@@ -32,6 +32,7 @@ import com.onyx.kreader.api.ReaderTextSplitter;
 import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.api.ReaderViewOptions;
+import com.onyx.kreader.host.impl.ReaderSelectionImpl;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
@@ -375,24 +376,10 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean searchPrevious(final ReaderSearchOptions options) {
-        searchResults.clear();
-        int page = Integer.parseInt(options.fromPage());
-        for (int i = page; i >= 0; i--) {
-            if (searchInPage(i, options,false)) {
-                return true;
-            }
-        }
         return false;
     }
 
     public boolean searchNext(final ReaderSearchOptions options) {
-        searchResults.clear();
-        int page = Integer.parseInt(options.fromPage());
-        for (int i = page; i < getTotalPage(); i++) {
-            if (searchInPage(i, options,false)) {
-                return true;
-            }
-        }
         return false;
     }
 
@@ -400,8 +387,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (clear){
             searchResults.clear();
         }
-        List<AlOneSearchResult> list = getPluginImpl().search(options.pattern());
-        return false;
+        return getPluginImpl().search(options.pattern(), searchResults);
     }
 
     public List<ReaderSelection> searchResults() {
@@ -433,7 +419,7 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderSelection selectWord(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
-        return null;
+        return getPluginImpl().selectText(hitTest.point, hitTest.point);
     }
 
     public String position(final ReaderHitTestArgs hitTest) {
@@ -441,12 +427,14 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
-        return null;
+        return getPluginImpl().selectText(start.point, end.point);
     }
 
     @Override
     public ReaderSelection select(String pagePosition, String startPosition, String endPosition) {
-        return null;
+        int start = PagePositionUtils.getPosition(startPosition);
+        int end = PagePositionUtils.getPosition(endPosition);
+        return getPluginImpl().selectText(start, end);
     }
 
     public boolean supportScale() {
