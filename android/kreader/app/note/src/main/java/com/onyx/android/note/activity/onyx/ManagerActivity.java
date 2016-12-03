@@ -1,8 +1,10 @@
 package com.onyx.android.note.activity.onyx;
 
+import android.app.Instrumentation;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,6 +43,7 @@ import com.onyx.android.sdk.ui.dialog.DialogProgress;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.util.List;
 
@@ -53,6 +56,7 @@ public class ManagerActivity extends BaseManagerActivity {
     private ImageView addFolderButton;
     private ImageView moveButton;
     private ImageView deleteButton;
+    private ImageView settingButton;
     private LinearLayout controlPanel;
     private @SortBy.SortByDef int currentSortBy = SortBy.CREATED_AT;
     private @AscDescOrder.AscDescOrderDef int ascOrder= AscDescOrder.DESC;
@@ -65,6 +69,12 @@ public class ManagerActivity extends BaseManagerActivity {
         loadSortByAndAsc();
         initView();
         initNoteViewHelper();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DeviceUtils.setFullScreenOnResume(this, NoteAppConfig.sharedInstance(this).useFullScreen());
     }
 
     private void loadSortByAndAsc() {
@@ -112,6 +122,7 @@ public class ManagerActivity extends BaseManagerActivity {
         toolBarTitle = (TextView) findViewById(R.id.textView_main_title);
         moveButton = (ImageView) findViewById(R.id.move_btn);
         deleteButton = (ImageView) findViewById(R.id.delete_btn);
+        settingButton = (ImageView) findViewById(R.id.setting_btn);
         controlPanel = (LinearLayout) findViewById(R.id.control_panel);
         ImageView sortByButton = (ImageView) findViewById(R.id.button_sort_by);
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -151,6 +162,12 @@ public class ManagerActivity extends BaseManagerActivity {
                     }
                 });
                 dlgCreateFolder.show(getFragmentManager());
+            }
+        });
+        settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportActionBar().openOptionsMenu();
             }
         });
         moveButton.setOnClickListener(new View.OnClickListener() {
@@ -336,7 +353,6 @@ public class ManagerActivity extends BaseManagerActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.export).setVisible(NoteAppConfig.sharedInstance(this).isEnableExport());
-        menu.findItem(R.id.import_scribble).setVisible(NotePreference.getBooleanValue(this, NotePreference.KEY_IMPORT_MENU_VISIBLE, true));
         if (chosenItemsList.size() <= 0 ||
                 (Utils.getItemType((chosenItemsList.get(0))) == DataItemType.TYPE_CREATE)) {
             menu.findItem(R.id.delete).setEnabled(false);

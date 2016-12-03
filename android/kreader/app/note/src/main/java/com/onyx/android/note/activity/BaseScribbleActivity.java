@@ -40,6 +40,7 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.io.File;
 import java.util.List;

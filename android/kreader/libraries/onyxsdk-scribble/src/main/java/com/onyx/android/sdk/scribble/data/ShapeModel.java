@@ -151,6 +151,13 @@ public class ShapeModel extends BaseModel {
         points = pts;
     }
 
+    public void addPoints(final  TouchPointList pts) {
+        if (points == null) {
+            points = new TouchPointList();
+        }
+        points.addAll(pts);
+    }
+
     public final String getShapeUniqueId() {
         return shapeUniqueId;
     }
