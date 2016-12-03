@@ -29,10 +29,11 @@ public class ImportScribbleAction<T extends BaseManagerActivity> extends BaseNot
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
-                    int count  = scribbleRequest.getMaxCount();
+                    int count  = scribbleRequest.getImportCount();
+                    int max = scribbleRequest.getMaxCount();
                     progress.setTitle(activity.getString(R.string.import_success));
                     progress.setSubTitle(activity.getString(R.string.import_success_info, count));
-                    progress.setProgress(count);
+                    progress.setProgress(max);
                 }else {
                     progress.getProgressBar().setVisibility(View.GONE);
                     progress.setTitle(activity.getString(R.string.import_fail));

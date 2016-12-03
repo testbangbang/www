@@ -55,7 +55,7 @@ public class TouchPointList implements Serializable {
         return points.iterator();
     }
 
-    public void scaleAllPoint(final float scaleValue) {
+    public void scaleAllPoints(final float scaleValue) {
         for (TouchPoint point : points) {
             point.x = point.x * scaleValue;
             point.y = point.y * scaleValue;

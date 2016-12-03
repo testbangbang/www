@@ -25,8 +25,10 @@ import com.onyx.android.sdk.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static android.provider.BaseColumns._ID;
 
@@ -39,10 +41,10 @@ public class ImportScribbleRequest extends BaseNoteRequest {
     private final String url = "content://com.onyx.android.sdk.OnyxCmsProvider/library_scribble";
 
     private Context context;
-    private int maxCount = 0;
-    private List<NoteModel> oldNoteModels = new ArrayList<>();
+    private int maxCount;
     private List<ShapeModel> newShapeModels = new ArrayList<>();
     private Map<String, NoteModel> noteModelMap = new HashMap<>();
+    private Set<String> existDocIds = new HashSet<>();
     private float scaleValue = 0.9f;
 
     private String MD5 = "MD5";
@@ -68,14 +70,13 @@ public class ImportScribbleRequest extends BaseNoteRequest {
     private int sColumnPointsBlob = -1;
     private int sColumnUniqueId = -1;
 
-    private static boolean columnIndexesInitialized = false;
+    private boolean columnIndexesInitialized = false;
 
     public ImportScribbleRequest(Context context) {
         this.context = context;
     }
 
     public void execute(NoteViewHelper helper) throws Exception {
-        oldNoteModels = NoteDataProvider.loadNoteList(context, null);
         Cursor cursor = null;
         try {
             Uri uri = Uri.parse(url);
@@ -118,7 +119,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
             columnIndexesInitialized = true;
         }
 
-        long id = CursorUtil.getLong(c, sColumnID);
+        Long id = CursorUtil.getLong(c, sColumnID);
         String md5 = CursorUtil.getString(c, sColumnMD5);
         Integer page = CursorUtil.getInt(c, sColumnPage);
         Integer color = CursorUtil.getInt(c, sColumnColor);
@@ -147,7 +148,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         }
 
         final TouchPointList points = SerializationUtils.pointsFromByteArray(pts);
-        points.scaleAllPoint(scaleValue);
+        points.scaleAllPoints(scaleValue);
         shapeModel.setPoints(points);
         Shape shape = new NormalPencilShape();
         shapeModel.setShapeUniqueId(uniqueId);
@@ -156,7 +157,9 @@ public class ImportScribbleRequest extends BaseNoteRequest {
             shapeModel.updateBoundingRect(touchPoint.x, touchPoint.y);
         }
 
-        newShapeModels.add(shapeModel);
+        if (!hasImported(md5)) {
+            newShapeModels.add(shapeModel);
+        }
 
         BaseCallback.ProgressInfo progressInfo = new BaseCallback.ProgressInfo();
         progressInfo.progress = index;
@@ -170,9 +173,6 @@ public class ImportScribbleRequest extends BaseNoteRequest {
             String shapeUniqueId = shapeModel.getShapeUniqueId();
             String documentUniqueId = shapeModel.getDocumentUniqueId();
             String pageUniqueId = shapeModel.getPageUniqueId();
-            if (hasImported(pageUniqueId)) {
-                continue;
-            }
 
             String title = "";
             Date createDate = shapeModel.getCreatedAt();
@@ -198,12 +198,14 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         return newNoteModes;
     }
 
-    private boolean hasImported(String pageUniqueId) {
-        for (NoteModel noteModel : oldNoteModels) {
-            PageNameList pageNameList = noteModel.getPageNameList();
-            if (pageNameList != null && pageNameList.contains(pageUniqueId)) {
-                return true;
-            }
+    private boolean hasImported(String documentUniqueId) {
+        if (existDocIds.contains(documentUniqueId)) {
+            return true;
+        }
+        NoteModel model = NoteDataProvider.load(context, documentUniqueId);
+        if (model != null) {
+            existDocIds.add(documentUniqueId);
+            return true;
         }
         return false;
     }
@@ -212,6 +214,10 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         List<NoteModel> newNoteModels = createNoteModes();
         ShapeDataProvider.saveShapeList(context, newShapeModels);
         NoteDataProvider.saveNoteList(context, newNoteModels);
+    }
+
+    public int getImportCount() {
+        return newShapeModels.size();
     }
 
     public int getMaxCount() {
