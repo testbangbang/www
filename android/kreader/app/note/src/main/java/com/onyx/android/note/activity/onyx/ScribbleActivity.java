@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.scribble.ClearPageAction;
@@ -40,6 +39,7 @@ import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.HashMap;
@@ -57,10 +57,16 @@ public class ScribbleActivity extends BaseScribbleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NoteApplication.initWithAppConfig(this);
+        DeviceUtils.setFullScreenOnCreate(this, true);
         setContentView(R.layout.onyx_activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         initToolbarButtons();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DeviceUtils.setFullScreenOnResume(this, true);
     }
 
     private void initToolbarButtons() {

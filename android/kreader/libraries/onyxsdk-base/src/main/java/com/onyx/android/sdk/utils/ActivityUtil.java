@@ -13,10 +13,13 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.support.graphics.drawable.BuildConfig;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -198,5 +201,4 @@ public class ActivityUtil {
             }
         }
     }
-
 }

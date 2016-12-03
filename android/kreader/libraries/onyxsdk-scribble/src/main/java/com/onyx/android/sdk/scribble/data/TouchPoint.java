@@ -93,4 +93,8 @@ public class TouchPoint implements Serializable {
         x = (x - pageInfo.getDisplayRect().left) / pageInfo.getActualScale();
         y = (y - pageInfo.getDisplayRect().top) / pageInfo.getActualScale();
     }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 }

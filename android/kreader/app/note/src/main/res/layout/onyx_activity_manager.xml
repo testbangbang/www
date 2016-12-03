@@ -69,6 +69,14 @@
                     android:src="@drawable/ic_move_to_inbox_black_36dp" />
             </LinearLayout>
 
+            <com.onyx.android.sdk.ui.view.CustomIconView
+                android:id="@+id/setting_btn"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/add_folder_btn"
+                android:src="@drawable/ic_setting"
+                app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
 
             <com.onyx.android.sdk.ui.view.CustomIconView
                 android:id="@+id/add_folder_btn"

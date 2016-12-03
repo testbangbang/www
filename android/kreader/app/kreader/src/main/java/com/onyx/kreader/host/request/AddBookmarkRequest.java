@@ -3,6 +3,7 @@ package com.onyx.kreader.host.request;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.layout.LayoutProviderUtils;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -35,6 +36,9 @@ public class AddBookmarkRequest extends BaseReaderRequest {
     }
 
     private String getQuote(String pageText) {
+        if (StringUtils.isNullOrEmpty(pageText)) {
+            return "";
+        }
         if (pageText.length() <= 50) {
             return pageText;
         } else {
