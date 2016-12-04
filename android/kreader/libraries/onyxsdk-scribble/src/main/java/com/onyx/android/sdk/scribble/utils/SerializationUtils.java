@@ -77,5 +77,4 @@ public class SerializationUtils {
 
         return points;
     }
-
 }

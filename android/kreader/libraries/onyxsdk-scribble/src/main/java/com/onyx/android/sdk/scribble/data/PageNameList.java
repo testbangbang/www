@@ -1,5 +1,8 @@
 package com.onyx.android.sdk.scribble.data;
 
+import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.utils.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +47,15 @@ public class PageNameList {
 
     public void setPageNameList(final List<String> set) {
         pageNameList = set;
+    }
+
+    public boolean contains(final String name) {
+        for (String s : pageNameList) {
+            if (s.equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
