@@ -59,8 +59,8 @@ public class InkUtils {
         final TouchPointList touchPointList = shape.getNormalizedPoints();
         TouchPoint touchPoint = touchPointList.get(0);
         TouchPoint lastTouchPoint = touchPoint;
-        float currentStrokeWidth;
         float lastStrokeWidth = strokeWidth(touchPoint, shape.getStrokeWidth(), shape.getStrokeWidth());
+        float currentStrokeWidth = lastStrokeWidth;
 
         Path path = new Path();
         path.moveTo(touchPoint.getX(), touchPoint.getY());
@@ -77,6 +77,9 @@ public class InkUtils {
                 lastStrokeWidth = currentStrokeWidth;
             }
             lastTouchPoint = touchPoint;
+        }
+        if (touchPointList.size() > 1) {
+            flushPath(list, path, currentStrokeWidth, renderContext);
         }
         return list;
     }
