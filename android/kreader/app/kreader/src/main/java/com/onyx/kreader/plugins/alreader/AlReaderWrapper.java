@@ -340,7 +340,7 @@ public class AlReaderWrapper {
 
     private AlTextOnScreen getTextOnScreen() {
         if (screenText == null) {
-            screenText = bookEng.fillTextOnScreen(true, 0, true, 0);
+            screenText = bookEng.getTextOnScreen();
         }
         return screenText;
     }
