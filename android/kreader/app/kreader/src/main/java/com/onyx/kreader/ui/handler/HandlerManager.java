@@ -342,17 +342,9 @@ public class HandlerManager {
         } else if (action.equals(KeyAction.MOVE_RIGHT)) {
             panRight(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_UP)) {
-            if (readerDataHolder.supportScalable()) {
-                panUp(readerDataHolder);
-            } else {
-                increaseFontSize(readerDataHolder);
-            }
+            onMoveUp(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_DOWN)) {
-            if (readerDataHolder.supportScalable()) {
-                panDown(readerDataHolder);
-            } else {
-                decreaseFontSize(readerDataHolder);
-            }
+            onMoveDown(readerDataHolder);
         } else if (action.equals(KeyAction.TOGGLE_BOOKMARK)) {
             toggleBookmark(readerDataHolder);
         } else if (action.equals(KeyAction.SHOW_MENU)) {
@@ -363,6 +355,22 @@ public class HandlerManager {
             return false;
         }
         return true;
+    }
+
+    private void onMoveUp(ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.supportScalable()) {
+            panUp(readerDataHolder);
+        } else {
+            increaseFontSize(readerDataHolder);
+        }
+    }
+
+    private void onMoveDown(ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.supportScalable()) {
+            panDown(readerDataHolder);
+        } else {
+            decreaseFontSize(readerDataHolder);
+        }
     }
 
     private void nextScreen(final ReaderDataHolder readerDataHolder) {
