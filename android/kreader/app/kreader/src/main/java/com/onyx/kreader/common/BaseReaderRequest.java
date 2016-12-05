@@ -157,9 +157,11 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     public void saveReaderOptions(final Reader reader) {
-        reader.saveOptions();
-        saveToDocumentOptionsProvider(reader);
-        saveToLegacyDataProvider(reader);
+        if (reader.getDocument().saveOptions()) {
+            reader.saveOptions();
+            saveToDocumentOptionsProvider(reader);
+            saveToLegacyDataProvider(reader);
+        }
     }
 
     private void saveToDocumentOptionsProvider(final Reader reader) {
