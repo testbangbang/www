@@ -367,7 +367,7 @@ public class AlReaderWrapper {
             return null;
         }
         final AlTextOnScreen.AlPieceOfText startPiece = screenText.regionList.get(startIndex);
-        final AlTextOnScreen.AlPieceOfText endPiece = screenText.regionList.get(startIndex);
+        final AlTextOnScreen.AlPieceOfText endPiece = screenText.regionList.get(endIndex);
         Debug.d(getClass(), JSON.toJSONString(startPiece));
         ReaderSelectionImpl selection = new ReaderSelectionImpl();
         selection.setPageName(PagePositionUtils.fromPageNumber(getPageNumberOfPosition(getPieceStart(startPiece))));
