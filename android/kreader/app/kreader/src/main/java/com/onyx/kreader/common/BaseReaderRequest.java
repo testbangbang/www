@@ -127,14 +127,15 @@ public abstract class BaseReaderRequest extends BaseRequest {
                 }
                 BaseCallback.invoke(getCallback(), BaseReaderRequest.this, getException());
                 reader.releaseWakeLock(BaseReaderRequest.this.getClass().getSimpleName());
-        }};
+            }
+        };
 
         if (isRunInBackground()) {
             reader.getLooperHandler().post(runnable);
         } else {
             runnable.run();
         }
-        if (getRenderBitmap() != null && !isTransferBitmap()){
+        if (getRenderBitmap() != null && !isTransferBitmap()) {
             reader.returnBitmapToCache(getRenderBitmap());
         }
     }
@@ -192,22 +193,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
             if (!reader.getRendererFeatures().supportScale()) {
                 // if document doesn't support scale, means it's a flow document,
                 // then we need update selection rectangles as they may change
-                for (PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
-                    List<PageAnnotation> annotations = getReaderUserDataInfo().getPageAnnotations(pageInfo);
-                    if (annotations == null) {
-                        continue;
-                    }
-                    for (PageAnnotation annotation : annotations) {
-                        ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
-                        ReaderSelection selection = hitTestManager.select(pageInfo.getPosition(),
-                                annotation.getAnnotation().getLocationBegin(),
-                                annotation.getAnnotation().getLocationEnd());
-                        annotation.getRectangles().clear();
-                        if (selection != null) {
-                            annotation.getRectangles().addAll(selection.getRectangles());
-                        }
-                    }
-                }
+                updateAnnotationRectangles(reader);
             }
         }
         if (readerViewInfo != null && loadBookmark) {
@@ -215,6 +201,25 @@ public abstract class BaseReaderRequest extends BaseRequest {
         }
         if (readerViewInfo != null && loadPageLinks) {
             getReaderUserDataInfo().loadPageLinks(getContext(), reader, readerViewInfo.getVisiblePages());
+        }
+    }
+
+    private void updateAnnotationRectangles(final Reader reader) {
+        for (PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
+            List<PageAnnotation> annotations = getReaderUserDataInfo().getPageAnnotations(pageInfo);
+            if (annotations == null) {
+                continue;
+            }
+            for (PageAnnotation annotation : annotations) {
+                ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
+                ReaderSelection selection = hitTestManager.select(pageInfo.getPosition(),
+                        annotation.getAnnotation().getLocationBegin(),
+                        annotation.getAnnotation().getLocationEnd());
+                annotation.getRectangles().clear();
+                if (selection != null) {
+                    annotation.getRectangles().addAll(selection.getRectangles());
+                }
+            }
         }
     }
 
