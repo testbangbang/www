@@ -18,6 +18,8 @@ public interface ReaderSelection {
         VIDEO,
     }
 
+    public String getPageName();
+
     public String getPagePosition();
 
     /**

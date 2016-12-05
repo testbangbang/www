@@ -52,6 +52,8 @@ public abstract class AlFormat {
     public boolean softHyphenPresent;
     protected int softHyphenCount;
 
+    public boolean  isTextFormat = true;
+
     public boolean haveProblem = false;
 
     AlPreferenceOptions preference = new AlPreferenceOptions();
@@ -463,7 +465,7 @@ public abstract class AlFormat {
     }
 
     protected char getTextStyle() {
-        return (char) (AlStyles.STYLE_BASE0 + (paragraph & AlStyles.PAR_STYLE_MASK));
+        return (char) (AlStyles.STYLE_BASE0 + (paragraph & AlStyles.STYLE_MASK));
     }
 
     void setParagraphStyle(long tag) {
@@ -805,18 +807,18 @@ public abstract class AlFormat {
         }
 
         // �������������� code /code � pre /pre
-        if ((alp.iType & (AlStyles.PAR_PRE | AlStyles.PAR_STYLE_CODE)) == AlStyles.PAR_STYLE_CODE) {
+        if ((alp.iType & (AlStyles.PAR_PRE | AlStyles.STYLE_CODE)) == AlStyles.STYLE_CODE) {
             start_style_point = 1;
-            j = AlStyles.PAR_STYLE_CODE;
+            j = AlStyles.STYLE_CODE;
             for (i = 0; i < len; i++) {
                 ch = stored_par.data[i];
                 if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0) {
-                    if ((ch & AlStyles.PAR_STYLE_CODE) == 0) {
-                        j = ch & AlStyles.PAR_STYLE_MASK;
+                    if ((ch & AlStyles.STYLE_CODE) == 0) {
+                        j = ch & AlStyles.STYLE_MASK;
                         continue;
                     }
                 }
-                if ((j & AlStyles.PAR_STYLE_CODE) == 0 && ch != 0x20 && ch != 0xa0) {
+                if ((j & AlStyles.STYLE_CODE) == 0 && ch != 0x20 && ch != 0xa0) {
                     start_style_point = 0;
                     break;
                 }
@@ -827,12 +829,12 @@ public abstract class AlFormat {
         }
         // �������� ����������� ��������
         if (preference.delete0xA0 && (alp.iType & AlStyles.PAR_PRE) == 0) {
-            j = (int) (alp.iType & AlStyles.PAR_STYLE_CODE);
+            j = (int) (alp.iType & AlStyles.STYLE_CODE);
             for (i = 0; i < len; i++) {
                 ch = stored_par.data[i];
                 if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0) {
-                    if ((ch & AlStyles.PAR_STYLE_CODE) == 0) {
-                        j = ch & AlStyles.PAR_STYLE_CODE;
+                    if ((ch & AlStyles.STYLE_CODE) == 0) {
+                        j = ch & AlStyles.STYLE_CODE;
                         continue;
                     }
                 }
@@ -963,12 +965,12 @@ public abstract class AlFormat {
             return;
         } else {
             boolean needReturn = false;
-            j = (int) (alp.iType & AlStyles.PAR_STYLE_CODE);
+            j = (int) (alp.iType & AlStyles.STYLE_CODE);
             boolean needJustLeft = j != 0;
             for (i = 0; i < len; i++) {
                 ch = stored_par.data[i];
                 if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0) {
-                    j = (int) (ch & AlStyles.PAR_STYLE_CODE);
+                    j = (int) (ch & AlStyles.STYLE_CODE);
                     needJustLeft |= j != 0;
                     continue;
                 }
@@ -990,7 +992,7 @@ public abstract class AlFormat {
         if (preference.need_dialog == 2)
             return;
 
-        boolean disable_linear = (alp.iType & (AlStyles.PAR_PRE | AlStyles.SL_CODE)) != 0;
+        boolean disable_linear = (alp.iType & (AlStyles.PAR_PRE | AlStyles.STYLE_CODE)) != 0;
         // ������������ ��������
         for (i = 0; i < len; i++) {
             ch = stored_par.data[i];
@@ -999,7 +1001,7 @@ public abstract class AlFormat {
                     return;
                 stored_par.data[i] = AlStyles.CHAR_NONE;
             } else if (ch < 0x20 || ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0)) {
-                disable_linear = (ch & (AlStyles.PAR_PRE | AlStyles.SL_CODE)) != 0;
+                disable_linear = (ch & (AlStyles.PAR_PRE | AlStyles.STYLE_CODE)) != 0;
             } else
                 //if ((ch & AlStyles.STYLE_BASE_MASK) == STYLE_BASE1) {
                 //
@@ -1091,7 +1093,7 @@ public abstract class AlFormat {
         ap = par.get(par_num);
         getPreparedParagraph0(par_num, ap);
 
-        char style = (char) (ap.iType & AlStyles.PAR_STYLE_MASK);
+        char style = (char) (ap.iType & AlStyles.STYLE_MASK);
         char style_image;
         style |= AlStyles.SL_PAR;
         if ((ap.iType & AlStyles.PAR_PREVIOUS_EMPTY_0) != 0)
@@ -1166,8 +1168,8 @@ public abstract class AlFormat {
                         break;
                 }
             } else if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0) {
-                style &= AlStyles.PAR_STYLE_ICHARMASK;
-                style |= ch & AlStyles.PAR_STYLE_MASK;
+                style &= AlStyles.STYLE_ICHARMASK;
+                style |= ch & AlStyles.STYLE_MASK;
             } else
                 //if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE1) {
                 //
@@ -1179,7 +1181,7 @@ public abstract class AlFormat {
                         ) {
 
                     if ((ap.iType & (AlStyles.MASK_FOR_FLETTER - AlStyles.PAR_FIRSTP - extfl_mask)) == 0 &&
-                            (style & (AlStyles.PAR_STYLE_MASK - extfl_mask)) == 0) {
+                            (style & (AlStyles.STYLE_MASK - extfl_mask)) == 0) {
 
                         switch (profileType) {
                             case 0x02:
@@ -1266,7 +1268,7 @@ public abstract class AlFormat {
                     //} else
                     if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0) {
                         // mark last link char if present
-                        if ((style & AlStyles.SL_LINK) != 0 && (ch & AlStyles.SL_LINK) == 0) {
+                        if ((style & AlStyles.STYLE_LINK) != 0 && (ch & AlStyles.STYLE_LINK) == 0) {
                             for (k = j - 1; k >= 0; k--) {
                                 if (slot_t[k] > 0x20 || slot_t[k] == AlStyles.CHAR_IMAGE_E) {
                                     slot_s[k] |= AlStyles.SL_MARKNOTE0;
@@ -1275,8 +1277,8 @@ public abstract class AlFormat {
                             }
                         }
                         //
-                        style &= AlStyles.PAR_STYLE_ICHARMASK;
-                        style |= ch & AlStyles.PAR_STYLE_MASK;
+                        style &= AlStyles.STYLE_ICHARMASK;
+                        style |= ch & AlStyles.STYLE_MASK;
                         slot_t[j] = 0x00;
                     } else {
                         slot_t[j] = isInvisible ? 0x00 : ch;
@@ -1291,7 +1293,7 @@ public abstract class AlFormat {
                 }
                 //
 
-                is_link = (style & AlStyles.SL_LINK) != 0;
+                is_link = (style & AlStyles.STYLE_LINK) != 0;
                 if (is_link) {
                     slot_s[j] &= AlStyles.SL_COLOR_IMASK;
                     slot_s[j] |= AlStyles.SL_COLOR_LINK;
@@ -1314,7 +1316,7 @@ public abstract class AlFormat {
                         ((ch > 0x20) || (ch == AlStyles.CHAR_IMAGE_E) || (ch == AlStyles.CHAR_ROWS_E))) {
 
                     if ((ap.iType & (AlStyles.MASK_FOR_FLETTER - AlStyles.PAR_FIRSTP - extfl_mask)) == 0 &&
-                            (style & (AlStyles.PAR_STYLE_MASK - extfl_mask)) == 0) {
+                            (style & (AlStyles.STYLE_MASK - extfl_mask)) == 0) {
 
                         switch (profileType) {
                             case 0x02:
@@ -1346,7 +1348,7 @@ public abstract class AlFormat {
                 }
 
                 if (((slot_s[j] & AlStyles.SL_MARKFIRTSTLETTER) == 0) &&
-                        (style & (AlStyles.SL_BOLD | AlStyles.SL_ITALIC | AlStyles.SL_CODE/* | AlStyles.SL_CSTYLE*/)) != 0) {
+                        (style & (AlStyles.STYLE_BOLD | AlStyles.STYLE_ITALIC | AlStyles.STYLE_CODE/* | AlStyles.SL_CSTYLE*/)) != 0) {
                     remap_font = slot_s[j];
                     remap_color = slot_s[j];
 
@@ -1382,7 +1384,7 @@ public abstract class AlFormat {
                     }*/
 
 
-                    if ((style & 0x03) == AlStyles.SL_BOLD) {
+                    if ((style & 0x03) == AlStyles.STYLE_BOLD) {
                         switch (((int) style_b) & AlStyles.REMAP_MASKF) {
                             case AlStyles.REMAP_TEXTF:
                                 if ((ap.iType & AlStyles.MASK_FOR_REMAPTEXT) == 0)
@@ -1414,7 +1416,7 @@ public abstract class AlFormat {
                     }
 
 
-                    if ((style & 0x03) == AlStyles.SL_ITALIC) {
+                    if ((style & 0x03) == AlStyles.STYLE_ITALIC) {
                         switch (((int) style_i) & AlStyles.REMAP_MASKF) {
                             case AlStyles.REMAP_TEXTF:
                                 if ((ap.iType & AlStyles.MASK_FOR_REMAPTEXT) == 0)
@@ -1445,7 +1447,7 @@ public abstract class AlFormat {
                             }
                     }
 
-                    if ((style & 0x03) == AlStyles.SL_ITALIC + AlStyles.SL_BOLD) {
+                    if ((style & 0x03) == AlStyles.STYLE_ITALIC + AlStyles.STYLE_BOLD) {
                         switch (((int) style_bi) & AlStyles.REMAP_MASKF) {
                             case AlStyles.REMAP_TEXTF:
                                 if ((ap.iType & AlStyles.MASK_FOR_REMAPTEXT) == 0)
@@ -1476,7 +1478,7 @@ public abstract class AlFormat {
                             }
                     }
 
-                    if ((style & AlStyles.SL_CODE) != 0) {
+                    if ((style & AlStyles.STYLE_CODE) != 0) {
                         switch (((int) style_c) & AlStyles.REMAP_MASKF) {
                             case AlStyles.REMAP_TEXTF:
                                 if ((ap.iType & AlStyles.MASK_FOR_REMAPTEXT) == 0)
@@ -1526,7 +1528,7 @@ public abstract class AlFormat {
             ap = par.get(par_num);
             getPreparedParagraph0(par_num, ap);
 
-            style = (char) (ap.iType & AlStyles.PAR_STYLE_MASK);
+            style = (char) (ap.iType & AlStyles.STYLE_MASK);
             style |= AlStyles.SL_PAR;
             if ((ap.iType & AlStyles.PAR_PREVIOUS_EMPTY_0) != 0)
                 style |= AlStyles.SL_PREV_EMPTY_0;
@@ -1553,7 +1555,7 @@ public abstract class AlFormat {
                 for (; start < stored_par.length; start++) {
                     if (bi_mask &&
                             (stored_par.data[start] & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0 &&
-                            (stored_par.data[start] & (AlStyles.PAR_STYLE_MASK - 0x03)) == 0) {
+                            (stored_par.data[start] & (AlStyles.STYLE_MASK - 0x03)) == 0) {
                         res++;
                         if (start == stored_par.length - 1)
                             return 0;
@@ -1574,7 +1576,7 @@ public abstract class AlFormat {
                 for (; start < stored_par.length; start++) {
                     if (bi_mask &&
                             (stored_par.data[start] & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0 &&
-                            (stored_par.data[start] & (AlStyles.PAR_STYLE_MASK - 0x03)) == 0) {
+                            (stored_par.data[start] & (AlStyles.STYLE_MASK - 0x03)) == 0) {
                         res++;
                         if (start == stored_par.length - 1)
                             return 0;
@@ -1602,7 +1604,7 @@ public abstract class AlFormat {
                 for (; start < stored_par.length; start++) {
                     if (bi_mask &&
                             (stored_par.data[start] & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0 &&
-                            (stored_par.data[start] & (AlStyles.PAR_STYLE_MASK - 0x03)) == 0) {
+                            (stored_par.data[start] & (AlStyles.STYLE_MASK - 0x03)) == 0) {
                         res2++;
                         if (start == stored_par.length - 1)
                             return res;
@@ -1628,6 +1630,8 @@ public abstract class AlFormat {
 
         if ((s & AlStyles.PAR_PRE) != 0) {
             res = styles.style[InternalConst.STYLES_STYLE_PRE];
+        } else if ((s & AlStyles.PAR_TITLE) != 0 && (s & AlStyles.PAR_AUTHOR) != 0) {
+            res = AlStyles.SL_MARKTITLE | styles.style[InternalConst.STYLES_STYLE_STITLE];
         } else if ((s & AlStyles.PAR_TITLE) != 0) {
             res = AlStyles.SL_MARKTITLE | styles.style[InternalConst.STYLES_STYLE_TITLE];
         } else if ((s & AlStyles.PAR_SUBTITLE) != 0) {
@@ -1655,12 +1659,13 @@ public abstract class AlFormat {
         }
 
         if ((s & AlStyles.PAR_HIDDEN) != 0) {
-            res |= s & AlStyles.SL_HIDDEN;
+            res |= s & AlStyles.STYLE_HIDDEN;
         }
 
         if (((s & AlStyles.PAR_TABLE) != 0)) {
-            res &= AlStyles.SL_JUST_MASK;
-            res |= AlStyles.SL_SIZE_M2 | AlStyles.SL_TABLE | AlStyles.SL_HYPH | AlStyles.SL_INTER_ADDTEXT;
+            //res &= AlStyles.SL_JUST_MASK;
+            res = s & AlStyles.SL_JUST_MASK;
+            res |= AlStyles.SL_SIZE_M2 | AlStyles.SL_TABLE | AlStyles.SL_HYPH | AlStyles.SL_INTER_TEXT;
         }
 
         res |= s & AlStyles.PAR_UL_BASE;
@@ -1901,6 +1906,10 @@ public abstract class AlFormat {
 
     public int getStartPragarphByNum(int num) {
         return par.get(num).start;
+    }
+
+    public int getLengthPragarphByNum(int num) {
+        return par.get(num).length;
     }
 
     public long getStylePragarphByNum(int num) {
@@ -2308,6 +2317,14 @@ public abstract class AlFormat {
     }
 
     abstract protected void doTextChar(char ch, boolean addSpecial);
+
+    public int getPageStart(int pos) {
+        return 0;
+    }
+
+    public int getCountPages() {
+        return 0;
+    }
 
     protected void prepareCustom() {
         haveNotesOnPageReal = false;

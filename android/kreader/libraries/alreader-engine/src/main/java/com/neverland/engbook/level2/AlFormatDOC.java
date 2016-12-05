@@ -225,6 +225,9 @@ public class AlFormatDOC extends AlFormat {
     private void prepareLink(char ch) {
         switch (ch) {
             case 0x13:
+                if (!allState.text_present)
+                    addCharFromTag((char)0xa0, false);
+
                 switch (allState.state_parser) {
                     case STATE_LINK14:
                         clearTextStyle(AlStyles.STYLE_LINK);
@@ -570,7 +573,7 @@ public class AlFormatDOC extends AlFormat {
                                             real_special - 1, aDoc.format.xnote), size, 1));
 
                                 if (preference.onlyPopupFootnote)
-                                    setTextStyle(AlStyles.PAR_STYLE_HIDDEN);
+                                    setTextStyle(AlStyles.STYLE_HIDDEN);
 
                                 if (ch == 0x02)
                                     addTextFromTag(String.format("%d ", aDoc.format.xnote), false);

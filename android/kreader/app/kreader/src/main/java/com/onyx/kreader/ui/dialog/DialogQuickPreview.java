@@ -265,7 +265,7 @@ public class DialogQuickPreview extends Dialog {
         findViewById(R.id.image_view_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogQuickPreview.this.dismiss();
+                DialogQuickPreview.this.cancel();
             }
         });
 
@@ -293,6 +293,16 @@ public class DialogQuickPreview extends Dialog {
         setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
+                if (callback != null) {
+                    callback.abort();
+                }
+                readerDataHolder.removeActiveDialog(DialogQuickPreview.this);
+            }
+        });
+
+        setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
                 if (callback != null) {
                     callback.abort();
                 }

@@ -4,6 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.RectF;
+
+import com.alibaba.fastjson.JSON;
 import com.neverland.engbook.bookobj.AlBookEng;
 import com.neverland.engbook.forpublic.AlBitmap;
 import com.neverland.engbook.forpublic.AlBookOptions;
@@ -14,7 +18,11 @@ import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.AlOneSearchResult;
 import com.neverland.engbook.forpublic.AlPublicProfileOptions;
+import com.neverland.engbook.forpublic.AlRect;
+import com.neverland.engbook.forpublic.AlTapInfo;
+import com.neverland.engbook.forpublic.AlTextOnScreen;
 import com.neverland.engbook.forpublic.EngBookMyType;
+import com.neverland.engbook.forpublic.EngSelectionCorrecter;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.util.TTFInfo;
@@ -25,10 +33,14 @@ import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.api.ReaderPluginOptions;
+import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.host.impl.ReaderSelectionImpl;
 import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.kreader.utils.RectUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,6 +61,8 @@ public class AlReaderWrapper {
     private AlEngineOptions engineOptions;
     private AlPublicProfileOptions profile = new AlPublicProfileOptions();
     private ReaderTextStyle textStyle = null;
+
+    private AlTextOnScreen screenText;
 
     public AlReaderWrapper(final Context context, final ReaderPluginOptions pluginOptions) {
         bookEng = new AlBookEng();
@@ -103,6 +117,7 @@ public class AlReaderWrapper {
     private AlEngineOptions createEngineOptions(final Context context, final ReaderPluginOptions pluginOptions) {
         engineOptions = new AlEngineOptions();
         engineOptions.appInstance = context;
+        engineOptions.runInOneThread = true;
         engineOptions.font_catalog = pluginOptions.getFontDirectories().get(0);
         engineOptions.hyph_lang = EngBookMyType.TAL_HYPH_LANG.ENGRUS;
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
@@ -185,6 +200,8 @@ public class AlReaderWrapper {
         Debug.e(getClass(), "draw bitmap: %d, %d, %s", bmp.bmp.getWidth(), bmp.bmp.getHeight(), bmp.bmp);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawBitmap(bmp.bmp, 0, 0, new Paint());
+
+        resetScreenState();
     }
 
     public int getTotalPage() {
@@ -200,7 +217,7 @@ public class AlReaderWrapper {
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
             return -1;
         }
-        return position.pageCurrent;
+        return getPageNumberOfPosition(position.readPositionStart) - 1;
     }
 
     public int getCurrentPosition() {
@@ -247,11 +264,6 @@ public class AlReaderWrapper {
         return ret == TAL_RESULT.OK;
     }
 
-    public List<AlOneSearchResult> search(final String text) {
-        bookEng.findText(text);
-        return bookEng.getFindTextResult();
-    }
-
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         AlBookProperties properties = bookEng.getBookProperties(true);
         if (properties.content == null) {
@@ -265,6 +277,134 @@ public class AlReaderWrapper {
                      content.pageNum, PagePositionUtils.fromPosition(content.positionS));
         }
         return true;
+    }
+
+    public boolean search(final String text, final List<ReaderSelection> list) {
+        try {
+            if (bookEng.findText(text) != TAL_RESULT.OK) {
+                return false;
+            }
+            ArrayList<AlOneSearchResult> searchResults = bookEng.getFindTextResult();
+            if (searchResults == null || searchResults.size() <= 0) {
+                return false;
+            }
+            for (AlOneSearchResult result : searchResults) {
+                ReaderSelectionImpl selection = new ReaderSelectionImpl();
+                selection.setPageName(PagePositionUtils.fromPageNumber(getPageNumberOfPosition(result.pos_start)));
+                selection.setPagePosition(PagePositionUtils.fromPosition(result.pos_start));
+                selection.setText(text);
+                list.add(selection);
+            }
+        } finally {
+            // clear finds in book engine
+            bookEng.findText(null);
+        }
+
+        return true;
+    }
+
+    public ReaderSelection selectText(PointF start, PointF end) {
+        Debug.d(getClass(), "start point: %s, end point: %s", JSON.toJSONString(start),
+                JSON.toJSONString(end));
+
+        AlTextOnScreen screenText = getTextOnScreen();
+        if (screenText == null) {
+            Debug.w(getClass(), "get text on screen failed!");
+            return null;
+        }
+
+        int startPos = hitTest((int)start.x, (int)start.y);
+        if (startPos == -1) {
+            return null;
+        }
+        int endPos = hitTest((int)end.x, (int)end.y);
+        if (endPos == -1) {
+            return null;
+        }
+        return combineSelection(screenText, startPos, endPos);
+    }
+
+    public ReaderSelection selectText(int startPos, int endPos) {
+        AlTextOnScreen screenText = getTextOnScreen();
+        if (screenText == null) {
+            Debug.w(getClass(), "get text on screen failed!");
+            return null;
+        }
+
+        return combineSelection(screenText, startPos, endPos);
+    }
+
+    private void resetScreenState() {
+        screenText = null;
+    }
+
+    private AlTextOnScreen getTextOnScreen() {
+        if (screenText == null) {
+            screenText = bookEng.fillTextOnScreen(true, 0, true, 0);
+        }
+        return screenText;
+    }
+
+    private int hitTest(int x, int y) {
+        try {
+            AlTapInfo tapInfo = bookEng.getInfoByTap(x, y, EngBookMyType.TAL_SCREEN_SELECTION_MODE.DICTIONARY);
+            Debug.d(getClass(), "tap info: " + JSON.toJSONString(tapInfo));
+            return tapInfo == null ? -1 : tapInfo.pos;
+        } finally {
+            bookEng.setSelectionMode(EngBookMyType.TAL_SCREEN_SELECTION_MODE.NONE);
+        }
+    }
+
+    private int getPageNumberOfPosition(int position) {
+        return bookEng.getPageOfPosition(position);
+    }
+
+    private ReaderSelection combineSelection(AlTextOnScreen textOnScreen, int startPos, int endPos) {
+        Debug.d(getClass(), "start pos: %d, end pos: %d", startPos, endPos);
+        int startIndex = textOnScreen.findWordByPos(startPos);
+        int endIndex = textOnScreen.findWordByPos(endPos);
+        if (startIndex == -1 || endIndex == -1) {
+            return null;
+        }
+        final AlTextOnScreen.AlPieceOfText startPiece = screenText.regionList.get(startIndex);
+        final AlTextOnScreen.AlPieceOfText endPiece = screenText.regionList.get(startIndex);
+        Debug.d(getClass(), JSON.toJSONString(startPiece));
+        ReaderSelectionImpl selection = new ReaderSelectionImpl();
+        selection.setPageName(PagePositionUtils.fromPageNumber(getPageNumberOfPosition(getPieceStart(startPiece))));
+        selection.setPagePosition(PagePositionUtils.fromPosition(getCurrentPosition()));
+        selection.setText(combineSelectionText(textOnScreen, startIndex, endIndex));
+        selection.setStartPosition(PagePositionUtils.fromPosition(getPieceStart(startPiece)));
+        selection.setEndPosition(PagePositionUtils.fromPosition(getPieceEnd(endPiece)));
+        selection.setDisplayRects(combineSelectionRectangles(textOnScreen, startIndex, endIndex));
+        return selection;
+    }
+
+    private int getPieceStart(AlTextOnScreen.AlPieceOfText piece) {
+        return piece.positions[0];
+    }
+
+    private int getPieceEnd(AlTextOnScreen.AlPieceOfText piece) {
+        return piece.positions[piece.positions.length - 1];
+    }
+
+    private String combineSelectionText(AlTextOnScreen textOnScreen, int startIndex, int endIndex) {
+        StringBuilder builder = new StringBuilder(textOnScreen.regionList.get(startIndex).word);
+        for (int i = startIndex + 1; i <= endIndex; i++) {
+            builder.append(" ").append(textOnScreen.regionList.get(i).word);
+        }
+        return builder.toString();
+    }
+
+    private List<RectF> combineSelectionRectangles(AlTextOnScreen textOnScreen, int startIndex, int endIndex) {
+        ArrayList<RectF> rectList = new ArrayList<>();
+        for (int i = startIndex; i <= endIndex; i++) {
+            rectList.add(createRect(textOnScreen.regionList.get(i).rect));
+        }
+        return RectUtils.mergeRectanglesByBaseLine(rectList);
+    }
+
+    private RectF createRect(AlRect rect) {
+        return new RectF(rect.x0, rect.y0, rect.x1, rect.y1);
     }
 
 }

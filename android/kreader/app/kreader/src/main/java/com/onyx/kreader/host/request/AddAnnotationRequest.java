@@ -42,7 +42,7 @@ public class AddAnnotationRequest extends BaseReaderRequest {
         Annotation annotation = new Annotation();
         annotation.setIdString(reader.getDocumentMd5());
         annotation.setApplication(reader.getPlugin().displayName());
-        annotation.setPosition(pageInfo.getName());
+        annotation.setPosition(pageInfo.getPosition());
         annotation.setPageNumber(PagePositionUtils.getPageNumber(pageInfo.getName()));
         annotation.setLocationBegin(locationBegin);
         annotation.setLocationEnd(locationEnd);

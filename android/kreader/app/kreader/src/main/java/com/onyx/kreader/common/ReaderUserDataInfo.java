@@ -14,6 +14,7 @@ import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.utils.PagePositionUtils;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.ArrayList;
@@ -135,7 +136,7 @@ public class ReaderUserDataInfo {
             final List<Annotation> annotations = DataProviderManager.getDataProvider().loadAnnotations(
                     reader.getPlugin().displayName(),
                     reader.getDocumentMd5(),
-                    pageInfo.getName(),
+                    PagePositionUtils.getPageNumber(pageInfo.getName()),
                     OrderBy.fromProperty(Annotation_Table.pageNumber).ascending());
             if (annotations != null && annotations.size() > 0) {
                 List<PageAnnotation> list = new ArrayList<>();
@@ -164,7 +165,8 @@ public class ReaderUserDataInfo {
 
     public boolean loadBookmarks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
-            final Bookmark bookmark = DataProviderManager.getDataProvider().loadBookmark(reader.getPlugin().displayName(), reader.getDocumentMd5(), pageInfo.getName());
+            final Bookmark bookmark = DataProviderManager.getDataProvider().loadBookmark(reader.getPlugin().displayName(),
+                    reader.getDocumentMd5(), PagePositionUtils.getPageNumber(pageInfo.getName()));
             if (bookmark != null) {
                 bookmarkMap.put(pageInfo.getName(), bookmark);
             }

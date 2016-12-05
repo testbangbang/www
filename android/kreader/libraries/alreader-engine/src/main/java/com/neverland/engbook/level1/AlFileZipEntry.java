@@ -8,4 +8,5 @@ public class AlFileZipEntry {
 	public int					compress;
 	public int					time;
 	public int					flag;
+	public Object				obj = null;
 }

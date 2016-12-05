@@ -108,7 +108,8 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         private LinearLayout deleteLayout;
         private LinearLayout editLayout;
         private View splitLine;
-        private String page;
+        private String pageName;
+        private String pagePosition;
         private int position;
 
         public SimpleListViewItemViewHolder(final ReaderDataHolder readerDataHolder, final View itemView) {
@@ -148,7 +149,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new GotoPositionAction(page).execute(readerDataHolder, new BaseCallback() {
+                    new GotoPositionAction(pagePosition).execute(readerDataHolder, new BaseCallback() {
                         @Override
                         public void done(BaseRequest request, Throwable e) {
                             DialogTableOfContent.this.dismiss();
@@ -158,15 +159,16 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             });
         }
 
-        public void bindView(String title, String description, String page, long time, int position, DirectoryTab tab) {
+        public void bindView(String title, String description, String pageName, String pagePosition, long time, int position, DirectoryTab tab) {
             textViewTitle.setText(title);
             description = StringUtils.deleteNewlineSymbol(description);
             textViewDescription.setText(description);
             Date date = new Date(time);
             textViewTime.setText(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
-            String format = String.format(readerDataHolder.getContext().getString(R.string.page), Integer.valueOf(page) + 1);
+            String format = String.format(readerDataHolder.getContext().getString(R.string.page), Integer.valueOf(pageName) + 1);
             textViewPage.setText(format);
-            this.page = page;
+            this.pageName = pageName;
+            this.pagePosition = pagePosition;
             this.position = position;
 
             editLayout.setVisibility(currentTab == DirectoryTab.Annotation ? View.VISIBLE : View.GONE);
@@ -545,6 +547,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 }
                 ((SimpleListViewItemViewHolder) holder).bindView(title,
                         bookmark.getQuote(),
+                        PagePositionUtils.fromPageNumber(bookmark.getPageNumber()),
                         bookmark.getPosition(),
                         bookmark.getCreatedAt().getTime(),
                         position,
@@ -586,6 +589,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 Annotation annotation = annotationList.get(position);
                 ((SimpleListViewItemViewHolder) holder).bindView(annotation.getNote(),
                         annotation.getQuote(),
+                        PagePositionUtils.fromPageNumber(annotation.getPageNumber()),
                         annotation.getPosition(),
                         annotation.getCreatedAt().getTime(),
                         position,

@@ -14,9 +14,9 @@ public class InternalConst {
 	public final static char TAL_HYPH_INPLACE_DISABLESPACE =			'A';
 	public final static char TAL_HYPH_INPLACE_PREDISABLE =				'B';
 
-	public final static int INTER_TEXT = 8;
+	/*public final static int INTER_TEXT = 8;
 	public final static int INTER_NOTE = 9;
-	public final static int INTER_FLET = 10;
+	public final static int INTER_FLET = 10;*/
 
 
 	public final static int PAR_STYLE_INTERNAL_MAX =					32;
@@ -79,16 +79,16 @@ public class InternalConst {
 	public final static int TAL_PROFILE_COLOR_BOLDITALIC = 6;	
 	public final static int TAL_PROFILE_COLOR_CUSTOM1 = 7;
 	public final static int TAL_PROFILE_COLOR_CUSTOM2 = 8;
-	public final static int TAL_PROFILE_COLOR_MARK = 9;
+	public final static int TAL_PROFILE_COLOR_MARK0 = 9;
 	public final static int TAL_PROFILE_COLOR_SELECT = 10;
-	public final static int TAL_PROFILE_COLOR_SELECTMARK = 11;
-	public final static int TAL_PROFILE_COLOR_CUSTOM3 = 12;
-	public final static int TAL_PROFILE_COLOR_CUSTOM4 = 13;
-	public final static int TAL_PROFILE_COLOR_CUSTOM5 = 14;
-	public final static int TAL_PROFILE_COLOR_CUSTOM6 = 15;
-	public final static int TAL_PROFILE_COLOR_CUSTOM7 = 16;
-	public final static int TAL_PROFILE_COLOR_CUSTOM8 = 17;
-	public final static int TAL_PROFILE_COLOR_CUSTOM9 = 18;
+	public final static int TAL_PROFILE_COLOR_CUSTOMC = 11;
+	public final static int TAL_PROFILE_COLOR_MARK1 = 12;
+	public final static int TAL_PROFILE_COLOR_MARK2 = 13;
+	public final static int TAL_PROFILE_COLOR_MARK3 = 14;
+	public final static int TAL_PROFILE_COLOR_MARK4 = 15;
+	public final static int TAL_PROFILE_COLOR_MARK5 = 16;
+	public final static int TAL_PROFILE_COLOR_MARK6 = 17;
+	public final static int TAL_PROFILE_COLOR_CUSTOMD = 18;
 	public final static int TAL_PROFILE_COLOR_SHADOW = 19;
 	public final static int TAL_PROFILE_COLOR_CODE = 20;
 	public final static int TAL_PROFILE_COLOR_CUSTOMA = 21;
@@ -103,7 +103,8 @@ public class InternalConst {
 	public final static int TAL_PROFILE_FONT_FLET		= 4;
 	public final static int TAL_PROFILE_FONT_CUSTOM1	= 5;
 	public final static int TAL_PROFILE_FONT_CUSTOM2	= 6;
+	public final static int TAL_PROFILE_FONT_RESERV		= 7;
 
-	public final static int TAL_PROFILE_FONT_COUNT = 7;
+	public final static int TAL_PROFILE_FONT_COUNT = 8;
 
 }

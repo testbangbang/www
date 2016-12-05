@@ -146,11 +146,11 @@ public class AlFormatODT extends AlAXML {
 
             case AlFormatTag.TAG_A:
                 if (tag.closed) {
-                    if ((paragraph & AlStyles.PAR_STYLE_LINK) != 0)
-                        clearTextStyle(AlStyles.PAR_STYLE_LINK);
+                    if ((paragraph & AlStyles.STYLE_LINK) != 0)
+                        clearTextStyle(AlStyles.STYLE_LINK);
                 } else if (!tag.ended) {
                     if (addNotes())
-                        setTextStyle(AlStyles.PAR_STYLE_LINK);
+                        setTextStyle(AlStyles.STYLE_LINK);
                 } else {
 
                 }

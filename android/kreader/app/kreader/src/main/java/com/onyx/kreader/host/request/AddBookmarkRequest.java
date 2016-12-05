@@ -29,9 +29,9 @@ public class AddBookmarkRequest extends BaseReaderRequest {
         Bookmark bookmark = new Bookmark();
         bookmark.setIdString(reader.getDocumentMd5());
         bookmark.setApplication(reader.getPlugin().displayName());
-        bookmark.setPosition(pageInfo.getName());
+        bookmark.setPosition(pageInfo.getPosition());
         bookmark.setPageNumber(PagePositionUtils.getPageNumber(pageInfo.getName()));
-        bookmark.setQuote(getQuote(reader.getDocument().getPageText(pageInfo.getName())));
+        bookmark.setQuote(getQuote(reader.getDocument().getPageText(pageInfo.getPosition())));
         return bookmark;
     }
 

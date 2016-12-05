@@ -478,6 +478,20 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return selection;
     }
 
+    @Override
+    public ReaderSelection select(String pagePosition, String startPosition, String endPosition) {
+        int page = PagePositionUtils.getPageNumber(pagePosition);
+        int start = PagePositionUtils.getPosition(startPosition);
+        int end = PagePositionUtils.getPosition(endPosition);
+
+        float[] size = new float[2];
+        getPluginImpl().pageSize(page, size);
+
+        NeoPdfSelection selection = new NeoPdfSelection(pagePosition);
+        getPluginImpl().selection(page, 0, 0, (int)size[0], (int)size[1], 0, start, end, selection);
+        return selection;
+    }
+
     public boolean supportScale() {
         if (StringUtils.isNullOrEmpty(documentPath)) {
             return false;
