@@ -155,7 +155,7 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.FONT);
         }
 
-        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportBrushPen()) {
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportBrushPen()) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
         }
 
