@@ -155,6 +155,11 @@ public class ReaderNoteDocument {
         noteDrawingArgs.penState = NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING;
     }
 
+    public void reloadPageIndex(Context context) {
+        final ReaderNoteDocumentModel documentModel = ReaderNoteDataProvider.loadDocument(context, getDocumentUniqueId());
+        setupPageIndex(documentModel);
+    }
+
     // loadDocument args from model.
     private void setupDrawingArgs(final ReaderNoteDocumentModel noteModel) {
         resetNoteDrawingArgs();

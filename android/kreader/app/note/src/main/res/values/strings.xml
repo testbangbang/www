@@ -47,8 +47,4 @@
     <string name="versionName">Version Code</string>
     <string name="clear">Clear</string>
     <string name="clear_confirm">Are you sure to clear whole page?</string>
-    <string name="importing">Importing old scribble data...</string>
-    <string name="import_success">Import success！</string>
-    <string name="import_fail">Import failure</string>
-    <string name="import_success_info" formatted="false">Import total of %d data</string>
 </resources>

@@ -263,6 +263,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case NOTE_EXPORT:
                         showExportDialog(readerDataHolder);
                         break;
+                    case NOTE_IMPORT:
+                        importScribbleData(readerDataHolder);
+                        break;
                     case SHOW_NOTE:
                         showScribble(readerDataHolder);
                         break;
@@ -476,6 +479,11 @@ public class ShowReaderMenuAction extends BaseAction {
         Dialog exportDialog = new DialogExport(readerDataHolder);
         exportDialog.show();
         readerDataHolder.addActiveDialog(exportDialog);
+    }
+
+    private void importScribbleData(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        new ImportReaderScribbleAction(readerDataHolder).execute(readerDataHolder, null);
     }
 
     private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {

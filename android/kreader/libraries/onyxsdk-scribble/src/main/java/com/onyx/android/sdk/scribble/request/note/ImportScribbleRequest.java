@@ -39,6 +39,7 @@ import static android.provider.BaseColumns._ID;
 public class ImportScribbleRequest extends BaseNoteRequest {
 
     private final String url = "content://com.onyx.android.sdk.OnyxCmsProvider/library_scribble";
+    private final String OLD_SCRIBBLE_APPLICATION = "com.onyx.android.scribbler";
 
     private Context context;
     private int maxCount;
@@ -131,6 +132,9 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         String uniqueId = CursorUtil.getString(c, sColumnUniqueId);
 
         if (StringUtils.isNullOrEmpty(uniqueId)) {
+            return;
+        }
+        if (StringUtils.isNullOrEmpty(application) || !application.equals(OLD_SCRIBBLE_APPLICATION)) {
             return;
         }
 

@@ -79,6 +79,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         ImageView redoBtn = (ImageView) findViewById(R.id.button_redo);
         ImageView saveBtn = (ImageView) findViewById(R.id.button_save);
         ImageView exportBtn = (ImageView) findViewById(R.id.button_export);
+        ImageView settingBtn = (ImageView) findViewById(R.id.button_setting);
         exportBtn.setVisibility(NoteAppConfig.sharedInstance(this).isEnableExport() ? View.VISIBLE : View.GONE);
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
         ContentView functionContentView = (ContentView) findViewById(R.id.function_content_view);
@@ -144,6 +145,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void onClick(View v) {
                 onExport();
+            }
+        });
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
         pageIndicator.setOnClickListener(new View.OnClickListener() {
