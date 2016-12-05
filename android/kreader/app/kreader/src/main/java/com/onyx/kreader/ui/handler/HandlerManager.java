@@ -12,6 +12,8 @@ import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.ui.actions.DecreaseFontSizeAction;
+import com.onyx.kreader.ui.actions.IncreaseFontSizeAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -340,9 +342,17 @@ public class HandlerManager {
         } else if (action.equals(KeyAction.MOVE_RIGHT)) {
             panRight(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_UP)) {
-            panUp(readerDataHolder);
+            if (readerDataHolder.supportScalable()) {
+                panUp(readerDataHolder);
+            } else {
+                increaseFontSize(readerDataHolder);
+            }
         } else if (action.equals(KeyAction.MOVE_DOWN)) {
-            panDown(readerDataHolder);
+            if (readerDataHolder.supportScalable()) {
+                panDown(readerDataHolder);
+            } else {
+                decreaseFontSize(readerDataHolder);
+            }
         } else if (action.equals(KeyAction.TOGGLE_BOOKMARK)) {
             toggleBookmark(readerDataHolder);
         } else if (action.equals(KeyAction.SHOW_MENU)) {
@@ -401,6 +411,14 @@ public class HandlerManager {
         getActiveProvider().beforeChangePosition(readerDataHolder);
         getActiveProvider().panDown(readerDataHolder);
         getActiveProvider().afterChangePosition(readerDataHolder);
+    }
+
+    private void increaseFontSize(final ReaderDataHolder readerDataHolder) {
+        new IncreaseFontSizeAction().execute(readerDataHolder, null);
+    }
+
+    private void decreaseFontSize(final ReaderDataHolder readerDataHolder) {
+        new DecreaseFontSizeAction().execute(readerDataHolder, null);
     }
 
     public void toggleBookmark(ReaderDataHolder readerDataHolder) {
