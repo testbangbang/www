@@ -8,13 +8,16 @@ import android.graphics.Bitmap;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -96,6 +99,17 @@ public class NoteDataProvider {
             return;
         }
         model.save();
+    }
+
+    public static void saveNoteList(final Context context,
+                                     final Collection<NoteModel> list) {
+        final DatabaseWrapper database= FlowManager.getDatabase(ShapeDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for(NoteModel noteModel : list) {
+            noteModel.save();
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
     }
 
     public static boolean remove(final Context context, final String uniqueId) {

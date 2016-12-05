@@ -36,6 +36,7 @@ import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
@@ -90,7 +91,6 @@ import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.utils.DeviceConfig;
-import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -223,7 +223,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     private void beforeSetContentView() {
         boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
-        DeviceUtils.requestFullScreenFeature(this, fullScreen);
+        DeviceUtils.setFullScreenOnCreate(this, fullScreen);
     }
 
     private void initComponents() {
@@ -843,7 +843,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void setFullScreen(boolean fullScreen) {
-        DeviceUtils.setFullScreen(this, fullScreen);
+        DeviceUtils.setFullScreenOnResume(this, fullScreen);
     }
 
     public SurfaceView getSurfaceView() {

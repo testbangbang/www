@@ -1,8 +1,10 @@
 package com.onyx.android.note.activity.onyx;
 
+import android.app.Instrumentation;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,6 +17,7 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.manager.CreateLibraryAction;
+import com.onyx.android.note.actions.manager.ImportScribbleAction;
 import com.onyx.android.note.actions.manager.LoadNoteListAction;
 import com.onyx.android.note.actions.manager.ManageLoadPageAction;
 import com.onyx.android.note.actions.manager.NoteMoveAction;
@@ -36,9 +39,11 @@ import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.AscDescOrder;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.SortBy;
+import com.onyx.android.sdk.ui.dialog.DialogProgress;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.util.List;
 
@@ -51,6 +56,7 @@ public class ManagerActivity extends BaseManagerActivity {
     private ImageView addFolderButton;
     private ImageView moveButton;
     private ImageView deleteButton;
+    private ImageView settingButton;
     private LinearLayout controlPanel;
     private @SortBy.SortByDef int currentSortBy = SortBy.CREATED_AT;
     private @AscDescOrder.AscDescOrderDef int ascOrder= AscDescOrder.DESC;
@@ -63,6 +69,12 @@ public class ManagerActivity extends BaseManagerActivity {
         loadSortByAndAsc();
         initView();
         initNoteViewHelper();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DeviceUtils.setFullScreenOnResume(this, NoteAppConfig.sharedInstance(this).useFullScreen());
     }
 
     private void loadSortByAndAsc() {
@@ -110,6 +122,7 @@ public class ManagerActivity extends BaseManagerActivity {
         toolBarTitle = (TextView) findViewById(R.id.textView_main_title);
         moveButton = (ImageView) findViewById(R.id.move_btn);
         deleteButton = (ImageView) findViewById(R.id.delete_btn);
+        settingButton = (ImageView) findViewById(R.id.setting_btn);
         controlPanel = (LinearLayout) findViewById(R.id.control_panel);
         ImageView sortByButton = (ImageView) findViewById(R.id.button_sort_by);
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -149,6 +162,12 @@ public class ManagerActivity extends BaseManagerActivity {
                     }
                 });
                 dlgCreateFolder.show(getFragmentManager());
+            }
+        });
+        settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportActionBar().openOptionsMenu();
             }
         });
         moveButton.setOnClickListener(new View.OnClickListener() {
@@ -268,6 +287,9 @@ public class ManagerActivity extends BaseManagerActivity {
                 break;
             case R.id.export:
                 break;
+            case R.id.import_scribble:
+                importScribbleData();
+                break;
             case R.id.move:
                 onItemMove();
                 break;
@@ -280,6 +302,19 @@ public class ManagerActivity extends BaseManagerActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void importScribbleData() {
+        final ImportScribbleAction<ManagerActivity> scribbleAction = new ImportScribbleAction();
+        scribbleAction.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e == null) {
+                    loadNoteList();
+                    NotePreference.setBooleanValue(NotePreference.KEY_IMPORT_MENU_VISIBLE, false);
+                }
+            }
+        });
     }
 
     private void onSettings() {

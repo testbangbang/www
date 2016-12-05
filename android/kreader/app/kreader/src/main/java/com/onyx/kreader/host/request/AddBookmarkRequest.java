@@ -36,6 +36,9 @@ public class AddBookmarkRequest extends BaseReaderRequest {
     }
 
     private String getQuote(String pageText) {
+        if (StringUtils.isNullOrEmpty(pageText)) {
+            return "";
+        }
         if (pageText.length() <= 50) {
             return pageText;
         } else {

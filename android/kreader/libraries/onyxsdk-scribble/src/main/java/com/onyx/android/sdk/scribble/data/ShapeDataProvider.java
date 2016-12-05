@@ -52,6 +52,14 @@ public class ShapeDataProvider {
         database.endTransaction();
     }
 
+    public static void saveShape(final Context context,
+                                 final ShapeModel shapeModel) {
+        if (shapeModel == null) {
+            return;
+        }
+        shapeModel.save();
+    }
+
     public static void svaeShapeListInBackground(final Context context,
                                                  final Collection<ShapeModel> list,
                                                  final DataProviderCallback callback) {
