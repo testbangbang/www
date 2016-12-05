@@ -5925,7 +5925,26 @@ public class AlBookEng{
         return true;
     }
 
-	public AlTextOnScreen fillTextOnScreen(boolean s, int ps, boolean e, int pe) {
+	public AlTextOnScreen getTextOnScreen() {
+		textOnScreen.clear();
+
+		fillTextOnScreenOnePage(mpage[0][0], screen_parameters.marginL);
+		if (profiles.twoColumnUsed)
+			fillTextOnScreenOnePage(mpage[0][1], (screenWidth >> 1) + screen_parameters.marginR);
+
+		textOnScreen.needCorrectStart = false;
+		textOnScreen.defaultResultForStart = -1;
+		textOnScreen.needCorrectEnd = false;
+		textOnScreen.defaultResultForEnd = -1;
+		textOnScreen.numWordWithStartSelection = -1;
+		textOnScreen.numWordWithEndSelection = -1;
+
+		textOnScreen.clearBeforeNormalCall();
+
+		return textOnScreen;
+	}
+	
+	private void fillTextOnScreen(boolean s, int ps, boolean e, int pe) {
 		textOnScreen.clear();
 
 		s = textOnScreen.verifyStart(s, ps);
@@ -5937,14 +5956,13 @@ public class AlBookEng{
 			e = false;
 
 		if (!s && !e)
-			return null;
+			return;
 
 		fillTextOnScreenOnePage(mpage[0][0], screen_parameters.marginL);
 		if (profiles.twoColumnUsed)
 			fillTextOnScreenOnePage(mpage[0][1], (screenWidth >> 1) + screen_parameters.marginR);
 
 		textOnScreen.prepareBeforeCorrect0(s, ps, e, pe);
-		return textOnScreen;
 	}
 
 	private void fillTextOnScreenOnePage(AlOnePage page, int margLeft) {
@@ -5974,10 +5992,10 @@ public class AlBookEng{
 						continue;
 					}
 				} else {
-					if (oi.text[i] > 0x3000 || (word_text.length() == 1 && word_text.charAt(0) > 0x3000)) {
+					
+					if (oi.text[i] > 0x3000 || (word_text.length() == 1 && word_text.charAt(0) > 0x3000))
 						textOnScreen.add(word_text, word_rect, word_pos);
-					}
-
+					
 					if (word_text.length() == 0) {
 						word_rect.x0 = word_rect.x1 = x;
 						word_rect.y0 = y - oi.base_line_up;
