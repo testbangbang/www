@@ -174,6 +174,11 @@ public class AlReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public boolean saveOptions() {
+        return true;
+    }
+
     public ReaderRendererFeatures getRendererFeatures() {
         return this;
     }

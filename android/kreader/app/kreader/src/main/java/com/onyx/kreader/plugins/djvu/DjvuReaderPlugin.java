@@ -131,6 +131,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean saveOptions() {
+        return true;
+    }
+
+    @Override
     public void close() {
         getPluginImpl().close();
 

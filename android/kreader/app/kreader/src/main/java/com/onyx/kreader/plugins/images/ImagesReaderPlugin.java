@@ -139,6 +139,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public boolean saveOptions() {
+        return false;
+    }
+
     public ReaderRendererFeatures getRendererFeatures() {
         return this;
     }

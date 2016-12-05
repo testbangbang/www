@@ -340,7 +340,7 @@ public class AlReaderWrapper {
 
     private AlTextOnScreen getTextOnScreen() {
         if (screenText == null) {
-            screenText = bookEng.fillTextOnScreen(true, 0, true, 0);
+            screenText = bookEng.getTextOnScreen();
         }
         return screenText;
     }
@@ -366,8 +366,13 @@ public class AlReaderWrapper {
         if (startIndex == -1 || endIndex == -1) {
             return null;
         }
+        if (startIndex > endIndex) {
+            int tmp = startIndex;
+            startIndex = endIndex;
+            endIndex = tmp;
+        }
         final AlTextOnScreen.AlPieceOfText startPiece = screenText.regionList.get(startIndex);
-        final AlTextOnScreen.AlPieceOfText endPiece = screenText.regionList.get(startIndex);
+        final AlTextOnScreen.AlPieceOfText endPiece = screenText.regionList.get(endIndex);
         Debug.d(getClass(), JSON.toJSONString(startPiece));
         ReaderSelectionImpl selection = new ReaderSelectionImpl();
         selection.setPageName(PagePositionUtils.fromPageNumber(getPageNumberOfPosition(getPieceStart(startPiece))));
