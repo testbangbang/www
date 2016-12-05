@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
@@ -78,7 +79,6 @@ public class ShowReaderMenuAction extends BaseAction {
 
     // use reader menu as static field to avoid heavy init of showing reader menu each time
     private static ReaderMenu readerMenu;
-    private boolean disableScribbleBrush = false;
     private static boolean isScribbleMenuVisible = false;
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
     private static List<String> fontFaces = new ArrayList<>();
@@ -151,11 +151,11 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
             disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
-        }else {
+        } else {
             disableMenus.add(ReaderMenuAction.FONT);
         }
 
-        if (disableScribbleBrush) {
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportBrushPen()) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
         }
 

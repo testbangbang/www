@@ -8,6 +8,7 @@
   "fixedGamma": 100,
   "frontLight" : 100,
   "defaultUseSystemStatusBar" : false,
+  "supportBrushPen": true,
   "gcInterval" : 1,
   "keyBinding": {
     "HandlerManager": {

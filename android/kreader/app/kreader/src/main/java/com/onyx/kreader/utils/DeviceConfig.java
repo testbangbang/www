@@ -45,6 +45,7 @@ public class DeviceConfig {
     private boolean supportColor = false;
     private int defaultGamma = 150;
     private int fixedGamma = 0;
+    private boolean supportBrushPen = false;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -229,6 +230,14 @@ public class DeviceConfig {
 
     public void setUseBigPen(boolean useBigPen) {
         this.useBigPen = useBigPen;
+    }
+
+    public boolean isSupportBrushPen() {
+        return supportBrushPen;
+    }
+
+    public void setSupportBrushPen(boolean supportBrushPen) {
+        this.supportBrushPen = supportBrushPen;
     }
 
     public boolean isDefaultUseSystemStatusBar() {
