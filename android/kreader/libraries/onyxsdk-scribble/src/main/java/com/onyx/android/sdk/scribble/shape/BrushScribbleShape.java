@@ -1,6 +1,8 @@
 package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.Path;
+import android.util.Log;
+
 import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
@@ -70,7 +72,7 @@ public class BrushScribbleShape extends EPDShape  {
             pathList = InkUtils.generate(renderContext, this);
         }
         for(InkUtils.PathEntry entry : pathList) {
-            renderContext.paint.setStrokeWidth(entry.pathWidth);
+            renderContext.paint.setStrokeWidth(entry.pathWidth * getDisplayScale(renderContext));
             renderContext.canvas.drawPath(entry.path, renderContext.paint);
         }
     }
