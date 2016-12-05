@@ -366,6 +366,11 @@ public class AlReaderWrapper {
         if (startIndex == -1 || endIndex == -1) {
             return null;
         }
+        if (startIndex > endIndex) {
+            int tmp = startIndex;
+            startIndex = endIndex;
+            endIndex = tmp;
+        }
         final AlTextOnScreen.AlPieceOfText startPiece = screenText.regionList.get(startIndex);
         final AlTextOnScreen.AlPieceOfText endPiece = screenText.regionList.get(endIndex);
         Debug.d(getClass(), JSON.toJSONString(startPiece));
