@@ -35,7 +35,7 @@ public class AddAnnotationRequest extends BaseReaderRequest {
 
     public void execute(final Reader reader) throws Exception {
         DataProviderManager.getDataProvider().addAnnotation(createAnnotation(reader));
-        LayoutProviderUtils.updateReaderViewInfo(createReaderViewInfo(), reader.getReaderLayoutManager());
+        LayoutProviderUtils.updateReaderViewInfo(reader, createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 
     private Annotation createAnnotation(final Reader reader) {

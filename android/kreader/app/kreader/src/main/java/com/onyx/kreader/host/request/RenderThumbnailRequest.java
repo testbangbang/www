@@ -33,7 +33,7 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         final RectF origin = reader.getDocument().getPageOriginSize(page);
         reader.getNavigator().gotoPage(PagePositionUtils.getPageNumber(page));
-        String position = reader.getNavigator().getCurrentPosition();
+        String position = reader.getNavigator().getScreenStartPosition();
         PageInfo pageInfo = new PageInfo(page, position, origin.width(), origin.height());
         if (reader.getRendererFeatures().supportScale()) {
             this.pageInfo = LayoutProviderUtils.drawPageWithScaleToPage(pageInfo, bitmap, reader.getRenderer());

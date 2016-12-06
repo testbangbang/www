@@ -3,7 +3,7 @@ package com.onyx.kreader.plugins.alreader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import com.neverland.engbook.forpublic.AlOneSearchResult;
+
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -32,7 +32,6 @@ import com.onyx.kreader.api.ReaderTextSplitter;
 import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.api.ReaderViewOptions;
-import com.onyx.kreader.host.impl.ReaderSelectionImpl;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
@@ -145,7 +144,7 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     @Override
     public String getPageText(String position) {
-        return "";
+        return getPluginImpl().getScreenText();
     }
 
     @Override
@@ -269,11 +268,16 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String getPositionByPageNumber(int pageNumber) {
-        return PagePositionUtils.fromPageNumber(pageNumber);
+        return PagePositionUtils.fromPosition(getPluginImpl().getPositionOfPageNumber(pageNumber));
     }
 
     public String getPositionByPageName(final String pageName) {
         return pageName;
+    }
+
+    @Override
+    public int getPageNumberByPosition(String position) {
+        return getPluginImpl().getPageNumberOfPosition(PagePositionUtils.getPosition(position));
     }
 
     /**
@@ -285,13 +289,28 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public int getCurrentPageNumber() {
-        return getPluginImpl().getCurrentPage();
+    public int getScreenStartPageNumber() {
+        return getPluginImpl().getScreenStartPage();
     }
 
     @Override
-    public String getCurrentPosition() {
-        return PagePositionUtils.fromPosition(getPluginImpl().getCurrentPosition());
+    public int getScreenEndPageNumber() {
+        return getPluginImpl().getScreenEndPage();
+    }
+
+    @Override
+    public String getScreenStartPosition() {
+        return PagePositionUtils.fromPosition(getPluginImpl().getScreenStartPosition());
+    }
+
+    @Override
+    public String getScreenEndPosition() {
+        return PagePositionUtils.fromPosition(getPluginImpl().getScreenEndPosition());
+    }
+
+    @Override
+    public int comparePosition(String pos1, String pos2) {
+        return PagePositionUtils.getPosition(pos1) - PagePositionUtils.getPosition(pos2);
     }
 
     /**
@@ -330,12 +349,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (!getPluginImpl().nextPage()) {
             return null;
         }
-        return PagePositionUtils.fromPageNumber(getPluginImpl().getCurrentPage());
-//        int pn = PagePositionUtils.getPageNumber(position);
-//        if (pn + 1 < getTotalPage()) {
-//            return PagePositionUtils.fromPageNumber(pn + 1);
-//        }
-//        return null;
+        return PagePositionUtils.fromPageNumber(getPluginImpl().getScreenStartPage());
     }
 
     /**
@@ -346,12 +360,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (!getPluginImpl().prevPage()) {
             return null;
         }
-        int pn = PagePositionUtils.getPageNumber(position);
-        if (pn > 0) {
-            return PagePositionUtils.fromPageNumber(pn - 1);
-        }
-        return null;
-
+        return PagePositionUtils.fromPageNumber(getPluginImpl().getScreenStartPage());
     }
 
     @Override

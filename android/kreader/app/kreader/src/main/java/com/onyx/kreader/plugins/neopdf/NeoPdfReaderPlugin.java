@@ -298,6 +298,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return pageName;
     }
 
+    @Override
+    public int getPageNumberByPosition(String position) {
+        return -1;
+    }
+
     /**
      * Return total page number.
      * @return 1 based total page number.
@@ -307,13 +312,28 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public int getCurrentPageNumber() {
+    public int getScreenStartPageNumber() {
         return 0;
     }
 
     @Override
-    public String getCurrentPosition() {
+    public int getScreenEndPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getScreenStartPosition() {
         return null;
+    }
+
+    @Override
+    public String getScreenEndPosition() {
+        return null;
+    }
+
+    @Override
+    public int comparePosition(String pos1, String pos2) {
+        return 0;
     }
 
     /**
