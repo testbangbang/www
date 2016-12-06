@@ -28,9 +28,15 @@
         </item>
         <item name="editTextStyle">@style/OnyxAppCompat.EditTextStyle</item>
 
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="android:listDivider">@android:color/black</item>
+        <item name="preferenceTheme">@style/OnyxAppCompat.PreferenceTheme</item>
         <item name="alertDialogTheme">@style/OnyxAppCompat.AlertDialog</item>
         <item name="buttonStyle">@style/OnyxAppCompat.ButtonStyle</item>
+    </style>
+
+    <style name="OnyxAppCompat.PreferenceTheme" parent="PreferenceThemeOverlay.v14.Material">
+        <item name="android:overScrollMode">never</item>
+        <item name="android:listDivider">@android:color/black</item>
     </style>
 
     <style name="OnyxAppCompat.AlertDialog" parent="Theme.AppCompat.Light.Dialog">

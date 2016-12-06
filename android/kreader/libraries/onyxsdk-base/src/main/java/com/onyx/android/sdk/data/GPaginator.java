@@ -193,4 +193,8 @@ public class GPaginator {
     public int prevRow(int index) {
         return index - getColumns();
     }
+
+    public boolean isLastPage() {
+        return lastPage() == currentPage;
+    }
 }

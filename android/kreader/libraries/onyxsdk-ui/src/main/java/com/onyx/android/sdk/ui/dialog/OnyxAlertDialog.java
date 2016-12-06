@@ -28,7 +28,14 @@ public class OnyxAlertDialog extends DialogFragment {
     private RelativeLayout alertTittleBarLayout;
     private LinearLayout functionPanelLayout;
     private TextView tittleTextView, alertMessageView, pageSizeIndicator;
-    private Button positiveButton, negativeButton, neutralButton;
+    private Button positiveButton;
+
+    protected Button getPositiveButton() {
+        return positiveButton;
+    }
+
+    private Button negativeButton;
+    private Button neutralButton;
     private View customContentView, topDividerLine, functionButtonDividerLine, bottomDivider, btnNeutralDivider;
     private Params params = new Params();
 

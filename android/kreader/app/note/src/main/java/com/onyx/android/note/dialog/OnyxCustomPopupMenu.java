@@ -13,7 +13,7 @@ import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.onyx.android.sdk.ui.view.DividerItemDecoration;
+import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 
 import java.util.List;
 
@@ -62,8 +62,8 @@ public class OnyxCustomPopupMenu {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         menu.recyclerView.setLayoutManager(layoutManager);
         menu.recyclerView.setAnimation(null);
-        menu.recyclerView.addItemDecoration(new DividerItemDecoration(
-                activity, DividerItemDecoration.VERTICAL_LIST));
+        menu.recyclerView.addItemDecoration(new OnyxPageDividerItemDecoration(
+                activity, OnyxPageDividerItemDecoration.VERTICAL));
         OptionAdapter adapter = new OptionAdapter(dataList, callBack);
         menu.recyclerView.setAdapter(adapter);
         return menu;
