@@ -65,4 +65,8 @@
     <string name="current_value">Current value:</string>
     <string name="custom_value">The custom value</string>
     <string name="reader_layer_menu_slideshow">Slideshow</string>
+
+    <string name="wifi_dialog_title">Wifi connection</string>
+    <string name="wifi_dialog_content">WiFi connection is needed. Turn on WiFi?</string>
+
 </resources>

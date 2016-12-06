@@ -96,4 +96,5 @@
     <string name="current_learning_progress">您当前的学习进度</string>
     <string name="last_studying_time">上次学习时刻</string>
 
+    <string name="download_link_invalid">下载链接为空或者有误</string>
 </resources>

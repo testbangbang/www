@@ -60,4 +60,7 @@
     <string name="current_value">当前线宽:</string>
     <string name="custom_value">自定义值</string>
     <string name="reader_layer_menu_slideshow">自动翻页</string>
+
+    <string name="wifi_dialog_title">WiFi连接</string>
+    <string name="wifi_dialog_content">无网络连接，是否打开WiFi？</string>
 </resources>
