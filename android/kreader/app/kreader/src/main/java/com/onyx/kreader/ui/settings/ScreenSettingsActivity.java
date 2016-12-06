@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.kreader.R;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -66,6 +67,11 @@ public class ScreenSettingsActivity extends PreferenceActivity implements Shared
         preference.setSummary(preference.getEntry());
         if (preference.getValue() == null) {
             preference.setValue(DeviceConfig.sharedInstance(getBaseContext()).defaultAnnotationHighlightStyle().toString());
+        }
+
+        Preference regal = findPreference(getString(R.string.settings_regal_mode_key));
+        if (!EpdController.supportRegal() && regal != null) {
+            getPreferenceScreen().removePreference(regal);
         }
     }
 
