@@ -292,7 +292,10 @@ public class AlReaderWrapper {
                 ReaderSelectionImpl selection = new ReaderSelectionImpl();
                 selection.setPageName(PagePositionUtils.fromPageNumber(getPageNumberOfPosition(result.pos_start)));
                 selection.setPagePosition(PagePositionUtils.fromPosition(result.pos_start));
+                selection.setStartPosition(PagePositionUtils.fromPosition(result.pos_start));
+                selection.setEndPosition(PagePositionUtils.fromPosition(result.pos_end));
                 selection.setText(text);
+                selection.setDisplayRects(new ArrayList<RectF>());
                 list.add(selection);
             }
         } finally {
