@@ -5992,8 +5992,8 @@ public class AlBookEng{
 						continue;
 					}
 				} else {
-					
-					if (oi.text[i] > 0x3000 || (word_text.length() == 1 && word_text.charAt(0) > 0x3000))
+
+					if ( AlUnicode.isChineze(oi.text[i]) || (word_text.length() == 1 && AlUnicode.isChineze(word_text.charAt(0))))
 						textOnScreen.add(word_text, word_rect, word_pos);
 					
 					if (word_text.length() == 0) {
