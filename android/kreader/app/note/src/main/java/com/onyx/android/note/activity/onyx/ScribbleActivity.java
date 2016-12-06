@@ -157,7 +157,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         settingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportActionBar().openOptionsMenu();
+                showExportMenu();
             }
         });
         pageIndicator.setOnClickListener(new View.OnClickListener() {
@@ -240,6 +240,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 noteTitle,
                 exportCurPage,
                 shapeDataInfo.getCurrentPageIndex()).execute(ScribbleActivity.this, null);
+    }
+
+    private void showExportMenu() {
+        syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                getSupportActionBar().openOptionsMenu();
+            }
+        });
     }
 
     private void onSave(final boolean finishAfterSave) {
