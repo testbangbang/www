@@ -1,0 +1,89 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">libsetting</string>
+    <string name="setting_wifi">Wifi</string>
+    <string name="setting_sound">Sound</string>
+    <string name="setting_storage">Storage</string>
+    <string name="setting_lang_input"><![CDATA[Language & input]]></string>
+    <string name="setting_date">Date</string>
+    <string name="setting_application">Application</string>
+    <string name="setting_other">Other</string>
+    <string name="settings_sound_preferences_key" translatable="false">settings_sound_preferences_key</string>
+    <string name="touch_sound_key" translatable="false">touch_sound_key</string>
+    <string name="touch_sound">Touch Sound</string>
+    <string name="notification_sound">Notification Sound</string>
+
+    <!-- Wifi setting -->
+    <string name="wifi_network">Wi-fi network</string>
+    <string name="wifi_security_short_eap" translatable="false">802.1x</string>
+    <string name="wifi_security_eap" translatable="false">802.1x EAP</string>
+    <string name="wifi_security_short_wpa" translatable="false">WPA</string>
+    <string name="wifi_security_wpa" translatable="false">WPA PSK</string>
+    <string name="wifi_security_short_wpa2" translatable="false">WPA2</string>
+    <string name="wifi_security_wpa2" translatable="false">WPA2 PSK</string>
+    <string name="wifi_security_short_wpa_wpa2" translatable="false">WPA/WPA2</string>
+    <string name="wifi_security_wpa_wpa2" translatable="false">WPA/WPA2 PSK</string>
+    <string name="wifi_security_short_psk_generic" translatable="false">@string/wifi_security_short_wpa_wpa2</string>
+    <string name="wifi_security_psk_generic" translatable="false">@string/wifi_security_wpa_wpa2</string>
+    <string name="wifi_security_short_wep" translatable="false">WEP</string>
+    <string name="wifi_security_wep" translatable="false">WEP</string>
+    <string name="wifi_security_none">None</string>
+    <string name="wifi_remembered">Saved</string>
+    <string name="wifi_secured_first_item">Secured with <xliff:g id="wifi_security_short">%1$s</xliff:g></string>
+    <string name="wifi_secured_second_item">, secured with <xliff:g id="wifi_security_short">%1$s</xliff:g></string>
+    <string name="wifi_wps_available_first_item">Protected network available</string>
+    <string name="wifi_wps_available_second_item">\u0020(protected network available)</string>
+    <string name="wifi_disabled_password_failure">Authentication problem</string>
+    <string name="wifi_password">Password</string>
+    <string name="wifi_show_password">Show password</string>
+    <string name="wifi_show_advanced">Show advanced options</string>
+    <string name="wifi_signal">Signal strength</string>
+    <string name="wifi_security">Security</string>
+    <string name="wifi_speed">Link speed</string>
+    <string name="wifi_ip_address">IP address</string>
+    <string name="Wireless_lan">Wireless LAN</string>
+    <string name="wifi_status">Status</string>
+    <string name="open_wifi">Open Wi-Fi</string>
+    <string name="current_available_wifi_count">Currently available wifi: %1$d </string>
+    <string name="wifi_connected">Connected</string>
+    <string name="wifi_disabled_generic">Disabled</string>
+    <string name="wifi_disabled_network_failure">Avoided poor Internet connection</string>
+    <string name="wifi_forget">Forget</string>
+    <string name="wifi_connect">Connect</string>
+    <string name="closed">Closed</string>
+    <string name="wifi_rescan">Rescan</string>
+    <string name="select_nearby_available_wireless">Select a nearby available wireless LAN</string>
+    <string name="bgn_net_work" translatable="false">2.4Ghz</string>
+    <string name="ac_network" translatable="false">5Ghz</string>
+    <string name="unknown_network" translatable="false">Unknown Network Type</string>
+    <string name="wifi_band">Frequency</string>
+    <!--Temporarily fix unit.-->
+    <string name="space_in_use">Space In Use: %1$s GB</string>
+    <string name="free_space">Free Space: %1$s GB</string>
+    <string name="total_space">Total Space: %1$s GB</string>
+    <string name="language">Language</string>
+    <string name="settings_lang_input_preferences_key" translatable="false">settings_lang_input_preference_key</string>
+
+    <!-- Language input method setting -->
+    <string name="ime_category_key" translatable="false">ime_category_key</string>
+    <string name="keyboard_and_input">Keyboard And InputMethods</string>
+    <string name="voice">Voice</string>
+    <string name="tts_settings_key" translatable="false">tts_settings_key</string>
+    <string name="tts_settings_title">Text-to-speech output</string>
+
+    <!--Date Time Config-->
+    <string name="current_time">Current Time</string>
+    <string name="time_setting_key" translatable="false">time_setting_key</string>
+    <string name="auto_time_setting_key" translatable="false">auto_time_setting_key</string>
+    <string name="date_config_key" translatable="false">date_config_key</string>
+    <string name="time_config_key" translatable="false">time_config_key</string>
+    <string name="set_time_twenty_four_key" translatable="false">set_time_twenty_four_key</string>
+    <string name="set_time_zone_key" translatable="false">set_time_zone_key</string>
+    <string name="date_time_auto">Automatic date &amp; time</string>
+    <string name="date_time_24hour">Use 24-hour format</string>
+    <string name="date_time_set_timezone">Select time zone</string>
+    <string name="date_time_set_date">Set date</string>
+    <string name="date_time_set_time">Set Time</string>
+    <string name="date_time_set_format">Set format</string>
+
+</resources>
+

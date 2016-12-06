@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="@string/settings_lang_input_preferences_key"
+    android:title="@string/setting_lang_input">
+
+    <android.support.v7.preference.PreferenceCategory
+        android:key="@string/ime_category_key"
+        android:title="@string/keyboard_and_input" />
+
+    <android.support.v7.preference.PreferenceCategory android:title="@string/voice">
+        <android.support.v7.preference.Preference
+            android:key="@string/tts_settings_key"
+            android:title="@string/tts_settings_title">
+        </android.support.v7.preference.Preference>
+    </android.support.v7.preference.PreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>

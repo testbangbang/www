@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string-array name="wifi_status">
+        <item></item>
+        <item>"正在扫描…"</item>
+        <item>"正在连接…"</item>
+        <item>"正在进行身份验证…"</item>
+        <item>"正在获取 IP 地址…"</item>
+        <item>"已连接"</item>
+        <item>"已暂停"</item>
+        <item>"正在断开连接…"</item>
+        <item>"已断开连接"</item>
+        <item>"失败"</item>
+    </string-array>
+
+    <string-array name="wifi_status_with_ssid">
+        <item></item>
+        <item>"正在扫描…"</item>
+        <item>"正在连接到 <xliff:g id="NETWORK_NAME">%1$s</xliff:g>…"</item>
+        <item>"正在通过 <xliff:g id="NETWORK_NAME">%1$s</xliff:g> 进行身份验证…"</item>
+        <item>"正在从 <xliff:g id="NETWORK_NAME">%1$s</xliff:g> 获取 IP 地址…"</item>
+        <item>"已连接到 <xliff:g id="NETWORK_NAME">%1$s</xliff:g>"</item>
+        <item>"已暂停"</item>
+        <item>"正在断开与 <xliff:g id="NETWORK_NAME">%1$s</xliff:g> 的连接…"</item>
+        <item>"已断开连接"</item>
+        <item>"失败"</item>
+    </string-array>
+
+    <string-array name="wifi_signal">
+        <item>"弱"</item>
+        <item>"一般"</item>
+        <item>"较强"</item>
+        <item>"强"</item>
+    </string-array>
+</resources>

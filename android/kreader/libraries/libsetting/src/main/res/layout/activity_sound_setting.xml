@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/activity_sound_setting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="con.onyx.android.libsetting.view.activity.SoundSettingActivity">
+
+        <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true">
+
+                <RelativeLayout
+                    android:id="@id/back_function_layout"
+                    style="@style/global_activities_back_function_layout">
+
+                    <ImageView
+                        android:id="@+id/back_icon"
+                        style="@style/global_activities_back_btn_image"
+                        android:contentDescription="" />
+
+                    <ImageView
+                        android:id="@+id/imageView_main_title"
+                        style="@style/global_activities_back_btn_category_image"
+                        android:layout_toRightOf="@+id/back_icon"
+                        android:src="@drawable/ic_settings" />
+
+                    <TextView
+                        android:id="@+id/textView_main_title"
+                        style="@style/global_activities_back_btn_category_tittle"
+                        android:layout_toRightOf="@+id/imageView_main_title"
+                        android:ellipsize="middle"
+                        android:gravity="left|center_vertical"
+                        android:maxEms="10"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@string/setting_sound" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_margin="5dp"
+            android:layout_height="wrap_content">
+
+            <com.onyx.android.sdk.ui.view.CustomIconView
+                android:id="@+id/button_mute"
+                android:layout_width="@dimen/button_minHeight"
+                android:layout_height="@dimen/button_minHeight"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/ic_sound_mute" />
+
+            <com.onyx.android.sdk.ui.view.CustomIconView
+                android:id="@+id/button_max"
+                android:layout_width="@dimen/button_minHeight"
+                android:layout_height="@dimen/button_minHeight"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_sound_max" />
+
+            <SeekBar
+                android:id="@+id/volume_seek_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/button_max"
+                android:layout_toRightOf="@id/button_mute" />
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/sound_preference"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+</layout>

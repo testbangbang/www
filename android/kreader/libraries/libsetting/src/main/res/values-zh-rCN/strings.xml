@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="setting_wifi">WLAN</string>
+    <string name="setting_sound">声音</string>
+    <string name="setting_storage">存储</string>
+    <string name="setting_lang_input">语言和输入法</string>
+    <string name="setting_date">日期和时间</string>
+    <string name="setting_application">应用</string>
+    <string name="setting_other">其他</string>
+    <string name="touch_sound">触摸提示音</string>
+    <string name="notification_sound">提示音</string>
+
+    <!-- Wifi setting -->
+    <string name="wifi_network">Wi-fi 网络</string>
+    <string name="wifi_security_none">无</string>
+    <string name="wifi_remembered">已保存</string>
+    <string name="wifi_secured_first_item">"通过<xliff:g id="WIFI_SECURITY_SHORT">%1$s</xliff:g>进行保护"</string>
+    <string name="wifi_secured_second_item">"，通过<xliff:g id="WIFI_SECURITY_SHORT">%1$s</xliff:g>进行保护"</string>
+    <string name="wifi_wps_available_first_item">受保护的网络可用</string>
+    <string name="wifi_wps_available_second_item">" （受保护的网络可用）"</string>
+    <string name="wifi_password">密码</string>
+    <string name="wifi_show_password">显示密码</string>
+    <string name="wifi_show_advanced">显示高级选项</string>
+    <string name="wifi_signal">信号强度</string>
+    <string name="wifi_security">安全性</string>
+    <string name="wifi_speed">连接速度</string>
+    <string name="wifi_ip_address">IP 地址</string>
+    <string name="wifi_status">状态消息</string>
+    <string name="Wireless_lan">无线局域网</string>
+    <string name="open_wifi">要查看可用网络，请打开Wi-Fi</string>
+    <string name="current_available_wifi_count">当前可用Wi-Fi网络: %1$d </string>
+    <string name="wifi_disabled_password_failure">身份验证出现问题</string>
+    <string name="wifi_disabled_generic">已停用</string>
+    <string name="wifi_disabled_network_failure">已停用状况不佳的互联网连接</string>
+    <string name="wifi_forget">不保存</string>
+    <string name="wifi_connect">连接</string>
+    <string name="wifi_connected">已连接</string>
+    <string name="closed">关闭</string>
+    <string name="wifi_rescan">重新扫描</string>
+    <string name="select_nearby_available_wireless">选取附近可用无线局域网</string>
+    <string name="wifi_band">频率</string>
+
+    <!--Temporarily fix unit.-->
+    <string name="space_in_use">已使用: %1$s GB</string>
+    <string name="free_space">可用空间: %1$s GB</string>
+    <string name="total_space">总容量: %1$s GB</string>
+
+    <!-- Language input method setting -->
+    <string name="language">语言</string>
+    <string name="keyboard_and_input">键盘和输入法</string>
+    <string name="voice">语音</string>
+    <string name="tts_settings_title">文字转语音 (TTS) 输出</string>
+
+    <!--Date Time Config-->
+    <string name="current_time">当前时间</string>
+    <string name="date_time_auto">自动确定日期和时间</string>
+    <string name="date_time_24hour">使用 24 小时格式</string>
+    <string name="date_time_set_timezone">选择时区</string>
+    <string name="date_time_set_date">设置日期</string>
+    <string name="date_time_set_time">设置时间</string>
+    <string name="date_time_set_format">格式设置</string>
+</resources>

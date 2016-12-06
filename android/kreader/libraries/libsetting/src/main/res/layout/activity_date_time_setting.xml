@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/activity_date_time_setting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="con.onyx.android.libsetting.view.activity.DateTimeSettingActivity">
+
+        <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true">
+
+                <RelativeLayout
+                    android:id="@id/back_function_layout"
+                    style="@style/global_activities_back_function_layout">
+
+                    <ImageView
+                        android:id="@+id/back_icon"
+                        style="@style/global_activities_back_btn_image"
+                        android:contentDescription="" />
+
+                    <ImageView
+                        android:id="@+id/imageView_main_title"
+                        style="@style/global_activities_back_btn_category_image"
+                        android:layout_toRightOf="@+id/back_icon"
+                        android:src="@drawable/ic_settings" />
+
+                    <TextView
+                        android:id="@+id/textView_main_title"
+                        style="@style/global_activities_back_btn_category_tittle"
+                        android:layout_toRightOf="@+id/imageView_main_title"
+                        android:ellipsize="middle"
+                        android:gravity="left|center_vertical"
+                        android:maxEms="10"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@string/setting_date" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/image_button_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="@string/current_time"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Small" />
+
+            <TextView
+                android:id="@+id/current_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/date_preference"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp" />
+    </LinearLayout>
+
+</layout>
