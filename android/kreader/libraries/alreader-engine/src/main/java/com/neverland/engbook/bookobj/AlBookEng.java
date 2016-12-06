@@ -5146,6 +5146,29 @@ public class AlBookEng{
 		return -1;
 	}
 
+	public int getPositionOfPage(int pageNum) {
+		if (preferences.isASRoll)
+			return -1;
+
+		if (openState.getState() != AlBookState.OPEN)
+			return -1;
+
+		switch (preferences.calcPagesModeUsed) {
+			case SCREEN:
+				if (pageNum - 1 >= 0 && pageNum - 1 < pagePositionPointer.size()) {
+					return pagePositionPointer.get(pageNum - 1).start;
+				}
+				break;
+			case AUTO:
+			case SIZE:
+				if ((pageNum - 1) * preferences.pageSize >= 0 && (pageNum - 1) * preferences.pageSize < format.getSize()) {
+					return getCorrectSizePosition((pageNum - 1) * preferences.pageSize);
+				}
+				break;
+		}
+		return -1;
+	}
+
     /**
      * получение номера текущей страницы, общего количества страниц и актуальной позиции чтения.
      * @param position - обьект, содержащий минимально необходимую информацию о положении чтения
