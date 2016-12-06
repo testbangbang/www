@@ -3,17 +3,22 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.scribble.ClearPageAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.android.note.actions.scribble.DocumentSaveAction;
+import com.onyx.android.note.actions.scribble.ExportNoteAction;
 import com.onyx.android.note.actions.scribble.GotoTargetPageAction;
 import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.android.note.actions.scribble.PenColorChangeAction;
@@ -32,6 +37,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -42,7 +48,9 @@ import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -144,13 +152,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
         exportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onExport();
             }
         });
         settingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                getSupportActionBar().openOptionsMenu();
             }
         });
         pageIndicator.setOnClickListener(new View.OnClickListener() {
@@ -166,6 +173,28 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 });
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.onyx_scribble_activity_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.export_current_page:
+                onExport(true);
+                break;
+            case R.id.export_all_pages:
+                onExport(false);
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showGotoPageDialog() {
@@ -204,7 +233,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
         dlg.show(getFragmentManager());
     }
 
-    private void onExport() {
+    private void onExport(boolean exportCurPage) {
+        new ExportNoteAction<>(this,
+                shapeDataInfo.getDocumentUniqueId(),
+                shapeDataInfo.getPageNameList().getPageNameList(),
+                noteTitle,
+                exportCurPage,
+                shapeDataInfo.getCurrentPageIndex()).execute(ScribbleActivity.this, null);
     }
 
     private void onSave(final boolean finishAfterSave) {

@@ -29,6 +29,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="export">Export</string>
+    <string name="export_current_page">Export the current page</string>
+    <string name="export_all_pages">Export all pages</string>
     <string name="import_scribble">Import</string>
     <string name="sort">Sort</string>
     <string name="updated_at">Last Updated Time</string>
@@ -47,4 +49,8 @@
     <string name="versionName">Version Code</string>
     <string name="clear">Clear</string>
     <string name="clear_confirm">Are you sure to clear whole page?</string>
+    <string name="exporting_info">Exporting Note....</string>
+    <string name="export_location" formatted="false">(Export location: %s)</string>
+    <string name="export_success">Export Success!</string>
+    <string name="export_fail">Export failure</string>
 </resources>
