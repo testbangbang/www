@@ -32,7 +32,6 @@ ext {
     minSdkVersion = 15
     targetSdkVersion = 23
     compileSdkVersion = 24
-    compatibleSdkVersion = 23 // for projects which can't be built with sdk 24
     buildToolsVersion = '25.0.1'
 
     // App dependencies
@@ -57,5 +56,10 @@ ext {
     okhttpurlconnectionVersion = '2.0.0'
     picassoVersion = '2.5.2'
     multidexVersion = '1.0.1'
+
+    //compatible
+    compatibleSdkVersion = 23 // for projects which can't be built with sdk 24
+    compatibleSupportLibraryVersion = '23.4.0' // for projects which can't be built with sdk 24
+
 }
 

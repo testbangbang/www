@@ -32,7 +32,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:design:$rootProject.supportLibraryVersion"
     compile "com.android.support:gridlayout-v7:$rootProject.supportLibraryVersion"
-    compile "com.android.support:preference-v14:$rootProject.supportLibraryVersion"
+    compile "com.android.support:preference-v14:$rootProject.compatibleSupportLibraryVersion"
     compile "com.android.support:percent:$rootProject.supportLibraryVersion"
     testCompile "junit:junit:$rootProject.junitVersion"
 }

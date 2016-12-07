@@ -37,6 +37,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:preference-v14:$rootProject.supportLibraryVersion"
+
     compile project(':libraries:onyxsdk-ui')
     testCompile "junit:junit:$rootProject.junitVersion"
 
