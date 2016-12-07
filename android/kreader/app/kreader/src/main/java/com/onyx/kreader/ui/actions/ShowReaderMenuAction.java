@@ -18,7 +18,15 @@ import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.shape.BrushScribbleShape;
+import com.onyx.android.sdk.scribble.shape.CircleShape;
+import com.onyx.android.sdk.scribble.shape.LineShape;
+import com.onyx.android.sdk.scribble.shape.NormalPencilShape;
+import com.onyx.android.sdk.scribble.shape.RectangleShape;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.scribble.shape.TexShape;
+import com.onyx.android.sdk.scribble.shape.TriangleShape;
 import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
@@ -67,6 +75,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 
 /**
  * Created by Joy on 2016/6/7.
@@ -548,6 +557,8 @@ public class ShowReaderMenuAction extends BaseAction {
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
                 getScribbleActionCallback(readerDataHolder),
                 disableMenus);
+        int currentShapeType = readerDataHolder.getNoteManager().getNoteDocument().getCurrentShapeType();
+        menuAction.setSelectShapeAction(createShapeAction(currentShapeType));
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -873,6 +884,34 @@ public class ShowReaderMenuAction extends BaseAction {
             return map.get(width);
         }
         return ReaderMenuAction.SCRIBBLE_WIDTH1;
+    }
+
+    public static final ReaderMenuAction createShapeAction(int type) {
+        ReaderMenuAction action;
+        switch (type) {
+            case ShapeFactory.SHAPE_PENCIL_SCRIBBLE:
+                action = ReaderMenuAction.SCRIBBLE_PENCIL;
+                break;
+            case ShapeFactory.SHAPE_BRUSH_SCRIBBLE:
+                action = ReaderMenuAction.SCRIBBLE_BRUSH;
+                break;
+            case ShapeFactory.SHAPE_LINE:
+                action = ReaderMenuAction.SCRIBBLE_LINE;
+                break;
+            case ShapeFactory.SHAPE_TRIANGLE:
+                action = ReaderMenuAction.SCRIBBLE_TRIANGLE;
+                break;
+            case ShapeFactory.SHAPE_CIRCLE:
+                action = ReaderMenuAction.SCRIBBLE_CIRCLE;
+                break;
+            case ShapeFactory.SHAPE_RECTANGLE:
+                action = ReaderMenuAction.SCRIBBLE_SQUARE;
+                break;
+            default:
+                action = ReaderMenuAction.SCRIBBLE_PENCIL;
+                break;
+        }
+        return action;
     }
 
 }

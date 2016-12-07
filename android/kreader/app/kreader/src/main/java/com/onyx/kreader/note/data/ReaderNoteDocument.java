@@ -121,6 +121,10 @@ public class ReaderNoteDocument {
         return noteDrawingArgs.strokeColor;
     }
 
+    public int getCurrentShapeType() {
+        return noteDrawingArgs.getCurrentShapeType();
+    }
+
     public float getEraserRadius() {
         return noteDrawingArgs.eraserRadius;
     }
