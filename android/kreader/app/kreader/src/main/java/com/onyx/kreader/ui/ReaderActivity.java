@@ -230,7 +230,6 @@ public class ReaderActivity extends ActionBarActivity {
         initStatusBar();
         initReaderDataHolder();
         initSurfaceView();
-        initReaderMenu();
     }
 
     private void initReaderMenu(){
@@ -599,6 +598,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onDocumentInitRendered(final DocumentInitRenderedEvent event) {
+        initReaderMenu();
         updateNoteHostView();
         getReaderDataHolder().updateNoteManager();
     }
