@@ -432,7 +432,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public ReaderSelection selectWord(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
+    public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
         return getPluginImpl().selectText(hitTest.point, hitTest.point);
     }
 

@@ -11,7 +11,7 @@ public interface ReaderHitTestManager {
      * @param splitter the text splitter.
      * @return the selection.
      */
-    public ReaderSelection selectWord(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter);
+    public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter);
 
     /**
      * Get document position for specified point.

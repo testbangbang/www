@@ -197,7 +197,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
      * @return the selection.
      */
     @Override
-    public ReaderSelection selectWord(ReaderHitTestArgs hitTest, ReaderTextSplitter splitter) {
+    public ReaderSelection selectWordOnScreen(ReaderHitTestArgs hitTest, ReaderTextSplitter splitter) {
         return null;
     }
 

@@ -172,7 +172,7 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public ReaderSelection selectWord(ReaderHitTestArgs hitTest, ReaderTextSplitter splitter) {
+    public ReaderSelection selectWordOnScreen(ReaderHitTestArgs hitTest, ReaderTextSplitter splitter) {
         return null;
     }
 

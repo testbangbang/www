@@ -402,7 +402,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public ReaderSelection selectWord(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
+    public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
 
         return null;
     }
