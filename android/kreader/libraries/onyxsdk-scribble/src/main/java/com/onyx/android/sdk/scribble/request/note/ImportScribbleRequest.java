@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
@@ -47,6 +49,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
     private Map<String, NoteModel> noteModelMap = new HashMap<>();
     private Set<String> existDocIds = new HashSet<>();
     private float scaleValue = 0.9f;
+    private Handler handler;
 
     private String MD5 = "MD5";
     private String PAGE = "Page";
@@ -168,7 +171,10 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         BaseCallback.ProgressInfo progressInfo = new BaseCallback.ProgressInfo();
         progressInfo.progress = index;
         progressInfo.totalBytes = count;
-        getCallback().progress(this, progressInfo);
+        if (handler == null) {
+            handler = new Handler(Looper.getMainLooper());
+        }
+        BaseCallback.invokeProgress(handler, getCallback(), this, progressInfo);
     }
 
     private List<NoteModel> createNoteModes() {

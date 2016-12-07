@@ -16,10 +16,8 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class ImportReaderScribbleAction extends BaseAction {
 
-    private Activity activity;
 
     public ImportReaderScribbleAction(ReaderDataHolder readerDataHolder) {
-        activity = (Activity) readerDataHolder.getContext();
     }
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -48,12 +46,8 @@ public class ImportReaderScribbleAction extends BaseAction {
             @Override
             public void progress(BaseRequest request, final ProgressInfo info) {
                 super.progress(request, info);
-                activity.runOnUiThread(new Runnable() {
-                    public void run() {
-                        progress.setProgress((int) info.progress);
-                        progress.setMaxValue((int) info.totalBytes);
-                    }
-                });
+                progress.setProgress((int) info.progress);
+                progress.setMaxValue((int) info.totalBytes);
             }
         });
     }
