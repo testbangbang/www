@@ -15,9 +15,9 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keepattributes Exceptions,InnerClasses,...
 -keepnames class com.onyx.android.sdk.scribble.data.PageNameList { *; }
+-keepattributes Exceptions,InnerClasses,...
 -keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig { *; }
--keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig$ { ; }
+-keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig$ { *; }
 -keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig { *; }
--keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig$ { ; }
+-keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig$ { *; }
