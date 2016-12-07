@@ -51,7 +51,6 @@ public class ImportReaderScribbleRequest extends BaseReaderRequest {
     private List<ReaderNoteShapeModel> readShapeModels = new ArrayList<>();
     private Set<String> existDocIds = new HashSet<>();
     private ReaderDataHolder readerDataHolder;
-    private Handler handler;
 
     private String MD5 = "MD5";
     private String PAGE = "Page";
@@ -141,10 +140,7 @@ public class ImportReaderScribbleRequest extends BaseReaderRequest {
         BaseCallback.ProgressInfo progressInfo = new BaseCallback.ProgressInfo();
         progressInfo.progress = index;
         progressInfo.totalBytes = count;
-        if (handler == null) {
-            handler = new Handler(Looper.getMainLooper());
-        }
-        BaseCallback.invokeProgress(handler, getCallback(), this, progressInfo);
+        BaseCallback.invokeProgress(readerDataHolder.getReader().getLooperHandler(), getCallback(), this, progressInfo);
 
         if (StringUtils.isNullOrEmpty(application)) {
             return;

@@ -49,7 +49,6 @@ public class ImportScribbleRequest extends BaseNoteRequest {
     private Map<String, NoteModel> noteModelMap = new HashMap<>();
     private Set<String> existDocIds = new HashSet<>();
     private float scaleValue = 0.9f;
-    private Handler handler;
 
     private String MD5 = "MD5";
     private String PAGE = "Page";
@@ -94,7 +93,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
             maxCount = cursor.getCount();
             int index = 0;
             while (cursor.moveToNext()) {
-                readColumnData(cursor, maxCount, index);
+                readColumnData(helper, cursor, maxCount, index);
                 index++;
             }
             saveShapeAndNote(context);
@@ -107,7 +106,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         }
     }
 
-    private void readColumnData(Cursor c, int count, int index) {
+    private void readColumnData(NoteViewHelper helper, Cursor c, int count, int index) {
         if (!columnIndexesInitialized) {
             sColumnID = c.getColumnIndex(_ID);
             sColumnMD5 = c.getColumnIndex(MD5);
@@ -171,10 +170,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         BaseCallback.ProgressInfo progressInfo = new BaseCallback.ProgressInfo();
         progressInfo.progress = index;
         progressInfo.totalBytes = count;
-        if (handler == null) {
-            handler = new Handler(Looper.getMainLooper());
-        }
-        BaseCallback.invokeProgress(handler, getCallback(), this, progressInfo);
+        BaseCallback.invokeProgress(helper.getRequestManager().getLooperHandler(), getCallback(), this, progressInfo);
     }
 
     private List<NoteModel> createNoteModes() {
