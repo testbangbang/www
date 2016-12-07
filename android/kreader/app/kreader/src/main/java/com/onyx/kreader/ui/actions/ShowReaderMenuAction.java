@@ -557,7 +557,7 @@ public class ShowReaderMenuAction extends BaseAction {
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
                 getScribbleActionCallback(readerDataHolder),
                 disableMenus);
-        int currentShapeType = readerDataHolder.getNoteManager().getNoteDocument().getCurrentShapeType();
+        int currentShapeType = readerDataHolder.getNoteManager().getNoteDataInfo().getCurrentShapeType();
         menuAction.setSelectShapeAction(createShapeAction(currentShapeType));
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
