@@ -230,6 +230,11 @@ public class ReaderActivity extends ActionBarActivity {
         initStatusBar();
         initReaderDataHolder();
         initSurfaceView();
+        initReaderMenu();
+    }
+
+    private void initReaderMenu(){
+        ShowReaderMenuAction.initDisableMenus(getReaderDataHolder());
     }
 
     private void initStatusBar() {
