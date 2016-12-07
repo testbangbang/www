@@ -249,7 +249,7 @@ public class AlReaderWrapper {
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
             return -1;
         }
-        return position.readPositionEnd;
+        return position.readPositionEnd - 1;
     }
 
     public boolean isFirstPage() {
