@@ -338,7 +338,7 @@ public class AlReaderWrapper {
         return true;
     }
 
-    public ReaderSelection selectText(PointF start, PointF end) {
+    public ReaderSelection selectTextOnScreen(PointF start, PointF end) {
         Debug.d(getClass(), "start point: %s, end point: %s", JSON.toJSONString(start),
                 JSON.toJSONString(end));
 
@@ -359,14 +359,18 @@ public class AlReaderWrapper {
         return combineSelection(screenText, startPos, endPos);
     }
 
-    public ReaderSelection selectText(int startPos, int endPos) {
+    public ReaderSelection selectTextOnScreen(int startPos, int endPos) {
         AlTextOnScreen screenText = getTextOnScreen();
         if (screenText == null) {
             Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
 
-        return combineSelection(screenText, startPos, endPos);
+        AlTextOnScreen.AlPieceOfText firstPiece = screenText.regionList.get(0);
+        AlTextOnScreen.AlPieceOfText lastPiece = screenText.regionList.get(screenText.regionList.size() - 1);
+        int start = Math.max(getPieceStart(firstPiece), startPos);
+        int end = Math.min(getPieceEnd(lastPiece), endPos);
+        return combineSelection(screenText, start, end);
     }
 
     private void resetScreenState() {

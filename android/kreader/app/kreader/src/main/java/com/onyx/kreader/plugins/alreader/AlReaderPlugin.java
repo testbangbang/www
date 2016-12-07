@@ -433,7 +433,7 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
-        return getPluginImpl().selectText(hitTest.point, hitTest.point);
+        return getPluginImpl().selectTextOnScreen(hitTest.point, hitTest.point);
     }
 
     public String position(final ReaderHitTestArgs hitTest) {
@@ -441,14 +441,14 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderSelection selectOnScreen(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
-        return getPluginImpl().selectText(start.point, end.point);
+        return getPluginImpl().selectTextOnScreen(start.point, end.point);
     }
 
     @Override
     public ReaderSelection selectOnScreen(String pagePosition, String startPosition, String endPosition) {
         int start = PagePositionUtils.getPosition(startPosition);
         int end = PagePositionUtils.getPosition(endPosition);
-        return getPluginImpl().selectText(start, end);
+        return getPluginImpl().selectTextOnScreen(start, end);
     }
 
     public boolean supportScale() {
