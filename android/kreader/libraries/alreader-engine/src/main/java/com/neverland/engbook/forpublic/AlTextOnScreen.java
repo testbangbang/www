@@ -18,7 +18,7 @@ public class AlTextOnScreen {
 
     public class AlPieceOfText {
         public String              word;
-        public final AlRect        rect = new AlRect();
+        public final AlRect rect = new AlRect();
         public final int[]         positions;
 
         public AlPieceOfText(String w, AlRect r, int[] p) {
@@ -39,7 +39,6 @@ public class AlTextOnScreen {
         numWordWithStartSelection = numWordWithEndSelection = -1;
         needCorrectStart = needCorrectEnd = false;
         regionList.clear();
-        lastStart = lastEnd = -1;
     }
 
     public void add(StringBuilder word, AlRect rect, ArrayList<Integer> pos) {
@@ -94,6 +93,11 @@ public class AlTextOnScreen {
             }
         }
 
+    }
+    
+    public void clearBeforeNormalCall() {
+        lastStart = -1;
+        lastEnd = -1;
     }
 
     private int lastStart = -1;

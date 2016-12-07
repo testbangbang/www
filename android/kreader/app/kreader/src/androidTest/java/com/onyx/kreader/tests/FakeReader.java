@@ -102,6 +102,11 @@ public class FakeReader implements ReaderDocument,
         return this;
     }
 
+    @Override
+    public boolean saveOptions() {
+        return true;
+    }
+
     public ReaderViewOptions getViewOptions() {
         return this;
     }

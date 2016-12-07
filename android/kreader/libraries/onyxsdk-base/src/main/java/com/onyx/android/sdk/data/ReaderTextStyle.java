@@ -277,6 +277,26 @@ public class ReaderTextStyle {
         this.fontSize = fontSize;
     }
 
+    public void increaseFontSize() {
+        int i = 0;
+        for (; i < FONT_SIZE_LIST.length - 1; i++) {
+            if (FONT_SIZE_LIST[i].getValue() > fontSize.getValue()) {
+                break;
+            }
+        }
+        fontSize = FONT_SIZE_LIST[i];
+    }
+
+    public void decreaseFontSize() {
+        int i = FONT_SIZE_LIST.length - 1;
+        for (; i > 0; i--) {
+            if (FONT_SIZE_LIST[i].getValue() < fontSize.getValue()) {
+                break;
+            }
+        }
+        fontSize = FONT_SIZE_LIST[i];
+    }
+
     public Alignment getAlignment() {
         return alignment;
     }

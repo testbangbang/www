@@ -56,3 +56,10 @@
 -keep class com.onyx.kreader.note.data.ReaderNotePageNameMap { *; }
 -keep class com.onyx.android.sdk.scribble.data.PageNameList { *; }
 -keep class com.onyx.android.sdk.scribble.data.TouchPointList { *; }
+
+-keepattributes Exceptions,InnerClasses,...
+-keepnames class com.onyx.android.sdk.scribble.data.PageNameList { *; }
+-keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig { *; }
+-keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig$ { *; }
+-keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig { *; }
+-keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig$ { *; }

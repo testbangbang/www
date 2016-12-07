@@ -140,6 +140,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public boolean saveOptions() {
+        return true;
+    }
+
     /**
      * Close the document.
      */
