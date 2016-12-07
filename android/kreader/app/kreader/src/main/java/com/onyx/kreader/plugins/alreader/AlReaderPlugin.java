@@ -440,12 +440,12 @@ public class AlReaderPlugin implements ReaderPlugin,
         return null;
     }
 
-    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
+    public ReaderSelection selectOnScreen(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
         return getPluginImpl().selectText(start.point, end.point);
     }
 
     @Override
-    public ReaderSelection select(String pagePosition, String startPosition, String endPosition) {
+    public ReaderSelection selectOnScreen(String pagePosition, String startPosition, String endPosition) {
         int start = PagePositionUtils.getPosition(startPosition);
         int end = PagePositionUtils.getPosition(endPosition);
         return getPluginImpl().selectText(start, end);

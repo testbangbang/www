@@ -411,12 +411,12 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return null;
     }
 
-    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
+    public ReaderSelection selectOnScreen(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
         return null;
     }
 
     @Override
-    public ReaderSelection select(String pagePosition, String startPosition, String endPosition) {
+    public ReaderSelection selectOnScreen(String pagePosition, String startPosition, String endPosition) {
         return null;
     }
 

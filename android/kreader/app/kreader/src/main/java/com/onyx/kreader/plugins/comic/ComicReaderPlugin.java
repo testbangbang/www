@@ -221,12 +221,12 @@ public class ComicReaderPlugin implements ReaderPlugin,
      * @return the selection.
      */
     @Override
-    public ReaderSelection select(ReaderHitTestArgs start, ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
+    public ReaderSelection selectOnScreen(ReaderHitTestArgs start, ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
         return null;
     }
 
     @Override
-    public ReaderSelection select(String pagePosition, String startPosition, String endPosition) {
+    public ReaderSelection selectOnScreen(String pagePosition, String startPosition, String endPosition) {
         return null;
     }
 

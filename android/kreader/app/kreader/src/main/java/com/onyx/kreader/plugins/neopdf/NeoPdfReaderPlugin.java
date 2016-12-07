@@ -486,7 +486,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return null;
     }
 
-    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
+    public ReaderSelection selectOnScreen(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
         NeoPdfSelection selection = new NeoPdfSelection(start.pageName);
         getPluginImpl().hitTest(PagePositionUtils.getPageNumber(start.pageName),
                 (int) start.pageDisplayRect.left,
@@ -504,7 +504,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public ReaderSelection select(String pagePosition, String startPosition, String endPosition) {
+    public ReaderSelection selectOnScreen(String pagePosition, String startPosition, String endPosition) {
         int page = PagePositionUtils.getPageNumber(pagePosition);
         int start = PagePositionUtils.getPosition(startPosition);
         int end = PagePositionUtils.getPosition(endPosition);

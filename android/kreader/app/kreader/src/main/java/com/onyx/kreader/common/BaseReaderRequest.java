@@ -214,7 +214,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
             }
             for (PageAnnotation annotation : annotations) {
                 ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
-                ReaderSelection selection = hitTestManager.select(pageInfo.getPosition(),
+                ReaderSelection selection = hitTestManager.selectOnScreen(pageInfo.getPosition(),
                         annotation.getAnnotation().getLocationBegin(),
                         annotation.getAnnotation().getLocationEnd());
                 annotation.getRectangles().clear();

@@ -44,7 +44,7 @@ public class GotoSearchLocationRequest extends GotoPositionRequest {
                 }
             } else {
                 ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
-                ReaderSelection sel = hitTestManager.select(pageInfo.getPosition(),
+                ReaderSelection sel = hitTestManager.selectOnScreen(pageInfo.getPosition(),
                         searchResult.getStartPosition(), searchResult.getEndPosition());
                 searchResult.getRectangles().clear();
                 if (sel != null) {

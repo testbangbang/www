@@ -31,7 +31,7 @@ public class AnnotationRequest extends BaseReaderRequest {
         PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pageName);
         ReaderHitTestArgs startArgs = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, start);
         ReaderHitTestArgs endArgs = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, end);
-        selection = hitTestManager.select(startArgs, endArgs, ReaderHitTestOptionsImpl.create(false));
+        selection = hitTestManager.selectOnScreen(startArgs, endArgs, ReaderHitTestOptionsImpl.create(false));
     }
 
     public final ReaderSelection getSelection() {

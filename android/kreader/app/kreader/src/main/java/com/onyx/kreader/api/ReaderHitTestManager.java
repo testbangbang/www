@@ -26,9 +26,9 @@ public interface ReaderHitTestManager {
      * @param hitTestOptions
      * @return the selection.
      */
-    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, final ReaderHitTestOptions hitTestOptions);
+    public ReaderSelection selectOnScreen(final ReaderHitTestArgs start, final ReaderHitTestArgs end, final ReaderHitTestOptions hitTestOptions);
 
-    public ReaderSelection select(String pagePosition, final String startPosition, final String endPosition);
+    public ReaderSelection selectOnScreen(String pagePosition, final String startPosition, final String endPosition);
 
 
 }
