@@ -465,4 +465,8 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         actionChain.addAction(new ChangeStrokeWidthAction(width, true));
         actionChain.execute(readerDataHolder, null);
     }
+
+    public void setSelectShapeAction(ReaderMenuAction selectShapeAction) {
+        this.selectShapeAction = selectShapeAction;
+    }
 }

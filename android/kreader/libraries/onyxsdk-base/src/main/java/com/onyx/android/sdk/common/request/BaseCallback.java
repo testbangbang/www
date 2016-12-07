@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.common.request;
 
+import android.os.Handler;
+
 /**
  * Created by zhuzeng on 10/4/15.
  */
@@ -22,6 +24,17 @@ public abstract class BaseCallback {
     public static void invokeProgress(final BaseCallback callback, final BaseRequest request, final ProgressInfo progressInfo) {
         if (callback != null) {
             callback.progress(request, progressInfo);
+        }
+    }
+
+    public static void invokeProgress(final Handler handler, final BaseCallback callback, final BaseRequest request, final ProgressInfo progressInfo) {
+        if (callback != null && handler != null) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    callback.progress(request, progressInfo);
+                }
+            });
         }
     }
 

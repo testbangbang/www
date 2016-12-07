@@ -1,4 +1,4 @@
-package com.onyx.kreader.utils;
+package com.onyx.android.sdk.utils;
 
 import com.onyx.android.sdk.utils.FileUtils;
 
@@ -10,6 +10,8 @@ import java.io.IOException;
  */
 
 public class ExportUtils {
+
+    public static String NOTE_EXPORT_LOCATION = "/mnt/sdcard/note/";
 
     private static String getExportFolderPath(String documentPath) throws IOException{
         String parent = FileUtils.getParent(documentPath);
@@ -35,5 +37,10 @@ public class ExportUtils {
     public static String getExportScribblePath(String documentPath, String page) throws IOException{
         String baseName = FileUtils.getBaseName(documentPath);
         return new File(getExportFolderPath(documentPath), baseName + "-scribble-" + page + ".png").getAbsolutePath();
+    }
+
+    public static String getExportNotePath(String document, String page) throws IOException{
+        String documentPath = NOTE_EXPORT_LOCATION + document;
+        return new File(getExportFolderPath(documentPath), page + ".png").getAbsolutePath();
     }
 }

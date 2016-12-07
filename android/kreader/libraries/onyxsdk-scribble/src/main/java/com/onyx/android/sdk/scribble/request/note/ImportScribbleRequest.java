@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
@@ -39,6 +41,7 @@ import static android.provider.BaseColumns._ID;
 public class ImportScribbleRequest extends BaseNoteRequest {
 
     private final String url = "content://com.onyx.android.sdk.OnyxCmsProvider/library_scribble";
+    private final String OLD_SCRIBBLE_APPLICATION = "com.onyx.android.scribbler";
 
     private Context context;
     private int maxCount;
@@ -90,7 +93,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
             maxCount = cursor.getCount();
             int index = 0;
             while (cursor.moveToNext()) {
-                readColumnData(cursor, maxCount, index);
+                readColumnData(helper, cursor, maxCount, index);
                 index++;
             }
             saveShapeAndNote(context);
@@ -103,7 +106,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         }
     }
 
-    private void readColumnData(Cursor c, int count, int index) {
+    private void readColumnData(NoteViewHelper helper, Cursor c, int count, int index) {
         if (!columnIndexesInitialized) {
             sColumnID = c.getColumnIndex(_ID);
             sColumnMD5 = c.getColumnIndex(MD5);
@@ -131,6 +134,9 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         String uniqueId = CursorUtil.getString(c, sColumnUniqueId);
 
         if (StringUtils.isNullOrEmpty(uniqueId)) {
+            return;
+        }
+        if (StringUtils.isNullOrEmpty(application) || !application.equals(OLD_SCRIBBLE_APPLICATION)) {
             return;
         }
 
@@ -164,7 +170,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         BaseCallback.ProgressInfo progressInfo = new BaseCallback.ProgressInfo();
         progressInfo.progress = index;
         progressInfo.totalBytes = count;
-        getCallback().progress(this, progressInfo);
+        BaseCallback.invokeProgress(helper.getRequestManager().getLooperHandler(), getCallback(), this, progressInfo);
     }
 
     private List<NoteModel> createNoteModes() {

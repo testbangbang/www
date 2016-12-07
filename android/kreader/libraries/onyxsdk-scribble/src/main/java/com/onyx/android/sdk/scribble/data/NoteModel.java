@@ -61,7 +61,7 @@ public class NoteModel extends BaseModel {
     int strokeColor;
 
     @Column
-    int currentShapeType;
+    int currentShapeType = ShapeFactory.SHAPE_INVALID;
 
     @Column
     int background;

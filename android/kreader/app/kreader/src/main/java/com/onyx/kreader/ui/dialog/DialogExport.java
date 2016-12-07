@@ -23,7 +23,7 @@ import com.onyx.kreader.host.request.ExportNotesRequest;
 import com.onyx.kreader.ui.actions.ExportNotesActionChain;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.utils.ExportUtils;
+import com.onyx.android.sdk.utils.ExportUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;

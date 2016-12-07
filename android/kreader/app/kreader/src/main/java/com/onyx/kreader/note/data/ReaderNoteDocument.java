@@ -121,6 +121,10 @@ public class ReaderNoteDocument {
         return noteDrawingArgs.strokeColor;
     }
 
+    public int getCurrentShapeType() {
+        return noteDrawingArgs.getCurrentShapeType();
+    }
+
     public float getEraserRadius() {
         return noteDrawingArgs.eraserRadius;
     }
@@ -153,6 +157,11 @@ public class ReaderNoteDocument {
         noteDrawingArgs.background = NoteModel.getDefaultBackground();
         noteDrawingArgs.strokeColor = NoteModel.getDefaultStrokeColor();
         noteDrawingArgs.penState = NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING;
+    }
+
+    public void reloadPageIndex(Context context) {
+        final ReaderNoteDocumentModel documentModel = ReaderNoteDataProvider.loadDocument(context, getDocumentUniqueId());
+        setupPageIndex(documentModel);
     }
 
     // loadDocument args from model.

@@ -44,12 +44,8 @@ public class ImportScribbleAction<T extends BaseManagerActivity> extends BaseNot
             @Override
             public void progress(BaseRequest request, final ProgressInfo info) {
                 super.progress(request, info);
-                activity.runOnUiThread(new Runnable() {
-                    public void run() {
-                        progress.setProgress((int) info.progress);
-                        progress.setMaxValue((int) info.totalBytes);
-                    }
-                });
+                progress.setProgress((int) info.progress);
+                progress.setMaxValue((int) info.totalBytes);
             }
         });
     }

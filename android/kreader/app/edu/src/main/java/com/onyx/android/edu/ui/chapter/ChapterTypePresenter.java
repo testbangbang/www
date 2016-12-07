@@ -102,7 +102,7 @@ public class ChapterTypePresenter implements ChapterTypeContract.ChapterTypePres
     }
 
     private void loadQuestionAnalytical(final int index) {
-        if (index >= questions.size()) {
+        if (questions == null || index >= questions.size()) {
             chapterTypeView.openQuestions(questions);
             return;
         }
