@@ -17,17 +17,8 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
-import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.shape.BrushScribbleShape;
-import com.onyx.android.sdk.scribble.shape.CircleShape;
-import com.onyx.android.sdk.scribble.shape.LineShape;
-import com.onyx.android.sdk.scribble.shape.NormalPencilShape;
-import com.onyx.android.sdk.scribble.shape.RectangleShape;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.scribble.shape.TexShape;
-import com.onyx.android.sdk.scribble.shape.TriangleShape;
 import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
@@ -67,7 +58,6 @@ import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.dialog.DialogTextStyle;
 import com.onyx.kreader.ui.events.QuitEvent;
-import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.utils.DeviceConfig;
 
 import java.util.ArrayList;
@@ -130,11 +120,10 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void initReaderMenu(final ReaderDataHolder readerDataHolder) {
-        getDisableMenus(readerDataHolder);
         createReaderSideMenu(readerDataHolder);
     }
 
-    private void getDisableMenus(ReaderDataHolder readerDataHolder) {
+    public static void initDisableMenus(ReaderDataHolder readerDataHolder) {
         disableMenus.clear();
 
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isDisableNoteFunc()) {
