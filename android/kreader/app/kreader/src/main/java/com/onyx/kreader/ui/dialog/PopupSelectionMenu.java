@@ -34,6 +34,8 @@ import com.onyx.kreader.ui.view.HTMLReaderWebView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle.Highlight;
 
@@ -395,39 +397,9 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     private void updateTranslation(final ReaderDataHolder readerDataHolder, String token) {
-        token = filterInvalidChar(token);
+        token = StringUtils.trimPunctuation(token);
         mDictTitle.setText(token);
         dictionaryQuery(readerDataHolder, token);
-    }
-
-    private String filterInvalidChar(String word) {
-        word = StringUtils.trim(word);
-        if (StringUtils.isNullOrEmpty(word)) {
-            return word;
-        }
-
-        boolean isAlphaWord =  ReaderTextSplitterImpl.isAlpha(word.charAt(0));
-        if (!isAlphaWord) {
-            return word;
-        }
-
-        int start = 0;
-        while (start < word.length() - 1) {
-            if (ReaderTextSplitterImpl.isAlpha(word.charAt(start))) {
-                break;
-            }
-            ++start;
-        }
-
-        int end = word.length() - 1;
-        while (end >= 0) {
-            if (ReaderTextSplitterImpl.isAlpha(word.charAt(end))) {
-                break;
-            }
-            --end;
-        }
-        word = word.substring(start, end + 1);
-        return word;
     }
 
     private void dictionaryQuery(final ReaderDataHolder readerDataHolder, final String token) {

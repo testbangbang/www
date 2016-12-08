@@ -6,6 +6,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by zhuzeng on 10/16/15.
@@ -15,6 +16,9 @@ public class StringUtils {
     static public final String UTF16LE = "UTF-16LE";
     static public final String UTF16BE = "UTF-16BE";
     static public final String UTF16 = "UTF-16";
+
+    static public String punctuation="[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+    static public Pattern punctuationPattern = Pattern.compile(punctuation);
 
     static public boolean isNullOrEmpty(final String string) {
         return (string == null || string.trim().length() <= 0);
@@ -115,6 +119,31 @@ public class StringUtils {
             input = input.replaceAll("\\u0000", ""); // removes NUL chars
             input = input.replaceAll("\\\\u0000", ""); // removes backslash+u0000
         }
+        return input;
+    }
+
+    public static String trimPunctuation(String input) {
+        input = StringUtils.trim(input);
+        if (StringUtils.isNullOrEmpty(input)) {
+            return input;
+        }
+
+        int start = 0;
+        while (start < input.length() - 1) {
+            if (!punctuationPattern.matcher(String.valueOf(input.charAt(start))).find()) {
+                break;
+            }
+            ++start;
+        }
+
+        int end = input.length() - 1;
+        while (end >= 0) {
+            if (!punctuationPattern.matcher(String.valueOf(input.charAt(end))).find()) {
+                break;
+            }
+            --end;
+        }
+        input = input.substring(start, end + 1);
         return input;
     }
 }
