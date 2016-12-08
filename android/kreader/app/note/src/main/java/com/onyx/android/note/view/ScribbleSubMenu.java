@@ -300,6 +300,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         thickness_menus.addObject(createImageButtonMenu(R.drawable.ic_width_3, ScribbleSubMenuID.THICKNESS_NORMAL, true));
         thickness_menus.addObject(createImageButtonMenu(R.drawable.ic_width_4, ScribbleSubMenuID.THICKNESS_BOLD, true));
         thickness_menus.addObject(createImageButtonMenu(R.drawable.ic_width_5, ScribbleSubMenuID.THICKNESS_ULTRA_BOLD, true));
+        thickness_menus.addObject(createImageButtonMenu(R.drawable.ic_width_6, ScribbleSubMenuID.THICKNESS_CUSTOM_BOLD, true));
         return thickness_menus;
     }
 
