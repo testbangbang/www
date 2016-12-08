@@ -582,10 +582,15 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void onSurfaceViewSizeChanged() {
-        updateNoteHostView();
-        if (getReaderDataHolder().isDocumentOpened()) {
-            new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
+        if (!getReaderDataHolder().isDocumentOpened()) {
+            return;
         }
+        updateNoteHostView();
+        new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
+    }
+
+    private void initNoteArgs() {
+        getReaderDataHolder().getNoteManager().initNoteArgs(this);
     }
 
     private void updateNoteHostView() {
@@ -599,6 +604,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onDocumentInitRendered(final DocumentInitRenderedEvent event) {
         initReaderMenu();
+        initNoteArgs();
         updateNoteHostView();
         getReaderDataHolder().updateNoteManager();
     }
