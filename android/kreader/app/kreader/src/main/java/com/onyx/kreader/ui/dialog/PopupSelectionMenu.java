@@ -24,6 +24,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.ui.actions.DictionaryQueryAction;
 import com.onyx.kreader.ui.data.DictionaryQuery;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -394,8 +395,39 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     private void updateTranslation(final ReaderDataHolder readerDataHolder, String token) {
+        token = filterInvalidChar(token);
         mDictTitle.setText(token);
         dictionaryQuery(readerDataHolder, token);
+    }
+
+    private String filterInvalidChar(String word) {
+        word = StringUtils.trim(word);
+        if (StringUtils.isNullOrEmpty(word)) {
+            return word;
+        }
+
+        boolean isAlphaWord =  ReaderTextSplitterImpl.isAlpha(word.charAt(0));
+        if (!isAlphaWord) {
+            return word;
+        }
+
+        int start = 0;
+        while (start < word.length() - 1) {
+            if (ReaderTextSplitterImpl.isAlpha(word.charAt(start))) {
+                break;
+            }
+            ++start;
+        }
+
+        int end = word.length() - 1;
+        while (end >= 0) {
+            if (ReaderTextSplitterImpl.isAlpha(word.charAt(end))) {
+                break;
+            }
+            --end;
+        }
+        word = word.substring(start, end + 1);
+        return word;
     }
 
     private void dictionaryQuery(final ReaderDataHolder readerDataHolder, final String token) {
