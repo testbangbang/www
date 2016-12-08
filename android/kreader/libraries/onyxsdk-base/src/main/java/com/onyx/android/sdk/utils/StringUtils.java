@@ -18,7 +18,6 @@ public class StringUtils {
     static public final String UTF16 = "UTF-16";
 
     static public String punctuation="[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
-    static public Pattern punctuationPattern = Pattern.compile(punctuation);
 
     static public boolean isNullOrEmpty(final String string) {
         return (string == null || string.trim().length() <= 0);
@@ -130,7 +129,7 @@ public class StringUtils {
 
         int start = 0;
         while (start < input.length() - 1) {
-            if (!punctuationPattern.matcher(String.valueOf(input.charAt(start))).find()) {
+            if (!punctuation.contains(String.valueOf(input.charAt(start)))) {
                 break;
             }
             ++start;
@@ -138,7 +137,7 @@ public class StringUtils {
 
         int end = input.length() - 1;
         while (end >= 0) {
-            if (!punctuationPattern.matcher(String.valueOf(input.charAt(end))).find()) {
+            if (!punctuation.contains(String.valueOf(input.charAt(end)))) {
                 break;
             }
             --end;
