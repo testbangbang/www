@@ -12,6 +12,6 @@ public class DeleteSearchHistoryRequest extends BaseReaderRequest {
 
     public void execute(final Reader reader) throws Exception {
         SearchHistoryProvider.deleteSearchHistory(reader.getDocumentMd5());
-        LayoutProviderUtils.updateReaderViewInfo(createReaderViewInfo(), reader.getReaderLayoutManager());
+        LayoutProviderUtils.updateReaderViewInfo(reader, createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 }

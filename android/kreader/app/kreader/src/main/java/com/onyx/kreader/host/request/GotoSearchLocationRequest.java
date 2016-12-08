@@ -1,6 +1,7 @@
 package com.onyx.kreader.host.request;
 
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.kreader.api.ReaderHitTestManager;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -25,20 +26,30 @@ public class GotoSearchLocationRequest extends GotoPositionRequest {
     @Override
     public void execute(Reader reader) throws Exception {
         super.execute(reader);
-        getReaderUserDataInfo().saveSearchResults(translateToScreen(searchResults));
+        getReaderUserDataInfo().saveSearchResults(translateToScreen(reader, searchResults));
     }
 
-    private List<ReaderSelection> translateToScreen(final List<ReaderSelection> list) {
-        for (ReaderSelection selection : list) {
-            PageInfo pageInfo = getReaderViewInfo().getPageInfo(selection.getPagePosition());
+    private List<ReaderSelection> translateToScreen(final Reader reader, final List<ReaderSelection> list) {
+        for (ReaderSelection searchResult : list) {
+            PageInfo pageInfo = getReaderViewInfo().getPageInfo(searchResult.getPagePosition());
             if (pageInfo == null) {
                 continue;
             }
-            for (int i = 0; i < selection.getRectangles().size(); i++) {
-                PageUtils.translate(pageInfo.getDisplayRect().left,
-                        pageInfo.getDisplayRect().top,
-                        pageInfo.getActualScale(),
-                        selection.getRectangles().get(i));
+            if (reader.getRendererFeatures().supportScale()) {
+                for (int i = 0; i < searchResult.getRectangles().size(); i++) {
+                    PageUtils.translate(pageInfo.getDisplayRect().left,
+                            pageInfo.getDisplayRect().top,
+                            pageInfo.getActualScale(),
+                            searchResult.getRectangles().get(i));
+                }
+            } else {
+                ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
+                ReaderSelection sel = hitTestManager.selectOnScreen(pageInfo.getPosition(),
+                        searchResult.getStartPosition(), searchResult.getEndPosition());
+                searchResult.getRectangles().clear();
+                if (sel != null) {
+                    searchResult.getRectangles().addAll(sel.getRectangles());
+                }
             }
         }
         return list;

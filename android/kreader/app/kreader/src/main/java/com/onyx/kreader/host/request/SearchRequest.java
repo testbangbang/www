@@ -30,7 +30,7 @@ public class SearchRequest extends BaseReaderRequest {
         reader.getReaderLayoutManager().getPageManager().collectVisiblePages();
         reader.getSearchManager().searchInPage(PagePositionUtils.getPageNumber(currentPage),searchOptions,true);
         if (reader.getSearchManager().searchResults().size() > 0) {
-            LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
+            LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderLayoutManager());
             readerDataHolder.getReaderUserDataInfo().saveSearchResults(reader.getSearchManager().searchResults());
         }
     }

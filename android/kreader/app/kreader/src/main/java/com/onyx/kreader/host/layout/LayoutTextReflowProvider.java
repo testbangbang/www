@@ -5,6 +5,7 @@ import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.common.ReaderViewInfo;
 import com.onyx.kreader.host.navigation.NavigationArgs;
@@ -55,22 +56,22 @@ public class LayoutTextReflowProvider extends LayoutProvider {
 
     public boolean prevPage() throws ReaderException {
         LayoutProviderUtils.prevPage(getLayoutManager());
-        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
+        return gotoPosition(getLayoutManager().getNavigator().getScreenStartPosition());
     }
 
     public boolean nextPage() throws ReaderException {
         LayoutProviderUtils.nextPage(getLayoutManager());
-        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
+        return gotoPosition(getLayoutManager().getNavigator().getScreenStartPosition());
     }
 
     public boolean firstPage() throws ReaderException {
         LayoutProviderUtils.firstPage(getLayoutManager());
-        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
+        return gotoPosition(getLayoutManager().getNavigator().getScreenStartPosition());
     }
 
     public boolean lastPage() throws ReaderException {
         LayoutProviderUtils.lastPage(getLayoutManager());
-        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
+        return gotoPosition(getLayoutManager().getNavigator().getScreenStartPosition());
     }
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo readerViewInfo) throws ReaderException {
@@ -95,25 +96,23 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         if (!getLayoutManager().getNavigator().gotoPage(page)) {
             return false;
         }
-        return gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
+        return gotoPosition(getLayoutManager().getNavigator().getScreenStartPosition());
     }
 
     public boolean gotoPosition(final String position) throws ReaderException {
         if (StringUtils.isNullOrEmpty(position)) {
             return false;
         }
-
         if (!getLayoutManager().getNavigator().gotoPosition(position)) {
             return false;
         }
-
-        String page = PagePositionUtils.fromPageNumber(getLayoutManager().getNavigator().getCurrentPageNumber());
-        final RectF viewportBeforeChange = new RectF(getPageManager().getViewportRect());
+        String page = PagePositionUtils.fromPageNumber(getLayoutManager().getNavigator().getScreenStartPageNumber());
         LayoutProviderUtils.addSinglePage(getLayoutManager(), page, position);
         if (!getPageManager().gotoPage(position)) {
             return false;
         }
 
+        final RectF viewportBeforeChange = new RectF(getPageManager().getViewportRect());
         onPageChanged(viewportBeforeChange);
         return true;
     }
@@ -162,7 +161,7 @@ public class LayoutTextReflowProvider extends LayoutProvider {
     public void updateViewportRect(RectF rect) throws ReaderException {
         super.updateViewportRect(rect);
         getPageManager().clear();
-        gotoPosition(getLayoutManager().getNavigator().getCurrentPosition());
+        gotoPosition(getLayoutManager().getNavigator().getScreenStartPosition());
     }
 
     public void scaleToPage() throws ReaderException {

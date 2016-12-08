@@ -294,7 +294,16 @@ public class ReaderDataHolder {
     }
 
     public boolean hasBookmark() {
-        return getReaderUserDataInfo().hasBookmark(getFirstPageInfo());
+        return getFirstVisiblePageWithBookmark() != null;
+    }
+
+    public PageInfo getFirstVisiblePageWithBookmark() {
+        for (PageInfo pageInfo : getVisiblePages()) {
+            if (getReaderUserDataInfo().hasBookmark(pageInfo)) {
+                return pageInfo;
+            }
+        }
+        return null;
     }
 
     public void submitNonRenderRequest(final BaseReaderRequest request) {

@@ -298,7 +298,12 @@ public class ReaderPainter {
     }
 
     private boolean hasBookmark(final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
-        return userDataInfo.hasBookmark(viewInfo.getFirstVisiblePage());
+        for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
+            if (userDataInfo.hasBookmark(pageInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isShapeBitmapReady(NoteManager noteManager, ReaderNoteDataInfo shapeDataInfo) {

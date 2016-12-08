@@ -19,7 +19,7 @@ public class AddSearchHistoryRequest extends BaseReaderRequest {
 
     public void execute(final Reader reader) throws Exception {
         SearchHistoryProvider.addSearchHistory(createSearchHistory(reader));
-        LayoutProviderUtils.updateReaderViewInfo(createReaderViewInfo(), reader.getReaderLayoutManager());
+        LayoutProviderUtils.updateReaderViewInfo(reader, createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 
     private SearchHistory createSearchHistory(final Reader reader) {

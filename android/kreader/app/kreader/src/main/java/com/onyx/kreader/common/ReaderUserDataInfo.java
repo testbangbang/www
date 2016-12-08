@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.provider.SearchHistoryProvider;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
+import com.onyx.kreader.api.ReaderNavigator;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.wrapper.Reader;
@@ -132,7 +133,15 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadPageAnnotations(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
-        for(PageInfo pageInfo: visiblePages) {
+        if (reader.getRendererFeatures().supportScale()) {
+            return loadPageAnnotationsForFixedDocument(context, reader, visiblePages);
+        } else {
+            return loadPageAnnotationsForFlowDocument(context, reader, visiblePages);
+        }
+    }
+
+    public boolean loadPageAnnotationsForFixedDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+        for (PageInfo pageInfo : visiblePages) {
             final List<Annotation> annotations = DataProviderManager.getDataProvider().loadAnnotations(
                     reader.getPlugin().displayName(),
                     reader.getDocumentMd5(),
@@ -147,6 +156,48 @@ public class ReaderUserDataInfo {
             }
         }
         return true;
+    }
+
+    public boolean loadPageAnnotationsForFlowDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+        final List<Annotation> annotations = DataProviderManager.getDataProvider().loadAnnotations(
+                reader.getPlugin().displayName(),
+                reader.getDocumentMd5(),
+                OrderBy.fromProperty(Annotation_Table.pageNumber).ascending());
+        if (annotations != null && annotations.size() > 0) {
+            ReaderNavigator navigator = reader.getNavigator();
+            String startPos = reader.getNavigator().getScreenStartPosition();
+            String endPos = reader.getNavigator().getScreenEndPosition();
+            for (Annotation annotation : annotations) {
+                if (navigator.comparePosition(annotation.getLocationEnd(), startPos) <= 0 &&
+                        navigator.comparePosition(annotation.getLocationBegin(), endPos) >= 0) {
+                    continue;
+                }
+                if (navigator.comparePosition(annotation.getLocationBegin(), endPos) < 0) {
+                    annotation.setPageNumber(navigator.getPageNumberByPosition(annotation.getLocationBegin()));
+                } else {
+                    annotation.setPageNumber(navigator.getPageNumberByPosition(annotation.getLocationEnd()));
+                }
+                String pageName = PagePositionUtils.fromPageNumber(annotation.getPageNumber());
+                PageInfo pageInfo = findPageInfo(visiblePages, pageName);
+                if (pageInfo == null) {
+                    continue;
+                }
+                if (pageAnnotationMap.get(pageName) == null) {
+                    pageAnnotationMap.put(pageName, new ArrayList<PageAnnotation>());
+                }
+                pageAnnotationMap.get(pageName).add(new PageAnnotation(pageInfo, annotation));
+            }
+        }
+        return true;
+    }
+
+    private PageInfo findPageInfo(final List<PageInfo> visiblePages, String pageName) {
+        for (PageInfo page : visiblePages) {
+            if (page.getName().equals(pageName)) {
+                return page;
+            }
+        }
+        return null;
     }
 
     public boolean hasBookmark(final PageInfo pageInfo) {
@@ -164,11 +215,39 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadBookmarks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
-        for(PageInfo pageInfo: visiblePages) {
+        if (reader.getRendererFeatures().supportScale()) {
+            return loadBookmarksForFixedDocument(context, reader, visiblePages);
+        } else {
+            return loadBookmarksForFlowDocument(context, reader, visiblePages);
+        }
+    }
+
+    private boolean loadBookmarksForFixedDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+        for (PageInfo pageInfo : visiblePages) {
             final Bookmark bookmark = DataProviderManager.getDataProvider().loadBookmark(reader.getPlugin().displayName(),
                     reader.getDocumentMd5(), PagePositionUtils.getPageNumber(pageInfo.getName()));
             if (bookmark != null) {
                 bookmarkMap.put(pageInfo.getName(), bookmark);
+            }
+        }
+        return true;
+    }
+
+    private boolean loadBookmarksForFlowDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+        List<Bookmark> bookmarks = DataProviderManager.getDataProvider().loadBookmarks(
+                reader.getPlugin().displayName(),
+                reader.getDocumentMd5(),
+                OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());
+        String startPos = reader.getNavigator().getScreenStartPosition();
+        String endPos = reader.getNavigator().getScreenEndPosition();
+        if (bookmarks != null) {
+            for (Bookmark bookmark : bookmarks) {
+                if (reader.getNavigator().comparePosition(bookmark.getPosition(), startPos) >= 0 &&
+                        reader.getNavigator().comparePosition(bookmark.getPosition(), endPos) <=0) {
+                    int page = reader.getNavigator().getPageNumberByPosition(bookmark.getPosition());
+                    bookmark.setPageNumber(page);
+                    bookmarkMap.put(PagePositionUtils.fromPageNumber(page), bookmark);
+                }
             }
         }
         return true;

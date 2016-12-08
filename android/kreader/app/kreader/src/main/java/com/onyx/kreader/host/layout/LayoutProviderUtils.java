@@ -19,6 +19,7 @@ import com.onyx.kreader.host.math.PageUtils;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.navigation.NavigationList;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class LayoutProviderUtils {
         }
 
         // final step: update view info.
-        updateReaderViewInfo(readerViewInfo, layoutManager);
+        updateReaderViewInfo(reader, readerViewInfo, layoutManager);
     }
 
     static private void drawVisiblePagesImpl(final ReaderRenderer renderer,
@@ -112,8 +113,12 @@ public class LayoutProviderUtils {
         }
     }
 
-    static public void updateReaderViewInfo(final ReaderViewInfo readerViewInfo,
+    static public void updateReaderViewInfo(final Reader reader,
+                                            final ReaderViewInfo readerViewInfo,
                                             final ReaderLayoutManager layoutManager) throws ReaderException {
+        if (!reader.getRendererFeatures().supportScale()) {
+            updateVisiblePagesForFlowDocument(reader, readerViewInfo, layoutManager);
+        }
         final List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
         for (PageInfo pageInfo : visiblePages) {
             readerViewInfo.copyPageInfo(pageInfo);
@@ -132,6 +137,23 @@ public class LayoutProviderUtils {
             readerViewInfo.readerTextStyle = ReaderTextStyle.copy(layoutManager.getTextStyleManager().getStyle());
         }
         readerViewInfo.layoutChanged = layoutManager.isLayoutChanged();
+    }
+
+    static private void updateVisiblePagesForFlowDocument(final Reader reader,
+                                                          final ReaderViewInfo readerViewInfo,
+                                                          final ReaderLayoutManager layoutManager) {
+        clear(layoutManager);
+        String startPage = PagePositionUtils.fromPageNumber(reader.getNavigator().getScreenStartPageNumber());
+        addPage(layoutManager, startPage, reader.getNavigator().getScreenStartPosition());
+        layoutManager.getPageManager().gotoPage(reader.getNavigator().getScreenStartPosition());
+        for (int i = reader.getNavigator().getScreenStartPageNumber() + 1;
+             i <= reader.getNavigator().getScreenEndPageNumber();
+             i++) {
+            String page = PagePositionUtils.fromPageNumber(i);
+            String pos = reader.getNavigator().getPositionByPageNumber(i);
+            addPage(layoutManager, page, pos);
+        }
+        layoutManager.getPageManager().getVisiblePages().addAll(layoutManager.getPageManager().getPageInfoList());
     }
 
     static public PageInfo drawReflowablePage(final PageInfo pageInfo, final ReaderBitmap bitmap, final ReaderRenderer readerRenderer) {

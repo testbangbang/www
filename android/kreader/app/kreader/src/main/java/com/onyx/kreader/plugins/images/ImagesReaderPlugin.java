@@ -240,6 +240,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return PagePositionUtils.fromPageNumber(index);
     }
 
+    @Override
+    public int getPageNumberByPosition(String position) {
+        return -1;
+    }
+
     private String getImagePath(final String position) {
         int index = PagePositionUtils.getPageNumber(position);
         if (index < 0 || index >= pageList.size()) {
@@ -257,13 +262,28 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public int getCurrentPageNumber() {
+    public int getScreenStartPageNumber() {
         return 0;
     }
 
     @Override
-    public String getCurrentPosition() {
+    public int getScreenEndPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getScreenStartPosition() {
         return null;
+    }
+
+    @Override
+    public String getScreenEndPosition() {
+        return null;
+    }
+
+    @Override
+    public int comparePosition(String pos1, String pos2) {
+        return 0;
     }
 
     @Override
@@ -382,7 +402,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public ReaderSelection selectWord(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
+    public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
 
         return null;
     }
@@ -391,12 +411,12 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return null;
     }
 
-    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
+    public ReaderSelection selectOnScreen(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
         return null;
     }
 
     @Override
-    public ReaderSelection select(String pagePosition, String startPosition, String endPosition) {
+    public ReaderSelection selectOnScreen(String pagePosition, String startPosition, String endPosition) {
         return null;
     }
 

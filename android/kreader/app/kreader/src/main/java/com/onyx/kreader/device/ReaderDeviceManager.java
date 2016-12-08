@@ -10,6 +10,7 @@ import android.view.Surface;
 import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.utils.DeviceUtils;
 
 /**
@@ -71,7 +72,7 @@ public class ReaderDeviceManager {
     }
 
     public static void applyWithGCInterval(View view, boolean isTextPage) {
-        boolean useRegal = false;
+        boolean useRegal = SingletonSharedPreference.isEnableRegal(view.getContext());
         if (EpdController.supportRegal() && useRegal) {
             applyWithGCIntervalWitRegal(view, isTextPage);
         } else {

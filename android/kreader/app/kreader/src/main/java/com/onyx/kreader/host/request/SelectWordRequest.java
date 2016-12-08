@@ -53,8 +53,8 @@ public class SelectWordRequest extends BaseReaderRequest {
         PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pagePosition);
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, start);
         ReaderHitTestArgs argsEnd = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, end);
-        selection = hitTestManager.select(argsStart, argsEnd, hitTestOptions);
-        LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
+        selection = hitTestManager.selectOnScreen(argsStart, argsEnd, hitTestOptions);
+        LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderLayoutManager());
         if (selection != null && selection.getRectangles().size() > 0) {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
             getReaderUserDataInfo().setTouchPoint(touchPoint);

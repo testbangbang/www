@@ -5146,6 +5146,29 @@ public class AlBookEng{
 		return -1;
 	}
 
+	public int getPositionOfPage(int pageNum) {
+		if (preferences.isASRoll)
+			return -1;
+
+		if (openState.getState() != AlBookState.OPEN)
+			return -1;
+
+		switch (preferences.calcPagesModeUsed) {
+			case SCREEN:
+				if (pageNum - 1 >= 0 && pageNum - 1 < pagePositionPointer.size()) {
+					return pagePositionPointer.get(pageNum - 1).start;
+				}
+				break;
+			case AUTO:
+			case SIZE:
+				if ((pageNum - 1) * preferences.pageSize >= 0 && (pageNum - 1) * preferences.pageSize < format.getSize()) {
+					return getCorrectSizePosition((pageNum - 1) * preferences.pageSize);
+				}
+				break;
+		}
+		return -1;
+	}
+
     /**
      * получение номера текущей страницы, общего количества страниц и актуальной позиции чтения.
      * @param position - обьект, содержащий минимально необходимую информацию о положении чтения
@@ -5992,8 +6015,8 @@ public class AlBookEng{
 						continue;
 					}
 				} else {
-					
-					if (oi.text[i] > 0x3000 || (word_text.length() == 1 && word_text.charAt(0) > 0x3000))
+
+					if ( AlUnicode.isChineze(oi.text[i]) || (word_text.length() == 1 && AlUnicode.isChineze(word_text.charAt(0))))
 						textOnScreen.add(word_text, word_rect, word_pos);
 					
 					if (word_text.length() == 0) {

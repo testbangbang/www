@@ -438,15 +438,12 @@ public class HandlerManager {
     }
 
     private void removeBookmark(ReaderDataHolder readerDataHolder) {
-        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.Off).execute(readerDataHolder, null);
+        new ToggleBookmarkAction(readerDataHolder.getFirstVisiblePageWithBookmark(),
+                ToggleBookmarkAction.ToggleSwitch.Off).execute(readerDataHolder, null);
     }
 
     private void addBookmark(ReaderDataHolder readerDataHolder) {
-        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.On).execute(readerDataHolder, null);
-    }
-
-    private PageInfo getFirstPageInfo(ReaderDataHolder readerDataHolder) {
-        return readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
+        new ToggleBookmarkAction(readerDataHolder.getFirstPageInfo(), ToggleBookmarkAction.ToggleSwitch.On).execute(readerDataHolder, null);
     }
 
     private void close(final ReaderDataHolder readerDataHolder) {

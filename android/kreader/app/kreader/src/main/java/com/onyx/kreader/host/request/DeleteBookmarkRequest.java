@@ -21,6 +21,6 @@ public class DeleteBookmarkRequest extends BaseReaderRequest {
         if (bookmark != null) {
             DataProviderManager.getDataProvider().deleteBookmark(bookmark);
         }
-        LayoutProviderUtils.updateReaderViewInfo(createReaderViewInfo(), reader.getReaderLayoutManager());
+        LayoutProviderUtils.updateReaderViewInfo(reader, createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 }
