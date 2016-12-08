@@ -42,6 +42,7 @@ import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
@@ -314,6 +315,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 float value = ScribbleSubMenuID.strokeWidthFromMenuId(item);
                 onStrokeWidthChanged(value, null);
                 break;
+            case ScribbleSubMenuID.THICKNESS_CUSTOM_BOLD:
+                showCustomLineWidthDialog();
+                break;
             case ScribbleSubMenuID.ERASE_PARTIALLY:
                 onEraseClicked(true);
                 break;
@@ -387,6 +391,18 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 onPenColoChanged();
                 break;
         }
+    }
+
+    private void showCustomLineWidthDialog() {
+        DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(this,
+                (int) shapeDataInfo.getStrokeWidth(),
+                20, Color.BLACK, new DialogCustomLineWidth.Callback() {
+            @Override
+            public void done(int lineWidth) {
+                onStrokeWidthChanged(lineWidth, null);
+            }
+        });
+        customLineWidth.show();
     }
 
     private void onBackgroundChanged() {
