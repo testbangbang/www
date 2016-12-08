@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenuAction;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
@@ -403,7 +404,8 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private void showCustomLineWidthDialog() {
         DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(readerDataHolder.getContext(),
                 (int) readerDataHolder.getNoteManager().getNoteDrawingArgs().strokeWidth,
-                20, Color.BLACK, new DialogCustomLineWidth.Callback() {
+                NoteDrawingArgs.MAX_STROKE_WIDTH,
+                Color.BLACK, new DialogCustomLineWidth.Callback() {
             @Override
             public void done(int lineWidth) {
                 useStrokeWidth(readerDataHolder, lineWidth);
