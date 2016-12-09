@@ -38,10 +38,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     public static abstract class ActionCallback {
         public abstract void onClicked(final ReaderMenuAction action);
-    }
-
-    public static abstract class MenuCallback {
-        public abstract List<ReaderMenuAction> getIgnoreMenu();
+        public abstract void onToggle(final ReaderMenuAction action, boolean expand);
     }
 
     private ViewGroup parent;
@@ -131,6 +128,13 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                 return handleBottomMenuView(readerDataHolder, action, expandedActions);
             }
         });
+        toolbar.setOnToggleToolbarListener(new OnyxToolbar.OnToggleToolbarListener() {
+            @Override
+            public void onToggle(Object tag, boolean expand) {
+                ReaderMenuAction action = (ReaderMenuAction) tag;
+                actionCallback.onToggle(action, expand);
+            }
+        });
         return toolbar;
     }
 
@@ -162,7 +166,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         return toolbar;
     }
 
-    private OnyxToolbar handleBottomMenuView(ReaderDataHolder readerDataHolder, ReaderMenuAction clickedAction, ReaderMenuAction[] expandedActions) {
+    private OnyxToolbar handleBottomMenuView(ReaderDataHolder readerDataHolder, final ReaderMenuAction clickedAction, ReaderMenuAction[] expandedActions) {
         updateMarkerView(clickedAction, expandedActions);
 
         switch (clickedAction) {
@@ -175,6 +179,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             case SCRIBBLE_COLOR:
                 return createColorToolbar(readerDataHolder);
         }
+
         return null;
     }
 
@@ -375,9 +380,10 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                 changeToolBarVisibility(false);
                 break;
             case SCRIBBLE_ERASER_PART:
+                onSelectEraser(false);
+                break;
             case SCRIBBLE_ERASER_ALL:
-                switchDragFunc(true);
-                selectShapeAction = null;
+                onSelectEraser(true);
                 break;
             case SCRIBBLE_PENCIL:
             case SCRIBBLE_BRUSH:
@@ -385,8 +391,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             case SCRIBBLE_TRIANGLE:
             case SCRIBBLE_CIRCLE:
             case SCRIBBLE_SQUARE:
-                switchDragFunc(true);
-                selectEraserAction = null;
+                onSelectShape();
                 break;
             case SCRIBBLE_CUSTOM_WIDTH:
                 showCustomLineWidthDialog();
@@ -396,9 +401,34 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             case SCRIBBLE_WIDTH3:
             case SCRIBBLE_WIDTH4:
             case SCRIBBLE_WIDTH5:
-                switchDragFunc(true);
+                onSelectWidth();
                 break;
         }
+    }
+
+    private void onSelectEraser(boolean wholeEraser) {
+        if (!wholeEraser) {
+            selectShapeAction = null;
+            selectWidthAction = null;
+        }
+        switchDragFunc(true);
+    }
+
+    private void onSelectShape() {
+        switchDragFunc(true);
+        selectEraserAction = null;
+        if (selectWidthAction == null) {
+            selectWidthAction = ReaderMenuAction.SCRIBBLE_WIDTH1;
+        }
+    }
+
+    private void onSelectWidth() {
+        if (selectShapeAction == null) {
+            readerDataHolder.getNoteManager().restoreCurrentShapeType();
+            int currentShapeType = readerDataHolder.getNoteManager().getNoteDrawingArgs().getCurrentShapeType();
+            selectShapeAction = ShowReaderMenuAction.createShapeAction(currentShapeType);
+        }
+        switchDragFunc(true);
     }
 
     private void showCustomLineWidthDialog() {
