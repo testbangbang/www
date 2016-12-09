@@ -103,7 +103,7 @@ public class NoteManager {
         getNoteEventProcessorManager().resume();
     }
 
-    public void initNoteArgs(final Context context) {
+    private void initNoteArgs(final Context context) {
         noteConfig = DeviceConfig.sharedInstance(context, "note");
         mappingConfig = MappingConfig.sharedInstance(context, "note");
         enableShortcutDrawing = noteConfig.isShortcutDrawingEnabled();
@@ -114,6 +114,9 @@ public class NoteManager {
     }
 
     public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final Rect excludeRect, int orientation) {
+        if (noteConfig == null || mappingConfig == null) {
+            initNoteArgs(context);
+        }
         view = sv;
         getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
     }

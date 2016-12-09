@@ -589,10 +589,6 @@ public class ReaderActivity extends ActionBarActivity {
         new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
     }
 
-    private void initNoteArgs() {
-        getReaderDataHolder().getNoteManager().initNoteArgs(this);
-    }
-
     private void updateNoteHostView() {
         getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         final Rect visibleDrawRect = new Rect();
@@ -604,7 +600,6 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onDocumentInitRendered(final DocumentInitRenderedEvent event) {
         initReaderMenu();
-        initNoteArgs();
         updateNoteHostView();
         getReaderDataHolder().updateNoteManager();
     }
