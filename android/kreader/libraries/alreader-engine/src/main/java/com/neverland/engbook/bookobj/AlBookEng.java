@@ -5997,6 +5997,7 @@ public class AlBookEng{
 		AlRect word_rect = new AlRect();
 		ArrayList<Integer> word_pos = new ArrayList<>();
 
+		boolean isLink = false;
 		for (int j = 0; j < page.countItems; j++) {
 			AlOneItem oi = page.items.get(j);
 
@@ -6006,7 +6007,26 @@ public class AlBookEng{
 			y = oi.yDrawPosition;
 			x = margLeft + oi.isLeft + oi.isRed;
 
+			if (isLink) {
+				textOnScreen.markLinkEnd();
+			}
+			isLink = false;
 			for (int i = 0; i < oi.count; i++) {
+				if (!isLink && (oi.style[i] & AlStyles.STYLE_LINK) != 0) {
+					String link = format.getLinkNameByPos(oi.pos[i], InternalConst.TAL_LINK_TYPE.LINK);
+					if (link != null) {
+						AlOneLink al = format.getLinkByName(link, true);
+						if (al != null) {
+							isLink = true;
+							textOnScreen.markLinkStart(al.positionS);
+						}
+					}
+				}
+				if (isLink && (oi.style[i] & AlStyles.STYLE_LINK) == 0) {
+					isLink = false;
+					textOnScreen.markLinkEnd();
+				}
+
 				if (oi.text[i] <= 0x20 || oi.pos[i] < 0) {
 					textOnScreen.add(word_text, word_rect, word_pos);
 
