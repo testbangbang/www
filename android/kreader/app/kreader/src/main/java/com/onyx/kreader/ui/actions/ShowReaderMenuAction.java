@@ -575,6 +575,10 @@ public class ShowReaderMenuAction extends BaseAction {
                 }
                 processScribbleAction(readerDataHolder, action);
             }
+
+            @Override
+            public void onToggle(final ReaderMenuAction action, boolean expand){
+            }
         };
         return callback;
     }

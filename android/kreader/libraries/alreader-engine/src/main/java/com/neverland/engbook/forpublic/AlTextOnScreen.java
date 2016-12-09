@@ -33,7 +33,18 @@ public class AlTextOnScreen {
         }
     }
 
+    public class AlTextLink {
+        public int startPosition = -1;
+        public int endPosition;
+        public int linkLocalPosition;
+    }
+
     public ArrayList<AlPieceOfText> regionList = new ArrayList<>();
+    public ArrayList<AlTextLink> linkList = new ArrayList<>();
+
+    private boolean isLink = false;
+    private int linkPosition = -1;
+    private AlTextLink link;
 
     public void clear() {
         numWordWithStartSelection = numWordWithEndSelection = -1;
@@ -53,7 +64,29 @@ public class AlTextOnScreen {
             regionList.add(a);
 
             word.setLength(0);
+
+            if (isLink) {
+                if (link == null) {
+                    link = new AlTextLink();
+                    linkList.add(link);
+                    link.startPosition = pos.get(0);
+                    link.endPosition = pos.get(pos.size() - 1);
+                    link.linkLocalPosition = linkPosition;
+                }
+                link.endPosition = pos.get(pos.size() - 1);
+            }
         }
+    }
+
+    public void markLinkStart(int linkPosition) {
+        isLink = true;
+        this.linkPosition = linkPosition;
+    }
+
+    public void markLinkEnd() {
+        isLink = false;
+        linkPosition = -1;
+        link = null;
     }
 
     public boolean verifyStart(boolean needStart, int posStart) {

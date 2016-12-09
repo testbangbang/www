@@ -212,6 +212,23 @@ public class AlReaderWrapper {
         return combineSelectionText(screenText, 0, screenText.regionList.size() - 1);
     }
 
+    public List<ReaderSelection> getPageLinks() {
+        List<ReaderSelection> result = new ArrayList<>();
+
+        AlTextOnScreen screenText = getTextOnScreen();
+        if (screenText == null) {
+            Debug.w(getClass(), "get text on screen failed!");
+            return result;
+        }
+        for (AlTextOnScreen.AlTextLink link : screenText.linkList) {
+            ReaderSelectionImpl selection = combineSelection(screenText, link.startPosition, link.endPosition);
+            selection.setPagePosition(PagePositionUtils.fromPosition(link.linkLocalPosition));
+            selection.setPageName(PagePositionUtils.fromPageNumber(getPageNumberOfPosition(link.linkLocalPosition)));
+            result.add(selection);
+        }
+        return result;
+    }
+
     public int getTotalPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
@@ -386,7 +403,7 @@ public class AlReaderWrapper {
 
     private int hitTest(int x, int y) {
         try {
-            AlTapInfo tapInfo = bookEng.getInfoByTap(x, y, EngBookMyType.TAL_SCREEN_SELECTION_MODE.DICTIONARY);
+            AlTapInfo tapInfo = bookEng.getInfoByTap(x, y, EngBookMyType.TAL_SCREEN_SELECTION_MODE.NONE);
             Debug.d(getClass(), "tap info: " + JSON.toJSONString(tapInfo));
             return tapInfo == null ? -1 : tapInfo.pos;
         } finally {
@@ -394,7 +411,7 @@ public class AlReaderWrapper {
         }
     }
 
-    private ReaderSelection combineSelection(AlTextOnScreen textOnScreen, int startPos, int endPos) {
+    private ReaderSelectionImpl combineSelection(AlTextOnScreen textOnScreen, int startPos, int endPos) {
         Debug.d(getClass(), "start pos: %d, end pos: %d", startPos, endPos);
         int startIndex = textOnScreen.findWordByPos(startPos);
         int endIndex = textOnScreen.findWordByPos(endPos);
