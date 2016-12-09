@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
@@ -20,6 +21,7 @@ import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
+import com.onyx.kreader.note.actions.RestoreShapeAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
@@ -418,15 +420,20 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         switchDragFunc(true);
         selectEraserAction = null;
         if (selectWidthAction == null) {
-            selectWidthAction = ReaderMenuAction.SCRIBBLE_WIDTH1;
+            float strokeWidth =  readerDataHolder.getNoteManager().getNoteDrawingArgs().strokeWidth;
+            selectWidthAction = ShowReaderMenuAction.menuIdFromStrokeWidth(strokeWidth);
         }
     }
 
     private void onSelectWidth() {
         if (selectShapeAction == null) {
-            readerDataHolder.getNoteManager().restoreCurrentShapeType();
-            int currentShapeType = readerDataHolder.getNoteManager().getNoteDrawingArgs().getCurrentShapeType();
-            selectShapeAction = ShowReaderMenuAction.createShapeAction(currentShapeType);
+            new RestoreShapeAction().execute(readerDataHolder, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    int currentShapeType = readerDataHolder.getNoteManager().getNoteDrawingArgs().getCurrentShapeType();
+                    selectShapeAction = ShowReaderMenuAction.createShapeAction(currentShapeType);
+                }
+            });
         }
         switchDragFunc(true);
     }
