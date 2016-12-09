@@ -78,7 +78,6 @@ public class ShowReaderMenuAction extends BaseAction {
 
     // use reader menu as static field to avoid heavy init of showing reader menu each time
     private static ReaderMenu readerMenu;
-    private static boolean isScribbleMenuVisible = false;
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
     private static List<String> fontFaces = new ArrayList<>();
     private static Map<Float, ReaderMenuAction> strokeMapping;
@@ -542,7 +541,6 @@ public class ShowReaderMenuAction extends BaseAction {
 
     public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
         hideReaderMenu();
-        setIsScribbleMenuVisible(true);
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
                 getScribbleActionCallback(readerDataHolder),
                 disableMenus);
@@ -551,19 +549,10 @@ public class ShowReaderMenuAction extends BaseAction {
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                setIsScribbleMenuVisible(false);
                 StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, false, false, false, true);
                 stopNoteActionChain.execute(readerDataHolder, null);
             }
         });
-    }
-
-    public static boolean isScribbleMenuVisible() {
-        return isScribbleMenuVisible;
-    }
-
-    public static void setIsScribbleMenuVisible(boolean isScribbleMenuVisible) {
-        ShowReaderMenuAction.isScribbleMenuVisible = isScribbleMenuVisible;
     }
 
     public static ShowScribbleMenuAction.ActionCallback getScribbleActionCallback(final ReaderDataHolder readerDataHolder) {

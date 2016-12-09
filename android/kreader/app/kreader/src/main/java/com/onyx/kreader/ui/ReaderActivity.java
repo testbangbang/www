@@ -666,7 +666,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onShortcutErasingStart(final ShortcutErasingStartEvent event) {
         if (!getReaderDataHolder().inNoteWritingProvider()) {
-            getReaderDataHolder().getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
+            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
         }
     }
 
@@ -676,9 +676,6 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShortcutErasingFinish(final ShortcutErasingFinishEvent event) {
-        if (!ShowReaderMenuAction.isScribbleMenuVisible()) {
-            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
-        }
     }
 
     @Subscribe
