@@ -3,6 +3,7 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -172,6 +173,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         }
                     }
                 });
+            }
+        });
+
+        getSupportActionBar().addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
+            @Override
+            public void onMenuVisibilityChanged(boolean isVisible) {
+                if (!isVisible) {
+                    syncWithCallback(true, true, null);
+                }
             }
         });
     }
