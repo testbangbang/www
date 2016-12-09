@@ -238,7 +238,7 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return
      */
     public List<ReaderSelection> getLinks(final String position) {
-        return null;
+        return getPluginImpl().getPageLinks();
     }
 
     /**
