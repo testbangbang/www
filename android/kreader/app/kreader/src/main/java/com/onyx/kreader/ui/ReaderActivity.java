@@ -40,7 +40,6 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
-import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.actions.FlushNoteAction;
@@ -140,7 +139,6 @@ public class ReaderActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        afterPause(null);
     }
 
     @Override
@@ -339,7 +337,6 @@ public class ReaderActivity extends ActionBarActivity {
         syncSystemStatusBar();
         syncReaderPainter();
         reconfigStatusBar();
-        checkNoteDrawing();
     }
 
     private void syncReaderPainter() {
@@ -350,18 +347,10 @@ public class ReaderActivity extends ActionBarActivity {
         setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
     }
 
-    private void checkNoteDrawing() {
-        if (!getReaderDataHolder().inNoteWritingProvider()) {
-            return;
-        }
-        final StartNoteRequest request = new StartNoteRequest(getReaderDataHolder().getVisiblePages());
-        getReaderDataHolder().getNoteManager().submit(this, request, null);
-    }
-
     @Subscribe
     public void onLayoutChanged(final LayoutChangeEvent event) {
         updateNoteHostView();
-        getReaderDataHolder().updateNoteManager();
+        getReaderDataHolder().updateRawEventProcessor();
     }
 
     @Subscribe
@@ -602,7 +591,7 @@ public class ReaderActivity extends ActionBarActivity {
     public void onDocumentInitRendered(final DocumentInitRenderedEvent event) {
         initReaderMenu();
         updateNoteHostView();
-        getReaderDataHolder().updateNoteManager();
+        getReaderDataHolder().updateRawEventProcessor();
     }
 
     @Subscribe

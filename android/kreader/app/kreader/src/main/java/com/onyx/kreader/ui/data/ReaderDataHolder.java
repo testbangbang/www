@@ -261,7 +261,7 @@ public class ReaderDataHolder {
         return noteManager;
     }
 
-    public void updateNoteManager() {
+    public void updateRawEventProcessor() {
         if (!supportScalable()) {
             getNoteManager().stopRawEventProcessor();
             return;
