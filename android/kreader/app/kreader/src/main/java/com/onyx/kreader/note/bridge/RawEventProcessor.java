@@ -51,6 +51,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile boolean pressed = false;
     private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
+    private volatile FileInputStream fileInputStream;
     private volatile DataInputStream dataInputStream;
     private volatile boolean reportData = false;
 
@@ -108,6 +109,9 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void closeInputDevice() {
+        FileUtils.closeQuietly(fileInputStream);
+        fileInputStream = null;
+
         FileUtils.closeQuietly(dataInputStream);
         dataInputStream = null;
     }
@@ -144,7 +148,8 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void readLoop() throws Exception {
-        dataInputStream = new DataInputStream(new FileInputStream(inputDevice));
+        fileInputStream = new FileInputStream(inputDevice);
+        dataInputStream = new DataInputStream(fileInputStream);
         byte[] data = new byte[16];
         while (!stop) {
             dataInputStream.readFully(data);
@@ -409,6 +414,9 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     private void invokeDFBShapeStart() {
         final boolean shortcut = shortcutDrawing;
+        if (shortcut) {
+            getCallback().enableTouchInput(false);
+        }
         handler.post(new Runnable() {
             @Override
             public void run() {

@@ -64,8 +64,8 @@
     <!--Use  -2 dp will translate as wrap_content in actual layout-->
     <!--Use  -1 dp will translate as match_parent in actual layout-->
 
-    <dimen name="wrap_content">-2dp</dimen>
-    <dimen name="match_parent">-1dp</dimen>
+    <item name="match_parent" format="integer" type="dimen">-1</item>
+    <item name="wrap_content" format="integer" type="dimen">-2</item>
     <dimen name="dialog_custom_width_preview_height">100dp</dimen>
     <dimen name="bessel_curve_view_width">300dp</dimen>
     <dimen name="bessel_curve_view_height">60dp</dimen>

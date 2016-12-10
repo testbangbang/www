@@ -172,7 +172,7 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public ReaderSelection selectWord(ReaderHitTestArgs hitTest, ReaderTextSplitter splitter) {
+    public ReaderSelection selectWordOnScreen(ReaderHitTestArgs hitTest, ReaderTextSplitter splitter) {
         return null;
     }
 
@@ -182,12 +182,12 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public ReaderSelection select(ReaderHitTestArgs start, ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
+    public ReaderSelection selectOnScreen(ReaderHitTestArgs start, ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
         return null;
     }
 
     @Override
-    public ReaderSelection select(String pagePosition, String startPosition, String endPosition) {
+    public ReaderSelection selectOnScreen(String pagePosition, String startPosition, String endPosition) {
         return null;
     }
 
@@ -207,18 +207,38 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public int getPageNumberByPosition(String position) {
+        return -1;
+    }
+
+    @Override
     public int getTotalPage() {
         return getPluginImpl().getPageCount();
     }
 
     @Override
-    public int getCurrentPageNumber() {
+    public int getScreenStartPageNumber() {
         return 0;
     }
 
     @Override
-    public String getCurrentPosition() {
+    public int getScreenEndPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getScreenStartPosition() {
         return null;
+    }
+
+    @Override
+    public String getScreenEndPosition() {
+        return null;
+    }
+
+    @Override
+    public int comparePosition(String pos1, String pos2) {
+        return 0;
     }
 
     @Override

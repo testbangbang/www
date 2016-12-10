@@ -22,7 +22,6 @@ import com.neverland.engbook.forpublic.AlRect;
 import com.neverland.engbook.forpublic.AlTapInfo;
 import com.neverland.engbook.forpublic.AlTextOnScreen;
 import com.neverland.engbook.forpublic.EngBookMyType;
-import com.neverland.engbook.forpublic.EngSelectionCorrecter;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.util.TTFInfo;
@@ -204,6 +203,32 @@ public class AlReaderWrapper {
         resetScreenState();
     }
 
+    public String getScreenText() {
+        AlTextOnScreen screenText = getTextOnScreen();
+        if (screenText == null) {
+            Debug.w(getClass(), "get text on screen failed!");
+            return null;
+        }
+        return combineSelectionText(screenText, 0, screenText.regionList.size() - 1);
+    }
+
+    public List<ReaderSelection> getPageLinks() {
+        List<ReaderSelection> result = new ArrayList<>();
+
+        AlTextOnScreen screenText = getTextOnScreen();
+        if (screenText == null) {
+            Debug.w(getClass(), "get text on screen failed!");
+            return result;
+        }
+        for (AlTextOnScreen.AlTextLink link : screenText.linkList) {
+            ReaderSelectionImpl selection = combineSelection(screenText, link.startPosition, link.endPosition);
+            selection.setPagePosition(PagePositionUtils.fromPosition(link.linkLocalPosition));
+            selection.setPageName(PagePositionUtils.fromPageNumber(getPageNumberOfPosition(link.linkLocalPosition)));
+            result.add(selection);
+        }
+        return result;
+    }
+
     public int getTotalPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
@@ -212,20 +237,36 @@ public class AlReaderWrapper {
         return position.pageCount;
     }
 
-    public int getCurrentPage() {
+    public int getScreenStartPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
             return -1;
         }
-        return getPageNumberOfPosition(position.readPositionStart) - 1;
+        return getPageNumberOfPosition(position.readPositionStart);
     }
 
-    public int getCurrentPosition() {
+    public int getScreenEndPage() {
+        AlCurrentPosition position = new AlCurrentPosition();
+        if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            return -1;
+        }
+        return getPageNumberOfPosition(position.readPositionEnd);
+    }
+
+    public int getScreenStartPosition() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
             return -1;
         }
         return position.readPositionStart;
+    }
+
+    public int getScreenEndPosition() {
+        AlCurrentPosition position = new AlCurrentPosition();
+        if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            return -1;
+        }
+        return position.readPositionEnd - 1;
     }
 
     public boolean isFirstPage() {
@@ -264,6 +305,14 @@ public class AlReaderWrapper {
         return ret == TAL_RESULT.OK;
     }
 
+    public int getPositionOfPageNumber(int page) {
+        return bookEng.getPositionOfPage(page + 1);
+    }
+
+    public int getPageNumberOfPosition(int position) {
+        return bookEng.getPageOfPosition(position) - 1;
+    }
+
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         AlBookProperties properties = bookEng.getBookProperties(true);
         if (properties.content == null) {
@@ -292,7 +341,10 @@ public class AlReaderWrapper {
                 ReaderSelectionImpl selection = new ReaderSelectionImpl();
                 selection.setPageName(PagePositionUtils.fromPageNumber(getPageNumberOfPosition(result.pos_start)));
                 selection.setPagePosition(PagePositionUtils.fromPosition(result.pos_start));
+                selection.setStartPosition(PagePositionUtils.fromPosition(result.pos_start));
+                selection.setEndPosition(PagePositionUtils.fromPosition(result.pos_end));
                 selection.setText(text);
+                selection.setDisplayRects(new ArrayList<RectF>());
                 list.add(selection);
             }
         } finally {
@@ -303,7 +355,7 @@ public class AlReaderWrapper {
         return true;
     }
 
-    public ReaderSelection selectText(PointF start, PointF end) {
+    public ReaderSelection selectTextOnScreen(PointF start, PointF end) {
         Debug.d(getClass(), "start point: %s, end point: %s", JSON.toJSONString(start),
                 JSON.toJSONString(end));
 
@@ -324,14 +376,18 @@ public class AlReaderWrapper {
         return combineSelection(screenText, startPos, endPos);
     }
 
-    public ReaderSelection selectText(int startPos, int endPos) {
+    public ReaderSelection selectTextOnScreen(int startPos, int endPos) {
         AlTextOnScreen screenText = getTextOnScreen();
         if (screenText == null) {
             Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
 
-        return combineSelection(screenText, startPos, endPos);
+        AlTextOnScreen.AlPieceOfText firstPiece = screenText.regionList.get(0);
+        AlTextOnScreen.AlPieceOfText lastPiece = screenText.regionList.get(screenText.regionList.size() - 1);
+        int start = Math.max(getPieceStart(firstPiece), startPos);
+        int end = Math.min(getPieceEnd(lastPiece), endPos);
+        return combineSelection(screenText, start, end);
     }
 
     private void resetScreenState() {
@@ -347,7 +403,7 @@ public class AlReaderWrapper {
 
     private int hitTest(int x, int y) {
         try {
-            AlTapInfo tapInfo = bookEng.getInfoByTap(x, y, EngBookMyType.TAL_SCREEN_SELECTION_MODE.DICTIONARY);
+            AlTapInfo tapInfo = bookEng.getInfoByTap(x, y, EngBookMyType.TAL_SCREEN_SELECTION_MODE.NONE);
             Debug.d(getClass(), "tap info: " + JSON.toJSONString(tapInfo));
             return tapInfo == null ? -1 : tapInfo.pos;
         } finally {
@@ -355,11 +411,7 @@ public class AlReaderWrapper {
         }
     }
 
-    private int getPageNumberOfPosition(int position) {
-        return bookEng.getPageOfPosition(position);
-    }
-
-    private ReaderSelection combineSelection(AlTextOnScreen textOnScreen, int startPos, int endPos) {
+    private ReaderSelectionImpl combineSelection(AlTextOnScreen textOnScreen, int startPos, int endPos) {
         Debug.d(getClass(), "start pos: %d, end pos: %d", startPos, endPos);
         int startIndex = textOnScreen.findWordByPos(startPos);
         int endIndex = textOnScreen.findWordByPos(endPos);
@@ -376,7 +428,7 @@ public class AlReaderWrapper {
         Debug.d(getClass(), JSON.toJSONString(startPiece));
         ReaderSelectionImpl selection = new ReaderSelectionImpl();
         selection.setPageName(PagePositionUtils.fromPageNumber(getPageNumberOfPosition(getPieceStart(startPiece))));
-        selection.setPagePosition(PagePositionUtils.fromPosition(getCurrentPosition()));
+        selection.setPagePosition(PagePositionUtils.fromPosition(getScreenStartPosition()));
         selection.setText(combineSelectionText(textOnScreen, startIndex, endIndex));
         selection.setStartPosition(PagePositionUtils.fromPosition(getPieceStart(startPiece)));
         selection.setEndPosition(PagePositionUtils.fromPosition(getPieceEnd(endPiece)));

@@ -18,6 +18,7 @@
   "shortcut_drawing": 1,
   "shortcut_erasing": 1,
   "support_color": true,
+  "default_stroke_color": -16776961,
   "eraser_radius" : 10
 
 

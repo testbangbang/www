@@ -39,6 +39,7 @@ public class ScribbleSubMenuID {
     public static final int PEN_COLOR_BLUE = 22;
     public static final int PEN_COLOR_GREEN = 23;
     public static final int PEN_COLOR_MAGENTA = 24;
+    public static final int THICKNESS_CUSTOM_BOLD = 25;
 
     private static Map<Float, Integer> strokeMapping;
 
@@ -47,7 +48,7 @@ public class ScribbleSubMenuID {
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
     @IntDef({THICKNESS_ULTRA_LIGHT, THICKNESS_LIGHT, THICKNESS_NORMAL, THICKNESS_BOLD,
-            THICKNESS_ULTRA_BOLD, NORMAL_PEN_STYLE, BRUSH_PEN_STYLE, LINE_STYLE, TRIANGLE_STYLE,
+            THICKNESS_ULTRA_BOLD, THICKNESS_CUSTOM_BOLD, NORMAL_PEN_STYLE, BRUSH_PEN_STYLE, LINE_STYLE, TRIANGLE_STYLE,
             CIRCLE_STYLE, RECT_STYLE, ERASE_PARTIALLY, ERASE_TOTALLY, BG_EMPTY, BG_GRID, BG_LINE, BG_MATS, BG_ENGLISH, BG_MUSIC,
             PEN_COLOR_BLACK, PEN_COLOR_RED, PEN_COLOR_YELLOW, PEN_COLOR_BLUE, PEN_COLOR_GREEN, PEN_COLOR_MAGENTA})
     // Create an interface for validating int types

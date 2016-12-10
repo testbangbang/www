@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.ui.actions.DecreaseFontSizeAction;
 import com.onyx.kreader.ui.actions.IncreaseFontSizeAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
@@ -22,6 +23,7 @@ import com.onyx.kreader.utils.DeviceConfig;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,8 +45,8 @@ public class HandlerManager {
     private String activeProviderName;
     private Map<String, BaseHandler> providerMap = new HashMap<String, BaseHandler>();
     private PointF touchStartPosition;
-    private boolean enable;
-    private boolean enableTouch;
+    private AtomicBoolean enable = new AtomicBoolean();
+    private AtomicBoolean enableTouch = new AtomicBoolean();
     static private boolean enableScrollAfterLongPress = false;
     private DeviceConfig deviceConfig;
     private ReaderDataHolder readerDataHolder;
@@ -63,8 +65,8 @@ public class HandlerManager {
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
         providerMap.put(SLIDESHOW_PROVIDER, new SlideshowHandler(this));
         activeProviderName = READING_PROVIDER;
-        enable = true;
-        enableTouch = true;
+        enable.set(true);
+        enableTouch.set(true);
         deviceConfig = DeviceConfig.sharedInstance(context);
     }
 
@@ -126,19 +128,19 @@ public class HandlerManager {
     }
 
     public void setEnable(boolean e) {
-        enable = e;
+        enable.set(e);
     }
 
     public boolean isEnable() {
-        return enable;
+        return enable.get();
     }
 
     public void setEnableTouch(boolean e) {
-        enableTouch = e;
+        enableTouch.set(e);
     }
 
     public boolean isEnableTouch() {
-        return enableTouch;
+        return enableTouch.get();
     }
 
     public PointF getTouchStartPosition() {
@@ -438,15 +440,12 @@ public class HandlerManager {
     }
 
     private void removeBookmark(ReaderDataHolder readerDataHolder) {
-        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.Off).execute(readerDataHolder, null);
+        new ToggleBookmarkAction(readerDataHolder.getFirstVisiblePageWithBookmark(),
+                ToggleBookmarkAction.ToggleSwitch.Off).execute(readerDataHolder, null);
     }
 
     private void addBookmark(ReaderDataHolder readerDataHolder) {
-        new ToggleBookmarkAction(getFirstPageInfo(readerDataHolder), ToggleBookmarkAction.ToggleSwitch.On).execute(readerDataHolder, null);
-    }
-
-    private PageInfo getFirstPageInfo(ReaderDataHolder readerDataHolder) {
-        return readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
+        new ToggleBookmarkAction(readerDataHolder.getFirstPageInfo(), ToggleBookmarkAction.ToggleSwitch.On).execute(readerDataHolder, null);
     }
 
     private void close(final ReaderDataHolder readerDataHolder) {

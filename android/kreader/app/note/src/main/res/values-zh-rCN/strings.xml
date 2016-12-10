@@ -26,6 +26,8 @@
     <string name="noti">通知</string>
     <string name="note_name_already_exist">此文件已重名\n请更换文件名后重新保存</string>
     <string name="export">导出</string>
+    <string name="export_current_page">导出当前页</string>
+    <string name="export_all_pages">导出全部页</string>
     <string name="import_scribble">导入</string>
     <string name="sort">排序</string>
     <string name="updated_at">最后更新时间</string>
@@ -44,8 +46,8 @@
     <string name="action_settings">设置</string>
     <string name="clear">清除</string>
     <string name="clear_confirm">确定要清空本页内容?</string>
-    <string name="importing">正在导入旧手写板数据...</string>
-    <string name="import_success">导入成功！</string>
-    <string name="import_fail">导入失败</string>
-    <string name="import_success_info" formatted="false">总共导入%d条数据</string>
+    <string name="exporting_info">正在导出手写数据....</string>
+    <string name="export_location" formatted="false">(导出位置: %s)</string>
+    <string name="export_success">导出成功!</string>
+    <string name="export_fail">导出失败</string>
 </resources>

@@ -5146,6 +5146,29 @@ public class AlBookEng{
 		return -1;
 	}
 
+	public int getPositionOfPage(int pageNum) {
+		if (preferences.isASRoll)
+			return -1;
+
+		if (openState.getState() != AlBookState.OPEN)
+			return -1;
+
+		switch (preferences.calcPagesModeUsed) {
+			case SCREEN:
+				if (pageNum - 1 >= 0 && pageNum - 1 < pagePositionPointer.size()) {
+					return pagePositionPointer.get(pageNum - 1).start;
+				}
+				break;
+			case AUTO:
+			case SIZE:
+				if ((pageNum - 1) * preferences.pageSize >= 0 && (pageNum - 1) * preferences.pageSize < format.getSize()) {
+					return getCorrectSizePosition((pageNum - 1) * preferences.pageSize);
+				}
+				break;
+		}
+		return -1;
+	}
+
     /**
      * получение номера текущей страницы, общего количества страниц и актуальной позиции чтения.
      * @param position - обьект, содержащий минимально необходимую информацию о положении чтения
@@ -5974,6 +5997,7 @@ public class AlBookEng{
 		AlRect word_rect = new AlRect();
 		ArrayList<Integer> word_pos = new ArrayList<>();
 
+		boolean isLink = false;
 		for (int j = 0; j < page.countItems; j++) {
 			AlOneItem oi = page.items.get(j);
 
@@ -5983,7 +6007,26 @@ public class AlBookEng{
 			y = oi.yDrawPosition;
 			x = margLeft + oi.isLeft + oi.isRed;
 
+			if (isLink) {
+				textOnScreen.markLinkEnd();
+			}
+			isLink = false;
 			for (int i = 0; i < oi.count; i++) {
+				if (!isLink && (oi.style[i] & AlStyles.STYLE_LINK) != 0) {
+					String link = format.getLinkNameByPos(oi.pos[i], InternalConst.TAL_LINK_TYPE.LINK);
+					if (link != null) {
+						AlOneLink al = format.getLinkByName(link, true);
+						if (al != null) {
+							isLink = true;
+							textOnScreen.markLinkStart(al.positionS);
+						}
+					}
+				}
+				if (isLink && (oi.style[i] & AlStyles.STYLE_LINK) == 0) {
+					isLink = false;
+					textOnScreen.markLinkEnd();
+				}
+
 				if (oi.text[i] <= 0x20 || oi.pos[i] < 0) {
 					textOnScreen.add(word_text, word_rect, word_pos);
 
@@ -5992,8 +6035,8 @@ public class AlBookEng{
 						continue;
 					}
 				} else {
-					
-					if (oi.text[i] > 0x3000 || (word_text.length() == 1 && word_text.charAt(0) > 0x3000))
+
+					if ( AlUnicode.isChineze(oi.text[i]) || (word_text.length() == 1 && AlUnicode.isChineze(word_text.charAt(0))))
 						textOnScreen.add(word_text, word_rect, word_pos);
 					
 					if (word_text.length() == 0) {
