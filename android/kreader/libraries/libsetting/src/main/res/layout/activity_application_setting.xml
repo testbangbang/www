@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
-        android:id="@+id/activity_language_input_setting"
+        android:id="@+id/activity_application_setting"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="con.onyx.android.libsetting.view.activity.LanguageInputDateSettingActivity">
+        tools:context="con.onyx.android.libsetting.view.activity.ApplicationSettingActivity">
 
         <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
 
@@ -41,45 +41,17 @@
                         android:maxEms="10"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:text="@string/setting_lang_input" />
+                        android:text="@string/setting_application" />
                 </RelativeLayout>
 
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
 
-        <LinearLayout
-            android:id="@+id/change_language_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/image_button_bg"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:focusable="false"
-                android:text="@string/language"
-                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Small" />
-
-            <TextView
-                android:id="@+id/current_language"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:focusable="false"
-                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large" />
-
-        </LinearLayout>
-
         <FrameLayout
-            android:id="@+id/input_preference"
+            android:id="@+id/application_setting_preference"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp" />
-    </LinearLayout>
+            android:layout_height="match_parent" />
 
+    </LinearLayout>
 </layout>
+

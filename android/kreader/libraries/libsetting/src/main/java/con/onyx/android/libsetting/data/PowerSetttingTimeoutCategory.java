@@ -1,4 +1,4 @@
-package con.onyx.android.libsetting.data.wifi;
+package con.onyx.android.libsetting.data;
 
 import android.support.annotation.IntDef;
 
@@ -9,23 +9,22 @@ import java.lang.annotation.RetentionPolicy;
  * Created by solskjaer49 on 2016/12/2 15:44.
  */
 
-public class PskType {
-    public static final int UNKNOWN = 0;
-    public static final int WPA = 1;
-    public static final int WPA2 = 2;
-    public static final int WPA_WPA2 = 3;
+public class PowerSetttingTimeoutCategory {
+    public static final int POWER_OFF_TIMEOUT = 0;
+    public static final int SCREEN_TIMEOUT = 1;
+    public static final int WIFI_INACTIVITY_TIMEOUT = 2;
 
     // ... type definitions
     // Describes when the annotation will be discarded
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
-    @IntDef({UNKNOWN, WPA, WPA2, WPA_WPA2})
+    @IntDef({POWER_OFF_TIMEOUT, SCREEN_TIMEOUT, WIFI_INACTIVITY_TIMEOUT})
     // Create an interface for validating int types
-    public @interface PskTypeDef {
+    public @interface PowerSetttingTimeoutCategoryDef {
     }
 
     public
-    @PskTypeDef
+    @PowerSetttingTimeoutCategoryDef
     static int translate(int val) {
         return val;
     }

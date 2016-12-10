@@ -4,68 +4,118 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.preference.PreferenceActivity;
-import android.util.Log;
+import android.provider.Settings;
+import android.text.TextUtils;
 
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import con.onyx.android.libsetting.data.DeviceType;
+import con.onyx.android.libsetting.data.PowerSetttingTimeoutCategory;
 import con.onyx.android.libsetting.util.CommonUtil;
+import con.onyx.android.libsetting.util.Constant;
 
 /**
  * Created by solskjaer49 on 2016/12/6 12:09.
  */
 
 public class SettingConfig {
+    static private String TAG = SettingConfig.class.getSimpleName();
+
     static private final String CUSTOM_SETTING_TTS_PACKAGE_NAME_TAG = "setting_tts_package_name";
     static private final String DEFAULT_ANDROID_SETTING_PACKAGE_NAME = "com.android.settings";
     static private final String CUSTOM_SETTING_TTS_CLASS_NAME_TAG = "setting_tts_class_name";
     static private final String DEFAULT_SETTING_TTS_CLASS_NAME = "com.android.settings.TextToSpeechSettings";
+    static private final String SYSTEM_SCREEN_OFF_VALUES_TAG = "screen_screen_off_values";
+    static private final String SYSTEM_AUTO_POWER_OFF_VALUES_TAG = "power_off_timeout_values";
+    static private final String SYSTEM_WIFI_INACTIVITY_VALUES_TAG = "network_inactivity_timeout_values";
 
+    static private final String SYSTEM_WAKE_UP_FRONT_LIGHT_KEY_TAG = "system_wake_up_front_light_key";
+    static private final String SYSTEM_SCREEN_OFF_KEY_TAG = "system_screen_off_key";
+    static private final String SYSTEM_AUTO_POWER_OFF_KEY_TAG = "system_power_off_key";
+    static private final String SYSTEM_WIFI_INACTIVITY_KEY_TAG = "system_wifi_inactivity_key";
 
-    static private String TAG = SettingConfig.class.getSimpleName();
     private static SettingConfig globalInstance;
     static private final boolean useDebugConfig = false;
-    private GObject backend;
+    private ArrayList<GObject> backendList = new ArrayList<>();
+    static private
+    @DeviceType.DeviceTypeDef
+    int currentDeviceType;
 
 
+    /**
+     * New backend logic,to avoid duplicate property copy in json.
+     * First,put model json in list(if have).
+     * Second,put manufacture-based default json in list.
+     * Third,put non-manufacture-based default json in list.
+     * If debug property has,put it in before model.
+     * <p>
+     * model json:contain all custom properties which only effect on this model.(Do not copy the common properties to the json file!).
+     * manufacture based json:contain all default properties which will be different by manufacture.
+     * non manufacture based json:contain all default properties which are not depend on manufacture.
+     *
+     * @param context
+     */
     private SettingConfig(Context context) {
-        backend = objectFromDebugModel(context);
-        if (backend != null) {
-            Log.i(TAG, "Using debug model.");
-            return;
-        }
-
-        backend = objectFromManufactureAndModel(context);
-        if (backend != null) {
-            Log.i(TAG, "Using manufacture model.");
-            return;
-        }
-
-        backend = objectFromModel(context);
-        if (backend != null) {
-            Log.i(TAG, "Using device model.");
-            return;
-        }
-
-        Log.i(TAG, "Using default model.");
-        backend = objectFromDefaultOnyxConfig(context);
+        backendList.add(objectFromDebugModel(context));
+        backendList.add(objectFromModel(context));
+        backendList.add(objectFromManufactureBasedDefaultConfig(context));
+        backendList.add(objectFromNonManufactureBasedDefaultConfig(context));
+        backendList.removeAll(Collections.singleton(null));
     }
 
     static public SettingConfig sharedInstance(Context context) {
         if (globalInstance == null) {
+            getCurrentDeviceType();
             globalInstance = new SettingConfig(context);
         }
         return globalInstance;
     }
 
-    private GObject objectFromManufactureAndModel(Context context) {
-        final String name = Build.MANUFACTURER + "_" + Build.MODEL;
+    static private void getCurrentDeviceType() {
+        String hardware = Build.HARDWARE;
+        if (hardware.startsWith(Constant.RK_PREFIX)) {
+            currentDeviceType = DeviceType.RK;
+            return;
+        }
+        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.M)) {
+            currentDeviceType = DeviceType.IMX7;
+        } else {
+            currentDeviceType = DeviceType.IMX6;
+        }
+    }
+
+    private <T> T getData(String dataKey, Class<T> clazz) {
+        GObject backend = new GObject();
+        for (GObject object : backendList) {
+            if (object.hasKey(dataKey)) {
+                backend = object;
+                break;
+            }
+        }
+        return backend.getBackend().getObject(dataKey, clazz);
+    }
+
+    private GObject objectFromManufactureBasedDefaultConfig(Context context) {
+        String name = "";
+        switch (currentDeviceType) {
+            case DeviceType.IMX6:
+                name = Constant.IMX6_BASED_CONFIG_NAME;
+                break;
+            case DeviceType.RK:
+                name = Constant.RK3026_BASED_CONFIG_NAME;
+                break;
+        }
         return objectFromRawResource(context, name);
     }
 
     private GObject objectFromDebugModel(Context context) {
         if (BuildConfig.DEBUG && useDebugConfig) {
-            return objectFromRawResource(context, "debug");
+            return objectFromRawResource(context, Constant.DEBUG_CONFIG_NAME);
         }
         return null;
     }
@@ -75,8 +125,8 @@ public class SettingConfig {
         return objectFromRawResource(context, name);
     }
 
-    private GObject objectFromDefaultOnyxConfig(Context context) {
-        return objectFromRawResource(context, "onyx");
+    private GObject objectFromNonManufactureBasedDefaultConfig(Context context) {
+        return objectFromRawResource(context, Constant.NON_MANUFACTURE_BASED_CONFIG_NAME);
     }
 
     private GObject objectFromRawResource(Context context, final String name) {
@@ -93,15 +143,13 @@ public class SettingConfig {
 
     public Intent getTTSSettingIntent() {
         Intent intent = new Intent();
-        String pkgName = DEFAULT_ANDROID_SETTING_PACKAGE_NAME;
-        String className = DEFAULT_SETTING_TTS_CLASS_NAME;
-        if (backend != null) {
-            if (backend.hasKey(CUSTOM_SETTING_TTS_PACKAGE_NAME_TAG)) {
-                pkgName = backend.getString(CUSTOM_SETTING_TTS_PACKAGE_NAME_TAG);
-            }
-            if (backend.hasKey(CUSTOM_SETTING_TTS_CLASS_NAME_TAG)) {
-                className = backend.getString(CUSTOM_SETTING_TTS_CLASS_NAME_TAG);
-            }
+        String pkgName = getData(CUSTOM_SETTING_TTS_PACKAGE_NAME_TAG, String.class);
+        if (TextUtils.isEmpty(pkgName)) {
+            pkgName = DEFAULT_ANDROID_SETTING_PACKAGE_NAME;
+        }
+        String className = getData(CUSTOM_SETTING_TTS_CLASS_NAME_TAG, String.class);
+        if (TextUtils.isEmpty(className)) {
+            className = DEFAULT_SETTING_TTS_CLASS_NAME;
         }
         intent.setClassName(pkgName, className);
         if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
@@ -124,4 +172,59 @@ public class SettingConfig {
         return intent;
     }
 
+    public Intent getBatteryStatusIntent() {
+        Intent intent = new Intent();
+        intent.setClassName("com.android.settings", "com.android.settings.Settings");
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.fuelgauge.PowerUsageSummary");
+        return intent;
+    }
+
+    public List<Integer> getTimeoutValues(@PowerSetttingTimeoutCategory.PowerSetttingTimeoutCategoryDef
+                                                  int item) {
+        switch (item) {
+            case PowerSetttingTimeoutCategory.SCREEN_TIMEOUT:
+                return getSystemScreenOffValues();
+            case PowerSetttingTimeoutCategory.POWER_OFF_TIMEOUT:
+                return getSystemAutoPowerOffValues();
+            case PowerSetttingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT:
+                return getSystemWifiInactivityTimeoutValues();
+            default:
+                return new ArrayList<>();
+        }
+    }
+
+    private List<Integer> getSystemScreenOffValues() {
+        return getData(SYSTEM_SCREEN_OFF_VALUES_TAG, List.class);
+    }
+
+    private List<Integer> getSystemAutoPowerOffValues() {
+        return getData(SYSTEM_AUTO_POWER_OFF_VALUES_TAG, List.class);
+    }
+
+    private List<Integer> getSystemWifiInactivityTimeoutValues() {
+        return getData(SYSTEM_WIFI_INACTIVITY_VALUES_TAG, List.class);
+    }
+
+    public String getSystemScreenOffKey() {
+        String key = getData(SYSTEM_SCREEN_OFF_KEY_TAG, String.class);
+        if (TextUtils.isEmpty(key)) {
+            key = Settings.System.SCREEN_OFF_TIMEOUT;
+        }
+        return key;
+    }
+
+    public String getSystemAutoPowerOffKey() {
+        return getData(SYSTEM_AUTO_POWER_OFF_KEY_TAG, String.class);
+    }
+
+    public String getSystemWifiInactivityKey() {
+        return getData(SYSTEM_WIFI_INACTIVITY_KEY_TAG, String.class);
+    }
+
+    public String getSystemWakeUpFrontLightKey() {
+        return getData(SYSTEM_WAKE_UP_FRONT_LIGHT_KEY_TAG, String.class);
+    }
 }

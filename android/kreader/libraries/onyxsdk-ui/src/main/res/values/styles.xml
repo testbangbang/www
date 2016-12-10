@@ -34,9 +34,14 @@
         <item name="buttonStyle">@style/OnyxAppCompat.ButtonStyle</item>
     </style>
 
+    <style name="OnyxAppCompat.PreferenceFragment.Material" parent="PreferenceFragment.Material">
+        <item name="android:divider">@drawable/onyx_preference_list_divider_material</item>
+    </style>
+
     <style name="OnyxAppCompat.PreferenceTheme" parent="PreferenceThemeOverlay.v14.Material">
         <item name="android:overScrollMode">never</item>
         <item name="android:listDivider">@android:color/black</item>
+        <item name="preferenceFragmentCompatStyle">@style/OnyxAppCompat.PreferenceFragment.Material</item>
     </style>
 
     <style name="OnyxAppCompat.AlertDialog" parent="Theme.AppCompat.Light.Dialog">

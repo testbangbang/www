@@ -30,4 +30,12 @@ public class CommonUtil {
         // We create a ContextWrapper which holds a reference to out Preference Theme
         return new ContextThemeWrapper(context, themeTypedValue.resourceId);
     }
+
+    public static String msToMinuteStringWithUnit(Context context, int ms) {
+        if (ms > 0) {
+            return context.getResources().getString(R.string.minute, ms / 60000);
+        } else {
+            return context.getResources().getString(R.string.never);
+        }
+    }
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="@string/settings_lang_input_preferences_key"
+    android:title="@string/setting_lang_input">
+
+    <android.support.v7.preference.PreferenceCategory
+        android:key="@string/ime_category_key"
+        android:title="@string/keyboard_and_input" />
+
+    <android.support.v7.preference.PreferenceCategory android:title="@string/voice">
+        <android.support.v7.preference.Preference
+            android:key="@string/tts_settings_key"
+            android:title="@string/tts_settings_title">
+        </android.support.v7.preference.Preference>
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory
+        android:key="@string/time_setting_key"
+        android:title="@string/date_time_set_date">
+
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:disableDependentsState="true"
+            android:key="@string/auto_time_setting_key"
+            android:title="@string/date_time_auto" />
+
+        <android.support.v7.preference.Preference
+            android:dependency="@string/auto_time_setting_key"
+            android:key="@string/date_config_key"
+            android:summary="03/10/2008"
+            android:title="@string/date_time_set_date" />
+
+        <android.support.v7.preference.Preference
+            android:dependency="@string/auto_time_setting_key"
+            android:key="@string/time_config_key"
+            android:summary="12:00am"
+            android:title="@string/date_time_set_time" />
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory android:title="@string/date_time_set_format">
+
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/set_time_twenty_four_key"
+            android:title="@string/date_time_24hour" />
+
+        <android.support.v7.preference.Preference
+            android:key="@string/set_time_zone_key"
+            android:summary="GMT-8:00"
+            android:title="@string/date_time_set_timezone" />
+
+    </android.support.v7.preference.PreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>

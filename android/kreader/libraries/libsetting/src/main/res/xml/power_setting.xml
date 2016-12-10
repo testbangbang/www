@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/setting_power">
+
+    <android.support.v7.preference.CheckBoxPreference
+        android:key="@string/wakeup_front_light_key"
+        android:summary="@string/wake_up_summary"
+        android:title="@string/wake_up_title" />
+
+    <android.support.v7.preference.ListPreference
+        android:key="@string/auto_sleep_timeout_key"
+        android:title="@string/auto_sleep" />
+
+    <android.support.v7.preference.ListPreference
+        android:key="@string/auto_power_off_timeout_key"
+        android:summary="@string/power_off_timeout_summary"
+        android:title="@string/power_off_timeout" />
+
+    <android.support.v7.preference.ListPreference
+        android:key="@string/auto_wifi_sleep_timeout_key"
+        android:summary="@string/wifi_timeout_summary"
+        android:title="@string/wifi_sleep_timeout" />
+
+    <android.support.v7.preference.Preference
+        android:key="@string/power_usage_key"
+        android:title="@string/power_usage" />
+
+</android.support.v7.preference.PreferenceScreen>

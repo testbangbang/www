@@ -32,17 +32,18 @@
             android:name=".view.activity.BluetoothSettingActivity"
             android:theme="@style/OnyxAppCompat" />
         <activity
-            android:name=".view.activity.LanguageInputSettingActivity"
+            android:name=".view.activity.LanguageInputDateSettingActivity"
             android:theme="@style/OnyxAppCompat" />
         <activity
             android:name=".view.activity.DateTimeSettingActivity"
             android:theme="@style/OnyxAppCompat" />
         <activity
-            android:name=".view.activity.LightPowerSettingActivity"
+            android:name=".view.activity.PowerSettingActivity"
             android:theme="@style/OnyxAppCompat" />
         <activity
             android:name=".view.activity.LocaleSelectActivity"
             android:theme="@style/OnyxAppCompat" />
+        <activity android:name=".view.activity.ApplicationSettingActivity"></activity>
     </application>
 
 </manifest>

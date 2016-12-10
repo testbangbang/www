@@ -6,13 +6,12 @@
     <string name="setting_lang_input"><![CDATA[Language & input]]></string>
     <string name="setting_date">Date</string>
     <string name="setting_application">Application</string>
-    <string name="setting_other">Other</string>
     <string name="settings_sound_preferences_key" translatable="false">settings_sound_preferences_key</string>
     <string name="touch_sound_key" translatable="false">touch_sound_key</string>
     <string name="touch_sound">Touch Sound</string>
     <string name="notification_sound">Notification Sound</string>
 
-    <!-- Wifi setting -->
+    <!-- NETWORK setting -->
     <string name="wifi_network">Wi-fi network</string>
     <string name="wifi_security_short_eap" translatable="false">802.1x</string>
     <string name="wifi_security_eap" translatable="false">802.1x EAP</string>
@@ -85,5 +84,23 @@
     <string name="date_time_set_time">Set Time</string>
     <string name="date_time_set_format">Set format</string>
 
+    <!--Power Config-->
+    <string name="setting_power">Power</string>
+    <string name="wakeup_front_light_key" translatable="false">wakeup_front_light_key</string>
+    <string name="wake_up_summary">Activate front light when device wake up </string>
+    <string name="wake_up_title">Wake up</string>
+    <string name="auto_sleep_timeout_key" translatable="false">auto_sleep_timeout_key</string>
+    <string name="auto_sleep">Sleep</string>
+    <string name="auto_power_off_timeout_key" translatable="false">auto_power_off_timeout_key</string>
+    <string name="power_off_timeout">Power off timeout</string>
+    <string name="auto_wifi_sleep_timeout_key" translatable="false">auto_wifi_sleep_timeout_key</string>
+    <string name="wifi_sleep_timeout">Network Inactivity Timeout</string>
+    <string name="minute">%1$d Minute</string>
+    <string name="never_sleep">Never</string>
+    <string name="sleep_summary">After %1$s of inactivity</string>
+    <string name="power_off_timeout_summary">Adjust the delay before the power off automatically</string>
+    <string name="wifi_timeout_summary">Turn off WiFi automatically during reading after network inactivity</string>
+    <string name="power_usage_key" translatable="false">power_usage_key</string>
+    <string name="power_usage">Battery Status</string>
 </resources>
 

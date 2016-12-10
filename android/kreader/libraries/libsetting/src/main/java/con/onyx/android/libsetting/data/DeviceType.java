@@ -1,4 +1,4 @@
-package con.onyx.android.libsetting.data.wifi;
+package con.onyx.android.libsetting.data;
 
 import android.support.annotation.IntDef;
 
@@ -6,26 +6,25 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by solskjaer49 on 2016/12/2 15:44.
+ * Created by solskjaer49 on 2016/12/9 10:30.
  */
 
-public class PskType {
-    public static final int UNKNOWN = 0;
-    public static final int WPA = 1;
-    public static final int WPA2 = 2;
-    public static final int WPA_WPA2 = 3;
+public class DeviceType {
+    public static final int IMX6 = 0;
+    public static final int RK = 1;
+    public static final int IMX7 = 2;
 
     // ... type definitions
     // Describes when the annotation will be discarded
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
-    @IntDef({UNKNOWN, WPA, WPA2, WPA_WPA2})
+    @IntDef({IMX6, RK, IMX7})
     // Create an interface for validating int types
-    public @interface PskTypeDef {
+    public @interface DeviceTypeDef {
     }
 
     public
-    @PskTypeDef
+    @DeviceTypeDef
     static int translate(int val) {
         return val;
     }

@@ -60,7 +60,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             public void itemClick(@SettingCategory.SettingCategoryDef int itemCategory) {
                 Intent intent;
                 switch (itemCategory) {
-                    case SettingCategory.Wifi:
+                    case SettingCategory.NETWORK:
                         intent = new Intent(DeviceMainSettingActivity.this, WifiSettingActivity.class);
                         break;
                     case SettingCategory.SOUND:
@@ -69,11 +69,14 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                     case SettingCategory.STORAGE:
                         intent = new Intent(DeviceMainSettingActivity.this, StorageSettingActivity.class);
                         break;
-                    case SettingCategory.LANGUAGE_AND_INPUTMETHOD:
-                        intent = new Intent(DeviceMainSettingActivity.this, LanguageInputSettingActivity.class);
+                    case SettingCategory.LANGUAGE_AND_DATE:
+                        intent = new Intent(DeviceMainSettingActivity.this, LanguageInputDateSettingActivity.class);
                         break;
                     case SettingCategory.DATE:
                         intent = new Intent(DeviceMainSettingActivity.this, DateTimeSettingActivity.class);
+                        break;
+                    case SettingCategory.POWER:
+                        intent = new Intent(DeviceMainSettingActivity.this, PowerSettingActivity.class);
                         break;
                     default:
                         Toast.makeText(DeviceMainSettingActivity.this, "Under Construction", Toast.LENGTH_SHORT).show();
@@ -107,13 +110,13 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     // TODO: 2016/11/30 sample item list,will load these from config.
     private List<SettingItem> buildSettingItem() {
         ArrayList<SettingItem> itemArrayList = new ArrayList<>();
-        itemArrayList.add(new SettingItem(SettingCategory.Wifi, R.drawable.ic_setting_wlan_gray, getString(R.string.setting_wifi), ""));
+        itemArrayList.add(new SettingItem(SettingCategory.NETWORK, R.drawable.ic_setting_wlan_gray, getString(R.string.setting_wifi), ""));
         itemArrayList.add(new SettingItem(SettingCategory.SOUND, R.drawable.ic_setting_sound_gray, getString(R.string.setting_sound), ""));
         itemArrayList.add(new SettingItem(SettingCategory.STORAGE, R.drawable.ic_setting_storage_gray, getString(R.string.setting_storage), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.LANGUAGE_AND_INPUTMETHOD, R.drawable.ic_setting_language_gray, getString(R.string.setting_lang_input), ""));
+        itemArrayList.add(new SettingItem(SettingCategory.LANGUAGE_AND_DATE, R.drawable.ic_setting_language_gray, getString(R.string.setting_lang_input), ""));
         itemArrayList.add(new SettingItem(SettingCategory.DATE, R.drawable.ic_setting_date_gray, getString(R.string.setting_date), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.APPLICATION, R.drawable.ic_setting_application_gray, getString(R.string.setting_application), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.OTHER, R.drawable.ic_setting_other_gray, getString(R.string.setting_other), ""));
+        itemArrayList.add(new SettingItem(SettingCategory.APPLICATION_MANAGEMENT, R.drawable.ic_setting_application_gray, getString(R.string.setting_application), ""));
+        itemArrayList.add(new SettingItem(SettingCategory.POWER, R.drawable.ic_setting_other_gray, getString(R.string.setting_power), ""));
         return itemArrayList;
     }
 

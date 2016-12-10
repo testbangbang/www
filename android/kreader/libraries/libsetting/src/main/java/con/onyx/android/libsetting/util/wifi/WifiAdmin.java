@@ -280,7 +280,8 @@ public class WifiAdmin {
         }
     }
 
-    private @PskType.PskTypeyDef int getPskType(ScanResult result) {
+    private @PskType.PskTypeDef
+    int getPskType(ScanResult result) {
         boolean wpa = result.capabilities.contains("WPA-PSK");
         boolean wpa2 = result.capabilities.contains("WPA2-PSK");
         if (wpa2 && wpa) {
