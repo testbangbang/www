@@ -218,6 +218,10 @@ public class NoteManager {
                 return enableRawEventProcessor;
             }
 
+            public void enableTouchInput(boolean enable) {
+                getParent().getHandlerManager().setEnableTouch(enable);
+            }
+
         };
         return inputCallback;
     }

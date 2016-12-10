@@ -40,6 +40,7 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
+import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.actions.FlushNoteAction;
@@ -698,8 +699,8 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShortcutDrawingFinished(final ShortcutDrawingFinishedEvent event) {
-        getHandlerManager().setEnableTouch(true);
         if (getReaderDataHolder().inNoteWritingProvider()) {
+            getHandlerManager().setEnableTouch(true);
             return;
         }
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
@@ -707,6 +708,7 @@ public class ReaderActivity extends ActionBarActivity {
         flushNoteAction.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                getHandlerManager().setEnableTouch(true);
                 ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
             }
         });

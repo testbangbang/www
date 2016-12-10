@@ -414,6 +414,9 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     private void invokeDFBShapeStart() {
         final boolean shortcut = shortcutDrawing;
+        if (shortcut) {
+            getCallback().enableTouchInput(false);
+        }
         handler.post(new Runnable() {
             @Override
             public void run() {
