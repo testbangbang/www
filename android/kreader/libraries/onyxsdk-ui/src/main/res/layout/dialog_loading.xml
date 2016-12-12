@@ -65,8 +65,8 @@
         android:layout_width="1dp" />
           
 	<ImageView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+		android:layout_width="@dimen/dialog_loading_close_button_image_size"
+		android:layout_height="@dimen/dialog_loading_close_button_image_size"
 		android:layout_marginLeft="5dp"
 		android:layout_marginRight="5dp"
 		android:layout_gravity="center"
