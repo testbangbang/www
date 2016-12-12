@@ -227,7 +227,7 @@ public class AlBookEng{
 
         closeBook();
 
-		if (externalBitmap == null) {
+		if (engOptions.externalBitmap == null) {
 			EngBitmap.reCreateBookBitmap(bmp[0], 0, 0, null);
 			EngBitmap.reCreateBookBitmap(bmp[1], 0, 0, null);
 			EngBitmap.reCreateBookBitmap(bmp[2], 0, 0, null);
@@ -324,7 +324,7 @@ public class AlBookEng{
 			externalBitmap = engOptions.externalBitmap;
 		}
 
-		if (externalBitmap == null) {
+		if (engOptions.externalBitmap == null) {
 			EngBitmap.reCreateBookBitmap(bmp[0], 0, 0, shtamp);
 			EngBitmap.reCreateBookBitmap(bmp[1], 0, 0, null);
 			EngBitmap.reCreateBookBitmap(bmp[2], 0, 0, null);
@@ -875,7 +875,7 @@ public class AlBookEng{
 		calc.drawBackground(screenWidth, screenHeight, profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG],
                 profiles.background, profiles.backgroundMode);
 
-		AlBitmap abmp = externalBitmap != null ? externalBitmap : bmp[activePage];
+		AlBitmap abmp = engOptions.externalBitmap != null ? engOptions.externalBitmap : bmp[activePage];
 
 		notesCounter++;
 		if (profiles.twoColumnUsed) {
@@ -978,7 +978,7 @@ public class AlBookEng{
 
         if (openState.getState() != AlBookState.OPEN) {
             if (index == TAL_PAGE_INDEX.CURR) {
-				abmp = externalBitmap != null ? externalBitmap : bmp[1];
+				abmp = engOptions.externalBitmap != null ? engOptions.externalBitmap : bmp[1];
 
                 int waitposition = openState.getState() != AlBookState.NOLOAD ? -2 : -1;
 
@@ -1004,7 +1004,7 @@ public class AlBookEng{
         }
 
 		if (index == TAL_PAGE_INDEX.CURR) {
-			abmp = externalBitmap != null ? externalBitmap : bmp[0];
+			abmp = engOptions.externalBitmap != null ? engOptions.externalBitmap : bmp[0];
 
 			if (abmp.shtamp != shtamp.value || bookPosition != abmp.position) {
 
@@ -1033,7 +1033,7 @@ public class AlBookEng{
                 selection.shtampSelectUsed = selection.shtampSelectRequred;
             }
 
-			needCalcNextPage = externalBitmap == null && profiles.specialModeRoll && (cachePrevNextPoint.current != bookPosition ||
+			needCalcNextPage = engOptions.externalBitmap == null && profiles.specialModeRoll && (cachePrevNextPoint.current != bookPosition ||
                     cachePrevNextPoint.prev == -1 || cachePrevNextPoint.shtamp != shtamp.value);
 
 			if (!needCalcNextPage)
@@ -1048,7 +1048,7 @@ public class AlBookEng{
         int testPosition = addonPosition;
 
         if (index == TAL_PAGE_INDEX.NEXT || needCalcNextPage) {
-			if (externalBitmap != null)
+			if (engOptions.externalBitmap != null)
 				return null;
 
             if (testPosition >= format.getSize())
@@ -1091,7 +1091,7 @@ public class AlBookEng{
         }
 
         // draw prev page
-		if (externalBitmap != null)
+		if (engOptions.externalBitmap != null)
 			return null;
         if (testPosition == 0)
             return null;
@@ -2937,14 +2937,14 @@ public class AlBookEng{
             startStopAS();
         }
 
-		AlBitmap abmp = externalBitmap != null ? externalBitmap : bmp[0];
+		AlBitmap abmp = engOptions.externalBitmap != null ? engOptions.externalBitmap : bmp[0];
 
 		switch (openState.getState()) {
 		case AlBookState.NOLOAD:
 			screenWidth = width;
 			screenHeight = height;			
 			EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
-			if (externalBitmap != null) {
+			if (engOptions.externalBitmap != null) {
 				EngBitmap.reCreateBookBitmap(bmp[1], screenWidth, screenHeight, null);
 				EngBitmap.reCreateBookBitmap(bmp[2], screenWidth, screenHeight, null);
 			}
@@ -2954,7 +2954,7 @@ public class AlBookEng{
 			screenWidth = width;
 			screenHeight = height;			
 			EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
-			if (externalBitmap != null) {
+			if (engOptions.externalBitmap != null) {
 				EngBitmap.reCreateBookBitmap(bmp[1], screenWidth, screenHeight, null);
 				EngBitmap.reCreateBookBitmap(bmp[2], screenWidth, screenHeight, null);
 			}
@@ -6614,7 +6614,7 @@ public class AlBookEng{
 	}
 
 	public void getScrollShift(final boolean fromCurrentPage, int shift, AlIntHolder outShift, AlIntHolder outPos, boolean nearest) {
-		if (externalBitmap != null)
+		if (engOptions.externalBitmap != null)
 			return;
 
 		AlOnePage page = fromCurrentPage ? mpage[0][0] : mpage[2][0];
