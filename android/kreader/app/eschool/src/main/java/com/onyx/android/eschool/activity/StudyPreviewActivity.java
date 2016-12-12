@@ -75,7 +75,7 @@ public class StudyPreviewActivity extends BaseActivity {
 
     private void initCategoryViews() {
         initCategoryView(R.id.study_preview_category_item_material, R.drawable.home_teaching_auxiliary, -1);
-        initCategoryView(R.id.study_preview_category_item_auxiliary, R.drawable.home_teaching_materials, R.string.home_item_teaching_auxiliary_text);
+        initCategoryView(R.id.study_preview_category_item_auxiliary, R.drawable.home_teaching_material, R.string.home_item_teaching_auxiliary_text);
         initCategoryView(R.id.study_preview_category_item_practice, R.drawable.home_practice, R.string.home_item_practice_text);
         initCategoryView(R.id.study_preview_category_item_person, R.drawable.material_person, R.string.study_preview_person);
     }
