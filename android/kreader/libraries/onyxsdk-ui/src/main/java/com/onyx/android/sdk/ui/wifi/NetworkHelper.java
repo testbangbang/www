@@ -49,9 +49,14 @@ public class NetworkHelper {
         }
     }
 
-    public static void toggleWiFi(Context context, boolean enabled) {
-        WifiManager wm = (WifiManager) context
-                .getSystemService(Context.WIFI_SERVICE);
+    public static void toggleWiFi(Context context) {
+        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        boolean enable = wm.isWifiEnabled();
+        wm.setWifiEnabled(!enable);
+    }
+
+    public static void enableWifi(Context context, boolean enabled) {
+        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         wm.setWifiEnabled(enabled);
     }
 }
