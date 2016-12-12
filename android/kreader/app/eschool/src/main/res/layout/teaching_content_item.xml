@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/imagebtn_bg">
+
+    <ImageView
+        android:id="@+id/imageView_book_image"
+        android:layout_width="@dimen/activity_teaching_material_item_cover_layout_width"
+        android:layout_height="@dimen/activity_teaching_material_item_cover_layout_height"
+        android:layout_centerInParent="true"
+        android:background="@drawable/background_shadow"
+        android:scaleType="fitXY" />
+
+</RelativeLayout>
