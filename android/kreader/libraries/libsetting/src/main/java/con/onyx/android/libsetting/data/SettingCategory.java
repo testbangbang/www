@@ -15,18 +15,17 @@ public class SettingCategory {
     public static final int SOUND = 2;
     public static final int STORAGE = 3;
     public static final int LANGUAGE_AND_DATE = 4;
-    public static final int DATE = 5;
-    public static final int APPLICATION_MANAGEMENT = 6;
-    public static final int POWER = 7;
-    public static final int SECURITY = 8;
-    public static final int ERROR_REPORT = 9;
+    public static final int APPLICATION_MANAGEMENT = 5;
+    public static final int POWER = 6;
+    public static final int SECURITY = 7;
+    public static final int ERROR_REPORT = 8;
 
     // ... type definitions
     // Describes when the annotation will be discarded
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
     @IntDef({NETWORK, USER_SETTING, SOUND, STORAGE,
-            LANGUAGE_AND_DATE, DATE, APPLICATION_MANAGEMENT, POWER, SECURITY, ERROR_REPORT})
+            LANGUAGE_AND_DATE, APPLICATION_MANAGEMENT, POWER, SECURITY, ERROR_REPORT})
     // Create an interface for validating int types
     public @interface SettingCategoryDef {
     }

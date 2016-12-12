@@ -1,11 +1,13 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">libsetting</string>
-    <string name="setting_wifi">Wifi</string>
+    <string name="setting_network">Network</string>
     <string name="setting_sound">Sound</string>
     <string name="setting_storage">Storage</string>
-    <string name="setting_lang_input"><![CDATA[Language & input]]></string>
-    <string name="setting_date">Date</string>
+    <string name="setting_lang_date"><![CDATA[Language & Date]]></string>
+    <string name="setting_security">Security</string>
+    <string name="setting_error_report">Error Report</string>
     <string name="setting_application">Application</string>
+    <string name="setting_user_setting">User Setting</string>
     <string name="settings_sound_preferences_key" translatable="false">settings_sound_preferences_key</string>
     <string name="touch_sound_key" translatable="false">touch_sound_key</string>
     <string name="touch_sound">Touch Sound</string>
@@ -123,5 +125,6 @@
     <string name="adb_warning_title">"Allow USB debugging?"</string>
     <string name="adb_warning_msg">"USB debugging is intended for development purposes only. Use it to copy data between your computer and your device, install apps on your device without notification and read log data."</string>
     <string name="install_all_warning">"Your device and personal data are more vulnerable to attack by apps from unknown sources. You agree that you are solely responsible for any damage to your tablet or loss of data that may result from using these apps."</string>
+
 </resources>
 

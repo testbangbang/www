@@ -72,9 +72,6 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                     case SettingCategory.LANGUAGE_AND_DATE:
                         intent = new Intent(DeviceMainSettingActivity.this, LanguageInputDateSettingActivity.class);
                         break;
-                    case SettingCategory.DATE:
-                        intent = new Intent(DeviceMainSettingActivity.this, DateTimeSettingActivity.class);
-                        break;
                     case SettingCategory.POWER:
                         intent = new Intent(DeviceMainSettingActivity.this, PowerSettingActivity.class);
                         break;
@@ -113,13 +110,13 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     // TODO: 2016/11/30 sample item list,will load these from config.
     private List<SettingItem> buildSettingItem() {
         ArrayList<SettingItem> itemArrayList = new ArrayList<>();
-        itemArrayList.add(new SettingItem(SettingCategory.NETWORK, R.drawable.ic_setting_wlan_gray, getString(R.string.setting_wifi), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.SOUND, R.drawable.ic_setting_sound_gray, getString(R.string.setting_sound), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.STORAGE, R.drawable.ic_setting_storage_gray, getString(R.string.setting_storage), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.LANGUAGE_AND_DATE, R.drawable.ic_setting_language_gray, getString(R.string.setting_lang_input), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.DATE, R.drawable.ic_setting_date_gray, getString(R.string.setting_date), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.APPLICATION_MANAGEMENT, R.drawable.ic_setting_application_gray, getString(R.string.setting_application), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.POWER, R.drawable.ic_setting_other_gray, getString(R.string.setting_power), ""));
+        itemArrayList.add(new SettingItem(SettingCategory.NETWORK, R.drawable.ic_setting_wlan, getString(R.string.setting_network), ""));
+        itemArrayList.add(new SettingItem(SettingCategory.USER_SETTING, R.drawable.ic_user_setting, getString(R.string.setting_user_setting), ""));
+        itemArrayList.add(new SettingItem(SettingCategory.POWER, R.drawable.ic_setting_power, getString(R.string.setting_power), ""));
+        itemArrayList.add(new SettingItem(SettingCategory.LANGUAGE_AND_DATE, R.drawable.ic_setting_language, getString(R.string.setting_lang_date), ""));
+        itemArrayList.add(new SettingItem(SettingCategory.APPLICATION_MANAGEMENT, R.drawable.ic_setting_application, getString(R.string.setting_application), ""));
+        itemArrayList.add(new SettingItem(SettingCategory.SECURITY, R.drawable.ic_security, getString(R.string.setting_security), ""));
+        itemArrayList.add(new SettingItem(SettingCategory.ERROR_REPORT, R.drawable.ic_error_report, getString(R.string.setting_error_report), ""));
         return itemArrayList;
     }
 

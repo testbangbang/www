@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="setting_wifi">WLAN</string>
+    <string name="setting_network">网络连接</string>
     <string name="setting_sound">声音</string>
     <string name="setting_storage">存储</string>
-    <string name="setting_lang_input">语言和输入法</string>
-    <string name="setting_date">日期和时间</string>
-    <string name="setting_application">应用</string>
+    <string name="setting_lang_date">语言和时间</string>
+    <string name="setting_security">安全隐私</string>
+    <string name="setting_error_report">错误收集</string>
+    <string name="setting_user_setting">用户设置</string>
+    <string name="setting_application">应用管理</string>
     <string name="touch_sound">触摸提示音</string>
     <string name="notification_sound">提示音</string>
 

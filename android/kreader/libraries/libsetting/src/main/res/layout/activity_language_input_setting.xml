@@ -41,7 +41,7 @@
                         android:maxEms="10"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:text="@string/setting_lang_input" />
+                        android:text="@string/setting_lang_date" />
                 </RelativeLayout>
 
             </RelativeLayout>
