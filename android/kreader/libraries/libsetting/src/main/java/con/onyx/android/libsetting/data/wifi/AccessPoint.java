@@ -8,7 +8,7 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 
 import con.onyx.android.libsetting.BR;
-import con.onyx.android.libsetting.util.wifi.WifiAdmin;
+import con.onyx.android.libsetting.manager.WifiAdmin;
 
 /**
  * Created by solskjaer49 on 2016/12/1 19:27.

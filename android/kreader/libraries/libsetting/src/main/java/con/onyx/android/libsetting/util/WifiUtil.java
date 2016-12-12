@@ -1,4 +1,4 @@
-package con.onyx.android.libsetting.util.wifi;
+package con.onyx.android.libsetting.util;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

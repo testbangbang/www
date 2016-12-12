@@ -1,4 +1,4 @@
-package con.onyx.android.libsetting.util.wifi;
+package con.onyx.android.libsetting.manager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

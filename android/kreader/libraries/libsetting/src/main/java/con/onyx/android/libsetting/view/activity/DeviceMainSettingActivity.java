@@ -78,6 +78,9 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                     case SettingCategory.POWER:
                         intent = new Intent(DeviceMainSettingActivity.this, PowerSettingActivity.class);
                         break;
+                    case SettingCategory.APPLICATION_MANAGEMENT:
+                        intent = new Intent(DeviceMainSettingActivity.this, ApplicationSettingActivity.class);
+                        break;
                     default:
                         Toast.makeText(DeviceMainSettingActivity.this, "Under Construction", Toast.LENGTH_SHORT).show();
                         return;

@@ -72,4 +72,19 @@
     <string name="wifi_timeout_summary">在阅读时自动关闭Wifi</string>
     <string name="power_off_timeout_summary">调整自动关机的延迟时间</string>
     <string name="power_usage">电池使用情况</string>
+
+    <!--Application Manager-->
+    <string name="usb_debug_mode_title">USB 调试模式</string>
+    <string name="application_management_title">应用管理</string>
+    <string name="drm_setting_title">DRM 设置</string>
+    <string name="unknown_resource_title">未知来源</string>
+    <string name="calibration_title">校准</string>
+    <string name="key_binding_title">按键映射</string>
+
+    <string name="usb_debug_mode_summary">连接 USB 后启用调试模式</string>
+    <string name="unknown_resource_summary">允许安装不是从电子市场获取的应用程序</string>
+    <string name="adb_warning_title">"是否允许 USB 调试？"</string>
+    <string name="adb_warning_msg">"USB 调试仅适用于开发工作。该功能可用于在您的计算机和设备之间复制数据、在您的设备上安装应用程序而不发送通知以及读取日志数据。"</string>
+    <string name="install_all_warning">"您的设备和个人数据更容易受到从未知来源获取的应用程序的攻击。对于因使用这些应用程序而造成的设备损坏或数据丢失，您同意自行承担全部责任。"</string>
+
 </resources>

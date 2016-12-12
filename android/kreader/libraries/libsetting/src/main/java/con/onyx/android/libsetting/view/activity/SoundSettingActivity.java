@@ -13,7 +13,7 @@ import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 
 import con.onyx.android.libsetting.R;
 import con.onyx.android.libsetting.databinding.ActivitySoundSettingBinding;
-import con.onyx.android.libsetting.util.audio.AudioAdmin;
+import con.onyx.android.libsetting.manager.AudioAdmin;
 
 public class SoundSettingActivity extends OnyxAppCompatActivity {
     static final String TAG = SoundSettingActivity.class.getSimpleName();

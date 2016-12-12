@@ -102,5 +102,26 @@
     <string name="wifi_timeout_summary">Turn off WiFi automatically during reading after network inactivity</string>
     <string name="power_usage_key" translatable="false">power_usage_key</string>
     <string name="power_usage">Battery Status</string>
+
+    <!--Application Manager-->
+    <string name="usb_debug_key" translatable="false">usb_debug_key</string>
+    <string name="application_management_key" translatable="false">application_management_key</string>
+    <string name="drm_setting_key" translatable="false">drm_setting_key</string>
+    <string name="unknown_resource_key" translatable="false">unknown_resource_key</string>
+    <string name="calibration_key" translatable="false">calibration_key</string>
+    <string name="key_binding_key" translatable="false">key_binding_key</string>
+
+    <string name="usb_debug_mode_title">USB debugging</string>
+    <string name="application_management_title">Manage apps</string>
+    <string name="drm_setting_title">DRM Settings</string>
+    <string name="unknown_resource_title">Unknown sources</string>
+    <string name="calibration_title">Calibration</string>
+    <string name="key_binding_title">Key Binding</string>
+
+    <string name="usb_debug_mode_summary">Debug mode When USB is connected</string>
+    <string name="unknown_resource_summary">Allow installation of non_Market apps</string>
+    <string name="adb_warning_title">"Allow USB debugging?"</string>
+    <string name="adb_warning_msg">"USB debugging is intended for development purposes only. Use it to copy data between your computer and your device, install apps on your device without notification and read log data."</string>
+    <string name="install_all_warning">"Your device and personal data are more vulnerable to attack by apps from unknown sources. You agree that you are solely responsible for any damage to your tablet or loss of data that may result from using these apps."</string>
 </resources>
 

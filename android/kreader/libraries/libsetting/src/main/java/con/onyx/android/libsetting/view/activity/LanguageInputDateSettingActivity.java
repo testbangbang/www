@@ -31,7 +31,7 @@ import con.onyx.android.libsetting.databinding.ActivityLanguageInputSettingBindi
 import con.onyx.android.libsetting.util.CommonUtil;
 import con.onyx.android.libsetting.util.DateTimeSettingUtil;
 import con.onyx.android.libsetting.util.InputMethodLanguageSettingUtil;
-import con.onyx.android.libsetting.util.wifi.WifiUtil;
+import con.onyx.android.libsetting.util.WifiUtil;
 
 import static android.content.Intent.ACTION_TIMEZONE_CHANGED;
 import static android.content.Intent.ACTION_TIME_CHANGED;

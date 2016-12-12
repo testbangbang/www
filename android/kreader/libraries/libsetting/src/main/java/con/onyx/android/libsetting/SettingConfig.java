@@ -141,47 +141,6 @@ public class SettingConfig {
         }
     }
 
-    public Intent getTTSSettingIntent() {
-        Intent intent = new Intent();
-        String pkgName = getData(CUSTOM_SETTING_TTS_PACKAGE_NAME_TAG, String.class);
-        if (TextUtils.isEmpty(pkgName)) {
-            pkgName = DEFAULT_ANDROID_SETTING_PACKAGE_NAME;
-        }
-        String className = getData(CUSTOM_SETTING_TTS_CLASS_NAME_TAG, String.class);
-        if (TextUtils.isEmpty(className)) {
-            className = DEFAULT_SETTING_TTS_CLASS_NAME;
-        }
-        intent.setClassName(pkgName, className);
-        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
-            intent.setClassName(DEFAULT_ANDROID_SETTING_PACKAGE_NAME, "com.android.settings.Settings");
-            intent.setAction(Intent.ACTION_MAIN);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.tts.TextToSpeechSettings");
-        }
-        return intent;
-    }
-
-    public Intent getTimeZoneSettingIntent() {
-        Intent intent = new Intent();
-        intent.setClassName("com.android.settings", "com.android.settings.Settings");
-        intent.setAction(Intent.ACTION_MAIN);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.ZonePicker");
-        return intent;
-    }
-
-    public Intent getBatteryStatusIntent() {
-        Intent intent = new Intent();
-        intent.setClassName("com.android.settings", "com.android.settings.Settings");
-        intent.setAction(Intent.ACTION_MAIN);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.fuelgauge.PowerUsageSummary");
-        return intent;
-    }
-
     public List<Integer> getTimeoutValues(@PowerSetttingTimeoutCategory.PowerSetttingTimeoutCategoryDef
                                                   int item) {
         switch (item) {
@@ -226,5 +185,68 @@ public class SettingConfig {
 
     public String getSystemWakeUpFrontLightKey() {
         return getData(SYSTEM_WAKE_UP_FRONT_LIGHT_KEY_TAG, String.class);
+    }
+
+    public Intent getTTSSettingIntent() {
+        Intent intent = new Intent();
+        String pkgName = getData(CUSTOM_SETTING_TTS_PACKAGE_NAME_TAG, String.class);
+        if (TextUtils.isEmpty(pkgName)) {
+            pkgName = DEFAULT_ANDROID_SETTING_PACKAGE_NAME;
+        }
+        String className = getData(CUSTOM_SETTING_TTS_CLASS_NAME_TAG, String.class);
+        if (TextUtils.isEmpty(className)) {
+            className = DEFAULT_SETTING_TTS_CLASS_NAME;
+        }
+        intent.setClassName(pkgName, className);
+        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
+            intent.setClassName(DEFAULT_ANDROID_SETTING_PACKAGE_NAME, "com.android.settings.Settings");
+            intent.setAction(Intent.ACTION_MAIN);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.tts.TextToSpeechSettings");
+        }
+        return intent;
+    }
+
+    public Intent getTimeZoneSettingIntent() {
+        Intent intent = new Intent();
+        intent.setClassName("com.android.settings", "com.android.settings.Settings");
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.ZonePicker");
+        return intent;
+    }
+
+    public Intent getBatteryStatusIntent() {
+        Intent intent = new Intent();
+        intent.setClassName("com.android.settings", "com.android.settings.Settings");
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.fuelgauge.PowerUsageSummary");
+        return intent;
+    }
+
+    public Intent getApplicationManagementIntent() {
+        Intent intent = new Intent();
+        intent.setClassName("com.android.settings", "com.android.settings.Settings");
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.applications.ManageApplications");
+        return intent;
+    }
+
+    public Intent getDRMSettingIntent() {
+        return null;
+    }
+
+    public Intent getCalibrationIntent() {
+        return null;
+    }
+
+    public Intent getKeyBindingIntent() {
+        return null;
     }
 }
