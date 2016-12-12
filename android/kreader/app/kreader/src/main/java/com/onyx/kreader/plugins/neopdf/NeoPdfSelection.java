@@ -133,7 +133,6 @@ public class NeoPdfSelection implements ReaderSelection, Cloneable {
 
     @SuppressWarnings("unused")
     public void addRectangle(float left, float top, float right, float bottom) {
-        Debug.d("addRectangle left %f, top %f, right %f, bottom %f", left, top, right, bottom);
         rectangles.add(new RectF(left, top, right, bottom));
     }
 
