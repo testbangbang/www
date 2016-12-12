@@ -28,7 +28,7 @@
             android:layout_height="@dimen/home_teaching_category_image_size"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/home_teaching_category_image_margin_top"
-            app:srcCompat="@drawable/home_teaching_auxiliary" />
+            app:srcCompat="@drawable/home_teaching_material" />
 
         <LinearLayout
             android:layout_width="wrap_content"
