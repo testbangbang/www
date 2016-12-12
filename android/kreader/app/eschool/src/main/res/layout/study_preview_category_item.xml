@@ -18,7 +18,7 @@
             android:id="@+id/imageView_category_image"
             android:layout_width="@dimen/study_preview_category_item_image_size"
             android:layout_height="@dimen/study_preview_category_item_image_size"
-            android:src="@drawable/home_teaching_materials" />
+            android:src="@drawable/home_teaching_material" />
 
         <TextView
             android:id="@+id/textView_category_text"
