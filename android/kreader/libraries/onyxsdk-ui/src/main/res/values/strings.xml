@@ -67,8 +67,12 @@
     <string name="custom_value">The custom value</string>
     <string name="reader_layer_menu_slideshow">Slideshow</string>
 
+    <string name="wifi_dialog_title">Wifi connection</string>
+    <string name="wifi_dialog_content">WiFi connection is needed. Turn on WiFi?</string>
+
     <string name="importing">Importing old scribble data...</string>
     <string name="import_success">Import success！</string>
     <string name="import_fail">Import failure</string>
     <string name="import_success_info" formatted="false">Import total of %d data</string>
+
 </resources>
