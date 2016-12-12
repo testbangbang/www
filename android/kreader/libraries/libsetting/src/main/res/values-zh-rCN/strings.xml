@@ -89,4 +89,7 @@
     <string name="adb_warning_msg">"USB 调试仅适用于开发工作。该功能可用于在您的计算机和设备之间复制数据、在您的设备上安装应用程序而不发送通知以及读取日志数据。"</string>
     <string name="install_all_warning">"您的设备和个人数据更容易受到从未知来源获取的应用程序的攻击。对于因使用这些应用程序而造成的设备损坏或数据丢失，您同意自行承担全部责任。"</string>
 
+    <!--Security Setting-->
+    <string name="data_backup_title">数据备份</string>
+    <string name="factory_reset_title">恢复出厂</string>
 </resources>

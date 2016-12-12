@@ -126,5 +126,11 @@
     <string name="adb_warning_msg">"USB debugging is intended for development purposes only. Use it to copy data between your computer and your device, install apps on your device without notification and read log data."</string>
     <string name="install_all_warning">"Your device and personal data are more vulnerable to attack by apps from unknown sources. You agree that you are solely responsible for any damage to your tablet or loss of data that may result from using these apps."</string>
 
+    <!--Security Setting-->
+    <string name="data_backup_key" translatable="false">data_backup_key</string>
+    <string name="data_backup_title">Data Backup</string>
+    <string name="factory_reset_key" translatable="false">factory_reset_key</string>
+    <string name="factory_reset_title">Factory Reset</string>
+
 </resources>
 

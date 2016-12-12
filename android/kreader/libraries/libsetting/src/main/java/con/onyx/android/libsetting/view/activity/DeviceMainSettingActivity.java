@@ -63,8 +63,8 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                     case SettingCategory.NETWORK:
                         intent = new Intent(DeviceMainSettingActivity.this, WifiSettingActivity.class);
                         break;
-                    case SettingCategory.SOUND:
-                        intent = new Intent(DeviceMainSettingActivity.this, SoundSettingActivity.class);
+                    case SettingCategory.SECURITY:
+                        intent = new Intent(DeviceMainSettingActivity.this, SecuritySettingActivity.class);
                         break;
                     case SettingCategory.STORAGE:
                         intent = new Intent(DeviceMainSettingActivity.this, StorageSettingActivity.class);

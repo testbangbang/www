@@ -47,6 +47,9 @@
         <activity
             android:name=".view.activity.ApplicationSettingActivity"
             android:theme="@style/OnyxAppCompat" />
+        <activity
+            android:name=".view.activity.SecuritySettingActivity"
+            android:theme="@style/OnyxAppCompat" />
     </application>
 
 </manifest>

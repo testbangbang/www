@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/setting_security">
+
+    <android.support.v7.preference.Preference
+        android:key="@string/data_backup_key"
+        android:title="@string/data_backup_title" />
+
+    <android.support.v7.preference.Preference
+        android:key="@string/factory_reset_key"
+        android:title="@string/factory_reset_title" />
+
+</android.support.v7.preference.PreferenceScreen>
