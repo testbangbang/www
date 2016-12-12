@@ -106,8 +106,8 @@ public class NoteManager {
     private void initNoteArgs(final Context context) {
         noteConfig = DeviceConfig.sharedInstance(context, "note");
         mappingConfig = MappingConfig.sharedInstance(context, "note");
-        enableShortcutDrawing = noteConfig.isShortcutDrawingEnabled();
-        enableShortcutErasing = noteConfig.isShortcutErasingEnabled();
+        enableShortcutDrawing = (noteConfig.isShortcutDrawingEnabled() && noteConfig.supportBigPen());
+        enableShortcutErasing = (noteConfig.isShortcutErasingEnabled() && noteConfig.supportBigPen());
         NoteModel.setDefaultEraserRadius(noteConfig.getEraserRadius());
         NoteModel.setDefaultStrokeColor(noteConfig.getDefaultStrokeColor());
         InkUtils.setPressureEntries(mappingConfig.getPressureList());
