@@ -40,6 +40,7 @@ import com.onyx.kreader.utils.RectUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -220,10 +221,18 @@ public class AlReaderWrapper {
             Debug.w(getClass(), "get text on screen failed!");
             return result;
         }
-        for (AlTextOnScreen.AlTextLink link : screenText.linkList) {
-            ReaderSelectionImpl selection = combineSelection(screenText, link.startPosition, link.endPosition);
-            selection.setPagePosition(PagePositionUtils.fromPosition(link.linkLocalPosition));
-            selection.setPageName(PagePositionUtils.fromPageNumber(getPageNumberOfPosition(link.linkLocalPosition)));
+        for (AlTextOnScreen.AlPieceOfLink link : screenText.linkList) {
+            AlTapInfo tapInfo = bookEng.getInfoByLinkPos(link.pos);
+            if (!tapInfo.isLocalLink) {
+                continue;
+            }
+            ReaderSelectionImpl selection = new ReaderSelectionImpl();
+            selection.setPageName(PagePositionUtils.fromPageNumber(getPageNumberOfPosition(tapInfo.linkLocalPosition)));
+            selection.setPagePosition(PagePositionUtils.fromPosition(tapInfo.linkLocalPosition));
+            selection.setText("");
+            selection.setStartPosition(PagePositionUtils.fromPosition(link.pos));
+            selection.setEndPosition(PagePositionUtils.fromPosition(link.pos));
+            selection.setDisplayRects(Arrays.asList(new RectF[]{ createRect(link.rect) }));
             result.add(selection);
         }
         return result;
