@@ -24,9 +24,11 @@ import com.neverland.engbook.forpublic.AlTextOnScreen;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
+import com.neverland.engbook.util.EngBitmap;
 import com.neverland.engbook.util.TTFInfo;
 import com.neverland.engbook.util.TTFScan;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDocumentOptions;
 import com.onyx.kreader.api.ReaderDocumentTableOfContent;
@@ -196,10 +198,11 @@ public class AlReaderWrapper {
     }
 
     public void draw(final Bitmap bitmap, final int width, final int height) {
-        AlBitmap bmp = bookEng.getPageBitmap(EngBookMyType.TAL_PAGE_INDEX.CURR, width, height);
-        Debug.e(getClass(), "draw bitmap: %d, %d, %s", bmp.bmp.getWidth(), bmp.bmp.getHeight(), bmp.bmp);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawBitmap(bmp.bmp, 0, 0, new Paint());
+        Benchmark benchmark = new Benchmark();
+        AlBitmap bmp = EngBitmap.createBookBitmap(bitmap);
+        engineOptions.externalBitmap = bmp;
+        bookEng.getPageBitmap(EngBookMyType.TAL_PAGE_INDEX.CURR, width, height);
+        benchmark.report("getPageBitmap");
 
         resetScreenState();
     }
