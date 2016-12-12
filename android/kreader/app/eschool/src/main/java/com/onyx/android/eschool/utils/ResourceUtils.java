@@ -29,4 +29,8 @@ public class ResourceUtils {
     static public int getLayoutResIdByName(Context context, final String resourceName) {
         return getResourceIdByName(context, "layout", resourceName);
     }
+
+    static public int getIdByName(Context context, final String resourceName) {
+        return getResourceIdByName(context, "id", resourceName);
+    }
 }

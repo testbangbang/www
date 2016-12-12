@@ -473,8 +473,11 @@ public class ReaderActivity extends ActionBarActivity {
             flushNoteAction.execute(getReaderDataHolder(), null);
             return;
         }
-        getReaderDataHolder().getNoteManager().ensureContentRendered();
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        boolean drawDuringErasing = false;
+        if (drawDuringErasing) {
+            getReaderDataHolder().getNoteManager().ensureContentRendered();
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        }
     }
 
     @Subscribe

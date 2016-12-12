@@ -89,12 +89,12 @@
         android:layout_marginTop="@dimen/home_item_divider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/home_teaching_auxiliary_item"
-        app:layout_constraintRight_toLeftOf="@+id/home_exam_item"
+        app:layout_constraintRight_toLeftOf="@+id/home_setting_item"
         app:layout_constraintTop_toBottomOf="@+id/home_teaching_auxiliary_item"
         app:layout_constraintVertical_weight="4" />
 
     <include
-        android:id="@+id/home_exam_item"
+        android:id="@+id/home_setting_item"
         layout="@layout/home_normal_land_item"
         android:layout_width="0dp"
         android:layout_height="0dp"

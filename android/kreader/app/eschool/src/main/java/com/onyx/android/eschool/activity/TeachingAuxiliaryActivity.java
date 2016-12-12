@@ -1,8 +1,6 @@
 package com.onyx.android.eschool.activity;
 
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +22,7 @@ import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
+import com.onyx.android.eschool.utils.ViewDocumentUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
@@ -40,6 +39,7 @@ import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.StoreUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -79,6 +79,7 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        NetworkHelper.requestWifi(this);
     }
 
     @Override
@@ -419,8 +420,12 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
         return visible;
     }
 
-    private int getCategoryPageViewHeight(){
-        return categoryPageView.getMeasuredHeight();
+    private int getCategoryPageViewHeight() {
+        int height = categoryPageView.getMeasuredHeight();
+        int[] location = new int[2];
+        categoryPageView.getLocationOnScreen(location);
+        height += location[1];
+        return height;
     }
 
     private boolean isPageViewVisible() {
@@ -494,6 +499,7 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
 
     private void startDownload(Product product, Link link) {
         if (isInvalidLink(link)) {
+            showToast(R.string.download_link_invalid, Toast.LENGTH_SHORT);
             return;
         }
         String filePath = getDataSaveFilePath(product, link);
@@ -530,25 +536,21 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
         });
     }
 
-    static public Intent viewActionIntent(final File file) {
-        final Intent intent = new Intent();
-        intent.setData(Uri.fromFile(file));
-        intent.setAction(Intent.ACTION_VIEW);
-        return intent;
-    }
-
     private void openCloudFile(final Product product) {
         File file = getDataSaveFilePath(product);
         if (file == null || !file.exists()) {
             return;
         }
-        ActivityUtil.startActivitySafely(this, viewActionIntent(file));
+        ActivityUtil.startActivitySafely(this, ViewDocumentUtils.viewActionIntentWithMimeType(file));
     }
 
     private void processProductItemClick(final int position) {
         Product product = productList.get(position);
         if (isFileExists(product)) {
             openCloudFile(product);
+            return;
+        }
+        if (!NetworkHelper.requestWifi(this)) {
             return;
         }
         startDownload(position);

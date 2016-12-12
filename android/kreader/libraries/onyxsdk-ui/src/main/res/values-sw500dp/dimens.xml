@@ -46,4 +46,11 @@
     <dimen name="current_value_tittle_text_size">20sp</dimen>
     <dimen name="current_value_tittle_margin">10dp</dimen>
     <dimen name="dialog_custom_line_width_tittle_margin">8dp</dimen>
+
+    <!--dimens value for dialog_loading-->
+    <dimen name="dialog_loading_min_width">200dp</dimen>
+    <dimen name="dialog_loading_text_area_minHeight">72dp</dimen>
+    <dimen name="dialog_loading_close_button_image_size">64dp</dimen>
+    <dimen name="dialog_loading_text_size">23sp</dimen>
+
 </resources>

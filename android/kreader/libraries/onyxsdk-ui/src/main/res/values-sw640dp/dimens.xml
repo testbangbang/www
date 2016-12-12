@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--dimens value for dialog_loading-->
+    <dimen name="dialog_loading_min_width">250dp</dimen>
+    <dimen name="dialog_loading_text_area_minHeight">80dp</dimen>
+    <dimen name="dialog_loading_close_button_image_size">72dp</dimen>
+    <dimen name="dialog_loading_text_size">24sp</dimen>
+
+</resources>

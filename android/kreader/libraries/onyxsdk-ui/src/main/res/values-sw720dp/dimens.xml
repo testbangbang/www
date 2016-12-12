@@ -42,4 +42,11 @@
     <dimen name="menu_back_text_size">20sp</dimen>
     <dimen name="common_dialog_width">510dp</dimen>
     <dimen name="global_activities_function_icon_size">48dp</dimen>
+
+    <!--dimens value for dialog_loading-->
+    <dimen name="dialog_loading_min_width">250dp</dimen>
+    <dimen name="dialog_loading_text_area_minHeight">92dp</dimen>
+    <dimen name="dialog_loading_close_button_image_size">84dp</dimen>
+    <dimen name="dialog_loading_text_size">25sp</dimen>
+
 </resources>

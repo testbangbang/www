@@ -16,6 +16,7 @@ public class ExportUtils {
     private static String getExportFolderPath(String documentPath) throws IOException{
         String parent = FileUtils.getParent(documentPath);
         String baseName = FileUtils.getBaseName(documentPath);
+        baseName = baseName.trim();
         String path = parent + "/" + baseName;
         if (!FileUtils.mkdirs(path)) {
             throw new IOException(path);

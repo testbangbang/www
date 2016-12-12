@@ -43,6 +43,14 @@ public class ActivityUtil {
         return false;
     }
 
+    public static boolean startActivitySafely(Context from, Intent intent, ComponentName componentName) {
+        if (componentName != null) {
+            intent.setPackage(componentName.getPackageName());
+            intent.setClassName(componentName.getPackageName(), componentName.getClassName());
+        }
+        return startActivitySafely(from, intent);
+    }
+
     public static Intent createIntent(final String packageName, final String activityClassName) {
         Intent intent = new Intent();
         final String className;

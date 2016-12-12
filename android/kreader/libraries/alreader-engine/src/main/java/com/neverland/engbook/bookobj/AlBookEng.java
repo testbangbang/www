@@ -143,6 +143,8 @@ public class AlBookEng{
 	 */
 	private boolean calcWordLenForPages;
 
+	private AlBitmap externalBitmap = null;
+
 	private AlBitmap errorBitmap = null;
 	private AlBitmap tableBitmap = null;
 	private AlBitmap waitBitmap = null;
@@ -225,9 +227,11 @@ public class AlBookEng{
 
         closeBook();
 
-        EngBitmap.reCreateBookBitmap(bmp[0], 0, 0, null);
-        EngBitmap.reCreateBookBitmap(bmp[1], 0, 0, null);
-        EngBitmap.reCreateBookBitmap(bmp[2], 0, 0, null);
+		if (engOptions.externalBitmap == null) {
+			EngBitmap.reCreateBookBitmap(bmp[0], 0, 0, null);
+			EngBitmap.reCreateBookBitmap(bmp[1], 0, 0, null);
+			EngBitmap.reCreateBookBitmap(bmp[2], 0, 0, null);
+		}
 
         return TAL_RESULT.OK;
     }
@@ -243,8 +247,7 @@ public class AlBookEng{
 		this.engOptions = engOptions;
 		pagePositionPointer.clear();
 
-        preferences.textMultiplexer = engOptions.textMultiplexer;
-		preferences.chinezeFormatting = engOptions.chinezeFormatting;
+        preferences.chinezeFormatting = engOptions.chinezeFormatting;
         preferences.onlyPopupFootnote = engOptions.onlyPopupFootnote;
 
 		old_style = 0;
@@ -285,6 +288,9 @@ public class AlBookEng{
         preferences.tableMode = engOptions.tableMode;
         preferences.value2CalcMargins = engOptions.value2CalcMargins;
 		preferences.textMultiplexer = engOptions.textMultiplexer;
+		if (preferences.textMultiplexer == 0)
+			preferences.textMultiplexer = preferences.picture_need_tuneK;
+
 		preferences.chinezeFormatting = engOptions.chinezeFormatting;
 
 		preferences.calcPagesModeRequest = engOptions.useScreenPages;
@@ -314,16 +320,21 @@ public class AlBookEng{
 
 		preferences.vjustifyUsed = preferences.vjustifyRequest;
 
+		if (engOptions.externalBitmap != null) {
+			externalBitmap = engOptions.externalBitmap;
+		}
 
-		EngBitmap.reCreateBookBitmap(bmp[0], 0, 0, shtamp);
-		EngBitmap.reCreateBookBitmap(bmp[1], 0, 0, null);
-        EngBitmap.reCreateBookBitmap(bmp[2], 0, 0, null);
-
+		if (engOptions.externalBitmap == null) {
+			EngBitmap.reCreateBookBitmap(bmp[0], 0, 0, shtamp);
+			EngBitmap.reCreateBookBitmap(bmp[1], 0, 0, null);
+			EngBitmap.reCreateBookBitmap(bmp[2], 0, 0, null);
+		}
 
 		return TAL_RESULT.OK;
 	}
 
 	private final AlTextOnScreen textOnScreen = new AlTextOnScreen();
+
 
     /**
      * Инициализация окна (Activity), с которым взаимодействует библиотека.
@@ -864,17 +875,10 @@ public class AlBookEng{
 		calc.drawBackground(screenWidth, screenHeight, profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG],
                 profiles.background, profiles.backgroundMode);
 
+		AlBitmap abmp = engOptions.externalBitmap != null ? engOptions.externalBitmap : bmp[activePage];
+
 		notesCounter++;
 		if (profiles.twoColumnUsed) {
-
-            /*if (turnBitmap) {
-                int32_t xxx = screen_parameters.marginR * 3 / 4;
-                calc->drawImage((screenWidth >> 1) - xxx, 0, xxx * 2, screenHeight, turnBitmap, true);
-
-                xxx = screen_parameters.marginL * 3 / 4;
-                calc->drawImage(-xxx, 0, xxx * 2, screenHeight, turnBitmap, true);
-                calc->drawImage(screenWidth - xxx, 0, xxx * 2, screenHeight, turnBitmap, true);
-            }*/
 
 			if (needRecalc) {
 				recalcColumn(
@@ -910,8 +914,7 @@ public class AlBookEng{
 			if (activePage == 0)
 				drawSelectMarker();
 
-            //(activePage == 0 ? bmp[0] : bmp[1]).freeSpaceAfterPage = 0;
-            bmp[activePage].freeSpaceAfterPage = 0;
+			abmp.freeSpaceAfterPage = 0;
 		} else {
 			if (needRecalc) {
 				recalcColumn(
@@ -941,29 +944,12 @@ public class AlBookEng{
 				drawSelectMarker();
 
             if (profiles.specialModeRoll) {
-                bmp[activePage].freeSpaceAfterPage = mpage[activePage][0].pageHeight - mpage[activePage][0].textHeight;
-                if (bmp[activePage].freeSpaceAfterPage < 0 || mpage[activePage][0].notePresent || screen_parameters.marginT != 0 || screen_parameters.marginB != 0)
-                    bmp[activePage].freeSpaceAfterPage = 0;
+				abmp.freeSpaceAfterPage = mpage[activePage][0].pageHeight - mpage[activePage][0].textHeight;
+                if (abmp.freeSpaceAfterPage < 0 || mpage[activePage][0].notePresent || screen_parameters.marginT != 0 || screen_parameters.marginB != 0)
+					abmp.freeSpaceAfterPage = 0;
             } else {
-                bmp[activePage].freeSpaceAfterPage = 0;
+				abmp.freeSpaceAfterPage = 0;
             }
-            /*if (activePage == 0) {
-                if (profiles.specialModeRoll) {
-                    bmp[0].freeSpaceAfterPage = mpage[activePage][0].pageHeight - mpage[activePage][0].textHeight;
-                    if (bmp[0].freeSpaceAfterPage < 0 || mpage[activePage][0].notePresent || screen_parameters.marginT != 0 || screen_parameters.marginB != 0)
-                        bmp[0].freeSpaceAfterPage = 0;
-                } else {
-                    bmp[0].freeSpaceAfterPage = 0;
-                }
-            } else {
-                if (profiles.specialModeRoll) {
-                    bmp[1].freeSpaceAfterPage = mpage[activePage][0].pageHeight - mpage[activePage][0].textHeight;
-                    if (bmp[1].freeSpaceAfterPage < 0 || mpage[activePage][0].notePresent || screen_parameters.marginT != 0 || screen_parameters.marginB != 0)
-                        bmp[1].freeSpaceAfterPage = 0;
-                } else {
-                    bmp[1].freeSpaceAfterPage = 0;
-                }
-            }*/
 		}
 		
 		if (selection.selectMode == TAL_SCREEN_SELECTION_MODE.CLEAR)
@@ -985,23 +971,26 @@ public class AlBookEng{
 	public AlBitmap	getPageBitmap(TAL_PAGE_INDEX index, int width, int height) {
 
         boolean needCalcNextPage = false;
+		AlBitmap abmp = null;
 
 		int rW = (width + 0x03) & 0xfffc;
 		int rH = (height + 0x03) & 0xfffc;
 
         if (openState.getState() != AlBookState.OPEN) {
             if (index == TAL_PAGE_INDEX.CURR) {
+				abmp = engOptions.externalBitmap != null ? engOptions.externalBitmap : bmp[1];
+
                 int waitposition = openState.getState() != AlBookState.NOLOAD ? -2 : -1;
 
-                if (bmp[1].width != rW || bmp[1].height != rH)
-                    EngBitmap.reCreateBookBitmap(bmp[1], width, height, null);
+                if (abmp.width != rW || abmp.height != rH)
+                    EngBitmap.reCreateBookBitmap(abmp, width, height, null);
 
-                if (bmp[1].shtamp == shtamp.value && bmp[1].position == waitposition)
-                    return bmp[1];
-                bmp[1].shtamp = shtamp.value;
-                bmp[1].position = waitposition;
+                if (abmp.shtamp == shtamp.value && abmp.position == waitposition)
+                    return abmp;
+				abmp.shtamp = shtamp.value;
+				abmp.position = waitposition;
 
-                calc.beginMain(bmp[1], profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG]);
+                calc.beginMain(abmp, profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG]);
                 calc.drawBackground(width, height, profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG], profiles.background, profiles.backgroundMode);
                 if (openState.getState() != AlBookState.NOLOAD) {
                     int x = (width - waitBitmap.width) >> 1;
@@ -1009,22 +998,23 @@ public class AlBookEng{
                     calc.drawImage(x, y, waitBitmap.width, waitBitmap.height, waitBitmap, profiles.isTransparentImage);
                 }
                 calc.endMain();
-				return bmp[1];
+				return abmp;
             } else
 				return null;
         }
 
 		if (index == TAL_PAGE_INDEX.CURR) {
+			abmp = engOptions.externalBitmap != null ? engOptions.externalBitmap : bmp[0];
 
-			if (bmp[0].shtamp != shtamp.value || bookPosition != bmp[0].position) {
+			if (abmp.shtamp != shtamp.value || bookPosition != abmp.position) {
 
-                if (bmp[0].width != rW || bmp[0].height != rH)
-                    EngBitmap.reCreateBookBitmap(bmp[0], width, height, shtamp);
+                if (abmp.width != rW || abmp.height != rH)
+                    EngBitmap.reCreateBookBitmap(abmp, width, height, shtamp);
 
-                bmp[0].shtamp = shtamp.value;
-                bmp[0].position = bookPosition;
+				abmp.shtamp = shtamp.value;
+				abmp.position = bookPosition;
 
-                calc.beginMain(bmp[0], profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG]);
+                calc.beginMain(abmp, profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG]);
 
                 calcScreenParameters();
                 drawPageFromPosition(bookPosition, true, 0);
@@ -1034,7 +1024,7 @@ public class AlBookEng{
             if (selection.selectMode != EngBookMyType.TAL_SCREEN_SELECTION_MODE.NONE &&
                     selection.shtampSelectRequred != selection.shtampSelectUsed) {
 
-                calc.beginMain(bmp[0], profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG]);
+                calc.beginMain(abmp, profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG]);
 
                 calcScreenParameters();
                 drawPageFromPosition(bookPosition, false, 0);
@@ -1043,10 +1033,11 @@ public class AlBookEng{
                 selection.shtampSelectUsed = selection.shtampSelectRequred;
             }
 
-			needCalcNextPage = profiles.specialModeRoll && (cachePrevNextPoint.current != bookPosition ||
+			needCalcNextPage = engOptions.externalBitmap == null && profiles.specialModeRoll && (cachePrevNextPoint.current != bookPosition ||
                     cachePrevNextPoint.prev == -1 || cachePrevNextPoint.shtamp != shtamp.value);
+
 			if (!needCalcNextPage)
-				return bmp[0];
+				return abmp;
 		}
 
         if (preferences.isASRoll)
@@ -1057,6 +1048,8 @@ public class AlBookEng{
         int testPosition = addonPosition;
 
         if (index == TAL_PAGE_INDEX.NEXT || needCalcNextPage) {
+			if (engOptions.externalBitmap != null)
+				return null;
 
             if (testPosition >= format.getSize())
                 return needCalcNextPage ? bmp[0] : null;
@@ -1098,6 +1091,8 @@ public class AlBookEng{
         }
 
         // draw prev page
+		if (engOptions.externalBitmap != null)
+			return null;
         if (testPosition == 0)
             return null;
         testPosition *= -1;
@@ -1138,57 +1133,6 @@ public class AlBookEng{
         }
 
         return bmp[2];
-
-        /*if (index == TAL_PAGE_INDEX.PREV) {
-            if (testPosition == 0)
-                return null;
-            testPosition *= -1;
-        } else {
-            if (testPosition >= format.getSize())
-                return needCalcNextPage ? bmp[0] : null;
-        }
-
-        if (bmp[1].shtamp != shtamp.value || testPosition != bmp[1].position) {
-
-            if (cachePrevNextPoint.current != bookPosition || cachePrevNextPoint.shtamp != shtamp.value) {
-                cachePrevNextPoint.shtamp = shtamp.value;
-                cachePrevNextPoint.current = bookPosition;
-                cachePrevNextPoint.next = cachePrevNextPoint.prev = -1;
-            }
-
-            if (index == TAL_PAGE_INDEX.PREV) {
-                //Log.e("calc prev", Boolean.toString(needCalcNextPage));
-                if (cachePrevNextPoint.prev != -1) {
-                    addonPosition = cachePrevNextPoint.prev;
-                } else {
-                    addonPosition = cachePrevNextPoint.prev = calculatePrevPagePoint(bookPosition);
-                }
-            } else {
-                //Log.e("calc next", Boolean.toString(needCalcNextPage));
-                if (cachePrevNextPoint.next != -1) {
-                    addonPosition = cachePrevNextPoint.next;
-                } else {
-                    addonPosition = cachePrevNextPoint.next = calculateNextPagePoint(bookPosition);
-                }
-            }
-
-            if (addonPosition == bookPosition) {
-                return needCalcNextPage ? bmp[0] : null;
-            }
-
-            bmp[1].shtamp = shtamp.value;
-            bmp[1].position = testPosition;
-
-            calc.beginMain(bmp[1].canvas, profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG]);
-            calcScreenParameters();
-            if (index == TAL_PAGE_INDEX.PREV)
-                scrollPrevPagePointStop = bookPosition;
-            drawPageFromPosition(addonPosition, true, 1);
-            scrollPrevPagePointStop = -1;
-            calc.endMain();
-        }
-
-		return needCalcNextPage ? bmp[0] : bmp[1];*/
 	}
 
     private int scrollPrevPagePointStop = -1;
@@ -1441,8 +1385,9 @@ public class AlBookEng{
 						oi.isRight = 0;					
 						if (page.countItems == 1) {
                             if (oi.isTableRow) {
-
-                            } else {
+								oi.height += oi.base_line_down >> 1;
+								oi.base_line_down >>= 1;
+							} else {
                                 if (page.pageHeight > page.textHeight && (!profiles.specialModeRoll || ((oi.style[0] & AlStyles.SL_MARKCOVER) != 0))) {
                                     oi.height += (page.pageHeight - page.textHeight) >> 1;
                                     page.textHeight += page.pageHeight - page.textHeight;
@@ -2992,23 +2937,33 @@ public class AlBookEng{
             startStopAS();
         }
 
+		AlBitmap abmp = engOptions.externalBitmap != null ? engOptions.externalBitmap : bmp[0];
+
 		switch (openState.getState()) {
 		case AlBookState.NOLOAD:
 			screenWidth = width;
 			screenHeight = height;			
-			EngBitmap.reCreateBookBitmap(bmp[0], screenWidth, screenHeight, shtamp);
+			EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
+			if (engOptions.externalBitmap != null) {
+				EngBitmap.reCreateBookBitmap(bmp[1], screenWidth, screenHeight, null);
+				EngBitmap.reCreateBookBitmap(bmp[2], screenWidth, screenHeight, null);
+			}
 			shtamp.value++;
 			break;
 		case AlBookState.OPEN:
 			screenWidth = width;
 			screenHeight = height;			
-			EngBitmap.reCreateBookBitmap(bmp[0], screenWidth, screenHeight, shtamp);
+			EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
+			if (engOptions.externalBitmap != null) {
+				EngBitmap.reCreateBookBitmap(bmp[1], screenWidth, screenHeight, null);
+				EngBitmap.reCreateBookBitmap(bmp[2], screenWidth, screenHeight, null);
+			}
 			shtamp.value++;			
 			needNewCalcPageCount();
 			break;
 		} 
 
-		return bmp[0].bmp != null ? TAL_RESULT.OK : TAL_RESULT.ERROR;
+		return abmp.bmp != null ? TAL_RESULT.OK : TAL_RESULT.ERROR;
 	}
 
 	private static void addW2I(AlOneItem oi, AlOneWord tword, int cnt) {
@@ -5948,12 +5903,48 @@ public class AlBookEng{
         return true;
     }
 
+	public AlTapInfo getInfoByLinkPos(int pos) {
+		tapInfo.clearInfo();
+
+		if (openState.getState() == AlBookState.OPEN) {
+			tapInfo.pos = pos;
+			tapInfo.isLocalLink = true;
+			AlOneLink al;
+			String link = format.getLinkNameByPos(tapInfo.pos, InternalConst.TAL_LINK_TYPE.LINK);
+			if (link != null) {
+				al = format.getLinkByName(link, true);
+				if (al != null) {
+					tapInfo.linkLocalPosition = al.positionS;
+					tapInfo.isFootNote = (al.iType == 1) && (!tapInfo.isNote);
+					tapInfo.link.append(link);
+				} else {
+					AlOneTable at = format.getTableByName(link);
+					if (at != null) {
+						tapInfo.isLocalLink = false;
+						tapInfo.isTableLink = true;
+						tapInfo.linkLocalPosition = at.start;
+					} else {
+						tapInfo.isLocalLink = false;
+						tapInfo.isExtLink = true;
+						tapInfo.link.append(link);
+					}
+				}
+			} else {
+				tapInfo.isLocalLink = false;
+			}
+		}
+
+		return tapInfo;
+	}
+
 	public AlTextOnScreen getTextOnScreen() {
 		textOnScreen.clear();
 
-		fillTextOnScreenOnePage(mpage[0][0], screen_parameters.marginL);
-		if (profiles.twoColumnUsed)
-			fillTextOnScreenOnePage(mpage[0][1], (screenWidth >> 1) + screen_parameters.marginR);
+		if (openState.getState() == AlBookState.OPEN) {
+			fillTextOnScreenOnePage(mpage[0][0], screen_parameters.marginL);
+			if (profiles.twoColumnUsed)
+				fillTextOnScreenOnePage(mpage[0][1], (screenWidth >> 1) + screen_parameters.marginR);
+		}
 
 		textOnScreen.needCorrectStart = false;
 		textOnScreen.defaultResultForStart = -1;
@@ -5966,7 +5957,7 @@ public class AlBookEng{
 
 		return textOnScreen;
 	}
-	
+
 	private void fillTextOnScreen(boolean s, int ps, boolean e, int pe) {
 		textOnScreen.clear();
 
@@ -5989,15 +5980,15 @@ public class AlBookEng{
 	}
 
 	private void fillTextOnScreenOnePage(AlOnePage page, int margLeft) {
-		int x, y;
+		int x, y, pos = -1;
 
 		StringBuilder word_text = new StringBuilder();
 		word_text.setLength(0);
 
 		AlRect word_rect = new AlRect();
+		AlRect link_rect = new AlRect();
 		ArrayList<Integer> word_pos = new ArrayList<>();
 
-		boolean isLink = false;
 		for (int j = 0; j < page.countItems; j++) {
 			AlOneItem oi = page.items.get(j);
 
@@ -6007,38 +5998,40 @@ public class AlBookEng{
 			y = oi.yDrawPosition;
 			x = margLeft + oi.isLeft + oi.isRed;
 
-			if (isLink) {
-				textOnScreen.markLinkEnd();
-			}
-			isLink = false;
 			for (int i = 0; i < oi.count; i++) {
-				if (!isLink && (oi.style[i] & AlStyles.STYLE_LINK) != 0) {
-					String link = format.getLinkNameByPos(oi.pos[i], InternalConst.TAL_LINK_TYPE.LINK);
-					if (link != null) {
-						AlOneLink al = format.getLinkByName(link, true);
-						if (al != null) {
-							isLink = true;
-							textOnScreen.markLinkStart(al.positionS);
-						}
+				if (pos == -1) {
+					if ((oi.style[i] & AlStyles.STYLE_LINK) != 0) {
+						pos = oi.pos[i];
+
+						link_rect.x0 = link_rect.x1 = x;
+						link_rect.y0 = y - oi.base_line_up;
+						link_rect.y1 = link_rect.y0 + oi.base_line_down + oi.base_line_up;
 					}
-				}
-				if (isLink && (oi.style[i] & AlStyles.STYLE_LINK) == 0) {
-					isLink = false;
-					textOnScreen.markLinkEnd();
+				} else {
+					if ((oi.style[i] & AlStyles.STYLE_LINK) == 0) {
+						textOnScreen.addLink(pos, link_rect);
+						pos = -1;
+					} else {
+						link_rect.x1 += oi.width[i];
+					}
 				}
 
 				if (oi.text[i] <= 0x20 || oi.pos[i] < 0) {
-					textOnScreen.add(word_text, word_rect, word_pos);
+					textOnScreen.addText(word_text, word_rect, word_pos);
 
 					if (oi.text[i] == AlStyles.CHAR_ROWS_E) {
+						if (pos != -1) {
+							textOnScreen.addLink(pos, link_rect);
+							pos = -1;
+						}
 						fillTextOnScreenTable(oi.pos[i], margLeft);
 						continue;
 					}
 				} else {
 
 					if ( AlUnicode.isChineze(oi.text[i]) || (word_text.length() == 1 && AlUnicode.isChineze(word_text.charAt(0))))
-						textOnScreen.add(word_text, word_rect, word_pos);
-					
+						textOnScreen.addText(word_text, word_rect, word_pos);
+
 					if (word_text.length() == 0) {
 						word_rect.x0 = word_rect.x1 = x;
 						word_rect.y0 = y - oi.base_line_up;
@@ -6055,7 +6048,11 @@ public class AlBookEng{
 				x += oi.width[i];
 			}
 
-			textOnScreen.add(word_text, word_rect, word_pos);
+			textOnScreen.addText(word_text, word_rect, word_pos);
+			if (pos != -1) {
+				textOnScreen.addLink(pos, link_rect);
+				pos = -1;
+			}
 		}
 	}
 
@@ -6617,6 +6614,9 @@ public class AlBookEng{
 	}
 
 	public void getScrollShift(final boolean fromCurrentPage, int shift, AlIntHolder outShift, AlIntHolder outPos, boolean nearest) {
+		if (engOptions.externalBitmap != null)
+			return;
+
 		AlOnePage page = fromCurrentPage ? mpage[0][0] : mpage[2][0];
 
 		int resultPos = fromCurrentPage ? page.end_position : page.start_position;

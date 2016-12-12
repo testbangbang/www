@@ -18,7 +18,7 @@ public class AlTextOnScreen {
 
     public class AlPieceOfText {
         public String              word;
-        public final AlRect rect = new AlRect();
+        public final AlRect        rect = new AlRect();
         public final int[]         positions;
 
         public AlPieceOfText(String w, AlRect r, int[] p) {
@@ -33,26 +33,32 @@ public class AlTextOnScreen {
         }
     }
 
-    public class AlTextLink {
-        public int startPosition = -1;
-        public int endPosition;
-        public int linkLocalPosition;
+    public class AlPieceOfLink {
+        public int                  pos;
+        public final AlRect         rect = new AlRect();
+
+
+        public AlPieceOfLink(int p, AlRect r) {
+            pos = p;
+
+            rect.x0 = r.x0;
+            rect.y0 = r.y0;
+            rect.x1 = r.x1;
+            rect.y1 = r.y1;
+        }
     }
 
-    public ArrayList<AlPieceOfText> regionList = new ArrayList<>();
-    public ArrayList<AlTextLink> linkList = new ArrayList<>();
-
-    private boolean isLink = false;
-    private int linkPosition = -1;
-    private AlTextLink link;
+    public final ArrayList<AlPieceOfText> regionList = new ArrayList<>();
+    public final ArrayList<AlPieceOfLink> linkList = new ArrayList<>();
 
     public void clear() {
         numWordWithStartSelection = numWordWithEndSelection = -1;
         needCorrectStart = needCorrectEnd = false;
         regionList.clear();
+        linkList.clear();
     }
 
-    public void add(StringBuilder word, AlRect rect, ArrayList<Integer> pos) {
+    public void addText(StringBuilder word, AlRect rect, ArrayList<Integer> pos) {
         int len = word.length();
         if (len > 0) {
 
@@ -64,29 +70,14 @@ public class AlTextOnScreen {
             regionList.add(a);
 
             word.setLength(0);
-
-            if (isLink) {
-                if (link == null) {
-                    link = new AlTextLink();
-                    linkList.add(link);
-                    link.startPosition = pos.get(0);
-                    link.endPosition = pos.get(pos.size() - 1);
-                    link.linkLocalPosition = linkPosition;
-                }
-                link.endPosition = pos.get(pos.size() - 1);
-            }
         }
     }
 
-    public void markLinkStart(int linkPosition) {
-        isLink = true;
-        this.linkPosition = linkPosition;
-    }
-
-    public void markLinkEnd() {
-        isLink = false;
-        linkPosition = -1;
-        link = null;
+    public void addLink(int p, AlRect rect) {
+        if (p >= 0) {
+            AlPieceOfLink a = new AlPieceOfLink(p, rect);
+            linkList.add(a);
+        }
     }
 
     public boolean verifyStart(boolean needStart, int posStart) {
@@ -127,7 +118,7 @@ public class AlTextOnScreen {
         }
 
     }
-    
+
     public void clearBeforeNormalCall() {
         lastStart = -1;
         lastEnd = -1;

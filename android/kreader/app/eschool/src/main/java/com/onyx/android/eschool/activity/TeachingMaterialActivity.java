@@ -13,21 +13,23 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.eschool.R;
+import com.onyx.android.eschool.model.AppConfig;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
+import com.onyx.android.eschool.utils.ViewDocumentUtils;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.TestUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,32 +49,18 @@ public class TeachingMaterialActivity extends BaseActivity {
     @Bind(R.id.syllabus_page_view)
     PageRecyclerView syllabusPageView;
 
-    // about showcase
-    @Bind(R.id.text_title)
-    TextView bookTitleView;
-    @Bind(R.id.text_publisher)
-    TextView bookPublisherView;
-    @Bind(R.id.text_last_reading_time)
-    TextView bookLastReadingTime;
-    @Bind(R.id.text_progress)
-    TextView bookLastReadingTextProgress;
-    @Bind(R.id.progress_line)
-    ProgressBar bookProgressBar;
-    @Bind(R.id.image_cover)
-    ImageView bookCover;
+    @Bind(R.id.content_page_view)
+    PageRecyclerView contentPageView;
 
-    @Bind(R.id.textView_material_label)
-    TextView materialLabelView;
-
-    @Bind(R.id.volume_one_item)
-    ImageView bookVolumeOne;
-    @Bind(R.id.volume_two_item)
-    ImageView bookVolumeTwo;
+    @Bind(R.id.textView_user_grade)
+    TextView gradeLabelTextView;
 
     private List<String> syllabusList = new ArrayList<>();
     private int syllabusCurrentIndex = 0;
 
-    private List<Metadata> VolumeMetadataCollection = new ArrayList<>();
+    private List<Metadata> metadataList = new ArrayList<>();
+
+    private String documentDisplayPath = "/mnt/sdcard/slide/演示（小学语数外）.pdf";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,20 +86,15 @@ public class TeachingMaterialActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        initMaterialLabelView();
         initSyllabusPageView();
+        initContentPageView();
     }
 
     @Override
     protected void initData() {
         loadSyllabusData();
         loadSpecifySyllabusData();
-    }
-
-    private void initMaterialLabelView() {
-        String materialLabel = StudentPreferenceManager.loadGradeSelected(this, getString(R.string.home_item_teaching_materials_text));
-        materialLabel = materialLabel.replace("上", "").replace("下", "") + getString(R.string.home_item_teaching_materials_text);
-        materialLabelView.setText(materialLabel);
+        loadContentData();
     }
 
     private void initSyllabusPageView() {
@@ -148,6 +131,38 @@ public class TeachingMaterialActivity extends BaseActivity {
         });
     }
 
+    private void initContentPageView() {
+        contentPageView.setLayoutManager(new DisableScrollGridManager(this));
+        contentPageView.setAdapter(new PageRecyclerView.PageAdapter<ContentViewHolder>() {
+            @Override
+            public int getRowCount() {
+                return 3;
+            }
+
+            @Override
+            public int getColumnCount() {
+                return 3;
+            }
+
+            @Override
+            public int getDataCount() {
+                return getDataSize(metadataList, -1);
+            }
+
+            @Override
+            public ContentViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
+                return new ContentViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.teaching_content_item, parent, false));
+            }
+
+            @Override
+            public void onPageBindViewHolder(ContentViewHolder viewHolder, int position) {
+                viewHolder.itemView.setTag(position);
+
+                loadImage(viewHolder.bookCover, getBookCover(position));
+            }
+        });
+    }
+
     private <T> int getDataSize(List<T> list, int forceValue) {
         return CollectionUtils.isNullOrEmpty(list) ? 0 : (forceValue > 0 ? forceValue : list.size());
     }
@@ -157,7 +172,7 @@ public class TeachingMaterialActivity extends BaseActivity {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (isPageViewVisible() && ev.getY() > getSyllabusPageViewHeight()) {
-                    toggleSyllabusPageView();
+                    //toggleSyllabusPageView();
                     return true;
                 }
         }
@@ -188,11 +203,22 @@ public class TeachingMaterialActivity extends BaseActivity {
     }
 
     private int getRandomBookCover() {
-        int[] covers = new int[]{
+        int[] covers = getBookCovers();
+        return covers[TestUtils.randInt(0, covers.length - 1)];
+    }
+
+    private int[] getBookCovers() {
+        return new int[]{
                 R.drawable.sample_cover1, R.drawable.sample_cover2, R.drawable.sample_cover3,
                 R.drawable.sample_cover4, R.drawable.sample_cover5, R.drawable.sample_cover6,
-                R.drawable.sample_cover7, R.drawable.sample_cover8,};
-        return covers[TestUtils.randInt(0, covers.length - 2)];
+                R.drawable.sample_cover7, R.drawable.sample_cover8, R.drawable.sample_cover9,
+                R.drawable.sample_cover10, R.drawable.sample_cover11, R.drawable.sample_cover12,
+                R.drawable.sample_cover13};
+    }
+
+    private int getBookCover(int position) {
+        int[] covers = getBookCovers();
+        return covers[position % covers.length];
     }
 
     private Metadata loadRandomMetadata() {
@@ -204,24 +230,23 @@ public class TeachingMaterialActivity extends BaseActivity {
         return metadata;
     }
 
-    private void loadSpecifySyllabusData() {
-        if (CollectionUtils.isNullOrEmpty(syllabusList)) {
-            return;
-        }
-        VolumeMetadataCollection.clear();
-        VolumeMetadataCollection.add(loadRandomMetadata());
-        VolumeMetadataCollection.add(loadRandomMetadata());
-        updateBookVolume();
-        updateShowcaseView(VolumeMetadataCollection.get(0), bookVolumeOne.getDrawable());
-    }
-
     private void loadSyllabusData() {
         String gradeSelected = StudentPreferenceManager.loadGradeSelected(this, "小学一年级");
         String schoolSelected = StudentPreferenceManager.loadSchoolSelected(this, "小学");
+        gradeLabelTextView.setText(gradeSelected);
         syllabusList.addAll(loadRowSyllabusConfig(schoolSelected, gradeSelected.replace("上", "").replace("下", "")));
         if (syllabusCurrentIndex >= syllabusList.size()) {
             syllabusCurrentIndex = 0;
         }
+    }
+
+    private void loadContentData() {
+        metadataList.clear();
+        int N = TestUtils.randInt(getBookCovers().length, 19);
+        for (int i = 0; i < N; i++) {
+            metadataList.add(loadRandomMetadata());
+        }
+        contentPageView.getAdapter().notifyDataSetChanged();
     }
 
     private List<String> loadRowSyllabusConfig(String schoolSelected, String gradeSelected) {
@@ -233,23 +258,6 @@ public class TeachingMaterialActivity extends BaseActivity {
             return new ArrayList<>();
         }
         return dataMap.get(gradeSelected);
-    }
-
-    private void updateBookVolume() {
-        bookVolumeOne.setImageResource(getRandomBookCover());
-        bookVolumeTwo.setImageResource(getRandomBookCover());
-    }
-
-    private void updateShowcaseView(Metadata metadata, Object image) {
-        bookTitleView.setText(metadata.getTitle());
-        bookPublisherView.setText(metadata.getPublisher());
-        bookLastReadingTime.setText(DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM.format(metadata.getUpdatedAt()));
-        bookLastReadingTextProgress.setText(getString(R.string.page) + metadata.getProgress());
-        if (metadata.getProgress().contains("/")) {
-            String[] progressInfo = metadata.getProgress().split("/");
-            bookProgressBar.setProgress(getProgress(progressInfo));
-        }
-        loadImage(bookCover, image);
     }
 
     private void loadImage(ImageView imageView, Object image) {
@@ -275,20 +283,6 @@ public class TeachingMaterialActivity extends BaseActivity {
         return progress;
     }
 
-    @OnClick(R.id.volume_one_layout)
-    void onVolumeOneClick() {
-        updateShowcaseView(VolumeMetadataCollection.get(0), bookVolumeOne.getDrawable());
-    }
-
-    @OnClick(R.id.volume_two_layout)
-    void onVolumeTwoClick() {
-        updateShowcaseView(VolumeMetadataCollection.get(1), bookVolumeTwo.getDrawable());
-    }
-
-    @OnClick(R.id.showcase_id)
-    void onShowCaseClick() {
-    }
-
     @Override
     public void onBackPressed() {
         if (hideSyllabusPageView()) {
@@ -301,7 +295,7 @@ public class TeachingMaterialActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_MENU:
-                toggleSyllabusPageView();
+                //toggleSyllabusPageView();
                 return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -320,11 +314,19 @@ public class TeachingMaterialActivity extends BaseActivity {
     }
 
     private int getSyllabusPageViewHeight() {
-        return syllabusPageView.getMeasuredHeight();
+        int height = syllabusPageView.getMeasuredHeight();
+        int[] location = new int[2];
+        syllabusPageView.getLocationOnScreen(location);
+        height += location[1];
+        return height;
     }
 
     private void toggleSyllabusPageView() {
         syllabusPageView.setVisibility(isPageViewVisible() ? View.GONE : View.VISIBLE);
+    }
+
+    private void loadSpecifySyllabusData() {
+
     }
 
     private void processSyllabusItemClick(int position) {
@@ -332,6 +334,12 @@ public class TeachingMaterialActivity extends BaseActivity {
         syllabusPageView.getAdapter().notifyItemChanged(position);
         syllabusCurrentIndex = position;
         loadSpecifySyllabusData();
+    }
+
+    private void processContentItemClick(int position) {
+        ActivityUtil.startActivitySafely(this,
+                ViewDocumentUtils.viewActionIntentWithMimeType(new File(documentDisplayPath)),
+                AppConfig.sharedInstance(this).getReaderComponentName(this));
     }
 
     class SyllabusViewHolder extends RecyclerView.ViewHolder {
@@ -346,6 +354,23 @@ public class TeachingMaterialActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     processSyllabusItemClick((Integer) itemView.getTag());
+                }
+            });
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    class ContentViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.imageView_book_image)
+        ImageView bookCover;
+
+        public ContentViewHolder(final View itemView) {
+            super(itemView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    processContentItemClick((Integer) itemView.getTag());
                 }
             });
             ButterKnife.bind(this, itemView);
