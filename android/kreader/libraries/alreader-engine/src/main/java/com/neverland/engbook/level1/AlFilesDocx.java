@@ -5,11 +5,11 @@ import com.neverland.engbook.forpublic.TAL_RESULT;
 import java.util.ArrayList;
 
 public class AlFilesDocx extends AlFilesZIPRecord {
-    private static final String FILE_RELS = "/word/_rels/document.xml.rels";
-    private static final String FILE_STYLES0 =  "/styles.xml";
-    private static final String FILE_STYLES1 =  "/word/styles.xml";
-    private static final String FILE_FOOTNOTES = "/word/footnotes.xml";
-    private static final String FILE_ENDNOTES = "/word/endnotes.xml";
+    public static final String FILE_RELS = "/word/_rels/document.xml.rels";
+    public static final String FILE_STYLES0 =  "/styles.xml";
+    public static final String FILE_STYLES1 =  "/word/styles.xml";
+    public static final String FILE_FOOTNOTES = "/word/footnotes.xml";
+    public static final String FILE_ENDNOTES = "/word/endnotes.xml";
 
     @Override
     public int initState(String file, AlFiles myParent, ArrayList<AlFileZipEntry> fList) {

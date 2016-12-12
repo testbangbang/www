@@ -26,7 +26,5 @@ public class Config {
 
     public static final int COMMON_COLUMNS = 4;
 
-    public static boolean useLocalData = true;
-
-
+    public static boolean useLocalData = false;
 }

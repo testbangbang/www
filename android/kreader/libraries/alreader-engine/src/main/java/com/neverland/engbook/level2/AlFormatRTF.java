@@ -771,6 +771,7 @@ public class AlFormatRTF extends AlFormat {
                     }
                 }
                 break;
+            case AlFormatTag.TAG_CELL:
             case AlFormatTag.TAG_PAR:
             case AlFormatTag.TAG_LINE:
                 newParagraph();
@@ -783,10 +784,10 @@ public class AlFormatRTF extends AlFormat {
             case AlFormatTag.TAG_PARD:
                 newParagraph();
                 clearParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_MASK);
-                clearTextStyle(AlStyles.PAR_STYLE_MASK);
+                clearTextStyle(AlStyles.STYLE_MASK);
                 break;
             case AlFormatTag.TAG_PLAIN:
-                clearTextStyle(AlStyles.PAR_STYLE_MASK);
+                clearTextStyle(AlStyles.STYLE_MASK);
                 break;
             case AlFormatTag.TAG_B:
                 if (rtf_param.length() == 0) {

@@ -10,6 +10,8 @@ import android.view.WindowManager;
 import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.NotePreference;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
@@ -30,12 +32,7 @@ public class NoteApplication extends Application {
     }
 
     public static void initWithAppConfig(final Activity activity) {
-        if (!NoteAppConfig.sharedInstance(activity).useFullScreen()) {
-            return;
-        }
-        activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        DeviceUtils.setFullScreenOnCreate(activity, NoteAppConfig.sharedInstance(activity).useFullScreen());
     }
 
     @Override

@@ -69,6 +69,11 @@ public class AlTapInfo {
      */
     public final StringBuilder  image = new StringBuilder();
 
+    /*
+	тап был по области, которая отмечена как заметка. Id  этой самой заметки
+	*/
+    public int bookmarkId = -1;
+
 
     public void clearInfo() {
         pos = TAP_ON_CLEAR_SPACE;
@@ -81,6 +86,7 @@ public class AlTapInfo {
         isTableTap = false;
         link.setLength(0);
         image.setLength(0);
+        bookmarkId = -1;
         tapWordStart = TAP_ON_CLEAR_SPACE;
         tapWordStop = TAP_ON_CLEAR_SPACE;
     }

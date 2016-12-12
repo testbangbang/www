@@ -17,7 +17,7 @@ public class TriangleShape extends BaseShape {
         return ShapeFactory.SHAPE_TRIANGLE;
     }
 
-    public boolean addMovePoint() {
+    public boolean isAddMovePoint() {
         return false;
     }
 

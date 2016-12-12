@@ -5,6 +5,7 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.shape.BrushScribbleShape;
 import com.onyx.android.sdk.scribble.shape.CircleShape;
 import com.onyx.android.sdk.scribble.shape.LineShape;
 import com.onyx.android.sdk.scribble.shape.NormalPencilShape;
@@ -15,7 +16,7 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.utils.ExportUtils;
+import com.onyx.android.sdk.utils.ExportUtils;
 import com.onyx.kreader.utils.PdfWriterUtils;
 
 import java.io.IOException;
@@ -107,8 +108,9 @@ public class ExportNotesRequest extends BaseReaderRequest {
         for (Shape shape : shapes) {
             int color = getColorOfShape(shape, colorOption);
             boolean succ;
-            if (shape instanceof NormalPencilShape) {
-                succ = writePolyLine((NormalPencilShape)shape, color);
+            if (shape instanceof NormalPencilShape ||
+                    shape instanceof BrushScribbleShape) {
+                succ = writePolyLine(shape, color);
             } else if (shape instanceof LineShape) {
                 succ = writeLine((LineShape)shape, color);
             } else if (shape instanceof RectangleShape) {
@@ -155,7 +157,7 @@ public class ExportNotesRequest extends BaseReaderRequest {
         return rect;
     }
 
-    private boolean writePolyLine(final NormalPencilShape line, final int color) {
+    private boolean writePolyLine(final Shape line, final int color) {
         int page = Integer.parseInt(line.getPageUniqueId());
         float[] boundingRect = getBoundingRect(line);
         float[] vertices = new float[line.getPoints().size() * 2];

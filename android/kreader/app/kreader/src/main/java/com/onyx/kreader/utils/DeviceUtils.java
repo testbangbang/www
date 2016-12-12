@@ -44,8 +44,6 @@ public class DeviceUtils {
 
     public static final String TAG = DeviceUtils.class.getSimpleName();
 
-    private final static String SHOW_STATUS_BAR_ACTION = "show_status_bar";
-    private final static String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
     private final static String DEFAULT_TOUCH_DEVICE_PATH = "/dev/input/event1";
 
     public static boolean isRkDevice() {
@@ -154,38 +152,7 @@ public class DeviceUtils {
         return orientation;
     }
 
-    public static void setFullScreen(Activity activity, boolean fullScreen) {
-        if (Build.VERSION.SDK_INT >= 19) {
-            if (fullScreen) {
-                setFullScreenForAPIAbove19(activity);
-            } else {
 
-            }
-            return;
-        }
-
-        Intent intent;
-        if (fullScreen) {
-            intent = new Intent(HIDE_STATUS_BAR_ACTION);
-        } else {
-            intent = new Intent(SHOW_STATUS_BAR_ACTION);
-        }
-        activity.sendBroadcast(intent);
-    }
-
-    public static void setFullScreenForAPIAbove19(final Activity activity) {
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        View decorView = activity.getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-    }
-
-    public static void requestFullScreenFeature(final Activity activity, boolean fullScreen) {
-        if (fullScreen) {
-            activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
-    }
 
     public static int detectTouchDeviceCount() {
         int count = 0;
@@ -279,11 +246,6 @@ public class DeviceUtils {
         } finally {
             return typeface;
         }
-    }
-
-    public static void exit() {
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
     }
 
     public static int getBatteryPecentLevel(final Context context) {

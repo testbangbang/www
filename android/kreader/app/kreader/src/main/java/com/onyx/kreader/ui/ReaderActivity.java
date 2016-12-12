@@ -36,6 +36,7 @@ import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
@@ -90,7 +91,6 @@ import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.utils.DeviceConfig;
-import com.onyx.kreader.utils.DeviceUtils;
 import com.onyx.kreader.utils.TreeObserverUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -139,7 +139,6 @@ public class ReaderActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        afterPause(null);
     }
 
     @Override
@@ -222,14 +221,18 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void beforeSetContentView() {
-        boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this);
-        DeviceUtils.requestFullScreenFeature(this, fullScreen);
+        boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
+        DeviceUtils.setFullScreenOnCreate(this, fullScreen);
     }
 
     private void initComponents() {
         initStatusBar();
         initReaderDataHolder();
         initSurfaceView();
+    }
+
+    private void initReaderMenu(){
+        ShowReaderMenuAction.initDisableMenus(getReaderDataHolder());
     }
 
     private void initStatusBar() {
@@ -334,7 +337,6 @@ public class ReaderActivity extends ActionBarActivity {
         syncSystemStatusBar();
         syncReaderPainter();
         reconfigStatusBar();
-        checkNoteDrawing();
     }
 
     private void syncReaderPainter() {
@@ -345,18 +347,10 @@ public class ReaderActivity extends ActionBarActivity {
         setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
     }
 
-    private void checkNoteDrawing() {
-        if (!getReaderDataHolder().inNoteWritingProvider()) {
-            return;
-        }
-        final StartNoteRequest request = new StartNoteRequest(getReaderDataHolder().getVisiblePages());
-        getReaderDataHolder().getNoteManager().submit(this, request, null);
-    }
-
     @Subscribe
     public void onLayoutChanged(final LayoutChangeEvent event) {
         updateNoteHostView();
-        getReaderDataHolder().updateNoteManager();
+        getReaderDataHolder().updateRawEventProcessor();
     }
 
     @Subscribe
@@ -376,7 +370,7 @@ public class ReaderActivity extends ActionBarActivity {
         }
         boolean update = (event != null && event.isApplyGCIntervalUpdate());
         if (update) {
-            ReaderDeviceManager.applyWithGCIntervalWithoutRegal(surfaceView);
+            ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
         }
         if (event != null && !event.isWaitForShapeData()) {
             beforeDrawPage();
@@ -479,8 +473,11 @@ public class ReaderActivity extends ActionBarActivity {
             flushNoteAction.execute(getReaderDataHolder(), null);
             return;
         }
-        getReaderDataHolder().getNoteManager().ensureContentRendered();
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        boolean drawDuringErasing = false;
+        if (drawDuringErasing) {
+            getReaderDataHolder().getNoteManager().ensureContentRendered();
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        }
     }
 
     @Subscribe
@@ -578,10 +575,11 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void onSurfaceViewSizeChanged() {
-        updateNoteHostView();
-        if (getReaderDataHolder().isDocumentOpened()) {
-            new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
+        if (!getReaderDataHolder().isDocumentOpened()) {
+            return;
         }
+        updateNoteHostView();
+        new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
     }
 
     private void updateNoteHostView() {
@@ -594,8 +592,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onDocumentInitRendered(final DocumentInitRenderedEvent event) {
+        initReaderMenu();
         updateNoteHostView();
-        getReaderDataHolder().updateNoteManager();
+        getReaderDataHolder().updateRawEventProcessor();
     }
 
     @Subscribe
@@ -660,7 +659,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onShortcutErasingStart(final ShortcutErasingStartEvent event) {
         if (!getReaderDataHolder().inNoteWritingProvider()) {
-            getReaderDataHolder().getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
+            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
         }
     }
 
@@ -670,9 +669,6 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShortcutErasingFinish(final ShortcutErasingFinishEvent event) {
-        if (!ShowReaderMenuAction.isScribbleMenuVisible()) {
-            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
-        }
     }
 
     @Subscribe
@@ -695,8 +691,8 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onShortcutDrawingFinished(final ShortcutDrawingFinishedEvent event) {
-        getHandlerManager().setEnableTouch(true);
         if (getReaderDataHolder().inNoteWritingProvider()) {
+            getHandlerManager().setEnableTouch(true);
             return;
         }
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
@@ -704,6 +700,7 @@ public class ReaderActivity extends ActionBarActivity {
         flushNoteAction.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                getHandlerManager().setEnableTouch(true);
                 ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
             }
         });
@@ -843,7 +840,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void setFullScreen(boolean fullScreen) {
-        DeviceUtils.setFullScreen(this, fullScreen);
+        DeviceUtils.setFullScreenOnResume(this, fullScreen);
     }
 
     public SurfaceView getSurfaceView() {

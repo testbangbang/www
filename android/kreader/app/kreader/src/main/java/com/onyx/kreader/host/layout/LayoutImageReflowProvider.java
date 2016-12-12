@@ -123,7 +123,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
             return false;
         }
         drawContext.renderingBitmap.attachWith(key, bmp);
-        LayoutProviderUtils.updateReaderViewInfo(readerViewInfo, getLayoutManager());
+        LayoutProviderUtils.updateReaderViewInfo(reader, readerViewInfo, getLayoutManager());
         return true;
     }
 

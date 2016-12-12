@@ -1,7 +1,5 @@
 package com.neverland.engbook.bookobj;
 
-import android.graphics.Paint;
-
 import android.util.Log;
 
 import com.neverland.engbook.forpublic.AlBitmap;
@@ -12,11 +10,14 @@ import com.neverland.engbook.forpublic.AlCurrentPosition;
 import com.neverland.engbook.forpublic.AlEngineNotifyForUI;
 import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.AlIntHolder;
+import com.neverland.engbook.forpublic.AlOneBookmark;
 import com.neverland.engbook.forpublic.AlOneSearchResult;
 import com.neverland.engbook.forpublic.AlPoint;
 import com.neverland.engbook.forpublic.AlPublicProfileOptions;
+import com.neverland.engbook.forpublic.AlRect;
 import com.neverland.engbook.forpublic.AlSourceImage;
 import com.neverland.engbook.forpublic.AlTapInfo;
+import com.neverland.engbook.forpublic.AlTextOnScreen;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_FILE_TYPE;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_GOTOCOMMAND;
@@ -28,6 +29,8 @@ import com.neverland.engbook.forpublic.EngBookMyType.TAL_SCREEN_SELECTION_MODE;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_THREAD_TASK;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.level1.AlFileDoc;
+import com.neverland.engbook.level1.AlFilesBypassRAR;
+import com.neverland.engbook.level1.AlFilesCBZ;
 import com.neverland.engbook.level1.AlFilesDocx;
 import com.neverland.engbook.level1.AlFilesFB3;
 import com.neverland.engbook.level1.AlFilesMOBI;
@@ -40,8 +43,10 @@ import com.neverland.engbook.level1.AlFilesBypassDecrypt;
 import com.neverland.engbook.level1.AlFilesBypassNative;
 import com.neverland.engbook.level1.AlFilesEPUB;
 
+import com.neverland.engbook.level1.AlFilesRAR;
 import com.neverland.engbook.level1.AlFilesZIP;
 import com.neverland.engbook.level2.AlFormat;
+import com.neverland.engbook.level2.AlFormatCOMICS;
 import com.neverland.engbook.level2.AlFormatDOC;
 import com.neverland.engbook.level2.AlFormatDOCX;
 import com.neverland.engbook.level2.AlFormatEPUB;
@@ -220,9 +225,9 @@ public class AlBookEng{
 
         closeBook();
 
-        EngBitmap.reCreateBookBitmap(bmp[0], 0, 0, shtamp);
-        EngBitmap.reCreateBookBitmap(bmp[1], 0, 0, shtamp);
-        EngBitmap.reCreateBookBitmap(bmp[2], 0, 0, shtamp);
+        EngBitmap.reCreateBookBitmap(bmp[0], 0, 0, null);
+        EngBitmap.reCreateBookBitmap(bmp[1], 0, 0, null);
+        EngBitmap.reCreateBookBitmap(bmp[2], 0, 0, null);
 
         return TAL_RESULT.OK;
     }
@@ -244,8 +249,8 @@ public class AlBookEng{
 
 		old_style = 0;
 		initDefaultPreference();
+		initDefaultStyles();
 		initDefaultProfile();
-		initDefaultStyles();	
 		
 		calc.init(engOptions, fontParam);
 		fonts.init(engOptions, calc, fontParam);
@@ -311,11 +316,14 @@ public class AlBookEng{
 
 
 		EngBitmap.reCreateBookBitmap(bmp[0], 0, 0, shtamp);
-		EngBitmap.reCreateBookBitmap(bmp[1], 0, 0, shtamp);
-        EngBitmap.reCreateBookBitmap(bmp[2], 0, 0, shtamp);
+		EngBitmap.reCreateBookBitmap(bmp[1], 0, 0, null);
+        EngBitmap.reCreateBookBitmap(bmp[2], 0, 0, null);
+
 
 		return TAL_RESULT.OK;
 	}
+
+	private final AlTextOnScreen textOnScreen = new AlTextOnScreen();
 
     /**
      * Инициализация окна (Activity), с которым взаимодействует библиотека.
@@ -415,8 +423,6 @@ public class AlBookEng{
         profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT] = prof.colorText;
         profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG] = prof.colorBack;
         profiles.colors[InternalConst.TAL_PROFILE_COLOR_TITLE] = prof.colorTitle;
-        profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECT] = prof.colorSelected;//0x66ffff;
-        profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECTMARK] = prof.colorMarked;//0xffcccc;
 
         preferences.justify = prof.justify;
         preferences.sectionNewScreen = prof.sectionNewScreen;
@@ -479,10 +485,7 @@ public class AlBookEng{
 		if (profiles.font_sizes[InternalConst.TAL_PROFILE_FONT_NOTE] > profiles.font_sizes[0])
 			profiles.font_sizes[InternalConst.TAL_PROFILE_FONT_NOTE] = profiles.font_sizes[0];		
 		
-		profiles.colors[InternalConst.TAL_PROFILE_COLOR_LINK] =	0x2196f3;//0xffcc00;	
-		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK] =	0x4caf50;//0x66ff33;
-		/*profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECT] = 0x3f51b5;//0x66ffff;
-		profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECTMARK] = 0x009688;//0xffcccc;*/
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_LINK] =	0x2196f3;//0xffcc00;
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_SHADOW] = 0x00808080;
 
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_BOLD] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
@@ -492,15 +495,17 @@ public class AlBookEng{
 		
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_CUSTOM1] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_CUSTOM2] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
-		profiles.colors[InternalConst.TAL_PROFILE_COLOR_CUSTOM3] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
-		profiles.colors[InternalConst.TAL_PROFILE_COLOR_CUSTOM4] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
-		profiles.colors[InternalConst.TAL_PROFILE_COLOR_CUSTOM5] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
-		profiles.colors[InternalConst.TAL_PROFILE_COLOR_CUSTOM6] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
-		profiles.colors[InternalConst.TAL_PROFILE_COLOR_CUSTOM7] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
-		profiles.colors[InternalConst.TAL_PROFILE_COLOR_CUSTOM8] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
-		profiles.colors[InternalConst.TAL_PROFILE_COLOR_CUSTOM9] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_CUSTOMA] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_CUSTOMB] = profiles.colors[InternalConst.TAL_PROFILE_COLOR_TEXT];
+
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECT] = styles.color[InternalConst.TAL_PROFILE_COLOR_SELECT];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK0] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK0];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK1] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK1];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK2] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK2];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK3] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK3];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK4] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK4];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK5] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK5];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK6] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK6];
 
 		profiles.DPIMultiplex = preferences.picture_need_tuneK;
 		
@@ -575,32 +580,51 @@ public class AlBookEng{
             styles.style[InternalConst.STYLES_STYLE_POEM] = val.stylePoem;
             styles.style[InternalConst.STYLES_STYLE_FOOTNOTES] = val.styleFootnote;
             styles.style[InternalConst.STYLES_STYLE_CODE] = val.styleCode;
+
+			styles.color[InternalConst.TAL_PROFILE_COLOR_SELECT] = val.colorSelect;
+			styles.color[InternalConst.TAL_PROFILE_COLOR_MARK0] = val.colorMarkFind;
+			styles.color[InternalConst.TAL_PROFILE_COLOR_MARK1] = val.colorMarkRed;
+			styles.color[InternalConst.TAL_PROFILE_COLOR_MARK2] = val.colorMarkYellow;
+			styles.color[InternalConst.TAL_PROFILE_COLOR_MARK3] = val.colorMarkBlue;
+			styles.color[InternalConst.TAL_PROFILE_COLOR_MARK4] = val.colorMarkGreen;
+			styles.color[InternalConst.TAL_PROFILE_COLOR_MARK5] = val.colorMarkPurple;
+			styles.color[InternalConst.TAL_PROFILE_COLOR_MARK6] = val.colorMarkAqua;
         }
+
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECT] = styles.color[InternalConst.TAL_PROFILE_COLOR_SELECT];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK0] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK0];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK1] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK1];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK2] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK2];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK3] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK3];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK4] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK4];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK5] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK5];
+		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK6] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK6];
+
 		shtamp.value++;
 		return returnOkWithRedraw();
 	}
 
 	private void initDefaultStyles() {
 		styles.style[InternalConst.STYLES_STYLE_TITLE] =  AlStyles.SL_FONT_TITLE | AlStyles.SL_SIZE_P2 | AlStyles.SL_COLOR_TITLE | 
-			AlStyles.SL_JUST_CENTER | AlStyles.SL_KONTUR1 | AlStyles.SL_BOLD | AlStyles.SL_MARGL1 | 
-			AlStyles.SL_MARGR1 | AlStyles.SL_SHADOW | AlStyles.SL_INTER_ADDFONT;
+			AlStyles.SL_JUST_CENTER | AlStyles.SL_KONTUR1 | AlStyles.STYLE_BOLD | AlStyles.SL_MARGL1 |
+			AlStyles.SL_MARGR1 | AlStyles.SL_SHADOW | AlStyles.SL_INTER_TEXT;
 		styles.style[InternalConst.STYLES_STYLE_STITLE] = AlStyles.SL_FONT_TITLE | AlStyles.SL_SIZE_P1 | AlStyles.SL_COLOR_TITLE | 
 			AlStyles.SL_JUST_CENTER | AlStyles.SL_MARGL1 | AlStyles.SL_MARGR1 | //AlStyles.SL_SHADOW | 
-			AlStyles.SL_HYPH | AlStyles.SL_INTER_ADDFONT;
+			AlStyles.SL_HYPH | AlStyles.SL_INTER_TEXT;
 		styles.style[InternalConst.STYLES_STYLE_ANNOTATION] = AlStyles.SL_FONT_TEXT | AlStyles.SL_SIZE_M3 | AlStyles.SL_COLOR_TEXT | 
-			AlStyles.SL_JUST_LEFT | AlStyles.SL_ITALIC | AlStyles.SL_MARGL3 | AlStyles.SL_HYPH | 
-			AlStyles.SL_INTER_ADDTEXT;
+			AlStyles.SL_JUST_LEFT | AlStyles.STYLE_ITALIC | AlStyles.SL_MARGL3 | AlStyles.SL_HYPH |
+			AlStyles.SL_INTER_TEXT;
 		styles.style[InternalConst.STYLES_STYLE_EPIGRAPH] = AlStyles.SL_FONT_TEXT | AlStyles.SL_SIZE_M2 | AlStyles.SL_COLOR_TEXT | 
-			AlStyles.SL_JUST_LEFT | AlStyles.SL_MARGL3 | AlStyles.SL_HYPH | AlStyles.SL_INTER_ADDTEXT;
+			AlStyles.SL_JUST_LEFT | AlStyles.SL_MARGL3 | AlStyles.SL_HYPH | AlStyles.SL_INTER_TEXT;
 		styles.style[InternalConst.STYLES_STYLE_AUTHOR] = AlStyles.SL_FONT_TEXT | AlStyles.SL_SIZE_M3 | AlStyles.SL_COLOR_TEXT | 
-			AlStyles.SL_JUST_RIGHT | AlStyles.SL_MARGL2 | AlStyles.SL_MARGR1 | AlStyles.SL_HYPH | AlStyles.SL_INTER_ADDTEXT;
+			AlStyles.SL_JUST_RIGHT | AlStyles.SL_MARGL2 | AlStyles.SL_MARGR1 | AlStyles.SL_HYPH | AlStyles.SL_INTER_TEXT;
 		styles.style[InternalConst.STYLES_STYLE_CITE] = AlStyles.SL_FONT_TEXT | AlStyles.SL_SIZE_M2 | AlStyles.SL_COLOR_TEXT | 
-			AlStyles.SL_JUST_NONE | AlStyles.SL_ITALIC |
-	    				AlStyles.SL_HYPH | AlStyles.SL_INTER_ADDTEXT;
+			AlStyles.SL_JUST_NONE | AlStyles.STYLE_ITALIC |
+	    				AlStyles.SL_HYPH | AlStyles.SL_INTER_TEXT;
 		styles.style[InternalConst.STYLES_STYLE_PRE] = AlStyles.SL_FONT_CODE | AlStyles.SL_SIZE_M1 | AlStyles.SL_JUST_LEFT | 
-			AlStyles.SL_COLOR_TEXT | AlStyles.SL_INTER_ADDFONT;
+			AlStyles.SL_COLOR_TEXT | AlStyles.SL_INTER_TEXT;
 		styles.style[InternalConst.STYLES_STYLE_POEM] = AlStyles.SL_FONT_TEXT | AlStyles.SL_SIZE_0 | AlStyles.SL_COLOR_TEXT | AlStyles.SL_REDLINE |
-			AlStyles.SL_JUST_LEFT | AlStyles.SL_JUSTIFY_POEM | AlStyles.SL_ITALIC | AlStyles.SL_INTER_ADDTEXT;
+			AlStyles.SL_JUST_LEFT | AlStyles.SL_JUSTIFY_POEM | AlStyles.STYLE_ITALIC | AlStyles.SL_INTER_TEXT;
 		styles.style[InternalConst.STYLES_STYLE_BOLD] = AlStyles.SL_FONT_TEXT | AlStyles.SL_SIZE_0 | AlStyles.SL_COLOR_TEXT | 
 			AlStyles.REMAP_NONEF | AlStyles.REMAP_NONEC;
 		styles.style[InternalConst.STYLES_STYLE_ITALIC] = AlStyles.SL_FONT_TEXT | AlStyles.SL_SIZE_0 | AlStyles.SL_COLOR_TEXT | 
@@ -610,12 +634,21 @@ public class AlBookEng{
 		styles.style[InternalConst.STYLES_STYLE_FLETTER0] = AlStyles.SL_FONT_TITLE | AlStyles.SL_SIZE_P5 | AlStyles.SL_COLOR_TITLE | 
 			AlStyles.SL_KONTUR1 | AlStyles.SL_SHADOW;
 		styles.style[InternalConst.STYLES_STYLE_FOOTNOTES] = AlStyles.SL_FONT_TEXT | AlStyles.SL_SIZE_M2 | AlStyles.SL_COLOR_STATUS | 
-			AlStyles.SL_HYPH | AlStyles.SL_INTER_ADDFONT;
+			AlStyles.SL_HYPH | AlStyles.SL_INTER_TEXT;
 		styles.style[InternalConst.STYLES_STYLE_CODE] = AlStyles.SL_FONT_CODE | AlStyles.SL_SIZE_0 | AlStyles.SL_COLOR_TEXT | 
 			AlStyles.REMAP_ALLF | AlStyles.REMAP_NONEC;
 		styles.style[InternalConst.STYLES_STYLE_CSTYLE] = AlStyles.SL_FONT_TEXT | AlStyles.SL_SIZE_0 | AlStyles.SL_COLOR_TITLE | 
 			AlStyles.REMAP_NONEF | AlStyles.REMAP_NONEC;
 		styles.style[InternalConst.STYLES_STYLE_FLETTER1] = AlStyles.SL_FONT_TITLE | AlStyles.SL_SIZE_P5 | AlStyles.SL_COLOR_TITLE;
+
+		styles.color[InternalConst.TAL_PROFILE_COLOR_SELECT] = AlBookStyles.DEFAULT_COLOR_SELECT;
+		styles.color[InternalConst.TAL_PROFILE_COLOR_MARK0] = AlBookStyles.DEFAULT_COLOR_MARKFIND;
+		styles.color[InternalConst.TAL_PROFILE_COLOR_MARK1] = AlBookStyles.DEFAULT_COLOR_MARKRED;
+		styles.color[InternalConst.TAL_PROFILE_COLOR_MARK2] = AlBookStyles.DEFAULT_COLOR_MARKYELLOW;
+		styles.color[InternalConst.TAL_PROFILE_COLOR_MARK3] = AlBookStyles.DEFAULT_COLOR_MARKBLUE;
+		styles.color[InternalConst.TAL_PROFILE_COLOR_MARK4] = AlBookStyles.DEFAULT_COLOR_MARKGREEN;
+		styles.color[InternalConst.TAL_PROFILE_COLOR_MARK5] = AlBookStyles.DEFAULT_COLOR_MARKPURPLE;
+		styles.color[InternalConst.TAL_PROFILE_COLOR_MARK6] = AlBookStyles.DEFAULT_COLOR_MARKAQUA;
 	}
 
 
@@ -640,9 +673,9 @@ public class AlBookEng{
 		if (profiles.classicFirstLetter) {
 			screen_parameters.fletter_mask0 &= AlStyles.SL_MARKFIRTSTLETTER | AlStyles.SL_FONT_MASK | AlStyles.SL_SIZE_MASK | AlStyles.SL_COLOR_MASK;
 			screen_parameters.fletter_mask0 |= styles.style[InternalConst.STYLES_STYLE_FLETTER1] & (AlStyles.SL_SHADOW | AlStyles.SL_KONTUR_MASK);
-			screen_parameters.fletter_mask1 = styles.style[InternalConst.STYLES_STYLE_FLETTER1] & (AlStyles.SL_BOLD | AlStyles.SL_ITALIC);
+			screen_parameters.fletter_mask1 = styles.style[InternalConst.STYLES_STYLE_FLETTER1] & (AlStyles.STYLE_BOLD | AlStyles.STYLE_ITALIC);
 		} else
-			screen_parameters.fletter_mask1 = styles.style[InternalConst.STYLES_STYLE_FLETTER0] & (AlStyles.SL_BOLD | AlStyles.SL_ITALIC);
+			screen_parameters.fletter_mask1 = styles.style[InternalConst.STYLES_STYLE_FLETTER0] & (AlStyles.STYLE_BOLD | AlStyles.STYLE_ITALIC);
 
 		screen_parameters.style_notes = styles.style[InternalConst.STYLES_STYLE_FOOTNOTES];
 		screen_parameters.style_titlenotes = styles.style[InternalConst.STYLES_STYLE_TITLE] & AlStyles.SL_COLOR_MASK;
@@ -665,17 +698,12 @@ public class AlBookEng{
 
 		for (int i = 0; i < 7; i++) {
 			fonts.modifyPaint(0xffffffffffffffffL, (long)i << AlStyles.SL_FONT_SHIFT, profiles, false);
-			screen_parameters.interFI0[i] = profiles.font_interline[i];
-			screen_parameters.interFH_0[i] = fontParam.base_line_down + fontParam.base_line_up;
-			screen_parameters.interFH_1[i] = fontParam.base_line_down;
-			screen_parameters.interFH_2[i] = fontParam.base_line_up;
+			screen_parameters.cFontInterline[i] = profiles.font_interline[i];
+			screen_parameters.cFontHeight[i] = fontParam.base_line_down + fontParam.base_line_up;
+			screen_parameters.cFontLineDown[i] = fontParam.base_line_down;
+			screen_parameters.cFontLineUp[i] = fontParam.base_line_up;
 		}
-		screen_parameters.interFI0[InternalConst.INTER_TEXT] = profiles.font_interline[InternalConst.TAL_PROFILE_FONT_TEXT];
-		screen_parameters.interFI0[InternalConst.INTER_NOTE] = profiles.font_interline[InternalConst.TAL_PROFILE_FONT_NOTE];
-		screen_parameters.interFI0[InternalConst.INTER_FLET] = profiles.font_interline[InternalConst.TAL_PROFILE_FONT_FLET];
-		//
-		screen_parameters.interFI0[0] = screen_parameters.interFI0[InternalConst.INTER_TEXT];
-		screen_parameters.interFI0[3] = screen_parameters.interFI0[InternalConst.INTER_NOTE];
+
 		//
 		fonts.modifyPaint(0xffffffffffffffffL, 0, profiles, false);
 		old_style = 0;
@@ -782,8 +810,9 @@ public class AlBookEng{
 
             float charWidth = (float)(testWidth[0]) / TESTSTRING_FOR_CALCPAGESIZE.length() + 0.5f;
 
-            int itemHeight = screen_parameters.interFH_0[0] +
-                    screen_parameters.interFH_0[0] * screen_parameters.interFI0[InternalConst.INTER_TEXT] / 100;
+            int itemHeight = screen_parameters.cFontHeight[InternalConst.TAL_PROFILE_FONT_TEXT] +
+                    screen_parameters.cFontHeight[InternalConst.TAL_PROFILE_FONT_TEXT] *
+							screen_parameters.cFontInterline[InternalConst.TAL_PROFILE_FONT_TEXT] / 100;
             int rows = (screenHeight - screen_parameters.marginT - screen_parameters.marginB) / itemHeight;
             if (rows < 1)
                 rows = 1;
@@ -1075,8 +1104,10 @@ public class AlBookEng{
 
         if (bmp[2].shtamp != shtamp.value || testPosition != bmp[2].position) {
 
-            if (bmp[2].width != rW || bmp[2].height != rH)
-                EngBitmap.reCreateBookBitmap(bmp[2], width, height, null);
+            if (bmp[2].width != rW || bmp[2].height != rH) {
+				EngBitmap.reCreateBookBitmap(bmp[2], width, height, null);
+
+			}
 
             if (cachePrevNextPoint.current != bookPosition || cachePrevNextPoint.shtamp != shtamp.value) {
                 cachePrevNextPoint.shtamp = shtamp.value;
@@ -1094,7 +1125,7 @@ public class AlBookEng{
             if (addonPosition == bookPosition)
                 return null;
 
-            bmp[2].shtamp = shtamp.value;
+			bmp[2].shtamp = shtamp.value;
             bmp[2].position = testPosition;
 
             calc.beginMain(bmp[2], profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG]);
@@ -1172,6 +1203,60 @@ public class AlBookEng{
 
 	private void markFindResultAndSelect(AlOnePage page) {
 		AlOneItem oi;
+
+		int spos, epos;
+		if (bookmarks != null) {
+			for (int i = 0; i < bookmarks.size(); i++) {
+				if (bookmarks.get(i).color == EngBookMyType.TAL_BOOKMARK_COLOR.NONE)
+					continue;
+
+				spos = bookmarks.get(i).pos_start;
+				epos = bookmarks.get(i).pos_end;
+
+				if ((spos >= page.start_position && spos < page.end_position)||
+					(epos >= page.start_position && epos < page.end_position)||
+					(spos <  page.start_position && epos > page.end_position)){
+
+					boolean needMark;
+					for (int item = 0; item < page.countItems; item++) {
+						oi = page.items.get(item);
+						for (int poschar = 0; poschar < oi.count; poschar++) {
+							if (oi.pos[poschar] >= spos && oi.pos[poschar] <= epos) {
+								needMark = true;
+							} else if (oi.pos[poschar] == SPECIAL_HYPH_POS && poschar > 0 && oi.pos[poschar - 1] >= spos && oi.pos[poschar - 1] <= epos) {
+								needMark = true;
+							} else
+								needMark = false;
+
+							if (needMark) {
+								oi.style[poschar] &= ~(AlStyles.SL_MARK | AlStyles.SL_MARKCOLOR_MASK);
+								switch (bookmarks.get(i).color) {
+								case RED:
+									oi.style[poschar] |= AlStyles.SL_MARK | AlStyles.SL_MARKCOLOR2;
+									break;
+								case YELLOW:
+									oi.style[poschar] |= AlStyles.SL_MARK | AlStyles.SL_MARKCOLOR3;
+									break;
+								case BLUE:
+									oi.style[poschar] |= AlStyles.SL_MARK | AlStyles.SL_MARKCOLOR4;
+									break;
+								case GREEN:
+									oi.style[poschar] |= AlStyles.SL_MARK | AlStyles.SL_MARKCOLOR5;
+									break;
+								case PURPLE:
+									oi.style[poschar] |= AlStyles.SL_MARK | AlStyles.SL_MARKCOLOR6;
+									break;
+								case UNDERLINE:
+									oi.style[poschar] |= AlStyles.SL_MARK | AlStyles.SL_MARKCOLOR7;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
 		switch (selection.selectMode) {
 			case CLEAR:
 				for (int item = 0; item < page.countItems; item++) {
@@ -1207,7 +1292,6 @@ public class AlBookEng{
 				break;
 			default:
 				if (format.resfind.size() > 0) {
-					int spos, epos;
 					for (int i = 0; i < format.resfind.size(); i++) {
 						spos = format.resfind.get(i).pos_start;
 						epos = format.resfind.get(i).pos_end;
@@ -1220,10 +1304,10 @@ public class AlBookEng{
                                     continue;
 								for (int poschar = 0; poschar < oi.count; poschar++) {
 									if (oi.pos[poschar] >= spos && oi.pos[poschar] <= epos) {
-                                        oi.style[poschar] |= AlStyles.SL_SELECT;
+                                        oi.style[poschar] |= AlStyles.SL_MARK | AlStyles.SL_MARKCOLOR1;
                                     } else
                                     if (oi.pos[poschar] == SPECIAL_HYPH_POS && poschar > 0 && oi.pos[poschar - 1] >= spos && oi.pos[poschar - 1] <= epos)
-                                        oi.style[poschar] |= AlStyles.SL_SELECT;
+                                        oi.style[poschar] |= AlStyles.SL_MARK | AlStyles.SL_MARKCOLOR1;
 								}
 							}
 						}
@@ -1709,6 +1793,28 @@ public class AlBookEng{
                         calc.drawLine(x + w, y - h, x + w, y, preferences.picture_need_tuneK, profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECT]);
                         calc.drawRect(x, y,// - 3 * preferences.picture_need_tuneK,
                                 x + w, y + downLine, profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECT]);
+					} else
+					if ((style & AlStyles.SL_MARK) != 0) {
+						int num_color = (int) ((old_style & AlStyles.SL_MARKCOLOR_MASK) >> AlStyles.SL_MARKCOLOR_SHIFT);
+
+						int sm;
+						switch (num_color) {
+							case 1: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK0]; break;
+							case 2: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK1]; break;
+							case 3: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK2]; break;
+							case 4: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK3]; break;
+							case 5: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK4]; break;
+							case 6: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK5]; break;
+							case 7: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK6]; break;
+							default: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG]; break;
+						}
+
+						sm |= 0x80000000;
+						if (num_color == 7) {
+							calc.drawRect(x, y + 1, x + w, y + 2, sm);
+						} else {
+							calc.drawRect(x, y + 1, x + w, y + downLine, sm);
+						}
 					}
 					
 					return;
@@ -1888,20 +1994,45 @@ public class AlBookEng{
 
 			int sm;
 			if ((old_style & (AlStyles.SL_MARK | AlStyles.SL_SELECT)) != 0) {
-				if ((old_style & (AlStyles.SL_MARK | AlStyles.SL_SELECT)) == (AlStyles.SL_MARK | AlStyles.SL_SELECT)) {
-					sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECTMARK];				
-				} else
-				if ((old_style & AlStyles.SL_SELECT) != 0) {														
-					sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECT];
-				} else {
-					sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK];
-				}
-				
-				x2 = x; 
-				for (i = start; i <= end; i++)
-					x2 += oi.width[i];				
 
-				calc.drawRect(x, ySelect0 - oi.base_line_up, x2, ySelect1 + oi.base_line_down, sm);
+				if ((old_style & AlStyles.SL_MARK) != 0) {
+					int num_color = (int) ((old_style & AlStyles.SL_MARKCOLOR_MASK) >> AlStyles.SL_MARKCOLOR_SHIFT);
+
+					switch (num_color) {
+					case 1: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK0]; break;
+					case 2: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK1]; break;
+					case 3: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK2]; break;
+					case 4: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK3]; break;
+					case 5: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK4]; break;
+					case 6: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK5]; break;
+					case 7: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK6]; break;
+					default: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG]; break;
+					}
+
+					sm |= 0x80000000;
+
+					x2 = x;
+					for (i = start; i <= end; i++)
+						x2 += oi.width[i];
+
+					if (num_color == 7) {
+						calc.drawRect(x, ySelect0  + 1, x2, ySelect1 + 2, sm);
+					} else {
+						calc.drawRect(x, ySelect0 - oi.base_line_up, x2, ySelect1 + oi.base_line_down, sm);
+					}
+				}
+
+				if ((old_style & AlStyles.SL_SELECT) != 0) {
+					sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECT];
+
+					sm |= 0x80000000;
+
+					x2 = x;
+					for (i = start; i <= end; i++)
+						x2 += oi.width[i];
+
+					calc.drawRect(x, ySelect0 - oi.base_line_up, x2, ySelect1 + oi.base_line_down, sm);
+				}
 			}
 
 			
@@ -1912,7 +2043,7 @@ public class AlBookEng{
 				y -= fontParam.base_line_up / 2; 
 			}
 			
-			if ((old_style & (AlStyles.STYLE_LINK | AlStyles.STYLE_UNDER)) != 0) {						
+			if ((old_style & (AlStyles.STYLE_LINK | AlStyles.STYLE_UNDER)) != 0) {
 				x2 = x; 
 				for (i = start; i <= end; i++)
 					x2 += oi.width[i];
@@ -2069,7 +2200,7 @@ public class AlBookEng{
 					
 					if (oi.isStart && ((oi.justify & AlStyles.SL_JUST_RIGHT) == 0) && ((oi.style[0] & AlStyles.SL_UL_BASE) != 0)) {
 						int ul = (int) ((oi.style[0] >> AlStyles.SL_UL_SHIFT) & AlStyles.SL_UL_MASK);
-						long stl = oi.style[0] & (~((long)AlStyles.PAR_STYLE_MASK));
+						long stl = oi.style[0] & (~((long)AlStyles.STYLE_MASK));
 						fonts.modifyPaint(old_style, stl, profiles, true);
 						old_style = stl;
 						char ch = 0x2022;
@@ -2105,15 +2236,35 @@ public class AlBookEng{
 									&& ((oi.style[i + 1] & (AlStyles.SL_SELECT | AlStyles.SL_MARK)) != 0)) {
 
 								int sm;
-								if ((old_style & (AlStyles.SL_MARK | AlStyles.SL_SELECT)) == (AlStyles.SL_MARK | AlStyles.SL_SELECT)) {
-									sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECTMARK];
-								} else
+
+								if ((old_style & AlStyles.SL_MARK) != 0) {
+									int num_color = (int) ((old_style & AlStyles.SL_MARKCOLOR_MASK) >> AlStyles.SL_MARKCOLOR_SHIFT);
+
+									switch (num_color) {
+										case 1: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK0]; break;
+										case 2: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK1]; break;
+										case 3: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK2]; break;
+										case 4: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK3]; break;
+										case 5: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK4]; break;
+										case 6: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK5]; break;
+										case 7: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK6]; break;
+										default: sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_BG]; break;
+									}
+
+									sm |= 0x80000000;
+									if (num_color == 7) {
+										calc.drawRect(x, y + 1, x + oi.width[i], y + 2, sm);
+									} else {
+										calc.drawRect(x, y - oi.base_line_up, x + oi.width[i], y + oi.base_line_down, sm);
+									}
+								}
+
 								if ((old_style & AlStyles.SL_SELECT) != 0) {
 									sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_SELECT];
-								} else {
-									sm = profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK];
+
+									sm |= 0x80000000;
+									calc.drawRect(x, y - oi.base_line_up, x + oi.width[i], y + oi.base_line_down, sm);
 								}
-								calc.drawRect(x, y - oi.base_line_up, x + oi.width[i], y + oi.base_line_down, sm);
 							}
 							x += oi.width[i];
 
@@ -2160,7 +2311,7 @@ public class AlBookEng{
         String currName;
         String prevExt;
         int	tmp;
-        TAL_FILE_TYPE ft;
+        TAL_FILE_TYPE ft = TAL_FILE_TYPE.TXT;
 
         tmp = fName.indexOf(EngBookMyType.AL_FILENAMES_SEPARATOR);
         if (tmp == -1) {
@@ -2171,10 +2322,26 @@ public class AlBookEng{
             fName = fName.substring(tmp + 1);
         }
 
-        AlFiles activeFile = bookOptions.decryptObj == null ?
-                new AlFilesBypassNative() : new AlFilesBypassDecrypt(bookOptions.decryptObj);
+		if (currName.toLowerCase().endsWith(".rar") || currName.toLowerCase().endsWith(".cbr"))
+			ft = AlFilesBypassRAR.isBypassRARFile(currName);
 
-        int lastInitState = activeFile.initState(currName, null, null);
+		AlFiles activeFile = null;
+		int lastInitState;
+		if (ft == TAL_FILE_TYPE.RARUnk) {
+			openState.decState();
+			return null;
+		} else
+		if (ft == TAL_FILE_TYPE.TXT) {
+			activeFile = bookOptions.decryptObj == null ?
+					new AlFilesBypassNative() : new AlFilesBypassDecrypt(bookOptions.decryptObj);
+			activeFile.setLoadTime(true);
+
+			lastInitState = activeFile.initState(currName, null, null);
+		} else {
+			activeFile = new AlFilesBypassRAR();
+			lastInitState = activeFile.initState(currName, null, null);
+		}
+
         while (true) {
             if (activeFile.getSize() < 1 || lastInitState != TAL_RESULT.OK) {
                 activeFile = null;
@@ -2188,7 +2355,7 @@ public class AlBookEng{
                 prevExt = currName.substring(tmp);
             }
 
-            tmp = fName.indexOf(':');
+            tmp = fName.indexOf(EngBookMyType.AL_FILENAMES_SEPARATOR);
             if (tmp == -1) {
                 currName = fName;
                 fName = "";
@@ -2201,10 +2368,25 @@ public class AlBookEng{
 
             ArrayList<AlFileZipEntry> fList = new ArrayList<>(0);
             fList.clear();
+
+			if (a.getIdentStr().equalsIgnoreCase("bypassrar")) {
+				activeFile = new AlFilesRAR();
+				lastInitState = activeFile.initState(currName, a, fList);
+
+				ft = AlFilesCBZ.isCBZFile(activeFile, prevExt, true);
+				if (ft == TAL_FILE_TYPE.CBZ)
+					return bookMetaData;
+				continue;
+			}
+
             ft = AlFilesZIP.isZIPFile(currName, a, fList, prevExt);
             if (ft == TAL_FILE_TYPE.ZIP) {
                 activeFile = new AlFilesZIP();
                 lastInitState = activeFile.initState(currName, a, fList);
+
+				ft = AlFilesCBZ.isCBZFile(activeFile, prevExt, true);
+				if (ft == TAL_FILE_TYPE.CBZ)
+					return bookMetaData;
                 continue;
             } else
             if (ft == TAL_FILE_TYPE.FB3) {
@@ -2310,7 +2492,8 @@ public class AlBookEng{
 		String currName;
 		String prevExt;
 		int	tmp;
-		TAL_FILE_TYPE ft;
+		TAL_FILE_TYPE ft = TAL_FILE_TYPE.TXT;
+		bookmarks = null;
 
 		tmp = fName.indexOf(EngBookMyType.AL_FILENAMES_SEPARATOR);
 		if (tmp == -1) {
@@ -2322,12 +2505,29 @@ public class AlBookEng{
 		}		
 
 		//Log.e("files open start", Long.toString(System.currentTimeMillis()));
-		
-		AlFiles activeFile = bookOptions.decryptObj == null ?
-                new AlFilesBypassNative() : new AlFilesBypassDecrypt(bookOptions.decryptObj);
-		activeFile.setLoadTime(true);
 
-		int lastInitState = activeFile.initState(currName, null, null);
+		if (currName.toLowerCase().endsWith(".rar") || currName.toLowerCase().endsWith(".cbr"))
+			ft = AlFilesBypassRAR.isBypassRARFile(currName);
+
+		AlFiles activeFile = null;
+		int lastInitState;
+		if (ft == TAL_FILE_TYPE.RARUnk) {
+			openState.decState();
+			return TAL_NOTIFY_RESULT.ERROR;
+		} else
+		if (ft == TAL_FILE_TYPE.TXT) {
+			activeFile = bookOptions.decryptObj == null ?
+					new AlFilesBypassNative() : new AlFilesBypassDecrypt(bookOptions.decryptObj);
+			activeFile.setLoadTime(true);
+
+			lastInitState = activeFile.initState(currName, null, null);
+		} else {
+			activeFile = new AlFilesBypassRAR();
+			activeFile.setLoadTime(true);
+
+			lastInitState = activeFile.initState(currName, null, null);
+		}
+
 		while (true) {
 			if (activeFile.getSize() < 1 || lastInitState != TAL_RESULT.OK) {
 				activeFile = null;
@@ -2342,7 +2542,7 @@ public class AlBookEng{
 				prevExt = currName.substring(tmp);
 			}
 
-			tmp = fName.indexOf(':');
+			tmp = fName.indexOf(EngBookMyType.AL_FILENAMES_SEPARATOR);
 			if (tmp == -1) {
 				currName = fName;
 				fName = "";
@@ -2355,10 +2555,34 @@ public class AlBookEng{
 
 			ArrayList<AlFileZipEntry> fList = new ArrayList<>(0);
 			fList.clear();
+
+			if (a.getIdentStr().equalsIgnoreCase("bypassrar")) {
+				activeFile = new AlFilesRAR();
+				lastInitState = activeFile.initState(currName, a, fList);
+
+				ft = AlFilesCBZ.isCBZFile(activeFile, prevExt, true);
+				if (ft == TAL_FILE_TYPE.CBZ) {
+					a = activeFile;
+					activeFile = new AlFilesCBZ();
+					lastInitState = activeFile.initState(currName, a, fList);
+					break;
+				}
+				continue;
+			}
+
 			ft = AlFilesZIP.isZIPFile(currName, a, fList, prevExt);		
 			if (ft == TAL_FILE_TYPE.ZIP) {
 				activeFile = new AlFilesZIP();
                 lastInitState = activeFile.initState(currName, a, fList);
+
+				ft = AlFilesCBZ.isCBZFile(activeFile, prevExt, false);
+				if (ft == TAL_FILE_TYPE.CBZ) {
+					a = activeFile;
+					activeFile = new AlFilesCBZ();
+					lastInitState = activeFile.initState(currName, a, fList);
+					break;
+				}
+
 				continue;
 			} else
 			if (ft == TAL_FILE_TYPE.EPUB) {
@@ -2455,6 +2679,9 @@ public class AlBookEng{
 		if (AlFormatHTML.isHTML(activeFile)) {
 			format = new AlFormatHTML();
 		} else
+		if (AlFormatCOMICS.isCOMICS(activeFile) || AlFormatCOMICS.isACBF(activeFile)) {
+			format = new AlFormatCOMICS();
+		} else
 		if (AlFormatNativeImages.isImage(activeFile, prevExt)) {
 			format = new AlFormatNativeImages();
 		} else
@@ -2485,6 +2712,9 @@ public class AlBookEng{
 			format.getSize() < AL_FILESIZEMIN_FOR_AUTOCALC)
 			preferences.calcPagesModeUsed = TAL_SCREEN_PAGES_COUNT.SCREEN;
 
+		if (!format.isTextFormat)
+			preferences.calcPagesModeUsed = TAL_SCREEN_PAGES_COUNT.SCREEN;
+
 		openState.incState();		
 		switch (preferences.calcPagesModeUsed) {
 		case SCREEN:
@@ -2499,7 +2729,7 @@ public class AlBookEng{
 		}
 		//Log.e("calc page end", Long.toString(System.currentTimeMillis()));
 		
-		bookPosition = getCorrectPosition(bookPosition);
+		bookPosition = getCorrectScreenPagePosition(bookPosition);
 
 		openState.incState();		
 		return TAL_NOTIFY_RESULT.OK;
@@ -2534,8 +2764,18 @@ public class AlBookEng{
 			preferences.calcPagesModeUsed == TAL_SCREEN_PAGES_COUNT.AUTO)
 			preferences.calcPagesModeUsed = TAL_SCREEN_PAGES_COUNT.SCREEN;
 
-		AlThreadData.startThread(threadData, TAL_THREAD_TASK.NEWCALCPAGES);	
+		AlThreadData.startThread(threadData, TAL_THREAD_TASK.NEWCALCPAGES, engOptions.runInOneThread);
 		return TAL_RESULT.OK;
+	}
+
+	private ArrayList<AlOneBookmark> bookmarks = null;
+
+	public int updateBookmarks(ArrayList<AlOneBookmark> bmks) {
+		if (openState.getState() != AlBookState.OPEN)
+			return TAL_RESULT.ERROR;
+		bookmarks = bmks;
+		shtamp.value++;
+		return returnOkWithRedraw();
 	}
 
     /**
@@ -2553,7 +2793,7 @@ public class AlBookEng{
 		openState.incState();		
 
 		threadData.param_char1 = path;
-		AlThreadData.startThread(threadData, TAL_THREAD_TASK.CREATEDEBUG);	
+		AlThreadData.startThread(threadData, TAL_THREAD_TASK.CREATEDEBUG, engOptions.runInOneThread);
 		return TAL_RESULT.OK;
 	}
 
@@ -2584,7 +2824,7 @@ public class AlBookEng{
 
 		threadData.param_void1 = bookOptions;
 		threadData.param_char1 = fName;
-		AlThreadData.startThread(threadData, TAL_THREAD_TASK.OPENBOOK);	
+		AlThreadData.startThread(threadData, TAL_THREAD_TASK.OPENBOOK, engOptions.runInOneThread);
 		return TAL_RESULT.OK;
 	}
 
@@ -2624,13 +2864,14 @@ public class AlBookEng{
 
         bookProperties.title = format.bookTitle;
         bookProperties.authors = format.bookAuthors;
+		bookProperties.isTextFormat = format.isTextFormat;
 
         bookProperties.content = format.ttl;
         if (needCalcPage4Content && format.ttl.size() > 0) {
             for (AlOneContent x : format.ttl) {
                 switch (preferences.calcPagesModeUsed) {
                     case SCREEN:
-                        x.pageNum  = getCorrectPosition(x.positionS);
+                        x.pageNum  = getCorrectScreenPagePosition(x.positionS);
                         break;
                     case AUTO:
                     case SIZE:
@@ -2704,7 +2945,7 @@ public class AlBookEng{
 		openState.incState();
 
 		threadData.param_char1 = find;
-		AlThreadData.startThread(threadData, TAL_THREAD_TASK.FIND);
+		AlThreadData.startThread(threadData, TAL_THREAD_TASK.FIND, engOptions.runInOneThread);
 		return TAL_RESULT.OK;
 	}
 
@@ -2835,8 +3076,8 @@ public class AlBookEng{
         oi.yDrawPosition = -1;
         oi.isTableRow = calcMode == TAL_CALC_MODE.ROWS;
 
-        oi.base_line_down = screen_parameters.interFH_1[(int) ((style & AlStyles.SL_INTER_MASK) >> AlStyles.SL_INTER_SHIFT)];
-		oi.base_line_up = screen_parameters.interFH_2[(int) ((style & AlStyles.SL_INTER_MASK) >> AlStyles.SL_INTER_SHIFT)];		
+        oi.base_line_down = screen_parameters.cFontLineDown[(int) ((style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT)];
+		oi.base_line_up = screen_parameters.cFontLineUp[(int) ((style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT)];
 		if (oi.base_line_down < 2)
 			oi.base_line_down = 2;
 		if (oi.base_line_up < 2)
@@ -2847,21 +3088,21 @@ public class AlBookEng{
 		oi.isPrepare = false;
 		oi.spaceAfterHyph0 = 0;		
 		
-		switch ((int) (style & AlStyles.SL_INTER_ADDMASK)) {
-		case (int)AlStyles.SL_INTER_ADD100: 
+		switch ((int) (style & AlStyles.SL_INTER_MASK)) {
+		case (int)AlStyles.SL_INTER_100:
 			oi.interline = 0;
 			break;
-		case (int)AlStyles.SL_INTER_ADDTEXT: 
-			oi.interline = screen_parameters.interFI0[InternalConst.INTER_TEXT] * 
-				screen_parameters.interFH_0[(int) ((style & AlStyles.SL_INTER_MASK) >> AlStyles.SL_INTER_SHIFT)] / 100;
+		case (int)AlStyles.SL_INTER_TEXT:
+			oi.interline = screen_parameters.cFontInterline[InternalConst.TAL_PROFILE_FONT_TEXT] *
+				screen_parameters.cFontHeight[(int) ((style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT)] / 100;
 			break;	
-		case (int)AlStyles.SL_INTER_ADDNOTES: 
-			oi.interline = screen_parameters.interFI0[InternalConst.INTER_NOTE] * 
-				screen_parameters.interFH_0[(int) ((style & AlStyles.SL_INTER_MASK) >> AlStyles.SL_INTER_SHIFT)] / 100;
+		case (int)AlStyles.SL_INTER_NOTES:
+			oi.interline = screen_parameters.cFontInterline[InternalConst.TAL_PROFILE_FONT_NOTE] *
+				screen_parameters.cFontHeight[(int) ((style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT)] / 100;
 			break;	
-		case (int)AlStyles.SL_INTER_ADDFONT: 
-			oi.interline = screen_parameters.interFI0[(int) ((style & AlStyles.SL_INTER_MASK) >> AlStyles.SL_INTER_SHIFT)] * 
-				screen_parameters.interFH_0[(int) ((style & AlStyles.SL_INTER_MASK) >> AlStyles.SL_INTER_SHIFT)] / 100;
+		case (int)AlStyles.SL_INTER_FONT:
+			oi.interline = screen_parameters.cFontInterline[(int) ((style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT)] *
+				screen_parameters.cFontHeight[(int) ((style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT)] / 100;
 			break;		
 		}
 
@@ -2958,7 +3199,8 @@ public class AlBookEng{
 					oi.isRed = poi.isRed + poi.width[0];
 					oi.isLeft = poi.isLeft;
 					oi.allWidth -= oi.isLeft + oi.isRed;					
-					oi.height -= fontParam.height + screen_parameters.interFI0[InternalConst.INTER_TEXT] * screen_parameters.interFH_0[0] / 100;
+					oi.height -= fontParam.height + (float)screen_parameters.cFontInterline[InternalConst.TAL_PROFILE_FONT_TEXT] *
+							screen_parameters.cFontHeight[InternalConst.TAL_PROFILE_FONT_TEXT] / 100.0;
 					
 					for (int j = 1; j < poi.count; j++) {
 						if ((poi.style[j] & AlStyles.SL_MARKFIRTSTLETTER) == 0)
@@ -3089,8 +3331,8 @@ public class AlBookEng{
             }
 		}
 
-        oi.style[num] &= AlStyles.SL_COLOR_IMASK - AlStyles.SL_SUB - AlStyles.SL_SUP;
-        oi.style[num] |= AlStyles.SL_COLOR_LINK | AlStyles.SL_LINK;
+        oi.style[num] &= AlStyles.SL_COLOR_IMASK - AlStyles.STYLE_SUB - AlStyles.STYLE_SUP;
+        oi.style[num] |= AlStyles.SL_COLOR_LINK | AlStyles.STYLE_LINK;
         oi.pos[num] = pos;
         oi.text[num] = 0x2026;
 	}
@@ -3109,7 +3351,7 @@ public class AlBookEng{
 
         page.textHeightWONotes = page.textHeight;
         page.notePresent = false;
-        page.notesShift = (int) (screen_parameters.interFH_0[0] * 0.6f/* >> 1*/);
+        page.notesShift = (int) (screen_parameters.cFontHeight[InternalConst.TAL_PROFILE_FONT_TEXT] * 0.6f/* >> 1*/);
 
         note_word.need_flags = 0;
         note_word.count = 0;
@@ -3128,7 +3370,7 @@ public class AlBookEng{
                     break;
                 if ((ch = format_note_and_style.txt[i]) == 0x00)
                     continue;
-                if ((format_note_and_style.stl[i] & AlStyles.SL_HIDDEN) != 0)
+                if ((format_note_and_style.stl[i] & AlStyles.STYLE_HIDDEN) != 0)
                     continue;
 
                 //
@@ -3834,7 +4076,7 @@ public class AlBookEng{
 		
 		int pos = tword.pos[pos_in_word];
 
-        int devDiff = screen_parameters.interFH_1[(int) ((tword.style[pos_in_word] & AlStyles.SL_INTER_MASK) >> AlStyles.SL_INTER_SHIFT)];
+        int devDiff = screen_parameters.cFontLineDown[(int) ((tword.style[pos_in_word] & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT)];
         if (devDiff < 2)
             devDiff = 2;
 		int maxHeight = screen_parameters.free_picture_height -
@@ -4512,38 +4754,38 @@ public class AlBookEng{
 			} else {		
 				if (calcMode == TAL_CALC_MODE.NOTES) {
 					for (i = 0; i < tword.count; i++) {
-						if ((tword.style[i] & AlStyles.SL_CODE) != 0) {
+						if ((tword.style[i] & AlStyles.STYLE_CODE) != 0) {
 							tword.style[i] &= AlStyles.SL_FONT_MASK | 
-								AlStyles.SL_MARKTITLE | AlStyles.SL_BOLD | AlStyles.SL_MASKFORLINK | 
-								AlStyles.SL_ITALIC | AlStyles.SL_SUB | AlStyles.SL_SUP | AlStyles.SL_LINK | AlStyles.SL_IMAGE |
-								AlStyles.SL_HIDDEN | AlStyles.SL_STRIKE | AlStyles.SL_UNDER;
+								AlStyles.SL_MARKTITLE | AlStyles.STYLE_BOLD | AlStyles.SL_MASKFORLINK |
+								AlStyles.STYLE_ITALIC | AlStyles.STYLE_SUB | AlStyles.STYLE_SUP | AlStyles.STYLE_LINK | AlStyles.SL_IMAGE |
+								AlStyles.STYLE_HIDDEN | AlStyles.STYLE_STRIKE | AlStyles.STYLE_UNDER;
 							if (preferences.styleSumm) 
 								tword.style[i] |= screen_parameters.style_notes & AlStyles.SL_FONT_IMASK; else 
 								tword.style[i] ^= screen_parameters.style_notes & AlStyles.SL_FONT_IMASK;
 						} else 
-						if ((tword.style[i] & AlStyles.SL_HIDDEN) != 0 && (tword.style[i] & AlStyles.SL_REMAPFONT) != 0 ) {
+						if ((tword.style[i] & AlStyles.STYLE_HIDDEN) != 0 && (tword.style[i] & AlStyles.SL_REMAPFONT) != 0 ) {
 							tword.style[i] &= AlStyles.SL_FONT_MASK | 
-								AlStyles.SL_MARKTITLE | AlStyles.SL_BOLD | AlStyles.SL_MASKFORLINK | 
-								AlStyles.SL_ITALIC | AlStyles.SL_SUB | AlStyles.SL_SUP | AlStyles.SL_LINK | AlStyles.SL_IMAGE |
-								AlStyles.SL_HIDDEN | AlStyles.SL_STRIKE | AlStyles.SL_UNDER;
+								AlStyles.SL_MARKTITLE | AlStyles.STYLE_BOLD | AlStyles.SL_MASKFORLINK |
+								AlStyles.STYLE_ITALIC | AlStyles.STYLE_SUB | AlStyles.STYLE_SUP | AlStyles.STYLE_LINK | AlStyles.SL_IMAGE |
+								AlStyles.STYLE_HIDDEN | AlStyles.STYLE_STRIKE | AlStyles.STYLE_UNDER;
 							if (preferences.styleSumm) 
 								tword.style[i] |= screen_parameters.style_notes & AlStyles.SL_FONT_IMASK; else 
 								tword.style[i] ^= screen_parameters.style_notes & AlStyles.SL_FONT_IMASK;
 						} else{
-							tword.style[i] &= AlStyles.SL_MARKTITLE | AlStyles.SL_BOLD | AlStyles.SL_MASKFORLINK | 
-								AlStyles.SL_ITALIC | AlStyles.SL_SUB | AlStyles.SL_SUP | AlStyles.SL_LINK | AlStyles.SL_IMAGE |
-								AlStyles.SL_HIDDEN | AlStyles.SL_STRIKE | AlStyles.SL_UNDER;
+							tword.style[i] &= AlStyles.SL_MARKTITLE | AlStyles.STYLE_BOLD | AlStyles.SL_MASKFORLINK |
+								AlStyles.STYLE_ITALIC | AlStyles.STYLE_SUB | AlStyles.STYLE_SUP | AlStyles.STYLE_LINK | AlStyles.SL_IMAGE |
+								AlStyles.STYLE_HIDDEN | AlStyles.STYLE_STRIKE | AlStyles.STYLE_UNDER;
 							if (preferences.styleSumm) tword.style[i] |= 
 								screen_parameters.style_notes; else tword.style[i] ^= screen_parameters.style_notes;
 						}
 						
-						if ((tword.style[i] & AlStyles.SL_LINK) != 0x00) {
+						if ((tword.style[i] & AlStyles.STYLE_LINK) != 0x00) {
 							tword.style[i] &= AlStyles.SL_COLOR_IMASK;
 							tword.style[i] |= AlStyles.SL_COLOR_LINK;
 						} else						
 						if ((tword.style[i] & AlStyles.SL_MARKTITLE) != 0x00) {
 							tword.style[i] &= AlStyles.SL_COLOR_IMASK & 0xfffffffffffffffcL;
-							tword.style[i] |= screen_parameters.style_titlenotes + AlStyles.SL_BOLD;
+							tword.style[i] |= screen_parameters.style_titlenotes + AlStyles.STYLE_BOLD;
 						}
 						
 						tword.style[i] |= (tword.style[i] & AlStyles.SL_FONT_MASK) >> 8;
@@ -4618,8 +4860,9 @@ public class AlBookEng{
 						if (profiles.classicFirstLetter) {
 							tword.base_line_down[0] = fontParam.def_line_down;
 							tword.base_line_up[0] = fontParam.height - fontParam.base_line_down;
-							tword.base_line_down[0] += fontParam.height + screen_parameters.interFI0[InternalConst.INTER_TEXT] * 
-								screen_parameters.interFH_0[0] / 100;							
+							tword.base_line_down[0] += fontParam.height +
+									screen_parameters.cFontInterline[InternalConst.TAL_PROFILE_FONT_TEXT] *
+									screen_parameters.cFontHeight[InternalConst.TAL_PROFILE_FONT_TEXT] / 100;
 						} else {
 							if (tword.base_line_down[0] > fontParam.def_line_down)
 								tword.base_line_down[0] = fontParam.def_line_down;
@@ -4647,6 +4890,38 @@ public class AlBookEng{
 		return res;
 	}
 
+	private int	getCorrectSizePosition(int pos) {
+		int i = format.getNumParagraphByPoint(pos);
+		int len = format.getLengthPragarphByNum(i);
+		i = format.getStartPragarphByNum(i);
+		if (i + 128 >= pos)
+			return i;
+
+		int start = pos, j;
+		int end = format.getSize();
+
+		if (pos + 128 > i + len && pos + 128 < end)
+			return i + len;
+
+		while (start < end) {
+			j = format.getTextBuffer(start, format_text_and_style, shtamp.value, profiles);
+			i = start - (start & AlFiles.LEVEL1_FILE_BUF_MASK);
+
+			for (; i < j; i++, start++) {
+				if (format_text_and_style.txt[i] == 0x00)
+					continue;
+
+				if (format_text_and_style.txt[i] == 0x20)
+					return start;
+
+				if ((format_text_and_style.stl[i] & AlStyles.SL_PAR) != 0)
+					return start;
+			}
+		}
+
+		return pos;
+	}
+
 	private void recalcColumn(int width, int height, AlOnePage page, int start_point, TAL_CALC_MODE calc_mode) {
 
 		page.start_position = start_point;
@@ -4664,7 +4939,7 @@ public class AlBookEng{
 		}
 		page.textHeightWONotes = page.textHeight;
 		page.notePresent = false;
-		page.notesShift = (int) (screen_parameters.interFH_0[0] * 0.6f/* >> 1*/);
+		page.notesShift = (int) (screen_parameters.cFontHeight[InternalConst.TAL_PROFILE_FONT_TEXT] * 0.6f/* >> 1*/);
 		/*if (screen_parameters.interFI0[0] < 0)
 			page.notesShift -= screen_parameters.interFI0[0];*/
 
@@ -4685,7 +4960,7 @@ public class AlBookEng{
 				
 				if ((ch = format_text_and_style.txt[i]) == 0x00)
 					continue;
-                if ((format_text_and_style.stl[i] & (AlStyles.SL_HIDDEN | AlStyles.SL_TABLE)) != 0)
+                if ((format_text_and_style.stl[i] & (AlStyles.STYLE_HIDDEN | AlStyles.SL_TABLE)) != 0)
                     continue;
 
                     if ((format_text_and_style.stl[i] & AlStyles.SL_PAR) != 0) {
@@ -4745,17 +5020,34 @@ public class AlBookEng{
     }
 
 	private void calcCountPages() {
-		//calc.beginMain();
-		
-		calcScreenParameters();
-		
+
 		format.lastCalcTime = System.currentTimeMillis();
 		pagePositionPointer.clear();
 
-		calcWordLenForPages = true;
-
 		int start_point = 0;
 		int end_point = format.getSize();
+
+		if (!format.isTextFormat) {
+
+			while (start_point < format.getCountPages()) {
+				pagePositionPointer.add(AlPagePositionStack.add(format.getPageStart(start_point), 0));
+				if (profiles.twoColumnUsed)
+					start_point++;
+				start_point++;
+			}
+
+			format.lastCalcTime = System.currentTimeMillis() - format.lastCalcTime;
+			format.lastPageCount = pagePositionPointer.size();
+			return;
+		}
+
+
+		//calc.beginMain();
+		calcScreenParameters();
+
+		calcWordLenForPages = true;
+
+
 		while (start_point < end_point) {
 			pagePositionPointer.add(AlPagePositionStack.add(start_point, 0));
 			
@@ -4816,7 +5108,7 @@ public class AlBookEng{
 		
 		Log.e("last open/calc time", Long.toString(AlFiles.time_load) + '/' + Long.toString(format.lastCalcTime));
 
-		bookPosition = getCorrectPosition(bookPosition);
+		bookPosition = getCorrectScreenPagePosition(bookPosition);
 		if (preferences.calcPagesModeUsed == TAL_SCREEN_PAGES_COUNT.SCREEN) {
 			bookPosition = pagePositionPointer.get(bookPosition).start;			
 		} else {
@@ -4826,7 +5118,7 @@ public class AlBookEng{
 		//calc.endMain();
 	}
 
-	private int	getCorrectPosition(int pos) {
+	private int	getCorrectScreenPagePosition(int pos) {
 		if (preferences.calcPagesModeUsed == TAL_SCREEN_PAGES_COUNT.SCREEN) {
 			for (int i = 0; i < pagePositionPointer.size(); i++) {
 				if (pagePositionPointer.get(i).start == pos)
@@ -4837,6 +5129,44 @@ public class AlBookEng{
 			return pagePositionPointer.size() - 1;
 		}
 		return pos;
+	}
+
+	public int getPageOfPosition(int pos) {
+		if (openState.getState() == AlBookState.OPEN) {
+			switch (preferences.calcPagesModeUsed) {
+				case SCREEN:
+					return getCorrectScreenPagePosition(pos) + 1;
+				case AUTO:
+				case SIZE:
+					return (int) (0.5f + (pos / preferences.pageSize)) + 1;
+				default:
+					return -1;
+			}
+		}
+		return -1;
+	}
+
+	public int getPositionOfPage(int pageNum) {
+		if (preferences.isASRoll)
+			return -1;
+
+		if (openState.getState() != AlBookState.OPEN)
+			return -1;
+
+		switch (preferences.calcPagesModeUsed) {
+			case SCREEN:
+				if (pageNum - 1 >= 0 && pageNum - 1 < pagePositionPointer.size()) {
+					return pagePositionPointer.get(pageNum - 1).start;
+				}
+				break;
+			case AUTO:
+			case SIZE:
+				if ((pageNum - 1) * preferences.pageSize >= 0 && (pageNum - 1) * preferences.pageSize < format.getSize()) {
+					return getCorrectSizePosition((pageNum - 1) * preferences.pageSize);
+				}
+				break;
+		}
+		return -1;
 	}
 
     /**
@@ -4858,7 +5188,7 @@ public class AlBookEng{
 
 			switch (preferences.calcPagesModeUsed) {
 				case SCREEN:
-                    position.pageCurrent = getCorrectPosition(bookPosition) + 1;
+                    position.pageCurrent = getCorrectScreenPagePosition(bookPosition) + 1;
                     position.pageCount = pagePositionPointer.size();
 					return TAL_RESULT.OK;
 				case AUTO:
@@ -4951,7 +5281,11 @@ public class AlBookEng{
         int /*nextStart1, nextEnd1,*/ start1;
 
         while (true) {
-            start1 = page.items.get(1).start_pos;
+
+			start1 = 1;
+			while (page.items.get(start1).isNote && start1 < page.countItems) start1++;
+
+            start1 = page.items.get(start1).start_pos;
             if (start1 == start_point)
                 return start0;
 
@@ -5015,7 +5349,7 @@ public class AlBookEng{
         int current_page;
         switch (preferences.calcPagesModeUsed) {
             case SCREEN:
-                current_page = getCorrectPosition(bookPosition);
+                current_page = getCorrectScreenPagePosition(bookPosition);
                 if (current_page < pagePositionPointer.size() - 1)
                     return pagePositionPointer.get(current_page + 1).start;
                 break;
@@ -5040,7 +5374,7 @@ public class AlBookEng{
         int current_page;
         switch (preferences.calcPagesModeUsed) {
             case SCREEN:
-                current_page = getCorrectPosition(bookPosition);
+                current_page = getCorrectScreenPagePosition(bookPosition);
                 if (current_page > 0)
                     return pagePositionPointer.get(current_page - 1).start;
                 break;
@@ -5072,7 +5406,7 @@ public class AlBookEng{
 			case SIZE:
                 if ((pageNum - 1) * preferences.pageSize >= 0 && (pageNum - 1) * preferences.pageSize < format.getSize()) {
                     pagePositionPointer.clear();
-                    bookPosition = (pageNum - 1) * preferences.pageSize;
+                    bookPosition = getCorrectSizePosition((pageNum - 1) * preferences.pageSize);
                     return returnOkWithRedraw();
                 }
                 break;
@@ -5097,15 +5431,18 @@ public class AlBookEng{
 		if (openState.getState() != AlBookState.OPEN) 
 			return TAL_RESULT.ERROR;
 
+		if ((mode == TAL_GOTOCOMMAND.POSITION || mode == TAL_GOTOCOMMAND.POSITION_WITH_CORRECT)&& pos > format.getSize())
+			mode = TAL_GOTOCOMMAND.LASTPAGE;
+
 		int current_page;
 		switch (preferences.calcPagesModeUsed) {
 		case SCREEN: {
 				if (mode == TAL_GOTOCOMMAND.POSITION) {
-					current_page = getCorrectPosition(pos);
+					current_page = getCorrectScreenPagePosition(pos);
 					bookPosition = pagePositionPointer.get(current_page).start;
 					return returnOkWithRedraw();
 				} else {
-					current_page = getCorrectPosition(bookPosition);
+					current_page = getCorrectScreenPagePosition(bookPosition);
 					switch (mode) {
 						case NEXTPAGE:
 							if (current_page < pagePositionPointer.size() - 1) {
@@ -5186,6 +5523,10 @@ public class AlBookEng{
 					pagePositionPointer.clear();
 					bookPosition = pos;
 					return returnOkWithRedraw();
+				case POSITION_WITH_CORRECT:
+					pagePositionPointer.clear();
+					bookPosition = getCorrectSizePosition(pos);
+					return returnOkWithRedraw();
 				}
 			}
 			break;
@@ -5213,22 +5554,59 @@ public class AlBookEng{
     	tapInfo.y = y;
 
 		if (openState.getState() != AlBookState.OPEN || !getPositionByXY(initialSelectMode)) {
-            switch (initialSelectMode) {
-            case START: case END: case DICTIONARY:
-                setSelectionMode(initialSelectMode);
-                break;
-            }
+
+			if (selection.selectMode == TAL_SCREEN_SELECTION_MODE.NONE) {
+				switch (initialSelectMode) {
+					case START:
+					case END:
+					case DICTIONARY:
+						setSelectionMode(initialSelectMode);
+						break;
+				}
+			}
             return null;
         }
+
+		//
+		// scan bookmark Id
+		if (tapInfo.pos != AlTapInfo.TAP_ON_CLEAR_SPACE && bookmarks != null) {
+			AlOneBookmark bmk = null;
+			for (int i = 0; i < bookmarks.size(); i++) {
+				bmk = bookmarks.get(i);
+				if (bmk.pos_start <= tapInfo.pos && bmk.pos_end >= tapInfo.pos) {
+					tapInfo.bookmarkId = bmk.id;
+					break;
+				}
+			}
+		}
+		//
 
         int start, stop;
 
 		switch (selection.selectMode) {
 		case NONE:
 			if (!tapInfo.isNote && (initialSelectMode == TAL_SCREEN_SELECTION_MODE.START || initialSelectMode == TAL_SCREEN_SELECTION_MODE.END)) {
+
+				if (engOptions.selectCorrecter != null) {
+					fillTextOnScreen(true, tapInfo.tapWordStart, true, tapInfo.tapWordStop);
+					if (engOptions.selectCorrecter.correct(textOnScreen)) {
+						tapInfo.tapWordStart = textOnScreen.correctedPositionStart;
+						tapInfo.tapWordStop = textOnScreen.correctedPositionEnd;
+					}
+				}
+
                 setSelection(initialSelectMode, tapInfo.tapWordStart, tapInfo.tapWordStop);
 			} else
 			if (!tapInfo.isNote && (initialSelectMode == TAL_SCREEN_SELECTION_MODE.DICTIONARY)) {
+
+				if (engOptions.selectCorrecter != null) {
+					fillTextOnScreen(true, tapInfo.tapWordStart, true, tapInfo.tapWordStop);
+					if (engOptions.selectCorrecter.correct(textOnScreen)) {
+						tapInfo.tapWordStart = textOnScreen.correctedPositionStart;
+						tapInfo.tapWordStop = textOnScreen.correctedPositionEnd;
+					}
+				}
+
 				setSelection(EngBookMyType.TAL_SCREEN_SELECTION_MODE.DICTIONARY, tapInfo.tapWordStart, tapInfo.tapWordStop);
 			} else {
 				if (tapInfo.isImage) {
@@ -5274,6 +5652,12 @@ public class AlBookEng{
 			}		
 			break;
 		case START:
+			if (engOptions.selectCorrecter != null) {
+				fillTextOnScreen(true, tapInfo.tapWordStart, false, -1);
+				if (engOptions.selectCorrecter.correct(textOnScreen))
+					tapInfo.tapWordStart = textOnScreen.correctedPositionStart;
+			}
+
 			start = tapInfo.tapWordStart;
             stop = selection.selectPosition.y;
             if (stop < start)
@@ -5282,14 +5666,28 @@ public class AlBookEng{
             setSelection(selection.selectMode, start, stop);
 			break;
 		case END:
-            start = selection.selectPosition.x;
+			if (engOptions.selectCorrecter != null) {
+				fillTextOnScreen(false, -1, true, tapInfo.tapWordStop);
+				if (engOptions.selectCorrecter.correct(textOnScreen))
+					tapInfo.tapWordStop = textOnScreen.correctedPositionEnd;
+			}
+
+			start = selection.selectPosition.x;
             stop = tapInfo.tapWordStop;
-            if (stop < start)
+			if (stop < start)
                 start = tapInfo.tapWordStart;
 
             setSelection(selection.selectMode, start, stop);
 			break;
 		case DICTIONARY:
+			if (engOptions.selectCorrecter != null) {
+				fillTextOnScreen(true, tapInfo.tapWordStart, true, tapInfo.tapWordStop);
+				if (engOptions.selectCorrecter.correct(textOnScreen)) {
+					tapInfo.tapWordStart = textOnScreen.correctedPositionStart;
+					tapInfo.tapWordStop = textOnScreen.correctedPositionEnd;
+				}
+			}
+
 			setSelection(EngBookMyType.TAL_SCREEN_SELECTION_MODE.DICTIONARY, tapInfo.tapWordStart, tapInfo.tapWordStop);
 			break;
 		}
@@ -5298,6 +5696,7 @@ public class AlBookEng{
     }
 
     private boolean getPositionByXY(TAL_SCREEN_SELECTION_MODE initialSelectMode) {
+
         if (profiles.twoColumnUsed && tapInfo.x >= (screenWidth >> 1))
             return getPositionInPageByXY(mpage[0][1], (screenWidth >> 1) + screen_parameters.marginR, initialSelectMode);
         return getPositionInPageByXY(mpage[0][0], screen_parameters.marginL, initialSelectMode);
@@ -5408,7 +5807,7 @@ public class AlBookEng{
                                         x + oi.width[i] + areal >= tapInfo.x) {
 
                                     tapInfo.isNote = oi.isNote;
-                                    tapInfo.isLocalLink = (oi.style[i] & AlStyles.SL_LINK) != 0;
+                                    tapInfo.isLocalLink = (oi.style[i] & AlStyles.STYLE_LINK) != 0;
                                     tapInfo.isImage = oi.text[i] == AlStyles.CHAR_IMAGE_E;
                                     tapInfo.pos = oi.pos[i];
 
@@ -5549,6 +5948,149 @@ public class AlBookEng{
         return true;
     }
 
+	public AlTextOnScreen getTextOnScreen() {
+		textOnScreen.clear();
+
+		fillTextOnScreenOnePage(mpage[0][0], screen_parameters.marginL);
+		if (profiles.twoColumnUsed)
+			fillTextOnScreenOnePage(mpage[0][1], (screenWidth >> 1) + screen_parameters.marginR);
+
+		textOnScreen.needCorrectStart = false;
+		textOnScreen.defaultResultForStart = -1;
+		textOnScreen.needCorrectEnd = false;
+		textOnScreen.defaultResultForEnd = -1;
+		textOnScreen.numWordWithStartSelection = -1;
+		textOnScreen.numWordWithEndSelection = -1;
+
+		textOnScreen.clearBeforeNormalCall();
+
+		return textOnScreen;
+	}
+	
+	private void fillTextOnScreen(boolean s, int ps, boolean e, int pe) {
+		textOnScreen.clear();
+
+		s = textOnScreen.verifyStart(s, ps);
+		e = textOnScreen.verifyEnd(e, pe);
+
+		if (s && ps < 0)
+			s = false;
+		if (e && pe < 0)
+			e = false;
+
+		if (!s && !e)
+			return;
+
+		fillTextOnScreenOnePage(mpage[0][0], screen_parameters.marginL);
+		if (profiles.twoColumnUsed)
+			fillTextOnScreenOnePage(mpage[0][1], (screenWidth >> 1) + screen_parameters.marginR);
+
+		textOnScreen.prepareBeforeCorrect0(s, ps, e, pe);
+	}
+
+	private void fillTextOnScreenOnePage(AlOnePage page, int margLeft) {
+		int x, y;
+
+		StringBuilder word_text = new StringBuilder();
+		word_text.setLength(0);
+
+		AlRect word_rect = new AlRect();
+		ArrayList<Integer> word_pos = new ArrayList<>();
+
+		boolean isLink = false;
+		for (int j = 0; j < page.countItems; j++) {
+			AlOneItem oi = page.items.get(j);
+
+			if (oi.isNote)
+				continue;
+
+			y = oi.yDrawPosition;
+			x = margLeft + oi.isLeft + oi.isRed;
+
+			if (isLink) {
+				textOnScreen.markLinkEnd();
+			}
+			isLink = false;
+			for (int i = 0; i < oi.count; i++) {
+				if (!isLink && (oi.style[i] & AlStyles.STYLE_LINK) != 0) {
+					String link = format.getLinkNameByPos(oi.pos[i], InternalConst.TAL_LINK_TYPE.LINK);
+					if (link != null) {
+						AlOneLink al = format.getLinkByName(link, true);
+						if (al != null) {
+							isLink = true;
+							textOnScreen.markLinkStart(al.positionS);
+						}
+					}
+				}
+				if (isLink && (oi.style[i] & AlStyles.STYLE_LINK) == 0) {
+					isLink = false;
+					textOnScreen.markLinkEnd();
+				}
+
+				if (oi.text[i] <= 0x20 || oi.pos[i] < 0) {
+					textOnScreen.add(word_text, word_rect, word_pos);
+
+					if (oi.text[i] == AlStyles.CHAR_ROWS_E) {
+						fillTextOnScreenTable(oi.pos[i], margLeft);
+						continue;
+					}
+				} else {
+
+					if ( AlUnicode.isChineze(oi.text[i]) || (word_text.length() == 1 && AlUnicode.isChineze(word_text.charAt(0))))
+						textOnScreen.add(word_text, word_rect, word_pos);
+					
+					if (word_text.length() == 0) {
+						word_rect.x0 = word_rect.x1 = x;
+						word_rect.y0 = y - oi.base_line_up;
+						word_rect.y1 = word_rect.y0 + oi.base_line_down + oi.base_line_up;
+
+						word_pos.clear();
+					}
+
+					word_rect.x1 += oi.width[i];
+					word_text.append(oi.text[i]);
+					word_pos.add(oi.pos[i]);
+				}
+
+				x += oi.width[i];
+			}
+
+			textOnScreen.add(word_text, word_rect, word_pos);
+		}
+	}
+
+	private void fillTextOnScreenTable(int sellPos, int margLeft) {
+		// get Table
+		AlOneTable ai = null;
+		String link, rows;
+
+		link = format.getLinkNameByPos(sellPos, InternalConst.TAL_LINK_TYPE.ROW);
+		if (link == null)
+			return;
+		int i = link.indexOf(':');
+		if (i == -1)
+			return;
+
+		rows = link.substring(i + 1);
+		link = link.substring(0, i);
+
+		int table = InternalFunc.str2int(link, 10);
+		int row = InternalFunc.str2int(rows, 10);
+
+		ai = format.getTableByNum(table);
+		if (ai != null) {
+			// get Cell
+			AlOneTableCell cell = null;
+			AlOnePage page = null;
+			for (i = 0; i < ai.rows.get(row).cell_accepted; i++) {
+				cell = ai.rows.get(row).cells.get(i);
+				page = ai.rows.get(row).pages[i];
+				if (cell != null && page != null)
+					fillTextOnScreenOnePage(page, margLeft + cell.left);
+			}
+		}
+	}
+
     private boolean getPositionInPageByXY(AlOnePage page, int margLeft, TAL_SCREEN_SELECTION_MODE initialSelectMode) {
 
         int areal = (int) (EngBookMyType.AL_DEFAULT_TAP_AREAL * preferences.textMultiplexer);
@@ -5568,13 +6110,13 @@ public class AlBookEng{
 					tapInfo.tapWordStart = tapInfo.tapWordStop = -1;
 
 					for (int i = 0; i < oi.count; i++) {
-						if ((oi.style[i] & AlStyles.SL_LINK) != 0 &&
+						if ((oi.style[i] & AlStyles.STYLE_LINK) != 0 &&
 							oi.pos[i] >= 0 &&
 							x - areal <= tapInfo.x &&
 							x + oi.width[i] + areal >= tapInfo.x) {
 
 							tapInfo.isNote = oi.isNote;
-							tapInfo.isLocalLink = (oi.style[i] & AlStyles.SL_LINK) != 0;
+							tapInfo.isLocalLink = (oi.style[i] & AlStyles.STYLE_LINK) != 0;
 							tapInfo.isImage = oi.text[i] == AlStyles.CHAR_IMAGE_E;
 							tapInfo.pos = oi.pos[i];
 							tapInfo.tapWordStart = tapInfo.tapWordStop = oi.pos[i];
@@ -5643,12 +6185,11 @@ public class AlBookEng{
             				x + oi.width[i] + areal >= tapInfo.x) {
             				
             				tapInfo.isNote = oi.isNote;
-                            tapInfo.isLocalLink = (oi.style[i] & AlStyles.SL_LINK) != 0;
+                            tapInfo.isLocalLink = (oi.style[i] & AlStyles.STYLE_LINK) != 0;
                             tapInfo.isImage = oi.text[i] == AlStyles.CHAR_IMAGE_E;
                             tapInfo.pos = oi.pos[i];
 
                             if (oi.text[i] == AlStyles.CHAR_ROWS_E) {
-
                                 if (areal > 0) {
                                     tapInfo.pos = AlTapInfo.TAP_ON_CLEAR_SPACE;
                                 } else
@@ -5900,6 +6441,40 @@ public class AlBookEng{
 	public EngBookMyType.TAL_SCREEN_SELECTION_MODE getSelectionMode() {
 
         return selection.selectMode;
+	}
+
+	public AlPoint getSelectionRange() {
+		if (openState.getState() == AlBookState.OPEN) {
+			switch (selection.selectMode) {
+				case START:
+				case END:
+				case DICTIONARY:
+					return selection.selectPosition;
+			}
+		}
+		return null;
+	}
+
+	public int setSelectionRange(int selStart, int selStop) {
+		if (openState.getState() == AlBookState.OPEN) {
+			switch (selection.selectMode) {
+				case START:
+				case END:
+				case DICTIONARY:
+					if (selStart < 0 || selStop >= format.getSize())
+						return TAL_RESULT.ERROR;
+
+					boolean isUpdate = (selection.selectPosition.x != selStart || selection.selectPosition.y != selStop);
+					if (isUpdate) {
+						selection.shtampSelectRequred++;
+						selection.selectPosition.x = selStart;
+						selection.selectPosition.y = selStop;
+						return returnOkWithRedraw();
+					}
+					return TAL_RESULT.OK;
+			}
+		}
+		return TAL_RESULT.ERROR;
 	}
 
     /**

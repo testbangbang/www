@@ -34,6 +34,7 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
+        setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
         ensureDocumentOpened(noteManager);
         for(Shape shape : shapeList) {
             final ReaderNotePage readerNotePage = noteManager.getNoteDocument().ensurePageExist(getContext(), shape.getPageUniqueId(), subPageIndex);

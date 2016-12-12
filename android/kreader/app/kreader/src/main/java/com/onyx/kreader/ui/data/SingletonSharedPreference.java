@@ -166,6 +166,10 @@ public class SingletonSharedPreference {
         return getBooleanByStringID(context, R.string.settings_dithering_key, false);
     }
 
+    public static boolean isEnableRegal(Context context) {
+        return getBooleanByStringID(context, R.string.settings_regal_mode_key, true);
+    }
+
     public static boolean isShowDocTitleInStatusBar(Context context) {
         return getBooleanByStringID(context, R.string.settings_show_doc_title_key, DeviceConfig.sharedInstance(context).isDefaultShowDocTitleInStatusBar());
     }

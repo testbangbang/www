@@ -11,7 +11,7 @@ public interface ReaderHitTestManager {
      * @param splitter the text splitter.
      * @return the selection.
      */
-    public ReaderSelection selectWord(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter);
+    public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter);
 
     /**
      * Get document position for specified point.
@@ -26,7 +26,9 @@ public interface ReaderHitTestManager {
      * @param hitTestOptions
      * @return the selection.
      */
-    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, final ReaderHitTestOptions hitTestOptions);
+    public ReaderSelection selectOnScreen(final ReaderHitTestArgs start, final ReaderHitTestArgs end, final ReaderHitTestOptions hitTestOptions);
+
+    public ReaderSelection selectOnScreen(String pagePosition, final String startPosition, final String endPosition);
 
 
 }

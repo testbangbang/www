@@ -16,7 +16,7 @@ public class LineShape extends BaseShape {
         return ShapeFactory.SHAPE_LINE;
     }
 
-    public boolean addMovePoint() {
+    public boolean isAddMovePoint() {
         return false;
     }
 

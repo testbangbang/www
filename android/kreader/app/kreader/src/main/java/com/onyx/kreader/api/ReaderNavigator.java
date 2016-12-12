@@ -28,20 +28,28 @@ public interface ReaderNavigator {
      */
     public String getPositionByPageName(final String pageName);
 
+    public int getPageNumberByPosition(final String position);
+
     /**
      * Return total page number.
      * @return 1 based total page number. return -1 if not available yet.
      */
     public int getTotalPage();
 
-    public int getCurrentPageNumber();
+    public int getScreenStartPageNumber();
+
+    public int getScreenEndPageNumber();
 
     /**
      * current position in document
      *
      * @return
      */
-    public String getCurrentPosition();
+    public String getScreenStartPosition();
+
+    public String getScreenEndPosition();
+
+    public int comparePosition(final String pos1, final String pos2);
 
     /**
      * goto position in document

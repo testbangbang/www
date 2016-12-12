@@ -41,6 +41,9 @@ public class LoadDocumentOptionsRequest extends BaseDataRequest {
     public final BaseOptions getDocumentOptions() {
         final BaseOptions baseOptions = BaseOptions.optionsFromJSONString(document.getExtraAttributes());
         baseOptions.setMd5(md5);
+        if (DeviceConfig.sharedInstance(getContext()).getFixedGamma() > 0) {
+            baseOptions.setGamma(DeviceConfig.sharedInstance(getContext()).getFixedGamma());
+        }
         return baseOptions;
     }
 

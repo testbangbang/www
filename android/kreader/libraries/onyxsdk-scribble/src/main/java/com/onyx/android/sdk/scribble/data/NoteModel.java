@@ -58,10 +58,10 @@ public class NoteModel extends BaseModel {
     float strokeWidth;
 
     @Column
-    int strokeColor;
+    int strokeColor = 0;
 
     @Column
-    int currentShapeType;
+    int currentShapeType = ShapeFactory.SHAPE_INVALID;
 
     @Column
     int background;
@@ -73,6 +73,7 @@ public class NoteModel extends BaseModel {
 
     private static final float DEFAULT_STROKE_WIDTH = 2.0f;
     private static float DEFAULT_ERASER_RADIUS = 15.0f;
+    private static int DEFAULT_STROKE_COLOR = Color.BLACK;
 
     public NoteModel() {
     }
@@ -198,6 +199,9 @@ public class NoteModel extends BaseModel {
     }
 
     public int getStrokeColor() {
+        if (strokeColor == 0) {
+            strokeColor = getDefaultStrokeColor();
+        }
         return strokeColor;
     }
 
@@ -238,7 +242,11 @@ public class NoteModel extends BaseModel {
     }
 
     public static int getDefaultStrokeColor() {
-        return Color.BLACK;
+        return DEFAULT_STROKE_COLOR;
+    }
+
+    public static void setDefaultStrokeColor(int color) {
+        DEFAULT_STROKE_COLOR = color;
     }
 
     public static int getDefaultBackground() {

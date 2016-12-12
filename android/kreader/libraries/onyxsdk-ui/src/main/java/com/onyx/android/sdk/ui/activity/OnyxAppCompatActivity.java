@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.ui.activity;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +20,7 @@ import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder.DialogCancelListener;
 import com.onyx.android.sdk.ui.utils.ScreenSpecUtil;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 /**
  * Created by solskjaer49 on 16/6/22 16:32.

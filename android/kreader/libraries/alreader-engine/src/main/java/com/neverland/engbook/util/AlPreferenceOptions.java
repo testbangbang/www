@@ -34,5 +34,4 @@ public class AlPreferenceOptions {
 	public int			value2CalcMargins = 0;
 	public boolean 		onlyPopupFootnote = false;
 	public TAL_TABLEMODE tableMode;
-
 }

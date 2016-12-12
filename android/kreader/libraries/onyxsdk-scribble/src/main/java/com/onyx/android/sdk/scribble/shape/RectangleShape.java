@@ -17,7 +17,7 @@ public class RectangleShape extends BaseShape {
         return ShapeFactory.SHAPE_RECTANGLE;
     }
 
-    public boolean addMovePoint() {
+    public boolean isAddMovePoint() {
         return false;
     }
 

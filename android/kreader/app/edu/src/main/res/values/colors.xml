@@ -14,4 +14,5 @@
     <color name="right_color">#000000</color>
     <color name="wrong_color">#B3B3B3</color>
     <color name="progress_color">#4D4D4D</color>
+    <color name="home_item_view_background">#E8E2D1</color>
 </resources>

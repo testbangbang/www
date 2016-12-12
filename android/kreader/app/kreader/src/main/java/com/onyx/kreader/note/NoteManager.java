@@ -21,6 +21,7 @@ import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.note.bridge.NoteEventProcessorBase;
@@ -102,13 +103,21 @@ public class NoteManager {
         getNoteEventProcessorManager().resume();
     }
 
-    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final Rect excludeRect, int orientation) {
-        view = sv;
+    private void initNoteArgs(final Context context) {
         noteConfig = DeviceConfig.sharedInstance(context, "note");
         mappingConfig = MappingConfig.sharedInstance(context, "note");
         enableShortcutDrawing = noteConfig.isShortcutDrawingEnabled();
         enableShortcutErasing = noteConfig.isShortcutErasingEnabled();
         NoteModel.setDefaultEraserRadius(noteConfig.getEraserRadius());
+        NoteModel.setDefaultStrokeColor(noteConfig.getDefaultStrokeColor());
+        InkUtils.setPressureEntries(mappingConfig.getPressureList());
+    }
+
+    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final Rect excludeRect, int orientation) {
+        if (noteConfig == null || mappingConfig == null) {
+            initNoteArgs(context);
+        }
+        view = sv;
         getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
     }
 
@@ -207,6 +216,10 @@ public class NoteManager {
 
             public boolean enableRawEventProcessor() {
                 return enableRawEventProcessor;
+            }
+
+            public void enableTouchInput(boolean enable) {
+                getParent().getHandlerManager().setEnableTouch(enable);
             }
 
         };

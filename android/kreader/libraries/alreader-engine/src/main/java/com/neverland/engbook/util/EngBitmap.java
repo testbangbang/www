@@ -42,7 +42,7 @@ public class EngBitmap {
 
 		// ��������� ��� ����
 		if (shtamp != null)
-		shtamp.value++;	
+			shtamp.value++;
 
 		// ����� ������ ��������� ��������� ��� - �� ������ bmp->bmp ������ ���� ������� ����� ������
 		// 32 ���� �� �����		

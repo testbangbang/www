@@ -22,6 +22,8 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.scribble.utils.InkUtils;
+import com.onyx.android.sdk.scribble.utils.MappingConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +84,7 @@ public class NoteViewHelper {
     private InputCallback callback;
     private TouchPointList erasePoints;
     private DeviceConfig deviceConfig;
+    private MappingConfig mappingConfig;
     private Shape currentShape = null;
     private boolean shortcutErasing = false;
     private OnyxMatrix viewToEpdMatrix = null;
@@ -130,6 +133,7 @@ public class NoteViewHelper {
         renderBitmapWrapper.clear();
         NoteModel.setDefaultEraserRadius(deviceConfig.getEraserRadius());
         getNoteDocument().getNoteDrawingArgs().setEraserRadius(deviceConfig.getEraserRadius());
+        InkUtils.setPressureEntries(mappingConfig.getPressureList());
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
         EpdController.setStrokeColor(getNoteDocument().getNoteDrawingArgs().strokeColor);
     }
@@ -152,6 +156,7 @@ public class NoteViewHelper {
 
     private void initRawResource(final Context context) {
         deviceConfig = DeviceConfig.sharedInstance(context, "note");
+        mappingConfig = MappingConfig.sharedInstance(context, "note");
     }
 
     private void initBigPenState(final Context context) {
@@ -242,7 +247,6 @@ public class NoteViewHelper {
     }
 
     private void updateLimitRect() {
-
         Rect dfbLimitRect = new Rect();
         softwareLimitRect = new Rect();
 

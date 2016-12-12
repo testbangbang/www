@@ -30,6 +30,9 @@ public class AlOneImage {
 	public int					height = -1;
 	
 	public byte[]				data = null;
+	public Object				otherRender = null;
+
+	public boolean				lowQuality = false;
 
 	/*public static String getExtension(AlOneImage a) {
 		switch (a.iType & 0x0f) {
@@ -50,7 +53,19 @@ public class AlOneImage {
 		a.iType = iT;
 		a.needScan = true;
 		return a;
-	}	
+	}
+
+	public static AlOneImage addLowQuality(String name, int posS, int posE, int iT) {
+		AlOneImage a = new AlOneImage();
+		a.name = name;
+		a.positionS = posS;
+		a.positionE = posE;
+		a.iType = iT;
+		a.needScan = true;
+		a.lowQuality = true;
+		return a;
+	}
+
 
 	@Override
 	public String toString() {

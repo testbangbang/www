@@ -75,6 +75,7 @@ public class AlFormatNativeImages extends AlFormat {
 
         ident = "IMAGE";
 
+        isTextFormat = false;
         aFiles = myParent;
 
         preference = pref;
@@ -128,7 +129,7 @@ public class AlFormatNativeImages extends AlFormat {
         addCharFromTag((char)AlStyles.CHAR_IMAGE_E, false);
 
         if (allState.isOpened) {
-            im.add(AlOneImage.add(coverName, 0, stop_pos, AlOneImage.IMG_MEMO));
+            im.add(AlOneImage.add(coverName, 0, 0, AlOneImage.IMG_MEMO));
             newParagraph();
         }
     }

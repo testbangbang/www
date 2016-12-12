@@ -102,6 +102,11 @@ public class FakeReader implements ReaderDocument,
         return this;
     }
 
+    @Override
+    public boolean saveOptions() {
+        return true;
+    }
+
     public ReaderViewOptions getViewOptions() {
         return this;
     }
@@ -153,18 +158,38 @@ public class FakeReader implements ReaderDocument,
         return PagePositionUtils.fromPageNumber(position);
     }
 
+    @Override
+    public int getPageNumberByPosition(String position) {
+        return -1;
+    }
+
     public int getTotalPage() {
         return pageInfoList.size();
     }
 
     @Override
-    public int getCurrentPageNumber() {
+    public int getScreenStartPageNumber() {
         return 0;
     }
 
     @Override
-    public String getCurrentPosition() {
+    public int getScreenEndPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getScreenStartPosition() {
         return null;
+    }
+
+    @Override
+    public String getScreenEndPosition() {
+        return null;
+    }
+
+    @Override
+    public int comparePosition(String pos1, String pos2) {
+        return 0;
     }
 
     @Override

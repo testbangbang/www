@@ -61,6 +61,8 @@ public interface ReaderDocument {
      */
     public ReaderView getView(final ReaderViewOptions viewOptions);
 
+    public boolean saveOptions();
+
     /**
      * Close the document.
      */

@@ -7,6 +7,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.libedu.EduCloudManager;
 import com.onyx.libedu.model.ChooseQuestionVariable;
 import com.onyx.libedu.model.Difficult;
+import com.onyx.libedu.model.DocumentType;
 import com.onyx.libedu.model.KnowledgePoint;
 import com.onyx.libedu.model.QuestionType;
 import com.onyx.libedu.model.Stage;
@@ -14,6 +15,7 @@ import com.onyx.libedu.model.Subject;
 import com.onyx.libedu.model.Textbook;
 import com.onyx.libedu.model.Version;
 import com.onyx.libedu.request.cloud.GetBookNodesRequest;
+import com.onyx.libedu.request.cloud.GetDocumentsRequest;
 import com.onyx.libedu.request.cloud.GetKnowledgePointsRequest;
 import com.onyx.libedu.request.cloud.GetQuestionTypeRequest;
 import com.onyx.libedu.request.cloud.GetSubjectRequest;
@@ -30,7 +32,8 @@ public class ChooseExercisePresenter implements ChooseExerciseContract.ChooseExe
 
     private ChooseExerciseContract.ChooseExerciseView chooseExerciseView;
     private EduCloudManager eduCloudManager;
-    private ChooseQuestionVariable chooseQuestionVariable;
+    private ChooseQuestionVariable chooseQuestionVariable = new ChooseQuestionVariable();
+    private boolean isPractice = false;
 
     public ChooseExercisePresenter(ChooseExerciseContract.ChooseExerciseView chooseExerciseView){
         this.chooseExerciseView = chooseExerciseView;
@@ -40,7 +43,6 @@ public class ChooseExercisePresenter implements ChooseExerciseContract.ChooseExe
     @Override
     public void subscribe() {
         eduCloudManager = new EduCloudManager();
-        chooseQuestionVariable = new ChooseQuestionVariable();
     }
 
     @Override
@@ -71,7 +73,6 @@ public class ChooseExercisePresenter implements ChooseExerciseContract.ChooseExe
                 chooseExerciseView.showSubjects(subjects);
             }
         });
-
 
     }
 
@@ -161,5 +162,31 @@ public class ChooseExercisePresenter implements ChooseExerciseContract.ChooseExe
 
     public ChooseExerciseContract.ChooseExerciseView getChooseExerciseView() {
         return chooseExerciseView;
+    }
+
+    @Override
+    public void loadDocuments() {
+        final GetDocumentsRequest documentsRequest = new GetDocumentsRequest(chooseQuestionVariable);
+        eduCloudManager.submitRequest(EduApp.instance(), documentsRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                chooseExerciseView.showDocuments(documentsRequest.getDocuments());
+            }
+        });
+    }
+
+    @Override
+    public boolean isPractice() {
+        return isPractice;
+    }
+
+    public void setPractice(boolean practice) {
+        isPractice = practice;
+        chooseDocumentType(practice ? DocumentType.Other : DocumentType.Examination);
+    }
+
+    @Override
+    public void chooseDocumentType(DocumentType type) {
+        chooseQuestionVariable.setDocumentType(type);
     }
 }

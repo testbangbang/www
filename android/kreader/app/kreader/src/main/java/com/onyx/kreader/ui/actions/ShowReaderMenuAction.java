@@ -58,7 +58,6 @@ import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.dialog.DialogTextStyle;
 import com.onyx.kreader.ui.events.QuitEvent;
-import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.utils.DeviceConfig;
 
 import java.util.ArrayList;
@@ -67,6 +66,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 
 /**
  * Created by Joy on 2016/6/7.
@@ -78,8 +78,6 @@ public class ShowReaderMenuAction extends BaseAction {
 
     // use reader menu as static field to avoid heavy init of showing reader menu each time
     private static ReaderMenu readerMenu;
-    private boolean disableScribbleBrush = true;
-    private static boolean isScribbleMenuVisible = false;
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
     private static List<String> fontFaces = new ArrayList<>();
     private static Map<Float, ReaderMenuAction> strokeMapping;
@@ -121,11 +119,10 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void initReaderMenu(final ReaderDataHolder readerDataHolder) {
-        getDisableMenus(readerDataHolder);
         createReaderSideMenu(readerDataHolder);
     }
 
-    private void getDisableMenus(ReaderDataHolder readerDataHolder) {
+    public static void initDisableMenus(ReaderDataHolder readerDataHolder) {
         disableMenus.clear();
 
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isDisableNoteFunc()) {
@@ -151,11 +148,11 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
             disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
-        }else {
+        } else {
             disableMenus.add(ReaderMenuAction.FONT);
         }
 
-        if (disableScribbleBrush) {
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportBrushPen()) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
         }
 
@@ -262,6 +259,9 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case NOTE_EXPORT:
                         showExportDialog(readerDataHolder);
+                        break;
+                    case NOTE_IMPORT:
+                        importScribbleData(readerDataHolder);
                         break;
                     case SHOW_NOTE:
                         showScribble(readerDataHolder);
@@ -478,6 +478,11 @@ public class ShowReaderMenuAction extends BaseAction {
         readerDataHolder.addActiveDialog(exportDialog);
     }
 
+    private void importScribbleData(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        new ImportReaderScribbleAction(readerDataHolder).execute(readerDataHolder, null);
+    }
+
     private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {
         OnyxDictionaryInfo info = LegacySdkDataUtils.getDictionary(readerDataHolder.getContext());
         if (info == null) {
@@ -536,26 +541,18 @@ public class ShowReaderMenuAction extends BaseAction {
 
     public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
         hideReaderMenu();
-        setIsScribbleMenuVisible(true);
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
                 getScribbleActionCallback(readerDataHolder),
                 disableMenus);
+        int currentShapeType = readerDataHolder.getNoteManager().getNoteDataInfo().getCurrentShapeType();
+        menuAction.setSelectShapeAction(createShapeAction(currentShapeType));
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                setIsScribbleMenuVisible(false);
                 StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, false, false, false, true);
                 stopNoteActionChain.execute(readerDataHolder, null);
             }
         });
-    }
-
-    public static boolean isScribbleMenuVisible() {
-        return isScribbleMenuVisible;
-    }
-
-    public static void setIsScribbleMenuVisible(boolean isScribbleMenuVisible) {
-        ShowReaderMenuAction.isScribbleMenuVisible = isScribbleMenuVisible;
     }
 
     public static ShowScribbleMenuAction.ActionCallback getScribbleActionCallback(final ReaderDataHolder readerDataHolder) {
@@ -566,6 +563,10 @@ public class ShowReaderMenuAction extends BaseAction {
                     return;
                 }
                 processScribbleAction(readerDataHolder, action);
+            }
+
+            @Override
+            public void onToggle(final ReaderMenuAction action, boolean expand){
             }
         };
         return callback;
@@ -865,6 +866,34 @@ public class ShowReaderMenuAction extends BaseAction {
             return map.get(width);
         }
         return ReaderMenuAction.SCRIBBLE_WIDTH1;
+    }
+
+    public static final ReaderMenuAction createShapeAction(int type) {
+        ReaderMenuAction action;
+        switch (type) {
+            case ShapeFactory.SHAPE_PENCIL_SCRIBBLE:
+                action = ReaderMenuAction.SCRIBBLE_PENCIL;
+                break;
+            case ShapeFactory.SHAPE_BRUSH_SCRIBBLE:
+                action = ReaderMenuAction.SCRIBBLE_BRUSH;
+                break;
+            case ShapeFactory.SHAPE_LINE:
+                action = ReaderMenuAction.SCRIBBLE_LINE;
+                break;
+            case ShapeFactory.SHAPE_TRIANGLE:
+                action = ReaderMenuAction.SCRIBBLE_TRIANGLE;
+                break;
+            case ShapeFactory.SHAPE_CIRCLE:
+                action = ReaderMenuAction.SCRIBBLE_CIRCLE;
+                break;
+            case ShapeFactory.SHAPE_RECTANGLE:
+                action = ReaderMenuAction.SCRIBBLE_SQUARE;
+                break;
+            default:
+                action = ReaderMenuAction.SCRIBBLE_PENCIL;
+                break;
+        }
+        return action;
     }
 
 }

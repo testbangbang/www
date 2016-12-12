@@ -40,6 +40,8 @@ public class NoteEventProcessorBase {
         public abstract boolean enableShortcutErasing();
 
         public abstract boolean enableRawEventProcessor();
+
+        public abstract void enableTouchInput(boolean enable);
     }
 
     private NoteManager noteManager;

@@ -15,6 +15,7 @@ public class PositionSnapshot {
 
     public String layoutType;
     public String pageName;
+    public String pagePosition;
     public RectF viewport;              // viewport absolute position.
     public RectF viewportOffsetRect;    // viewport offset in page
     public float actualScale = 1.0f;
@@ -33,6 +34,7 @@ public class PositionSnapshot {
     static public PositionSnapshot snapshot(final String type, final PageInfo pageInfo, final RectF viewport, int specialScale, int subScreenIndex)  {
         PositionSnapshot snapshot = new PositionSnapshot();
         snapshot.pageName = pageInfo.getName();
+        snapshot.pagePosition = pageInfo.getPosition();
         snapshot.layoutType = type;
         snapshot.actualScale = pageInfo.getActualScale();
         snapshot.viewport = new RectF(viewport);

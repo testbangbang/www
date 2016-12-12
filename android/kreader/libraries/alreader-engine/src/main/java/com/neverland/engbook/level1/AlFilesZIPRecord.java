@@ -21,8 +21,8 @@ public class AlFilesZIPRecord extends AlFiles {
             if (a.special == AlOneZIPRecord.SPECIAL_IMAGE) {
                 a.size = 0;
 
-                String tmp = String.format("\r\n<image numfiles = \"%d\" id=\"%s\" src=\"%s\"\r\n",
-                        a.special, a.file, a.file);
+                String tmp = String.format("\r\n<image numfiles = \"%d\" idref=\"%d\" src=\"%s\">\r\n",
+                        a.num, a.special, a.file);
                 a.startSize = AlUnicode.string2utf8(tmp, null);
                 a.startStr = new byte[a.startSize + 1];
                 AlUnicode.string2utf8(tmp, a.startStr);

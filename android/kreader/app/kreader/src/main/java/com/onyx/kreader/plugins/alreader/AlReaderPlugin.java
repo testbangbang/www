@@ -3,7 +3,7 @@ package com.onyx.kreader.plugins.alreader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import com.neverland.engbook.forpublic.AlOneSearchResult;
+
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -144,7 +144,7 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     @Override
     public String getPageText(String position) {
-        return null;
+        return getPluginImpl().getScreenText();
     }
 
     @Override
@@ -171,6 +171,11 @@ public class AlReaderPlugin implements ReaderPlugin,
         readerViewOptions = viewOptions;
         getPluginImpl().setViewSize(readerViewOptions.getViewWidth(), readerViewOptions.getViewHeight());
         return this;
+    }
+
+    @Override
+    public boolean saveOptions() {
+        return true;
     }
 
     public ReaderRendererFeatures getRendererFeatures() {
@@ -233,7 +238,7 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return
      */
     public List<ReaderSelection> getLinks(final String position) {
-        return null;
+        return getPluginImpl().getPageLinks();
     }
 
     /**
@@ -263,11 +268,16 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return
      */
     public String getPositionByPageNumber(int pageNumber) {
-        return PagePositionUtils.fromPageNumber(pageNumber);
+        return PagePositionUtils.fromPosition(getPluginImpl().getPositionOfPageNumber(pageNumber));
     }
 
     public String getPositionByPageName(final String pageName) {
         return pageName;
+    }
+
+    @Override
+    public int getPageNumberByPosition(String position) {
+        return getPluginImpl().getPageNumberOfPosition(PagePositionUtils.getPosition(position));
     }
 
     /**
@@ -279,13 +289,28 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public int getCurrentPageNumber() {
-        return getPluginImpl().getCurrentPage();
+    public int getScreenStartPageNumber() {
+        return getPluginImpl().getScreenStartPage();
     }
 
     @Override
-    public String getCurrentPosition() {
-        return PagePositionUtils.fromPosition(getPluginImpl().getCurrentPosition());
+    public int getScreenEndPageNumber() {
+        return getPluginImpl().getScreenEndPage();
+    }
+
+    @Override
+    public String getScreenStartPosition() {
+        return PagePositionUtils.fromPosition(getPluginImpl().getScreenStartPosition());
+    }
+
+    @Override
+    public String getScreenEndPosition() {
+        return PagePositionUtils.fromPosition(getPluginImpl().getScreenEndPosition());
+    }
+
+    @Override
+    public int comparePosition(String pos1, String pos2) {
+        return PagePositionUtils.getPosition(pos1) - PagePositionUtils.getPosition(pos2);
     }
 
     /**
@@ -324,12 +349,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (!getPluginImpl().nextPage()) {
             return null;
         }
-        return PagePositionUtils.fromPageNumber(getPluginImpl().getCurrentPage());
-//        int pn = PagePositionUtils.getPageNumber(position);
-//        if (pn + 1 < getTotalPage()) {
-//            return PagePositionUtils.fromPageNumber(pn + 1);
-//        }
-//        return null;
+        return PagePositionUtils.fromPageNumber(getPluginImpl().getScreenStartPage());
     }
 
     /**
@@ -340,12 +360,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (!getPluginImpl().prevPage()) {
             return null;
         }
-        int pn = PagePositionUtils.getPageNumber(position);
-        if (pn > 0) {
-            return PagePositionUtils.fromPageNumber(pn - 1);
-        }
-        return null;
-
+        return PagePositionUtils.fromPageNumber(getPluginImpl().getScreenStartPage());
     }
 
     @Override
@@ -375,24 +390,10 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean searchPrevious(final ReaderSearchOptions options) {
-        searchResults.clear();
-        int page = Integer.parseInt(options.fromPage());
-        for (int i = page; i >= 0; i--) {
-            if (searchInPage(i, options,false)) {
-                return true;
-            }
-        }
         return false;
     }
 
     public boolean searchNext(final ReaderSearchOptions options) {
-        searchResults.clear();
-        int page = Integer.parseInt(options.fromPage());
-        for (int i = page; i < getTotalPage(); i++) {
-            if (searchInPage(i, options,false)) {
-                return true;
-            }
-        }
         return false;
     }
 
@@ -400,8 +401,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (clear){
             searchResults.clear();
         }
-        List<AlOneSearchResult> list = getPluginImpl().search(options.pattern());
-        return false;
+        return getPluginImpl().search(options.pattern(), searchResults);
     }
 
     public List<ReaderSelection> searchResults() {
@@ -432,16 +432,23 @@ public class AlReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    public ReaderSelection selectWord(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
-        return null;
+    public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
+        return getPluginImpl().selectTextOnScreen(hitTest.point, hitTest.point);
     }
 
     public String position(final ReaderHitTestArgs hitTest) {
         return null;
     }
 
-    public ReaderSelection select(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
-        return null;
+    public ReaderSelection selectOnScreen(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
+        return getPluginImpl().selectTextOnScreen(start.point, end.point);
+    }
+
+    @Override
+    public ReaderSelection selectOnScreen(String pagePosition, String startPosition, String endPosition) {
+        int start = PagePositionUtils.getPosition(startPosition);
+        int end = PagePositionUtils.getPosition(endPosition);
+        return getPluginImpl().selectTextOnScreen(start, end);
     }
 
     public boolean supportScale() {

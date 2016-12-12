@@ -56,7 +56,7 @@
             <TextView
                 android:textColor="@color/black"
                 android:layout_marginTop="30dp"
-                android:text="@string/subject"
+                android:text="@string/subject_format"
                 android:id="@+id/subject_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

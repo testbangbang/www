@@ -1,11 +1,13 @@
 package com.onyx.android.sdk.scribble.utils;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
 
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.BuildConfig;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -41,6 +43,7 @@ public class DeviceConfig {
 
     static public final String SUPPORT_COLOR = "support_color";
     static public final String ERASER_RADIUS = "eraser_radius";
+    static public final String DEFAULT_STROKE_COLOR = "default_stroke_color";
 
     static public boolean useDebugConfig = false;
 
@@ -150,6 +153,13 @@ public class DeviceConfig {
             return backend.getFloat(ERASER_RADIUS);
         }
         return 15.0f;
+    }
+
+    public int getDefaultStrokeColor() {
+        if (backend.hasKey(DEFAULT_STROKE_COLOR)) {
+            return backend.getInt(DEFAULT_STROKE_COLOR);
+        }
+        return Color.BLACK;
     }
 
     static public DeviceConfig sharedInstance(Context context) {

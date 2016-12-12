@@ -16,7 +16,7 @@ public class CircleShape extends BaseShape {
         return ShapeFactory.SHAPE_CIRCLE;
     }
 
-    public boolean addMovePoint() {
+    public boolean isAddMovePoint() {
         return false;
     }
 

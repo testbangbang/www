@@ -99,6 +99,10 @@ public class ReaderDataHolder {
         return getReaderViewInfo() != null && getReaderViewInfo().supportScalable;
     }
 
+    public boolean supportSearchByPage() {
+        return supportScalable();
+    }
+
     public final List<PageInfo> getVisiblePages() {
         return getReaderViewInfo().getVisiblePages();
     }
@@ -257,7 +261,7 @@ public class ReaderDataHolder {
         return noteManager;
     }
 
-    public void updateNoteManager() {
+    public void updateRawEventProcessor() {
         if (!supportScalable()) {
             getNoteManager().stopRawEventProcessor();
             return;
@@ -290,7 +294,16 @@ public class ReaderDataHolder {
     }
 
     public boolean hasBookmark() {
-        return getReaderUserDataInfo().hasBookmark(getFirstPageInfo());
+        return getFirstVisiblePageWithBookmark() != null;
+    }
+
+    public PageInfo getFirstVisiblePageWithBookmark() {
+        for (PageInfo pageInfo : getVisiblePages()) {
+            if (getReaderUserDataInfo().hasBookmark(pageInfo)) {
+                return pageInfo;
+            }
+        }
+        return null;
     }
 
     public void submitNonRenderRequest(final BaseReaderRequest request) {

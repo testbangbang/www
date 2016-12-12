@@ -1,10 +1,10 @@
 package com.neverland.engbook.util;
 
 public class AlScreenParameters {
-	public final int[]		interFH_0 = new int [8];
-	public final int[]		interFH_1 = new int [8];
-	public final int[]		interFH_2 = new int [8];
-	public final int[]		interFI0 = new int [11];
+	public final int[]		cFontHeight = new int [InternalConst.TAL_PROFILE_FONT_COUNT];
+	public final int[]		cFontLineDown = new int [InternalConst.TAL_PROFILE_FONT_COUNT];
+	public final int[]		cFontLineUp = new int [InternalConst.TAL_PROFILE_FONT_COUNT];
+	public final int[]		cFontInterline = new int [InternalConst.TAL_PROFILE_FONT_COUNT];
 	public int		redLine;
 	public int		vikluchL;
 	public int		vikluchR;

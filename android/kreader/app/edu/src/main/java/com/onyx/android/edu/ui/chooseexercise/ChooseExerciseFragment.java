@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +31,11 @@ import com.onyx.android.edu.ui.chapter.ChapterTypeActivity;
 import com.onyx.android.edu.ui.exercisedetail.ExerciseDetailActivity;
 import com.onyx.android.edu.ui.exercisepractise.ExercisePractiseActivity;
 import com.onyx.android.edu.ui.findexercise.FindExerciseActivity;
+import com.onyx.android.edu.utils.JsonUtils;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.libedu.model.BookNode;
 import com.onyx.libedu.model.Difficult;
+import com.onyx.libedu.model.Document;
 import com.onyx.libedu.model.KnowledgePoint;
 import com.onyx.libedu.model.QuestionType;
 import com.onyx.libedu.model.Stage;
@@ -338,6 +341,7 @@ public class ChooseExerciseFragment extends BaseFragment implements ChooseExerci
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
                 if (isChecked) {
                     mPresenter.chooseTextbook(textbooks.get(position));
+                    mPresenter.loadDocuments();
                 }
             }
         });
@@ -391,5 +395,10 @@ public class ChooseExerciseFragment extends BaseFragment implements ChooseExerci
             }
         });
         questionTypeView.getMultiAdapter().setItemChecked(true, 0);
+    }
+
+    @Override
+    public void showDocuments(List<Document> documents) {
+        Log.d(TAG, JsonUtils.toJson(documents));
     }
 }

@@ -42,7 +42,7 @@
 
     <string name="click_download">点击下载</string>
     <string name="click_buy">点击购买</string>
-    <string name="subject" formatted="false">科目：%s</string>
+    <string name="subject_format" formatted="false">科目：%s</string>
     <string name="publish" formatted="false">出版：%s</string>
     <string name="price" formatted="false">价格：%s</string>
     <string name="exercise_introduction">试题简介：</string>
@@ -59,4 +59,9 @@
     <string name="no_find_chapter">未找到该教材的章节</string>
     <string name="no_find_knowledgePoint">未找到该科目的知识点</string>
     <string name="no_find_questions">未找到问题</string>
+
+    <string name="subject">科目</string>
+    <string name="version">教材版本</string>
+    <string name="textbook">教材册别</string>
+    <string name="go_test">开始考试</string>
 </resources>

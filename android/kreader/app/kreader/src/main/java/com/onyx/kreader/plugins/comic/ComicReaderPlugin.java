@@ -140,6 +140,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public boolean saveOptions() {
+        return true;
+    }
+
     /**
      * Close the document.
      */
@@ -192,7 +197,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
      * @return the selection.
      */
     @Override
-    public ReaderSelection selectWord(ReaderHitTestArgs hitTest, ReaderTextSplitter splitter) {
+    public ReaderSelection selectWordOnScreen(ReaderHitTestArgs hitTest, ReaderTextSplitter splitter) {
         return null;
     }
 
@@ -216,7 +221,12 @@ public class ComicReaderPlugin implements ReaderPlugin,
      * @return the selection.
      */
     @Override
-    public ReaderSelection select(ReaderHitTestArgs start, ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
+    public ReaderSelection selectOnScreen(ReaderHitTestArgs start, ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
+        return null;
+    }
+
+    @Override
+    public ReaderSelection selectOnScreen(String pagePosition, String startPosition, String endPosition) {
         return null;
     }
 
@@ -252,6 +262,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return pageName;
     }
 
+    @Override
+    public int getPageNumberByPosition(String position) {
+        return -1;
+    }
+
     /**
      * Return total page number.
      *
@@ -263,13 +278,28 @@ public class ComicReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public int getCurrentPageNumber() {
+    public int getScreenStartPageNumber() {
         return 0;
     }
 
     @Override
-    public String getCurrentPosition() {
+    public int getScreenEndPageNumber() {
+        return 0;
+    }
+
+    @Override
+    public String getScreenStartPosition() {
         return null;
+    }
+
+    @Override
+    public String getScreenEndPosition() {
+        return null;
+    }
+
+    @Override
+    public int comparePosition(String pos1, String pos2) {
+        return 0;
     }
 
     @Override

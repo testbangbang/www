@@ -27,7 +27,8 @@ public class AlFilesBypassNative extends AlFilesBypass {
 
     @Override
     public void finalize() throws Throwable {
-        raf.close();
+        if (raf != null)
+            raf.close();
         super.finalize();
     }
 

@@ -42,9 +42,9 @@ public class ReaderViewInfo {
         return visiblePages.get(0);
     }
 
-    public final PageInfo getPageInfo(final String pageName) {
+    public final PageInfo getPageInfo(final String pagePosition) {
         for(PageInfo pageInfo : getVisiblePages()) {
-            if (pageInfo.getName().equals(pageName)) {
+            if (pageInfo.getPosition().equals(pagePosition)) {
                 return pageInfo;
             }
         }

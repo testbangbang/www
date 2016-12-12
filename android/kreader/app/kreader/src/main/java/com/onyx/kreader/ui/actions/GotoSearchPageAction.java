@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class GotoSearchPageAction{
 
-    public static void execute(ReaderDataHolder readerDataHolder, String pageName, List<ReaderSelection> searchResults, BaseCallback baseCallback){
-        BaseReaderRequest gotoPosition = new GotoSearchLocationRequest(pageName, readerDataHolder, searchResults);
+    public static void execute(ReaderDataHolder readerDataHolder, String pagePosition, List<ReaderSelection> searchResults, BaseCallback baseCallback){
+        BaseReaderRequest gotoPosition = new GotoSearchLocationRequest(pagePosition, readerDataHolder, searchResults);
         readerDataHolder.submitRenderRequest(gotoPosition, baseCallback);
     }
 

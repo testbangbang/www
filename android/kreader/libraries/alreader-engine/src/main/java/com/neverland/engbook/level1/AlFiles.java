@@ -23,6 +23,7 @@ public abstract class AlFiles {
 	public static final String LEVEL1_FB3_FILE_FORCOVER = "/_rels/.rels";
 	public static final String LEVEL1_ZIP_FIRSTNAME_FB3 = "/fb3/body.xml";
 	public static final String LEVEL1_ZIP_DESCRIPTION_FB3 = "/fb3/description.xml";
+	public static final String LEVEL1_FB3_FILE_CONTENTTYPES = "/[Content_Types].xml";
 
 
 	int					read_pos;
@@ -76,7 +77,11 @@ public abstract class AlFiles {
 
 		super.finalize();
 	}
-	
+
+	public ArrayList<AlFileZipEntry> getFileList() {
+		return fileList;
+	}
+
 	public long setLoadTime(boolean setStart) {
 		if (setStart) {
 			time_load = System.currentTimeMillis();
@@ -356,6 +361,30 @@ public abstract class AlFiles {
 			return true;
 		} else
 		if (test.endsWith("doc")) {
+			return true;
+		} else
+		if (test.endsWith("html")) {
+			return true;
+		} else
+		if (test.endsWith("rtf")) {
+			return true;
+		} else
+		if (test.endsWith("pdb")) {
+			return true;
+		} else
+		if (test.endsWith("fb3")) {
+			return true;
+		} else
+		if (test.endsWith("azw")) {
+			return true;
+		} else
+		if (test.endsWith("azw3")) {
+			return true;
+		} else
+		if (test.endsWith("pdb")) {
+			return true;
+		} else
+		if (test.endsWith("acbf")) {
 			return true;
 		}
 			

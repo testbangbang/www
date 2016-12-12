@@ -26,6 +26,7 @@
     <string name="reader_layer_menu_directory_note">标注</string>
     <string name="reader_layer_menu_directory_scribble">手写</string>
     <string name="reader_layer_menu_directory_export">导出</string>
+    <string name="reader_layer_menu_directory_import">导入</string>
     <string name="reader_layer_menu_show_annotation">标注</string>
     <string name="reader_layer_menu_show_scribble">显示</string>
     <string name="reader_layer_menu_hide_scribble">隐藏</string>
@@ -63,4 +64,10 @@
 
     <string name="wifi_dialog_title">WiFi连接</string>
     <string name="wifi_dialog_content">无网络连接，是否打开WiFi？</string>
+
+    <string name="importing">正在导入旧手写板数据...</string>
+    <string name="import_success">导入成功！</string>
+    <string name="import_fail">导入失败</string>
+    <string name="import_success_info" formatted="false">总共导入%d条数据</string>
+
 </resources>

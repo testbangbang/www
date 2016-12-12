@@ -3,6 +3,7 @@ package com.onyx.android.sdk.scribble.data;
 import android.content.Context;
 
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -182,7 +183,10 @@ public class NoteDocument {
         if (noteModel != null) {
             noteDrawingArgs.background = noteModel.getBackground();
             noteDrawingArgs.strokeColor = noteModel.getStrokeColor();
-            noteDrawingArgs.setCurrentShapeType(noteModel.getCurrentShapeType());
+            int currentShapeType = noteModel.getCurrentShapeType();
+            if (currentShapeType != ShapeFactory.SHAPE_INVALID) {
+                noteDrawingArgs.setCurrentShapeType(currentShapeType);
+            }
             noteDrawingArgs.strokeWidth = noteModel.getStrokeWidth();
         }
     }

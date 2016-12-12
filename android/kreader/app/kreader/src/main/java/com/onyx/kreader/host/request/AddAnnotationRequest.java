@@ -35,14 +35,14 @@ public class AddAnnotationRequest extends BaseReaderRequest {
 
     public void execute(final Reader reader) throws Exception {
         DataProviderManager.getDataProvider().addAnnotation(createAnnotation(reader));
-        LayoutProviderUtils.updateReaderViewInfo(createReaderViewInfo(), reader.getReaderLayoutManager());
+        LayoutProviderUtils.updateReaderViewInfo(reader, createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 
     private Annotation createAnnotation(final Reader reader) {
         Annotation annotation = new Annotation();
         annotation.setIdString(reader.getDocumentMd5());
         annotation.setApplication(reader.getPlugin().displayName());
-        annotation.setPosition(pageInfo.getName());
+        annotation.setPosition(pageInfo.getPosition());
         annotation.setPageNumber(PagePositionUtils.getPageNumber(pageInfo.getName()));
         annotation.setLocationBegin(locationBegin);
         annotation.setLocationEnd(locationEnd);

@@ -113,7 +113,7 @@ public class AlFonts {
 			case (int) AlStyles.SL_SIZE_P8: text_size += 8 * multiplexer; break;
 			}
 			
-			if ((new_style & (AlStyles.SL_SUB | AlStyles.SL_SUP)) != 0)
+			if ((new_style & (AlStyles.STYLE_SUB | AlStyles.STYLE_SUP)) != 0)
 				text_size = text_size * 7 / 10;
 			
 			if (text_size < 3)
@@ -203,7 +203,7 @@ public class AlFonts {
 
 		fparam.color = profile.colors[(int)((new_style & AlStyles.SL_COLOR_MASK) >> AlStyles.SL_COLOR_SHIFT)] | 0xff000000;
 		calc.fontPaint.setColor(fparam.color);
-		calc.fontPaint.setStrikeThruText((new_style & AlStyles.SL_STRIKE) != 0);
+		calc.fontPaint.setStrikeThruText((new_style & AlStyles.STYLE_STRIKE) != 0);
 			
 		if (needDraw) {
 			/*if ((new_style & AlStyles.SL_SHADOW) != 0) {	
@@ -394,10 +394,10 @@ public class AlFonts {
 
 	
 	private AlTypefaces getTPF(long style, AlProfileOptions profile) {
-		AlTypefaces tf = collTPF.get(style & (AlStyles.SL_FONT_MASK | AlStyles.SL_BOLD | AlStyles.SL_ITALIC));
+		AlTypefaces tf = collTPF.get(style & (AlStyles.SL_FONT_MASK | AlStyles.STYLE_BOLD | AlStyles.STYLE_ITALIC));
 		if (tf == null) {
 			tf = addTPF(style, profile);
-			collTPF.put(style & (AlStyles.SL_FONT_MASK | AlStyles.SL_BOLD | AlStyles.SL_ITALIC), tf);
+			collTPF.put(style & (AlStyles.SL_FONT_MASK | AlStyles.STYLE_BOLD | AlStyles.STYLE_ITALIC), tf);
 		}		
 		return tf;
 	}

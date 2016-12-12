@@ -5,6 +5,8 @@ import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
+import com.neverland.engbook.level1.AlFilesEPUB;
+import com.neverland.engbook.level1.AlFilesFB3;
 import com.neverland.engbook.level1.AlOneZIPRecord;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlPreferenceOptions;
@@ -17,32 +19,32 @@ import java.util.HashMap;
 public class AlFormatFB3 extends AlAXML {
 
     private static final String LEVELE2_FB3_COVER_TYPE = "http://schemas.openxmlformats.org/package/2006/relationships/metadata/thumbnail";
+    private static final String LEVELE2_FB3_CORE_TYPE = "application/vnd.openxmlformats-package.core-properties+xml";
+    private static final String LEVELE2_FB3_DESCRIPTION_TYPE = "application/fb3-description+xml";
+    private static final String LEVELE2_FB3_BODY_TYPE = "application/fb3-body+xml";
+
 
     protected int active_file = UNKNOWN_FILE_SOURCE_NUM;
     protected int active_type = 0x00;
 
     private int section_count;
-
-    private int image_start;
-    private int image_stop;
-    private String image_name;
     private int content_start;
 
     private boolean isGenre;
     private boolean isAuthor;
     private boolean isAuthorFirst;
     private boolean isAuthorLast;
-    private boolean isAuthorNick;
+    //private boolean isAuthorNick;
     private boolean isAuthorMiddle;
     private boolean isBookTitle;
-    private boolean isProgramUsed;
+    //private boolean isProgramUsed;
     private boolean isTitle0;
-    private boolean isTitle1;
+    private boolean isGenreList;
 
     private String firstAuthor = null;
     private String middleAuthor = null;
     private String lastAuthor = null;
-    private String nickAuthor = null;
+    //private String nickAuthor = null;
 
     @Override
     public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
@@ -69,7 +71,7 @@ public class AlFormatFB3 extends AlAXML {
         allState.state_skipped_flag = true;
 
         allState.state_parser = 0;
-        parser(0, aFiles.getSize());
+        parser(0, -1);//aFiles.getSize());
         newParagraph();
 
         allState.isOpened = false;
@@ -83,25 +85,25 @@ public class AlFormatFB3 extends AlAXML {
 
     public AlFormatFB3() {
         section_count = 0;
-        image_start = -1;
-        image_stop = -1;
-        image_name = null;
+
         isGenre = false;
         isAuthor = false;
         isAuthorFirst = false;
         isAuthorLast = false;
-        isAuthorNick = false;
+        //isAuthorNick = false;
         isAuthorMiddle = false;
         isBookTitle = false;
-        isProgramUsed = false;
+        //isProgramUsed = false;
         isTitle0 = false;
-        isTitle1 = false;
+        isGenreList = false;
         content_start = 0;
         firstAuthor = null;
         middleAuthor = null;
         lastAuthor = null;
-        nickAuthor = null;
+        //nickAuthor = null;
 
+        active_file = UNKNOWN_FILE_SOURCE_NUM;
+        active_type = AlOneZIPRecord.SPECIAL_UNKNOWN;
     }
 
     private final HashMap<String, String> allId = new HashMap<>();
@@ -122,7 +124,7 @@ public class AlFormatFB3 extends AlAXML {
                     sTarget.startsWith("mailto:")*/) {
                     target = sTarget.toString();
                 } else {
-                    target = aFiles.getAbsoluteName("/word/", sTarget.toString());
+                    target = aFiles.getAbsoluteName("/fb3/", sTarget.toString());
                 }
 
                 allId.put(sId.toString(), target);
@@ -131,10 +133,27 @@ public class AlFormatFB3 extends AlAXML {
         if (active_type == AlOneZIPRecord.SPECIAL_CONTENT) {
             StringBuilder sId = tag.getATTRValue(AlFormatTag.TAG_TYPE);
             StringBuilder sTarget = tag.getATTRValue(AlFormatTag.TAG_TARGET);
-            if (sId != null && sId.indexOf(LEVELE2_FB3_COVER_TYPE) == 0 && sTarget != null && sId.length() > 0 && sTarget.length() > 0) {
-                if (sTarget.indexOf(":") == -1) {
-                    coverName = aFiles.getAbsoluteName("/", sTarget.toString());
+            if (sId != null && sTarget != null) {
+                if (sId.indexOf(LEVELE2_FB3_COVER_TYPE) == 0 && sId.length() > 0 && sTarget.length() > 0) {
+                    if (sTarget.indexOf(":") == -1) {
+                        coverName = aFiles.getAbsoluteName("/", sTarget.toString());
+                    }
                 }
+                return;
+            }
+
+            sId = tag.getATTRValue(AlFormatTag.TAG_CONTENTTYPE);
+            sTarget = tag.getATTRValue(AlFormatTag.TAG_PARTNAME);
+            if (sId != null && sTarget != null) {
+                if (sId.indexOf(LEVELE2_FB3_CORE_TYPE) == 0 && sId.length() > 0 && sTarget.length() > 0) {
+                    if (sTarget.indexOf(":") == -1) {
+                        String addFiles = AlFiles.getAbsoluteName("/", sTarget.toString());
+                        ((AlFilesFB3)aFiles).addFilesToRecord(addFiles, AlOneZIPRecord.SPECIAL_CONTENT);
+                        if (dinamicSize)
+                            stop_posUsed = aFiles.getSize();
+                    }
+                }
+                return;
             }
         }
     }
@@ -144,7 +163,7 @@ public class AlFormatFB3 extends AlAXML {
         paragraph = iType;
         allState.state_parser = 0;
         active_type = addon & 0xffff;
-        active_file = (addon >> 16) & 0xfff;
+        active_file = (addon >> 16) & 0x0fff;
         paragraph_level = (int) (level & LEVEL2_MASK_FOR_LEVEL);
         paragraph_tag = (int) ((level >> 31) & 0xffffffff);
         allState.state_skipped_flag = (addon & LEVEL2_FRM_ADDON_SKIPPEDTEXT) != 0;
@@ -156,7 +175,7 @@ public class AlFormatFB3 extends AlAXML {
     void formatAddonInt() {
         pariType = paragraph;
         parAddon = active_type & 0xffff;
-        parAddon += (active_file & 0xfff) << 16;
+        parAddon += (active_file & 0x0fff) << 16;
 
         parLevel = paragraph_level | (((long)paragraph_tag) << 31);
 
@@ -174,8 +193,11 @@ public class AlFormatFB3 extends AlAXML {
             case AlFormatTag.TAG_NUMBER:
             case AlFormatTag.TAG_NUMFILES:
             case AlFormatTag.TAG_CONTENT_TYPE:
+            case AlFormatTag.TAG_CONTENTTYPE:
             case AlFormatTag.TAG_TARGET:
+            case AlFormatTag.TAG_PARTNAME:
             case AlFormatTag.TAG_TITLE:
+            case AlFormatTag.TAG_LINK:
                 return true;
         }
         return super.isNeedAttribute(atr);
@@ -216,15 +238,6 @@ public class AlFormatFB3 extends AlAXML {
         }
     }
 
-    private void addtestImage() {
-        if (allState.isOpened) {
-            if (image_start > 0) {
-                image_stop = tag.start_pos;
-                im.add(AlOneImage.add(image_name, image_start, image_stop, AlOneImage.IMG_BASE64));
-            }
-        }
-        image_start = -1;
-    }
 
     private void setSpecialText(boolean flag) {
         if (flag) {
@@ -243,17 +256,25 @@ public class AlFormatFB3 extends AlAXML {
             if (isAuthorLast) {
                 lastAuthor = state_specialBuff0.toString();
                 isAuthorLast = false;
-            } else
+            } /*else
             if (isAuthorNick) {
                 if (state_specialBuff0.length() > 0) {
                     nickAuthor = '\"' + state_specialBuff0.toString() + '\"';
                 }
                 isAuthorNick = false;
-            } else
+            }*/ else
             if (isGenre) {
                 if (allState.isOpened)
                     bookGenres.add(state_specialBuff0.toString());
                 isGenre = false;
+            } else
+            if (isGenreList) {
+                if (allState.isOpened) {
+                    String[] spl = state_specialBuff0.toString().split(" ");
+                    for (int i = 0; i < spl.length; i++)
+                        bookGenres.add(spl[i]);
+                }
+                isGenreList = false;
             } else
             if (isBookTitle) {
                 if (allState.isOpened) {
@@ -265,7 +286,7 @@ public class AlFormatFB3 extends AlAXML {
             if (isTitle0) {
                 addTestContent(state_specialBuff0.toString().trim(), section_count);
                 isTitle0 = false;
-            } else
+            } /*else
             if (isTitle1) {
                 addTestContent(state_specialBuff0.toString().trim(), section_count + 1);
                 isTitle1 = false;
@@ -276,7 +297,7 @@ public class AlFormatFB3 extends AlAXML {
                     if (state_specialBuff0.indexOf(LEVEL2_PRGUSEDTEST) != -1)
                         program_used_position = -1;
                 }
-            }
+            }*/
             allState.state_special_flag0 = false;
         }
     }
@@ -291,8 +312,8 @@ public class AlFormatFB3 extends AlAXML {
             if (s.length() == 0) s.append(firstAuthor.trim()); else {s.append(' '); s.append(firstAuthor.trim());}
         if (middleAuthor != null)
             if (s.length() == 0) s.append(middleAuthor.trim()); else {s.append(' '); s.append(middleAuthor.trim());}
-        if (nickAuthor != null)
-            if (s.length() == 0) s.append(nickAuthor.trim()); else {s.append(' '); s.append(nickAuthor.trim());}
+        /*if (nickAuthor != null)
+            if (s.length() == 0) s.append(nickAuthor.trim()); else {s.append(' '); s.append(nickAuthor.trim());}*/
 
         if (s.length() > 0) {
             bookAuthors.add(s.toString());
@@ -301,7 +322,7 @@ public class AlFormatFB3 extends AlAXML {
         firstAuthor = null;
         middleAuthor = null;
         lastAuthor = null;
-        nickAuthor = null;
+        //nickAuthor = null;
     }
 
     private boolean addNotes() {
@@ -310,14 +331,6 @@ public class AlFormatFB3 extends AlAXML {
         s = tag.getATTRValue(AlFormatTag.TAG_HREF);
 
         if (s != null) {
-            if (allState.isOpened) {
-				/*if (s[0] == '#' && s.length() > 1) {
-					//arr_usedlink.put(s.substr(1), true);
-				} else {
-					//arr_usedlink.put(s, true);
-				}*/
-            }
-
             addCharFromTag((char) AlStyles.CHAR_LINK_S, false);
             addTextFromTag(s, false);
             addCharFromTag((char) AlStyles.CHAR_LINK_E, false);
@@ -327,38 +340,27 @@ public class AlFormatFB3 extends AlAXML {
         return false;
     }
 
-    private void testImage() {
-        image_start = -1;
-        if (allState.isOpened) {
-            StringBuilder s1 = tag.getATTRValue(AlFormatTag.TAG_ID);
-            if (s1 != null) {
-                image_name = s1.toString();
-                image_start = allState.start_position;
-            }
-        }
-    }
 
     private boolean addImages() {
-        StringBuilder s = tag.getATTRValue(AlFormatTag.TAG_HREF);
+        if (active_file != UNKNOWN_FILE_SOURCE_NUM) {
+            StringBuilder sId = tag.getATTRValue(AlFormatTag.TAG_SRC);
 
-        if (s != null) {
-            if ((paragraph & AlStyles.PAR_COVER) != 0) {
-                if (s.length() > 0 && s.charAt(0) == '#')
-                    s.delete(0, 1);
-                coverName = s.toString();
-            } else {
-                addCharFromTag((char)AlStyles.CHAR_IMAGE_S, false);
-                addTextFromTag(s, false);
-                addCharFromTag((char)AlStyles.CHAR_IMAGE_E, false);
+            if (sId == null)
+                sId = tag.getATTRValue(AlFormatTag.TAG_ID);
 
-                s = tag.getATTRValue(AlFormatTag.TAG_TITLE);
-                if (s != null) {
-                    addCharFromTag((char)AlStyles.CHAR_TITLEIMG_START, false);
-                    addTextFromTag(s, false);
-                    addCharFromTag((char)AlStyles.CHAR_TITLEIMG_STOP, false);
+            if (sId != null) {
+
+                String sTarget = allId.get(sId.toString());
+
+                if (sTarget != null) {
+                    addCharFromTag((char) AlStyles.CHAR_IMAGE_S, false);
+                    addTextFromTag(sTarget, false);
+                    addCharFromTag((char) AlStyles.CHAR_IMAGE_E, false);
+
+                    if (allState.isOpened)
+                        im.add(AlOneImage.add(sTarget, 0, 0, AlOneImage.IMG_MEMO));
                 }
             }
-            return false;
         }
         return false;
     }
@@ -367,7 +369,7 @@ public class AlFormatFB3 extends AlAXML {
     protected boolean externPrepareTAG() {
         StringBuilder param;
 
-        if (allState.isOpened && tag.tag != AlFormatTag.TAG_BINARY) {
+        if (active_type == AlOneZIPRecord.SPECIAL_NONE && allState.isOpened && tag.tag != AlFormatTag.TAG_BINARY) {
             param = tag.getATTRValue(AlFormatTag.TAG_ID);
             if (param != null)
                 addtestLink(param.toString());
@@ -375,20 +377,25 @@ public class AlFormatFB3 extends AlAXML {
 
 
         switch (tag.tag) {
+            case AlFormatTag.TAG_FB3_DESCRIPTION:
+
+                return true;
+            case AlFormatTag.TAG_OVERRIDE:
             case AlFormatTag.TAG_RELATIONSHIP:
                 if (tag.closed) {
 
                 } else
-                if (!tag.ended) {
+                /*if (!tag.ended) {
                     addRelationShip();
-                } else {
+                } else*/ {
                     addRelationShip();
                 }
                 return true;
             case AlFormatTag.TAG_EXTFILE:
                 if (tag.closed) {
                     closeOpenNotes();
-                    active_file = 0xfff;
+                    active_file = UNKNOWN_FILE_SOURCE_NUM;
+                    active_type = AlOneZIPRecord.SPECIAL_UNKNOWN;
                     clearParagraphStyle(AlStyles.PAR_NOTE);
                     newParagraph();
                     setParagraphStyle(AlStyles.PAR_BREAKPAGE);
@@ -402,17 +409,18 @@ public class AlFormatFB3 extends AlAXML {
 
                                 if (coverName.length() > 0 && !noUseCover) {
                                     boolean bs = allState.state_skipped_flag;
+                                    allState.state_skipped_flag = false;
                                     if (allState.isOpened) {
-                                        allState.state_skipped_flag = false;
                                         newParagraph();
                                         setParagraphStyle(AlStyles.PAR_COVER);
                                     }
                                     addCharFromTag((char) AlStyles.CHAR_IMAGE_S, false);
                                     addTextFromTag(LEVEL2_COVERTOTEXT_STR, false);
                                     addCharFromTag((char) AlStyles.CHAR_IMAGE_E, false);
+
+                                    allState.state_skipped_flag = bs;
                                     if (allState.isOpened) {
                                         newParagraph();
-                                        allState.state_skipped_flag = bs;
                                         clearParagraphStyle(AlStyles.PAR_COVER);
                                     }
                                 }
@@ -420,9 +428,11 @@ public class AlFormatFB3 extends AlAXML {
                                 break;
                             case AlOneZIPRecord.SPECIAL_CONTENT:
                                 active_type = AlOneZIPRecord.SPECIAL_CONTENT;
+                                allState.state_skipped_flag = true;
                                 break;
                             default:
                                 active_type = AlOneZIPRecord.SPECIAL_NONE;
+                                allState.state_skipped_flag = false;
                                 break;
                         }
 
@@ -430,27 +440,223 @@ public class AlFormatFB3 extends AlAXML {
                         if (param != null) {
                             active_file = InternalFunc.str2int(param, 10);
                         } else {
-                            active_file = 0xfff;
+                            active_file = UNKNOWN_FILE_SOURCE_NUM;
                             active_type = AlOneZIPRecord.SPECIAL_NONE;
                         }
                     } else {
-                        active_file = 0xfff;
+                        active_file = UNKNOWN_FILE_SOURCE_NUM;
                         active_type = AlOneZIPRecord.SPECIAL_NONE;
                     }
                 } else {
 
                 }
                 return true;
+            case AlFormatTag.TAG_CUSTOM_INFO:
+            case AlFormatTag.TAG_FB3_CLASSIFICATION:
+            case AlFormatTag.TAG_CLASSIFICATION:
             case AlFormatTag.TAG_PERIODICAL:
-                if (tag.closed) {
+            case AlFormatTag.TAG_WRITTEN:
+                if (active_type == AlOneZIPRecord.SPECIAL_CONTENT) {
+                    if (tag.closed) {
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == AlStyles.PAR_DESCRIPTION4)
+                            clearParagraphStyle(AlStyles.PAR_DESCRIPTION4);
+                    } else
+                    if (!tag.ended) {
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == 0x00)
+                            setParagraphStyle(AlStyles.PAR_DESCRIPTION4);
+                    } else {
 
+                    }
+                }
+                return true;
+            case AlFormatTag.TAG_SEQUENCE:
+                if (active_type == AlOneZIPRecord.SPECIAL_CONTENT) {
+                    if (tag.closed) {
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == AlStyles.PAR_DESCRIPTION3)
+                            clearParagraphStyle(AlStyles.PAR_DESCRIPTION3);
+                    } else
+                    if (!tag.ended) {
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == 0x00)
+                            setParagraphStyle(AlStyles.PAR_DESCRIPTION3);
+                    } else {
+
+                    }
+                }
+                return true;
+            case AlFormatTag.TAG_FB3_RELATIONS:
+            case AlFormatTag.TAG_RELATIONS:
+                if (active_type == AlOneZIPRecord.SPECIAL_CONTENT) {
+                    if (tag.closed) {
+                        if ((paragraph & AlStyles.PAR_DESCRIPTION1) == AlStyles.PAR_DESCRIPTION1)
+                            clearParagraphStyle(AlStyles.PAR_DESCRIPTION1);
+                    } else
+                    if (!tag.ended) {
+                        if ((paragraph & AlStyles.PAR_DESCRIPTION1) == 0)
+                            setParagraphStyle(AlStyles.PAR_DESCRIPTION1);
+                    } else {
+
+                    }
+                }
+                return true;
+            case AlFormatTag.TAG_LANG:
+                if (active_type == AlOneZIPRecord.SPECIAL_CONTENT) {
+                    if (tag.closed) {
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == AlStyles.PAR_DESCRIPTION2)
+                            clearParagraphStyle(AlStyles.PAR_DESCRIPTION3);
+                    } else
+                    if (!tag.ended) {
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == 0x00)
+                            setParagraphStyle(AlStyles.PAR_DESCRIPTION2);
+                    } else {
+
+                    }
+                }
+                return true;
+            case AlFormatTag.TAG_CATEGORY:
+                if (active_type == AlOneZIPRecord.SPECIAL_CONTENT) {
+                    if (tag.closed) {
+                        setSpecialText(false);
+                    } else
+                    if (!tag.ended) {
+                        isGenreList = true;
+                        setSpecialText(true);
+                    } else {
+
+                    }
+                }
+                return true;
+            case AlFormatTag.TAG_SUBJECT:
+                if (active_type == AlOneZIPRecord.SPECIAL_CONTENT) {
+                    if (tag.closed) {
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == (AlStyles.PAR_DESCRIPTION1 | AlStyles.PAR_DESCRIPTION2)) {
+                            addAuthor();
+                            clearParagraphStyle(AlStyles.PAR_DESCRIPTION2);
+                        } else
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == AlStyles.PAR_DESCRIPTION4) {
+                            setSpecialText(false);
+                        }
+                    } else
+                    if (!tag.ended) {
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == AlStyles.PAR_DESCRIPTION1) {
+                            StringBuilder s1 = tag.getATTRValue(AlFormatTag.TAG_LINK);
+                            if (s1 != null) {
+                                String s = s1.toString().toLowerCase();
+                                if (s.contentEquals("author"))
+                                    setParagraphStyle(AlStyles.PAR_DESCRIPTION1 | AlStyles.PAR_DESCRIPTION2);
+                            }
+                        } else
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == AlStyles.PAR_DESCRIPTION4) {
+                            isGenre = true;
+                            setSpecialText(true);
+                        }
+                    } else {
+
+                    }
+                }
+                return true;
+            case AlFormatTag.TAG_FIRST_NAME:
+            case AlFormatTag.TAG_MIDDLE_NAME:
+            case AlFormatTag.TAG_LAST_NAME:
+                if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == (AlStyles.PAR_DESCRIPTION1 | AlStyles.PAR_DESCRIPTION2)) {
+
+                    if (tag.closed) {
+                        setSpecialText(false);
+                    } else
+                    if (!tag.ended) {
+                        if (tag.tag == AlFormatTag.TAG_FIRST_NAME)
+                            isAuthorFirst = true;
+                        if (tag.tag == AlFormatTag.TAG_MIDDLE_NAME)
+                            isAuthorMiddle = true;
+                        if (tag.tag == AlFormatTag.TAG_LAST_NAME)
+                            isAuthorLast = true;
+                        setSpecialText(true);
+                    }
+                }
+                return true;
+            case AlFormatTag.TAG_MAIN:
+                if (active_type == AlOneZIPRecord.SPECIAL_CONTENT) {
+
+                    if (tag.closed) {
+                        setSpecialText(false);
+                    } else
+                    if (!tag.ended) {
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == 0x00) {
+                            // title
+                            isBookTitle = true;
+                        }
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == AlStyles.PAR_DESCRIPTION2) {
+                            // series
+                        }
+                        if ((paragraph & AlStyles.PAR_DESCRIPTIONMASK) == AlStyles.PAR_DESCRIPTION3) {
+                            // lang
+                        }
+
+                        setSpecialText(true);
+                    }
+                }
+                return true;
+            case AlFormatTag.TAG_TITLE:
+                if (active_type == AlOneZIPRecord.SPECIAL_CONTENT) {
+
+                } else {
+                    if (tag.closed) {
+                        clearParagraphStyle(AlStyles.PAR_TITLE);// | AlStyles::PAR_BREAKPAGE);
+                        newParagraph();
+                        newEmptyStyleParagraph();
+                        if (allState.isOpened)
+                            setSpecialText(false);
+                    } else
+                    if (!tag.ended) {
+                        newParagraph();
+                        newEmptyStyleParagraph();
+                        setParagraphStyle(AlStyles.PAR_TITLE);
+                        if (allState.isOpened) {
+                            isTitle0 = true;
+                            content_start = size;
+                            setSpecialText(true);
+                        }
+                    } else {
+
+                    }
+                }
+                return true;
+            case AlFormatTag.TAG_ANNOTATION:
+                if (tag.closed) {
+                    if (active_type == AlOneZIPRecord.SPECIAL_CONTENT)
+                        allState.state_skipped_flag = true;
+                    clearParagraphStyle(AlStyles.PAR_ANNOTATION);
+                    newParagraph();
+                    newEmptyStyleParagraph();
                 } else
                 if (!tag.ended) {
-
+                    if (active_type == AlOneZIPRecord.SPECIAL_CONTENT)
+                        allState.state_skipped_flag = false;
+                    newParagraph();
+                    setParagraphStyle(AlStyles.PAR_ANNOTATION);
                 } else {
 
                 }
                 return true;
+            case AlFormatTag.TAG_PREAMBLE:
+                if (tag.closed) {
+                    if (active_type == AlOneZIPRecord.SPECIAL_CONTENT)
+                        allState.state_skipped_flag = true;
+                    clearParagraphStyle(AlStyles.PAR_ANNOTATION);
+                    newParagraph();
+                    newEmptyStyleParagraph();
+                } else
+                if (!tag.ended) {
+                    if (active_type == AlOneZIPRecord.SPECIAL_CONTENT)
+                        allState.state_skipped_flag = false;
+                    newParagraph();
+                    setParagraphStyle(AlStyles.PAR_BREAKPAGE);
+                    setParagraphStyle(AlStyles.PAR_ANNOTATION);
+                } else {
+
+                }
+                return true;
+
+            /////////////////////////////////////////////////////////////////
 
 // paragraph
             case AlFormatTag.TAG_DIV:
@@ -495,77 +701,7 @@ public class AlFormatFB3 extends AlAXML {
 
                 }
                 return true;
-            case AlFormatTag.TAG_SUBTITLE:
-                if (tag.closed) {
-                    clearParagraphStyle(AlStyles.PAR_SUBTITLE);
-                    newParagraph();
-                    newEmptyStyleParagraph();
-                    if (allState.isOpened && (tune & 0x01) != 0x00)
-                        setSpecialText(false);
-                } else
-                if (!tag.ended) {
-                    newParagraph();
-                    newEmptyStyleParagraph();
-                    setParagraphStyle(AlStyles.PAR_SUBTITLE);
-                    if (allState.isOpened && (tune & 0x01) != 0) {
-                        isTitle1 = true;
-                        content_start = size;
-                        setSpecialText(true);
-                    }
-                } else {
 
-                }
-                return true;
-            case AlFormatTag.TAG_TITLE:
-                if (active_type == AlOneZIPRecord.SPECIAL_CONTENT) {
-                    if (tag.closed) {
-
-                    } else
-                    if (!tag.ended) {
-
-                    } else {
-
-                    }
-                } else {
-                    if (tag.closed) {
-                        clearParagraphStyle(AlStyles.PAR_TITLE);// | AlStyles.PAR_BREAKPAGE);
-                        newParagraph();
-                        newEmptyStyleParagraph();
-                        if (allState.isOpened)
-                            setSpecialText(false);
-                    } else
-                    if (!tag.ended) {
-                        newParagraph();
-                        newEmptyStyleParagraph();
-                        setParagraphStyle(AlStyles.PAR_TITLE);
-                        if (allState.isOpened) {
-                            isTitle0 = true;
-                            content_start = size;
-                            setSpecialText(true);
-                        }
-                    } else {
-
-                    }
-                }
-                return true;
-            case AlFormatTag.TAG_ANNOTATION:
-                if (tag.closed) {
-                    if (active_type == AlOneZIPRecord.SPECIAL_CONTENT) {
-                        allState.state_skipped_flag = true;
-                    }
-                    clearParagraphStyle(AlStyles.PAR_ANNOTATION);
-                    newParagraph();
-                    newEmptyStyleParagraph();
-                } else
-                if (!tag.ended) {
-                    if (active_type == AlOneZIPRecord.SPECIAL_CONTENT)
-                        allState.state_skipped_flag = false;
-                    newParagraph();
-                    setParagraphStyle(AlStyles.PAR_ANNOTATION);
-                } else {
-
-                }
-                return true;
             case AlFormatTag.TAG_EPIGRAPH:
                 if (tag.closed) {
                     clearParagraphStyle(AlStyles.PAR_EPIGRAPH);
@@ -617,26 +753,7 @@ public class AlFormatFB3 extends AlAXML {
 
                 }
                 return true;
-            case AlFormatTag.TAG_LANG:
-                if (tag.closed) {
 
-                } else
-                if (!tag.ended) {
-
-                } else {
-
-                }
-                return true;
-            case AlFormatTag.TAG_WRITTEN:
-                if (tag.closed) {
-
-                } else
-                if (!tag.ended) {
-
-                } else {
-
-                }
-                return true;
             case AlFormatTag.TAG_DATE:
                 if (tag.closed) {
 
@@ -664,10 +781,10 @@ public class AlFormatFB3 extends AlAXML {
                 return true;
             case AlFormatTag.TAG_CODE:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_CODE);
+                    clearTextStyle(AlStyles.STYLE_CODE);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_CODE);
+                    setTextStyle(AlStyles.STYLE_CODE);
                 } else {
 
                 }
@@ -691,9 +808,9 @@ public class AlFormatFB3 extends AlAXML {
                 if (tag.closed) {
 
                 } else
-                if (!tag.ended) {
+                /*if (!tag.ended) {
                     addImages();
-                } else {
+                } else*/ {
                     addImages();
                 }
                 return true;
@@ -745,6 +862,8 @@ public class AlFormatFB3 extends AlAXML {
 
                 }
                 return true;
+
+            case AlFormatTag.TAG_BODY:
             case AlFormatTag.TAG_FB3_BODY:
                 if (tag.closed) {
                     closeOpenNotes();
@@ -761,19 +880,8 @@ public class AlFormatFB3 extends AlAXML {
 
                 }
                 return true;
-            case AlFormatTag.TAG_RELATIONS:
-                if (tag.closed) {
-                    if ((paragraph & AlStyles.PAR_DESCRIPTION1) != 0)
-                        clearParagraphStyle(AlStyles.PAR_DESCRIPTION2);
-                } else
-                if (!tag.ended) {
-                    if ((paragraph & AlStyles.PAR_DESCRIPTION1) != 0)
-                        setParagraphStyle(AlStyles.PAR_DESCRIPTION2);
-                } else {
 
-                }
-                return true;
-            case AlFormatTag.TAG_SEQUENCE:
+            /*case AlFormatTag.TAG_LINK:
                 if (tag.closed) {
 
                 } else
@@ -782,106 +890,7 @@ public class AlFormatFB3 extends AlAXML {
                 } else {
 
                 }
-                return true;
-            case AlFormatTag.TAG_SUBJECT:
-                if (tag.closed) {
-
-                } else
-                if (!tag.ended) {
-
-                } else {
-
-                }
-                return true;
-            case AlFormatTag.TAG_MAIN:
-                if (tag.closed) {
-
-                } else
-                if (!tag.ended) {
-
-                } else {
-
-                }
-                return true;
-            case AlFormatTag.TAG_LINK:
-                if (tag.closed) {
-
-                } else
-                if (!tag.ended) {
-
-                } else {
-
-                }
-                return true;
-            case AlFormatTag.TAG_CLASSIFICATION:
-                if (tag.closed) {
-
-                } else
-                if (!tag.ended) {
-
-                }
-                else {
-
-                }
-                return true;
-
-	/*case TAG_GENRE:
-		if (tag.closed) {
-			if ((paragraph & AlStyles.PAR_DESCRIPTION2) != 0)
-				setSpecialText(false);
-		} else
-		if (!tag.ended) {
-			if ((paragraph & AlStyles.PAR_DESCRIPTION2) != 0) {
-				isGenre = true;
-				setSpecialText(true);
-			}
-		} else {
-
-		}
-		return true;*/
-
-            case AlFormatTag.TAG_FIRST_NAME:
-                if (tag.closed) {
-			/*if (isAuthor)
-				setSpecialText(false);*/
-                } else
-                if (!tag.ended) {
-			/*if (isAuthor) {
-				isAuthorFirst = true;
-				setSpecialText(true);
-			}*/
-                } else {
-
-                }
-                return true;
-            case AlFormatTag.TAG_MIDDLE_NAME:
-                if (tag.closed) {
-			/*if (isAuthor)
-				setSpecialText(false);*/
-                } else
-                if (!tag.ended) {
-			/*if (isAuthor) {
-				isAuthorMiddle = true;
-				setSpecialText(true);
-			}*/
-                } else {
-
-                }
-                return true;
-            case AlFormatTag.TAG_LAST_NAME:
-                if (tag.closed) {
-			/*if (isAuthor)
-				setSpecialText(false);*/
-                } else
-                if (!tag.ended) {
-			/*if (isAuthor) {
-				isAuthorLast = true;
-				setSpecialText(true);
-			}*/
-                } else {
-
-                }
-                return true;
+                return true;*/
 
 ///////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
@@ -889,10 +898,10 @@ public class AlFormatFB3 extends AlAXML {
             case AlFormatTag.TAG_B:
             case AlFormatTag.TAG_STRONG:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_BOLD);
+                    clearTextStyle(AlStyles.STYLE_BOLD);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_BOLD);
+                    setTextStyle(AlStyles.STYLE_BOLD);
                 }
                 else {
 
@@ -902,10 +911,10 @@ public class AlFormatFB3 extends AlAXML {
             case AlFormatTag.TAG_EM:
             case AlFormatTag.TAG_EMPHASIS:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_ITALIC);
+                    clearTextStyle(AlStyles.STYLE_ITALIC);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_ITALIC);
+                    setTextStyle(AlStyles.STYLE_ITALIC);
                 } else {
 
                 }
@@ -914,10 +923,10 @@ public class AlFormatFB3 extends AlAXML {
             case AlFormatTag.TAG_DEL:
             case AlFormatTag.TAG_STRIKETHROUGH:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_STRIKE);
+                    clearTextStyle(AlStyles.STYLE_STRIKE);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_STRIKE);
+                    setTextStyle(AlStyles.STYLE_STRIKE);
                 } else {
 
                 }
@@ -927,20 +936,20 @@ public class AlFormatFB3 extends AlAXML {
             case AlFormatTag.TAG_U:
             case AlFormatTag.TAG_UNDERLINE:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_UNDER);
+                    clearTextStyle(AlStyles.STYLE_UNDER);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_UNDER);
+                    setTextStyle(AlStyles.STYLE_UNDER);
                 } else {
 
                 }
                 return true;
             case AlFormatTag.TAG_SPACING:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_RAZR);
+                    clearTextStyle(AlStyles.STYLE_RAZR);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_RAZR);
+                    setTextStyle(AlStyles.STYLE_RAZR);
                 } else {
 
                 }
@@ -948,32 +957,32 @@ public class AlFormatFB3 extends AlAXML {
             case AlFormatTag.TAG_NOTE:
             case AlFormatTag.TAG_A:
                 if (tag.closed) {
-                    if ((paragraph & AlStyles.PAR_STYLE_LINK) != 0)
-                        clearTextStyle(AlStyles.PAR_STYLE_LINK);
+                    if ((paragraph & AlStyles.STYLE_LINK) != 0)
+                        clearTextStyle(AlStyles.STYLE_LINK);
                 } else
                 if (!tag.ended) {
                     if (addNotes())
-                        setTextStyle(AlStyles.PAR_STYLE_LINK);
+                        setTextStyle(AlStyles.STYLE_LINK);
                 } else {
 
                 }
                 return true;
             case AlFormatTag.TAG_SUP:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_SUP);
+                    clearTextStyle(AlStyles.STYLE_SUP);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_SUP);
+                    setTextStyle(AlStyles.STYLE_SUP);
                 } else {
 
                 }
                 return true;
             case AlFormatTag.TAG_SUB:
                 if (tag.closed) {
-                    clearTextStyle(AlStyles.PAR_STYLE_SUB);
+                    clearTextStyle(AlStyles.STYLE_SUB);
                 } else
                 if (!tag.ended) {
-                    setTextStyle(AlStyles.PAR_STYLE_SUB);
+                    setTextStyle(AlStyles.STYLE_SUB);
                 } else {
 
                 }

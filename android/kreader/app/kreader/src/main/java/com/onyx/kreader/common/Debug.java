@@ -25,6 +25,10 @@ public class Debug {
         }
     }
 
+    public static void w(final Class<?> cls, final String msg, final Object... args) {
+        e(cls.getSimpleName(), msg, args);
+    }
+
     public static void w(final Class<?> cls, final Throwable throwable) {
         Log.w(cls.getSimpleName(), throwable);
     }

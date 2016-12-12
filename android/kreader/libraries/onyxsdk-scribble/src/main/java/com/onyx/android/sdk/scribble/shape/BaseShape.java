@@ -1,12 +1,9 @@
 package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.*;
-import android.media.MediaActionSound;
 
-import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.List;
@@ -84,7 +81,7 @@ public class BaseShape implements Shape {
     public void setZOrder(int order) {
     }
 
-    public boolean addMovePoint() {
+    public boolean isAddMovePoint() {
         return true;
     }
 
@@ -151,6 +148,10 @@ public class BaseShape implements Shape {
     public void setOrientation(int orientation) {}
 
     public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
+        addDownPoint(normalizedPoint, screenPoint);
+    }
+
+    public void addDownPoint(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         downPoint.x = normalizedPoint.x;
         downPoint.y = normalizedPoint.y;
         currentPoint.x = normalizedPoint.x;
@@ -160,14 +161,22 @@ public class BaseShape implements Shape {
     }
 
     public void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
+        addMovePoint(normalizedPoint, screenPoint);
+    }
+
+    public void addMovePoint(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
-        if (addMovePoint()) {
+        if (isAddMovePoint()) {
             normalizedPoints.add(normalizedPoint);
         }
     }
 
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
+        addUpPoint(normalizedPoint, screenPoint);
+    }
+
+    public void addUpPoint(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
         normalizedPoints.add(normalizedPoint);

@@ -21,14 +21,14 @@ public class SelectWordRequest extends BaseReaderRequest {
     private PointF end = new PointF();
     private PointF touchPoint = new PointF();
     private ReaderSelection selection;
-    private String pageName;
+    private String pagePosition;
     private ReaderHitTestOptions hitTestOptions;
 
-    public SelectWordRequest(final String name, final PointF startPoint, final PointF endPoint, final PointF touchPoint,final ReaderHitTestOptions hitTestOptions) {
+    public SelectWordRequest(final String pagePosition, final PointF startPoint, final PointF endPoint, final PointF touchPoint,final ReaderHitTestOptions hitTestOptions) {
         start.set(startPoint.x, startPoint.y);
         end.set(endPoint.x, endPoint.y);
         this.touchPoint.set(touchPoint.x, touchPoint.y);
-        pageName = name;
+        this.pagePosition = pagePosition;
         this.hitTestOptions = hitTestOptions;
     }
 
@@ -50,11 +50,11 @@ public class SelectWordRequest extends BaseReaderRequest {
             return;
         }
         ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
-        PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pageName);
-        ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, start);
-        ReaderHitTestArgs argsEnd = new ReaderHitTestArgs(pageName, pageInfo.getDisplayRect(), 0, end);
-        selection = hitTestManager.select(argsStart, argsEnd, hitTestOptions);
-        LayoutProviderUtils.updateReaderViewInfo(getReaderViewInfo(), reader.getReaderLayoutManager());
+        PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pagePosition);
+        ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, start);
+        ReaderHitTestArgs argsEnd = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, end);
+        selection = hitTestManager.selectOnScreen(argsStart, argsEnd, hitTestOptions);
+        LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderLayoutManager());
         if (selection != null && selection.getRectangles().size() > 0) {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
             getReaderUserDataInfo().setTouchPoint(touchPoint);
