@@ -260,6 +260,8 @@ public class DialogTextStyle extends DialogBase {
                 updatePageIndicator();
             }
         });
+
+        updatePageIndicator();
     }
 
     private View initPageSpacingView() {
