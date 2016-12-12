@@ -1,6 +1,9 @@
 package com.onyx.android.eschool.model;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.eschool.R;
@@ -21,7 +24,6 @@ public class AppConfig {
     public static final String HOME_LAYOUT = "home_layout";
     public static final String HOME_PIC_DISPLAY_FILE_PATH = "home_pic_display_file_path";
     public static final String HOME_VIDEO_DISPLAY_FILE_PATH = "home_video_display_file_path";
-
 
     private AppConfig(Context context) {
         initAppConfig(context);
@@ -73,5 +75,25 @@ public class AppConfig {
 
     public String getHomeVideoDisplayFilePath() {
         return getString(HOME_VIDEO_DISPLAY_FILE_PATH, "");
+    }
+
+    public ComponentName getKreaderComponentName() {
+        String packageName = "com.onyx.kreader";
+        String className = packageName + ".ui.ReaderActivity";
+        return new ComponentName(packageName, className);
+    }
+
+    public ComponentName getReaderComponentName(Context context) {
+        ActivityInfo activityInfo = null;
+        ComponentName componentName = getKreaderComponentName();
+        try {
+            activityInfo = context.getPackageManager().getActivityInfo(componentName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (activityInfo == null) {
+            return null;
+        }
+        return componentName;
     }
 }

@@ -21,7 +21,7 @@
             android:layout_height="@dimen/home_teaching_category_image_size"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/home_teaching_materials" />
+            app:srcCompat="@drawable/home_teaching_auxiliary" />
 
         <TextView
             android:id="@+id/textView_category_text"

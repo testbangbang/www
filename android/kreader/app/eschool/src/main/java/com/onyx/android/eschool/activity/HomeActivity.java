@@ -1,5 +1,6 @@
 package com.onyx.android.eschool.activity;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -184,7 +185,7 @@ public class HomeActivity extends BaseActivity {
     private void loadTeachingData() {
     }
 
-    @OnClick(R.id.textView_study_process)
+    @OnClick(R.id.home_account_info)
     void onStudyScheduleClick() {
         ActivityUtil.startActivitySafely(this, new Intent(this, StudyPreviewActivity.class));
     }
@@ -200,7 +201,12 @@ public class HomeActivity extends BaseActivity {
     }
 
     private Intent getPicDisplayIntent() {
-        return ViewDocumentUtils.viewActionIntentWithMimeType(new File(picDisplayPath));
+        Intent intent = ViewDocumentUtils.viewActionIntentWithMimeType(new File(picDisplayPath));
+        ComponentName component = AppConfig.sharedInstance(this).getReaderComponentName(this);
+        if (component != null) {
+            intent.setComponent(component);
+        }
+        return intent;
     }
 
     private Intent getVideoPlayIntent() {
@@ -223,7 +229,8 @@ public class HomeActivity extends BaseActivity {
 
     private Intent getSettingIntent() {
         Intent intent = new Intent();
-        intent.setClassName("com.onyx.android.libsetting", "con.onyx.android.libsetting.view.activity.DeviceMainSettingActivity");
+        //intent.setClassName("com.onyx.android.libsetting", "con.onyx.android.libsetting.view.activity.DeviceMainSettingActivity");
+        intent.setClassName("com.onyx", "com.onyx.content.browser.activity.SettingsActivity");
         return intent;
     }
 

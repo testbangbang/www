@@ -77,6 +77,9 @@
     <dimen name="activity_teaching_material_volume_item_width">265dp</dimen>
     <dimen name="activity_teaching_material_volume_item_height">392dp</dimen>
     <dimen name="activity_teaching_material_volume_item_cover_margin">8dp</dimen>
+    <dimen name="activity_teaching_material_item_layout_margin">25dp</dimen>
+    <dimen name="activity_teaching_material_item_cover_layout_width">214dp</dimen>
+    <dimen name="activity_teaching_material_item_cover_layout_height">324dp</dimen>
 
     <dimen name="activity_avatar_preview_layout_margin">21dp</dimen>
     <dimen name="activity_avatar_preview_layout_item_image_size">550dp</dimen>
