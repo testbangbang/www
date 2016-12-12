@@ -103,15 +103,22 @@ public class NoteManager {
         getNoteEventProcessorManager().resume();
     }
 
-    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final Rect excludeRect, int orientation) {
-        view = sv;
+    private void initNoteArgs(final Context context) {
         noteConfig = DeviceConfig.sharedInstance(context, "note");
         mappingConfig = MappingConfig.sharedInstance(context, "note");
         enableShortcutDrawing = noteConfig.isShortcutDrawingEnabled();
         enableShortcutErasing = noteConfig.isShortcutErasingEnabled();
         NoteModel.setDefaultEraserRadius(noteConfig.getEraserRadius());
-        getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
+        NoteModel.setDefaultStrokeColor(noteConfig.getDefaultStrokeColor());
         InkUtils.setPressureEntries(mappingConfig.getPressureList());
+    }
+
+    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final Rect excludeRect, int orientation) {
+        if (noteConfig == null || mappingConfig == null) {
+            initNoteArgs(context);
+        }
+        view = sv;
+        getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
     }
 
     public final NoteEventProcessorManager getNoteEventProcessorManager() {
@@ -209,6 +216,10 @@ public class NoteManager {
 
             public boolean enableRawEventProcessor() {
                 return enableRawEventProcessor;
+            }
+
+            public void enableTouchInput(boolean enable) {
+                getParent().getHandlerManager().setEnableTouch(enable);
             }
 
         };

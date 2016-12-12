@@ -31,6 +31,10 @@ public class OnyxToolbar extends ViewGroup {
         void onSizeChanged(int w, int h, int oldw, int oldh);
     }
 
+    public interface OnToggleToolbarListener {
+        void onToggle(Object tag, boolean expand);
+    }
+
     private OnyxToolbar currentExpandedToolbar;
     private View currentExpandedView;
     private View dividerView;
@@ -39,6 +43,7 @@ public class OnyxToolbar extends ViewGroup {
     private int menuViewCount = 0;
     private int menuViewIndex = 0;
     private OnMenuClickListener onMenuClickListener;
+    private OnToggleToolbarListener onToggleToolbarListener;
     private Direction direction = Direction.Bottom;
     private FillStyle fillStyle = FillStyle.WrapContent;
     private boolean clickedDismissToolbar = false;
@@ -142,21 +147,18 @@ public class OnyxToolbar extends ViewGroup {
             @Override
             public void onClick(View v) {
                 if (onMenuClickListener != null) {
-                    dismissExpandedToolbar();
+                    dismissExpandedToolbar(currentExpandedView);
 
                     OnyxToolbar toolbar = onMenuClickListener.OnClickListener(v);
                     if (clickedDismissToolbar){
                         OnyxToolbar parent = (OnyxToolbar)getParent();
-                        parent.dismissExpandedToolbar();
+                        parent.dismissExpandedToolbar(v);
                         parent.clearState();
                         return;
                     }
 
                     if (currentExpandedView != v && toolbar != null) {
-                        currentExpandedToolbar = toolbar;
-                        currentExpandedToolbar.setDirection(direction);
-                        addView(currentExpandedToolbar);
-                        currentExpandedView = v;
+                        expandToolbar(toolbar, v);
                     } else {
                         clearState();
                     }
@@ -165,9 +167,22 @@ public class OnyxToolbar extends ViewGroup {
         });
     }
 
-    public void dismissExpandedToolbar() {
+    private void expandToolbar(OnyxToolbar expandToolbar, View view) {
+        currentExpandedToolbar = expandToolbar;
+        currentExpandedToolbar.setDirection(direction);
+        addView(currentExpandedToolbar);
+        if (onToggleToolbarListener != null) {
+            onToggleToolbarListener.onToggle(view.getTag(), true);
+        }
+        currentExpandedView = view;
+    }
+
+    public void dismissExpandedToolbar(View view) {
         if (currentExpandedToolbar != null) {
             removeView(currentExpandedToolbar);
+            if (onToggleToolbarListener != null) {
+                onToggleToolbarListener.onToggle(view.getTag(), false);
+            }
             currentExpandedToolbar = null;
         }
     }
@@ -179,6 +194,10 @@ public class OnyxToolbar extends ViewGroup {
 
     public void setClickedDismissToolbar(boolean clickedDismissToolbar) {
         this.clickedDismissToolbar = clickedDismissToolbar;
+    }
+
+    public void setOnToggleToolbarListener(OnToggleToolbarListener onToggleToolbarListener) {
+        this.onToggleToolbarListener = onToggleToolbarListener;
     }
 
     private View generateDefaultDividerView() {

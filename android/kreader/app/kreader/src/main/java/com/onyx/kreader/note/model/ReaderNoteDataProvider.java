@@ -69,6 +69,17 @@ public class ReaderNoteDataProvider {
         database.endTransaction();
     }
 
+    public static void saveDocumentList(final Context context,
+                                     final Collection<ReaderNoteDocumentModel> list) {
+        final DatabaseWrapper database= FlowManager.getDatabase(ReaderNoteDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for(ReaderNoteDocumentModel documentModel : list) {
+            documentModel.save();
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
     public static void svaeShapeListInBackground(final Context context,
                                                  final Collection<ReaderNoteShapeModel> list,
                                                  final DataProviderCallback callback) {

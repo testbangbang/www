@@ -16,7 +16,7 @@ import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.utils.ExportUtils;
+import com.onyx.android.sdk.utils.ExportUtils;
 import com.onyx.kreader.utils.PdfWriterUtils;
 
 import java.io.IOException;

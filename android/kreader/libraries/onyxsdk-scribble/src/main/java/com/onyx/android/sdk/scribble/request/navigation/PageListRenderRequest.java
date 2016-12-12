@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class PageListRenderRequest extends BaseNoteRequest {
 
+    private Bitmap renderBitmap;
 
     public PageListRenderRequest(final String id, final List<PageInfo> pages, final Rect size) {
         setDocUniqueId(id);
@@ -29,6 +30,7 @@ public class PageListRenderRequest extends BaseNoteRequest {
         loadShapeData(parent);
         renderVisiblePages(parent);
         updateShapeDataInfo(parent);
+        renderBitmap = parent.getRenderBitmap();
     }
 
     public void loadShapeData(final NoteViewHelper parent) {
@@ -39,4 +41,7 @@ public class PageListRenderRequest extends BaseNoteRequest {
         }
     }
 
+    public Bitmap getRenderBitmap() {
+        return renderBitmap;
+    }
 }

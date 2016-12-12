@@ -47,7 +47,7 @@ public class InkUtils {
     }
 
     public static boolean inRange(final float newStrokeWidth, final float lastStrokeWidth) {
-        return Math.abs(newStrokeWidth - lastStrokeWidth) < 1.0f;
+        return Math.abs(newStrokeWidth - lastStrokeWidth) < 0.5f;
     }
 
     public static List<PathEntry> generate(final RenderContext renderContext, final BrushScribbleShape shape) {

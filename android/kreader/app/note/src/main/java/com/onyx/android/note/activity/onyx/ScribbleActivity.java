@@ -3,17 +3,23 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.scribble.ClearPageAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.android.note.actions.scribble.DocumentSaveAction;
+import com.onyx.android.note.actions.scribble.ExportNoteAction;
 import com.onyx.android.note.actions.scribble.GotoTargetPageAction;
 import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.android.note.actions.scribble.PenColorChangeAction;
@@ -32,17 +38,21 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -79,6 +89,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         ImageView redoBtn = (ImageView) findViewById(R.id.button_redo);
         ImageView saveBtn = (ImageView) findViewById(R.id.button_save);
         ImageView exportBtn = (ImageView) findViewById(R.id.button_export);
+        ImageView settingBtn = (ImageView) findViewById(R.id.button_setting);
         exportBtn.setVisibility(NoteAppConfig.sharedInstance(this).isEnableExport() ? View.VISIBLE : View.GONE);
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
         ContentView functionContentView = (ContentView) findViewById(R.id.function_content_view);
@@ -143,7 +154,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
         exportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onExport();
+            }
+        });
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showExportMenu();
             }
         });
         pageIndicator.setOnClickListener(new View.OnClickListener() {
@@ -159,6 +175,37 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 });
             }
         });
+
+        getSupportActionBar().addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
+            @Override
+            public void onMenuVisibilityChanged(boolean isVisible) {
+                if (!isVisible) {
+                    syncWithCallback(true, true, null);
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.onyx_scribble_activity_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.export_current_page:
+                onExport(true);
+                break;
+            case R.id.export_all_pages:
+                onExport(false);
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showGotoPageDialog() {
@@ -197,7 +244,22 @@ public class ScribbleActivity extends BaseScribbleActivity {
         dlg.show(getFragmentManager());
     }
 
-    private void onExport() {
+    private void onExport(boolean exportCurPage) {
+        new ExportNoteAction<>(this,
+                shapeDataInfo.getDocumentUniqueId(),
+                shapeDataInfo.getPageNameList().getPageNameList(),
+                noteTitle,
+                exportCurPage,
+                shapeDataInfo.getCurrentPageIndex()).execute(ScribbleActivity.this, null);
+    }
+
+    private void showExportMenu() {
+        syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                getSupportActionBar().openOptionsMenu();
+            }
+        });
     }
 
     private void onSave(final boolean finishAfterSave) {
@@ -262,6 +324,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
             case ScribbleSubMenuID.THICKNESS_ULTRA_BOLD:
                 float value = ScribbleSubMenuID.strokeWidthFromMenuId(item);
                 onStrokeWidthChanged(value, null);
+                break;
+            case ScribbleSubMenuID.THICKNESS_CUSTOM_BOLD:
+                showCustomLineWidthDialog();
                 break;
             case ScribbleSubMenuID.ERASE_PARTIALLY:
                 onEraseClicked(true);
@@ -336,6 +401,18 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 onPenColoChanged();
                 break;
         }
+    }
+
+    private void showCustomLineWidthDialog() {
+        DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(this,
+                (int) shapeDataInfo.getStrokeWidth(),
+                20, Color.BLACK, new DialogCustomLineWidth.Callback() {
+            @Override
+            public void done(int lineWidth) {
+                onStrokeWidthChanged(lineWidth, null);
+            }
+        });
+        customLineWidth.show();
     }
 
     private void onBackgroundChanged() {

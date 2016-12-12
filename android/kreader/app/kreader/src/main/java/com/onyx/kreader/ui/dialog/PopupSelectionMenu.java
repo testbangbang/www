@@ -24,6 +24,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.ui.actions.DictionaryQueryAction;
 import com.onyx.kreader.ui.data.DictionaryQuery;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -33,6 +34,8 @@ import com.onyx.kreader.ui.view.HTMLReaderWebView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle.Highlight;
 
@@ -394,6 +397,7 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     private void updateTranslation(final ReaderDataHolder readerDataHolder, String token) {
+        token = StringUtils.trimPunctuation(token);
         mDictTitle.setText(token);
         dictionaryQuery(readerDataHolder, token);
     }
