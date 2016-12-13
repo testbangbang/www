@@ -95,12 +95,24 @@ public class ReaderDataHolder {
         return getReaderViewInfo() != null && getReaderViewInfo().supportTextPage;
     }
 
+    public boolean isFixedDocument() {
+        return getReaderViewInfo() != null && getReaderViewInfo().isFixedDocument;
+    }
+
+    public boolean isFlowDocument() {
+        return !isFixedDocument();
+    }
+
     public boolean supportScalable() {
         return getReaderViewInfo() != null && getReaderViewInfo().supportScalable;
     }
 
-    public boolean isFixedPageDocument() {
-        return getReaderViewInfo() != null && getReaderViewInfo().isFixedPageDocument;
+    public boolean supportFontSizeAdjustment() {
+        return getReaderViewInfo() != null && getReaderViewInfo().supportFontSizeAdjustment;
+    }
+
+    public boolean supportTypefaceAdjustment() {
+        return getReaderViewInfo() != null && getReaderViewInfo().supportTypefaceAdjustment;
     }
 
     public boolean canPan() {
@@ -108,7 +120,7 @@ public class ReaderDataHolder {
     }
 
     public boolean supportSearchByPage() {
-        return supportScalable();
+        return isFixedDocument() && supportScalable();
     }
 
     public final List<PageInfo> getVisiblePages() {

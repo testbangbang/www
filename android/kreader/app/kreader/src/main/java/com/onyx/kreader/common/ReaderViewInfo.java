@@ -17,6 +17,7 @@ public class ReaderViewInfo {
 
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
 
+    public boolean isFixedDocument;
     public boolean canPrevScreen;
     public boolean canNextScreen;
     public boolean canGoBack;
@@ -24,7 +25,8 @@ public class ReaderViewInfo {
     public boolean supportTextPage;
     public boolean supportReflow;
     public boolean supportScalable;
-    public boolean isFixedPageDocument;
+    public boolean supportFontSizeAdjustment;
+    public boolean supportTypefaceAdjustment;
     public int scale;
     public RectF viewportInDoc = new RectF();
     public RectF pagesBoundingRect = new RectF();

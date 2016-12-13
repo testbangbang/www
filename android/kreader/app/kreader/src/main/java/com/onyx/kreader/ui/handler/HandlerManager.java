@@ -387,8 +387,10 @@ public class HandlerManager {
             } else {
                 prevScreen(readerDataHolder);
             }
-        } else {
+        } else if (readerDataHolder.supportFontSizeAdjustment()) {
             increaseFontSize(readerDataHolder);
+        } else {
+            prevScreen(readerDataHolder);
         }
     }
 
@@ -399,8 +401,10 @@ public class HandlerManager {
             } else {
                 nextScreen(readerDataHolder);
             }
-        } else {
+        } else if (readerDataHolder.supportFontSizeAdjustment()) {
             decreaseFontSize(readerDataHolder);
+        } else {
+            nextScreen(readerDataHolder);
         }
     }
 

@@ -286,7 +286,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
         if (DeviceConfig.sharedInstance(getContext()).isDisableNoteFunc() ||
-                !readerDataHolder.isFixedPageDocument()) {
+                !readerDataHolder.isFixedDocument()) {
             btnScribble.setVisibility(View.GONE);
         }
 

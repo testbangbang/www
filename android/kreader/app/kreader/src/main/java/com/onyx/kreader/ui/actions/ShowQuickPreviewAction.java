@@ -1,12 +1,10 @@
 package com.onyx.kreader.ui.actions;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.android.sdk.data.Size;
 import com.onyx.kreader.host.request.RenderThumbnailRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogQuickPreview;
@@ -30,7 +28,7 @@ public class ShowQuickPreviewAction extends BaseAction {
     private int height = 400;
 
     public ShowQuickPreviewAction(ReaderDataHolder readerDataHolder) {
-        if (readerDataHolder.isFixedPageDocument()) {
+        if (readerDataHolder.isFixedDocument()) {
             width = readerDataHolder.getDisplayWidth();
             height = readerDataHolder.getDisplayHeight();
         }
