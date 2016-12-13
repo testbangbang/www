@@ -7,6 +7,7 @@ import android.widget.Button;
 
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.ui.view.SeekBarWithEditTextView;
+import com.onyx.kreader.utils.DeviceConfig;
 
 
 /**
@@ -37,9 +38,14 @@ public class DialogSlideshowSettings extends DialogBase {
     }
 
     private void initData() {
-        final int DEFAULT_INTERVAL = 20;
-        seekBarInterval.updateValue(R.string.dialog_slideshow_intervals_title, DEFAULT_INTERVAL, 1, 60);
-        seekBarMaxPageCount.updateValue(R.string.dialog_slideshow_max_page_count_title, 2000, 1, 6000);
+        seekBarInterval.updateValue(R.string.dialog_slideshow_intervals_title,
+                DeviceConfig.sharedInstance(getContext()).getDefaultSlideshowInterval(),
+                DeviceConfig.sharedInstance(getContext()).getSlideshowMinimumInterval(),
+                DeviceConfig.sharedInstance(getContext()).getSlideshowMaximumInterval());
+        seekBarMaxPageCount.updateValue(R.string.dialog_slideshow_max_page_count_title,
+                DeviceConfig.sharedInstance(getContext()).getDefaultSlideshowPages(),
+                DeviceConfig.sharedInstance(getContext()).getSlideshowMinimumPages(),
+                DeviceConfig.sharedInstance(getContext()).getSlideshowMaximumPages());
     }
 
     private void initView() {

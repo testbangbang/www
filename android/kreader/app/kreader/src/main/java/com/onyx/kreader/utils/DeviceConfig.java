@@ -57,6 +57,15 @@ public class DeviceConfig {
     private int frontLight = 0;
     private boolean exitAfterFinish = false;
 
+    // in seconds
+    private int slideshowMinimumInterval = 1;
+    private int slideshowMaximumInterval = 60;
+    private int defaultSlideshowInterval = 20;
+
+    private int slideshowMinimumPages = 1;
+    private int slideshowMaximumPages = 6000;
+    private int defaultSlideshowPages = 2000;
+
     private String defaultAnnotationHighlightStyle = "Highlight";
 
     private DeviceConfig(Context context) {
@@ -390,6 +399,54 @@ public class DeviceConfig {
 
     public void setExitAfterFinish(boolean exitAfterFinish) {
         this.exitAfterFinish = exitAfterFinish;
+    }
+
+    public int getSlideshowMinimumInterval() {
+        return slideshowMinimumInterval;
+    }
+
+    public void setSlideshowMinimumInterval(int slideshowMinimumInterval) {
+        this.slideshowMinimumInterval = slideshowMinimumInterval;
+    }
+
+    public int getSlideshowMaximumInterval() {
+        return slideshowMaximumInterval;
+    }
+
+    public void setSlideshowMaximumInterval(int slideshowMaximumInterval) {
+        this.slideshowMaximumInterval = slideshowMaximumInterval;
+    }
+
+    public int getDefaultSlideshowInterval() {
+        return defaultSlideshowInterval;
+    }
+
+    public void setDefaultSlideshowInterval(int defaultSlideshowInterval) {
+        this.defaultSlideshowInterval = defaultSlideshowInterval;
+    }
+
+    public int getSlideshowMinimumPages() {
+        return slideshowMinimumPages;
+    }
+
+    public void setSlideshowMinimumPages(int slideshowMinimumPages) {
+        this.slideshowMinimumPages = slideshowMinimumPages;
+    }
+
+    public int getSlideshowMaximumPages() {
+        return slideshowMaximumPages;
+    }
+
+    public void setSlideshowMaximumPages(int slideshowMaximumPages) {
+        this.slideshowMaximumPages = slideshowMaximumPages;
+    }
+
+    public int getDefaultSlideshowPages() {
+        return defaultSlideshowPages;
+    }
+
+    public void setDefaultSlideshowPages(int defaultSlideshowPages) {
+        this.defaultSlideshowPages = defaultSlideshowPages;
     }
 
     public int getFrontLight() {
