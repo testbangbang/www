@@ -56,22 +56,22 @@ public class LayoutTextReflowProvider extends LayoutProvider {
 
     public boolean prevPage() throws ReaderException {
         LayoutProviderUtils.prevPage(getLayoutManager());
-        return gotoPosition(getLayoutManager().getNavigator().getScreenStartPosition());
+        return onPositionChanged(getLayoutManager().getNavigator().getScreenStartPosition());
     }
 
     public boolean nextPage() throws ReaderException {
         LayoutProviderUtils.nextPage(getLayoutManager());
-        return gotoPosition(getLayoutManager().getNavigator().getScreenStartPosition());
+        return onPositionChanged(getLayoutManager().getNavigator().getScreenStartPosition());
     }
 
     public boolean firstPage() throws ReaderException {
         LayoutProviderUtils.firstPage(getLayoutManager());
-        return gotoPosition(getLayoutManager().getNavigator().getScreenStartPosition());
+        return onPositionChanged(getLayoutManager().getNavigator().getScreenStartPosition());
     }
 
     public boolean lastPage() throws ReaderException {
         LayoutProviderUtils.lastPage(getLayoutManager());
-        return gotoPosition(getLayoutManager().getNavigator().getScreenStartPosition());
+        return onPositionChanged(getLayoutManager().getNavigator().getScreenStartPosition());
     }
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo readerViewInfo) throws ReaderException {
@@ -96,7 +96,7 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         if (!getLayoutManager().getNavigator().gotoPage(page)) {
             return false;
         }
-        return gotoPosition(getLayoutManager().getNavigator().getScreenStartPosition());
+        return onPositionChanged(getLayoutManager().getNavigator().getScreenStartPosition());
     }
 
     public boolean gotoPosition(final String position) throws ReaderException {
@@ -106,6 +106,10 @@ public class LayoutTextReflowProvider extends LayoutProvider {
         if (!getLayoutManager().getNavigator().gotoPosition(position)) {
             return false;
         }
+        return onPositionChanged(position);
+    }
+
+    private boolean onPositionChanged(String position) {
         String page = PagePositionUtils.fromPageNumber(getLayoutManager().getNavigator().getScreenStartPageNumber());
         LayoutProviderUtils.addSinglePage(getLayoutManager(), page, position);
         if (!getPageManager().gotoPage(position)) {
