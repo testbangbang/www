@@ -176,7 +176,7 @@ public class DialogTextStyle extends DialogBase {
                 fonts = getFontsAction.getFonts();
                 if (fontFace != null) {
                     for (int i = 0; i < fonts.size(); i++) {
-                        if (fontFace.equals(fonts.get(i))) {
+                        if (fontFace.equals(fonts.get(i).getId())) {
                             selectIndex = i;
                         }
                     }
