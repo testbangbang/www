@@ -12,7 +12,7 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 
 import con.onyx.android.libsetting.R;
 import con.onyx.android.libsetting.SettingConfig;
-import con.onyx.android.libsetting.data.PowerSetttingTimeoutCategory;
+import con.onyx.android.libsetting.data.PowerSettingTimeoutCategory;
 import con.onyx.android.libsetting.databinding.ActivityPowerSettingBinding;
 import con.onyx.android.libsetting.util.CommonUtil;
 import con.onyx.android.libsetting.util.PowerUtil;
@@ -61,7 +61,7 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     PowerUtil.setCurrentTimeoutValue(getContext(),
-                            PowerSetttingTimeoutCategory.SCREEN_TIMEOUT, Integer.parseInt((String) newValue));
+                            PowerSettingTimeoutCategory.SCREEN_TIMEOUT, Integer.parseInt((String) newValue));
                     updateAutoSleepListSummary(Integer.parseInt((String) newValue));
                     return true;
                 }
@@ -70,7 +70,7 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     PowerUtil.setCurrentTimeoutValue(getContext(),
-                            PowerSetttingTimeoutCategory.POWER_OFF_TIMEOUT, (Integer) newValue);
+                            PowerSettingTimeoutCategory.POWER_OFF_TIMEOUT, (Integer) newValue);
                     return true;
                 }
             });
@@ -78,7 +78,7 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     PowerUtil.setCurrentTimeoutValue(getContext(),
-                            PowerSetttingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT, (Integer) newValue);
+                            PowerSettingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT, (Integer) newValue);
                     return true;
                 }
             });
@@ -95,26 +95,26 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
             wakeupPreference.setChecked(PowerUtil.isWakeUpFrontLightEnabled(getContext()));
 
             autoSleepListPreference.setValue(PowerUtil.getCurrentTimeoutValue(getContext(),
-                    PowerSetttingTimeoutCategory.SCREEN_TIMEOUT));
+                    PowerSettingTimeoutCategory.SCREEN_TIMEOUT));
             autoSleepListPreference.setEntries(PowerUtil.getTimeoutEntries(getContext(),
-                    PowerSetttingTimeoutCategory.SCREEN_TIMEOUT));
+                    PowerSettingTimeoutCategory.SCREEN_TIMEOUT));
             autoSleepListPreference.setEntryValues(PowerUtil.getTimeoutEntryValues(getContext(),
-                    PowerSetttingTimeoutCategory.SCREEN_TIMEOUT));
+                    PowerSettingTimeoutCategory.SCREEN_TIMEOUT));
             updateAutoSleepListSummary(Integer.parseInt(autoSleepListPreference.getValue()));
 
             autoPowerOffListPreference.setValue(PowerUtil.getCurrentTimeoutValue(getContext(),
-                    PowerSetttingTimeoutCategory.POWER_OFF_TIMEOUT));
+                    PowerSettingTimeoutCategory.POWER_OFF_TIMEOUT));
             autoPowerOffListPreference.setEntries(PowerUtil.getTimeoutEntries(getContext(),
-                    PowerSetttingTimeoutCategory.POWER_OFF_TIMEOUT));
+                    PowerSettingTimeoutCategory.POWER_OFF_TIMEOUT));
             autoPowerOffListPreference.setEntryValues(PowerUtil.getTimeoutEntryValues(getContext(),
-                    PowerSetttingTimeoutCategory.POWER_OFF_TIMEOUT));
+                    PowerSettingTimeoutCategory.POWER_OFF_TIMEOUT));
 
             networkLatencyListPreference.setValue(PowerUtil.getCurrentTimeoutValue(getContext(),
-                    PowerSetttingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT));
+                    PowerSettingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT));
             networkLatencyListPreference.setEntries(PowerUtil.getTimeoutEntries(getContext(),
-                    PowerSetttingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT));
+                    PowerSettingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT));
             networkLatencyListPreference.setEntryValues(PowerUtil.getTimeoutEntryValues(getContext(),
-                    PowerSetttingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT));
+                    PowerSettingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT));
         }
 
         private void updateAutoSleepListSummary(int ms) {

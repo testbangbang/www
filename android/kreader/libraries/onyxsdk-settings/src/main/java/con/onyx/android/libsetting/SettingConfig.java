@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import con.onyx.android.libsetting.data.DeviceType;
-import con.onyx.android.libsetting.data.PowerSetttingTimeoutCategory;
+import con.onyx.android.libsetting.data.PowerSettingTimeoutCategory;
 import con.onyx.android.libsetting.util.CommonUtil;
 import con.onyx.android.libsetting.util.Constant;
 
@@ -142,14 +142,14 @@ public class SettingConfig {
         }
     }
 
-    public List<Integer> getTimeoutValues(@PowerSetttingTimeoutCategory.PowerSetttingTimeoutCategoryDef
+    public List<Integer> getTimeoutValues(@PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef
                                                   int item) {
         switch (item) {
-            case PowerSetttingTimeoutCategory.SCREEN_TIMEOUT:
+            case PowerSettingTimeoutCategory.SCREEN_TIMEOUT:
                 return getSystemScreenOffValues();
-            case PowerSetttingTimeoutCategory.POWER_OFF_TIMEOUT:
+            case PowerSettingTimeoutCategory.POWER_OFF_TIMEOUT:
                 return getSystemAutoPowerOffValues();
-            case PowerSetttingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT:
+            case PowerSettingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT:
                 return getSystemWifiInactivityTimeoutValues();
             default:
                 return new ArrayList<>();

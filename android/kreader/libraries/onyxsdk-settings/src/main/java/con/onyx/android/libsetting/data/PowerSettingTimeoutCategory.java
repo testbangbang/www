@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
  * Created by solskjaer49 on 2016/12/2 15:44.
  */
 
-public class PowerSetttingTimeoutCategory {
+public class PowerSettingTimeoutCategory {
     public static final int POWER_OFF_TIMEOUT = 0;
     public static final int SCREEN_TIMEOUT = 1;
     public static final int WIFI_INACTIVITY_TIMEOUT = 2;
@@ -20,11 +20,11 @@ public class PowerSetttingTimeoutCategory {
     // Enumerate valid values for this interface
     @IntDef({POWER_OFF_TIMEOUT, SCREEN_TIMEOUT, WIFI_INACTIVITY_TIMEOUT})
     // Create an interface for validating int types
-    public @interface PowerSetttingTimeoutCategoryDef {
+    public @interface PowerSettingTimeoutCategoryDef {
     }
 
     public
-    @PowerSetttingTimeoutCategoryDef
+    @PowerSettingTimeoutCategoryDef
     static int translate(int val) {
         return val;
     }

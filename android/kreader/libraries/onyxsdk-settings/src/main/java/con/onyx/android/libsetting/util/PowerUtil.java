@@ -7,7 +7,7 @@ import java.util.List;
 
 import con.onyx.android.libsetting.R;
 import con.onyx.android.libsetting.SettingConfig;
-import con.onyx.android.libsetting.data.PowerSetttingTimeoutCategory;
+import con.onyx.android.libsetting.data.PowerSettingTimeoutCategory;
 
 /**
  * Created by solskjaer49 on 2016/12/9 17:26.
@@ -27,8 +27,7 @@ public class PowerUtil {
     }
 
     public static CharSequence[] getTimeoutEntries(Context context,
-                                                   @PowerSetttingTimeoutCategory.
-                                                           PowerSetttingTimeoutCategoryDef int timeoutCategory) {
+                                                   @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int timeoutCategory) {
         SettingConfig config = SettingConfig.sharedInstance(context);
         List<Integer> timeoutValueList = config.getTimeoutValues(timeoutCategory);
         CharSequence[] entriesArray = new CharSequence[timeoutValueList.size()];
@@ -45,8 +44,7 @@ public class PowerUtil {
     }
 
     public static CharSequence[] getTimeoutEntryValues(Context context,
-                                                       @PowerSetttingTimeoutCategory.
-                                                               PowerSetttingTimeoutCategoryDef int timeoutCategory) {
+                                                       @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int timeoutCategory) {
         SettingConfig config = SettingConfig.sharedInstance(context);
         List<Integer> timeoutValueList = config.getTimeoutValues(timeoutCategory);
         CharSequence[] entryValueArray = new CharSequence[timeoutValueList.size()];
@@ -58,25 +56,23 @@ public class PowerUtil {
     }
 
     public static String getCurrentTimeoutValue(Context context,
-                                                @PowerSetttingTimeoutCategory.
-                                                        PowerSetttingTimeoutCategoryDef int timeoutCategory) {
+                                                @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int timeoutCategory) {
         return Integer.toString(Settings.System.getInt(
                 context.getContentResolver(), getTimeoutDataKeyByCategory(context, timeoutCategory), -1));
     }
 
     private static String getTimeoutDataKeyByCategory(Context context,
-                                                      @PowerSetttingTimeoutCategory.
-                                                              PowerSetttingTimeoutCategoryDef int timeoutCategory) {
+                                                      @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int timeoutCategory) {
         String key = null;
         SettingConfig config = SettingConfig.sharedInstance(context);
         switch (timeoutCategory) {
-            case PowerSetttingTimeoutCategory.POWER_OFF_TIMEOUT:
+            case PowerSettingTimeoutCategory.POWER_OFF_TIMEOUT:
                 key = config.getSystemAutoPowerOffKey();
                 break;
-            case PowerSetttingTimeoutCategory.SCREEN_TIMEOUT:
+            case PowerSettingTimeoutCategory.SCREEN_TIMEOUT:
                 key = config.getSystemScreenOffKey();
                 break;
-            case PowerSetttingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT:
+            case PowerSettingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT:
                 key = config.getSystemWifiInactivityKey();
                 break;
         }
@@ -84,8 +80,7 @@ public class PowerUtil {
     }
 
     public static void setCurrentTimeoutValue(Context context,
-                                              @PowerSetttingTimeoutCategory.
-                                                      PowerSetttingTimeoutCategoryDef int timeoutCategory, int value) {
+                                              @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int timeoutCategory, int value) {
         SystemSettingUtil.changeSystemConfigIntegerValue(context,
                 getTimeoutDataKeyByCategory(context, timeoutCategory),
                 value);
