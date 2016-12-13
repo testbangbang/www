@@ -30,7 +30,7 @@ public class ShowQuickPreviewAction extends BaseAction {
     private int height = 400;
 
     public ShowQuickPreviewAction(ReaderDataHolder readerDataHolder) {
-        if (readerDataHolder.getReader().getRendererFeatures().supportScale()) {
+        if (readerDataHolder.isFixedPageDocument()) {
             width = readerDataHolder.getDisplayWidth();
             height = readerDataHolder.getDisplayHeight();
         }

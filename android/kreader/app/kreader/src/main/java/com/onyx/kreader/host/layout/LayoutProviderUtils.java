@@ -128,6 +128,7 @@ public class LayoutProviderUtils {
         readerViewInfo.supportTextPage = layoutManager.getReaderDocument().supportTextPage();
         readerViewInfo.supportReflow = layoutManager.isSupportReflow();
         readerViewInfo.supportScalable = layoutManager.getCurrentLayoutProvider().supportScale();
+        readerViewInfo.isFixedPageDocument = layoutManager.getReaderRendererFeatures().supportScale();
         readerViewInfo.canGoBack = layoutManager.canGoBack();
         readerViewInfo.canGoForward = layoutManager.canGoForward();
         readerViewInfo.viewportInDoc.set(layoutManager.getViewportRect());

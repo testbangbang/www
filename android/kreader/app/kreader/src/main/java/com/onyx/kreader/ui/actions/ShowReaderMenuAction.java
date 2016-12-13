@@ -141,7 +141,7 @@ public class ShowReaderMenuAction extends BaseAction {
         if (!readerDataHolder.supportNoteExport()) {
             disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
         }
-        if (!readerDataHolder.supportScalable()) {
+        if (!readerDataHolder.isFixedPageDocument()) {
             disableMenus.add(ReaderMenuAction.ZOOM);
             disableMenus.add(ReaderMenuAction.IMAGE_REFLOW);
             disableMenus.add(ReaderMenuAction.NAVIGATION_COMIC_MODE);

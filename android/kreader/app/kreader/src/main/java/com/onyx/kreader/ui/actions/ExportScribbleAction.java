@@ -34,7 +34,7 @@ public class ExportScribbleAction extends BaseAction {
 
         int width = 600;
         int height = 800;
-        if (readerDataHolder.getReader().getRendererFeatures().supportScale()) {
+        if (readerDataHolder.isFixedPageDocument()) {
             width = readerDataHolder.getDisplayWidth();
             height = readerDataHolder.getDisplayHeight();
         }

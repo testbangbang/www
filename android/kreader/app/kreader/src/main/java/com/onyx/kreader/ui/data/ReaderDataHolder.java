@@ -99,6 +99,10 @@ public class ReaderDataHolder {
         return getReaderViewInfo() != null && getReaderViewInfo().supportScalable;
     }
 
+    public boolean isFixedPageDocument() {
+        return getReaderViewInfo() != null && getReaderViewInfo().isFixedPageDocument;
+    }
+
     public boolean supportSearchByPage() {
         return supportScalable();
     }

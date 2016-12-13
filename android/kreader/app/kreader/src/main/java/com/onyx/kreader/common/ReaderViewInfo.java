@@ -24,6 +24,7 @@ public class ReaderViewInfo {
     public boolean supportTextPage;
     public boolean supportReflow;
     public boolean supportScalable;
+    public boolean isFixedPageDocument;
     public int scale;
     public RectF viewportInDoc = new RectF();
     public RectF pagesBoundingRect = new RectF();
