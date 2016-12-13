@@ -100,6 +100,10 @@ public class ReaderDataHolder {
         return getReaderViewInfo() != null && getReaderViewInfo().supportScalable;
     }
 
+    public boolean canPan() {
+        return getReaderViewInfo() != null && getReaderViewInfo().canPan();
+    }
+
     public final List<PageInfo> getVisiblePages() {
         return getReaderViewInfo().getVisiblePages();
     }
