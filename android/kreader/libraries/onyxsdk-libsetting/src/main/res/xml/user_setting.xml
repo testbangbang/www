@@ -40,7 +40,7 @@
 
     <android.support.v7.preference.PreferenceCategory
         android:key="@string/homepage_preference_category_key"
-        android:title="@string/settings_Homepage_option">
+        android:title="@string/settings_homepage_option">
 
         <android.support.v7.preference.ListPreference
             android:dialogTitle="@string/homepage_preference"
