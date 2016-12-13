@@ -141,7 +141,7 @@ public class ShowReaderMenuAction extends BaseAction {
         if (!readerDataHolder.supportNoteExport()) {
             disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
         }
-        if (!readerDataHolder.isFixedDocument()) {
+        if (!readerDataHolder.isFixedPageDocument()) {
             disableMenus.add(ReaderMenuAction.ZOOM);
             disableMenus.add(ReaderMenuAction.IMAGE_REFLOW);
             disableMenus.add(ReaderMenuAction.NAVIGATION_COMIC_MODE);
@@ -817,7 +817,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
             @Override
             public boolean isFixedPagingMode() {
-                return readerDataHolder.isFixedDocument() && readerDataHolder.supportScalable();
+                return readerDataHolder.isFixedPageDocument() && readerDataHolder.supportScalable();
             }
 
             @Override

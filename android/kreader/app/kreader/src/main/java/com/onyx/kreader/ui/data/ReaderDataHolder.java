@@ -95,12 +95,12 @@ public class ReaderDataHolder {
         return getReaderViewInfo() != null && getReaderViewInfo().supportTextPage;
     }
 
-    public boolean isFixedDocument() {
+    public boolean isFixedPageDocument() {
         return getReaderViewInfo() != null && getReaderViewInfo().isFixedDocument;
     }
 
     public boolean isFlowDocument() {
-        return !isFixedDocument();
+        return !isFixedPageDocument();
     }
 
     public boolean supportScalable() {
@@ -120,7 +120,7 @@ public class ReaderDataHolder {
     }
 
     public boolean supportSearchByPage() {
-        return isFixedDocument() && supportScalable();
+        return isFixedPageDocument() && supportScalable();
     }
 
     public final List<PageInfo> getVisiblePages() {
