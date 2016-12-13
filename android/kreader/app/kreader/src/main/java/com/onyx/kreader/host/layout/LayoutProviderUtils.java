@@ -123,11 +123,14 @@ public class LayoutProviderUtils {
         for (PageInfo pageInfo : visiblePages) {
             readerViewInfo.copyPageInfo(pageInfo);
         }
+        readerViewInfo.isFixedDocument = layoutManager.getReaderRendererFeatures().supportScale();
         readerViewInfo.canPrevScreen = layoutManager.getCurrentLayoutProvider().canPrevScreen();
         readerViewInfo.canNextScreen = layoutManager.getCurrentLayoutProvider().canNextScreen();
         readerViewInfo.supportTextPage = layoutManager.getReaderDocument().supportTextPage();
         readerViewInfo.supportReflow = layoutManager.isSupportReflow();
         readerViewInfo.supportScalable = layoutManager.getCurrentLayoutProvider().supportScale();
+        readerViewInfo.supportFontSizeAdjustment = layoutManager.getReaderRendererFeatures().supportFontSizeAdjustment();
+        readerViewInfo.supportTypefaceAdjustment = layoutManager.getReaderRendererFeatures().supportTypefaceAdjustment();
         readerViewInfo.canGoBack = layoutManager.canGoBack();
         readerViewInfo.canGoForward = layoutManager.canGoForward();
         readerViewInfo.viewportInDoc.set(layoutManager.getViewportRect());

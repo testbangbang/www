@@ -340,13 +340,18 @@ public class HandlerManager {
         } else if (action.equals(KeyAction.PREV_PAGE)) {
             prevPage(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_LEFT)) {
-            panLeft(readerDataHolder);
+            onMoveLeft(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_RIGHT)) {
-            panRight(readerDataHolder);
+            onMoveRight(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_UP)) {
             onMoveUp(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_DOWN)) {
             onMoveDown(readerDataHolder);
+        } else if (action.equals(KeyAction.INCREASE_FONT_SIZE)) {
+            increaseFontSize(readerDataHolder);
+        } else if (action.equals(KeyAction.DECREASE_FONT_SIZE)) {
+            decreaseFontSize(readerDataHolder);
+        } else if (action.equals(KeyAction.MOVE_DOWN)) {
         } else if (action.equals(KeyAction.TOGGLE_BOOKMARK)) {
             toggleBookmark(readerDataHolder);
         } else if (action.equals(KeyAction.SHOW_MENU)) {
@@ -359,19 +364,47 @@ public class HandlerManager {
         return true;
     }
 
+    private void onMoveLeft(ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.supportScalable() && readerDataHolder.canPan()) {
+            panLeft(readerDataHolder);
+        } else {
+            prevScreen(readerDataHolder);
+        }
+    }
+
+    private void onMoveRight(ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.supportScalable() && readerDataHolder.canPan()) {
+            panRight(readerDataHolder);
+        } else {
+            nextScreen(readerDataHolder);
+        }
+    }
+
     private void onMoveUp(ReaderDataHolder readerDataHolder) {
         if (readerDataHolder.supportScalable()) {
-            panUp(readerDataHolder);
-        } else {
+            if (readerDataHolder.canPan()) {
+                panUp(readerDataHolder);
+            } else {
+                prevScreen(readerDataHolder);
+            }
+        } else if (readerDataHolder.supportFontSizeAdjustment()) {
             increaseFontSize(readerDataHolder);
+        } else {
+            prevScreen(readerDataHolder);
         }
     }
 
     private void onMoveDown(ReaderDataHolder readerDataHolder) {
         if (readerDataHolder.supportScalable()) {
-            panDown(readerDataHolder);
-        } else {
+            if (readerDataHolder.canPan()) {
+                panDown(readerDataHolder);
+            } else {
+                nextScreen(readerDataHolder);
+            }
+        } else if (readerDataHolder.supportFontSizeAdjustment()) {
             decreaseFontSize(readerDataHolder);
+        } else {
+            nextScreen(readerDataHolder);
         }
     }
 

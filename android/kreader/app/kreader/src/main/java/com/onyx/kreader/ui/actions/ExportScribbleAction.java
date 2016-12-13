@@ -5,9 +5,7 @@ import android.graphics.Bitmap;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.request.ExportAnnotationRequest;
 import com.onyx.kreader.host.request.ExportScribbleRequest;
 import com.onyx.kreader.note.actions.GetScribbleBitmapAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -34,7 +32,7 @@ public class ExportScribbleAction extends BaseAction {
 
         int width = 600;
         int height = 800;
-        if (readerDataHolder.getReader().getRendererFeatures().supportScale()) {
+        if (readerDataHolder.isFixedPageDocument()) {
             width = readerDataHolder.getDisplayWidth();
             height = readerDataHolder.getDisplayHeight();
         }

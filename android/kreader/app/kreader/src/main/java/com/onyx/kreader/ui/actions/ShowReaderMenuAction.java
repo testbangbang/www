@@ -141,14 +141,14 @@ public class ShowReaderMenuAction extends BaseAction {
         if (!readerDataHolder.supportNoteExport()) {
             disableMenus.add(ReaderMenuAction.NOTE_EXPORT);
         }
-        if (!readerDataHolder.supportScalable()) {
+        if (!readerDataHolder.isFixedPageDocument()) {
             disableMenus.add(ReaderMenuAction.ZOOM);
             disableMenus.add(ReaderMenuAction.IMAGE_REFLOW);
             disableMenus.add(ReaderMenuAction.NAVIGATION_COMIC_MODE);
             disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
             disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
-        } else {
+        } else if (!readerDataHolder.isFlowDocument()) {
             disableMenus.add(ReaderMenuAction.FONT);
         }
 
@@ -817,7 +817,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
             @Override
             public boolean isFixedPagingMode() {
-                return readerDataHolder.supportScalable();
+                return readerDataHolder.isFixedPageDocument() && readerDataHolder.supportScalable();
             }
 
             @Override
