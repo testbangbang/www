@@ -59,6 +59,8 @@ public class AlReaderWrapper {
     static public long ERROR_SECURITY = 5;
     static public long ERROR_PAGE_NOT_FOUND = 6;
 
+    private static String DEFAULT_FONT_NAME = "XZ";
+
     private AlBookEng bookEng;
     private AlEngineOptions engineOptions;
     private AlPublicProfileOptions profile = new AlPublicProfileOptions();
@@ -150,7 +152,7 @@ public class AlReaderWrapper {
         profile.background = null;
         profile.backgroundMode = AlPublicProfileOptions.BACK_TILE_NONE;
         profile.bold = false;
-        profile.font_name = "XZ";
+        profile.font_name = DEFAULT_FONT_NAME;
         profile.font_monospace = "Monospace";
         profile.font_size = 36;
         profile.setMargins(5); // in percent
@@ -168,6 +170,7 @@ public class AlReaderWrapper {
 
     private void updateFontFace(final String fontface) {
         if (StringUtils.isNullOrEmpty(fontface)) {
+            profile.font_name = DEFAULT_FONT_NAME;
             return;
         }
         File file = new File(fontface);

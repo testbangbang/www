@@ -53,6 +53,8 @@ public class DialogTextStyle extends DialogBase {
         void onSaveReaderStyle(ReaderTextStyle readerTextStyle);
     }
 
+    private FontInfo defaultFont = new FontInfo();
+
     private View fontFaceLine;
     private View fontSpacingLine;
     private OnyxCustomViewPager viewPager;
@@ -87,6 +89,8 @@ public class DialogTextStyle extends DialogBase {
     }
 
     private void init() {
+        defaultFont.setName(getContext().getString(R.string.default_font));
+
         fontFaceLine = findViewById(R.id.font_face_bottom_view);
         fontSpacingLine = findViewById(R.id.page_spacing_bottom_view);
         fontFaceLayout = (LinearLayout) findViewById(R.id.font_face_layout);
@@ -173,8 +177,12 @@ public class DialogTextStyle extends DialogBase {
         getFontsAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                fonts = getFontsAction.getFonts();
-                if (fontFace != null) {
+                fonts.clear();
+                fonts.add(defaultFont);
+                fonts.addAll(getFontsAction.getFonts());
+                if (fontFace == null) {
+                    selectIndex = 0; // choose default
+                } else {
                     for (int i = 0; i < fonts.size(); i++) {
                         if (fontFace.equals(fonts.get(i).getId())) {
                             selectIndex = i;

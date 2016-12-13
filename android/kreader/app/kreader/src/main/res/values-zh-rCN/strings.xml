@@ -233,4 +233,5 @@
   <string name="dialog_slideshow_statistic_page_count">翻页: </string>
   <string name="dialog_slideshow_statistic_start_battery">初始电量: </string>
   <string name="dialog_slideshow_statistic_end_battery">当前电量: </string>
+  <string name="default_font">默认字体</string>
 </resources>
