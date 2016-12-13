@@ -37,7 +37,8 @@ public class DialogSlideshowSettings extends DialogBase {
     }
 
     private void initData() {
-        seekBarInterval.updateValue(R.string.dialog_slideshow_intervals_title, 3, 1, 60);
+        final int DEFAULT_INTERVAL = 20;
+        seekBarInterval.updateValue(R.string.dialog_slideshow_intervals_title, DEFAULT_INTERVAL, 1, 60);
         seekBarMaxPageCount.updateValue(R.string.dialog_slideshow_max_page_count_title, 2000, 1, 6000);
     }
 
