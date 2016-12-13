@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.onyx.android.sdk.ui.R;
@@ -94,10 +95,16 @@ public class CustomIconView extends android.support.v7.widget.AppCompatImageView
 
         if (d != null) {
             if (drawingSize != -1) {
-                setImageDrawable(zoomDrawable(d, drawingSize));
+                super.setImageDrawable(zoomDrawable(d, drawingSize));
             } else {
                 super.setImageResource(resId);
             }
         }
+    }
+
+    @Override
+    public void setImageDrawable(@Nullable Drawable drawable) {
+        super.setImageDrawable((drawingSize != -1 && drawable != null) ?
+                zoomDrawable(drawable, drawingSize) : drawable);
     }
 }
