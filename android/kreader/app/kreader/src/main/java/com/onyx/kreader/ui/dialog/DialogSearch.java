@@ -153,7 +153,7 @@ public class DialogSearch extends Dialog{
         nextIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (pageRecyclerView.getPaginator().canNextPage()){
+                if (pageRecyclerView.getPaginator().hasNextPage()){
                     pageRecyclerView.nextPage();
                 }else {
                     nextSearch();
@@ -319,7 +319,7 @@ public class DialogSearch extends Dialog{
                         mergeSearchList();
                         updatePageIndicator(currentPagePosition,pageRecyclerView.getAdapter().getItemCount());
                         pageRecyclerView.getAdapter().notifyDataSetChanged();
-                        if (nextPageAction && pageRecyclerView.getPaginator().canNextPage()){
+                        if (nextPageAction && pageRecyclerView.getPaginator().hasNextPage()){
                             nextPageAction = false;
                             pageRecyclerView.nextPage();
                         }

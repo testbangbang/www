@@ -24,6 +24,6 @@ public class ExportNotesAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
         final ExportNotesRequest request = new ExportNotesRequest(documentInfoAction.getAnnotations(), shapesAction.getShapes());
-        readerDataHolder.submitNonRenderRequest(request, baseCallback);
+        readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), request, baseCallback);
     }
 }
