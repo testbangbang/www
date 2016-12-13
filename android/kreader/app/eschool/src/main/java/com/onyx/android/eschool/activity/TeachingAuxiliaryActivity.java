@@ -21,6 +21,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
+import com.onyx.android.eschool.model.AppConfig;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.eschool.utils.ViewDocumentUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -80,6 +81,14 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NetworkHelper.requestWifi(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (CollectionUtils.isNullOrEmpty(productList)) {
+            loadProductList();
+        }
     }
 
     @Override
@@ -204,7 +213,6 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
                 viewHolder.itemView.setTag(position);
 
                 Product product = productList.get(position);
-                viewHolder.titleView.setText(product.name);
                 viewHolder.getWidgetImage.setVisibility(isFileExists(product) ? View.VISIBLE : View.GONE);
                 updateDownloadPanel(viewHolder, product);
 
@@ -221,7 +229,7 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
         productPageView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
-                if (!productPageView.getPaginator().canNextPage()) {
+                if (!productPageView.getPaginator().hasNextPage()) {
                     loadMoreProductList();
                 }
             }
@@ -255,7 +263,6 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
                     break;
             }
         }
-        holder.titleView.setVisibility(showProgress ? View.INVISIBLE : View.VISIBLE);
         holder.progressBar.setVisibility(showProgress ? View.VISIBLE : View.INVISIBLE);
         holder.progressBar.setProgress(showProgress ? getDownLoaderManager().getTaskProgress(task.getId()) : 0);
     }
@@ -263,7 +270,6 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
     @Override
     protected void initData() {
         loadCategoryData();
-        loadProductList();
     }
 
     private void loadProductList() {
@@ -276,7 +282,11 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
                 if (e != null) {
                     return;
                 }
-                updateViewPanel(StoreUtils.getResultList(listRequest.getProductResult()));
+                List<Product> list = StoreUtils.getResultList(listRequest.getProductResult());
+                if (CollectionUtils.isNullOrEmpty(list)) {
+                    showToast(R.string.category_below_content_empty_tip, Toast.LENGTH_SHORT);
+                }
+                updateViewPanel(list);
             }
         });
         showProgressDialog(listRequest, null);
@@ -541,7 +551,9 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
         if (file == null || !file.exists()) {
             return;
         }
-        ActivityUtil.startActivitySafely(this, ViewDocumentUtils.viewActionIntentWithMimeType(file));
+        ActivityUtil.startActivitySafely(this,
+                ViewDocumentUtils.viewActionIntentWithMimeType(file),
+                AppConfig.sharedInstance(this).getReaderComponentName(this));
     }
 
     private void processProductItemClick(final int position) {
@@ -580,8 +592,6 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
         ImageView coverImage;
         @Bind(R.id.image_get_widget)
         ImageView getWidgetImage;
-        @Bind(R.id.title_text)
-        TextView titleView;
         @Bind(R.id.progress_line)
         ProgressBar progressBar;
 

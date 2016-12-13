@@ -191,14 +191,12 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         if (selectAction == null) {
             return;
         }
-        for (int i = 0; i < actions.length; i++) {
-            CommonViewHolder viewHolder = scribbleViewHolderMap.get(actions[i]);
-            if (viewHolder != null) {
-                viewHolder.setVisibility(R.id.marker_view, View.INVISIBLE);
+        for (ReaderMenuAction action : actions) {
+            CommonViewHolder viewHolder = scribbleViewHolderMap.get(action);
+            if (viewHolder == null) {
+                continue;
             }
-            if (selectAction == actions[i]) {
-                scribbleViewHolderMap.get(actions[i]).setVisibility(R.id.marker_view, View.VISIBLE);
-            }
+            viewHolder.setVisibility(R.id.marker_view, selectAction == action ? View.VISIBLE : View.INVISIBLE);
         }
     }
 

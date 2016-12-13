@@ -97,4 +97,5 @@
     <string name="last_studying_time">上次学习时刻</string>
 
     <string name="download_link_invalid">下载链接为空或者有误</string>
+    <string name="category_below_content_empty_tip">该分类内容为空</string>
 </resources>
