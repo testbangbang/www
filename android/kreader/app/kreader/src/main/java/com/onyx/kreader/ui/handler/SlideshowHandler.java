@@ -101,12 +101,12 @@ public class SlideshowHandler extends BaseHandler {
 
     @Override
     public boolean onTouchEvent(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        Toast.makeText(readerDataHolder.getContext(), "Press back to quit slideshow mode!", Toast.LENGTH_SHORT).show();
         return true;
     }
 
     @Override
     public boolean onDown(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        Toast.makeText(readerDataHolder.getContext(), "Press back to quit slideshow mode!", Toast.LENGTH_SHORT).show();
         return true;
     }
 
