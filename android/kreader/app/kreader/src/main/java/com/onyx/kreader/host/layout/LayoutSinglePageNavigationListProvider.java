@@ -36,25 +36,31 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
         return navigationArgs;
     }
 
-    private NavigationList getNavigationList() {
-        return getNavigationArgs().getList();
+    private NavigationArgs.Type getPageType(int pageIndex) {
+        return pageIndex % 2 == 0 ? NavigationArgs.Type.EVEN : NavigationArgs.Type.ODD;
+    }
+
+    private NavigationList getNavigationList(int pageIndex) {
+        return getNavigationArgs().getListByType(getPageType(pageIndex));
     }
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         navigationArgs = args;
-        RectF subScreen = getNavigationList().first();
-        getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
+        if (getLayoutManager().getCurrentPageInfo() != null) {
+            RectF subScreen = getNavigationList(getCurrentPage()).first();
+            getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
+        }
         return true;
     }
 
     @Override
     public boolean canPrevScreen() throws ReaderException {
-        return getNavigationList().hasPrevious() || !atFirstPage();
+        return getNavigationList(getCurrentPage()).hasPrevious() || !atFirstPage();
     }
 
     public boolean prevScreen() throws ReaderException {
-        if (getNavigationList().hasPrevious()) {
-            RectF subScreen = getNavigationList().previous();
+        if (getNavigationList(getCurrentPage()).hasPrevious()) {
+            RectF subScreen = getNavigationList(getCurrentPage()).previous();
             getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
             return true;
         }
@@ -63,12 +69,12 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 
     @Override
     public boolean canNextScreen() throws ReaderException {
-        return getNavigationList().hasNext() || !atLastPage();
+        return getNavigationList(getCurrentPage()).hasNext() || !atLastPage();
     }
 
     public boolean nextScreen() throws ReaderException {
-        if (getNavigationList().hasNext()) {
-            RectF subScreen = getNavigationList().next();
+        if (getNavigationList(getCurrentPage()).hasNext()) {
+            RectF subScreen = getNavigationList(getCurrentPage()).next();
             getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
             return true;
         }
@@ -76,7 +82,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     }
 
     public boolean prevPage() throws ReaderException {
-        return gotoPositionImpl(LayoutProviderUtils.prevPage(getLayoutManager()), getNavigationList().getLastSubScreenIndex());
+        return gotoPositionImpl(LayoutProviderUtils.prevPage(getLayoutManager()), getNavigationList(getCurrentPage()).getLastSubScreenIndex());
     }
 
     public boolean nextPage() throws ReaderException {
@@ -132,7 +138,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
             return false;
         }
 
-        RectF subScreen = getNavigationList().gotoSubScreen(index);
+        RectF subScreen = getNavigationList(getCurrentPage()).gotoSubScreen(index);
         getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
         return true;
     }
@@ -188,12 +194,12 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
                 getPageManager().getFirstVisiblePage(),
                 getPageManager().getViewportRect(),
                 getPageManager().getSpecialScale(),
-                getNavigationList().getCurrentIndex());
+                getNavigationList(getCurrentPage()).getCurrentIndex());
     }
 
     public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
         super.restoreBySnapshot(snapshot);
-        getNavigationList().setCurrentIndex(snapshot.subScreenIndex);
+        getNavigationList(getCurrentPage()).setCurrentIndex(snapshot.subScreenIndex);
         return true;
     }
 }

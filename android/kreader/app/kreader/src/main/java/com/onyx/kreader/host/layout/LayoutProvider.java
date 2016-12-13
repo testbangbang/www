@@ -194,4 +194,8 @@ public class LayoutProvider {
         return getLayoutManager().getCurrentPagePosition();
     }
 
+    public final int getCurrentPage() {
+        return PagePositionUtils.getPageNumber(getCurrentPageName());
+    }
+
 }

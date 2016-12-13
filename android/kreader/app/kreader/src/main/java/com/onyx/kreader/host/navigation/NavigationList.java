@@ -146,10 +146,10 @@ public class NavigationList {
     }
 
     private static RectF getSubScreenRect(RectF parent, PointMatrix pointMatrix, int rows, int cols, int row, int col) {
-        boolean useLeftEdge = col <= 0;
-        boolean useTopEdge = row <= 0;
-        boolean useRightEdge = col >= pointMatrix.cols();// screensSplitPoints[0].length;
-        boolean useBottomEdge = row >= pointMatrix.rows();//screensSplitPoints.length;
+        boolean useLeftEdge = cols == 1 || col <= 0;
+        boolean useTopEdge = rows == 1 || row <= 0;
+        boolean useRightEdge = cols == 1 || col >= pointMatrix.cols();// screensSplitPoints[0].length;
+        boolean useBottomEdge = rows == 1 || row >= pointMatrix.rows();//screensSplitPoints.length;
 
         final Float left, top, right, bottom;
         // separating single row/column screen to simplify the logic of sub screen computation
