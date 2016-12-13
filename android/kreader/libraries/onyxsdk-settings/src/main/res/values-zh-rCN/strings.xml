@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="setting_network">网络连接</string>
+    <string name="setting_sound">声音</string>
+    <string name="setting_storage">存储</string>
+    <string name="setting_lang_date">语言和时间</string>
+    <string name="setting_security">安全隐私</string>
+    <string name="setting_error_report">错误收集</string>
+    <string name="setting_user_setting">用户设置</string>
+    <string name="setting_application">应用管理</string>
+    <string name="touch_sound">触摸提示音</string>
+    <string name="notification_sound">提示音</string>
+
+    <!-- NETWORK setting -->
+    <string name="wifi_network">Wi-fi 网络</string>
+    <string name="wifi_security_none">无</string>
+    <string name="wifi_remembered">已保存</string>
+    <string name="wifi_secured_first_item">"通过<xliff:g id="WIFI_SECURITY_SHORT">%1$s</xliff:g>进行保护"</string>
+    <string name="wifi_secured_second_item">"，通过<xliff:g id="WIFI_SECURITY_SHORT">%1$s</xliff:g>进行保护"</string>
+    <string name="wifi_wps_available_first_item">受保护的网络可用</string>
+    <string name="wifi_wps_available_second_item">" （受保护的网络可用）"</string>
+    <string name="wifi_password">密码</string>
+    <string name="wifi_show_password">显示密码</string>
+    <string name="wifi_show_advanced">显示高级选项</string>
+    <string name="wifi_signal">信号强度</string>
+    <string name="wifi_security">安全性</string>
+    <string name="wifi_speed">连接速度</string>
+    <string name="wifi_ip_address">IP 地址</string>
+    <string name="wifi_status">状态消息</string>
+    <string name="Wireless_lan">无线局域网</string>
+    <string name="open_wifi">要查看可用网络，请打开Wi-Fi</string>
+    <string name="current_available_wifi_count">当前可用Wi-Fi网络: %1$d </string>
+    <string name="wifi_disabled_password_failure">身份验证出现问题</string>
+    <string name="wifi_disabled_generic">已停用</string>
+    <string name="wifi_disabled_network_failure">已停用状况不佳的互联网连接</string>
+    <string name="wifi_forget">不保存</string>
+    <string name="wifi_connect">连接</string>
+    <string name="wifi_connected">已连接</string>
+    <string name="closed">关闭</string>
+    <string name="wifi_rescan">重新扫描</string>
+    <string name="select_nearby_available_wireless">选取附近可用无线局域网</string>
+    <string name="wifi_band">频率</string>
+
+    <!--Temporarily fix unit.-->
+    <string name="space_in_use">已使用: %1$s GB</string>
+    <string name="free_space">可用空间: %1$s GB</string>
+    <string name="total_space">总容量: %1$s GB</string>
+
+    <!-- Language input method setting -->
+    <string name="language">语言</string>
+    <string name="keyboard_and_input">键盘和输入法</string>
+    <string name="voice">语音</string>
+    <string name="tts_settings_title">文字转语音 (TTS) 输出</string>
+
+    <!--Date Time Config-->
+    <string name="current_time">当前时间</string>
+    <string name="date_time_auto">自动确定日期和时间</string>
+    <string name="date_time_24hour">使用 24 小时格式</string>
+    <string name="date_time_set_timezone">选择时区</string>
+    <string name="date_time_set_date">设置日期</string>
+    <string name="date_time_set_time">设置时间</string>
+    <string name="date_time_set_format">格式设置</string>
+
+    <!--Power Setting-->
+    <string name="setting_power">电源管理</string>
+    <string name="wake_up_summary">系统唤醒时打开前照光</string>
+    <string name="wake_up_title">唤醒</string>
+    <string name="auto_sleep">休眠</string>
+    <string name="power_off_timeout">关机延迟</string>
+    <string name="wifi_sleep_timeout">网络闲置超时</string>
+    <string name="minute">%1$d 分钟</string>
+    <string name="never_sleep">永不</string>
+    <string name="sleep_summary">无操作 %1$s 后</string>
+    <string name="wifi_timeout_summary">在阅读时自动关闭Wifi</string>
+    <string name="power_off_timeout_summary">调整自动关机的延迟时间</string>
+    <string name="power_usage">电池使用情况</string>
+
+    <!--Application Manager-->
+    <string name="usb_debug_mode_title">USB 调试模式</string>
+    <string name="application_management_title">应用管理</string>
+    <string name="drm_setting_title">DRM 设置</string>
+    <string name="unknown_resource_title">未知来源</string>
+    <string name="calibration_title">校准</string>
+    <string name="key_binding_title">按键映射</string>
+
+    <string name="usb_debug_mode_summary">连接 USB 后启用调试模式</string>
+    <string name="unknown_resource_summary">允许安装不是从电子市场获取的应用程序</string>
+    <string name="adb_warning_title">"是否允许 USB 调试？"</string>
+    <string name="adb_warning_msg">"USB 调试仅适用于开发工作。该功能可用于在您的计算机和设备之间复制数据、在您的设备上安装应用程序而不发送通知以及读取日志数据。"</string>
+    <string name="install_all_warning">"您的设备和个人数据更容易受到从未知来源获取的应用程序的攻击。对于因使用这些应用程序而造成的设备损坏或数据丢失，您同意自行承担全部责任。"</string>
+
+    <!--Security Setting-->
+    <string name="data_backup_title">数据备份</string>
+    <string name="factory_reset_title">恢复出厂</string>
+
+    <!--User Setting-->
+    <string name="startup_options">开机选项</string>
+    <string name="settings_set_startup_options_explanation">设备启动后，会自动打开最后阅读文件</string>
+    <string name="settings_set_startup_options">打开最后阅读文件</string>
+    <string name="book_scan_options">扫描选项</string>
+    <string name="enable">已启用</string>
+    <string name="disable">未启用</string>
+    <string name="setting_set_scan_on_storage_options">限定内置存储只扫描 \"Books\"/\"书籍\" 文件夹</string>
+    <string name="setting_set_scan_on_SDCard_options">限定SD卡只扫描 \"Books\"/\"书籍\" 文件夹</string>
+    <string name="setting_set_auto_scan_on_SDCard_mount_options">插入SD卡后自动扫描书库</string>
+    <string name="setting_set_auto_scan_on_pc_connect_options">与PC断开连接后自动扫描书库</string>
+    <string name="settings_homepage_option">主页选项</string>
+    <string name="homepage_preference">主页设定</string>
+    <string name="settings_Library_option">书库选项</string>
+    <string name="show_tittle_instead_of_book_name_option">在书库中,显示书的标题以代替文件名.</string>
+</resources>

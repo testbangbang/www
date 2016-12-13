@@ -1,0 +1,9 @@
+{
+  "system_wifi_inactivity_key": "wifi_inactivity_timeout",
+  "power_off_timeout_values": [
+    1200000,
+    1800000,
+    3600000,
+    -1
+  ]
+}

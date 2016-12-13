@@ -1,0 +1,163 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">libsetting</string>
+    <string name="setting_network">Network</string>
+    <string name="setting_sound">Sound</string>
+    <string name="setting_storage">Storage</string>
+    <string name="setting_lang_date"><![CDATA[Language & Date]]></string>
+    <string name="setting_security">Security</string>
+    <string name="setting_error_report">Error Report</string>
+    <string name="setting_application">Application</string>
+    <string name="setting_user_setting">User Setting</string>
+    <string name="settings_sound_preferences_key" translatable="false">settings_sound_preferences_key</string>
+    <string name="touch_sound_key" translatable="false">touch_sound_key</string>
+    <string name="touch_sound">Touch Sound</string>
+    <string name="notification_sound">Notification Sound</string>
+
+    <!-- NETWORK setting -->
+    <string name="wifi_network">Wi-fi network</string>
+    <string name="wifi_security_short_eap" translatable="false">802.1x</string>
+    <string name="wifi_security_eap" translatable="false">802.1x EAP</string>
+    <string name="wifi_security_short_wpa" translatable="false">WPA</string>
+    <string name="wifi_security_wpa" translatable="false">WPA PSK</string>
+    <string name="wifi_security_short_wpa2" translatable="false">WPA2</string>
+    <string name="wifi_security_wpa2" translatable="false">WPA2 PSK</string>
+    <string name="wifi_security_short_wpa_wpa2" translatable="false">WPA/WPA2</string>
+    <string name="wifi_security_wpa_wpa2" translatable="false">WPA/WPA2 PSK</string>
+    <string name="wifi_security_short_psk_generic" translatable="false">@string/wifi_security_short_wpa_wpa2</string>
+    <string name="wifi_security_psk_generic" translatable="false">@string/wifi_security_wpa_wpa2</string>
+    <string name="wifi_security_short_wep" translatable="false">WEP</string>
+    <string name="wifi_security_wep" translatable="false">WEP</string>
+    <string name="wifi_security_none">None</string>
+    <string name="wifi_remembered">Saved</string>
+    <string name="wifi_secured_first_item">Secured with <xliff:g id="wifi_security_short">%1$s</xliff:g></string>
+    <string name="wifi_secured_second_item">, secured with <xliff:g id="wifi_security_short">%1$s</xliff:g></string>
+    <string name="wifi_wps_available_first_item">Protected network available</string>
+    <string name="wifi_wps_available_second_item">\u0020(protected network available)</string>
+    <string name="wifi_disabled_password_failure">Authentication problem</string>
+    <string name="wifi_password">Password</string>
+    <string name="wifi_show_password">Show password</string>
+    <string name="wifi_show_advanced">Show advanced options</string>
+    <string name="wifi_signal">Signal strength</string>
+    <string name="wifi_security">Security</string>
+    <string name="wifi_speed">Link speed</string>
+    <string name="wifi_ip_address">IP address</string>
+    <string name="Wireless_lan">Wireless LAN</string>
+    <string name="wifi_status">Status</string>
+    <string name="open_wifi">Open Wi-Fi</string>
+    <string name="current_available_wifi_count">Currently available wifi: %1$d </string>
+    <string name="wifi_connected">Connected</string>
+    <string name="wifi_disabled_generic">Disabled</string>
+    <string name="wifi_disabled_network_failure">Avoided poor Internet connection</string>
+    <string name="wifi_forget">Forget</string>
+    <string name="wifi_connect">Connect</string>
+    <string name="closed">Closed</string>
+    <string name="wifi_rescan">Rescan</string>
+    <string name="select_nearby_available_wireless">Select a nearby available wireless LAN</string>
+    <string name="bgn_net_work" translatable="false">2.4Ghz</string>
+    <string name="ac_network" translatable="false">5Ghz</string>
+    <string name="unknown_network" translatable="false">Unknown Network Type</string>
+    <string name="wifi_band">Frequency</string>
+    <!--Temporarily fix unit.-->
+    <string name="space_in_use">Space In Use: %1$s GB</string>
+    <string name="free_space">Free Space: %1$s GB</string>
+    <string name="total_space">Total Space: %1$s GB</string>
+    <string name="language">Language</string>
+    <string name="settings_lang_input_preferences_key" translatable="false">settings_lang_input_preference_key</string>
+
+    <!-- Language input method setting -->
+    <string name="ime_category_key" translatable="false">ime_category_key</string>
+    <string name="keyboard_and_input">Keyboard And InputMethods</string>
+    <string name="voice">Voice</string>
+    <string name="tts_settings_key" translatable="false">tts_settings_key</string>
+    <string name="tts_settings_title">Text-to-speech output</string>
+
+    <!--Date Time Config-->
+    <string name="current_time">Current Time</string>
+    <string name="time_setting_key" translatable="false">time_setting_key</string>
+    <string name="auto_time_setting_key" translatable="false">auto_time_setting_key</string>
+    <string name="date_config_key" translatable="false">date_config_key</string>
+    <string name="time_config_key" translatable="false">time_config_key</string>
+    <string name="set_time_twenty_four_key" translatable="false">set_time_twenty_four_key</string>
+    <string name="set_time_zone_key" translatable="false">set_time_zone_key</string>
+    <string name="date_time_auto">Automatic date &amp; time</string>
+    <string name="date_time_24hour">Use 24-hour format</string>
+    <string name="date_time_set_timezone">Select time zone</string>
+    <string name="date_time_set_date">Set date</string>
+    <string name="date_time_set_time">Set Time</string>
+    <string name="date_time_set_format">Set format</string>
+
+    <!--Power Config-->
+    <string name="setting_power">Power</string>
+    <string name="wakeup_front_light_key" translatable="false">wakeup_front_light_key</string>
+    <string name="wake_up_summary">Activate front light when device wake up </string>
+    <string name="wake_up_title">Wake up</string>
+    <string name="auto_sleep_timeout_key" translatable="false">auto_sleep_timeout_key</string>
+    <string name="auto_sleep">Sleep</string>
+    <string name="auto_power_off_timeout_key" translatable="false">auto_power_off_timeout_key</string>
+    <string name="power_off_timeout">Power off timeout</string>
+    <string name="auto_wifi_sleep_timeout_key" translatable="false">auto_wifi_sleep_timeout_key</string>
+    <string name="wifi_sleep_timeout">Network Inactivity Timeout</string>
+    <string name="minute">%1$d Minute</string>
+    <string name="never_sleep">Never</string>
+    <string name="sleep_summary">After %1$s of inactivity</string>
+    <string name="power_off_timeout_summary">Adjust the delay before the power off automatically</string>
+    <string name="wifi_timeout_summary">Turn off WiFi automatically during reading after network inactivity</string>
+    <string name="power_usage_key" translatable="false">power_usage_key</string>
+    <string name="power_usage">Battery Status</string>
+
+    <!--Application Manager-->
+    <string name="usb_debug_key" translatable="false">usb_debug_key</string>
+    <string name="application_management_key" translatable="false">application_management_key</string>
+    <string name="drm_setting_key" translatable="false">drm_setting_key</string>
+    <string name="unknown_resource_key" translatable="false">unknown_resource_key</string>
+    <string name="calibration_key" translatable="false">calibration_key</string>
+    <string name="key_binding_key" translatable="false">key_binding_key</string>
+
+    <string name="usb_debug_mode_title">USB debugging</string>
+    <string name="application_management_title">Manage apps</string>
+    <string name="drm_setting_title">DRM Settings</string>
+    <string name="unknown_resource_title">Unknown sources</string>
+    <string name="calibration_title">Calibration</string>
+    <string name="key_binding_title">Key Binding</string>
+
+    <string name="usb_debug_mode_summary">Debug mode When USB is connected</string>
+    <string name="unknown_resource_summary">Allow installation of non_Market apps</string>
+    <string name="adb_warning_title">"Allow USB debugging?"</string>
+    <string name="adb_warning_msg">"USB debugging is intended for development purposes only. Use it to copy data between your computer and your device, install apps on your device without notification and read log data."</string>
+    <string name="install_all_warning">"Your device and personal data are more vulnerable to attack by apps from unknown sources. You agree that you are solely responsible for any damage to your tablet or loss of data that may result from using these apps."</string>
+
+    <!--Security Setting-->
+    <string name="data_backup_key" translatable="false">data_backup_key</string>
+    <string name="data_backup_title">Data Backup</string>
+    <string name="factory_reset_key" translatable="false">factory_reset_key</string>
+    <string name="factory_reset_title">Factory Reset</string>
+
+    <!--User Setting-->
+    <string name="settings_user_preferences_key" translatable="false">settings_user_preferences_key</string>
+    <string name="open_last_document" translatable="false">keyOpenLast</string>
+    <string name="scan_on_storage" translatable="false">scanOnStorage</string>
+    <string name="scan_on_SDCard" translatable="false">scanOnSDCard</string>
+    <string name="library_sd_scan_option_key" translatable="false">library_sd_scan_option</string>
+    <string name="library_pc_scan_option_key" translatable="false">library_pc_scan_option</string>
+    <string name="homepage_preference_category_key" translatable="false">homepage_preference_category_key</string>
+    <string name="homepage_preference_key" translatable="false">homepage_preference_key</string>
+    <string name="library_preference_category_key" translatable="false">library_preference_category_key</string>
+    <string name="library_display_preference_key" translatable="false">library_display_preference_key</string>
+
+    <string name="startup_options">Startup Options</string>
+    <string name="settings_set_startup_options_explanation">The last read document will be opened automatically after startup</string>
+    <string name="settings_set_startup_options">Open the last read document</string>
+    <string name="book_scan_options">Book scan options</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+    <string name="setting_set_scan_on_storage_options">Only scan \"Books\" folder on internal storage</string>
+    <string name="setting_set_scan_on_SDCard_options">Only scan \"Books\" folder on SDCard</string>
+    <string name="setting_set_auto_scan_on_SDCard_mount_options">Auto Scan Books After SD Card Mount</string>
+    <string name="setting_set_auto_scan_on_pc_connect_options">Auto Scan Books After PC Disconnect</string>
+    <string name="settings_homepage_option">Homepage Option</string>
+    <string name="homepage_preference">Homepage preference</string>
+    <string name="settings_Library_option">Library Option</string>
+    <string name="show_tittle_instead_of_book_name_option">Show books‘ tittles instead of their names in library.</string>
+
+</resources>
+

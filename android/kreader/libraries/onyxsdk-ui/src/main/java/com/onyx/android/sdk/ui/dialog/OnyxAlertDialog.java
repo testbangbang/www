@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,14 @@ public class OnyxAlertDialog extends DialogFragment {
     private RelativeLayout alertTittleBarLayout;
     private LinearLayout functionPanelLayout;
     private TextView tittleTextView, alertMessageView, pageSizeIndicator;
-    private Button positiveButton, negativeButton, neutralButton;
+    private Button positiveButton;
+
+    protected Button getPositiveButton() {
+        return positiveButton;
+    }
+
+    private Button negativeButton;
+    private Button neutralButton;
     private View customContentView, topDividerLine, functionButtonDividerLine, bottomDivider, btnNeutralDivider;
     private Params params = new Params();
 
@@ -169,7 +177,12 @@ public class OnyxAlertDialog extends DialogFragment {
             bottomDivider.setVisibility(View.GONE);
         }
 
+        parentView.findViewById(R.id.button_function_panel).setVisibility(params.enablePageIndicator ? View.VISIBLE : View.GONE);
         pageSizeIndicator.setVisibility(params.enablePageIndicator ? View.VISIBLE : View.GONE);
+
+        if (params.alertMsgGravity != Gravity.CENTER) {
+            alertMessageView.setGravity(params.alertMsgGravity);
+        }
 
         if (params.customContentLayoutResID != -1) {
             setCustomContentLayout(parentView, params.customContentLayoutResID,
@@ -228,6 +241,7 @@ public class OnyxAlertDialog extends DialogFragment {
          * @param usePercentageWidth use this flag to configure use percentage width or not,
          * if not,dialog itself would use margin Left&Right in x dp,
          * which defines in values/dimens.xml/onyx_alert_dialog_width_margin.
+         * @param alertMsgGravity allow outside to control alert msg gravity.
          */
         boolean enableTittle = true;
         boolean enableFunctionPanel = true;
@@ -250,6 +264,17 @@ public class OnyxAlertDialog extends DialogFragment {
         int dialogHeight = ViewGroup.LayoutParams.WRAP_CONTENT;
         String tittleString = "";
         String alertMsgString = "";
+
+        public int getAlertMsgGravity() {
+            return alertMsgGravity;
+        }
+
+        public Params setAlertMsgGravity(int alertMsgGravity) {
+            this.alertMsgGravity = alertMsgGravity;
+            return this;
+        }
+
+        int alertMsgGravity = Gravity.CENTER;
         CustomViewAction customViewAction = new CustomViewAction() {
             @Override
             public void onCreateCustomView(View customView, TextView pageIndicator) {

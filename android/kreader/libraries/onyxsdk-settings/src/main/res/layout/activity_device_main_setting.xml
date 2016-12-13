@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="info"
+            type="con.onyx.android.libsetting.model.ModelInfo" />
+
+    </data>
+
+    <android.support.percent.PercentRelativeLayout
+        android:id="@+id/activity_main_setting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.activity.DeviceMainSettingActivity">
+
+        <RelativeLayout
+            android:id="@+id/info_area"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_alignParentTop="true"
+            app:layout_heightPercent="40%"
+            app:layout_widthPercent="100%">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <com.onyx.android.sdk.ui.view.CustomIconView
+                    android:id="@+id/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@{info.deviceLogoResId}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{info.deviceName}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{info.deviceSerial}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{info.deviceVersion}" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/function_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_below="@+id/info_area"
+            android:layerType="software"
+            android:overScrollMode="never"
+            app:layout_heightPercent="60%"
+            app:layout_widthPercent="100%">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </android.support.percent.PercentRelativeLayout>
+</layout>
