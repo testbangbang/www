@@ -32,4 +32,10 @@
         <item>"较强"</item>
         <item>"强"</item>
     </string-array>
+
+    <string-array name="homepage_preference">
+        <item>显示最近阅读书籍</item>
+        <item>显示最近添加书籍</item>
+    </string-array>
+
 </resources>

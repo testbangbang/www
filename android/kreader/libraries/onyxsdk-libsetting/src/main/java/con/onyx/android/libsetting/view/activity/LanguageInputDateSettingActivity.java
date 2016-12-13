@@ -27,7 +27,7 @@ import java.util.List;
 
 import con.onyx.android.libsetting.R;
 import con.onyx.android.libsetting.SettingConfig;
-import con.onyx.android.libsetting.databinding.ActivityLanguageInputSettingBinding;
+import con.onyx.android.libsetting.databinding.ActivityLanguageDateSettingBinding;
 import con.onyx.android.libsetting.util.CommonUtil;
 import con.onyx.android.libsetting.util.DateTimeSettingUtil;
 import con.onyx.android.libsetting.util.InputMethodLanguageSettingUtil;
@@ -38,7 +38,7 @@ import static android.content.Intent.ACTION_TIME_CHANGED;
 import static android.content.Intent.ACTION_TIME_TICK;
 
 public class LanguageInputDateSettingActivity extends OnyxAppCompatActivity {
-    ActivityLanguageInputSettingBinding binding;
+    ActivityLanguageDateSettingBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class LanguageInputDateSettingActivity extends OnyxAppCompatActivity {
     }
 
     private void initView() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_language_input_setting);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_language_date_setting);
         initSupportActionBarWithCustomBackFunction();
         getSupportFragmentManager().beginTransaction().replace(R.id.input_preference,
                 new LanguageInputDateSettingActivity.ImeTtsDateTimeSettingPreferenceFragment()).commit();

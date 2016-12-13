@@ -132,5 +132,32 @@
     <string name="factory_reset_key" translatable="false">factory_reset_key</string>
     <string name="factory_reset_title">Factory Reset</string>
 
+    <!--User Setting-->
+    <string name="settings_user_preferences_key" translatable="false">settings_user_preferences_key</string>
+    <string name="open_last_document" translatable="false">keyOpenLast</string>
+    <string name="scan_on_storage" translatable="false">scanOnStorage</string>
+    <string name="scan_on_SDCard" translatable="false">scanOnSDCard</string>
+    <string name="library_sd_scan_option_key" translatable="false">library_sd_scan_option</string>
+    <string name="library_pc_scan_option_key" translatable="false">library_pc_scan_option</string>
+    <string name="homepage_preference_category_key" translatable="false">homepage_preference_category_key</string>
+    <string name="homepage_preference_key" translatable="false">homepage_preference_key</string>
+    <string name="library_preference_category_key" translatable="false">library_preference_category_key</string>
+    <string name="library_display_preference_key" translatable="false">library_display_preference_key</string>
+
+    <string name="startup_options">Startup Options</string>
+    <string name="settings_set_startup_options_explanation">The last read document will be opened automatically after startup</string>
+    <string name="settings_set_startup_options">Open the last read document</string>
+    <string name="book_scan_options">Book scan options</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+    <string name="setting_set_scan_on_storage_options">Only scan \"Books\" folder on internal storage</string>
+    <string name="setting_set_scan_on_SDCard_options">Only scan \"Books\" folder on SDCard</string>
+    <string name="setting_set_auto_scan_on_SDCard_mount_options">Auto Scan Books After SD Card Mount</string>
+    <string name="setting_set_auto_scan_on_pc_connect_options">Auto Scan Books After PC Disconnect</string>
+    <string name="settings_homepage_option">Homepage Option</string>
+    <string name="homepage_preference">Homepage preference</string>
+    <string name="settings_Library_option">Library Option</string>
+    <string name="show_tittle_instead_of_book_name_option">Show books‘ tittles instead of their names in library.</string>
+
 </resources>
 

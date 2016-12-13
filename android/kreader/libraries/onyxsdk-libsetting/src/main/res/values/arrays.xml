@@ -53,13 +53,24 @@
         <item>Excellent</item>
     </string-array>
 
-    <string-array translatable="false" name="special_locale_codes">
+    <string-array name="special_locale_codes" translatable="false">
         <item>zh_CN</item>
         <item>zh_TW</item>
     </string-array>
 
-    <string-array translatable="false" name="special_locale_names">
+    <string-array name="special_locale_names" translatable="false">
         <item>中文 (简体)</item>
         <item>中文 (繁體)</item>
     </string-array>
+
+    <string-array name="homepage_preference">
+        <item>Show recently read books</item>
+        <item>Show new added books</item>
+    </string-array>
+
+    <string-array name="homepage_preference_values">
+        <item>RecentlyRead</item>
+        <item>NewAdded</item>
+    </string-array>
+
 </resources>

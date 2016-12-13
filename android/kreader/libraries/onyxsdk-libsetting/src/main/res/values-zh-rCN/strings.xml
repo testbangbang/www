@@ -92,4 +92,20 @@
     <!--Security Setting-->
     <string name="data_backup_title">数据备份</string>
     <string name="factory_reset_title">恢复出厂</string>
+
+    <!--User Setting-->
+    <string name="startup_options">开机选项</string>
+    <string name="settings_set_startup_options_explanation">设备启动后，会自动打开最后阅读文件</string>
+    <string name="settings_set_startup_options">打开最后阅读文件</string>
+    <string name="book_scan_options">扫描选项</string>
+    <string name="enable">已启用</string>
+    <string name="disable">未启用</string>
+    <string name="setting_set_scan_on_storage_options">限定内置存储只扫描 \"Books\"/\"书籍\" 文件夹</string>
+    <string name="setting_set_scan_on_SDCard_options">限定SD卡只扫描 \"Books\"/\"书籍\" 文件夹</string>
+    <string name="setting_set_auto_scan_on_SDCard_mount_options">插入SD卡后自动扫描书库</string>
+    <string name="setting_set_auto_scan_on_pc_connect_options">与PC断开连接后自动扫描书库</string>
+    <string name="settings_homepage_option">主页选项</string>
+    <string name="homepage_preference">主页设定</string>
+    <string name="settings_Library_option">书库选项</string>
+    <string name="show_tittle_instead_of_book_name_option">在书库中,显示书的标题以代替文件名.</string>
 </resources>
