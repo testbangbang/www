@@ -331,13 +331,13 @@ public class HandlerManager {
         } else if (action.equals(KeyAction.PREV_PAGE)) {
             prevPage(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_LEFT)) {
-            panLeft(readerDataHolder);
+            onMoveLeft(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_RIGHT)) {
-            panRight(readerDataHolder);
+            onMoveRight(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_UP)) {
-            panUp(readerDataHolder);
+            onMoveUp(readerDataHolder);
         } else if (action.equals(KeyAction.MOVE_DOWN)) {
-            panDown(readerDataHolder);
+            onMoveDown(readerDataHolder);
         } else if (action.equals(KeyAction.TOGGLE_BOOKMARK)) {
             toggleBookmark(readerDataHolder);
         } else if (action.equals(KeyAction.SHOW_MENU)) {
@@ -348,6 +348,46 @@ public class HandlerManager {
             return false;
         }
         return true;
+    }
+
+    private void onMoveLeft(ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.supportScalable() && readerDataHolder.canPan()) {
+            panLeft(readerDataHolder);
+        } else {
+            prevScreen(readerDataHolder);
+        }
+    }
+
+    private void onMoveRight(ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.supportScalable() && readerDataHolder.canPan()) {
+            panRight(readerDataHolder);
+        } else {
+            nextScreen(readerDataHolder);
+        }
+    }
+
+    private void onMoveUp(ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.supportScalable()) {
+            if (readerDataHolder.canPan()) {
+                panUp(readerDataHolder);
+            } else {
+                prevScreen(readerDataHolder);
+            }
+        } else {
+            prevScreen(readerDataHolder);
+        }
+    }
+
+    private void onMoveDown(ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.supportScalable()) {
+            if (readerDataHolder.canPan()) {
+                panDown(readerDataHolder);
+            } else {
+                nextScreen(readerDataHolder);
+            }
+        } else {
+            nextScreen(readerDataHolder);
+        }
     }
 
     private void nextScreen(final ReaderDataHolder readerDataHolder) {
