@@ -400,15 +400,16 @@ public class ReaderHelper {
             getDocumentOptions().setReflowOptions(getImageReflowManager().getSettings().jsonString());
 
             final ReaderTextStyle style = layoutManager.getTextStyleManager().getStyle();
-            if (style != null) {
-                saveReaderTextStyle(style);
-            }
+            saveReaderTextStyle(style);
         } catch (Exception e) {
 
         }
     }
 
     private void saveReaderTextStyle(final ReaderTextStyle style) {
+        if (style == null) {
+            return;
+        }
         getDocumentOptions().setFontFace(style.getFontFace());
         getDocumentOptions().setFontSize(style.getFontSize().getValue());
         getDocumentOptions().setFontFace(style.getFontFace());
