@@ -51,11 +51,11 @@ public class LayoutProvider {
     }
 
     public boolean atFirstPage() throws ReaderException {
-        return getCurrentPageName().equals(LayoutProviderUtils.firstPage(getLayoutManager()));
+        return getCurrentPagePosition().equals(LayoutProviderUtils.firstPage(getLayoutManager()));
     }
 
     public boolean atLastPage() throws ReaderException {
-        return getCurrentPageName().equals(LayoutProviderUtils.lastPage(getLayoutManager()));
+        return getCurrentPagePosition().equals(LayoutProviderUtils.lastPage(getLayoutManager()));
     }
 
     public boolean canPrevScreen() throws ReaderException {
@@ -190,8 +190,12 @@ public class LayoutProvider {
         return true;
     }
 
-    public final String getCurrentPageName() {
+    public final String getCurrentPagePosition() {
         return getLayoutManager().getCurrentPagePosition();
+    }
+
+    public final int getCurrentPageNumber() {
+        return getLayoutManager().getCurrentPageNumber();
     }
 
 }

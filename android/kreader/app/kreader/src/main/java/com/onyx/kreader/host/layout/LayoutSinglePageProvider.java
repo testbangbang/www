@@ -208,7 +208,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
             return;
         }
         if (getPageManager().isSpecialScale()) {
-            getPageManager().setSpecialScale(getCurrentPageName(), getPageManager().getSpecialScale());
+            getPageManager().setSpecialScale(getCurrentPagePosition(), getPageManager().getSpecialScale());
         }
     }
 
