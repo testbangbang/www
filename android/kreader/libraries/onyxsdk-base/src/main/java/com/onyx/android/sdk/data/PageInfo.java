@@ -147,6 +147,10 @@ public class PageInfo {
         return name;
     }
 
+    public int getPageNumber() {
+        return Integer.parseInt(name);
+    }
+
     public String getPositionSafely() {
         if (StringUtils.isNullOrEmpty(position)) {
             return name;

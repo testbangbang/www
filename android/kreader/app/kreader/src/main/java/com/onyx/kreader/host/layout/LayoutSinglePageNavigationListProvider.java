@@ -36,26 +36,32 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
         return navigationArgs;
     }
 
-    private NavigationList getNavigationList() {
-        return getNavigationArgs().getList();
+    private NavigationArgs.Type getPageType(int pageIndex) {
+        return pageIndex % 2 == 0 ? NavigationArgs.Type.EVEN : NavigationArgs.Type.ODD;
+    }
+
+    private NavigationList getNavigationList(int pageIndex) {
+        return getNavigationArgs().getListByType(getPageType(pageIndex));
     }
 
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         navigationArgs = args;
-        RectF subScreen = getNavigationList().first();
-        getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
+        if (getLayoutManager().getCurrentPageInfo() != null) {
+            RectF subScreen = getNavigationList(getCurrentPageNumber()).first();
+            getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
+        }
         return true;
     }
 
     @Override
     public boolean canPrevScreen() throws ReaderException {
-        return getNavigationList().hasPrevious() || !atFirstPage();
+        return getNavigationList(getCurrentPageNumber()).hasPrevious() || !atFirstPage();
     }
 
     public boolean prevScreen() throws ReaderException {
-        if (getNavigationList().hasPrevious()) {
-            RectF subScreen = getNavigationList().previous();
-            getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
+        if (getNavigationList(getCurrentPageNumber()).hasPrevious()) {
+            RectF subScreen = getNavigationList(getCurrentPageNumber()).previous();
+            getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
             return true;
         }
         return prevPage();
@@ -63,20 +69,20 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 
     @Override
     public boolean canNextScreen() throws ReaderException {
-        return getNavigationList().hasNext() || !atLastPage();
+        return getNavigationList(getCurrentPageNumber()).hasNext() || !atLastPage();
     }
 
     public boolean nextScreen() throws ReaderException {
-        if (getNavigationList().hasNext()) {
-            RectF subScreen = getNavigationList().next();
-            getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
+        if (getNavigationList(getCurrentPageNumber()).hasNext()) {
+            RectF subScreen = getNavigationList(getCurrentPageNumber()).next();
+            getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
             return true;
         }
         return nextPage();
     }
 
     public boolean prevPage() throws ReaderException {
-        return gotoPositionImpl(LayoutProviderUtils.prevPage(getLayoutManager()), getNavigationList().getLastSubScreenIndex());
+        return gotoPositionImpl(LayoutProviderUtils.prevPage(getLayoutManager()), getNavigationList(getCurrentPageNumber()).getLastSubScreenIndex());
     }
 
     public boolean nextPage() throws ReaderException {
@@ -132,8 +138,8 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
             return false;
         }
 
-        RectF subScreen = getNavigationList().gotoSubScreen(index);
-        getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
+        RectF subScreen = getNavigationList(getCurrentPageNumber()).gotoSubScreen(index);
+        getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
         return true;
     }
 
@@ -188,12 +194,12 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
                 getPageManager().getFirstVisiblePage(),
                 getPageManager().getViewportRect(),
                 getPageManager().getSpecialScale(),
-                getNavigationList().getCurrentIndex());
+                getNavigationList(getCurrentPageNumber()).getCurrentIndex());
     }
 
     public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
         super.restoreBySnapshot(snapshot);
-        getNavigationList().setCurrentIndex(snapshot.subScreenIndex);
+        getNavigationList(getCurrentPageNumber()).setCurrentIndex(snapshot.subScreenIndex);
         return true;
     }
 }
