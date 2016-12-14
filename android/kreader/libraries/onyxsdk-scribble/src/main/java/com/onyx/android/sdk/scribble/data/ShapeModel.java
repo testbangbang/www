@@ -71,6 +71,12 @@ public class ShapeModel extends BaseModel {
     @Column
     String extraAttributes;
 
+    @Column
+    String groupId;
+
+    @Column
+    int layoutType;
+
     public ShapeModel() {
     }
 
@@ -225,5 +231,21 @@ public class ShapeModel extends BaseModel {
 
     public void setPageOriginHeight(int pageOriginHeight) {
         this.pageOriginHeight = pageOriginHeight;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public int getLayoutType() {
+        return layoutType;
+    }
+
+    public void setLayoutType(int layoutType) {
+        this.layoutType = layoutType;
     }
 }
