@@ -79,13 +79,23 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     static public Set<String> getExtensionFilters() {
         if (extensionFilters.size() <= 0) {
+            extensionFilters.add("azw");
+            extensionFilters.add("azw3");
+            extensionFilters.add("doc");
+            extensionFilters.add("docm");
+            extensionFilters.add("docx");
             extensionFilters.add("epub");
             extensionFilters.add("fb2");
+            extensionFilters.add("fbz");
+            extensionFilters.add("html");
             extensionFilters.add("mobi");
+            extensionFilters.add("odt");
+            extensionFilters.add("pdb");
+            extensionFilters.add("prc");
             extensionFilters.add("rtf");
+            extensionFilters.add("sxw");
+            extensionFilters.add("trc");
             extensionFilters.add("txt");
-            extensionFilters.add("doc");
-            extensionFilters.add("docx");
         }
         return extensionFilters;
     }

@@ -290,6 +290,22 @@ public class ReaderDataHolder {
         getNoteManager().pauseRawEventProcessor();
     }
 
+    public void enablePenShortcut()  {
+        if (!supportScalable()) {
+            return;
+        }
+        getNoteManager().setEnableShortcutDrawing(true);
+        getNoteManager().setEnableShortcutErasing(true);
+    }
+
+    public void disablePenShortcut() {
+        if (!supportScalable()) {
+            return;
+        }
+        getNoteManager().setEnableShortcutDrawing(false);
+        getNoteManager().setEnableShortcutErasing(false);
+    }
+
     public String getDocumentPath() {
         return documentPath;
     }

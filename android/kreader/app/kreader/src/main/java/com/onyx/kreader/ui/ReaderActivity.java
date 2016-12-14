@@ -48,7 +48,6 @@ import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
-import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
@@ -139,6 +138,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        disablePenShortcut();
     }
 
     @Override
@@ -337,6 +337,15 @@ public class ReaderActivity extends ActionBarActivity {
         syncSystemStatusBar();
         syncReaderPainter();
         reconfigStatusBar();
+        enablePenShortcut();
+    }
+
+    private void enablePenShortcut() {
+        getReaderDataHolder().enablePenShortcut();
+    }
+
+    private void disablePenShortcut() {
+        getReaderDataHolder().disablePenShortcut();
     }
 
     private void syncReaderPainter() {

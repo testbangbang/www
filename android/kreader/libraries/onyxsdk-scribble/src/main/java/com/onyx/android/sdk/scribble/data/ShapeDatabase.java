@@ -14,6 +14,6 @@ import com.raizlabs.android.dbflow.annotation.Database;
 public class ShapeDatabase {
 
     public static final String NAME = "ShapeDatabase";
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
 }
