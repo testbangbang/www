@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <con.onyx.android.libsetting.view.OnyxCustomSwitchPreference
+        android:key="@string/wifi_setting_key"
+        android:title="@string/setting_wifi" />
+
+</android.support.v7.preference.PreferenceScreen>

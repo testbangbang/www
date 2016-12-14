@@ -3,6 +3,7 @@
     <string name="setting_network">Network</string>
     <string name="setting_sound">Sound</string>
     <string name="setting_storage">Storage</string>
+    <string name="setting_wifi" translatable="false">WiFi</string>
     <string name="setting_lang_date"><![CDATA[Language & Date]]></string>
     <string name="setting_security">Security</string>
     <string name="setting_error_report">Error Report</string>
@@ -158,6 +159,9 @@
     <string name="homepage_preference">Homepage preference</string>
     <string name="settings_Library_option">Library Option</string>
     <string name="show_tittle_instead_of_book_name_option">Show books‘ tittles instead of their names in library.</string>
+
+    <!--Network Setting-->
+    <string name="wifi_setting_key" translatable="false">wifi_setting_key</string>
 
 </resources>
 
