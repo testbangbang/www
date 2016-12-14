@@ -30,8 +30,8 @@ import con.onyx.android.libsetting.SettingConfig;
 import con.onyx.android.libsetting.databinding.ActivityLanguageDateSettingBinding;
 import con.onyx.android.libsetting.util.CommonUtil;
 import con.onyx.android.libsetting.util.DateTimeSettingUtil;
+import con.onyx.android.libsetting.util.DeviceFeatureUtil;
 import con.onyx.android.libsetting.util.InputMethodLanguageSettingUtil;
-import con.onyx.android.libsetting.util.WifiUtil;
 
 import static android.content.Intent.ACTION_TIMEZONE_CHANGED;
 import static android.content.Intent.ACTION_TIME_CHANGED;
@@ -155,7 +155,7 @@ public class LanguageInputDateSettingActivity extends OnyxAppCompatActivity {
         private void updateData() {
             dummyDate = Calendar.getInstance();
             autoDateTimePreference.setChecked(DateTimeSettingUtil.isAutoTimeEnabled(getContext()));
-            if (!WifiUtil.hasWifi(getContext())) {
+            if (!DeviceFeatureUtil.hasWifi(getContext())) {
                 autoDateTimePreference.setChecked(false);
                 PreferenceCategory notificationsCategory = (PreferenceCategory) findPreference(getString(R.string.time_setting_key));
                 notificationsCategory.removePreference(autoDateTimePreference);

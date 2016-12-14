@@ -1,7 +1,6 @@
 package con.onyx.android.libsetting.util;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 
 import con.onyx.android.libsetting.R;
 import con.onyx.android.libsetting.data.wifi.WifiBand;
@@ -35,7 +34,4 @@ public class WifiUtil {
         }
     }
 
-    public static boolean hasWifi(Context context) {
-        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI);
-    }
 }

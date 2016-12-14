@@ -4,9 +4,9 @@ import android.content.Context;
 import android.support.v14.preference.R.attr;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceViewHolder;
-import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Switch;
 
 import con.onyx.android.libsetting.R;
 
@@ -21,7 +21,7 @@ public class OnyxCustomSwitchPreference extends Preference {
     }
 
     private Callback callback;
-    private SwitchCompat switchWidget;
+    private Switch switchWidget;
 
     public interface Callback {
         void onSwitchClicked();
@@ -48,15 +48,14 @@ public class OnyxCustomSwitchPreference extends Preference {
     }
 
     @Override
-    public void onBindViewHolder(PreferenceViewHolder holder) {
+    public void onBindViewHolder(final PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
-        switchWidget = (SwitchCompat) holder.findViewById(R.id.onyx_custom_switch);
-        holder.itemView.setOnClickListener(null);
+        switchWidget = (Switch) holder.findViewById(R.id.onyx_custom_switch);
         holder.itemView.setClickable(false);
         holder.findViewById(R.id.title_area).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                performClick();
+                holder.itemView.performClick();
             }
         });
         switchWidget.setOnClickListener(new View.OnClickListener() {

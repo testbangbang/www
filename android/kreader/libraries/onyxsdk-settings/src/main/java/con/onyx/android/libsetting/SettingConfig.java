@@ -27,10 +27,13 @@ public class SettingConfig {
     static private String TAG = SettingConfig.class.getSimpleName();
 
     static private final String CUSTOM_SETTING_TTS_PACKAGE_NAME_TAG = "setting_tts_package_name";
+    static private final String CUSTOM_SETTING_BLUETOOTH_PACKAGE_NAME_TAG = "setting_bluetooth_package_name";
     static private final String DEFAULT_ANDROID_SETTING_PACKAGE_NAME = "com.android.settings";
     static private final String DEFAULT_ANDROID_SETTING_CLASS_NAME = "com.android.settings.Settings";
     static private final String CUSTOM_SETTING_TTS_CLASS_NAME_TAG = "setting_tts_class_name";
+    static private final String CUSTOM_SETTING_BLUETOOTH_CLASS_NAME_TAG = "setting_bluetooth_class_name";
     static private final String DEFAULT_SETTING_TTS_CLASS_NAME = "com.android.settings.TextToSpeechSettings";
+    static private final String DEFAULT_SETTING_BLUETOOTH_CLASS_NAME = "com.android.settings.bluetooth.BluetoothSettings";
     static private final String SYSTEM_SCREEN_OFF_VALUES_TAG = "screen_screen_off_values";
     static private final String SYSTEM_AUTO_POWER_OFF_VALUES_TAG = "power_off_timeout_values";
     static private final String SYSTEM_WIFI_INACTIVITY_VALUES_TAG = "network_inactivity_timeout_values";
@@ -249,5 +252,19 @@ public class SettingConfig {
 
     public Intent getKeyBindingIntent() {
         return null;
+    }
+
+    public Intent getBluetoothSettingIntent() {
+        Intent intent = new Intent();
+        String pkgName = getData(CUSTOM_SETTING_BLUETOOTH_PACKAGE_NAME_TAG, String.class);
+        if (TextUtils.isEmpty(pkgName)) {
+            pkgName = DEFAULT_ANDROID_SETTING_PACKAGE_NAME;
+        }
+        String className = getData(CUSTOM_SETTING_TTS_CLASS_NAME_TAG, String.class);
+        if (TextUtils.isEmpty(className)) {
+            className = DEFAULT_SETTING_BLUETOOTH_CLASS_NAME;
+        }
+        intent.setClassName(pkgName, className);
+        return intent;
     }
 }

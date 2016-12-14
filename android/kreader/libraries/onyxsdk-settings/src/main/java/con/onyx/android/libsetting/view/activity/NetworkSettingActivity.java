@@ -13,8 +13,10 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 import java.util.List;
 
 import con.onyx.android.libsetting.R;
+import con.onyx.android.libsetting.SettingConfig;
 import con.onyx.android.libsetting.data.wifi.AccessPoint;
 import con.onyx.android.libsetting.databinding.ActivityNetworkSettingBinding;
+import con.onyx.android.libsetting.manager.BluetoothAdmin;
 import con.onyx.android.libsetting.manager.WifiAdmin;
 import con.onyx.android.libsetting.view.OnyxCustomSwitchPreference;
 
@@ -36,14 +38,21 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
 
     public static class NetworkSettingPreferenceFragment extends PreferenceFragmentCompat {
         OnyxCustomSwitchPreference wifiSwitchPreference;
+        OnyxCustomSwitchPreference bluetoothSwitchPreference;
         WifiAdmin wifiAdmin;
+        BluetoothAdmin bluetoothAdmin;
+        SettingConfig config;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.network_setting);
+            config = SettingConfig.sharedInstance(getContext());
             initView();
-            wifiAdmin = new WifiAdmin(getContext());
-            wifiAdmin.setCallback(new WifiAdmin.Callback() {
+            initAdmin();
+        }
+
+        private void initAdmin() {
+            wifiAdmin = new WifiAdmin(getContext(), new WifiAdmin.Callback() {
                 @Override
                 public void onWifiStateChange(boolean isWifiEnable) {
                     wifiSwitchPreference.setSwitchChecked(isWifiEnable);
@@ -64,10 +73,18 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
 
                 }
             });
+            bluetoothAdmin = new BluetoothAdmin(getContext(), new BluetoothAdmin.Callback() {
+                @Override
+                public void onBluetoothStateChange(boolean isBluetoothEnable) {
+                    bluetoothSwitchPreference.setSwitchChecked(isBluetoothEnable);
+                }
+            });
+
         }
 
         private void initView() {
             wifiSwitchPreference = (OnyxCustomSwitchPreference) findPreference(getString(R.string.wifi_setting_key));
+            bluetoothSwitchPreference = (OnyxCustomSwitchPreference) findPreference(getString(R.string.bluetooth_setting_key));
             wifiSwitchPreference.setCallback(new OnyxCustomSwitchPreference.Callback() {
                 @Override
                 public void onSwitchClicked() {
@@ -87,18 +104,38 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
                     return true;
                 }
             });
+            bluetoothSwitchPreference.setCallback(new OnyxCustomSwitchPreference.Callback() {
+                @Override
+                public void onSwitchClicked() {
+                    bluetoothAdmin.toggleBluetoothEnabled();
+                }
+
+                @Override
+                public void onSwitchReady() {
+                    bluetoothSwitchPreference.setSwitchChecked(bluetoothAdmin.isEnabled());
+                }
+            });
+            bluetoothSwitchPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    ActivityUtil.startActivitySafely(getContext(), config.getBluetoothSettingIntent());
+                    return true;
+                }
+            });
         }
 
         @Override
         public void onResume() {
             super.onResume();
             wifiAdmin.registerReceiver();
+            bluetoothAdmin.registerReceiver();
         }
 
         @Override
         public void onPause() {
             super.onPause();
             wifiAdmin.unregisterReceiver();
+            bluetoothAdmin.unregisterReceiver();
         }
     }
 }
