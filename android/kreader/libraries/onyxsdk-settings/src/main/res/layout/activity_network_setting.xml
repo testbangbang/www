@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="con.onyx.android.libsetting.view.activity.NetworkSettingActivity">
+        tools:context="com.onyx.android.libsetting.view.activity.NetworkSettingActivity">
 
         <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
 

@@ -1,4 +1,4 @@
-package con.onyx.android.libsetting;
+package com.onyx.android.libsetting;
 
 import org.junit.Test;
 
