@@ -254,16 +254,14 @@ public class SettingConfig {
     }
 
     public Intent getBluetoothSettingIntent() {
-        Intent intent = new Intent();
-        String pkgName = getData(CUSTOM_SETTING_BLUETOOTH_PACKAGE_NAME_TAG, String.class);
-        if (TextUtils.isEmpty(pkgName)) {
-            pkgName = DEFAULT_ANDROID_SETTING_PACKAGE_NAME;
-        }
-        String className = getData(CUSTOM_SETTING_TTS_CLASS_NAME_TAG, String.class);
-        if (TextUtils.isEmpty(className)) {
-            className = DEFAULT_SETTING_BLUETOOTH_CLASS_NAME;
-        }
-        intent.setClassName(pkgName, className);
+        Intent intent = buildDefaultSettingIntent();
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, DEFAULT_SETTING_BLUETOOTH_CLASS_NAME);
+        return intent;
+    }
+
+    public Intent getVPNSettingIntent() {
+        Intent intent = buildDefaultSettingIntent();
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.vpn2.VpnSettings");
         return intent;
     }
 }

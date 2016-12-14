@@ -7,11 +7,6 @@ import android.os.Bundle;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
-import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
-import com.onyx.android.sdk.utils.ActivityUtil;
-
-import java.util.List;
-
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.SettingConfig;
 import com.onyx.android.libsetting.data.wifi.AccessPoint;
@@ -19,6 +14,10 @@ import com.onyx.android.libsetting.databinding.ActivityNetworkSettingBinding;
 import com.onyx.android.libsetting.manager.BluetoothAdmin;
 import com.onyx.android.libsetting.manager.WifiAdmin;
 import com.onyx.android.libsetting.view.OnyxCustomSwitchPreference;
+import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.utils.ActivityUtil;
+
+import java.util.List;
 
 public class NetworkSettingActivity extends OnyxAppCompatActivity {
     ActivityNetworkSettingBinding binding;
@@ -39,6 +38,7 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
     public static class NetworkSettingPreferenceFragment extends PreferenceFragmentCompat {
         OnyxCustomSwitchPreference wifiSwitchPreference;
         OnyxCustomSwitchPreference bluetoothSwitchPreference;
+        Preference vpnPreference;
         WifiAdmin wifiAdmin;
         BluetoothAdmin bluetoothAdmin;
         SettingConfig config;
@@ -79,12 +79,19 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
                     bluetoothSwitchPreference.setSwitchChecked(isBluetoothEnable);
                 }
             });
-
         }
 
         private void initView() {
             wifiSwitchPreference = (OnyxCustomSwitchPreference) findPreference(getString(R.string.wifi_setting_key));
             bluetoothSwitchPreference = (OnyxCustomSwitchPreference) findPreference(getString(R.string.bluetooth_setting_key));
+            vpnPreference = findPreference(getString(R.string.vpn_setting_key));
+            vpnPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    ActivityUtil.startActivitySafely(getContext(),config.getVPNSettingIntent());
+                    return true;
+                }
+            });
             wifiSwitchPreference.setCallback(new OnyxCustomSwitchPreference.Callback() {
                 @Override
                 public void onSwitchClicked() {

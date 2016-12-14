@@ -10,6 +10,7 @@
     <string name="setting_application">Application</string>
     <string name="setting_user_setting">User Setting</string>
     <string name="setting_bluetooth">Bluetooth</string>
+    <string name="setting_vpn">VPN</string>
     <string name="settings_sound_preferences_key" translatable="false">settings_sound_preferences_key</string>
     <string name="touch_sound_key" translatable="false">touch_sound_key</string>
     <string name="touch_sound">Touch Sound</string>
@@ -164,6 +165,6 @@
     <!--Network Setting-->
     <string name="wifi_setting_key" translatable="false">wifi_setting_key</string>
     <string name="bluetooth_setting_key" translatable="false">bluetooth_setting_key</string>
-
+    <string name="vpn_setting_key" translatable="false">vpn_setting_key</string>
 </resources>
 
