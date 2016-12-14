@@ -93,7 +93,11 @@ public class NavigationArgs {
     }
 
     public NavigationList getListByType(final Type t) {
-        return map.get(t);
+        NavigationList list = map.get(t);
+        if (list == null) {
+            list = map.get(Type.ALL);
+        }
+        return list;
     }
 
     static public RectF rectInViewport(final RectF subScreen, final RectF limit, final RectF viewport) {

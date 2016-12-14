@@ -286,6 +286,22 @@ public class ReaderLayoutManager {
         return getPageManager().getFirstVisiblePagePosition();
     }
 
+    public String getCurrentPageName() {
+        PageInfo pageInfo = getPageManager().getFirstVisiblePage();
+        if (pageInfo == null) {
+            return null;
+        }
+        return pageInfo.getName();
+    }
+
+    public int getCurrentPageNumber() {
+        PageInfo pageInfo = getPageManager().getFirstVisiblePage();
+        if (pageInfo == null) {
+            return -1;
+        }
+        return pageInfo.getPageNumber();
+    }
+
     public final PageInfo getCurrentPageInfo() {
         return getPageManager().getFirstVisiblePage();
     }
