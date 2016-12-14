@@ -8,8 +8,10 @@ import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import com.onyx.android.sdk.ui.R;
 
@@ -19,7 +21,9 @@ import com.onyx.android.sdk.ui.R;
  * CustomIconView for zoom src as target drawing size,without zoom in background.
  */
 
-public class CustomIconView extends ImageView {
+public class CustomIconView extends android.support.v7.widget.AppCompatImageView {
+    float drawingSize;
+
     public CustomIconView(Context context) {
         this(context, null);
     }
@@ -39,7 +43,7 @@ public class CustomIconView extends ImageView {
         }
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.CustomIconView);
-        final float drawingSize = a.getDimension(R.styleable.CustomIconView_iconDrawingSize, -1);
+        drawingSize = a.getDimension(R.styleable.CustomIconView_iconDrawingSize, -1);
 
         a.recycle();
         Drawable d = getDrawable();
@@ -51,7 +55,6 @@ public class CustomIconView extends ImageView {
         setFocusable(true);
         setClickable(true);
     }
-
 
     private Drawable zoomDrawable(Drawable drawable, float size) {
         int width = drawable.getIntrinsicWidth();
@@ -81,4 +84,27 @@ public class CustomIconView extends ImageView {
         return bitmap;
     }
 
+    @Override
+    public void setImageResource(@DrawableRes int resId) {
+        Drawable d;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            d = getResources().getDrawable(resId);
+        } else {
+            d = getResources().getDrawable(resId, getContext().getTheme());
+        }
+
+        if (d != null) {
+            if (drawingSize != -1) {
+                super.setImageDrawable(zoomDrawable(d, drawingSize));
+            } else {
+                super.setImageResource(resId);
+            }
+        }
+    }
+
+    @Override
+    public void setImageDrawable(@Nullable Drawable drawable) {
+        super.setImageDrawable((drawingSize != -1 && drawable != null) ?
+                zoomDrawable(drawable, drawingSize) : drawable);
+    }
 }

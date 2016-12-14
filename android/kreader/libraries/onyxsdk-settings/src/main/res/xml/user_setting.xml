@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="@string/settings_user_preferences_key">
+
+    <android.support.v7.preference.PreferenceCategory android:title="@string/startup_options">
+
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/open_last_document"
+            android:summary="@string/settings_set_startup_options_explanation"
+            android:title="@string/settings_set_startup_options" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory android:title="@string/book_scan_options">
+
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/scan_on_storage"
+            android:title="@string/setting_set_scan_on_storage_options" />
+
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/scan_on_SDCard"
+            android:title="@string/setting_set_scan_on_SDCard_options" />
+
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/library_sd_scan_option_key"
+            android:summary="@string/enable"
+            android:title="@string/setting_set_auto_scan_on_SDCard_mount_options" />
+
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/library_pc_scan_option_key"
+            android:summary="@string/enable"
+            android:title="@string/setting_set_auto_scan_on_pc_connect_options" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory
+        android:key="@string/homepage_preference_category_key"
+        android:title="@string/settings_homepage_option">
+
+        <android.support.v7.preference.ListPreference
+            android:dialogTitle="@string/homepage_preference"
+            android:entries="@array/homepage_preference"
+            android:entryValues="@array/homepage_preference_values"
+            android:key="@string/homepage_preference_key"
+            android:title="@string/homepage_preference" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory
+        android:key="@string/library_preference_category_key"
+        android:title="@string/settings_Library_option">
+
+        <android.support.v7.preference.CheckBoxPreference
+            android:key="@string/library_display_preference_key"
+            android:summary="@string/disable"
+            android:title="@string/show_tittle_instead_of_book_name_option" />
+    </android.support.v7.preference.PreferenceCategory>
+
+</android.support.v7.preference.PreferenceScreen>

@@ -21,4 +21,18 @@
     <declare-styleable name="CustomIconView">
         <attr name="iconDrawingSize" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="pieChartView">
+        <attr name="roundColor" format="color"/>
+        <attr name="roundProgressColor" format="color"/>
+        <attr name="roundWidth" format="dimension" />
+        <attr name="progressTextColor" format="color" />
+        <attr name="progressTextSize" format="dimension" />
+        <attr name="max" format="float" />
+        <attr name="textIsDisplayable" format="boolean" />
+        <attr name="style">
+            <enum name="STROKE" value="0"/>
+            <enum name="FILL" value="1" />
+        </attr>
+    </declare-styleable>
 </resources>

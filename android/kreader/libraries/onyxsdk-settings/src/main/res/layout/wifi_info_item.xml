@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="accessPoint"
+            type="con.onyx.android.libsetting.data.wifi.AccessPoint" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/imagebtn_bg">
+
+        <RelativeLayout
+            android:id="@+id/text_message_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@+id/signal_indicator">
+
+            <TextView
+                android:id="@+id/textView_wifi_ssid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
+                android:ellipsize="middle"
+                android:gravity="center_vertical|left"
+                android:maxLines="2"
+                android:text="@{accessPoint.scanResult.SSID}"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large"
+                />
+
+            <TextView
+                android:id="@+id/textView_wifi_security"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView_wifi_ssid"
+                android:ellipsize="middle"
+                android:gravity="left|center_vertical"
+                android:maxLines="2"
+                android:text="@{accessPoint.securityString}"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Small" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/signal_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:clickable="false"
+            android:focusable="false"
+            android:longClickable="false"
+            android:src="@drawable/wifi_signal"
+            app:imageLevel="@{accessPoint.signalLevel}"
+            imageState="@{accessPoint.imageState}" />
+
+    </RelativeLayout>
+</layout>

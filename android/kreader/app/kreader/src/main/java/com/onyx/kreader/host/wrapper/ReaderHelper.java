@@ -343,18 +343,30 @@ public class ReaderHelper {
     }
 
     public void applyPostBitmapProcess(ReaderBitmapImpl bitmap) {
+        applyGammaCorrection(bitmap);
+        applyEmbolden(bitmap);
+        applySaturation(bitmap);
+    }
+
+    private void applyGammaCorrection(final ReaderBitmapImpl bitmap) {
         if (getDocumentOptions().isGamaCorrectionEnabled() &&
                 Float.compare(bitmap.gammaCorrection(), getDocumentOptions().getGammaLevel()) != 0) {
             if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel())) {
                 bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
             }
         }
+    }
+
+    private void applyEmbolden(final ReaderBitmapImpl bitmap) {
         if (getDocumentOptions().isEmboldenLevelEnabled() &&
                 bitmap.getEmboldenLevel() != getDocumentOptions().getEmboldenLevel()) {
             if (ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getDocumentOptions().getEmboldenLevel())) {
                 bitmap.setEmboldenLevel(getDocumentOptions().getEmboldenLevel());
             }
         }
+    }
+
+    private void applySaturation(final ReaderBitmapImpl bitmap) {
     }
 
     public final String getDocumentPath() {

@@ -13,12 +13,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static android.support.v7.widget.StaggeredGridLayoutManager.TAG;
-
 /**
  * Created by joy on 10/10/16.
  */
 public class ReflowedSubPageIndex {
+    private final String TAG = ReflowedSubPageIndex.class.getSimpleName();
 
     private File indexFile;
 

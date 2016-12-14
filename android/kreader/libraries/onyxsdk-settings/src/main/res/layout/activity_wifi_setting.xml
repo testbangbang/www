@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/activity_wlan_setting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="con.onyx.android.libsetting.view.activity.WifiSettingActivity">
+
+        <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true">
+
+                <RelativeLayout
+                    android:id="@id/back_function_layout"
+                    style="@style/global_activities_back_function_layout">
+
+                    <ImageView
+                        android:id="@+id/back_icon"
+                        style="@style/global_activities_back_btn_image"
+                        android:contentDescription="" />
+
+                    <ImageView
+                        android:id="@+id/imageView_main_title"
+                        style="@style/global_activities_back_btn_category_image"
+                        android:layout_toRightOf="@+id/back_icon"
+                        android:src="@drawable/ic_settings" />
+
+                    <TextView
+                        android:id="@+id/textView_main_title"
+                        style="@style/global_activities_back_btn_category_tittle"
+                        android:layout_toRightOf="@+id/imageView_main_title"
+                        android:ellipsize="middle"
+                        android:gravity="left|center_vertical"
+                        android:maxEms="10"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@string/setting_network" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+        <RelativeLayout
+            android:id="@+id/wifi_toggle_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:minHeight="@dimen/btn_minHeight"
+                android:layout_marginLeft="5dp"
+                android:layout_toLeftOf="@+id/wif_switch">
+
+                <TextView
+                    android:id="@+id/textView_wifi_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:ellipsize="middle"
+                    android:gravity="center_vertical|left"
+                    android:maxLines="2"
+                    android:text="@string/setting_network"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large"
+                    android:textColor="@android:color/primary_text_light" />
+
+                <TextView
+                    android:id="@+id/textView_wifi_summary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textView_wifi_title"
+                    android:ellipsize="middle"
+                    android:gravity="left|center_vertical"
+                    android:maxLines="2"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Small"
+                    android:textColor="@android:color/primary_text_light"/>
+            </RelativeLayout>
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/wif_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:focusable="false"
+                android:longClickable="false" />
+
+        </RelativeLayout>
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/wifi_scan_result_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+        </com.onyx.android.sdk.ui.view.PageRecyclerView>
+
+        <TextView
+            android:id="@+id/rescan_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/imagebtn_bg"
+            android:gravity="center"
+            android:minHeight="@dimen/btn_minHeight"
+            android:text="@string/wifi_rescan" />
+    </LinearLayout>
+</layout>
+
