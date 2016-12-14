@@ -47,21 +47,21 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         navigationArgs = args;
         if (getLayoutManager().getCurrentPageInfo() != null) {
-            RectF subScreen = getNavigationList(getCurrentPage()).first();
-            getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
+            RectF subScreen = getNavigationList(getCurrentPageNumber()).first();
+            getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
         }
         return true;
     }
 
     @Override
     public boolean canPrevScreen() throws ReaderException {
-        return getNavigationList(getCurrentPage()).hasPrevious() || !atFirstPage();
+        return getNavigationList(getCurrentPageNumber()).hasPrevious() || !atFirstPage();
     }
 
     public boolean prevScreen() throws ReaderException {
-        if (getNavigationList(getCurrentPage()).hasPrevious()) {
-            RectF subScreen = getNavigationList(getCurrentPage()).previous();
-            getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
+        if (getNavigationList(getCurrentPageNumber()).hasPrevious()) {
+            RectF subScreen = getNavigationList(getCurrentPageNumber()).previous();
+            getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
             return true;
         }
         return prevPage();
@@ -69,20 +69,20 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 
     @Override
     public boolean canNextScreen() throws ReaderException {
-        return getNavigationList(getCurrentPage()).hasNext() || !atLastPage();
+        return getNavigationList(getCurrentPageNumber()).hasNext() || !atLastPage();
     }
 
     public boolean nextScreen() throws ReaderException {
-        if (getNavigationList(getCurrentPage()).hasNext()) {
-            RectF subScreen = getNavigationList(getCurrentPage()).next();
-            getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
+        if (getNavigationList(getCurrentPageNumber()).hasNext()) {
+            RectF subScreen = getNavigationList(getCurrentPageNumber()).next();
+            getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
             return true;
         }
         return nextPage();
     }
 
     public boolean prevPage() throws ReaderException {
-        return gotoPositionImpl(LayoutProviderUtils.prevPage(getLayoutManager()), getNavigationList(getCurrentPage()).getLastSubScreenIndex());
+        return gotoPositionImpl(LayoutProviderUtils.prevPage(getLayoutManager()), getNavigationList(getCurrentPageNumber()).getLastSubScreenIndex());
     }
 
     public boolean nextPage() throws ReaderException {
@@ -138,8 +138,8 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
             return false;
         }
 
-        RectF subScreen = getNavigationList(getCurrentPage()).gotoSubScreen(index);
-        getPageManager().scaleByRatioRect(getCurrentPageName(), subScreen);
+        RectF subScreen = getNavigationList(getCurrentPageNumber()).gotoSubScreen(index);
+        getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
         return true;
     }
 
@@ -194,12 +194,12 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
                 getPageManager().getFirstVisiblePage(),
                 getPageManager().getViewportRect(),
                 getPageManager().getSpecialScale(),
-                getNavigationList(getCurrentPage()).getCurrentIndex());
+                getNavigationList(getCurrentPageNumber()).getCurrentIndex());
     }
 
     public boolean restoreBySnapshot(final PositionSnapshot snapshot) throws ReaderException {
         super.restoreBySnapshot(snapshot);
-        getNavigationList(getCurrentPage()).setCurrentIndex(snapshot.subScreenIndex);
+        getNavigationList(getCurrentPageNumber()).setCurrentIndex(snapshot.subScreenIndex);
         return true;
     }
 }
