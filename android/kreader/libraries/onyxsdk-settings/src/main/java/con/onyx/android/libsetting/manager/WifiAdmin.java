@@ -40,7 +40,7 @@ import static con.onyx.android.libsetting.data.wifi.PskType.WPA_WPA2;
  */
 
 public class WifiAdmin {
-    static final String TAG = WifiAdmin.class.getSimpleName();
+    private static final String TAG = WifiAdmin.class.getSimpleName();
     private WifiManager wifiManager;
     private List<ScanResult> wifiScanResultList;
     private Context context;
@@ -48,7 +48,9 @@ public class WifiAdmin {
     private Callback callback;
     private BroadcastReceiver wifiStateReceiver;
 
-    /** These values are matched in string arrays -- changes must be kept in sync */
+    /**
+     * These values are matched in string arrays -- changes must be kept in sync
+     */
     static final int SECURITY_NONE = 0;
     static final int SECURITY_WEP = 1;
     static final int SECURITY_PSK = 2;
@@ -80,11 +82,15 @@ public class WifiAdmin {
         void onNetworkConnectionChange(NetworkInfo.DetailedState state);
     }
 
-    public WifiAdmin(Context context, Callback callback) {
+    public WifiAdmin(Context context) {
         this.context = context;
-        this.callback = callback;
         wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         initWifiStateFilterAndReceiver();
+    }
+
+    public WifiAdmin(Context context, Callback callback) {
+        this(context);
+        setCallback(callback);
     }
 
     private void initWifiStateFilterAndReceiver() {
@@ -168,6 +174,16 @@ public class WifiAdmin {
         }
     }
 
+    public boolean isWifiEnabled() {
+        return wifiManager != null && wifiManager.isWifiEnabled();
+    }
+
+    public void setWifiEnabled(boolean isWifiEnabled){
+        if (wifiManager != null) {
+            wifiManager.setWifiEnabled(isWifiEnabled);
+        }
+    }
+
     public void triggerWifiScan() {
         if (wifiManager != null) {
             wifiManager.startScan();
@@ -185,7 +201,7 @@ public class WifiAdmin {
     public WifiConfiguration getWifiConfiguration(ScanResult result) {
         WifiConfiguration wifiConfiguration = null;
         for (WifiConfiguration configuration : wifiManager.getConfiguredNetworks()) {
-            if (configuration.SSID.equals("\""+ result.SSID + "\"")) {
+            if (configuration.SSID.equals("\"" + result.SSID + "\"")) {
                 wifiConfiguration = configuration;
                 break;
             }
@@ -251,7 +267,7 @@ public class WifiAdmin {
     }
 
     public String getSecurityMode(ScanResult result, boolean concise, int security) {
-        switch(security) {
+        switch (security) {
             case SECURITY_EAP:
                 return concise ? context.getString(R.string.wifi_security_short_eap) :
                         context.getString(R.string.wifi_security_eap);
@@ -280,7 +296,8 @@ public class WifiAdmin {
         }
     }
 
-    private @PskType.PskTypeDef
+    private
+    @PskType.PskTypeDef
     int getPskType(ScanResult result) {
         boolean wpa = result.capabilities.contains("WPA-PSK");
         boolean wpa2 = result.capabilities.contains("WPA2-PSK");
@@ -382,11 +399,11 @@ public class WifiAdmin {
     }
 
     public String getLocalIPAddress() throws SocketException {
-        for(Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();){
+        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
             NetworkInterface intf = en.nextElement();
-            for(Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();){
+            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                 InetAddress inetAddress = enumIpAddr.nextElement();
-                if(!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address){
+                if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
                     return inetAddress.getHostAddress();
                 }
             }
@@ -431,4 +448,5 @@ public class WifiAdmin {
         Object property = field.get(config);
         return (int) property;
     }
+
 }
