@@ -9,8 +9,6 @@ extern "C" {
 #endif
 #undef com_onyx_kreader_utils_ImageUtils_NO_GAMMA
 #define com_onyx_kreader_utils_ImageUtils_NO_GAMMA -1.0f
-#undef com_onyx_kreader_utils_ImageUtils_STANDARD_GAMMA
-#define com_onyx_kreader_utils_ImageUtils_STANDARD_GAMMA 150.0f
 #undef com_onyx_kreader_utils_ImageUtils_MAX_GAMMA
 #define com_onyx_kreader_utils_ImageUtils_MAX_GAMMA 200.0f
 /*
@@ -76,6 +74,22 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_renderReflowed
  */
 JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_releaseReflowedPages
   (JNIEnv *, jclass);
+
+/*
+ * Class:     com_onyx_kreader_utils_ImageUtils
+ * Method:    toGrayScale
+ * Signature: (Landroid/graphics/Bitmap;[BI)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toGrayScale
+  (JNIEnv *, jclass, jobject, jbyteArray, jint);
+
+/*
+ * Class:     com_onyx_kreader_utils_ImageUtils
+ * Method:    toRgbw
+ * Signature: (Landroid/graphics/Bitmap;IIII[BI)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbw
+  (JNIEnv *, jclass, jobject, jint, jint, jint, jint, jbyteArray, jint);
 
 #ifdef __cplusplus
 }

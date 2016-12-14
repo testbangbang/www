@@ -794,9 +794,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_renderReflowed
 
     WILLUSBITMAP dst;
     bmp_init(&dst);
-    LOGE("renderReflowedPage, crop region: [%d, %d] - [%d, %d]", left, top, right, bottom);
     bmp_crop_ex(&dst, page.get(), left, top, right - left, bottom - top);
-    LOGE("renderReflowedPage, crop region finished");
 
     unsigned int * target = (unsigned int *)pixels;
     for(int row = 0; row < dst.height; ++row) {
@@ -819,4 +817,79 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_renderReflowed
 JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_releaseReflowedPages
   (JNIEnv *, jclass) {
     releaseReflowedPages();
+}
+
+
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toGrayScale
+  (JNIEnv *env, jclass thiz, jobject bitmap, jbyteArray array, jint bufferStrideInBytes) {
+    AndroidBitmapInfo info;
+    int *pixels;
+    int ret;
+
+    if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+        LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+        return;
+    }
+
+    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+        LOGE("Bitmap format is not RGBA_8888 !");
+        return;
+    }
+
+    if ((ret = AndroidBitmap_lockPixels(env, bitmap, (void **)&pixels)) < 0) {
+        LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+        return;
+    }
+
+    JByteArray data(bufferStrideInBytes * info.height);
+    for(int y = 0; y < info.height; ++y) {
+        int * src = pixels + y * info.stride / 4;
+        unsigned char * dst = (unsigned char *)data.getRawBuffer() + y * bufferStrideInBytes;
+        for(int x = 0; x < info.width; ++x) {
+            int rgba = *src++;
+            unsigned char gray = ColorUtils::gray(rgba);
+            *dst++ = gray;
+        }
+    }
+    env->SetByteArrayRegion(array, 0, bufferStrideInBytes * info.height, data.getRawBuffer());
+}
+
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbw
+  (JNIEnv *env, jclass thiz, jobject bitmap, jint left, jint top, jint right, jint bottom, jbyteArray array, jint bufferStrideInBytes) {
+    AndroidBitmapInfo info;
+    int *pixels;
+    int ret;
+
+    if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+        LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+        return;
+    }
+
+    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+        LOGE("Bitmap format is not RGBA_8888 !");
+        return;
+    }
+
+    if ((ret = AndroidBitmap_lockPixels(env, bitmap, (void **)&pixels)) < 0) {
+        LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+        return;
+    }
+
+    JByteArray data(bufferStrideInBytes * info.height * 2);
+    for(int y = 0; y < info.height; ++y) {
+        int * src = pixels + y * info.stride / 4;
+        unsigned short * dst1 = (unsigned short *)data.getRawBuffer() + y * bufferStrideInBytes;
+        unsigned short * dst2 = dst1 + bufferStrideInBytes / 2;
+        for(int x = 0; x < info.width; ++x) {
+            int rgba = *src++;
+            unsigned char red = ColorUtils::red(rgba);
+            unsigned char green = ColorUtils::green(rgba);
+            unsigned char blue = ColorUtils::blue(rgba);
+            unsigned char white = ColorUtils::white(red, green, blue);
+            *dst1++ = white | (blue << 8);
+            *dst2++ = red | (green << 8);
+        }
+    }
+    env->SetByteArrayRegion(array, 0, bufferStrideInBytes * info.height * 2, data.getRawBuffer());
+
 }

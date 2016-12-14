@@ -6,10 +6,11 @@ import com.onyx.kreader.reflow.ImageReflowSettings;
 
 /**
  * Created by joy on 3/22/16.
+ * kreader zhuzeng$ javah -classpath ./build/intermediates/classes/debug/:/opt/adt-bundle-linux/sdk/platforms/android-14/android.jar:./com/onyx/kreader/utils
+ * -jni com.onyx.kreader.utils.ImageUtils
  */
 public class ImageUtils {
     public static final float NO_GAMMA = -1;
-    public static final float STANDARD_GAMMA = 150;
     public static final float MAX_GAMMA = 200;
 
     static {
@@ -25,6 +26,9 @@ public class ImageUtils {
     static public native boolean getReflowedPageSize(String pageName, int []size);
     static public native boolean renderReflowedPage(String pageName, int left, int top, int right, int bottom, final Bitmap bitmap);
     static public native void releaseReflowedPages();
+
+    static public native void toGrayScale(final Bitmap bitmap, byte[] data, int strideInBytes);
+    static public native void toRgbw(final Bitmap src, int left, int top, int right, int bottom, byte [] data, int strideInBytes);
 
     /**
      * Return content region with specified bitmap. usually takes about 60ms to finish 1440x1080 bitmap.

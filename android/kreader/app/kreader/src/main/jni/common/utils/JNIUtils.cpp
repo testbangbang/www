@@ -101,3 +101,23 @@ void JNIUtils::invokeStaticMethod(JNIEnv *env, ...) {
     env->CallStaticVoidMethod(clazz, methodId, args);
     va_end(args);
 }
+
+unsigned char ColorUtils::red(int rgba) {
+    return (unsigned char)((rgba >> 24) & 0xff);
+}
+
+unsigned char ColorUtils::green(int rgba) {
+    return (unsigned char)((rgba >> 16) & 0xff);
+}
+
+unsigned char ColorUtils::blue(int rgba) {
+    return (unsigned char)((rgba >> 8) & 0xff);
+}
+
+unsigned char ColorUtils::gray(int rgba) {
+    return (unsigned char) (0.299 * red(rgba) + 0.587 * green(rgba) + 0.114 * blue(rgba));
+}
+
+unsigned char ColorUtils::white(int red, int green, int blue) {
+    return (unsigned char)((((red * 299) + (green * 587) + (blue * 114)) / 1000) & 0xff);
+}

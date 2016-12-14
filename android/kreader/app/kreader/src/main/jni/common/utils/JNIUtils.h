@@ -239,4 +239,19 @@ public:
     }
 };
 
+class ColorUtils {
+
+public:
+    static unsigned char red(int rgba);
+
+    static unsigned char green(int rgba);
+
+    static unsigned char blue(int rgba);
+
+    static unsigned char gray(int rgba);
+
+    static unsigned char white(int red, int green, int blue);
+
+};
+
 #endif
