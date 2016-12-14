@@ -2,17 +2,24 @@ package com.onyx.android.note.activity.onyx;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.DrawableUtils;
+import android.text.SpannableStringBuilder;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
@@ -38,10 +45,13 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
-import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
@@ -50,7 +60,6 @@ import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -61,8 +70,16 @@ import java.util.List;
 public class ScribbleActivity extends BaseScribbleActivity {
     static final String TAG = ScribbleActivity.class.getCanonicalName();
     private TextView titleTextView;
-    private GAdapter adapter;
     private ScribbleSubMenu scribbleSubMenu = null;
+    private boolean isSpanMode = false;
+    private ImageView switchBtn;
+    private EditText spanTextView;
+    private ContentView functionContentView;
+    private RelativeLayout workView;
+    private static final int SPAN_TIME_OUT = 1000;
+    Runnable spanRunnable;
+    long lastUpTime = -1;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +88,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         setContentView(R.layout.onyx_activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         initToolbarButtons();
+        handler = new Handler(getMainLooper());
     }
 
     @Override
@@ -90,9 +108,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
         ImageView saveBtn = (ImageView) findViewById(R.id.button_save);
         ImageView exportBtn = (ImageView) findViewById(R.id.button_export);
         ImageView settingBtn = (ImageView) findViewById(R.id.button_setting);
+        workView = (RelativeLayout) findViewById(R.id.work_view);
+        spanTextView = (EditText) findViewById(R.id.span_text_view);
+        switchBtn = (ImageView) findViewById(R.id.button_switch);
         exportBtn.setVisibility(NoteAppConfig.sharedInstance(this).isEnableExport() ? View.VISIBLE : View.GONE);
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
-        ContentView functionContentView = (ContentView) findViewById(R.id.function_content_view);
+        functionContentView = (ContentView) findViewById(R.id.function_content_view);
         functionContentView.setShowPageInfoArea(false);
         functionContentView.setSubLayoutParameter(R.layout.onyx_main_function_item, getItemViewDataMap());
         functionContentView.setCallback(new ContentView.ContentViewCallback() {
@@ -102,13 +123,16 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 syncWithCallback(true, false, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        getScribbleSubMenu().show(ScribbleMenuCategory.translate(GAdapterUtil.getUniqueIdAsIntegerType(temp)));
+                        int category = ScribbleMenuCategory.translate(GAdapterUtil.getUniqueIdAsIntegerType(temp));
+                        if (digestionSpanMenu(category)) {
+                            return;
+                        }
+                        getScribbleSubMenu().show(category);
                     }
                 });
             }
         });
-        functionContentView.setupContent(1,
-                getResources().getInteger(R.integer.onyx_scribble_main_function_cols), getFunctionAdapter(), 0);
+
         addPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,6 +208,66 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 }
             }
         });
+
+        switchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                syncWithCallback(true, false, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (e == null) {
+                            isSpanMode = !isSpanMode;
+                            switchScribbleMode(isSpanMode);
+                        }
+                    }
+                });
+            }
+        });
+
+        updateMenuView(isSpanMode);
+        updateWorkView(isSpanMode);
+
+        final SurfaceView surfaceView = (SurfaceView) findViewById(R.id.note_view);
+        surfaceView.post(new Runnable() {
+            @Override
+            public void run() {
+                spanTextView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, surfaceView.getMeasuredHeight() * 2 / 3));
+                spanTextView.setFocusable(true);
+            }
+        });
+    }
+
+    private boolean digestionSpanMenu(final @ScribbleMenuCategory.ScribbleMenuCategoryDef
+                                          int category) {
+        switch (category) {
+            case ScribbleMenuCategory.DELETE:
+                onDelete();
+                return true;
+            case ScribbleMenuCategory.SPACE:
+                onSpace();
+                return true;
+            case ScribbleMenuCategory.ENTER:
+                onEnter();
+                return true;
+            case ScribbleMenuCategory.KEYBOARD:
+                onKeyboard();
+                return true;
+        }
+        return false;
+    }
+
+    private void switchScribbleMode(boolean isSpanMode) {
+        updateMenuView(isSpanMode);
+        updateWorkView(isSpanMode);
+    }
+
+    private void updateMenuView(boolean isSpanMode) {
+        switchBtn.setImageResource(isSpanMode ? R.drawable.ic_vector : R.drawable.ic_note);
+        functionContentView.setupContent(1, getResources().getInteger(R.integer.onyx_scribble_main_function_cols), getFunctionAdapter(isSpanMode), 0, true);
+    }
+
+    private void updateWorkView(boolean isSpanMode) {
+        spanTextView.setVisibility(isSpanMode ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -289,6 +373,22 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 action.execute(ScribbleActivity.this);
             }
         });
+    }
+
+    private void onDelete() {
+
+    }
+
+    private void onSpace() {
+
+    }
+
+    private void onEnter() {
+
+    }
+
+    private void onKeyboard() {
+
     }
 
     private ScribbleSubMenu getScribbleSubMenu() {
@@ -433,16 +533,21 @@ public class ScribbleActivity extends BaseScribbleActivity {
         return mapping;
     }
 
-    private GAdapter getFunctionAdapter() {
-        if (adapter == null) {
-            adapter = new GAdapter();
-            adapter.addObject(createFunctionItem(R.drawable.ic_shape, ScribbleMenuCategory.PEN_STYLE));
+    private GAdapter getFunctionAdapter(boolean isSpanMode) {
+        GAdapter adapter = new GAdapter();
+        adapter.addObject(createFunctionItem(R.drawable.ic_shape, ScribbleMenuCategory.PEN_STYLE));
+        adapter.addObject(createFunctionItem(R.drawable.ic_template, ScribbleMenuCategory.BG));
+        if (!isSpanMode) {
             adapter.addObject(createFunctionItem(R.drawable.ic_eraser, ScribbleMenuCategory.ERASER));
             adapter.addObject(createFunctionItem(R.drawable.ic_width, ScribbleMenuCategory.PEN_WIDTH));
-            adapter.addObject(createFunctionItem(R.drawable.ic_template, ScribbleMenuCategory.BG));
-            if (getNoteViewHelper().supportColor(this)){
-                adapter.addObject(createFunctionItem(R.drawable.ic_color, ScribbleMenuCategory.COLOR));
-            }
+        }else {
+            adapter.addObject(createFunctionItem(R.drawable.ic_delet_big, ScribbleMenuCategory.DELETE));
+            adapter.addObject(createFunctionItem(R.drawable.ic_space, ScribbleMenuCategory.SPACE));
+            adapter.addObject(createFunctionItem(R.drawable.ic_enter, ScribbleMenuCategory.ENTER));
+            adapter.addObject(createFunctionItem(R.drawable.ic_keyboard, ScribbleMenuCategory.KEYBOARD));
+        }
+        if (getNoteViewHelper().supportColor(this)){
+            adapter.addObject(createFunctionItem(R.drawable.ic_color, ScribbleMenuCategory.COLOR));
         }
         return adapter;
     }
@@ -576,4 +681,87 @@ public class ScribbleActivity extends BaseScribbleActivity {
         return object;
     }
 
+    @Override
+    protected NoteViewHelper.InputCallback inputCallback() {
+        return new NoteViewHelper.InputCallback() {
+            @Override
+            public void onBeginRawData() {
+            }
+
+            @Override
+            public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+                onNewTouchPointListReceived(shape, pointList);
+                triggerSpan(isSpanMode);
+            }
+
+            @Override
+            public void onBeginErasing() {
+                ScribbleActivity.this.onBeginErasing();
+            }
+
+            @Override
+            public void onErasing(final MotionEvent touchPoint) {
+                ScribbleActivity.this.onErasing(touchPoint);
+            }
+
+            @Override
+            public void onEraseTouchPointListReceived(TouchPointList pointList) {
+                onFinishErasing(pointList);
+            }
+
+            public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
+                if (!shape.supportDFB()) {
+                    drawPage();
+                }
+            }
+
+            public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
+                if (last && !shape.supportDFB()) {
+                    drawPage();
+                }
+            }
+
+            public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
+                if (!shape.supportDFB()) {
+                    drawPage();
+                }
+                triggerSpan(isSpanMode);
+            }
+        };
+    }
+
+    private void triggerSpan(boolean isSpanMode) {
+        if (!isSpanMode) {
+            return;
+        }
+        long curTime = System.currentTimeMillis();
+        if (lastUpTime != -1 && (curTime - lastUpTime <= SPAN_TIME_OUT) && (spanRunnable != null)) {
+            handler.removeCallbacks(spanRunnable);
+        }
+        lastUpTime = curTime;
+        spanRunnable = buildSpanRunnable();
+        handler.postDelayed(spanRunnable, SPAN_TIME_OUT);
+    }
+
+    private Runnable buildSpanRunnable(){
+        return new Runnable() {
+            @Override
+            public void run() {
+                buildSpanImpl();
+            }
+        };
+    }
+
+    private void buildSpanImpl() {
+        List<Shape> list = getNoteViewHelper().detachStash();
+        final SpannableRequest spannableRequest = new SpannableRequest(list);
+        getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final SpannableStringBuilder builder = spannableRequest.getSpannableStringBuilder();
+                spanTextView.setText(builder);
+                spanTextView.setSelection(builder.length());
+            }
+        });
+    }
 }

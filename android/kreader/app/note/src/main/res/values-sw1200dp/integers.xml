@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="onyx_scribble_main_function_cols">5</integer>
+    <integer name="onyx_scribble_main_function_cols">6</integer>
 </resources>
