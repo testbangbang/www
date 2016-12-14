@@ -22,7 +22,7 @@ import com.onyx.android.sdk.ui.R;
  */
 
 public class CustomIconView extends android.support.v7.widget.AppCompatImageView {
-    float drawingSize;
+    float drawingSize = -1;
 
     public CustomIconView(Context context) {
         this(context, null);
@@ -47,7 +47,7 @@ public class CustomIconView extends android.support.v7.widget.AppCompatImageView
 
         a.recycle();
         Drawable d = getDrawable();
-        if (d != null && drawingSize != -1) {
+        if (d != null && drawingSize > 0) {
             setImageDrawable(zoomDrawable(d, drawingSize));
         }
         setScaleType(ScaleType.CENTER);
@@ -94,7 +94,7 @@ public class CustomIconView extends android.support.v7.widget.AppCompatImageView
         }
 
         if (d != null) {
-            if (drawingSize != -1) {
+            if (drawingSize > 0) {
                 super.setImageDrawable(zoomDrawable(d, drawingSize));
             } else {
                 super.setImageResource(resId);
@@ -104,7 +104,7 @@ public class CustomIconView extends android.support.v7.widget.AppCompatImageView
 
     @Override
     public void setImageDrawable(@Nullable Drawable drawable) {
-        super.setImageDrawable((drawingSize != -1 && drawable != null) ?
+        super.setImageDrawable((drawingSize > 0 && drawable != null) ?
                 zoomDrawable(drawable, drawingSize) : drawable);
     }
 }
