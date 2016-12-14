@@ -516,4 +516,16 @@ public class NoteManager {
     public void setNoteDirty(boolean dirty) {
         noteDirty.set(dirty);
     }
+
+    public void setEnableShortcutDrawing(boolean enableShortcutDrawing) {
+        if (noteConfig != null && noteConfig.isShortcutDrawingEnabled() && noteConfig.supportBigPen()) {
+            this.enableShortcutDrawing = enableShortcutDrawing;
+        }
+    }
+
+    public void setEnableShortcutErasing(boolean enableShortcutErasing) {
+        if (noteConfig != null && noteConfig.isShortcutDrawingEnabled() && noteConfig.supportBigPen()) {
+            this.enableShortcutErasing = enableShortcutErasing;
+        }
+    }
 }
