@@ -973,8 +973,8 @@ public class AlBookEng{
         boolean needCalcNextPage = false;
 		AlBitmap abmp = null;
 
-		int rW = (width + 0x03) & 0xfffc;
-		int rH = (height + 0x03) & 0xfffc;
+		int rW = width;
+		int rH = height;
 
         if (openState.getState() != AlBookState.OPEN) {
             if (index == TAL_PAGE_INDEX.CURR) {

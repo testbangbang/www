@@ -22,6 +22,7 @@
     android:focusable="false"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:layout_marginTop="5dp"
     android:paddingRight="?android:attr/listPreferredItemPaddingRight">
 
     <LinearLayout
@@ -30,7 +31,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="-4dp"
         android:gravity="start|center_vertical"
-        android:visibility="gone"
         android:minWidth="60dp"
         android:orientation="horizontal"
         android:paddingBottom="4dp"

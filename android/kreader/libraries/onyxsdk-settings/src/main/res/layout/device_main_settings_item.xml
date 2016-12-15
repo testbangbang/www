@@ -9,7 +9,7 @@
 
         <variable
             name="item"
-            type="con.onyx.android.libsetting.model.SettingItem" />
+            type="com.onyx.android.libsetting.model.SettingItem" />
 
     </data>
 

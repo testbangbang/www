@@ -8,6 +8,8 @@
     <string name="setting_error_report">错误收集</string>
     <string name="setting_user_setting">用户设置</string>
     <string name="setting_application">应用管理</string>
+    <string name="setting_bluetooth">蓝牙</string>
+    <string name="setting_vpn">VPN</string>
     <string name="touch_sound">触摸提示音</string>
     <string name="notification_sound">提示音</string>
 

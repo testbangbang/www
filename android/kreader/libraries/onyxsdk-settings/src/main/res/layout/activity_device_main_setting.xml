@@ -7,7 +7,7 @@
 
         <variable
             name="info"
-            type="con.onyx.android.libsetting.model.ModelInfo" />
+            type="com.onyx.android.libsetting.model.ModelInfo" />
 
     </data>
 
