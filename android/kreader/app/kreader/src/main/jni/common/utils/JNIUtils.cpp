@@ -121,3 +121,19 @@ unsigned char ColorUtils::gray(int rgba) {
 unsigned char ColorUtils::white(int red, int green, int blue) {
     return (unsigned char)((((red * 299) + (green * 587) + (blue * 114)) / 1000) & 0xff);
 }
+
+int ColorUtils::toRed(int gray) {
+    return gray << 24;
+}
+
+int ColorUtils::toGreen(int gray) {
+    return gray << 16;
+}
+
+int ColorUtils::toBlue(int gray) {
+    return gray << 8;
+}
+
+int ColorUtils::toWhite(int white) {
+    return white | white << 8 | white << 16 | white << 24;
+}

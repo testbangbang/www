@@ -93,6 +93,14 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbw
 
 /*
  * Class:     com_onyx_kreader_utils_ImageUtils
+ * Method:    fromRgbw
+ * Signature: (Landroid/graphics/Bitmap;[BI)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_fromRgbw
+  (JNIEnv *, jclass, jobject, jbyteArray, jint);
+
+/*
+ * Class:     com_onyx_kreader_utils_ImageUtils
  * Method:    blend
  * Signature: ([BI[BIIIII)V
  */

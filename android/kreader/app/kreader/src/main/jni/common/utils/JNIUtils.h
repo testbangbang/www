@@ -252,6 +252,14 @@ public:
 
     static unsigned char white(int red, int green, int blue);
 
+    static int toRed(int gray);
+
+    static int toGreen(int gray);
+
+    static int toBlue(int gray);
+
+    static int toWhite(int white);
+
 };
 
 #endif

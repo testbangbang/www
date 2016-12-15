@@ -1,6 +1,8 @@
 package com.onyx.kreader.tests;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.os.PowerManager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
@@ -53,21 +55,36 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
         int strideInBytes = argb.getWidth() * 4;
         final byte [] gray = new byte[strideInBytes * argb.getHeight()];
         ImageUtils.toGrayScale(argb, gray, strideInBytes);
-        FileUtils.saveContentToFile(gray, new File("/mnt/sdcard/Books/gray.bin"));
+        Bitmap temp = BitmapUtils.fromGrayscale(gray, argb.getWidth(), argb.getHeight(), strideInBytes);
+        BitmapUtils.saveBitmap(temp, "/mnt/sdcard/Books/gray.png");
 
         // copy rect of source bitmap to dst bitmap with cfa applied.
-        final Bitmap image = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/Books/color.png");
-        int colorStrideInBytes = image.getWidth() * 4;
-        final byte [] rgbw = new byte[colorStrideInBytes * image.getHeight() * 4];
-        ImageUtils.toRgbw(image, rgbw, strideInBytes * 2);
-        FileUtils.saveContentToFile(rgbw, new File("/mnt/sdcard/Books/rgbw.bin"));
+        Bitmap scaledColor = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/Books/color.png");
+        scaledColor = Bitmap.createScaledBitmap(scaledColor, 100, 100, true);
+        BitmapUtils.saveBitmap(scaledColor, "/mnt/sdcard/Books/scaledColor.png");
+
+        int cw = scaledColor.getWidth() * 2;
+        int ch = scaledColor.getHeight() * 2;
+        int colorStrideInBytes = cw * 4;
+        final byte [] rgbw = new byte[colorStrideInBytes * ch * 2];
+        ImageUtils.toRgbw(scaledColor, rgbw, colorStrideInBytes);
+        temp = BitmapUtils.fromGrayscale(rgbw, cw, ch, colorStrideInBytes);
+        BitmapUtils.saveBitmap(temp, "/mnt/sdcard/Books/rgbw.png");
 
         // blend
-        ImageUtils.blend(gray, strideInBytes, rgbw, 100, 100, image.getWidth(), image.getHeight(), colorStrideInBytes);
+        ImageUtils.blend(gray, strideInBytes, rgbw, 0, 0, cw, ch, colorStrideInBytes);
+        temp = BitmapUtils.fromGrayscale(gray, argb.getWidth(), argb.getHeight(), strideInBytes);
+        BitmapUtils.saveBitmap(temp, "/mnt/sdcard/Books/grayblend.png");
         FileUtils.saveContentToFile(gray, new File("/mnt/sdcard/Books/final.bin"));
+
+        // recreate image from blended data.
+        final Bitmap finalBitmap = Bitmap.createBitmap(argb.getWidth(), argb.getHeight(), Bitmap.Config.ARGB_8888);
+        ImageUtils.fromRgbw(finalBitmap, gray, strideInBytes);
+        BitmapUtils.saveBitmap(finalBitmap, "/mnt/sdcard/Books/final.png");
 
         assertTrue(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
+
     }
 
 
