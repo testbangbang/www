@@ -282,6 +282,10 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
 //        return 0;
 //    }
 
+    public static boolean isSentenceBreakSplitter(char ch) {
+        return Splitters.contains(ch);
+    }
+
     public static boolean isAlpha(char ch) {
         /**
          * The following defines which characters are included in these sets. The values are Unicode code points.
