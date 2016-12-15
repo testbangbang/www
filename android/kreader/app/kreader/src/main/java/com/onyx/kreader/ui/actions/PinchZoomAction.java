@@ -161,7 +161,7 @@ public class PinchZoomAction extends BaseAction {
 
     private static void scalingForFlowPage(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
         float newSize = initialFontSize * detector.getCurrentSpan() / initialGestureSpan;
-        lastFontSize = limitFontSize(newSize);
+        lastFontSize = ReaderTextStyle.limitFontSize(newSize);
         showFontSizeInfo(readerDataHolder, lastFontSize);
     }
 
@@ -174,17 +174,6 @@ public class PinchZoomAction extends BaseAction {
             }
         });
         hideFontSizeInfo(readerDataHolder);
-    }
-
-    static private float limitFontSize(float newSize) {
-        final int minSize = (int)ReaderTextStyle.FONT_SIZE_LIST[0].getValue();
-        final int maxSize = (int)ReaderTextStyle.FONT_SIZE_LIST[ReaderTextStyle.FONT_SIZE_LIST.length - 1].getValue();
-        if (newSize < minSize) {
-            newSize = minSize;
-        } else if (newSize > maxSize) {
-            newSize = maxSize;
-        }
-        return newSize;
     }
 
     static void showFontSizeInfo(final ReaderDataHolder readerDataHolder, final float size) {
