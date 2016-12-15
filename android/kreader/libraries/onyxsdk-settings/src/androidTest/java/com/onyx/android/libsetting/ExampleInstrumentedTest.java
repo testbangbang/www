@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("con.onyx.android.libsetting.test", appContext.getPackageName());
+        assertEquals("com.onyx.android.libsetting.test", appContext.getPackageName());
     }
 }
