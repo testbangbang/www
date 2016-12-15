@@ -875,7 +875,7 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbw
         return;
     }
 
-    JByteArray data(bufferStrideInBytes * info.height * 2);
+    JByteArray data(bufferStrideInBytes * info.height * 4);
     for(int y = 0; y < info.height; ++y) {
         int * src = pixels + y * info.stride / 4;
         unsigned short * dst1 = (unsigned short *)data.getRawBuffer() + y * bufferStrideInBytes;
@@ -906,4 +906,47 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_blend
         memcpy(dst, src, length);
     }
 
+}
+
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_fromRgbw
+  (JNIEnv *env, jclass thiz, jobject bitmap, jbyteArray array, jint strideInBytes) {
+
+    AndroidBitmapInfo info;
+    int *pixels;
+    int ret;
+
+    if ((ret = AndroidBitmap_getInfo(env, bitmap, &info)) < 0) {
+        LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+        return;
+    }
+
+    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+        LOGE("Bitmap format is not RGBA_8888 !");
+        return;
+    }
+
+    if ((ret = AndroidBitmap_lockPixels(env, bitmap, (void **)&pixels)) < 0) {
+        LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+        return;
+    }
+
+    jboolean isCopy = false;
+    unsigned char * data = (unsigned char *)env->GetByteArrayElements(array, &isCopy);
+
+    for(int y = 0; y < info.height / 2; ++y) {
+        int * dst1 = pixels + y * 2 * info.stride / 4;
+        int * dst2 = dst1 + info.stride / 4;
+        unsigned char * src1 = data + y * 2 * strideInBytes;
+        unsigned char * src2 = src1 + strideInBytes;
+        for(int x = 0; x < info.width / 2; ++x) {
+            int white = *src1++;
+            int blue = *src1;
+            int red = *src2++;
+            int green = *src2++;
+            *dst1++ = ColorUtils::toWhite(white);
+            *dst1++ = ColorUtils::toBlue(blue);
+            *dst2++ = ColorUtils::toRed(red);
+            *dst2++ = ColorUtils::toGreen(green);
+        }
+    }
 }

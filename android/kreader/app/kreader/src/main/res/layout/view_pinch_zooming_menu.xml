@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_menu"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/view_pinch_zooming_background">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/view_pinch_zooming_message_font_size"
+            android:text="Small Text"
+            android:textColor="@android:color/white"
+            android:id="@+id/textView_tittle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/view_pinch_zooming_message_scale_size"
+            android:textColor="@android:color/white"
+            android:text="Large Text"
+            android:id="@+id/textView_subTittle" />
+    </LinearLayout>
+
+
+</RelativeLayout>
