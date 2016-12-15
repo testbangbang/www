@@ -15,12 +15,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.onyx.android.libsetting.R;
+import com.onyx.android.libsetting.SettingConfig;
 import com.onyx.android.libsetting.data.SettingCategory;
 import com.onyx.android.libsetting.databinding.ActivityDeviceMainSettingBinding;
 import com.onyx.android.libsetting.databinding.DeviceMainSettingsItemBinding;
@@ -28,8 +24,13 @@ import com.onyx.android.libsetting.model.ModelInfo;
 import com.onyx.android.libsetting.model.SettingItem;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.DeviceMainSettingItemDecoration;
+import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
+    SettingConfig config;
     ActivityDeviceMainSettingBinding binding;
     ModelInfo info;
 
@@ -37,12 +38,17 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+        updateData();
+    }
+
+    private void updateData() {
+        info = new ModelInfo(Build.MODEL, Build.ID, Build.VERSION.RELEASE, R.drawable.device_logo);
+        binding.setInfo(info);
+        config = SettingConfig.sharedInstance(this);
     }
 
     private void initView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_device_main_setting);
-        info = new ModelInfo(Build.MODEL, Build.ID, Build.VERSION.RELEASE, R.drawable.device_logo);
-        binding.setInfo(info);
         RecyclerView recyclerView = binding.functionRecyclerView;
         recyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 6);
@@ -90,6 +96,15 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         });
         recyclerView.addItemDecoration(new DeviceMainSettingItemDecoration());
         recyclerView.setAdapter(adapter);
+
+        binding.icon.setClickable(false);
+        binding.icon.setFocusable(false);
+        binding.infoArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(config.getDeviceInfoIntent());
+            }
+        });
     }
 
     // TODO: 2016/11/30 temp max 3 line layout

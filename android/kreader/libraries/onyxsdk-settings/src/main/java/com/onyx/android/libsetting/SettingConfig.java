@@ -190,6 +190,8 @@ public class SettingConfig {
         return getData(SYSTEM_WAKE_UP_FRONT_LIGHT_KEY_TAG, String.class);
     }
 
+    // TODO: 2016/12/15  should replace all direct call string class name.
+
     public Intent getTTSSettingIntent() {
         Intent intent = new Intent();
         String pkgName = getData(CUSTOM_SETTING_TTS_PACKAGE_NAME_TAG, String.class);
@@ -262,6 +264,12 @@ public class SettingConfig {
     public Intent getVPNSettingIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.vpn2.VpnSettings");
+        return intent;
+    }
+
+    public Intent getDeviceInfoIntent() {
+        Intent intent = buildDefaultSettingIntent();
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.DeviceInfoSettings");
         return intent;
     }
 }
