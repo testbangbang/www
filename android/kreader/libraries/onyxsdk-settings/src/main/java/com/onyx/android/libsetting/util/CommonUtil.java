@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.os.Build;
 import android.support.v7.view.ContextThemeWrapper;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.WindowManager;
 
 import com.onyx.android.libsetting.R;
 
@@ -38,4 +40,30 @@ public class CommonUtil {
             return context.getResources().getString(R.string.never);
         }
     }
+
+    public static int getStatusBarHeight(Context context) {
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    /**
+     * get height of screen without status bar.
+     */
+    public static int getWindowHeight(Context context) {
+        int windowHeight = 0;
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(dm);
+        if (apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN)) {
+            windowHeight = dm.heightPixels - getStatusBarHeight(context);
+        } else {
+            windowHeight = dm.heightPixels;
+        }
+        return windowHeight;
+    }
+
 }

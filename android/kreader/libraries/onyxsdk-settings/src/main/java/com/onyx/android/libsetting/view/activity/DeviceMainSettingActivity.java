@@ -8,11 +8,9 @@ import android.os.Bundle;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.onyx.android.libsetting.R;
@@ -22,6 +20,7 @@ import com.onyx.android.libsetting.databinding.ActivityDeviceMainSettingBinding;
 import com.onyx.android.libsetting.databinding.DeviceMainSettingsItemBinding;
 import com.onyx.android.libsetting.model.ModelInfo;
 import com.onyx.android.libsetting.model.SettingItem;
+import com.onyx.android.libsetting.util.CommonUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.DeviceMainSettingItemDecoration;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
@@ -219,10 +218,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         }
 
         private int calculateParentHeight() {
-            DisplayMetrics dm = new DisplayMetrics();
-            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            wm.getDefaultDisplay().getMetrics(dm);
-            return (int) (dm.heightPixels * ((PercentRelativeLayout.LayoutParams)
+            return (int) (CommonUtil.getWindowHeight(context) * ((PercentRelativeLayout.LayoutParams)
                     parent.getLayoutParams()).getPercentLayoutInfo().heightPercent);
         }
 
