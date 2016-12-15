@@ -419,6 +419,10 @@ public class ReaderDataHolder {
         }
     }
 
+    public void updatePinchZoomMenu(final PinchZoomEvent event) {
+        getEventBus().post(event);
+    }
+
     public void redrawPage() {
         if (getReader() != null) {
             submitRenderRequest(new RenderRequest());

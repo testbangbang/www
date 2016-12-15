@@ -15,6 +15,7 @@ import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -48,7 +49,6 @@ import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
-import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
@@ -71,6 +71,7 @@ import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.HomeClickEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
+import com.onyx.kreader.ui.events.PinchZoomEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
@@ -90,6 +91,7 @@ import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
+import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
 import com.onyx.kreader.utils.DeviceConfig;
 import com.onyx.kreader.utils.TreeObserverUtils;
 
@@ -114,6 +116,8 @@ public class ReaderActivity extends ActionBarActivity {
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
     private final ReaderPainter readerPainter = new ReaderPainter();
+
+    private PinchZoomingPopupMenu pinchZoomingPopupMenu;
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -427,6 +431,35 @@ public class ReaderActivity extends ActionBarActivity {
         afterPause(null);
     }
 
+    @Subscribe
+    public void pinchZoomMenuChanged(final PinchZoomEvent event) {
+        if (event == null) {
+            return;
+        }
+        if (event.command == PinchZoomEvent.Command.HIDE) {
+            getPinchZoomPopupMenu().hide();
+            return;
+        }
+        if (event.type == PinchZoomEvent.Type.FONT_SIZE) {
+            String value = String.format("%d", event.value);
+            getPinchZoomPopupMenu().showAndUpdate(PinchZoomingPopupMenu.MessageToShown.FontSize, value);
+        } else {
+            String value = String.format("%d %%", event.value);
+            getPinchZoomPopupMenu().showAndUpdate(PinchZoomingPopupMenu.MessageToShown.ZoomFactor, value);
+        }
+    }
+
+    private PinchZoomingPopupMenu getPinchZoomPopupMenu() {
+        if (pinchZoomingPopupMenu == null) {
+            DisplayMetrics dm = getResources().getDisplayMetrics();
+            int menuWidth = Math.max(dm.widthPixels, dm.heightPixels) / 4;
+            int menuHeight = Math.max(Math.min(dm.widthPixels, dm.heightPixels) / 5, 300);
+            pinchZoomingPopupMenu = new PinchZoomingPopupMenu(this,
+                    (RelativeLayout)this.findViewById(R.id.main_view),menuWidth,menuHeight);
+        }
+        return pinchZoomingPopupMenu;
+    }
+
     private void afterPause(final BaseCallback baseCallback) {
         enablePost(true);
         if (!verifyReader()) {
@@ -722,14 +755,17 @@ public class ReaderActivity extends ActionBarActivity {
         if (canvas == null) {
             return;
         }
-        readerPainter.drawPage(this,
-                canvas,
-                pageBitmap,
-                getReaderDataHolder().getReaderUserDataInfo(),
-                getReaderDataHolder().getReaderViewInfo(),
-                getReaderDataHolder().getSelectionManager(),
-                getReaderDataHolder().getNoteManager());
-        holder.unlockCanvasAndPost(canvas);
+        try {
+            readerPainter.drawPage(this,
+                    canvas,
+                    pageBitmap,
+                    getReaderDataHolder().getReaderUserDataInfo(),
+                    getReaderDataHolder().getReaderViewInfo(),
+                    getReaderDataHolder().getSelectionManager(),
+                    getReaderDataHolder().getNoteManager());
+        } finally {
+            holder.unlockCanvasAndPost(canvas);
+        }
     }
 
     private void renderShapeDataInBackground() {

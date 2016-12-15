@@ -377,7 +377,8 @@ public abstract class BaseHandler {
     }
 
     public boolean isSkipPinchZooming(final ReaderDataHolder readerDataHolder) {
-        return !readerDataHolder.supportScalable();
+        return (readerDataHolder.isFixedPageDocument() && !readerDataHolder.supportScalable()) ||
+                (readerDataHolder.isFlowDocument() && !readerDataHolder.supportFontSizeAdjustment());
     }
 
     public void resetState() {

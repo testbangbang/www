@@ -76,5 +76,7 @@
     <dimen name="bold_checkbox_divider_width">2dp</dimen>
     <dimen name="dialog_contrast_margin">10dp</dimen>
     <dimen name="dialog_contrast_seek_bar_width">300dp</dimen>
+    <dimen name="view_pinch_zooming_message_font_size">25sp</dimen>
+    <dimen name="view_pinch_zooming_message_scale_size">48sp</dimen>
 
 </resources>

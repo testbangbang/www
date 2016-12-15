@@ -11,7 +11,9 @@ import android.view.SurfaceHolder;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.host.math.PageUtils;
@@ -20,6 +22,7 @@ import com.onyx.kreader.host.request.ScaleRequest;
 import com.onyx.kreader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.events.PinchZoomEvent;
 
 /**
  * Created by zhuzeng on 5/26/16.
@@ -35,6 +38,9 @@ public class PinchZoomAction extends BaseAction {
     static private boolean animateDisplay = true;
     static private boolean filterScaling = true;
 
+    static private float initialGestureSpan;
+    static private float initialFontSize;
+    static private float lastFontSize;
 
     private ScaleGestureDetector detector;
 
@@ -48,6 +54,30 @@ public class PinchZoomAction extends BaseAction {
     }
 
     static public void scaleBegin(final ReaderDataHolder readerDataHolder, final ScaleGestureDetector detector) {
+        if (readerDataHolder.supportScalable()) {
+            scaleBeginForFixedPage(readerDataHolder, detector);
+        } else if (readerDataHolder.supportFontSizeAdjustment()) {
+            scaleBeginForFlowPage(readerDataHolder, detector);
+        }
+    }
+
+    static public void scaling(final ReaderDataHolder readerDataHolder, final ScaleGestureDetector detector) {
+        if (readerDataHolder.supportScalable()) {
+            scalingForFixedPage(readerDataHolder, detector);
+        } else if (readerDataHolder.supportFontSizeAdjustment()) {
+            scalingForFlowPage(readerDataHolder, detector);
+        }
+    }
+
+    static public void scaleEnd(final ReaderDataHolder readerDataHolder, BaseCallback callback) {
+        if (readerDataHolder.supportScalable()) {
+            scaleEndForFixedPage(readerDataHolder, callback);
+        } else if (readerDataHolder.supportFontSizeAdjustment()) {
+            scaleEndForFlowPage(readerDataHolder, callback);
+        }
+    }
+
+    static private void scaleBeginForFixedPage(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
         lastFocusX = detector.getFocusX();
         lastFocusY = detector.getFocusY();
         scaleMatrix.reset();
@@ -56,7 +86,7 @@ public class PinchZoomAction extends BaseAction {
         fastRedrawScalingBitmap(readerDataHolder);
     }
 
-    static public void scaling(final ReaderDataHolder readerDataHolder, final ScaleGestureDetector detector) {
+    static private void scalingForFixedPage(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
         float focusX = detector.getFocusX();
         float focusY = detector.getFocusY();
         transformationMatrix.reset();
@@ -75,32 +105,16 @@ public class PinchZoomAction extends BaseAction {
             return;
         }
         lastScale = scale;
-        showScalingInfo(scale);
+        showScalingInfo(readerDataHolder, scale);
         if (!animateDisplay) {
             return;
         }
         fastRedrawScalingBitmap(readerDataHolder);
     }
 
-    static void showScalingInfo(final float scale) {
-        String string = String.format("%d %%", (int)(scale * 100));
-//        getTextZoomingPopupMenu().showAndUpdate(TextZoomingPopupMenu.MessageToShown.ZoomFactor, string);
-    }
+    static private void scaleEndForFixedPage(ReaderDataHolder readerDataHolder, BaseCallback callback) {
+        hideScalingInfo(readerDataHolder);
 
-    static public void fastRedrawScalingBitmap(final ReaderDataHolder readerDataHolder) {
-        ReaderActivity readerActivity = (ReaderActivity)readerDataHolder.getContext();
-        final SurfaceHolder holder = readerActivity.getHolder();
-        Canvas canvas =  holder.lockCanvas();
-        Bitmap bmp = readerDataHolder.getReader().getViewportBitmap().getBitmap();
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(0, 0, readerDataHolder.getDisplayWidth(), readerDataHolder.getDisplayHeight(), paint);
-        canvas.drawBitmap(bmp, scaleMatrix, null);
-        holder.unlockCanvasAndPost(canvas);
-    }
-
-    static public void scaleEnd(final ReaderDataHolder readerDataHolder, BaseCallback callback) {
         float values[] = new float[9];
         scaleMatrix.getValues(values);
         final RectF viewport = readerDataHolder.getReaderViewInfo().viewportInDoc;
@@ -135,6 +149,72 @@ public class PinchZoomAction extends BaseAction {
 
         final ScaleRequest scaleRequest = new ScaleRequest(pageInfo.getName(), newScale, left, top);
         readerDataHolder.submitRenderRequest(scaleRequest, callback);
+
+    }
+
+    private static void scaleBeginForFlowPage(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
+        scaleMatrix.reset();
+        initialGestureSpan = detector.getCurrentSpan();
+        initialFontSize = readerDataHolder.getReaderViewInfo().getReaderTextStyle().getFontSize().getValue();
+        lastFontSize = initialFontSize;
+    }
+
+    private static void scalingForFlowPage(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
+        float newSize = initialFontSize * detector.getCurrentSpan() / initialGestureSpan;
+        lastFontSize = limitFontSize(newSize);
+        showFontSizeInfo(readerDataHolder, lastFontSize);
+    }
+
+    private static void scaleEndForFlowPage(ReaderDataHolder readerDataHolder, BaseCallback callback) {
+        ReaderTextStyle style = readerDataHolder.getReaderViewInfo().getReaderTextStyle();
+        style.setFontSize(ReaderTextStyle.SPUnit.create(lastFontSize));
+        new ChangeStyleAction(style).execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+            }
+        });
+        hideFontSizeInfo(readerDataHolder);
+    }
+
+    static private float limitFontSize(float newSize) {
+        final int minSize = (int)ReaderTextStyle.FONT_SIZE_LIST[0].getValue();
+        final int maxSize = (int)ReaderTextStyle.FONT_SIZE_LIST[ReaderTextStyle.FONT_SIZE_LIST.length - 1].getValue();
+        if (newSize < minSize) {
+            newSize = minSize;
+        } else if (newSize > maxSize) {
+            newSize = maxSize;
+        }
+        return newSize;
+    }
+
+    static void showFontSizeInfo(final ReaderDataHolder readerDataHolder, final float size) {
+        readerDataHolder.updatePinchZoomMenu(PinchZoomEvent.create(PinchZoomEvent.Command.SHOW, PinchZoomEvent.Type.FONT_SIZE, (int)size));
+    }
+
+    static void hideFontSizeInfo(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.updatePinchZoomMenu(PinchZoomEvent.create(PinchZoomEvent.Command.HIDE, PinchZoomEvent.Type.FONT_SIZE, 0));
+    }
+
+    static void showScalingInfo(final ReaderDataHolder readerDataHolder, final float scale) {
+        int s = (int)(scale * 100);
+        readerDataHolder.updatePinchZoomMenu(PinchZoomEvent.create(PinchZoomEvent.Command.SHOW, PinchZoomEvent.Type.SCALE, s));
+    }
+
+    static void hideScalingInfo(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.updatePinchZoomMenu(PinchZoomEvent.create(PinchZoomEvent.Command.HIDE, PinchZoomEvent.Type.SCALE, 0));
+    }
+
+    static public void fastRedrawScalingBitmap(final ReaderDataHolder readerDataHolder) {
+        ReaderActivity readerActivity = (ReaderActivity)readerDataHolder.getContext();
+        final SurfaceHolder holder = readerActivity.getHolder();
+        Canvas canvas =  holder.lockCanvas();
+        Bitmap bmp = readerDataHolder.getReader().getViewportBitmap().getBitmap();
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.WHITE);
+        canvas.drawRect(0, 0, readerDataHolder.getDisplayWidth(), readerDataHolder.getDisplayHeight(), paint);
+        canvas.drawBitmap(bmp, scaleMatrix, null);
+        holder.unlockCanvasAndPost(canvas);
     }
 
     static private float filterScale(float currentScale, float targetScale, Matrix matrix) {
