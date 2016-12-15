@@ -104,7 +104,7 @@ public class ReaderLayoutManager {
     }
 
     public void updateViewportSize() throws ReaderException {
-        getCurrentLayoutProvider().updateViewportRect(new RectF(0, 0, getReaderViewOptions().getViewWidth() - 1, getReaderViewOptions().getViewHeight() - 1));
+        getCurrentLayoutProvider().updateViewportRect(new RectF(0, 0, getReaderViewOptions().getViewWidth(), getReaderViewOptions().getViewHeight()));
     }
 
     public LayoutProvider getCurrentLayoutProvider() {
