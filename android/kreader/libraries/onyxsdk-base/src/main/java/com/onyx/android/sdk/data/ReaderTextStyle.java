@@ -226,6 +226,17 @@ public class ReaderTextStyle {
     private Percentage lineSpacing = DEFAULT_LINE_SPACING;
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
 
+    public static float limitFontSize(float newSize) {
+        final float minSize = FONT_SIZE_LIST[0].getValue();
+        final float maxSize = FONT_SIZE_LIST[ReaderTextStyle.FONT_SIZE_LIST.length - 1].getValue();
+        if (newSize < minSize) {
+            newSize = minSize;
+        } else if (newSize > maxSize) {
+            newSize = maxSize;
+        }
+        return newSize;
+    }
+
     private ReaderTextStyle() {
     }
 
