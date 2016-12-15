@@ -1,4 +1,4 @@
-package con.onyx.android.libsetting;
+package com.onyx.android.libsetting;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
