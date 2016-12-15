@@ -45,21 +45,26 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
         assertTrue(size[1] > 0);
 
         // render origin image
-        Bitmap bitmap = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
-        assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
+        Bitmap argb = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
+        assertTrue(wrapper.drawPage(page, 0, 0, argb.getWidth(), argb.getHeight(), 0, argb));
+        BitmapUtils.saveBitmap(argb, "/mnt/sdcard/Books/argb.png");
 
-        // to grayscale
-        BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/Books/argb.png");
+        // save gray bin file.
+        int strideInBytes = argb.getWidth() * 4;
+        final byte [] gray = new byte[strideInBytes * argb.getHeight()];
+        ImageUtils.toGrayScale(argb, gray, strideInBytes);
+        FileUtils.saveContentToFile(gray, new File("/mnt/sdcard/Books/gray.bin"));
 
-        int strideInBytes = bitmap.getWidth() * 4;
-        final byte [] data = new byte[strideInBytes * bitmap.getHeight()];
-        ImageUtils.toGrayScale(bitmap, data, strideInBytes);
-
-        // render origin image rect here.
         // copy rect of source bitmap to dst bitmap with cfa applied.
-        final byte [] rgbw = new byte[strideInBytes * bitmap.getHeight() * 4];
-        ImageUtils.toRgbw(bitmap, 0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1, rgbw, strideInBytes * 2);
+        final Bitmap image = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/Books/color.png");
+        int colorStrideInBytes = image.getWidth() * 4;
+        final byte [] rgbw = new byte[colorStrideInBytes * image.getHeight() * 4];
+        ImageUtils.toRgbw(image, rgbw, strideInBytes * 2);
         FileUtils.saveContentToFile(rgbw, new File("/mnt/sdcard/Books/rgbw.bin"));
+
+        // blend
+        ImageUtils.blend(gray, strideInBytes, rgbw, 100, 100, image.getWidth(), image.getHeight(), colorStrideInBytes);
+        FileUtils.saveContentToFile(gray, new File("/mnt/sdcard/Books/final.bin"));
 
         assertTrue(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());

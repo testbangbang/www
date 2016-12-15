@@ -86,10 +86,18 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toGrayScale
 /*
  * Class:     com_onyx_kreader_utils_ImageUtils
  * Method:    toRgbw
- * Signature: (Landroid/graphics/Bitmap;IIII[BI)V
+ * Signature: (Landroid/graphics/Bitmap;[BI)V
  */
 JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbw
-  (JNIEnv *, jclass, jobject, jint, jint, jint, jint, jbyteArray, jint);
+  (JNIEnv *, jclass, jobject, jbyteArray, jint);
+
+/*
+ * Class:     com_onyx_kreader_utils_ImageUtils
+ * Method:    blend
+ * Signature: ([BI[BIIIII)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_blend
+  (JNIEnv *, jclass, jbyteArray, jint, jbyteArray, jint, jint, jint, jint, jint);
 
 #ifdef __cplusplus
 }

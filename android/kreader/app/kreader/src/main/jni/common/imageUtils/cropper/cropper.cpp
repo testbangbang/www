@@ -855,7 +855,7 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toGrayScale
 }
 
 JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbw
-  (JNIEnv *env, jclass thiz, jobject bitmap, jint left, jint top, jint right, jint bottom, jbyteArray array, jint bufferStrideInBytes) {
+  (JNIEnv *env, jclass thiz, jobject bitmap, jbyteArray array, jint bufferStrideInBytes) {
     AndroidBitmapInfo info;
     int *pixels;
     int ret;
@@ -891,5 +891,19 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbw
         }
     }
     env->SetByteArrayRegion(array, 0, bufferStrideInBytes * info.height * 2, data.getRawBuffer());
+}
+
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_blend
+  (JNIEnv *env, jclass thiz, jbyteArray parentArray, jint parentStrideInBytes, jbyteArray childArray, jint left, jint top, jint right, jint bottom, jint childStrideInBytes) {
+
+    jboolean isCopy = false;
+    unsigned char * parent = (unsigned char *)env->GetByteArrayElements(parentArray, &isCopy);
+    unsigned char * child = (unsigned char *)env->GetByteArrayElements(childArray, &isCopy);
+    int length = right - left + 1;
+    for(int y = top; y <= bottom; ++y) {
+        unsigned char * src = child + childStrideInBytes * y;
+        unsigned char * dst = parent + parentStrideInBytes * y + left;
+        memcpy(dst, src, length);
+    }
 
 }

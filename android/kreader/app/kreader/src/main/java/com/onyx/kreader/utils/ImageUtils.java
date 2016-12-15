@@ -28,7 +28,8 @@ public class ImageUtils {
     static public native void releaseReflowedPages();
 
     static public native void toGrayScale(final Bitmap bitmap, byte[] data, int strideInBytes);
-    static public native void toRgbw(final Bitmap src, int left, int top, int right, int bottom, byte [] data, int strideInBytes);
+    static public native void toRgbw(final Bitmap src, byte [] data, int strideInBytes);
+    static public native void blend(final byte [] parent, int parentStrideInBytes, final byte [] child, int left, int top, int right, int bottom, int childStrideInBytes);
 
     /**
      * Return content region with specified bitmap. usually takes about 60ms to finish 1440x1080 bitmap.
