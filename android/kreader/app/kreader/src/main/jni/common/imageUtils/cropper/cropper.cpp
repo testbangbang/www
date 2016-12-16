@@ -54,6 +54,63 @@ extern "C" {
 #define LOGT(...) __android_log_print(ANDROID_LOG_INFO,"alert",__VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
+
+
+class JNIBitmap {
+private:
+    JNIEnv * myEnv;
+    AndroidBitmapInfo info;
+    int *pixels;
+
+
+public:
+    JNIBitmap(JNIEnv * env);
+    ~JNIBitmap();
+
+public:
+    bool attach(jobject bitmap);
+    const AndroidBitmapInfo & getInfo() const;
+    int * getPixels();
+
+};
+
+
+JNIBitmap::JNIBitmap(JNIEnv * env) : myEnv(env), pixels(0) {
+
+}
+
+JNIBitmap::~JNIBitmap() {
+}
+
+const AndroidBitmapInfo & JNIBitmap::getInfo() const {
+    return info;
+}
+
+int * JNIBitmap::getPixels() {
+    return pixels;
+}
+
+bool JNIBitmap::attach(jobject bitmap) {
+    int ret;
+    if ((ret = AndroidBitmap_getInfo(myEnv, bitmap, &info)) < 0) {
+        LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+        return false;
+    }
+
+    if (info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+        LOGE("Bitmap format is not RGBA_8888 !");
+        return false;
+    }
+
+    if ((ret = AndroidBitmap_lockPixels(myEnv, bitmap, (void **)&pixels)) < 0) {
+        LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+        return false;
+    }
+
+    return true;
+}
+
+
 namespace {
 
 double WHITE_THRESHOLD  = 0.05;
@@ -856,6 +913,7 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toGrayScale
 
 JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbw
   (JNIEnv *env, jclass thiz, jobject bitmap, jbyteArray array, jint bufferStrideInBytes) {
+
     AndroidBitmapInfo info;
     int *pixels;
     int ret;
@@ -947,6 +1005,42 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_fromRgbw
             *dst1++ = ColorUtils::toBlue(blue);
             *dst2++ = ColorUtils::toRed(red);
             *dst2++ = ColorUtils::toGreen(green);
+        }
+    }
+}
+
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbwBitmap
+  (JNIEnv *env, jclass thiz, jobject dstBitmap, jobject srcBitmap, jint orientation) {
+    JNIBitmap dst(env);
+    JNIBitmap src(env);
+    if (!dst.attach(dstBitmap) || !src.attach(srcBitmap)) {
+        return;
+    }
+
+    int sw = src.getInfo().width;
+    int sh = src.getInfo().height;
+    int ss = src.getInfo().stride;
+    int * srcData = src.getPixels();
+
+    int * dstData = dst.getPixels();
+    int ds = dst.getInfo().stride;
+
+    for(int y = 0; y < sh; ++y) {
+        int * srcLine = srcData + ss * y / 4;
+        int * dstLine1 = dstData + ds * y * 2 / 4;
+        int * dstLine2 = dstLine1 + ds / 4;
+        for(int x = 0; x < sw; ++x) {
+            int argb = *srcLine++;
+            unsigned char r = ColorUtils::red(argb);
+            unsigned char g = ColorUtils::green(argb);
+            unsigned char b = ColorUtils::blue(argb);
+            unsigned char w = ColorUtils::white(r, g, b);
+
+            *dstLine1++ = ColorUtils::argb(0xff, b, b, b);
+            *dstLine1++ = ColorUtils::argb(0xff, g, g, g);
+
+            *dstLine2++ = ColorUtils::argb(0xff, w, w, w);
+            *dstLine2++ = ColorUtils::argb(0xff, r, r, r);
         }
     }
 }

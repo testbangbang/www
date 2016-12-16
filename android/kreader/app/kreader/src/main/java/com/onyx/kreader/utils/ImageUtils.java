@@ -31,7 +31,7 @@ public class ImageUtils {
     static public native void toRgbw(final Bitmap src, byte [] data, int strideInBytes);
     static public native void fromRgbw(final Bitmap src, byte [] data, int strideInBytes);
     static public native void blend(final byte [] parent, int parentStrideInBytes, final byte [] child, int left, int top, int right, int bottom, int childStrideInBytes);
-
+    static public native void toRgbwBitmap(final Bitmap dst, final Bitmap src, int orientation);
 
     /**
      * Return content region with specified bitmap. usually takes about 60ms to finish 1440x1080 bitmap.
