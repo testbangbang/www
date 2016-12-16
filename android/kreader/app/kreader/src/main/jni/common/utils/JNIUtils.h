@@ -249,6 +249,8 @@ public:
 
     static unsigned char blue(int rgba);
 
+    static unsigned char alpha(int rgba);
+
     static unsigned char gray(int rgba);
 
     static unsigned char white(int red, int green, int blue);

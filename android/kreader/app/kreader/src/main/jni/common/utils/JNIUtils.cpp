@@ -114,6 +114,10 @@ unsigned char ColorUtils::red(int argb) {
     return (unsigned char)((argb & 0x00FF0000) >> 16);
 }
 
+unsigned char ColorUtils::alpha(int argb) {
+    return (unsigned char)((argb & 0xFF000000) >> 24);
+}
+
 unsigned char ColorUtils::gray(int rgba) {
     return (unsigned char) (0.299 * red(rgba) + 0.587 * green(rgba) + 0.114 * blue(rgba));
 }
