@@ -382,14 +382,37 @@ public class AlReaderWrapper {
         if (properties.content == null) {
             return false;
         }
-        for (AlOneContent content : properties.content) {
+        buildTableOfContentTree(toc.getRootEntry(), 0, properties.content, 0);
+        return true;
+    }
+
+    private int buildTableOfContentTree(ReaderDocumentTableOfContentEntry root,
+                                         int currentLevel,
+                                         ArrayList<AlOneContent> contentList,
+                                         int contentIndex) {
+        AlOneContent content;
+        ReaderDocumentTableOfContentEntry entry = null;
+        int i = contentIndex;
+        for (; i < contentList.size(); ) {
+            content = contentList.get(i);
             if (content.isBookmark) {
+                i++;
                 continue;
             }
-             ReaderDocumentTableOfContentEntry.addEntry(toc.getRootEntry(), content.name,
-                     content.pageNum, PagePositionUtils.fromPosition(content.positionS));
+            if (content.iType == currentLevel) {
+                entry = ReaderDocumentTableOfContentEntry.addEntry(root, content.name,
+                        content.pageNum, PagePositionUtils.fromPosition(content.positionS));
+                i++;
+            } else if (content.iType > currentLevel) {
+                if (entry == null) {
+                    entry = root;
+                }
+                i += buildTableOfContentTree(entry, content.iType, contentList, i);
+            } else {
+                return i - contentIndex;
+            }
         }
-        return true;
+        return i - contentIndex;
     }
 
     public boolean search(final String text, final List<ReaderSelection> list) {
