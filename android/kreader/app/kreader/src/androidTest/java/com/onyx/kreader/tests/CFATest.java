@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.kreader.utils.ImageUtils;
 
 /**
  * Created by zhuzeng on 12/12/2016.
