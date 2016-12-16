@@ -14,20 +14,19 @@ import com.onyx.kreader.utils.PagePositionUtils;
  */
 public class GetSentenceRequest extends BaseReaderRequest {
 
-    private int page;
+    private String pagePosition;
     private String sentenceStartPosition;
     private ReaderSentence sentenceResult;
 
-    public GetSentenceRequest(int page, final String sentenceStartPosition) {
-        this.page = page;
+    public GetSentenceRequest(String pagePosition, final String sentenceStartPosition) {
+        this.pagePosition = pagePosition;
         this.sentenceStartPosition = sentenceStartPosition;
     }
 
     public void execute(final Reader reader) throws Exception {
         createReaderViewInfo();
-        String pageName = PagePositionUtils.fromPageNumber(page);
-        PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pageName);
-        sentenceResult = reader.getDocument().getSentence(pageName, sentenceStartPosition);
+        PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pagePosition);
+        sentenceResult = reader.getDocument().getSentence(pagePosition, sentenceStartPosition);
         LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderLayoutManager());
         if (sentenceResult != null && sentenceResult.getReaderSelection().getRectangles().size() > 0) {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, sentenceResult.getReaderSelection()));
