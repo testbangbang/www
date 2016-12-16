@@ -903,11 +903,11 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbwBitmap
             unsigned char b = ColorUtils::blue(argb);
             unsigned char w = ColorUtils::white(r, g, b);
 
-            *dstLine1++ = ColorUtils::argb(0xff, b, b, b);
+            *dstLine1++ = ColorUtils::argb(0xff, r, r, r);
             *dstLine1++ = ColorUtils::argb(0xff, g, g, g);
 
             *dstLine2++ = ColorUtils::argb(0xff, w, w, w);
-            *dstLine2++ = ColorUtils::argb(0xff, r, r, r);
+            *dstLine2++ = ColorUtils::argb(0xff, b, b, b);
         }
     }
 }
