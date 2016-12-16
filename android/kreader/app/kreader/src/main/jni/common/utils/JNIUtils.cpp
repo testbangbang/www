@@ -103,15 +103,15 @@ void JNIUtils::invokeStaticMethod(JNIEnv *env, ...) {
 }
 
 unsigned char ColorUtils::red(int rgba) {
-    return (unsigned char)((rgba >> 24) & 0xff);
+    return (unsigned char)(rgba & 0xff);
 }
 
 unsigned char ColorUtils::green(int rgba) {
-    return (unsigned char)((rgba >> 16) & 0xff);
+    return (unsigned char)((rgba >> 8) & 0xff);
 }
 
 unsigned char ColorUtils::blue(int rgba) {
-    return (unsigned char)((rgba >> 8) & 0xff);
+    return (unsigned char)((rgba >> 16) & 0xff);
 }
 
 unsigned char ColorUtils::gray(int rgba) {
@@ -120,6 +120,10 @@ unsigned char ColorUtils::gray(int rgba) {
 
 unsigned char ColorUtils::white(int red, int green, int blue) {
     return (unsigned char)((((red * 299) + (green * 587) + (blue * 114)) / 1000) & 0xff);
+}
+
+int ColorUtils::argb(int a, int r, int g, int b) {
+    return a << 24 | b << 16 | g << 8 | r;
 }
 
 int ColorUtils::toRed(int gray) {
@@ -137,3 +141,4 @@ int ColorUtils::toBlue(int gray) {
 int ColorUtils::toWhite(int white) {
     return white | white << 8 | white << 16 | white << 24;
 }
+

@@ -77,35 +77,11 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_releaseReflowedPag
 
 /*
  * Class:     com_onyx_kreader_utils_ImageUtils
- * Method:    toGrayScale
- * Signature: (Landroid/graphics/Bitmap;[BI)V
+ * Method:    toRgbwBitmap
+ * Signature: (Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;I)V
  */
-JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toGrayScale
-  (JNIEnv *, jclass, jobject, jbyteArray, jint);
-
-/*
- * Class:     com_onyx_kreader_utils_ImageUtils
- * Method:    toRgbw
- * Signature: (Landroid/graphics/Bitmap;[BI)V
- */
-JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbw
-  (JNIEnv *, jclass, jobject, jbyteArray, jint);
-
-/*
- * Class:     com_onyx_kreader_utils_ImageUtils
- * Method:    fromRgbw
- * Signature: (Landroid/graphics/Bitmap;[BI)V
- */
-JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_fromRgbw
-  (JNIEnv *, jclass, jobject, jbyteArray, jint);
-
-/*
- * Class:     com_onyx_kreader_utils_ImageUtils
- * Method:    blend
- * Signature: ([BI[BIIIII)V
- */
-JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_blend
-  (JNIEnv *, jclass, jbyteArray, jint, jbyteArray, jint, jint, jint, jint, jint);
+JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbwBitmap
+  (JNIEnv *, jclass, jobject, jobject, jint);
 
 #ifdef __cplusplus
 }

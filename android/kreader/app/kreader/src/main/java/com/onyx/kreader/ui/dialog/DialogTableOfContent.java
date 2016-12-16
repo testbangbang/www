@@ -736,8 +736,14 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         PageRecyclerView pageView = viewList.get(getTabIndex(currentTab));
         int currentPage = Math.max(pageView.getPaginator().getCurrentPage() + 1, 1);
         int pages = Math.max(pageView.getPaginator().pages(), 1);
-        String show = String.format("%d/%d", currentPage, pages);
-        pageIndicator.setText(show);
+        final String show = String.format("%d/%d", currentPage, pages);
+        // post to force relayout of page indicator, a work around for 4.0 and 4.2 devices
+        pageView.post(new Runnable() {
+            @Override
+            public void run() {
+                pageIndicator.setText(show);
+            }
+        });
 
         if (currentTab == DirectoryTab.Scribble && scribblePageView != null) {
             requestScribblePreview(scribblePageView);

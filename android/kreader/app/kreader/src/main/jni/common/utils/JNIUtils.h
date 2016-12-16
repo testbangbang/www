@@ -213,6 +213,7 @@ public:
     
 };
 
+
 class StringUtils {
     
 public:
@@ -251,6 +252,8 @@ public:
     static unsigned char gray(int rgba);
 
     static unsigned char white(int red, int green, int blue);
+
+    static int argb(int a, int r, int g, int b);
 
     static int toRed(int gray);
 
