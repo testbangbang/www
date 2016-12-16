@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDRMCallback;
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
@@ -159,7 +160,10 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     @Override
     public ReaderSentence getSentence(String position, String sentenceStartPosition) {
-        return null;
+        int startPos = StringUtils.isBlank(sentenceStartPosition) ?
+                getPluginImpl().getScreenStartPosition() :
+                Integer.parseInt(sentenceStartPosition);
+        return getPluginImpl().getSentence(startPos);
     }
 
     public void abortCurrentJob() {

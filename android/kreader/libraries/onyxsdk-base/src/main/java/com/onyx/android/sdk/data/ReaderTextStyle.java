@@ -48,6 +48,10 @@ public class ReaderTextStyle {
             this.indent = indent;
         }
 
+        public static CharacterIndent create(int indent) {
+            return new CharacterIndent(indent);
+        }
+
         public int getIndent() {
             return indent;
         }
@@ -226,6 +230,17 @@ public class ReaderTextStyle {
     private Percentage lineSpacing = DEFAULT_LINE_SPACING;
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
 
+    public static float limitFontSize(float newSize) {
+        final float minSize = FONT_SIZE_LIST[0].getValue();
+        final float maxSize = FONT_SIZE_LIST[ReaderTextStyle.FONT_SIZE_LIST.length - 1].getValue();
+        if (newSize < minSize) {
+            newSize = minSize;
+        } else if (newSize > maxSize) {
+            newSize = maxSize;
+        }
+        return newSize;
+    }
+
     private ReaderTextStyle() {
     }
 
@@ -253,11 +268,11 @@ public class ReaderTextStyle {
         }
         ReaderTextStyle copy = new ReaderTextStyle();
         copy.fontFace = style.fontFace;
-        copy.fontSize = style.fontSize;
+        copy.fontSize = SPUnit.create(style.fontSize.getValue());
         copy.alignment = style.alignment;
-        copy.indent = style.indent;
-        copy.lineSpacing = style.lineSpacing;
-        copy.pageMargin = style.pageMargin;
+        copy.indent = CharacterIndent.create(style.indent.getIndent());
+        copy.lineSpacing = Percentage.create(style.lineSpacing.getPercent());
+        copy.pageMargin = PageMargin.copy(style.pageMargin);
         return copy;
     }
 
