@@ -2,10 +2,12 @@ package com.onyx.android.libsetting.util;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.Point;
 import android.os.Build;
 import android.support.v7.view.ContextThemeWrapper;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.WindowManager;
 
 import com.onyx.android.libsetting.R;
@@ -54,12 +56,15 @@ public class CommonUtil {
      * get height of screen without status bar.
      */
     public static int getWindowHeight(Context context) {
-        int windowHeight = 0;
+        int windowHeight;
         DisplayMetrics dm = new DisplayMetrics();
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getMetrics(dm);
-        if (apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN)) {
-            windowHeight = dm.heightPixels - getStatusBarHeight(context);
+        Display d = wm.getDefaultDisplay();
+        d.getMetrics(dm);
+        Point point = new Point();
+        if (apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
+            d.getRealSize(point);
+            windowHeight = point.y - getStatusBarHeight(context);
         } else {
             windowHeight = dm.heightPixels;
         }
