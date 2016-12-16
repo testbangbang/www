@@ -90,6 +90,7 @@ public class DialogTextStyle extends DialogBase {
 
     private void init() {
         defaultFont.setName(getContext().getString(R.string.default_font));
+        defaultFont.setId("serif"); // magic code from alreader engine
 
         fontFaceLine = findViewById(R.id.font_face_bottom_view);
         fontSpacingLine = findViewById(R.id.page_spacing_bottom_view);
