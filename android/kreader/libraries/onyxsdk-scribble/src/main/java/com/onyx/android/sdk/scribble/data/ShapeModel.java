@@ -248,4 +248,5 @@ public class ShapeModel extends BaseModel {
     public void setLayoutType(int layoutType) {
         this.layoutType = layoutType;
     }
+
 }

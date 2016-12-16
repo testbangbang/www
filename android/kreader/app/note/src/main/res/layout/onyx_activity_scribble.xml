@@ -114,16 +114,15 @@
             android:layout_height="wrap_content"
             android:textSize="50sp"
             android:inputType="textMultiLine"
-            android:focusable="false"
+            android:focusable="true"
             android:clickable="false"
-            android:maxLines="5"
+            android:maxLines="10"
             android:minLines="5"
-            android:lines="5"
             android:gravity="top"
             android:lineSpacingMultiplier="1.5"
             android:scrollHorizontally="false"
             android:singleLine="false"
-            android:scrollbars="vertical"
+            android:scrollbars="none"
             android:textColor="@android:color/black"/>
     </RelativeLayout>
 

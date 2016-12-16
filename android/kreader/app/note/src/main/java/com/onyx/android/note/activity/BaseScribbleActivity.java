@@ -63,6 +63,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     boolean isSurfaceViewFirstCreated = false;
     protected int currentVisualPageIndex;
     protected int totalPageCount;
+    protected boolean isSpanMode = false;
 
     private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY}
     private ActivityState activityState;
@@ -302,6 +303,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
             @Override
             public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
                 onNewTouchPointListReceived(shape, pointList);
+                triggerSpan(isSpanMode);
             }
 
             @Override
@@ -338,9 +340,14 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                 if (!shape.supportDFB()) {
                     drawPage();
                 }
+                triggerSpan(isSpanMode);
             }
 
         };
+    }
+
+    protected void triggerSpan(boolean isSpanMode) {
+
     }
 
     protected void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {

@@ -68,6 +68,8 @@ public interface Shape {
 
     void updateBoundingRect();
 
+    void resetBoundingRect();
+
     void moveTo(final float x, final float y);
 
     void resize(final float width, final float height);
@@ -81,6 +83,8 @@ public interface Shape {
     void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint);
 
     void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint);
+
+    void onTranslate(final float dx, final float dy);
 
     void addPoints(final TouchPointList points);
 
@@ -96,4 +100,15 @@ public interface Shape {
 
     void clear();
 
+    void setGroupId(String groupId);
+
+    String getGroupId();
+
+    void setLayoutType(int layoutType);
+
+    int getLayoutType();
+
+    String getExtraAttributes();
+
+    void setExtraAttributes(final String attributes);
 }

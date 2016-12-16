@@ -6,6 +6,11 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.text.style.ReplacementSpan;
+import android.util.Log;
+
+import com.alibaba.fastjson.JSON;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -18,9 +23,15 @@ public class ShapeSpan extends ReplacementSpan {
     private int margin = 5;
     private float scale = 1.0f;
     private int width = 1;
+    private boolean needUpdateShape = false;
 
     public ShapeSpan(final List<Shape> s) {
         shapeList = s;
+    }
+
+    public ShapeSpan(List<Shape> shapeList, boolean needUpdateShape) {
+        this.shapeList = shapeList;
+        this.needUpdateShape = needUpdateShape;
     }
 
     public final List<Shape> getShapeList() {
@@ -45,8 +56,12 @@ public class ShapeSpan extends ReplacementSpan {
         final Matrix matrix = new Matrix();
         final RectF rect = boundingRect();
 
-        matrix.postScale(scale, scale);
-        matrix.postTranslate(x + margin - rect.left * scale, top - rect.top * scale + (bottom - top - rect.height() * scale));
+        float translateX = x + margin - rect.left  * scale;
+        float translateY = top - rect.top * scale + (bottom - top - rect.height() * scale);
+        if (needUpdateShape) {
+            matrix.postScale(scale, scale);
+            matrix.postTranslate(translateX, translateY);
+        }
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
@@ -54,7 +69,12 @@ public class ShapeSpan extends ReplacementSpan {
         RenderContext renderContext = RenderContext.create(canvas, paint, matrix);
         for (Shape shape : shapeList) {
             shape.render(renderContext);
+            if (needUpdateShape) {
+                shape.getPoints().scaleAllPoints(scale);
+                shape.onTranslate(translateX, translateY);
+            }
         }
+        needUpdateShape = false;
     }
 
     private RectF boundingRect() {
@@ -66,7 +86,9 @@ public class ShapeSpan extends ReplacementSpan {
             rect.set(shapeList.get(0).getBoundingRect());
         }
         return rect;
-
     }
 
+    public float getScale() {
+        return scale;
+    }
 }

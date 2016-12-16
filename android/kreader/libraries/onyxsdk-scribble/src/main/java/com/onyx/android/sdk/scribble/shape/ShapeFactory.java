@@ -2,6 +2,13 @@ package com.onyx.android.sdk.scribble.shape;
 
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentSkipListMap;
+
 /**
  * Created by zhuzeng on 4/20/16.
  */
@@ -22,6 +29,8 @@ public class ShapeFactory {
     static public final int SHAPE_TRIANGLE = 8;
     static public final int SHAPE_ANNOTATION = 9;
 
+    static public final int NORMAL_LAYOUT_TYPE = 0;
+    static public final int SPAN_TEXT_LAYOUT_TYPE = 1;
 
     public static final Shape createShape(int type) {
         Shape shape;
@@ -83,6 +92,9 @@ public class ShapeFactory {
         shapeModel.setPoints(shape.getPoints());
         shapeModel.setThickness(shape.getStrokeWidth());
         shapeModel.setShapeType(shape.getType());
+        shapeModel.setGroupId(shape.getGroupId());
+        shapeModel.setLayoutType(shape.getLayoutType());
+        shapeModel.setExtraAttributes(shape.getExtraAttributes());
         return shapeModel;
     }
 
@@ -94,5 +106,26 @@ public class ShapeFactory {
         shape.setShapeUniqueId(model.getShapeUniqueId());
         shape.addPoints(model.getPoints());
         shape.setPageOriginWidth(model.getPageOriginWidth());
+        shape.setGroupId(model.getGroupId());
+        shape.setLayoutType(model.getLayoutType());
+        shape.setExtraAttributes(model.getExtraAttributes());
+    }
+
+    public static Map<String, List<Shape>> getSubPageSpanShapeList(List<Shape> subPageShapes) {
+        Map<String, List<Shape>> subPageSpanShapeMap = new LinkedHashMap<>();
+        for (Shape subPageShape : subPageShapes) {
+            if (subPageShape.getLayoutType() != SPAN_TEXT_LAYOUT_TYPE) {
+                continue;
+            }
+            String groupId = subPageShape.getGroupId();
+            if (subPageSpanShapeMap.containsKey(groupId)) {
+                subPageSpanShapeMap.get(groupId).add(subPageShape);
+            }else {
+                List<Shape> spanShapes = new ArrayList<>();
+                spanShapes.add(subPageShape);
+                subPageSpanShapeMap.put(groupId,spanShapes);
+            }
+        }
+        return subPageSpanShapeMap;
     }
 }
