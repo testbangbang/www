@@ -9,6 +9,8 @@ import android.text.TextUtils;
 
 import com.onyx.android.libsetting.data.DeviceType;
 import com.onyx.android.libsetting.data.PowerSettingTimeoutCategory;
+import com.onyx.android.libsetting.data.SettingCategory;
+import com.onyx.android.libsetting.model.SettingItem;
 import com.onyx.android.libsetting.util.CommonUtil;
 import com.onyx.android.libsetting.util.Constant;
 import com.onyx.android.sdk.data.GObject;
@@ -16,7 +18,18 @@ import com.onyx.android.sdk.utils.RawResourceUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_APPLICATION_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_DATE_TIME_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_ERROR_REPORT_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_LANG_INPUT_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_NETWORK_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_POWER_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_SECURITY_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_USER_SETTING_TAG;
 
 /**
  * Created by solskjaer49 on 2016/12/6 12:09.
@@ -33,6 +46,11 @@ public class SettingConfig {
     static private final String CUSTOM_SETTING_BLUETOOTH_CLASS_NAME_TAG = "setting_bluetooth_class_name";
     static private final String DEFAULT_SETTING_TTS_CLASS_NAME = "com.android.settings.TextToSpeechSettings";
     static private final String DEFAULT_SETTING_BLUETOOTH_CLASS_NAME = "com.android.settings.bluetooth.BluetoothSettings";
+
+    static private final String SETTING_ITEM_LIST_TAG = "setting_item_list";
+    static private final String CUSTOMIZED_SETTING_ICON_MAPS_TAG = "customized_setting_icon_maps";
+    static private final String CUSTOMIZED_SETTING_TITTLE_MAPS_TAG = "customized_setting_tittle_maps";
+
     static private final String SYSTEM_SCREEN_OFF_VALUES_TAG = "screen_screen_off_values";
     static private final String SYSTEM_AUTO_POWER_OFF_VALUES_TAG = "power_off_timeout_values";
     static private final String SYSTEM_WIFI_INACTIVITY_VALUES_TAG = "network_inactivity_timeout_values";
@@ -42,12 +60,18 @@ public class SettingConfig {
     static private final String SYSTEM_AUTO_POWER_OFF_KEY_TAG = "system_power_off_key";
     static private final String SYSTEM_WIFI_INACTIVITY_KEY_TAG = "system_wifi_inactivity_key";
 
+
     private static SettingConfig globalInstance;
     static private final boolean useDebugConfig = false;
     private ArrayList<GObject> backendList = new ArrayList<>();
     static private
     @DeviceType.DeviceTypeDef
     int currentDeviceType;
+
+    static private List<String> settingItemTAGList;
+    static private List<SettingItem> settingItemList;
+    static private Map<String, String> settingIconsMap;
+    static private Map<String, String> settingTittleMap;
 
 
     /**
@@ -271,5 +295,93 @@ public class SettingConfig {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.DeviceInfoSettings");
         return intent;
+    }
+
+    private List<String> getSettingItemTAGList() {
+        if (settingItemTAGList == null) {
+            settingItemTAGList = new ArrayList<>();
+            List<String> rawResourceList = getData(SETTING_ITEM_LIST_TAG, List.class);
+            if (rawResourceList == null) {
+                buildDefaultSettingTAGList();
+            } else {
+                settingItemTAGList.addAll(rawResourceList);
+            }
+        }
+        return settingItemTAGList;
+    }
+
+    /**
+     * Customized Icon For Setting Item.
+     *
+     * @return Customized Setting And Icon Maps.
+     */
+    private Map<String, String> getSettingIconMaps() {
+        if (settingIconsMap == null) {
+            buildDefaultSettingsIconsMap();
+            Map<String, String> rawResourceMap = (Map<String, String>) (getData(CUSTOMIZED_SETTING_ICON_MAPS_TAG, Map.class));
+            if (rawResourceMap != null) {
+                settingIconsMap.putAll(rawResourceMap);
+            }
+        }
+        return settingIconsMap;
+    }
+
+    private Map<String, String> getSettingTittleMap() {
+        if (settingTittleMap == null) {
+            buildDefaultSettingsTittleMap();
+            Map<String, String> rawResourceMap = (Map<String, String>) (getData(CUSTOMIZED_SETTING_TITTLE_MAPS_TAG, Map.class));
+            if (rawResourceMap != null) {
+                settingTittleMap.putAll(rawResourceMap);
+            }
+        }
+        return settingTittleMap;
+    }
+
+    private void buildDefaultSettingTAGList() {
+        settingItemTAGList = new ArrayList<>();
+        settingItemTAGList.add(SETTING_ITEM_NETWORK_TAG);
+        settingItemTAGList.add(SETTING_ITEM_USER_SETTING_TAG);
+        settingItemTAGList.add(SETTING_ITEM_POWER_TAG);
+        settingItemTAGList.add(SETTING_ITEM_LANG_INPUT_TAG);
+        settingItemTAGList.add(SETTING_ITEM_DATE_TIME_TAG);
+        settingItemTAGList.add(SETTING_ITEM_APPLICATION_TAG);
+        settingItemTAGList.add(SETTING_ITEM_SECURITY_TAG);
+        settingItemTAGList.add(SETTING_ITEM_ERROR_REPORT_TAG);
+    }
+
+    private void buildDefaultSettingsIconsMap() {
+        settingIconsMap = new HashMap<>();
+        settingIconsMap.put(SETTING_ITEM_NETWORK_TAG, "ic_setting_network");
+        settingIconsMap.put(SETTING_ITEM_USER_SETTING_TAG, "ic_user_setting");
+        settingIconsMap.put(SETTING_ITEM_POWER_TAG, "ic_setting_power");
+        settingIconsMap.put(SETTING_ITEM_LANG_INPUT_TAG, "ic_setting_language");
+        settingIconsMap.put(SETTING_ITEM_DATE_TIME_TAG, "ic_setting_date");
+        settingIconsMap.put(SETTING_ITEM_APPLICATION_TAG, "ic_setting_application");
+        settingIconsMap.put(SETTING_ITEM_SECURITY_TAG, "ic_security");
+        settingIconsMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "ic_error_report");
+    }
+
+    private void buildDefaultSettingsTittleMap() {
+        settingTittleMap = new HashMap<>();
+        settingTittleMap.put(SETTING_ITEM_NETWORK_TAG, "setting_network");
+        settingTittleMap.put(SETTING_ITEM_USER_SETTING_TAG, "setting_user_setting");
+        settingTittleMap.put(SETTING_ITEM_POWER_TAG, "setting_power");
+        settingTittleMap.put(SETTING_ITEM_LANG_INPUT_TAG, "setting_lang_input");
+        settingTittleMap.put(SETTING_ITEM_DATE_TIME_TAG, "setting_date_time");
+        settingTittleMap.put(SETTING_ITEM_APPLICATION_TAG, "setting_application");
+        settingTittleMap.put(SETTING_ITEM_SECURITY_TAG, "setting_security");
+        settingTittleMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "setting_error_report");
+    }
+
+    public List<SettingItem> getSettingItemList(Context context) {
+        List<String> settingItemStringList = new ArrayList<>();
+        List<SettingItem> settingItemList = new ArrayList<>();
+        settingItemStringList.addAll(getSettingItemTAGList());
+        for (String tag : settingItemStringList) {
+            settingItemList.add(new SettingItem(SettingCategory.translate(tag),
+                    RawResourceUtil.getDrawableIdByName(context, getSettingIconMaps().get(tag)),
+                    context.getString(RawResourceUtil.getStringIdByName(context, getSettingTittleMap().get(tag)))));
+        }
+        return settingItemList;
     }
 }

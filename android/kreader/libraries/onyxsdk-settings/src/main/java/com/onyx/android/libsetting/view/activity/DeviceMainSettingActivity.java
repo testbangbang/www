@@ -32,18 +32,28 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     SettingConfig config;
     ActivityDeviceMainSettingBinding binding;
     ModelInfo info;
+    SettingFunctionAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         updateData();
+
     }
 
     private void updateData() {
         info = new ModelInfo(Build.MODEL, Build.ID, Build.VERSION.RELEASE, R.drawable.device_logo);
         binding.setInfo(info);
         config = SettingConfig.sharedInstance(this);
+        adapter.dataList.clear();
+        adapter.dataList.addAll(config.getSettingItemList(this));
+        adapter.notifyDataSetChanged();
     }
 
     private void initView() {
@@ -51,7 +61,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         RecyclerView recyclerView = binding.functionRecyclerView;
         recyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 6);
-        final SettingFunctionAdapter adapter = new SettingFunctionAdapter(this, buildSettingItem());
+        adapter = new SettingFunctionAdapter(this, new ArrayList<SettingItem>());
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -127,26 +137,11 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         }
     }
 
-    // TODO: 2016/11/30 sample item list,will load these from config.
-    private List<SettingItem> buildSettingItem() {
-        ArrayList<SettingItem> itemArrayList = new ArrayList<>();
-        itemArrayList.add(new SettingItem(SettingCategory.NETWORK, R.drawable.ic_setting_wlan, getString(R.string.setting_network)));
-        itemArrayList.add(new SettingItem(SettingCategory.USER_SETTING, R.drawable.ic_user_setting, getString(R.string.setting_user_setting)));
-        itemArrayList.add(new SettingItem(SettingCategory.POWER, R.drawable.ic_setting_power, getString(R.string.setting_power), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.LANGUAGE_AND_INPUT, R.drawable.ic_setting_language, getString(R.string.setting_lang_input)));
-        itemArrayList.add(new SettingItem(SettingCategory.DATE_TIME_SETTING, R.drawable.ic_setting_date, getString(R.string.setting_date_time)));
-        itemArrayList.add(new SettingItem(SettingCategory.APPLICATION_MANAGEMENT, R.drawable.ic_setting_application, getString(R.string.setting_application)));
-        itemArrayList.add(new SettingItem(SettingCategory.SECURITY, R.drawable.ic_security, getString(R.string.setting_security)));
-        itemArrayList.add(new SettingItem(SettingCategory.ERROR_REPORT, R.drawable.ic_error_report, getString(R.string.setting_error_report)));
-        return itemArrayList;
-    }
-
     static class SettingFunctionAdapter extends RecyclerView.Adapter<SettingFunctionAdapter.MainSettingItemViewHolder> {
         private List<SettingItem> dataList;
         private LayoutInflater layoutInflater;
         private Context context;
         private ViewGroup parent;
-        private int rowCount = -1;
         private double parentHeight = -1;
         private int itemHeight = -1;
 
@@ -169,7 +164,6 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             layoutInflater = LayoutInflater.from(context);
             dataList = new ArrayList<>();
             dataList.addAll(list);
-            rowCount = dataList.size() < 6 ? 2 : 3;
         }
 
         @Override
@@ -205,7 +199,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                     return false;
                 }
             });
-            if (rowCount > 0) {
+            if (getRowCount() > 0) {
                 parentHeight = parentHeight == -1 ? calculateParentHeight() : parentHeight;
                 itemHeight = itemHeight == -1 ? (int) Math.floor((parentHeight) / getRowCount()) : itemHeight;
                 if (itemHeight > 0) {
@@ -223,12 +217,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         }
 
         public int getRowCount() {
-            return rowCount;
-        }
-
-        public SettingFunctionAdapter setRowCount(int rowCount) {
-            this.rowCount = rowCount;
-            return this;
+            return dataList.size() < 6 ? 2 : 3;
         }
 
         class MainSettingItemViewHolder extends BindingViewHolder<DeviceMainSettingsItemBinding, SettingItem> {
