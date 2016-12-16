@@ -202,8 +202,10 @@ public class AlReaderWrapper {
             TTFInfo ttf = TTFScan.getTTFInfo(new File(fontface), false);
             if (ttf != null) {
                 profile.font_name = ttf.Name;
+                return;
             }
         }
+        profile.font_name = fontface;
     }
 
     public void updateFontSize(final float fontSize) {
