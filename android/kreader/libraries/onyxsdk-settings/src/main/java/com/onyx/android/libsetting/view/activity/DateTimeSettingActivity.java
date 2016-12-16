@@ -70,6 +70,11 @@ public class DateTimeSettingActivity extends OnyxAppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle bundle, String s) {
             addPreferencesFromResource(R.xml.date_time_setting);
+            initView();
+            hidePreferenceByDeviceFeature();
+        }
+
+        private void initView() {
             autoDateTimePreference = (CheckBoxPreference) findPreference(getString(R.string.auto_time_setting_key));
             is24HourFormatPreference = (CheckBoxPreference) findPreference(getString(R.string.set_time_twenty_four_key));
             timeConfig = findPreference(getString(R.string.time_config_key));
@@ -126,11 +131,6 @@ public class DateTimeSettingActivity extends OnyxAppCompatActivity {
         private void updateData() {
             dummyDate = Calendar.getInstance();
             autoDateTimePreference.setChecked(DateTimeSettingUtil.isAutoTimeEnabled(getContext()));
-            if (!DeviceFeatureUtil.hasWifi(getContext())) {
-                autoDateTimePreference.setChecked(false);
-                PreferenceCategory notificationsCategory = (PreferenceCategory) findPreference(getString(R.string.time_setting_key));
-                notificationsCategory.removePreference(autoDateTimePreference);
-            }
         }
 
         @Override
@@ -148,6 +148,14 @@ public class DateTimeSettingActivity extends OnyxAppCompatActivity {
         public void onPause() {
             super.onPause();
             getContext().unregisterReceiver(receiver);
+        }
+
+        private void hidePreferenceByDeviceFeature() {
+            if (!DeviceFeatureUtil.hasWifi(getContext())) {
+                autoDateTimePreference.setChecked(false);
+                PreferenceCategory notificationsCategory = (PreferenceCategory) findPreference(getString(R.string.time_setting_key));
+                notificationsCategory.removePreference(autoDateTimePreference);
+            }
         }
 
         public void updateTimeAndDateDisplay() {
