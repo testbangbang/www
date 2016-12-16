@@ -35,8 +35,10 @@ import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.api.ReaderSentence;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.impl.ReaderSelectionImpl;
+import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.RectUtils;
 
@@ -217,6 +219,53 @@ public class AlReaderWrapper {
             return null;
         }
         return combineSelectionText(screenText, 0, screenText.regionList.size() - 1);
+    }
+
+    public ReaderSentence getSentence(final int startPosition) {
+        if (startPosition < getScreenStartPosition() ||
+                startPosition >= getScreenEndPosition()) {
+            return null;
+        }
+        AlTextOnScreen screenText = getTextOnScreen();
+        if (screenText == null) {
+            Debug.w(getClass(), "get text on screen failed!");
+            return null;
+        }
+        final int MAX_SENTENCE_LENGTH = 200;
+        int endPos = -1;
+        boolean found = false;
+        // sentence in the range [startPos, endPos]
+        for (AlTextOnScreen.AlPieceOfText piece : screenText.regionList) {
+            if (found) {
+                break;
+            }
+            int textEndPos = getPieceEnd(piece);
+            if (textEndPos < startPosition) {
+                continue;
+            }
+            for (int i = 0; i < piece.positions.length; i++) {
+                endPos = piece.positions[i];
+                if (endPos <= startPosition) {
+                    continue;
+                }
+                if ((endPos - startPosition + 1) >= MAX_SENTENCE_LENGTH) {
+                    found = true;
+                    break;
+                }
+                char ch = piece.word.charAt(i);
+                if (ReaderTextSplitterImpl.isSentenceBreakSplitter(ch)) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        ReaderSelectionImpl selection = combineSelection(screenText, startPosition, endPos);
+        boolean endOfScreen = endPos == getPieceEnd(lastPiece(screenText));
+        boolean endOfDocument = endOfScreen && isLastPage();
+        int nextPos = nextTextPosition(screenText, endPos);
+        ReaderSentence sentence = ReaderSentence.create(selection, nextPos, endOfScreen, endOfDocument);
+        return sentence;
     }
 
     public List<ReaderSelection> getPageLinks() {
@@ -451,12 +500,37 @@ public class AlReaderWrapper {
         return selection;
     }
 
+    private AlTextOnScreen.AlPieceOfText lastPiece(AlTextOnScreen textOnScreen) {
+        return textOnScreen.regionList.get(textOnScreen.regionList.size() - 1);
+    }
+
     private int getPieceStart(AlTextOnScreen.AlPieceOfText piece) {
         return piece.positions[0];
     }
 
     private int getPieceEnd(AlTextOnScreen.AlPieceOfText piece) {
         return piece.positions[piece.positions.length - 1];
+    }
+
+    private int nextTextPosition(AlTextOnScreen textOnScreen, int pos) {
+        int index = textOnScreen.findWordByPos(pos);
+        if (index == -1) {
+            return -1;
+        }
+        AlTextOnScreen.AlPieceOfText piece = textOnScreen.regionList.get(index);
+        int i = 0;
+        for (; i < piece.positions.length; i++) {
+            if (piece.positions[i] == pos) {
+                break;
+            }
+        }
+        if (i < piece.positions.length - 1) {
+            return piece.positions[i + 1];
+        }
+
+        return index < textOnScreen.regionList.size() - 1 ?
+                textOnScreen.regionList.get(index + 1).positions[0] :
+                getScreenEndPosition();
     }
 
     private String combineSelectionText(AlTextOnScreen textOnScreen, int startIndex, int endIndex) {

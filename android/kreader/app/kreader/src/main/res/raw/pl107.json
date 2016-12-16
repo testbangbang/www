@@ -3,6 +3,12 @@
   "hasFrontLight" : false,
   "disableNoteFunc" : false,
   "supportBrushPen": true,
+  "defaultGamma": 100,
+  "fixedGamma": 125,
+  "frontLight" : 100,
+  "defaultUseSystemStatusBar" : false,
+  "supportBrushPen": true,
+  "gcInterval" : 1,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
