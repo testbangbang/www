@@ -233,7 +233,6 @@
   <string name="dialog_slideshow_statistic_page_count">翻页: </string>
   <string name="dialog_slideshow_statistic_start_battery">初始电量: </string>
   <string name="dialog_slideshow_statistic_end_battery">当前电量: </string>
-  <string name="default_font">默认字体</string>
   <string name="view_pinch_zooming_menu_font_size">字号:</string>
   <string name="view_pinch_zooming_menu_scale_factor">缩放:</string>
 </resources>
