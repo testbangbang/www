@@ -23,6 +23,36 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
         super("com.onyx.reader", ReaderTestActivity.class);
     }
 
+    public void testRender000() throws Exception {
+        for(int i = 1; i <= 4; ++i) {
+            final Bitmap origin = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/cfa-org/" + i + ".jpg");
+            final Bitmap scaled = origin.createScaledBitmap(origin, 480, 640, true);
+            final Bitmap result = Bitmap.createBitmap(960, 1280, Bitmap.Config.ARGB_8888);
+            ImageUtils.toRgbwBitmap(result, scaled, 0);
+            BitmapUtils.saveBitmap(result, "/mnt/sdcard/cfa-org/" + i + ".cfa.png");
+        }
+    }
+
+    public void testRender0() throws Exception {
+        int targetWidth = 200;
+        int targetHeight = 200;
+        final Bitmap origin = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/icons/user_boy.png");
+        final Bitmap scaled = origin.createScaledBitmap(origin, targetWidth / 2, targetHeight / 2, true);
+        final Bitmap result = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+        ImageUtils.toRgbwBitmap(result, scaled, 0);
+        BitmapUtils.saveBitmap(result, "/mnt/sdcard/icons/user_boy_cfa.png");
+    }
+
+    public void testRender00() throws Exception {
+        int targetWidth = 100;
+        int targetHeight = 100;
+        final Bitmap origin = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/icons/home_pic_display.png");
+        final Bitmap scaled = origin.createScaledBitmap(origin, targetWidth / 2, targetHeight / 2, true);
+        final Bitmap result = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+        ImageUtils.toRgbwBitmap(result, scaled, 0);
+        BitmapUtils.saveBitmap(result, "/mnt/sdcard/icons/home_pic_display_cfa.png");
+    }
+
     public void testRender1() throws Exception {
         NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
         String[] pathes = {"/mnt/sdcard/Books/cfa.pdf"};
