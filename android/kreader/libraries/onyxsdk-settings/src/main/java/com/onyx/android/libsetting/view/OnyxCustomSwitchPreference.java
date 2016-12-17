@@ -66,7 +66,9 @@ public class OnyxCustomSwitchPreference extends Preference {
                 }
             }
         });
-        callback.onSwitchReady();
+        if (callback!=null) {
+            callback.onSwitchReady();
+        }
     }
 
     public void setSwitchChecked(boolean isChecked) {
