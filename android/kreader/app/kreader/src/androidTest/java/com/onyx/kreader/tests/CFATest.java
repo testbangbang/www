@@ -7,8 +7,14 @@ import android.util.Log;
 
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.plugins.neopdf.NeoPdfJniWrapper;
 import com.onyx.kreader.utils.ImageUtils;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by zhuzeng on 12/12/2016.
@@ -23,13 +29,37 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
         super("com.onyx.reader", ReaderTestActivity.class);
     }
 
-    public void testRender000() throws Exception {
-        for(int i = 1; i <= 4; ++i) {
-            final Bitmap origin = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/cfa-org/" + i + ".jpg");
-            final Bitmap scaled = origin.createScaledBitmap(origin, 480, 640, true);
-            final Bitmap result = Bitmap.createBitmap(960, 1280, Bitmap.Config.ARGB_8888);
+
+    static int findNumber(final String string) {
+        String result = string.replaceAll("[^0-9]+", " ");
+        String[]  array = result.trim().split(" ");
+        if (array != null && array.length > 0) {
+            return Integer.valueOf(array[0]);
+        }
+        return -1;
+    }
+
+    public void testCfaResource() throws Exception {
+        Set<String> filter = new HashSet<>();
+        filter.add("jpg");
+        filter.add("png");
+        List<String> fileList = new ArrayList<>();
+        FileUtils.collectFiles("/mnt/sdcard/res/", filter, true, fileList);
+
+        for(String path : fileList) {
+            if (path.contains(".cfa.")) {
+                continue;
+            }
+            int dp = findNumber(path);
+            if (dp < 0) {
+                continue;
+            }
+
+            final Bitmap origin = BitmapUtils.loadBitmapFromFile(path);
+            final Bitmap scaled = origin.createScaledBitmap(origin, dp / 2, dp / 2, true);
+            final Bitmap result = Bitmap.createBitmap(dp, dp, Bitmap.Config.ARGB_8888);
             ImageUtils.toRgbwBitmap(result, scaled, 0);
-            BitmapUtils.saveBitmap(result, "/mnt/sdcard/cfa-org/" + i + ".cfa.png");
+            BitmapUtils.saveBitmap(result, path + ".cfa.png");
         }
     }
 
