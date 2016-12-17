@@ -296,7 +296,7 @@
     <string name="dialog_slideshow_statistic_page_count">Page count: </string>
     <string name="dialog_slideshow_statistic_start_battery">Start battery: </string>
     <string name="dialog_slideshow_statistic_end_battery">End battery: </string>
-    <string name="default_font">Default font</string>
+    <string name="default_font" translatable="false">Serif</string>
     <string name="view_pinch_zooming_menu_font_size">Font size:</string>
     <string name="view_pinch_zooming_menu_scale_factor">Zoom factor:</string>
 </resources>
