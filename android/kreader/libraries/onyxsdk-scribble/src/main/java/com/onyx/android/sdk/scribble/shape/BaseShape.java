@@ -1,9 +1,8 @@
 package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.*;
-import android.util.Log;
 
-import com.onyx.android.sdk.scribble.data.ExtraAttributes;
+import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
@@ -24,7 +23,7 @@ public class BaseShape implements Shape {
     private String pageUniqueId;
     private String subPageUniqueId;
     private String groupId;
-    private ExtraAttributes extraAttributes;
+    private ShapeExtraAttributes shapeExtraAttributes;
     private int layoutType;
     private int color = Color.BLACK;
     private float strokeWidth;
@@ -331,17 +330,15 @@ public class BaseShape implements Shape {
         return layoutType;
     }
 
-    @Override
-    public ExtraAttributes getExtraAttributes() {
-        if (extraAttributes == null) {
-            extraAttributes = new ExtraAttributes();
+    public ShapeExtraAttributes getShapeExtraAttributes() {
+        if (shapeExtraAttributes == null) {
+            shapeExtraAttributes = new ShapeExtraAttributes();
         }
-        return extraAttributes;
+        return shapeExtraAttributes;
     }
 
-    @Override
-    public void setExtraAttributes(ExtraAttributes attributes) {
-        extraAttributes = attributes;
+    public void setShapeExtraAttributes(ShapeExtraAttributes attributes) {
+        shapeExtraAttributes = attributes;
     }
 
     public void setPageOriginWidth(int width) {

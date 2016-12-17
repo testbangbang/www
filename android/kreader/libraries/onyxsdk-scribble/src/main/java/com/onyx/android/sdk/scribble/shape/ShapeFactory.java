@@ -92,7 +92,7 @@ public class ShapeFactory {
         shapeModel.setShapeType(shape.getType());
         shapeModel.setGroupId(shape.getGroupId());
         shapeModel.setLayoutType(shape.getLayoutType());
-        shapeModel.setExtraAttributesBean(shape.getExtraAttributes());
+        shapeModel.setExtraAttributesBean(shape.getShapeExtraAttributes());
         return shapeModel;
     }
 
@@ -106,7 +106,7 @@ public class ShapeFactory {
         shape.setPageOriginWidth(model.getPageOriginWidth());
         shape.setGroupId(model.getGroupId());
         shape.setLayoutType(model.getLayoutType());
-        shape.setExtraAttributes(model.getExtraAttributesBean());
+        shape.setShapeExtraAttributes(model.getExtraAttributesBean());
     }
 
     public static Map<String, List<Shape>> getSubPageSpanShapeList(List<Shape> subPageShapes) {

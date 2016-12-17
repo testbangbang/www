@@ -204,16 +204,16 @@ public class ShapeModel extends BaseModel {
         extraAttributes = attributes;
     }
 
-    public void setExtraAttributesBean(final  ExtraAttributes extraAttributes) {
-        if (extraAttributes != null) {
-            this.extraAttributes = JSON.toJSONString(extraAttributes);
+    public void setExtraAttributesBean(final ShapeExtraAttributes shapeExtraAttributes) {
+        if (shapeExtraAttributes != null) {
+            this.extraAttributes = JSON.toJSONString(shapeExtraAttributes);
         }
 
     }
 
-    public ExtraAttributes getExtraAttributesBean() {
+    public ShapeExtraAttributes getExtraAttributesBean() {
         if (!StringUtils.isNullOrEmpty(extraAttributes)) {
-            return JSON.parseObject(extraAttributes, ExtraAttributes.class);
+            return JSON.parseObject(extraAttributes, ShapeExtraAttributes.class);
         }
         return null;
     }

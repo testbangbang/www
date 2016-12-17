@@ -4,7 +4,7 @@ package com.onyx.android.sdk.scribble.data;
  * Created by ming on 2016/12/17.
  */
 
-public class ExtraAttributes {
+public class ShapeExtraAttributes {
 
     private String textContent;
 

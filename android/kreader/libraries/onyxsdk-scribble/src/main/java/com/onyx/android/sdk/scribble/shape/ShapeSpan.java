@@ -65,7 +65,7 @@ public class ShapeSpan extends ReplacementSpan {
         for (Shape shape : shapeList) {
             shape.render(renderContext);
             if (shape.getType() == ShapeFactory.SHAPE_TEXT) {
-                shape.getExtraAttributes().setTextSize(paint.getTextSize());
+                shape.getShapeExtraAttributes().setTextSize(paint.getTextSize());
             }
             if (needUpdateShape) {
                 shape.getPoints().scaleAllPoints(scale);

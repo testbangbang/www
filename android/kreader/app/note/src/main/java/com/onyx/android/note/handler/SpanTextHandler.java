@@ -160,7 +160,7 @@ public class SpanTextHandler {
         shape.setColor(getNoteViewHelper().getNoteDocument().getStrokeColor());
         shape.setLayoutType(ShapeFactory.POSITION_LINE_LAYOUT);
         shape.setGroupId(ShapeUtils.generateUniqueId());
-        shape.getExtraAttributes().setTextContent(text);
+        shape.getShapeExtraAttributes().setTextContent(text);
         return shape;
     }
 

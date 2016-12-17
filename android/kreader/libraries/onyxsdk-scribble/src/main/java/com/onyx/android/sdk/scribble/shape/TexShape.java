@@ -1,11 +1,8 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.RectF;
 
-import com.onyx.android.sdk.scribble.data.ExtraAttributes;
+import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.utils.StringUtils;
 
 /**
@@ -22,11 +19,11 @@ public class TexShape extends BaseShape  {
     }
 
     public void render(final RenderContext renderContext) {
-        ExtraAttributes extraAttributes = getExtraAttributes();
-        if (extraAttributes == null) {
+        ShapeExtraAttributes shapeExtraAttributes = getShapeExtraAttributes();
+        if (shapeExtraAttributes == null) {
             return;
         }
-        String content = extraAttributes.getTextContent();
+        String content = shapeExtraAttributes.getTextContent();
         if (StringUtils.isNullOrEmpty(content)) {
             return;
         }
@@ -40,9 +37,9 @@ public class TexShape extends BaseShape  {
             renderContext.matrix.mapRect(rect);
         }
 
-        float textSize = extraAttributes.getTextSize();
+        float textSize = shapeExtraAttributes.getTextSize();
         renderContext.paint.setTextSize(textSize);
-        renderContext.canvas.drawText(extraAttributes.getTextContent(), rect.left, rect.bottom - (rect.bottom - rect.top) / 2 , renderContext.paint);
+        renderContext.canvas.drawText(shapeExtraAttributes.getTextContent(), rect.left, rect.bottom - (rect.bottom - rect.top) / 2 , renderContext.paint);
     }
 
 }
