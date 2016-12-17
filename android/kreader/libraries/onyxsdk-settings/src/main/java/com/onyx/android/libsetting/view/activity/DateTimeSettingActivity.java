@@ -136,6 +136,10 @@ public class DateTimeSettingActivity extends OnyxAppCompatActivity {
         @Override
         public void onResume() {
             super.onResume();
+            onPostResume();
+        }
+
+        private void onPostResume() {
             filter = new IntentFilter(ACTION_TIME_CHANGED);
             filter.addAction(ACTION_TIME_TICK);
             filter.addAction(ACTION_TIMEZONE_CHANGED);
