@@ -66,7 +66,11 @@ public class SettingItem extends BaseObservable {
     private String tittle;
     private String subTittle;
 
-    public SettingItem(int itemCategory, int iconRes, String tittle, String subTittle) {
+    public SettingItem(@SettingCategory.SettingCategoryDef int itemCategory, int iconRes, String tittle) {
+        this(itemCategory, iconRes, tittle, "");
+    }
+
+    public SettingItem(@SettingCategory.SettingCategoryDef int itemCategory, int iconRes, String tittle, String subTittle) {
         this.itemCategory = itemCategory;
         this.iconRes = iconRes;
         this.tittle = tittle;

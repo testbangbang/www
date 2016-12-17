@@ -3,7 +3,8 @@
     <string name="setting_network">网络连接</string>
     <string name="setting_sound">声音</string>
     <string name="setting_storage">存储</string>
-    <string name="setting_lang_date">语言和时间</string>
+    <string name="setting_lang_input">语言和输入法</string>
+    <string name="setting_date_time">日期与时间</string>
     <string name="setting_security">安全隐私</string>
     <string name="setting_error_report">错误收集</string>
     <string name="setting_user_setting">用户设置</string>

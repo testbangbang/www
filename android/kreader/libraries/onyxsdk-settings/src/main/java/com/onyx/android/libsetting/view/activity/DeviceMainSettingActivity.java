@@ -8,30 +8,31 @@ import android.os.Bundle;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.onyx.android.libsetting.R;
+import com.onyx.android.libsetting.SettingConfig;
 import com.onyx.android.libsetting.data.SettingCategory;
 import com.onyx.android.libsetting.databinding.ActivityDeviceMainSettingBinding;
 import com.onyx.android.libsetting.databinding.DeviceMainSettingsItemBinding;
 import com.onyx.android.libsetting.model.ModelInfo;
 import com.onyx.android.libsetting.model.SettingItem;
+import com.onyx.android.libsetting.util.CommonUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.DeviceMainSettingItemDecoration;
+import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
+    SettingConfig config;
     ActivityDeviceMainSettingBinding binding;
     ModelInfo info;
+    SettingFunctionAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +40,28 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         initView();
     }
 
-    private void initView() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_device_main_setting);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateData();
+
+    }
+
+    private void updateData() {
         info = new ModelInfo(Build.MODEL, Build.ID, Build.VERSION.RELEASE, R.drawable.device_logo);
         binding.setInfo(info);
+        config = SettingConfig.sharedInstance(this);
+        adapter.dataList.clear();
+        adapter.dataList.addAll(config.getSettingItemList(this));
+        adapter.notifyDataSetChanged();
+    }
+
+    private void initView() {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_device_main_setting);
         RecyclerView recyclerView = binding.functionRecyclerView;
         recyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 6);
-        final SettingFunctionAdapter adapter = new SettingFunctionAdapter(this, buildSettingItem());
+        adapter = new SettingFunctionAdapter(this, new ArrayList<SettingItem>());
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -69,8 +84,11 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                     case SettingCategory.STORAGE:
                         intent = new Intent(DeviceMainSettingActivity.this, StorageSettingActivity.class);
                         break;
-                    case SettingCategory.LANGUAGE_AND_DATE:
+                    case SettingCategory.LANGUAGE_AND_INPUT:
                         intent = new Intent(DeviceMainSettingActivity.this, LanguageInputDateSettingActivity.class);
+                        break;
+                    case SettingCategory.DATE_TIME_SETTING:
+                        intent = new Intent(DeviceMainSettingActivity.this, DateTimeSettingActivity.class);
                         break;
                     case SettingCategory.POWER:
                         intent = new Intent(DeviceMainSettingActivity.this, PowerSettingActivity.class);
@@ -90,6 +108,15 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         });
         recyclerView.addItemDecoration(new DeviceMainSettingItemDecoration());
         recyclerView.setAdapter(adapter);
+
+        binding.icon.setClickable(false);
+        binding.icon.setFocusable(false);
+        binding.infoArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(config.getDeviceInfoIntent());
+            }
+        });
     }
 
     // TODO: 2016/11/30 temp max 3 line layout
@@ -110,25 +137,11 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         }
     }
 
-    // TODO: 2016/11/30 sample item list,will load these from config.
-    private List<SettingItem> buildSettingItem() {
-        ArrayList<SettingItem> itemArrayList = new ArrayList<>();
-        itemArrayList.add(new SettingItem(SettingCategory.NETWORK, R.drawable.ic_setting_wlan, getString(R.string.setting_network), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.USER_SETTING, R.drawable.ic_user_setting, getString(R.string.setting_user_setting), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.POWER, R.drawable.ic_setting_power, getString(R.string.setting_power), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.LANGUAGE_AND_DATE, R.drawable.ic_setting_language, getString(R.string.setting_lang_date), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.APPLICATION_MANAGEMENT, R.drawable.ic_setting_application, getString(R.string.setting_application), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.SECURITY, R.drawable.ic_security, getString(R.string.setting_security), ""));
-        itemArrayList.add(new SettingItem(SettingCategory.ERROR_REPORT, R.drawable.ic_error_report, getString(R.string.setting_error_report), ""));
-        return itemArrayList;
-    }
-
     static class SettingFunctionAdapter extends RecyclerView.Adapter<SettingFunctionAdapter.MainSettingItemViewHolder> {
         private List<SettingItem> dataList;
         private LayoutInflater layoutInflater;
         private Context context;
         private ViewGroup parent;
-        private int rowCount = -1;
         private double parentHeight = -1;
         private int itemHeight = -1;
 
@@ -151,7 +164,6 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             layoutInflater = LayoutInflater.from(context);
             dataList = new ArrayList<>();
             dataList.addAll(list);
-            rowCount = dataList.size() < 6 ? 2 : 3;
         }
 
         @Override
@@ -187,7 +199,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                     return false;
                 }
             });
-            if (rowCount > 0) {
+            if (getRowCount() > 0) {
                 parentHeight = parentHeight == -1 ? calculateParentHeight() : parentHeight;
                 itemHeight = itemHeight == -1 ? (int) Math.floor((parentHeight) / getRowCount()) : itemHeight;
                 if (itemHeight > 0) {
@@ -200,20 +212,12 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         }
 
         private int calculateParentHeight() {
-            DisplayMetrics dm = new DisplayMetrics();
-            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            wm.getDefaultDisplay().getMetrics(dm);
-            return (int) (dm.heightPixels * ((PercentRelativeLayout.LayoutParams)
+            return (int) (CommonUtil.getWindowHeight(context) * ((PercentRelativeLayout.LayoutParams)
                     parent.getLayoutParams()).getPercentLayoutInfo().heightPercent);
         }
 
         public int getRowCount() {
-            return rowCount;
-        }
-
-        public SettingFunctionAdapter setRowCount(int rowCount) {
-            this.rowCount = rowCount;
-            return this;
+            return dataList.size() < 6 ? 2 : 3;
         }
 
         class MainSettingItemViewHolder extends BindingViewHolder<DeviceMainSettingsItemBinding, SettingItem> {

@@ -4,7 +4,8 @@
     <string name="setting_sound">Sound</string>
     <string name="setting_storage">Storage</string>
     <string name="setting_wifi" translatable="false">WiFi</string>
-    <string name="setting_lang_date"><![CDATA[Language & Date]]></string>
+    <string name="setting_lang_input"><![CDATA[Language & Input]]></string>
+    <string name="setting_date_time"><![CDATA[Date & Time]]></string>
     <string name="setting_security">Security</string>
     <string name="setting_error_report">Error Report</string>
     <string name="setting_application">Application</string>

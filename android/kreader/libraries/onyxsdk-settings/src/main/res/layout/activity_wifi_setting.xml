@@ -69,7 +69,7 @@
                     android:ellipsize="middle"
                     android:gravity="center_vertical|left"
                     android:maxLines="2"
-                    android:text="@string/setting_network"
+                    android:text="@string/setting_wifi"
                     android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large"
                     android:textColor="@android:color/primary_text_light" />
 

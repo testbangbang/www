@@ -2,11 +2,16 @@ package com.onyx.android.libsetting.util;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.Point;
 import android.os.Build;
 import android.support.v7.view.ContextThemeWrapper;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.onyx.android.libsetting.R;
+
 
 /**
  * Created by solskjaer49 on 2016/12/5 11:40.
@@ -38,4 +43,33 @@ public class CommonUtil {
             return context.getResources().getString(R.string.never);
         }
     }
+
+    public static int getStatusBarHeight(Context context) {
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    /**
+     * get height of screen without status bar.
+     */
+    public static int getWindowHeight(Context context) {
+        int windowHeight;
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display d = wm.getDefaultDisplay();
+        d.getMetrics(dm);
+        Point point = new Point();
+        if (apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
+            d.getRealSize(point);
+            windowHeight = point.y - getStatusBarHeight(context);
+        } else {
+            windowHeight = dm.heightPixels;
+        }
+        return windowHeight;
+    }
+
 }
