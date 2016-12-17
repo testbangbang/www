@@ -3,10 +3,6 @@ package com.onyx.android.note.handler;
 import android.content.Context;
 import android.os.Handler;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
-import android.util.Log;
-import android.util.TypedValue;
-import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -18,7 +14,6 @@ import com.onyx.android.sdk.scribble.request.note.NotePageShapesRequest;
 import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.scribble.shape.TexShape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import org.apache.commons.collections4.MapUtils;
@@ -27,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 import static android.os.Looper.getMainLooper;
 
@@ -43,6 +37,7 @@ public class SpanTextHandler {
 
     public static String SPACE_TEXT = " ";
     private static final int SPAN_TIME_OUT = 1000;
+    public static final int SPACE_WIDTH = 40;
     private Map<String, List<Shape>> subPageSpanTextShapeMap;
     private Runnable spanRunnable;
     private long lastUpTime = -1;
@@ -120,11 +115,13 @@ public class SpanTextHandler {
     }
 
     public void clear() {
-        subPageSpanTextShapeMap.clear();
+        if (subPageSpanTextShapeMap != null) {
+            subPageSpanTextShapeMap.clear();
+            subPageSpanTextShapeMap = null;
+        }
         if (spanRunnable != null) {
             handler.removeCallbacks(spanRunnable);
         }
-        callback = null;
     }
 
     public String getLastGroupId() {
@@ -161,9 +158,9 @@ public class SpanTextHandler {
         Shape shape = ShapeFactory.createShape(ShapeFactory.SHAPE_TEXT);
         shape.setStrokeWidth(getNoteViewHelper().getNoteDocument().getStrokeWidth());
         shape.setColor(getNoteViewHelper().getNoteDocument().getStrokeColor());
-        shape.setLayoutType(ShapeFactory.SPAN_TEXT_LAYOUT_TYPE);
+        shape.setLayoutType(ShapeFactory.POSITION_LINE_LAYOUT);
         shape.setGroupId(ShapeUtils.generateUniqueId());
-        shape.setExtraAttributes(text);
+        shape.getExtraAttributes().setTextContent(text);
         return shape;
     }
 

@@ -486,7 +486,7 @@ public class NoteViewHelper {
         Shape shape = ShapeFactory.createShape(getNoteDocument().getNoteDrawingArgs().getCurrentShapeType());
         shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
         shape.setColor(getNoteDocument().getStrokeColor());
-        shape.setLayoutType(isSpanTextMode ? ShapeFactory.SPAN_TEXT_LAYOUT_TYPE : ShapeFactory.NORMAL_LAYOUT_TYPE);
+        shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
         shape.setGroupId(currentGroupId);
         return shape;
     }

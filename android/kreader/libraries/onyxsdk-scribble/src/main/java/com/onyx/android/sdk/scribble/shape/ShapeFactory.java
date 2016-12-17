@@ -3,11 +3,9 @@ package com.onyx.android.sdk.scribble.shape;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * Created by zhuzeng on 4/20/16.
@@ -29,8 +27,8 @@ public class ShapeFactory {
     static public final int SHAPE_TRIANGLE = 8;
     static public final int SHAPE_ANNOTATION = 9;
 
-    static public final int NORMAL_LAYOUT_TYPE = 0;
-    static public final int SPAN_TEXT_LAYOUT_TYPE = 1;
+    static public final int POSITION_FREE = 0;
+    static public final int POSITION_LINE_LAYOUT = 1;
 
     public static final Shape createShape(int type) {
         Shape shape;
@@ -94,7 +92,7 @@ public class ShapeFactory {
         shapeModel.setShapeType(shape.getType());
         shapeModel.setGroupId(shape.getGroupId());
         shapeModel.setLayoutType(shape.getLayoutType());
-        shapeModel.setExtraAttributes(shape.getExtraAttributes());
+        shapeModel.setExtraAttributesBean(shape.getExtraAttributes());
         return shapeModel;
     }
 
@@ -108,13 +106,13 @@ public class ShapeFactory {
         shape.setPageOriginWidth(model.getPageOriginWidth());
         shape.setGroupId(model.getGroupId());
         shape.setLayoutType(model.getLayoutType());
-        shape.setExtraAttributes(model.getExtraAttributes());
+        shape.setExtraAttributes(model.getExtraAttributesBean());
     }
 
     public static Map<String, List<Shape>> getSubPageSpanShapeList(List<Shape> subPageShapes) {
         Map<String, List<Shape>> subPageSpanShapeMap = new LinkedHashMap<>();
         for (Shape subPageShape : subPageShapes) {
-            if (subPageShape.getLayoutType() != SPAN_TEXT_LAYOUT_TYPE) {
+            if (subPageShape.getLayoutType() != POSITION_LINE_LAYOUT) {
                 continue;
             }
             String groupId = subPageShape.getGroupId();

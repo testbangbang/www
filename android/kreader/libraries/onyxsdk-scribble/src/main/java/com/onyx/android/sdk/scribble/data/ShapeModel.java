@@ -1,7 +1,10 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.graphics.RectF;
+
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.*;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
@@ -199,6 +202,20 @@ public class ShapeModel extends BaseModel {
 
     public void setExtraAttributes(final String attributes) {
         extraAttributes = attributes;
+    }
+
+    public void setExtraAttributesBean(final  ExtraAttributes extraAttributes) {
+        if (extraAttributes != null) {
+            this.extraAttributes = JSON.toJSONString(extraAttributes);
+        }
+
+    }
+
+    public ExtraAttributes getExtraAttributesBean() {
+        if (!StringUtils.isNullOrEmpty(extraAttributes)) {
+            return JSON.parseObject(extraAttributes, ExtraAttributes.class);
+        }
+        return null;
     }
 
     public int getZorder() {

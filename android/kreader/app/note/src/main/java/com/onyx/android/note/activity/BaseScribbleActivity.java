@@ -25,6 +25,7 @@ import com.onyx.android.note.actions.scribble.DocumentFlushAction;
 import com.onyx.android.note.actions.scribble.GotoNextPageAction;
 import com.onyx.android.note.actions.scribble.GotoPrevPageAction;
 import com.onyx.android.note.actions.scribble.RemoveByPointListAction;
+import com.onyx.android.note.handler.SpanTextHandler;
 import com.onyx.android.note.receiver.DeviceReceiver;
 import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;

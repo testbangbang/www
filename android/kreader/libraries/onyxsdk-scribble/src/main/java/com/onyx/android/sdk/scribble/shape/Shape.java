@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
+
+import com.onyx.android.sdk.scribble.data.ExtraAttributes;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 
@@ -108,7 +110,9 @@ public interface Shape {
 
     int getLayoutType();
 
-    String getExtraAttributes();
+    ExtraAttributes getExtraAttributes();
 
-    void setExtraAttributes(final String attributes);
+    void setExtraAttributes(final ExtraAttributes extraAttributes);
+
+    boolean isFreePosition();
 }

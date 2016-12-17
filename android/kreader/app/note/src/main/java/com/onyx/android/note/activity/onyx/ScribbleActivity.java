@@ -3,6 +3,7 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
@@ -60,6 +61,7 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
@@ -82,8 +84,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private ImageView switchBtn;
     private ContentView functionContentView;
     private RelativeLayout workView;
-    private SpanTextHandler spanTextHandler;
     private LinedEditText spanTextView;
+    private SpanTextHandler spanTextHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,24 +141,28 @@ public class ScribbleActivity extends BaseScribbleActivity {
         addPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeSpanTextMode();
                 onAddNewPage();
             }
         });
         deletePageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeSpanTextMode();
                 onDeletePage();
             }
         });
         prevPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeSpanTextMode();
                 onPrevPage();
             }
         });
         nextPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeSpanTextMode();
                 onNextPage();
             }
         });
@@ -250,6 +256,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 }
                 spanTextView.setText(builder);
                 spanTextView.setSelection(builder.length());
+                spanTextView.requestFocus();
                 spanTextView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -257,7 +264,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
                                 false,
                                 false,
                                 shapeDataInfo.getDrawingArgs());
-                        action.execute(ScribbleActivity.this, null);
+                        action.execute(ScribbleActivity.this, new BaseCallback() {
+                            @Override
+                            public void done(BaseRequest request, Throwable e) {
+                                spanTextView.invalidate();
+                            }
+                        });
                     }
                 });
             }
@@ -279,8 +291,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void commitText(CharSequence text, int newCursorPosition) {
                 int width = (int) spanTextView.getPaint().measureText(text.toString());
-                int height = (int) spanTextView.getPaint().measureText(SpannableRequest.SPAN_BUILDER_SYMBOL) * 2;
-                spanTextHandler.buildTextShape(text.toString(), width, height);
+                spanTextHandler.buildTextShape(text.toString(), width, getSpanTextFontHeight());
             }
         });
     }
@@ -304,9 +315,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
         return false;
     }
 
+    private void closeSpanTextMode() {
+        isSpanMode = false;
+        switchScribbleMode(isSpanMode);
+        spanTextHandler.clear();
+        spanTextView.setText("");
+    }
+
     private void switchScribbleMode(boolean isSpanMode) {
         if (isSpanMode) {
-            spanTextView.requestFocus();
             spanTextHandler.openSpanTextFunc();
         }
         getNoteViewHelper().setSpanTextMode(isSpanMode);
@@ -440,22 +457,23 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
-
     private void onSpace() {
-        int height = (int) spanTextView.getPaint().measureText(SpannableRequest.SPAN_BUILDER_SYMBOL) * 2;
-        spanTextHandler.buildSpaceShape(40, height);
+        spanTextHandler.buildSpaceShape(SpanTextHandler.SPACE_WIDTH, getSpanTextFontHeight());
+    }
+
+    private int getSpanTextFontHeight() {
+        float bottom = spanTextView.getPaint().getFontMetrics().bottom;
+        float top = spanTextView.getPaint().getFontMetrics().top;
+        int height = (int) Math.ceil(bottom - top - 2 * ShapeSpan.SHAPE_SPAN_MARGIN);
+        return height;
     }
 
     private void onEnter() {
         int pos = spanTextView.getSelectionStart();
         Layout layout = spanTextView.getLayout();
-        int line = layout.getLineForOffset(pos);
-//        int baseline = layout.getLineBaseline(line);
-//        int ascent = layout.getLineAscent(line);
         float x = layout.getPrimaryHorizontal(pos);
-//        float y = baseline + ascent;
 
-        spanTextHandler.buildSpaceShape((int) (spanTextView.getMeasuredWidth() - x), 57);
+        spanTextHandler.buildSpaceShape((int) Math.ceil(spanTextView.getMeasuredWidth() - x), getSpanTextFontHeight());
     }
 
     private void onKeyboard() {

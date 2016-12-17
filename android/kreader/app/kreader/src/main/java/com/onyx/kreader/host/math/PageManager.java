@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * Created by zhuzeng on 10/8/15.
- * All pages are arranged in page bounding coordinates system. The plugin needs to translateAllPoints that
+ * All pages are arranged in page bounding coordinates system. The plugin needs to translate that
  * into its own coordinates system, for example, document coordinates system.
  */
 public class PageManager {

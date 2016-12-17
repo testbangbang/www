@@ -6,11 +6,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.text.style.ReplacementSpan;
-import android.util.Log;
-
-import com.alibaba.fastjson.JSON;
-
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -19,8 +14,8 @@ import java.util.List;
  */
 public class ShapeSpan extends ReplacementSpan {
     static final String TAG = ShapeSpan.class.getSimpleName();
+    public static int SHAPE_SPAN_MARGIN = 3;
     private List<Shape> shapeList;
-    private int margin = 5;
     private float scale = 1.0f;
     private int width = 1;
     private boolean needUpdateShape = false;
@@ -42,13 +37,13 @@ public class ShapeSpan extends ReplacementSpan {
         if (fm == null) {
             return width;
         }
-        float height = fm.bottom - fm.top - 2 * margin;
+        float height = fm.bottom - fm.top - 2 * SHAPE_SPAN_MARGIN;
         RectF rect = boundingRect();
         scale = height / rect.height();
         if (scale > 1.0f) {
             scale = Math.min(height / rect.width(), scale);
         }
-        width = (int)(rect.width() * scale) + 2 * margin;
+        width = (int)(rect.width() * scale) + 2 * SHAPE_SPAN_MARGIN;
         return width;
     }
 
@@ -56,7 +51,7 @@ public class ShapeSpan extends ReplacementSpan {
         final Matrix matrix = new Matrix();
         final RectF rect = boundingRect();
 
-        float translateX = x + margin - rect.left  * scale;
+        float translateX = x + SHAPE_SPAN_MARGIN - rect.left  * scale;
         float translateY = top - rect.top * scale + (bottom - top - rect.height() * scale);
         if (needUpdateShape) {
             matrix.postScale(scale, scale);
@@ -69,6 +64,9 @@ public class ShapeSpan extends ReplacementSpan {
         RenderContext renderContext = RenderContext.create(canvas, paint, matrix);
         for (Shape shape : shapeList) {
             shape.render(renderContext);
+            if (shape.getType() == ShapeFactory.SHAPE_TEXT) {
+                shape.getExtraAttributes().setTextSize(paint.getTextSize());
+            }
             if (needUpdateShape) {
                 shape.getPoints().scaleAllPoints(scale);
                 shape.onTranslate(translateX, translateY);

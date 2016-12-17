@@ -19,7 +19,6 @@ public class ShapeRemoveByGroupIdRequest extends BaseNoteRequest {
 
     public void execute(final NoteViewHelper helper) throws Exception {
         setResumeInputProcessor(helper.useDFBForCurrentState());
-        benchmarkStart();
         helper.getNoteDocument().removeShapesByGroupId(getContext(), groupId);
         renderCurrentPage(helper);
         updateShapeDataInfo(helper);

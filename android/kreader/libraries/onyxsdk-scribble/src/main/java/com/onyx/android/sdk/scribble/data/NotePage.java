@@ -138,7 +138,7 @@ public class NotePage {
         }
         Map<String, Shape> hitShapes = new HashMap<>();
         for(Shape shape : shapeList) {
-            if (shape.getLayoutType() != ShapeFactory.NORMAL_LAYOUT_TYPE) {
+            if (!shape.isFreePosition()) {
                 continue;
             }
             for(TouchPoint touchPoint : touchPointList.getPoints()) {

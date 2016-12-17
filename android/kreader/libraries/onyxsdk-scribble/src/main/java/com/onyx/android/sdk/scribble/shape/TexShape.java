@@ -5,6 +5,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.scribble.data.ExtraAttributes;
+import com.onyx.android.sdk.utils.StringUtils;
+
 /**
  * Created by zhuzeng on 4/19/16.
  */
@@ -19,6 +22,15 @@ public class TexShape extends BaseShape  {
     }
 
     public void render(final RenderContext renderContext) {
+        ExtraAttributes extraAttributes = getExtraAttributes();
+        if (extraAttributes == null) {
+            return;
+        }
+        String content = extraAttributes.getTextContent();
+        if (StringUtils.isNullOrEmpty(content)) {
+            return;
+        }
+
         float sx = getDownPoint().getX();
         float sy = getDownPoint().getY();
         float ex = getCurrentPoint().getX();
@@ -28,10 +40,9 @@ public class TexShape extends BaseShape  {
             renderContext.matrix.mapRect(rect);
         }
 
-        float height = Math.abs(rect.top - rect.bottom);
-        renderContext.paint.setStyle(Paint.Style.STROKE);
-        renderContext.paint.setTextSize(height);
-        renderContext.canvas.drawText(getExtraAttributes(), rect.left, rect.bottom - (rect.bottom - rect.top) / 2 , renderContext.paint);
+        float textSize = extraAttributes.getTextSize();
+        renderContext.paint.setTextSize(textSize);
+        renderContext.canvas.drawText(extraAttributes.getTextContent(), rect.left, rect.bottom - (rect.bottom - rect.top) / 2 , renderContext.paint);
     }
 
 }
