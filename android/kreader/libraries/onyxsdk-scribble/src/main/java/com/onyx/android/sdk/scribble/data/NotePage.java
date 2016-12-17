@@ -7,6 +7,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -164,12 +165,18 @@ public class NotePage {
             return;
         }
 
-        for(Shape shape : shapeList) {
+        List<Shape> removeShapes = new ArrayList<>();
+        for (Shape shape : shapeList) {
             String groupId = shape.getGroupId();
             if (!StringUtils.isNullOrEmpty(groupId) && removeGroupId.equals(groupId)) {
-                removeShape(shape, false);
+                removeShapes.add(shape);
             }
         }
+
+        for (Shape removeShape : removeShapes) {
+            removeShape(removeShape, false);
+        }
+        removeShapes.clear();
     }
 
     public final List<Shape> getShapeList() {

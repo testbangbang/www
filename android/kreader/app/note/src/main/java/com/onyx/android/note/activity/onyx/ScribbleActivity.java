@@ -294,6 +294,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 spanTextHandler.buildTextShape(text.toString(), width, getSpanTextFontHeight());
             }
         });
+
     }
 
     private boolean digestionSpanMenu(final @ScribbleMenuCategory.ScribbleMenuCategoryDef
@@ -327,7 +328,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
             spanTextHandler.openSpanTextFunc();
         }
         getNoteViewHelper().setSpanTextMode(isSpanMode);
-        getNoteViewHelper().resetCurrentGroupId();
         updateMenuView(isSpanMode);
         updateWorkView(isSpanMode);
     }
@@ -779,7 +779,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         if (!isSpanMode) {
             return;
         }
-        getNoteViewHelper().resetCurrentGroupId();
+        Log.d(TAG, "resetCurrentGroupId: ");
         spanTextHandler.buildSpan();
     }
 }

@@ -92,7 +92,6 @@ public class NoteViewHelper {
     private int viewPosition[] = {0, 0};
     private boolean supportBigPen = false;
     private boolean isSpanTextMode = false;
-    private String currentGroupId;
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, PEN_PAUSE);
@@ -487,7 +486,6 @@ public class NoteViewHelper {
         shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
         shape.setColor(getNoteDocument().getStrokeColor());
         shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
-        shape.setGroupId(currentGroupId);
         return shape;
     }
 
@@ -723,9 +721,5 @@ public class NoteViewHelper {
 
     public void setSpanTextMode(boolean spanTextMode) {
         isSpanTextMode = spanTextMode;
-    }
-
-    public void resetCurrentGroupId() {
-        this.currentGroupId = ShapeUtils.generateUniqueId();
     }
 }
