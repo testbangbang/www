@@ -270,6 +270,11 @@ public class NoteDocument {
         notePage.removeShapesByTouchPointList(touchPointList, noteDrawingArgs.eraserRadius * scale);
     }
 
+    public void removeShapesByGroupId(final Context context, final String groupId) {
+        final NotePage notePage = getCurrentPage(context);
+        notePage.removeShapesByGroupId(groupId);
+    }
+
     public int getCurrentPageIndex() {
         return currentPageIndex;
     }
