@@ -226,7 +226,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (e == null) {
-                            setSpanMode(!isSpanMode());
+                            toggleSpanMode();
                             switchScribbleMode(isSpanMode());
                         }
                     }

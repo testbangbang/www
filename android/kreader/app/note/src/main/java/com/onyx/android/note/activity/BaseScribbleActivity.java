@@ -529,4 +529,8 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     public void setSpanMode(boolean spanMode) {
         isSpanMode = spanMode;
     }
+
+    public void toggleSpanMode() {
+        isSpanMode = !isSpanMode;
+    }
 }
