@@ -24,6 +24,7 @@
         android:layout_marginRight="@dimen/home_normal_item_category_margin"
         android:text="@string/home_item_note_text"
         android:textSize="@dimen/home_normal_item_category_text_size"
+        android:textStyle="bold"
         android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"

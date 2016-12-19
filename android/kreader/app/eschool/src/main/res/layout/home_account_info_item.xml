@@ -10,7 +10,6 @@
         android:layout_width="@dimen/home_account_info_user_image_size"
         android:layout_height="@dimen/home_account_info_user_image_size"
         android:layout_marginTop="@dimen/home_account_info_user_image_margin_top"
-        android:padding="@dimen/home_account_info_user_image_padding"
         android:src="@drawable/user_girl_glass"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
