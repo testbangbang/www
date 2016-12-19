@@ -66,6 +66,9 @@ public class NoteModel extends BaseModel {
     @Column
     int background;
 
+    @Column
+    int lineLayoutBackgroud;
+
     @Column(typeConverter = ConverterStringList.class)
     PageNameList pageNameList = null;
 
@@ -205,6 +208,14 @@ public class NoteModel extends BaseModel {
         return strokeColor;
     }
 
+    public int getLineLayoutBackgroud() {
+        return lineLayoutBackgroud;
+    }
+
+    public void setLineLayoutBackgroud(int lineLayoutBackgroud) {
+        this.lineLayoutBackgroud = lineLayoutBackgroud;
+    }
+
     public void setStrokeColor(int strokeColor) {
         this.strokeColor = strokeColor;
     }
@@ -251,6 +262,10 @@ public class NoteModel extends BaseModel {
 
     public static int getDefaultBackground() {
         return NoteBackgroundType.EMPTY;
+    }
+
+    public static int getDefaultLineLayoutBackground() {
+        return NoteBackgroundType.LINE;
     }
 
     public static NoteModel createNote(final String documentUniqueId, final String parentUniqueId, final String title) {

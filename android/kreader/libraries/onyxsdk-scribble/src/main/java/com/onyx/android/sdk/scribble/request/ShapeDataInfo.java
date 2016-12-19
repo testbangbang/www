@@ -38,6 +38,14 @@ public class ShapeDataInfo {
         return drawingArgs.background;
     }
 
+    public void setLineLayoutBackground(final int bg) {
+        drawingArgs.setLineLayoutBackground(bg);
+    }
+
+    public int getLineLayoutBackground() {
+        return drawingArgs.getLineLayoutBackground();
+    }
+
     public int getPageCount() {
         return pageNameList.size();
     }

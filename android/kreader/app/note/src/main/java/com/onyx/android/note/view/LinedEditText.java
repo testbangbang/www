@@ -23,6 +23,7 @@ public class LinedEditText extends EditText {
     private Rect mRect;
     private Paint mPaint;
     InputConnectionListener inputConnectionListener;
+    private boolean showLineBackground = true;
 
     // we need this constructor for LayoutInflater
     public LinedEditText(Context context, AttributeSet attrs) {
@@ -39,6 +40,14 @@ public class LinedEditText extends EditText {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        drawLine(canvas);
+        super.onDraw(canvas);
+    }
+
+    private void drawLine(Canvas canvas) {
+        if (!showLineBackground) {
+            return;
+        }
         int height = getHeight();
         int line_height = getLineHeight();
         int count = height / line_height;
@@ -55,7 +64,6 @@ public class LinedEditText extends EditText {
             canvas.drawLine(r.left, baseline + 1, r.right, baseline + 1, paint);
             baseline += getLineHeight();
         }
-        super.onDraw(canvas);
     }
 
     @Override
@@ -78,5 +86,10 @@ public class LinedEditText extends EditText {
     @Override
     public boolean onCheckIsTextEditor() {
         return true;
+    }
+
+    public void setShowLineBackground(boolean showLineBackground) {
+        this.showLineBackground = showLineBackground;
+        invalidate();
     }
 }

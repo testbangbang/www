@@ -319,6 +319,10 @@ public class NoteViewHelper {
         getNoteDocument().setBackground(bgType);
     }
 
+    public void setLineLayoutBackground(int bgType) {
+        getNoteDocument().setLineLayoutBackground(bgType);
+    }
+
     public void setStrokeWidth(float width) {
         getNoteDocument().setStrokeWidth(width);
         EpdController.setStrokeWidth(width);

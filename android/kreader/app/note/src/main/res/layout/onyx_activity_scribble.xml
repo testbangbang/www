@@ -108,7 +108,7 @@
             android:layout_height="match_parent" />
 
         <com.onyx.android.note.view.LinedEditText
-            android:background="@android:color/white"
+            android:background="@drawable/bottom_line_bg"
             android:id="@+id/span_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

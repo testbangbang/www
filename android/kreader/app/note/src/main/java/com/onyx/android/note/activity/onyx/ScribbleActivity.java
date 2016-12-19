@@ -29,6 +29,7 @@ import com.onyx.android.note.actions.scribble.DocumentSaveAction;
 import com.onyx.android.note.actions.scribble.ExportNoteAction;
 import com.onyx.android.note.actions.scribble.GotoTargetPageAction;
 import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
+import com.onyx.android.note.actions.scribble.NoteLineLayoutBackgroundChangeAction;
 import com.onyx.android.note.actions.scribble.PenColorChangeAction;
 import com.onyx.android.note.actions.scribble.RedoAction;
 import com.onyx.android.note.actions.scribble.RemoveByGroupIdAction;
@@ -123,7 +124,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         if (digestionSpanMenu(category)) {
                             return;
                         }
-                        getScribbleSubMenu().show(category);
+                        getScribbleSubMenu().show(category, isLineLayoutMode());
                     }
                 });
             }
@@ -132,28 +133,24 @@ public class ScribbleActivity extends BaseScribbleActivity {
         addPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                closeSpanTextMode();
                 onAddNewPage();
             }
         });
         deletePageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                closeSpanTextMode();
                 onDeletePage();
             }
         });
         prevPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                closeSpanTextMode();
                 onPrevPage();
             }
         });
         nextPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                closeSpanTextMode();
                 onNextPage();
             }
         });
@@ -212,15 +209,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
         switchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                syncWithCallback(true, true, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        if (e == null) {
-                            toggleLineLayoutMode();
-                            switchScribbleMode(isLineLayoutMode());
-                        }
-                    }
-                });
+                toggleLineLayoutMode();
+                switchScribbleMode(isLineLayoutMode());
+                syncWithCallback(true, true, null);
             }
         });
 
@@ -252,8 +243,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void run() {
                         final DocumentFlushAction<BaseScribbleActivity> action = new DocumentFlushAction<>(spanShapeList,
-                                false,
-                                false,
+                                true,
+                                true,
                                 shapeDataInfo.getDrawingArgs());
                         action.execute(ScribbleActivity.this, new BaseCallback() {
                             @Override
@@ -307,18 +298,16 @@ public class ScribbleActivity extends BaseScribbleActivity {
         return false;
     }
 
-    private void closeSpanTextMode() {
-        setLineLayoutMode(false);
-        switchScribbleMode(isLineLayoutMode());
+    private void clearLineLayoutMode() {
         spanTextHandler.clear();
         spanTextView.setText("");
     }
 
     private void switchScribbleMode(boolean isLineLayoutMode) {
+        cleanUpAllPopMenu();
         if (isLineLayoutMode) {
             spanTextHandler.openSpanTextFunc();
         }
-        getNoteViewHelper().setLineLayoutMode(isLineLayoutMode);
         updateMenuView(isLineLayoutMode);
         updateWorkView(isLineLayoutMode);
     }
@@ -537,28 +526,22 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 onNoteShapeChanged(true, false, ShapeFactory.SHAPE_TRIANGLE, null);
                 break;
             case ScribbleSubMenuID.BG_EMPTY:
-                setBackgroundType(NoteBackgroundType.EMPTY);
-                onBackgroundChanged();
+                onBackgroundChanged(NoteBackgroundType.EMPTY);
                 break;
             case ScribbleSubMenuID.BG_LINE:
-                setBackgroundType(NoteBackgroundType.LINE);
-                onBackgroundChanged();
+                onBackgroundChanged(NoteBackgroundType.LINE);
                 break;
             case ScribbleSubMenuID.BG_GRID:
-                setBackgroundType(NoteBackgroundType.GRID);
-                onBackgroundChanged();
+                onBackgroundChanged(NoteBackgroundType.GRID);
                 break;
             case ScribbleSubMenuID.BG_MUSIC:
-                setBackgroundType(NoteBackgroundType.MUSIC);
-                onBackgroundChanged();
+                onBackgroundChanged(NoteBackgroundType.MUSIC);
                 break;
             case ScribbleSubMenuID.BG_MATS:
-                setBackgroundType(NoteBackgroundType.MATS);
-                onBackgroundChanged();
+                onBackgroundChanged(NoteBackgroundType.MATS);
                 break;
             case ScribbleSubMenuID.BG_ENGLISH:
-                setBackgroundType(NoteBackgroundType.ENGLISH);
-                onBackgroundChanged();
+                onBackgroundChanged(NoteBackgroundType.ENGLISH);
                 break;
             case ScribbleSubMenuID.PEN_COLOR_BLACK:
                 setStrokeColor(Color.BLACK);
@@ -599,7 +582,17 @@ public class ScribbleActivity extends BaseScribbleActivity {
         customLineWidth.show();
     }
 
-    private void onBackgroundChanged() {
+    private void onBackgroundChanged(int type) {
+        if (isLineLayoutMode()) {
+            shapeDataInfo.setLineLayoutBackground(type);
+            spanTextView.setShowLineBackground(type == NoteBackgroundType.LINE);
+            final NoteLineLayoutBackgroundChangeAction<ScribbleActivity> changeBGAction =
+                    new NoteLineLayoutBackgroundChangeAction<>(type, true);
+            changeBGAction.execute(ScribbleActivity.this, null);
+            return;
+        }
+
+        setBackgroundType(type);
         final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction =
                 new NoteBackgroundChangeAction<>(getBackgroundType(), !getNoteViewHelper().inUserErasing());
         changeBGAction.execute(ScribbleActivity.this, null);
@@ -771,5 +764,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
             return;
         }
         spanTextHandler.buildSpan();
+    }
+
+    @Override
+    protected void loadLineLayoutData() {
+        if (!isLineLayoutMode()) {
+            return;
+        }
+
+        clearLineLayoutMode();
+        spanTextHandler.loadPageShapes();
     }
 }
