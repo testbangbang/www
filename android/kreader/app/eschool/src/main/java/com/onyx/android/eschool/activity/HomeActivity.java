@@ -233,13 +233,4 @@ public class HomeActivity extends BaseActivity {
         intent.setClassName("com.onyx", "com.onyx.content.browser.activity.SettingsActivity");
         return intent;
     }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            ActivityUtil.startActivitySafely(this, getSettingIntent());
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 }

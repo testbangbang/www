@@ -33,6 +33,7 @@
             android:gravity="center"
             android:text="@string/home_item_teaching_auxiliary_text"
             android:textSize="@dimen/home_teaching_auxiliary_title_text_size"
+            android:textStyle="bold"
             android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
             app:layout_constraintBottom_toBottomOf="@+id/imageView_category_image"
             app:layout_constraintLeft_toRightOf="@+id/imageView_category_image"
