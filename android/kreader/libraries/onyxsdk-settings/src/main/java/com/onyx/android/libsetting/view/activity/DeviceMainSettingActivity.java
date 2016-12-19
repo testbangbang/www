@@ -24,6 +24,7 @@ import com.onyx.android.libsetting.util.CommonUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.DeviceMainSettingItemDecoration;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.utils.ActivityUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +116,14 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(config.getDeviceInfoIntent());
+            }
+        });
+
+        binding.buttonOta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityUtil.startActivitySafely(DeviceMainSettingActivity.this,
+                        new Intent(DeviceMainSettingActivity.this, FirmwareOTAActivity.class));
             }
         });
     }
