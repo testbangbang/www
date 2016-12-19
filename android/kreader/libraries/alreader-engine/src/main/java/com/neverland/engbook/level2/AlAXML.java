@@ -19,7 +19,10 @@ import java.util.HashMap;
 
 public abstract class AlAXML extends AlFormat {
 
-	protected static final int UNKNOWN_FILE_SOURCE_NUM = 0x0fff;
+	protected int active_file = UNKNOWN_FILE_SOURCE_NUM;
+	protected int active_type = 0x00;
+
+	protected static final int UNKNOWN_FILE_SOURCE_NUM = 0x0fffff;
 
 	protected static final int LEVEL2_XML_PARAMETER_VALUE_LEN =	4096;
 
@@ -308,7 +311,7 @@ public abstract class AlAXML extends AlFormat {
 								int cnt_add = max_col - currentTable.rows.get(i).cells.size();
 								for (int j = 0; j < cnt_add; j++) {
 									currentCell.clear(0);
-									currentCell.start = currentCell.stop = AlOneTable.LEVEL2_TABLE_CELL_ALIGNED;
+									currentCell.start = currentCell.stop = AlOneTable.LEVEL2_TABLE_CELL_COLSPANNED;//ALIGNED;
 									currentTable.rows.get(i).cells.add(currentCell);
                                     currentCell = new AlOneTableCell();
 								}

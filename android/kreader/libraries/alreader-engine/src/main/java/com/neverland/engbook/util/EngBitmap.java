@@ -14,8 +14,8 @@ public class EngBitmap {
 
 		// ������� ������� ������ � ����� ������� ������ ���� ������ 4-��,
 		//�.�. ���� ����� �������� 3 �� 3 ������� - ���������� 4 �� 4
-		final int rW = newWidth;
-		final int rH = newHeight;
+		final int rW = (newWidth + 0x03) & 0xfffc;
+		final int rH = (newHeight + 0x03) & 0xfffc;
 
 		// ���� ����� � ������ ������� ��������� - ������ �� ������
 		if (bmp.width == rW && bmp.height == rH)
@@ -72,8 +72,8 @@ public class EngBitmap {
 	public static AlBitmap createBookBitmap(Bitmap bmp) {
 		AlBitmap bitmap = new AlBitmap();
 		bitmap.bmp = bmp;
-		bitmap.width = bmp.getWidth();
-		bitmap.height = bmp.getHeight();
+		bitmap.width = (bmp.getWidth() + 0x03) & 0xfffc;
+		bitmap.height = (bmp.getHeight() + 0x03) & 0xfffc;
 		bitmap.canvas = new Canvas(bmp);
 		bitmap.canvas.drawColor(0x00000000);
 		return bitmap;

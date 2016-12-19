@@ -74,7 +74,26 @@ public class AlUnicode {
 	}
 	
 	public static boolean isChineze(char ch) {
-		return (ch >= 0x3000 && ch < 0xd800) || (ch >= 0xf900 && ch < 0xfb00) || (ch >= 0xfe30 && ch < 0xfe4f) || (ch >= 0xff01 && ch < 0xff1f);
+		return (ch >= 0x3000 && ch < 0xd800) || (ch >= 0xf900 && ch < 0xfb00) || (ch >= 0xfe30 && ch < 0xfe4f) || (ch >= 0xff01 && ch <= 0xff1f);
+	}
+
+	public static boolean isChinezeSpecial(char c) {
+		switch (c) {
+			case 0xff01: //１
+			case 0xff02: //＂
+			case 0xff07: //＇
+			case 0xff09: //）
+			case 0xff0c: //，
+			case 0xff0e: //．
+			case 0xff1a: //：
+			case 0xff1b: //；
+			case 0xff1f: //？
+
+			case 0x3001: //、
+			case 0x3002: //。
+				return true;
+		}
+		return false;
 	}
 
 	public static boolean isNotCharForSUP(char ch) {

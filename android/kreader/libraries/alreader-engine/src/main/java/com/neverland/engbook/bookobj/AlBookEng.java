@@ -143,7 +143,7 @@ public class AlBookEng{
 	 */
 	private boolean calcWordLenForPages;
 
-	private AlBitmap externalBitmap = null;
+	//private AlBitmap externalBitmap = null;
 
 	private AlBitmap errorBitmap = null;
 	private AlBitmap tableBitmap = null;
@@ -319,10 +319,6 @@ public class AlBookEng{
 		}
 
 		preferences.vjustifyUsed = preferences.vjustifyRequest;
-
-		if (engOptions.externalBitmap != null) {
-			externalBitmap = engOptions.externalBitmap;
-		}
 
 		if (engOptions.externalBitmap == null) {
 			EngBitmap.reCreateBookBitmap(bmp[0], 0, 0, shtamp);
@@ -973,20 +969,21 @@ public class AlBookEng{
         boolean needCalcNextPage = false;
 		AlBitmap abmp = null;
 
-		int rW = width;
-		int rH = height;
+		int rW = (width + 0x03) & 0xfffc;
+		int rH = (height + 0x03) & 0xfffc;
 
         if (openState.getState() != AlBookState.OPEN) {
             if (index == TAL_PAGE_INDEX.CURR) {
-				abmp = engOptions.externalBitmap != null ? engOptions.externalBitmap : bmp[1];
+				abmp = engOptions.externalBitmap != null ? engOptions.externalBitmap : bmp[2];
 
                 int waitposition = openState.getState() != AlBookState.NOLOAD ? -2 : -1;
 
                 if (abmp.width != rW || abmp.height != rH)
-                    EngBitmap.reCreateBookBitmap(abmp, width, height, null);
+                    EngBitmap.reCreateBookBitmap(abmp, width, height, shtamp);
 
                 if (abmp.shtamp == shtamp.value && abmp.position == waitposition)
                     return abmp;
+
 				abmp.shtamp = shtamp.value;
 				abmp.position = waitposition;
 
@@ -1006,10 +1003,10 @@ public class AlBookEng{
 		if (index == TAL_PAGE_INDEX.CURR) {
 			abmp = engOptions.externalBitmap != null ? engOptions.externalBitmap : bmp[0];
 
-			if (abmp.shtamp != shtamp.value || bookPosition != abmp.position) {
+			if (abmp.width != rW || abmp.height != rH)
+				EngBitmap.reCreateBookBitmap(abmp, width, height, shtamp);
 
-                if (abmp.width != rW || abmp.height != rH)
-                    EngBitmap.reCreateBookBitmap(abmp, width, height, shtamp);
+			if (abmp.shtamp != shtamp.value || bookPosition != abmp.position) {
 
 				abmp.shtamp = shtamp.value;
 				abmp.position = bookPosition;
@@ -1054,10 +1051,10 @@ public class AlBookEng{
             if (testPosition >= format.getSize())
                 return needCalcNextPage ? bmp[0] : null;
 
-            if (bmp[1].shtamp != shtamp.value || testPosition != bmp[1].position) {
+			if (bmp[1].width != rW || bmp[1].height != rH)
+				EngBitmap.reCreateBookBitmap(bmp[1], width, height, shtamp);
 
-                if (bmp[1].width != rW || bmp[1].height != rH)
-                    EngBitmap.reCreateBookBitmap(bmp[1], width, height, null);
+            if (bmp[1].shtamp != shtamp.value || testPosition != bmp[1].position) {
 
                 if (cachePrevNextPoint.current != bookPosition || cachePrevNextPoint.shtamp != shtamp.value) {
                     cachePrevNextPoint.shtamp = shtamp.value;
@@ -1097,12 +1094,10 @@ public class AlBookEng{
             return null;
         testPosition *= -1;
 
+		if (bmp[2].width != rW || bmp[2].height != rH)
+			EngBitmap.reCreateBookBitmap(bmp[2], width, height, shtamp);
+
         if (bmp[2].shtamp != shtamp.value || testPosition != bmp[2].position) {
-
-            if (bmp[2].width != rW || bmp[2].height != rH) {
-				EngBitmap.reCreateBookBitmap(bmp[2], width, height, null);
-
-			}
 
             if (cachePrevNextPoint.current != bookPosition || cachePrevNextPoint.shtamp != shtamp.value) {
                 cachePrevNextPoint.shtamp = shtamp.value;
@@ -1483,20 +1478,13 @@ public class AlBookEng{
 				
 				count_space = 0;
 
-				//if (preferences.chinezeFormatting) {
-					for (i = 0; i < oilen; i++) {
-						ch = oi.text[i];
-						if (ch == 0x20 || (AlUnicode.isChineze(ch) && i != oilen - 1 && !AlUnicode.isLetter(ch)))
-							count_space++;
-					}
-				/*} else {
-					for (i = 0; i < oilen; i++) {
-						ch = oi.text[i];
-						if (ch == 0x20)
-							count_space++;
-					}
-				}*/
-				
+
+				for (i = 0; i < oilen - 1; i++) {
+					ch = oi.text[i];
+					if (ch == 0x20 || (AlUnicode.isChineze(ch) && !AlUnicode.isLetterOrDigit(ch)))
+						count_space++;
+				}
+
 
 				if (count_space > 0) {
 					switch (Character.getType(oi.text[oilen - 1])) {
@@ -1518,24 +1506,27 @@ public class AlBookEng{
 					
 					ext_len = oi.allWidth - oi.textWidth;
 					
-					for (i = 0; i < oilen; i++) {
+					for (i = 0; i < oilen - 1; i++) {
 						ch = oi.text[i];
 						if (ch == 0x20) {
 							add = ext_len / count_space;
 							oi.width[i] += add;
 							count_space--;
 							ext_len -= add;
-						} else {
-                            if (/*preferences.chinezeFormatting && */AlUnicode.isChineze(ch) && i != oilen - 1 && !AlUnicode.isLetter(ch)) {
-                                add = (int) (ext_len / count_space);
-                                oi.width[i] += add;
-                                count_space--;
-                                ext_len -= add;
+						} else
+						if (AlUnicode.isChineze(ch) && !AlUnicode.isLetterOrDigit(ch)) {
+							add = (int) (ext_len / count_space);
+							oi.width[i] += add;
+							count_space--;
+							ext_len -= add;
 
-                                if (i == 0 || (oi.style[i - 1] & AlStyles.SL_CHINEZEADJUST) == 0)
-                                    oi.style[i] |= AlStyles.SL_CHINEZEADJUST;
-                            }
-                        }
+							if ((oi.style[i] & AlStyles.SL_CHINEZEADJUST) == 0) {
+								oi.style[i + 1] |= AlStyles.SL_CHINEZEADJUST;
+							} else {
+								oi.style[i + 1] &= ~AlStyles.SL_CHINEZEADJUST;
+							}
+						}
+
 					}
 
                     if (oi.isArabic) {
@@ -1543,33 +1534,59 @@ public class AlBookEng{
                             oi.isLeft -= oi.isRed;
                     }
 
-                } else
-				if (preferences.chinezeFormatting) {
+                } else {
 					count_space = 0;
 
-					for (i = 0; i < oilen; i++) {
+					/*for (i = 0; i < oilen - 1; i++) {
 						ch = oi.text[i];
-						if (AlUnicode.isChineze(ch))
-							count_space++;
+						if (!AlUnicode.isLetterOrDigit(ch) || AlUnicode.isChinezeSpecial(ch))
+						count_space++;
 					}
-					
+
 					if (count_space > 0) {
-						ext_len = oi.allWidth - oi.textWidth;
-						
-						for (i = 0; i < oilen; i++) {
+						ext_len = (int)(oi.allWidth - oi.textWidth);
+
+						for (i = 0; i < oilen - 1; i++) {
 							ch = oi.text[i];
-							if (AlUnicode.isChineze(ch)) {
-								add = ext_len / count_space;
+							if (!AlUnicode.isLetterOrDigit(ch) || AlUnicode.isChinezeSpecial(ch)) {
+								add = (int)(ext_len / count_space);
 								count_space--;
 								if (add > 0) {
-									oi.width[i] += add;									
-									ext_len -= add;									
+									oi.width[i] += add;
+									ext_len -= add;
 									if (i == 0 || (oi.style[i - 1] & AlStyles.SL_CHINEZEADJUST) == 0)
 										oi.style[i] |= AlStyles.SL_CHINEZEADJUST;
 								}
 							}
 						}
-					}
+					} else {*/
+						for (i = 0; i < oilen - 1; i++) {
+							ch = oi.text[i];
+							if (AlUnicode.isChineze(ch))
+								count_space++;
+						}
+
+						if (count_space > (oilen >> 1)) {
+							ext_len = oi.allWidth - oi.textWidth;
+
+							for (i = 0; i < oilen - 1; i++) {
+								ch = oi.text[i];
+								if (AlUnicode.isChineze(ch)) {
+									add = ext_len / count_space;
+									count_space--;
+									if (add > 0) {
+										oi.width[i] += add;
+										ext_len -= add;
+										if ((oi.style[i] & AlStyles.SL_CHINEZEADJUST) == 0) {
+											oi.style[i + 1] |= AlStyles.SL_CHINEZEADJUST;
+										} else {
+											oi.style[i + 1] &= ~AlStyles.SL_CHINEZEADJUST;
+										}
+									}
+								}
+							}
+						}
+					//}
 				}
 			} else
 			if (oi.justify == AlStyles.SL_JUST_LEFT) {
@@ -2944,20 +2961,20 @@ public class AlBookEng{
 			screenWidth = width;
 			screenHeight = height;			
 			EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
-			if (engOptions.externalBitmap != null) {
+			/*if (engOptions.externalBitmap != null) {
 				EngBitmap.reCreateBookBitmap(bmp[1], screenWidth, screenHeight, null);
 				EngBitmap.reCreateBookBitmap(bmp[2], screenWidth, screenHeight, null);
-			}
+			}*/
 			shtamp.value++;
 			break;
 		case AlBookState.OPEN:
 			screenWidth = width;
 			screenHeight = height;			
 			EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
-			if (engOptions.externalBitmap != null) {
+			/*if (engOptions.externalBitmap != null) {
 				EngBitmap.reCreateBookBitmap(bmp[1], screenWidth, screenHeight, null);
 				EngBitmap.reCreateBookBitmap(bmp[2], screenWidth, screenHeight, null);
-			}
+			}*/
 			shtamp.value++;			
 			needNewCalcPageCount();
 			break;
@@ -3381,6 +3398,8 @@ public class AlBookEng{
         if (note_word.count != 0)
             res = !addWord(note_word, page, width, TAL_CALC_MODE.ROWS);
         res = res && (!addWord(note_word, page, width, TAL_CALC_MODE.ROWS));
+
+		page.end_position = end_point;
 
         return res;
     }
@@ -4347,7 +4366,12 @@ public class AlBookEng{
 							
 							//if (preferences.chinezeFormatting) {
 								for (j = 0; j < t; j++) {
-									switch (tword.text[j]) {
+									if (AlUnicode.isChinezeSpecial(tword.text[j])) {
+										tword.width[j] *= 0.7f;
+										if (j == 0 || (tword.style[j - 1] & AlStyles.SL_CHINEZEADJUST) == 0)
+											tword.style[j] |= AlStyles.SL_CHINEZEADJUST;
+									}
+									/*switch (tword.text[j]) {
 									case 0xff01:
 									case 0xff02:
 									case 0xff07:
@@ -4367,7 +4391,7 @@ public class AlBookEng{
 										break;
 									default:
 										break;
-									}
+									}*/
 								}
 							//}
 						}
@@ -4403,7 +4427,12 @@ public class AlBookEng{
 
 				//if (preferences.chinezeFormatting) {
 					for (j = 0; j < t; j++) {
-						switch (tword.text[j]) {
+						if (AlUnicode.isChinezeSpecial(tword.text[j])) {
+							tword.width[j] *= 0.7;
+							if (j == 0 || (tword.style[j - 1] & AlStyles.SL_CHINEZEADJUST) == 0)
+								tword.style[j] |= AlStyles.SL_CHINEZEADJUST;
+						}
+						/*switch (tword.text[j]) {
 						case 0xff01:
 						case 0xff02:
 						case 0xff07:
@@ -4423,7 +4452,7 @@ public class AlBookEng{
 							break;
 						default:
 							break;
-						}
+						}*/
 					}
 				//}
 			}
@@ -4533,7 +4562,12 @@ public class AlBookEng{
 						
 						//if (preferences.chinezeFormatting) {
 							for (j = 0; j < t; j++) {
-								switch (tword.text[j]) {
+								if (AlUnicode.isChinezeSpecial(tword.text[j])) {
+									tword.width[j] *= 0.7f;
+									if (j == 0 || (tword.style[j - 1] & AlStyles.SL_CHINEZEADJUST) == 0)
+										tword.style[j] |= AlStyles.SL_CHINEZEADJUST;
+								}
+								/*switch (tword.text[j]) {
 								case 0xff01:
 								case 0xff02:
 								case 0xff07:
@@ -4553,7 +4587,7 @@ public class AlBookEng{
 									break;
 								default:
 									break;
-								}
+								}*/
 							}
 						//}
 					}
@@ -4633,7 +4667,12 @@ public class AlBookEng{
 
 				//if (preferences.chinezeFormatting) {
 					for (j = 0; j < t; j++) {
-						switch (tword.text[j]) {
+						if (AlUnicode.isChinezeSpecial(tword.text[j])) {
+							tword.width[j] *= 0.7;
+							if (j == 0 || (tword.style[j - 1] & AlStyles.SL_CHINEZEADJUST) == 0)
+								tword.style[j] |= AlStyles.SL_CHINEZEADJUST;
+						}
+						/*switch (tword.text[j]) {
 						case 0xff01:
 						case 0xff02:
 						case 0xff07:
@@ -4653,7 +4692,7 @@ public class AlBookEng{
 							break;
 						default:
 							break;
-						}
+						}*/
 					}
 				//}
 			}
@@ -4965,12 +5004,28 @@ public class AlBookEng{
 			}
 		}
 
-		if (tmp_word.count > 0)
+		int scan_pos = -1, verifed_pos = -1;
+
+		if (tmp_word.count > 0) {
+			scan_pos = tmp_word.pos[tmp_word.count - 1];
 			addWord(tmp_word, page, width, calc_mode);
-		/*if (!addWord(tmp_word, page, width, calc_mode))
-			page.end_position = end;*/
+		}
+
         addWord(tmp_word, page, width, calc_mode);
-        page.end_position = end;
+
+		if (page.countItems > 0) {
+			i = page.items.get(page.countItems - 1).count;
+			while ((--i) > 0) {
+				verifed_pos = page.items.get(page.countItems - 1).pos[i];
+				if (verifed_pos >= 0)
+					break;
+			}
+		} else verifed_pos = scan_pos;
+
+		if (scan_pos != -1 && scan_pos != verifed_pos) {
+			page.end_position = verifed_pos + 1;
+		} else
+			page.end_position = end;
 
     }
 
@@ -5659,13 +5714,33 @@ public class AlBookEng{
 
     private static final int SPECIAL_HYPH_POS = -2;
 
+	private AlOneTable getTableAndRowByPos(int sellpos, AlIntHolder row) {
+		String link, rows;
+
+		link = format.getLinkNameByPos(sellpos, InternalConst.TAL_LINK_TYPE.ROW);
+		if (link == null)
+			return null;
+
+		int i = link.indexOf(':');
+		if (i == -1)
+			return null;
+
+		rows = link.substring(i + 1);
+		link = link.substring(0, i);
+
+		int table = InternalFunc.str2int(link, 10);
+		row.value = InternalFunc.str2int(rows, 10);
+
+		return format.getTableByNum(table);
+	}
+
     private boolean getPositionInTableByXY(AlTapInfo tapInfo, TAL_SCREEN_SELECTION_MODE initialSelectMode, int left, int top) {
-        int sellPos = tapInfo.pos, SymbolFound = -1;
+        int sellPos = tapInfo.pos, SymbolFound = -1, i;
         tapInfo.pos = AlTapInfo.TAP_ON_CLEAR_SPACE;
         tapInfo.isTableTap = true;
 
         // get Table
-        AlOneTable ai = null;
+       /* AlOneTable ai = null;
         String link, rows;
 
         link = format.getLinkNameByPos(sellPos, InternalConst.TAL_LINK_TYPE.ROW);
@@ -5681,8 +5756,13 @@ public class AlBookEng{
         int table = InternalFunc.str2int(link, 10);
         int row = InternalFunc.str2int(rows, 10);
 
-        ai = format.getTableByNum(table);
-        if (ai != null) {
+        ai = format.getTableByNum(table);*/
+
+		AlIntHolder rowHolde = new AlIntHolder(0);
+		AlOneTable ai = getTableAndRowByPos(sellPos, rowHolde);
+		int row = rowHolde.value;
+
+		if (ai != null) {
             // get Cell
             AlOneTableCell cell = null;
             AlOnePage page = null;

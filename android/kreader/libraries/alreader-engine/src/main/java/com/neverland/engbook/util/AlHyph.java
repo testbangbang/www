@@ -59,7 +59,26 @@ public class AlHyph {
 		wordIn[0] = 0x20; wordAdr[0] = space_adr; hyph[0] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
 		for (i = 0, j = 1; i < count; i++, j++) {
 			if (text[i] >= 0x3000) {
-				wordIn[j]  = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';			
+				if (AlUnicode.isChineze(text[i])) {
+					wordIn[j] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
+					wordAdr[j] = space_adr;
+					hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;
+
+					if (i > 0 && !AlUnicode.isChineze(text[i - 1])) {
+						hyph[j - 1] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;
+					}
+
+					if (i < count - 1 && AlUnicode.isChinezeSpecial(text[i + 1]))
+						hyph[j] = '8';
+
+					if (i == count - 2 && !AlUnicode.isLetterOrDigit(text[i + 1]))
+						hyph[j] = '8';
+				} else {
+					wordIn[j] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
+					wordAdr[j] = space_adr;
+					hyph[j] = '8';
+				}
+				/*wordIn[j]  = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
 				wordAdr[j] = space_adr; 
 				if (((i == count - 1) || AlUnicode.isLetter(text[j]))) {
 					hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
@@ -68,7 +87,7 @@ public class AlHyph {
 						hyph[j] = InternalConst.TAL_HYPH_INPLACE_PREDISABLE;//'B';
 					} else 
 						hyph[j] = '8';
-				}
+				}*/
 			} else {
 				switch (isLetterLower[text[i]]) {
 				case 0x00:
