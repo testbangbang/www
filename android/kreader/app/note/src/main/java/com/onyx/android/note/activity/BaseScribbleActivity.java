@@ -301,7 +301,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
             @Override
             public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
                 onNewTouchPointListReceived(shape, pointList);
-                triggerSpan(isLineLayoutMode());
+                triggerLineLayoutMode(isLineLayoutMode());
             }
 
             @Override
@@ -338,13 +338,13 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                 if (!shape.supportDFB()) {
                     drawPage();
                 }
-                triggerSpan(isLineLayoutMode());
+                triggerLineLayoutMode(isLineLayoutMode());
             }
 
         };
     }
 
-    protected void triggerSpan(boolean isSpanMode) {
+    protected void triggerLineLayoutMode(boolean isSpanMode) {
 
     }
 

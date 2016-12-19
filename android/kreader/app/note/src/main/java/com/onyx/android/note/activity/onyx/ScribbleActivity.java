@@ -766,7 +766,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     @Override
-    protected void triggerSpan(boolean isLineLayoutMode) {
+    protected void triggerLineLayoutMode(boolean isLineLayoutMode) {
         if (!isLineLayoutMode) {
             return;
         }
