@@ -34,8 +34,8 @@ import java.util.Locale;
 public class InputMethodLanguageSettingUtil {
     private static final boolean DEBUG = false;
 
-    private static final char INPUT_METHOD_SEPARATER = ':';
-    private static final char INPUT_METHOD_SUBTYPE_SEPARATER = ';';
+    private static final char INPUT_METHOD_SEPARATOR = ':';
+    private static final char INPUT_METHOD_SUBTYPE_SEPARATOR = ';';
     private static final int NOT_A_SUBTYPE_ID = -1;
 
     private static final String DISABLED_SYSTEM_INPUT_METHODS = "disabled_system_input_methods";
@@ -94,10 +94,10 @@ public class InputMethodLanguageSettingUtil {
                 String targetString;
                 if (enabled) {
                     targetString = Settings.Secure.getString(
-                            context.getContentResolver(), Settings.Secure.ENABLED_INPUT_METHODS) + INPUT_METHOD_SEPARATER + imeID;
+                            context.getContentResolver(), Settings.Secure.ENABLED_INPUT_METHODS) + INPUT_METHOD_SEPARATOR + imeID;
                 } else {
                     targetString = Settings.Secure.getString(
-                            context.getContentResolver(), Settings.Secure.ENABLED_INPUT_METHODS).replace((INPUT_METHOD_SEPARATER + imeID), "");
+                            context.getContentResolver(), Settings.Secure.ENABLED_INPUT_METHODS).replace((INPUT_METHOD_SEPARATOR + imeID), "");
                 }
                 Settings.Secure.putString(context.getContentResolver(),
                         Settings.Secure.ENABLED_INPUT_METHODS, targetString);
@@ -201,10 +201,10 @@ public class InputMethodLanguageSettingUtil {
     }
 
     private static final TextUtils.SimpleStringSplitter sStringInputMethodSplitter
-            = new TextUtils.SimpleStringSplitter(INPUT_METHOD_SEPARATER);
+            = new TextUtils.SimpleStringSplitter(INPUT_METHOD_SEPARATOR);
 
     private static final TextUtils.SimpleStringSplitter sStringInputMethodSubtypeSplitter
-            = new TextUtils.SimpleStringSplitter(INPUT_METHOD_SUBTYPE_SEPARATER);
+            = new TextUtils.SimpleStringSplitter(INPUT_METHOD_SUBTYPE_SEPARATOR);
 
     private static void buildEnabledInputMethodsString(
             StringBuilder builder, String imi, HashSet<String> subtypes) {
@@ -212,7 +212,7 @@ public class InputMethodLanguageSettingUtil {
         // Inputmethod and subtypes are saved in the settings as follows:
         // ime0;subtype0;subtype1:ime1;subtype0:ime2:ime3;subtype0;subtype1
         for (String subtypeId : subtypes) {
-            builder.append(INPUT_METHOD_SUBTYPE_SEPARATER).append(subtypeId);
+            builder.append(INPUT_METHOD_SUBTYPE_SEPARATOR).append(subtypeId);
         }
     }
 
@@ -221,7 +221,7 @@ public class InputMethodLanguageSettingUtil {
         boolean needsAppendSeparator = false;
         for (String imi : imsList.keySet()) {
             if (needsAppendSeparator) {
-                builder.append(INPUT_METHOD_SEPARATER);
+                builder.append(INPUT_METHOD_SEPARATOR);
             } else {
                 needsAppendSeparator = true;
             }
@@ -234,7 +234,7 @@ public class InputMethodLanguageSettingUtil {
         boolean needsAppendSeparator = false;
         for (String ime : imes) {
             if (needsAppendSeparator) {
-                builder.append(INPUT_METHOD_SEPARATER);
+                builder.append(INPUT_METHOD_SEPARATOR);
             } else {
                 needsAppendSeparator = true;
             }
