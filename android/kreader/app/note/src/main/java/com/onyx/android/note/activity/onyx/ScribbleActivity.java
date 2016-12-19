@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -225,15 +226,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (e == null) {
-                            isSpanMode = !isSpanMode;
-                            switchScribbleMode(isSpanMode);
+                            setSpanMode(!isSpanMode());
+                            switchScribbleMode(isSpanMode());
                         }
                     }
                 });
             }
         });
 
-        switchScribbleMode(isSpanMode);
+        switchScribbleMode(isSpanMode());
         initSpanTextView();
     }
 
@@ -317,8 +318,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void closeSpanTextMode() {
-        isSpanMode = false;
-        switchScribbleMode(isSpanMode);
+        setSpanMode(false);
+        switchScribbleMode(isSpanMode());
         spanTextHandler.clear();
         spanTextView.setText("");
     }

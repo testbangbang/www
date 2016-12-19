@@ -521,4 +521,12 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected abstract void cleanUpAllPopMenu();
+
+    public boolean isSpanMode() {
+        return isSpanMode;
+    }
+
+    public void setSpanMode(boolean spanMode) {
+        isSpanMode = spanMode;
+    }
 }

@@ -651,7 +651,7 @@ public class NoteViewHelper {
             return;
         }
         currentShape.onDown(normalized, screen);
-        isDrawing = true;
+        setDrawing(true);
         if (callback != null) {
             callback.onDrawingTouchDown(motionEvent, currentShape);
         }
@@ -680,7 +680,7 @@ public class NoteViewHelper {
             return;
         }
         currentShape.onMove(normalized, screen);
-        isDrawing = true;
+        setDrawing(true);
         if (callback != null) {
             callback.onDrawingTouchMove(motionEvent, currentShape, true);
         }
@@ -696,7 +696,7 @@ public class NoteViewHelper {
             return;
         }
         currentShape.onUp(normalized, screen);
-        isDrawing = false;
+        setDrawing(false);
         if (callback != null) {
             callback.onDrawingTouchUp(motionEvent, currentShape);
         }
@@ -729,5 +729,9 @@ public class NoteViewHelper {
 
     public boolean isDrawing() {
         return isDrawing;
+    }
+
+    public void setDrawing(boolean drawing) {
+        isDrawing = drawing;
     }
 }
