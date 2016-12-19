@@ -3,7 +3,10 @@ package com.onyx.android.sdk.scribble.shape;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.RectF;
+import android.util.Log;
 
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 /**
@@ -42,6 +45,11 @@ public class TriangleShape extends BaseShape {
         points[3] = getCurrentPoint().getY();
         points[4] = Math.abs(2 * points[0] - points[2]);
         points[5] = points[3];
+        RectF boundingRect = getBoundingRect();
+        if (boundingRect == null) {
+            boundingRect = new RectF();
+        }
+        boundingRect.set(points[4], points[1], points[2], points[3]);
         float result [] = new float[6];
         if (renderContext.matrix != null) {
             renderContext.matrix.mapPoints(result, points);

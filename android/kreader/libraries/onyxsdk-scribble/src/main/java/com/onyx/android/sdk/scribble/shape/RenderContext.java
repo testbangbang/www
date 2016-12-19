@@ -75,4 +75,9 @@ public class RenderContext {
         m.getValues(f);
         displayScale = f[Matrix.MSCALE_X];
     }
+
+    public void setMatrix(Matrix matrix) {
+        this.matrix = matrix;
+        updateDisplayScale(matrix);
+    }
 }

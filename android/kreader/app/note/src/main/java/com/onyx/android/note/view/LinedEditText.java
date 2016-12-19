@@ -5,15 +5,24 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.text.InputType;
 import android.util.AttributeSet;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.widget.EditText;
 
 /**
  * Created by zhuzeng on 8/18/16.
  */
 public class LinedEditText extends EditText {
+
+    public interface InputConnectionListener {
+        void commitText(CharSequence text, int newCursorPosition);
+    }
+
     private Rect mRect;
     private Paint mPaint;
+    InputConnectionListener inputConnectionListener;
 
     // we need this constructor for LayoutInflater
     public LinedEditText(Context context, AttributeSet attrs) {
@@ -22,6 +31,10 @@ public class LinedEditText extends EditText {
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setColor(Color.BLACK);
+    }
+
+    public void setInputConnectionListener(InputConnectionListener inputConnectionListener) {
+        this.inputConnectionListener = inputConnectionListener;
     }
 
     @Override
@@ -43,5 +56,27 @@ public class LinedEditText extends EditText {
             baseline += getLineHeight();
         }
         super.onDraw(canvas);
+    }
+
+    @Override
+    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+        outAttrs.actionLabel = null;
+        outAttrs.label = "Test text";
+        outAttrs.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+        outAttrs.imeOptions = EditorInfo.IME_ACTION_DONE;
+        final SpanInputConnection spanInputConnection = new SpanInputConnection(this, true, new SpanInputConnection.Callback() {
+            @Override
+            public void commitText(CharSequence text, int newCursorPosition) {
+                if (inputConnectionListener != null) {
+                    inputConnectionListener.commitText(text, newCursorPosition);
+                }
+            }
+        });
+        return spanInputConnection;
+    }
+
+    @Override
+    public boolean onCheckIsTextEditor() {
+        return true;
     }
 }

@@ -22,6 +22,16 @@ import java.util.Map;
  *
  */
 public class RawResourceUtil {
+    static final String DRAWABLE_RESOURCE_TYPE = "drawable";
+    static final String STRING_RESOURCE_TYPE = "string";
+
+    static public int getDrawableIdByName(Context context, final String resourceName) {
+        return getResourceIdByName(context, DRAWABLE_RESOURCE_TYPE, resourceName);
+    }
+
+    static public int getStringIdByName(Context context,final String resourceName){
+        return getResourceIdByName(context, STRING_RESOURCE_TYPE, resourceName);
+    }
 
     static public int getResourceIdByName(Context context, final String resourceType, final String resourceName) {
         if (StringUtils.isNotBlank(resourceName)) {

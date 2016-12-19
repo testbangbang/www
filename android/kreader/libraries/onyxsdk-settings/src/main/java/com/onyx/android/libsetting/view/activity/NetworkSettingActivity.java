@@ -13,6 +13,7 @@ import com.onyx.android.libsetting.data.wifi.AccessPoint;
 import com.onyx.android.libsetting.databinding.ActivityNetworkSettingBinding;
 import com.onyx.android.libsetting.manager.BluetoothAdmin;
 import com.onyx.android.libsetting.manager.WifiAdmin;
+import com.onyx.android.libsetting.util.DeviceFeatureUtil;
 import com.onyx.android.libsetting.view.OnyxCustomSwitchPreference;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.utils.ActivityUtil;
@@ -49,6 +50,7 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
             config = SettingConfig.sharedInstance(getContext());
             initView();
             initAdmin();
+            hidePreferenceByDeviceFeature();
         }
 
         private void initAdmin() {
@@ -88,7 +90,7 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
             vpnPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    ActivityUtil.startActivitySafely(getContext(),config.getVPNSettingIntent());
+                    ActivityUtil.startActivitySafely(getContext(), config.getVPNSettingIntent());
                     return true;
                 }
             });
@@ -129,6 +131,16 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
                     return true;
                 }
             });
+        }
+
+        private void hidePreferenceByDeviceFeature() {
+            if (!DeviceFeatureUtil.hasWifi(getContext())) {
+                getPreferenceScreen().removePreference(wifiSwitchPreference);
+                getPreferenceScreen().removePreference(vpnPreference);
+            }
+            if (!DeviceFeatureUtil.hasBluetooth(getContext())) {
+                getPreferenceScreen().removePreference(bluetoothSwitchPreference);
+            }
         }
 
         @Override

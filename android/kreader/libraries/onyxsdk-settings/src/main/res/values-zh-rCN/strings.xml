@@ -3,7 +3,8 @@
     <string name="setting_network">网络连接</string>
     <string name="setting_sound">声音</string>
     <string name="setting_storage">存储</string>
-    <string name="setting_lang_date">语言和时间</string>
+    <string name="setting_lang_input">语言和输入法</string>
+    <string name="setting_date_time">日期与时间</string>
     <string name="setting_security">安全隐私</string>
     <string name="setting_error_report">错误收集</string>
     <string name="setting_user_setting">用户设置</string>
@@ -51,6 +52,7 @@
     <!-- Language input method setting -->
     <string name="language">语言</string>
     <string name="keyboard_and_input">键盘和输入法</string>
+    <string name="default_ime_tittle">默认</string>
     <string name="voice">语音</string>
     <string name="tts_settings_title">文字转语音 (TTS) 输出</string>
 
