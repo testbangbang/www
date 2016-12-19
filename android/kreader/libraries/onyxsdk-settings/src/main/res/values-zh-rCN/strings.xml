@@ -112,4 +112,14 @@
     <string name="homepage_preference">主页设定</string>
     <string name="settings_Library_option">书库选项</string>
     <string name="show_tittle_instead_of_book_name_option">在书库中,显示书的标题以代替文件名.</string>
+
+    <!--OTA Setting-->
+    <string name="setting_ota">固件更新</string>
+    <string name="ota_from_cloud">从网络检查升级包</string>
+    <string name="ota_from_local">从本地检查升级包</string>
+    <string name="ota_auto_update">自动升级</string>
+    <string name="ota_auto_summary">自动检查升级</string>
+    <string name="model_number">设备型号 : </string>
+    <string name="build_number">版本号 : </string>
+
 </resources>
