@@ -63,6 +63,27 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
         }
     }
 
+    public void testCfaSlide() throws Exception {
+        Set<String> filter = new HashSet<>();
+        filter.add("jpg");
+        filter.add("png");
+        List<String> fileList = new ArrayList<>();
+        FileUtils.collectFiles("/mnt/sdcard/slide/", filter, true, fileList);
+
+        for(String path : fileList) {
+            if (path.contains(".cfa.")) {
+                continue;
+            }
+            int width = 960;
+            int height = 1280;
+            final Bitmap origin = BitmapUtils.loadBitmapFromFile(path);
+            final Bitmap scaled = origin.createScaledBitmap(origin, width / 2, height / 2, true);
+            final Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            ImageUtils.toRgbwBitmap(result, scaled, 0);
+            BitmapUtils.saveBitmap(result, path + ".cfa.png");
+        }
+    }
+
     public void testRender0() throws Exception {
         int targetWidth = 200;
         int targetHeight = 200;
