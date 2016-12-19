@@ -133,28 +133,24 @@ public class ScribbleActivity extends BaseScribbleActivity {
         addPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                closeSpanTextMode();
                 onAddNewPage();
             }
         });
         deletePageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                closeSpanTextMode();
                 onDeletePage();
             }
         });
         prevPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                closeSpanTextMode();
                 onPrevPage();
             }
         });
         nextPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                closeSpanTextMode();
                 onNextPage();
             }
         });
@@ -302,9 +298,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         return false;
     }
 
-    private void closeSpanTextMode() {
-        setLineLayoutMode(false);
-        switchScribbleMode(isLineLayoutMode());
+    private void clearLineLayoutMode() {
         spanTextHandler.clear();
         spanTextView.setText("");
     }
@@ -770,5 +764,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
             return;
         }
         spanTextHandler.buildSpan();
+    }
+
+    @Override
+    protected void loadLineLayoutData() {
+        if (!isLineLayoutMode()) {
+            return;
+        }
+
+        clearLineLayoutMode();
+        spanTextHandler.loadPageShapes();
     }
 }
