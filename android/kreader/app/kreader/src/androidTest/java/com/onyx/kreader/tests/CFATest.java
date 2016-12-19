@@ -1,7 +1,6 @@
 package com.onyx.kreader.tests;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
@@ -56,7 +55,7 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
             }
 
             final Bitmap origin = BitmapUtils.loadBitmapFromFile(path);
-            final Bitmap scaled = origin.createScaledBitmap(origin, dp / 2, dp / 2, true);
+            final Bitmap scaled = BitmapUtils.createScaledBitmap(origin, dp / 2, dp / 2);
             final Bitmap result = Bitmap.createBitmap(dp, dp, Bitmap.Config.ARGB_8888);
             ImageUtils.toRgbwBitmap(result, scaled, 0);
             BitmapUtils.saveBitmap(result, path + ".cfa.png");
@@ -77,7 +76,7 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
             int width = 960;
             int height = 1280;
             final Bitmap origin = BitmapUtils.loadBitmapFromFile(path);
-            final Bitmap scaled = origin.createScaledBitmap(origin, width / 2, height / 2, true);
+            final Bitmap scaled = BitmapUtils.createScaledBitmap(origin, width / 2, height / 2);
             final Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             ImageUtils.toRgbwBitmap(result, scaled, 0);
             BitmapUtils.saveBitmap(result, path + ".cfa.png");
@@ -88,7 +87,7 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
         int targetWidth = 200;
         int targetHeight = 200;
         final Bitmap origin = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/icons/user_boy.png");
-        final Bitmap scaled = origin.createScaledBitmap(origin, targetWidth / 2, targetHeight / 2, true);
+        final Bitmap scaled = BitmapUtils.createScaledBitmap(origin, targetWidth / 2, targetHeight / 2);
         final Bitmap result = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
         ImageUtils.toRgbwBitmap(result, scaled, 0);
         BitmapUtils.saveBitmap(result, "/mnt/sdcard/icons/user_boy_cfa.png");
@@ -98,15 +97,16 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
         int targetWidth = 100;
         int targetHeight = 100;
         final Bitmap origin = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/icons/home_pic_display.png");
-        final Bitmap scaled = origin.createScaledBitmap(origin, targetWidth / 2, targetHeight / 2, true);
+        final Bitmap scaled = BitmapUtils.createScaledBitmap(origin, targetWidth / 2, targetHeight / 2);
         final Bitmap result = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
         ImageUtils.toRgbwBitmap(result, scaled, 0);
         BitmapUtils.saveBitmap(result, "/mnt/sdcard/icons/home_pic_display_cfa.png");
     }
 
     public void testRender1() throws Exception {
+        boolean saveOrigin = false;
         NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
-        String[] pathes = {"/mnt/sdcard/Books/cfa.pdf"};
+        String[] pathes = {"/mnt/sdcard/Books/color-org.pdf"};
         for (String path : pathes) {
             assertTrue(wrapper.nativeInitLibrary());
             assertTrue(wrapper.openDocument(path, null) == NeoPdfJniWrapper.NO_ERROR);
@@ -129,8 +129,9 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
                 long end = System.currentTimeMillis();
                 Log.i(TAG, "Performance testing: " + path + " page: " + i + " ts: " + (end - start));
 
-                BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/Books/cfa.origin." + i + ".png");
-
+                if (saveOrigin) {
+                    BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/Books/cfa.origin." + i + ".png");
+                }
                 final Bitmap result = Bitmap.createBitmap(960, 1280, Bitmap.Config.ARGB_8888);
                 ImageUtils.toRgbwBitmap(result, bitmap, 0);
                 BitmapUtils.saveBitmap(result, "/mnt/sdcard/Books/cfa." + i + ".png");
@@ -146,7 +147,7 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
     public void testRender2() throws Exception {
         //final Bitmap origin = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/slide/ab2.png");
         final Bitmap origin = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/slide/shutterstock_104688953_smalll_tweaked.jpg");
-        final Bitmap scaled = origin.createScaledBitmap(origin, 480, 640, true);
+        final Bitmap scaled = BitmapUtils.createScaledBitmap(origin, 480, 640);
         BitmapUtils.saveBitmap(scaled, "/mnt/sdcard/Books/ab-scaled.png");
 
         final Bitmap result = Bitmap.createBitmap(960, 1280, Bitmap.Config.ARGB_8888);
