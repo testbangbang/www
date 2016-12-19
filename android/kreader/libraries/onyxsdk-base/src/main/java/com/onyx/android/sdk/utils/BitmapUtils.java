@@ -46,6 +46,22 @@ public class BitmapUtils {
         canvas.drawBitmap(src, srcRegion, dstRegion, paint);
     }
 
+    public static Bitmap createScaledBitmap(final Bitmap origin, int newWidth, int newHeight) {
+        Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
+
+        float ratioX = newWidth / (float) origin.getWidth();
+        float ratioY = newHeight / (float) origin.getHeight();
+        float middleX = newWidth / 2.0f;
+        float middleY = newHeight / 2.0f;
+        Matrix scaleMatrix = new Matrix();
+        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
+        Canvas canvas = new Canvas(scaledBitmap);
+        canvas.setMatrix(scaleMatrix);
+        canvas.drawBitmap(origin, middleX - origin.getWidth() / 2, middleY - origin.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+        return scaledBitmap;
+    }
+
+
     /**
      * return null if failed
      *
