@@ -18,6 +18,9 @@ public final class AlStyles {
 	public static final int	CHAR_ROWS_S =		0x000e;
 	public static final int	CHAR_ROWS_E =		0x000f;
 
+	public static final int	CHAR_MARKER_FIND_S =0x0016;
+	public static final int	CHAR_MARKER_FIND_E =0x0017;
+
 	
 	// text style specific value
 	public static final int	STYLE_BOLD =						0x00000001;
