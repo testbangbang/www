@@ -92,6 +92,7 @@ public class NoteViewHelper {
     private int viewPosition[] = {0, 0};
     private boolean supportBigPen = false;
     private boolean isSpanTextMode = false;
+    private volatile boolean isDrawing = false;
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, PEN_PAUSE);
@@ -650,6 +651,7 @@ public class NoteViewHelper {
             return;
         }
         currentShape.onDown(normalized, screen);
+        isDrawing = true;
         if (callback != null) {
             callback.onDrawingTouchDown(motionEvent, currentShape);
         }
@@ -678,6 +680,7 @@ public class NoteViewHelper {
             return;
         }
         currentShape.onMove(normalized, screen);
+        isDrawing = true;
         if (callback != null) {
             callback.onDrawingTouchMove(motionEvent, currentShape, true);
         }
@@ -693,6 +696,7 @@ public class NoteViewHelper {
             return;
         }
         currentShape.onUp(normalized, screen);
+        isDrawing = false;
         if (callback != null) {
             callback.onDrawingTouchUp(motionEvent, currentShape);
         }
@@ -721,5 +725,9 @@ public class NoteViewHelper {
 
     public void setSpanTextMode(boolean spanTextMode) {
         isSpanTextMode = spanTextMode;
+    }
+
+    public boolean isDrawing() {
+        return isDrawing;
     }
 }

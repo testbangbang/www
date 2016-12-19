@@ -45,7 +45,6 @@ public class SpanTextHandler {
     private Handler handler;
     private Context context;
     private Callback callback;
-    private int spanHeight = 57;
 
     public SpanTextHandler(Context context, Callback callback) {
         this.context = context;
@@ -95,6 +94,9 @@ public class SpanTextHandler {
     }
 
     private void buildSpanImpl() {
+        if (getNoteViewHelper().isDrawing()) {
+            return;
+        }
         final List<Shape> newAddShapeList = getNoteViewHelper().detachStash();
         String groupId = ShapeUtils.generateUniqueId();
         for (Shape shape : newAddShapeList) {

@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -298,7 +299,6 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         return new NoteViewHelper.InputCallback() {
             @Override
             public void onBeginRawData() {
-
             }
 
             @Override

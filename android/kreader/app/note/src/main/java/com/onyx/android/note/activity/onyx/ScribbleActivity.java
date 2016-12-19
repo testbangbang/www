@@ -779,7 +779,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
         if (!isSpanMode) {
             return;
         }
-        Log.d(TAG, "resetCurrentGroupId: ");
         spanTextHandler.buildSpan();
     }
 }
