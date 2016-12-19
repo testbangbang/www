@@ -212,15 +212,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
         switchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                syncWithCallback(true, true, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        if (e == null) {
-                            toggleLineLayoutMode();
-                            switchScribbleMode(isLineLayoutMode());
-                        }
-                    }
-                });
+                toggleLineLayoutMode();
+                switchScribbleMode(isLineLayoutMode());
+                syncWithCallback(true, true, null);
             }
         });
 
@@ -252,8 +246,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void run() {
                         final DocumentFlushAction<BaseScribbleActivity> action = new DocumentFlushAction<>(spanShapeList,
-                                false,
-                                false,
+                                true,
+                                true,
                                 shapeDataInfo.getDrawingArgs());
                         action.execute(ScribbleActivity.this, new BaseCallback() {
                             @Override
@@ -318,7 +312,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
         if (isLineLayoutMode) {
             spanTextHandler.openSpanTextFunc();
         }
-        getNoteViewHelper().setLineLayoutMode(isLineLayoutMode);
         updateMenuView(isLineLayoutMode);
         updateWorkView(isLineLayoutMode);
     }
