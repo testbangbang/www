@@ -29,6 +29,7 @@ import com.onyx.android.note.actions.scribble.DocumentSaveAction;
 import com.onyx.android.note.actions.scribble.ExportNoteAction;
 import com.onyx.android.note.actions.scribble.GotoTargetPageAction;
 import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
+import com.onyx.android.note.actions.scribble.NoteLineLayoutBackgroundChangeAction;
 import com.onyx.android.note.actions.scribble.PenColorChangeAction;
 import com.onyx.android.note.actions.scribble.RedoAction;
 import com.onyx.android.note.actions.scribble.RemoveByGroupIdAction;
@@ -123,7 +124,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         if (digestionSpanMenu(category)) {
                             return;
                         }
-                        getScribbleSubMenu().show(category);
+                        getScribbleSubMenu().show(category, isLineLayoutMode());
                     }
                 });
             }
@@ -309,6 +310,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void switchScribbleMode(boolean isLineLayoutMode) {
+        cleanUpAllPopMenu();
         if (isLineLayoutMode) {
             spanTextHandler.openSpanTextFunc();
         }
@@ -530,28 +532,22 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 onNoteShapeChanged(true, false, ShapeFactory.SHAPE_TRIANGLE, null);
                 break;
             case ScribbleSubMenuID.BG_EMPTY:
-                setBackgroundType(NoteBackgroundType.EMPTY);
-                onBackgroundChanged();
+                onBackgroundChanged(NoteBackgroundType.EMPTY);
                 break;
             case ScribbleSubMenuID.BG_LINE:
-                setBackgroundType(NoteBackgroundType.LINE);
-                onBackgroundChanged();
+                onBackgroundChanged(NoteBackgroundType.LINE);
                 break;
             case ScribbleSubMenuID.BG_GRID:
-                setBackgroundType(NoteBackgroundType.GRID);
-                onBackgroundChanged();
+                onBackgroundChanged(NoteBackgroundType.GRID);
                 break;
             case ScribbleSubMenuID.BG_MUSIC:
-                setBackgroundType(NoteBackgroundType.MUSIC);
-                onBackgroundChanged();
+                onBackgroundChanged(NoteBackgroundType.MUSIC);
                 break;
             case ScribbleSubMenuID.BG_MATS:
-                setBackgroundType(NoteBackgroundType.MATS);
-                onBackgroundChanged();
+                onBackgroundChanged(NoteBackgroundType.MATS);
                 break;
             case ScribbleSubMenuID.BG_ENGLISH:
-                setBackgroundType(NoteBackgroundType.ENGLISH);
-                onBackgroundChanged();
+                onBackgroundChanged(NoteBackgroundType.ENGLISH);
                 break;
             case ScribbleSubMenuID.PEN_COLOR_BLACK:
                 setStrokeColor(Color.BLACK);
@@ -592,7 +588,17 @@ public class ScribbleActivity extends BaseScribbleActivity {
         customLineWidth.show();
     }
 
-    private void onBackgroundChanged() {
+    private void onBackgroundChanged(int type) {
+        if (isLineLayoutMode()) {
+            shapeDataInfo.setLineLayoutBackground(type);
+            spanTextView.setShowLineBackground(type == NoteBackgroundType.LINE);
+            final NoteLineLayoutBackgroundChangeAction<ScribbleActivity> changeBGAction =
+                    new NoteLineLayoutBackgroundChangeAction<>(type, true);
+            changeBGAction.execute(ScribbleActivity.this, null);
+            return;
+        }
+
+        setBackgroundType(type);
         final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction =
                 new NoteBackgroundChangeAction<>(getBackgroundType(), !getNoteViewHelper().inUserErasing());
         changeBGAction.execute(ScribbleActivity.this, null);

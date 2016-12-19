@@ -92,7 +92,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
                 syncWithCallback(true, false, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        getScribbleSubMenu().show(ScribbleMenuCategory.translate(GAdapterUtil.getUniqueIdAsIntegerType(temp)));
+                        getScribbleSubMenu().show(ScribbleMenuCategory.translate(GAdapterUtil.getUniqueIdAsIntegerType(temp)), true);
                     }
                 });
             }

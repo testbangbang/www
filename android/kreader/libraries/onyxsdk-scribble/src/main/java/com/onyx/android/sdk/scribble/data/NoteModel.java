@@ -264,6 +264,10 @@ public class NoteModel extends BaseModel {
         return NoteBackgroundType.EMPTY;
     }
 
+    public static int getDefaultLineLayoutBackground() {
+        return NoteBackgroundType.LINE;
+    }
+
     public static NoteModel createNote(final String documentUniqueId, final String parentUniqueId, final String title) {
         final NoteModel document = new NoteModel();
         document.setType(TYPE_DOCUMENT);

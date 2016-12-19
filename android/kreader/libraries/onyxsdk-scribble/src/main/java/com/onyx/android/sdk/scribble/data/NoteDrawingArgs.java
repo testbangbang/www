@@ -25,6 +25,7 @@ public class NoteDrawingArgs {
     private volatile int currentShapeType = defaultShape();
     public volatile float eraserRadius = NoteModel.getDefaultEraserRadius();
     public volatile int background;
+    private volatile int lineLayoutBackground;
     public volatile PenState penState;
     public final static int MAX_STROKE_WIDTH = 20;
 
@@ -36,6 +37,7 @@ public class NoteDrawingArgs {
         eraserRadius = other.eraserRadius;
         background = other.background;
         penState = other.penState;
+        setLineLayoutBackground(other.getLineLayoutBackground());
     }
 
     public static int defaultShape() {
@@ -49,6 +51,14 @@ public class NoteDrawingArgs {
     public void setCurrentShapeType(int newShape) {
         lastShapeType = currentShapeType;
         currentShapeType = newShape;
+    }
+
+    public int getLineLayoutBackground() {
+        return lineLayoutBackground;
+    }
+
+    public void setLineLayoutBackground(int lineLayoutBackground) {
+        this.lineLayoutBackground = lineLayoutBackground;
     }
 
     public int getCurrentShapeType() {
