@@ -23,14 +23,6 @@ public class EPDShape extends BaseShape {
     private int penState = PEN_NULL;
 
 
-    /**
-     * rectangle, circle, etc.
-     * @return
-     */
-    public int getType() {
-        return ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
-    }
-
     public boolean supportDFB() {
         return true;
     }

@@ -307,7 +307,7 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public void syncDrawingArgs(final NoteDrawingArgs args) {
-        getShapeDataInfo().getDrawingArgs().syncFrom(args);
+        getShapeDataInfo().getDrawingArgs().copyFrom(args);
     }
 
     public final NoteDrawingArgs getDrawingArgs() {

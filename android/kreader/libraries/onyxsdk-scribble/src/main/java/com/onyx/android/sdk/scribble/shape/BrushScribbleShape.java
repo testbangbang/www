@@ -19,6 +19,10 @@ public class BrushScribbleShape extends EPDShape  {
     private float lastX, lastY;
     private List<InkUtils.PathEntry> pathList;
 
+    public int getType() {
+        return ShapeFactory.SHAPE_BRUSH_SCRIBBLE;
+    }
+
     public float getLastStrokeWidth() {
         return lastStrokeWidth;
     }

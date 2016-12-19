@@ -16,6 +16,10 @@ public class NormalPencilShape extends EPDShape {
 
     private static boolean useHwColorPaint = false;
 
+    public int getType() {
+        return ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
+    }
+
     public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         super.onDown(normalizedPoint, screenPoint);
     }

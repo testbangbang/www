@@ -123,6 +123,6 @@ public class ShapeDataInfo {
     }
 
     public void updateDrawingArgs(NoteDrawingArgs other) {
-        drawingArgs.syncFrom(other);
+        drawingArgs.copyFrom(other);
     }
 }

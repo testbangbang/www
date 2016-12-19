@@ -318,7 +318,7 @@ public class NoteManager {
     }
 
     public final NoteDrawingArgs getNoteDrawingArgs() {
-        return noteDrawingArgs;
+        return noteDocument.getNoteDrawingArgs();
     }
 
     public void setCurrentShapeType(int type) {

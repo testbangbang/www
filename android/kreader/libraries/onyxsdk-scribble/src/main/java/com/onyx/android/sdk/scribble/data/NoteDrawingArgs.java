@@ -29,7 +29,7 @@ public class NoteDrawingArgs {
     public volatile PenState penState;
     public final static int MAX_STROKE_WIDTH = 20;
 
-    public void syncFrom(final NoteDrawingArgs other) {
+    public void copyFrom(final NoteDrawingArgs other) {
         strokeWidth = other.strokeWidth;
         strokeColor = other.strokeColor;
         style = other.style;

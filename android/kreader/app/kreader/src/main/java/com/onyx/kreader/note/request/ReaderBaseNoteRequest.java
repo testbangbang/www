@@ -320,11 +320,10 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private void initWithDeviceConfig(final NoteManager parent) {
         NoteModel.setDefaultEraserRadius(DeviceConfig.sharedInstance(getContext()).getEraserRadius());
         parent.getNoteDocument().setEraserRadius(NoteModel.getDefaultEraserRadius());
-        parent.getNoteDrawingArgs().setEraserRadius(NoteModel.getDefaultEraserRadius());
     }
 
     public void syncDrawingArgs(final NoteDrawingArgs args) {
-        getNoteDataInfo().getDrawingArgs().syncFrom(args);
+        getNoteDataInfo().getDrawingArgs().copyFrom(args);
     }
 
     public final NoteDrawingArgs getDrawingArgs() {
