@@ -3,15 +3,10 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.text.Editable;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
-import android.text.TextWatcher;
-import android.text.method.KeyListener;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,17 +14,14 @@ import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
-import com.onyx.android.note.actions.scribble.AddShapeInBackgroundAction;
 import com.onyx.android.note.actions.scribble.ClearPageAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.android.note.actions.scribble.DocumentFlushAction;
@@ -59,11 +51,9 @@ import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
-import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
-import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
 import com.onyx.android.sdk.ui.view.ContentItemView;
@@ -226,15 +216,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (e == null) {
-                            toggleSpanMode();
-                            switchScribbleMode(isSpanMode());
+                            toggleLineLayoutMode();
+                            switchScribbleMode(isLineLayoutMode());
                         }
                     }
                 });
             }
         });
 
-        switchScribbleMode(isSpanMode());
+        switchScribbleMode(isLineLayoutMode());
         initSpanTextView();
     }
 
@@ -318,28 +308,28 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void closeSpanTextMode() {
-        setSpanMode(false);
-        switchScribbleMode(isSpanMode());
+        setLineLayoutMode(false);
+        switchScribbleMode(isLineLayoutMode());
         spanTextHandler.clear();
         spanTextView.setText("");
     }
 
-    private void switchScribbleMode(boolean isSpanMode) {
-        if (isSpanMode) {
+    private void switchScribbleMode(boolean isLineLayoutMode) {
+        if (isLineLayoutMode) {
             spanTextHandler.openSpanTextFunc();
         }
-        getNoteViewHelper().setSpanTextMode(isSpanMode);
-        updateMenuView(isSpanMode);
-        updateWorkView(isSpanMode);
+        getNoteViewHelper().setLineLayoutMode(isLineLayoutMode);
+        updateMenuView(isLineLayoutMode);
+        updateWorkView(isLineLayoutMode);
     }
 
-    private void updateMenuView(boolean isSpanMode) {
-        switchBtn.setImageResource(isSpanMode ? R.drawable.ic_vector : R.drawable.ic_note);
-        functionContentView.setupContent(1, getResources().getInteger(R.integer.onyx_scribble_main_function_cols), getFunctionAdapter(isSpanMode), 0, true);
+    private void updateMenuView(boolean isLineLayoutMode) {
+        switchBtn.setImageResource(isLineLayoutMode ? R.drawable.ic_vector : R.drawable.ic_note);
+        functionContentView.setupContent(1, getResources().getInteger(R.integer.onyx_scribble_main_function_cols), getFunctionAdapter(isLineLayoutMode), 0, true);
     }
 
-    private void updateWorkView(boolean isSpanMode) {
-        spanTextView.setVisibility(isSpanMode ? View.VISIBLE : View.GONE);
+    private void updateWorkView(boolean isLineLayoutMode) {
+        spanTextView.setVisibility(isLineLayoutMode ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -627,11 +617,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
         return mapping;
     }
 
-    private GAdapter getFunctionAdapter(boolean isSpanMode) {
+    private GAdapter getFunctionAdapter(boolean isLineLayoutMode) {
         GAdapter adapter = new GAdapter();
         adapter.addObject(createFunctionItem(R.drawable.ic_shape, ScribbleMenuCategory.PEN_STYLE));
         adapter.addObject(createFunctionItem(R.drawable.ic_template, ScribbleMenuCategory.BG));
-        if (!isSpanMode) {
+        if (!isLineLayoutMode) {
             adapter.addObject(createFunctionItem(R.drawable.ic_eraser, ScribbleMenuCategory.ERASER));
             adapter.addObject(createFunctionItem(R.drawable.ic_width, ScribbleMenuCategory.PEN_WIDTH));
         }else {
@@ -776,8 +766,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     @Override
-    protected void triggerSpan(boolean isSpanMode) {
-        if (!isSpanMode) {
+    protected void triggerSpan(boolean isLineLayoutMode) {
+        if (!isLineLayoutMode) {
             return;
         }
         spanTextHandler.buildSpan();

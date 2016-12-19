@@ -24,7 +24,6 @@ import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
-import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +90,7 @@ public class NoteViewHelper {
     private OnyxMatrix viewToEpdMatrix = null;
     private int viewPosition[] = {0, 0};
     private boolean supportBigPen = false;
-    private boolean isSpanTextMode = false;
+    private boolean isLineLayoutMode = false;
     private volatile boolean isDrawing = false;
 
     public void reset(final View view) {
@@ -474,7 +473,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-        Shape shape = createNewShape(isSpanTextMode);
+        Shape shape = createNewShape(isLineLayoutMode());
         shape.addPoints(pointList);
         dirtyStash.add(shape);
         if (callback != null) {
@@ -642,7 +641,7 @@ public class NoteViewHelper {
     }
 
     private void onDrawingTouchDown(final MotionEvent motionEvent) {
-        currentShape = createNewShape(isSpanTextMode);
+        currentShape = createNewShape(isLineLayoutMode);
         beforeDownMessage(currentShape);
         dirtyStash.add(currentShape);
         final TouchPoint normalized = new TouchPoint(motionEvent);
@@ -723,8 +722,8 @@ public class NoteViewHelper {
         return DeviceConfig.sharedInstance(context, "note").supportColor();
     }
 
-    public void setSpanTextMode(boolean spanTextMode) {
-        isSpanTextMode = spanTextMode;
+    public void setLineLayoutMode(boolean lineLayoutMode) {
+        isLineLayoutMode = lineLayoutMode;
     }
 
     public boolean isDrawing() {
@@ -733,5 +732,9 @@ public class NoteViewHelper {
 
     public void setDrawing(boolean drawing) {
         isDrawing = drawing;
+    }
+
+    public boolean isLineLayoutMode() {
+        return isLineLayoutMode;
     }
 }
