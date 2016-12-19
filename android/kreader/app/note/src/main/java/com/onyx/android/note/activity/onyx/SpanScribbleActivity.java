@@ -318,7 +318,6 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
 
     @Override
     protected void onDestroy() {
-        SpannableRequest.cleanHistoryShapeList();
         super.onDestroy();
     }
 
@@ -501,14 +500,14 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
 
     private void buildSpanImpl() {
         List<Shape> list = getNoteViewHelper().detachStash();
-        final SpannableRequest spannableRequest = new SpannableRequest(list);
-        getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                final SpannableStringBuilder builder = spannableRequest.getSpannableStringBuilder();
-                spanTextView.setText(builder);
-                spanTextView.setSelection(builder.length());
-            }
-        });
+//        final SpannableRequest spannableRequest = new SpannableRequest(list);
+//        getNoteViewHelper().submit(this, spannableRequest, new BaseCallback() {
+//            @Override
+//            public void done(BaseRequest request, Throwable e) {
+//                final SpannableStringBuilder builder = spannableRequest.getSpannableStringBuilder();
+//                spanTextView.setText(builder);
+//                spanTextView.setSelection(builder.length());
+//            }
+//        });
     }
 }

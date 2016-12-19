@@ -3,9 +3,11 @@ package com.onyx.android.sdk.scribble.data;
 import android.content.Context;
 
 import com.onyx.android.sdk.scribble.shape.*;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -137,6 +139,9 @@ public class NotePage {
         }
         Map<String, Shape> hitShapes = new HashMap<>();
         for(Shape shape : shapeList) {
+            if (!shape.isFreePosition()) {
+                continue;
+            }
             for(TouchPoint touchPoint : touchPointList.getPoints()) {
                 if (shape.fastHitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
                     hitShapes.put(shape.getShapeUniqueId(), shape);
@@ -153,6 +158,25 @@ public class NotePage {
                 }
             }
         }
+    }
+
+    public void removeShapesByGroupId(final String removeGroupId) {
+        if (StringUtils.isNullOrEmpty(removeGroupId)) {
+            return;
+        }
+
+        List<Shape> removeShapes = new ArrayList<>();
+        for (Shape shape : shapeList) {
+            String groupId = shape.getGroupId();
+            if (!StringUtils.isNullOrEmpty(groupId) && removeGroupId.equals(groupId)) {
+                removeShapes.add(shape);
+            }
+        }
+
+        for (Shape removeShape : removeShapes) {
+            removeShape(removeShape, false);
+        }
+        removeShapes.clear();
     }
 
     public final List<Shape> getShapeList() {

@@ -47,6 +47,10 @@ public class TouchPointList implements Serializable {
         points.add(touchPoint);
     }
 
+    public void add(final int index, final TouchPoint touchPoint) {
+        points.add(index, touchPoint);
+    }
+
     public void addAll(final TouchPointList other) {
         points.addAll(other.getPoints());
     }
@@ -59,6 +63,13 @@ public class TouchPointList implements Serializable {
         for (TouchPoint point : points) {
             point.x = point.x * scaleValue;
             point.y = point.y * scaleValue;
+        }
+    }
+
+    public void translateAllPoints(final float dx, final float dy) {
+        for (TouchPoint point : points) {
+            point.x = point.x + dx;
+            point.y = point.y + dy;
         }
     }
 }

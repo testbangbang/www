@@ -5,7 +5,12 @@
 
     <android.support.v7.preference.PreferenceCategory
         android:key="@string/ime_category_key"
-        android:title="@string/keyboard_and_input" />
+        android:title="@string/keyboard_and_input">
+        <android.support.v7.preference.ListPreference
+            android:key="@string/default_ime_key"
+            android:title="@string/default_ime_tittle" />
+
+    </android.support.v7.preference.PreferenceCategory>
 
     <android.support.v7.preference.PreferenceCategory android:title="@string/voice">
         <android.support.v7.preference.Preference

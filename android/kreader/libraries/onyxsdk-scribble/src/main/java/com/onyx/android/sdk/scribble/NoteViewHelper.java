@@ -24,6 +24,7 @@ import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +91,7 @@ public class NoteViewHelper {
     private OnyxMatrix viewToEpdMatrix = null;
     private int viewPosition[] = {0, 0};
     private boolean supportBigPen = false;
+    private boolean isSpanTextMode = false;
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, PEN_PAUSE);
@@ -471,7 +473,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-        Shape shape = createNewShape();
+        Shape shape = createNewShape(isSpanTextMode);
         shape.addPoints(pointList);
         dirtyStash.add(shape);
         if (callback != null) {
@@ -479,10 +481,11 @@ public class NoteViewHelper {
         }
     }
 
-    private Shape createNewShape() {
+    private Shape createNewShape(boolean isSpanTextMode) {
         Shape shape = ShapeFactory.createShape(getNoteDocument().getNoteDrawingArgs().getCurrentShapeType());
         shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
         shape.setColor(getNoteDocument().getStrokeColor());
+        shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
         return shape;
     }
 
@@ -638,7 +641,7 @@ public class NoteViewHelper {
     }
 
     private void onDrawingTouchDown(final MotionEvent motionEvent) {
-        currentShape = createNewShape();
+        currentShape = createNewShape(isSpanTextMode);
         beforeDownMessage(currentShape);
         dirtyStash.add(currentShape);
         final TouchPoint normalized = new TouchPoint(motionEvent);
@@ -714,5 +717,9 @@ public class NoteViewHelper {
 
     public boolean supportColor(Context context){
         return DeviceConfig.sharedInstance(context, "note").supportColor();
+    }
+
+    public void setSpanTextMode(boolean spanTextMode) {
+        isSpanTextMode = spanTextMode;
     }
 }

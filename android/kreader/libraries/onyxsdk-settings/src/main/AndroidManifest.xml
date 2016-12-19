@@ -38,7 +38,7 @@
             android:name=".view.activity.BluetoothSettingActivity"
             android:theme="@style/OnyxAppCompat" />
         <activity
-            android:name=".view.activity.LanguageInputDateSettingActivity"
+            android:name=".view.activity.LanguageInputSettingActivity"
             android:theme="@style/OnyxAppCompat" />
         <activity
             android:name=".view.activity.DateTimeSettingActivity"
