@@ -25,7 +25,6 @@ import com.onyx.android.note.actions.scribble.DocumentFlushAction;
 import com.onyx.android.note.actions.scribble.GotoNextPageAction;
 import com.onyx.android.note.actions.scribble.GotoPrevPageAction;
 import com.onyx.android.note.actions.scribble.RemoveByPointListAction;
-import com.onyx.android.note.handler.SpanTextHandler;
 import com.onyx.android.note.receiver.DeviceReceiver;
 import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
@@ -41,7 +40,6 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
-import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.io.File;
 import java.util.List;
@@ -64,7 +62,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     boolean isSurfaceViewFirstCreated = false;
     protected int currentVisualPageIndex;
     protected int totalPageCount;
-    protected boolean isSpanMode = false;
+    protected boolean isLineLayoutMode = false;
 
     private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY}
     private ActivityState activityState;
@@ -298,13 +296,12 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         return new NoteViewHelper.InputCallback() {
             @Override
             public void onBeginRawData() {
-
             }
 
             @Override
             public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
                 onNewTouchPointListReceived(shape, pointList);
-                triggerSpan(isSpanMode);
+                triggerLineLayoutMode(isLineLayoutMode());
             }
 
             @Override
@@ -341,13 +338,13 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                 if (!shape.supportDFB()) {
                     drawPage();
                 }
-                triggerSpan(isSpanMode);
+                triggerLineLayoutMode(isLineLayoutMode());
             }
 
         };
     }
 
-    protected void triggerSpan(boolean isSpanMode) {
+    protected void triggerLineLayoutMode(boolean isSpanMode) {
 
     }
 
@@ -521,4 +518,16 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected abstract void cleanUpAllPopMenu();
+
+    public boolean isLineLayoutMode() {
+        return isLineLayoutMode;
+    }
+
+    public void setLineLayoutMode(boolean lineLayoutMode) {
+        isLineLayoutMode = lineLayoutMode;
+    }
+
+    public void toggleLineLayoutMode() {
+        isLineLayoutMode = !isLineLayoutMode;
+    }
 }
