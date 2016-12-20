@@ -17,6 +17,7 @@ public class ChangeStyleRequest extends BaseReaderRequest {
 
     public void execute(final Reader reader) throws Exception {
         reader.getReaderLayoutManager().setStyle(readerTextStyle);
+        reader.getBitmapCache().clear();
         drawVisiblePages(reader);
     }
 }
