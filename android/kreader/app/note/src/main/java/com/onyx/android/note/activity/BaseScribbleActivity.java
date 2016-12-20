@@ -560,4 +560,8 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         isLineLayoutMode = !isLineLayoutMode;
         getNoteViewHelper().setLineLayoutMode(isLineLayoutMode);
     }
+
+    public SurfaceView getSurfaceView() {
+        return surfaceView;
+    }
 }

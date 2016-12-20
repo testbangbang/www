@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -74,8 +76,10 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private ImageView switchBtn;
     private ContentView functionContentView;
     private RelativeLayout workView;
+    private RelativeLayout rootView;
     private LinedEditText spanTextView;
     private SpanTextHandler spanTextHandler;
+    private boolean isKeyboardInput = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +108,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         ImageView exportBtn = (ImageView) findViewById(R.id.button_export);
         ImageView settingBtn = (ImageView) findViewById(R.id.button_setting);
         workView = (RelativeLayout) findViewById(R.id.work_view);
+        rootView = (RelativeLayout) findViewById(R.id.onyx_activity_scribble);
         spanTextView = (LinedEditText) findViewById(R.id.span_text_view);
         switchBtn = (ImageView) findViewById(R.id.button_switch);
         exportBtn.setVisibility(NoteAppConfig.sharedInstance(this).isEnableExport() ? View.VISIBLE : View.GONE);
@@ -218,8 +223,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void initSpanTextView() {
-        spanTextView.setCursorVisible(true);
-
         spanTextHandler = new SpanTextHandler(this, new SpanTextHandler.Callback() {
             @Override
             public void OnFinishedSpan(SpannableStringBuilder builder, final List<Shape> spanShapeList) {
@@ -234,7 +237,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     public void run() {
                         final DocumentFlushAction<BaseScribbleActivity> action = new DocumentFlushAction<>(spanShapeList,
                                 true,
-                                true,
+                                !isKeyboardInput(),
                                 shapeDataInfo.getDrawingArgs());
                         action.execute(ScribbleActivity.this, null);
                     }
@@ -247,10 +250,27 @@ public class ScribbleActivity extends BaseScribbleActivity {
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_DEL:
+                        setKeyboardInput(true);
                         onDelete();
                         return true;
+                    case KeyEvent.KEYCODE_ENTER:
+                        onCloseKeyBoard();
+                        return false;
                 }
                 return false;
+            }
+        });
+
+        spanTextView.setOnKeyPreImeListener(new LinedEditText.OnKeyPreImeListener() {
+            @Override
+            public void onKeyPreIme(int keyCode, KeyEvent event) {
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_BACK:
+                        if (isKeyboardInput()) {
+                            onCloseKeyBoard();
+                        }
+                        break;
+                }
             }
         });
 
@@ -258,10 +278,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void commitText(CharSequence text, int newCursorPosition) {
                 int width = (int) spanTextView.getPaint().measureText(text.toString());
+                setKeyboardInput(true);
                 spanTextHandler.buildTextShape(text.toString(), width, getSpanTextFontHeight());
             }
         });
+    }
 
+    private void onCloseKeyBoard() {
+        setKeyboardInput(false);
+        syncWithCallback(false, true, null);
     }
 
     private boolean digestionSpanMenu(final @ScribbleMenuCategory.ScribbleMenuCategoryDef
@@ -290,6 +315,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void switchScribbleMode(boolean isLineLayoutMode) {
         cleanUpAllPopMenu();
+        hideSoftInput();
         if (isLineLayoutMode) {
             spanTextHandler.openSpanTextFunc();
         }
@@ -442,11 +468,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onKeyboard() {
-        spanTextView.setFocusable(true);
-        spanTextView.setFocusableInTouchMode(true);
-        spanTextView.requestFocus();
+        syncWithCallback(false, false, null);
         InputMethodManager inputManager = (InputMethodManager)spanTextView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.showSoftInput(spanTextView, 0);
+    }
+
+    private void hideSoftInput() {
+        setKeyboardInput(false);
+        InputMethodManager inputManager = (InputMethodManager)spanTextView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(spanTextView.getWindowToken(), 0);
     }
 
     private ScribbleSubMenu getScribbleSubMenu() {
@@ -748,6 +778,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         if (!isLineLayoutMode) {
             return;
         }
+        setKeyboardInput(false);
         spanTextHandler.buildSpan();
     }
 
@@ -759,5 +790,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
         clearLineLayoutMode();
         spanTextHandler.loadPageShapes();
+    }
+
+    public boolean isKeyboardInput() {
+        return isKeyboardInput;
+    }
+
+    public void setKeyboardInput(boolean keyboardInput) {
+        isKeyboardInput = keyboardInput;
     }
 }
