@@ -37,4 +37,22 @@ public class AvatarUtils {
             Picasso.with(context).load(path).fit().centerCrop().into(imageView);
         }
     }
+
+    public static String getSpecifyArrayAvatarPath(Context context, int avatarArrayRes) {
+        String avatarPath = StudentAccount.loadAvatarPath(context);
+        if (!AppCompatUtils.isPL107Device(context)) {
+            return avatarPath;
+        }
+        String[] avatarArray = context.getResources().getStringArray(avatarArrayRes);
+        if (StringUtils.isNullOrEmpty(avatarPath)) {
+            avatarPath = avatarArray[0];
+        }
+        for (String s : avatarArray) {
+            if (FileUtils.getBaseName(s).startsWith(FileUtils.getBaseName(avatarPath))) {
+                avatarPath = s;
+                break;
+            }
+        }
+        return avatarPath;
+    }
 }

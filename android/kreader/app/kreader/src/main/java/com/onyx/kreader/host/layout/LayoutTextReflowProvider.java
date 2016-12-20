@@ -75,7 +75,7 @@ public class LayoutTextReflowProvider extends LayoutProvider {
     }
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo readerViewInfo) throws ReaderException {
-        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo, false);
+        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo, true);
         return true;
     }
 
@@ -122,7 +122,7 @@ public class LayoutTextReflowProvider extends LayoutProvider {
     }
 
     public boolean supportPreRender() throws ReaderException {
-        return false;
+        return true;
     }
 
     @Override
