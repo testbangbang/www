@@ -5530,7 +5530,9 @@ public class AlBookEng{
 					}
 					break;
 				case POSITION:
-					pagePositionPointer.clear();
+					if (AlPagePositionStack.findPage(pagePositionPointer, pos) == null) {
+						pagePositionPointer.clear();
+					}
 					bookPosition = pos;
 					return returnOkWithRedraw();
 				case POSITION_WITH_CORRECT:
