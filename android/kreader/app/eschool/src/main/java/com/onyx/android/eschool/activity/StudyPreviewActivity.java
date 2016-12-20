@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.model.StudentAccount;
+import com.onyx.android.eschool.utils.AppCompatUtils;
 import com.onyx.android.eschool.utils.AvatarUtils;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.utils.ActivityUtil;
@@ -74,10 +75,22 @@ public class StudyPreviewActivity extends BaseActivity {
     }
 
     private void initCategoryViews() {
-        initCategoryView(R.id.study_preview_category_item_material, R.drawable.home_teaching_material, -1);
-        initCategoryView(R.id.study_preview_category_item_auxiliary, R.drawable.home_teaching_auxiliary, R.string.home_item_teaching_auxiliary_text);
-        initCategoryView(R.id.study_preview_category_item_practice, R.drawable.home_practice, R.string.home_item_practice_text);
-        initCategoryView(R.id.study_preview_category_item_person, R.drawable.material_person, R.string.study_preview_person);
+        initCategoryView(R.id.study_preview_category_item_material,
+                getPL107CategoryImageDrawableRes(R.drawable.study_preview_material_without_text, R.drawable.home_teaching_material_without_text),
+                R.string.home_item_teaching_materials_text);
+        initCategoryView(R.id.study_preview_category_item_auxiliary,
+                getPL107CategoryImageDrawableRes(R.drawable.study_preview_teaching_auxiliary, R.drawable.home_teaching_auxiliary),
+                R.string.home_item_teaching_auxiliary_text);
+        initCategoryView(R.id.study_preview_category_item_practice,
+                getPL107CategoryImageDrawableRes(R.drawable.study_preview_practice, R.drawable.home_practice),
+                R.string.home_item_practice_text);
+        initCategoryView(R.id.study_preview_category_item_person,
+                getPL107CategoryImageDrawableRes(R.drawable.study_preview_material_person, R.drawable.material_person),
+                R.string.study_preview_person);
+    }
+
+    private int getPL107CategoryImageDrawableRes(int resId, int fallbackResId) {
+        return AppCompatUtils.isPL107Device(this) ? resId : fallbackResId;
     }
 
     private void initCategoryView(int layoutResId, int imageResId, int textResId) {
@@ -106,7 +119,7 @@ public class StudyPreviewActivity extends BaseActivity {
         return (TextView) viewGroup.findViewById(R.id.textView_study_process);
     }
 
-    private String getTextViewString(TextView textView){
+    private String getTextViewString(TextView textView) {
         String text = textView.getText().toString();
         if (StringUtils.isNotBlank(text)) {
             text = text.substring(0, 3);
@@ -115,7 +128,7 @@ public class StudyPreviewActivity extends BaseActivity {
     }
 
     private void updateUserProfileInfo() {
-        AvatarUtils.loadAvatar(this, profileAvatar, StudentAccount.loadAvatarPath(this));
+        AvatarUtils.loadAvatar(this, profileAvatar, AvatarUtils.getSpecifyArrayAvatarPath(this, R.array.study_preview_user_avatar_array));
         StudentAccount account = StudentAccount.loadAccount(this);
 
         profileName.setText(getTextViewString(profileName) + account.name);
