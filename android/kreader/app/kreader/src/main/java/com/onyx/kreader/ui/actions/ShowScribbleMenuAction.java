@@ -336,7 +336,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        lp.addRule(RelativeLayout.ALIGN_LEFT);
         int margin = DimenUtils.dip2px(readerDataHolder.getContext(), 10);
         lp.setMargins(0, 0, margin, margin);
         view.setLayoutParams(lp);
