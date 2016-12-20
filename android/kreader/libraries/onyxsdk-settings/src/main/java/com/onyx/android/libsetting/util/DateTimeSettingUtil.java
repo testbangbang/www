@@ -15,7 +15,7 @@ import java.util.TimeZone;
  */
 
 public class DateTimeSettingUtil {
-    public final static String AUTO_TIME_KEY = CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1) ?
+    private final static String AUTO_TIME_KEY = CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1) ?
             Settings.Global.AUTO_TIME : Settings.System.AUTO_TIME;
     private static final String HOURS_12 = "12";
     private static final String HOURS_24 = "24";
@@ -71,14 +71,9 @@ public class DateTimeSettingUtil {
 
     public static String getTimeZoneText(TimeZone tz) {
         boolean daylight = tz.inDaylightTime(new Date());
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(formatOffset(tz.getRawOffset() +
-                (daylight ? tz.getDSTSavings() : 0))).
-                append(", ").
-                append(tz.getDisplayName(daylight, TimeZone.LONG));
-
-        return sb.toString();
+        return String.valueOf(formatOffset(tz.getRawOffset() +
+                (daylight ? tz.getDSTSavings() : 0))) +
+                ", " + tz.getDisplayName(daylight, TimeZone.LONG);
     }
 
     private static char[] formatOffset(int off) {

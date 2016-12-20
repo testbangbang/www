@@ -38,27 +38,37 @@ import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_USER
 public class SettingConfig {
     static private String TAG = SettingConfig.class.getSimpleName();
 
-    static private final String CUSTOM_SETTING_TTS_PACKAGE_NAME_TAG = "setting_tts_package_name";
-    static private final String CUSTOM_SETTING_BLUETOOTH_PACKAGE_NAME_TAG = "setting_bluetooth_package_name";
-    static private final String DEFAULT_ANDROID_SETTING_PACKAGE_NAME = "com.android.settings";
-    static private final String DEFAULT_ANDROID_SETTING_CLASS_NAME = "com.android.settings.Settings";
-    static private final String CUSTOM_SETTING_TTS_CLASS_NAME_TAG = "setting_tts_class_name";
-    static private final String CUSTOM_SETTING_BLUETOOTH_CLASS_NAME_TAG = "setting_bluetooth_class_name";
-    static private final String DEFAULT_SETTING_TTS_CLASS_NAME = "com.android.settings.TextToSpeechSettings";
-    static private final String DEFAULT_SETTING_BLUETOOTH_CLASS_NAME = "com.android.settings.bluetooth.BluetoothSettings";
+    static class Custom {
+        static private final String TTS_PACKAGE_NAME_TAG = "setting_tts_package_name";
+        static private final String BLUETOOTH_PACKAGE_NAME_TAG = "setting_bluetooth_package_name";
+        static private final String TTS_CLASS_NAME_TAG = "setting_tts_class_name";
+        static private final String BLUETOOTH_CLASS_NAME_TAG = "setting_bluetooth_class_name";
+        static private final String ICON_MAPS_TAG = "customized_setting_icon_maps";
+        static private final String TITTLE_MAPS_TAG = "customized_setting_tittle_maps";
+        static private final String ITEM_LIST_TAG = "setting_item_list";
 
-    static private final String SETTING_ITEM_LIST_TAG = "setting_item_list";
-    static private final String CUSTOMIZED_SETTING_ICON_MAPS_TAG = "customized_setting_icon_maps";
-    static private final String CUSTOMIZED_SETTING_TITTLE_MAPS_TAG = "customized_setting_tittle_maps";
+        static private final String SCREEN_OFF_VALUES_TAG = "screen_screen_off_values";
+        static private final String AUTO_POWER_OFF_VALUES_TAG = "power_off_timeout_values";
+        static private final String WIFI_INACTIVITY_VALUES_TAG = "network_inactivity_timeout_values";
 
-    static private final String SYSTEM_SCREEN_OFF_VALUES_TAG = "screen_screen_off_values";
-    static private final String SYSTEM_AUTO_POWER_OFF_VALUES_TAG = "power_off_timeout_values";
-    static private final String SYSTEM_WIFI_INACTIVITY_VALUES_TAG = "network_inactivity_timeout_values";
+        static private final String WAKE_UP_FRONT_LIGHT_KEY_TAG = "system_wake_up_front_light_key";
+        static private final String SCREEN_OFF_KEY_TAG = "system_screen_off_key";
+        static private final String AUTO_POWER_OFF_KEY_TAG = "system_power_off_key";
+        static private final String WIFI_INACTIVITY_KEY_TAG = "system_wifi_inactivity_key";
+    }
 
-    static private final String SYSTEM_WAKE_UP_FRONT_LIGHT_KEY_TAG = "system_wake_up_front_light_key";
-    static private final String SYSTEM_SCREEN_OFF_KEY_TAG = "system_screen_off_key";
-    static private final String SYSTEM_AUTO_POWER_OFF_KEY_TAG = "system_power_off_key";
-    static private final String SYSTEM_WIFI_INACTIVITY_KEY_TAG = "system_wifi_inactivity_key";
+    static class Default {
+        static private final String ANDROID_SETTING_PACKAGE_NAME = "com.android.settings";
+        static private final String ANDROID_SETTING_CLASS_NAME = "com.android.settings.Settings";
+        static private final String TTS_CLASS_NAME = "com.android.settings.TextToSpeechSettings";
+        static private final String BLUETOOTH_CLASS_NAME = "com.android.settings.bluetooth.BluetoothSettings";
+        static private final String ZONE_PICKER_CLASS_NAME = "com.android.settings.ZonePicker";
+        static private final String POWER_USAGE_SUMMARY_CLASS_NAME = "com.android.settings.fuelgauge.PowerUsageSummary";
+        static private final String APPLICATION_MANAGEMENT_CLASS_NAME = "com.android.settings.applications.ManageApplications";
+        static private final String FACTORY_RESET_CLASS_NAME = "com.android.settings.MasterClear";
+        static private final String VPN_SETTING_CLASS_NAME = "com.android.settings.vpn2.VpnSettings";
+        static private final String DEVICE_INFO_CLASS_NAME = "com.android.settings.DeviceInfoSettings";
+    }
 
 
     private static SettingConfig globalInstance;
@@ -69,7 +79,6 @@ public class SettingConfig {
     int currentDeviceType;
 
     static private List<String> settingItemTAGList;
-    static private List<SettingItem> settingItemList;
     static private Map<String, String> settingIconsMap;
     static private Map<String, String> settingTittleMap;
 
@@ -183,19 +192,19 @@ public class SettingConfig {
     }
 
     private List<Integer> getSystemScreenOffValues() {
-        return getData(SYSTEM_SCREEN_OFF_VALUES_TAG, List.class);
+        return getData(Custom.SCREEN_OFF_VALUES_TAG, List.class);
     }
 
     private List<Integer> getSystemAutoPowerOffValues() {
-        return getData(SYSTEM_AUTO_POWER_OFF_VALUES_TAG, List.class);
+        return getData(Custom.AUTO_POWER_OFF_VALUES_TAG, List.class);
     }
 
     private List<Integer> getSystemWifiInactivityTimeoutValues() {
-        return getData(SYSTEM_WIFI_INACTIVITY_VALUES_TAG, List.class);
+        return getData(Custom.WIFI_INACTIVITY_VALUES_TAG, List.class);
     }
 
     public String getSystemScreenOffKey() {
-        String key = getData(SYSTEM_SCREEN_OFF_KEY_TAG, String.class);
+        String key = getData(Custom.SCREEN_OFF_KEY_TAG, String.class);
         if (TextUtils.isEmpty(key)) {
             key = Settings.System.SCREEN_OFF_TIMEOUT;
         }
@@ -203,64 +212,62 @@ public class SettingConfig {
     }
 
     public String getSystemAutoPowerOffKey() {
-        return getData(SYSTEM_AUTO_POWER_OFF_KEY_TAG, String.class);
+        return getData(Custom.AUTO_POWER_OFF_KEY_TAG, String.class);
     }
 
     public String getSystemWifiInactivityKey() {
-        return getData(SYSTEM_WIFI_INACTIVITY_KEY_TAG, String.class);
+        return getData(Custom.WIFI_INACTIVITY_KEY_TAG, String.class);
     }
 
     public String getSystemWakeUpFrontLightKey() {
-        return getData(SYSTEM_WAKE_UP_FRONT_LIGHT_KEY_TAG, String.class);
+        return getData(Custom.WAKE_UP_FRONT_LIGHT_KEY_TAG, String.class);
     }
-
-    // TODO: 2016/12/15  should replace all direct call string class name.
 
     public Intent getTTSSettingIntent() {
         Intent intent = new Intent();
-        String pkgName = getData(CUSTOM_SETTING_TTS_PACKAGE_NAME_TAG, String.class);
+        String pkgName = getData(Custom.TTS_PACKAGE_NAME_TAG, String.class);
         if (TextUtils.isEmpty(pkgName)) {
-            pkgName = DEFAULT_ANDROID_SETTING_PACKAGE_NAME;
+            pkgName = Default.ANDROID_SETTING_PACKAGE_NAME;
         }
-        String className = getData(CUSTOM_SETTING_TTS_CLASS_NAME_TAG, String.class);
+        String className = getData(Custom.TTS_CLASS_NAME_TAG, String.class);
         if (TextUtils.isEmpty(className)) {
-            className = DEFAULT_SETTING_TTS_CLASS_NAME;
+            className = Default.TTS_CLASS_NAME;
         }
         intent.setClassName(pkgName, className);
         if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
             intent = buildDefaultSettingIntent();
-            intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.tts.TextToSpeechSettings");
+            intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.TTS_CLASS_NAME);
         }
         return intent;
     }
 
     public Intent getTimeZoneSettingIntent() {
         Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.ZonePicker");
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.ZONE_PICKER_CLASS_NAME);
         return intent;
     }
 
     public Intent getBatteryStatusIntent() {
         Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.fuelgauge.PowerUsageSummary");
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.POWER_USAGE_SUMMARY_CLASS_NAME);
         return intent;
     }
 
     public Intent getApplicationManagementIntent() {
         Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.applications.ManageApplications");
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.APPLICATION_MANAGEMENT_CLASS_NAME);
         return intent;
     }
 
     public Intent getFactoryResetIntent() {
         Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.MasterClear");
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.FACTORY_RESET_CLASS_NAME);
         return intent;
     }
 
     private Intent buildDefaultSettingIntent() {
         Intent intent = new Intent();
-        intent.setClassName(DEFAULT_ANDROID_SETTING_PACKAGE_NAME, DEFAULT_ANDROID_SETTING_CLASS_NAME);
+        intent.setClassName(Default.ANDROID_SETTING_PACKAGE_NAME, Default.ANDROID_SETTING_CLASS_NAME);
         intent.setAction(Intent.ACTION_MAIN);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -281,26 +288,26 @@ public class SettingConfig {
 
     public Intent getBluetoothSettingIntent() {
         Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, DEFAULT_SETTING_BLUETOOTH_CLASS_NAME);
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.BLUETOOTH_CLASS_NAME);
         return intent;
     }
 
     public Intent getVPNSettingIntent() {
         Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.vpn2.VpnSettings");
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.VPN_SETTING_CLASS_NAME);
         return intent;
     }
 
     public Intent getDeviceInfoIntent() {
         Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, "com.android.settings.DeviceInfoSettings");
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.DEVICE_INFO_CLASS_NAME);
         return intent;
     }
 
     private List<String> getSettingItemTAGList() {
         if (settingItemTAGList == null) {
             settingItemTAGList = new ArrayList<>();
-            List<String> rawResourceList = getData(SETTING_ITEM_LIST_TAG, List.class);
+            List<String> rawResourceList = getData(Custom.ITEM_LIST_TAG, List.class);
             if (rawResourceList == null) {
                 buildDefaultSettingTAGList();
             } else {
@@ -318,7 +325,7 @@ public class SettingConfig {
     private Map<String, String> getSettingIconMaps() {
         if (settingIconsMap == null) {
             buildDefaultSettingsIconsMap();
-            Map<String, String> rawResourceMap = (Map<String, String>) (getData(CUSTOMIZED_SETTING_ICON_MAPS_TAG, Map.class));
+            Map<String, String> rawResourceMap = (Map<String, String>) (getData(Custom.ICON_MAPS_TAG, Map.class));
             if (rawResourceMap != null) {
                 settingIconsMap.putAll(rawResourceMap);
             }
@@ -329,7 +336,7 @@ public class SettingConfig {
     private Map<String, String> getSettingTittleMap() {
         if (settingTittleMap == null) {
             buildDefaultSettingsTittleMap();
-            Map<String, String> rawResourceMap = (Map<String, String>) (getData(CUSTOMIZED_SETTING_TITTLE_MAPS_TAG, Map.class));
+            Map<String, String> rawResourceMap = (Map<String, String>) (getData(Custom.TITTLE_MAPS_TAG, Map.class));
             if (rawResourceMap != null) {
                 settingTittleMap.putAll(rawResourceMap);
             }

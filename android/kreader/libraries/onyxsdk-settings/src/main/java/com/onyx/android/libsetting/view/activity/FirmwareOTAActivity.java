@@ -24,6 +24,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
 
     private void initView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_firmware_ota);
+        initSupportActionBarWithCustomBackFunction();
         binding.buttonCloudOta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
