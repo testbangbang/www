@@ -30,7 +30,7 @@ public class OnyxCustomSwitchPreference extends Preference {
     }
 
     public OnyxCustomSwitchPreference(Context context) {
-        this(context, (AttributeSet) null);
+        this(context, null);
     }
 
     public OnyxCustomSwitchPreference(Context context, AttributeSet attrs, int defStyleAttr) {

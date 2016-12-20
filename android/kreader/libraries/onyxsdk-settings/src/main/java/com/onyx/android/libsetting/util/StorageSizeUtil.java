@@ -33,7 +33,7 @@ public class StorageSizeUtil {
      * @return total storage amount in bytes
      */
     public static long getTotalStorageAmount() {
-        List<String> pathList = new ArrayList<String>();
+        List<String> pathList = new ArrayList<>();
         pathList.add("/system");
         pathList.add("/data");
         pathList.add("/cache");
@@ -71,13 +71,13 @@ public class StorageSizeUtil {
     }
 
     public static long getInternalStorageAmount() {
-        List<String> list = new ArrayList<String>(1);
+        List<String> list = new ArrayList<>(1);
         list.add("/mnt/sdcard");
         return getStorageAmountForPartitions(list);
     }
 
     public static long getExtsdStorageAmount() {
-        List<String> list = new ArrayList<String>(1);
+        List<String> list = new ArrayList<>(1);
         list.add("/mnt/extsd");
         return getStorageAmountForPartitions(list);
     }

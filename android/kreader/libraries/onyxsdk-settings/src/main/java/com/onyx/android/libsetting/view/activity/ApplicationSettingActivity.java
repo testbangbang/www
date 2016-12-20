@@ -3,6 +3,7 @@ package com.onyx.android.libsetting.view.activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.preference.CheckBoxPreference;
+import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.Gravity;
@@ -36,7 +37,8 @@ public class ApplicationSettingActivity extends OnyxAppCompatActivity {
     public static class ApplicationSettingPreferenceFragment extends PreferenceFragmentCompat {
         CheckBoxPreference adbPreference;
         CheckBoxPreference unknownResourcePreference;
-        Preference applicationManagement, drmSetting, calibration, keyBinding;
+        Preference applicationManagement, drmSetting, calibration;
+        ListPreference keyBinding;
         SettingConfig config;
 
         @Override
@@ -52,7 +54,7 @@ public class ApplicationSettingActivity extends OnyxAppCompatActivity {
             applicationManagement = findPreference(getString(R.string.application_management_key));
             drmSetting = findPreference(getString(R.string.drm_setting_key));
             calibration = findPreference(getString(R.string.calibration_key));
-            keyBinding = findPreference(getString(R.string.key_binding_key));
+            keyBinding = (ListPreference) findPreference(getString(R.string.key_binding_key));
 
             applicationManagement.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override

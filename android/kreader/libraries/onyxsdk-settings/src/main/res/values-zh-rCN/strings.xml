@@ -72,7 +72,9 @@
     <string name="auto_sleep">休眠</string>
     <string name="power_off_timeout">关机延迟</string>
     <string name="wifi_sleep_timeout">网络闲置超时</string>
-    <string name="minute">%1$d 分钟</string>
+    <plurals name="minute">
+        <item quantity="other">%1$d 分钟</item>
+    </plurals>
     <string name="never_sleep">永不</string>
     <string name="sleep_summary">无操作 %1$s 后</string>
     <string name="wifi_timeout_summary">在阅读时自动关闭Wifi</string>
@@ -119,7 +121,7 @@
     <string name="ota_from_local">从本地检查升级包</string>
     <string name="ota_auto_update">自动升级</string>
     <string name="ota_auto_summary">自动检查升级</string>
-    <string name="model_number">设备型号 : </string>
-    <string name="build_number">版本号 : </string>
+    <string name="model_number_title">设备型号 : </string>
+    <string name="firmware_number_title">版本号 : </string>
 
 </resources>
