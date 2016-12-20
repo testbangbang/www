@@ -221,14 +221,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void initSpanTextView() {
         spanTextView.setCursorVisible(true);
-        final SurfaceView surfaceView = (SurfaceView) findViewById(R.id.note_view);
-        surfaceView.post(new Runnable() {
-            @Override
-            public void run() {
-                spanTextView.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, surfaceView.getMeasuredHeight() * 2 / 3));
-                spanTextView.setFocusable(true);
-            }
-        });
 
         spanTextHandler = new SpanTextHandler(this, new SpanTextHandler.Callback() {
             @Override
@@ -246,12 +238,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                                 true,
                                 true,
                                 shapeDataInfo.getDrawingArgs());
-                        action.execute(ScribbleActivity.this, new BaseCallback() {
-                            @Override
-                            public void done(BaseRequest request, Throwable e) {
-                                spanTextView.invalidate();
-                            }
-                        });
+                        action.execute(ScribbleActivity.this, null);
                     }
                 });
             }

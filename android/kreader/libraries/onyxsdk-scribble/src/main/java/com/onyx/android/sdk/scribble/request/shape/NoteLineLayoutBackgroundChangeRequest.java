@@ -18,6 +18,7 @@ public class NoteLineLayoutBackgroundChangeRequest extends BaseNoteRequest {
 
     public void execute(final NoteViewHelper parent) throws Exception {
         parent.setLineLayoutBackground(bgType);
+        renderCurrentPage(parent);
         updateShapeDataInfo(parent);
     }
 

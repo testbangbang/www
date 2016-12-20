@@ -102,21 +102,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <SurfaceView
-            android:id="@+id/note_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
         <com.onyx.android.note.view.LinedEditText
-            android:background="@drawable/bottom_line_bg"
             android:id="@+id/span_text_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textSize="50sp"
             android:inputType="textMultiLine"
             android:focusable="true"
             android:clickable="false"
-            android:maxLines="8"
+            android:maxLines="12"
             android:minLines="5"
             android:gravity="top"
             android:lineSpacingMultiplier="1.5"
@@ -124,6 +118,12 @@
             android:singleLine="false"
             android:scrollbars="none"
             android:textColor="@android:color/black"/>
+
+        <SurfaceView
+            android:id="@+id/note_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </RelativeLayout>
 
     <View

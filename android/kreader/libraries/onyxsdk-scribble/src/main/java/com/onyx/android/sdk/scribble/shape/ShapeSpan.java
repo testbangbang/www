@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class ShapeSpan extends ReplacementSpan {
     static final String TAG = ShapeSpan.class.getSimpleName();
-    public static int SHAPE_SPAN_MARGIN = 3;
+    public static int SHAPE_SPAN_MARGIN = 5;
     private List<Shape> shapeList;
     private float scale = 1.0f;
     private int width = 1;
@@ -53,7 +53,7 @@ public class ShapeSpan extends ReplacementSpan {
         final RectF rect = boundingRect();
 
         float translateX = x + SHAPE_SPAN_MARGIN - rect.left  * scale;
-        float translateY = top - rect.top * scale + (bottom - top - rect.height() * scale);
+        float translateY = top - rect.top * scale + (bottom - top - rect.height() * scale) - 2 * SHAPE_SPAN_MARGIN;
         if (needUpdateShape) {
             matrix.postScale(scale, scale);
             matrix.postTranslate(translateX, translateY);

@@ -86,6 +86,7 @@ public class NoteViewHelper {
     private DeviceConfig deviceConfig;
     private MappingConfig mappingConfig;
     private Shape currentShape = null;
+    private Shape cursorShape = null;
     private boolean shortcutErasing = false;
     private OnyxMatrix viewToEpdMatrix = null;
     private int viewPosition[] = {0, 0};
