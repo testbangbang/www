@@ -1,5 +1,7 @@
 package com.onyx.android.eschool.utils;
 
+import android.content.Context;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -48,5 +50,9 @@ public class AppCompatUtils {
             }
             imageView.layout(left, top, left + imageView.getWidth(), top + imageView.getHeight());
         }
+    }
+
+    public static boolean isPL107Device(Context context) {
+        return "pl107".equalsIgnoreCase(Build.MODEL) && context.getResources().getConfiguration().smallestScreenWidthDp == 960;
     }
 }
