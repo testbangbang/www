@@ -145,6 +145,9 @@ public class ApplicationSettingActivity extends OnyxAppCompatActivity {
                     return true;
                 }
             });
+            if (!config.isEnableKeyBinding()) {
+                keyBinding.setVisible(false);
+            }
         }
 
         @Override

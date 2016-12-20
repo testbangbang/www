@@ -75,7 +75,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
 
         private void updateData() {
             if (!DeviceFeatureUtil.hasWifi(getContext())) {
-                getPreferenceScreen().removePreference(otaAutoCheckPreference);
+                otaAutoCheckPreference.setVisible(false);
             }
             modelSpecPreference.setSummary(Build.DEVICE);
             firmwareSpecPreference.setSummary(Build.DISPLAY);

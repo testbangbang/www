@@ -133,18 +133,18 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
             });
         }
 
-        private void updateData(){
+        private void updateData() {
             wifiSwitchPreference.setSwitchChecked(wifiAdmin.isWifiEnabled());
             bluetoothSwitchPreference.setSwitchChecked(bluetoothAdmin.isEnabled());
         }
 
         private void hidePreferenceByDeviceFeature() {
             if (!DeviceFeatureUtil.hasWifi(getContext())) {
-                getPreferenceScreen().removePreference(wifiSwitchPreference);
-                getPreferenceScreen().removePreference(vpnPreference);
+                wifiSwitchPreference.setVisible(false);
+                vpnPreference.setVisible(false);
             }
             if (!DeviceFeatureUtil.hasBluetooth(getContext())) {
-                getPreferenceScreen().removePreference(bluetoothSwitchPreference);
+                bluetoothSwitchPreference.setVisible(false);
             }
         }
 

@@ -55,6 +55,7 @@ public class SettingConfig {
         static private final String SCREEN_OFF_KEY_TAG = "system_screen_off_key";
         static private final String AUTO_POWER_OFF_KEY_TAG = "system_power_off_key";
         static private final String WIFI_INACTIVITY_KEY_TAG = "system_wifi_inactivity_key";
+        static private final String ENABLE_KEY_BINDING_TAG = "enable_key_binding_key";
     }
 
     static class Default {
@@ -390,5 +391,9 @@ public class SettingConfig {
                     context.getString(RawResourceUtil.getStringIdByName(context, getSettingTittleMap().get(tag)))));
         }
         return settingItemList;
+    }
+
+    public boolean isEnableKeyBinding() {
+        return getData(Custom.ENABLE_KEY_BINDING_TAG, Boolean.class);
     }
 }
