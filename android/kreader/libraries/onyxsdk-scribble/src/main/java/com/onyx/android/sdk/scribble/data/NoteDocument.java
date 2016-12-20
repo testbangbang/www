@@ -267,12 +267,12 @@ public class NoteDocument {
         return gotoPage(value);
     }
 
-    public boolean clearPage(final Context context, final int index) {
+    public boolean clearFreeShapes(final Context context, final int index) {
         final NotePage notePage = getPageByIndex(index);
         if (notePage == null) {
             return false;
         }
-        notePage.clear(true);
+        notePage.clearFreeShapes(true);
         return true;
     }
 

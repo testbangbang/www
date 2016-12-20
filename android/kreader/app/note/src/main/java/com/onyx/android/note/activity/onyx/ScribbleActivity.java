@@ -11,9 +11,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,7 +20,7 @@ import android.widget.TextView;
 
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
-import com.onyx.android.note.actions.scribble.ClearPageAction;
+import com.onyx.android.note.actions.scribble.ClearAllFreeShapesAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.android.note.actions.scribble.DocumentFlushAction;
 import com.onyx.android.note.actions.scribble.DocumentSaveAction;
@@ -727,7 +725,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
             syncWithCallback(true, false, null);
         } else {
-            ClearPageAction<ScribbleActivity> action = new ClearPageAction<>();
+            ClearAllFreeShapesAction<ScribbleActivity> action = new ClearAllFreeShapesAction<>();
             action.execute(this, null);
         }
     }

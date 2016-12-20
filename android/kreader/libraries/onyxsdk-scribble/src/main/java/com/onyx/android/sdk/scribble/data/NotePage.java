@@ -58,13 +58,24 @@ public class NotePage {
         return subPageName;
     }
 
-    public void clear(boolean addToHistory) {
-        if (shapeList.size() > 0 && addToHistory) {
-            removedShapeList.addAll(shapeList);
-            undoRedoManager.addToHistory(ShapeActions.removeShapeListAction(shapeList), false);
+    public void clearFreeShapes(boolean addToHistory) {
+        List<Shape> freeShapes = getFreeShapes(shapeList);
+        if (freeShapes.size() > 0 && addToHistory) {
+            removedShapeList.addAll(freeShapes);
+            undoRedoManager.addToHistory(ShapeActions.removeShapeListAction(freeShapes), false);
         }
-        shapeList.clear();
-        newAddedShapeList.clear();
+        shapeList.removeAll(freeShapes);
+        newAddedShapeList.removeAll(freeShapes);
+    }
+
+    private List<Shape> getFreeShapes(List<Shape> shapes) {
+        List<Shape> freeShapes = new ArrayList<>();
+        for (Shape shape : shapes) {
+            if (shape.isFreePosition()) {
+                freeShapes.add(shape);
+            }
+        }
+        return freeShapes;
     }
 
     public void addShapeFromModel(final Shape shape) {
