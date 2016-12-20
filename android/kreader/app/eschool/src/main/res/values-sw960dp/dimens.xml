@@ -131,9 +131,9 @@
     <dimen name="teaching_category_item_text_size">24sp</dimen>
 
     <dimen name="activity_user_setting_user_info_panel_margin">20dp</dimen>
-    <dimen name="activity_user_setting_user_info_image_size">188dp</dimen>
+    <dimen name="activity_user_setting_user_info_image_size">218dp</dimen>
     <dimen name="activity_user_setting_user_info_image_margin">12dp</dimen>
-    <dimen name="activity_user_setting_user_info_image_padding">3dp</dimen>
+    <dimen name="activity_user_setting_user_info_image_padding">4dp</dimen>
     <dimen name="activity_user_setting_change_avatar_text_size">22sp</dimen>
     <dimen name="activity_user_setting_edit_student_text_size">27sp</dimen>
     <dimen name="activity_user_setting_edit_student_name_text_margin_top">45dp</dimen>
