@@ -133,6 +133,11 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
             });
         }
 
+        private void updateData(){
+            wifiSwitchPreference.setSwitchChecked(wifiAdmin.isWifiEnabled());
+            bluetoothSwitchPreference.setSwitchChecked(bluetoothAdmin.isEnabled());
+        }
+
         private void hidePreferenceByDeviceFeature() {
             if (!DeviceFeatureUtil.hasWifi(getContext())) {
                 getPreferenceScreen().removePreference(wifiSwitchPreference);
@@ -148,6 +153,7 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
             super.onResume();
             wifiAdmin.registerReceiver();
             bluetoothAdmin.registerReceiver();
+            updateData();
         }
 
         @Override
