@@ -142,7 +142,12 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean readCover(final Bitmap bitmap) {
-        return false;
+        getPluginImpl().setViewSize(bitmap.getWidth(), bitmap.getHeight());
+        if (!getPluginImpl().gotoPosition(0)) {
+            return false;
+        }
+        getPluginImpl().draw(bitmap, bitmap.getWidth(), bitmap.getHeight());
+        return true;
     }
 
     public RectF getPageOriginSize(final String position) {
