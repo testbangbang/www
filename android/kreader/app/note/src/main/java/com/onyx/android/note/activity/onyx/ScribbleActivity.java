@@ -390,13 +390,24 @@ public class ScribbleActivity extends BaseScribbleActivity {
         dlg.show(getFragmentManager());
     }
 
-    private void onExport(boolean exportCurPage) {
-        new ExportNoteAction<>(this,
-                shapeDataInfo.getDocumentUniqueId(),
-                shapeDataInfo.getPageNameList().getPageNameList(),
-                noteTitle,
-                exportCurPage,
-                shapeDataInfo.getCurrentPageIndex()).execute(ScribbleActivity.this, null);
+    private void onExport(final boolean exportCurPage) {
+        syncWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new ExportNoteAction<>(ScribbleActivity.this,
+                        shapeDataInfo.getDocumentUniqueId(),
+                        shapeDataInfo.getPageNameList().getPageNameList(),
+                        noteTitle,
+                        exportCurPage,
+                        shapeDataInfo.getCurrentPageIndex()).execute(ScribbleActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        new GotoTargetPageAction<ScribbleActivity>(shapeDataInfo.getCurrentPageIndex()).execute(ScribbleActivity.this);
+                    }
+                });
+            }
+        });
+
     }
 
     private void showExportMenu() {
