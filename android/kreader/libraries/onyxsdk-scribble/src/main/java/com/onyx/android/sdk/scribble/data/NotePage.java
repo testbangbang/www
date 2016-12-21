@@ -114,16 +114,20 @@ public class NotePage {
         return undoRedoManager.canRedo();
     }
 
-    public void redo() {
-        NotePageUndoRedoManager.redo(this, undoRedoManager);
+    public void redo(final boolean isLineLayoutMode) {
+        NotePageUndoRedoManager.redo(this, undoRedoManager, isLineLayoutMode);
     }
 
     public boolean canUndo() {
         return undoRedoManager.canUndo();
     }
 
-    public void undo() {
-        NotePageUndoRedoManager.undo(this, undoRedoManager);
+    public void undo(final boolean isLineLayoutMode) {
+        NotePageUndoRedoManager.undo(this, undoRedoManager, isLineLayoutMode);
+    }
+
+    public void clearUndoRedoRecord() {
+        undoRedoManager.clear();
     }
 
     private void updateShape(final Shape shape) {

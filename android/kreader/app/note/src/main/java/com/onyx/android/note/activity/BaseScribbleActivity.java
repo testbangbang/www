@@ -462,7 +462,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         onRequestFinished((BaseNoteRequest) request, true);
-                        loadLineLayoutData();
+                        reloadLineLayoutData();
                     }
                 });
             }
@@ -478,7 +478,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         onRequestFinished((BaseNoteRequest) request, true);
-                        loadLineLayoutData();
+                        reloadLineLayoutData();
                     }
                 });
             }
@@ -494,7 +494,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         onRequestFinished((BaseNoteRequest) request, true);
-                        loadLineLayoutData();
+                        reloadLineLayoutData();
                     }
                 });
             }
@@ -510,14 +510,14 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         onRequestFinished((BaseNoteRequest) request, true);
-                        loadLineLayoutData();
+                        reloadLineLayoutData();
                     }
                 });
             }
         });
     }
 
-    protected void loadLineLayoutData() {
+    protected void reloadLineLayoutData() {
 
     }
 

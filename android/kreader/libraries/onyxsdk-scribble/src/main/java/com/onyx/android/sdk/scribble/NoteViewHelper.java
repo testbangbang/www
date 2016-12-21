@@ -142,11 +142,18 @@ public class NoteViewHelper {
     }
 
     public void undo(final Context context) {
-        getNoteDocument().getCurrentPage(context).undo();
+        getNoteDocument().getCurrentPage(context).undo(isLineLayoutMode());
     }
 
     public void redo(final Context context) {
-        getNoteDocument().getCurrentPage(context).redo();
+        getNoteDocument().getCurrentPage(context).redo(isLineLayoutMode());
+    }
+
+    public void clearPageUndoRedo(final Context context) {
+        NotePage currentPage = getNoteDocument().getCurrentPage(context);
+        if (currentPage != null) {
+            currentPage.clearUndoRedoRecord();
+        }
     }
 
     public void save(final Context context, final String title , boolean closeAfterSave) {

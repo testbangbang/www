@@ -316,6 +316,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private void switchScribbleMode(boolean isLineLayoutMode) {
         cleanUpAllPopMenu();
         hideSoftInput();
+        getNoteViewHelper().clearPageUndoRedo(this);
         if (isLineLayoutMode) {
             spanTextHandler.openSpanTextFunc();
         }
@@ -433,7 +434,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final RedoAction<ScribbleActivity> action = new RedoAction<>();
-                action.execute(ScribbleActivity.this);
+                action.execute(ScribbleActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        onRequestFinished((BaseNoteRequest) request, true);
+                        loadLineLayoutShapes();
+                    }
+                });
             }
         });
     }
@@ -443,7 +450,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final UndoAction<ScribbleActivity> action = new UndoAction<>();
-                action.execute(ScribbleActivity.this);
+                action.execute(ScribbleActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        onRequestFinished((BaseNoteRequest) request, true);
+                        loadLineLayoutShapes();
+                    }
+                });
             }
         });
     }
@@ -454,13 +467,19 @@ public class ScribbleActivity extends BaseScribbleActivity {
         removeByPointListAction.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                spanTextHandler.loadPageShapes();
+                loadLineLayoutShapes();
             }
         });
     }
 
     private void onSpace() {
         spanTextHandler.buildSpaceShape(SpanTextHandler.SPACE_WIDTH, getSpanTextFontHeight());
+    }
+
+    private void loadLineLayoutShapes() {
+        if (isLineLayoutMode()) {
+            spanTextHandler.loadPageShapes();
+        }
     }
 
     private int getSpanTextFontHeight() {
@@ -794,13 +813,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     @Override
-    protected void loadLineLayoutData() {
+    protected void reloadLineLayoutData() {
         if (!isLineLayoutMode()) {
             return;
         }
 
         clearLineLayoutMode();
-        spanTextHandler.loadPageShapes();
+        loadLineLayoutShapes();
     }
 
     public boolean isKeyboardInput() {

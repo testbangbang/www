@@ -291,7 +291,10 @@ public class NoteDocument {
     }
 
     public String getCurrentPageUniqueId() {
-        return pageDataMap.get(getCurrentPageIndex());
+        if (pageDataMap.size() > getCurrentPageIndex()) {
+            return pageDataMap.get(getCurrentPageIndex());
+        }
+        return null;
     }
 
     public int getPageCount() {
