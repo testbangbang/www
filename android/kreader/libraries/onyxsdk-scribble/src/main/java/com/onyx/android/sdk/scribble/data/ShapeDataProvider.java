@@ -49,7 +49,6 @@ public class ShapeDataProvider {
         final DatabaseWrapper database= FlowManager.getDatabase(ShapeDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
         for(ShapeModel shapeModel : list) {
-            Log.d("saveShapeList", "saveShapeList: " + JSON.toJSONString(shapeModel));
             shapeModel.save();
         }
         database.setTransactionSuccessful();
