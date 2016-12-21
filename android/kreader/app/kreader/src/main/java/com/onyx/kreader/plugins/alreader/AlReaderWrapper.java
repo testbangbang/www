@@ -2,6 +2,7 @@ package com.onyx.kreader.plugins.alreader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Pair;
@@ -63,6 +64,7 @@ public class AlReaderWrapper {
 
      static String DEFAULT_FONT_NAME = "Serif";
 
+    private String filePath;
     private AlBookEng bookEng;
     private AlEngineOptions engineOptions;
     private AlPublicProfileOptions profile = new AlPublicProfileOptions();
@@ -88,6 +90,7 @@ public class AlReaderWrapper {
     }
 
     public long openDocument(final String path,  final ReaderDocumentOptions documentOptions) {
+        filePath = path;
         AlBookOptions bookOpt = new AlBookOptions();
         bookOpt.codePage = TAL_CODE_PAGES.AUTO;
         bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
@@ -101,7 +104,26 @@ public class AlReaderWrapper {
         if (bookEng == null) {
             return;
         }
+        resetScreenState();
         bookEng.closeBook();
+    }
+
+    public Bitmap readCover() {
+        AlBookOptions bookOpt = new AlBookOptions();
+        bookOpt.codePage = TAL_CODE_PAGES.AUTO;
+        bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
+        bookOpt.formatOptions = 0;
+        bookOpt.readPosition = 0;
+        bookOpt.needCoverData = true;
+        AlBookProperties properties = bookEng.scanMetaData(filePath, bookOpt);
+        if (properties.coverImageData == null) {
+            return null;
+        }
+        try {
+            return BitmapFactory.decodeByteArray(properties.coverImageData, 0, properties.coverImageData.length);
+        } catch (Throwable tr) {
+            return null;
+        }
     }
 
     public String metadataString(final String tag) {
@@ -123,6 +145,8 @@ public class AlReaderWrapper {
                 style.getPageMargin().getBottomMargin());
         bookEng.setNewProfileParameters(profile);
         textStyle = style;
+
+        resetScreenState();
     }
 
     private AlEngineOptions createEngineOptions(final Context context, final ReaderPluginOptions pluginOptions) {
@@ -358,21 +382,25 @@ public class AlReaderWrapper {
 
     public boolean nextPage() {
         int ret = bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.NEXTPAGE, 0);
+        resetScreenState();
         return ret == TAL_RESULT.OK;
     }
 
     public boolean prevPage() {
         int ret = bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.PREVPAGE, 0);
+        resetScreenState();
         return ret == TAL_RESULT.OK;
     }
 
     public boolean gotoPosition(int pos) {
         int ret = bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.POSITION, pos);
+        resetScreenState();
         return ret == TAL_RESULT.OK;
     }
 
     public boolean gotoPage(int page) {
         int ret = bookEng.gotoPage(page + 1);
+        resetScreenState();
         return ret == TAL_RESULT.OK;
     }
 
