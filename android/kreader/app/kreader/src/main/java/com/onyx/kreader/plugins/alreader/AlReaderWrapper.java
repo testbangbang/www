@@ -2,6 +2,7 @@ package com.onyx.kreader.plugins.alreader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Pair;
@@ -63,6 +64,7 @@ public class AlReaderWrapper {
 
      static String DEFAULT_FONT_NAME = "Serif";
 
+    private String filePath;
     private AlBookEng bookEng;
     private AlEngineOptions engineOptions;
     private AlPublicProfileOptions profile = new AlPublicProfileOptions();
@@ -88,6 +90,7 @@ public class AlReaderWrapper {
     }
 
     public long openDocument(final String path,  final ReaderDocumentOptions documentOptions) {
+        filePath = path;
         AlBookOptions bookOpt = new AlBookOptions();
         bookOpt.codePage = TAL_CODE_PAGES.AUTO;
         bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
@@ -103,6 +106,24 @@ public class AlReaderWrapper {
         }
         resetScreenState();
         bookEng.closeBook();
+    }
+
+    public Bitmap readCover() {
+        AlBookOptions bookOpt = new AlBookOptions();
+        bookOpt.codePage = TAL_CODE_PAGES.AUTO;
+        bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
+        bookOpt.formatOptions = 0;
+        bookOpt.readPosition = 0;
+        bookOpt.needCoverData = true;
+        AlBookProperties properties = bookEng.scanMetaData(filePath, bookOpt);
+        if (properties.coverImageData == null) {
+            return null;
+        }
+        try {
+            return BitmapFactory.decodeByteArray(properties.coverImageData, 0, properties.coverImageData.length);
+        } catch (Throwable tr) {
+            return null;
+        }
     }
 
     public String metadataString(final String tag) {

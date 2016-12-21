@@ -2,12 +2,14 @@ package com.onyx.kreader.plugins.alreader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDRMCallback;
@@ -142,6 +144,13 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean readCover(final Bitmap bitmap) {
+        Bitmap cover = getPluginImpl().readCover();
+        if (cover != null) {
+            BitmapUtils.scaleBitmap(cover, new Rect(0, 0, cover.getWidth(), cover.getHeight()),
+                    bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()));
+            cover.recycle();
+            return true;
+        }
         getPluginImpl().setViewSize(bitmap.getWidth(), bitmap.getHeight());
         if (!getPluginImpl().gotoPosition(0)) {
             return false;
