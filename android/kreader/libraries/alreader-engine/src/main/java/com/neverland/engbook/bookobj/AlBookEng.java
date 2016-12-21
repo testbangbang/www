@@ -2960,7 +2960,7 @@ public class AlBookEng{
 		case AlBookState.NOLOAD:
 			screenWidth = width;
 			screenHeight = height;			
-			EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
+			//EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
 			/*if (engOptions.externalBitmap != null) {
 				EngBitmap.reCreateBookBitmap(bmp[1], screenWidth, screenHeight, null);
 				EngBitmap.reCreateBookBitmap(bmp[2], screenWidth, screenHeight, null);
@@ -2970,7 +2970,7 @@ public class AlBookEng{
 		case AlBookState.OPEN:
 			screenWidth = width;
 			screenHeight = height;			
-			EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
+			//EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
 			/*if (engOptions.externalBitmap != null) {
 				EngBitmap.reCreateBookBitmap(bmp[1], screenWidth, screenHeight, null);
 				EngBitmap.reCreateBookBitmap(bmp[2], screenWidth, screenHeight, null);
