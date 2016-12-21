@@ -132,23 +132,13 @@ public class TtsHandler extends BaseHandler {
             if (currentSentence.isEndOfScreen()) {
                 Debug.d(TAG, "end of page");
                 currentSentence = null;
-                String next = PagePositionUtils.fromPageNumber(readerDataHolder.getCurrentPage() + 1);
-                new GotoPositionAction(next).execute(readerDataHolder, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        if (e != null) {
-                            Log.w(TAG, e);
-                            return;
-                        }
-                        requestSentenceForTts();
-                    }
-                });
+                nextScreen(readerDataHolder);
                 return true;
             }
         }
 
         String startPosition = currentSentence == null ? "" : currentSentence.getNextPosition();
-        final GetSentenceRequest sentenceRequest = new GetSentenceRequest(readerDataHolder.getCurrentPage(), startPosition);
+        final GetSentenceRequest sentenceRequest = new GetSentenceRequest(readerDataHolder.getCurrentPagePosition(), startPosition);
         readerDataHolder.submitRenderRequest(sentenceRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

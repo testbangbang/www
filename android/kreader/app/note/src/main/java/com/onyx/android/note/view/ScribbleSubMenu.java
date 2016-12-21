@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
@@ -14,6 +15,7 @@ import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.ui.view.ContentItemView;
@@ -49,7 +51,7 @@ public class ScribbleSubMenu extends RelativeLayout {
     }
 
     private final MenuCallback mMenuCallback;
-    GAdapter mThicknessAdapter, mBGAdapter, mEraseAdapter, mPenStyleAdapter, mColoAdapter = new GAdapter();
+    GAdapter mThicknessAdapter, mBGAdapter, mLineLayoutBGAdapter,mEraseAdapter, mPenStyleAdapter, mColoAdapter = new GAdapter();
     private ContentView mMenuContentView;
     static HashMap<String, Integer> mapping = null;
     private int mPositionID;
@@ -121,7 +123,7 @@ public class ScribbleSubMenu extends RelativeLayout {
     }
 
     public void show(final @ScribbleMenuCategory.ScribbleMenuCategoryDef
-                             int category) {
+                             int category, boolean isLineLayoutMode) {
         currentCategory = category;
         switch (category) {
             case ScribbleMenuCategory.PEN_WIDTH:
@@ -134,13 +136,13 @@ public class ScribbleSubMenu extends RelativeLayout {
                 mMenuContentView.setAdapter(mEraseAdapter, 0);
                 break;
             case ScribbleMenuCategory.BG:
-                mMenuContentView.setAdapter(mBGAdapter, 0);
+                mMenuContentView.setAdapter(isLineLayoutMode ? mLineLayoutBGAdapter : mBGAdapter, 0);
                 break;
             case ScribbleMenuCategory.COLOR:
                 mMenuContentView.setAdapter(mColoAdapter,0);
                 break;
         }
-        updateSubMenuIndicatorByCurrentStatus(category);
+        updateSubMenuIndicatorByCurrentStatus(category, isLineLayoutMode);
         setFocusable(true);
         setVisibility(View.VISIBLE);
     }
@@ -167,7 +169,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         mMenuContentView.updateCurrentPage();
     }
 
-    private void updateSubMenuIndicatorByCurrentStatus(final @ScribbleMenuCategory.ScribbleMenuCategoryDef int category) {
+    private void updateSubMenuIndicatorByCurrentStatus(final @ScribbleMenuCategory.ScribbleMenuCategoryDef int category, boolean isLineLayoutMode) {
         GObject object = null;
         int dataIndex = -1;
         Object targetPattern = null;
@@ -208,7 +210,8 @@ public class ScribbleSubMenu extends RelativeLayout {
                 }
                 break;
             case ScribbleMenuCategory.BG:
-                switch (curShapeDataInfo.getBackground()) {
+                int bg = isLineLayoutMode ? curShapeDataInfo.getLineLayoutBackground() : curShapeDataInfo.getBackground();
+                switch (bg) {
                     case NoteBackgroundType.EMPTY:
                         targetPattern = ScribbleSubMenuID.BG_EMPTY;
                         break;
@@ -272,6 +275,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         mEraseAdapter = createEraseAdapter();
         mPenStyleAdapter = createPenStyleAdapter();
         mBGAdapter = createBGAdapter();
+        mLineLayoutBGAdapter = createLineLayoutBGAdapter();
         mColoAdapter = createPenColorAdapter();
     }
 
@@ -332,6 +336,13 @@ public class ScribbleSubMenu extends RelativeLayout {
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_mats, ScribbleSubMenuID.BG_MATS, true));
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_music, ScribbleSubMenuID.BG_MUSIC, true));
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_english, ScribbleSubMenuID.BG_ENGLISH, true));
+        return bgMenus;
+    }
+
+    private GAdapter createLineLayoutBGAdapter() {
+        GAdapter bgMenus = new GAdapter();
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_white, ScribbleSubMenuID.BG_EMPTY, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_line, ScribbleSubMenuID.BG_LINE, true));
         return bgMenus;
     }
 

@@ -2,6 +2,7 @@ package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.*;
 
+import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
@@ -21,6 +22,9 @@ public class BaseShape implements Shape {
     private String documentUniqueId;
     private String pageUniqueId;
     private String subPageUniqueId;
+    private String groupId;
+    private ShapeExtraAttributes shapeExtraAttributes;
+    private int layoutType;
     private int color = Color.BLACK;
     private float strokeWidth;
     private float displayStrokeWidth;
@@ -131,6 +135,10 @@ public class BaseShape implements Shape {
         }
     }
 
+    public void resetBoundingRect() {
+        boundingRect = null;
+    }
+
     public RectF getBoundingRect() {
         return boundingRect;
     }
@@ -174,6 +182,18 @@ public class BaseShape implements Shape {
 
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         addUpPoint(normalizedPoint, screenPoint);
+    }
+
+    public void onTranslate(final float dx, final float dy) {
+        normalizedPoints.translateAllPoints(dx, dy);
+        if (normalizedPoints.size() > 0) {
+            downPoint.set(normalizedPoints.get(0));
+        }
+        if (normalizedPoints.size() > 1) {
+            currentPoint.set(normalizedPoints.get(1));
+        }
+        resetBoundingRect();
+        updateBoundingRect();
     }
 
     public void addUpPoint(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
@@ -290,6 +310,37 @@ public class BaseShape implements Shape {
         originDisplayPath = null;
     }
 
+    @Override
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    @Override
+    public String getGroupId() {
+        return groupId;
+    }
+
+    @Override
+    public void setLayoutType(int layoutType) {
+        this.layoutType = layoutType;
+    }
+
+    @Override
+    public int getLayoutType() {
+        return layoutType;
+    }
+
+    public ShapeExtraAttributes getShapeExtraAttributes() {
+        if (shapeExtraAttributes == null) {
+            shapeExtraAttributes = new ShapeExtraAttributes();
+        }
+        return shapeExtraAttributes;
+    }
+
+    public void setShapeExtraAttributes(ShapeExtraAttributes attributes) {
+        shapeExtraAttributes = attributes;
+    }
+
     public void setPageOriginWidth(int width) {
         originWidth = width;
     }
@@ -306,4 +357,8 @@ public class BaseShape implements Shape {
         return originHeight;
     }
 
+    @Override
+    public boolean isFreePosition() {
+        return getLayoutType() == ShapeFactory.POSITION_FREE;
+    }
 }

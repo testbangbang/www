@@ -1854,6 +1854,13 @@ public abstract class AlFormat {
                             AlOneSearchResult a = new AlOneSearchResult();
                             a.pos_start = stackPos[(fPos - j) & InternalConst.FIND_MASK];
                             a.pos_end = stackPos[fPos & InternalConst.FIND_MASK];
+
+                            if (a.pos_start >= ap.start) {
+                                getFindContext(a, ap.start, par_num, par_num);
+                            } else {
+                                getFindContext(a, 0, findParagraphByPos(a.pos_start), par_num);
+                            }
+
                             resfind.add(a);
                             res = TAL_NOTIFY_RESULT.OK;
                         }
@@ -1871,6 +1878,100 @@ public abstract class AlFormat {
         }
 
         return res;
+    }
+
+     private static final int LEVEL2_FIND_CONTEXT_OFFSET = 35;
+     private void getFindContext(AlOneSearchResult find, int start, int par_start, int par_stop) {
+
+        int par_num = par_start;
+
+        AlOneParagraph ap;
+        boolean isInvisible = false;
+        int apstart;
+        char ch;
+
+        int state = 0, ws = -1, we = -1;
+        StringBuilder text = new StringBuilder();
+
+        while (par_num <= par_stop) {
+
+            if (par_start == par_stop) {
+                apstart = start;
+                par_num++;
+            } else {
+                ap = par.get(par_num++);
+                getParagraph(ap);
+                apstart = ap.start;
+            }
+
+            for (int i = 0; i < stored_par.length; i++) {
+                ch = stored_par.data[i];
+
+                if (ch < 0x20) {
+                    switch (ch) {
+                        case AlStyles.CHAR_TITLEIMG_START:
+                        case AlStyles.CHAR_ROWS_S:
+                        case AlStyles.CHAR_LINK_S:
+                        case AlStyles.CHAR_IMAGE_S:
+                            isInvisible = true;
+                            continue;
+                        case AlStyles.CHAR_TITLEIMG_STOP:
+                        case AlStyles.CHAR_ROWS_E:
+                        case AlStyles.CHAR_LINK_E:
+                        case AlStyles.CHAR_IMAGE_E:
+                            isInvisible = false;
+                            continue;
+                        case AlStyles.CHAR_COVER:
+                            ch = ' ';
+                            break;
+                        default:
+                            continue;
+                    }
+                } else
+                if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0) {
+                    continue;
+                    //} else
+                    //if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE1) {
+                    //	continue;
+                } else {
+                    if (isInvisible)
+                        continue;
+                }
+
+                if (state == 0 && apstart + i > find.pos_start - LEVEL2_FIND_CONTEXT_OFFSET) {
+                    if (ch == 0x20 || i == 0 || apstart + i > find.pos_start - (LEVEL2_FIND_CONTEXT_OFFSET >> 2))
+                        state = 1;
+                }
+
+                if (state == 1) {
+
+                    if (ws == -1 && apstart + i >= find.pos_start) {
+                        text.append((char)AlStyles.CHAR_MARKER_FIND_S);
+                        ws = apstart + i;
+                    }
+
+                    text.append(ch);
+
+                    if (we == -1 && apstart + i >= find.pos_end) {
+                        text.append((char)AlStyles.CHAR_MARKER_FIND_E);
+                        we = apstart + i;
+                    }
+
+                    if (apstart + i > find.pos_end + LEVEL2_FIND_CONTEXT_OFFSET) {
+                        if (ch == 0x20 || i == 0 || apstart + i > find.pos_end + LEVEL2_FIND_CONTEXT_OFFSET + (LEVEL2_FIND_CONTEXT_OFFSET >> 1)) {
+                            state = 2;
+                        }
+                    }
+
+                } else
+                if (state == 2) {
+                    if (par_num > par_stop)
+                        break;
+                }
+            }
+        }
+
+        find.context = text.toString();
     }
 
     static boolean getTestBuffer(AlFiles a, int cp, char[] dst, int len, boolean toLower) {

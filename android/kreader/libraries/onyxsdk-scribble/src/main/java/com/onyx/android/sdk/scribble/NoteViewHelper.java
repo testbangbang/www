@@ -90,6 +90,8 @@ public class NoteViewHelper {
     private OnyxMatrix viewToEpdMatrix = null;
     private int viewPosition[] = {0, 0};
     private boolean supportBigPen = false;
+    private boolean isLineLayoutMode = false;
+    private volatile boolean isDrawing = false;
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, PEN_PAUSE);
@@ -317,6 +319,10 @@ public class NoteViewHelper {
         getNoteDocument().setBackground(bgType);
     }
 
+    public void setLineLayoutBackground(int bgType) {
+        getNoteDocument().setLineLayoutBackground(bgType);
+    }
+
     public void setStrokeWidth(float width) {
         getNoteDocument().setStrokeWidth(width);
         EpdController.setStrokeWidth(width);
@@ -471,7 +477,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-        Shape shape = createNewShape();
+        Shape shape = createNewShape(isLineLayoutMode());
         shape.addPoints(pointList);
         dirtyStash.add(shape);
         if (callback != null) {
@@ -479,10 +485,11 @@ public class NoteViewHelper {
         }
     }
 
-    private Shape createNewShape() {
+    private Shape createNewShape(boolean isSpanTextMode) {
         Shape shape = ShapeFactory.createShape(getNoteDocument().getNoteDrawingArgs().getCurrentShapeType());
         shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
         shape.setColor(getNoteDocument().getStrokeColor());
+        shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
         return shape;
     }
 
@@ -638,7 +645,7 @@ public class NoteViewHelper {
     }
 
     private void onDrawingTouchDown(final MotionEvent motionEvent) {
-        currentShape = createNewShape();
+        currentShape = createNewShape(isLineLayoutMode);
         beforeDownMessage(currentShape);
         dirtyStash.add(currentShape);
         final TouchPoint normalized = new TouchPoint(motionEvent);
@@ -647,6 +654,7 @@ public class NoteViewHelper {
             return;
         }
         currentShape.onDown(normalized, screen);
+        setDrawing(true);
         if (callback != null) {
             callback.onDrawingTouchDown(motionEvent, currentShape);
         }
@@ -675,6 +683,7 @@ public class NoteViewHelper {
             return;
         }
         currentShape.onMove(normalized, screen);
+        setDrawing(true);
         if (callback != null) {
             callback.onDrawingTouchMove(motionEvent, currentShape, true);
         }
@@ -690,6 +699,7 @@ public class NoteViewHelper {
             return;
         }
         currentShape.onUp(normalized, screen);
+        setDrawing(false);
         if (callback != null) {
             callback.onDrawingTouchUp(motionEvent, currentShape);
         }
@@ -714,5 +724,21 @@ public class NoteViewHelper {
 
     public boolean supportColor(Context context){
         return DeviceConfig.sharedInstance(context, "note").supportColor();
+    }
+
+    public void setLineLayoutMode(boolean lineLayoutMode) {
+        isLineLayoutMode = lineLayoutMode;
+    }
+
+    public boolean isDrawing() {
+        return isDrawing;
+    }
+
+    public void setDrawing(boolean drawing) {
+        isDrawing = drawing;
+    }
+
+    public boolean isLineLayoutMode() {
+        return isLineLayoutMode;
     }
 }

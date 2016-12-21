@@ -48,6 +48,10 @@ public class ReaderTextStyle {
             this.indent = indent;
         }
 
+        public static CharacterIndent create(int indent) {
+            return new CharacterIndent(indent);
+        }
+
         public int getIndent() {
             return indent;
         }
@@ -264,11 +268,11 @@ public class ReaderTextStyle {
         }
         ReaderTextStyle copy = new ReaderTextStyle();
         copy.fontFace = style.fontFace;
-        copy.fontSize = style.fontSize;
+        copy.fontSize = SPUnit.create(style.fontSize.getValue());
         copy.alignment = style.alignment;
-        copy.indent = style.indent;
-        copy.lineSpacing = style.lineSpacing;
-        copy.pageMargin = style.pageMargin;
+        copy.indent = CharacterIndent.create(style.indent.getIndent());
+        copy.lineSpacing = Percentage.create(style.lineSpacing.getPercent());
+        copy.pageMargin = PageMargin.copy(style.pageMargin);
         return copy;
     }
 

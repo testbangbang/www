@@ -40,7 +40,6 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
-import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.io.File;
 import java.util.List;
@@ -63,6 +62,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     boolean isSurfaceViewFirstCreated = false;
     protected int currentVisualPageIndex;
     protected int totalPageCount;
+    protected boolean isLineLayoutMode = false;
 
     private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY}
     private ActivityState activityState;
@@ -296,12 +296,12 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         return new NoteViewHelper.InputCallback() {
             @Override
             public void onBeginRawData() {
-
             }
 
             @Override
             public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
                 onNewTouchPointListReceived(shape, pointList);
+                triggerLineLayoutMode(isLineLayoutMode());
             }
 
             @Override
@@ -338,9 +338,14 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                 if (!shape.supportDFB()) {
                     drawPage();
                 }
+                triggerLineLayoutMode(isLineLayoutMode());
             }
 
         };
+    }
+
+    protected void triggerLineLayoutMode(boolean isSpanMode) {
+
     }
 
     protected void onNewTouchPointListReceived(final Shape shape, TouchPointList pointList) {
@@ -453,7 +458,13 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final GotoNextPageAction<BaseScribbleActivity> action = new GotoNextPageAction<>();
-                action.execute(BaseScribbleActivity.this);
+                action.execute(BaseScribbleActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        onRequestFinished((BaseNoteRequest) request, true);
+                        loadLineLayoutData();
+                    }
+                });
             }
         });
     }
@@ -463,7 +474,13 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final GotoPrevPageAction<BaseScribbleActivity> action = new GotoPrevPageAction<>();
-                action.execute(BaseScribbleActivity.this);
+                action.execute(BaseScribbleActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        onRequestFinished((BaseNoteRequest) request, true);
+                        loadLineLayoutData();
+                    }
+                });
             }
         });
     }
@@ -473,7 +490,13 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentAddNewPageAction<BaseScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
-                action.execute(BaseScribbleActivity.this);
+                action.execute(BaseScribbleActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        onRequestFinished((BaseNoteRequest) request, true);
+                        loadLineLayoutData();
+                    }
+                });
             }
         });
     }
@@ -483,9 +506,19 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentDeletePageAction<BaseScribbleActivity> action = new DocumentDeletePageAction<>();
-                action.execute(BaseScribbleActivity.this);
+                action.execute(BaseScribbleActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        onRequestFinished((BaseNoteRequest) request, true);
+                        loadLineLayoutData();
+                    }
+                });
             }
         });
+    }
+
+    protected void loadLineLayoutData() {
+
     }
 
     protected void setCurrentShapeType(int type) {
@@ -513,4 +546,18 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected abstract void cleanUpAllPopMenu();
+
+    public boolean isLineLayoutMode() {
+        return isLineLayoutMode;
+    }
+
+    public void setLineLayoutMode(boolean lineLayoutMode) {
+        isLineLayoutMode = lineLayoutMode;
+        getNoteViewHelper().setLineLayoutMode(isLineLayoutMode);
+    }
+
+    public void toggleLineLayoutMode() {
+        isLineLayoutMode = !isLineLayoutMode;
+        getNoteViewHelper().setLineLayoutMode(isLineLayoutMode);
+    }
 }

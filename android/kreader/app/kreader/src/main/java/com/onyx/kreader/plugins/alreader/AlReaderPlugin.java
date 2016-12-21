@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderDRMCallback;
 import com.onyx.kreader.api.ReaderDocument;
 import com.onyx.kreader.api.ReaderDocumentMetadata;
@@ -32,6 +33,7 @@ import com.onyx.kreader.api.ReaderTextSplitter;
 import com.onyx.kreader.api.ReaderTextStyleManager;
 import com.onyx.kreader.api.ReaderView;
 import com.onyx.kreader.api.ReaderViewOptions;
+import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
@@ -159,7 +161,10 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     @Override
     public ReaderSentence getSentence(String position, String sentenceStartPosition) {
-        return null;
+        int startPos = StringUtils.isBlank(sentenceStartPosition) ?
+                getPluginImpl().getScreenStartPosition() :
+                Integer.parseInt(sentenceStartPosition);
+        return getPluginImpl().getSentence(startPos);
     }
 
     public void abortCurrentJob() {
@@ -443,7 +448,7 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
-        return getPluginImpl().selectTextOnScreen(hitTest.point, hitTest.point);
+        return getPluginImpl().selectWordOnScreen(hitTest.point, splitter);
     }
 
     public String position(final ReaderHitTestArgs hitTest) {
@@ -451,7 +456,11 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderSelection selectOnScreen(final ReaderHitTestArgs start, final ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
-        return getPluginImpl().selectTextOnScreen(start.point, end.point);
+        if (hitTestOptions.isSelectingWord()) {
+            return getPluginImpl().selectWordOnScreen(start.point, ReaderTextSplitterImpl.sharedInstance());
+        } else {
+            return getPluginImpl().selectTextOnScreen(start.point, end.point);
+        }
     }
 
     @Override

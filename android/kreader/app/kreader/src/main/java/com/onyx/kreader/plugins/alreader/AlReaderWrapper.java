@@ -2,12 +2,10 @@ package com.onyx.kreader.plugins.alreader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Pair;
 
-import com.alibaba.fastjson.JSON;
 import com.neverland.engbook.bookobj.AlBookEng;
 import com.neverland.engbook.forpublic.AlBitmap;
 import com.neverland.engbook.forpublic.AlBookOptions;
@@ -24,6 +22,7 @@ import com.neverland.engbook.forpublic.AlTextOnScreen;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
+import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.EngBitmap;
 import com.neverland.engbook.util.TTFInfo;
 import com.neverland.engbook.util.TTFScan;
@@ -35,8 +34,11 @@ import com.onyx.kreader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.kreader.api.ReaderSentence;
+import com.onyx.kreader.api.ReaderTextSplitter;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.impl.ReaderSelectionImpl;
+import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.utils.PagePositionUtils;
 import com.onyx.kreader.utils.RectUtils;
 
@@ -59,7 +61,7 @@ public class AlReaderWrapper {
     static public long ERROR_SECURITY = 5;
     static public long ERROR_PAGE_NOT_FOUND = 6;
 
-    private static String DEFAULT_FONT_NAME = "XZ";
+     static String DEFAULT_FONT_NAME = "Serif";
 
     private AlBookEng bookEng;
     private AlEngineOptions engineOptions;
@@ -73,7 +75,12 @@ public class AlReaderWrapper {
         bookEng.initializeBookEngine(createEngineOptions(context, pluginOptions));
         bookEng.initializeOwner(getEngineNotifyForUI());
         bookEng.setNewProfileParameters(getProfileDay(pluginOptions));
-        setStyle(ReaderTextStyle.defaultStyle());
+        initDefaultTextStyle();
+    }
+
+    private void initDefaultTextStyle() {
+        ReaderTextStyle style = ReaderTextStyle.defaultStyle();
+        setStyle(style);
     }
 
     public void setViewSize(int width, int height) {
@@ -178,8 +185,10 @@ public class AlReaderWrapper {
             TTFInfo ttf = TTFScan.getTTFInfo(new File(fontface), false);
             if (ttf != null) {
                 profile.font_name = ttf.Name;
+                return;
             }
         }
+        profile.font_name = fontface;
     }
 
     public void updateFontSize(final float fontSize) {
@@ -217,6 +226,53 @@ public class AlReaderWrapper {
             return null;
         }
         return combineSelectionText(screenText, 0, screenText.regionList.size() - 1);
+    }
+
+    public ReaderSentence getSentence(final int startPosition) {
+        if (startPosition < getScreenStartPosition() ||
+                startPosition >= getScreenEndPosition()) {
+            return null;
+        }
+        AlTextOnScreen screenText = getTextOnScreen();
+        if (screenText == null) {
+            Debug.w(getClass(), "get text on screen failed!");
+            return null;
+        }
+        final int MAX_SENTENCE_LENGTH = 200;
+        int endPos = -1;
+        boolean found = false;
+        // sentence in the range [startPos, endPos]
+        for (AlTextOnScreen.AlPieceOfText piece : screenText.regionList) {
+            if (found) {
+                break;
+            }
+            int textEndPos = getPieceEnd(piece);
+            if (textEndPos < startPosition) {
+                continue;
+            }
+            for (int i = 0; i < piece.positions.length; i++) {
+                endPos = piece.positions[i];
+                if (endPos <= startPosition) {
+                    continue;
+                }
+                if ((endPos - startPosition + 1) >= MAX_SENTENCE_LENGTH) {
+                    found = true;
+                    break;
+                }
+                char ch = piece.word.charAt(i);
+                if (ReaderTextSplitterImpl.isSentenceBreakSplitter(ch)) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        ReaderSelectionImpl selection = combineSelection(screenText, startPosition, endPos);
+        boolean endOfScreen = endPos == getPieceEnd(lastPiece(screenText));
+        boolean endOfDocument = endOfScreen && isLastPage();
+        int nextPos = nextTextPosition(screenText, endPos);
+        ReaderSentence sentence = ReaderSentence.create(selection, nextPos, endOfScreen, endOfDocument);
+        return sentence;
     }
 
     public List<ReaderSelection> getPageLinks() {
@@ -333,14 +389,37 @@ public class AlReaderWrapper {
         if (properties.content == null) {
             return false;
         }
-        for (AlOneContent content : properties.content) {
+        buildTableOfContentTree(toc.getRootEntry(), 0, properties.content, 0);
+        return true;
+    }
+
+    private int buildTableOfContentTree(ReaderDocumentTableOfContentEntry root,
+                                         int currentLevel,
+                                         ArrayList<AlOneContent> contentList,
+                                         int contentIndex) {
+        AlOneContent content;
+        ReaderDocumentTableOfContentEntry entry = null;
+        int i = contentIndex;
+        for (; i < contentList.size(); ) {
+            content = contentList.get(i);
             if (content.isBookmark) {
+                i++;
                 continue;
             }
-             ReaderDocumentTableOfContentEntry.addEntry(toc.getRootEntry(), content.name,
-                     content.pageNum, PagePositionUtils.fromPosition(content.positionS));
+            if (content.iType == currentLevel) {
+                entry = ReaderDocumentTableOfContentEntry.addEntry(root, content.name,
+                        content.pageNum, PagePositionUtils.fromPosition(content.positionS));
+                i++;
+            } else if (content.iType > currentLevel) {
+                if (entry == null) {
+                    entry = root;
+                }
+                i += buildTableOfContentTree(entry, content.iType, contentList, i);
+            } else {
+                return i - contentIndex;
+            }
         }
-        return true;
+        return i - contentIndex;
     }
 
     public boolean search(final String text, final List<ReaderSelection> list) {
@@ -371,9 +450,6 @@ public class AlReaderWrapper {
     }
 
     public ReaderSelection selectTextOnScreen(PointF start, PointF end) {
-        Debug.d(getClass(), "start point: %s, end point: %s", JSON.toJSONString(start),
-                JSON.toJSONString(end));
-
         AlTextOnScreen screenText = getTextOnScreen();
         if (screenText == null) {
             Debug.w(getClass(), "get text on screen failed!");
@@ -389,6 +465,113 @@ public class AlReaderWrapper {
             return null;
         }
         return combineSelection(screenText, startPos, endPos);
+    }
+
+    public ReaderSelection selectWordOnScreen(PointF point, final ReaderTextSplitter splitter) {
+        AlTextOnScreen screenText = getTextOnScreen();
+        if (screenText == null) {
+            Debug.w(getClass(), "get text on screen failed!");
+            return null;
+        }
+        int pos = hitTest((int)point.x, (int)point.y);
+        if (pos == -1) {
+            return null;
+        }
+
+        String ch = getCharAtPos(screenText, pos);
+        if (!AlUnicode.isChineze(ch.charAt(0))) {
+            // simplifying latter work
+            return selectTextOnScreen(point, point);
+        }
+
+        String leftText = getLeftText(screenText, pos, 50);
+        String rightText = getRightText(screenText, pos, 50);
+        if (ch == null || leftText == null || rightText == null) {
+            return null;
+        }
+
+        int leftOffset = splitter.getTextLeftBoundary(ch, leftText, rightText);
+        int leftPos = previousTextPosition(screenText, pos, leftOffset);
+        int rightOffset = splitter.getTextRightBoundary(ch, leftText, rightText);
+        int rightPos = nextTextPosition(screenText, pos, rightOffset);
+        return combineSelection(screenText, leftPos, rightPos);
+    }
+
+    private String getCharAtPos(AlTextOnScreen textOnScreen, int pos) {
+        Pair<Integer, Integer> index = findWordByPos(textOnScreen, pos);
+        if (index == null) {
+            return null;
+        }
+
+        AlTextOnScreen.AlPieceOfText piece = textOnScreen.regionList.get(index.first);
+        for (int i = 0; i < piece.positions.length; i++) {
+            if (piece.positions[i] == pos) {
+                return String.valueOf(piece.word.charAt(i));
+            }
+        }
+        return null;
+    }
+
+    private String getLeftText(AlTextOnScreen textOnScreen, int pos, int length) {
+        if (isTextBeginningPosition(textOnScreen, pos)) {
+            return "";
+        }
+        int prevPos = previousTextPosition(textOnScreen, pos);
+        if (prevPos < 0) {
+            return null;
+        }
+        Pair<Integer, Integer> index = findWordByPos(textOnScreen, prevPos);
+        if (index == null) {
+            return null;
+        }
+        StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        for (int i = index.first; i >= 0; i--) {
+            AlTextOnScreen.AlPieceOfText piece = textOnScreen.regionList.get(i);
+            int j = piece.positions.length - 1;
+            if (first) {
+                j = index.second;
+                first = false;
+            }
+            for (; j >= 0; j--) {
+                builder.insert(0, piece.word.charAt(j));
+                if (builder.length() >= length) {
+                    return builder.toString();
+                }
+            }
+        }
+        return builder.toString();
+    }
+
+    private String getRightText(AlTextOnScreen textOnScreen, int pos, int length) {
+        if (isTextEndPosition(textOnScreen, pos)) {
+            return "";
+        }
+        int nextPos = nextTextPosition(textOnScreen, pos);
+        if (nextPos < 0) {
+            return null;
+        }
+        Pair<Integer, Integer> index = findWordByPos(textOnScreen, nextPos);
+        if (index == null) {
+            return null;
+        }
+        StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        for (int i = index.first; i <= textOnScreen.regionList.size() - 1; i++) {
+            AlTextOnScreen.AlPieceOfText piece = textOnScreen.regionList.get(i);
+            int j = 0;
+            if (first) {
+                j = index.second;
+                first = false;
+            }
+            for (; j <= piece.positions.length - 1; j++) {
+                builder.append(piece.word.charAt(j));
+                if (builder.length() >= length) {
+                    return builder.toString();
+                }
+            }
+        }
+        return builder.toString();
     }
 
     public ReaderSelection selectTextOnScreen(int startPos, int endPos) {
@@ -419,36 +602,85 @@ public class AlReaderWrapper {
     private int hitTest(int x, int y) {
         try {
             AlTapInfo tapInfo = bookEng.getInfoByTap(x, y, EngBookMyType.TAL_SCREEN_SELECTION_MODE.NONE);
-            Debug.d(getClass(), "tap info: " + JSON.toJSONString(tapInfo));
             return tapInfo == null ? -1 : tapInfo.pos;
         } finally {
             bookEng.setSelectionMode(EngBookMyType.TAL_SCREEN_SELECTION_MODE.NONE);
         }
     }
 
+    private Pair<Integer, Integer> findWordByPos(AlTextOnScreen textOnScreen, int pos) {
+        for (int i = 0; i < textOnScreen.regionList.size(); i++) {
+            AlTextOnScreen.AlPieceOfText a = textOnScreen.regionList.get(i);
+            int s = a.positions[0];
+            int e = a.positions[a.positions.length - 1];
+            if (pos >= s && pos <= e) {
+                int offset = getOffsetInPiece(a, pos);
+                if (offset == -1) {
+                    assert false;
+                    return null;
+                }
+                return new Pair<>(i, offset);
+            }
+        }
+
+        return null;
+    }
+
     private ReaderSelectionImpl combineSelection(AlTextOnScreen textOnScreen, int startPos, int endPos) {
-        Debug.d(getClass(), "start pos: %d, end pos: %d", startPos, endPos);
-        int startIndex = textOnScreen.findWordByPos(startPos);
-        int endIndex = textOnScreen.findWordByPos(endPos);
-        if (startIndex == -1 || endIndex == -1) {
+        Pair<Integer, Integer> startIndex = findWordByPos(textOnScreen, startPos);
+        Pair<Integer, Integer> endIndex = findWordByPos(textOnScreen, endPos);
+        if (startIndex == null || endIndex == null) {
             return null;
         }
-        if (startIndex > endIndex) {
-            int tmp = startIndex;
+        if (startIndex.first > endIndex.first) {
+            Pair<Integer, Integer> tmp = startIndex;
             startIndex = endIndex;
             endIndex = tmp;
         }
-        final AlTextOnScreen.AlPieceOfText startPiece = screenText.regionList.get(startIndex);
-        final AlTextOnScreen.AlPieceOfText endPiece = screenText.regionList.get(endIndex);
-        Debug.d(getClass(), JSON.toJSONString(startPiece));
+        final AlTextOnScreen.AlPieceOfText startPiece = screenText.regionList.get(startIndex.first);
+        final AlTextOnScreen.AlPieceOfText endPiece = screenText.regionList.get(endIndex.first);
         ReaderSelectionImpl selection = new ReaderSelectionImpl();
         selection.setPageName(PagePositionUtils.fromPageNumber(getPageNumberOfPosition(getPieceStart(startPiece))));
         selection.setPagePosition(PagePositionUtils.fromPosition(getScreenStartPosition()));
-        selection.setText(combineSelectionText(textOnScreen, startIndex, endIndex));
+        selection.setText(combineSelectionText(textOnScreen, startIndex.first, endIndex.first));
         selection.setStartPosition(PagePositionUtils.fromPosition(getPieceStart(startPiece)));
         selection.setEndPosition(PagePositionUtils.fromPosition(getPieceEnd(endPiece)));
-        selection.setDisplayRects(combineSelectionRectangles(textOnScreen, startIndex, endIndex));
+        selection.setDisplayRects(combineSelectionRectangles(textOnScreen, startIndex.first, endIndex.first));
         return selection;
+    }
+
+
+    private AlTextOnScreen.AlPieceOfText firstPiece(AlTextOnScreen textOnScreen) {
+        return textOnScreen.regionList.get(0);
+    }
+
+    private AlTextOnScreen.AlPieceOfText lastPiece(AlTextOnScreen textOnScreen) {
+        return textOnScreen.regionList.get(textOnScreen.regionList.size() - 1);
+    }
+
+    private boolean isFirstPiece(AlTextOnScreen textOnScreen, int index) {
+        return index == 0;
+    }
+
+    private boolean isLastPiece(AlTextOnScreen textOnScreen, int index) {
+        return index == textOnScreen.regionList.size() - 1;
+    }
+
+    private boolean isTextBeginningPosition(AlTextOnScreen textOnScreen, int pos) {
+        Pair<Integer, Integer> index = findWordByPos(textOnScreen, pos);
+        if (index == null) {
+            return false;
+        }
+        return index.first == 0 && index.second == 0;
+    }
+
+    private boolean isTextEndPosition(AlTextOnScreen textOnScreen, int pos) {
+        Pair<Integer, Integer> index = findWordByPos(textOnScreen, pos);
+        if (index == null) {
+            return false;
+        }
+        return isLastPiece(textOnScreen, index.first) &&
+                getPieceEnd(lastPiece(textOnScreen)) == index.second;
     }
 
     private int getPieceStart(AlTextOnScreen.AlPieceOfText piece) {
@@ -457,6 +689,102 @@ public class AlReaderWrapper {
 
     private int getPieceEnd(AlTextOnScreen.AlPieceOfText piece) {
         return piece.positions[piece.positions.length - 1];
+    }
+
+    private int getOffsetInPiece(AlTextOnScreen.AlPieceOfText piece, int pos) {
+        for (int i = 0; i < piece.positions.length; i++) {
+            if (piece.positions[i] == pos) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int previousTextPosition(AlTextOnScreen textOnScreen, int pos, int offset) {
+        Pair<Integer, Integer> index = findWordByPos(textOnScreen, pos);
+        if (index == null) {
+            return -1;
+        }
+        boolean first = true;
+        for (int i = index.first; i >= 0; i--) {
+            AlTextOnScreen.AlPieceOfText piece = textOnScreen.regionList.get(i);
+            int anchor = piece.positions.length - 1;
+            if (first) {
+                first = false;
+                if (index.second >= offset) {
+                    return piece.positions[index.second - offset];
+                }
+                anchor = index.second - 1;
+                if (anchor < 0) {
+                    continue;
+                }
+            }
+            int length = anchor + 1;
+            if (length >= offset) {
+                return piece.positions[anchor - offset + 1];
+            } else {
+                offset -= length;
+            }
+        }
+        return getPieceStart(firstPiece(textOnScreen));
+    }
+
+    private int previousTextPosition(AlTextOnScreen textOnScreen, int pos) {
+        Pair<Integer, Integer> index = findWordByPos(textOnScreen, pos);
+        if (index == null) {
+            return -1;
+        }
+
+        AlTextOnScreen.AlPieceOfText piece = textOnScreen.regionList.get(index.first);
+        if (index.second > 0) {
+            return piece.positions[index.second - 1];
+        }
+        return isFirstPiece(textOnScreen, index.first) ? -1 :
+                getPieceEnd(textOnScreen.regionList.get(index.first -1));
+    }
+
+    private int nextTextPosition(AlTextOnScreen textOnScreen, int pos, int offset) {
+        Pair<Integer, Integer> index = findWordByPos(textOnScreen, pos);
+        if (index == null) {
+            return -1;
+        }
+        boolean first = true;
+        for (int i = index.first; i >= 0; i++) {
+            AlTextOnScreen.AlPieceOfText piece = textOnScreen.regionList.get(i);
+            int anchor = 0;
+            if (first) {
+                first = false;
+                if (index.second + offset < piece.positions.length) {
+                    return piece.positions[index.second + offset];
+                }
+                anchor = index.second + 1;
+                if (anchor >= piece.positions.length) {
+                    continue;
+                }
+            }
+            int length = piece.positions.length - anchor;
+            if (length >= offset) {
+                return piece.positions[anchor + offset - 1];
+            } else {
+                offset -= length;
+            }
+        }
+        return getPieceStart(firstPiece(textOnScreen));
+    }
+
+    private int nextTextPosition(AlTextOnScreen textOnScreen, int pos) {
+        Pair<Integer, Integer> index = findWordByPos(textOnScreen, pos);
+        if (index == null) {
+            return -1;
+        }
+
+        AlTextOnScreen.AlPieceOfText piece = textOnScreen.regionList.get(index.first);
+        if (index.second < piece.positions.length - 1) {
+            return piece.positions[index.second + 1];
+        }
+
+        return isLastPiece(textOnScreen, index.first) ? -1 :
+                textOnScreen.regionList.get(index.first + 1).positions[0];
     }
 
     private String combineSelectionText(AlTextOnScreen textOnScreen, int startIndex, int endIndex) {

@@ -294,7 +294,7 @@ public class ReaderPainter {
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2.0f);
-        canvas.drawCircle(touchPoint.x, touchPoint.y, noteManager.getNoteDrawingArgs().eraserRadius, paint);
+        canvas.drawCircle(touchPoint.x, touchPoint.y, noteManager.getNoteDataInfo().getEraserRadius(), paint);
     }
 
     private boolean hasBookmark(final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {

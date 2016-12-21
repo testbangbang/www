@@ -1,23 +1,19 @@
 package com.onyx.kreader.tests;
 
 import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.os.PowerManager;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.plugins.neopdf.NeoPdfJniWrapper;
 import com.onyx.kreader.utils.ImageUtils;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by zhuzeng on 12/12/2016.
@@ -32,59 +28,131 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
         super("com.onyx.reader", ReaderTestActivity.class);
     }
 
-    public void testRender() throws Exception {
+
+    static int findNumber(final String string) {
+        String result = string.replaceAll("[^0-9]+", " ");
+        String[]  array = result.trim().split(" ");
+        if (array != null && array.length > 0) {
+            return Integer.valueOf(array[0]);
+        }
+        return -1;
+    }
+
+    public void testCfaResource() throws Exception {
+        Set<String> filter = new HashSet<>();
+        filter.add("jpg");
+        filter.add("png");
+        List<String> fileList = new ArrayList<>();
+        FileUtils.collectFiles("/mnt/sdcard/res/", filter, true, fileList);
+
+        for(String path : fileList) {
+            if (path.contains(".cfa.")) {
+                continue;
+            }
+            int dp = findNumber(path);
+            if (dp < 0) {
+                continue;
+            }
+
+            final Bitmap origin = BitmapUtils.loadBitmapFromFile(path);
+            final Bitmap scaled = BitmapUtils.createScaledBitmap(origin, dp / 2, dp / 2);
+            final Bitmap result = Bitmap.createBitmap(dp, dp, Bitmap.Config.ARGB_8888);
+            ImageUtils.toRgbwBitmap(result, scaled, 0);
+            BitmapUtils.saveBitmap(result, path + ".cfa.png");
+        }
+    }
+
+    public void testCfaSlide() throws Exception {
+        Set<String> filter = new HashSet<>();
+        filter.add("jpg");
+        filter.add("png");
+        List<String> fileList = new ArrayList<>();
+        FileUtils.collectFiles("/mnt/sdcard/slide/", filter, true, fileList);
+
+        for(String path : fileList) {
+            if (path.contains(".cfa.")) {
+                continue;
+            }
+            int width = 960;
+            int height = 1280;
+            final Bitmap origin = BitmapUtils.loadBitmapFromFile(path);
+            final Bitmap scaled = BitmapUtils.createScaledBitmap(origin, width / 2, height / 2);
+            final Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            ImageUtils.toRgbwBitmap(result, scaled, 0);
+            BitmapUtils.saveBitmap(result, path + ".cfa.png");
+        }
+    }
+
+    public void testRender0() throws Exception {
+        int targetWidth = 200;
+        int targetHeight = 200;
+        final Bitmap origin = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/icons/user_boy.png");
+        final Bitmap scaled = BitmapUtils.createScaledBitmap(origin, targetWidth / 2, targetHeight / 2);
+        final Bitmap result = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+        ImageUtils.toRgbwBitmap(result, scaled, 0);
+        BitmapUtils.saveBitmap(result, "/mnt/sdcard/icons/user_boy_cfa.png");
+    }
+
+    public void testRender00() throws Exception {
+        int targetWidth = 100;
+        int targetHeight = 100;
+        final Bitmap origin = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/icons/home_pic_display.png");
+        final Bitmap scaled = BitmapUtils.createScaledBitmap(origin, targetWidth / 2, targetHeight / 2);
+        final Bitmap result = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+        ImageUtils.toRgbwBitmap(result, scaled, 0);
+        BitmapUtils.saveBitmap(result, "/mnt/sdcard/icons/home_pic_display_cfa.png");
+    }
+
+    public void testRender1() throws Exception {
+        boolean saveOrigin = false;
         NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
-        assertTrue(wrapper.nativeInitLibrary());
-        assertTrue(wrapper.openDocument("/mnt/sdcard/Books/cfa.pdf", null) == NeoPdfJniWrapper.NO_ERROR);
+        String[] pathes = {"/mnt/sdcard/Books/color-org.pdf"};
+        for (String path : pathes) {
+            assertTrue(wrapper.nativeInitLibrary());
+            assertTrue(wrapper.openDocument(path, null) == NeoPdfJniWrapper.NO_ERROR);
+            int pageCount = wrapper.pageCount();
+            assertTrue(pageCount > 0);
+            ReaderBitmapImpl readerBitmap = null;
+            for (int i = 0; i < pageCount; ++i) {
+                float size[] = new float[2];
+                assertTrue(wrapper.pageSize(i, size));
+                assertTrue(size[0] > 0);
+                assertTrue(size[1] > 0);
+                if (readerBitmap == null) {
+                    readerBitmap = new ReaderBitmapImpl(480, 640, Bitmap.Config.ARGB_8888);
+                } else {
+                    readerBitmap.update(480, 640, Bitmap.Config.ARGB_8888);
+                }
+                Bitmap bitmap = readerBitmap.getBitmap();
+                long start = System.currentTimeMillis();
+                assertTrue(wrapper.drawPage(i, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
+                long end = System.currentTimeMillis();
+                Log.i(TAG, "Performance testing: " + path + " page: " + i + " ts: " + (end - start));
 
-        int pageCount = wrapper.pageCount();
-        assertTrue(pageCount > 0);
+                if (saveOrigin) {
+                    BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/Books/cfa.origin." + i + ".png");
+                }
+                final Bitmap result = Bitmap.createBitmap(960, 1280, Bitmap.Config.ARGB_8888);
+                ImageUtils.toRgbwBitmap(result, bitmap, 0);
+                BitmapUtils.saveBitmap(result, "/mnt/sdcard/Books/cfa." + i + ".png");
 
-        int page = 0;
-        float size[] = new float[2];
-        assertTrue(wrapper.pageSize(page, size));
-        assertTrue(size[0] > 0);
-        assertTrue(size[1] > 0);
 
-        // render origin image
-        Bitmap argb = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
-        assertTrue(wrapper.drawPage(page, 0, 0, argb.getWidth(), argb.getHeight(), 0, argb));
-        BitmapUtils.saveBitmap(argb, "/mnt/sdcard/Books/argb.png");
+            }
+            readerBitmap.recycleBitmap();
+            assertTrue(wrapper.closeDocument());
+            assertTrue(wrapper.nativeDestroyLibrary());
+        }
+    }
 
-        // save gray bin file.
-        int strideInBytes = argb.getWidth() * 4;
-        final byte [] gray = new byte[strideInBytes * argb.getHeight()];
-        ImageUtils.toGrayScale(argb, gray, strideInBytes);
-        Bitmap temp = BitmapUtils.fromGrayscale(gray, argb.getWidth(), argb.getHeight(), strideInBytes);
-        BitmapUtils.saveBitmap(temp, "/mnt/sdcard/Books/gray.png");
+    public void testRender2() throws Exception {
+        //final Bitmap origin = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/slide/ab2.png");
+        final Bitmap origin = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/slide/shutterstock_104688953_smalll_tweaked.jpg");
+        final Bitmap scaled = BitmapUtils.createScaledBitmap(origin, 480, 640);
+        BitmapUtils.saveBitmap(scaled, "/mnt/sdcard/Books/ab-scaled.png");
 
-        // copy rect of source bitmap to dst bitmap with cfa applied.
-        Bitmap scaledColor = BitmapUtils.loadBitmapFromFile("/mnt/sdcard/Books/color.png");
-        scaledColor = Bitmap.createScaledBitmap(scaledColor, 100, 100, true);
-        BitmapUtils.saveBitmap(scaledColor, "/mnt/sdcard/Books/scaledColor.png");
-
-        int cw = scaledColor.getWidth() * 2;
-        int ch = scaledColor.getHeight() * 2;
-        int colorStrideInBytes = cw * 4;
-        final byte [] rgbw = new byte[colorStrideInBytes * ch * 2];
-        ImageUtils.toRgbw(scaledColor, rgbw, colorStrideInBytes);
-        temp = BitmapUtils.fromGrayscale(rgbw, cw, ch, colorStrideInBytes);
-        BitmapUtils.saveBitmap(temp, "/mnt/sdcard/Books/rgbw.png");
-
-        // blend
-        ImageUtils.blend(gray, strideInBytes, rgbw, 0, 0, cw, ch, colorStrideInBytes);
-        temp = BitmapUtils.fromGrayscale(gray, argb.getWidth(), argb.getHeight(), strideInBytes);
-        BitmapUtils.saveBitmap(temp, "/mnt/sdcard/Books/grayblend.png");
-        FileUtils.saveContentToFile(gray, new File("/mnt/sdcard/Books/final.bin"));
-
-        // recreate image from blended data.
-        final Bitmap finalBitmap = Bitmap.createBitmap(argb.getWidth(), argb.getHeight(), Bitmap.Config.ARGB_8888);
-        ImageUtils.fromRgbw(finalBitmap, gray, strideInBytes);
-        BitmapUtils.saveBitmap(finalBitmap, "/mnt/sdcard/Books/final.png");
-
-        assertTrue(wrapper.closeDocument());
-        assertTrue(wrapper.nativeDestroyLibrary());
-
+        final Bitmap result = Bitmap.createBitmap(960, 1280, Bitmap.Config.ARGB_8888);
+        ImageUtils.toRgbwBitmap(result, scaled, 0);
+        BitmapUtils.saveBitmap(result, "/mnt/sdcard/Books/final11.png");
     }
 
 

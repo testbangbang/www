@@ -41,12 +41,11 @@
                         android:maxEms="10"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:text="@string/setting_lang_date" />
+                        android:text="@string/setting_date_time" />
                 </RelativeLayout>
 
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
-
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -17,11 +17,14 @@
         android:layout_height="match_parent"
         tools:context=".view.activity.DeviceMainSettingActivity">
 
-        <RelativeLayout
+        <android.support.percent.PercentRelativeLayout
             android:id="@+id/info_area"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_alignParentTop="true"
+            android:background="@drawable/imagebtn_bg"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_heightPercent="40%"
             app:layout_widthPercent="100%">
 
@@ -55,7 +58,17 @@
             </LinearLayout>
 
 
-        </RelativeLayout>
+            <Button
+                android:id="@+id/button_ota"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:minHeight="@dimen/btn_minHeight"
+                android:text="@string/setting_ota"
+                app:layout_marginBottomPercent="1%"
+                app:layout_marginRightPercent="1%" />
+        </android.support.percent.PercentRelativeLayout>
 
 
         <android.support.v7.widget.RecyclerView

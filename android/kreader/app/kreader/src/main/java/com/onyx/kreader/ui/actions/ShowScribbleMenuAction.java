@@ -420,7 +420,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         switchDragFunc(true);
         selectEraserAction = null;
         if (selectWidthAction == null) {
-            float strokeWidth =  readerDataHolder.getNoteManager().getNoteDrawingArgs().strokeWidth;
+            float strokeWidth =  readerDataHolder.getNoteManager().getNoteDataInfo().getStrokeWidth();
             selectWidthAction = ShowReaderMenuAction.menuIdFromStrokeWidth(strokeWidth);
         }
     }
@@ -430,7 +430,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             new RestoreShapeAction().execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
-                    int currentShapeType = readerDataHolder.getNoteManager().getNoteDrawingArgs().getCurrentShapeType();
+                    int currentShapeType = readerDataHolder.getNoteManager().getNoteDataInfo().getCurrentShapeType();
                     selectShapeAction = ShowReaderMenuAction.createShapeAction(currentShapeType);
                 }
             });
@@ -440,7 +440,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private void showCustomLineWidthDialog() {
         DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(readerDataHolder.getContext(),
-                (int) readerDataHolder.getNoteManager().getNoteDrawingArgs().strokeWidth,
+                (int) readerDataHolder.getNoteManager().getNoteDataInfo().getStrokeWidth(),
                 NoteDrawingArgs.MAX_STROKE_WIDTH,
                 Color.BLACK, new DialogCustomLineWidth.Callback() {
             @Override

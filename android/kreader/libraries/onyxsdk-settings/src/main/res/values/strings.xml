@@ -4,7 +4,8 @@
     <string name="setting_sound">Sound</string>
     <string name="setting_storage">Storage</string>
     <string name="setting_wifi" translatable="false">WiFi</string>
-    <string name="setting_lang_date"><![CDATA[Language & Date]]></string>
+    <string name="setting_lang_input"><![CDATA[Language & Input]]></string>
+    <string name="setting_date_time"><![CDATA[Date & Time]]></string>
     <string name="setting_security">Security</string>
     <string name="setting_error_report">Error Report</string>
     <string name="setting_application">Application</string>
@@ -64,11 +65,13 @@
     <string name="space_in_use">Space In Use: %1$s GB</string>
     <string name="free_space">Free Space: %1$s GB</string>
     <string name="total_space">Total Space: %1$s GB</string>
-    <string name="language">Language</string>
-    <string name="settings_lang_input_preferences_key" translatable="false">settings_lang_input_preference_key</string>
 
     <!-- Language input method setting -->
+    <string name="language">Language</string>
+    <string name="settings_lang_input_preferences_key" translatable="false">settings_lang_input_preference_key</string>
     <string name="ime_category_key" translatable="false">ime_category_key</string>
+    <string name="default_ime_key" translatable="false">default_ime_key</string>
+    <string name="default_ime_tittle">Default</string>
     <string name="keyboard_and_input">Keyboard And InputMethods</string>
     <string name="voice">Voice</string>
     <string name="tts_settings_key" translatable="false">tts_settings_key</string>
@@ -166,5 +169,19 @@
     <string name="wifi_setting_key" translatable="false">wifi_setting_key</string>
     <string name="bluetooth_setting_key" translatable="false">bluetooth_setting_key</string>
     <string name="vpn_setting_key" translatable="false">vpn_setting_key</string>
+
+    <!--OTA Setting-->
+    <string name="ota_auto_check_key" translatable="false">ota_auto_check_key</string>
+    <string name="model_spec_key" translatable="false">model_spec_key</string>
+    <string name="firmware_spec_key" translatable="false">firmware_spec_key</string>
+
+    <string name="setting_ota">Firmware Update</string>
+    <string name="ota_from_cloud">Check update from cloud</string>
+    <string name="ota_from_local">Check update from local storage</string>
+    <string name="ota_auto_update">Auto update</string>
+    <string name="ota_auto_summary">Check for updates automatically</string>
+    <string name="model_number_title">Model number : </string>
+    <string name="firmware_number_title">Build number : </string>
+
 </resources>
 

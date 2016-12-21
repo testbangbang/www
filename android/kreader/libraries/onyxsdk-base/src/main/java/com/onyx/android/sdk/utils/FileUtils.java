@@ -3,6 +3,7 @@ package com.onyx.android.sdk.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.util.Log;
 
@@ -189,6 +190,20 @@ public class FileUtils {
             succeed = false;
         } finally {
             closeQuietly(out);
+        }
+        return succeed;
+    }
+
+    public static boolean saveContentToFile(final byte[] data, final File fileForSave) {
+        boolean succeed = true;
+        FileOutputStream output = null;
+        try {
+            output = new FileOutputStream(fileForSave);
+            output.write(data);
+        } catch (Exception e) {
+            succeed = false;
+        } finally {
+            closeQuietly(output);
         }
         return succeed;
     }

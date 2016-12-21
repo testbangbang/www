@@ -90,6 +90,7 @@ public class NoteDocument {
         noteModel.strokeWidth = noteDrawingArgs.strokeWidth;
         noteModel.background = noteDrawingArgs.background;
         noteModel.strokeColor = noteDrawingArgs.strokeColor;
+        noteModel.setLineLayoutBackgroud(noteDrawingArgs.getLineLayoutBackground());
         return noteModel;
     }
 
@@ -115,6 +116,14 @@ public class NoteDocument {
 
     public void setBackground(int background) {
         noteDrawingArgs.background = background;
+    }
+
+    public void setLineLayoutBackground(int background) {
+        noteDrawingArgs.setLineLayoutBackground(background);
+    }
+
+    public int getLineLayoutBackground() {
+        return noteDrawingArgs.getLineLayoutBackground();
     }
 
     public float getStrokeWidth() {
@@ -175,6 +184,7 @@ public class NoteDocument {
         noteDrawingArgs.background = NoteModel.getDefaultBackground();
         noteDrawingArgs.strokeColor = NoteModel.getDefaultStrokeColor();
         noteDrawingArgs.penState = NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING;
+        noteDrawingArgs.setLineLayoutBackground(NoteModel.getDefaultLineLayoutBackground());
     }
 
     // load args from model.
@@ -183,6 +193,7 @@ public class NoteDocument {
         if (noteModel != null) {
             noteDrawingArgs.background = noteModel.getBackground();
             noteDrawingArgs.strokeColor = noteModel.getStrokeColor();
+            noteDrawingArgs.setLineLayoutBackground(noteModel.getLineLayoutBackgroud());
             int currentShapeType = noteModel.getCurrentShapeType();
             if (currentShapeType != ShapeFactory.SHAPE_INVALID) {
                 noteDrawingArgs.setCurrentShapeType(currentShapeType);
@@ -268,6 +279,11 @@ public class NoteDocument {
     public void removeShapesByTouchPointList(final Context context, final TouchPointList touchPointList, final float scale) {
         final NotePage notePage = getCurrentPage(context);
         notePage.removeShapesByTouchPointList(touchPointList, noteDrawingArgs.eraserRadius * scale);
+    }
+
+    public void removeShapesByGroupId(final Context context, final String groupId) {
+        final NotePage notePage = getCurrentPage(context);
+        notePage.removeShapesByGroupId(groupId);
     }
 
     public int getCurrentPageIndex() {

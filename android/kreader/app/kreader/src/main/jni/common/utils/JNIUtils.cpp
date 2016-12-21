@@ -102,16 +102,20 @@ void JNIUtils::invokeStaticMethod(JNIEnv *env, ...) {
     va_end(args);
 }
 
-unsigned char ColorUtils::red(int rgba) {
-    return (unsigned char)((rgba >> 24) & 0xff);
+unsigned char ColorUtils::blue(int argb) {
+    return (unsigned char)((argb & 0x000000FF));
 }
 
-unsigned char ColorUtils::green(int rgba) {
-    return (unsigned char)((rgba >> 16) & 0xff);
+unsigned char ColorUtils::green(int argb) {
+    return (unsigned char)((argb & 0x0000FF00) >> 8);
 }
 
-unsigned char ColorUtils::blue(int rgba) {
-    return (unsigned char)((rgba >> 8) & 0xff);
+unsigned char ColorUtils::red(int argb) {
+    return (unsigned char)((argb & 0x00FF0000) >> 16);
+}
+
+unsigned char ColorUtils::alpha(int argb) {
+    return (unsigned char)((argb & 0xFF000000) >> 24);
 }
 
 unsigned char ColorUtils::gray(int rgba) {
@@ -120,6 +124,10 @@ unsigned char ColorUtils::gray(int rgba) {
 
 unsigned char ColorUtils::white(int red, int green, int blue) {
     return (unsigned char)((((red * 299) + (green * 587) + (blue * 114)) / 1000) & 0xff);
+}
+
+int ColorUtils::argb(int a, int r, int g, int b) {
+    return a << 24 | r << 16 | g << 8 | b;
 }
 
 int ColorUtils::toRed(int gray) {
@@ -137,3 +145,4 @@ int ColorUtils::toBlue(int gray) {
 int ColorUtils::toWhite(int white) {
     return white | white << 8 | white << 16 | white << 24;
 }
+

@@ -46,6 +46,22 @@ public class BitmapUtils {
         canvas.drawBitmap(src, srcRegion, dstRegion, paint);
     }
 
+    public static Bitmap createScaledBitmap(final Bitmap origin, int newWidth, int newHeight) {
+        Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
+
+        float ratioX = newWidth / (float) origin.getWidth();
+        float ratioY = newHeight / (float) origin.getHeight();
+        float middleX = newWidth / 2.0f;
+        float middleY = newHeight / 2.0f;
+        Matrix scaleMatrix = new Matrix();
+        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
+        Canvas canvas = new Canvas(scaledBitmap);
+        canvas.setMatrix(scaleMatrix);
+        canvas.drawBitmap(origin, middleX - origin.getWidth() / 2, middleY - origin.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+        return scaledBitmap;
+    }
+
+
     /**
      * return null if failed
      *
@@ -127,6 +143,48 @@ public class BitmapUtils {
 
     static public boolean isValid(final Bitmap bitmap) {
         return bitmap != null && bitmap.getWidth() > 0 && bitmap.getHeight() > 0 && !bitmap.isRecycled();
+    }
+
+    static public Bitmap fromGrayscale(final byte[] gray, int width, int height, int stride) {
+        final int pixCount = width * height;
+        int[] intGreyBuffer = new int[pixCount];
+        int index = 0;
+        for(int i=0; i < height; i++) {
+            for (int j = 0; j < width; ++j) {
+                int greyValue = (int) gray[i * stride + j] & 0xff;
+                intGreyBuffer[index++] = 0xff000000 | (greyValue << 16) | (greyValue << 8) | greyValue;
+            }
+        }
+        Bitmap grayScaledPic = Bitmap.createBitmap(intGreyBuffer, width, height, Bitmap.Config.ARGB_8888);
+        return grayScaledPic;
+    }
+
+    static public byte[] toGrayScale(final Bitmap bitmapInArgb) {
+        byte [] data = new byte[bitmapInArgb.getWidth() * bitmapInArgb.getHeight()];
+        for(int y = 0; y < bitmapInArgb.getHeight(); ++y) {
+            for(int x = 0; x < bitmapInArgb.getWidth(); ++x) {
+                int value = bitmapInArgb.getPixel(x, y);
+                byte gray = (byte) (0.299 * Color.red(value) + 0.587 * Color.green(value) + 0.114 * Color.blue(value));
+                data[y * bitmapInArgb.getWidth() + x] = gray;
+            }
+        }
+        return data;
+    }
+
+
+    static public byte[] cfa(final Bitmap bitmapInArgb, final Rect rect) {
+        byte [] data = new byte[rect.width() * rect.height() * 4];
+        for(int y = rect.top; y < rect.bottom; ++y) {
+            for(int x = rect.left; x < rect.right; ++x) {
+                int value = bitmapInArgb.getPixel(x, y);
+                byte r = (byte)Color.red(value);
+                byte g = (byte)Color.green(value);
+                byte b = (byte)Color.blue(value);
+                byte w = r;
+                data[y * rect.width() + x] = w;
+            }
+        }
+        return data;
     }
 
 }

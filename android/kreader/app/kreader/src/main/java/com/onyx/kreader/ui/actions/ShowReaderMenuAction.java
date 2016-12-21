@@ -403,12 +403,14 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void adjustContrast(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         Dialog dialogContrast = new DialogContrast(readerDataHolder);
         dialogContrast.show();
         readerDataHolder.addActiveDialog(dialogContrast);
     }
 
     private void adjustEmbolden(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         final EmboldenAction action = new EmboldenAction();
         action.execute(readerDataHolder, null);
     }
@@ -466,6 +468,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void showBrightnessDialog(ReaderDataHolder readerDataHolder){
+        hideReaderMenu();
         Dialog dlg = new DialogBrightness(readerDataHolder.getContext());
         dlg.show();
         readerDataHolder.addActiveDialog(dlg);

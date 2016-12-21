@@ -7,6 +7,7 @@ import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
+import com.onyx.android.libsetting.util.DeviceFeatureUtil;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.utils.ActivityUtil;
 
@@ -43,6 +44,7 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
             addPreferencesFromResource(R.xml.power_setting);
             config = SettingConfig.sharedInstance(getContext());
             initView();
+            hidePreferenceByDeviceFeature();
         }
 
         private void initView() {
@@ -85,7 +87,7 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
             findPreference(getString(R.string.power_usage_key)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    ActivityUtil.startActivitySafely(getContext(),SettingConfig.sharedInstance(getContext()).getBatteryStatusIntent());
+                    ActivityUtil.startActivitySafely(getContext(), SettingConfig.sharedInstance(getContext()).getBatteryStatusIntent());
                     return true;
                 }
             });
@@ -120,6 +122,15 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
         private void updateAutoSleepListSummary(int ms) {
             autoSleepListPreference.setSummary(ms == -1 ? getString(R.string.never_sleep) :
                     getString(R.string.sleep_summary, CommonUtil.msToMinuteStringWithUnit(getContext(), ms)));
+        }
+
+        private void hidePreferenceByDeviceFeature() {
+            if (!DeviceFeatureUtil.hasWifi(getContext())) {
+                getPreferenceScreen().removePreference(networkLatencyListPreference);
+            }
+            if (!DeviceFeatureUtil.hasFrontLight(getContext())){
+                getPreferenceScreen().removePreference(wakeupPreference);
+            }
         }
 
         @Override
