@@ -120,6 +120,7 @@ public class NoteViewHelper {
         pauseDrawing();
         quitDrawing();
         removeLayoutListener();
+        setLineLayoutMode(false);
     }
 
     public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
@@ -730,6 +731,18 @@ public class NoteViewHelper {
         return softwareLimitRect.contains((int) touchPoint.x, (int) touchPoint.y);
     }
 
+    public boolean checkTouchPointList(final TouchPointList touchPointList) {
+        if (touchPointList == null || touchPointList.size() == 0) {
+            return false;
+        }
+        List<TouchPoint> touchPoints = touchPointList.getPoints();
+        for (TouchPoint touchPoint : touchPoints) {
+            if (!checkTouchPoint(touchPoint)) {
+                return false;
+            }
+        }
+        return true;
+    }
     public boolean supportColor(Context context){
         return DeviceConfig.sharedInstance(context, "note").supportColor();
     }

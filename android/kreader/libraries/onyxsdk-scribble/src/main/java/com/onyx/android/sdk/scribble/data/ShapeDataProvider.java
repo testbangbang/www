@@ -1,6 +1,9 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Database;
@@ -46,6 +49,7 @@ public class ShapeDataProvider {
         final DatabaseWrapper database= FlowManager.getDatabase(ShapeDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
         for(ShapeModel shapeModel : list) {
+            Log.d("saveShapeList", "saveShapeList: " + JSON.toJSONString(shapeModel));
             shapeModel.save();
         }
         database.setTransactionSuccessful();

@@ -13,12 +13,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
@@ -51,6 +51,7 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -225,23 +226,23 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private void initSpanTextView() {
         spanTextHandler = new SpanTextHandler(this, new SpanTextHandler.Callback() {
             @Override
-            public void OnFinishedSpan(SpannableStringBuilder builder, final List<Shape> spanShapeList) {
+            public void OnFinishedSpan(SpannableStringBuilder builder, final List<Shape> spanShapeList, final ShapeSpan lastShapeSpan) {
                 if (builder == null) {
                     return;
                 }
                 spanTextView.setText(builder);
                 spanTextView.setSelection(builder.length());
                 spanTextView.requestFocus();
-                spanTextView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        final DocumentFlushAction<BaseScribbleActivity> action = new DocumentFlushAction<>(spanShapeList,
-                                true,
-                                !isKeyboardInput(),
-                                shapeDataInfo.getDrawingArgs());
-                        action.execute(ScribbleActivity.this, null);
-                    }
-                });
+                if (lastShapeSpan != null) {
+                    lastShapeSpan.setCallback(new ShapeSpan.Callback() {
+                        @Override
+                        public void onFinishDrawShapes(List<Shape> shapes) {
+                            afterDrawLineLayoutShapes(spanShapeList);
+                        }
+                    });
+                }else {
+                    afterDrawLineLayoutShapes(spanShapeList);
+                }
             }
         });
 
@@ -282,6 +283,39 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 spanTextHandler.buildTextShape(text.toString(), width, getSpanTextFontHeight());
             }
         });
+    }
+
+    private void afterDrawLineLayoutShapes(final List<Shape> lineLayoutShapes) {
+        if (checkShapesOutOfRange(lineLayoutShapes)) {
+            lineLayoutShapes.clear();
+            Toast.makeText(this, getString(R.string.shape_out_of_range), Toast.LENGTH_SHORT).show();
+            syncWithCallback(true, !isKeyboardInput(), new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    loadLineLayoutShapes();
+                }
+            });
+            return;
+        }
+
+        final DocumentFlushAction<BaseScribbleActivity> action = new DocumentFlushAction<>(lineLayoutShapes,
+                true,
+                !isKeyboardInput(),
+                shapeDataInfo.getDrawingArgs());
+        action.execute(ScribbleActivity.this, null);
+    }
+
+    private boolean checkShapesOutOfRange(List<Shape> shapes) {
+        if (shapes == null || shapes.size() == 0) {
+            return false;
+        }
+        for (Shape shape : shapes) {
+            TouchPointList pointList = shape.getPoints();
+            if (!getNoteViewHelper().checkTouchPointList(pointList)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void onCloseKeyBoard() {
