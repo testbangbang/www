@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.model.StudentAccount;
-import com.onyx.android.eschool.utils.AppCompatUtils;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.eschool.utils.AvatarUtils;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.utils.ActivityUtil;
