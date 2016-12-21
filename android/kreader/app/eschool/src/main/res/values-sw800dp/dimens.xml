@@ -46,12 +46,14 @@
     <dimen name="home_teaching_material_title_margin_top">6dp</dimen>
     <dimen name="home_teaching_material_title_margin_left">50dp</dimen>
     <dimen name="home_teaching_material_title_margin_right">8dp</dimen>
+    <dimen name="home_teaching_material_category_text_margin_bottom">13dp</dimen>
+    <dimen name="home_teaching_category_text_size">33sp</dimen>
+    <dimen name="home_teaching_title_text_size">22sp</dimen>
     <dimen name="home_teaching_auxiliary_title_text_size">33sp</dimen>
     <dimen name="home_teaching_auxiliary_title_margin_left">12dp</dimen>
     <dimen name="home_teaching_auxiliary_title_margin_right">8dp</dimen>
     <dimen name="home_item_background_normal_stroke_width">3dp</dimen>
     <dimen name="home_item_background_select_stroke_width">4dp</dimen>
-
     <dimen name="teaching_material_showcase_layout_min_height">400dp</dimen>
     <dimen name="teaching_material_showcase_layout_padding">30dp</dimen>
     <dimen name="teaching_material_showcase_cover_width">208dp</dimen>

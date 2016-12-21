@@ -32,7 +32,7 @@
             android:layout_marginStart="@dimen/home_teaching_auxiliary_title_margin_left"
             android:gravity="center"
             android:text="@string/home_item_teaching_auxiliary_text"
-            android:textSize="@dimen/home_teaching_auxiliary_title_text_size"
+            android:textSize="@dimen/home_teaching_category_text_size"
             android:textStyle="bold"
             android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
             app:layout_constraintBottom_toBottomOf="@+id/imageView_category_image"
@@ -43,11 +43,13 @@
 
     <View
         android:id="@+id/view_divider"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/home_teaching_material_layout_margin_bottom"
         android:layout_marginBottom="@dimen/home_teaching_material_layout_margin"
+        android:layout_marginEnd="@dimen/home_teaching_material_layout_margin"
         android:layout_marginLeft="@dimen/home_teaching_material_layout_margin"
         android:layout_marginRight="@dimen/home_teaching_material_layout_margin"
+        android:layout_marginStart="@dimen/home_teaching_material_layout_margin"
         android:background="@color/home_item_view_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -87,7 +89,7 @@
         android:maxLines="3"
         android:text="小学一点通(语文)"
         android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large"
-        android:textSize="@dimen/home_teaching_material_title_size"
+        android:textSize="@dimen/home_teaching_title_text_size"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/view_divider" />
