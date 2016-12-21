@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.model.StudentAccount;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.squareup.picasso.Picasso;

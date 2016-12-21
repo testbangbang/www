@@ -35,4 +35,9 @@
             <enum name="FILL" value="1" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="AppCompatLayout">
+        <attr name="alwaysLayoutImageView" format="boolean" />
+    </declare-styleable>
+
 </resources>

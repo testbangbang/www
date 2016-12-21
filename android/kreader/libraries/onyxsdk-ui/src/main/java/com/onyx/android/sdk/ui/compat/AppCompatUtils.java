@@ -1,4 +1,4 @@
-package com.onyx.android.eschool.utils;
+package com.onyx.android.sdk.ui.compat;
 
 import android.content.Context;
 import android.os.Build;
