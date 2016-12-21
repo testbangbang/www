@@ -101,6 +101,7 @@ public class AlReaderWrapper {
         if (bookEng == null) {
             return;
         }
+        resetScreenState();
         bookEng.closeBook();
     }
 
@@ -123,6 +124,8 @@ public class AlReaderWrapper {
                 style.getPageMargin().getBottomMargin());
         bookEng.setNewProfileParameters(profile);
         textStyle = style;
+
+        resetScreenState();
     }
 
     private AlEngineOptions createEngineOptions(final Context context, final ReaderPluginOptions pluginOptions) {
@@ -358,21 +361,25 @@ public class AlReaderWrapper {
 
     public boolean nextPage() {
         int ret = bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.NEXTPAGE, 0);
+        resetScreenState();
         return ret == TAL_RESULT.OK;
     }
 
     public boolean prevPage() {
         int ret = bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.PREVPAGE, 0);
+        resetScreenState();
         return ret == TAL_RESULT.OK;
     }
 
     public boolean gotoPosition(int pos) {
         int ret = bookEng.gotoPosition(EngBookMyType.TAL_GOTOCOMMAND.POSITION, pos);
+        resetScreenState();
         return ret == TAL_RESULT.OK;
     }
 
     public boolean gotoPage(int page) {
         int ret = bookEng.gotoPage(page + 1);
+        resetScreenState();
         return ret == TAL_RESULT.OK;
     }
 
