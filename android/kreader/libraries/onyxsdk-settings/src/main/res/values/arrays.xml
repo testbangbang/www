@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string-array name="wifi_status">
         <!-- Status message of Wi-Fi when it is idle. -->
-        <item></item>
+        <item />
         <!-- Status message of Wi-Fi when it is scanning. -->
         <item>Scanning\u2026</item>
         <!-- Status message of Wi-Fi when it is connecting. -->
@@ -25,7 +25,7 @@
 
     <string-array name="wifi_status_with_ssid">
         <!-- Status message of Wi-Fi when it is idle. -->
-        <item></item>
+        <item />
         <!-- Status message of Wi-Fi when it is scanning. -->
         <item>Scanning\u2026</item>
         <!-- Status message of Wi-Fi when it is connecting to a network. -->
@@ -68,7 +68,7 @@
         <item>Show new added books</item>
     </string-array>
 
-    <string-array name="homepage_preference_values">
+    <string-array name="homepage_preference_values" translatable="false">
         <item>RecentlyRead</item>
         <item>NewAdded</item>
     </string-array>

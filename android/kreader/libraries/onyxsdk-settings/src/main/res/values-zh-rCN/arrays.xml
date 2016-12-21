@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string-array name="wifi_status">
-        <item></item>
+        <item />
         <item>"正在扫描…"</item>
         <item>"正在连接…"</item>
         <item>"正在进行身份验证…"</item>
@@ -14,7 +14,7 @@
     </string-array>
 
     <string-array name="wifi_status_with_ssid">
-        <item></item>
+        <item />
         <item>"正在扫描…"</item>
         <item>"正在连接到 <xliff:g id="NETWORK_NAME">%1$s</xliff:g>…"</item>
         <item>"正在通过 <xliff:g id="NETWORK_NAME">%1$s</xliff:g> 进行身份验证…"</item>

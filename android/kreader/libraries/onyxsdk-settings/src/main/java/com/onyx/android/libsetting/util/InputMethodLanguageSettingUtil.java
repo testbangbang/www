@@ -278,7 +278,7 @@ public class InputMethodLanguageSettingUtil {
             String nextImsStr = sStringInputMethodSplitter.next();
             sStringInputMethodSubtypeSplitter.setString(nextImsStr);
             if (sStringInputMethodSubtypeSplitter.hasNext()) {
-                HashSet<String> subtypeHashes = new HashSet<String>();
+                HashSet<String> subtypeHashes = new HashSet<>();
                 // The first element is ime id.
                 String imeId = sStringInputMethodSubtypeSplitter.next();
                 while (sStringInputMethodSubtypeSplitter.hasNext()) {

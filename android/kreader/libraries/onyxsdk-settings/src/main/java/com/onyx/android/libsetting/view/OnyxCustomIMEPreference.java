@@ -36,7 +36,7 @@ public class OnyxCustomIMEPreference extends Preference {
     }
 
     public OnyxCustomIMEPreference(Context context) {
-        this(context, (AttributeSet) null);
+        this(context, null);
     }
 
     public OnyxCustomIMEPreference(Context context, AttributeSet attrs, int defStyleAttr) {

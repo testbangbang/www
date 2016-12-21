@@ -38,9 +38,9 @@ public class CommonUtil {
 
     public static String msToMinuteStringWithUnit(Context context, int ms) {
         if (ms > 0) {
-            return context.getResources().getString(R.string.minute, ms / 60000);
+            return context.getResources().getQuantityString(R.plurals.minute, ms / 60000, ms / 60000);
         } else {
-            return context.getResources().getString(R.string.never);
+            return context.getResources().getString(R.string.never_sleep);
         }
     }
 

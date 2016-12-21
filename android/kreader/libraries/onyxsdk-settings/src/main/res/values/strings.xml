@@ -103,7 +103,10 @@
     <string name="power_off_timeout">Power off timeout</string>
     <string name="auto_wifi_sleep_timeout_key" translatable="false">auto_wifi_sleep_timeout_key</string>
     <string name="wifi_sleep_timeout">Network Inactivity Timeout</string>
-    <string name="minute">%1$d Minute</string>
+    <plurals name="minute">
+        <item quantity="one">%1$d Minute</item>
+        <item quantity="other">%1$d Minutes</item>
+    </plurals>
     <string name="never_sleep">Never</string>
     <string name="sleep_summary">After %1$s of inactivity</string>
     <string name="power_off_timeout_summary">Adjust the delay before the power off automatically</string>
