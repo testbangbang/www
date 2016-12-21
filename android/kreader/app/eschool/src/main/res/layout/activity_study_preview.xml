@@ -19,7 +19,7 @@
             android:layout_margin="@dimen/activity_study_preview_user_image_margin"
             android:background="@drawable/imagebtn_bg"
             android:scaleType="centerCrop"
-            android:src="@drawable/user_boy_study_preview" />
+            android:src="@drawable/user_boy" />
 
         <TextView
             android:id="@+id/textView_user_name"
@@ -84,7 +84,7 @@
             android:layout_alignParentTop="true"
             android:layout_margin="@dimen/activity_study_preview_user_setting_image_margin"
             android:background="@drawable/imagebtn_bg"
-            android:scaleType="center"
+            android:scaleType="centerInside"
             android:padding="@dimen/activity_study_preview_user_setting_image_padding"
             android:src="@drawable/user_info_setting" />
 
