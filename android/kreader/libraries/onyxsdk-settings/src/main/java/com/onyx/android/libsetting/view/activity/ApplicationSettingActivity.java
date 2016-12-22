@@ -2,7 +2,6 @@ package com.onyx.android.libsetting.view.activity;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
@@ -56,9 +55,6 @@ public class ApplicationSettingActivity extends OnyxAppCompatActivity {
             applicationManagement = findPreference(getString(R.string.application_management_key));
             drmSetting = findPreference(getString(R.string.drm_setting_key));
             calibration = findPreference(getString(R.string.calibration_key));
-            keyBinding = (ListPreference) findPreference(getString(R.string.key_binding_key));
-            longPressFeatureSetting = (ListPreference) findPreference(getString(R.string.long_press_feature_key));
-
             applicationManagement.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
@@ -144,39 +140,41 @@ public class ApplicationSettingActivity extends OnyxAppCompatActivity {
                     return true;
                 }
             });
+            initKeyBindSetting();
+        }
 
+        private void initKeyBindSetting() {
+            keyBinding = (ListPreference) findPreference(getString(R.string.key_binding_key));
+            longPressFeatureSetting = (ListPreference) findPreference(getString(R.string.long_press_feature_key));
             // TODO: 2016/12/21 tp_model for what purpose?Should use a better check?
             if (!config.isEnableKeyBinding()) {
                 keyBinding.setVisible(false);
                 longPressFeatureSetting.setVisible(false);
-            } else {
-                Environment.getExternalStorageDirectory();
-                keyBinding.setEntryValues(getContext().getResources().getStringArray(
-                        DeviceFeatureUtil.hasTouch(getContext()) ?
-                                R.array.long_short_click_key_map_mode_value :
-                                R.array.long_short_click_key_map_mode_value_for_tp_model));
-                keyBinding.setEntries(getContext().getResources().getStringArray(
-                        DeviceFeatureUtil.hasTouch(getContext()) ?
-                                R.array.long_short_click_key_map_summary :
-                                R.array.long_short_click_key_map_summary_for_tp_model));
-                if (DeviceFeatureUtil.hasTouch(getContext())) {
-                    longPressFeatureSetting.setVisible(false);
-                }
-                keyBinding.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                    @Override
-                    public boolean onPreferenceChange(Preference preference, Object o) {
-                        KeyBindingSettingUtil.setKeyMapMode(getContext(), (String) o);
-                        return true;
-                    }
-                });
-                longPressFeatureSetting.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                    @Override
-                    public boolean onPreferenceChange(Preference preference, Object o) {
-                        KeyBindingSettingUtil.setDpadLongPressFeature(getContext(), (String) o);
-                        return true;
-                    }
-                });
+                return;
             }
+            keyBinding.setEntryValues(getContext().getResources().getStringArray(
+                    DeviceFeatureUtil.hasTouch(getContext()) ?
+                            R.array.long_short_click_key_map_mode_value :
+                            R.array.long_short_click_key_map_mode_value_for_tp_model));
+            keyBinding.setEntries(getContext().getResources().getStringArray(
+                    DeviceFeatureUtil.hasTouch(getContext()) ?
+                            R.array.long_short_click_key_map_summary :
+                            R.array.long_short_click_key_map_summary_for_tp_model));
+            longPressFeatureSetting.setVisible(!DeviceFeatureUtil.hasTouch(getContext()));
+            keyBinding.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object o) {
+                    KeyBindingSettingUtil.setKeyMapMode(getContext(), Integer.parseInt((String) o));
+                    return true;
+                }
+            });
+            longPressFeatureSetting.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object o) {
+                    KeyBindingSettingUtil.setDpadLongPressFeature(getContext(), Integer.parseInt((String) o));
+                    return true;
+                }
+            });
         }
 
         @Override

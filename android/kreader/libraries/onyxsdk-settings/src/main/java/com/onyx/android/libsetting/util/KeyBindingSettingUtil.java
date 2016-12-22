@@ -7,19 +7,22 @@ import android.content.Context;
  */
 
 public class KeyBindingSettingUtil {
-    public static void setKeyMapMode(Context context, String targetKeyMap) {
+    private static final String KEY_MAP_MODE = "key_map_mode";
+    private static final String LONG_PRESS_FEATURE = "long_press_feature";
 
+    public static void setKeyMapMode(Context context, int targetKeyMap) {
+        SystemSettingUtil.changeSystemConfigIntegerValue(context, KEY_MAP_MODE, targetKeyMap);
     }
 
     public static String getKeyMapMode(Context context) {
-        return "1";
+        return Integer.toString(SystemSettingUtil.getSystemConfigIntegerValue(context, KEY_MAP_MODE, 1));
     }
 
-    public static void setDpadLongPressFeature(Context context, String targetFeature) {
-
+    public static void setDpadLongPressFeature(Context context, int targetFeature) {
+        SystemSettingUtil.changeSystemConfigIntegerValue(context, LONG_PRESS_FEATURE, targetFeature);
     }
 
     public static String getDpadLongPressFeature(Context context) {
-        return "1";
+        return Integer.toString(SystemSettingUtil.getSystemConfigIntegerValue(context, LONG_PRESS_FEATURE, 1));
     }
 }
