@@ -57,7 +57,7 @@ public class HomeActivity extends BaseActivity {
     @Bind(R.id.textView_auxiliary_title)
     TextView teachingAuxiliaryText;
 
-    private String picDisplayPath = "/mnt/sdcard/slide/0037.jpg";
+    private String picDisplayPath = "/mnt/sdcard/slide/sample-cfa_01.png";
     private String videoDisplayPath = "/mnt/sdcard/slide/video_display.flv";
 
     @Override

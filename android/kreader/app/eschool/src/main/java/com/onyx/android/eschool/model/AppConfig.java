@@ -24,6 +24,7 @@ public class AppConfig {
     public static final String HOME_LAYOUT = "home_layout";
     public static final String HOME_PIC_DISPLAY_FILE_PATH = "home_pic_display_file_path";
     public static final String HOME_VIDEO_DISPLAY_FILE_PATH = "home_video_display_file_path";
+    public static final String TEACHING_MATERIAL_DOCUMENT_DISPLAY_FILE_PATH = "teaching_material_document_display_file_path";
 
     private AppConfig(Context context) {
         initAppConfig(context);
@@ -75,6 +76,10 @@ public class AppConfig {
 
     public String getHomeVideoDisplayFilePath() {
         return getString(HOME_VIDEO_DISPLAY_FILE_PATH, "");
+    }
+
+    public String getTeachingMaterialDocumentDisplayFilePath() {
+        return getString(TEACHING_MATERIAL_DOCUMENT_DISPLAY_FILE_PATH, "");
     }
 
     public ComponentName getKreaderComponentName() {
