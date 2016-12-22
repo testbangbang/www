@@ -3,6 +3,7 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.text.Layout;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,6 +51,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -76,7 +79,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private ScribbleSubMenu scribbleSubMenu = null;
     private ImageView switchBtn;
     private ContentView functionContentView;
-    private RelativeLayout workView;
+    private FrameLayout workView;
     private RelativeLayout rootView;
     private LinedEditText spanTextView;
     private SpanTextHandler spanTextHandler;
@@ -108,7 +111,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         ImageView saveBtn = (ImageView) findViewById(R.id.button_save);
         ImageView exportBtn = (ImageView) findViewById(R.id.button_export);
         ImageView settingBtn = (ImageView) findViewById(R.id.button_setting);
-        workView = (RelativeLayout) findViewById(R.id.work_view);
+        workView = (FrameLayout) findViewById(R.id.work_view);
         rootView = (RelativeLayout) findViewById(R.id.onyx_activity_scribble);
         spanTextView = (LinedEditText) findViewById(R.id.span_text_view);
         switchBtn = (ImageView) findViewById(R.id.button_switch);
@@ -219,7 +222,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
             }
         });
 
-        switchScribbleMode(isLineLayoutMode());
         initSpanTextView();
     }
 
@@ -283,6 +285,29 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 spanTextHandler.buildTextShape(text.toString(), width, getSpanTextFontHeight());
             }
         });
+
+        spanTextView.post(new Runnable() {
+            @Override
+            public void run() {
+                updateLineLayoutArgs();
+                switchScribbleMode(isLineLayoutMode());
+            }
+        });
+    }
+
+    private void updateLineLayoutArgs() {
+        int height = spanTextView.getHeight();
+        int lineHeight = spanTextView.getLineHeight();
+        int lineCount = spanTextView.getLineCount();
+        int count = height / lineHeight;
+        if (lineCount <= count) {
+            lineCount = count;
+        }
+        Rect r = new Rect();
+        spanTextView.getLineBounds(0, r);
+        int baseLine = r.bottom;
+        LineLayoutArgs args = LineLayoutArgs.create(baseLine, lineCount, lineHeight);
+        getNoteViewHelper().setLineLayoutArgs(args);
     }
 
     private void afterDrawLineLayoutShapes(final List<Shape> lineLayoutShapes) {
@@ -298,11 +323,23 @@ public class ScribbleActivity extends BaseScribbleActivity {
             return;
         }
 
+        updateLineLayoutCursor();
         final DocumentFlushAction<BaseScribbleActivity> action = new DocumentFlushAction<>(lineLayoutShapes,
                 true,
                 !isKeyboardInput(),
                 shapeDataInfo.getDrawingArgs());
         action.execute(ScribbleActivity.this, null);
+    }
+
+    private void updateLineLayoutCursor() {
+        int pos = spanTextView.getSelectionStart();
+        Layout layout = spanTextView.getLayout();
+        int line = layout.getLineForOffset(pos);
+        int x = (int) layout.getPrimaryHorizontal(pos);
+        LineLayoutArgs args = getNoteViewHelper().getLineLayoutArgs();
+        int top = args.getLineTop(line);
+        int bottom = args.getLineBottom(line);
+        getNoteViewHelper().updateCursorShape(x, top + 1 , x, bottom);
     }
 
     private boolean checkShapesOutOfRange(List<Shape> shapes) {
@@ -526,6 +563,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private void onEnter() {
         int pos = spanTextView.getSelectionStart();
         Layout layout = spanTextView.getLayout();
+        int line = layout.getLineForOffset(pos);
+        if (line == (getNoteViewHelper().getLineLayoutArgs().getLineCount() - 1)) {
+            Toast.makeText(this, getString(R.string.shape_out_of_range), Toast.LENGTH_SHORT).show();
+            return;
+        }
         float x = layout.getPrimaryHorizontal(pos);
 
         spanTextHandler.buildSpaceShape((int) Math.ceil(spanTextView.getMeasuredWidth() - x), getSpanTextFontHeight());

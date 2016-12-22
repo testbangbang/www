@@ -3,6 +3,7 @@ package com.onyx.android.sdk.scribble;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -18,6 +19,7 @@ import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
@@ -85,6 +87,7 @@ public class NoteViewHelper {
     private TouchPointList erasePoints;
     private DeviceConfig deviceConfig;
     private MappingConfig mappingConfig;
+    private LineLayoutArgs lineLayoutArgs;
     private Shape currentShape = null;
     private Shape cursorShape = null;
     private boolean shortcutErasing = false;
@@ -486,7 +489,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-        Shape shape = createNewShape(isLineLayoutMode());
+        Shape shape = createNewShape(isLineLayoutMode(), getNoteDocument().getNoteDrawingArgs().getCurrentShapeType());
         shape.addPoints(pointList);
         dirtyStash.add(shape);
         if (callback != null) {
@@ -494,8 +497,8 @@ public class NoteViewHelper {
         }
     }
 
-    private Shape createNewShape(boolean isSpanTextMode) {
-        Shape shape = ShapeFactory.createShape(getNoteDocument().getNoteDrawingArgs().getCurrentShapeType());
+    private Shape createNewShape(boolean isSpanTextMode, int type) {
+        Shape shape = ShapeFactory.createShape(type);
         shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
         shape.setColor(getNoteDocument().getStrokeColor());
         shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
@@ -654,7 +657,7 @@ public class NoteViewHelper {
     }
 
     private void onDrawingTouchDown(final MotionEvent motionEvent) {
-        currentShape = createNewShape(isLineLayoutMode);
+        currentShape = createNewShape(isLineLayoutMode, getNoteDocument().getNoteDrawingArgs().getCurrentShapeType());
         beforeDownMessage(currentShape);
         dirtyStash.add(currentShape);
         final TouchPoint normalized = new TouchPoint(motionEvent);
@@ -761,5 +764,59 @@ public class NoteViewHelper {
 
     public boolean isLineLayoutMode() {
         return isLineLayoutMode;
+    }
+
+    public void updateCursorShape(final int left, final int top, final int right, final int bottom) {
+        TouchPointList touchPointList = new TouchPointList();
+        TouchPoint downPoint = new TouchPoint();
+        downPoint.offset(left, top);
+        TouchPoint currentPoint = new TouchPoint();
+        currentPoint.offset(right, bottom);
+        touchPointList.add(downPoint);
+        touchPointList.add(currentPoint);
+        getCursorShape().addPoints(touchPointList);
+    }
+
+    public Shape getCursorShape() {
+        if (cursorShape == null) {
+            cursorShape = createNewShape(true, ShapeFactory.SHAPE_LINE);
+        }
+        return cursorShape;
+    }
+
+    public void renderCursorShape(final RenderContext renderContext) {
+        if (cursorShape == null || !isLineLayoutMode()) {
+            return;
+        }
+        cursorShape.render(renderContext);
+    }
+
+    public void drawLineLayoutBackground(final RenderContext renderContext) {
+        if (!isLineLayoutMode()) {
+            return;
+        }
+        LineLayoutArgs args = getLineLayoutArgs();
+        if (args == null) {
+            return;
+        }
+
+        Rect viewRect = new Rect();
+        surfaceView.getLocalVisibleRect(viewRect);
+        int count = args.getLineCount();
+        int lineHeight = args.getLineHeight();
+        int baseline = args.getBaseLine();
+        Paint paint = new Paint();
+        for (int i = 0; i < count; i++) {
+            renderContext.canvas.drawLine(viewRect.left, baseline + 1, viewRect.right, baseline + 1, paint);
+            baseline += lineHeight;
+        }
+    }
+
+    public void setLineLayoutArgs(LineLayoutArgs lineLayoutArgs) {
+        this.lineLayoutArgs = lineLayoutArgs;
+    }
+
+    public LineLayoutArgs getLineLayoutArgs() {
+        return lineLayoutArgs;
     }
 }

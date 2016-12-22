@@ -56,7 +56,6 @@ public class LinedEditText extends EditText {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        drawLine(canvas);
         super.onDraw(canvas);
     }
 
