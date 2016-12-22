@@ -21,7 +21,6 @@ public class ChangeColorRequest extends ReaderBaseNoteRequest {
         ensureDocumentOpened(noteManager);
         noteManager.setCurrentShapeColor(newColor);
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
-        updateShapeDataInfo(noteManager);
     }
 
 }

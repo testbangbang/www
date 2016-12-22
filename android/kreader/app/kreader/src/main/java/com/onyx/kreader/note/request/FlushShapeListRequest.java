@@ -51,7 +51,6 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
         if (saveDocument) {
             noteManager.getNoteDocument().save(getContext(), "title");
         }
-        updateShapeDataInfo(noteManager);
     }
 
 }

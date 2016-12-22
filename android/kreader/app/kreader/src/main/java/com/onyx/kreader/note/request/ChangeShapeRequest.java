@@ -20,7 +20,6 @@ public class ChangeShapeRequest extends ReaderBaseNoteRequest {
         ensureDocumentOpened(noteManager);
         noteManager.setCurrentShapeType(newShape);
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
-        updateShapeDataInfo(noteManager);
     }
 
 }
