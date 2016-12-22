@@ -16,7 +16,6 @@ public class RedoRequest extends ReaderBaseNoteRequest {
         noteManager.redo(getContext(), getVisiblePages().get(0).getName());
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
-        updateShapeDataInfo(noteManager);
     }
 
 }

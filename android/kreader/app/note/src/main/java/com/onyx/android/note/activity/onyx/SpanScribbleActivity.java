@@ -3,7 +3,6 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.SpannableStringBuilder;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.*;
@@ -11,7 +10,7 @@ import android.widget.*;
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
-import com.onyx.android.note.actions.scribble.ClearPageAction;
+import com.onyx.android.note.actions.scribble.ClearAllFreeShapesAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.android.note.actions.scribble.DocumentSaveAction;
 import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
@@ -34,7 +33,6 @@ import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
-import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.view.ContentItemView;
@@ -411,7 +409,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
             setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
             syncWithCallback(true, false, null);
         } else {
-            ClearPageAction<SpanScribbleActivity> action = new ClearPageAction<>();
+            ClearAllFreeShapesAction<SpanScribbleActivity> action = new ClearAllFreeShapesAction<>();
             action.execute(this, null);
         }
     }

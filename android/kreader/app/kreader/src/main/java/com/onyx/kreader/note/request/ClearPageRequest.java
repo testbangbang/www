@@ -22,6 +22,5 @@ public class ClearPageRequest extends ReaderBaseNoteRequest {
         renderVisiblePages(noteManager);
         getNoteDataInfo().setContentRendered(true);
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
-        updateShapeDataInfo(noteManager);
     }
 }

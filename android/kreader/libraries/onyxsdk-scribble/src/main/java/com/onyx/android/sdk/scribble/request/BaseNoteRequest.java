@@ -182,14 +182,14 @@ public class BaseNoteRequest extends BaseRequest {
             }
             prepareRenderingBuffer(bitmap);
 
-            if (!parent.isLineLayoutMode()) {
-                final Matrix renderMatrix = new Matrix();
-                final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
-                for (PageInfo page : getVisiblePages()) {
-                    final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
-                    notePage.render(renderContext, null);
-                }
+            final Matrix renderMatrix = new Matrix();
+            final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
+            for (PageInfo page : getVisiblePages()) {
+                final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
+                notePage.render(renderContext, null);
             }
+            parent.renderCursorShape(renderContext);
+            parent.drawLineLayoutBackground(renderContext);
 
             flushRenderingBuffer(bitmap);
             drawRandomTestPath(canvas, paint);

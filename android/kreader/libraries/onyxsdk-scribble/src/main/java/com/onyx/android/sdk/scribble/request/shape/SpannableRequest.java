@@ -18,11 +18,13 @@ import java.util.Map;
  */
 public class SpannableRequest extends BaseNoteRequest {
     private static final String TAG = "SpannableRequest";
+
     public static String SPAN_BUILDER_SYMBOL = "A";
     public static String SPACE_SPAN = " ";
     private Map<String, List<Shape>> subPageSpanTextShapeMap;
     private SpannableStringBuilder spannableStringBuilder;
     private List<Shape> newAddShapes;
+    private ShapeSpan lastShapeSpan;
 
     public SpannableRequest(Map<String, List<Shape>> subPageSpanTextShapeMap, final List<Shape> newAddShapes) {
         this.subPageSpanTextShapeMap = subPageSpanTextShapeMap;
@@ -43,22 +45,29 @@ public class SpannableRequest extends BaseNoteRequest {
         spannableStringBuilder = new SpannableStringBuilder(builder.toString());
         int index = 0;
         for (String groupId : subPageSpanTextShapeMap.keySet()) {
-            setSpan(index, subPageSpanTextShapeMap.get(groupId), false);
+            lastShapeSpan = setSpan(index, subPageSpanTextShapeMap.get(groupId), false);
             index++;
         }
-        setSpan(index, newAddShapes, true);
+        ShapeSpan newShapeSpan = setSpan(index, newAddShapes, true);
+        if (newShapeSpan != null) {
+            lastShapeSpan = newShapeSpan;
+        }
     }
 
-    private void setSpan(int index, List<Shape> shapeList, boolean needUpdateShape) {
+    private ShapeSpan setSpan(int index, List<Shape> shapeList, boolean needUpdateShape) {
         if (shapeList == null || shapeList.size() == 0) {
-            return;
+            return null;
         }
-        Shape shape = shapeList.get(0);
         ShapeSpan span = new ShapeSpan(shapeList, needUpdateShape);
         spannableStringBuilder.setSpan(span, index, index + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        return span;
     }
 
     public SpannableStringBuilder getSpannableStringBuilder() {
         return spannableStringBuilder;
+    }
+
+    public ShapeSpan getLastShapeSpan() {
+        return lastShapeSpan;
     }
 }

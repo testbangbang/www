@@ -16,7 +16,6 @@ public class UndoRequest extends ReaderBaseNoteRequest {
         noteManager.undo(getContext(), getVisiblePages().get(0).getName());
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
-        updateShapeDataInfo(noteManager);
     }
 
 }

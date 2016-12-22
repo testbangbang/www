@@ -26,7 +26,6 @@ public class ChangeStrokeWidthRequest extends ReaderBaseNoteRequest {
             noteManager.setCurrentShapeType(NoteDrawingArgs.defaultShape());
         }
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
-        updateShapeDataInfo(noteManager);
     }
 
 }
