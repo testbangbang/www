@@ -12,7 +12,7 @@ public interface ReaderDocumentOptions {
 
     String getLanguage();
 
-    int getAutoCodePage();
+    int getCodePage();
 
     String getCodePageFallback();
 

@@ -47,7 +47,7 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
     }
 
     @Override
-    public int getAutoCodePage() {
+    public int getCodePage() {
         return autoCodePage;
     }
 
