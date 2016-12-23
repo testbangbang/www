@@ -795,6 +795,9 @@ public class NoteViewHelper {
         if (!isLineLayoutMode()) {
             return;
         }
+        if (getNoteDocument().getLineLayoutBackground() == NoteBackgroundType.EMPTY) {
+            return;
+        }
         LineLayoutArgs args = getLineLayoutArgs();
         if (args == null) {
             return;

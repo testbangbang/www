@@ -90,7 +90,7 @@ public class NoteDocument {
         noteModel.strokeWidth = noteDrawingArgs.strokeWidth;
         noteModel.background = noteDrawingArgs.background;
         noteModel.strokeColor = noteDrawingArgs.strokeColor;
-        noteModel.setLineLayoutBackgroud(noteDrawingArgs.getLineLayoutBackground());
+        noteModel.setLineLayoutBackground(noteDrawingArgs.getLineLayoutBackground());
         return noteModel;
     }
 
@@ -193,7 +193,7 @@ public class NoteDocument {
         if (noteModel != null) {
             noteDrawingArgs.background = noteModel.getBackground();
             noteDrawingArgs.strokeColor = noteModel.getStrokeColor();
-            noteDrawingArgs.setLineLayoutBackground(noteModel.getLineLayoutBackgroud());
+            noteDrawingArgs.setLineLayoutBackground(noteModel.getLineLayoutBackground());
             int currentShapeType = noteModel.getCurrentShapeType();
             if (currentShapeType != ShapeFactory.SHAPE_INVALID) {
                 noteDrawingArgs.setCurrentShapeType(currentShapeType);

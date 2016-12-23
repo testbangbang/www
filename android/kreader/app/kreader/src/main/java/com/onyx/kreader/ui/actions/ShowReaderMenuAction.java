@@ -47,6 +47,7 @@ import com.onyx.kreader.note.actions.RestoreShapeAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
+import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -547,8 +548,11 @@ public class ShowReaderMenuAction extends BaseAction {
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
                 getScribbleActionCallback(readerDataHolder),
                 disableMenus);
-        int currentShapeType = readerDataHolder.getNoteManager().getNoteDataInfo().getCurrentShapeType();
-        menuAction.setSelectShapeAction(createShapeAction(currentShapeType));
+        ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
+        if (noteDataInfo != null) {
+            int currentShapeType = noteDataInfo.getCurrentShapeType();
+            menuAction.setSelectShapeAction(createShapeAction(currentShapeType));
+        }
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
