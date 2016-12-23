@@ -68,7 +68,7 @@ public class ReaderLayerMenuViewFactory {
     }
 
     public static View createSubMenuContainerView(final Context context, final ReaderLayerMenuItem parent, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final boolean ignoreEmptyChildMenu, final ReaderMenu.ReaderMenuCallback callback) {
-        if (parent.getAction() == ReaderMenuAction.FONT) {
+        if (parent.getChildren().size() == 0) {
             return null;
         }
 
