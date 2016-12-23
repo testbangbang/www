@@ -1,50 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:padding="1dp"
     android:layout_width="@dimen/common_dialog_width"
     android:layout_height="wrap_content"
+              android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/dialog_tittleArea"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/imageView_Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/title"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_menu_more" />
-
-        <TextView
-            android:textSize="@dimen/dialog_common_text_size"
-            android:id="@+id/textView_dialog_Tittle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/imageView_Icon"
-            android:layout_centerVertical="true"
-            android:singleLine="true"
-            android:ellipsize="middle"
-            android:textStyle="bold"
-            android:gravity="center_vertical"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@android:color/black" />
-    </RelativeLayout>
+    <TextView
+        android:text="@string/slide_setting"
+        android:layout_gravity="center"
+        android:minHeight="@dimen/dialog_title_min_height"
+        android:textSize="@dimen/dialog_common_text_size"
+        android:id="@+id/textView_dialog_Tittle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="middle"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/black" />
 
     <View
         style="@style/single_line_X_axis_View"
-        android:layout_height="2dp" />
+        android:layout_height="1dp" />
 
     <com.onyx.android.sdk.ui.view.SeekBarWithEditTextView android:id="@+id/seekbar_interval"
+                                                          android:layout_margin="10dp"
                                                           android:layout_width="match_parent"
                                                           android:layout_height="wrap_content" />
 
     <View
         style="@style/single_line_X_axis_View"
-        android:layout_height="2dp" />
+        android:layout_height="1dp" />
 
     <com.onyx.android.sdk.ui.view.SeekBarWithEditTextView android:id="@+id/seekbar_max_page_count"
+                                                          android:layout_margin="10dp"
                                                           android:layout_width="match_parent"
                                                           android:layout_height="wrap_content" />
 
@@ -71,23 +62,35 @@
         <!--android:id="@+id/checkedTextView" />-->
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@android:color/black"/>
+
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button
             android:textSize="@dimen/dialog_common_text_size"
-            android:background="@drawable/all_line_press_bg"
+            android:background="@drawable/no_line_press_bg"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:text="@string/cancel"
             android:layout_weight="1"
             android:id="@+id/button_Cancel" />
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"/>
+
         <Button
             android:textSize="@dimen/dialog_common_text_size"
-            android:background="@drawable/no_left_line_press_bg"
+            android:background="@drawable/no_line_press_bg"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"

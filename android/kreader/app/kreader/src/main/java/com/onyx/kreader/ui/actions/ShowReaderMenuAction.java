@@ -149,8 +149,12 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
             disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
+            disableMenus.add(ReaderMenuAction.GAMMA_CORRECTION);
+            disableMenus.add(ReaderMenuAction.NOTE);
+            disableMenus.add(ReaderMenuAction.NAVIGATION);
         } else if (!readerDataHolder.isFlowDocument()) {
             disableMenus.add(ReaderMenuAction.FONT);
+            disableMenus.add(ReaderMenuAction.GROUP_GAMMA_CORRECTION);
         }
 
         if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportBrushPen()) {
@@ -241,6 +245,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         showNavigationSettingsDialog(readerDataHolder);
                         break;
                     case GAMMA_CORRECTION:
+                    case GROUP_GAMMA_CORRECTION:
                         adjustContrast(readerDataHolder);
                         break;
                     case GLYPH_EMBOLDEN:
