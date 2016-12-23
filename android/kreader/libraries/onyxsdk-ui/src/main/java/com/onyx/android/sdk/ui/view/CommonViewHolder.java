@@ -97,6 +97,12 @@ public class CommonViewHolder extends RecyclerView.ViewHolder{
         return this;
     }
 
+    public CommonViewHolder setRotation(int viewId, float rotation) {
+        View view = getView(viewId);
+        view.setRotation(rotation);
+        return this;
+    }
+
     public CommonViewHolder setOnClickListener(int viewId, View.OnClickListener listener) {
 
         View view = getView(viewId);
