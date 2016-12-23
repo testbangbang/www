@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -29,16 +30,17 @@ import static android.content.Context.ALARM_SERVICE;
 public class SlideshowHandler extends BaseHandler {
 
     private static Intent intent = new Intent(SlideshowHandler.class.getCanonicalName());
-
+    private static final String TAG = SlideshowHandler.class.getSimpleName();
     private boolean activated;
     private ReaderDataHolder readerDataHolder;
     private int maxPageCount;
     private int pageCount;
     private int startBatteryPercent;
     private Calendar startTime;
-    private int interval = 3 * 1000; // in milliseconds
+    private int intervalInMS = 3 * 1000;
+    private WakeLockHolder wakeLockHolder = new WakeLockHolder();
 
-    BaseCallback pageLimitCallback = new BaseCallback() {
+    private BaseCallback pageLimitCallback = new BaseCallback() {
         @Override
         public void done(BaseRequest request, Throwable e) {
             if (pageCount >= maxPageCount) {
@@ -50,6 +52,7 @@ public class SlideshowHandler extends BaseHandler {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            wakeLockHolder.acquireWakeLockWithTimeout(context, TAG, 1000);
             Debug.d(getClass(), "onReceive: " + intent.getAction());
             if (!activated) {
                 return;
@@ -160,8 +163,8 @@ public class SlideshowHandler extends BaseHandler {
         return true;
     }
 
-    public void setInterval(int interval) {
-        this.interval = interval * 1000;
+    public void setInterval(int seconds) {
+        this.intervalInMS = seconds * 1000;
     }
 
     public void start(int maxPageCount) {
@@ -175,7 +178,7 @@ public class SlideshowHandler extends BaseHandler {
     private void setAlarm() {
         AlarmManager am = (AlarmManager)readerDataHolder.getContext().getSystemService(ALARM_SERVICE);
         if (am != null) {
-            am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + interval,
+            am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + intervalInMS,
                     pendingIntent);
         }
     }
