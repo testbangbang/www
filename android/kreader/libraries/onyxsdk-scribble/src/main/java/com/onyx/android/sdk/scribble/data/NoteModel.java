@@ -67,7 +67,7 @@ public class NoteModel extends BaseModel {
     int background;
 
     @Column
-    int lineLayoutBackgroud;
+    int lineLayoutBackground;
 
     @Column(typeConverter = ConverterStringList.class)
     PageNameList pageNameList = null;
@@ -208,12 +208,12 @@ public class NoteModel extends BaseModel {
         return strokeColor;
     }
 
-    public int getLineLayoutBackgroud() {
-        return lineLayoutBackgroud;
+    public int getLineLayoutBackground() {
+        return lineLayoutBackground;
     }
 
-    public void setLineLayoutBackgroud(int lineLayoutBackgroud) {
-        this.lineLayoutBackgroud = lineLayoutBackgroud;
+    public void setLineLayoutBackground(int lineLayoutBackground) {
+        this.lineLayoutBackground = lineLayoutBackground;
     }
 
     public void setStrokeColor(int strokeColor) {

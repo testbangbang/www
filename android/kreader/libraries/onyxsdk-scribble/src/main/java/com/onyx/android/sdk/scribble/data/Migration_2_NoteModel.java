@@ -18,7 +18,7 @@ public class Migration_2_NoteModel extends AlterTableMigration<NoteModel> {
 
     @Override
     public void onPreMigrate() {
-        addColumn(SQLiteType.INTEGER, NoteModel_Table.lineLayoutBackgroud.getNameAlias().name());
+        addColumn(SQLiteType.INTEGER, NoteModel_Table.lineLayoutBackground.getNameAlias().name());
     }
 }
 
