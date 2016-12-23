@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.navigation.NavigationArgs;
@@ -295,7 +296,8 @@ public class BaseOptions {
     }
 
     public int getCodePage() {
-        return backend.getInt(CODE_PAGE_TAG, TAL_CODE_PAGES.AUTO);
+        return backend.getInt(CODE_PAGE_TAG, LocaleUtils.isChinese() ? TAL_CODE_PAGES.CP936 :
+                TAL_CODE_PAGES.AUTO);
     }
 
     public void setCodePage(int codePage) {
