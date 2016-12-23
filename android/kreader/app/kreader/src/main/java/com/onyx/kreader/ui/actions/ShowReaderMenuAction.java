@@ -149,6 +149,7 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
             disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
+            disableMenus.add(ReaderMenuAction.NOTE);
         } else if (!readerDataHolder.isFlowDocument()) {
             disableMenus.add(ReaderMenuAction.FONT);
         }
