@@ -11,7 +11,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceCategory;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.text.format.DateFormat;
 import android.widget.DatePicker;
@@ -157,8 +156,7 @@ public class DateTimeSettingActivity extends OnyxAppCompatActivity {
         private void hidePreferenceByDeviceFeature() {
             if (!DeviceFeatureUtil.hasWifi(getContext())) {
                 autoDateTimePreference.setChecked(false);
-                PreferenceCategory notificationsCategory = (PreferenceCategory) findPreference(getString(R.string.time_setting_key));
-                notificationsCategory.removePreference(autoDateTimePreference);
+                autoDateTimePreference.setVisible(false);
             }
         }
 

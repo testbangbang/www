@@ -27,6 +27,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.RawResourceUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.io.File;
@@ -60,7 +61,7 @@ public class TeachingMaterialActivity extends BaseActivity {
 
     private List<Metadata> metadataList = new ArrayList<>();
 
-    private String documentDisplayPath = "/mnt/sdcard/slide/演示（小学语数外）.pdf";
+    private String documentDisplayPath = "/mnt/sdcard/edu/sample-cfa.pdf";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +75,14 @@ public class TeachingMaterialActivity extends BaseActivity {
 
     protected void initConfig() {
         loadCategoryConfig();
+        initAppConfig();
+    }
+
+    private void initAppConfig() {
+        String path = AppConfig.sharedInstance(this).getTeachingMaterialDocumentDisplayFilePath();
+        if (StringUtils.isNotBlank(path)) {
+            documentDisplayPath = path;
+        }
     }
 
     private void loadCategoryConfig() {

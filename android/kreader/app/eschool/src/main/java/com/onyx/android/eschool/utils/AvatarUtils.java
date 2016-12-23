@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.model.StudentAccount;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.squareup.picasso.Picasso;
@@ -36,5 +37,23 @@ public class AvatarUtils {
         } else {
             Picasso.with(context).load(path).fit().centerCrop().into(imageView);
         }
+    }
+
+    public static String getSpecifyArrayAvatarPath(Context context, int avatarArrayRes) {
+        String avatarPath = StudentAccount.loadAvatarPath(context);
+        if (!AppCompatUtils.isPL107Device(context)) {
+            return avatarPath;
+        }
+        String[] avatarArray = context.getResources().getStringArray(avatarArrayRes);
+        if (StringUtils.isNullOrEmpty(avatarPath)) {
+            avatarPath = avatarArray[0];
+        }
+        for (String s : avatarArray) {
+            if (FileUtils.getBaseName(s).startsWith(FileUtils.getBaseName(avatarPath))) {
+                avatarPath = s;
+                break;
+            }
+        }
+        return avatarPath;
     }
 }

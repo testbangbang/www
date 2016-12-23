@@ -22,7 +22,7 @@
         android:key="@string/calibration_key"
         android:title="@string/calibration_title" />
 
-    <android.support.v7.preference.Preference
+    <android.support.v7.preference.ListPreference
         android:key="@string/key_binding_key"
         android:title="@string/key_binding_title" />
 

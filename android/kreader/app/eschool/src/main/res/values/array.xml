@@ -10,6 +10,15 @@
         <item>@drawable/avatar_add</item>
     </string-array>
 
+    <string-array name="study_preview_user_avatar_array">
+        <item>@drawable/user_boy_study_preview</item>
+        <item>@drawable/user_boy_glass_study_preview</item>
+        <item>@drawable/user_boy_hat_study_preview</item>
+        <item>@drawable/user_girl_study_preview</item>
+        <item>@drawable/user_girl_glass_study_preview</item>
+        <item>@drawable/user_girl_short_hair_study_preview</item>
+    </string-array>
+
     <string-array name="teaching_auxiliary_set">
         <item>全部</item>
         <item>文学</item>

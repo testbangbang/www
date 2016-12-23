@@ -2,5 +2,5 @@
   "home_activity_pkg": "com.onyx.android.note",
   "home_activity_cls": ".activity.mx.ManagerActivity",
   "scribble_activity_pkg": "com.onyx.android.note",
-  "scribble_activity_cls": ".activity.mx.ScribbleActivity",
+  "scribble_activity_cls": ".activity.mx.ScribbleActivity"
 }

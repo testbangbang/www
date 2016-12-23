@@ -34,5 +34,6 @@ dependencies {
     compile "com.android.support:gridlayout-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:preference-v14:$rootProject.compatibleSupportLibraryVersion"
     compile "com.android.support:percent:$rootProject.supportLibraryVersion"
+    compile "com.android.support.constraint:constraint-layout:$rootProject.constraintlayoutVersion"
     testCompile "junit:junit:$rootProject.junitVersion"
 }

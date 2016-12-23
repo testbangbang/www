@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.onyx.android.sdk.ui.compat.AppCompatLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/activity_study_preview_layout_margin"
@@ -18,9 +18,8 @@
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/activity_study_preview_user_image_margin"
             android:background="@drawable/imagebtn_bg"
-            android:padding="@dimen/activity_study_preview_user_image_padding"
             android:scaleType="centerCrop"
-            android:src="@drawable/user_girl_glass" />
+            android:src="@drawable/user_boy" />
 
         <TextView
             android:id="@+id/textView_user_name"
@@ -85,6 +84,7 @@
             android:layout_alignParentTop="true"
             android:layout_margin="@dimen/activity_study_preview_user_setting_image_margin"
             android:background="@drawable/imagebtn_bg"
+            android:scaleType="centerInside"
             android:padding="@dimen/activity_study_preview_user_setting_image_padding"
             android:src="@drawable/user_info_setting" />
 
@@ -254,4 +254,4 @@
 
     </RelativeLayout>
 
-</LinearLayout>
+</com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>

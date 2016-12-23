@@ -2960,7 +2960,7 @@ public class AlBookEng{
 		case AlBookState.NOLOAD:
 			screenWidth = width;
 			screenHeight = height;			
-			EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
+			//EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
 			/*if (engOptions.externalBitmap != null) {
 				EngBitmap.reCreateBookBitmap(bmp[1], screenWidth, screenHeight, null);
 				EngBitmap.reCreateBookBitmap(bmp[2], screenWidth, screenHeight, null);
@@ -2970,7 +2970,7 @@ public class AlBookEng{
 		case AlBookState.OPEN:
 			screenWidth = width;
 			screenHeight = height;			
-			EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
+			//EngBitmap.reCreateBookBitmap(abmp, screenWidth, screenHeight, shtamp);
 			/*if (engOptions.externalBitmap != null) {
 				EngBitmap.reCreateBookBitmap(bmp[1], screenWidth, screenHeight, null);
 				EngBitmap.reCreateBookBitmap(bmp[2], screenWidth, screenHeight, null);
@@ -5350,7 +5350,63 @@ public class AlBookEng{
 		return res;
 	}
 
+	private void updatePageItems(AlOnePage page, int x0, int y0, int x1, int y1) {
+		boolean first_notes = true;
+		AlOneItem oi;
+		int x;
+		int col_count = page.countItems;
+
+		if (preferences.isASRoll || (profiles.specialModeRoll && !profiles.twoColumnUsed)) {
+			oi = page.items.get(col_count);
+			if (oi.count > 0 && oi.pos[0] >= page.end_position &&
+					(profiles.classicFirstLetter || oi.isEnd || ((oi.style[0] & AlStyles.SL_MARKFIRTSTLETTER) == 0)))
+				col_count++;
+		}
+
+		int z, i, j, y = y0 + page.topMarg, start, end;
+		for (z = 0; z < 2; z++) {
+			for (j = 0; j < col_count; j++) {
+				oi = page.items.get(j);
+				if (z == 0) {
+					if (oi.isNote)
+						continue;
+				} else {
+					if (!oi.isNote)
+						continue;
+					if (first_notes) {
+						y += page.pageHeight - page.textHeight - page.topMarg + page.notesShift;
+						first_notes = false;
+					}
+				}
+
+
+				y += oi.height + oi.base_line_up;
+				oi.yDrawPosition = y;
+
+				y += oi.base_line_down;
+				y += oi.interline;
+			}
+		}
+	}
+
+	private void recalcAndPrepareColumn() {
+		if (openState.getState() != AlBookState.OPEN) {
+			return;
+		}
+		calcScreenParameters();
+		recalcColumn(screenWidth - screen_parameters.marginR - screen_parameters.marginL,
+				screenHeight - screen_parameters.marginB - screen_parameters.marginT,
+				mpage[0][0], bookPosition, TAL_CALC_MODE.NORMAL);
+		prepareColumn(mpage[0][0]);
+		updatePageItems(mpage[0][0],
+				screen_parameters.marginL,
+				screen_parameters.marginT,
+				(screenWidth >> 1) - screen_parameters.marginR,
+				screenHeight - screen_parameters.marginB);
+	}
+
 	private int returnOkWithRedraw() {
+		recalcAndPrepareColumn();
 		threadData.sendNotifyForUIThread(TAL_NOTIFY_ID.NEEDREDRAW, TAL_NOTIFY_RESULT.OK);
 		return TAL_RESULT.OK;
 	}
@@ -5530,7 +5586,9 @@ public class AlBookEng{
 					}
 					break;
 				case POSITION:
-					pagePositionPointer.clear();
+					if (AlPagePositionStack.findPage(pagePositionPointer, pos) == null) {
+						pagePositionPointer.clear();
+					}
 					bookPosition = pos;
 					return returnOkWithRedraw();
 				case POSITION_WITH_CORRECT:

@@ -66,6 +66,8 @@ public class DeviceConfig {
     private int slideshowMaximumPages = 6000;
     private int defaultSlideshowPages = 2000;
 
+    private String defaultFontFileForChinese = "/system/fonts/OnyxCustomFont-Regular.ttf";
+
     private String defaultAnnotationHighlightStyle = "Highlight";
 
     private DeviceConfig(Context context) {
@@ -447,6 +449,14 @@ public class DeviceConfig {
 
     public void setDefaultSlideshowPages(int defaultSlideshowPages) {
         this.defaultSlideshowPages = defaultSlideshowPages;
+    }
+
+    public String getDefaultFontFileForChinese() {
+        return defaultFontFileForChinese;
+    }
+
+    public void setDefaultFontFileForChinese(String defaultFontFileForChinese) {
+        this.defaultFontFileForChinese = defaultFontFileForChinese;
     }
 
     public int getFrontLight() {
