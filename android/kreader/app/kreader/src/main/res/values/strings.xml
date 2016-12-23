@@ -299,4 +299,5 @@
     <string name="default_font" translatable="false">Serif</string>
     <string name="view_pinch_zooming_menu_font_size">Font size:</string>
     <string name="view_pinch_zooming_menu_scale_factor">Zoom factor:</string>
+    <string name="slide_setting">Slide Setting</string>
 </resources>
