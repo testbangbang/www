@@ -50,6 +50,7 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
+import com.onyx.kreader.ui.actions.ChangeCodePageActionChain;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
 import com.onyx.kreader.ui.actions.ForwardAction;
@@ -64,6 +65,7 @@ import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.events.BeforeDocumentCloseEvent;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
+import com.onyx.kreader.ui.events.ChangeCodePageEvent;
 import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
@@ -375,6 +377,11 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onResetEpdUpdateMode(final ResetEpdUpdateModeEvent event) {
         ReaderDeviceManager.resetUpdateMode(surfaceView);
+    }
+
+    @Subscribe
+    public void onChangeCodePage(final ChangeCodePageEvent event) {
+        new ChangeCodePageActionChain(this, event.getCodePage()).execute(getReaderDataHolder(), null);
     }
 
     @Subscribe

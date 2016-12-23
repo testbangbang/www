@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.RectF;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.api.ReaderPluginOptions;
@@ -26,6 +27,7 @@ public class BaseOptions {
     transient static public final String ACTUAL_SCALE_TAG = "actual_scale";
     transient static public final String MANUAL_CROP_REGION_TAG = "manual_crop_region";
     transient static public final String SCREEN_SPLIT_POINT_TAG = "screen_split_point";
+    transient static public final String CODE_PAGE_TAG = "code_page";
     transient static public final String FONT_SIZE_TAG = "font_size";
     transient static public final String DEFAULT_FONT_SIZE = "default_font_size";
     transient static public final String FONT_FACE_TAG = "font_face";
@@ -292,6 +294,14 @@ public class BaseOptions {
         return (pixelSize / 6) - 1;
     }
 
+    public int getCodePage() {
+        return backend.getInt(CODE_PAGE_TAG, TAL_CODE_PAGES.AUTO);
+    }
+
+    public void setCodePage(int codePage) {
+        backend.putInt(CODE_PAGE_TAG, codePage);
+    }
+
     public float getFontSize() {
         if (!backend.hasKey(FONT_SIZE_TAG)) {
             return getDefaultStreamDocFontSize();
@@ -553,7 +563,8 @@ public class BaseOptions {
     }
 
     public final ReaderDocumentOptionsImpl documentOptions() {
-        return new ReaderDocumentOptionsImpl(getPassword(), getZipPassword());
+        return new ReaderDocumentOptionsImpl(getPassword(), getZipPassword(),
+                getCodePage());
     }
 
     public final ReaderPluginOptions pluginOptions() {
