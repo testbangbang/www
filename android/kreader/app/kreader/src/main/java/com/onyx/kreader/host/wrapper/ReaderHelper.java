@@ -106,6 +106,7 @@ public class ReaderHelper {
 
         getDocumentOptions().setZipPassword(options.getZipPassword());
         getDocumentOptions().setPassword(options.getPassword());
+        getDocumentOptions().setCodePage(options.getCodePage());
         saveMetadata(context, documentPath);
         saveThumbnail(context, documentPath);
     }

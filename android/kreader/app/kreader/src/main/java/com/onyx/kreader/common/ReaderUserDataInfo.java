@@ -35,6 +35,7 @@ public class ReaderUserDataInfo {
     private PointF touchPoint;
 
     private String documentPath;
+    private int documentCodePage;
     private ReaderDocumentMetadata documentMetadata;
 
     private ReaderDocumentTableOfContent toc;
@@ -50,6 +51,14 @@ public class ReaderUserDataInfo {
 
     public String getDocumentPath() {
         return documentPath;
+    }
+
+    public void setDocumentCodePage(int documentCodePage) {
+        this.documentCodePage = documentCodePage;
+    }
+
+    public int getDocumentCodePage() {
+        return documentCodePage;
     }
 
     public void setDocumentMetadata(ReaderDocumentMetadata documentMetadata) {

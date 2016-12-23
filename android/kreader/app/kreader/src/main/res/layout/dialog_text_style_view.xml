@@ -60,6 +60,30 @@
                 android:layout_height="5dp"/>
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/code_page_layout"
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="30dp"
+            android:orientation="vertical"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/code_page_text"
+                android:textSize="@dimen/dialog_common_text_size"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/dialog_text_style_view_code_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <View
+                android:id="@+id/code_page_bottom_view"
+                android:background="@android:color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="5dp"/>
+        </LinearLayout>
+
     </LinearLayout>
 
     <View

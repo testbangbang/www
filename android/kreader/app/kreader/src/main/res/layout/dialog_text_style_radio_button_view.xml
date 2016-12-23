@@ -9,7 +9,7 @@
         android:layout_gravity="center_vertical"
         android:textSize="@dimen/dialog_common_text_size"
         android:textColor="@android:color/black"
-        android:id="@+id/btn_font"
+        android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
