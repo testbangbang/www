@@ -47,6 +47,7 @@ import com.onyx.kreader.note.actions.RestoreShapeAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
+import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -148,8 +149,12 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
             disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
+            disableMenus.add(ReaderMenuAction.GAMMA_CORRECTION);
+            disableMenus.add(ReaderMenuAction.NOTE);
+            disableMenus.add(ReaderMenuAction.NAVIGATION);
         } else if (!readerDataHolder.isFlowDocument()) {
             disableMenus.add(ReaderMenuAction.FONT);
+            disableMenus.add(ReaderMenuAction.GROUP_GAMMA_CORRECTION);
         }
 
         if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportBrushPen()) {
@@ -240,6 +245,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         showNavigationSettingsDialog(readerDataHolder);
                         break;
                     case GAMMA_CORRECTION:
+                    case GROUP_GAMMA_CORRECTION:
                         adjustContrast(readerDataHolder);
                         break;
                     case GLYPH_EMBOLDEN:
@@ -547,8 +553,11 @@ public class ShowReaderMenuAction extends BaseAction {
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
                 getScribbleActionCallback(readerDataHolder),
                 disableMenus);
-        int currentShapeType = readerDataHolder.getNoteManager().getNoteDataInfo().getCurrentShapeType();
-        menuAction.setSelectShapeAction(createShapeAction(currentShapeType));
+        ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
+        if (noteDataInfo != null) {
+            int currentShapeType = noteDataInfo.getCurrentShapeType();
+            menuAction.setSelectShapeAction(createShapeAction(currentShapeType));
+        }
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

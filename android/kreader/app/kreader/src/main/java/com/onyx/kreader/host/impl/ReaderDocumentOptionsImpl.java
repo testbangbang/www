@@ -10,14 +10,21 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
     private String documentPath;
     private String documentPassword;
     private String archivePassword;
-    private String autoCodePage;
+    private int autoCodePage;
     private String codePageFallback;
     private String language;
-
 
     public ReaderDocumentOptionsImpl(final String dp, final String ap) {
         documentPassword = dp;
         archivePassword = ap;
+        autoCodePage = -1;
+    }
+
+    public ReaderDocumentOptionsImpl(final String dp, final String ap,
+                                     final int codePage) {
+        documentPassword = dp;
+        archivePassword = ap;
+        autoCodePage = codePage;
     }
 
     public void setDocumentPath(final String path) {
@@ -45,11 +52,11 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
     }
 
     @Override
-    public String getAutoCodePage() {
+    public int getCodePage() {
         return autoCodePage;
     }
 
-    public void setAutoCodePage(String autoCodePage) {
+    public void setAutoCodePage(int autoCodePage) {
         this.autoCodePage = autoCodePage;
     }
 

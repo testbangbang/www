@@ -93,7 +93,7 @@ public class AlReaderWrapper {
         filePath = path;
         AlBookOptions bookOpt = new AlBookOptions();
         bookOpt.codePage = TAL_CODE_PAGES.AUTO;
-        bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
+        bookOpt.codePageDefault = documentOptions.getCodePage();
         bookOpt.formatOptions = 0;
         bookOpt.readPosition = 0;
         bookEng.openBook(path, bookOpt);

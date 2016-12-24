@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.text.InputType;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.EditText;
@@ -20,9 +22,14 @@ public class LinedEditText extends EditText {
         void commitText(CharSequence text, int newCursorPosition);
     }
 
+    public interface OnKeyPreImeListener {
+        void onKeyPreIme(int keyCode, KeyEvent event);
+    }
+
     private Rect mRect;
     private Paint mPaint;
-    InputConnectionListener inputConnectionListener;
+    private InputConnectionListener inputConnectionListener;
+    private OnKeyPreImeListener onKeyPreImeListener;
     private boolean showLineBackground = true;
 
     // we need this constructor for LayoutInflater
@@ -38,9 +45,17 @@ public class LinedEditText extends EditText {
         this.inputConnectionListener = inputConnectionListener;
     }
 
+
+    @Override
+    public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+        if (onKeyPreImeListener != null) {
+            onKeyPreImeListener.onKeyPreIme(keyCode, event);
+        }
+        return super.onKeyPreIme(keyCode, event);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
-        drawLine(canvas);
         super.onDraw(canvas);
     }
 
@@ -91,5 +106,9 @@ public class LinedEditText extends EditText {
     public void setShowLineBackground(boolean showLineBackground) {
         this.showLineBackground = showLineBackground;
         invalidate();
+    }
+
+    public void setOnKeyPreImeListener(OnKeyPreImeListener onKeyPreImeListener) {
+        this.onKeyPreImeListener = onKeyPreImeListener;
     }
 }

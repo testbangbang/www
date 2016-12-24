@@ -165,6 +165,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                         if (isRender() && isTransfer()) {
                             parent.copyBitmap();
                         }
+                        updateShapeDataInfo(parent);
                         parent.saveNoteDataInfo(ReaderBaseNoteRequest.this);
                     }
                     BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
@@ -298,7 +299,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         renderVisiblePages(helper);
     }
 
-    public void updateShapeDataInfo(final NoteManager parent) {
+    private void updateShapeDataInfo(final NoteManager parent) {
         final ReaderNoteDataInfo shapeDataInfo = getNoteDataInfo();
         parent.updateShapeDataInfo(getContext(), shapeDataInfo);
     }

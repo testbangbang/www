@@ -16,8 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RequestManager {
 
     private static final String TAG = RequestManager.class.getSimpleName();
-    private volatile PowerManager.WakeLock wakeLock;
-    private AtomicInteger wakeLockCounting = new AtomicInteger();
+    private volatile WakeLockHolder wakeLockHolder = new WakeLockHolder();
     private boolean debugWakelock = false;
 
     private ExecutorContext executor;
@@ -41,39 +40,16 @@ public class RequestManager {
     }
 
     public void acquireWakeLock(final Context context, final String tag) {
-        try {
-            if (wakeLock == null) {
-                wakeLock = Device.currentDevice().newWakeLock(context, tag);
-            }
-            if (wakeLock != null) {
-                wakeLock.acquire();
-                wakeLockCounting.incrementAndGet();
-            }
-        } catch (java.lang.Exception e) {
-            e.printStackTrace();
-        }
+        wakeLockHolder.acquireWakeLock(context, tag);
     }
 
     public void releaseWakeLock() {
-        try {
-            if (wakeLock != null) {
-                if (wakeLock.isHeld()) {
-                    wakeLock.release();
-                }
-                if (wakeLockCounting.decrementAndGet() <= 0) {
-                    wakeLock = null;
-                }
-            }
-        } catch (java.lang.Exception e) {
-            e.printStackTrace();
-        }
+        wakeLockHolder.releaseWakeLock();
     }
 
     public void dumpWakelocks() {
         if (debugWakelock) {
-            if (wakeLock != null || wakeLockCounting.get() > 0) {
-                Log.w(TAG, "wake lock not released. check wake lock." + wakeLock.toString() + " counting: " + wakeLockCounting.get());
-            }
+            wakeLockHolder.dumpWakelocks(TAG);
         }
     }
 

@@ -299,4 +299,24 @@
     <string name="default_font" translatable="false">Serif</string>
     <string name="view_pinch_zooming_menu_font_size">Font size:</string>
     <string name="view_pinch_zooming_menu_scale_factor">Zoom factor:</string>
+    <string name="slide_setting">Slide Setting</string>
+    <string name="dialog_text_style_view_code_page">Code page</string>
+    <string name="code_page_simplified_chinese">Simplified Chinese</string>
+    <string name="code_page_utf8">UTF-8</string>
+    <string name="code_page_traditional_chinese">Traditional Chinese</string>
+    <string name="code_page_utf16_le">UTF-16LE</string>
+    <string name="code_page_utf16_be">UTF-16BE</string>
+    <string name="code_page_japanese">Japanese</string>
+    <string name="code_page_korean">Korean</string>
+    <string name="code_page_russian_oem">Russian OEM</string>
+    <string name="code_page_russian_ansi">Russian ANSI</string>
+    <string name="code_page_russian_koi8_r">Russian KOI8-R</string>
+    <string name="code_page_thai">ANSI/OEM Thai</string>
+    <string name="code_page_latin_i">ANSI Latin I</string>
+    <string name="code_page_hebrew">ANSI Hebrew</string>
+    <string name="code_page_arabic">ANSI Arabic</string>
+    <string name="code_page_vietnam">ANSI/OEM Viet Nam</string>
+    <string name="code_page_cyrillic_mac">MAC Cyrillic</string>
+    <string name="code_page_ukraine_mac">MAC Ukraine</string>
+    <string name="code_page_auto">Auto</string>
 </resources>

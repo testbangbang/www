@@ -1,20 +1,17 @@
 package com.onyx.kreader.host.request;
 
-import android.util.Log;
-
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.reflow.ImageReflowSettings;
 import com.onyx.kreader.utils.DeviceConfig;
 import com.onyx.kreader.utils.ImageUtils;
-
-import java.util.Locale;
 
 /**
  * Created by zhuzeng on 2/15/16.
@@ -100,7 +97,7 @@ public class RestoreRequest extends BaseReaderRequest {
 
     private void restoreReaderTextStyle(final Reader reader) throws ReaderException {
         String fontface = baseOptions.getFontFace();
-        if (StringUtils.isNullOrEmpty(fontface) && isChineseLocale()) {
+        if (StringUtils.isNullOrEmpty(fontface) && LocaleUtils.isChinese()) {
             fontface = DeviceConfig.sharedInstance(getContext()).getDefaultFontFileForChinese();
         }
         float fontSize = baseOptions.getFontSize();
@@ -117,13 +114,6 @@ public class RestoreRequest extends BaseReaderRequest {
                 ReaderTextStyle.Percentage.create(rightMargin),
                 ReaderTextStyle.Percentage.create(bottomMargin));
         reader.getReaderLayoutManager().setStyle(style);
-    }
-
-    private boolean isChineseLocale() {
-        return Locale.getDefault().equals(Locale.CHINA) ||
-                Locale.getDefault().equals(Locale.CHINESE) ||
-                Locale.getDefault().equals(Locale.SIMPLIFIED_CHINESE) ||
-                Locale.getDefault().equals(Locale.TRADITIONAL_CHINESE);
     }
 
     private void setSpecialScale(final Reader reader, final BaseOptions baseOptions, final String position) throws Exception {

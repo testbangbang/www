@@ -9,9 +9,12 @@ import java.util.List;
  */
 public class NotePageUndoRedoManager {
 
-    public static void undo(final NotePage notePage, final UndoRedoManager undoRedoManager) {
+    public static void undo(final NotePage notePage, final UndoRedoManager undoRedoManager, final boolean isLineLayoutMode) {
         final UndoRedoManager.Action<List<Shape>> action = undoRedoManager.undo();
         if (action == null) {
+            return;
+        }
+        if (action.getObject().get(0).isFreePosition() == isLineLayoutMode) {
             return;
         }
         if (ShapeActions.ACTION_ADD_SHAPE.equalsIgnoreCase(action.getActionName())) {
@@ -25,9 +28,12 @@ public class NotePageUndoRedoManager {
         }
     }
 
-    public static void redo(final NotePage notePage, final UndoRedoManager undoRedoManager) {
+    public static void redo(final NotePage notePage, final UndoRedoManager undoRedoManager, final boolean isLineLayoutMode) {
         final UndoRedoManager.Action<List<Shape>> action = undoRedoManager.redo();
         if (action == null) {
+            return;
+        }
+        if (action.getObject().get(0).isFreePosition() == isLineLayoutMode) {
             return;
         }
         if (ShapeActions.ACTION_ADD_SHAPE.equalsIgnoreCase(action.getActionName())) {

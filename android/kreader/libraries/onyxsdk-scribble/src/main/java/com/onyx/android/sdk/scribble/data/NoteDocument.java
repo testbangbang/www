@@ -90,7 +90,7 @@ public class NoteDocument {
         noteModel.strokeWidth = noteDrawingArgs.strokeWidth;
         noteModel.background = noteDrawingArgs.background;
         noteModel.strokeColor = noteDrawingArgs.strokeColor;
-        noteModel.setLineLayoutBackgroud(noteDrawingArgs.getLineLayoutBackground());
+        noteModel.setLineLayoutBackground(noteDrawingArgs.getLineLayoutBackground());
         return noteModel;
     }
 
@@ -193,7 +193,7 @@ public class NoteDocument {
         if (noteModel != null) {
             noteDrawingArgs.background = noteModel.getBackground();
             noteDrawingArgs.strokeColor = noteModel.getStrokeColor();
-            noteDrawingArgs.setLineLayoutBackground(noteModel.getLineLayoutBackgroud());
+            noteDrawingArgs.setLineLayoutBackground(noteModel.getLineLayoutBackground());
             int currentShapeType = noteModel.getCurrentShapeType();
             if (currentShapeType != ShapeFactory.SHAPE_INVALID) {
                 noteDrawingArgs.setCurrentShapeType(currentShapeType);
@@ -267,12 +267,12 @@ public class NoteDocument {
         return gotoPage(value);
     }
 
-    public boolean clearPage(final Context context, final int index) {
+    public boolean clearFreeShapes(final Context context, final int index) {
         final NotePage notePage = getPageByIndex(index);
         if (notePage == null) {
             return false;
         }
-        notePage.clear(true);
+        notePage.clearFreeShapes(true);
         return true;
     }
 
@@ -291,7 +291,10 @@ public class NoteDocument {
     }
 
     public String getCurrentPageUniqueId() {
-        return pageDataMap.get(getCurrentPageIndex());
+        if (pageDataMap.size() > getCurrentPageIndex()) {
+            return pageDataMap.get(getCurrentPageIndex());
+        }
+        return null;
     }
 
     public int getPageCount() {
