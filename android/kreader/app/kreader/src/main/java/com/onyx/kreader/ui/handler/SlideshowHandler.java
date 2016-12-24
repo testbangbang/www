@@ -37,7 +37,7 @@ public class SlideshowHandler extends BaseHandler {
     private int pageCount;
     private int startBatteryPercent;
     private Calendar startTime;
-    private int intervalInMS = 3 * 1000;
+    private int intervalInSeconds = 3;
     private WakeLockHolder wakeLockHolder = new WakeLockHolder();
 
     private BaseCallback pageLimitCallback = new BaseCallback() {
@@ -164,7 +164,7 @@ public class SlideshowHandler extends BaseHandler {
     }
 
     public void setInterval(int seconds) {
-        this.intervalInMS = seconds * 1000;
+        intervalInSeconds = seconds;
     }
 
     public void start(int maxPageCount) {
@@ -178,7 +178,7 @@ public class SlideshowHandler extends BaseHandler {
     private void setAlarm() {
         AlarmManager am = (AlarmManager)readerDataHolder.getContext().getSystemService(ALARM_SERVICE);
         if (am != null) {
-            am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + intervalInMS,
+            am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + intervalInSeconds * 1000,
                     pendingIntent);
         }
     }
