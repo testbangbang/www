@@ -43,6 +43,7 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
@@ -853,6 +854,7 @@ public class ReaderActivity extends ActionBarActivity {
         ShowReaderMenuAction.hideReaderMenu();
         ShowTextSelectionMenuAction.hideTextSelectionPopupMenu();
         getReaderDataHolder().closeActiveDialogs();
+        getReaderDataHolder().closeNoteMenu();
     }
 
     private boolean processKeyDown(int keyCode, KeyEvent event) {

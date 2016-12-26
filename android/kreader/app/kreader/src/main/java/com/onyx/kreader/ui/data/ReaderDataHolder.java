@@ -22,6 +22,7 @@ import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.host.wrapper.ReaderManager;
 import com.onyx.kreader.note.NoteManager;
+import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.receiver.DeviceReceiver;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
@@ -486,6 +487,7 @@ public class ReaderDataHolder {
         closeActiveDialogs();
         closeTts();
         closeNoteManager();
+        closeNoteMenu();
         resetHandlerManager();
         closeDocument(callback);
     }
@@ -509,6 +511,10 @@ public class ReaderDataHolder {
                 BaseCallback.invoke(callback, request, e);
             }
         });
+    }
+
+    public void closeNoteMenu() {
+        new CloseNoteMenuAction().execute(this, null);
     }
 
     private void closeTts() {
