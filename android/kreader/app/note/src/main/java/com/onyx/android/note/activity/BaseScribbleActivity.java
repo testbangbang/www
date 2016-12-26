@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -462,7 +463,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         onRequestFinished((BaseNoteRequest) request, true);
-                        loadLineLayoutData();
+                        reloadLineLayoutData();
                     }
                 });
             }
@@ -478,7 +479,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         onRequestFinished((BaseNoteRequest) request, true);
-                        loadLineLayoutData();
+                        reloadLineLayoutData();
                     }
                 });
             }
@@ -494,7 +495,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         onRequestFinished((BaseNoteRequest) request, true);
-                        loadLineLayoutData();
+                        reloadLineLayoutData();
                     }
                 });
             }
@@ -510,14 +511,14 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         onRequestFinished((BaseNoteRequest) request, true);
-                        loadLineLayoutData();
+                        reloadLineLayoutData();
                     }
                 });
             }
         });
     }
 
-    protected void loadLineLayoutData() {
+    protected void reloadLineLayoutData() {
 
     }
 
@@ -559,5 +560,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     public void toggleLineLayoutMode() {
         isLineLayoutMode = !isLineLayoutMode;
         getNoteViewHelper().setLineLayoutMode(isLineLayoutMode);
+    }
+
+    public SurfaceView getSurfaceView() {
+        return surfaceView;
     }
 }

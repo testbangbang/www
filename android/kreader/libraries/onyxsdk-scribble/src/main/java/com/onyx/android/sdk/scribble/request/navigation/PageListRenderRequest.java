@@ -16,13 +16,13 @@ public class PageListRenderRequest extends BaseNoteRequest {
 
     private Bitmap renderBitmap;
 
-    public PageListRenderRequest(final String id, final List<PageInfo> pages, final Rect size) {
+    public PageListRenderRequest(final String id, final List<PageInfo> pages, final Rect size, boolean resume) {
         setDocUniqueId(id);
         setAbortPendingTasks(true);
         setViewportSize(size);
         setVisiblePages(pages);
         setPauseInputProcessor(true);
-        setResumeInputProcessor(true);
+        setResumeInputProcessor(resume);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {

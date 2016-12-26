@@ -14,6 +14,11 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
     private String codePageFallback;
     private String language;
 
+    public ReaderDocumentOptionsImpl(final String dp, final String ap) {
+        documentPassword = dp;
+        archivePassword = ap;
+        autoCodePage = -1;
+    }
 
     public ReaderDocumentOptionsImpl(final String dp, final String ap,
                                      final int codePage) {

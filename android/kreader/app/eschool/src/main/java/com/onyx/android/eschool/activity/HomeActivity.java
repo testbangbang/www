@@ -57,7 +57,7 @@ public class HomeActivity extends BaseActivity {
     @Bind(R.id.textView_auxiliary_title)
     TextView teachingAuxiliaryText;
 
-    private String picDisplayPath = "/mnt/sdcard/slide/0037.jpg";
+    private String picDisplayPath = "/mnt/sdcard/slide/sample-cfa_01.png";
     private String videoDisplayPath = "/mnt/sdcard/slide/video_display.flv";
 
     @Override
@@ -155,7 +155,7 @@ public class HomeActivity extends BaseActivity {
 
     private void initDisplayItemView() {
         initNormalView(R.id.home_pic_display_item, R.string.home_item_pic_display_text, R.drawable.home_pic_display, getPicDisplayIntent());
-        initNormalView(R.id.home_video_display_item, R.string.home_item_video_display_text, R.drawable.home_video_display, getVideoPlayIntent());
+        //initNormalView(R.id.home_video_display_item, R.string.home_item_video_display_text, R.drawable.home_video_display, getVideoPlayIntent());
     }
 
     private void initNormalView(int layoutResId, int textResId, int imageResId, final Intent intent) {

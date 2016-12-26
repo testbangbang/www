@@ -9,11 +9,11 @@
     <dimen name="home_account_info_user_image_size">210dp</dimen>
     <dimen name="home_account_info_user_image_margin_top">25dp</dimen>
     <dimen name="home_account_info_user_image_padding">3dp</dimen>
-    <dimen name="home_account_info_user_name_text_size">28sp</dimen>
+    <dimen name="home_account_info_user_name_text_size">31sp</dimen>
     <dimen name="home_account_info_user_name_margin_top">12dp</dimen>
-    <dimen name="home_account_info_user_class_text_size">21sp</dimen>
+    <dimen name="home_account_info_user_class_text_size">25sp</dimen>
     <dimen name="home_account_info_user_class_margin_top">5dp</dimen>
-    <dimen name="home_account_info_user_study_process_text_size">27sp</dimen>
+    <dimen name="home_account_info_user_study_process_text_size">30sp</dimen>
     <dimen name="home_account_info_user_study_process_margin_top">18dp</dimen>
     <dimen name="home_account_info_user_study_process_padding">5dp</dimen>
     <dimen name="home_weather_notify_location_text_size">19sp</dimen>
@@ -38,20 +38,22 @@
     <dimen name="home_teaching_category_image_margin_top">18dp</dimen>
     <dimen name="home_teaching_decoration_image_size">140dp</dimen>
     <dimen name="home_teaching_decoration_image_margin_left_right">42dp</dimen>
-    <dimen name="home_teaching_record_text_size">19sp</dimen>
+    <dimen name="home_teaching_record_text_size">23sp</dimen>
     <dimen name="home_teaching_record_image_size">40dp</dimen>
     <dimen name="home_teaching_record_image_margin_bottom">8dp</dimen>
     <dimen name="home_teaching_record_image_margin_left">10dp</dimen>
-    <dimen name="home_teaching_material_title_size">22sp</dimen>
+    <dimen name="home_teaching_material_title_size">26sp</dimen>
     <dimen name="home_teaching_material_title_margin_top">6dp</dimen>
     <dimen name="home_teaching_material_title_margin_left">50dp</dimen>
     <dimen name="home_teaching_material_title_margin_right">8dp</dimen>
+    <dimen name="home_teaching_material_category_text_margin_bottom">12dp</dimen>
+    <dimen name="home_teaching_category_text_size">33sp</dimen>
+    <dimen name="home_teaching_title_text_size">26sp</dimen>
     <dimen name="home_teaching_auxiliary_title_text_size">33sp</dimen>
     <dimen name="home_teaching_auxiliary_title_margin_left">12dp</dimen>
     <dimen name="home_teaching_auxiliary_title_margin_right">8dp</dimen>
     <dimen name="home_item_background_normal_stroke_width">3dp</dimen>
     <dimen name="home_item_background_select_stroke_width">4dp</dimen>
-
     <dimen name="teaching_material_showcase_layout_min_height">400dp</dimen>
     <dimen name="teaching_material_showcase_layout_padding">30dp</dimen>
     <dimen name="teaching_material_showcase_cover_width">208dp</dimen>
@@ -78,8 +80,8 @@
     <dimen name="activity_teaching_material_volume_item_height">392dp</dimen>
     <dimen name="activity_teaching_material_volume_item_cover_margin">8dp</dimen>
     <dimen name="activity_teaching_material_item_layout_margin">25dp</dimen>
-    <dimen name="activity_teaching_material_item_cover_layout_width">214dp</dimen>
-    <dimen name="activity_teaching_material_item_cover_layout_height">324dp</dimen>
+    <dimen name="activity_teaching_material_item_cover_layout_width">@dimen/wrap_content</dimen>
+    <dimen name="activity_teaching_material_item_cover_layout_height">@dimen/wrap_content</dimen>
 
     <dimen name="activity_avatar_preview_layout_margin">21dp</dimen>
     <dimen name="activity_avatar_preview_layout_item_image_size">550dp</dimen>

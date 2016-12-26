@@ -14,16 +14,20 @@ import java.util.List;
  * Created by zhuzeng on 8/6/16.
  */
 public class ShapeSpan extends ReplacementSpan {
-    static final String TAG = ShapeSpan.class.getSimpleName();
-    public static int SHAPE_SPAN_MARGIN = 3;
+
+    public interface Callback {
+        void onFinishDrawShapes(List<Shape> shapes);
+    }
+
+    public static int SHAPE_SPAN_MARGIN = 5;
     private List<Shape> shapeList;
     private float scale = 1.0f;
     private int width = 1;
     private boolean needUpdateShape = false;
-
     public ShapeSpan(final List<Shape> s) {
         shapeList = s;
     }
+    private Callback callback;
 
     public ShapeSpan(List<Shape> shapeList, boolean needUpdateShape) {
         this.shapeList = shapeList;
@@ -53,7 +57,7 @@ public class ShapeSpan extends ReplacementSpan {
         final RectF rect = boundingRect();
 
         float translateX = x + SHAPE_SPAN_MARGIN - rect.left  * scale;
-        float translateY = top - rect.top * scale + (bottom - top - rect.height() * scale);
+        float translateY = top - rect.top * scale + (bottom - top - rect.height() * scale) -  SHAPE_SPAN_MARGIN;
         if (needUpdateShape) {
             matrix.postScale(scale, scale);
             matrix.postTranslate(translateX, translateY);
@@ -62,9 +66,7 @@ public class ShapeSpan extends ReplacementSpan {
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(1.0f * scale);
-        RenderContext renderContext = RenderContext.create(canvas, paint, matrix);
         for (Shape shape : shapeList) {
-            shape.render(renderContext);
             if (shape.getType() == ShapeFactory.SHAPE_TEXT) {
                 shape.getShapeExtraAttributes().setTextSize(paint.getTextSize());
             }
@@ -73,7 +75,15 @@ public class ShapeSpan extends ReplacementSpan {
                 shape.onTranslate(translateX, translateY);
             }
         }
+        if (callback != null) {
+            callback.onFinishDrawShapes(shapeList);
+            clearCallback();
+        }
         needUpdateShape = false;
+    }
+
+    private void clearCallback() {
+        callback = null;
     }
 
     private RectF boundingRect() {
@@ -89,5 +99,9 @@ public class ShapeSpan extends ReplacementSpan {
 
     public float getScale() {
         return scale;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
 }

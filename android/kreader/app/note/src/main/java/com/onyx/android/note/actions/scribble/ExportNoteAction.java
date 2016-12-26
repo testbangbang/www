@@ -1,5 +1,6 @@
 package com.onyx.android.note.actions.scribble;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -61,6 +62,12 @@ public class ExportNoteAction<T extends BaseScribbleActivity> extends BaseNoteAc
         progress.setSubTitle(location);
         progress.show();
 
+        progress.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                callback.done(null, null);
+            }
+        });
         getPageBitmap(activity);
     }
 
@@ -74,7 +81,7 @@ public class ExportNoteAction<T extends BaseScribbleActivity> extends BaseNoteAc
         PageInfo pageInfo = new PageInfo(pageUniqueId, size.width(), size.height());
         pageInfo.updateDisplayRect(new RectF(0, 0, size.width(), size.height()));
         pageInfoList.add(pageInfo);
-        final PageListRenderRequest renderRequest = new PageListRenderRequest(douId, pageInfoList, size);
+        final PageListRenderRequest renderRequest = new PageListRenderRequest(douId, pageInfoList, size, false);
         activity.submitRequest(renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -82,18 +89,21 @@ public class ExportNoteAction<T extends BaseScribbleActivity> extends BaseNoteAc
                     onExportFail(activity, progress);
                     return;
                 }
-                Bitmap bitmap = renderRequest.getRenderBitmap();
+                Bitmap bitmap = Bitmap.createBitmap(renderRequest.getRenderBitmap());
                 exportPage(activity, bitmap, index);
                 getPageBitmap(activity);
             }
         });
     }
 
-    private void exportPage(final T activity, Bitmap bitmap, final int index) {
+    private void exportPage(final T activity, final Bitmap bitmap, final int index) {
         ExportNoteRequest exportNoteRequest = new ExportNoteRequest(bitmap, noteTitle, String.valueOf(index));
         activity.submitRequest(exportNoteRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (!bitmap.isRecycled()) {
+                    bitmap.recycle();
+                }
                 if (e != null) {
                     onExportFail(activity, progress);
                     return;

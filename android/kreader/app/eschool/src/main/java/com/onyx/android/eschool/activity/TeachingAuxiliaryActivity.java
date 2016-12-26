@@ -64,6 +64,8 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
     private static final String PRODUCT_QUERY_KEY = "auxiliary_activity_query_key";
     private static final String CATEGORY_KEY = "auxiliary_activity_category_key";
 
+    private static boolean notifyWifiRequest = false;
+
     @Bind(R.id.category_page_view)
     PageRecyclerView categoryPageView;
     @Bind(R.id.product_page_view)
@@ -74,20 +76,25 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
     private List<Product> productList = new ArrayList<>();
     private List<Category> categoryList = new ArrayList<>();
     private int categoryCurrentIndex;
+    private boolean isLoadData = true;
 
     private ProductQuery productQuery = new ProductQuery();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NetworkHelper.requestWifi(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (CollectionUtils.isNullOrEmpty(productList)) {
+        if (isLoadData) {
             loadProductList();
+            isLoadData = false;
+        }
+        if (!notifyWifiRequest) {
+            isLoadData = !NetworkHelper.requestWifi(this);
+            notifyWifiRequest = true;
         }
     }
 

@@ -97,7 +97,8 @@ public class ReaderLayerMenu extends ReaderMenu {
     }
 
     private void handleMenuItemClicked(ReaderMenuItem item) {
-        if (item.getItemType() == ReaderMenuItem.ItemType.Group && item.getAction() != ReaderMenuAction.FONT) {
+        if (item.getItemType() == ReaderMenuItem.ItemType.Group
+                && item.getChildren().size() > 0) {
             currentParentMenuItem = (ReaderLayerMenuItem)item;
             updateMenuContent();
         } else {

@@ -15,6 +15,7 @@ import com.onyx.android.sdk.scribble.request.note.NotePageShapesRequest;
 import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import org.apache.commons.collections4.MapUtils;
@@ -33,7 +34,7 @@ import static android.os.Looper.getMainLooper;
 public class SpanTextHandler {
 
     public interface Callback{
-        void OnFinishedSpan(SpannableStringBuilder builder, List<Shape> spanShapeList);
+        void OnFinishedSpan(SpannableStringBuilder builder, List<Shape> spanShapeList, ShapeSpan lastShapeSpan);
     }
 
     public static String SPACE_TEXT = " ";
@@ -64,7 +65,7 @@ public class SpanTextHandler {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 List<Shape> subPageAllShapeList = notePageShapesRequest.getPageShapes();
-                subPageSpanTextShapeMap= ShapeFactory.getSubPageSpanShapeList(subPageAllShapeList);
+                subPageSpanTextShapeMap = ShapeFactory.getSubPageSpanShapeList(subPageAllShapeList);
                 spannableRequest(subPageSpanTextShapeMap, null);
             }
         });
@@ -115,7 +116,7 @@ public class SpanTextHandler {
                     subPageSpanTextShapeMap.put(newAddShapeList.get(0).getGroupId(), newAddShapeList);
                 }
                 if (callback != null) {
-                    callback.OnFinishedSpan(builder, newAddShapeList);
+                    callback.OnFinishedSpan(builder, newAddShapeList, spannableRequest.getLastShapeSpan());
                 }
             }
         });

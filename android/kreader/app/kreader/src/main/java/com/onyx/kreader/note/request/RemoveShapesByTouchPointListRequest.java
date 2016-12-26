@@ -29,6 +29,5 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
         }
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
-        updateShapeDataInfo(noteManager);
     }
 }
