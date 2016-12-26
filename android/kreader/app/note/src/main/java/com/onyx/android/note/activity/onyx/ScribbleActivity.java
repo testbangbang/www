@@ -574,6 +574,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onKeyboard() {
+        setKeyboardInput(true);
         syncWithCallback(false, false, null);
         InputMethodManager inputManager = (InputMethodManager)spanTextView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.showSoftInput(spanTextView, 0);
