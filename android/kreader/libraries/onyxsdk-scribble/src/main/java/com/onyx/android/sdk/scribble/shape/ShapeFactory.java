@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.shape;
 
 import com.onyx.android.sdk.scribble.data.ShapeModel;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -112,7 +113,7 @@ public class ShapeFactory {
     public static Map<String, List<Shape>> getSubPageSpanShapeList(List<Shape> subPageShapes) {
         Map<String, List<Shape>> subPageSpanShapeMap = new LinkedHashMap<>();
         for (Shape subPageShape : subPageShapes) {
-            if (subPageShape.getLayoutType() != POSITION_LINE_LAYOUT) {
+            if (subPageShape.isFreePosition() || StringUtils.isNullOrEmpty(subPageShape.getGroupId())) {
                 continue;
             }
             String groupId = subPageShape.getGroupId();
