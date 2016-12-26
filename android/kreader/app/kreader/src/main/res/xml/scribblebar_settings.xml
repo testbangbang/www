@@ -16,13 +16,13 @@
             android:defaultValue="true"
             android:title="@string/settings_scribble_smooth_title"/>
 
-    <CheckBoxPreference
-            android:key="@string/settings_acquire_scribble_lock_key"
-            android:layout="@layout/settings_custom_preference_item"
-            android:summaryOn="@string/settings_enable"
-            android:summaryOff="@string/settings_disable"
-            android:defaultValue="true"
-            android:title="@string/settings_acquire_scribble_lock_title"/>
+    <!--<CheckBoxPreference-->
+            <!--android:key="@string/settings_acquire_scribble_lock_key"-->
+            <!--android:layout="@layout/settings_custom_preference_item"-->
+            <!--android:summaryOn="@string/settings_enable"-->
+            <!--android:summaryOff="@string/settings_disable"-->
+            <!--android:defaultValue="true"-->
+            <!--android:title="@string/settings_acquire_scribble_lock_title"/>-->
     <ListPreference
             android:key="@string/settings_scribble_base_width_key"
             android:layout="@layout/settings_custom_preference_item"

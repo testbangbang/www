@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -171,7 +172,7 @@ public class DialogTextStyle extends DialogBase {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancel();
+                restoreAndDismiss();
             }
         });
 
@@ -183,6 +184,24 @@ public class DialogTextStyle extends DialogBase {
         });
 
         viewPager.setPagingEnabled(false);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            restoreAndDismiss();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void restoreAndDismiss() {
+        updateReaderStyle(originalStyle, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                dismiss();
+            }
+        });
     }
 
     private View initFontFaceView() {
@@ -328,11 +347,16 @@ public class DialogTextStyle extends DialogBase {
     }
 
     private void updateReaderStyle(final ReaderTextStyle style) {
-        new ChangeStyleAction(style).execute(readerDataHolder, new BaseCallback() {
+        updateReaderStyle(style, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+
             }
         });
+    }
+
+    private void updateReaderStyle(final ReaderTextStyle style, BaseCallback callback) {
+        new ChangeStyleAction(style).execute(readerDataHolder, callback);
     }
 
     private void initFontPageView(final PageRecyclerView pageView, String fontFace, List<FontInfo> fontsList) {
