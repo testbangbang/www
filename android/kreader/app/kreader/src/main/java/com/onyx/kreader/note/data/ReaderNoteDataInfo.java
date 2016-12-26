@@ -14,7 +14,7 @@ public class ReaderNoteDataInfo {
     private volatile boolean contentRendered;
     private String documentUniqueId;
     private NoteDrawingArgs drawingArgs = new NoteDrawingArgs();
-
+    private boolean requestFinished = false;
 
     public final ReaderNotePageNameMap getPageMap() {
         return pageMap;
@@ -114,5 +114,13 @@ public class ReaderNoteDataInfo {
 
     public void setContentRendered(boolean contentRendered) {
         this.contentRendered = contentRendered;
+    }
+
+    public boolean isRequestFinished() {
+        return requestFinished;
+    }
+
+    public void setRequestFinished(boolean requestFinished) {
+        this.requestFinished = requestFinished;
     }
 }
