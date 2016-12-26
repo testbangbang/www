@@ -449,7 +449,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_nat
     int count = 0;
     FPDF_SCHHANDLE searchHandle = FPDFText_FindStart(textPage, (unsigned short *)stringData, flags, 0);
     JNIUtils utils(env);
-    utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;)V");
+    utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;)V", true);
     while (searchHandle != NULL && FPDFText_FindNext(searchHandle)) {
         ++count;
         int startIndex = FPDFText_GetSchResultIndex(searchHandle);
@@ -561,7 +561,7 @@ JNIEXPORT jobject JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper_
     reportSelection(env, page, textPage, 0, 0, 0, 0, 0, sentenceStartIndex, lastIndex, selection);
 
     JNIUtils utils(env);
-    if (!utils.findStaticMethod(sentenceClassName, "create", "(Lcom/onyx/kreader/api/ReaderSelection;IZZ)Lcom/onyx/kreader/api/ReaderSentence;")) {
+    if (!utils.findStaticMethod(sentenceClassName, "create", "(Lcom/onyx/kreader/api/ReaderSelection;IZZ)Lcom/onyx/kreader/api/ReaderSentence;", true)) {
         return NULL;
     }
 
@@ -640,7 +640,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
     }
 
     JNIUtils utils(env);
-    if (!utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;)V")) {
+    if (!utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;)V", true)) {
         return false;
     }
 

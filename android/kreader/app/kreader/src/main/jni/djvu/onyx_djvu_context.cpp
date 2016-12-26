@@ -217,7 +217,7 @@ bool OnyxDjvuContext::extractPageText(JNIEnv *env, int pageNum, jobject textChun
 
     JNIUtils utils(env);
     utils.findStaticMethod("com/onyx/kreader/plugins/djvu/DjvuSelection",
-                           "addToSelectionList", "(Ljava/util/List;Ljava/lang/String;[I)V");
+                           "addToSelectionList", "(Ljava/util/List;Ljava/lang/String;[I)V", true);
     int w = info.width;
     int h = info.height;
     fz_bbox target = { 0, 0, w, h };

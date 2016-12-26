@@ -28,8 +28,10 @@ public:
     bool getObjectClass(const jobject object);
     bool findMethod(const char * method, const char *signature);
     bool findMethod(const char * className, const char * method, const char *signature);
-    bool findStaticMethod(const char * className, const char * method, const char *signature);
-    
+    bool findStaticMethod(const char * className, const char * method, const char *signature, bool debug);
+
+    static int random(int min, int max);
+
     jclass getClazz() {
         return clazz;
     }
@@ -266,5 +268,6 @@ public:
     static int toWhite(int white);
 
 };
+
 
 #endif

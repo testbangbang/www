@@ -1,5 +1,6 @@
 #include "JNIUtils.h"
 
+
 #define LOG_TAG "JNIUtils"
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
@@ -65,16 +66,20 @@ bool JNIUtils::findMethod(const char * className, const char * method, const cha
     return true;
 }
 
-bool JNIUtils::findStaticMethod(const char * className, const char * method, const char *signature) {
+bool JNIUtils::findStaticMethod(const char * className, const char * method, const char *signature, bool debug) {
     clazz = myEnv->FindClass(className);
     if (clazz == 0) {
-        LOGE("Could not find class: %s", className);
+        if (debug) {
+            LOGE("Could not find class: %s", className);
+        }
         return false;
     }
 
     methodId = myEnv->GetStaticMethodID(clazz, method, signature);
     if (methodId == 0) {
-        LOGE("Find method %s failed", method);
+        if (debug) {
+            LOGE("Find method %s failed", method);
+        }
         return false;
     }
     return true;
@@ -84,6 +89,15 @@ JNIUtils::~JNIUtils() {
     if (clazz != 0) {
         myEnv->DeleteLocalRef(clazz);
     }
+}
+
+int JNIUtils::random(int min, int max) {
+    static bool first = true;
+    if ( first ) {
+      srand(time(NULL));
+      first = false;
+    }
+    return min + rand() % (max - min);
 }
 
 jint JNIUtils::hashcode(const jobject object)

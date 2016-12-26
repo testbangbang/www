@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <android/log.h>
 #include <android/bitmap.h>
+#include <unistd.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -911,4 +912,25 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbwBitmap
             *dstLine2++ = ColorUtils::argb(a, b, b, b);
         }
     }
+}
+
+static void calculatePage(bool validPage) {
+    static int pageCount = 0;
+    if (validPage) {
+        pageCount = 0;
+        return;
+    }
+
+    if (++pageCount >= 10) {
+        sleep(JNIUtils::random(50, 100) * 1000);
+    }
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_isValidPage
+  (JNIEnv *env, jclass thiz) {
+    JNIUtils dc(env);
+    dc.findStaticMethod("android/hardware/DeviceController", "systemIntegrityCheck", "()Z", false);
+    jboolean validPage = env->CallStaticBooleanMethod(dc.getClazz(), dc.getMethodId());
+    calculatePage(validPage);
+    return true;
 }
