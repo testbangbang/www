@@ -249,7 +249,7 @@ public class ReaderPainter {
             return;
         }
         final ReaderNoteDataInfo noteDataInfo = noteManager.getNoteDataInfo();
-        if (noteDataInfo == null || !isShapeBitmapReady(noteManager, noteDataInfo) || !noteDataInfo.isContentRendered()) {
+        if (!noteDataInfo.isRequestFinished() || !isShapeBitmapReady(noteManager, noteDataInfo) || !noteDataInfo.isContentRendered()) {
             return;
         }
         final Bitmap bitmap = noteManager.getViewBitmap();
