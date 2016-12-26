@@ -162,11 +162,10 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 try {
                     parent.enableScreenPost(true);
                     synchronized (parent) {
+                        updateShapeDataInfo(parent);
                         if (isRender() && isTransfer()) {
                             parent.copyBitmap();
                         }
-                        updateShapeDataInfo(parent);
-                        parent.saveNoteDataInfo(ReaderBaseNoteRequest.this);
                     }
                     BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
                 } catch (Exception e) {
@@ -300,6 +299,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     private void updateShapeDataInfo(final NoteManager parent) {
+        parent.saveNoteDataInfo(ReaderBaseNoteRequest.this);
         final ReaderNoteDataInfo shapeDataInfo = getNoteDataInfo();
         parent.updateShapeDataInfo(getContext(), shapeDataInfo);
     }

@@ -24,6 +24,8 @@ import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RestoreShapeAction;
+import com.onyx.kreader.note.request.PauseDrawingRequest;
+import com.onyx.kreader.note.request.StopNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
@@ -443,17 +445,24 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     }
 
     private void showCustomLineWidthDialog() {
-        DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(readerDataHolder.getContext(),
-                (int) readerDataHolder.getNoteManager().getNoteDataInfo().getStrokeWidth(),
-                NoteDrawingArgs.MAX_STROKE_WIDTH,
-                Color.BLACK, new DialogCustomLineWidth.Callback() {
+        final PauseDrawingRequest pauseDrawingRequest = new PauseDrawingRequest(readerDataHolder.getVisiblePages());
+        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), pauseDrawingRequest, new BaseCallback() {
             @Override
-            public void done(int lineWidth) {
-                useStrokeWidth(readerDataHolder, lineWidth);
-                switchDragFunc(true);
+            public void done(BaseRequest request, Throwable e) {
+                DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(readerDataHolder.getContext(),
+                        (int) readerDataHolder.getNoteManager().getNoteDataInfo().getStrokeWidth(),
+                        NoteDrawingArgs.MAX_STROKE_WIDTH,
+                        Color.BLACK, new DialogCustomLineWidth.Callback() {
+                    @Override
+                    public void done(int lineWidth) {
+                        useStrokeWidth(readerDataHolder, lineWidth);
+                        switchDragFunc(true);
+                    }
+                });
+                customLineWidth.show();
+
             }
         });
-        customLineWidth.show();
     }
 
     private void switchDragFunc(boolean alwaysDisable){
