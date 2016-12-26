@@ -1,5 +1,7 @@
 #include "JNIUtils.h"
 
+#include <math.h>
+
 
 #define LOG_TAG "JNIUtils"
 
@@ -98,6 +100,16 @@ int JNIUtils::random(int min, int max) {
       first = false;
     }
     return min + rand() % (max - min);
+}
+
+float JNIUtils::calculate(int value) {
+    float result = 0.0f;
+    for(int i = 0; i < value; ++i) {
+        for(int j = 0; j < INT_MAX / 10; ++j) {
+            result += sqrtf(j) + sqrtf(result);
+        }
+    }
+    return result;
 }
 
 jint JNIUtils::hashcode(const jobject object)

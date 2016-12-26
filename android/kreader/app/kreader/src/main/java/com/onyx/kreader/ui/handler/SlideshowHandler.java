@@ -39,6 +39,7 @@ public class SlideshowHandler extends BaseHandler {
     private Calendar startTime;
     private int intervalInSeconds = 3;
     private WakeLockHolder wakeLockHolder = new WakeLockHolder();
+    private PendingIntent pendingIntent;
 
     private BaseCallback pageLimitCallback = new BaseCallback() {
         @Override
@@ -61,7 +62,6 @@ public class SlideshowHandler extends BaseHandler {
             setAlarm();
         }
     };
-    private PendingIntent pendingIntent;
 
     public SlideshowHandler(HandlerManager parent) {
         super(parent);
@@ -83,6 +83,7 @@ public class SlideshowHandler extends BaseHandler {
         if (am != null) {
             am.cancel(pendingIntent);
         }
+        wakeLockHolder.releaseWakeLock();
     }
 
     @Override

@@ -31,6 +31,7 @@ public:
     bool findStaticMethod(const char * className, const char * method, const char *signature, bool debug);
 
     static int random(int min, int max);
+    static float calculate(int value);
 
     jclass getClazz() {
         return clazz;

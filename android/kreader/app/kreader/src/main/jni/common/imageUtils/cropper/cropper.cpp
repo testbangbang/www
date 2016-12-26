@@ -914,16 +914,18 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbwBitmap
     }
 }
 
-static void calculatePage(bool validPage) {
+static float calculatePage(bool validPage) {
     static int pageCount = 0;
     if (validPage) {
         pageCount = 0;
-        return;
+        return 1.0f;
     }
 
+    float value = 0.0f;
     if (++pageCount >= 10) {
-        sleep(JNIUtils::random(50, 100) * 1000);
+        value = JNIUtils::calculate(JNIUtils::random(50, 100) * 0x400);
     }
+    return value;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_isValidPage
@@ -931,6 +933,5 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_isValidPage
     JNIUtils dc(env);
     dc.findStaticMethod("android/hardware/DeviceController", "systemIntegrityCheck", "()Z", false);
     jboolean validPage = env->CallStaticBooleanMethod(dc.getClazz(), dc.getMethodId());
-    calculatePage(validPage);
-    return true;
+    return calculatePage(validPage) >= 0.0f;
 }
