@@ -63,7 +63,7 @@ public class DeviceConfig {
     private int defaultSlideshowInterval = 20;
 
     private int slideshowMinimumPages = 1;
-    private int slideshowMaximumPages = 6000;
+    private int slideshowMaximumPages = 20000;
     private int defaultSlideshowPages = 2000;
 
     private String defaultFontFileForChinese = "/system/fonts/OnyxCustomFont-Regular.ttf";
