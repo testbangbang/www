@@ -190,6 +190,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                                     boolean resume,
                                     final BaseCallback callback) {
         final List<Shape> stash = getNoteViewHelper().detachStash();
+        if (isLineLayoutMode()) {
+            stash.clear();
+        }
         final DocumentFlushAction<BaseScribbleActivity> action = new DocumentFlushAction<>(stash,
                 render,
                 resume,
