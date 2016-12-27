@@ -3669,7 +3669,16 @@ public class AlBookEng{
                     if (format.softHyphenPresent) {
                         hyphen.getHyph4Soft(tword.text, tword.hyph, tword.count, hyphFlag);
                     } else {
-                        hyphen.getHyph(tword.text, tword.hyph, tword.count, hyphFlag);
+						if (tword.text[0] >= 0x3000 && ((tword.need_flags & InternalConst.AL_ONEWORD_FLAG_NOINSERTALL) != 0)) {
+							int wwlen = word_len, wchina = tword.count;
+							while ((--wchina) > 8 && wwlen > oi.allWidth + (fontParam.space_width_standart << 4)) {
+								tword.hyph[wchina] = '8';
+								wwlen -= tword.width[wchina];
+							}
+							hyphen.getHyph(tword.text, tword.hyph, wchina + 1, hyphFlag);
+						} else {
+							hyphen.getHyph(tword.text, tword.hyph, tword.count, hyphFlag);
+						}
                     }
 					tword.need_flags = hyphFlag.value;
 				}
@@ -3683,15 +3692,15 @@ public class AlBookEng{
 					tword.complete--;
 					wlen -= tword.width[tword.complete];
 					
-					if (tword.hyph[tword.complete] == 'D') {
-						if (wlen <= oi.allWidth) {
+					if (wlen <= oi.allWidth && tword.hyph[tword.complete] == 'D') {
+						//if () {
 							oi.textWidth += wlen;
 							addW2I(oi, tword, tword.complete);
 							
 							oi.spaceAfterHyph0 = oi.allWidth - oi.textWidth;
 							oi.textWidth += oi.spaceAfterHyph0;
 							return false;						
-						}
+						//}
 					}			
 					if (tword.complete == 1)
 						break;
@@ -3703,18 +3712,21 @@ public class AlBookEng{
 					do  {
 						tword.complete--;
 						wlen -= tword.width[tword.complete];
-						
+
+						if (wlen > oi.allWidth) {
+
+						} else
 						switch (tword.hyph[tword.complete]) {
 						case 'B':
-							if (wlen <= oi.allWidth) {
+							//if (wlen <= oi.allWidth) {
 								oi.textWidth += wlen;
 								addW2I(oi, tword, tword.complete);
 								
 								oi.spaceAfterHyph0 = oi.allWidth - oi.textWidth;
 								oi.textWidth += oi.spaceAfterHyph0;
 								return false;						
-							}
-							break;
+							//}
+							//break;
 						case '-':
 							if (tword.width[tword.complete] != 0) {
 								if (wlen + fontParam.hyph_width_current <= oi.allWidth) {
@@ -3741,15 +3753,15 @@ public class AlBookEng{
 						tword.complete--;
 						wlen -= tword.width[tword.complete];
 						
-						if (tword.hyph[tword.complete] == 'B') {
-							if (wlen <= oi.allWidth) {
+						if (wlen <= oi.allWidth && tword.hyph[tword.complete] == 'B') {
+							//if (wlen <= oi.allWidth) {
 								oi.textWidth += wlen;
 								addW2I(oi, tword, tword.complete);
 								
 								oi.spaceAfterHyph0 = oi.allWidth - oi.textWidth;
 								oi.textWidth += oi.spaceAfterHyph0;
 								return false;						
-							}
+							//}
 						}			
 						if (tword.complete == 1)
 							break;
@@ -3835,14 +3847,19 @@ public class AlBookEng{
 				addW2I(oi, tword, tword.count);
 				return false;
 			} 
-			
+
+			if (oi.textWidth + need_space_len >= oi.allWidth) {
+				word_len++;
+			} else
 			if (tword.count > 3) {
+				int china_end_char = 0xffff;
+
 				if ((tword.need_flags & InternalConst.AL_ONEWORD_FLAG_DOHYPH) == 0) {
 					hyphFlag.value = tword.need_flags;
                     if (format.softHyphenPresent) {
                         hyphen.getHyph4Soft(tword.text, tword.hyph, tword.count, hyphFlag);
                     } else {
-                        hyphen.getHyph(tword.text, tword.hyph, tword.count, hyphFlag);
+						hyphen.getHyph(tword.text, tword.hyph, tword.count, hyphFlag);
                     }
 					tword.need_flags = hyphFlag.value;
 				}
@@ -5004,10 +5021,10 @@ public class AlBookEng{
 			}
 		}
 
-		int scan_pos = -1, verifed_pos = -1;
+		int /*scan_pos = -1, */verifed_pos = -1;
 
 		if (tmp_word.count > 0) {
-			scan_pos = tmp_word.pos[tmp_word.count - 1];
+			//scan_pos = tmp_word.pos[tmp_word.count - 1];
 			addWord(tmp_word, page, width, calc_mode);
 		}
 
@@ -5020,9 +5037,14 @@ public class AlBookEng{
 				if (verifed_pos >= 0)
 					break;
 			}
-		} else verifed_pos = scan_pos;
+		} //else verifed_pos = scan_pos;
 
-		if (scan_pos != -1 && scan_pos != verifed_pos) {
+		/*if (scan_pos != -1 && scan_pos != verifed_pos) {
+			page.end_position = verifed_pos + 1;
+		} else
+			page.end_position = end;*/
+
+		if (verifed_pos >= 0) {
 			page.end_position = verifed_pos + 1;
 		} else
 			page.end_position = end;
@@ -6608,6 +6630,14 @@ public class AlBookEng{
 					}
 					return TAL_RESULT.OK;
 			}
+		}
+		return TAL_RESULT.ERROR;
+	}
+
+	public int getTextRect(int textStart, int textStop, AlRect rect) {
+		if (openState.getState() == AlBookState.OPEN) {
+
+			return TAL_RESULT.OK;
 		}
 		return TAL_RESULT.ERROR;
 	}
