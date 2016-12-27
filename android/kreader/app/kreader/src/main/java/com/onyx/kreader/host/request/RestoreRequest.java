@@ -100,12 +100,12 @@ public class RestoreRequest extends BaseReaderRequest {
         if (StringUtils.isNullOrEmpty(fontface) && LocaleUtils.isChinese()) {
             fontface = DeviceConfig.sharedInstance(getContext()).getDefaultFontFileForChinese();
         }
-        float fontSize = baseOptions.getFontSize();
-        int lineSpacing = baseOptions.getLineSpacing();
-        int leftMargin = baseOptions.getLeftMargin();
-        int topMargin = baseOptions.getTopMargin();
-        int rightMargin = baseOptions.getRightMargin();
-        int bottomMargin = baseOptions.getBottomMargin();
+        float fontSize = baseOptions.getFontSize(getContext());
+        int lineSpacing = baseOptions.getLineSpacing(getContext());
+        int leftMargin = baseOptions.getLeftMargin(getContext());
+        int topMargin = baseOptions.getTopMargin(getContext());
+        int rightMargin = baseOptions.getRightMargin(getContext());
+        int bottomMargin = baseOptions.getBottomMargin(getContext());
         ReaderTextStyle style = ReaderTextStyle.create(fontface,
                 ReaderTextStyle.SPUnit.create(fontSize),
                 ReaderTextStyle.Percentage.create(lineSpacing),

@@ -55,6 +55,9 @@ public class DeviceConfig {
     private int selectionMoveDistanceThreshold = 8;
     private int gcInterval = 0;
     private int frontLight = 0;
+    private int defaultFontSizeIndex = 3;
+    private int defaultLineSpacingIndex = 1;
+    private int defaultPageMarginIndex = 1;
     private boolean exitAfterFinish = false;
 
     // in seconds
@@ -475,6 +478,30 @@ public class DeviceConfig {
             Debug.w(getClass(), e);
         }
         return style;
+    }
+
+    public int getDefaultFontSizeIndex() {
+        return defaultFontSizeIndex;
+    }
+
+    public void setDefaultFontSizeIndex(int defaultFontSizeIndex) {
+        this.defaultFontSizeIndex = defaultFontSizeIndex;
+    }
+
+    public int getDefaultPageMarginIndex() {
+        return defaultPageMarginIndex;
+    }
+
+    public void setDefaultPageMarginIndex(int defaultPageMarginIndex) {
+        this.defaultPageMarginIndex = defaultPageMarginIndex;
+    }
+
+    public int getDefaultLineSpacingIndex() {
+        return defaultLineSpacingIndex;
+    }
+
+    public void setDefaultLineSpacingIndex(int defaultLineSpacingIndex) {
+        this.defaultLineSpacingIndex = defaultLineSpacingIndex;
     }
 }
 

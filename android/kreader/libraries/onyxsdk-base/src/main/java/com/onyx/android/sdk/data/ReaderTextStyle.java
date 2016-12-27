@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data;
 
+import android.content.Context;
+
 /**
  * Created by zhuzeng on 11/6/15.
  */
@@ -239,6 +241,39 @@ public class ReaderTextStyle {
             newSize = maxSize;
         }
         return newSize;
+    }
+
+    public static SPUnit getFontSizeByIndex(int index) {
+        if (FONT_SIZE_LIST.length > index) {
+            return FONT_SIZE_LIST[index];
+        }
+        return DEFAULT_FONT_SIZE;
+    }
+
+    public static Percentage getLineSpacingByIndex(int index) {
+        switch (index) {
+            case 0:
+                return SMALL_LINE_SPACING;
+            case 1:
+                return NORMAL_LINE_SPACING;
+            case 2:
+                return LARGE_LINE_SPACING;
+            default:
+                return NORMAL_LINE_SPACING;
+        }
+    }
+
+    public static PageMargin getPageMarginByIndex(int index) {
+        switch (index) {
+            case 0:
+                return SMALL_PAGE_MARGIN;
+            case 1:
+                return NORMAL_PAGE_MARGIN;
+            case 2:
+                return LARGE_PAGE_MARGIN;
+            default:
+                return NORMAL_PAGE_MARGIN;
+        }
     }
 
     private ReaderTextStyle() {
