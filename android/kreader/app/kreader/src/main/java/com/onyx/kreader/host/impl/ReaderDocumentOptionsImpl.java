@@ -10,21 +10,22 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
     private String documentPath;
     private String documentPassword;
     private String archivePassword;
-    private int autoCodePage;
-    private String codePageFallback;
+    private int codePage;
+    private int codePageFallback;
     private String language;
 
     public ReaderDocumentOptionsImpl(final String dp, final String ap) {
         documentPassword = dp;
         archivePassword = ap;
-        autoCodePage = -1;
+        codePage = -1;
     }
 
     public ReaderDocumentOptionsImpl(final String dp, final String ap,
-                                     final int codePage) {
+                                     final int codePage, final int codePageFallback) {
         documentPassword = dp;
         archivePassword = ap;
-        autoCodePage = codePage;
+        this.codePage = codePage;
+        this.codePageFallback = codePageFallback;
     }
 
     public void setDocumentPath(final String path) {
@@ -53,19 +54,19 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
 
     @Override
     public int getCodePage() {
-        return autoCodePage;
+        return codePage;
     }
 
-    public void setAutoCodePage(int autoCodePage) {
-        this.autoCodePage = autoCodePage;
+    public void setCodePage(int codePage) {
+        this.codePage = codePage;
     }
 
     @Override
-    public String getCodePageFallback() {
+    public int getCodePageFallback() {
         return codePageFallback;
     }
 
-    public void setCodePageFallback(String codePageFallback) {
+    public void setCodePageFallback(int codePageFallback) {
         this.codePageFallback = codePageFallback;
     }
 

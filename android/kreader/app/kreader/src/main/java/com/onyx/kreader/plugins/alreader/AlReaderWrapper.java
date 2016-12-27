@@ -93,7 +93,7 @@ public class AlReaderWrapper {
         filePath = path;
         AlBookOptions bookOpt = new AlBookOptions();
         bookOpt.codePage = documentOptions.getCodePage();
-        bookOpt.codePageDefault = documentOptions.getCodePage();
+        bookOpt.codePageDefault = documentOptions.getCodePageFallback();
         bookOpt.formatOptions = 0;
         bookOpt.readPosition = 0;
         bookEng.openBook(path, bookOpt);
