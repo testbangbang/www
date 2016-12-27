@@ -545,13 +545,23 @@ public abstract class AlAXML extends AlFormat {
 								ch = (char)((ch & 0x1f) << 6);				
 								ch1 = (char)parser_inBuff[j++];
 								ch += (char)(ch1 & 0x3f);
-							} else {
-								ch = (char)((ch & 0x1f) << 6);				
-								ch1 = (char)parser_inBuff[j++];							
-								ch += (char)(ch1 & 0x3f);											
-								ch <<= 6;				
+							} else
+							if ((ch & 0x10) == 0) {
+								ch = (char)((ch & 0x1f) << 6);
 								ch1 = (char)parser_inBuff[j++];
 								ch += (char)(ch1 & 0x3f);
+								ch <<= 6;
+								ch1 = (char)parser_inBuff[j++];
+								ch += (char)(ch1 & 0x3f);
+							} else {
+								if ((ch & 0x08) == 0) {
+									j += 3;
+								} else if ((ch & 0x04) == 0) {
+									j += 4;
+								} else if ((ch & 0x02) == 0) {
+									j += 5;
+								}
+								ch = '?';
 							}
 							break;
 						case TAL_CODE_PAGES.CP1201:

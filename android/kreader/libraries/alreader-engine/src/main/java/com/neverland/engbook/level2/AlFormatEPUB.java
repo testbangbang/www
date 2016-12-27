@@ -214,8 +214,39 @@ public class AlFormatEPUB extends AlAXML {
             }
         }
 
+        coverIsFirstImage = false;
+        if (coverMETAIID != null) {
+            coverName = coverMETAIID;
+        } else
+        if (coverITEM_hrefImage != null) {
+            coverName = coverITEM_hrefImage;
+        } else
+
+        /*if (coverITEM_idImage != null) {
+            coverName = coverITEM_idImage;
+        } else
+        if (coverITEM_idXML != null) {
+            coverName = coverITEM_idXML;
+        } else
+        if (coverITEM_hrefXML != null) {
+            coverName = coverITEM_hrefXML;
+        } else*/
+
+        if (coverFIRST != null) {
+            coverIsFirstImage = true;
+            coverName = coverFIRST;
+        }
+
         super.prepareCustom();
     }
+
+    private boolean coverIsFirstImage = false;
+    private String	coverMETAIID = null;
+    private String	coverITEM_hrefImage = null;
+    private String	coverITEM_idImage = null;
+    private String	coverITEM_idXML = null;
+    private String	coverITEM_hrefXML = null;
+    private String	coverFIRST = null;
 
     private void setSpecialText(boolean flag) {
         if (flag) {
@@ -310,7 +341,7 @@ public class AlFormatEPUB extends AlAXML {
         }
     }
 
-    int			realSkipCoverPos = -1;
+    private int			realSkipCoverPos = -1;
 
     private boolean addImages() {
         StringBuilder param = tag.getATTRValue(AlFormatTag.TAG_SRC);
@@ -327,30 +358,34 @@ public class AlFormatEPUB extends AlAXML {
 
             boolean needInsert = true;
 
+            boolean hasCover = false;
             if (allState.isOpened) {
                 if (realSkipCoverPos == -1 && size == 0 && noUseCover) {
                     realSkipCoverPos = tag.start_pos;
                     needInsert = false;
                 }
+
+                hasCover = coverMETAIID != null || coverITEM_hrefImage != null
+                //|| coverITEM_idImage != null || coverITEM_idXML != null || coverITEM_hrefXML != null
+                ;
             } else {
                 needInsert = realSkipCoverPos != tag.start_pos;
+                hasCover = coverName.length() > 0;
             }
 
             if (needInsert) {
-                if (coverName == null)
+                if (!hasCover && coverFIRST == null)
                     setParagraphStyle(AlStyles.PAR_COVER);
 
                 addCharFromTag((char) AlStyles.CHAR_IMAGE_S, false);
                 addTextFromTag(name, false);
                 addCharFromTag((char) AlStyles.CHAR_IMAGE_E, false);
 
-                if (coverName == null) {
+                if (!hasCover && coverFIRST == null)
                     clearParagraphStyle(AlStyles.PAR_COVER);
-                    coverName = name;
-                }
             }
-            if (coverName  == null) {
-                coverName = name;
+            if (coverFIRST  == null) {
+                coverFIRST = name;
             }
         }
 
@@ -641,7 +676,7 @@ public class AlFormatEPUB extends AlAXML {
                 if (tag.closed) {
 
                 } else {
-                    /*if (allState.isOpened && (paragraph & AlStyles.PAR_DESCRIPTION2) != 0) {
+                    if (allState.isOpened && (paragraph & AlStyles.PAR_DESCRIPTION2) != 0) {
                         if (allState.isOpened) {
                             param = tag.getATTRValue(AlFormatTag.TAG_NAME);
                             if (param != null && (META_NAME_COVER.contentEquals(param))) {
@@ -650,7 +685,7 @@ public class AlFormatEPUB extends AlAXML {
                                     coverMETAIID = param.toString();
                             }
                         }
-                    }*/
+                    }
                 }
                 return true;
 
@@ -714,23 +749,23 @@ public class AlFormatEPUB extends AlAXML {
                                     a.type = type.toString();
                                     mapId.put(param.toString(), a);
 
-                                    /*if (param.indexOf(META_NAME_COVER) == 0) {
-                                        if (type.find(U16("image/")) == 0) {
+                                    if (param.indexOf(META_NAME_COVER) == 0) {
+                                        if (a.type.startsWith("image/")) {
                                             coverITEM_idImage = file;
                                         } else
-                                        if (type->find(META_NAME_XMLHTML) == 0) {
+                                        if (a.type.contains(META_NAME_XMLHTML)) {
                                             coverITEM_idXML = file;
                                         }
                                     }
 
-                                    if (href.indexOf(META_NAME_COVER) != std::string::npos) {
-                                        if (type->find(U16("image/")) == 0) {
+                                    if (href.indexOf(META_NAME_COVER) != -1) {
+                                        if (a.type.startsWith("image/")) {
                                             coverITEM_hrefImage = file;
                                         } else
-                                        if (type->find(META_NAME_XMLHTML) == 0) {
+                                        if (a.type.startsWith(META_NAME_XMLHTML)) {
                                             coverITEM_hrefXML = file;
                                         }
-                                    }*/
+                                    }
                                 }
                             }
                         }
@@ -997,13 +1032,13 @@ public class AlFormatEPUB extends AlAXML {
                                     listFiles.get(i).note ? AlOneZIPRecord.SPECIAL_NOTE : AlOneZIPRecord.SPECIAL_NONE);
                         }
 
-                        /*if (coverMETAIID.length()) {
-                            const map<u16string, AlOneEPUBIDItem>::const_iterator it = mapId.find(coverMETAIID);
-                            if (it != mapId.end())
-                                coverMETAIID = it->second.href;
+                        if (coverMETAIID != null) {
+                            AlOneEPUBIDItem it = mapId.get(coverMETAIID);
+                            if (it != null)
+                                coverMETAIID = it.href;
                         }
 
-                        acoverITEM_hrefXML = acoverITEM_idXML = acoverREFERENCE_XML = false;*/
+                        //acoverITEM_hrefXML = acoverITEM_idXML = acoverREFERENCE_XML = false;
                     }
 
                     if (allState.isOpened)
@@ -1041,6 +1076,26 @@ public class AlFormatEPUB extends AlAXML {
                             break;
                         case AlOneZIPRecord.SPECIAL_CONTENT:
                             setParagraphStyle(AlStyles.PAR_DESCRIPTION2);
+
+                            allState.state_skipped_flag = false;
+                            if (allState.isOpened || coverName != null) {
+                                setParagraphStyle(AlStyles.PAR_COVER);
+                                if (noUseCover || coverIsFirstImage) {
+                                    addCharFromTag((char)0xa0, false);
+                                    addCharFromTag((char)0xa0, false);
+                                    addCharFromTag((char)0xa0, false);
+                                } else {
+                                    addCharFromTag((char) AlStyles.CHAR_IMAGE_S, false);
+                                    addCharFromTag(LEVEL2_COVERTOTEXT, false);
+                                    addCharFromTag((char) AlStyles.CHAR_IMAGE_E, false);
+                                }
+                                clearParagraphStyle(AlStyles.PAR_COVER);
+                            } else {
+                                addCharFromTag((char)0xa0, false);
+                                addCharFromTag((char)0xa0, false);
+                                addCharFromTag((char)0xa0, false);
+                            }
+                            allState.state_skipped_flag = true;
                             break;
                         case AlOneZIPRecord.SPECIAL_TOC:
                             toc_base = currentFile;
