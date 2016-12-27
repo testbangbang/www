@@ -45,7 +45,6 @@ public class SlideshowHandler extends BaseHandler {
         @Override
         public void done(BaseRequest request, Throwable e) {
             if (pageCount >= maxPageCount) {
-                readerDataHolder.notifySlideshowFinished();
                 quit();
             } else {
                 updateSlideshowStatus();
@@ -205,6 +204,7 @@ public class SlideshowHandler extends BaseHandler {
 
     private void quit() {
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
+        readerDataHolder.notifySlideshowFinished();
         showStatisticDialog();
     }
 
