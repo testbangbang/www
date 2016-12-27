@@ -424,16 +424,6 @@ public class ReaderDataHolder {
         getEventBus().post(new ChangeCodePageEvent(codePage));
     }
 
-    public void notifySlideshowProgress(int totalPage, int currentPage, int startBatteryPercentValue,
-                                        int currentBatteryPercentValue) {
-        getEventBus().post(new SlideshowProgressEvent(totalPage, currentPage, startBatteryPercentValue,
-                currentBatteryPercentValue));
-    }
-
-    public void notifySlideshowFinished() {
-        getEventBus().post(new SlideshowFinishedEvent());
-    }
-
     public void onRenderRequestFinished(final BaseReaderRequest request,
                                         Throwable e,
                                         boolean applyGCIntervalUpdate,

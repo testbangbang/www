@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -18,6 +20,7 @@ import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogSlideshowStatistic;
+import com.onyx.kreader.ui.view.SlideshowStatusBar;
 import com.onyx.kreader.utils.DeviceUtils;
 
 import java.util.Calendar;
@@ -33,6 +36,8 @@ public class SlideshowHandler extends BaseHandler {
     private static final String TAG = SlideshowHandler.class.getSimpleName();
     private boolean activated;
     private ReaderDataHolder readerDataHolder;
+    private RelativeLayout parent;
+    private SlideshowStatusBar slideshowStatusBar;
     private int maxPageCount;
     private int pageCount;
     private int startBatteryPercent;
@@ -47,16 +52,10 @@ public class SlideshowHandler extends BaseHandler {
             if (pageCount >= maxPageCount) {
                 quit();
             } else {
-                updateSlideshowStatus();
+                updateSlideshowStatusBar();
             }
         }
     };
-
-    private void updateSlideshowStatus() {
-        int battery = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
-        readerDataHolder.notifySlideshowProgress(maxPageCount, pageCount + 1,
-                startBatteryPercent, battery);
-    }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -176,13 +175,14 @@ public class SlideshowHandler extends BaseHandler {
         intervalInSeconds = seconds;
     }
 
-    public void start(int maxPageCount) {
+    public void start(RelativeLayout parent, int maxPageCount) {
+        this.parent = parent;
         this.maxPageCount = maxPageCount;
         pageCount = 0;
         startBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
         startTime = Calendar.getInstance();
         setAlarm();
-        updateSlideshowStatus();
+        updateSlideshowStatusBar();
     }
 
     private void setAlarm() {
@@ -204,8 +204,26 @@ public class SlideshowHandler extends BaseHandler {
 
     private void quit() {
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
-        readerDataHolder.notifySlideshowFinished();
+        hideSlideshowStatusBar();
         showStatisticDialog();
+    }
+
+    private void updateSlideshowStatusBar() {
+        int battery = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
+        getSlideshowStatusBar().updateValue(maxPageCount, pageCount + 1,
+                startBatteryPercent, battery);
+        getSlideshowStatusBar().setVisibility(View.VISIBLE);
+    }
+
+    private void hideSlideshowStatusBar() {
+        getSlideshowStatusBar().setVisibility(View.GONE);
+    }
+
+    private SlideshowStatusBar getSlideshowStatusBar() {
+        if (slideshowStatusBar == null) {
+            slideshowStatusBar = new SlideshowStatusBar(readerDataHolder.getContext(), parent);
+        }
+        return slideshowStatusBar;
     }
 
     private void showStatisticDialog() {

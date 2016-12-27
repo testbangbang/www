@@ -117,7 +117,6 @@ public class ReaderActivity extends ActionBarActivity {
     private SurfaceHolder.Callback surfaceHolderCallback;
     private SurfaceHolder holder;
     private ReaderStatusBar statusBar;
-    private SlideshowStatusBar slideshowStatusBar;
 
     private ReaderDataHolder dataHolder;
     private GestureDetector gestureDetector;
@@ -387,25 +386,6 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onChangeCodePage(final ChangeCodePageEvent event) {
         new ChangeCodePageActionChain(this, event.getCodePage()).execute(getReaderDataHolder(), null);
-    }
-
-    @Subscribe
-    public void onSlideshowProgressed(final SlideshowProgressEvent event) {
-        getSlideshowStatusBar().updateValue(event.getTotalPage(), event.getCurrentPage(),
-                event.getStartBatteryPercentLevel(), event.getCurrentBatteryPercentLevel());
-        getSlideshowStatusBar().setVisibility(View.VISIBLE);
-    }
-
-    @Subscribe
-    public void onSlideshowFinished(final SlideshowFinishedEvent event) {
-        getSlideshowStatusBar().setVisibility(View.GONE);
-    }
-
-    private SlideshowStatusBar getSlideshowStatusBar() {
-        if (slideshowStatusBar == null) {
-            slideshowStatusBar = new SlideshowStatusBar(this, mainView);
-        }
-        return slideshowStatusBar;
     }
 
     @Subscribe
