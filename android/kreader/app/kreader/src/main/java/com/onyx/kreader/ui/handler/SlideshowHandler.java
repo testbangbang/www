@@ -44,10 +44,19 @@ public class SlideshowHandler extends BaseHandler {
         @Override
         public void done(BaseRequest request, Throwable e) {
             if (pageCount >= maxPageCount) {
+                readerDataHolder.notifySlideshowFinished();
                 quit();
+            } else {
+                updateSlideshowStatus();
             }
         }
     };
+
+    private void updateSlideshowStatus() {
+        int battery = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
+        readerDataHolder.notifySlideshowProgress(maxPageCount, pageCount + 1,
+                startBatteryPercent, battery);
+    }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -173,6 +182,7 @@ public class SlideshowHandler extends BaseHandler {
         startBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
         startTime = Calendar.getInstance();
         setAlarm();
+        updateSlideshowStatus();
     }
 
     private void setAlarm() {
