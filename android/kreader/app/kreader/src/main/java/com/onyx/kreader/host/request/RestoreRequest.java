@@ -103,37 +103,13 @@ public class RestoreRequest extends BaseReaderRequest {
         if (StringUtils.isNullOrEmpty(fontface) && LocaleUtils.isChinese()) {
             fontface = DeviceConfig.sharedInstance(getContext()).getDefaultFontFileForChinese();
         }
-        float fontSize = baseOptions.getFontSize();
-        if (fontSize == BaseOptions.INVALID_FLOAT_VALUE) {
-            int index = DeviceConfig.sharedInstance(getContext()).getDefaultFontSizeIndex();
-            fontSize = ReaderTextStyle.getFontSizeByIndex(index).getValue();
-        }
 
-        int lineSpacing = baseOptions.getLineSpacing();
-        if (lineSpacing == BaseOptions.INVALID_INT_VALUE) {
-            int index = DeviceConfig.sharedInstance(getContext()).getDefaultLineSpacingIndex();
-            lineSpacing = ReaderTextStyle.getLineSpacingByIndex(index).getPercent();
-        }
-
-        int leftMargin = baseOptions.getLeftMargin();
-        if (leftMargin == BaseOptions.INVALID_INT_VALUE) {
-            leftMargin = getDefaultPageMargin(getContext()).getLeftMargin().getPercent();
-        }
-
-        int topMargin = baseOptions.getTopMargin();
-        if (topMargin == BaseOptions.INVALID_INT_VALUE) {
-            topMargin = getDefaultPageMargin(getContext()).getTopMargin().getPercent();
-        }
-
-        int rightMargin = baseOptions.getRightMargin();
-        if (rightMargin == BaseOptions.INVALID_INT_VALUE) {
-            rightMargin = getDefaultPageMargin(getContext()).getRightMargin().getPercent();
-        }
-
-        int bottomMargin = baseOptions.getBottomMargin();
-        if (bottomMargin == BaseOptions.INVALID_INT_VALUE) {
-            bottomMargin = getDefaultPageMargin(getContext()).getBottomMargin().getPercent();
-        }
+        float fontSize = getFontSize();
+        int lineSpacing = getLineSpacing();
+        int leftMargin = getLeftMargin();
+        int topMargin = getTopMargin();
+        int rightMargin = getRightMargin();
+        int bottomMargin = getBottomMargin();
 
         ReaderTextStyle style = ReaderTextStyle.create(fontface,
                 ReaderTextStyle.SPUnit.create(fontSize),
@@ -143,6 +119,56 @@ public class RestoreRequest extends BaseReaderRequest {
                 ReaderTextStyle.Percentage.create(rightMargin),
                 ReaderTextStyle.Percentage.create(bottomMargin));
         reader.getReaderLayoutManager().setStyle(style);
+    }
+
+    private float getFontSize() {
+        float fontSize = baseOptions.getFontSize();
+        if (fontSize == BaseOptions.INVALID_FLOAT_VALUE) {
+            int index = DeviceConfig.sharedInstance(getContext()).getDefaultFontSizeIndex();
+            fontSize = ReaderTextStyle.getFontSizeByIndex(index).getValue();
+        }
+        return fontSize;
+    }
+
+    private int getLineSpacing() {
+        int lineSpacing = baseOptions.getLineSpacing();
+        if (lineSpacing == BaseOptions.INVALID_INT_VALUE) {
+            int index = DeviceConfig.sharedInstance(getContext()).getDefaultLineSpacingIndex();
+            lineSpacing = ReaderTextStyle.getLineSpacingByIndex(index).getPercent();
+        }
+        return lineSpacing;
+    }
+
+    private int getLeftMargin() {
+        int leftMargin = baseOptions.getLeftMargin();
+        if (leftMargin == BaseOptions.INVALID_INT_VALUE) {
+            leftMargin = getDefaultPageMargin(getContext()).getLeftMargin().getPercent();
+        }
+        return leftMargin;
+    }
+
+    private int getTopMargin() {
+        int topMargin = baseOptions.getTopMargin();
+        if (topMargin == BaseOptions.INVALID_INT_VALUE) {
+            topMargin = getDefaultPageMargin(getContext()).getTopMargin().getPercent();
+        }
+        return topMargin;
+    }
+
+    private int getRightMargin() {
+        int rightMargin = baseOptions.getRightMargin();
+        if (rightMargin == BaseOptions.INVALID_INT_VALUE) {
+            rightMargin = getDefaultPageMargin(getContext()).getRightMargin().getPercent();
+        }
+        return rightMargin;
+    }
+
+    private int getBottomMargin() {
+        int bottomMargin = baseOptions.getBottomMargin();
+        if (bottomMargin == BaseOptions.INVALID_INT_VALUE) {
+            bottomMargin = getDefaultPageMargin(getContext()).getBottomMargin().getPercent();
+        }
+        return bottomMargin;
     }
 
     private ReaderTextStyle.PageMargin getDefaultPageMargin(Context context) {
