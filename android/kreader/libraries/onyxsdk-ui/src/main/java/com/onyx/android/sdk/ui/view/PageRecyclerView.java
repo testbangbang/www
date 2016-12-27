@@ -380,6 +380,7 @@ public class PageRecyclerView extends RecyclerView {
                 if (position < getDataCount()){
                     view.setVisibility(VISIBLE);
                     onPageBindViewHolder(holder,adapterPosition);
+                    setupListener(view,adapterPosition);
                     updateFocusView(view,adapterPosition);
                 }else {
                     view.setVisibility(INVISIBLE);
@@ -429,7 +430,9 @@ public class PageRecyclerView extends RecyclerView {
             }else {
                 view.setActivated(false);
             }
+        }
 
+        private void setupListener(final View view, final int position) {
             view.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -437,6 +440,17 @@ public class PageRecyclerView extends RecyclerView {
                         pageRecyclerView.setCurrentFocusedPosition(position);
                     }
                     return false;
+                }
+            });
+
+            view.setOnFocusChangeListener(new OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        pageRecyclerView.setCurrentFocusedPosition(position);
+                    }else {
+                        pageRecyclerView.setCurrentFocusedPosition(-1);
+                    }
                 }
             });
         }
