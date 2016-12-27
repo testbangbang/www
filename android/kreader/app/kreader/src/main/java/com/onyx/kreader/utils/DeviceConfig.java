@@ -72,6 +72,7 @@ public class DeviceConfig {
     private String defaultFontFileForChinese = "/system/fonts/OnyxCustomFont-Regular.ttf";
 
     private String defaultAnnotationHighlightStyle = "Highlight";
+    private Float[] defaultFontSizes = {20.0f, 24.0f, 28.0f, 32.0f, 36.0f, 40.0f, 44.0f, 48.0f};
 
     private DeviceConfig(Context context) {
         String content = readConfig(context);
@@ -502,6 +503,14 @@ public class DeviceConfig {
 
     public void setDefaultLineSpacingIndex(int defaultLineSpacingIndex) {
         this.defaultLineSpacingIndex = defaultLineSpacingIndex;
+    }
+
+    public Float[] getDefaultFontSizes() {
+        return defaultFontSizes;
+    }
+
+    public void setDefaultFontSizes(Float[] defaultFontSizes) {
+        this.defaultFontSizes = defaultFontSizes;
     }
 }
 

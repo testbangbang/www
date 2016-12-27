@@ -1,7 +1,5 @@
 package com.onyx.android.sdk.data;
 
-import android.content.Context;
-
 /**
  * Created by zhuzeng on 11/6/15.
  */
@@ -221,7 +219,7 @@ public class ReaderTextStyle {
     static public PageMargin LARGE_PAGE_MARGIN = new PageMargin(Percentage.create(LARGE_MARGIN), Percentage.create(LARGE_MARGIN), Percentage.create(LARGE_MARGIN), Percentage.create(LARGE_MARGIN));
     static public PageMargin DEFAULT_PAGE_MARGIN = NORMAL_PAGE_MARGIN;
 
-    static public SPUnit[] FONT_SIZE_LIST = {SPUnit.create(20.0f), SPUnit.create(24.0f), SPUnit.create(28.0f),
+    static public SPUnit[] DEFAULT_FONT_SIZE_LIST = {SPUnit.create(20.0f), SPUnit.create(24.0f), SPUnit.create(28.0f),
             SPUnit.create(32.0f), SPUnit.create(36.0f), SPUnit.create(40.0f), SPUnit.create(44.0f), SPUnit.create(48.0f)};
     static public SPUnit DEFAULT_FONT_SIZE = SPUnit.create(40.0f);
 
@@ -233,8 +231,8 @@ public class ReaderTextStyle {
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
 
     public static float limitFontSize(float newSize) {
-        final float minSize = FONT_SIZE_LIST[0].getValue();
-        final float maxSize = FONT_SIZE_LIST[ReaderTextStyle.FONT_SIZE_LIST.length - 1].getValue();
+        final float minSize = DEFAULT_FONT_SIZE_LIST[0].getValue();
+        final float maxSize = DEFAULT_FONT_SIZE_LIST[ReaderTextStyle.DEFAULT_FONT_SIZE_LIST.length - 1].getValue();
         if (newSize < minSize) {
             newSize = minSize;
         } else if (newSize > maxSize) {
@@ -243,9 +241,19 @@ public class ReaderTextStyle {
         return newSize;
     }
 
+    public static void setDefaultFontSizes(Float[] fontSizes) {
+        if (fontSizes == null || fontSizes.length <=0) {
+            return;
+        }
+        DEFAULT_FONT_SIZE_LIST = new SPUnit[fontSizes.length];
+        for (int i = 0; i < fontSizes.length; i++) {
+            DEFAULT_FONT_SIZE_LIST[i] = SPUnit.create(fontSizes[i]);
+        }
+    }
+
     public static SPUnit getFontSizeByIndex(int index) {
-        if (FONT_SIZE_LIST.length > index) {
-            return FONT_SIZE_LIST[index];
+        if (DEFAULT_FONT_SIZE_LIST.length > index) {
+            return DEFAULT_FONT_SIZE_LIST[index];
         }
         return DEFAULT_FONT_SIZE;
     }
@@ -329,22 +337,22 @@ public class ReaderTextStyle {
 
     public void increaseFontSize() {
         int i = 0;
-        for (; i < FONT_SIZE_LIST.length - 1; i++) {
-            if (FONT_SIZE_LIST[i].getValue() > fontSize.getValue()) {
+        for (; i < DEFAULT_FONT_SIZE_LIST.length - 1; i++) {
+            if (DEFAULT_FONT_SIZE_LIST[i].getValue() > fontSize.getValue()) {
                 break;
             }
         }
-        fontSize = FONT_SIZE_LIST[i];
+        fontSize = DEFAULT_FONT_SIZE_LIST[i];
     }
 
     public void decreaseFontSize() {
-        int i = FONT_SIZE_LIST.length - 1;
+        int i = DEFAULT_FONT_SIZE_LIST.length - 1;
         for (; i > 0; i--) {
-            if (FONT_SIZE_LIST[i].getValue() < fontSize.getValue()) {
+            if (DEFAULT_FONT_SIZE_LIST[i].getValue() < fontSize.getValue()) {
                 break;
             }
         }
-        fontSize = FONT_SIZE_LIST[i];
+        fontSize = DEFAULT_FONT_SIZE_LIST[i];
     }
 
     public Alignment getAlignment() {

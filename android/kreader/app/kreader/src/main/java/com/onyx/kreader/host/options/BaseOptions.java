@@ -11,7 +11,6 @@ import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.kreader.utils.DeviceConfig;
 import com.onyx.kreader.utils.GObject;
 
 import java.util.List;
@@ -71,6 +70,8 @@ public class BaseOptions {
 
     transient private static int lowerGammaLimit = 100;
     transient private static int globalDefaultGamma = 100;
+    public static final float INVALID_FLOAT_VALUE = - 1;
+    public static final int INVALID_INT_VALUE = - 1;
 
     private GObject backend;
 
@@ -261,11 +262,6 @@ public class BaseOptions {
         return 1.0;
     }
 
-    public static float getDefaultStreamDocFontSize(final Context context) {
-        int index = DeviceConfig.sharedInstance(context).getDefaultFontSizeIndex();
-        return ReaderTextStyle.getFontSizeByIndex(index).getValue();
-    }
-
     public static double getDefaultFixedPageFontSize() {
         return 1.1;
     }
@@ -306,13 +302,13 @@ public class BaseOptions {
         backend.putInt(CODE_PAGE_TAG, codePage);
     }
 
-    public float getFontSize(final Context context) {
+    public float getFontSize() {
         if (!backend.hasKey(FONT_SIZE_TAG)) {
-            return getDefaultStreamDocFontSize(context);
+            return INVALID_FLOAT_VALUE;
         }
         float size = backend.getFloat(FONT_SIZE_TAG);
         if (size <= 0) {
-            return getDefaultStreamDocFontSize(context);
+            return INVALID_FLOAT_VALUE;
         }
         return size;
     }
@@ -328,10 +324,9 @@ public class BaseOptions {
         return backend.getString(FONT_FACE_TAG);
     }
 
-    public int getLineSpacing(final Context context) {
+    public int getLineSpacing() {
         if (!backend.hasKey(LINE_SPACING_TAG)) {
-            int index = DeviceConfig.sharedInstance(context).getDefaultLineSpacingIndex();
-            return ReaderTextStyle.getLineSpacingByIndex(index).getPercent();
+            return INVALID_INT_VALUE;
         }
         return backend.getInt(LINE_SPACING_TAG);
     }
@@ -481,53 +476,48 @@ public class BaseOptions {
         return 100;
     }
 
-    public int getLeftMargin(final Context context) {
+    public int getLeftMargin() {
         if (backend.hasKey(PAGE_LEFT_MARGIN)) {
             return backend.getInt(PAGE_LEFT_MARGIN);
         }
-        return getDefaultPageMargin(context).getLeftMargin().getPercent();
+        return INVALID_INT_VALUE;
     }
 
     public void setLeftMargin(int value) {
         backend.putInt(PAGE_LEFT_MARGIN, value);
     }
 
-    public int getTopMargin(final Context context) {
+    public int getTopMargin() {
         if (backend.hasKey(PAGE_TOP_MARGIN)) {
             return backend.getInt(PAGE_TOP_MARGIN);
         }
-        return getDefaultPageMargin(context).getTopMargin().getPercent();
+        return INVALID_INT_VALUE;
     }
 
     public void setTopMargin(int value) {
         backend.putInt(PAGE_TOP_MARGIN, value);
     }
 
-    public int getRightMargin(final Context context) {
+    public int getRightMargin() {
         if (backend.hasKey(PAGE_RIGHT_MARGIN)) {
             return backend.getInt(PAGE_RIGHT_MARGIN);
         }
-        return getDefaultPageMargin(context).getRightMargin().getPercent();
+        return INVALID_INT_VALUE;
     }
 
     public void setRightMargin(int value) {
         backend.putInt(PAGE_RIGHT_MARGIN, value);
     }
 
-    public int getBottomMargin(final Context context) {
+    public int getBottomMargin() {
         if (backend.hasKey(PAGE_BOTTOM_MARGIN)) {
             return backend.getInt(PAGE_BOTTOM_MARGIN);
         }
-        return getDefaultPageMargin(context).getBottomMargin().getPercent();
+        return INVALID_INT_VALUE;
     }
 
     public void setBottomMargin(int value) {
         backend.putInt(PAGE_BOTTOM_MARGIN, value);
-    }
-
-    private ReaderTextStyle.PageMargin getDefaultPageMargin(Context context) {
-        int index = DeviceConfig.sharedInstance(context).getDefaultPageMarginIndex();
-        return ReaderTextStyle.getPageMarginByIndex(index);
     }
 
     public void setReflowOptions(final String settings) {
