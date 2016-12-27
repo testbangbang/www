@@ -222,6 +222,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             }
         });
 
+        switchBtn.setVisibility(NoteAppConfig.sharedInstance(this).useLineLayout() ? View.VISIBLE : View.GONE);
         initSpanTextView();
     }
 
