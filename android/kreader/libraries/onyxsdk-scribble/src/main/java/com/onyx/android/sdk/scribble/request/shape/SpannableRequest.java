@@ -33,7 +33,6 @@ public class SpannableRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
-        setResumeInputProcessor(helper.useDFBForCurrentState());
         StringBuilder builder = new StringBuilder();
         for(int i = 0; i < subPageSpanTextShapeMap.size(); ++i) {
             builder.append(SPAN_BUILDER_SYMBOL);
