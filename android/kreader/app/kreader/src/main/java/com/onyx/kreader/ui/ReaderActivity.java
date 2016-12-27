@@ -89,12 +89,15 @@ import com.onyx.kreader.ui.events.ShortcutErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
+import com.onyx.kreader.ui.events.SlideshowFinishedEvent;
+import com.onyx.kreader.ui.events.SlideshowProgressEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
+import com.onyx.kreader.ui.view.SlideshowStatusBar;
 import com.onyx.kreader.utils.DeviceConfig;
 import com.onyx.kreader.utils.TreeObserverUtils;
 

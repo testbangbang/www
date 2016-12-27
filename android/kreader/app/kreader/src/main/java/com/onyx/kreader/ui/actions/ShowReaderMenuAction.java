@@ -470,7 +470,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void enterSlideshow(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        new SlideshowAction().execute(readerDataHolder, null);
+        new SlideshowAction(readerActivity.getMainView()).execute(readerDataHolder, null);
     }
 
     private void showBrightnessDialog(ReaderDataHolder readerDataHolder){
