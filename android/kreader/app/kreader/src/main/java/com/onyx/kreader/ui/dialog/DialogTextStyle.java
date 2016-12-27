@@ -27,7 +27,6 @@ import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.OnyxRadioButton;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.kreader.R;
-import com.onyx.kreader.ui.actions.ChangeCodePageAction;
 import com.onyx.kreader.ui.actions.ChangeStyleAction;
 import com.onyx.kreader.ui.actions.GetFontsAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -449,9 +448,10 @@ public class DialogTextStyle extends DialogBase {
     }
 
     private void updateFontSizeTextView(final List<AlignTextView> fontSizeTexts, final ReaderTextStyle readerTextStyle) {
-        for (int i = 0; i < fontSizeTexts.size(); i++) {
+        for (int i = 0; i < readerTextStyle.DEFAULT_FONT_SIZE_LIST.length; i++) {
             AlignTextView fontSizeText = fontSizeTexts.get(i);
-            final ReaderTextStyle.SPUnit size = readerTextStyle.FONT_SIZE_LIST[i];
+            fontSizeText.setVisibility(View.VISIBLE);
+            final ReaderTextStyle.SPUnit size = readerTextStyle.DEFAULT_FONT_SIZE_LIST[i];
             boolean isSelected = size.equals(readerTextStyle.getFontSize());
             fontSizeText.setTextSize(size.getValue());
             fontSizeText.setActivated(isSelected);

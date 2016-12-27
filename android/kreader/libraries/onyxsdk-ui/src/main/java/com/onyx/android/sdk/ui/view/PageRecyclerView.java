@@ -188,7 +188,7 @@ public class PageRecyclerView extends RecyclerView {
         setClipToPadding(true);
         setClipChildren(true);
         setLayoutManager(new DisableScrollLinearManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        setDefaultMoveKeyBinding();
+        setDefaultPageKeyBinding();
     }
 
     private TouchDirection touchDirection = TouchDirection.Vertical;

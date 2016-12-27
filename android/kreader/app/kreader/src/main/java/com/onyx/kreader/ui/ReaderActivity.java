@@ -879,8 +879,9 @@ public class ReaderActivity extends ActionBarActivity {
                 title = getReaderDataHolder().getBookTitle();
             }
         }
+        int endBatteryPercent = com.onyx.kreader.utils.DeviceUtils.getBatteryPecentLevel(getReaderDataHolder().getContext());
         statusBar.updateStatusBar(new ReaderStatusInfo(pageRect, displayRect,
-                current, total, 0, title));
+                current, total, endBatteryPercent, title));
     }
 
     private void resetStatusBar() {

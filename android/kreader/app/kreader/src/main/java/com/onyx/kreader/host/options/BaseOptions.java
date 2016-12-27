@@ -70,6 +70,8 @@ public class BaseOptions {
 
     transient private static int lowerGammaLimit = 100;
     transient private static int globalDefaultGamma = 100;
+    public static final float INVALID_FLOAT_VALUE = - 1;
+    public static final int INVALID_INT_VALUE = - 1;
 
     private GObject backend;
 
@@ -260,10 +262,6 @@ public class BaseOptions {
         return 1.0;
     }
 
-    public static float getDefaultStreamDocFontSize() {
-        return defaultFontSize;
-    }
-
     public static double getDefaultFixedPageFontSize() {
         return 1.1;
     }
@@ -306,11 +304,11 @@ public class BaseOptions {
 
     public float getFontSize() {
         if (!backend.hasKey(FONT_SIZE_TAG)) {
-            return getDefaultStreamDocFontSize();
+            return INVALID_FLOAT_VALUE;
         }
         float size = backend.getFloat(FONT_SIZE_TAG);
         if (size <= 0) {
-            return getDefaultStreamDocFontSize();
+            return INVALID_FLOAT_VALUE;
         }
         return size;
     }
@@ -328,7 +326,7 @@ public class BaseOptions {
 
     public int getLineSpacing() {
         if (!backend.hasKey(LINE_SPACING_TAG)) {
-            return ReaderTextStyle.DEFAULT_LINE_SPACING.getPercent();
+            return INVALID_INT_VALUE;
         }
         return backend.getInt(LINE_SPACING_TAG);
     }
@@ -482,7 +480,7 @@ public class BaseOptions {
         if (backend.hasKey(PAGE_LEFT_MARGIN)) {
             return backend.getInt(PAGE_LEFT_MARGIN);
         }
-        return ReaderTextStyle.DEFAULT_PAGE_MARGIN.getLeftMargin().getPercent();
+        return INVALID_INT_VALUE;
     }
 
     public void setLeftMargin(int value) {
@@ -493,7 +491,7 @@ public class BaseOptions {
         if (backend.hasKey(PAGE_TOP_MARGIN)) {
             return backend.getInt(PAGE_TOP_MARGIN);
         }
-        return ReaderTextStyle.DEFAULT_PAGE_MARGIN.getTopMargin().getPercent();
+        return INVALID_INT_VALUE;
     }
 
     public void setTopMargin(int value) {
@@ -504,7 +502,7 @@ public class BaseOptions {
         if (backend.hasKey(PAGE_RIGHT_MARGIN)) {
             return backend.getInt(PAGE_RIGHT_MARGIN);
         }
-        return ReaderTextStyle.DEFAULT_PAGE_MARGIN.getRightMargin().getPercent();
+        return INVALID_INT_VALUE;
     }
 
     public void setRightMargin(int value) {
@@ -515,7 +513,7 @@ public class BaseOptions {
         if (backend.hasKey(PAGE_BOTTOM_MARGIN)) {
             return backend.getInt(PAGE_BOTTOM_MARGIN);
         }
-        return ReaderTextStyle.DEFAULT_PAGE_MARGIN.getBottomMargin().getPercent();
+        return INVALID_INT_VALUE;
     }
 
     public void setBottomMargin(int value) {
