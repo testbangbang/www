@@ -2005,7 +2005,8 @@ public class AlBookEng{
 				y -= fontParam.base_line_up / 2; 
 			}
 			
-			if ((old_style & (AlStyles.STYLE_LINK | AlStyles.STYLE_UNDER)) != 0) {
+			if ((old_style & AlStyles.STYLE_UNDER) != 0 ||
+					((old_style & AlStyles.STYLE_LINK) != 0) && engOptions.drawLinkStyle) {
 				x2 = x; 
 				for (i = start; i <= end; i++)
 					x2 += oi.width[i];
@@ -2185,13 +2186,16 @@ public class AlBookEng{
 									&& (i + 1 < oi.count)
 									&& ((oi.style[i + 1] & (AlStyles.STYLE_LINK | AlStyles.STYLE_UNDER)) != 0)) {
 
-                                int ysub = y;
-								if ((old_style & AlStyles.STYLE_SUB) != 0)
-                                    ysub += fontParam.base_line_down / 2;
-								if ((old_style & AlStyles.STYLE_SUP) != 0)
-                                    ysub -= fontParam.base_line_up / 2;
-								calc.drawLine(x, ysub + 2, x + oi.width[i] + 1, ysub + 2,
-									preferences.picture_need_tuneK, fontParam.color);
+								if (engOptions.drawLinkStyle || ((old_style & AlStyles.STYLE_UNDER) != 0) ||
+										((oi.style[i + 1] & AlStyles.STYLE_UNDER) != 0)) {
+									int ysub = y;
+									if ((old_style & AlStyles.STYLE_SUB) != 0)
+										ysub += fontParam.base_line_down / 2;
+									if ((old_style & AlStyles.STYLE_SUP) != 0)
+										ysub -= fontParam.base_line_up / 2;
+									calc.drawLine(x, ysub + 2, x + oi.width[i] + 1, ysub + 2,
+											preferences.picture_need_tuneK, fontParam.color);
+								}
 							}
 							if (((old_style & (AlStyles.SL_SELECT | AlStyles.SL_MARK)) != 0)
 									&& (i + 1 < oi.count)
