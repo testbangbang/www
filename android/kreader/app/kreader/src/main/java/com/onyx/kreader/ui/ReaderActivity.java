@@ -435,6 +435,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onHomeClick(final HomeClickEvent event) {
         if (event == null || !getReaderDataHolder().inNoteWritingProvider()) {
+            getReaderDataHolder().getHandlerManager().resetToDefaultProvider();
             saveDocumentOptions();
             return;
         }
