@@ -61,7 +61,7 @@ public class SlideshowHandler extends BaseHandler {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            wakeLockHolder.acquireWakeLockWithTimeout(context, TAG, 1000);
+            wakeLockHolder.acquireWakeLock(context, WakeLockHolder.WAKEUP_FLAGS, TAG, 1000);
             Debug.d(getClass(), "onReceive: " + intent.getAction());
             if (!activated) {
                 return;
