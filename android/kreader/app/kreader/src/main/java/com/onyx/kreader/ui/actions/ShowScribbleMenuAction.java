@@ -456,7 +456,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                     @Override
                     public void done(int lineWidth) {
                         useStrokeWidth(readerDataHolder, lineWidth);
-                        switchDragFunc(true);
+                        onSelectWidth();
                     }
                 });
                 customLineWidth.show();

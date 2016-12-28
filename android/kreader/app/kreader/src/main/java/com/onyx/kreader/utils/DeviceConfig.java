@@ -55,6 +55,9 @@ public class DeviceConfig {
     private int selectionMoveDistanceThreshold = 8;
     private int gcInterval = 0;
     private int frontLight = 0;
+    private int defaultFontSizeIndex = 3;
+    private int defaultLineSpacingIndex = 1;
+    private int defaultPageMarginIndex = 1;
     private boolean exitAfterFinish = false;
 
     // in seconds
@@ -69,6 +72,7 @@ public class DeviceConfig {
     private String defaultFontFileForChinese = "/system/fonts/OnyxCustomFont-Regular.ttf";
 
     private String defaultAnnotationHighlightStyle = "Highlight";
+    private Float[] defaultFontSizes = {20.0f, 24.0f, 28.0f, 32.0f, 36.0f, 40.0f, 44.0f, 48.0f};
 
     private DeviceConfig(Context context) {
         String content = readConfig(context);
@@ -475,6 +479,38 @@ public class DeviceConfig {
             Debug.w(getClass(), e);
         }
         return style;
+    }
+
+    public int getDefaultFontSizeIndex() {
+        return defaultFontSizeIndex;
+    }
+
+    public void setDefaultFontSizeIndex(int defaultFontSizeIndex) {
+        this.defaultFontSizeIndex = defaultFontSizeIndex;
+    }
+
+    public int getDefaultPageMarginIndex() {
+        return defaultPageMarginIndex;
+    }
+
+    public void setDefaultPageMarginIndex(int defaultPageMarginIndex) {
+        this.defaultPageMarginIndex = defaultPageMarginIndex;
+    }
+
+    public int getDefaultLineSpacingIndex() {
+        return defaultLineSpacingIndex;
+    }
+
+    public void setDefaultLineSpacingIndex(int defaultLineSpacingIndex) {
+        this.defaultLineSpacingIndex = defaultLineSpacingIndex;
+    }
+
+    public Float[] getDefaultFontSizes() {
+        return defaultFontSizes;
+    }
+
+    public void setDefaultFontSizes(Float[] defaultFontSizes) {
+        this.defaultFontSizes = defaultFontSizes;
     }
 }
 
