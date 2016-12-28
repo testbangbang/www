@@ -36,14 +36,13 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
@@ -51,8 +50,6 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
-import com.onyx.kreader.ui.actions.ChangeCodePageAction;
-import com.onyx.kreader.ui.actions.ChangeCodePageActionChain;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
 import com.onyx.kreader.ui.actions.ForwardAction;
@@ -67,7 +64,6 @@ import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.events.BeforeDocumentCloseEvent;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
-import com.onyx.kreader.ui.events.ChangeCodePageEvent;
 import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
@@ -82,23 +78,20 @@ import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
-import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
+import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
-import com.onyx.kreader.ui.events.SlideshowFinishedEvent;
-import com.onyx.kreader.ui.events.SlideshowProgressEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
-import com.onyx.kreader.ui.view.SlideshowStatusBar;
 import com.onyx.kreader.utils.DeviceConfig;
 import com.onyx.kreader.utils.TreeObserverUtils;
 
@@ -382,11 +375,6 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onResetEpdUpdateMode(final ResetEpdUpdateModeEvent event) {
         ReaderDeviceManager.resetUpdateMode(surfaceView);
-    }
-
-    @Subscribe
-    public void onChangeCodePage(final ChangeCodePageEvent event) {
-        new ChangeCodePageAction(event.getCodePage()).execute(getReaderDataHolder(), null);
     }
 
     @Subscribe
