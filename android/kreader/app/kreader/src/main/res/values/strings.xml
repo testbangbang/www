@@ -322,4 +322,5 @@
     <string name="code_page_auto">Auto</string>
     <string name="view_slideshow_status_bar_page" formatted="false">Page: %d/%d</string>
     <string name="view_slideshow_status_bar_battery" formatted="false">Battery: %d/%d (%%)</string>
+    <string name="slideshow_quit_warning">Press back to quit slideshow mode!</string>
 </resources>

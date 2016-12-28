@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
+import com.onyx.kreader.R;
 import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -105,7 +106,9 @@ public class SlideshowHandler extends BaseHandler {
                 quit();
                 return true;
             default:
-                Toast.makeText(readerDataHolder.getContext(), "Press back to quit slideshow mode!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(readerDataHolder.getContext(),
+                        readerDataHolder.getContext().getString(R.string.slideshow_quit_warning),
+                        Toast.LENGTH_SHORT).show();
                 return true;
         }
     }
@@ -117,7 +120,9 @@ public class SlideshowHandler extends BaseHandler {
 
     @Override
     public boolean onDown(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        Toast.makeText(readerDataHolder.getContext(), "Press back to quit slideshow mode!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(readerDataHolder.getContext(),
+                readerDataHolder.getContext().getString(R.string.slideshow_quit_warning),
+                Toast.LENGTH_SHORT).show();
         return true;
     }
 
