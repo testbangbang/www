@@ -91,6 +91,9 @@ public class SlideshowHandler extends BaseHandler {
         if (am != null) {
             am.cancel(pendingIntent);
         }
+        if (getSlideshowStatusBar().getVisibility() != View.GONE) {
+            getSlideshowStatusBar().setVisibility(View.GONE);
+        }
         wakeLockHolder.releaseWakeLock();
     }
 
@@ -234,7 +237,9 @@ public class SlideshowHandler extends BaseHandler {
     private void showStatisticDialog() {
         Calendar endTime = Calendar.getInstance();
         int endBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
-        new DialogSlideshowStatistic(readerDataHolder.getContext(), startTime, endTime,
-                pageCount, startBatteryPercent, endBatteryPercent).show();
+        DialogSlideshowStatistic dlg = new DialogSlideshowStatistic(readerDataHolder.getContext(), startTime, endTime,
+                pageCount, startBatteryPercent, endBatteryPercent);
+        readerDataHolder.addActiveDialog(dlg);
+        dlg.show();
     }
 }
