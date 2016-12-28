@@ -133,6 +133,11 @@ public class FakeReader implements ReaderDocument,
 
     public void close() {}
 
+    @Override
+    public void updateDocumentOptions(ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) {
+
+    }
+
     public boolean supportScale() {
         return true;
     }

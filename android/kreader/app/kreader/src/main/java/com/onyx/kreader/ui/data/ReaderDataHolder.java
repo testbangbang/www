@@ -420,10 +420,6 @@ public class ReaderDataHolder {
         getEventBus().post(new ResetEpdUpdateModeEvent());
     }
 
-    public void changeCodePage(int codePage) {
-        getEventBus().post(new ChangeCodePageEvent(codePage));
-    }
-
     public void onRenderRequestFinished(final BaseReaderRequest request,
                                         Throwable e,
                                         boolean applyGCIntervalUpdate,

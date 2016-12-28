@@ -27,6 +27,7 @@ import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.OnyxRadioButton;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.kreader.R;
+import com.onyx.kreader.ui.actions.ChangeCodePageAction;
 import com.onyx.kreader.ui.actions.ChangeStyleAction;
 import com.onyx.kreader.ui.actions.GetFontsAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -98,12 +99,14 @@ public class DialogTextStyle extends DialogBase {
     private TextStyleCallback callback;
 
     private ReaderTextStyle originalStyle;
+    private int originalCodePage;
 
     public DialogTextStyle(ReaderDataHolder readerDataHolder, TextStyleCallback callback) {
         super(readerDataHolder.getContext());
         this.readerDataHolder = readerDataHolder;
         this.callback = callback;
         this.originalStyle = ReaderTextStyle.copy(readerDataHolder.getReaderViewInfo().getReaderTextStyle());
+        this.originalCodePage = readerDataHolder.getReaderUserDataInfo().getDocumentCodePage();
         setContentView(R.layout.dialog_text_style_view);
         init();
     }
@@ -195,6 +198,7 @@ public class DialogTextStyle extends DialogBase {
     }
 
     private void restoreAndDismiss() {
+        new ChangeCodePageAction(originalCodePage).execute(readerDataHolder, null);
         updateReaderStyle(originalStyle, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -334,7 +338,7 @@ public class DialogTextStyle extends DialogBase {
                         pageView.getPageAdapter().notifyItemChanged(selectCodePageIndex);
                         selectCodePageIndex = position;
                         pageView.getPageAdapter().notifyItemChanged(selectCodePageIndex);
-                        readerDataHolder.changeCodePage(CODE_PAGES[position].first);
+                        new ChangeCodePageAction(CODE_PAGES[position].first).execute(readerDataHolder, null);
                     }
                 });
             }

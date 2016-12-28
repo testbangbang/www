@@ -100,6 +100,13 @@ public class AlReaderWrapper {
         return NO_ERROR;
     }
 
+    public void updateDocumentOptions(ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) {
+        int readPosition = getScreenStartPosition();
+        closeDocument();
+        openDocument(filePath, documentOptions);
+        gotoPosition(readPosition);
+    }
+
     public void closeDocument() {
         if (bookEng == null) {
             return;
@@ -158,6 +165,7 @@ public class AlReaderWrapper {
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
         engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
         engineOptions.chinezeFormatting = true;
+        engineOptions.drawLinkStyle = false;
 
         float dpiMultiplex = context.getResources().getDisplayMetrics().density;
         engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_160;

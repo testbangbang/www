@@ -191,6 +191,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         getPluginImpl().closeDocument();
     }
 
+    @Override
+    public void updateDocumentOptions(ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) {
+
+    }
+
     public ReaderViewOptions getViewOptions() {
         return readerViewOptions;
     }
