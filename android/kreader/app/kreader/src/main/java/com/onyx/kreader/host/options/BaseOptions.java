@@ -564,7 +564,7 @@ public class BaseOptions {
 
     public final ReaderDocumentOptionsImpl documentOptions() {
         return new ReaderDocumentOptionsImpl(getPassword(), getZipPassword(),
-                getCodePage());
+                getCodePage(), LocaleUtils.getLocaleDefaultCodePage());
     }
 
     public final ReaderPluginOptions pluginOptions() {

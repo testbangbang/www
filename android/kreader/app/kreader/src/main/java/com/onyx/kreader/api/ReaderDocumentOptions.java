@@ -14,6 +14,6 @@ public interface ReaderDocumentOptions {
 
     int getCodePage();
 
-    String getCodePageFallback();
+    int getCodePageFallback();
 
 }
