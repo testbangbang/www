@@ -854,10 +854,10 @@ public class ShowReaderMenuAction extends BaseAction {
         if (strokeMapping == null) {
             strokeMapping = new HashMap<>();
             strokeMapping.put(NoteModel.getDefaultStrokeWidth(), ReaderMenuAction.SCRIBBLE_WIDTH1);
-            strokeMapping.put(5.0f, ReaderMenuAction.SCRIBBLE_WIDTH2);
-            strokeMapping.put(7.0f, ReaderMenuAction.SCRIBBLE_WIDTH3);
-            strokeMapping.put(9.0f, ReaderMenuAction.SCRIBBLE_WIDTH4);
-            strokeMapping.put(11.0f, ReaderMenuAction.SCRIBBLE_WIDTH5);
+            strokeMapping.put(4.0f, ReaderMenuAction.SCRIBBLE_WIDTH2);
+            strokeMapping.put(6.0f, ReaderMenuAction.SCRIBBLE_WIDTH3);
+            strokeMapping.put(8.0f, ReaderMenuAction.SCRIBBLE_WIDTH4);
+            strokeMapping.put(10.0f, ReaderMenuAction.SCRIBBLE_WIDTH5);
         }
         return strokeMapping;
     }
