@@ -100,7 +100,6 @@ public class ReaderLayerMenuViewFactory {
     private static View createSimpleButtonContainerView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         final PageRecyclerView view = (PageRecyclerView) LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
         GridLayoutManager gridLayoutManager = new DisableScrollGridManager(context, 1);
-//        gridLayoutManager.setSpanCount(6);
         view.setDefaultMoveKeyBinding();
         view.setLayoutManager(gridLayoutManager);
         final LayoutInflater inflater = LayoutInflater.from(context);
@@ -130,22 +129,6 @@ public class ReaderLayerMenuViewFactory {
                 ((MainMenuItemViewHolder) holder).setMenuItem(items.get(position));
             }
         });
-//        view.setAdapter(new RecyclerView.Adapter() {
-//            @Override
-//            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//                return new MainMenuItemViewHolder(inflater.inflate(R.layout.reader_layer_menu_button_item, parent, false), callback);
-//            }
-//
-//            @Override
-//            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-//                ((MainMenuItemViewHolder) holder).setMenuItem(items.get(position));
-//            }
-//
-//            @Override
-//            public int getItemCount() {
-//                return items.size();
-//            }
-//        });
         return view;
     }
 
