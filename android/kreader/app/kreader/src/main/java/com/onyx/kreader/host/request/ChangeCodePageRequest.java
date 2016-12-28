@@ -17,5 +17,8 @@ public class ChangeCodePageRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         reader.getDocumentOptions().setCodePage(codePage);
         saveReaderOptions(reader);
+        reader.getDocument().updateDocumentOptions(reader.getDocumentOptions().documentOptions(),
+                reader.getPluginOptions());
+        drawVisiblePages(reader);
     }
 }

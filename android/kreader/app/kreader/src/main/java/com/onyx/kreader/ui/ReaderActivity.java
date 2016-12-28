@@ -51,6 +51,7 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
+import com.onyx.kreader.ui.actions.ChangeCodePageAction;
 import com.onyx.kreader.ui.actions.ChangeCodePageActionChain;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
@@ -385,7 +386,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onChangeCodePage(final ChangeCodePageEvent event) {
-        new ChangeCodePageActionChain(this, event.getCodePage()).execute(getReaderDataHolder(), null);
+        new ChangeCodePageAction(event.getCodePage()).execute(getReaderDataHolder(), null);
     }
 
     @Subscribe

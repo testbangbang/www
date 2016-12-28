@@ -153,6 +153,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         getPluginImpl().close();
     }
 
+    @Override
+    public void updateDocumentOptions(ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) {
+        
+    }
+
     /**
      * Check if drm manager accept the file or not.
      *

@@ -153,6 +153,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         pageList.clear();
     }
 
+    @Override
+    public void updateDocumentOptions(ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) {
+
+    }
+
     public ReaderViewOptions getViewOptions() {
         return null;
     }

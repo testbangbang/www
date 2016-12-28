@@ -68,5 +68,6 @@ public interface ReaderDocument {
      */
     public void close();
 
+    public void updateDocumentOptions(final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions);
 
 }

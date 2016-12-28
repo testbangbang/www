@@ -100,6 +100,13 @@ public class AlReaderWrapper {
         return NO_ERROR;
     }
 
+    public void updateDocumentOptions(ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) {
+        int readPosition = getScreenStartPosition();
+        closeDocument();
+        openDocument(filePath, documentOptions);
+        gotoPosition(readPosition);
+    }
+
     public void closeDocument() {
         if (bookEng == null) {
             return;
