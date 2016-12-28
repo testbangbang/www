@@ -29,6 +29,7 @@ public class NoteAppConfig {
     public static final String SCRIBBLE_ACTIVITY_PKG_NAME = "scribble_activity_pkg";
     public static final String SCRIBBLE_ACTIVITY_CLS_NAME = "scribble_activity_cls";
     public static final String USE_FULL_SCREEN = "full_screen";
+    public static final String USE_LINE_LAYOUT = "use_line_layout";
     public static final String SHOW_INPUT_METHOD_INSTANTLY_AFTER_OPEN_DIALOG = "show_input_method_instantly_after_open_dialog";
     public static final String USE_MX_UI_STYLE = "use_mx_ui_style";
     static public final boolean useDebugConfig = false;
@@ -85,6 +86,10 @@ public class NoteAppConfig {
 
     public boolean useFullScreen() {
         return backend.hasKey(USE_FULL_SCREEN) && backend.getBoolean(USE_FULL_SCREEN);
+    }
+
+    public boolean useLineLayout() {
+        return backend.hasKey(USE_LINE_LAYOUT) && backend.getBoolean(USE_LINE_LAYOUT);
     }
 
     private NoteAppConfig(Context context) {
