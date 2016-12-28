@@ -216,9 +216,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
         switchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                syncWithCallback(true, true, null);
                 toggleLineLayoutMode();
                 switchScribbleMode(isLineLayoutMode());
-                syncWithCallback(true, true, null);
             }
         });
 
