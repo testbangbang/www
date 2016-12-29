@@ -464,6 +464,9 @@ public class NoteViewHelper {
         rawInputProcessor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
             public void onBeginRawData() {
+                if (callback != null) {
+                    callback.onBeginRawData();
+                }
             }
 
             @Override

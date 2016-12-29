@@ -906,4 +906,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
     public void setKeyboardInput(boolean keyboardInput) {
         isKeyboardInput = keyboardInput;
     }
+
+    @Override
+    protected void onStartDrawing() {
+        spanTextHandler.removeSpanRunnable();
+    }
 }

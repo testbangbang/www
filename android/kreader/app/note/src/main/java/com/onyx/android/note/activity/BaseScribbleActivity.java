@@ -300,6 +300,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         return new NoteViewHelper.InputCallback() {
             @Override
             public void onBeginRawData() {
+                onStartDrawing();
             }
 
             @Override
@@ -522,6 +523,10 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void reloadLineLayoutData() {
+
+    }
+
+    protected void onStartDrawing() {
 
     }
 
