@@ -38,4 +38,8 @@ public class ReflowedSubPageCache {
     public Bitmap get(final String key) {
         return diskCache.get(key);
     }
+
+    public void release() {
+        diskCache.clear();
+    }
 }
