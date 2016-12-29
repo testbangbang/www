@@ -45,8 +45,7 @@ public class TexShape extends BaseShape  {
         renderContext.paint.setTextSize(textSize);
         Paint.Style beforeStyle = renderContext.paint.getStyle();
         renderContext.paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        Paint.FontMetrics fontMetrics = renderContext.paint.getFontMetrics();
-        renderContext.canvas.drawText(shapeExtraAttributes.getTextContent(), rect.left, rect.bottom - fontMetrics.descent, renderContext.paint);
+        renderContext.canvas.drawText(shapeExtraAttributes.getTextContent(), rect.left, rect.bottom, renderContext.paint);
         renderContext.paint.setStyle(beforeStyle);
     }
 
