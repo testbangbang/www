@@ -74,11 +74,17 @@ public class SpanTextHandler {
     public void buildSpan() {
         long curTime = System.currentTimeMillis();
         if (lastUpTime != -1 && (curTime - lastUpTime <= SPAN_TIME_OUT) && (spanRunnable != null)) {
-            handler.removeCallbacks(spanRunnable);
+            removeSpanRunnable();
         }
         lastUpTime = curTime;
         spanRunnable = buildSpanRunnable();
         handler.postDelayed(spanRunnable, SPAN_TIME_OUT);
+    }
+
+    public void removeSpanRunnable() {
+        if (handler != null && spanRunnable != null) {
+            handler.removeCallbacks(spanRunnable);
+        }
     }
 
     private NoteViewHelper getNoteViewHelper() {

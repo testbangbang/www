@@ -464,13 +464,14 @@ public class NoteViewHelper {
         rawInputProcessor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
             public void onBeginRawData() {
-                setDrawing(true);
+                if (callback != null) {
+                    callback.onBeginRawData();
+                }
             }
 
             @Override
             public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
                 NoteViewHelper.this.onNewTouchPointListReceived(pointList);
-                setDrawing(false);
             }
 
             @Override
