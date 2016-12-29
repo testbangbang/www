@@ -60,6 +60,16 @@ public class WakeLockHolder {
         }
     }
 
+    public void forceReleaseWakeLock() {
+        if (wakeLock != null) {
+            if (wakeLock.isHeld()) {
+                wakeLock.setReferenceCounted(false);
+                wakeLock.release();
+            }
+            wakeLock = null;
+        }
+    }
+
     public void dumpWakelocks(final String tag) {
         if (wakeLock != null || wakeLockCounting.get() > 0) {
             Log.w(tag, "wake lock not released. check wake lock." + wakeLock.toString() + " counting: " + wakeLockCounting.get());
