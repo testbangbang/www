@@ -36,7 +36,7 @@ public class DeviceConfig {
     private boolean disableRotationFunc = false;
     private boolean useBigPen = false;
     private boolean defaultUseSystemStatusBar = false;
-    private boolean defaultUseReaderStatusBar = false;
+    private boolean defaultUseReaderStatusBar = true;
     private boolean defaultShowDocTitleInStatusBar = false;
     private boolean disableNavigation = false;
     private boolean hideSelectionModeUiOption = false;
