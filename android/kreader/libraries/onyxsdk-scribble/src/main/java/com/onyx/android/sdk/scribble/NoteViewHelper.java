@@ -516,7 +516,9 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onErasing(motionEvent);
         }
-        erasePoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(), motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
+        if (erasePoints != null) {
+            erasePoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(), motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
+        }
         return true;
     }
 
