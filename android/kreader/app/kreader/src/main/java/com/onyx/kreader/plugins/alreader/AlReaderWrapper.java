@@ -253,7 +253,7 @@ public class AlReaderWrapper {
 
     public String getScreenText() {
         AlTextOnScreen screenText = getTextOnScreen();
-        if (screenText == null) {
+        if (!checkTextOnScreen(screenText)) {
             Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
@@ -266,7 +266,7 @@ public class AlReaderWrapper {
             return null;
         }
         AlTextOnScreen screenText = getTextOnScreen();
-        if (screenText == null) {
+        if (!checkTextOnScreen(screenText)) {
             Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
@@ -311,7 +311,7 @@ public class AlReaderWrapper {
         List<ReaderSelection> result = new ArrayList<>();
 
         AlTextOnScreen screenText = getTextOnScreen();
-        if (screenText == null) {
+        if (!checkTextOnScreen(screenText)) {
             Debug.w(getClass(), "get text on screen failed!");
             return result;
         }
@@ -487,7 +487,7 @@ public class AlReaderWrapper {
 
     public ReaderSelection selectTextOnScreen(PointF start, PointF end) {
         AlTextOnScreen screenText = getTextOnScreen();
-        if (screenText == null) {
+        if (!checkTextOnScreen(screenText)) {
             Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
@@ -505,7 +505,7 @@ public class AlReaderWrapper {
 
     public ReaderSelection selectWordOnScreen(PointF point, final ReaderTextSplitter splitter) {
         AlTextOnScreen screenText = getTextOnScreen();
-        if (screenText == null) {
+        if (!checkTextOnScreen(screenText)) {
             Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
@@ -612,7 +612,7 @@ public class AlReaderWrapper {
 
     public ReaderSelection selectTextOnScreen(int startPos, int endPos) {
         AlTextOnScreen screenText = getTextOnScreen();
-        if (screenText == null) {
+        if (!checkTextOnScreen(screenText)) {
             Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
@@ -633,6 +633,10 @@ public class AlReaderWrapper {
             screenText = bookEng.getTextOnScreen();
         }
         return screenText;
+    }
+
+    private boolean checkTextOnScreen(AlTextOnScreen textOnScreen) {
+        return textOnScreen != null && textOnScreen.regionList.size() > 0;
     }
 
     private int hitTest(int x, int y) {
