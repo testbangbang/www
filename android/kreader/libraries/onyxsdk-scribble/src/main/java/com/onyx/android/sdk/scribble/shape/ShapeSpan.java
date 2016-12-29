@@ -57,7 +57,7 @@ public class ShapeSpan extends ReplacementSpan {
         final RectF rect = boundingRect();
 
         float translateX = x + SHAPE_SPAN_MARGIN - rect.left  * scale;
-        float translateY = top - rect.top * scale + (bottom - top - rect.height() * scale) -  SHAPE_SPAN_MARGIN;
+        float translateY = top - rect.top * scale + (bottom - top - rect.height() * scale);
         if (needUpdateShape) {
             matrix.postScale(scale, scale);
             matrix.postTranslate(translateX, translateY);
