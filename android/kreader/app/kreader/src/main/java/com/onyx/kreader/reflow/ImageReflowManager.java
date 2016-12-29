@@ -80,6 +80,7 @@ public class ImageReflowManager {
             waitUntilSubPagesReady(currentPage);
         }
         ImageUtils.releaseReflowedPages();
+        subPageCache.release();
         documentMd5 = null;
     }
 

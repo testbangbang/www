@@ -23,6 +23,10 @@ public class WakeLockHolder {
         acquireWakeLock(context, FULL_FLAGS, tag, -1);
     }
 
+    public void acquireWakeLock(final Context context, int flags, final String tag) {
+        acquireWakeLock(context, flags, tag, -1);
+    }
+
     public void acquireWakeLock(final Context context, int flags, final String tag, int ms) {
         try {
             if (wakeLock == null) {
