@@ -363,7 +363,7 @@ public class ReaderTtsService {
     }
 
     private void releaseWakeLock() {
-        wakeLockHolder.releaseWakeLock();
+        wakeLockHolder.forceReleaseWakeLock();
     }
 
     private void onStart() {
