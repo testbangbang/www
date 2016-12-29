@@ -61,7 +61,7 @@ public class SlideshowHandler extends BaseHandler {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            wakeLockHolder.acquireWakeLockWithTimeout(context, TAG, 1000);
+            wakeLockHolder.acquireWakeLock(context, WakeLockHolder.WAKEUP_FLAGS, TAG, 1000);
             Debug.d(getClass(), "onReceive: " + intent.getAction());
             if (!activated) {
                 return;
@@ -90,6 +90,9 @@ public class SlideshowHandler extends BaseHandler {
         AlarmManager am = (AlarmManager)readerDataHolder.getContext().getSystemService(ALARM_SERVICE);
         if (am != null) {
             am.cancel(pendingIntent);
+        }
+        if (getSlideshowStatusBar().getVisibility() != View.GONE) {
+            getSlideshowStatusBar().setVisibility(View.GONE);
         }
         wakeLockHolder.releaseWakeLock();
     }
@@ -234,7 +237,9 @@ public class SlideshowHandler extends BaseHandler {
     private void showStatisticDialog() {
         Calendar endTime = Calendar.getInstance();
         int endBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
-        new DialogSlideshowStatistic(readerDataHolder.getContext(), startTime, endTime,
-                pageCount, startBatteryPercent, endBatteryPercent).show();
+        DialogSlideshowStatistic dlg = new DialogSlideshowStatistic(readerDataHolder.getContext(), startTime, endTime,
+                pageCount, startBatteryPercent, endBatteryPercent);
+        readerDataHolder.addActiveDialog(dlg);
+        dlg.show();
     }
 }

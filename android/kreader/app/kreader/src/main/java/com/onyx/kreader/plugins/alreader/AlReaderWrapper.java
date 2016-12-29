@@ -826,7 +826,12 @@ public class AlReaderWrapper {
     private String combineSelectionText(AlTextOnScreen textOnScreen, int startIndex, int endIndex) {
         StringBuilder builder = new StringBuilder(textOnScreen.regionList.get(startIndex).word);
         for (int i = startIndex + 1; i <= endIndex; i++) {
-            builder.append(" ").append(textOnScreen.regionList.get(i).word);
+            if (builder.length() > 0 && !AlUnicode.isChineze(builder.charAt(builder.length() - 1)) &&
+                    !AlUnicode.isChineze(builder.charAt(builder.length() - 1))) {
+                // don't insert space between Chinese characters
+                builder.append(" ");
+            }
+            builder.append(textOnScreen.regionList.get(i).word);
         }
         return builder.toString();
     }

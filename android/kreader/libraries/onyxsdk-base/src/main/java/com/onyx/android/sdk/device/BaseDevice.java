@@ -59,6 +59,11 @@ public class BaseDevice {
         return pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, tag);
     }
 
+    public PowerManager.WakeLock newWakeLockWithFlags(Context context, int flags, String tag) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        return pm.newWakeLock(flags, tag);
+    }
+
     public void useBigPen(boolean use) {
     }
 
