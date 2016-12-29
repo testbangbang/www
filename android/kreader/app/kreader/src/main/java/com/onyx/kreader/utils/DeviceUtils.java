@@ -258,4 +258,19 @@ public class DeviceUtils {
 
         return (int)(batteryPercent*100);
     }
+
+    public static boolean isEngVersion() {
+        final String type = Build.TYPE;
+        final String display = Build.DISPLAY;
+        final String finger = Build.FINGERPRINT;
+        final String tag = "eng";
+        return safeContains(type, tag) || safeContains(display, tag) || safeContains(finger, tag);
+    }
+
+    public static boolean safeContains(final String value, final String tag) {
+        if (StringUtils.isNotBlank(value) && value.toLowerCase().contains(tag)) {
+            return true;
+        }
+        return false;
+    }
 }

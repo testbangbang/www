@@ -347,4 +347,8 @@ public class BaseDevice {
 
     public void enableA2ForSpecificView(View view) {
     }
+
+    public boolean isLegalSystem(final Context context){
+        return true;
+    }
 }
