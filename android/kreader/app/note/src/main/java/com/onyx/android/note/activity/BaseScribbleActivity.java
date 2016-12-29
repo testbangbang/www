@@ -424,7 +424,6 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         cleanup(canvas, paint, rect);
         drawContent(canvas, paint);
         drawStashShape(canvas, paint);
-        drawErasingIndicator(canvas, paint);
         afterDraw(canvas);
     }
 
