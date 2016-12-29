@@ -153,8 +153,9 @@ public class TTFScan {
 	}
 	
 	public static TTFInfo getTTFInfo(File f, boolean scanByName) {
+		FileInputStream is = null;
 		try {
-			FileInputStream is = new FileInputStream(f);
+			is = new FileInputStream(f);
 			int flen = (int) f.length();
 			
 			byte[] buff0 = new byte[12];
@@ -197,7 +198,14 @@ public class TTFScan {
 			
 		} catch (IOException e) {
 			Log.e("error font", f.getPath());
-		}		
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+				}
+			}
+		}
 		return null;
 	}
 }
