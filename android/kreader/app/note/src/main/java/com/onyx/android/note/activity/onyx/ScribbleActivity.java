@@ -886,7 +886,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
         if (!isLineLayoutMode) {
             return;
         }
-        setKeyboardInput(false);
         spanTextHandler.buildSpan();
     }
 
@@ -906,5 +905,10 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     public void setKeyboardInput(boolean keyboardInput) {
         isKeyboardInput = keyboardInput;
+    }
+
+    @Override
+    protected void onStartDrawing() {
+        spanTextHandler.removeSpanRunnable();
     }
 }

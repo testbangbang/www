@@ -18,6 +18,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogSlideshowStatistic;
@@ -53,7 +54,18 @@ public class SlideshowHandler extends BaseHandler {
             if (pageCount >= maxPageCount) {
                 quit();
             } else {
-                updateSlideshowStatusBar();
+                // if we are using regal, we need separate the update of page and status bar,
+                // or else it will cause screen update chaos
+                if (!ReaderDeviceManager.isUsingRegal(readerDataHolder.getContext())) {
+                    updateSlideshowStatusBar();
+                } else {
+                    parent.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateSlideshowStatusBar();
+                        }
+                    }, 500);
+                }
             }
         }
     };
@@ -90,6 +102,9 @@ public class SlideshowHandler extends BaseHandler {
         AlarmManager am = (AlarmManager)readerDataHolder.getContext().getSystemService(ALARM_SERVICE);
         if (am != null) {
             am.cancel(pendingIntent);
+        }
+        if (getSlideshowStatusBar().getVisibility() != View.GONE) {
+            getSlideshowStatusBar().setVisibility(View.GONE);
         }
         wakeLockHolder.releaseWakeLock();
     }
@@ -234,7 +249,9 @@ public class SlideshowHandler extends BaseHandler {
     private void showStatisticDialog() {
         Calendar endTime = Calendar.getInstance();
         int endBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
-        new DialogSlideshowStatistic(readerDataHolder.getContext(), startTime, endTime,
-                pageCount, startBatteryPercent, endBatteryPercent).show();
+        DialogSlideshowStatistic dlg = new DialogSlideshowStatistic(readerDataHolder.getContext(), startTime, endTime,
+                pageCount, startBatteryPercent, endBatteryPercent);
+        readerDataHolder.addActiveDialog(dlg);
+        dlg.show();
     }
 }
