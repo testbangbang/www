@@ -235,6 +235,15 @@ public class BaseNoteRequest extends BaseRequest {
             case NoteBackgroundType.MATS:
                 bgResID = R.drawable.scribble_back_ground_mats;
                 break;
+            case NoteBackgroundType.TABLE:
+                bgResID = R.drawable.scribble_back_ground_table_grid;
+                break;
+            case NoteBackgroundType.COLUMN:
+                bgResID = R.drawable.scribble_back_ground_line_column;
+                break;
+            case NoteBackgroundType.LEFT_GRID:
+                bgResID = R.drawable.scribble_back_ground_left_grid;
+                break;
         }
         drawBackgroundResource(canvas, paint, bgResID);
 
