@@ -66,6 +66,10 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     private void restoreViewport(final Reader reader) throws Exception {
+        if (!reader.getReaderHelper().getRendererFeatures().supportScale()) {
+            // only scalable document need restore viewport
+            return;
+        }
         int viewWidth = reader.getViewOptions().getViewWidth();
         int viewHeight = reader.getViewOptions().getViewHeight();
         if (baseOptions.getViewport() != null &&
