@@ -261,6 +261,10 @@ public class ReaderDataHolder {
         getEventBus().post(new TtsStateChangedEvent());
     }
 
+    public void notifyUpdateSlideshowStatusBar() {
+        getEventBus().post(new UpdateSlideshowEvent());
+    }
+
     public void notifyTtsRequestSentence() {
         getEventBus().post(new TtsRequestSentenceEvent());
     }

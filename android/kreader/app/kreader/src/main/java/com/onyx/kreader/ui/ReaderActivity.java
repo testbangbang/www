@@ -386,14 +386,37 @@ public class ReaderActivity extends ActionBarActivity {
         if (update) {
             ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
         }
+
         if (event != null && !event.isWaitForShapeData()) {
             beforeDrawPage();
-            updateStatusBar();
             drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+            afterDrawPage();
         }
+
         if (event != null && event.isRenderShapeData()) {
             renderShapeDataInBackground();
         }
+    }
+
+    private void afterDrawPage() {
+        if (!ReaderDeviceManager.isUsingRegal(this)) {
+            updateReadingAndSlideshowStatusBar();
+        } else {
+            // if we are using regal, we need separate the update of page and status bar,
+            // or else it will cause screen update chaos
+            mainView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    EpdController.waitForUpdateFinished();
+                    updateReadingAndSlideshowStatusBar();
+                }
+            }, 300);
+        }
+    }
+
+    private void updateReadingAndSlideshowStatusBar() {
+        updateStatusBar();
+        getReaderDataHolder().notifyUpdateSlideshowStatusBar();
     }
 
     @Subscribe
