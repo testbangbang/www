@@ -24,9 +24,10 @@ LOCAL_SRC_FILES := \
 
 MY_SRC_ROOT := $(LOCAL_PATH)/..
 LOCAL_C_INCLUDES := \
-    $(MY_SRC_ROOT)                      \
-    $(MY_SRC_ROOT)/public               \
-    $(MY_SRC_ROOT)/core/include              \
+    $(MY_SRC_ROOT) \
+    $(MY_SRC_ROOT)/libpdfium \
+    $(MY_SRC_ROOT)/libpdfium/public \
+    $(MY_SRC_ROOT)/libpdfium/third_party/freetype/include \
     $(MY_SRC_ROOT)/../common/utils
 
 include $(BUILD_SHARED_LIBRARY)

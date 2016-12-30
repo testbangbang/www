@@ -7,7 +7,7 @@
 
 #include "fpdf_doc.h"
 
-#include "fpdfapi/fpdf_pageobj.h"
+#include "core/fpdfapi/fpdf_page/include/cpdf_pageobject.h"
 #include "fpdf_edit.h"
 
 #include <memory>
@@ -497,7 +497,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_plugins_neopdf_NeoPdfJniWrapper
             LOGE("get page object failed: %d", i);
             return false;
         }
-        if (obj->m_Type != FPDF_PAGEOBJ_FORM && obj->m_Type != FPDF_PAGEOBJ_TEXT) {
+        if (obj->GetType() != FPDF_PAGEOBJ_FORM && obj->GetType() != FPDF_PAGEOBJ_TEXT) {
             return false;
         }
     }
