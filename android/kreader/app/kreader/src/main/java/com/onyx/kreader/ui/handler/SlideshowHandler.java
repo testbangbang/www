@@ -22,8 +22,11 @@ import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogSlideshowStatistic;
+import com.onyx.kreader.ui.events.UpdateSlideshowEvent;
 import com.onyx.kreader.ui.view.SlideshowStatusBar;
 import com.onyx.kreader.utils.DeviceUtils;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Calendar;
 
@@ -53,19 +56,6 @@ public class SlideshowHandler extends BaseHandler {
         public void done(BaseRequest request, Throwable e) {
             if (pageCount >= maxPageCount) {
                 quit();
-            } else {
-                // if we are using regal, we need separate the update of page and status bar,
-                // or else it will cause screen update chaos
-                if (!ReaderDeviceManager.isUsingRegal(readerDataHolder.getContext())) {
-                    updateSlideshowStatusBar();
-                } else {
-                    parent.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateSlideshowStatusBar();
-                        }
-                    }, 500);
-                }
             }
         }
     };
@@ -93,12 +83,14 @@ public class SlideshowHandler extends BaseHandler {
     public void onActivate(ReaderDataHolder readerDataHolder) {
         activated = true;
         readerDataHolder.getContext().registerReceiver(broadcastReceiver, new IntentFilter(intent.getAction()));
+        readerDataHolder.getEventBus().register(this);
     }
 
     @Override
     public void onDeactivate(ReaderDataHolder readerDataHolder) {
         activated = false;
         readerDataHolder.getContext().unregisterReceiver(broadcastReceiver);
+        readerDataHolder.getEventBus().unregister(this);
         AlarmManager am = (AlarmManager)readerDataHolder.getContext().getSystemService(ALARM_SERVICE);
         if (am != null) {
             am.cancel(pendingIntent);
@@ -202,7 +194,15 @@ public class SlideshowHandler extends BaseHandler {
         startBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
         startTime = Calendar.getInstance();
         setAlarm();
-        updateSlideshowStatusBar();
+        updateSlideshowStatusBar(null);
+    }
+
+    @Subscribe
+    public void updateSlideshowStatusBar(UpdateSlideshowEvent event) {
+        int battery = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
+        getSlideshowStatusBar().updateValue(maxPageCount, pageCount + 1,
+                startBatteryPercent, battery);
+        getSlideshowStatusBar().setVisibility(View.VISIBLE);
     }
 
     private void setAlarm() {
@@ -226,13 +226,6 @@ public class SlideshowHandler extends BaseHandler {
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
         hideSlideshowStatusBar();
         showStatisticDialog();
-    }
-
-    private void updateSlideshowStatusBar() {
-        int battery = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
-        getSlideshowStatusBar().updateValue(maxPageCount, pageCount + 1,
-                startBatteryPercent, battery);
-        getSlideshowStatusBar().setVisibility(View.VISIBLE);
     }
 
     private void hideSlideshowStatusBar() {
