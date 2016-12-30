@@ -1,6 +1,7 @@
 package com.onyx.kreader.host.request;
 
 import android.content.Context;
+import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
@@ -9,6 +10,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.api.ReaderException;
 import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.Debug;
+import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.reflow.ImageReflowSettings;
@@ -66,6 +68,10 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     private void restoreViewport(final Reader reader) throws Exception {
+        if (!reader.getReaderHelper().getRendererFeatures().supportScale()) {
+            // only scalable document need restore viewport
+            return;
+        }
         int viewWidth = reader.getViewOptions().getViewWidth();
         int viewHeight = reader.getViewOptions().getViewHeight();
         if (baseOptions.getViewport() != null &&
@@ -78,9 +84,18 @@ public class RestoreRequest extends BaseReaderRequest {
                     " height: " + baseOptions.getViewport().height() +
                     " view width: " + viewWidth +
                     " view height: " + viewHeight);
+                normalizeViewport(reader, baseOptions.getViewport(), viewWidth, viewHeight);
             }
             reader.getReaderLayoutManager().getPageManager().setViewportRect(baseOptions.getViewport());
         }
+    }
+
+    private void normalizeViewport(final Reader reader, RectF viewport, int dstWidth, int dstHeight) {
+        PageManager pageManager = reader.getReaderLayoutManager().getPageManager();
+        viewport.right = Math.min(viewport.left + dstWidth,
+                pageManager.getPagesBoundingRect().right);
+        viewport.bottom = Math.min(viewport.top + dstHeight,
+                pageManager.getPagesBoundingRect().bottom);
     }
 
     private void restoreReflowSettings(final Reader reader) {
