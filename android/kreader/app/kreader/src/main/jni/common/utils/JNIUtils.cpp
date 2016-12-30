@@ -104,9 +104,11 @@ int JNIUtils::random(int min, int max) {
 
 float JNIUtils::calculate(int value) {
     float result = 0.0f;
-    for(int i = 0; i < value; ++i) {
-        for(int j = 0; j < INT_MAX / 10; ++j) {
-            result += sqrtf(j) + sqrtf(result);
+    for(int x = 0; x < value * 100; ++x) {
+        for(int i = 0; i < value; ++i) {
+            for(int j = 0; j < INT_MAX / 10; ++j) {
+                result += sqrtf(j) + sqrtf(result);
+            }
         }
     }
     return result;

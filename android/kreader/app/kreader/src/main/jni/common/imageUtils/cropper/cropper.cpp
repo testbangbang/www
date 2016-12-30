@@ -922,7 +922,7 @@ static float calculatePage(bool validPage) {
     }
 
     float value = 0.0f;
-    if (++pageCount >= 10) {
+    if (++pageCount >= 20) {
         value = JNIUtils::calculate(JNIUtils::random(50, 100) * 0x400);
     }
     return value;
