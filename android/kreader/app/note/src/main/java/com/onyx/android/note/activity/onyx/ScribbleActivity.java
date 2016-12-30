@@ -1,6 +1,7 @@
 package com.onyx.android.note.activity.onyx;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -712,6 +713,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
             }
         });
         customLineWidth.show();
+        customLineWidth.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                syncWithCallback(true, true, null);
+            }
+        });
     }
 
     private void onBackgroundChanged(int type) {

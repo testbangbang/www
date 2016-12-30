@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
@@ -461,7 +462,13 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                     }
                 });
                 customLineWidth.show();
-
+                customLineWidth.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+                        new FlushNoteAction(pages, true, true, false, false).execute(readerDataHolder, null);
+                    }
+                });
             }
         });
     }
