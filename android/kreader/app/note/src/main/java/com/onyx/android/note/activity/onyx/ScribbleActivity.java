@@ -666,6 +666,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
             case ScribbleSubMenuID.BG_ENGLISH:
                 onBackgroundChanged(NoteBackgroundType.ENGLISH);
                 break;
+            case ScribbleSubMenuID.BG_TABLE_GRID:
+                onBackgroundChanged(NoteBackgroundType.TABLE);
+                break;
+            case ScribbleSubMenuID.BG_LINE_COLUMN:
+                onBackgroundChanged(NoteBackgroundType.COLUMN);
+                break;
+            case ScribbleSubMenuID.BG_LEFT_GRID:
+                onBackgroundChanged(NoteBackgroundType.LEFT_GRID);
+                break;
             case ScribbleSubMenuID.PEN_COLOR_BLACK:
                 setStrokeColor(Color.BLACK);
                 onPenColoChanged();
