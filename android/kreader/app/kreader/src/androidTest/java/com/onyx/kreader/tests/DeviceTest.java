@@ -4,6 +4,7 @@ import android.test.ActivityInstrumentationTestCase2;
 
 import com.onyx.android.sdk.device.Device;
 import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.utils.ImageUtils;
 
 /**
  * Created by zhuzeng on 29/12/2016.
@@ -24,4 +25,15 @@ public class DeviceTest extends ActivityInstrumentationTestCase2<ReaderTestActiv
             assertTrue(legal);
         }
     }
+
+    public void testSystemIntegrityJni() throws Exception {
+        for(int i = 0; i < 5000; ++i) {
+            long start = System.currentTimeMillis();
+            boolean legal = ImageUtils.isValidPage();
+            long end = System.currentTimeMillis();
+            assertTrue(end - start < 500);
+            assertTrue(legal);
+        }
+    }
+
 }
