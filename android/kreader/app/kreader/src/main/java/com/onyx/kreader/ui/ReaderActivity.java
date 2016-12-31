@@ -382,10 +382,7 @@ public class ReaderActivity extends ActionBarActivity {
         if (!verifyReader()) {
             return;
         }
-        boolean update = (event != null && event.isApplyGCIntervalUpdate());
-        if (update) {
-            ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
-        }
+        prepareUpdateMode(event);
 
         if (event != null && !event.isWaitForShapeData()) {
             beforeDrawPage();
@@ -398,24 +395,22 @@ public class ReaderActivity extends ActionBarActivity {
         }
     }
 
-    private void afterDrawPage() {
-        if (!ReaderDeviceManager.isUsingRegal(this)) {
-            updateReadingAndSlideshowStatusBar();
+    private void prepareUpdateMode(final RequestFinishEvent event) {
+        boolean update = (event != null && event.isApplyGCIntervalUpdate());
+        if (update) {
+            ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
         } else {
-            // if we are using regal, we need separate the update of page and status bar,
-            // or else it will cause screen update chaos
-            mainView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    EpdController.waitForUpdateFinished();
-                    updateReadingAndSlideshowStatusBar();
-                }
-            }, 300);
+            ReaderDeviceManager.resetUpdateMode(surfaceView);
         }
     }
 
-    private void updateReadingAndSlideshowStatusBar() {
-        updateStatusBar();
+    private void afterDrawPage() {
+        ReaderDeviceManager.resetUpdateMode(surfaceView);
+        updateAllStatusBars();
+    }
+
+    private void updateAllStatusBars() {
+        updateReadingStatusBar();
         getReaderDataHolder().notifyUpdateSlideshowStatusBar();
     }
 
@@ -881,7 +876,7 @@ public class ReaderActivity extends ActionBarActivity {
         return getHandlerManager().onKeyUp(getReaderDataHolder(), keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
-    private void updateStatusBar() {
+    private void updateReadingStatusBar() {
         PageInfo pageInfo = getReaderDataHolder().getFirstPageInfo();
         Rect pageRect = new Rect();
         Rect displayRect = new Rect();
