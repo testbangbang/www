@@ -488,7 +488,7 @@ public class AlFonts {
 
 	private int	internalFontCount = 0;
 
-	private void loadAllFonts(String path, AlResourceFont resFont[]) {
+	private void loadAllFonts(String path[], AlResourceFont resFont[]) {
 		if (internalFontCount != 0)
 			return;
 		
@@ -504,8 +504,10 @@ public class AlFonts {
 		reinitExtPath("/system/fonts", true);		
 		internalFontCount = allfonts.size();
 
-		if (path != null)
-			reinitExtPath(path, false);
+		if (path != null) {
+			for (String p : path)
+				reinitExtPath(p, false);
+		}
 	}
 	
 }

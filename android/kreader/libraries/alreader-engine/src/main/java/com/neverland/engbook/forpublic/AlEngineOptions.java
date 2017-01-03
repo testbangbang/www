@@ -31,7 +31,7 @@ public class AlEngineOptions {
 	/**
 	 * каталог, откуда библиотека считывает шрифты
 	 */
-	public String								font_catalog; // not to use for win32
+	public String								font_catalog[]; // not to use for win32
 	/*
 	 * список шрифтов из ресурсов
 	 */
