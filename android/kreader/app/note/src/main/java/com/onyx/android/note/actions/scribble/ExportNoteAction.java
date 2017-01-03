@@ -81,7 +81,7 @@ public class ExportNoteAction<T extends BaseScribbleActivity> extends BaseNoteAc
         PageInfo pageInfo = new PageInfo(pageUniqueId, size.width(), size.height());
         pageInfo.updateDisplayRect(new RectF(0, 0, size.width(), size.height()));
         pageInfoList.add(pageInfo);
-        final PageListRenderRequest renderRequest = new PageListRenderRequest(douId, pageInfoList, size, false);
+        final PageListRenderRequest renderRequest = new PageListRenderRequest(douId, pageInfoList, size, false, true);
         activity.submitRequest(renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -89,8 +89,7 @@ public class ExportNoteAction<T extends BaseScribbleActivity> extends BaseNoteAc
                     onExportFail(activity, progress);
                     return;
                 }
-                Bitmap bitmap = Bitmap.createBitmap(renderRequest.getRenderBitmap());
-                exportPage(activity, bitmap, index);
+                exportPage(activity, renderRequest.getRenderBitmap(), index);
                 getPageBitmap(activity);
             }
         });
