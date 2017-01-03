@@ -241,6 +241,9 @@ public class DialogTextStyle extends DialogBase {
         getFontsAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
                 initFontPageView(pageView, fontFace, getFontsAction.getFonts());
                 updatePageIndicator(pageView, pageSizeIndicator);
             }
