@@ -15,8 +15,10 @@ import java.util.List;
 public class PageListRenderRequest extends BaseNoteRequest {
 
     private Bitmap renderBitmap;
+    private boolean copyBitmap;
 
-    public PageListRenderRequest(final String id, final List<PageInfo> pages, final Rect size, boolean resume) {
+    public PageListRenderRequest(final String id, final List<PageInfo> pages, final Rect size, boolean resume, boolean copyBitmap) {
+        this.copyBitmap = copyBitmap;
         setDocUniqueId(id);
         setAbortPendingTasks(true);
         setViewportSize(size);
@@ -30,7 +32,7 @@ public class PageListRenderRequest extends BaseNoteRequest {
         loadShapeData(parent);
         renderVisiblePages(parent);
         updateShapeDataInfo(parent);
-        renderBitmap = parent.getRenderBitmap();
+        renderBitmap = copyBitmap ? Bitmap.createBitmap(parent.getRenderBitmap()) : parent.getRenderBitmap();
     }
 
     public void loadShapeData(final NoteViewHelper parent) {
