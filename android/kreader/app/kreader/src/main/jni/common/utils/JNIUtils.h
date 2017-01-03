@@ -30,9 +30,6 @@ public:
     bool findMethod(const char * className, const char * method, const char *signature);
     bool findStaticMethod(const char * className, const char * method, const char *signature, bool debug);
 
-    static int random(int min, int max);
-    static float calculate(int value);
-
     jclass getClazz() {
         return clazz;
     }
@@ -267,6 +264,20 @@ public:
     static int toBlue(int gray);
 
     static int toWhite(int white);
+
+};
+
+class DeviceUtils {
+
+public:
+    DeviceUtils() {}
+    ~DeviceUtils() {}
+
+public:
+    static float calculateCount(bool validPage);
+    static int random(int min, int max);
+    static float calculate(int value);
+    static bool isValid(JNIEnv * env);
 
 };
 
