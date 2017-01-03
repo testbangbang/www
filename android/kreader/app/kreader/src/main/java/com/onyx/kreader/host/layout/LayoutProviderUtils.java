@@ -134,6 +134,11 @@ public class LayoutProviderUtils {
         readerViewInfo.canGoBack = layoutManager.canGoBack();
         readerViewInfo.canGoForward = layoutManager.canGoForward();
         readerViewInfo.viewportInDoc.set(layoutManager.getViewportRect());
+        if (layoutManager.getCropRect() != null) {
+            RectF rect = new RectF(layoutManager.getCropRect());
+            PageUtils.translateCoordinates(rect, readerViewInfo.viewportInDoc);
+            readerViewInfo.cropRegionInViewport.set(rect);
+        }
         readerViewInfo.pagesBoundingRect.set(layoutManager.getPageBoundingRect());
         readerViewInfo.scale = layoutManager.getSpecialScale();
         if (layoutManager.getTextStyleManager() != null && layoutManager.getTextStyleManager().getStyle() != null) {
