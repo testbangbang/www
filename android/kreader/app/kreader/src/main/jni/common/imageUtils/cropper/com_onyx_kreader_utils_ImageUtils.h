@@ -83,6 +83,14 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_releaseReflowedPag
 JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbwBitmap
   (JNIEnv *, jclass, jobject, jobject, jint);
 
+/*
+ * Class:     com_onyx_kreader_utils_ImageUtils
+ * Method:    isTextPage
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_isValidPage
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

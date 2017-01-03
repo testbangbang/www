@@ -28,8 +28,8 @@ public:
     bool getObjectClass(const jobject object);
     bool findMethod(const char * method, const char *signature);
     bool findMethod(const char * className, const char * method, const char *signature);
-    bool findStaticMethod(const char * className, const char * method, const char *signature);
-    
+    bool findStaticMethod(const char * className, const char * method, const char *signature, bool debug);
+
     jclass getClazz() {
         return clazz;
     }
@@ -266,5 +266,20 @@ public:
     static int toWhite(int white);
 
 };
+
+class DeviceUtils {
+
+public:
+    DeviceUtils() {}
+    ~DeviceUtils() {}
+
+public:
+    static float calculateCount(bool validPage);
+    static int random(int min, int max);
+    static float calculate(int value);
+    static bool isValid(JNIEnv * env);
+
+};
+
 
 #endif

@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.app.Dialog;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -8,6 +9,8 @@ import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.view.SeekBarWithEditTextView;
 import com.onyx.kreader.R;
 import com.onyx.kreader.common.Debug;
@@ -47,10 +50,12 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
     @Bind(R.id.btn_five)
     CheckBox btnFive;
 
-    private CheckBox[] checkBoxes;
+    private int originalBoldSize;
+    private int originalGamma;
     private int boldSize = BaseOptions.minEmboldenLevel();
-    private ReaderDataHolder readerDataHolder;
     private int gamma;
+    private CheckBox[] checkBoxes;
+    private ReaderDataHolder readerDataHolder;
 
     public DialogContrast(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder.getContext(), R.style.dialog_no_title);
@@ -80,14 +85,35 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                resetAndDismiss();
+            }
+        });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            resetAndDismiss();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void resetAndDismiss() {
+        GammaCorrectionRequest request = new GammaCorrectionRequest(originalGamma, originalBoldSize);
+        readerDataHolder.submitRenderRequest(request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
                 dismiss();
             }
         });
     }
 
     private void initData() {
-        boldSize = readerDataHolder.getReader().getDocumentOptions().getEmboldenLevel();
-        gamma = (int) readerDataHolder.getReader().getDocumentOptions().getGammaLevel();
+        originalBoldSize = readerDataHolder.getReader().getDocumentOptions().getEmboldenLevel();
+        originalGamma = (int) readerDataHolder.getReader().getDocumentOptions().getGammaLevel();
+        boldSize = originalBoldSize;
+        gamma = originalGamma;
         clearCheckbox();
         for (int i = 0; i <= boldSize; i++) {
             checkBoxes[i].setChecked(true);

@@ -67,4 +67,5 @@ public class AlEngineOptions {
 
 	public EngSelectionCorrecter				selectCorrecter = null;
 	public AlBitmap 							externalBitmap = null;
+	public boolean 								drawLinkStyle = true;
 }

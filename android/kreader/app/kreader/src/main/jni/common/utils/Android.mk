@@ -10,6 +10,7 @@ LOCAL_MODULE := libutils
 src_files := \
 	JNIUtils.cpp
 
+
 LOCAL_CFLAGS += -O3 -DUSE_MMAP
 LOCAL_SRC_FILES := $(src_files)
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)

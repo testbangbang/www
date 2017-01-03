@@ -16,6 +16,7 @@ import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,25 +98,35 @@ public class ReaderLayerMenuViewFactory {
     }
 
     private static View createSimpleButtonContainerView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
-        final RecyclerView view = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
+        final PageRecyclerView view = (PageRecyclerView) LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
         GridLayoutManager gridLayoutManager = new DisableScrollGridManager(context, 1);
-        gridLayoutManager.setSpanCount(6);
+        view.setDefaultMoveKeyBinding();
         view.setLayoutManager(gridLayoutManager);
         final LayoutInflater inflater = LayoutInflater.from(context);
-        view.setAdapter(new RecyclerView.Adapter() {
+        view.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public int getRowCount() {
+                return 1;
+            }
+
+            @Override
+            public int getColumnCount() {
+                return 6;
+            }
+
+            @Override
+            public int getDataCount() {
+                return items.size();
+            }
+
+            @Override
+            public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
                 return new MainMenuItemViewHolder(inflater.inflate(R.layout.reader_layer_menu_button_item, parent, false), callback);
             }
 
             @Override
-            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
                 ((MainMenuItemViewHolder) holder).setMenuItem(items.get(position));
-            }
-
-            @Override
-            public int getItemCount() {
-                return items.size();
             }
         });
         return view;

@@ -198,4 +198,8 @@ public class GPaginator {
     public boolean isLastPage() {
         return lastPage() == currentPage;
     }
+
+    public static String progressText(int current, int total) {
+        return String.format("%d / %d", current, total);
+    }
 }

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
+
+import com.onyx.android.sdk.BuildConfig;
 import com.onyx.android.sdk.api.device.epd.EPDMode;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -84,6 +86,7 @@ public class RK3026Device extends BaseDevice {
 
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
+    private static Method sMethodSystemIntegrityCheck;
 
     private static final String UNKNOWN = "unknown";
     private static final String DEVICE_ID = "ro.deviceid";
@@ -131,6 +134,7 @@ public class RK3026Device extends BaseDevice {
                 sMethodGetFrontLightValueList = ReflectUtil.getMethodSafely(class_device_controller, "getFrontLightValues", Context.class);
                 sMethodReadSystemConfig = ReflectUtil.getMethodSafely(class_device_controller, "readSystemConfig", String.class);
                 sMethodSaveSystemConfig = ReflectUtil.getMethodSafely(class_device_controller, "saveSystemConfig", String.class, String.class);
+                sMethodSystemIntegrityCheck = ReflectUtil.getMethodSafely(class_device_controller, "systemIntegrityCheck");
 
                 sMethodStopBootAnimation = ReflectUtil.getMethodSafely(class_view, "requestStopBootAnimation");
 
@@ -140,6 +144,7 @@ public class RK3026Device extends BaseDevice {
                 sMethodEnableA2 = ReflectUtil.getMethodSafely(class_view, "enableA2");
                 // signature of "public void disableA2()"
                 sMethodDisableA2 = ReflectUtil.getMethodSafely(class_view, "disableA2");
+
 
             } catch (ClassNotFoundException e) {
                 Log.w(TAG, e);
@@ -490,4 +495,11 @@ public class RK3026Device extends BaseDevice {
         ReflectUtil.invokeMethodSafely(sMethodEnableA2, view);
     }
 
+    @Override
+    public boolean isLegalSystem(final Context context) {
+        if (BuildConfig.DEBUG) {
+            return true;
+        }
+        return (Boolean)this.invokeDeviceControllerMethod(context, sMethodSystemIntegrityCheck);
+    }
 }

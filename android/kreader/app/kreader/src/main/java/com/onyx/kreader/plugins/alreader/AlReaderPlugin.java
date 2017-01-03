@@ -215,6 +215,11 @@ public class AlReaderPlugin implements ReaderPlugin,
         getPluginImpl().closeDocument();
     }
 
+    @Override
+    public void updateDocumentOptions(ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) {
+        getPluginImpl().updateDocumentOptions(documentOptions, pluginOptions);
+    }
+
     public ReaderViewOptions getViewOptions() {
         return readerViewOptions;
     }

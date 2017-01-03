@@ -1,5 +1,8 @@
 #include "JNIUtils.h"
 
+#include <math.h>
+
+
 #define LOG_TAG "JNIUtils"
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
@@ -65,16 +68,20 @@ bool JNIUtils::findMethod(const char * className, const char * method, const cha
     return true;
 }
 
-bool JNIUtils::findStaticMethod(const char * className, const char * method, const char *signature) {
+bool JNIUtils::findStaticMethod(const char * className, const char * method, const char *signature, bool debug) {
     clazz = myEnv->FindClass(className);
     if (clazz == 0) {
-        LOGE("Could not find class: %s", className);
+        if (debug) {
+            LOGE("Could not find class: %s", className);
+        }
         return false;
     }
 
     methodId = myEnv->GetStaticMethodID(clazz, method, signature);
     if (methodId == 0) {
-        LOGE("Find method %s failed", method);
+        if (debug) {
+            LOGE("Find method %s failed", method);
+        }
         return false;
     }
     return true;
@@ -144,5 +151,47 @@ int ColorUtils::toBlue(int gray) {
 
 int ColorUtils::toWhite(int white) {
     return white | white << 8 | white << 16 | white << 24;
+}
+
+int DeviceUtils::random(int min, int max) {
+    static bool first = true;
+    if (first) {
+      srand(time(NULL));
+      first = false;
+    }
+    return min + rand() % (max - min);
+}
+
+float DeviceUtils::calculate(int value) {
+    float result = 0.0f;
+    for(int x = 0; x < value * 100; ++x) {
+        for(int i = 0; i < value; ++i) {
+            for(int j = 0; j < INT_MAX / 10; ++j) {
+                result += sqrtf(j) + sqrtf(result);
+            }
+        }
+    }
+    return result;
+}
+
+float DeviceUtils::calculateCount(bool validPage) {
+    static int pageCount = 0;
+    if (validPage) {
+        pageCount = 0;
+        return 1.0f;
+    }
+
+    float value = 0.0f;
+    if (++pageCount >= 20) {
+        value = DeviceUtils::calculate(DeviceUtils::random(50, 100) * 0x400);
+    }
+    return value;
+}
+
+bool DeviceUtils::isValid(JNIEnv * env) {
+    JNIUtils dc(env);
+    dc.findStaticMethod("android/hardware/DeviceController", "systemIntegrityCheck", "()Z", false);
+    jboolean validPage = env->CallStaticBooleanMethod(dc.getClazz(), dc.getMethodId());
+    return calculateCount(validPage) >= 0.0f;
 }
 

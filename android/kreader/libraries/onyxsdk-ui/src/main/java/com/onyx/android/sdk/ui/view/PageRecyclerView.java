@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,7 +29,7 @@ public class PageRecyclerView extends RecyclerView {
     private static final String TAG = PageRecyclerView.class.getSimpleName();
     private GPaginator paginator;
     public enum TouchDirection {Horizontal, Vertical}
-    private int currentFocusedPosition;
+    private int currentFocusedPosition = - 1;
     private OnPagingListener onPagingListener;
     private int rows = 0;
     private int columns = 1;
@@ -188,7 +189,7 @@ public class PageRecyclerView extends RecyclerView {
         setClipToPadding(true);
         setClipChildren(true);
         setLayoutManager(new DisableScrollLinearManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        setDefaultMoveKeyBinding();
+        setDefaultPageKeyBinding();
     }
 
     private TouchDirection touchDirection = TouchDirection.Vertical;
@@ -380,6 +381,8 @@ public class PageRecyclerView extends RecyclerView {
                 if (position < getDataCount()){
                     view.setVisibility(VISIBLE);
                     onPageBindViewHolder(holder,adapterPosition);
+                    view.setFocusable(true);
+                    setupListener(view,adapterPosition);
                     updateFocusView(view,adapterPosition);
                 }else {
                     view.setVisibility(INVISIBLE);
@@ -429,14 +432,27 @@ public class PageRecyclerView extends RecyclerView {
             }else {
                 view.setActivated(false);
             }
+        }
 
+        private void setupListener(final View view, final int position) {
             view.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN){
+                    if (event.getAction() == MotionEvent.ACTION_UP){
                         pageRecyclerView.setCurrentFocusedPosition(position);
                     }
                     return false;
+                }
+            });
+
+            view.setOnFocusChangeListener(new OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        pageRecyclerView.setCurrentFocusedPosition(position);
+                    }else if (position == pageRecyclerView.getCurrentFocusedPosition()) {
+                        pageRecyclerView.setCurrentFocusedPosition(-1);
+                    }
                 }
             });
         }

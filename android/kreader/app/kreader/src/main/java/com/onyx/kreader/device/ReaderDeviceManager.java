@@ -1,6 +1,7 @@
 package com.onyx.kreader.device;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
@@ -72,12 +73,16 @@ public class ReaderDeviceManager {
     }
 
     public static void applyWithGCInterval(View view, boolean isTextPage) {
-        boolean useRegal = SingletonSharedPreference.isEnableRegal(view.getContext());
-        if (EpdController.supportRegal() && useRegal) {
+        if (isUsingRegal(view.getContext())) {
             applyWithGCIntervalWitRegal(view, isTextPage);
         } else {
             applyWithGCIntervalWithoutRegal(view);
         }
+    }
+
+    public static boolean isUsingRegal(Context context) {
+        boolean useRegal = SingletonSharedPreference.isEnableRegal(context);
+        return EpdController.supportRegal() && useRegal;
     }
 
     public static void enableScreenUpdate(View view, boolean enable) {

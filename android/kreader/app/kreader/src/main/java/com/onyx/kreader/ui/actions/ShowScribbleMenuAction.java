@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
@@ -24,6 +25,8 @@ import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RestoreShapeAction;
+import com.onyx.kreader.note.request.PauseDrawingRequest;
+import com.onyx.kreader.note.request.StopNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
@@ -227,7 +230,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private OnyxToolbar createWidthToolbar(ReaderDataHolder readerDataHolder) {
         final OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext());
         toolbar.setClickedDismissToolbar(true);
-        final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_WIDTH1, ReaderMenuAction.SCRIBBLE_WIDTH2, ReaderMenuAction.SCRIBBLE_WIDTH3, ReaderMenuAction.SCRIBBLE_WIDTH4, ReaderMenuAction.SCRIBBLE_WIDTH5};
+        final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_WIDTH1, ReaderMenuAction.SCRIBBLE_WIDTH2, ReaderMenuAction.SCRIBBLE_WIDTH3, ReaderMenuAction.SCRIBBLE_WIDTH4, ReaderMenuAction.SCRIBBLE_WIDTH5, ReaderMenuAction.SCRIBBLE_CUSTOM_WIDTH};
 
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_width_1, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH1);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_width_2, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH2);
@@ -241,7 +244,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             @Override
             public OnyxToolbar OnClickListener(View view) {
                 ReaderMenuAction action = (ReaderMenuAction) view.getTag();
-                selectWidthAction = action;
+                setSelectWidthAction(action);
                 handleClickListener(action);
                 updateMarkerView(action, selectActions);
                 return null;
@@ -415,7 +418,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private void onSelectEraser(boolean wholeEraser) {
         if (!wholeEraser) {
             selectShapeAction = null;
-            selectWidthAction = null;
+            setSelectWidthAction(null);
         }
         switchDragFunc(true);
     }
@@ -425,7 +428,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         selectEraserAction = null;
         if (selectWidthAction == null) {
             float strokeWidth =  readerDataHolder.getNoteManager().getNoteDataInfo().getStrokeWidth();
-            selectWidthAction = ShowReaderMenuAction.menuIdFromStrokeWidth(strokeWidth);
+            setSelectWidthAction(ShowReaderMenuAction.menuIdFromStrokeWidth(strokeWidth));
         }
     }
 
@@ -443,17 +446,31 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     }
 
     private void showCustomLineWidthDialog() {
-        DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(readerDataHolder.getContext(),
-                (int) readerDataHolder.getNoteManager().getNoteDataInfo().getStrokeWidth(),
-                NoteDrawingArgs.MAX_STROKE_WIDTH,
-                Color.BLACK, new DialogCustomLineWidth.Callback() {
+        final PauseDrawingRequest pauseDrawingRequest = new PauseDrawingRequest(readerDataHolder.getVisiblePages());
+        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), pauseDrawingRequest, new BaseCallback() {
             @Override
-            public void done(int lineWidth) {
-                useStrokeWidth(readerDataHolder, lineWidth);
-                switchDragFunc(true);
+            public void done(BaseRequest request, Throwable e) {
+                DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(readerDataHolder.getContext(),
+                        (int) readerDataHolder.getNoteManager().getNoteDataInfo().getStrokeWidth(),
+                        NoteDrawingArgs.MAX_STROKE_WIDTH,
+                        Color.BLACK, new DialogCustomLineWidth.Callback() {
+                    @Override
+                    public void done(int lineWidth) {
+                        setSelectWidthAction(ReaderMenuAction.SCRIBBLE_CUSTOM_WIDTH);
+                        useStrokeWidth(readerDataHolder, lineWidth);
+                        onSelectWidth();
+                    }
+                });
+                customLineWidth.show();
+                customLineWidth.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+                        new FlushNoteAction(pages, true, true, false, false).execute(readerDataHolder, null);
+                    }
+                });
             }
         });
-        customLineWidth.show();
     }
 
     private void switchDragFunc(boolean alwaysDisable){
@@ -511,5 +528,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     public void setSelectShapeAction(ReaderMenuAction selectShapeAction) {
         this.selectShapeAction = selectShapeAction;
+    }
+
+    public void setSelectWidthAction(ReaderMenuAction selectWidthAction) {
+        this.selectWidthAction = selectWidthAction;
     }
 }

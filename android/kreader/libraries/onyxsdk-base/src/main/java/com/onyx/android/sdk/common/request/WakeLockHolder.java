@@ -16,15 +16,21 @@ public class WakeLockHolder {
 
     private volatile PowerManager.WakeLock wakeLock;
     private AtomicInteger wakeLockCounting = new AtomicInteger();
+    public final static int FULL_FLAGS = PowerManager.FULL_WAKE_LOCK;
+    public final static int WAKEUP_FLAGS = PowerManager.FULL_WAKE_LOCK|PowerManager.ACQUIRE_CAUSES_WAKEUP;
 
     public void acquireWakeLock(final Context context, final String tag) {
-        acquireWakeLockWithTimeout(context, tag, -1);
+        acquireWakeLock(context, FULL_FLAGS, tag, -1);
     }
 
-    public void acquireWakeLockWithTimeout(final Context context, final String tag, int ms) {
+    public void acquireWakeLock(final Context context, int flags, final String tag) {
+        acquireWakeLock(context, flags, tag, -1);
+    }
+
+    public void acquireWakeLock(final Context context, int flags, final String tag, int ms) {
         try {
             if (wakeLock == null) {
-                wakeLock = Device.currentDevice().newWakeLock(context, tag);
+                wakeLock = Device.currentDevice().newWakeLockWithFlags(context, flags, tag);
             }
             if (wakeLock != null) {
                 if (ms > 0) {
@@ -39,8 +45,6 @@ public class WakeLockHolder {
         }
     }
 
-
-
     public void releaseWakeLock() {
         try {
             if (wakeLock != null) {
@@ -53,6 +57,16 @@ public class WakeLockHolder {
             }
         } catch (java.lang.Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void forceReleaseWakeLock() {
+        if (wakeLock != null) {
+            if (wakeLock.isHeld()) {
+                wakeLock.setReferenceCounted(false);
+                wakeLock.release();
+            }
+            wakeLock = null;
         }
     }
 

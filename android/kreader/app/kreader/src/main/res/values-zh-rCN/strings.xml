@@ -254,4 +254,8 @@
   <string name="code_page_cyrillic_mac">MAC Cyrillic</string>
   <string name="code_page_ukraine_mac">MAC Ukraine</string>
   <string name="code_page_auto">Auto</string>
+  <string name="view_slideshow_status_bar_page" formatted="false">翻页: %d/%d</string>
+  <string name="view_slideshow_status_bar_battery" formatted="false">电量: %d/%d (%%)</string>
+  <string name="slideshow_quit_warning">按Back键退出自动翻页!</string>
+  <string name="code_page">设置文字编码...</string>
 </resources>

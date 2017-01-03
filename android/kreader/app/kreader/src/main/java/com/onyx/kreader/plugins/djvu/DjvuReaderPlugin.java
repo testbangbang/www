@@ -138,6 +138,10 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     @Override
     public void close() {
         getPluginImpl().close();
+    }
+
+    @Override
+    public void updateDocumentOptions(ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) {
 
     }
 

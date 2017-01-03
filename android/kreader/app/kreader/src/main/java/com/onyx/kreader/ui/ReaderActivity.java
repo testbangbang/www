@@ -36,8 +36,8 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
@@ -50,7 +50,6 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
-import com.onyx.kreader.ui.actions.ChangeCodePageActionChain;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
 import com.onyx.kreader.ui.actions.ForwardAction;
@@ -65,7 +64,6 @@ import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.events.BeforeDocumentCloseEvent;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
-import com.onyx.kreader.ui.events.ChangeCodePageEvent;
 import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
@@ -80,9 +78,9 @@ import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
-import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
+import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
@@ -380,27 +378,40 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     @Subscribe
-    public void onChangeCodePage(final ChangeCodePageEvent event) {
-        new ChangeCodePageActionChain(this, event.getCodePage()).execute(getReaderDataHolder(), null);
-    }
-
-    @Subscribe
     public void onRequestFinished(final RequestFinishEvent event) {
         if (!verifyReader()) {
             return;
         }
-        boolean update = (event != null && event.isApplyGCIntervalUpdate());
-        if (update) {
-            ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
-        }
+        prepareUpdateMode(event);
+
         if (event != null && !event.isWaitForShapeData()) {
             beforeDrawPage();
-            updateStatusBar();
             drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+            afterDrawPage();
         }
+
         if (event != null && event.isRenderShapeData()) {
             renderShapeDataInBackground();
         }
+    }
+
+    private void prepareUpdateMode(final RequestFinishEvent event) {
+        boolean update = (event != null && event.isApplyGCIntervalUpdate());
+        if (update) {
+            ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
+        } else {
+            ReaderDeviceManager.resetUpdateMode(surfaceView);
+        }
+    }
+
+    private void afterDrawPage() {
+        ReaderDeviceManager.resetUpdateMode(surfaceView);
+        updateAllStatusBars();
+    }
+
+    private void updateAllStatusBars() {
+        updateReadingStatusBar();
+        getReaderDataHolder().notifyUpdateSlideshowStatusBar();
     }
 
     @Subscribe
@@ -442,6 +453,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onHomeClick(final HomeClickEvent event) {
         if (event == null || !getReaderDataHolder().inNoteWritingProvider()) {
+            getReaderDataHolder().getHandlerManager().resetToDefaultProvider();
             saveDocumentOptions();
             return;
         }
@@ -853,6 +865,7 @@ public class ReaderActivity extends ActionBarActivity {
         ShowReaderMenuAction.hideReaderMenu();
         ShowTextSelectionMenuAction.hideTextSelectionPopupMenu();
         getReaderDataHolder().closeActiveDialogs();
+        getReaderDataHolder().closeNoteMenu();
     }
 
     private boolean processKeyDown(int keyCode, KeyEvent event) {
@@ -863,7 +876,7 @@ public class ReaderActivity extends ActionBarActivity {
         return getHandlerManager().onKeyUp(getReaderDataHolder(), keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
-    private void updateStatusBar() {
+    private void updateReadingStatusBar() {
         PageInfo pageInfo = getReaderDataHolder().getFirstPageInfo();
         Rect pageRect = new Rect();
         Rect displayRect = new Rect();
@@ -877,8 +890,9 @@ public class ReaderActivity extends ActionBarActivity {
                 title = getReaderDataHolder().getBookTitle();
             }
         }
+        int endBatteryPercent = com.onyx.kreader.utils.DeviceUtils.getBatteryPecentLevel(getReaderDataHolder().getContext());
         statusBar.updateStatusBar(new ReaderStatusInfo(pageRect, displayRect,
-                current, total, 0, title));
+                current, total, endBatteryPercent, title));
     }
 
     private void resetStatusBar() {

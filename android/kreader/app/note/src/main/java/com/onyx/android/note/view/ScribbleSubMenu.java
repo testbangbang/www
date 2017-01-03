@@ -7,15 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
 import com.onyx.android.note.utils.NoteAppConfig;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.ui.view.ContentItemView;
@@ -101,7 +101,6 @@ public class ScribbleSubMenu extends RelativeLayout {
                 dismiss(true);
             }
         });
-        initContentView();
         mPositionID = positionID;
         mMenuCallback = callback;
         mMenuContentView.setCallback(new ContentView.ContentViewCallback() {
@@ -123,8 +122,18 @@ public class ScribbleSubMenu extends RelativeLayout {
     }
 
     public void show(final @ScribbleMenuCategory.ScribbleMenuCategoryDef
-                             int category, boolean isLineLayoutMode) {
+                             int category, final boolean isLineLayoutMode) {
         currentCategory = category;
+        requestContentViewLayout(category, isLineLayoutMode, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                updateContentView(category, isLineLayoutMode);
+            }
+        });
+    }
+
+    private void updateContentView(final @ScribbleMenuCategory.ScribbleMenuCategoryDef
+                                           int category, final boolean isLineLayoutMode) {
         switch (category) {
             case ScribbleMenuCategory.PEN_WIDTH:
                 mMenuContentView.setAdapter(mThicknessAdapter, 0);
@@ -229,6 +238,15 @@ public class ScribbleSubMenu extends RelativeLayout {
                         break;
                     case NoteBackgroundType.MATS:
                         targetPattern = ScribbleSubMenuID.BG_MATS;
+                        break;
+                    case NoteBackgroundType.TABLE:
+                        targetPattern = ScribbleSubMenuID.BG_TABLE_GRID;
+                        break;
+                    case NoteBackgroundType.COLUMN:
+                        targetPattern = ScribbleSubMenuID.BG_LINE_COLUMN;
+                        break;
+                    case NoteBackgroundType.LEFT_GRID:
+                        targetPattern = ScribbleSubMenuID.BG_LEFT_GRID;
                         break;
                 }
                 break;
@@ -336,6 +354,9 @@ public class ScribbleSubMenu extends RelativeLayout {
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_mats, ScribbleSubMenuID.BG_MATS, true));
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_music, ScribbleSubMenuID.BG_MUSIC, true));
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_english, ScribbleSubMenuID.BG_ENGLISH, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_table_grid, ScribbleSubMenuID.BG_TABLE_GRID, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_left_grid, ScribbleSubMenuID.BG_LEFT_GRID, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_line_column, ScribbleSubMenuID.BG_LINE_COLUMN, true));
         return bgMenus;
     }
 
@@ -361,12 +382,33 @@ public class ScribbleSubMenu extends RelativeLayout {
         setLayoutParams(setMenuPosition(isShowStatusBar));
     }
 
-    private void initContentView() {
-        mMenuContentView.setupGridLayout((getResources().getInteger(R.integer.note_menu_rows)),
+    private void requestContentViewLayout(final @ScribbleMenuCategory.ScribbleMenuCategoryDef
+                                         int category, boolean isLineLayoutMode, final BaseCallback callback) {
+        int rows;
+        if (category == ScribbleMenuCategory.BG && !isLineLayoutMode) {
+            rows = 2;
+        } else {
+            rows = getResources().getInteger(R.integer.note_menu_rows);
+        }
+
+        mMenuContentView.setupGridLayout(rows,
                 (getResources().getInteger(R.integer.note_menu_columns)));
+
+        int height = (int) getContext().getResources().getDimension(R.dimen.onyx_sub_note_menu_height);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height * rows);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        mMenuContentView.setLayoutParams(layoutParams);
+
         mMenuContentView.setSubLayoutParameter(R.layout.onyx_sub_function_item, getMapping());
         mMenuContentView.setShowPageInfoArea(false);
         mMenuContentView.setBlankAreaAnswerLongClick(false);
+
+        mMenuContentView.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.done(null, null);
+            }
+        });
     }
 
     private static HashMap<String, Integer> getMapping() {

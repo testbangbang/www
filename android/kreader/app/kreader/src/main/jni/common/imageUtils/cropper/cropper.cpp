@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <android/log.h>
 #include <android/bitmap.h>
+#include <unistd.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -911,4 +912,9 @@ JNIEXPORT void JNICALL Java_com_onyx_kreader_utils_ImageUtils_toRgbwBitmap
             *dstLine2++ = ColorUtils::argb(a, b, b, b);
         }
     }
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_kreader_utils_ImageUtils_isValidPage
+  (JNIEnv *env, jclass thiz) {
+    return DeviceUtils::isValid(env);
 }

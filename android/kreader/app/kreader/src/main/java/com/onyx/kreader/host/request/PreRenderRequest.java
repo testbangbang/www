@@ -4,6 +4,8 @@ import com.onyx.kreader.common.BaseReaderRequest;
 import com.onyx.kreader.common.ReaderDrawContext;
 import com.onyx.kreader.host.math.PositionSnapshot;
 import com.onyx.kreader.host.wrapper.Reader;
+import com.onyx.kreader.utils.ImageUtils;
+
 
 /**
  * Created by zhuzeng on 2/16/16.
@@ -19,6 +21,8 @@ public class PreRenderRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        ImageUtils.isValidPage();
+
         if (!reader.getReaderLayoutManager().getCurrentLayoutProvider().supportPreRender()) {
             return;
         }

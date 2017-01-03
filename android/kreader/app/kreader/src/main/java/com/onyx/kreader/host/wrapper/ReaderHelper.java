@@ -228,7 +228,7 @@ public class ReaderHelper {
     }
 
     public void transferRenderBitmapToViewport(ReaderBitmapImpl renderBitmap) {
-        if (viewportBitmap != null) {
+        if (viewportBitmap != null && viewportBitmap.isValid()) {
             returnBitmapToCache(viewportBitmap);
         }
         viewportBitmap = renderBitmap;

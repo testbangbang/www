@@ -10,6 +10,8 @@ import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
+
+import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -38,7 +40,7 @@ public class ReaderTtsService {
 
     private static final String UTTERANCE_ID = TAG;
 
-    private volatile PowerManager.WakeLock wakeLock;
+    private volatile WakeLockHolder wakeLockHolder = new WakeLockHolder();
 
     private Context context = null;
     private Callback callback = null;
@@ -357,17 +359,11 @@ public class ReaderTtsService {
     }
 
     private void acquireWakeLock() {
-        if (wakeLock == null) {
-            wakeLock = Device.currentDevice().newWakeLock(context, TAG);
-            wakeLock.acquire();
-        }
+        wakeLockHolder.acquireWakeLock(context, WakeLockHolder.WAKEUP_FLAGS, TAG);
     }
 
     private void releaseWakeLock() {
-        if (wakeLock != null) {
-            wakeLock.release();
-            wakeLock = null;
-        }
+        wakeLockHolder.forceReleaseWakeLock();
     }
 
     private void onStart() {

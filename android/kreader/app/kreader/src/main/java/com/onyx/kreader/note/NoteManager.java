@@ -12,7 +12,6 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -64,7 +63,7 @@ public class NoteManager {
     private MappingConfig mappingConfig;
     private List<PageInfo> visiblePages = new ArrayList<>();
     private ReaderDataHolder parent;
-    private ReaderNoteDataInfo noteDataInfo;
+    private ReaderNoteDataInfo noteDataInfo = new ReaderNoteDataInfo();
     private RectF visibleDrawRectF;
     private volatile boolean enableRawEventProcessor = false;
     private AtomicBoolean noteDirty = new AtomicBoolean(false);
@@ -424,6 +423,7 @@ public class NoteManager {
 
     public void saveNoteDataInfo(final ReaderBaseNoteRequest request) {
         noteDataInfo = request.getNoteDataInfo();
+        noteDataInfo.setRequestFinished(true);
     }
 
     public final ReaderNoteDataInfo getNoteDataInfo() {
@@ -431,11 +431,11 @@ public class NoteManager {
     }
 
     public void resetNoteDataInfo() {
-        noteDataInfo = null;
+        noteDataInfo.setRequestFinished(false);
     }
 
     public void ensureContentRendered() {
-        if (getNoteDataInfo() != null) {
+        if (getNoteDataInfo().isRequestFinished()) {
             getNoteDataInfo().setContentRendered(true);
         }
     }

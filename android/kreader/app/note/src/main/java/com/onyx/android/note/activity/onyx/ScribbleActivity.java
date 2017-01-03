@@ -1,6 +1,7 @@
 package com.onyx.android.note.activity.onyx;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -216,12 +217,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
         switchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                syncWithCallback(true, true, null);
                 toggleLineLayoutMode();
                 switchScribbleMode(isLineLayoutMode());
-                syncWithCallback(true, true, null);
             }
         });
 
+        switchBtn.setVisibility(NoteAppConfig.sharedInstance(this).useLineLayout() ? View.VISIBLE : View.GONE);
         initSpanTextView();
     }
 
@@ -574,6 +576,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onKeyboard() {
+        setKeyboardInput(true);
         syncWithCallback(false, false, null);
         InputMethodManager inputManager = (InputMethodManager)spanTextView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.showSoftInput(spanTextView, 0);
@@ -664,6 +667,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
             case ScribbleSubMenuID.BG_ENGLISH:
                 onBackgroundChanged(NoteBackgroundType.ENGLISH);
                 break;
+            case ScribbleSubMenuID.BG_TABLE_GRID:
+                onBackgroundChanged(NoteBackgroundType.TABLE);
+                break;
+            case ScribbleSubMenuID.BG_LINE_COLUMN:
+                onBackgroundChanged(NoteBackgroundType.COLUMN);
+                break;
+            case ScribbleSubMenuID.BG_LEFT_GRID:
+                onBackgroundChanged(NoteBackgroundType.LEFT_GRID);
+                break;
             case ScribbleSubMenuID.PEN_COLOR_BLACK:
                 setStrokeColor(Color.BLACK);
                 onPenColoChanged();
@@ -701,6 +713,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
             }
         });
         customLineWidth.show();
+        customLineWidth.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                syncWithCallback(true, true, null);
+            }
+        });
     }
 
     private void onBackgroundChanged(int type) {
@@ -884,7 +902,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
         if (!isLineLayoutMode) {
             return;
         }
-        setKeyboardInput(false);
         spanTextHandler.buildSpan();
     }
 
@@ -904,5 +921,10 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     public void setKeyboardInput(boolean keyboardInput) {
         isKeyboardInput = keyboardInput;
+    }
+
+    @Override
+    protected void onStartDrawing() {
+        spanTextHandler.removeSpanRunnable();
     }
 }

@@ -92,12 +92,19 @@ public class AlReaderWrapper {
     public long openDocument(final String path,  final ReaderDocumentOptions documentOptions) {
         filePath = path;
         AlBookOptions bookOpt = new AlBookOptions();
-        bookOpt.codePage = TAL_CODE_PAGES.AUTO;
-        bookOpt.codePageDefault = documentOptions.getCodePage();
+        bookOpt.codePage = documentOptions.getCodePage();
+        bookOpt.codePageDefault = documentOptions.getCodePageFallback();
         bookOpt.formatOptions = 0;
         bookOpt.readPosition = 0;
         bookEng.openBook(path, bookOpt);
         return NO_ERROR;
+    }
+
+    public void updateDocumentOptions(ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) {
+        int readPosition = getScreenStartPosition();
+        closeDocument();
+        openDocument(filePath, documentOptions);
+        gotoPosition(readPosition);
     }
 
     public void closeDocument() {
@@ -158,6 +165,7 @@ public class AlReaderWrapper {
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
         engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
         engineOptions.chinezeFormatting = true;
+        engineOptions.drawLinkStyle = false;
 
         float dpiMultiplex = context.getResources().getDisplayMetrics().density;
         engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_160;
@@ -245,7 +253,7 @@ public class AlReaderWrapper {
 
     public String getScreenText() {
         AlTextOnScreen screenText = getTextOnScreen();
-        if (screenText == null) {
+        if (!checkTextOnScreen(screenText)) {
             Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
@@ -258,7 +266,7 @@ public class AlReaderWrapper {
             return null;
         }
         AlTextOnScreen screenText = getTextOnScreen();
-        if (screenText == null) {
+        if (!checkTextOnScreen(screenText)) {
             Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
@@ -303,7 +311,7 @@ public class AlReaderWrapper {
         List<ReaderSelection> result = new ArrayList<>();
 
         AlTextOnScreen screenText = getTextOnScreen();
-        if (screenText == null) {
+        if (!checkTextOnScreen(screenText)) {
             Debug.w(getClass(), "get text on screen failed!");
             return result;
         }
@@ -479,7 +487,7 @@ public class AlReaderWrapper {
 
     public ReaderSelection selectTextOnScreen(PointF start, PointF end) {
         AlTextOnScreen screenText = getTextOnScreen();
-        if (screenText == null) {
+        if (!checkTextOnScreen(screenText)) {
             Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
@@ -497,7 +505,7 @@ public class AlReaderWrapper {
 
     public ReaderSelection selectWordOnScreen(PointF point, final ReaderTextSplitter splitter) {
         AlTextOnScreen screenText = getTextOnScreen();
-        if (screenText == null) {
+        if (!checkTextOnScreen(screenText)) {
             Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
@@ -604,7 +612,7 @@ public class AlReaderWrapper {
 
     public ReaderSelection selectTextOnScreen(int startPos, int endPos) {
         AlTextOnScreen screenText = getTextOnScreen();
-        if (screenText == null) {
+        if (!checkTextOnScreen(screenText)) {
             Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
@@ -625,6 +633,10 @@ public class AlReaderWrapper {
             screenText = bookEng.getTextOnScreen();
         }
         return screenText;
+    }
+
+    private boolean checkTextOnScreen(AlTextOnScreen textOnScreen) {
+        return textOnScreen != null && textOnScreen.regionList.size() > 0;
     }
 
     private int hitTest(int x, int y) {
@@ -818,7 +830,12 @@ public class AlReaderWrapper {
     private String combineSelectionText(AlTextOnScreen textOnScreen, int startIndex, int endIndex) {
         StringBuilder builder = new StringBuilder(textOnScreen.regionList.get(startIndex).word);
         for (int i = startIndex + 1; i <= endIndex; i++) {
-            builder.append(" ").append(textOnScreen.regionList.get(i).word);
+            if (builder.length() > 0 && !AlUnicode.isChineze(builder.charAt(builder.length() - 1)) &&
+                    !AlUnicode.isChineze(builder.charAt(builder.length() - 1))) {
+                // don't insert space between Chinese characters
+                builder.append(" ");
+            }
+            builder.append(textOnScreen.regionList.get(i).word);
         }
         return builder.toString();
     }

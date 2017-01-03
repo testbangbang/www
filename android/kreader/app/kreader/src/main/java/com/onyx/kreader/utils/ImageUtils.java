@@ -29,6 +29,8 @@ public class ImageUtils {
 
     static public native void toRgbwBitmap(final Bitmap dst, final Bitmap src, int orientation);
 
+    static public native boolean isValidPage();
+
     /**
      * Return content region with specified bitmap. usually takes about 60ms to finish 1440x1080 bitmap.
      * @param bitmap The image bitmap.

@@ -49,7 +49,7 @@
     <string name="every_5_pages">每5页</string>
     <string name="every_7_pages">每7页</string>
     <string name="every_9_pages">每9页</string>
-    <string name="never">不刷新</string>
+    <string name="never">不全刷</string>
     <string name="ok">确认</string>
     <string name="cancel">取消</string>
     <string name="gamma_correction">对比度</string>
