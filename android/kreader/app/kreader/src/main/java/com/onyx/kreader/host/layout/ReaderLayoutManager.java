@@ -188,6 +188,10 @@ public class ReaderLayoutManager {
         return getCurrentLayoutProvider().getViewportRect();
     }
 
+    public RectF getCropRect() throws ReaderException {
+        return getCurrentLayoutProvider().getCropRect();
+    }
+
     public RectF getPageRectOnViewport(final String position) throws ReaderException {
         return getCurrentLayoutProvider().getPageRectOnViewport(position);
     }
