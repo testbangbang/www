@@ -198,7 +198,9 @@ public class DialogTextStyle extends DialogBase {
     }
 
     private void restoreAndDismiss() {
-        new ChangeCodePageAction(originalCodePage).execute(readerDataHolder, null);
+        if (originalCodePage != CODE_PAGES[selectCodePageIndex].first) {
+            new ChangeCodePageAction(originalCodePage).execute(readerDataHolder, null);
+        }
         updateReaderStyle(originalStyle, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -241,6 +243,9 @@ public class DialogTextStyle extends DialogBase {
         getFontsAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
                 initFontPageView(pageView, fontFace, getFontsAction.getFonts());
                 updatePageIndicator(pageView, pageSizeIndicator);
             }

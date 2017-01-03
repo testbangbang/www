@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 
+import com.onyx.android.sdk.device.Device;
 import com.onyx.kreader.api.ReaderPluginOptions;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +48,9 @@ public class ReaderPluginOptionsImpl implements ReaderPluginOptions {
         ReaderPluginOptionsImpl pluginOptions = new ReaderPluginOptionsImpl();
         pluginOptions.setScreenDensity(context.getResources().getDisplayMetrics().density);
         pluginOptions.fontDirectories = new ArrayList<>();
+        File flash = Device.currentDevice.getExternalStorageDirectory();
+        pluginOptions.fontDirectories.add(new File(flash, "fonts").getAbsolutePath());
+        pluginOptions.fontDirectories.add(new File(flash, "adobe/resources/fonts").getAbsolutePath());
         pluginOptions.fontDirectories.add("/system/fonts");
         pluginOptions.assetManager = context.getAssets();
         pluginOptions.resources = context.getResources();

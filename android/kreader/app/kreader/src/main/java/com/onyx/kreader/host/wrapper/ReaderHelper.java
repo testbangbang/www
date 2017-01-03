@@ -53,7 +53,7 @@ public class ReaderHelper {
     private String documentMd5;
     private ReaderDocumentMetadata documentMetadata;
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
-    private ReaderPluginOptionsImpl pluginOptions;
+    private ReaderPluginOptions pluginOptions;
     private BaseOptions documentOptions = new BaseOptions();
 
     private ReaderPlugin plugin;
@@ -94,7 +94,8 @@ public class ReaderHelper {
     public void onDocumentOpened(final Context context,
                                  final String path,
                                  final ReaderDocument doc,
-                                 final BaseOptions options) throws Exception {
+                                 final BaseOptions options,
+                                 final ReaderPluginOptions pluginOptions) throws Exception {
         documentPath = path;
         document = doc;
         if (StringUtils.isNotBlank(options.getMd5())) {
@@ -107,6 +108,7 @@ public class ReaderHelper {
         getDocumentOptions().setZipPassword(options.getZipPassword());
         getDocumentOptions().setPassword(options.getPassword());
         getDocumentOptions().setCodePage(options.getCodePage());
+        this.pluginOptions = pluginOptions;
         saveMetadata(context, documentPath);
         saveThumbnail(context, documentPath);
     }
@@ -303,7 +305,7 @@ public class ReaderHelper {
         AnalyzerAndroidWrapper.release();
     }
 
-    public ReaderPluginOptionsImpl getPluginOptions() {
+    public ReaderPluginOptions getPluginOptions() {
         return pluginOptions;
     }
 
