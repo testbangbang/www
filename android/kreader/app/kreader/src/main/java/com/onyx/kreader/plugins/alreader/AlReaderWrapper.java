@@ -271,7 +271,10 @@ public class AlReaderWrapper {
             return null;
         }
         final int MAX_SENTENCE_LENGTH = 200;
+        int startPos = -1;
         int endPos = -1;
+        int count = 0;
+        boolean firstPos = true;
         boolean found = false;
         // sentence in the range [startPos, endPos]
         for (AlTextOnScreen.AlPieceOfText piece : screenText.regionList) {
@@ -283,11 +286,14 @@ public class AlReaderWrapper {
                 continue;
             }
             for (int i = 0; i < piece.positions.length; i++) {
+                count++;
                 endPos = piece.positions[i];
-                if (endPos <= startPosition) {
+                if (firstPos || endPos <= startPosition) {
+                    firstPos = false;
+                    startPos = endPos;
                     continue;
                 }
-                if ((endPos - startPosition + 1) >= MAX_SENTENCE_LENGTH) {
+                if (count >= MAX_SENTENCE_LENGTH) {
                     found = true;
                     break;
                 }
@@ -299,7 +305,7 @@ public class AlReaderWrapper {
             }
         }
 
-        ReaderSelectionImpl selection = combineSelection(screenText, startPosition, endPos);
+        ReaderSelectionImpl selection = combineSelection(screenText, startPos, endPos);
         boolean endOfScreen = endPos == getPieceEnd(lastPiece(screenText));
         boolean endOfDocument = endOfScreen && isLastPage();
         int nextPos = nextTextPosition(screenText, endPos);
