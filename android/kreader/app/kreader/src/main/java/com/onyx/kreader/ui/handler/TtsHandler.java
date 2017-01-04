@@ -143,6 +143,7 @@ public class TtsHandler extends BaseHandler {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
+                    Toast.makeText(readerDataHolder.getContext(), R.string.get_page_text_failed, Toast.LENGTH_LONG).show();
                     Log.w(TAG, e);
                     return;
                 }
