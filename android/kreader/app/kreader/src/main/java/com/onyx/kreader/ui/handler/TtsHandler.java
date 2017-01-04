@@ -155,11 +155,11 @@ public class TtsHandler extends BaseHandler {
                     Log.w(TAG, "get sentence failed");
                     return;
                 }
-                dumpCurrentSentence();
-                if (StringUtils.isNullOrEmpty(currentSentence.getReaderSelection().getText())) {
+                if (!currentSentence.isNonBlank()) {
                     requestSentenceForTts();
                     return;
                 }
+                dumpCurrentSentence();
                 readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
                 readerDataHolder.getTtsManager().play();
             }
