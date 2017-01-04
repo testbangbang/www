@@ -256,7 +256,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_DEL:
                         setKeyboardInput(true);
-                        onDelete();
+                        onDelete(false);
                         return true;
                     case KeyEvent.KEYCODE_ENTER:
                         onCloseKeyBoard();
@@ -366,7 +366,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                                           int category) {
         switch (category) {
             case ScribbleMenuCategory.DELETE:
-                onDelete();
+                onDelete(true);
                 return true;
             case ScribbleMenuCategory.SPACE:
                 onSpace();
@@ -534,9 +534,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
-    private void onDelete() {
+    private void onDelete(boolean resume) {
         RemoveByGroupIdAction<BaseScribbleActivity> removeByPointListAction = new
-                RemoveByGroupIdAction<>(spanTextHandler.getLastGroupId());
+                RemoveByGroupIdAction<>(spanTextHandler.getLastGroupId(), resume);
         removeByPointListAction.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
