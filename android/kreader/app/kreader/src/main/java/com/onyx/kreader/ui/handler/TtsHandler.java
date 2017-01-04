@@ -144,6 +144,7 @@ public class TtsHandler extends BaseHandler {
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     Toast.makeText(readerDataHolder.getContext(), R.string.get_page_text_failed, Toast.LENGTH_LONG).show();
+                    ttsStop();
                     Log.w(TAG, e);
                     return;
                 }
@@ -153,6 +154,7 @@ public class TtsHandler extends BaseHandler {
                 currentSentence = sentenceRequest.getSentenceResult();
                 if (currentSentence == null) {
                     Toast.makeText(readerDataHolder.getContext(), R.string.get_page_text_failed, Toast.LENGTH_LONG).show();
+                    ttsStop();
                     Log.w(TAG, "get sentence failed");
                     return;
                 }
