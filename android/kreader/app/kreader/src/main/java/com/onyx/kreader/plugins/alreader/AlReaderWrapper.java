@@ -262,7 +262,7 @@ public class AlReaderWrapper {
 
     public ReaderSentence getSentence(final int startPosition) {
         if (startPosition < getScreenStartPosition() ||
-                startPosition >= getScreenEndPosition()) {
+                startPosition > getScreenEndPosition()) {
             return null;
         }
         AlTextOnScreen screenText = getTextOnScreen();
