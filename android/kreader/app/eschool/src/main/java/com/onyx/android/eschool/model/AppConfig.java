@@ -81,24 +81,4 @@ public class AppConfig {
     public String getTeachingMaterialDocumentDisplayFilePath() {
         return getString(TEACHING_MATERIAL_DOCUMENT_DISPLAY_FILE_PATH, "");
     }
-
-    public ComponentName getKreaderComponentName() {
-        String packageName = "com.onyx.kreader";
-        String className = packageName + ".ui.ReaderActivity";
-        return new ComponentName(packageName, className);
-    }
-
-    public ComponentName getReaderComponentName(Context context) {
-        ActivityInfo activityInfo = null;
-        ComponentName componentName = getKreaderComponentName();
-        try {
-            activityInfo = context.getPackageManager().getActivityInfo(componentName, 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (activityInfo == null) {
-            return null;
-        }
-        return componentName;
-    }
 }

@@ -1,6 +1,10 @@
-package com.onyx.android.eschool.utils;
+package com.onyx.android.sdk.utils;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
@@ -36,5 +40,25 @@ public class ViewDocumentUtils {
             intent.setData(Uri.fromFile(new File("dummy." + extensionName)));
         }
         return intent;
+    }
+
+    private static ComponentName getKreaderComponentName() {
+        String packageName = "com.onyx.kreader";
+        String className = packageName + ".ui.ReaderActivity";
+        return new ComponentName(packageName, className);
+    }
+
+    public static ComponentName getReaderComponentName(Context context) {
+        ActivityInfo activityInfo = null;
+        ComponentName componentName = getKreaderComponentName();
+        try {
+            activityInfo = context.getPackageManager().getActivityInfo(componentName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (activityInfo == null) {
+            return null;
+        }
+        return componentName;
     }
 }

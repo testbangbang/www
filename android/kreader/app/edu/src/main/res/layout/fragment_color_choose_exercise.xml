@@ -17,6 +17,7 @@
         </com.onyx.android.sdk.ui.view.PageRecyclerView>
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_marginBottom="10dp"
             android:gravity="center"
             android:layout_width="match_parent"
