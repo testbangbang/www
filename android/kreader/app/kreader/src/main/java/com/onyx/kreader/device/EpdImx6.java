@@ -35,4 +35,9 @@ public class EpdImx6 extends EpdDevice {
         EpdController.resetUpdateMode(view);
         useFastScheme();
     }
+
+    @Override
+    public void cleanUpdate(View view) {
+        resetUpdate(view);
+    }
 }
