@@ -142,4 +142,8 @@ public class ReaderDeviceManager {
         epdDevice.resetUpdate(view);
     }
 
+    public static void cleanUpdateMode(final View view) {
+        epdDevice.cleanUpdate(view);
+    }
+
 }
