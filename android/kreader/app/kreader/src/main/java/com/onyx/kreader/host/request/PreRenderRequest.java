@@ -21,7 +21,7 @@ public class PreRenderRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        ImageUtils.isValidPage();
+//        ImageUtils.isValidPage();
 
         if (!reader.getReaderLayoutManager().getCurrentLayoutProvider().supportPreRender()) {
             return;
