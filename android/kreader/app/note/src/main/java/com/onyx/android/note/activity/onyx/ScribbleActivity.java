@@ -687,6 +687,21 @@ public class ScribbleActivity extends BaseScribbleActivity {
             case ScribbleSubMenuID.BG_LEFT_GRID:
                 onBackgroundChanged(NoteBackgroundType.LEFT_GRID);
                 break;
+            case ScribbleSubMenuID.BG_GRID_5_5:
+                onBackgroundChanged(NoteBackgroundType.GRID_5_5);
+                break;
+            case ScribbleSubMenuID.BG_GRID_POINT:
+                onBackgroundChanged(NoteBackgroundType.GRID_POINT);
+                break;
+            case ScribbleSubMenuID.BG_LINE_1_6:
+                onBackgroundChanged(NoteBackgroundType.LINE_1_6);
+                break;
+            case ScribbleSubMenuID.BG_LINE_2_0:
+                onBackgroundChanged(NoteBackgroundType.LINE_2_0);
+                break;
+            case ScribbleSubMenuID.BG_CALENDAR:
+                onBackgroundChanged(NoteBackgroundType.CALENDAR);
+                break;
             case ScribbleSubMenuID.PEN_COLOR_BLACK:
                 setStrokeColor(Color.BLACK);
                 onPenColoChanged();
