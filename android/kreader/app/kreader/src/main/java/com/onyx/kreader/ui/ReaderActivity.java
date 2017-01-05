@@ -405,7 +405,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void afterDrawPage() {
-        ReaderDeviceManager.resetUpdateMode(surfaceView);
+        ReaderDeviceManager.cleanUpdateMode(surfaceView);
         updateAllStatusBars();
     }
 
