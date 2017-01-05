@@ -35,7 +35,7 @@ public class DialogBrightness extends Dialog {
      */
     public static int BRIGHTNESS_ON = 255;
 
-    final static int BIG_STEP_LIMIT = 15;
+    final static int BIG_STEP_LIMIT = 25;
 
     private ToggleButton mLightSwitch;
 
