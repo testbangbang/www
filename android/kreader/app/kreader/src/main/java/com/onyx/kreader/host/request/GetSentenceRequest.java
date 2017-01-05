@@ -28,7 +28,7 @@ public class GetSentenceRequest extends BaseReaderRequest {
         PageInfo pageInfo = reader.getReaderLayoutManager().getPageManager().getPageInfo(pagePosition);
         sentenceResult = reader.getDocument().getSentence(pagePosition, sentenceStartPosition);
         LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderLayoutManager());
-        if (sentenceResult != null && sentenceResult.getReaderSelection().getRectangles().size() > 0) {
+        if (sentenceResult != null && sentenceResult.isNonBlank()) {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, sentenceResult.getReaderSelection()));
         }
     }

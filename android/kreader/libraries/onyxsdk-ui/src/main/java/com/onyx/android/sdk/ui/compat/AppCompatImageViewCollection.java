@@ -51,4 +51,8 @@ public class AppCompatImageViewCollection {
             AppCompatUtils.processImageViewsLayoutEvenPosition(imageViewList);
         }
     }
+
+    public void setAlwaysLayoutImageView(boolean alwaysLayoutImageView) {
+        this.alwaysLayoutImageView = alwaysLayoutImageView;
+    }
 }

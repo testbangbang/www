@@ -145,17 +145,12 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     public boolean readCover(final Bitmap bitmap) {
         Bitmap cover = getPluginImpl().readCover();
-        if (cover != null) {
-            BitmapUtils.scaleBitmap(cover, new Rect(0, 0, cover.getWidth(), cover.getHeight()),
-                    bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()));
-            cover.recycle();
-            return true;
-        }
-        getPluginImpl().setViewSize(bitmap.getWidth(), bitmap.getHeight());
-        if (!getPluginImpl().gotoPosition(0)) {
+        if (cover == null) {
             return false;
         }
-        getPluginImpl().draw(bitmap, bitmap.getWidth(), bitmap.getHeight());
+        BitmapUtils.scaleBitmap(cover, new Rect(0, 0, cover.getWidth(), cover.getHeight()),
+                bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()));
+        cover.recycle();
         return true;
     }
 

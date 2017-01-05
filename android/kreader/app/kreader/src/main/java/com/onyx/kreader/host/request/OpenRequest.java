@@ -44,7 +44,7 @@ public class OpenRequest extends BaseReaderRequest {
 
         try {
             ReaderDocument document = reader.getPlugin().open(documentPath, documentOptions, pluginOptions);
-            reader.getReaderHelper().onDocumentOpened(getContext(), documentPath, document, srcOptions);
+            reader.getReaderHelper().onDocumentOpened(getContext(), documentPath, document, srcOptions, pluginOptions);
             // we should init data after document is opened
             reader.getReaderHelper().initData(getContext());
         } catch (ReaderException readerException) {

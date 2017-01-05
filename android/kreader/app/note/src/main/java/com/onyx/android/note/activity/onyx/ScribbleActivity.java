@@ -85,6 +85,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private LinedEditText spanTextView;
     private SpanTextHandler spanTextHandler;
     private boolean isKeyboardInput = false;
+    private boolean buildingSpan = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,6 +235,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 if (builder == null) {
                     return;
                 }
+                setBuildingSpan(true);
                 spanTextView.setText(builder);
                 spanTextView.setSelection(builder.length());
                 spanTextView.requestFocus();
@@ -256,7 +258,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_DEL:
                         setKeyboardInput(true);
-                        onDelete();
+                        onDelete(false);
                         return true;
                     case KeyEvent.KEYCODE_ENTER:
                         onCloseKeyBoard();
@@ -282,6 +284,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
         spanTextView.setInputConnectionListener(new LinedEditText.InputConnectionListener() {
             @Override
             public void commitText(CharSequence text, int newCursorPosition) {
+                if (isBuildingSpan()) {
+                    return;
+                }
                 int width = (int) spanTextView.getPaint().measureText(text.toString());
                 setKeyboardInput(true);
                 spanTextHandler.buildTextShape(text.toString(), width, getSpanTextFontHeight());
@@ -322,6 +327,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     loadLineLayoutShapes();
                 }
             });
+            setBuildingSpan(false);
             return;
         }
 
@@ -330,7 +336,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 true,
                 !isKeyboardInput(),
                 shapeDataInfo.getDrawingArgs());
-        action.execute(ScribbleActivity.this, null);
+        action.execute(ScribbleActivity.this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                setBuildingSpan(false);
+            }
+        });
     }
 
     private void updateLineLayoutCursor() {
@@ -366,7 +377,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                                           int category) {
         switch (category) {
             case ScribbleMenuCategory.DELETE:
-                onDelete();
+                onDelete(true);
                 return true;
             case ScribbleMenuCategory.SPACE:
                 onSpace();
@@ -534,9 +545,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
-    private void onDelete() {
+    private void onDelete(boolean resume) {
         RemoveByGroupIdAction<BaseScribbleActivity> removeByPointListAction = new
-                RemoveByGroupIdAction<>(spanTextHandler.getLastGroupId());
+                RemoveByGroupIdAction<>(spanTextHandler.getLastGroupId(), resume);
         removeByPointListAction.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -856,8 +867,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void saveExistingNoteDocument(final boolean finishAfterSave) {
+        String documentUniqueId = shapeDataInfo.getDocumentUniqueId();
+        if (StringUtils.isNullOrEmpty(documentUniqueId)) {
+            return;
+        }
         final DocumentSaveAction<ScribbleActivity> saveAction = new
-                DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
+                DocumentSaveAction<>(documentUniqueId, noteTitle, finishAfterSave);
         saveAction.execute(ScribbleActivity.this, null);
     }
 
@@ -926,5 +941,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
     @Override
     protected void onStartDrawing() {
         spanTextHandler.removeSpanRunnable();
+    }
+
+    public boolean isBuildingSpan() {
+        return buildingSpan;
+    }
+
+    public void setBuildingSpan(boolean buildingSpan) {
+        this.buildingSpan = buildingSpan;
     }
 }

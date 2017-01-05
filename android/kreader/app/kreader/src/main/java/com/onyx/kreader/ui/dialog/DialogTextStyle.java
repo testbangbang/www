@@ -198,7 +198,9 @@ public class DialogTextStyle extends DialogBase {
     }
 
     private void restoreAndDismiss() {
-        new ChangeCodePageAction(originalCodePage).execute(readerDataHolder, null);
+        if (originalCodePage != CODE_PAGES[selectCodePageIndex].first) {
+            new ChangeCodePageAction(originalCodePage).execute(readerDataHolder, null);
+        }
         updateReaderStyle(originalStyle, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -214,6 +216,8 @@ public class DialogTextStyle extends DialogBase {
         final TextView pageSizeIndicator = (TextView) view.findViewById(R.id.page_size_indicator);
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
         ImageView nextIcon = (ImageView) view.findViewById(R.id.next_icon);
+        ImageView decreaseIcon = (ImageView) view.findViewById(R.id.image_view_decrease_font_size);
+        ImageView increaseIcon = (ImageView) view.findViewById(R.id.image_view_increase_font_size);
 
         nextIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,6 +233,22 @@ public class DialogTextStyle extends DialogBase {
             }
         });
 
+        increaseIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReaderTextStyle.SPUnit currentSize = getReaderStyle().getFontSize();
+                applyFontSize(currentSize.increaseSPUnit(ReaderTextStyle.FONT_SIZE_STEP));
+            }
+        });
+
+        decreaseIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReaderTextStyle.SPUnit currentSize = getReaderStyle().getFontSize();
+                applyFontSize(currentSize.decreaseSPUnit(ReaderTextStyle.FONT_SIZE_STEP));
+            }
+        });
+
         pageView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
@@ -241,6 +261,9 @@ public class DialogTextStyle extends DialogBase {
         getFontsAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
                 initFontPageView(pageView, fontFace, getFontsAction.getFonts());
                 updatePageIndicator(pageView, pageSizeIndicator);
             }
@@ -463,12 +486,16 @@ public class DialogTextStyle extends DialogBase {
             fontSizeText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    readerTextStyle.setFontSize(size);
-                    updateReaderStyle(readerTextStyle);
-                    updateFontSizeTextView(fontSizeTexts, readerTextStyle);
+                    applyFontSize(size);
                 }
             });
         }
+    }
+
+    private void applyFontSize(ReaderTextStyle.SPUnit size) {
+        getReaderStyle().setFontSize(size);
+        updateReaderStyle(getReaderStyle());
+        updateFontSizeTextView(fontSizeTexts, getReaderStyle());
     }
 
     private void updateFontSpacingView(final Map<FontLevel, ImageView> spacingViewMap, final ReaderTextStyle readerTextStyle) {

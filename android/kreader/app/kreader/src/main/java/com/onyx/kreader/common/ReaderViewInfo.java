@@ -29,6 +29,7 @@ public class ReaderViewInfo {
     public boolean supportTypefaceAdjustment;
     public int scale;
     public RectF viewportInDoc = new RectF();
+    public RectF cropRegionInViewport = new RectF();
     public RectF pagesBoundingRect = new RectF();
     public PointF lastViewportOverlayPosition = null;
     public ReaderTextStyle readerTextStyle = null;

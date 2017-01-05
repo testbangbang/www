@@ -160,7 +160,7 @@ public class AlReaderWrapper {
         engineOptions = new AlEngineOptions();
         engineOptions.appInstance = context;
         engineOptions.runInOneThread = true;
-        engineOptions.font_catalog = pluginOptions.getFontDirectories().get(0);
+        engineOptions.font_catalog = pluginOptions.getFontDirectories().toArray(new String[0]);
         engineOptions.hyph_lang = EngBookMyType.TAL_HYPH_LANG.ENGRUS;
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
         engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
@@ -262,7 +262,7 @@ public class AlReaderWrapper {
 
     public ReaderSentence getSentence(final int startPosition) {
         if (startPosition < getScreenStartPosition() ||
-                startPosition >= getScreenEndPosition()) {
+                startPosition > getScreenEndPosition()) {
             return null;
         }
         AlTextOnScreen screenText = getTextOnScreen();
@@ -271,7 +271,10 @@ public class AlReaderWrapper {
             return null;
         }
         final int MAX_SENTENCE_LENGTH = 200;
+        int startPos = -1;
         int endPos = -1;
+        int count = 0;
+        boolean firstPos = true;
         boolean found = false;
         // sentence in the range [startPos, endPos]
         for (AlTextOnScreen.AlPieceOfText piece : screenText.regionList) {
@@ -283,11 +286,14 @@ public class AlReaderWrapper {
                 continue;
             }
             for (int i = 0; i < piece.positions.length; i++) {
+                count++;
                 endPos = piece.positions[i];
-                if (endPos <= startPosition) {
+                if (firstPos || endPos <= startPosition) {
+                    firstPos = false;
+                    startPos = endPos;
                     continue;
                 }
-                if ((endPos - startPosition + 1) >= MAX_SENTENCE_LENGTH) {
+                if (count >= MAX_SENTENCE_LENGTH) {
                     found = true;
                     break;
                 }
@@ -299,7 +305,7 @@ public class AlReaderWrapper {
             }
         }
 
-        ReaderSelectionImpl selection = combineSelection(screenText, startPosition, endPos);
+        ReaderSelectionImpl selection = combineSelection(screenText, startPos, endPos);
         boolean endOfScreen = endPos == getPieceEnd(lastPiece(screenText));
         boolean endOfDocument = endOfScreen && isLastPage();
         int nextPos = nextTextPosition(screenText, endPos);

@@ -130,14 +130,16 @@ public class PopupSelectionMenu extends LinearLayout {
                 }
             }
         });
+        markerView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleDictList();
+            }
+        });
         dictNameText.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (dictListView.getVisibility() == GONE) {
-                    showDictListView(dictNameText);
-                }else {
-                    hideDictListView();
-                }
+                toggleDictList();
             }
         });
 
@@ -234,6 +236,14 @@ public class PopupSelectionMenu extends LinearLayout {
         });
         setVisibility(View.GONE);
         initDictList();
+    }
+
+    private void toggleDictList() {
+        if (dictListView.getVisibility() == GONE) {
+            showDictListView(dictNameText);
+        }else {
+            hideDictListView();
+        }
     }
 
     private void hideDictListView() {

@@ -182,6 +182,12 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
         return getPageManager().getViewportRect();
     }
 
+    @Override
+    public RectF getCropRect() throws ReaderException {
+        return getPageManager().getChildRectFromRatio(getCurrentPagePosition(),
+                getNavigationList(getCurrentPageNumber()).getCurrent());
+    }
+
     public void scaleByRect(final String pageName, final RectF child) throws ReaderException {
         getPageManager().scaleToViewport(pageName, child);
     }

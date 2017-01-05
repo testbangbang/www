@@ -62,6 +62,7 @@ public class ReaderPainter {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
+        drawCropRectIndicator(canvas, paint, viewInfo);
         drawViewportOverlayIndicator(canvas, paint, viewInfo);
         drawBookmark(context, canvas, userDataInfo, viewInfo);
         drawSearchResults(context, canvas, paint, userDataInfo, viewInfo, annotationHighlightStyle);
@@ -99,17 +100,34 @@ public class ReaderPainter {
         }
     }
 
+    private void initPaintWithAuxiliaryLineStyle(final Paint paint) {
+        paint.setColor(Color.GRAY);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(3);
+        PathEffect effect = new DashPathEffect(new float[]{5,5,5,5},1);
+        paint.setPathEffect(effect);
+    }
+
+    private void resetPaintFromAuxiliaryLineStyle(final Paint paint) {
+        paint.setPathEffect(null);
+    }
+
+    private void drawCropRectIndicator(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
+        if (viewInfo.cropRegionInViewport == null || viewInfo.cropRegionInViewport.isEmpty()) {
+            return;
+        }
+        initPaintWithAuxiliaryLineStyle(paint);
+        canvas.drawRect(viewInfo.cropRegionInViewport, paint);
+        resetPaintFromAuxiliaryLineStyle(paint);
+    }
+
     private void drawViewportOverlayIndicator(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
         if (viewInfo.getLastViewportOverlayPosition() != null) {
-            paint.setColor(Color.GRAY);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(3);
-            PathEffect effect = new DashPathEffect(new float[]{5,5,5,5},1);
-            paint.setPathEffect(effect);
+            initPaintWithAuxiliaryLineStyle(paint);
             canvas.drawLine(0, viewInfo.getLastViewportOverlayPosition().y,
                     viewInfo.viewportInDoc.width(), viewInfo.getLastViewportOverlayPosition().y,
                     paint);
-            paint.setPathEffect(null);
+            resetPaintFromAuxiliaryLineStyle(paint);
         }
     }
 

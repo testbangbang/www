@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.onyx.android.edu.R;
 import com.onyx.android.edu.base.BaseActivity;
 import com.onyx.android.edu.utils.ActivityUtils;
+import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import butterknife.Bind;
@@ -47,7 +48,6 @@ public class ChooseExerciseActivity extends BaseActivity {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
-    private boolean useColorFragment = true;
     private ChooseExerciseFragment chooseExerciseFragment;
     private ChooseExerciseColorFragment chooseExerciseColorFragment;
     private ChooseExercisePresenter presenter;
@@ -65,7 +65,7 @@ public class ChooseExerciseActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        if (!useColorFragment) {
+        if (!AppCompatImageViewCollection.isPl107Device) {
             chooseExerciseFragment = (ChooseExerciseFragment) getFragmentManager()
                     .findFragmentById(R.id.contentFrame);
             if (chooseExerciseFragment == null) {
@@ -104,7 +104,7 @@ public class ChooseExerciseActivity extends BaseActivity {
         switch (keyCode) {
             case KeyEvent.KEYCODE_MENU:
                 if (chooseExerciseColorFragment != null) {
-                    chooseExerciseColorFragment.changeSubjectView();
+//                    chooseExerciseColorFragment.changeSubjectView();
                 }
                 return true;
         }

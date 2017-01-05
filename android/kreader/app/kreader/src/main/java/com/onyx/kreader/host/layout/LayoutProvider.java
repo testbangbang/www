@@ -137,6 +137,10 @@ public class LayoutProvider {
         return getPageManager().getViewportRect();
     }
 
+    public RectF getCropRect() throws ReaderException {
+        return null;
+    }
+
     public void updateViewportRect(RectF rect) throws ReaderException {
         getPageManager().setViewportRect(rect);
     }

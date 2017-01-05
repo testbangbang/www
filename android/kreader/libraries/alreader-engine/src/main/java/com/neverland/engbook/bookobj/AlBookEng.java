@@ -6167,7 +6167,8 @@ public class AlBookEng{
 					if ((oi.style[i] & AlStyles.STYLE_LINK) != 0) {
 						pos = oi.pos[i];
 
-						link_rect.x0 = link_rect.x1 = x;
+						link_rect.x0 = x;
+						link_rect.x1 = link_rect.x0 + oi.width[i];
 						link_rect.y0 = y - oi.base_line_up;
 						link_rect.y1 = link_rect.y0 + oi.base_line_down + oi.base_line_up;
 					}

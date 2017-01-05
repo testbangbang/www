@@ -12,13 +12,16 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 public class ShapeRemoveByGroupIdRequest extends BaseNoteRequest {
 
     private String groupId;
-    public ShapeRemoveByGroupIdRequest(final String groupId) {
+    private boolean resume;
+
+    public ShapeRemoveByGroupIdRequest(final String groupId, final boolean resume) {
         this.groupId = groupId;
+        this.resume = resume;
         setPauseInputProcessor(true);
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
-        setResumeInputProcessor(helper.useDFBForCurrentState());
+        setResumeInputProcessor(helper.useDFBForCurrentState() && resume);
         helper.getNoteDocument().removeShapesByGroupId(getContext(), groupId);
         renderCurrentPage(helper);
         updateShapeDataInfo(helper);

@@ -20,7 +20,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.model.AppConfig;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
-import com.onyx.android.eschool.utils.ViewDocumentUtils;
+import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -38,7 +38,6 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by suicheng on 2016/11/17.
@@ -61,7 +60,7 @@ public class TeachingMaterialActivity extends BaseActivity {
 
     private List<Metadata> metadataList = new ArrayList<>();
 
-    private String documentDisplayPath = "/mnt/sdcard/edu/sample-cfa.pdf";
+    private String documentDisplayPath = "/mnt/sdcard/slide/sample-cfa-png.pdf";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -348,7 +347,7 @@ public class TeachingMaterialActivity extends BaseActivity {
     private void processContentItemClick(int position) {
         ActivityUtil.startActivitySafely(this,
                 ViewDocumentUtils.viewActionIntentWithMimeType(new File(documentDisplayPath)),
-                AppConfig.sharedInstance(this).getReaderComponentName(this));
+                ViewDocumentUtils.getReaderComponentName(this));
     }
 
     class SyllabusViewHolder extends RecyclerView.ViewHolder {
