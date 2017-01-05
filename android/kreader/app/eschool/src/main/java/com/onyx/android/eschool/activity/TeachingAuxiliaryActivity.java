@@ -23,7 +23,7 @@ import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.model.AppConfig;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
-import com.onyx.android.eschool.utils.ViewDocumentUtils;
+import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
@@ -560,7 +560,7 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
         }
         ActivityUtil.startActivitySafely(this,
                 ViewDocumentUtils.viewActionIntentWithMimeType(file),
-                AppConfig.sharedInstance(this).getReaderComponentName(this));
+                ViewDocumentUtils.getReaderComponentName(this));
     }
 
     private void processProductItemClick(final int position) {
