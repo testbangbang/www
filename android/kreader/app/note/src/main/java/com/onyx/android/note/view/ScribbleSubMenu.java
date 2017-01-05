@@ -248,6 +248,21 @@ public class ScribbleSubMenu extends RelativeLayout {
                     case NoteBackgroundType.LEFT_GRID:
                         targetPattern = ScribbleSubMenuID.BG_LEFT_GRID;
                         break;
+                    case NoteBackgroundType.GRID_5_5:
+                        targetPattern = ScribbleSubMenuID.BG_GRID_5_5;
+                        break;
+                    case NoteBackgroundType.GRID_POINT:
+                        targetPattern = ScribbleSubMenuID.BG_GRID_POINT;
+                        break;
+                    case NoteBackgroundType.LINE_1_6:
+                        targetPattern = ScribbleSubMenuID.BG_LINE_1_6;
+                        break;
+                    case NoteBackgroundType.LINE_2_0:
+                        targetPattern = ScribbleSubMenuID.BG_LINE_2_0;
+                        break;
+                    case NoteBackgroundType.CALENDAR:
+                        targetPattern = ScribbleSubMenuID.BG_CALENDAR;
+                        break;
                 }
                 break;
             case ScribbleMenuCategory.COLOR:
@@ -350,13 +365,18 @@ public class ScribbleSubMenu extends RelativeLayout {
         GAdapter bgMenus = new GAdapter();
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_white, ScribbleSubMenuID.BG_EMPTY, true));
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_line, ScribbleSubMenuID.BG_LINE, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_line_1_6, ScribbleSubMenuID.BG_LINE_1_6, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_line_2_0, ScribbleSubMenuID.BG_LINE_2_0, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_line_column, ScribbleSubMenuID.BG_LINE_COLUMN, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_left_grid, ScribbleSubMenuID.BG_LEFT_GRID, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_table_grid, ScribbleSubMenuID.BG_TABLE_GRID, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_line_calendar, ScribbleSubMenuID.BG_CALENDAR, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_grid_5_5, ScribbleSubMenuID.BG_GRID_5_5, true));
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_grid, ScribbleSubMenuID.BG_GRID, true));
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_mats, ScribbleSubMenuID.BG_MATS, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_grid_point, ScribbleSubMenuID.BG_GRID_POINT, true));
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_music, ScribbleSubMenuID.BG_MUSIC, true));
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_english, ScribbleSubMenuID.BG_ENGLISH, true));
-        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_table_grid, ScribbleSubMenuID.BG_TABLE_GRID, true));
-        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_left_grid, ScribbleSubMenuID.BG_LEFT_GRID, true));
-        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_line_column, ScribbleSubMenuID.BG_LINE_COLUMN, true));
         return bgMenus;
     }
 
