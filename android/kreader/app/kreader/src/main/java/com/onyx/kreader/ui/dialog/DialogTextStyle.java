@@ -216,6 +216,8 @@ public class DialogTextStyle extends DialogBase {
         final TextView pageSizeIndicator = (TextView) view.findViewById(R.id.page_size_indicator);
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
         ImageView nextIcon = (ImageView) view.findViewById(R.id.next_icon);
+        ImageView decreaseIcon = (ImageView) view.findViewById(R.id.image_view_decrease_font_size);
+        ImageView increaseIcon = (ImageView) view.findViewById(R.id.image_view_increase_font_size);
 
         nextIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,6 +230,22 @@ public class DialogTextStyle extends DialogBase {
             @Override
             public void onClick(View v) {
                 pageView.prevPage();
+            }
+        });
+
+        increaseIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReaderTextStyle.SPUnit currentSize = getReaderStyle().getFontSize();
+                applyFontSize(currentSize.increaseSPUnit(ReaderTextStyle.FONT_SIZE_STEP));
+            }
+        });
+
+        decreaseIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReaderTextStyle.SPUnit currentSize = getReaderStyle().getFontSize();
+                applyFontSize(currentSize.decreaseSPUnit(ReaderTextStyle.FONT_SIZE_STEP));
             }
         });
 
@@ -468,12 +486,16 @@ public class DialogTextStyle extends DialogBase {
             fontSizeText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    readerTextStyle.setFontSize(size);
-                    updateReaderStyle(readerTextStyle);
-                    updateFontSizeTextView(fontSizeTexts, readerTextStyle);
+                    applyFontSize(size);
                 }
             });
         }
+    }
+
+    private void applyFontSize(ReaderTextStyle.SPUnit size) {
+        getReaderStyle().setFontSize(size);
+        updateReaderStyle(getReaderStyle());
+        updateFontSizeTextView(fontSizeTexts, getReaderStyle());
     }
 
     private void updateFontSpacingView(final Map<FontLevel, ImageView> spacingViewMap, final ReaderTextStyle readerTextStyle) {

@@ -118,6 +118,16 @@ public class ReaderTextStyle {
             }
             return false;
         }
+
+        public SPUnit increaseSPUnit(SPUnit step) {
+            value  = value + step.getValue();
+            return this;
+        }
+
+        public SPUnit decreaseSPUnit(SPUnit step) {
+            value  = Math.max(value - step.getValue(), 0);
+            return this;
+        }
     }
 
     public static class PageMargin {
@@ -222,6 +232,7 @@ public class ReaderTextStyle {
     static public SPUnit[] DEFAULT_FONT_SIZE_LIST = {SPUnit.create(20.0f), SPUnit.create(24.0f), SPUnit.create(28.0f),
             SPUnit.create(32.0f), SPUnit.create(36.0f), SPUnit.create(40.0f), SPUnit.create(44.0f), SPUnit.create(48.0f)};
     static public SPUnit DEFAULT_FONT_SIZE = SPUnit.create(40.0f);
+    static public SPUnit FONT_SIZE_STEP = SPUnit.create(4.0f);
 
     private String fontFace = null;
     private SPUnit fontSize = DEFAULT_FONT_SIZE;
