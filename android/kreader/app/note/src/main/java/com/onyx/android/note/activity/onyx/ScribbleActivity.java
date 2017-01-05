@@ -867,8 +867,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void saveExistingNoteDocument(final boolean finishAfterSave) {
+        String documentUniqueId = shapeDataInfo.getDocumentUniqueId();
+        if (StringUtils.isNullOrEmpty(documentUniqueId)) {
+            return;
+        }
         final DocumentSaveAction<ScribbleActivity> saveAction = new
-                DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
+                DocumentSaveAction<>(documentUniqueId, noteTitle, finishAfterSave);
         saveAction.execute(ScribbleActivity.this, null);
     }
 
