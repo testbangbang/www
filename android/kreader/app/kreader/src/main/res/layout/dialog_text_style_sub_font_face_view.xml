@@ -51,8 +51,9 @@
         android:layout_height="1dp"/>
 
     <LinearLayout
-        android:gravity="center_horizontal"
-        android:padding="10dp"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:baselineAligned="false"
         android:id="@+id/font_size_layout"
         android:layout_width="match_parent"
@@ -61,7 +62,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:visibility="gone"
+            android:padding="5dp"
             android:id="@+id/image_view_decrease_font_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -118,12 +119,11 @@
         </LinearLayout>
 
         <ImageView
-            android:visibility="gone"
+            android:padding="5dp"
             android:id="@+id/image_view_increase_font_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/reader_layer_menu_font_style_font_size_button_margin"
             android:background="@drawable/imagebtn_bg"
             android:focusable="true"
             android:src="@drawable/ic_dialog_reader_menu_font_big"/>
