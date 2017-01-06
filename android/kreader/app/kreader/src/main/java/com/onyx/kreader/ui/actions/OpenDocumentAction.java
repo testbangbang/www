@@ -17,6 +17,7 @@ import com.onyx.kreader.host.request.OpenRequest;
 import com.onyx.kreader.host.request.RestoreRequest;
 import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogMessage;
 import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
@@ -36,6 +37,7 @@ public class OpenDocumentAction extends BaseAction {
     private Activity activity;
     private String documentPath;
     private DataManager dataProvider;
+    private boolean canceled = false;
 
     public OpenDocumentAction(final Activity activity, final String path) {
         this.activity = activity;
@@ -46,13 +48,19 @@ public class OpenDocumentAction extends BaseAction {
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerDataHolder.initReaderFromPath(documentPath);
         readerDataHolder.getEventBus().post(new BeforeDocumentOpenEvent(documentPath));
-        showLoadingDialog(readerDataHolder, R.string.loading_document);
+        showLoadingDialog(readerDataHolder, R.string.loading_document, new DialogLoading.Callback() {
+            @Override
+            public void onCanceled() {
+                canceled = true;
+                cleanup(readerDataHolder);
+            }
+        });
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
                 readerDataHolder.getReader().getDocumentMd5());
         dataProvider.submit(readerDataHolder.getContext(), loadDocumentOptionsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
+                if (e != null || canceled) {
                     cleanup(readerDataHolder);
                     return;
                 }
@@ -84,6 +92,10 @@ public class OpenDocumentAction extends BaseAction {
         readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (canceled) {
+                    cleanup(readerDataHolder);
+                    return;
+                }
                 if (e != null) {
                     processOpenException(readerDataHolder, options, e);
                     return;
@@ -100,7 +112,7 @@ public class OpenDocumentAction extends BaseAction {
         readerDataHolder.submitNonRenderRequest(config, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
+                if (e != null || canceled) {
                     cleanup(readerDataHolder);
                     return;
                 }
@@ -149,6 +161,10 @@ public class OpenDocumentAction extends BaseAction {
         readerDataHolder.submitRenderRequest(restoreRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (e != null || canceled) {
+                    cleanup(readerDataHolder);
+                    return;
+                }
                 hideLoadingDialog();
                 readerDataHolder.submitNonRenderRequest(new SaveDocumentOptionsRequest());
                 readerDataHolder.onDocumentInitRendered();

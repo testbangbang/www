@@ -11,22 +11,21 @@ public abstract class BaseAction {
 
     public abstract void execute(final ReaderDataHolder readerDataHolder, BaseCallback baseCallback);
 
-    public DialogLoading showLoadingDialog(final ReaderDataHolder holder, String title) {
+    public DialogLoading showLoadingDialog(final ReaderDataHolder holder, String title, DialogLoading.Callback callback) {
         if (dialogLoading == null) {
             dialogLoading = new DialogLoading(holder.getContext(),
-                    title,
-                    true, new DialogLoading.Callback() {
-                @Override
-                public void onCanceled() {
-                }
-            });
+                    title, true, callback);
         }
         dialogLoading.show();
         return dialogLoading;
     }
 
+    public DialogLoading showLoadingDialog(final ReaderDataHolder holder, int titleResId, DialogLoading.Callback callback) {
+        return showLoadingDialog(holder, holder.getContext().getString(titleResId), callback);
+    }
+
     public DialogLoading showLoadingDialog(final ReaderDataHolder holder, int titleResId) {
-        return showLoadingDialog(holder, holder.getContext().getString(titleResId));
+        return showLoadingDialog(holder, titleResId, null);
     }
 
     public void hideLoadingDialog() {
