@@ -73,6 +73,7 @@ public class NoteModel extends BaseModel {
     PageNameList pageNameList = null;
 
     Bitmap thumbnail;
+    int subDocCount;
 
     private static final float DEFAULT_STROKE_WIDTH = 2.0f;
     private static float DEFAULT_ERASER_RADIUS = 15.0f;
@@ -266,6 +267,14 @@ public class NoteModel extends BaseModel {
 
     public static int getDefaultLineLayoutBackground() {
         return NoteBackgroundType.LINE;
+    }
+
+    public int getSubDocCount() {
+        return subDocCount;
+    }
+
+    public void setSubDocCount(int subDocCount) {
+        this.subDocCount = subDocCount;
     }
 
     public static NoteModel createNote(final String documentUniqueId, final String parentUniqueId, final String title) {
