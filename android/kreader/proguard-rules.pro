@@ -34,7 +34,7 @@
 -dontwarn com.github.junrar.**
 -dontwarn com.squareup.**
 
--keepnames class * {
+-keepclasseswithmembernames class * {
     native <methods>;
 }
 
