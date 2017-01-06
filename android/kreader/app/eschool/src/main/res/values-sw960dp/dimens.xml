@@ -117,7 +117,7 @@
     <dimen name="study_preview_category_item_text_size">23sp</dimen>
     <dimen name="study_preview_category_item_text_margin_left">8dp</dimen>
 
-    <dimen name="activity_teaching_auxiliary_product_page_view_margin">20dp</dimen>
+    <dimen name="activity_teaching_auxiliary_product_page_view_margin">21dp</dimen>
     <dimen name="activity_teaching_auxiliary_category_page_view_height">320dp</dimen>
     <dimen name="activity_teaching_auxiliary_category_page_view_padding">6dp</dimen>
     <dimen name="teaching_auxiliary_product_cover_panel_width">210dp</dimen>
