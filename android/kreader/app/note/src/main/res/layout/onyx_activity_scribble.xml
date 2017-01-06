@@ -11,7 +11,7 @@
         style="@style/OnyxToolBarStyle"
         android:layout_alignParentTop="true">
 
-        <RelativeLayout
+        <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -49,7 +49,8 @@
                     android:layout_height="?attr/actionBarSize"
                     android:layout_marginRight="12dp"
                     android:src="@drawable/ic_vector"
-                    app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
+                    app:iconDrawingSize="@dimen/global_activities_function_icon_size"
+                    app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
 
                 <com.onyx.android.sdk.ui.view.CustomIconView
                     android:id="@+id/button_undo"
@@ -57,7 +58,8 @@
                     android:layout_height="?attr/actionBarSize"
                     android:layout_marginRight="12dp"
                     android:src="@drawable/ic_undo"
-                    app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
+                    app:iconDrawingSize="@dimen/global_activities_function_icon_size"
+                    app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
 
                 <com.onyx.android.sdk.ui.view.CustomIconView
                     android:id="@+id/button_save"
@@ -65,7 +67,8 @@
                     android:layout_height="?attr/actionBarSize"
                     android:layout_marginRight="12dp"
                     android:src="@drawable/ic_save"
-                    app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
+                    app:iconDrawingSize="@dimen/global_activities_function_icon_size"
+                    app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
 
                 <com.onyx.android.sdk.ui.view.CustomIconView
                     android:id="@+id/button_redo"
@@ -73,7 +76,8 @@
                     android:layout_height="?attr/actionBarSize"
                     android:layout_marginRight="12dp"
                     android:src="@drawable/ic_redo"
-                    app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
+                    app:iconDrawingSize="@dimen/global_activities_function_icon_size"
+                    app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
 
                 <com.onyx.android.sdk.ui.view.CustomIconView
                     android:id="@+id/button_setting"
@@ -81,7 +85,8 @@
                     android:layout_height="?attr/actionBarSize"
                     android:layout_marginRight="12dp"
                     android:src="@drawable/ic_setting"
-                    app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
+                    app:iconDrawingSize="@dimen/global_activities_function_icon_size"
+                    app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
 
                 <com.onyx.android.sdk.ui.view.CustomIconView
                     android:id="@+id/button_export"
@@ -89,9 +94,10 @@
                     android:layout_height="?attr/actionBarSize"
                     android:layout_marginRight="12dp"
                     android:src="@drawable/ic_export"
-                    app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
+                    app:iconDrawingSize="@dimen/global_activities_function_icon_size"
+                    app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
             </LinearLayout>
-        </RelativeLayout>
+        </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
 
     </android.support.v7.widget.Toolbar>
 
@@ -144,7 +150,7 @@
             android:layout_width="@dimen/onyx_note_style_width"
             android:layout_height="match_parent" />
 
-        <RelativeLayout
+        <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
             android:id="@+id/page_count_control"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -159,7 +165,8 @@
                 android:layout_height="@dimen/onyx_main_note_menu_height"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/ic_delete"
-                app:iconDrawingSize="@dimen/onyx_note_item_img_size" />
+                app:iconDrawingSize="@dimen/onyx_note_item_img_size"
+                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
 
             <com.onyx.android.sdk.ui.view.CustomIconView
                 android:id="@+id/button_add_page"
@@ -168,11 +175,12 @@
                 android:layout_marginRight="5dp"
                 android:layout_toLeftOf="@+id/button_delete_page"
                 android:src="@drawable/ic_add"
-                app:iconDrawingSize="@dimen/onyx_note_item_img_size" />
+                app:iconDrawingSize="@dimen/onyx_note_item_img_size"
+                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
 
-        </RelativeLayout>
+        </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
 
-        <LinearLayout
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
             android:id="@+id/page_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -186,7 +194,8 @@
                 android:layout_width="@dimen/onyx_main_note_menu_height"
                 android:layout_height="@dimen/onyx_main_note_menu_height"
                 android:src="@drawable/ic_note_prev_page_black"
-                app:iconDrawingSize="@dimen/onyx_note_item_img_size" />
+                app:iconDrawingSize="@dimen/onyx_note_item_img_size"
+                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
 
             <Button
                 android:id="@+id/button_page_progress"
@@ -203,7 +212,8 @@
                 android:layout_width="@dimen/onyx_main_note_menu_height"
                 android:layout_height="@dimen/onyx_main_note_menu_height"
                 android:src="@drawable/ic_note_next_page_black"
-                app:iconDrawingSize="@dimen/onyx_note_item_img_size" />
-        </LinearLayout>
+                app:iconDrawingSize="@dimen/onyx_note_item_img_size"
+                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
     </RelativeLayout>
 </RelativeLayout>

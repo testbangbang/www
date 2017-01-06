@@ -20,6 +20,7 @@
 
     <declare-styleable name="CustomIconView">
         <attr name="iconDrawingSize" format="dimension" />
+        <attr name="enableZoomDrawable" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="pieChartView">
