@@ -95,7 +95,7 @@ public class StringUtils {
         if (start == 0) {
             return content;
         }
-        return content.substring(start, last);
+        return content.substring(start, last + 1);
     }
 
     public static String rightTrim(String content) {
@@ -107,7 +107,7 @@ public class StringUtils {
         if (end == last) {
             return content;
         }
-        return content.substring(start, end);
+        return content.substring(start, end + 1);
     }
 
     public static String trim(String input) {
