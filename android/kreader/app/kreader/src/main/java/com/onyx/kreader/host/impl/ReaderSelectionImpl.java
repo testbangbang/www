@@ -15,6 +15,8 @@ public class ReaderSelectionImpl implements ReaderSelection {
     private String startPosition;
     private String endPosition;
     private String text;
+    private String leftText;
+    private String rightText;
     private List<RectF> displayRects;
 
     public ReaderSelectionImpl() {
@@ -66,12 +68,20 @@ public class ReaderSelectionImpl implements ReaderSelection {
 
     @Override
     public String getLeftText() {
-        return "";
+        return leftText;
+    }
+
+    public void setLeftText(String leftText) {
+        this.leftText = leftText;
     }
 
     @Override
     public String getRightText() {
-        return "";
+        return rightText;
+    }
+
+    public void setRightText(String rightText) {
+        this.rightText = rightText;
     }
 
     @Override
