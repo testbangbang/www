@@ -56,6 +56,7 @@ public class RK3026Device extends BaseDevice {
     private static final String NAME_EPD_FULL = "EPD_FULL";
     private static final String NAME_EPD_A2 = "EPD_A2";
     private static final String NAME_EPD_PART = "EPD_PART";
+    private static final String NAME_EPD_REGAL = "EPD_REGLA";
 
     private Context mContext = null;
 
@@ -261,6 +262,9 @@ public class RK3026Device extends BaseDevice {
                 break;
             case DU:
                 einkModeString = NAME_EPD_A2;
+                break;
+            case REGAL:
+                einkModeString = NAME_EPD_REGAL;
                 break;
             default:
                 assert (false);
@@ -502,4 +506,10 @@ public class RK3026Device extends BaseDevice {
         }
         return (Boolean)this.invokeDeviceControllerMethod(context, sMethodSystemIntegrityCheck);
     }
+
+    @Override
+    public boolean supportRegal() {
+        return true;
+    }
+
 }
