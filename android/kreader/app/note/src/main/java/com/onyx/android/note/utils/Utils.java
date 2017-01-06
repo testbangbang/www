@@ -78,7 +78,7 @@ public class Utils {
     }
 
     public static GObject createLibraryItem(final NoteModel noteModel, final int folderRes) {
-        GObject object = GAdapterUtil.createTableItem(getNoteTitle(noteModel), null, 0, 0, null);
+        GObject object = GAdapterUtil.createTableItem(getNoteTitleWithSize(noteModel), null, 0, 0, null);
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, noteModel.getUniqueId());
         object.putNonNullObject(GAdapterUtil.TAG_THUMBNAIL, folderRes);
         object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, getDateFormat().format(noteModel.getUpdatedAt()));
@@ -87,7 +87,7 @@ public class Utils {
     }
 
     public static GObject createDocumentItem(final NoteModel noteModel, final int docRes) {
-        GObject object = GAdapterUtil.createTableItem(getNoteTitle(noteModel), null, 0, 0, null);
+        GObject object = GAdapterUtil.createTableItem(getNoteTitleWithSize(noteModel), null, 0, 0, null);
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, noteModel.getUniqueId());
         object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, getDateFormat().format(noteModel.getUpdatedAt()));
         object.putNonNullObject(GAdapterUtil.TAG_THUMBNAIL, noteModel.getThumbnail() == null ? docRes : noteModel.getThumbnail());
@@ -95,7 +95,7 @@ public class Utils {
         return object;
     }
 
-    private static String getNoteTitle(final NoteModel noteModel) {
+    private static String getNoteTitleWithSize(final NoteModel noteModel) {
         StringBuilder builder = new StringBuilder(noteModel.getTitle());
         PageNameList pageNameList = noteModel.getPageNameList();
         if (pageNameList != null && pageNameList.size() > 0) {
