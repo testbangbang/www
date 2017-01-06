@@ -16,19 +16,10 @@
 #   public *;
 #}
 
--keeppackagenames com.onyx.android.sdk.api.**
-#-keepnames com.onyx.android.sdk.api.**
+-keepparameternames
 
--keepclasseswithmembernames public class com.onyx.android.sdk.api.** {
+-keep class com.onyx.android.sdk.api.** {
     *;
 }
-
-#-keepclasseswithmembernames public class com.onyx.android.sdk.api.device.epd.EpdController {
-#    public *;
-#}
-#
-#-keepclasseswithmembers public enum com.onyx.android.sdk.api.device.epd.** {
-#    *;
-#}
 
 -dontshrink
