@@ -379,7 +379,7 @@ public class AlFilesZIP extends AlFiles {
 						}
 					}
 
-					infl.finished();
+					infl.end();
 					infl = null;
 
 				} else if (fileList.get(num).compress == 0) {
