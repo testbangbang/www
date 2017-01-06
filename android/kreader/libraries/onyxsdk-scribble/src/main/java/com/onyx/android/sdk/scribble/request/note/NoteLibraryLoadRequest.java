@@ -54,7 +54,8 @@ public class NoteLibraryLoadRequest extends BaseNoteRequest {
             if (noteModel.isDocument() && i < thumbnailLimit) {
                 loadThumbnail(noteModel);
                 i++;
-            }else if (!noteModel.isDocument()){
+            }
+            if (!noteModel.isDocument()){
                 loadSubDocCount(noteModel);
             }
         }
