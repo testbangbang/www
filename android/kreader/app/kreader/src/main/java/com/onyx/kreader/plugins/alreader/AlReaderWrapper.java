@@ -24,6 +24,7 @@ import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
+import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.EngBitmap;
 import com.neverland.engbook.util.TTFInfo;
 import com.neverland.engbook.util.TTFScan;
@@ -480,6 +481,8 @@ public class AlReaderWrapper {
                 selection.setStartPosition(PagePositionUtils.fromPosition(result.pos_start));
                 selection.setEndPosition(PagePositionUtils.fromPosition(result.pos_end));
                 selection.setText(text);
+                selection.setLeftText(getLeftContextOfSearchResult(result));
+                selection.setRightText(getRightContextOfSearchResult(result));
                 selection.setDisplayRects(new ArrayList<RectF>());
                 list.add(selection);
             }
@@ -489,6 +492,31 @@ public class AlReaderWrapper {
         }
 
         return true;
+    }
+
+    private String getLeftContextOfSearchResult(AlOneSearchResult searchResult) {
+        if (StringUtils.isNullOrEmpty(searchResult.context)) {
+            return "";
+        }
+        int idx = searchResult.context.indexOf((char) AlStyles.CHAR_MARKER_FIND_S);
+        if (idx == -1) {
+            return "";
+        }
+        return searchResult.context.substring(0, idx);
+    }
+
+    private String getRightContextOfSearchResult(AlOneSearchResult searchResult) {
+        if (StringUtils.isNullOrEmpty(searchResult.context)) {
+            return "";
+        }
+        int idx = searchResult.context.indexOf((char) AlStyles.CHAR_MARKER_FIND_E);
+        if (idx == -1) {
+            return "";
+        }
+        if (idx >= searchResult.context.length() - 1) {
+            return "";
+        }
+        return searchResult.context.substring(idx + 1);
     }
 
     public ReaderSelection selectTextOnScreen(PointF start, PointF end) {
