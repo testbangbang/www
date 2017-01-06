@@ -28,6 +28,11 @@ public class NoteBackgroundType {
     public static final int TABLE = 6;
     public static final int COLUMN = 7;
     public static final int LEFT_GRID = 8;
+    public static final int GRID_POINT = 9;
+    public static final int GRID_5_5 = 10;
+    public static final int LINE_1_6 = 11;
+    public static final int LINE_2_0 = 12;
+    public static final int CALENDAR = 13;
 
     public
     @NoteBackgroundDef
