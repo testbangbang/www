@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.scribble.ClearAllFreeShapesAction;
@@ -63,6 +64,7 @@ import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -77,7 +79,6 @@ import java.util.List;
  */
 public class ScribbleActivity extends BaseScribbleActivity {
     static final String TAG = ScribbleActivity.class.getCanonicalName();
-    static boolean showOutOfRangeTips = false;
     private TextView titleTextView;
     private ScribbleSubMenu scribbleSubMenu = null;
     private ImageView switchBtn;
@@ -358,10 +359,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void showOutOfRangeTips() {
-        if (!showOutOfRangeTips) {
-            Toast.makeText(this, getString(R.string.shape_out_of_range), Toast.LENGTH_SHORT).show();
-        }
-        showOutOfRangeTips = true;
+        ToastUtils.showToast(NoteApplication.getInstance(), getString(R.string.shape_out_of_range));
     }
 
     private boolean checkShapesOutOfRange(List<Shape> shapes) {
@@ -597,7 +595,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         int width = spanTextView.getMeasuredWidth();
         float x = layout.getPrimaryHorizontal(pos) - spaceWidth;
         x = x >= width ? 0 : x;
-
+        
         spanTextHandler.buildSpaceShape((int) Math.ceil(spanTextView.getMeasuredWidth() - x) - 2 * ShapeSpan.SHAPE_SPAN_MARGIN, getSpanTextFontHeight());
     }
 
