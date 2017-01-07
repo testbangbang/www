@@ -22,6 +22,12 @@ public class SingletonSharedPreference {
     private final static String EXPORT_WITH_SCRIBBLE = "export_with_scribble";
     private final static String EXPORT_SCRIBBLE_COLOR = "export_scribble_color";
     private final static String EXPORT_ALL_PAGES = "export_all_pages";
+    private final static String LAST_FONT_SIZE = "last_font_size";
+    private final static String LAST_LINE_SPACING = "last_line_spacing";
+    private final static String LAST_LEFT_MARGIN = "last_left_margin";
+    private final static String LAST_TOP_MARGIN = "last_top_margin";
+    private final static String LAST_RIGHT_MARGIN = "last_right_margin";
+    private final static String LAST_BOTTOM_MARGIN = "last_bottom_margin";
 
     private static SharedPreferences sPreferences;
     private static SharedPreferences.Editor sDefaultEditor;
@@ -293,4 +299,51 @@ public class SingletonSharedPreference {
         return sPreferences.getBoolean(EXPORT_ALL_PAGES, true);
     }
 
+    public static void setLastFontSize(float value) {
+        setFloatValue(LAST_FONT_SIZE, value);
+    }
+
+    public static float getLastFontSize(float defaultValue) {
+        return sPreferences.getFloat(LAST_FONT_SIZE, defaultValue);
+    }
+
+    public static void setLastLeftMargin(int value) {
+        setIntValue(LAST_LEFT_MARGIN, value);
+    }
+
+    public static int getLastLeftMargin(int defaultValue) {
+        return sPreferences.getInt(LAST_LEFT_MARGIN, defaultValue);
+    }
+
+    public static void setLastTopMargin(int value) {
+        setIntValue(LAST_TOP_MARGIN, value);
+    }
+
+    public static int getLastTopMargin(int defaultValue) {
+        return sPreferences.getInt(LAST_TOP_MARGIN, defaultValue);
+    }
+
+    public static void setLastRightMargin(int value) {
+        setIntValue(LAST_RIGHT_MARGIN, value);
+    }
+
+    public static int getLastRightMargin(int defaultValue) {
+        return sPreferences.getInt(LAST_RIGHT_MARGIN, defaultValue);
+    }
+
+    public static void setLastBottomMargin(int value) {
+        setIntValue(LAST_BOTTOM_MARGIN, value);
+    }
+
+    public static int getLastBottomMargin(int defaultValue) {
+        return sPreferences.getInt(LAST_BOTTOM_MARGIN, defaultValue);
+    }
+
+    public static void setLastLineSpacing(int value) {
+        setIntValue(LAST_LINE_SPACING, value);
+    }
+
+    public static int getLastLineSpacing(int defaultValue) {
+        return sPreferences.getInt(LAST_LINE_SPACING, defaultValue);
+    }
 }
