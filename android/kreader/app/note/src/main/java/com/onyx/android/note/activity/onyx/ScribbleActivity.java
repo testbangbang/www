@@ -595,7 +595,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
         int width = spanTextView.getMeasuredWidth();
         float x = layout.getPrimaryHorizontal(pos) - spaceWidth;
         x = x >= width ? 0 : x;
-        
+        if (isBuildingSpan()) {
+            return;
+        }
         spanTextHandler.buildSpaceShape((int) Math.ceil(spanTextView.getMeasuredWidth() - x) - 2 * ShapeSpan.SHAPE_SPAN_MARGIN, getSpanTextFontHeight());
     }
 
