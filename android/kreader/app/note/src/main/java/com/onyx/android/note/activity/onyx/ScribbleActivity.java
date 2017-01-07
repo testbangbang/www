@@ -57,6 +57,7 @@ import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
@@ -584,6 +585,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onEnter() {
+        float spaceWidth = (int) spanTextView.getPaint().measureText(SpannableRequest.SPACE_SPAN);
         int pos = spanTextView.getSelectionStart();
         Layout layout = spanTextView.getLayout();
         int line = layout.getLineForOffset(pos);
@@ -592,9 +594,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
             syncWithCallback(true,true, null);
             return;
         }
-        float x = layout.getPrimaryHorizontal(pos);
+        int width = spanTextView.getMeasuredWidth();
+        float x = layout.getPrimaryHorizontal(pos) - spaceWidth;
+        x = x >= width ? 0 : x;
 
-        spanTextHandler.buildSpaceShape((int) Math.ceil(spanTextView.getMeasuredWidth() - x), getSpanTextFontHeight());
+        spanTextHandler.buildSpaceShape((int) Math.ceil(spanTextView.getMeasuredWidth() - x) - 2 * ShapeSpan.SHAPE_SPAN_MARGIN, getSpanTextFontHeight());
     }
 
     private void onKeyboard() {
