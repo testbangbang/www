@@ -504,6 +504,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void showExportMenu() {
+        hideSoftInput();
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -513,6 +514,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onSave(final boolean finishAfterSave) {
+        hideSoftInput();
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
