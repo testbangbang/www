@@ -438,7 +438,7 @@ public class PageRecyclerView extends RecyclerView {
             view.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_UP){
+                    if (event.getAction() == MotionEvent.ACTION_DOWN){
                         pageRecyclerView.setCurrentFocusedPosition(position);
                     }
                     return false;
