@@ -348,6 +348,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void scaleToPage(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         final ScaleToPageRequest request = new ScaleToPageRequest(readerDataHolder.getCurrentPageName());
         readerDataHolder.submitRenderRequest(request);
     }
@@ -358,11 +359,13 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void cropPage(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         final ScaleToPageCropRequest request = new ScaleToPageCropRequest(readerDataHolder.getCurrentPageName());
         readerDataHolder.submitRenderRequest(request);
     }
 
     private void cropWidth(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         final ScaleToWidthContentRequest request = new ScaleToWidthContentRequest(readerDataHolder.getCurrentPageName());
         readerDataHolder.submitRenderRequest(request);
     }
@@ -378,6 +381,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void switchNavigationToArticleMode(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         NavigationArgs args = new NavigationArgs();
         RectF limit = new RectF(0, 0, 0, 0);
         args.columnsLeftToRight(NavigationArgs.Type.ALL, 2, 2, limit);
@@ -385,6 +389,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void switchNavigationToComicMode(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         NavigationArgs args = new NavigationArgs();
         RectF limit = new RectF(0, 0, 0, 0);
         args.rowsRightToLeft(NavigationArgs.Type.ALL, 2, 2, limit);
@@ -397,6 +402,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void resetNavigationMode(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE, new NavigationArgs());
         readerDataHolder.submitRenderRequest(request);
     }
