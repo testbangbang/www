@@ -31,6 +31,7 @@ import com.onyx.kreader.ui.actions.ChangeCodePageAction;
 import com.onyx.kreader.ui.actions.ChangeStyleAction;
 import com.onyx.kreader.ui.actions.GetFontsAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -496,6 +497,7 @@ public class DialogTextStyle extends DialogBase {
         getReaderStyle().setFontSize(size);
         updateReaderStyle(getReaderStyle());
         updateFontSizeTextView(fontSizeTexts, getReaderStyle());
+        SingletonSharedPreference.setLastFontSize(size.getValue());
     }
 
     private void updateFontSpacingView(final Map<FontLevel, ImageView> spacingViewMap, final ReaderTextStyle readerTextStyle) {
@@ -534,6 +536,7 @@ public class DialogTextStyle extends DialogBase {
                     readerTextStyle.setLineSpacing(percentage);
                     updateReaderStyle(readerTextStyle);
                     updateFontSpacingView(spacingViewMap, readerTextStyle);
+                    SingletonSharedPreference.setLastLineSpacing(percentage.getPercent());
                 }
             });
         }
@@ -563,13 +566,13 @@ public class DialogTextStyle extends DialogBase {
                 public void onClick(View v) {
                     switch (fontLevel) {
                         case SMALL:
-                            currentPageMargin = ReaderTextStyle.SMALL_PAGE_MARGIN;
+                            currentPageMargin = PageMargin.copy(ReaderTextStyle.SMALL_PAGE_MARGIN);
                             break;
                         case NORMAL:
-                            currentPageMargin = ReaderTextStyle.NORMAL_PAGE_MARGIN;
+                            currentPageMargin = PageMargin.copy(ReaderTextStyle.NORMAL_PAGE_MARGIN);
                             break;
                         case LARGE:
-                            currentPageMargin = ReaderTextStyle.LARGE_PAGE_MARGIN;
+                            currentPageMargin = PageMargin.copy(ReaderTextStyle.LARGE_PAGE_MARGIN);
                             break;
                         case INCREASE:
                             if (currentPageMargin.getLeftMargin().getPercent() >=
@@ -589,6 +592,10 @@ public class DialogTextStyle extends DialogBase {
                             break;
                     }
                     readerTextStyle.setPageMargin(currentPageMargin);
+                    SingletonSharedPreference.setLastLeftMargin(currentPageMargin.getLeftMargin().getPercent());
+                    SingletonSharedPreference.setLastTopMargin(currentPageMargin.getTopMargin().getPercent());
+                    SingletonSharedPreference.setLastRightMargin(currentPageMargin.getRightMargin().getPercent());
+                    SingletonSharedPreference.setLastBottomMargin(currentPageMargin.getBottomMargin().getPercent());
                     updateReaderStyle(readerTextStyle);
                     updateFontMarginView(marginViewMap, readerTextStyle);
                 }
