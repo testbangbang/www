@@ -40,7 +40,7 @@ public class SpannableRequest extends BaseNoteRequest {
         if (newAddShapes != null && newAddShapes.size() > 0) {
             builder.append(SPAN_BUILDER_SYMBOL);
         }
-        builder.append(" ");
+        builder.append(SPACE_SPAN);
         spannableStringBuilder = new SpannableStringBuilder(builder.toString());
         int index = 0;
         for (String groupId : subPageSpanTextShapeMap.keySet()) {
