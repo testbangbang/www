@@ -579,6 +579,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         int line = layout.getLineForOffset(pos);
         if (line == (getNoteViewHelper().getLineLayoutArgs().getLineCount() - 1)) {
             Toast.makeText(this, getString(R.string.shape_out_of_range), Toast.LENGTH_SHORT).show();
+            syncWithCallback(true,true, null);
             return;
         }
         float x = layout.getPrimaryHorizontal(pos);
