@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.handler;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -49,6 +50,8 @@ public class WordSelectionHandler extends BaseHandler{
     private SelectWordRequest selectWordRequest;
     private PointF highLightBeginTop;
     private PointF highLightEndBottom;
+    private int lastSelectStartPosition = 0;
+    private int lastSelectEndPosition = 0;
 
     public WordSelectionHandler(HandlerManager parent, Context context) {
         super(parent);
@@ -65,6 +68,8 @@ public class WordSelectionHandler extends BaseHandler{
             highLightEndBottom = new PointF(x2, y2);
             movedAfterLongPress = false;
             showSelectionCursor = false;
+            lastSelectStartPosition = 0;
+            lastSelectEndPosition = 0;
             super.onLongPress(readerDataHolder, x1, y1, x2, y2);
             selectWord(readerDataHolder, x1, y1, x2, y2);
         } else if (cursorSelected < 0) {
@@ -287,15 +292,19 @@ public class WordSelectionHandler extends BaseHandler{
         }
 
         if (cursorSelected == HighlightCursor.END_CURSOR_INDEX) {
-            if (selection.getStartPosition().equals(updatedSelection.getEndPosition())) {
+            int selectStartPosition = Integer.valueOf(selection.getStartPosition());
+            if (lastSelectStartPosition !=0 && lastSelectStartPosition != selectStartPosition) {
                 highLightEndBottom.set(highLightBeginTop.x, highLightBeginTop.y);
                 cursorSelected = HighlightCursor.BEGIN_CURSOR_INDEX;
             }
+            lastSelectStartPosition = selectStartPosition;
         }else if (cursorSelected == HighlightCursor.BEGIN_CURSOR_INDEX) {
-            if (selection.getEndPosition().equals(updatedSelection.getStartPosition())) {
+            int selectEndPosition = Integer.valueOf(selection.getEndPosition());
+            if (lastSelectEndPosition !=0 && lastSelectEndPosition != selectEndPosition) {
                 highLightBeginTop.set(highLightEndBottom.x, highLightEndBottom.y);
                 cursorSelected = HighlightCursor.END_CURSOR_INDEX;
             }
+            lastSelectEndPosition = selectEndPosition;
         }
     }
 
