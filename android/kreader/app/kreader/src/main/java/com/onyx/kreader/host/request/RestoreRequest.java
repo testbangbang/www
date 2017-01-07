@@ -14,6 +14,7 @@ import com.onyx.kreader.host.math.PageManager;
 import com.onyx.kreader.host.options.BaseOptions;
 import com.onyx.kreader.host.wrapper.Reader;
 import com.onyx.kreader.reflow.ImageReflowSettings;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.utils.DeviceConfig;
 import com.onyx.kreader.utils.ImageUtils;
 
@@ -141,6 +142,7 @@ public class RestoreRequest extends BaseReaderRequest {
         if (fontSize == BaseOptions.INVALID_FLOAT_VALUE) {
             int index = DeviceConfig.sharedInstance(getContext()).getDefaultFontSizeIndex();
             fontSize = ReaderTextStyle.getFontSizeByIndex(index).getValue();
+            fontSize = SingletonSharedPreference.getLastFontSize(fontSize);
         }
         return fontSize;
     }
@@ -150,6 +152,7 @@ public class RestoreRequest extends BaseReaderRequest {
         if (lineSpacing == BaseOptions.INVALID_INT_VALUE) {
             int index = DeviceConfig.sharedInstance(getContext()).getDefaultLineSpacingIndex();
             lineSpacing = ReaderTextStyle.getLineSpacingByIndex(index).getPercent();
+            lineSpacing = SingletonSharedPreference.getLastLineSpacing(lineSpacing);
         }
         return lineSpacing;
     }
@@ -158,6 +161,7 @@ public class RestoreRequest extends BaseReaderRequest {
         int leftMargin = baseOptions.getLeftMargin();
         if (leftMargin == BaseOptions.INVALID_INT_VALUE) {
             leftMargin = getDefaultPageMargin(getContext()).getLeftMargin().getPercent();
+            leftMargin = SingletonSharedPreference.getLastLeftMargin(leftMargin);
         }
         return leftMargin;
     }
@@ -166,6 +170,7 @@ public class RestoreRequest extends BaseReaderRequest {
         int topMargin = baseOptions.getTopMargin();
         if (topMargin == BaseOptions.INVALID_INT_VALUE) {
             topMargin = getDefaultPageMargin(getContext()).getTopMargin().getPercent();
+            topMargin = SingletonSharedPreference.getLastTopMargin(topMargin);
         }
         return topMargin;
     }
@@ -174,6 +179,7 @@ public class RestoreRequest extends BaseReaderRequest {
         int rightMargin = baseOptions.getRightMargin();
         if (rightMargin == BaseOptions.INVALID_INT_VALUE) {
             rightMargin = getDefaultPageMargin(getContext()).getRightMargin().getPercent();
+            rightMargin = SingletonSharedPreference.getLastRightMargin(rightMargin);
         }
         return rightMargin;
     }
@@ -182,6 +188,7 @@ public class RestoreRequest extends BaseReaderRequest {
         int bottomMargin = baseOptions.getBottomMargin();
         if (bottomMargin == BaseOptions.INVALID_INT_VALUE) {
             bottomMargin = getDefaultPageMargin(getContext()).getBottomMargin().getPercent();
+            bottomMargin = SingletonSharedPreference.getLastBottomMargin(bottomMargin);
         }
         return bottomMargin;
     }
