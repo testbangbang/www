@@ -23,6 +23,7 @@ public class NoteApplication extends Application {
 
 
     private static NoteViewHelper noteViewHelper;
+    private static NoteApplication instance;
 
     public static NoteViewHelper getNoteViewHelper() {
         if (noteViewHelper == null) {
@@ -38,8 +39,13 @@ public class NoteApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         initDataProvider(this);
         installExceptionHandler();
+    }
+
+    public static NoteApplication getInstance() {
+        return instance;
     }
 
     private void initDataProvider(final Context context) {
