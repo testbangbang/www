@@ -38,6 +38,7 @@ public class AddAnnotationAction extends BaseAction {
         readerDataHolder.submitRenderRequest(new AddAnnotationRequest(pageInfo, locationBegin, locationEnd, rects, quote, note), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.onTextSelected(quote, note);
                 BaseCallback.invoke(callback, request, e);
             }
         });

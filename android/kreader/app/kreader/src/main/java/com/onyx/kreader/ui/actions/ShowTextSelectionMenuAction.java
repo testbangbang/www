@@ -11,6 +11,7 @@ import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogAnnotation;
 import com.onyx.kreader.ui.dialog.PopupSelectionMenu;
+import com.onyx.kreader.ui.events.DictionaryLookupEvent;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
 
@@ -96,7 +97,7 @@ public class ShowTextSelectionMenuAction{
                     if (StringUtils.isNullOrEmpty(text)) {
                         return;
                     }
-                    lookupInDictionary(readerActivity, text);
+                    lookupInDictionary(readerActivity, readerDataHolder, text);
                     closeMenu();
                 }
 
@@ -144,7 +145,8 @@ public class ShowTextSelectionMenuAction{
                 selection.getRectangles(), selection.getText(), note).execute(readerDataHolder, null);
     }
 
-    private static void lookupInDictionary(final ReaderActivity activity, String text) {
+    private static void lookupInDictionary(final ReaderActivity activity, final ReaderDataHolder readerDataHolder, String text) {
+        readerDataHolder.onDictionaryLookup(text);
         text = StringUtils.trim(text);
         OnyxDictionaryInfo info = OnyxDictionaryInfo.getDefaultDictionary();
         Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
