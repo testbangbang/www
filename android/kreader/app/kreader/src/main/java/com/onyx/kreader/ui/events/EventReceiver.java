@@ -1,9 +1,15 @@
 package com.onyx.kreader.ui.events;
 
 
+import android.content.Context;
+
+import com.onyx.android.sdk.statistics.StatisticsBase;
 import com.onyx.android.sdk.statistics.StatisticsManager;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.Map;
 
 /**
  * Created by zhuzeng on 08/01/2017.
@@ -14,7 +20,11 @@ public class EventReceiver {
     private boolean enable = true;
     private StatisticsManager statisticsManager = new StatisticsManager();
 
-    public EventReceiver() {
+    public EventReceiver(final Context context) {
+        Map<String, String> args = new HashedMap<>();
+        args.put(StatisticsBase.KEY_TAG, "5871bb2907fe65168c000f07");
+        args.put(StatisticsBase.CHANNEL_TAG, "normal");
+        statisticsManager.init(context, args);
     }
 
     public boolean isEnable() {

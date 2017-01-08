@@ -54,7 +54,7 @@ public class ReaderDataHolder {
     private NoteManager noteManager;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private EventBus eventBus = new EventBus();
-    private EventReceiver eventReceiver = new EventReceiver();
+    private EventReceiver eventReceiver;
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
@@ -534,6 +534,9 @@ public class ReaderDataHolder {
     }
 
     public void prepareEventReceiver() {
+        if (eventReceiver == null) {
+            eventReceiver = new EventReceiver(getContext());
+        }
         getEventBus().register(eventReceiver);
     }
 
@@ -545,6 +548,7 @@ public class ReaderDataHolder {
     }
 
     public void onDocumentClosed() {
+        getEventBus().post(new DocumentCloseEvent(getContext()));
         getEventBus().unregister(eventReceiver);
     }
 
