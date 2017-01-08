@@ -3,7 +3,6 @@ package com.onyx.kreader.ui.handler;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 

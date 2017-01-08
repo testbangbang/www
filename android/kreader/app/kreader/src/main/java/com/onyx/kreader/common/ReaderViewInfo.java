@@ -46,6 +46,14 @@ public class ReaderViewInfo {
         return visiblePages.get(0);
     }
 
+    public final String getFirstVisiblePageName() {
+        final PageInfo pageInfo = getFirstVisiblePage();
+        if (pageInfo == null) {
+            return null;
+        }
+        return pageInfo.getName();
+    }
+
     public final PageInfo getPageInfo(final String pagePosition) {
         for(PageInfo pageInfo : getVisiblePages()) {
             if (pageInfo.getPosition().equals(pagePosition)) {
