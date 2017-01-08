@@ -25,6 +25,8 @@ public interface StatisticsBase {
 
     void onDocumentOpenedEvent(final Context context, final String path, final String md5);
 
+    void onDocumentClosed(final Context context);
+
     void onPageChangedEvent(final Context context, final String last, final String current, long duration);
 
     void onTextSelectedEvent(final Context context, final String text);

@@ -46,11 +46,16 @@ public class UMeng implements StatisticsBase {
             return;
         }
 
+        MobclickAgent.onResume(context);
         Map<String,String> map = new HashMap<String,String>();
         map.put("path", path);
         map.put("md5", md5);
         addHardwareInfo(map);
         MobclickAgent.onEvent(context, "documentOpen", map);
+    }
+
+    public void onDocumentClosed(final Context context) {
+        MobclickAgent.onPause(context);
     }
 
     public void onPageChangedEvent(final Context context, final String last, final String current, long duration) {
