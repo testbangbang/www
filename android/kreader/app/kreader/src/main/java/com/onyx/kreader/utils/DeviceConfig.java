@@ -59,6 +59,8 @@ public class DeviceConfig {
     private int defaultLineSpacingIndex = 1;
     private int defaultPageMarginIndex = 1;
     private boolean exitAfterFinish = false;
+    private String umengKey;
+    private String channel;
 
     // in seconds
     private int slideshowMinimumInterval = 1;
@@ -511,6 +513,22 @@ public class DeviceConfig {
 
     public void setDefaultFontSizes(Float[] defaultFontSizes) {
         this.defaultFontSizes = defaultFontSizes;
+    }
+
+    public String getUmengKey() {
+        return umengKey;
+    }
+
+    public void setUmengKey(String umengKey) {
+        this.umengKey = umengKey;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 }
 

@@ -5,7 +5,9 @@ import android.content.Context;
 
 import com.onyx.android.sdk.statistics.StatisticsBase;
 import com.onyx.android.sdk.statistics.StatisticsManager;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.ui.settings.SystemSettingsActivity;
+import com.onyx.kreader.utils.DeviceConfig;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.greenrobot.eventbus.Subscribe;
@@ -24,9 +26,19 @@ public class EventReceiver {
 
     public EventReceiver(final Context context) {
         Map<String, String> args = new HashedMap<>();
-        args.put(StatisticsBase.KEY_TAG, "5871bb2907fe65168c000f07");
-        args.put(StatisticsBase.CHANNEL_TAG, "normal");
+        final String key = DeviceConfig.sharedInstance(context).getUmengKey();
+        final String channel = DeviceConfig.sharedInstance(context).getChannel();
+        if (StringUtils.isBlank(key) || StringUtils.isBlank(channel)) {
+            setEnable(false);
+            return;
+        }
+        args.put(StatisticsBase.KEY_TAG, key);
+        args.put(StatisticsBase.CHANNEL_TAG, channel);
         statisticsManager.init(context, args);
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     public boolean isEnable() {
