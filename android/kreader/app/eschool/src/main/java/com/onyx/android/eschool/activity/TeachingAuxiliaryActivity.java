@@ -22,6 +22,7 @@ import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.model.AppConfig;
+import com.onyx.android.eschool.utils.DisplayModeUtils;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -46,6 +47,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -80,6 +82,10 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
 
     private ProductQuery productQuery = new ProductQuery();
 
+    private boolean displayMode = false;
+    private String displayDocumentPath = "/mnt/sdcard/slide/PL-TEST-2.pdf";
+    private int displayCount = 0;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +112,18 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
     @Override
     protected void initConfig() {
         loadCloudConf();
+        initDisplayModeConfig();
+    }
+
+    private void initDisplayModeConfig() {
+        displayMode = AppConfig.sharedInstance(this).isForDisplayHomeLayout();
+        if (displayMode) {
+            String displayPath = AppConfig.sharedInstance(this).getTeachingAuxiliaryDocumentDisplayFilePath();
+            if (StringUtils.isNotBlank(displayPath)) {
+                displayDocumentPath = displayPath;
+            }
+            displayCount = TestUtils.randInt(11, 17);
+        }
     }
 
     private void loadCloudConf() {
@@ -225,11 +243,11 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
 
                 if (StringUtils.isNotBlank(product.coverUrl)) {
                     Picasso.with(SchoolApp.singleton())
-                            .load(productList.get(position).coverUrl).fit().centerCrop()
+                            .load(product.coverUrl).fit().centerCrop()
                             .placeholder(R.drawable.cloud_cover).error(R.drawable.cloud_cover)
                             .into(viewHolder.coverImage);
                 } else {
-                    viewHolder.coverImage.setImageResource(R.drawable.cloud_cover);
+                    viewHolder.coverImage.setImageResource(getDefaultProductCover(position));
                 }
             }
         });
@@ -241,6 +259,13 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private int getDefaultProductCover(int position) {
+        if (!displayMode) {
+            return R.drawable.cloud_cover;
+        }
+        return DisplayModeUtils.getTeachingAuxiliaryCover(position);
     }
 
     private void updatePageIndicatorView() {
@@ -290,6 +315,7 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
                     return;
                 }
                 List<Product> list = StoreUtils.getResultList(listRequest.getProductResult());
+                processLoadProductList(list);
                 if (CollectionUtils.isNullOrEmpty(list)) {
                     showToast(R.string.category_below_content_empty_tip, Toast.LENGTH_SHORT);
                 }
@@ -399,6 +425,14 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
         startSearch(searchEdit.getText().toString().trim());
     }
 
+    private void processLoadProductList(List<Product> list) {
+        if (!displayMode) {
+            return;
+        }
+        list.clear();
+        list.addAll(DisplayModeUtils.getRandomProductList(displayCount));
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
@@ -498,6 +532,9 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
     }
 
     private File getDataSaveFilePath(Product product) {
+        if (product == null) {
+            return null;
+        }
         File dir = CloudUtils.dataCacheDirectory(this, product.getGuid());
         File[] files = dir.listFiles();
         if (files == null || files.length <= 0) {
@@ -555,6 +592,9 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
 
     private void openCloudFile(final Product product) {
         File file = getDataSaveFilePath(product);
+        if(displayMode){
+            file = new File(displayDocumentPath);
+        }
         if (file == null || !file.exists()) {
             return;
         }
@@ -565,7 +605,7 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
 
     private void processProductItemClick(final int position) {
         Product product = productList.get(position);
-        if (isFileExists(product)) {
+        if (isFileExists(product) || displayMode) {
             openCloudFile(product);
             return;
         }
