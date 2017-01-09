@@ -42,11 +42,13 @@ public class ShapeSpan extends ReplacementSpan {
         if (fm == null) {
             return width;
         }
-        float height = fm.bottom - fm.top - 2 * SHAPE_SPAN_MARGIN;
         RectF rect = boundingRect();
-        scale = height / rect.height();
-        if (scale > 1.0f) {
-            scale = Math.min(height / rect.width(), scale);
+        if (needUpdateShape) {
+            float height = fm.bottom - fm.top - 2 * SHAPE_SPAN_MARGIN;
+            scale = height / rect.height();
+            if (scale > 1.0f) {
+                scale = Math.min(height / rect.width(), scale);
+            }
         }
         width = (int)(rect.width() * scale) + 2 * SHAPE_SPAN_MARGIN;
         return width;

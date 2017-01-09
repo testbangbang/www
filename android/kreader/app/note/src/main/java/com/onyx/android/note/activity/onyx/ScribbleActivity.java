@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.scribble.ClearAllFreeShapesAction;
@@ -57,11 +58,13 @@ import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -320,7 +323,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private void afterDrawLineLayoutShapes(final List<Shape> lineLayoutShapes) {
         if (checkShapesOutOfRange(lineLayoutShapes)) {
             lineLayoutShapes.clear();
-            Toast.makeText(this, getString(R.string.shape_out_of_range), Toast.LENGTH_SHORT).show();
+            showOutOfRangeTips();
             syncWithCallback(true, !isKeyboardInput(), new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -353,6 +356,10 @@ public class ScribbleActivity extends BaseScribbleActivity {
         int top = args.getLineTop(line);
         int bottom = args.getLineBottom(line);
         getNoteViewHelper().updateCursorShape(x, top + 1 , x, bottom);
+    }
+
+    private void showOutOfRangeTips() {
+        ToastUtils.showToast(NoteApplication.getInstance(), getString(R.string.shape_out_of_range));
     }
 
     private boolean checkShapesOutOfRange(List<Shape> shapes) {
@@ -496,6 +503,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void showExportMenu() {
+        hideSoftInput();
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -505,6 +513,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onSave(final boolean finishAfterSave) {
+        hideSoftInput();
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -574,16 +583,22 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onEnter() {
+        float spaceWidth = (int) spanTextView.getPaint().measureText(SpannableRequest.SPACE_SPAN);
         int pos = spanTextView.getSelectionStart();
         Layout layout = spanTextView.getLayout();
         int line = layout.getLineForOffset(pos);
         if (line == (getNoteViewHelper().getLineLayoutArgs().getLineCount() - 1)) {
-            Toast.makeText(this, getString(R.string.shape_out_of_range), Toast.LENGTH_SHORT).show();
+            showOutOfRangeTips();
+            syncWithCallback(true,true, null);
             return;
         }
-        float x = layout.getPrimaryHorizontal(pos);
-
-        spanTextHandler.buildSpaceShape((int) Math.ceil(spanTextView.getMeasuredWidth() - x), getSpanTextFontHeight());
+        int width = spanTextView.getMeasuredWidth();
+        float x = layout.getPrimaryHorizontal(pos) - spaceWidth;
+        x = x >= width ? 0 : x;
+        if (isBuildingSpan()) {
+            return;
+        }
+        spanTextHandler.buildSpaceShape((int) Math.ceil(spanTextView.getMeasuredWidth() - x) - 2 * ShapeSpan.SHAPE_SPAN_MARGIN, getSpanTextFontHeight());
     }
 
     private void onKeyboard() {
@@ -686,6 +701,21 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 break;
             case ScribbleSubMenuID.BG_LEFT_GRID:
                 onBackgroundChanged(NoteBackgroundType.LEFT_GRID);
+                break;
+            case ScribbleSubMenuID.BG_GRID_5_5:
+                onBackgroundChanged(NoteBackgroundType.GRID_5_5);
+                break;
+            case ScribbleSubMenuID.BG_GRID_POINT:
+                onBackgroundChanged(NoteBackgroundType.GRID_POINT);
+                break;
+            case ScribbleSubMenuID.BG_LINE_1_6:
+                onBackgroundChanged(NoteBackgroundType.LINE_1_6);
+                break;
+            case ScribbleSubMenuID.BG_LINE_2_0:
+                onBackgroundChanged(NoteBackgroundType.LINE_2_0);
+                break;
+            case ScribbleSubMenuID.BG_CALENDAR:
+                onBackgroundChanged(NoteBackgroundType.CALENDAR);
                 break;
             case ScribbleSubMenuID.PEN_COLOR_BLACK:
                 setStrokeColor(Color.BLACK);

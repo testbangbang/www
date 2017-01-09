@@ -24,6 +24,9 @@ public class EpdDevice {
     public void resetUpdate(View view) {
     }
 
+    public void cleanUpdate(View view) {
+    }
+
     public void enableScreenUpdate(View view, boolean enable) {
         EpdController.enableScreenUpdate(view, enable);
     }

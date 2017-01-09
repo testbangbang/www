@@ -129,7 +129,6 @@ public class ReaderActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
-        beforeSetContentView();
         setContentView(R.layout.activity_reader);
         initComponents();
     }
@@ -358,7 +357,8 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void syncSystemStatusBar() {
-        setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
+        boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
+        setFullScreen(fullScreen);
     }
 
     @Subscribe
@@ -405,7 +405,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void afterDrawPage() {
-        ReaderDeviceManager.resetUpdateMode(surfaceView);
+        ReaderDeviceManager.cleanUpdateMode(surfaceView);
         updateAllStatusBars();
     }
 
