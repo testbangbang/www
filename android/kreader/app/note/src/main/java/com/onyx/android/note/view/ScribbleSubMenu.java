@@ -383,7 +383,7 @@ public class ScribbleSubMenu extends RelativeLayout {
     private GAdapter createLineLayoutBGAdapter() {
         GAdapter bgMenus = new GAdapter();
         bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_white, ScribbleSubMenuID.BG_EMPTY, true));
-        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_line, ScribbleSubMenuID.BG_LINE, true));
+        bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_line_layout_line, ScribbleSubMenuID.BG_LINE, true));
         return bgMenus;
     }
 
