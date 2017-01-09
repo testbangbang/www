@@ -5,24 +5,17 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
-import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
-
-import java.net.SocketException;
-import java.util.List;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.data.wifi.AccessPoint;
 import com.onyx.android.libsetting.databinding.ActivityWifiSettingBinding;
 import com.onyx.android.libsetting.databinding.WifiInfoItemBinding;
+import com.onyx.android.libsetting.manager.WifiAdmin;
 import com.onyx.android.libsetting.util.CommonUtil;
 import com.onyx.android.libsetting.util.SettingRecyclerViewUtil;
-import com.onyx.android.libsetting.manager.WifiAdmin;
 import com.onyx.android.libsetting.util.WifiUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.PageRecyclerViewItemClickListener;
@@ -30,6 +23,13 @@ import com.onyx.android.libsetting.view.SettingPageAdapter;
 import com.onyx.android.libsetting.view.dialog.WifiConnectedDialog;
 import com.onyx.android.libsetting.view.dialog.WifiLoginDialog;
 import com.onyx.android.libsetting.view.dialog.WifiSavedDialog;
+import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
+import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
+import com.onyx.android.sdk.ui.view.PageRecyclerView;
+
+import java.net.SocketException;
+import java.util.List;
 
 import static android.net.wifi.WifiInfo.LINK_SPEED_UNITS;
 import static com.onyx.android.libsetting.util.Constant.ARGS_BAND;
@@ -53,11 +53,13 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         wifiAdmin = new WifiAdmin(this, new WifiAdmin.Callback() {
             @Override
             public void onWifiStateChange(boolean isWifiEnable) {
+                Log.e(TAG, "onWifiStateChange: " );
                 updateUI(isWifiEnable);
             }
 
             @Override
             public void onScanResultReady(List<AccessPoint> scanResult) {
+                Log.e(TAG, "onScanResultReady: " );
                 adapter.setDataList(scanResult);
                 updateSummary(true);
                 adapter.notifyDataSetChanged();
@@ -65,12 +67,14 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
 
             @Override
             public void onSupplicantStateChanged(NetworkInfo.DetailedState state) {
+                Log.e(TAG, "onSupplicantStateChanged: " +state);
                 updateAccessPointDetailedState(state);
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onNetworkConnectionChange(NetworkInfo.DetailedState state) {
+                Log.e(TAG, "onNetworkConnectionChange: "+state );
                 updateAccessPointDetailedState(state);
                 adapter.notifyDataSetChanged();
             }
@@ -157,7 +161,7 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
     }
 
     private void buildAdapter() {
-        adapter = new SettingPageAdapter<WifiResultItemViewHolder,AccessPoint>() {
+        adapter = new SettingPageAdapter<WifiResultItemViewHolder, AccessPoint>() {
             @Override
             public int getRowCount() {
                 return WifiSettingActivity.this.getResources().getInteger(R.integer.wifi_per_page_item_count);
@@ -183,8 +187,8 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
 
         adapter.setItemClickListener(new PageRecyclerViewItemClickListener<AccessPoint>() {
             @Override
-            public void itemClick(final AccessPoint accessPoint) {
-                if (accessPoint.getWifiInfo() != null) {
+            public void itemClick(AccessPoint accessPoint) {
+                if (accessPoint.isConnected()) {
                     showConnectDialog(accessPoint);
                 } else if (accessPoint.getWifiConfiguration() == null) {
                     showLoginDialog(accessPoint);

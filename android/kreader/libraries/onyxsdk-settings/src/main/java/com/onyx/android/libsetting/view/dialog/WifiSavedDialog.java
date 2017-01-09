@@ -37,7 +37,7 @@ public class WifiSavedDialog extends OnyxAlertDialog {
         final String signalLevel = arguments.getString(ARGS_SIGNAL_LEVEL);
         final String securityMode = arguments.getString(ARGS_SECURITY_MODE);
         Params params = new Params().setTittleString(ssid)
-                .setCustomContentLayoutResID(R.layout.alert_dialog_wifi_connected)
+                .setCustomContentLayoutResID(R.layout.alert_dialog_wifi_saved)
                 .setEnableNeutralButton(true)
                 .setCustomViewAction(new CustomViewAction() {
                     @Override
