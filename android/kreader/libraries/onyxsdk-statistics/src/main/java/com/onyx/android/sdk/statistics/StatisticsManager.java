@@ -29,7 +29,7 @@ public class StatisticsManager {
         getImpl().onDocumentOpenedEvent(context, path, md5);
     }
 
-    public void onPageChangedEvent(final Context context, final String last, final String current, long duration) {
+    public void onPageChangedEvent(final Context context, final String last, final String current, int duration) {
         getImpl().onPageChangedEvent(context, last, current, duration);
     }
 

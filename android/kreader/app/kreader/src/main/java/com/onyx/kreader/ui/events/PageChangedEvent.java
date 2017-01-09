@@ -12,7 +12,7 @@ public class PageChangedEvent {
 
     private String lastPage;
     private String currentPage;
-    private long duration;
+    private int duration;
     private Context context;
 
     public PageChangedEvent() {
@@ -45,11 +45,11 @@ public class PageChangedEvent {
         this.currentPage = currentPage;
     }
 
-    public long getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 

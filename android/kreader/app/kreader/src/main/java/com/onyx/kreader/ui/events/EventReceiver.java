@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.onyx.android.sdk.statistics.StatisticsBase;
 import com.onyx.android.sdk.statistics.StatisticsManager;
+import com.onyx.kreader.ui.settings.SystemSettingsActivity;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.greenrobot.eventbus.Subscribe;
@@ -19,6 +20,7 @@ public class EventReceiver {
 
     private boolean enable = true;
     private StatisticsManager statisticsManager = new StatisticsManager();
+    private long lastTimestamp = 0;
 
     public EventReceiver(final Context context) {
         Map<String, String> args = new HashedMap<>();
@@ -31,12 +33,17 @@ public class EventReceiver {
         return enable;
     }
 
+    private void updateLastTimestamp() {
+        lastTimestamp = System.currentTimeMillis();
+    }
+
     @Subscribe
     public void onDocumentOpened(final DocumentOpenEvent event) {
         if (!isEnable()) {
             return;
         }
         statisticsManager.onDocumentOpenedEvent(event.getContext(), event.getPath(), event.getMd5());
+        updateLastTimestamp();
     }
 
     @Subscribe
@@ -44,6 +51,8 @@ public class EventReceiver {
         if (!isEnable()) {
             return;
         }
+        event.setDuration((int)(System.currentTimeMillis() - lastTimestamp));
+        updateLastTimestamp();
         statisticsManager.onPageChangedEvent(event.getContext(), event.getLastPage(), event.getCurrentPage(), event.getDuration());
     }
 

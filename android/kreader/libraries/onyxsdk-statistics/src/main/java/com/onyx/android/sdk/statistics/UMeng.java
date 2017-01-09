@@ -58,7 +58,7 @@ public class UMeng implements StatisticsBase {
         MobclickAgent.onPause(context);
     }
 
-    public void onPageChangedEvent(final Context context, final String last, final String current, long duration) {
+    public void onPageChangedEvent(final Context context, final String last, final String current, int duration) {
         if (context == null) {
             return;
         }
@@ -68,7 +68,7 @@ public class UMeng implements StatisticsBase {
         map.put("current", current);
         map.put("duration", String.valueOf(duration));
         addHardwareInfo(map);
-        MobclickAgent.onEvent(context, "pageChange", map);
+        MobclickAgent.onEventValue(context, "pageChange", map, duration);
     }
 
     public void onTextSelectedEvent(final Context context, final String text) {
