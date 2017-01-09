@@ -132,13 +132,10 @@ public class WifiAdmin {
             AccessPoint point = new AccessPoint(item, this);
             if (getCurrentConnectionInfo() != null && point.getWifiConfiguration() != null) {
                 if (point.getWifiConfiguration().networkId == getCurrentConnectionInfo().getNetworkId()) {
-                    Log.e(TAG, "updateWifiInfo: before");
                     point.updateWifiInfo();
-                    Log.e(TAG, "updateWifiInfo: after");
                     point.setDetailedState(NetworkInfo.DetailedState.CONNECTED);
                     point.setSecurityString(context.getString(R.string.wifi_connected));
                     connectedPoint = point;
-                    Log.e(TAG, "buildResultList: "+point.isConnected() );
                 }
             }
             resultList.add(point);
@@ -318,7 +315,6 @@ public class WifiAdmin {
     }
 
     public WifiInfo getWifiInfo(ScanResult result) {
-        Log.e(TAG, "getWifiInfo");
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if (wifiInfo == null) {
             return null;
