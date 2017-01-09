@@ -235,6 +235,30 @@ public class BaseNoteRequest extends BaseRequest {
             case NoteBackgroundType.MATS:
                 bgResID = R.drawable.scribble_back_ground_mats;
                 break;
+            case NoteBackgroundType.TABLE:
+                bgResID = R.drawable.scribble_back_ground_table_grid;
+                break;
+            case NoteBackgroundType.COLUMN:
+                bgResID = R.drawable.scribble_back_ground_line_column;
+                break;
+            case NoteBackgroundType.LEFT_GRID:
+                bgResID = R.drawable.scribble_back_ground_left_grid;
+                break;
+            case NoteBackgroundType.GRID_5_5:
+                bgResID = R.drawable.scribble_back_ground_grid_5_5;
+                break;
+            case NoteBackgroundType.GRID_POINT:
+                bgResID = R.drawable.scribble_back_ground_grid_point;
+                break;
+            case NoteBackgroundType.LINE_1_6:
+                bgResID = R.drawable.scribble_back_ground_line_1_6;
+                break;
+            case NoteBackgroundType.LINE_2_0:
+                bgResID = R.drawable.scribble_back_ground_line_2_0;
+                break;
+            case NoteBackgroundType.CALENDAR:
+                bgResID = R.drawable.scribble_back_ground_calendar;
+                break;
         }
         drawBackgroundResource(canvas, paint, bgResID);
 

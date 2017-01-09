@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,10 +17,13 @@ import com.onyx.android.edu.R;
 import com.onyx.android.edu.adapter.ChooseMultiAdapter;
 import com.onyx.android.edu.base.BaseFragment;
 import com.onyx.android.edu.base.Config;
+import com.onyx.android.sdk.ui.compat.AppCompatLinearLayout;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.libedu.model.BookNode;
 import com.onyx.libedu.model.Document;
 import com.onyx.libedu.model.KnowledgePoint;
@@ -29,6 +33,7 @@ import com.onyx.libedu.model.Subject;
 import com.onyx.libedu.model.Textbook;
 import com.onyx.libedu.model.Version;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +77,7 @@ public class ChooseExerciseColorFragment extends BaseFragment implements ChooseE
 
 
     private ChooseExerciseContract.ChooseExercisePresenter presenter;
+    private String documentDisplayPath = "/mnt/sdcard/slide/sample-cfa-png.pdf";
 
     public static ChooseExerciseColorFragment newInstance() {
         return new ChooseExerciseColorFragment();
@@ -332,7 +338,7 @@ public class ChooseExerciseColorFragment extends BaseFragment implements ChooseE
         exerciseList.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override
             public int getRowCount() {
-                return 2;
+                return 3;
             }
 
             @Override
@@ -342,7 +348,7 @@ public class ChooseExerciseColorFragment extends BaseFragment implements ChooseE
 
             @Override
             public int getDataCount() {
-                return 20;
+                return 17;
             }
 
             @Override
@@ -351,10 +357,37 @@ public class ChooseExerciseColorFragment extends BaseFragment implements ChooseE
             }
 
             @Override
-            public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+            public void onPageBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+                CommonViewHolder viewHolder = (CommonViewHolder)holder;
+                ImageView imageView = viewHolder.getView(R.id.practice_image);
+                String imageName = String.format("practice_bg%d", position + 1);
+                imageView.setImageResource(getImageResourceId(imageName));
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openDocumentFile(position);
+                    }
+                });
             }
         });
+    }
+
+    private void openDocumentFile(final int position) {
+        ActivityUtil.startActivitySafely(getActivity(),
+                ViewDocumentUtils.viewActionIntentWithMimeType(new File(documentDisplayPath)),
+                ViewDocumentUtils.getReaderComponentName(getActivity()));
+    }
+
+    public int getImageResourceId(String name) {
+        R.drawable drawables=new R.drawable();
+        int resId= R.drawable.practice_bg1;
+        try {
+            java.lang.reflect.Field field=R.drawable.class.getField(name);
+            resId=(Integer)field.get(drawables);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resId;
     }
 
 }

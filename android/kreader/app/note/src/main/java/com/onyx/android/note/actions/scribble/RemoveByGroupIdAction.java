@@ -15,9 +15,11 @@ import com.onyx.android.sdk.utils.StringUtils;
 public class RemoveByGroupIdAction<T extends BaseScribbleActivity> extends BaseNoteAction<T> {
     private ShapeRemoveByGroupIdRequest changeRequest;
     private String groupId;
+    private boolean resume;
 
-    public RemoveByGroupIdAction(String groupId) {
+    public RemoveByGroupIdAction(String groupId, final boolean resume) {
         this.groupId = groupId;
+        this.resume = resume;
     }
 
     public void execute(final T activity) {
@@ -34,7 +36,7 @@ public class RemoveByGroupIdAction<T extends BaseScribbleActivity> extends BaseN
         if (StringUtils.isNullOrEmpty(groupId)) {
             return;
         }
-        changeRequest = new ShapeRemoveByGroupIdRequest(groupId);
+        changeRequest = new ShapeRemoveByGroupIdRequest(groupId, resume);
         activity.submitRequest(changeRequest, callback);
     }
 

@@ -40,6 +40,14 @@ public class ScribbleSubMenuID {
     public static final int PEN_COLOR_GREEN = 23;
     public static final int PEN_COLOR_MAGENTA = 24;
     public static final int THICKNESS_CUSTOM_BOLD = 25;
+    public static final int BG_TABLE_GRID = 26;
+    public static final int BG_LEFT_GRID = 27;
+    public static final int BG_LINE_COLUMN = 28;
+    public static final int BG_GRID_5_5 = 29;
+    public static final int BG_GRID_POINT = 30;
+    public static final int BG_LINE_1_6 = 31;
+    public static final int BG_LINE_2_0 = 32;
+    public static final int BG_CALENDAR = 33;
 
     private static Map<Float, Integer> strokeMapping;
 
@@ -50,7 +58,8 @@ public class ScribbleSubMenuID {
     @IntDef({THICKNESS_ULTRA_LIGHT, THICKNESS_LIGHT, THICKNESS_NORMAL, THICKNESS_BOLD,
             THICKNESS_ULTRA_BOLD, THICKNESS_CUSTOM_BOLD, NORMAL_PEN_STYLE, BRUSH_PEN_STYLE, LINE_STYLE, TRIANGLE_STYLE,
             CIRCLE_STYLE, RECT_STYLE, ERASE_PARTIALLY, ERASE_TOTALLY, BG_EMPTY, BG_GRID, BG_LINE, BG_MATS, BG_ENGLISH, BG_MUSIC,
-            PEN_COLOR_BLACK, PEN_COLOR_RED, PEN_COLOR_YELLOW, PEN_COLOR_BLUE, PEN_COLOR_GREEN, PEN_COLOR_MAGENTA})
+            PEN_COLOR_BLACK, PEN_COLOR_RED, PEN_COLOR_YELLOW, PEN_COLOR_BLUE, PEN_COLOR_GREEN, PEN_COLOR_MAGENTA, BG_TABLE_GRID,
+            BG_LEFT_GRID, BG_LINE_COLUMN, BG_GRID_5_5, BG_GRID_POINT, BG_LINE_1_6, BG_LINE_2_0, BG_CALENDAR})
     // Create an interface for validating int types
     public @interface ScribbleSubMenuIDDef {
     }

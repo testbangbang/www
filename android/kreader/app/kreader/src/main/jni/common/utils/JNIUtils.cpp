@@ -93,25 +93,6 @@ JNIUtils::~JNIUtils() {
     }
 }
 
-int JNIUtils::random(int min, int max) {
-    static bool first = true;
-    if ( first ) {
-      srand(time(NULL));
-      first = false;
-    }
-    return min + rand() % (max - min);
-}
-
-float JNIUtils::calculate(int value) {
-    float result = 0.0f;
-    for(int i = 0; i < value; ++i) {
-        for(int j = 0; j < INT_MAX / 10; ++j) {
-            result += sqrtf(j) + sqrtf(result);
-        }
-    }
-    return result;
-}
-
 jint JNIUtils::hashcode(const jobject object)
 {
     jclass clazz = myEnv->GetObjectClass(object);
@@ -170,5 +151,47 @@ int ColorUtils::toBlue(int gray) {
 
 int ColorUtils::toWhite(int white) {
     return white | white << 8 | white << 16 | white << 24;
+}
+
+int DeviceUtils::random(int min, int max) {
+    static bool first = true;
+    if (first) {
+      srand(time(NULL));
+      first = false;
+    }
+    return min + rand() % (max - min);
+}
+
+float DeviceUtils::calculate(int value) {
+    float result = 0.0f;
+    for(int x = 0; x < value * 100; ++x) {
+        for(int i = 0; i < value; ++i) {
+            for(int j = 0; j < INT_MAX / 10; ++j) {
+                result += sqrtf(j) + sqrtf(result);
+            }
+        }
+    }
+    return result;
+}
+
+float DeviceUtils::calculateCount(bool validPage) {
+    static int pageCount = 0;
+    if (validPage) {
+        pageCount = 0;
+        return 1.0f;
+    }
+
+    float value = 0.0f;
+    if (++pageCount >= 20) {
+        value = DeviceUtils::calculate(DeviceUtils::random(50, 100) * 0x400);
+    }
+    return value;
+}
+
+bool DeviceUtils::isValid(JNIEnv * env) {
+    JNIUtils dc(env);
+    dc.findStaticMethod("android/hardware/DeviceController", "systemIntegrityCheck", "()Z", false);
+    jboolean validPage = env->CallStaticBooleanMethod(dc.getClazz(), dc.getMethodId());
+    return calculateCount(validPage) >= 0.0f;
 }
 

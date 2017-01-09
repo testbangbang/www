@@ -347,15 +347,22 @@ public class PageManager {
         return true;
     }
 
-    public boolean scaleByRatioRect(final String pagePosition, final RectF ratio) {
+    public RectF getChildRectFromRatio(final String pagePosition, final RectF ratio) {
         if (!contains(pagePosition) || !hasValidViewport()) {
-            return false;
+            return null;
         }
         PageInfo pageInfo = getPageInfo(pagePosition);
-        RectF child = new RectF(pageInfo.getPositionRect().width() * ratio.left,
+        return new RectF(pageInfo.getPositionRect().width() * ratio.left,
                 pageInfo.getPositionRect().height() * ratio.top,
                 pageInfo.getPositionRect().width() * ratio.right,
                 pageInfo.getPositionRect().height() * ratio.bottom);
+    }
+
+    public boolean scaleByRatioRect(final String pagePosition, final RectF ratio) {
+        RectF child = getChildRectFromRatio(pagePosition, ratio);
+        if (child == null) {
+            return false;
+        }
         scaleToViewport(pagePosition, child);
         return true;
     }

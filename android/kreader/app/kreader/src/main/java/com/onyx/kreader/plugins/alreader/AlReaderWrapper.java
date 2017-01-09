@@ -24,6 +24,7 @@ import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
+import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.EngBitmap;
 import com.neverland.engbook.util.TTFInfo;
 import com.neverland.engbook.util.TTFScan;
@@ -37,7 +38,6 @@ import com.onyx.kreader.api.ReaderPluginOptions;
 import com.onyx.kreader.api.ReaderSelection;
 import com.onyx.kreader.api.ReaderSentence;
 import com.onyx.kreader.api.ReaderTextSplitter;
-import com.onyx.kreader.common.Debug;
 import com.onyx.kreader.host.impl.ReaderSelectionImpl;
 import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.utils.PagePositionUtils;
@@ -160,7 +160,7 @@ public class AlReaderWrapper {
         engineOptions = new AlEngineOptions();
         engineOptions.appInstance = context;
         engineOptions.runInOneThread = true;
-        engineOptions.font_catalog = pluginOptions.getFontDirectories().get(0);
+        engineOptions.font_catalog = pluginOptions.getFontDirectories().toArray(new String[0]);
         engineOptions.hyph_lang = EngBookMyType.TAL_HYPH_LANG.ENGRUS;
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
         engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
@@ -254,7 +254,6 @@ public class AlReaderWrapper {
     public String getScreenText() {
         AlTextOnScreen screenText = getTextOnScreen();
         if (!checkTextOnScreen(screenText)) {
-            Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
         return combineSelectionText(screenText, 0, screenText.regionList.size() - 1);
@@ -262,16 +261,18 @@ public class AlReaderWrapper {
 
     public ReaderSentence getSentence(final int startPosition) {
         if (startPosition < getScreenStartPosition() ||
-                startPosition >= getScreenEndPosition()) {
+                startPosition > getScreenEndPosition()) {
             return null;
         }
         AlTextOnScreen screenText = getTextOnScreen();
         if (!checkTextOnScreen(screenText)) {
-            Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
         final int MAX_SENTENCE_LENGTH = 200;
+        int startPos = -1;
         int endPos = -1;
+        int count = 0;
+        boolean firstPos = true;
         boolean found = false;
         // sentence in the range [startPos, endPos]
         for (AlTextOnScreen.AlPieceOfText piece : screenText.regionList) {
@@ -283,11 +284,14 @@ public class AlReaderWrapper {
                 continue;
             }
             for (int i = 0; i < piece.positions.length; i++) {
+                count++;
                 endPos = piece.positions[i];
-                if (endPos <= startPosition) {
+                if (firstPos || endPos <= startPosition) {
+                    firstPos = false;
+                    startPos = endPos;
                     continue;
                 }
-                if ((endPos - startPosition + 1) >= MAX_SENTENCE_LENGTH) {
+                if (count >= MAX_SENTENCE_LENGTH) {
                     found = true;
                     break;
                 }
@@ -299,7 +303,7 @@ public class AlReaderWrapper {
             }
         }
 
-        ReaderSelectionImpl selection = combineSelection(screenText, startPosition, endPos);
+        ReaderSelectionImpl selection = combineSelection(screenText, startPos, endPos);
         boolean endOfScreen = endPos == getPieceEnd(lastPiece(screenText));
         boolean endOfDocument = endOfScreen && isLastPage();
         int nextPos = nextTextPosition(screenText, endPos);
@@ -312,7 +316,6 @@ public class AlReaderWrapper {
 
         AlTextOnScreen screenText = getTextOnScreen();
         if (!checkTextOnScreen(screenText)) {
-            Debug.w(getClass(), "get text on screen failed!");
             return result;
         }
         for (AlTextOnScreen.AlPieceOfLink link : screenText.linkList) {
@@ -474,6 +477,8 @@ public class AlReaderWrapper {
                 selection.setStartPosition(PagePositionUtils.fromPosition(result.pos_start));
                 selection.setEndPosition(PagePositionUtils.fromPosition(result.pos_end));
                 selection.setText(text);
+                selection.setLeftText(getLeftContextOfSearchResult(result));
+                selection.setRightText(getRightContextOfSearchResult(result));
                 selection.setDisplayRects(new ArrayList<RectF>());
                 list.add(selection);
             }
@@ -485,10 +490,34 @@ public class AlReaderWrapper {
         return true;
     }
 
+    private String getLeftContextOfSearchResult(AlOneSearchResult searchResult) {
+        if (StringUtils.isNullOrEmpty(searchResult.context)) {
+            return "";
+        }
+        int idx = searchResult.context.indexOf((char) AlStyles.CHAR_MARKER_FIND_S);
+        if (idx == -1) {
+            return "";
+        }
+        return searchResult.context.substring(0, idx);
+    }
+
+    private String getRightContextOfSearchResult(AlOneSearchResult searchResult) {
+        if (StringUtils.isNullOrEmpty(searchResult.context)) {
+            return "";
+        }
+        int idx = searchResult.context.indexOf((char) AlStyles.CHAR_MARKER_FIND_E);
+        if (idx == -1) {
+            return "";
+        }
+        if (idx >= searchResult.context.length() - 1) {
+            return "";
+        }
+        return searchResult.context.substring(idx + 1);
+    }
+
     public ReaderSelection selectTextOnScreen(PointF start, PointF end) {
         AlTextOnScreen screenText = getTextOnScreen();
         if (!checkTextOnScreen(screenText)) {
-            Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
 
@@ -506,7 +535,6 @@ public class AlReaderWrapper {
     public ReaderSelection selectWordOnScreen(PointF point, final ReaderTextSplitter splitter) {
         AlTextOnScreen screenText = getTextOnScreen();
         if (!checkTextOnScreen(screenText)) {
-            Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
         int pos = hitTest((int)point.x, (int)point.y);
@@ -613,7 +641,6 @@ public class AlReaderWrapper {
     public ReaderSelection selectTextOnScreen(int startPos, int endPos) {
         AlTextOnScreen screenText = getTextOnScreen();
         if (!checkTextOnScreen(screenText)) {
-            Debug.w(getClass(), "get text on screen failed!");
             return null;
         }
 

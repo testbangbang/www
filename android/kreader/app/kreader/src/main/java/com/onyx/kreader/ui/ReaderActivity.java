@@ -129,7 +129,6 @@ public class ReaderActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
-        beforeSetContentView();
         setContentView(R.layout.activity_reader);
         initComponents();
     }
@@ -358,7 +357,8 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void syncSystemStatusBar() {
-        setFullScreen(!SingletonSharedPreference.isSystemStatusBarEnabled(this));
+        boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
+        setFullScreen(fullScreen);
     }
 
     @Subscribe
@@ -382,18 +382,36 @@ public class ReaderActivity extends ActionBarActivity {
         if (!verifyReader()) {
             return;
         }
-        boolean update = (event != null && event.isApplyGCIntervalUpdate());
-        if (update) {
-            ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
-        }
+        prepareUpdateMode(event);
+
         if (event != null && !event.isWaitForShapeData()) {
             beforeDrawPage();
-            updateStatusBar();
             drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+            afterDrawPage();
         }
+
         if (event != null && event.isRenderShapeData()) {
             renderShapeDataInBackground();
         }
+    }
+
+    private void prepareUpdateMode(final RequestFinishEvent event) {
+        boolean update = (event != null && event.isApplyGCIntervalUpdate());
+        if (update) {
+            ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
+        } else {
+            ReaderDeviceManager.resetUpdateMode(surfaceView);
+        }
+    }
+
+    private void afterDrawPage() {
+        ReaderDeviceManager.cleanUpdateMode(surfaceView);
+        updateAllStatusBars();
+    }
+
+    private void updateAllStatusBars() {
+        updateReadingStatusBar();
+        getReaderDataHolder().notifyUpdateSlideshowStatusBar();
     }
 
     @Subscribe
@@ -858,7 +876,7 @@ public class ReaderActivity extends ActionBarActivity {
         return getHandlerManager().onKeyUp(getReaderDataHolder(), keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
-    private void updateStatusBar() {
+    private void updateReadingStatusBar() {
         PageInfo pageInfo = getReaderDataHolder().getFirstPageInfo();
         Rect pageRect = new Rect();
         Rect displayRect = new Rect();

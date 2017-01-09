@@ -31,6 +31,7 @@ import com.onyx.kreader.ui.actions.ChangeCodePageAction;
 import com.onyx.kreader.ui.actions.ChangeStyleAction;
 import com.onyx.kreader.ui.actions.GetFontsAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -198,7 +199,9 @@ public class DialogTextStyle extends DialogBase {
     }
 
     private void restoreAndDismiss() {
-        new ChangeCodePageAction(originalCodePage).execute(readerDataHolder, null);
+        if (originalCodePage != CODE_PAGES[selectCodePageIndex].first) {
+            new ChangeCodePageAction(originalCodePage).execute(readerDataHolder, null);
+        }
         updateReaderStyle(originalStyle, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -214,6 +217,8 @@ public class DialogTextStyle extends DialogBase {
         final TextView pageSizeIndicator = (TextView) view.findViewById(R.id.page_size_indicator);
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
         ImageView nextIcon = (ImageView) view.findViewById(R.id.next_icon);
+        ImageView decreaseIcon = (ImageView) view.findViewById(R.id.image_view_decrease_font_size);
+        ImageView increaseIcon = (ImageView) view.findViewById(R.id.image_view_increase_font_size);
 
         nextIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,6 +234,22 @@ public class DialogTextStyle extends DialogBase {
             }
         });
 
+        increaseIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReaderTextStyle.SPUnit currentSize = getReaderStyle().getFontSize();
+                applyFontSize(currentSize.increaseSPUnit(ReaderTextStyle.FONT_SIZE_STEP));
+            }
+        });
+
+        decreaseIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReaderTextStyle.SPUnit currentSize = getReaderStyle().getFontSize();
+                applyFontSize(currentSize.decreaseSPUnit(ReaderTextStyle.FONT_SIZE_STEP));
+            }
+        });
+
         pageView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
@@ -241,6 +262,9 @@ public class DialogTextStyle extends DialogBase {
         getFontsAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
                 initFontPageView(pageView, fontFace, getFontsAction.getFonts());
                 updatePageIndicator(pageView, pageSizeIndicator);
             }
@@ -463,12 +487,17 @@ public class DialogTextStyle extends DialogBase {
             fontSizeText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    readerTextStyle.setFontSize(size);
-                    updateReaderStyle(readerTextStyle);
-                    updateFontSizeTextView(fontSizeTexts, readerTextStyle);
+                    applyFontSize(size);
                 }
             });
         }
+    }
+
+    private void applyFontSize(ReaderTextStyle.SPUnit size) {
+        getReaderStyle().setFontSize(size);
+        updateReaderStyle(getReaderStyle());
+        updateFontSizeTextView(fontSizeTexts, getReaderStyle());
+        SingletonSharedPreference.setLastFontSize(size.getValue());
     }
 
     private void updateFontSpacingView(final Map<FontLevel, ImageView> spacingViewMap, final ReaderTextStyle readerTextStyle) {
@@ -507,6 +536,7 @@ public class DialogTextStyle extends DialogBase {
                     readerTextStyle.setLineSpacing(percentage);
                     updateReaderStyle(readerTextStyle);
                     updateFontSpacingView(spacingViewMap, readerTextStyle);
+                    SingletonSharedPreference.setLastLineSpacing(percentage.getPercent());
                 }
             });
         }
@@ -536,13 +566,13 @@ public class DialogTextStyle extends DialogBase {
                 public void onClick(View v) {
                     switch (fontLevel) {
                         case SMALL:
-                            currentPageMargin = ReaderTextStyle.SMALL_PAGE_MARGIN;
+                            currentPageMargin = PageMargin.copy(ReaderTextStyle.SMALL_PAGE_MARGIN);
                             break;
                         case NORMAL:
-                            currentPageMargin = ReaderTextStyle.NORMAL_PAGE_MARGIN;
+                            currentPageMargin = PageMargin.copy(ReaderTextStyle.NORMAL_PAGE_MARGIN);
                             break;
                         case LARGE:
-                            currentPageMargin = ReaderTextStyle.LARGE_PAGE_MARGIN;
+                            currentPageMargin = PageMargin.copy(ReaderTextStyle.LARGE_PAGE_MARGIN);
                             break;
                         case INCREASE:
                             if (currentPageMargin.getLeftMargin().getPercent() >=
@@ -562,6 +592,10 @@ public class DialogTextStyle extends DialogBase {
                             break;
                     }
                     readerTextStyle.setPageMargin(currentPageMargin);
+                    SingletonSharedPreference.setLastLeftMargin(currentPageMargin.getLeftMargin().getPercent());
+                    SingletonSharedPreference.setLastTopMargin(currentPageMargin.getTopMargin().getPercent());
+                    SingletonSharedPreference.setLastRightMargin(currentPageMargin.getRightMargin().getPercent());
+                    SingletonSharedPreference.setLastBottomMargin(currentPageMargin.getBottomMargin().getPercent());
                     updateReaderStyle(readerTextStyle);
                     updateFontMarginView(marginViewMap, readerTextStyle);
                 }

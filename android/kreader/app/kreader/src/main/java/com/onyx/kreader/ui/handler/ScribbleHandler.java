@@ -53,7 +53,7 @@ public class ScribbleHandler extends BaseHandler {
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 return false;
             case KeyEvent.KEYCODE_MENU:
-                return false;
+                return true;
             case KEYCDOE_ERASE:
             case KEYCDOE_ERASE_KK:
             case KeyEvent.KEYCODE_ALT_LEFT:

@@ -43,7 +43,10 @@ public class ReaderSentence {
     }
 
     public boolean isNonBlank() {
-        return readerSelection != null && StringUtils.isNotBlank(readerSelection.getText());
+        return readerSelection != null &&
+                readerSelection.getRectangles() != null &&
+                readerSelection.getRectangles().size() > 0 &&
+                StringUtils.isNotBlank(readerSelection.getText());
     }
 
     public boolean isEndOfScreen() {

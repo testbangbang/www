@@ -177,14 +177,14 @@ public class ReaderUserDataInfo {
             String startPos = reader.getNavigator().getScreenStartPosition();
             String endPos = reader.getNavigator().getScreenEndPosition();
             for (Annotation annotation : annotations) {
-                if (navigator.comparePosition(annotation.getLocationEnd(), startPos) <= 0 &&
-                        navigator.comparePosition(annotation.getLocationBegin(), endPos) >= 0) {
+                if (navigator.comparePosition(annotation.getLocationEnd(), startPos) < 0 ||
+                        navigator.comparePosition(annotation.getLocationBegin(), endPos) > 0) {
                     continue;
                 }
-                if (navigator.comparePosition(annotation.getLocationBegin(), endPos) < 0) {
-                    annotation.setPageNumber(navigator.getPageNumberByPosition(annotation.getLocationBegin()));
+                if (navigator.comparePosition(annotation.getLocationBegin(), startPos) < 0) {
+                    annotation.setPageNumber(navigator.getPageNumberByPosition(startPos));
                 } else {
-                    annotation.setPageNumber(navigator.getPageNumberByPosition(annotation.getLocationEnd()));
+                    annotation.setPageNumber(navigator.getPageNumberByPosition(annotation.getLocationBegin()));
                 }
                 String pageName = PagePositionUtils.fromPageNumber(annotation.getPageNumber());
                 PageInfo pageInfo = findPageInfo(visiblePages, pageName);

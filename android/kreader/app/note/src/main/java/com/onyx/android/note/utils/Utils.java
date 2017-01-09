@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.PageNameList;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -77,7 +78,7 @@ public class Utils {
     }
 
     public static GObject createLibraryItem(final NoteModel noteModel, final int folderRes) {
-        GObject object = GAdapterUtil.createTableItem(noteModel.getTitle(), null, 0, 0, null);
+        GObject object = GAdapterUtil.createTableItem(getLibraryTitleWithSize(noteModel), null, 0, 0, null);
         object.putString(GAdapterUtil.TAG_UNIQUE_ID, noteModel.getUniqueId());
         object.putNonNullObject(GAdapterUtil.TAG_THUMBNAIL, folderRes);
         object.putString(GAdapterUtil.TAG_SUB_TITLE_STRING, getDateFormat().format(noteModel.getUpdatedAt()));
@@ -92,6 +93,15 @@ public class Utils {
         object.putNonNullObject(GAdapterUtil.TAG_THUMBNAIL, noteModel.getThumbnail() == null ? docRes : noteModel.getThumbnail());
         putItemType(object, TYPE_DOCUMENT);
         return object;
+    }
+
+    private static String getLibraryTitleWithSize(final NoteModel noteModel) {
+        StringBuilder builder = new StringBuilder(noteModel.getTitle());
+        PageNameList pageNameList = noteModel.getPageNameList();
+        builder.append("(");
+        builder.append(noteModel.getSubDocCount());
+        builder.append(")");
+        return builder.toString();
     }
 
     public static GObject createNoteItem(final NoteModel noteModel, final int folderRes, final int docRes) {

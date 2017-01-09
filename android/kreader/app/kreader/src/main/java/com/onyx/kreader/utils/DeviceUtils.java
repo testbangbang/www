@@ -183,7 +183,7 @@ public class DeviceUtils {
                 path.toLowerCase(Locale.getDefault()).endsWith(".ttf");
     }
 
-    public static List<FontInfo> buildFontItemAdapter(String currentFont, final List<String> preferredFonts) {
+    public static List<FontInfo> buildFontItemAdapter(List<String> fontsFolderList, String currentFont, final List<String> preferredFonts) {
         List<FontInfo> fontInfoList = new ArrayList<>();
         FilenameFilter fontFilter = new FilenameFilter() {
             @Override
@@ -192,15 +192,9 @@ public class DeviceUtils {
             }
         };
 
-        File flash = EnvironmentUtil.getExternalStorageDirectory();
-        File[] fontsFolderList = new File[]{
-                new File(flash, "adobe/resources/fonts"),
-                new File("/system/fonts")
-        };
-
-
         TTFUtils utils = new TTFUtils();
-        for (File folder : fontsFolderList) {
+        for (String path : fontsFolderList) {
+            File folder = new File(path);
             File[] fonts = folder.listFiles(fontFilter);
             if (fonts != null) {
                 for (File f : fonts) {
