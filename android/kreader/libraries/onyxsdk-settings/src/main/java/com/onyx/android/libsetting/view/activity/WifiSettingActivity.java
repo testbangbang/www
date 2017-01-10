@@ -53,13 +53,11 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         wifiAdmin = new WifiAdmin(this, new WifiAdmin.Callback() {
             @Override
             public void onWifiStateChange(boolean isWifiEnable) {
-                Log.e(TAG, "onWifiStateChange: " );
                 updateUI(isWifiEnable);
             }
 
             @Override
             public void onScanResultReady(List<AccessPoint> scanResult) {
-                Log.e(TAG, "onScanResultReady: " );
                 adapter.setDataList(scanResult);
                 updateSummary(true);
                 adapter.notifyDataSetChanged();
@@ -67,14 +65,12 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
 
             @Override
             public void onSupplicantStateChanged(NetworkInfo.DetailedState state) {
-                Log.e(TAG, "onSupplicantStateChanged: " +state);
                 updateAccessPointDetailedState(state);
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onNetworkConnectionChange(NetworkInfo.DetailedState state) {
-                Log.e(TAG, "onNetworkConnectionChange: "+state );
                 updateAccessPointDetailedState(state);
                 adapter.notifyDataSetChanged();
             }
