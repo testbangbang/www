@@ -1,0 +1,8 @@
+{
+  "home_activity_pkg": "com.onyx.android.note",
+  "home_activity_cls": ".activity.mx.ManagerActivity",
+  "scribble_activity_pkg": "com.onyx.android.note",
+  "scribble_activity_cls": ".activity.mx.ScribbleActivity",
+  "use_mx_ui_style": true,
+  "show_input_method_instantly_after_open_dialog": false
+}
