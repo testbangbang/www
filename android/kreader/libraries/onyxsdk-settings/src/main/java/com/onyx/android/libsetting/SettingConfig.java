@@ -283,10 +283,6 @@ public class SettingConfig {
         return null;
     }
 
-    public Intent getKeyBindingIntent() {
-        return null;
-    }
-
     public Intent getBluetoothSettingIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.BLUETOOTH_CLASS_NAME);

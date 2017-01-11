@@ -9,14 +9,15 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.Gravity;
 import android.view.View;
 
-import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
-import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
-import com.onyx.android.sdk.utils.ActivityUtil;
-
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.SettingConfig;
 import com.onyx.android.libsetting.databinding.ActivityApplicationSettingBinding;
 import com.onyx.android.libsetting.util.ApplicationSettingUtil;
+import com.onyx.android.libsetting.util.DeviceFeatureUtil;
+import com.onyx.android.libsetting.util.KeyBindingSettingUtil;
+import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+import com.onyx.android.sdk.utils.ActivityUtil;
 
 public class ApplicationSettingActivity extends OnyxAppCompatActivity {
     ActivityApplicationSettingBinding binding;
@@ -38,7 +39,7 @@ public class ApplicationSettingActivity extends OnyxAppCompatActivity {
         CheckBoxPreference adbPreference;
         CheckBoxPreference unknownResourcePreference;
         Preference applicationManagement, drmSetting, calibration;
-        ListPreference keyBinding;
+        ListPreference keyBinding, longPressFeatureSetting;
         SettingConfig config;
 
         @Override
@@ -54,8 +55,6 @@ public class ApplicationSettingActivity extends OnyxAppCompatActivity {
             applicationManagement = findPreference(getString(R.string.application_management_key));
             drmSetting = findPreference(getString(R.string.drm_setting_key));
             calibration = findPreference(getString(R.string.calibration_key));
-            keyBinding = (ListPreference) findPreference(getString(R.string.key_binding_key));
-
             applicationManagement.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
@@ -77,14 +76,8 @@ public class ApplicationSettingActivity extends OnyxAppCompatActivity {
                     return true;
                 }
             });
-            keyBinding.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    ActivityUtil.startActivitySafely(getContext(), config.getKeyBindingIntent());
-                    return true;
-                }
-            });
 
+            // TODO: 2016/12/21 should simplify this method.
             adbPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -147,9 +140,41 @@ public class ApplicationSettingActivity extends OnyxAppCompatActivity {
                     return true;
                 }
             });
+            initKeyBindSetting();
+        }
+
+        private void initKeyBindSetting() {
+            keyBinding = (ListPreference) findPreference(getString(R.string.key_binding_key));
+            longPressFeatureSetting = (ListPreference) findPreference(getString(R.string.long_press_feature_key));
+            // TODO: 2016/12/21 tp_model for what purpose?Should use a better check?
             if (!config.isEnableKeyBinding()) {
                 keyBinding.setVisible(false);
+                longPressFeatureSetting.setVisible(false);
+                return;
             }
+            keyBinding.setEntryValues(getContext().getResources().getStringArray(
+                    DeviceFeatureUtil.hasTouch(getContext()) ?
+                            R.array.long_short_click_key_map_mode_value :
+                            R.array.long_short_click_key_map_mode_value_for_tp_model));
+            keyBinding.setEntries(getContext().getResources().getStringArray(
+                    DeviceFeatureUtil.hasTouch(getContext()) ?
+                            R.array.long_short_click_key_map_summary :
+                            R.array.long_short_click_key_map_summary_for_tp_model));
+            longPressFeatureSetting.setVisible(!DeviceFeatureUtil.hasTouch(getContext()));
+            keyBinding.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object o) {
+                    KeyBindingSettingUtil.setKeyMapMode(getContext(), Integer.parseInt((String) o));
+                    return true;
+                }
+            });
+            longPressFeatureSetting.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object o) {
+                    KeyBindingSettingUtil.setDpadLongPressFeature(getContext(), Integer.parseInt((String) o));
+                    return true;
+                }
+            });
         }
 
         @Override
@@ -161,6 +186,9 @@ public class ApplicationSettingActivity extends OnyxAppCompatActivity {
         private void updateData() {
             adbPreference.setChecked(ApplicationSettingUtil.isEnableADB(getContext()));
             unknownResourcePreference.setChecked(ApplicationSettingUtil.isNonMarketAppsAllowed(getContext()));
+            keyBinding.setValue(KeyBindingSettingUtil.getKeyMapMode(getContext()));
+            longPressFeatureSetting.setValue(KeyBindingSettingUtil.getDpadLongPressFeature(getContext()));
         }
+
     }
 }

@@ -12,6 +12,9 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import com.onyx.android.libsetting.R;
+import com.onyx.android.libsetting.data.wifi.AccessPoint;
+import com.onyx.android.libsetting.data.wifi.PskType;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.lang.reflect.Field;
@@ -25,10 +28,6 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.onyx.android.libsetting.R;
-import com.onyx.android.libsetting.data.wifi.AccessPoint;
-import com.onyx.android.libsetting.data.wifi.PskType;
 
 import static com.onyx.android.libsetting.data.wifi.PskType.WPA;
 import static com.onyx.android.libsetting.data.wifi.PskType.WPA2;
@@ -133,6 +132,8 @@ public class WifiAdmin {
             AccessPoint point = new AccessPoint(item, this);
             if (getCurrentConnectionInfo() != null && point.getWifiConfiguration() != null) {
                 if (point.getWifiConfiguration().networkId == getCurrentConnectionInfo().getNetworkId()) {
+                    point.updateWifiInfo();
+                    point.setDetailedState(NetworkInfo.DetailedState.CONNECTED);
                     point.setSecurityString(context.getString(R.string.wifi_connected));
                     connectedPoint = point;
                 }
@@ -322,7 +323,12 @@ public class WifiAdmin {
         if (StringUtils.isNullOrEmpty(ssid)) {
             return null;
         }
-        if (ssid.equals(result.SSID)) {
+
+        /*
+          After API 17,getSSID() will return ssid with quotation mark.
+          ref link:https://developer.android.com/reference/android/net/wifi/WifiInfo.html#getSSID()
+        */
+        if ((ssid.replaceAll("^\"(.*)\"$", "$1")).equals(result.SSID)) {
             return wifiInfo;
         }
         return null;
