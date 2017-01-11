@@ -26,6 +26,7 @@ import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.receiver.DeviceReceiver;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
+import com.onyx.kreader.ui.events.TextSelectionEvent;
 import com.onyx.kreader.ui.events.*;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
@@ -53,6 +54,7 @@ public class ReaderDataHolder {
     private NoteManager noteManager;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private EventBus eventBus = new EventBus();
+    private EventReceiver eventReceiver;
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
@@ -144,16 +146,6 @@ public class ReaderDataHolder {
         documentOpened = false;
         documentPath = path;
         reader = ReaderManager.getReader(documentPath);
-    }
-
-    public void onDocumentOpened() {
-        documentOpened = true;
-        getEventBus().post(new DocumentOpenEvent(documentPath));
-        registerDeviceReceiver();
-    }
-
-    public void onDocumentInitRendered() {
-        getEventBus().post(new DocumentInitRenderedEvent());
     }
 
     public boolean isDocumentOpened() {
@@ -507,6 +499,7 @@ public class ReaderDataHolder {
         submitNonRenderRequest(closeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                onDocumentClosed();
                 ReaderManager.releaseReader(documentPath);
                 BaseCallback.invoke(callback, request, e);
             }
@@ -538,6 +531,54 @@ public class ReaderDataHolder {
 
     public void setLastRequestSequence(int lastRequestSequence) {
         this.lastRequestSequence = lastRequestSequence;
+    }
+
+    public void prepareEventReceiver() {
+        if (eventReceiver == null) {
+            eventReceiver = new EventReceiver(getContext());
+        }
+        getEventBus().register(eventReceiver);
+    }
+
+    public void onDocumentOpened() {
+        prepareEventReceiver();
+        registerDeviceReceiver();
+        documentOpened = true;
+        getEventBus().post(new DocumentOpenEvent(getContext(), documentPath, getReader().getDocumentMd5()));
+    }
+
+    public void onDocumentClosed() {
+        getEventBus().post(new DocumentCloseEvent(getContext()));
+        getEventBus().unregister(eventReceiver);
+    }
+
+    public void onDocumentInitRendered() {
+        getEventBus().post(new DocumentInitRenderedEvent());
+    }
+
+    public final PageChangedEvent beforePageChange() {
+        final PageChangedEvent pageChangedEvent = PageChangedEvent.beforePageChange(this);
+        return pageChangedEvent;
+    }
+
+    public void afterPageChange(final PageChangedEvent pageChangedEvent) {
+        pageChangedEvent.afterPageChange(this);
+        getEventBus().post(pageChangedEvent);
+    }
+
+    public void onTextSelected(final String originText, final String userNote) {
+        if (StringUtils.isBlank(userNote)) {
+            final TextSelectionEvent event = TextSelectionEvent.onTextSelected(getContext(), originText);
+            getEventBus().post(event);
+            return;
+        }
+        final AnnotationEvent event = AnnotationEvent.onAddAnnotation(getContext(), originText, userNote);
+        getEventBus().post(event);
+    }
+
+    public void onDictionaryLookup(final String text) {
+        final DictionaryLookupEvent event = DictionaryLookupEvent.create(getContext(), text);
+        getEventBus().post(event);
     }
 }
 
