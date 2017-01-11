@@ -161,7 +161,7 @@ public class AlImage {
                 if (opts.outHeight != -1 && opts.outWidth != -1) {
                     ai.height = opts.outHeight;
                     ai.width = opts.outWidth;
-                    if (opts.outMimeType.contentEquals(""))
+                    if (opts.outMimeType == null || opts.outMimeType.contentEquals(""))
                         return true;
                 }
             }
