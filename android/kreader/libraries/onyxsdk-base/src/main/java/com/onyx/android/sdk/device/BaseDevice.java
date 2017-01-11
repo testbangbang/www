@@ -351,4 +351,8 @@ public class BaseDevice {
     public boolean isLegalSystem(final Context context){
         return true;
     }
+
+    public boolean isTouchable(Context context) {
+        return true;
+    }
 }
