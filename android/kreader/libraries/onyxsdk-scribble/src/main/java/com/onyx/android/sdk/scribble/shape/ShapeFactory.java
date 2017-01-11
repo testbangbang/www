@@ -47,7 +47,7 @@ public class ShapeFactory {
                 shape = new NormalPencilShape();
                 break;
             case ShapeFactory.SHAPE_BRUSH_SCRIBBLE:
-                shape = new BrushScribbleShape();
+                shape = new NormalPencilShape();
                 break;
             case ShapeFactory.SHAPE_CIRCLE:
                 shape = new CircleShape();
