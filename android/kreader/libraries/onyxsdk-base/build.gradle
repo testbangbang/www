@@ -31,3 +31,5 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
 }
+
+apply from: file(rootProject.projectDir.absolutePath + '/deploy.gradle')
