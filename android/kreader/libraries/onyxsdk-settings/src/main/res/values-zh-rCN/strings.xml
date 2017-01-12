@@ -43,6 +43,9 @@
     <string name="wifi_rescan">重新扫描</string>
     <string name="select_nearby_available_wireless">选取附近可用无线局域网</string>
     <string name="wifi_band">频率</string>
+    <string name="wifi_rational">请求权限以读取Wifi热点列表</string>
+    <string name="no_wifi_permission">权限请求已被拒绝,正在退出.</string>
+
 
     <!--Temporarily fix unit.-->
     <string name="space_in_use">已使用: %1$s GB</string>
