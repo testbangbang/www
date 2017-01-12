@@ -2,32 +2,13 @@ package com.onyx.kreader.ui.handler;
 
 
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.graphics.RectF;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.kreader.R;
-import com.onyx.kreader.common.PageAnnotation;
-import com.onyx.kreader.ui.actions.PanAction;
-import com.onyx.kreader.ui.actions.PinchZoomAction;
-import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
-import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
-import com.onyx.kreader.ui.data.BookmarkIconFactory;
-import com.onyx.kreader.ui.data.PageTurningDetector;
-import com.onyx.kreader.ui.data.PageTurningDirection;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.events.QuitEvent;
-import com.onyx.kreader.utils.DeviceConfig;
-
-import java.util.List;
+import com.onyx.kreader.device.DeviceConfig;
 
 
 /**

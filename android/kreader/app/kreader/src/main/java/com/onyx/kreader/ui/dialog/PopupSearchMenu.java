@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderSearchOptions;
+import com.onyx.android.sdk.reader.api.ReaderSearchOptions;
 
 public final class PopupSearchMenu extends LinearLayout {
 

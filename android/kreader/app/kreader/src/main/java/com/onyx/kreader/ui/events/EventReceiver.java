@@ -6,8 +6,7 @@ import android.content.Context;
 import com.onyx.android.sdk.statistics.StatisticsBase;
 import com.onyx.android.sdk.statistics.StatisticsManager;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.ui.settings.SystemSettingsActivity;
-import com.onyx.kreader.utils.DeviceConfig;
+import com.onyx.kreader.device.DeviceConfig;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.greenrobot.eventbus.Subscribe;

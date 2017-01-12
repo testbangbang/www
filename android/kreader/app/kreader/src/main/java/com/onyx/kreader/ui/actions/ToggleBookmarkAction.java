@@ -3,8 +3,8 @@ package com.onyx.kreader.ui.actions;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Bookmark;
-import com.onyx.kreader.host.request.AddBookmarkRequest;
-import com.onyx.kreader.host.request.DeleteBookmarkRequest;
+import com.onyx.android.sdk.reader.host.request.AddBookmarkRequest;
+import com.onyx.android.sdk.reader.host.request.DeleteBookmarkRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**

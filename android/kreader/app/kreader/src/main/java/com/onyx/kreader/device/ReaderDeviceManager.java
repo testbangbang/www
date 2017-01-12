@@ -1,18 +1,11 @@
 package com.onyx.kreader.device;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.os.Build;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Surface;
 import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.utils.DeviceUtils;
+import com.onyx.android.sdk.reader.utils.DeviceUtils;
 
 /**
  * Created by Joy on 2016/5/6.

@@ -4,9 +4,9 @@ import android.graphics.PointF;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.kreader.api.ReaderHitTestOptions;
-import com.onyx.kreader.host.impl.ReaderHitTestOptionsImpl;
-import com.onyx.kreader.host.request.SelectWordRequest;
+import com.onyx.android.sdk.reader.api.ReaderHitTestOptions;
+import com.onyx.android.sdk.reader.host.impl.ReaderHitTestOptionsImpl;
+import com.onyx.android.sdk.reader.host.request.SelectWordRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**

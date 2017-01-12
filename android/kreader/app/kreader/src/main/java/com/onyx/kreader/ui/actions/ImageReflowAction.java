@@ -4,10 +4,10 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.kreader.R;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.kreader.host.request.ChangeLayoutRequest;
-import com.onyx.kreader.reflow.ImageReflowSettings;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
+import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogReflowSettings;
 

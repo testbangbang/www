@@ -5,8 +5,8 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
-import com.onyx.kreader.api.ReaderDocumentTableOfContent;
-import com.onyx.kreader.host.request.GetDocumentInfoRequest;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.host.request.GetDocumentInfoRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.List;

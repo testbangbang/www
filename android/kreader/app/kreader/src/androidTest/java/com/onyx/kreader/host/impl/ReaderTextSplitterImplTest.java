@@ -1,6 +1,8 @@
 package com.onyx.kreader.host.impl;
 
 import android.test.ActivityInstrumentationTestCase2;
+
+import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.tests.ReaderTestActivity;
 
 /**

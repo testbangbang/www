@@ -1,39 +1,62 @@
 package com.onyx.kreader.tests;
 
 import android.app.Activity;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PixelXorXfermode;
+import android.graphics.PointF;
+import android.graphics.RectF;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Pair;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
-import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
-import com.onyx.android.sdk.utils.TestUtils;
-import com.onyx.kreader.api.ReaderPluginOptions;
-import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.api.ReaderViewOptions;
-import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.kreader.common.ReaderViewInfo;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
-import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
-import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.kreader.host.options.BaseOptions;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.kreader.host.request.*;
-import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.host.wrapper.ReaderManager;
-import com.onyx.kreader.plugins.neopdf.NeoPdfJniWrapper;
-import com.onyx.kreader.plugins.neopdf.NeoPdfSelection;
-import com.onyx.kreader.text.*;
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.utils.ImageUtils;
+import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.api.ReaderViewOptions;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.host.impl.ReaderPluginOptionsImpl;
+import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
+import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
+import com.onyx.android.sdk.reader.host.request.AnnotationRequest;
+import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
+import com.onyx.android.sdk.reader.host.request.CloseRequest;
+import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
+import com.onyx.android.sdk.reader.host.request.GotoPositionRequest;
+import com.onyx.android.sdk.reader.host.request.NextScreenRequest;
+import com.onyx.android.sdk.reader.host.request.OpenRequest;
+import com.onyx.android.sdk.reader.host.request.PreRenderRequest;
+import com.onyx.android.sdk.reader.host.request.PreviousScreenRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleByRectRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToWidthRequest;
+import com.onyx.android.sdk.reader.host.wrapper.Reader;
+import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
+import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfJniWrapper;
+import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfSelection;
+import com.onyx.android.sdk.reader.utils.ImageUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -78,7 +101,6 @@ public class ReaderTestActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         initSurfaceView();
-        OnyxHyphen.reinit_hyph(this, OnyxHyphen.HYPH_ENGLISH);
         test();
     }
 
@@ -165,7 +187,6 @@ public class ReaderTestActivity extends Activity {
             @Override
             public void onClick(View view) {
                 testNeoPdfWrapper();
-                testHyphen();
             }
         });
 
@@ -486,33 +507,6 @@ public class ReaderTestActivity extends Activity {
                 testReaderOpen();
             }
         });
-    }
-
-
-
-
-
-    private Style randStyle() {
-        Paint paint = new Paint();
-        paint.setTextSize(35);
-        paint.setColor(Color.BLACK);
-        paint.setAntiAlias(true);
-        int value = TestUtils.randInt(10, 20);
-        if (value > 10 && value < 13) {
-            paint.setTypeface(Typeface.create(Typeface.SERIF,Typeface.ITALIC));
-        } else if (value > 13 && value < 16) {
-            paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        }
-        paint.setStyle(Paint.Style.STROKE);
-        return TextStyle.create(paint);
-    }
-
-    private void testHyphen() {
-        final String source = "representatives";
-        List<Pair<String, String>> list = OnyxHyphen.getHyphList(source);
-        for(Pair<String, String> pair : list) {
-            Log.d(TAG, "after: " + pair.first + "-" + pair.second);
-        }
     }
 
     private void dumpBitmap(final Bitmap bmp, final String path, boolean save) {

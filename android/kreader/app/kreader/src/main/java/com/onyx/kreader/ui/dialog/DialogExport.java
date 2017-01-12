@@ -19,7 +19,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.request.ExportNotesRequest;
+import com.onyx.kreader.ui.requests.ExportNotesRequest;
 import com.onyx.kreader.ui.actions.ExportNotesActionChain;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
