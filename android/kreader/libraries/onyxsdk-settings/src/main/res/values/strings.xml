@@ -61,6 +61,10 @@
     <string name="ac_network" translatable="false">5Ghz</string>
     <string name="unknown_network" translatable="false">Unknown Network Type</string>
     <string name="wifi_band">Frequency</string>
+    <string name="wifi_rational">Request Permission To Read Wifi AP List</string>
+    <string name="no_wifi_permission">Without Wifi Permission,Quitting Settings.</string>
+
+
     <!--Temporarily fix unit.-->
     <string name="space_in_use">Space In Use: %1$s GB</string>
     <string name="free_space">Free Space: %1$s GB</string>
