@@ -128,11 +128,11 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        updateCheckBox(buttonView, isChecked, buttonView.isPressed());
+        updateCheckBox(buttonView, isChecked);
     }
 
-    private void updateCheckBox(CompoundButton buttonView, boolean isChecked, boolean isPressed) {
-        if (!isPressed) {
+    private void updateCheckBox(CompoundButton buttonView, boolean isChecked) {
+        if (!buttonView.isPressed() && !buttonView.isFocused()) {
             return;
         }
         clearCheckbox();
