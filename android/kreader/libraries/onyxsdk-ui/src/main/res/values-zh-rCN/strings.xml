@@ -70,4 +70,7 @@
     <string name="import_fail">导入失败</string>
     <string name="import_success_info" formatted="false">总共导入%d条数据</string>
 
+    <string name="expand">展开</string>
+    <string name="collapse">收缩</string>
+    <string name="jump">跳转</string>
 </resources>
