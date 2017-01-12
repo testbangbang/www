@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:Android="http://schemas.android.com/apk/res/android">
+    <item Android:drawable="@drawable/reflow_big_select_focus" Android:state_focused="true"/>
     <item Android:drawable="@drawable/reflow_big_select_no_label_on" Android:state_checked="true"/>
     <item Android:drawable="@drawable/reflow_big_select_no_label_off" Android:state_checked="false"/>
 </selector>

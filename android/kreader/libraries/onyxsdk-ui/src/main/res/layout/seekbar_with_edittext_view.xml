@@ -55,6 +55,7 @@
             android:layout_alignParentRight="true" />
 
         <SeekBar
+            android:background="@drawable/imagebtn_bg"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

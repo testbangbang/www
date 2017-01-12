@@ -126,7 +126,8 @@ public class ReaderLayerMenuViewFactory {
 
             @Override
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                ((MainMenuItemViewHolder) holder).setMenuItem(items.get(position));
+                MainMenuItemViewHolder viewHolder = ((MainMenuItemViewHolder) holder);
+                viewHolder.setMenuItem(items.get(position));
             }
         });
         return view;

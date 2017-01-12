@@ -20,6 +20,7 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
@@ -162,6 +163,11 @@ public class ShowReaderMenuAction extends BaseAction {
 
         if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportBrushPen()) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
+        }
+
+        if (!Device.detectDevice().isTouchable(readerDataHolder.getContext())){
+            disableMenus.add(ReaderMenuAction.ZOOM_BY_RECT);
+            disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
         }
 
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {

@@ -154,7 +154,7 @@ public class DialogQuickPreview extends OnyxBaseDialog {
         @Override
         public PreviewViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
             final PreviewViewHolder previewViewHolder = new PreviewViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.preview_list_item_view, parent, false));
-            previewViewHolder.getContainer().setOnClickListener(new View.OnClickListener() {
+            previewViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     new GotoPageAction(previewViewHolder.getPage(), true).execute(readerDataHolder, new BaseCallback() {
