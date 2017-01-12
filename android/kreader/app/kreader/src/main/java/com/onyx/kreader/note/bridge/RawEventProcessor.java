@@ -4,7 +4,6 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.onyx.android.sdk.common.request.SingleThreadExecutor;
 import com.onyx.android.sdk.data.PageInfo;
@@ -12,9 +11,9 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.kreader.common.Debug;
+import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.kreader.note.NoteManager;
-import com.onyx.kreader.utils.DeviceUtils;
+import com.onyx.android.sdk.reader.utils.DeviceUtils;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;

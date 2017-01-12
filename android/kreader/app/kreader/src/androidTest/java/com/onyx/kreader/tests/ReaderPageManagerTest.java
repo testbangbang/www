@@ -6,9 +6,9 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.TestUtils;
-import com.onyx.kreader.host.math.PageManager;
-import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.host.navigation.NavigationList;
+import com.onyx.android.sdk.reader.host.math.PageManager;
+import com.onyx.android.sdk.reader.host.math.PageUtils;
+import com.onyx.android.sdk.reader.host.navigation.NavigationList;
 
 import java.util.ArrayList;
 import java.util.List;

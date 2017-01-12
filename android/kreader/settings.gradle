@@ -1,4 +1,5 @@
 include ':libraries:cropimage',
+        ':libraries:onyxsdk-reader',
         ':libraries:onyxsdk-ui',
         ':libraries:onyxsdk-base',
         ':libraries:onyxsdk-data',
@@ -11,5 +12,4 @@ include ':libraries:cropimage',
         ':app:note',
         ':app:kreader',
         ':app:eschool',
-        ':app-edu'
-project(':app-edu').projectDir = new File('app/edu')
+        ':app:edu'

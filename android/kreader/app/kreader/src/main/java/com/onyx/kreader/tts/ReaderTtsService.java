@@ -6,16 +6,14 @@ package com.onyx.kreader.tts;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 
 import com.onyx.android.sdk.common.request.WakeLockHolder;
-import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.common.Debug;
+import com.onyx.android.sdk.reader.common.Debug;
 
 import java.io.File;
 import java.util.HashMap;

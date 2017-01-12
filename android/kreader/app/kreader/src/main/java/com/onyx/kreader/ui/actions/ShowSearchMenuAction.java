@@ -3,11 +3,11 @@ package com.onyx.kreader.ui.actions;
 import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.kreader.api.ReaderSearchOptions;
+import com.onyx.android.sdk.reader.api.ReaderSearchOptions;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.PopupSearchMenu;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 
 /**

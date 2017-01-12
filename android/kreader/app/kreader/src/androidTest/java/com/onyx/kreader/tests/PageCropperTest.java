@@ -2,11 +2,11 @@ package com.onyx.kreader.tests;
 
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
-import com.onyx.kreader.api.*;
-import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
-import com.onyx.kreader.host.layout.PageCropper;
+import com.onyx.android.sdk.reader.api.*;
+import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
+import com.onyx.android.sdk.reader.host.layout.PageCropper;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.plugins.neopdf.NeoPdfReaderPlugin;
+import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
 
 /**
  * Created by zhuzeng on 5/29/16.

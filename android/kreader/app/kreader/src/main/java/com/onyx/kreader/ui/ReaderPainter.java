@@ -22,17 +22,17 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.common.PageAnnotation;
-import com.onyx.kreader.common.ReaderUserDataInfo;
-import com.onyx.kreader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.common.PageAnnotation;
+import com.onyx.android.sdk.reader.common.ReaderUserDataInfo;
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
-import com.onyx.kreader.utils.RectUtils;
+import com.onyx.android.sdk.reader.utils.RectUtils;
 
 import java.util.List;
 

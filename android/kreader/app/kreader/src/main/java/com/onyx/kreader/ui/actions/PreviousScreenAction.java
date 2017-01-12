@@ -5,7 +5,7 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.request.PreviousScreenRequest;
+import com.onyx.android.sdk.reader.host.request.PreviousScreenRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.PageChangedEvent;
 

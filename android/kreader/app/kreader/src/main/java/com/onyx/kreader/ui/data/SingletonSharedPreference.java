@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.request.ExportNotesRequest;
-import com.onyx.kreader.utils.DeviceConfig;
+import com.onyx.kreader.ui.requests.ExportNotesRequest;
+import com.onyx.kreader.device.DeviceConfig;
 
 /**
  * Created by solskjaer49 on 14-4-22.

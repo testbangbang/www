@@ -6,12 +6,11 @@ import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogAnnotation;
 import com.onyx.kreader.ui.dialog.PopupSelectionMenu;
-import com.onyx.kreader.ui.events.DictionaryLookupEvent;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
 

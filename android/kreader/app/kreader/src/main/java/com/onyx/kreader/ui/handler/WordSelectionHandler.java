@@ -12,18 +12,18 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
-import com.onyx.kreader.host.request.AnalyzeWordAction;
-import com.onyx.kreader.host.request.SelectWordRequest;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
+import com.onyx.kreader.ui.actions.AnalyzeWordAction;
+import com.onyx.android.sdk.reader.host.request.SelectWordRequest;
 import com.onyx.kreader.ui.actions.SelectWordAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
-import com.onyx.kreader.utils.MathUtils;
-import com.onyx.kreader.utils.DeviceConfig;
-import com.onyx.kreader.utils.RectUtils;
+import com.onyx.android.sdk.reader.utils.MathUtils;
+import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.android.sdk.reader.utils.RectUtils;
 
 /**
  * Created with IntelliJ IDEA.

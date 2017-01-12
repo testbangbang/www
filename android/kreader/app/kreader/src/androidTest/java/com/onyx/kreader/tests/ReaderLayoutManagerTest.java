@@ -3,12 +3,12 @@ package com.onyx.kreader.tests;
 import android.test.ActivityInstrumentationTestCase2;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.utils.TestUtils;
-import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
-import com.onyx.kreader.host.layout.ReaderLayoutManager;
+import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
+import com.onyx.android.sdk.reader.host.layout.ReaderLayoutManager;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.kreader.host.wrapper.ReaderHelper;
+import com.onyx.android.sdk.reader.host.wrapper.ReaderHelper;
 
 /**
  * Created by zengzhu on 2/22/16.

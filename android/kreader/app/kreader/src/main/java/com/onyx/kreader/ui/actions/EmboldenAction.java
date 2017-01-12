@@ -2,8 +2,8 @@ package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.host.request.EmboldenGlyphRequest;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
+import com.onyx.android.sdk.reader.host.request.EmboldenGlyphRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogSetValue;
 

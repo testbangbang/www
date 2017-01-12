@@ -3,8 +3,6 @@ package com.onyx.kreader.ui.actions;
 import android.app.Activity;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.kreader.host.request.ChangeCodePageRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 

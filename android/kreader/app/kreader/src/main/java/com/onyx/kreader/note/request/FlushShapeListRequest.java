@@ -1,10 +1,8 @@
 package com.onyx.kreader.note.request;
 
-import android.util.Log;
-
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.kreader.common.Debug;
+import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNotePage;
 

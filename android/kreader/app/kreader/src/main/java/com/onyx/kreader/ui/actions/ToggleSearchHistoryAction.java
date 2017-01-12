@@ -1,8 +1,8 @@
 package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.kreader.host.request.AddSearchHistoryRequest;
-import com.onyx.kreader.host.request.DeleteSearchHistoryRequest;
+import com.onyx.android.sdk.reader.host.request.AddSearchHistoryRequest;
+import com.onyx.android.sdk.reader.host.request.DeleteSearchHistoryRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
