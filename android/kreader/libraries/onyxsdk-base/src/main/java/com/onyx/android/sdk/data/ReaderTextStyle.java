@@ -120,12 +120,12 @@ public class ReaderTextStyle {
         }
 
         public SPUnit increaseSPUnit(SPUnit step) {
-            value  = value + step.getValue();
+            value  = Math.min(value + step.getValue(), MAX_FONT_SIZE.getValue());
             return this;
         }
 
         public SPUnit decreaseSPUnit(SPUnit step) {
-            value  = Math.max(value - step.getValue(), 0);
+            value  = Math.max(value - step.getValue(), MIN_FONT_SIZE.getValue());
             return this;
         }
     }
@@ -232,6 +232,8 @@ public class ReaderTextStyle {
     static public SPUnit[] DEFAULT_FONT_SIZE_LIST = {SPUnit.create(20.0f), SPUnit.create(24.0f), SPUnit.create(28.0f),
             SPUnit.create(32.0f), SPUnit.create(36.0f), SPUnit.create(40.0f), SPUnit.create(44.0f), SPUnit.create(48.0f)};
     static public SPUnit DEFAULT_FONT_SIZE = SPUnit.create(40.0f);
+    static public SPUnit MAX_FONT_SIZE = SPUnit.create(96.0f);
+    static public SPUnit MIN_FONT_SIZE = SPUnit.create(10.0f);
     static public SPUnit FONT_SIZE_STEP = SPUnit.create(4.0f);
 
     private String fontFace = null;
@@ -242,8 +244,8 @@ public class ReaderTextStyle {
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
 
     public static float limitFontSize(float newSize) {
-        final float minSize = DEFAULT_FONT_SIZE_LIST[0].getValue();
-        final float maxSize = DEFAULT_FONT_SIZE_LIST[ReaderTextStyle.DEFAULT_FONT_SIZE_LIST.length - 1].getValue();
+        final float minSize = MIN_FONT_SIZE.getValue();
+        final float maxSize = MAX_FONT_SIZE.getValue();
         if (newSize < minSize) {
             newSize = minSize;
         } else if (newSize > maxSize) {

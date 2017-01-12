@@ -1,9 +1,12 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.content.DialogInterface;
+import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,23 +25,28 @@ import com.onyx.android.sdk.data.FontInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.ReaderTextStyle.PageMargin;
 import com.onyx.android.sdk.data.ReaderTextStyle.Percentage;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.AlignTextView;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.OnyxRadioButton;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.kreader.R;
+import com.onyx.kreader.ui.KReaderApp;
 import com.onyx.kreader.ui.actions.ChangeCodePageAction;
 import com.onyx.kreader.ui.actions.ChangeStyleAction;
 import com.onyx.kreader.ui.actions.GetFontsAction;
+import com.onyx.kreader.ui.actions.PinchZoomAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.os.Looper.getMainLooper;
 import static com.onyx.kreader.ui.dialog.DialogTextStyle.FontLevel.DECREASE;
 import static com.onyx.kreader.ui.dialog.DialogTextStyle.FontLevel.INCREASE;
 import static com.onyx.kreader.ui.dialog.DialogTextStyle.FontLevel.LARGE;
@@ -102,6 +111,12 @@ public class DialogTextStyle extends DialogBase {
     private ReaderTextStyle originalStyle;
     private int originalCodePage;
 
+    private PinchZoomingPopupMenu pinchZoomingPopupMenu;
+    private Handler handler;
+    private Runnable hideRunnable;
+    private long lastUpTime = -1;
+    private static final int HIDE_TIME_OUT = 1000;
+
     public DialogTextStyle(ReaderDataHolder readerDataHolder, TextStyleCallback callback) {
         super(readerDataHolder.getContext());
         this.readerDataHolder = readerDataHolder;
@@ -113,6 +128,7 @@ public class DialogTextStyle extends DialogBase {
     }
 
     private void init() {
+        handler = new Handler(getMainLooper());
         defaultFont.setName(getContext().getString(R.string.default_font));
         defaultFont.setId("serif"); // magic code from alreader engine
 
@@ -239,6 +255,7 @@ public class DialogTextStyle extends DialogBase {
             public void onClick(View v) {
                 ReaderTextStyle.SPUnit currentSize = getReaderStyle().getFontSize();
                 applyFontSize(currentSize.increaseSPUnit(ReaderTextStyle.FONT_SIZE_STEP));
+                showFontSize(currentSize.getValue());
             }
         });
 
@@ -247,6 +264,7 @@ public class DialogTextStyle extends DialogBase {
             public void onClick(View v) {
                 ReaderTextStyle.SPUnit currentSize = getReaderStyle().getFontSize();
                 applyFontSize(currentSize.decreaseSPUnit(ReaderTextStyle.FONT_SIZE_STEP));
+                showFontSize(currentSize.getValue());
             }
         });
 
@@ -281,6 +299,43 @@ public class DialogTextStyle extends DialogBase {
         updateFontSizeTextView(fontSizeTexts, getReaderStyle());
 
         return view;
+    }
+
+    private PinchZoomingPopupMenu getPinchZoomPopupMenu() {
+        if (pinchZoomingPopupMenu == null) {
+            DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
+            int menuWidth = Math.max(dm.widthPixels, dm.heightPixels) / 4;
+            int menuHeight = Math.max(Math.min(dm.widthPixels, dm.heightPixels) / 5, 300);
+            pinchZoomingPopupMenu = new PinchZoomingPopupMenu(getContext(),
+                    (RelativeLayout)this.findViewById(R.id.content_view),menuWidth,menuHeight);
+        }
+        return pinchZoomingPopupMenu;
+    }
+
+    private void showFontSize(final float fontSize) {
+        String value = String.format("%d", (int) fontSize);
+        getPinchZoomPopupMenu().showAndUpdate(PinchZoomingPopupMenu.MessageToShown.FontSize, value);
+        long curTime = System.currentTimeMillis();
+        if (lastUpTime != -1 && (curTime - lastUpTime <= HIDE_TIME_OUT) && (hideRunnable != null)) {
+            removeHideRunnable();
+        }
+        hideRunnable = buildHideRunnable();
+        handler.postDelayed(hideRunnable, HIDE_TIME_OUT);
+    }
+
+    private Runnable buildHideRunnable(){
+        return new Runnable() {
+            @Override
+            public void run() {
+                getPinchZoomPopupMenu().hide();
+            }
+        };
+    }
+
+    private void removeHideRunnable() {
+        if (handler != null && hideRunnable != null) {
+            handler.removeCallbacks(hideRunnable);
+        }
     }
 
     private View initCodePageView() {
