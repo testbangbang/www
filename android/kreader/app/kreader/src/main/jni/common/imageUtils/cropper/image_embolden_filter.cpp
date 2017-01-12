@@ -113,10 +113,10 @@ static bool emboldenGrayImage(unsigned char *grayData, const int width, const in
     invertGrayImage(grayData, width, height);
     switch (strongLevel) {
     case 1:
-        emboldenBitmapFromFreeType(grayData, width, height, 1, 0);
+        emboldenBitmapFromFreeType(grayData, width, height, 0, 1);
         break;
     case 2:
-        emboldenBitmapFromFreeType(grayData, width, height, 2, 0);
+        emboldenBitmapFromFreeType(grayData, width, height, 1, 0);
         break;
     case 3:
         emboldenBitmapFromFreeType(grayData, width, height, 1, 1);
