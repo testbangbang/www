@@ -59,6 +59,7 @@ ext {
     picassoVersion = '2.5.2'
     multidexVersion = '1.0.1'
     espressoVersion = '2.2.2'
+    easyPermissonVersion = '0.2.1'
 
     //compatible
     compatibleSdkVersion = 23 // for projects which can't be built with sdk 24+
