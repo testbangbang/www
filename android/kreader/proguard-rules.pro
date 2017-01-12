@@ -34,6 +34,12 @@
 -dontwarn com.github.junrar.**
 -dontwarn com.squareup.**
 
+-dontwarn butterknife.internal.ButterKnifeProcessor
+
+-dontwarn com.onyx.android.sdk.ui.dialog.DialogLoading
+-dontwarn com.onyx.android.sdk.ui.dialog.DialogReaderMenu
+-dontwarn com.onyx.android.sdk.scribble.request.shape.PenStateChangeRequest
+
 -keepclasseswithmembernames class * {
     native <methods>;
 }
@@ -47,5 +53,3 @@
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -keep class * extends com.raizlabs.android.dbflow.converter.TypeConverter { *; }
 -keep class * extends com.raizlabs.android.dbflow.structure.BaseModel { *; }
-
--dontwarn com.onyx.android.sdk.ui.dialog.DialogLoading

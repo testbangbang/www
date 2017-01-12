@@ -18,15 +18,6 @@
 
 -dontshrink
 
--dontwarn com.onyx.android.sdk.ui.dialog.DialogReaderMenu
--dontwarn com.onyx.android.sdk.scribble.request.shape.PenStateChangeRequest
-
--dontwarn butterknife.internal.ButterKnifeProcessor
-
--keepnames class * {
-    native <methods>;
-}
-
 -keepnames class com.onyx.kreader.device.DeviceConfig { *; }
 
 -keepnames class org.apache.lucene.analysis.** { *; }
