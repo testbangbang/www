@@ -384,12 +384,12 @@ public class PageRecyclerView extends RecyclerView {
                 if (position < getDataCount()){
                     view.setVisibility(VISIBLE);
                     view.setFocusable(true);
-                    onPageBindViewHolder(holder,adapterPosition);
                     setupListener(view,adapterPosition);
                     updateFocusView(view,adapterPosition);
                     if (getPagePaginator().offsetInCurrentPage(position) == 0) {
                         view.requestFocus();
                     }
+                    onPageBindViewHolder(holder,adapterPosition);
                 }else {
                     view.setFocusable(false);
                     view.setVisibility(INVISIBLE);

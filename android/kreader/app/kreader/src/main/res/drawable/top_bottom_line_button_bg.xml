@@ -2,12 +2,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
         <shape xmlns:android="http://schemas.android.com/apk/res/android">
-            <solid android:color="@android:color/transparent" />
+            <solid android:color="@android:color/white" />
             <corners android:radius="5dp" />
             <stroke android:width="5dp" android:color="@android:color/black" />
         </shape>
     </item>
-    <item
+    <item android:state_focused="false"
         android:top="0dp"
         android:right="-2dp"
         android:bottom="0dp"

@@ -241,6 +241,7 @@
     </style>
 
     <style name="fontStyle_imageView_style">
+        <item name="android:focusable">true</item>
         <item name="android:padding">5dp</item>
         <item name="android:layout_margin">5dp</item>
         <item name="android:background">@drawable/font_item_bg</item>
