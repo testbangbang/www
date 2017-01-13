@@ -11,6 +11,8 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:background="@drawable/imagebtn_bg"
+            android:focusable="true"
             android:gravity="center"
             android:id="@+id/back_layout"
             android:orientation="horizontal"
@@ -96,7 +98,7 @@
                 android:id="@+id/search_recycler_view"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="0dp">
 
             </com.onyx.android.sdk.ui.view.PageRecyclerView>
 

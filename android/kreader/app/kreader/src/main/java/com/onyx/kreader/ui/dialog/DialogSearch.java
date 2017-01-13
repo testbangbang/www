@@ -206,6 +206,7 @@ public class DialogSearch extends OnyxBaseDialog {
                 }
             }
         });
+        searchEditText.requestFocus();
     }
 
     private void showSearchHistoryView(){
@@ -468,6 +469,7 @@ public class DialogSearch extends OnyxBaseDialog {
 
     private void showLoadingLayout(){
         loadingLayout.setVisibility(View.VISIBLE);
+        closeSearch.requestFocus();
     }
 
     private void hideLoadingLayout(){
