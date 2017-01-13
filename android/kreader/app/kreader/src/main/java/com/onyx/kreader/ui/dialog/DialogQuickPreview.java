@@ -169,11 +169,21 @@ public class DialogQuickPreview extends OnyxBaseDialog {
         }
 
         @Override
-        public void onPageBindViewHolder(PreviewViewHolder holder, int position) {
+        public void onPageBindViewHolder(PreviewViewHolder holder, final int position) {
             Bitmap bmp = previewMap.get(position);
 
             holder.bindPreview(bmp, position);
             holder.getContainer().setActivated(readerDataHolder.getCurrentPage() == position);
+            holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        if (gridRecyclerView.getPaginator().isInNextPage(position)) {
+                            oneImageGrid.requestFocus();
+                        }
+                    }
+                }
+            });
         }
 
         @Override
