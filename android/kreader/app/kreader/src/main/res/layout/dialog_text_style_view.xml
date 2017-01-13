@@ -18,6 +18,8 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
+                android:focusable="true"
+                android:background="@drawable/imagebtn_bg"
                 android:gravity="center_horizontal"
                 android:id="@+id/font_face_layout"
                 android:layout_marginLeft="20dp"
@@ -42,6 +44,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:focusable="true"
+                android:background="@drawable/imagebtn_bg"
                 android:id="@+id/page_spacing_layout"
                 android:gravity="center_horizontal"
                 android:layout_marginLeft="30dp"
@@ -66,6 +70,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:focusable="true"
+                android:background="@drawable/imagebtn_bg"
                 android:id="@+id/code_page_layout"
                 android:gravity="center_horizontal"
                 android:layout_marginLeft="30dp"
@@ -114,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
+            <com.onyx.android.sdk.ui.view.OnyxButton
                 android:textSize="@dimen/dialog_export_text_size"
                 android:id="@+id/btn_cancel"
                 android:text="@string/cancel"
@@ -128,7 +134,7 @@
                 android:layout_width="1dp"
                 android:layout_height="match_parent"/>
 
-            <Button
+            <com.onyx.android.sdk.ui.view.OnyxButton
                 android:textSize="@dimen/dialog_export_text_size"
                 android:id="@+id/btn_ok"
                 android:text="@string/ok"

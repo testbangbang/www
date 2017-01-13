@@ -3,6 +3,7 @@ package com.onyx.android.sdk.ui.view;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 /**
@@ -32,5 +33,10 @@ public class OnyxCustomViewPager extends ViewPager {
 
     public void setPagingEnabled(boolean b) {
         this.isPagingEnabled = b;
+    }
+
+    @Override
+    public boolean executeKeyEvent(KeyEvent event) {
+        return false;
     }
 }
