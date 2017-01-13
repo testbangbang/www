@@ -247,7 +247,7 @@ public class SettingConfig {
     public Intent getTimeZoneSettingIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.ZONE_PICKER_CLASS_NAME);
-        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.M) ?
+        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
                 new Intent(Default.TIME_ZONE_PICKER_ACTION) : intent;
     }
 
@@ -264,7 +264,7 @@ public class SettingConfig {
     public Intent getFactoryResetIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.FACTORY_RESET_CLASS_NAME);
-        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.M) ?
+        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
                 new Intent(Default.MASTER_CLEAR_ACTION) : intent;
     }
 

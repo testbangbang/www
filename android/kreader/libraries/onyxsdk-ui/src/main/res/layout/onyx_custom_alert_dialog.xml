@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/top_divider_line"
         android:layout_centerHorizontal="true"
+        android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light"
         android:ellipsize="middle"
         android:gravity="center"
         android:padding="10dp" />
