@@ -204,6 +204,7 @@ public class DialogSearch extends Dialog{
                 }
             }
         });
+        searchEditText.requestFocus();
     }
 
     private void showSearchHistoryView(){
@@ -466,6 +467,7 @@ public class DialogSearch extends Dialog{
 
     private void showLoadingLayout(){
         loadingLayout.setVisibility(View.VISIBLE);
+        closeSearch.requestFocus();
     }
 
     private void hideLoadingLayout(){
