@@ -185,6 +185,9 @@ public class ReaderActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         ReaderActivity.super.onDestroy();
+        if (getReaderDataHolder().isDocumentOpened()) {
+            quitApplication(null);
+        }
     }
 
     private void resetMenus() {
