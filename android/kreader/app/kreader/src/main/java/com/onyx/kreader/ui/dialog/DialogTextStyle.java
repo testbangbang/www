@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.dialog;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Pair;
@@ -28,6 +29,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle.Percentage;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.AlignTextView;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
+import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.OnyxRadioButton;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -99,6 +101,8 @@ public class DialogTextStyle extends DialogBase {
     private LinearLayout fontFaceLayout;
     private LinearLayout fontSpacingLayout;
     private LinearLayout codePageLayout;
+    private ImageView decreaseIcon;
+    private ImageView increaseIcon;
 
     private List<FontInfo> fonts = new ArrayList<>();
     private int selectFontIndex = -1;
@@ -154,28 +158,19 @@ public class DialogTextStyle extends DialogBase {
         fontFaceLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewPager.setCurrentItem(0, false);
-                fontFaceLine.setVisibility(View.VISIBLE);
-                fontSpacingLine.setVisibility(View.INVISIBLE);
-                codePageLine.setVisibility(View.INVISIBLE);
+                switchViewPage(0);
             }
         });
         fontSpacingLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewPager.setCurrentItem(1, false);
-                fontFaceLine.setVisibility(View.INVISIBLE);
-                fontSpacingLine.setVisibility(View.VISIBLE);
-                codePageLine.setVisibility(View.INVISIBLE);
+                switchViewPage(1);
             }
         });
         codePageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewPager.setCurrentItem(2, false);
-                fontFaceLine.setVisibility(View.INVISIBLE);
-                fontSpacingLine.setVisibility(View.INVISIBLE);
-                codePageLine.setVisibility(View.VISIBLE);
+                switchViewPage(2);
             }
         });
 
@@ -205,6 +200,13 @@ public class DialogTextStyle extends DialogBase {
         viewPager.setPagingEnabled(false);
     }
 
+    private void switchViewPage(final int index) {
+        viewPager.setCurrentItem(index, false);
+        fontFaceLine.setVisibility(index == 0 ? View.VISIBLE : View.INVISIBLE);
+        fontSpacingLine.setVisibility(index == 1 ? View.VISIBLE : View.INVISIBLE);
+        codePageLine.setVisibility(index == 2 ? View.VISIBLE : View.INVISIBLE);
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -229,12 +231,12 @@ public class DialogTextStyle extends DialogBase {
     private View initFontFaceView() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_text_style_sub_font_face_view, null, false);
         CommonViewHolder fontFaceViewHolder = new CommonViewHolder(view);
+        decreaseIcon = (ImageView) view.findViewById(R.id.image_view_decrease_font_size);
+        increaseIcon = (ImageView) view.findViewById(R.id.image_view_increase_font_size);
         final PageRecyclerView pageView = (PageRecyclerView) view.findViewById(R.id.font_page_view);
         final TextView pageSizeIndicator = (TextView) view.findViewById(R.id.page_size_indicator);
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
         ImageView nextIcon = (ImageView) view.findViewById(R.id.next_icon);
-        ImageView decreaseIcon = (ImageView) view.findViewById(R.id.image_view_decrease_font_size);
-        ImageView increaseIcon = (ImageView) view.findViewById(R.id.image_view_increase_font_size);
 
         nextIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -420,6 +422,19 @@ public class DialogTextStyle extends DialogBase {
                         new ChangeCodePageAction(CODE_PAGES[position].first).execute(readerDataHolder, null);
                     }
                 });
+                viewHolder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (hasFocus) {
+                            if (pageView.getPaginator().isInNextPage(position)) {
+                                btnCancel.requestFocus();
+                            }
+                            if (pageView.getPaginator().isInPrevPage(position)) {
+                                codePageLayout.requestFocus();
+                            }
+                        }
+                    }
+                });
             }
         });
     }
@@ -494,6 +509,19 @@ public class DialogTextStyle extends DialogBase {
                         pageView.getPageAdapter().notifyItemChanged(selectFontIndex);
                         getReaderStyle().setFontFace(fonts.get(position).getId());
                         updateReaderStyle(getReaderStyle());
+                    }
+                });
+                viewHolder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (hasFocus) {
+                            if (pageView.getPaginator().isInNextPage(position)) {
+                                decreaseIcon.requestFocus();
+                            }
+                            if (pageView.getPaginator().isInPrevPage(position)) {
+                                fontFaceLayout.requestFocus();
+                            }
+                        }
                     }
                 });
             }

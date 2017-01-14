@@ -149,6 +149,14 @@ public class GPaginator {
         return getCurrentPageBegin() <= index && index < (getCurrentPageBegin() + itemsInCurrentPage());
     }
 
+    public boolean isInPrevPage(int index) {
+        return index < getCurrentPageBegin() ;
+    }
+
+    public boolean isInNextPage(int index) {
+        return index >= (getCurrentPageBegin() + itemsInCurrentPage());
+    }
+
     public int getCurrentPageBegin() {
         return getPageBegin(currentPage);
     }

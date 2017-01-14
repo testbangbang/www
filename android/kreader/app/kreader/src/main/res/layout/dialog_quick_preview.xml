@@ -14,29 +14,52 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
-        <ImageView
-            android:focusable="true"
+        <LinearLayout
+            android:gravity="center"
             android:background="@drawable/square_bg"
-            android:id="@+id/image_view_one_grids"
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_dialog_reader_page_one_black_focused"/>
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:focusable="true"
-            android:background="@drawable/top_bottom_line_button_bg"
-            android:id="@+id/image_view_four_grids"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_dialog_reader_page_four_white_focused"/>
+            <ImageView
+                android:padding="1dp"
+                android:focusable="true"
+                android:background="@drawable/quick_view_item_bg"
+                android:id="@+id/image_view_one_grids"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dialog_reader_page_one_black_focused"/>
 
-        <ImageView
-            android:focusable="true"
-            android:background="@drawable/square_bg"
-            android:id="@+id/image_view_nine_grids"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_dialog_reader_page_nine_white_focused"/>
+            <View
+                android:background="@android:color/black"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"/>
+
+            <ImageView
+                android:padding="1dp"
+                android:focusable="true"
+                android:background="@drawable/quick_view_item_bg"
+                android:id="@+id/image_view_four_grids"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dialog_reader_page_four_white_focused"/>
+
+            <View
+                android:background="@android:color/black"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"/>
+
+            <ImageView
+                android:padding="1dp"
+                android:focusable="true"
+                android:background="@drawable/quick_view_item_bg"
+                android:id="@+id/image_view_nine_grids"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dialog_reader_page_nine_white_focused"/>
+        </LinearLayout>
+
+
 
         <LinearLayout
             android:layout_marginLeft="20dp"

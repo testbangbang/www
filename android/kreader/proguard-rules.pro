@@ -54,6 +54,8 @@
 -keep class * extends com.raizlabs.android.dbflow.converter.TypeConverter { *; }
 -keep class * extends com.raizlabs.android.dbflow.structure.BaseModel { *; }
 
+-keep class com.alibaba.fastjson.** { *; }
+
 # Retain generated class which implement Unbinder.
 -keep public class * implements butterknife.Unbinder { public <init>(...); }
 

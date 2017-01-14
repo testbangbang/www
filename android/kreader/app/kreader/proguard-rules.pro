@@ -19,6 +19,7 @@
 -dontshrink
 
 -keepnames class com.onyx.kreader.device.DeviceConfig { *; }
+-keep class com.onyx.kreader.ui.handler.HandlerManager
 
 -keepnames class org.apache.lucene.analysis.** { *; }
 
