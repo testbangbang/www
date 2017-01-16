@@ -45,5 +45,7 @@
     <dimen name="dialog_loading_text_area_minHeight">102dp</dimen>
     <dimen name="dialog_loading_close_button_image_size">96dp</dimen>
     <dimen name="dialog_loading_text_size">25sp</dimen>
+    <dimen name="preference_title_text_size">16sp</dimen>
+    <dimen name="preference_category_text_size">14sp</dimen>
 
 </resources>
