@@ -65,6 +65,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private BackGroundTypePopupMenu bgTypePopupMenu;
     PenColorPopupMenu penColorPopupMenu;
     private ImageView penColorBtn;
+    private OnyxAlertDialog confirmDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,27 +138,31 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 syncWithCallback(true, false, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        final OnyxAlertDialog confirmDialog = new OnyxAlertDialog();
-                        confirmDialog.setParams(new OnyxAlertDialog.Params()
-                                .setCanceledOnTouchOutside(false)
-                                .setTittleString(getString(R.string.clear))
-                                .setAlertMsgString(getString(R.string.clear_confirm))
-                                .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
-                                .setPositiveAction(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        confirmDialog.dismiss();
-                                        onEraseClicked(false);
-                                    }
-                                })
-                                .setNegativeAction(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        confirmDialog.dismiss();
-                                        syncWithCallback(true, true, null);
-                                    }
-                                }));
-                        confirmDialog.show(getFragmentManager(), "confirmDialog");
+                        if (confirmDialog == null) {
+                            confirmDialog = new OnyxAlertDialog();
+                            confirmDialog.setParams(new OnyxAlertDialog.Params()
+                                    .setCanceledOnTouchOutside(false)
+                                    .setTittleString(getString(R.string.clear))
+                                    .setAlertMsgString(getString(R.string.clear_confirm))
+                                    .setCustomLayoutResID(R.layout.mx_custom_alert_dialog)
+                                    .setPositiveAction(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            confirmDialog.dismiss();
+                                            onEraseClicked(false);
+                                        }
+                                    })
+                                    .setNegativeAction(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            confirmDialog.dismiss();
+                                            syncWithCallback(true, true, null);
+                                        }
+                                    }));
+                        }
+                        if (!confirmDialog.isVisible()) {
+                            confirmDialog.show(getFragmentManager(), "confirmDialog");
+                        }
                     }
                 });
             }
