@@ -779,8 +779,8 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private ReaderDocumentTableOfContentEntry locateEntry(List<ReaderDocumentTableOfContentEntry> entries, int page) {
         for (int i = 0; i < entries.size() - 1; i++) {
             ReaderDocumentTableOfContentEntry current = entries.get(i);
-            int currentPage = PagePositionUtils.getPageNumber(current.getPosition());
-            int nextPage = PagePositionUtils.getPageNumber(entries.get(i + 1).getPosition());
+            int currentPage = PagePositionUtils.getPageNumber(current.getPageName());
+            int nextPage = PagePositionUtils.getPageNumber(entries.get(i + 1).getPageName());
             if (currentPage <= page && page < nextPage) {
                 return locateEntryWithChildren(current, page);
             }
@@ -791,11 +791,11 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     }
 
     private ReaderDocumentTableOfContentEntry locateEntryWithChildren(ReaderDocumentTableOfContentEntry entry, int page) {
-        int currentPage = PagePositionUtils.getPageNumber(entry.getPosition());
+        int currentPage = PagePositionUtils.getPageNumber(entry.getPageName());
         if (!hasChildren(entry)) {
             return entry;
         }
-        int firstChildPage = PagePositionUtils.getPageNumber(entry.getChildren().get(0).getPosition());
+        int firstChildPage = PagePositionUtils.getPageNumber(entry.getChildren().get(0).getPageName());
         if (currentPage <= page && page < firstChildPage) {
             return entry;
         }
@@ -846,7 +846,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     public void dismiss() {
         clearRequestPages();
         if (loadedScribble) {
-            new GotoPageAction(PagePositionUtils.getPageNumber(readerDataHolder.getCurrentPagePosition())).execute(readerDataHolder);
+            new GotoPositionAction(readerDataHolder.getCurrentPagePosition()).execute(readerDataHolder);
         }
         super.dismiss();
     }
