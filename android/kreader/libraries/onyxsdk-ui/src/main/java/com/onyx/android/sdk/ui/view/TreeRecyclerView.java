@@ -127,6 +127,44 @@ public class TreeRecyclerView extends PageRecyclerView {
             }
         }
 
+        public int getCurrentNotePosition(TreeNode currentNode) {
+            Stack<TreeNode> stack = new Stack<>();
+            TreeNode node = currentNode;
+            while (node.parent != null) {
+                stack.push(node.parent);
+                node = node.parent;
+            }
+            int idx = list.indexOf(node);
+            if (idx < 0) {
+                return -1;
+            }
+            int position = idx + 1;
+            while (!stack.isEmpty()) {
+                TreeNode parent = stack.pop();
+                if (!parent.hasChildren()) {
+                    continue;
+                }
+                int index = getIndexOfChildren(parent, currentNode);
+                position += index < 0 ? parent.children.size() : index;
+
+            }
+            return position;
+        }
+
+        private int getIndexOfChildren(TreeNode parent, TreeNode node) {
+            int index = -1;
+            if (node.parent == null || !node.parent.equals(parent)) {
+                return index;
+            }
+            for (TreeNode child : parent.children) {
+                index++;
+                if (child.title.equals(node.title) && child.description.equals(node.description)) {
+                    return index;
+                }
+            }
+            return index;
+        }
+
         public void collapse(TreeNode parent) {
             if (!isNodeExpanded(parent)) {
                 assert false;
@@ -362,5 +400,14 @@ public class TreeRecyclerView extends PageRecyclerView {
 
     public void setCurrentNode(TreeNode node){
         adapter.setCurrentNode(node);
+    }
+
+    public void jumpToNode(final TreeNode node) {
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                gotoPage(getPaginator().pageByIndex(list.getCurrentNotePosition(node)));
+            }
+        });
     }
 }
