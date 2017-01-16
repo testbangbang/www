@@ -160,8 +160,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
         if (reader.getDocument().saveOptions()) {
             reader.saveOptions();
             saveToDocumentOptionsProvider(reader);
-            saveToLegacyDataProvider(reader);
         }
+        saveToLegacyDataProvider(reader);
     }
 
     private void saveToDocumentOptionsProvider(final Reader reader) {
