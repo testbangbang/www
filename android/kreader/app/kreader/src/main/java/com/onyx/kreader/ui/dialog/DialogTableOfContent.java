@@ -503,8 +503,9 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             ReaderDocumentTableOfContentEntry entry = locateEntry(toc.getRootEntry().getChildren(), readerDataHolder.getCurrentPage());
             TreeRecyclerView.TreeNode treeNode = findTreeNodeByTag(rootNodes, entry);
             if (treeNode != null) {
-                treeRecyclerView.expandTo(treeNode);
                 treeRecyclerView.setCurrentNode(treeNode);
+                treeRecyclerView.expandTo(treeNode);
+                treeRecyclerView.jumpToNode(treeNode);
             }
         }
 
