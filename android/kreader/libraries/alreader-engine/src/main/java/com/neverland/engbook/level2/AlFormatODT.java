@@ -11,8 +11,8 @@ import com.neverland.engbook.util.InternalFunc;
 
 public class AlFormatODT extends AlAXML {
 
-    protected int active_file = UNKNOWN_FILE_SOURCE_NUM;
-    protected int active_type = AlOneZIPRecord.SPECIAL_NONE;
+    //protected int active_file = UNKNOWN_FILE_SOURCE_NUM;
+    //protected int active_type = AlOneZIPRecord.SPECIAL_NONE;
 
     public static boolean isODT(AlFiles a) {
         //noinspection RedundantIfStatement

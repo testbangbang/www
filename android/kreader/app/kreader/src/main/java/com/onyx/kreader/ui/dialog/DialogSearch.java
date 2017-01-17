@@ -31,8 +31,8 @@ import com.onyx.android.sdk.ui.view.OnyxCustomEditText;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.ui.actions.GetSearchHistoryAction;
 import com.onyx.kreader.ui.actions.GotoSearchPageAction;
 import com.onyx.kreader.ui.actions.SearchContentAction;
@@ -204,6 +204,7 @@ public class DialogSearch extends Dialog{
                 }
             }
         });
+        searchEditText.requestFocus();
     }
 
     private void showSearchHistoryView(){
@@ -466,6 +467,7 @@ public class DialogSearch extends Dialog{
 
     private void showLoadingLayout(){
         loadingLayout.setVisibility(View.VISIBLE);
+        closeSearch.requestFocus();
     }
 
     private void hideLoadingLayout(){

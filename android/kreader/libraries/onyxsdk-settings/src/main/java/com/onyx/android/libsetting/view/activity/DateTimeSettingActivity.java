@@ -130,6 +130,7 @@ public class DateTimeSettingActivity extends OnyxAppCompatActivity {
         private void updateData() {
             dummyDate = Calendar.getInstance();
             autoDateTimePreference.setChecked(DateTimeSettingUtil.isAutoTimeEnabled(getContext()));
+            is24HourFormatPreference.setChecked(DateTimeSettingUtil.is24HourEnabled(getContext()));
         }
 
         @Override

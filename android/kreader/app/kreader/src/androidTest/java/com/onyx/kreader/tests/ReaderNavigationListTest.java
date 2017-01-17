@@ -3,8 +3,8 @@ package com.onyx.kreader.tests;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.android.sdk.utils.TestUtils;
-import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.reader.host.math.PageUtils;
+import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 
 
 /**

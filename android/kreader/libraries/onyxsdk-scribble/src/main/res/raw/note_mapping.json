@@ -1,9 +1,10 @@
 {
   "i86": {"mappingList": [
       {"orientation": 270, "tx": 0, "ty": 1200},
-      {"orientation": 180, "tx": 1600, "ty": 1200},
+      {"orientation": 0, "tx": 0, "ty": 0},
       {"orientation": 90, "tx": 1600, "ty": 0},
-      {"orientation": 0, "tx": 0, "ty": 0}],
+      {"orientation": 180, "tx": 1600, "ty": 1200}],
+
 
     "pressureList" : [
       {"pressure": 64, "ratio": 0.30},
@@ -183,9 +184,9 @@
 
   "t68": {"mappingList":  [
       { "orientation" : 90,  "tx" : 1440, "ty" : 0},
-      { "orientation" : 0,  "tx" : 0, "ty" : 0},
+      { "orientation" : 180,  "tx" : 1440, "ty" : 1080},
       { "orientation" : 270,  "tx" : 0, "ty" : 1080},
-      { "orientation" : 180,  "tx" : 1440, "ty" : 1080}],
+      { "orientation" : 0,  "tx" : 0, "ty" : 0}],
 
     "pressureList" : [
       {"pressure": 64, "ratio": 0.30},
@@ -209,9 +210,9 @@
 
   "t76": {"mappingList": [
       { "orientation" : 90,  "tx" : 1440, "ty" : 0},
-      { "orientation" : 0,  "tx" : 0, "ty" : 0},
+      { "orientation" : 180,  "tx" : 1440, "ty" : 1080},
       { "orientation" : 270,  "tx" : 0, "ty" : 1080},
-      { "orientation" : 180,  "tx" : 1440, "ty" : 1080}],
+      { "orientation" : 0,  "tx" : 0, "ty" : 0}],
 
     "pressureList" : [
       {"pressure": 64, "ratio": 0.30},

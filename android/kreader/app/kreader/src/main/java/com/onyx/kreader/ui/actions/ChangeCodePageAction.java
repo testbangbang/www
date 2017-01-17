@@ -2,12 +2,9 @@ package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.request.ChangeCodePageRequest;
-import com.onyx.kreader.host.request.ChangeStyleRequest;
+import com.onyx.android.sdk.reader.host.request.ChangeCodePageRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.dialog.DialogLoading;
 
 
 /**

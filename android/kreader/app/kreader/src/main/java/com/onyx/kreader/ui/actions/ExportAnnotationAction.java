@@ -4,8 +4,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.request.ExportAnnotationRequest;
-import com.onyx.kreader.host.request.ExportNotesRequest;
+import com.onyx.kreader.ui.requests.ExportAnnotationRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.List;

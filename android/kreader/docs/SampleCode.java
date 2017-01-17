@@ -2,7 +2,7 @@ package com.onyx.kreader.tests;
 
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import com.onyx.kreader.api.*;
+import com.onyx.android.sdk.reader.api.*;
 
 import java.util.List;
 

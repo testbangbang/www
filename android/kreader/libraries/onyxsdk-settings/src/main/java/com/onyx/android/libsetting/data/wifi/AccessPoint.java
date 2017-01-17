@@ -145,4 +145,8 @@ public class AccessPoint extends BaseObservable {
     public int getDisableReason() {
         return disableReason;
     }
+
+    public boolean isConnected() {
+        return getWifiInfo() != null;
+    }
 }

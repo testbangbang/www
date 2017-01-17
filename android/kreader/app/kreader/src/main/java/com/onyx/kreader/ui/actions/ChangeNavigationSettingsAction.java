@@ -7,17 +7,17 @@ import com.onyx.android.cropimage.data.PointMatrix;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.kreader.host.request.ChangeLayoutRequest;
-import com.onyx.kreader.host.request.GotoPositionRequest;
-import com.onyx.kreader.host.request.ScaleToPageCropRequest;
-import com.onyx.kreader.host.request.ScaleToPageRequest;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.reader.host.math.PageUtils;
+import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
+import com.onyx.android.sdk.reader.host.request.GotoPositionRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.data.ReaderCropArgs;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 /**
  * Created by joy on 7/12/16.

@@ -15,7 +15,7 @@ import android.webkit.WebViewClient;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
-import com.onyx.kreader.common.Debug;
+import com.onyx.android.sdk.reader.common.Debug;
 
 import java.io.File;
 import java.io.FileOutputStream;

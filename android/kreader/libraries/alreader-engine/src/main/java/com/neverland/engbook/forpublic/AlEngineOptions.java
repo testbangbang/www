@@ -31,7 +31,11 @@ public class AlEngineOptions {
 	/**
 	 * каталог, откуда библиотека считывает шрифты
 	 */
-	public String								font_catalog[]; // not to use for win32
+	public String								font_catalog = null; // not to use for win32
+	/**
+	 * каталог, откуда библиотека считывает шрифты
+	 */
+	public String[]								font_catalogs_addon = null; // not to use for win32
 	/*
 	 * список шрифтов из ресурсов
 	 */
@@ -59,6 +63,10 @@ public class AlEngineOptions {
 	 * если сноски показываются только во всплывающем окошке - опция скрывает на странице сноски (ASIDE epub)
 	 */
 	public boolean 								onlyPopupFootnote = false;
+	/**
+	 * по умолчанию линки подчеркиваются
+	 */
+	public boolean 								drawLinkInternal = true;
 
 	public EngBookMyType.TAL_TABLEMODE			tableMode = EngBookMyType.TAL_TABLEMODE.BOTH;
 
@@ -67,5 +75,4 @@ public class AlEngineOptions {
 
 	public EngSelectionCorrecter				selectCorrecter = null;
 	public AlBitmap 							externalBitmap = null;
-	public boolean 								drawLinkStyle = true;
 }

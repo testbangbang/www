@@ -4,8 +4,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
 import android.graphics.Picture;
 import android.graphics.PorterDuff;
-import android.graphics.RectF;
-
 
 import com.larvalabs.svgandroid.SVG;
 import com.larvalabs.svgandroid.SVGParser;
@@ -13,9 +11,12 @@ import com.neverland.engbook.forpublic.AlBitmap;
 import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.level2.AlFormat;
+import com.neverland.engbook.unicode.AlUnicode;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class AlImage {
 
@@ -41,6 +42,52 @@ public class AlImage {
 	public void initWork(AlOneImage ai, AlFormat format) {
 		open(ai, format);
 		ai.needScan = false;
+		ai.tm = System.currentTimeMillis();
+	}
+
+	private class gcPair {
+		public gcPair(long t, int n) {
+			tm = t;
+			num = n;
+		}
+		public long tm;
+		public int  num;
+	}
+
+	public void gc(ArrayList<AlOneImage> im) {
+		gc(im, InternalConst.AL_IMAGE_SAVED_ACTUAL_COUNT);
+	}
+
+	public void gc(ArrayList<AlOneImage> im, int maxCount) {
+		if (im == null || im.size() <= maxCount)
+			return;
+
+		long now = System.currentTimeMillis();
+		ArrayList<gcPair> coll = new ArrayList<>();
+		for (int i = 0; i < im.size(); i++) {
+			if (im.get(i).data != null && now - im.get(i).tm > 10000) {
+				gcPair p = new gcPair(im.get(i).tm, i);
+				coll.add(p);
+			}
+		}
+
+		if (coll.size() <= maxCount)
+			return;
+
+		Collections.sort(coll, new Comparator<gcPair>() {
+			public int compare(gcPair o1, gcPair o2) {
+				return o2.tm > o1.tm ? 1 : (o2.tm < o1.tm ? -1 : 0);
+			}
+		});
+
+		for (int i = maxCount; i < coll.size(); i++) {
+			AlOneImage m = im.get(coll.get(i).num);
+			m.data = null;
+			m.needScan = true;
+			m.tm = 0;
+		}
+
+		System.gc();
 	}
 	
 	private final BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -90,8 +137,8 @@ public class AlImage {
 					e.printStackTrace();
 				}
 
-				storeBitmap[storeIndex].height = ai.width;
-				storeBitmap[storeIndex].width = ai.height;
+				storeBitmap[storeIndex].height = ai.height;
+				storeBitmap[storeIndex].width = ai.width;
 				storeImage[storeIndex] = ai.name;
 				storeScale[storeIndex] = scale;
 			}
@@ -161,7 +208,7 @@ public class AlImage {
                 if (opts.outHeight != -1 && opts.outWidth != -1) {
                     ai.height = opts.outHeight;
                     ai.width = opts.outWidth;
-                    if (opts.outMimeType == null || opts.outMimeType.contentEquals(""))
+                    if (opts.outMimeType.contentEquals(""))
                         return true;
                 }
             }
@@ -223,6 +270,21 @@ public class AlImage {
 			if (ch >= 0x80)
 				continue;
 
+			if (ch == '&') {
+				for (int j = i + 1; j < tmp_size; j++) {
+					if (tmp[j] == ';') {
+						for (int k = i + 1; k <= j; k++)
+							tmp[k] = 0x00;
+						break;
+					} else
+					if (AlUnicode.isHEXDigit((char) tmp[j]) || tmp[j] == '#') {
+
+					} else {
+						break;
+					}
+				}
+			}
+
 			ch = base64Decode[ch];
 			if (ch == 0xff)
 				continue;
@@ -260,7 +322,7 @@ public class AlImage {
 	}
 
 	private boolean  openBinInFile(AlOneImage ai, AlFormat format) {
-		int pos = 0;
+		/*int pos = 0;*/
 		ai.data = new byte [ai.positionE - ai.positionS];
 		format.aFiles.getByteBuffer(ai.positionS, ai.data, ai.positionE - ai.positionS);
 		return true;

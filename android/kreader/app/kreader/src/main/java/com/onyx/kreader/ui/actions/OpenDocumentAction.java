@@ -7,15 +7,15 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderException;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.host.request.CreateViewRequest;
-import com.onyx.kreader.host.request.LoadDocumentOptionsRequest;
-import com.onyx.kreader.host.request.OpenRequest;
-import com.onyx.kreader.host.request.RestoreRequest;
-import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
+import com.onyx.android.sdk.reader.api.ReaderException;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
+import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
+import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
+import com.onyx.android.sdk.reader.host.request.OpenRequest;
+import com.onyx.kreader.ui.requests.RestoreRequest;
+import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogMessage;
@@ -23,7 +23,7 @@ import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
-import com.onyx.kreader.utils.DeviceUtils;
+import com.onyx.android.sdk.reader.utils.DeviceUtils;
 
 /**
  * Created by zhuzeng on 5/17/16.

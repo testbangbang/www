@@ -355,4 +355,6 @@ public class BaseDevice {
     public boolean isTouchable(Context context) {
         return true;
     }
+
+    public void gotoSleep(final Context context) {}
 }

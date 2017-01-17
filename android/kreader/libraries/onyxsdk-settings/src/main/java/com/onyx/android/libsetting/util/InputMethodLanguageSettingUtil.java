@@ -40,6 +40,8 @@ public class InputMethodLanguageSettingUtil {
 
     private static final String DISABLED_SYSTEM_INPUT_METHODS = "disabled_system_input_methods";
 
+    private static final String SYSTEM_PRESERVED_IME = "com.android.inputmethod.latin/.LatinIME";
+
     private static final String TAG = InputMethodLanguageSettingUtil.class.getSimpleName();
 
     public static boolean isInputMethodPreference(List<InputMethodInfo> mImis, Preference preference) {
@@ -94,7 +96,12 @@ public class InputMethodLanguageSettingUtil {
                 String targetString;
                 if (enabled) {
                     targetString = Settings.Secure.getString(
-                            context.getContentResolver(), Settings.Secure.ENABLED_INPUT_METHODS) + INPUT_METHOD_SEPARATOR + imeID;
+                            context.getContentResolver(), Settings.Secure.ENABLED_INPUT_METHODS);
+                    if (targetString.contains(imeID)) {
+                        return;
+                    }
+                    targetString = targetString + INPUT_METHOD_SEPARATOR + imeID;
+
                 } else {
                     targetString = Settings.Secure.getString(
                             context.getContentResolver(), Settings.Secure.ENABLED_INPUT_METHODS).replace((INPUT_METHOD_SEPARATOR + imeID), "");
@@ -518,11 +525,17 @@ public class InputMethodLanguageSettingUtil {
 //        }
 //    }
 //
+
     public static boolean isSystemIme(InputMethodInfo property) {
         return (property.getServiceInfo().applicationInfo.flags
                 & ApplicationInfo.FLAG_SYSTEM) != 0;
     }
-//
+
+    public static boolean isSystemPreservedIme(InputMethodInfo property) {
+        return property.getId().equals(SYSTEM_PRESERVED_IME);
+    }
+
+    //
 //    public static boolean isAuxiliaryIme(InputMethodInfo imi) {
 //        return imi.isAuxiliaryIme();
 //    }

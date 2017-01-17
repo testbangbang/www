@@ -127,7 +127,7 @@ public class AlTextOnScreen {
     private int lastStart = -1;
     private int lastEnd = -1;
 
-    public int findWordByPos(int pos) {
+    private int findWordByPos(int pos) {
 
         int s, e;
 

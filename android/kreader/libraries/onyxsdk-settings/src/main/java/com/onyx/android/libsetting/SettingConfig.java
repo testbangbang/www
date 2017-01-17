@@ -62,13 +62,15 @@ public class SettingConfig {
         static private final String ANDROID_SETTING_PACKAGE_NAME = "com.android.settings";
         static private final String ANDROID_SETTING_CLASS_NAME = "com.android.settings.Settings";
         static private final String TTS_CLASS_NAME = "com.android.settings.TextToSpeechSettings";
-        static private final String BLUETOOTH_CLASS_NAME = "com.android.settings.bluetooth.BluetoothSettings";
         static private final String ZONE_PICKER_CLASS_NAME = "com.android.settings.ZonePicker";
         static private final String POWER_USAGE_SUMMARY_CLASS_NAME = "com.android.settings.fuelgauge.PowerUsageSummary";
-        static private final String APPLICATION_MANAGEMENT_CLASS_NAME = "com.android.settings.applications.ManageApplications";
         static private final String FACTORY_RESET_CLASS_NAME = "com.android.settings.MasterClear";
-        static private final String VPN_SETTING_CLASS_NAME = "com.android.settings.vpn2.VpnSettings";
         static private final String DEVICE_INFO_CLASS_NAME = "com.android.settings.DeviceInfoSettings";
+
+        static private final String TTS_ACTION = "com.android.settings.TTS_SETTINGS";
+        static private final String MASTER_CLEAR_ACTION = "android.settings.MASTER_CLEAR";
+        static private final String TIME_ZONE_PICKER_ACTION = "android.settings.TIME_ZONE_SETTING";
+        static private final String PRE_N_VPN_SETTING_ACTION = "android.net.vpn.SETTINGS";
     }
 
 
@@ -227,17 +229,17 @@ public class SettingConfig {
     public Intent getTTSSettingIntent() {
         Intent intent = new Intent();
         String pkgName = getData(Custom.TTS_PACKAGE_NAME_TAG, String.class);
-        if (TextUtils.isEmpty(pkgName)) {
-            pkgName = Default.ANDROID_SETTING_PACKAGE_NAME;
-        }
         String className = getData(Custom.TTS_CLASS_NAME_TAG, String.class);
-        if (TextUtils.isEmpty(className)) {
-            className = Default.TTS_CLASS_NAME;
-        }
-        intent.setClassName(pkgName, className);
-        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
-            intent = buildDefaultSettingIntent();
-            intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.TTS_CLASS_NAME);
+        if (TextUtils.isEmpty(pkgName) && TextUtils.isEmpty(className)) {
+            intent = new Intent(Default.TTS_ACTION);
+        } else {
+            if (TextUtils.isEmpty(pkgName)) {
+                pkgName = Default.ANDROID_SETTING_PACKAGE_NAME;
+            }
+            if (TextUtils.isEmpty(className)) {
+                className = Default.TTS_CLASS_NAME;
+            }
+            intent.setClassName(pkgName, className);
         }
         return intent;
     }
@@ -245,25 +247,25 @@ public class SettingConfig {
     public Intent getTimeZoneSettingIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.ZONE_PICKER_CLASS_NAME);
-        return intent;
+        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
+                new Intent(Default.TIME_ZONE_PICKER_ACTION) : intent;
     }
 
     public Intent getBatteryStatusIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.POWER_USAGE_SUMMARY_CLASS_NAME);
-        return intent;
+        return new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
     }
 
     public Intent getApplicationManagementIntent() {
-        Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.APPLICATION_MANAGEMENT_CLASS_NAME);
-        return intent;
+        return new Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS);
     }
 
     public Intent getFactoryResetIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.FACTORY_RESET_CLASS_NAME);
-        return intent;
+        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
+                new Intent(Default.MASTER_CLEAR_ACTION) : intent;
     }
 
     private Intent buildDefaultSettingIntent() {
@@ -283,26 +285,21 @@ public class SettingConfig {
         return null;
     }
 
-    public Intent getKeyBindingIntent() {
-        return null;
-    }
-
     public Intent getBluetoothSettingIntent() {
-        Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.BLUETOOTH_CLASS_NAME);
-        return intent;
+        return new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
     }
 
     public Intent getVPNSettingIntent() {
-        Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.VPN_SETTING_CLASS_NAME);
-        return intent;
+        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.N) ?
+                new Intent(Settings.ACTION_VPN_SETTINGS) :
+                new Intent(Default.PRE_N_VPN_SETTING_ACTION).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     public Intent getDeviceInfoIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.DEVICE_INFO_CLASS_NAME);
-        return intent;
+        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.M) ?
+                new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS) : intent;
     }
 
     private List<String> getSettingItemTAGList() {

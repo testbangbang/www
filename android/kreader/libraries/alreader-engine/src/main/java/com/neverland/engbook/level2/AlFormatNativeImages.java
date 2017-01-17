@@ -94,6 +94,16 @@ public class AlFormatNativeImages extends AlFormat {
     }
 
     @Override
+    public int getPageStart(int pos) {
+        return 0;
+    }
+
+    @Override
+    public int getCountPages() {
+        return 1;
+    }
+
+    @Override
     protected void doTextChar(char ch, boolean addSpecial) {
         if (allState.isOpened) {
             if (allState.text_present) {

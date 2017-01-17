@@ -15,7 +15,7 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.kreader.R;
-import com.onyx.kreader.reflow.ImageReflowSettings;
+import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.ArrayList;
@@ -294,7 +294,7 @@ public class DialogReflowSettings extends DialogBase {
         fontSizeLayout.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
-                if (buttonView.isPressed()) {
+                if (buttonView.isPressed() || buttonView.isFocused()) {
                     fontSizeLayout.getMultiAdapter().setItemRangeChecked(true, 0, position + 1);
                     fontSizeLayout.getMultiAdapter().setItemRangeChecked(false, position + 1, fontSizes.length - position - 1);
                 }
@@ -304,7 +304,7 @@ public class DialogReflowSettings extends DialogBase {
         upgradeLayout.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
-                if (buttonView.isPressed()) {
+                if (buttonView.isPressed() || buttonView.isFocused()) {
                     upgradeLayout.getMultiAdapter().setItemRangeChecked(true, 0, position + 1);
                     upgradeLayout.getMultiAdapter().setItemRangeChecked(false, position + 1, upgradeSizes.length - position - 1);
                 }
@@ -314,7 +314,7 @@ public class DialogReflowSettings extends DialogBase {
         columnsLayout.setOnCheckedChangeListener(new DynamicMultiRadioGroupView.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
-                if (buttonView.isPressed()) {
+                if (buttonView.isPressed() || buttonView.isFocused()) {
                     columnsLayout.getMultiAdapter().setItemRangeChecked(true, 0, position + 1);
                     columnsLayout.getMultiAdapter().setItemRangeChecked(false, position + 1, columnsSize.length - position - 1);
                 }
@@ -404,7 +404,7 @@ public class DialogReflowSettings extends DialogBase {
         }
 
         @Override
-        public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onPageBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
             ReflowViewHolder viewHolder = (ReflowViewHolder) holder;
             viewHolder.imageView.setImageResource(resIds[position]);
 
@@ -413,6 +413,12 @@ public class DialogReflowSettings extends DialogBase {
             } else {
                 viewHolder.imageView.setActivated(false);
             }
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getPageRecyclerView().setCurrentFocusedPosition(position);
+                }
+            });
         }
     }
 

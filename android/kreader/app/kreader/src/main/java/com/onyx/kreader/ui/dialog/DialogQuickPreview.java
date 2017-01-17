@@ -31,16 +31,16 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderDocumentTableOfContent;
-import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
-import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.kreader.ui.actions.GetTableOfContentAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.view.PreviewViewHolder;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,7 +153,7 @@ public class DialogQuickPreview extends Dialog {
         @Override
         public PreviewViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
             final PreviewViewHolder previewViewHolder = new PreviewViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.preview_list_item_view, parent, false));
-            previewViewHolder.getContainer().setOnClickListener(new View.OnClickListener() {
+            previewViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     new GotoPageAction(previewViewHolder.getPage(), true).execute(readerDataHolder, new BaseCallback() {
@@ -168,11 +168,21 @@ public class DialogQuickPreview extends Dialog {
         }
 
         @Override
-        public void onPageBindViewHolder(PreviewViewHolder holder, int position) {
+        public void onPageBindViewHolder(PreviewViewHolder holder, final int position) {
             Bitmap bmp = previewMap.get(position);
 
             holder.bindPreview(bmp, position);
             holder.getContainer().setActivated(readerDataHolder.getCurrentPage() == position);
+            holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        if (gridRecyclerView.getPaginator().isInNextPage(position)) {
+                            oneImageGrid.requestFocus();
+                        }
+                    }
+                }
+            });
         }
 
         @Override

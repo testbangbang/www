@@ -73,4 +73,63 @@
         <item>NewAdded</item>
     </string-array>
 
+    <string-array name="long_short_click_key_map_mode">
+        <item>"Option 1"</item>
+        <item>"Option 2"</item>
+        <item>"Option 3"</item>
+        <item>"Option 4"</item>
+    </string-array>
+
+    <string-array name="long_short_click_key_map_mode_for_tp_model">
+        <item>"Option 1"</item>
+        <item>"Option 2"</item>
+        <item>"Option 3"</item>
+        <item>"Option 4"</item>
+    </string-array>
+
+    <string-array name="long_short_click_key_map_summary">
+        <item>"Left button (short press) -&gt; Back \nLeft button (long press) -&gt; Menu \nRight button (long press) -&gt; Page up \nRight button (short press) -&gt; Page down"</item>
+        <item>"Left button (short press) -&gt; Page up \nLeft button (long press) -&gt; Back \nRight button (long press) -&gt; Menu \nRight button (short press) -&gt; Page down"</item>
+        <item>"Left button (short press) -&gt; Page down \nLeft button (long press) -&gt; Page up \nRight button (long press) -&gt; Menu \nRight button (short press) -&gt; Back"</item>
+        <item>"Left button (short press) -&gt; Page down \nLeft button (long press) -&gt; Menu \nRight button (long press) -&gt; Back \nRight button (short press) -&gt; Page up"</item>
+    </string-array>
+
+    <string-array name="long_short_click_key_map_summary_for_tp_model">
+        <item>"Left button (Short press) -&gt; Page up\nLeft button (Long press) -&gt; Screen refresh\nRight button (Short press) -&gt; Page down\nRight button (Long press) -&gt; Menu"</item>
+        <item>"Left button (Short press) -&gt; Page down\nLeft button (Long press) -&gt; Screen refresh\nRight button (Short press) -&gt; Page down\nRight button (Long press) -&gt; Page up"</item>
+        <item>"Left button (Short press) -&gt; Page down\nLeft button (long press) -&gt; Page up\nRight button (Short press) -&gt; Page down\nRight button (Long press) -&gt; Dictionary"</item>
+        <item>"Left button (Short press) -&gt; Page up\nLeft button (Long press) -&gt; Screen refresh\nRight button (short press) -&gt; Page down\nRight button (Long press) -&gt; Dictionary"</item>
+    </string-array>
+
+    <string-array name="key_map_mode_value" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="long_short_click_key_map_mode_value" translatable="false">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="long_short_click_key_map_mode_value_for_tp_model" translatable="false">
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
+    <string-array name="long_press_feature_summary">
+        <item>"Switch front light"</item>
+        <item>"Switch status bar"</item>
+    </string-array>
+
+    <string-array name="long_press_feature_value" translatable="false">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
 </resources>

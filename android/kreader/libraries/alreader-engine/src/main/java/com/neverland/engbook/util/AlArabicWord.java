@@ -1,6 +1,6 @@
 package com.neverland.engbook.util;
 
-public class AlArabicWord {
+class AlArabicWord {
     public int     start;
     public int     end;
     public int     type;

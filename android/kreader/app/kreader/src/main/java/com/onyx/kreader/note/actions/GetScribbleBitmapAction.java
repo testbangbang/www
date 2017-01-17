@@ -9,7 +9,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.kreader.host.request.RenderThumbnailRequest;
+import com.onyx.android.sdk.reader.host.request.RenderThumbnailRequest;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;

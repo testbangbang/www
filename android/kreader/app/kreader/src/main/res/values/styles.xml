@@ -61,6 +61,7 @@
         <item name="android:background">@color/title_background</item>
     </style>
     <style name="dialog_table_of_content_radio_button">
+        <item name="android:focusable">false</item>
         <item name="android:paddingTop">@dimen/dialog_table_of_content_radio_button_padding</item>
         <item name="android:paddingBottom">@dimen/dialog_table_of_content_radio_button_padding</item>
         <item name="android:gravity">center</item>
@@ -69,7 +70,8 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
     <style name="dialog_contrast_checkbox">
-        <item name="android:background">@android:color/white</item>
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/imagebtn_bg</item>
         <item name="android:gravity">center</item>
         <item name="android:button">@null</item>
         <item name="android:drawableTop">@drawable/bold_size_select</item>

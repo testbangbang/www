@@ -41,7 +41,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
-import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
@@ -92,8 +92,8 @@ import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
-import com.onyx.kreader.utils.DeviceConfig;
-import com.onyx.kreader.utils.TreeObserverUtils;
+import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -185,6 +185,9 @@ public class ReaderActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         ReaderActivity.super.onDestroy();
+        if (getReaderDataHolder().isDocumentOpened()) {
+            quitApplication(null);
+        }
     }
 
     private void resetMenus() {
@@ -890,7 +893,7 @@ public class ReaderActivity extends ActionBarActivity {
                 title = getReaderDataHolder().getBookTitle();
             }
         }
-        int endBatteryPercent = com.onyx.kreader.utils.DeviceUtils.getBatteryPecentLevel(getReaderDataHolder().getContext());
+        int endBatteryPercent = com.onyx.android.sdk.reader.utils.DeviceUtils.getBatteryPecentLevel(getReaderDataHolder().getContext());
         statusBar.updateStatusBar(new ReaderStatusInfo(pageRect, displayRect,
                 current, total, endBatteryPercent, title));
     }

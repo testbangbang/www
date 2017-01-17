@@ -8,9 +8,9 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.TestUtils;
-import com.onyx.kreader.api.*;
+import com.onyx.android.sdk.reader.api.*;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
 import java.util.List;

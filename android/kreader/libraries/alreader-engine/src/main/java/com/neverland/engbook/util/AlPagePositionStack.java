@@ -26,11 +26,4 @@ public class AlPagePositionStack {
 				return arr.get(i).back;
 		return -1;
 	}
-
-	public static AlPagePositionStack findPage(ArrayList<AlPagePositionStack> arr, int pos) {
-		for (int i = 0; i < arr.size(); i++)
-			if (arr.get(i).start == pos)
-				return arr.get(i);
-		return null;
-	}
 }

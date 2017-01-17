@@ -5,9 +5,9 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.kreader.plugins.neopdf.NeoPdfJniWrapper;
+import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfJniWrapper;
 
 import java.util.ArrayList;
 import java.util.List;

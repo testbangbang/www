@@ -1,7 +1,5 @@
 package com.neverland.engbook.bookobj;
 
-import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_ID;
-import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_RESULT;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_THREAD_TASK;
 
 class AlThread  implements Runnable {
