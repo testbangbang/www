@@ -13,6 +13,7 @@ public class AlBookProperties {
     // при получении свойств книги в scanMetaData - следующие два поля не заполняются
     public ArrayList<AlOneContent>	content = null;
 	public boolean 					isTextFormat = true;
+
     public int						size = 0;
 	// данные по обложке заполняются только в scanMetaData
 	//public int						coverImageDataSize = 0;

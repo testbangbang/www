@@ -17,8 +17,6 @@ import java.util.HashMap;
 
 public class AlFormatDOCX extends AlAXML {
 
-    protected int active_file = UNKNOWN_FILE_SOURCE_NUM;
-    protected int active_type = 0x00;
 
     private static final int DOCX_TEST_BUF_LENGTH = 1024;
     private static final String DOCX_TEST_STR_1 = "<?mso-application progid=\"word.document\"?>";
@@ -116,7 +114,7 @@ public class AlFormatDOCX extends AlAXML {
                     sTarget.startsWith("mailto:")*/) {
                     target = sTarget.toString();
                 } else {
-                    target = aFiles.getAbsoluteName("/word/", sTarget.toString());
+                    target = AlFiles.getAbsoluteName("/word/", sTarget.toString());
                 }
 
                 allId.put(sId.toString(), target);
@@ -128,8 +126,8 @@ public class AlFormatDOCX extends AlAXML {
     void doSpecialGetParagraph(long iType, int addon, long level, long[] stk, int[] cpl) {
         paragraph = iType;
         allState.state_parser = 0;
-        active_type = addon & 0xffff;
-        active_file = (addon >> 16) & 0x0fff;
+        active_type = addon & 0xff;
+        active_file = (addon >> 8) & 0x0fffff;
         paragraph_level = (int) (level & LEVEL2_MASK_FOR_LEVEL);
         paragraph_tag = (int) ((level >> 31) & 0xffffffff);
         allState.state_skipped_flag = (addon & LEVEL2_FRM_ADDON_SKIPPEDTEXT) != 0;
@@ -140,8 +138,8 @@ public class AlFormatDOCX extends AlAXML {
     @Override
     void formatAddonInt() {
         pariType = paragraph;
-        parAddon = active_type & 0xffff;
-        parAddon += (active_file & 0x0fff) << 16;
+        parAddon = active_type & 0xff;
+        parAddon += (active_file & 0x0fffff) << 8;
 
         parLevel = paragraph_level | (((long)paragraph_tag) << 31);
 
@@ -420,14 +418,27 @@ public class AlFormatDOCX extends AlAXML {
     }
 
     protected void addTestLink(int tp) {
-        StringBuilder s = tag.getATTRValue(AlFormatTag.TAG_NAME);
+        if (active_type != AlOneZIPRecord.SPECIAL_FIRST) {
+            StringBuilder s = tag.getATTRValue(AlFormatTag.TAG_NAME);
 
-        if (s != null && s.length() > 0)
-            addtestLink(s.toString(), size, tp);
+            if (s != null && s.length() > 0)
+                addtestLink(s.toString(), size, tp);
+        }
     }
 
 
     public boolean addImages() {
+        if (docx_type == DOCX_XML_WO_PART) {
+            StringBuilder sId = tag.getATTRValue(AlFormatTag.TAG_SRC);
+
+            if (sId != null) {
+
+                addCharFromTag((char) AlStyles.CHAR_IMAGE_S, false);
+                addTextFromTag(sId, false);
+                addCharFromTag((char) AlStyles.CHAR_IMAGE_E, false);
+                return true;
+            }
+        } else
         if (active_file != UNKNOWN_FILE_SOURCE_NUM) {
             StringBuilder sId = tag.getATTRValue(AlFormatTag.TAG_ID);
 
@@ -692,7 +703,7 @@ public class AlFormatDOCX extends AlAXML {
                             setTextStyle(AlStyles.STYLE_HIDDEN);
 
                         param = tag.getATTRValue(AlFormatTag.TAG_ID);
-                        boolean setSUP = !((paragraph & AlStyles.STYLE_SUP) != 0);
+                        boolean setSUP = ((paragraph & AlStyles.STYLE_SUP) == 0);
                         if (setSUP)
                             setTextStyle(AlStyles.STYLE_SUP);
                         if (param != null) {

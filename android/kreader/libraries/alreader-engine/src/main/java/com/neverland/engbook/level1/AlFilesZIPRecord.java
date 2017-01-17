@@ -8,6 +8,8 @@ public class AlFilesZIPRecord extends AlFiles {
 
     protected final ArrayList<AlOneZIPRecord> recordList = new ArrayList<>();
 
+    private final StringBuilder sb = new StringBuilder();
+
     public final void addFilesToRecord(String fname, int sp) {
         int num = parent.getExternalFileNum(fname);
 
@@ -21,7 +23,7 @@ public class AlFilesZIPRecord extends AlFiles {
             if (a.special == AlOneZIPRecord.SPECIAL_IMAGE) {
                 a.size = 0;
 
-                String tmp = String.format("\r\n<image numfiles = \"%d\" idref=\"%d\" src=\"%s\">\r\n",
+                String tmp = String.format("\r\n<image numfiles=\"%d\" idref=\"%d\" src=\"%s\">\r\n",
                         a.num, a.special, a.file);
                 a.startSize = AlUnicode.string2utf8(tmp, null);
                 a.startStr = new byte[a.startSize + 1];
@@ -32,6 +34,16 @@ public class AlFilesZIPRecord extends AlFiles {
 
                 String tmp = String.format("\r\n<alr:extfile numfiles=\"%d\" idref=\"%d\" id=\"%s\">\r\n",
                         a.num, a.special, a.file);
+                /*sb.setLength(0);
+                sb.append("\r\n<alr:extfile numfiles=\"");
+                sb.append(Integer.toString(a.num));
+                sb.append("\" idref=\"");
+                sb.append(Integer.toString(a.special));
+                sb.append("\" id=\"");
+                sb.append(a.file);
+                sb.append("\">\r\n");
+                String tmp = sb.toString();
+*/
                 a.startSize = AlUnicode.string2utf8(tmp, null);
                 a.startStr = new byte[a.startSize + 1];
                 AlUnicode.string2utf8(tmp, a.startStr);
@@ -116,5 +128,25 @@ public class AlFilesZIPRecord extends AlFiles {
     @Override
     public boolean fillBufFromExternalFile(int num, int pos, byte[] dst, int dst_pos, int cnt) {
         return parent.fillBufFromExternalFile(num, pos, dst, dst_pos, cnt);
+    }
+
+    @Override
+    public void	needUnpackData() {
+
+        if (useUnpack)
+            return;
+        useUnpack = true;
+
+        try {
+            unpack_buffer = new byte[size];
+        } catch (Exception e) {
+            e.printStackTrace();
+            unpack_buffer = null;
+        }
+        if (unpack_buffer != null) {
+            getBuffer(0, unpack_buffer, size);
+        } else {
+            useUnpack = false;
+        }
     }
 }

@@ -10,15 +10,25 @@ public abstract class AlFilesBypass extends AlFiles {
         if (fname == null)
             return LEVEL1_FILE_NOT_FOUND;
 
+        if (mapFile.size() == 0) {
+            for (int i = 0; i < fileList.size(); i++) {
+                mapFile.put(fileList.get(i).name, i);
+            }
+        }
+
         for (int j = 0; j < 2; j++) {
             fname = j == 0 ? getAbsoluteName(fileName, fname) : AlUnicode.URLDecode(fname);
 
             if (fname != null) {
-                for (int i = 0; i < fileList.size(); i++) {
+
+                Integer i = mapFile.get(fname);
+                if (i != null)
+                    return i;
+                /*for (int i = 0; i < fileList.size(); i++) {
                     if (fileList.get(i).name.contentEquals(fname)) {
                         return i;
                     }
-                }
+                }*/
 
                 int sz = AlRandomAccessFile.isFileExists(fname);
                 if (sz > 0) {
@@ -31,6 +41,9 @@ public abstract class AlFilesBypass extends AlFiles {
                     of.time = 0;
                     of.name = fname;
                     fileList.add(of);
+
+                    mapFile.put(fname, fileList.size() - 1);
+
                     return fileList.size() - 1;
                 }
             }
