@@ -47,6 +47,7 @@ public class ManagerActivity extends BaseManagerActivity {
     private ImageView nextPageBtn, prevPageBtn;
     private LinearLayout controlPanel;
 
+    private DialogMoveFolder dialogMoveFolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -265,6 +266,9 @@ public class ManagerActivity extends BaseManagerActivity {
         currentSelectMode = SelectionMode.NORMAL_MODE;
         EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC);
         super.onResume();
+        if (dialogMoveFolder != null && dialogMoveFolder.isVisible()) {
+            dialogMoveFolder.dismiss();
+        }
     }
 
     @Override
@@ -290,7 +294,7 @@ public class ManagerActivity extends BaseManagerActivity {
 
     @Override
     public void showMovableFolderDialog(List<NoteModel> curLibSubContList) {
-        final DialogMoveFolder dialogMoveFolder = new DialogMoveFolder();
+        dialogMoveFolder = new DialogMoveFolder();
         dialogMoveFolder.setDataList(curLibSubContList);
         dialogMoveFolder.setCallback(new DialogMoveFolder.DialogMoveFolderCallback() {
             @Override
