@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class AlFilesRAR extends AlFiles {
 
-    int rar_position = -1;
+    private int rar_position = -1;
     private RARByteArrayOutputStream baos = null;
 
     public int initState(String file, AlFiles myParent, ArrayList<AlFileZipEntry> fList) {

@@ -76,6 +76,10 @@ public abstract class AlFormat {
     final ArrayList<AlOneLink> lnk = new ArrayList<>(0);
     public final ArrayList<AlOneContent> ttl = new ArrayList<>(0);
 
+    public ArrayList<AlOneImage> getAllImages() {
+        return im;
+    }
+
     boolean autoCodePage;
 
     protected long parStack[] = null;

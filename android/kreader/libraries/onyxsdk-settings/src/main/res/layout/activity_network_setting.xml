@@ -49,6 +49,8 @@
 
         <FrameLayout
             android:id="@+id/network_setting"
+            android:layout_marginLeft="@dimen/preference_fragment_margin"
+            android:layout_marginRight="@dimen/preference_fragment_margin"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>

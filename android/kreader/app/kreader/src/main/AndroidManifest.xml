@@ -149,8 +149,6 @@
 
         </activity>
 
-        <activity android:name=".tests.LayoutTestActivity"/>
-
         <activity android:name="com.onyx.android.cropimage.CropImageActivity" />
 
         <activity android:name=".ui.settings.MainSettingsActivity"/>

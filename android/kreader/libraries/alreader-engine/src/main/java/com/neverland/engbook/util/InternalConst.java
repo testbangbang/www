@@ -5,6 +5,8 @@ public class InternalConst {
 	public final static int AL_MIN_FONTSIZE = 5;
 	public final static int AL_MAX_FONTSIZE = 240;
 
+	public final static int AL_IMAGE_SAVED_ACTUAL_COUNT = 6;
+
 	public final static int AL_ONEWORD_FLAG_NONE =				  0x00;
 	public final static int AL_ONEWORD_FLAG_DOHYPH =				  0x01;
 	public final static int AL_ONEWORD_FLAG_NOINSERTALL =			0x02;

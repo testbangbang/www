@@ -30,7 +30,7 @@ public class AlPreferenceOptions {
 	public boolean		vjustifyUsed;
 	public TAL_SCREEN_PAGES_COUNT			calcPagesModeRequest;
 	public TAL_SCREEN_PAGES_COUNT			calcPagesModeUsed;
-	public float		textMultiplexer;
+	public float		textMultiplexer = 0.0f;
 	public int			value2CalcMargins = 0;
 	public boolean 		onlyPopupFootnote = false;
 	public TAL_TABLEMODE tableMode;

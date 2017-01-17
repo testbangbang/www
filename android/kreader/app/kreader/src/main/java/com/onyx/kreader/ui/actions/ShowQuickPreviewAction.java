@@ -5,10 +5,10 @@ import android.graphics.Bitmap;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.kreader.host.request.RenderThumbnailRequest;
+import com.onyx.android.sdk.reader.host.request.RenderThumbnailRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogQuickPreview;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
 import java.util.List;

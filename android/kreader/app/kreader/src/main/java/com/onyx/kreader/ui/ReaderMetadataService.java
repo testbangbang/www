@@ -14,15 +14,15 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.RefValue;
 import com.onyx.android.sdk.reader.IMetadataService;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
-import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.host.request.CreateViewRequest;
-import com.onyx.kreader.host.request.OpenRequest;
-import com.onyx.kreader.host.request.ReadDocumentMetadataRequest;
-import com.onyx.kreader.host.request.ReaderDocumentCoverRequest;
-import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
+import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
+import com.onyx.android.sdk.reader.host.request.OpenRequest;
+import com.onyx.android.sdk.reader.host.request.ReadDocumentMetadataRequest;
+import com.onyx.android.sdk.reader.host.request.ReaderDocumentCoverRequest;
+import com.onyx.android.sdk.reader.host.wrapper.Reader;
+import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
 
 import java.util.List;
 

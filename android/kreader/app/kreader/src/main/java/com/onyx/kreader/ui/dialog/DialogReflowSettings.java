@@ -15,7 +15,7 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.kreader.R;
-import com.onyx.kreader.reflow.ImageReflowSettings;
+import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.ArrayList;

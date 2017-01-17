@@ -1,7 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.kreader.host.request.GotoPageRequest;
+import com.onyx.android.sdk.reader.host.request.GotoPageRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**

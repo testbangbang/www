@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.PowerManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -17,14 +18,13 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.kreader.R;
-import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogSlideshowStatistic;
 import com.onyx.kreader.ui.events.UpdateSlideshowEvent;
 import com.onyx.kreader.ui.view.SlideshowStatusBar;
-import com.onyx.kreader.utils.DeviceUtils;
+import com.onyx.android.sdk.reader.utils.DeviceUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 

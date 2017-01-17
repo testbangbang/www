@@ -42,10 +42,10 @@ import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderDocumentTableOfContent;
-import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
-import com.onyx.kreader.host.request.DeleteAnnotationRequest;
-import com.onyx.kreader.host.request.DeleteBookmarkRequest;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
+import com.onyx.android.sdk.reader.host.request.DeleteAnnotationRequest;
+import com.onyx.android.sdk.reader.host.request.DeleteBookmarkRequest;
 import com.onyx.kreader.note.actions.ClearPageAction;
 import com.onyx.kreader.note.actions.GetScribbleBitmapAction;
 import com.onyx.kreader.ui.actions.ExportAnnotationAction;
@@ -57,8 +57,8 @@ import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.view.PreviewViewHolder;
-import com.onyx.kreader.utils.DeviceConfig;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -840,8 +840,8 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private ReaderDocumentTableOfContentEntry locateEntry(List<ReaderDocumentTableOfContentEntry> entries, int page) {
         for (int i = 0; i < entries.size() - 1; i++) {
             ReaderDocumentTableOfContentEntry current = entries.get(i);
-            int currentPage = PagePositionUtils.getPageNumber(current.getPosition());
-            int nextPage = PagePositionUtils.getPageNumber(entries.get(i + 1).getPosition());
+            int currentPage = PagePositionUtils.getPageNumber(current.getPageName());
+            int nextPage = PagePositionUtils.getPageNumber(entries.get(i + 1).getPageName());
             if (currentPage <= page && page < nextPage) {
                 return locateEntryWithChildren(current, page);
             }
@@ -852,11 +852,11 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     }
 
     private ReaderDocumentTableOfContentEntry locateEntryWithChildren(ReaderDocumentTableOfContentEntry entry, int page) {
-        int currentPage = PagePositionUtils.getPageNumber(entry.getPosition());
+        int currentPage = PagePositionUtils.getPageNumber(entry.getPageName());
         if (!hasChildren(entry)) {
             return entry;
         }
-        int firstChildPage = PagePositionUtils.getPageNumber(entry.getChildren().get(0).getPosition());
+        int firstChildPage = PagePositionUtils.getPageNumber(entry.getChildren().get(0).getPageName());
         if (currentPage <= page && page < firstChildPage) {
             return entry;
         }
@@ -907,7 +907,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     public void dismiss() {
         clearRequestPages();
         if (loadedScribble) {
-            new GotoPageAction(PagePositionUtils.getPageNumber(readerDataHolder.getCurrentPagePosition())).execute(readerDataHolder);
+            new GotoPositionAction(readerDataHolder.getCurrentPagePosition()).execute(readerDataHolder);
         }
         super.dismiss();
     }

@@ -8,16 +8,16 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderSentence;
-import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.host.request.GetSentenceRequest;
-import com.onyx.kreader.host.request.RenderRequest;
+import com.onyx.android.sdk.reader.api.ReaderSentence;
+import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.reader.host.request.GetSentenceRequest;
+import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.NextScreenAction;
 import com.onyx.kreader.ui.actions.PreviousScreenAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 /**
  * Created by joy on 7/29/16.

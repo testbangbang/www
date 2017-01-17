@@ -74,4 +74,47 @@ public class AlOneItem {
 			a.realLength = new_length;
 		}
 
+	void dublicate(AlOneItem a) {
+		while (realLength < a.realLength)
+			incItemLength(this);
+
+		System.arraycopy(a.text, 0, text, 0, a.realLength);
+		System.arraycopy(a.style, 0, style, 0, a.realLength);
+		System.arraycopy(a.pos, 0, pos, 0, a.realLength);
+		System.arraycopy(a.width, 0, width, 0, a.realLength);
+		/////////////
+
+		start_pos = a.start_pos;
+		needHeihtImage0 = a.needHeihtImage0;
+		cntImage = a.cntImage;
+		isEnd = a.isEnd;
+		isStart = a.isStart;
+		isRed = a.isRed;
+		isLeft = a.isLeft;
+		isRight = a.isRight;
+		height = a.height;
+		base_line_up = a.base_line_up;
+		base_line_down = a.base_line_down;
+		justify = a.justify;
+		count = a.count;
+
+		textWidth = a.textWidth;
+		allWidth = a.allWidth;
+
+		isNote = a.isNote;
+		isPrepare = a.isPrepare;
+		spaceAfterHyph0 = a.spaceAfterHyph0;
+		interline = a.interline;
+
+		yDrawPosition = a.yDrawPosition;
+		isArabic = a.isArabic;
+		isTableRow = a.isTableRow;
+
+		blockHeight = a.blockHeight;
+		blockLeft = a.blockLeft;
+		base_line_up4text = a.base_line_up4text;
+
+		table_start = a.table_start;
+		table_row = a.table_row;
+	}
 }

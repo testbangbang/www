@@ -7,8 +7,8 @@ import android.util.Log;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.kreader.plugins.neopdf.NeoPdfJniWrapper;
-import com.onyx.kreader.utils.ImageUtils;
+import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfJniWrapper;
+import com.onyx.android.sdk.reader.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;

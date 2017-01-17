@@ -9,7 +9,7 @@ import com.onyx.android.cropimage.CropImageResultReceiver;
 import com.onyx.android.cropimage.data.CropArgs;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.host.request.ScaleByRectRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleByRectRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 

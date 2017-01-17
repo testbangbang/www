@@ -5,8 +5,8 @@ import android.graphics.RectF;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.host.request.AddAnnotationRequest;
+import com.onyx.android.sdk.reader.host.math.PageUtils;
+import com.onyx.android.sdk.reader.host.request.AddAnnotationRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.List;
@@ -38,6 +38,7 @@ public class AddAnnotationAction extends BaseAction {
         readerDataHolder.submitRenderRequest(new AddAnnotationRequest(pageInfo, locationBegin, locationEnd, rects, quote, note), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.onTextSelected(quote, note);
                 BaseCallback.invoke(callback, request, e);
             }
         });

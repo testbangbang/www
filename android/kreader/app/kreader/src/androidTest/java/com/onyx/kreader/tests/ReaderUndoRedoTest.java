@@ -1,7 +1,7 @@
 package com.onyx.kreader.tests;
 
 import android.test.ActivityInstrumentationTestCase2;
-import com.onyx.kreader.utils.HistoryManager;
+import com.onyx.android.sdk.reader.utils.HistoryManager;
 
 import java.util.HashSet;
 import java.util.Set;

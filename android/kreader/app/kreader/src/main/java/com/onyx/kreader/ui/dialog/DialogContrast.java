@@ -7,15 +7,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.view.SeekBarWithEditTextView;
 import com.onyx.kreader.R;
-import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.host.request.GammaCorrectionRequest;
+import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
+import com.onyx.android.sdk.reader.host.request.GammaCorrectionRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import butterknife.Bind;

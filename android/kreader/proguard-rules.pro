@@ -34,7 +34,13 @@
 -dontwarn com.github.junrar.**
 -dontwarn com.squareup.**
 
--keepnames class * {
+-dontwarn butterknife.internal.ButterKnifeProcessor
+
+-dontwarn com.onyx.android.sdk.ui.dialog.DialogLoading
+-dontwarn com.onyx.android.sdk.ui.dialog.DialogReaderMenu
+-dontwarn com.onyx.android.sdk.scribble.request.shape.PenStateChangeRequest
+
+-keepclasseswithmembernames class * {
     native <methods>;
 }
 
@@ -48,4 +54,14 @@
 -keep class * extends com.raizlabs.android.dbflow.converter.TypeConverter { *; }
 -keep class * extends com.raizlabs.android.dbflow.structure.BaseModel { *; }
 
--dontwarn com.onyx.android.sdk.ui.dialog.DialogLoading
+-keep class com.alibaba.fastjson.** { *; }
+
+# Retain generated class which implement Unbinder.
+-keep public class * implements butterknife.Unbinder { public <init>(...); }
+
+# Prevent obfuscation of types which use ButterKnife annotations since the simple name
+# is used to reflectively look up the generated ViewBinding.
+-keep class butterknife.*
+-keep class **$$ViewBinder { *; }
+-keepclasseswithmembernames class * { @butterknife.* <methods>; }
+-keepclasseswithmembernames class * { @butterknife.* <fields>; }

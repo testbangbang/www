@@ -2,7 +2,7 @@ package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.model.Annotation;
-import com.onyx.kreader.host.request.DeleteAnnotationRequest;
+import com.onyx.android.sdk.reader.host.request.DeleteAnnotationRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**

@@ -1,6 +1,5 @@
 package com.neverland.engbook.level1;
 
-import com.neverland.engbook.bookobj.AlUtilFunc;
 import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
@@ -12,8 +11,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class AlFilesMOBI extends AlFilesPDB {
-    static final int MOBI_NOTSET = 0xffffffff;
-    static final int MOBI_LINK_SHIFT = 14;// </body></html>
+    private static final boolean UNPACK_FIRST = true;
+
+    private static final int MOBI_NOTSET = 0xffffffff;
+    private static final int MOBI_LINK_SHIFT = 14;// </body></html>
 
     protected int       maxRec = 0;
     /*protected int       numRec = 0;
@@ -67,13 +68,13 @@ public class AlFilesMOBI extends AlFilesPDB {
     }
 
     private class MOBITagx {
-        public ArrayList<TAGXTags> tags =  new ArrayList<>(); /**< Array of tag entries */
+        public final ArrayList<TAGXTags> tags =  new ArrayList<>(); /**< Array of tag entries */
         public int tags_count; /**< Number of tag entries */
         public int control_byte_count; /**< Number of control bytes */
     }
 
     private class MOBIIdxt {
-        public ArrayList<Integer> offsets = new ArrayList<>(); /**< Offsets to index entries */
+        public final ArrayList<Integer> offsets = new ArrayList<>(); /**< Offsets to index entries */
         public int offsets_count; /**< Offsets count */
     }
 
@@ -89,13 +90,13 @@ public class AlFilesMOBI extends AlFilesPDB {
     private class MOBIIndexTag {
         public int tagid = 0; /**< Tag id */
         public int tagvalues_count = 0; /**< Number of tag values */
-        public ArrayList<Integer> tagvalues =  new ArrayList<>();
+        public final ArrayList<Integer> tagvalues =  new ArrayList<>();
     }
 
     private class MOBIIndexEntry {
         public String label = null; /**< Entry string, zero terminated */
         public int tags_count = 0; /**< Number of tags */
-        public ArrayList<MOBIIndexTag> tags = new ArrayList<>();
+        public final ArrayList<MOBIIndexTag> tags = new ArrayList<>();
     }
 
     private class MOBIPtagx {
@@ -134,7 +135,7 @@ public class AlFilesMOBI extends AlFilesPDB {
         public int ligt_entries_count = 0; /**< LIGT index entries count */
         public int cncx_records_count = 0; /**< Number of compiled NCX records */
         public int cncx_record = -1; /**< Link to CNCX record */
-        public ArrayList<MOBIIndexEntry> entries =  new ArrayList<>(); /**< Index entries array */
+        public final ArrayList<MOBIIndexEntry> entries =  new ArrayList<>(); /**< Index entries array */
         //char *orth_index_name; /**< Orth index name */
     }
 
@@ -145,11 +146,11 @@ public class AlFilesMOBI extends AlFilesPDB {
         public final ArrayList<String> data0 = new ArrayList<>();
     }
 
-    private FLOWIndex indFLOW = new FLOWIndex();
+    private final FLOWIndex indFLOW = new FLOWIndex();
 
     //private MOBIIndex indSKEL = null;
-    private MOBIIndex indFRAG = new MOBIIndex();
-    private MOBIIndex indNCX = new MOBIIndex();
+    private final MOBIIndex indFRAG = new MOBIIndex();
+    private final MOBIIndex indNCX = new MOBIIndex();
     //private MOBIIndex indGUIDE = null;
 
     //protected final ArrayList<AlOnePDBRecord>	recordList = new ArrayList<AlOnePDBRecord>();
@@ -408,8 +409,13 @@ public class AlFilesMOBI extends AlFilesPDB {
             }
         }
 
+        if (UNPACK_FIRST && rec0_ver > 1 && !onlyScan) {
+            unpack_buffer = new byte[rec0_usize];
+            useUnpack = false;
+        }
+
         size = 0;
-        int trall;
+        int trall, mcopy;
         if (!onlyScan) {
             for (i = 1; i < numRec; i++) {
                 oc = recordList.get(i);
@@ -420,11 +426,28 @@ public class AlFilesMOBI extends AlFilesPDB {
                         oc.len2 = rec0_rsize;
                 } else if (rec0_ver == 2) {
                     parent.getByteBuffer(oc.start, in_buff, oc.len1);
-                    oc.len2 = AlFilesPDB.calcsize_decompressPDB(in_buff, oc.len1, rec0_rsize);
+
+                    if (UNPACK_FIRST) {
+                        oc.len2 = AlFilesPDB.decompressPDB(in_buff, out_buff, oc.len1);
+                        mcopy = Math.min(rec0_usize - size, oc.len2);
+                        if (mcopy > 0)
+                            System.arraycopy(out_buff, 0, unpack_buffer, size, mcopy);
+                    } else {
+                        oc.len2 = AlFilesPDB.calcsize_decompressPDB(in_buff, oc.len1, rec0_rsize);
+                    }
                 } else {
                     parent.getByteBuffer(oc.start, in_buff, oc.len1);
                     trall = HUFFreader.calcTrailingDataEntries(in_buff, oc.len1, huffman_extra);
-                    oc.len2 = HUFFreader.calcSizeBlock(in_buff, oc.len1 - trall, 0);
+
+                    if (UNPACK_FIRST) {
+                        byte[] b = HUFFreader.unpack(in_buff, oc.len1 - trall, 0);
+                        oc.len2 = b.length;
+                        mcopy = Math.min(rec0_usize - size, oc.len2);
+                        if (mcopy > 0)
+                            System.arraycopy(b, 0, unpack_buffer, size, mcopy);
+                    } else {
+                        oc.len2 = HUFFreader.calcSizeBlock(in_buff, oc.len1 - trall, 0);
+                    }
                 }
 
                 oc.pos = size;
@@ -473,6 +496,10 @@ public class AlFilesMOBI extends AlFilesPDB {
 
         if (size > rec0_usize)
             size = rec0_usize - 1;
+
+        if (UNPACK_FIRST && rec0_ver > 1 && !onlyScan) {
+            useUnpack = true;
+        }
 
         return TAL_RESULT.OK;
     }
@@ -540,7 +567,7 @@ public class AlFilesMOBI extends AlFilesPDB {
         return -1;
     }
 
-    private ArrayList<MOBITOC> toc = new ArrayList<>();
+    private final ArrayList<MOBITOC> toc = new ArrayList<>();
 
     public ArrayList<MOBITOC> getTOC() {
         if (toc.isEmpty())
@@ -548,7 +575,7 @@ public class AlFilesMOBI extends AlFilesPDB {
         return toc;
     }
 
-    private ArrayList<Integer> frag = new ArrayList<>();
+    private final ArrayList<Integer> frag = new ArrayList<>();
 
     private boolean readRealFRAQ() {
         frag.clear();
@@ -1093,7 +1120,7 @@ public class AlFilesMOBI extends AlFilesPDB {
     public int getGanre() {
         int book_ganre = 0;
 
-        if (book_ganre0 != null && book_ganre0.size() > 0) {
+        if (/*book_ganre0 != null && */book_ganre0.size() > 0) {
             for (int i = 0; i < book_ganre0.size(); i++) {
                 //book_ganre |= AlGenre.getSympleGanre(book_ganre0.get(i));
             }
@@ -1110,7 +1137,7 @@ public class AlFilesMOBI extends AlFilesPDB {
         return book_author;
     }
 
-    public static final void addAllString2List(ArrayList<String> sl, StringBuilder sb) {
+    private static void addAllString2List(ArrayList<String> sl, StringBuilder sb) {
         while (true) {
             int i = sb.indexOf(";");
             if (i > 0) {
@@ -1180,9 +1207,9 @@ public class AlFilesMOBI extends AlFilesPDB {
             return LEVEL1_FILE_NOT_FOUND;
 
         Integer recNum = InternalFunc.str2int(fname, 10);
-        if (recNum == null)
+        /*if (recNum == null)
             return LEVEL1_FILE_NOT_FOUND;
-            //recNum = 0;
+            //recNum = 0;*/
 
         if (recNum == -1)
             return LEVEL1_FILE_NOT_FOUND;
@@ -1197,12 +1224,20 @@ public class AlFilesMOBI extends AlFilesPDB {
         if (recNum >= recordList.size())
             return LEVEL1_FILE_NOT_FOUND;
 
-        for (int i = 0; i < fileList.size(); i++) {
-            if (fileList.get(i).name.contentEquals(fname)) {
-                return i;
+        if (mapFile.size() == 0) {
+            for (int i = 0; i < fileList.size(); i++) {
+                mapFile.put(fileList.get(i).name, i);
             }
         }
 
+        Integer i = mapFile.get(fname);
+        if (i != null)
+            return i;
+        /*for (int i = 0; i < fileList.size(); i++) {
+            if (fileList.get(i).name.contentEquals(fname)) {
+                return i;
+            }
+        }*/
 
         AlOnePDBRecord oc = recordList.get(recNum);
         if (oc.len1 > 0) {
@@ -1215,6 +1250,9 @@ public class AlFilesMOBI extends AlFilesPDB {
             of.time = 0;
             of.name = fname;
             fileList.add(of);
+
+            mapFile.put(fname, fileList.size() - 1);
+
             return fileList.size() - 1;
         }
 
@@ -1252,6 +1290,27 @@ public class AlFilesMOBI extends AlFilesPDB {
             return null;
 
         return indFLOW.data0.get(num);
+    }
+
+    @Override
+    public void	needUnpackData() {
+
+        if (useUnpack)
+            return;
+
+        useUnpack = true;
+
+        try {
+            unpack_buffer = new byte[size];
+        } catch (Exception e) {
+            e.printStackTrace();
+            unpack_buffer = null;
+        }
+        if (unpack_buffer != null) {
+            getBuffer(0, unpack_buffer, size);
+        } else {
+            useUnpack = false;
+        }
     }
 
     private static final char LEVEL1_MOBI_SETBITS[] = {

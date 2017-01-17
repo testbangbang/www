@@ -1,10 +1,12 @@
 package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.host.request.GotoPositionRequest;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.host.request.GotoPositionRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.kreader.ui.events.PageChangedEvent;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 /**
  * Created by zhuzeng on 5/18/16.
@@ -31,7 +33,13 @@ public class GotoPositionAction extends BaseAction {
     }
 
     public void execute(final ReaderDataHolder readerDataHolder) {
-        execute(readerDataHolder, null);
+        final PageChangedEvent pageChangedEvent = readerDataHolder.beforePageChange();
+        execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.afterPageChange(pageChangedEvent);
+            }
+        });
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.onyx.android.libsetting.view.activity;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
@@ -89,8 +90,7 @@ public class LanguageInputSettingActivity extends OnyxAppCompatActivity {
             updateInstalledIMEPreference();
         }
 
-
-        private void updateDefaultIMESummary(){
+        private void updateDefaultIMESummary() {
             defaultImePreference.setSummary(InputMethodLanguageSettingUtil.getDefaultIMEName(getContext()));
         }
 
@@ -123,13 +123,23 @@ public class LanguageInputSettingActivity extends OnyxAppCompatActivity {
                 preference.setCallback(new OnyxCustomIMEPreference.Callback() {
                     @Override
                     public void onCheckBoxReady() {
-                        preference.setIMEChecked(InputMethodLanguageSettingUtil.isSpecificIMEEnabled(getContext(), preference.getKey()));
+                        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT)) {
+                            preference.setIMECheckedEnabled(
+                                    !InputMethodLanguageSettingUtil.isSystemPreservedIme(preference.getImeInfo()));
+                        } else {
+                            preference.setIMECheckedEnabled(!InputMethodLanguageSettingUtil.
+                                    isSystemIme(preference.getImeInfo()));
+                        }
+                        preference.setIMEChecked(InputMethodLanguageSettingUtil.
+                                isSpecificIMEEnabled(getContext(), preference.getKey()));
                     }
                 });
                 preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference pf) {
-                        InputMethodLanguageSettingUtil.setSpecificIMEEnabled(getContext(), pf.getKey(), preference.isIMEChecked());
+                        OnyxCustomIMEPreference imePf = (OnyxCustomIMEPreference) pf;
+                        InputMethodLanguageSettingUtil.setSpecificIMEEnabled(getContext(), imePf.getKey(),
+                                imePf.isIMEChecked());
                         updateDefaultIMEPreference();
                         return true;
                     }
@@ -138,5 +148,6 @@ public class LanguageInputSettingActivity extends OnyxAppCompatActivity {
                 imeCategory.addPreference(preference);
             }
         }
+
     }
 }
