@@ -166,6 +166,7 @@ public class AlReaderWrapper {
         engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
         engineOptions.chinezeFormatting = true;
         engineOptions.drawLinkInternal = false;
+        engineOptions.externalBitmap = new AlBitmap();
 
         float dpiMultiplex = context.getResources().getDisplayMetrics().density;
         engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_160;
