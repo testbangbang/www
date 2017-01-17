@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.PowerManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -209,6 +210,10 @@ public class SlideshowHandler extends BaseHandler {
         if (am != null) {
             am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + intervalInSeconds * 1000,
                     pendingIntent);
+        }
+        PowerManager powerManager = (PowerManager)readerDataHolder.getContext().getSystemService(Context.POWER_SERVICE);
+        if (powerManager != null) {
+            powerManager.
         }
     }
 

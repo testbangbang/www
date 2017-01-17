@@ -49,5 +49,9 @@
     <!--dimens value to override appcompat text appearance large/medium/small text size-->
     <dimen name="abc_text_size_large_material" tools:override="true">30sp</dimen>
     <dimen name="abc_text_size_medium_material" tools:override="true">26sp</dimen>
+    <dimen name="abc_text_size_small_material" tools:override="true">18sp</dimen>
+
+    <dimen name="preference_title_text_size">25sp</dimen>
+    <dimen name="preference_category_text_size">@dimen/abc_text_size_small_material</dimen>
 
 </resources>
