@@ -211,10 +211,6 @@ public class SlideshowHandler extends BaseHandler {
             am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + intervalInSeconds * 1000,
                     pendingIntent);
         }
-        PowerManager powerManager = (PowerManager)readerDataHolder.getContext().getSystemService(Context.POWER_SERVICE);
-        if (powerManager != null) {
-            powerManager.
-        }
     }
 
     private void loopNextScreen() {
