@@ -1,5 +1,7 @@
 package com.neverland.engbook.level2;
 
+import android.util.Log;
+
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.EngBookMyType;
@@ -71,6 +73,9 @@ public class AlFormatEPUB extends AlAXML {
         int		    section = 0;
     }
 
+    private boolean needUnpackAfterAllRead = false;
+
+
     @Override
     public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
         allState.isOpened = true;
@@ -81,7 +86,7 @@ public class AlFormatEPUB extends AlAXML {
         aFiles = myParent;
 
         if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
-            aFiles.needUnpackData();
+            needUnpackAfterAllRead = true;
 
         preference = pref;
         styles = stl;
@@ -95,8 +100,10 @@ public class AlFormatEPUB extends AlAXML {
         allState.state_parser = STATE_XML_SKIP;
         allState.state_skipped_flag = true;
 
+        Log.e("tmmmmmmmmmmm0", Long.toString(System.currentTimeMillis()));
         parser(0, -1);
         newParagraph();
+        Log.e("tmmmmmmmmmmm1", Long.toString(System.currentTimeMillis()));
 
         allState.isOpened = false;
     }
@@ -237,6 +244,8 @@ public class AlFormatEPUB extends AlAXML {
             coverName = coverFIRST;
         }
 
+        Log.e("tmmmmmmmmmmm0", Long.toString(System.currentTimeMillis()));
+
         super.prepareCustom();
     }
 
@@ -252,6 +261,7 @@ public class AlFormatEPUB extends AlAXML {
         if (flag) {
             allState.state_special_flag0 = true;
             state_specialBuff0.setLength(0);
+            state_specialBuff0.ensureCapacity(256);
         } else {
             if (isTOC) {
                 toc_text.setLength(0);
@@ -1038,6 +1048,8 @@ public class AlFormatEPUB extends AlAXML {
                                 coverMETAIID = it.href;
                         }
 
+                        if (needUnpackAfterAllRead)
+                            aFiles.needUnpackData();
                         //acoverITEM_hrefXML = acoverITEM_idXML = acoverREFERENCE_XML = false;
                     }
 

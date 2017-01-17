@@ -5,9 +5,7 @@ import com.github.junrar.exception.RarException;
 import com.github.junrar.rarfile.FileHeader;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_RESULT;
-import com.neverland.engbook.unicode.AlUnicode;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,12 +15,6 @@ public class AlFilesBypassRAR extends AlFiles {
     private Archive rar = null;
     public Archive getBypassRAR() {
         return rar;
-    }
-
-    protected class MyByteArrayOutputStream extends ByteArrayOutputStream {
-        public byte[] getBuff() {
-            return buf;
-        }
     }
 
     static public EngBookMyType.TAL_FILE_TYPE isBypassRARFile(String fName) {
@@ -83,6 +75,8 @@ public class AlFilesBypassRAR extends AlFiles {
         super.finalize();
     }
 
+    private int hiddenSize = 0;
+
     public int initState(String file, AlFiles myParent, ArrayList<AlFileZipEntry> fList) {
         super.initState(file, myParent, fList);
 
@@ -129,8 +123,10 @@ public class AlFilesBypassRAR extends AlFiles {
                     }
                 }
 
-                if (fileList.size() > 0)
-                    size = (int) f.length();
+                if (fileList.size() > 0) {
+                    size = 1;
+                    hiddenSize = (int) f.length();
+                }
             }
         }
 
@@ -138,29 +134,48 @@ public class AlFilesBypassRAR extends AlFiles {
     }
 
     @Override
-    protected int getBuffer(int pos, byte[] dst, int cnt) {
-        return 0;
+    public String toString() {
+        String s = "" + ((int)(time_load1 + time_load2)) + '/' + time_load1 + '/' + time_load2;
+        if (parent != null)
+            s = parent.toString();
+        return s + "\r\n" + (fileName != null ? fileName : ' ') + " " + hiddenSize + " " + getIdentStr();
     }
 
     @Override
+    protected int getBuffer(int pos, byte[] dst, int cnt) {
+        if (dst != null)
+            dst[0] = 'r';
+        return 1;
+    }
+
+    /*@Override
     public int getExternalFileNum(String fname) {
         if (fname == null)
             return LEVEL1_FILE_NOT_FOUND;
+
+        if (mapFile.size() == 0) {
+            for (int i = 0; i < fileList.size(); i++) {
+                mapFile.put(fileList.get(i).name, i);
+            }
+        }
 
         for (int j = 0; j < 2; j++) {
             fname = j == 0 ? getAbsoluteName(fileName, fname) : AlUnicode.URLDecode(fname);
 
             if (fname != null) {
-                for (int i = 0; i < fileList.size(); i++) {
+                *//*for (int i = 0; i < fileList.size(); i++) {
                     if (fileList.get(i).name.contentEquals(fname)) {
                         return i;
                     }
-                }
+                }*//*
+                Integer i = mapFile.get(fname);
+                if (i != null)
+                    return i;
             }
         }
 
         return LEVEL1_FILE_NOT_FOUND;
-    }
+    }*/
 
     @Override
     public boolean fillBufFromExternalFile(int num, int pos, byte[] dst, int dst_pos, int cnt) {
