@@ -66,6 +66,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     PenColorPopupMenu penColorPopupMenu;
     private ImageView penColorBtn;
     private OnyxAlertDialog confirmDialog;
+    private DialogNoteNameInput dialogNoteNameInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (dialogNoteNameInput != null && dialogNoteNameInput.isVisible()) {
+            dialogNoteNameInput.dismiss();
+        }
         updateColorIndicator();
     }
 
@@ -291,7 +295,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void saveNewNoteDocument() {
-        final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
+        dialogNoteNameInput = new DialogNoteNameInput();
         Bundle bundle = new Bundle();
         bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.save_note));
         bundle.putString(DialogNoteNameInput.ARGS_HINT, noteTitle);
