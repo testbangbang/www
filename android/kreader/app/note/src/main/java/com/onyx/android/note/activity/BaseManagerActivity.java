@@ -418,4 +418,12 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
                 break;
         }
     }
+
+    protected String removeTitleSuffix(String title) {
+        int endIndex = title.lastIndexOf("(");
+        if (endIndex > 0) {
+            title = title.substring(0, endIndex);
+        }
+        return title;
+    }
 }

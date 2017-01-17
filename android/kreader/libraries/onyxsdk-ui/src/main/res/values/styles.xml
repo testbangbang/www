@@ -283,4 +283,7 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="base_dialog" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:textSize">@dimen/alert_dialog_text_size</item>
+    </style>
 </resources>

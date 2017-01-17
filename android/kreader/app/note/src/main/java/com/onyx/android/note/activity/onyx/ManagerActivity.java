@@ -195,8 +195,10 @@ public class ManagerActivity extends BaseManagerActivity {
     protected void renameNoteOrLibrary(final GObject object) {
         final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
         Bundle bundle = new Bundle();
+        String title = object.getString(GAdapterUtil.TAG_TITLE_STRING);
+        title = Utils.isDocument(object) ? title : removeTitleSuffix(title);
         bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.rename));
-        bundle.putString(DialogNoteNameInput.ARGS_HINT, object.getString(GAdapterUtil.TAG_TITLE_STRING));
+        bundle.putString(DialogNoteNameInput.ARGS_HINT, title);
         bundle.putBoolean(DialogNoteNameInput.ARGS_ENABLE_NEUTRAL_OPTION, false);
         dialogNoteNameInput.setArguments(bundle);
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
