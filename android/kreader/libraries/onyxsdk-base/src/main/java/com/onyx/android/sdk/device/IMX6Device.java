@@ -154,6 +154,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodReadSystemConfig;
     private static Method sMethodSaveSystemConfig;
     private static Method sMethodUpdateMetadataDB;
+    private static Method sMethodGotoSleep;
 
     private static Method sMethodUseBigPen;
     private static Method sMethodStopTpd;
@@ -565,6 +566,7 @@ public class IMX6Device extends BaseDevice {
             sMethodStopTpd = ReflectUtil.getMethodSafely(deviceControllerClass, "stopTpd");
             sMethodStartTpd = ReflectUtil.getMethodSafely(deviceControllerClass, "startTpd");
             sMethodEnableTpd = ReflectUtil.getMethodSafely(cls, "enableOnyxTpd", int.class);
+            sMethodGotoSleep = ReflectUtil.getMethodSafely(cls, "gotoSleep", Context.class, long.class);
 
             sMethodLed = ReflectUtil.getMethodSafely(deviceControllerClass, "led", boolean.class);
             sMethodSetLedColor = ReflectUtil.getMethodSafely(deviceControllerClass, "setLedColor", String.class, int.class);
@@ -945,5 +947,10 @@ public class IMX6Device extends BaseDevice {
     @Override
     public void enableA2ForSpecificView(View view) {
         ReflectUtil.invokeMethodSafely(sMethodEnableA2, view);
+    }
+
+    public void gotoSleep(final Context context) {
+        long value = System.currentTimeMillis();
+        ReflectUtil.invokeMethodSafely(sMethodGotoSleep, context, value);
     }
 }
