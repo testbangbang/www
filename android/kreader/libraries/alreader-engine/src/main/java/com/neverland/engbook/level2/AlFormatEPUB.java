@@ -100,10 +100,8 @@ public class AlFormatEPUB extends AlAXML {
         allState.state_parser = STATE_XML_SKIP;
         allState.state_skipped_flag = true;
 
-        Log.e("tmmmmmmmmmmm0", Long.toString(System.currentTimeMillis()));
         parser(0, -1);
         newParagraph();
-        Log.e("tmmmmmmmmmmm1", Long.toString(System.currentTimeMillis()));
 
         allState.isOpened = false;
     }
@@ -243,8 +241,6 @@ public class AlFormatEPUB extends AlAXML {
             coverIsFirstImage = true;
             coverName = coverFIRST;
         }
-
-        Log.e("tmmmmmmmmmmm0", Long.toString(System.currentTimeMillis()));
 
         super.prepareCustom();
     }
