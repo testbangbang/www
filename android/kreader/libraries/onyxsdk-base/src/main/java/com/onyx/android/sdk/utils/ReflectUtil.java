@@ -247,16 +247,8 @@ public class ReflectUtil
             method.setAccessible(true);
             result.setValue(method);
             return true;
-        }
-        catch (SecurityException e) {
-            if (com.onyx.android.sdk.BuildConfig.DEBUG) {
-                Log.w(TAG, e);
-            }
-        }
-        catch (NoSuchMethodException e) {
-            if (com.onyx.android.sdk.BuildConfig.DEBUG) {
-                Log.w(TAG, e);
-            }
+        } catch (SecurityException e) {
+        } catch (NoSuchMethodException e) {
         }
         return false;
     }

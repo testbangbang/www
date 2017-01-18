@@ -170,11 +170,8 @@ public class IMX7Device extends BaseDevice {
             try {
                 return (Integer) sMethodGetWindowRotation.invoke(null);
             } catch (IllegalArgumentException e) {
-                Log.w(TAG, e);
             } catch (IllegalAccessException e) {
-                Log.w(TAG, e);
             } catch (InvocationTargetException e) {
-                Log.w(TAG, e);
             }
         }
 
@@ -188,11 +185,8 @@ public class IMX7Device extends BaseDevice {
                 sMethodSetWindowRotation.invoke(null, rotation, true, Surface_FLAGS_ORIENTATION_ANIMATION_DISABLE);
                 return true;
             } catch (IllegalArgumentException e) {
-                Log.w(TAG, e);
             } catch (IllegalAccessException e) {
-                Log.w(TAG, e);
             } catch (InvocationTargetException e) {
-                Log.w(TAG, e);
             }
         }
 
@@ -312,7 +306,6 @@ public class IMX7Device extends BaseDevice {
             sMethodRefreshScreenRegion.invoke(view, left, top, width, height, dst_mode_value);
             return;
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -321,7 +314,6 @@ public class IMX7Device extends BaseDevice {
             ReflectUtil.invokeMethodSafely(sMethodScreenshot, view, rotation, path);
             return;
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -330,7 +322,6 @@ public class IMX7Device extends BaseDevice {
         try {
             ReflectUtil.invokeMethodSafely(sMethodSetStrokeColor, null, color);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -338,7 +329,6 @@ public class IMX7Device extends BaseDevice {
         try {
             ReflectUtil.invokeMethodSafely(sMethodSetStrokeStyle, null, style);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -346,7 +336,6 @@ public class IMX7Device extends BaseDevice {
         try {
             ReflectUtil.invokeMethodSafely(sMethodSetPainterStyle, null, antiAlias, strokeStyle, joinStyle, capStyle);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -354,7 +343,6 @@ public class IMX7Device extends BaseDevice {
         try {
             ReflectUtil.invokeMethodSafely(sMethodSetStrokeWidth, null, width);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -362,7 +350,6 @@ public class IMX7Device extends BaseDevice {
         try {
             ReflectUtil.invokeMethodSafely(sMethodMoveTo, null, x, y, width);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -387,7 +374,6 @@ public class IMX7Device extends BaseDevice {
         try {
             ReflectUtil.invokeMethodSafely(sMethodLineTo, null, x, y, value);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -396,7 +382,6 @@ public class IMX7Device extends BaseDevice {
         try {
             ReflectUtil.invokeMethodSafely(sMethodQuadTo, null, x, y, value);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -405,7 +390,6 @@ public class IMX7Device extends BaseDevice {
             Float value = (Float)ReflectUtil.invokeMethodSafely(sMethodGetTouchWidth, null);
             return value.floatValue();
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return 0;
     }
@@ -415,7 +399,6 @@ public class IMX7Device extends BaseDevice {
             Float value = (Float)ReflectUtil.invokeMethodSafely(sMethodGetTouchHeight, null);
             return value.floatValue();
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return 0;
     }
@@ -425,7 +408,6 @@ public class IMX7Device extends BaseDevice {
             Float value = (Float) ReflectUtil.invokeMethodSafely(sMethodStartStroke, null, baseWidth, x, y, pressure, size, time);
             return value.floatValue();
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return baseWidth;
     }
@@ -435,7 +417,6 @@ public class IMX7Device extends BaseDevice {
             Float value = (Float) ReflectUtil.invokeMethodSafely(sMethodAddStrokePoint, null, baseWidth, x, y, pressure, size, time);
             return value.floatValue();
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return baseWidth;
     }
@@ -445,7 +426,6 @@ public class IMX7Device extends BaseDevice {
             Float value = (Float) ReflectUtil.invokeMethodSafely(sMethodFinishStroke, null, baseWidth, x, y, pressure, size, time);
             return value.floatValue();
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return baseWidth;
     }
@@ -454,7 +434,6 @@ public class IMX7Device extends BaseDevice {
         try {
             ReflectUtil.invokeMethodSafely(sMethodEnablePost, view, 0);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -462,7 +441,6 @@ public class IMX7Device extends BaseDevice {
         try {
             ReflectUtil.invokeMethodSafely(sMethodEnablePost, view, 1);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -470,7 +448,6 @@ public class IMX7Device extends BaseDevice {
         try {
             ReflectUtil.invokeMethodSafely(sMethodEnablePost, view, enable);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -482,7 +459,6 @@ public class IMX7Device extends BaseDevice {
         try {
             ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingPenState, view, penState);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -490,7 +466,6 @@ public class IMX7Device extends BaseDevice {
         try {
             ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionLimit, view, left, top, right, bottom);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -503,7 +478,6 @@ public class IMX7Device extends BaseDevice {
         try {
             sMethodEnableScreenUpdate.invoke(view, enable);
         } catch (Exception exception) {
-            exception.printStackTrace();
         }
         return true;
     }
