@@ -300,6 +300,27 @@ public class DialogQuickPreview extends Dialog {
             }
         });
 
+        oneImageGrid.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onGridFocusChange(oneImageGrid, GridType.One, hasFocus);
+            }
+        });
+
+        fourImageGrid.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onGridFocusChange(fourImageGrid, GridType.Four, hasFocus);
+            }
+        });
+
+        nineImageGrid.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onGridFocusChange(nineImageGrid, GridType.Nine, hasFocus);
+            }
+        });
+
         setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
@@ -384,6 +405,27 @@ public class DialogQuickPreview extends Dialog {
     private void initGridType() {
         int defaultGridType = getContext().getResources().getInteger(R.integer.quick_view_default_grid_type);
         grid.setGridType(SingletonSharedPreference.getQuickViewGridType(getContext(), defaultGridType));
+    }
+
+    private void onGridFocusChange(ImageView view, int gridType, boolean isFocus) {
+
+        int resId = R.drawable.ic_dialog_reader_page_one_white_focused;
+        switch (gridType) {
+            case GridType.One:
+                resId = R.drawable.ic_dialog_reader_page_one_white_focused;
+                break;
+            case GridType.Four:
+                resId = R.drawable.ic_dialog_reader_page_four_white_focused;
+                break;
+            case GridType.Nine:
+                resId = R.drawable.ic_dialog_reader_page_nine_white_focused;
+                break;
+        }
+        if (isFocus) {
+            view.setImageResource(resId);
+        }else {
+            onPressedImageView(grid.getGridType());
+        }
     }
 
     private void onGridTypeChange(int gridType) {

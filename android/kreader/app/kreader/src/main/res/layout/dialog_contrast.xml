@@ -97,7 +97,7 @@
             android:layout_height="wrap_content">
 
             <com.onyx.android.sdk.ui.view.OnyxButton
-                android:id="@+id/btn1"
+                android:id="@+id/btn_cancel"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
@@ -111,7 +111,7 @@
                 android:background="@android:color/black"/>
 
             <com.onyx.android.sdk.ui.view.OnyxButton
-                android:id="@+id/btn2"
+                android:id="@+id/btn_ok"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
