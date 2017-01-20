@@ -190,8 +190,13 @@ float DeviceUtils::calculateCount(bool validPage) {
 
 bool DeviceUtils::isValid(JNIEnv * env) {
     JNIUtils dc(env);
-    dc.findStaticMethod("android/hardware/DeviceController", "systemIntegrityCheck", "()Z", false);
-    jboolean validPage = env->CallStaticBooleanMethod(dc.getClazz(), dc.getMethodId());
-    return calculateCount(validPage) >= 0.0f;
+    if (dc.findStaticMethod("android/hardware/DeviceController", "systemIntegrityCheck", "()Z", false)) {
+        jboolean validPage = env->CallStaticBooleanMethod(dc.getClazz(), dc.getMethodId());
+        return calculateCount(validPage) >= 0.0f;
+    }
+    if (dc.findStaticMethod("android/onyx/hardware/DeviceController", "systemIntegrityCheck", "()Z", false)) {
+        jboolean validPage = env->CallStaticBooleanMethod(dc.getClazz(), dc.getMethodId());
+        return calculateCount(validPage) >= 0.0f;
+    }
 }
 
