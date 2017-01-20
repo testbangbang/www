@@ -7,7 +7,7 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
-    defaultPublishConfig "bintrayRelease"
+//    defaultPublishConfig "bintrayRelease"
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
