@@ -71,7 +71,7 @@
     </style>
     <style name="dialog_contrast_checkbox">
         <item name="android:focusable">true</item>
-        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:background">@drawable/focused_bg</item>
         <item name="android:gravity">center</item>
         <item name="android:button">@null</item>
         <item name="android:drawableTop">@drawable/bold_size_select</item>
