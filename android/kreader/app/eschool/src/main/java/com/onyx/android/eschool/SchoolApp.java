@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 
@@ -27,6 +28,7 @@ public class SchoolApp extends Application {
             StudentPreferenceManager.init(this);
             initCloudStoreConfig();
             initPl107DeviceConfig();
+            initSystemInBackground();
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace();
@@ -41,6 +43,14 @@ public class SchoolApp extends Application {
 
     public void initPl107DeviceConfig() {
         AppCompatImageViewCollection.isPl107Device = AppCompatUtils.isPL107Device(this);
+    }
+
+    private void initSystemInBackground() {
+        turnOffLed();
+    }
+
+    public void turnOffLed() {
+        Device.currentDevice().led(this, false);
     }
 
     public void initCloudDatabase() {
