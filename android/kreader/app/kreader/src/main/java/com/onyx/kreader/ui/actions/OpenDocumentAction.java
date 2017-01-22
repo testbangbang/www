@@ -48,11 +48,18 @@ public class OpenDocumentAction extends BaseAction {
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerDataHolder.initReaderFromPath(documentPath);
         readerDataHolder.getEventBus().post(new BeforeDocumentOpenEvent(documentPath));
-        showLoadingDialog(readerDataHolder, R.string.loading_document, new DialogLoading.Callback() {
+
+        //LoadingDialog shows only after the decorview is drawn,preventing the dialog from swinging.
+        activity.getWindow().getDecorView().post(new Runnable() {
             @Override
-            public void onCanceled() {
-                canceled = true;
-                cleanup(readerDataHolder);
+            public void run() {
+                showLoadingDialog(readerDataHolder, R.string.loading_document, new DialogLoading.Callback() {
+                    @Override
+                    public void onCanceled() {
+                        canceled = true;
+                        cleanup(readerDataHolder);
+                    }
+                });
             }
         });
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
