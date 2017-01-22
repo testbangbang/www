@@ -1,18 +1,18 @@
 package com.neverland.engbook.level1;
 
-import java.util.ArrayList;
-import java.util.zip.DataFormatException;
-import java.util.zip.Inflater;
-
 import com.jingdong.app.reader.epub.paging.DecryptHelper;
+import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_FILE_TYPE;
-import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
 
-public class AlFilesZIP extends AlFiles {
+import java.util.ArrayList;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
+
+public class JEBFilesZIP extends AlFiles {
 	
 	private static final int ZIP_CHUNK_SIZE = 16384;
 	
@@ -32,6 +32,12 @@ public class AlFilesZIP extends AlFiles {
 	private int		zip_out_buff_size;
 	private final byte[]	zip_in_buff = new byte [ZIP_CHUNK_SIZE];
 	private final byte[] 	zip_out_buff = new byte [ZIP_CHUNK_SIZE];
+
+	public JEBFilesZIP() {
+		DecryptHelper.create();
+	}
+
+
 
 	static public TAL_FILE_TYPE isZIPFile(String fName, AlFiles a, ArrayList<AlFileZipEntry> fList, String ext) {
 		TAL_FILE_TYPE res = TAL_FILE_TYPE.TXT;
@@ -144,7 +150,7 @@ public class AlFilesZIP extends AlFiles {
 				}				
 							
 				AlFileZipEntry of = new AlFileZipEntry();
-
+				
 				of.compress = zipLCD.compressed;
 				of.cSize = (int) zipLCD.csize;
 				of.uSize = (int) zipLCD.usize;
@@ -162,7 +168,6 @@ public class AlFilesZIP extends AlFiles {
 
 				of.name = newName.toString();
 
-
 				/*if (ext != null && (ext.equalsIgnoreCase(".odt") || ext.equalsIgnoreCase(".sxw")) && zipLCD.fName.equalsIgnoreCase(FIRSTNAME_ODT))
 					res = ArchiveType.ODT;*/
 				if ((ext == null || ext.equalsIgnoreCase(".odt") || ext.equalsIgnoreCase(".sxw")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_ODT))
@@ -173,12 +178,8 @@ public class AlFilesZIP extends AlFiles {
 					res = TAL_FILE_TYPE.EPUB;
 				if ((ext == null || ext.equalsIgnoreCase(".fb3")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_FB3))
 					res = TAL_FILE_TYPE.FB3;
-				if ((ext == null || ext.equalsIgnoreCase(".JEB")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB)) {
+				if ((ext == null || ext.equalsIgnoreCase(".jeb")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB))
 					res = TAL_FILE_TYPE.JEB;
-					if(of.compress == 8) {
-						of.uSize = gitCompressDataSize(a, zipLCD.offset, zipLCD.csize, zipLCD.usize);
-					}
-				}
 
 				fList.add(of);
 				
@@ -189,40 +190,6 @@ public class AlFilesZIP extends AlFiles {
 		}
 
 		return cnt_files > 0 ? res : TAL_FILE_TYPE.TXT;
-	}
-
-	public static int gitCompressDataSize(final AlFiles a,final long offset,final long compressionSize,final long uncompressionSize) {
-		DecryptHelper.create();
-		byte[] in_buff = new byte[ZIP_CHUNK_SIZE], decrypt_out_buff = new byte[ZIP_CHUNK_SIZE * 32], read_out_buff = new byte[ZIP_CHUNK_SIZE];
-		int in_buff_size, decrypt_out_buff_size = 0, read_out_buff_size;
-		Inflater infl = new Inflater(true);
-		if (infl.needsInput()) {
-			in_buff_size = a.getByteBuffer((int)offset, in_buff, ZIP_CHUNK_SIZE);
-			infl.setInput(in_buff, 0, in_buff_size);
-		}
-
-		try {
-			read_out_buff_size = infl.inflate(read_out_buff, 0, ZIP_CHUNK_SIZE);
-			String html = new String(read_out_buff);
-			//decrypt
-			decrypt_out_buff_size = DecryptHelper.decrypt(read_out_buff, read_out_buff_size, decrypt_out_buff, decrypt_out_buff.length, 1);
-			if (decrypt_out_buff_size < 0) {
-				return 0;
-			}
-
-			String decryptString = new String(decrypt_out_buff);
-			if (decrypt_out_buff_size == 0 && infl.finished()) {
-
-			}
-
-		} catch (DataFormatException e) {
-			e.printStackTrace();
-		}finally {
-			DecryptHelper.close();
-		}
-		infl.end();
-		infl = null;
-		return decrypt_out_buff_size;
 	}
 
 	public int initState(String file, AlFiles myParent, ArrayList<AlFileZipEntry> fList) {
@@ -280,6 +247,7 @@ public class AlFilesZIP extends AlFiles {
 	@Override
 	public void finalize() throws Throwable {
 		inflater = null;
+		//DecryptHelper.close();
 		super.finalize();
 	}
 
@@ -339,7 +307,7 @@ public class AlFilesZIP extends AlFiles {
 					
 					try {
 						zip_out_buff_size = inflater.inflate(zip_out_buff, 0, ZIP_CHUNK_SIZE);
-						
+						//decrypt
 						if (zip_out_buff_size == 0 && inflater.finished()) {
 							zip_out_buff_size = zip_out_buff.length;
 							for (int err = 0; err < zip_out_buff_size; err++)
@@ -379,21 +347,21 @@ public class AlFilesZIP extends AlFiles {
 				if (fileList.get(num).compress == 8) {
 
 					Inflater infl = new Inflater(true);
-					int	total_out, in_buff_size, out_buff_size, tmp;
-					byte[] in_buff = new byte [ZIP_CHUNK_SIZE], out_buff = new byte [ZIP_CHUNK_SIZE];
+					int	total_out, in_buff_size, decrypt_out_buff_size, tmp,read_out_buff_size;
+					byte[] in_buff = new byte [ZIP_CHUNK_SIZE], decrypt_out_buff = new byte [ZIP_CHUNK_SIZE * 32],read_out_buff = new byte[ZIP_CHUNK_SIZE];
 					int	position = fileList.get(num).position;
 
 					infl.reset();
-					total_out = out_buff_size = 0;
+					total_out = decrypt_out_buff_size = 0;
 
 					while (res < cnt && pos < fileList.get(num).uSize) {
-						if (pos >= total_out && pos < (total_out + out_buff_size)) {
-							tmp = Math.min((total_out + out_buff_size) - pos, cnt - res);
-							System.arraycopy(out_buff, pos - total_out, dst, res + dst_pos, tmp);
+						if (pos >= total_out && pos < (total_out + decrypt_out_buff_size)) {
+							tmp = Math.min((total_out + decrypt_out_buff_size) - pos, cnt - res);
+							System.arraycopy(decrypt_out_buff, pos - total_out, dst, res + dst_pos, tmp);
 							res += tmp;
 							pos += tmp;
 						} else {
-							total_out += out_buff_size;
+							total_out += decrypt_out_buff_size;
 
 							if (infl.needsInput()) {
 								in_buff_size = //parent.getBuffer(
@@ -403,18 +371,26 @@ public class AlFilesZIP extends AlFiles {
 							}
 
 							try {
-								out_buff_size = infl.inflate(out_buff, 0, ZIP_CHUNK_SIZE);
-
-								if (out_buff_size == 0 && infl.finished()) {
-									out_buff_size = out_buff.length;
-									for (int err = 0; err < out_buff_size; err++)
-										out_buff[err] = 0x00;
+								read_out_buff_size = infl.inflate(read_out_buff, 0, ZIP_CHUNK_SIZE);
+								//decrypt
+								decrypt_out_buff_size = DecryptHelper.decrypt(read_out_buff,read_out_buff_size,decrypt_out_buff,decrypt_out_buff.length,1);
+								if (decrypt_out_buff_size < 0) {
+									break;
+								}
+								fileList.get(num).uSize = decrypt_out_buff_size;
+								cnt = decrypt_out_buff_size;
+								parent.size = decrypt_out_buff_size;
+								String decryptString = new String(decrypt_out_buff);
+								if (decrypt_out_buff_size == 0 && infl.finished()) {
+									decrypt_out_buff_size = decrypt_out_buff.length;
+									for (int err = 0; err < decrypt_out_buff_size; err++)
+										decrypt_out_buff[err] = 0x00;
 								}
 
 							} catch (DataFormatException e) {
-								out_buff_size = out_buff.length;
-								for (int err = 0; err < out_buff_size; err++)
-									out_buff[err] = 0x00;
+								decrypt_out_buff_size = decrypt_out_buff.length;
+								for (int err = 0; err < decrypt_out_buff_size; err++)
+									decrypt_out_buff[err] = 0x00;
 								e.printStackTrace();
 							}
 

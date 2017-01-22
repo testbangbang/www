@@ -45,6 +45,8 @@ import com.neverland.engbook.level1.AlFilesEPUB;
 
 import com.neverland.engbook.level1.AlFilesRAR;
 import com.neverland.engbook.level1.AlFilesZIP;
+import com.neverland.engbook.level1.JEBFilesEPUB;
+import com.neverland.engbook.level1.JEBFilesZIP;
 import com.neverland.engbook.level2.AlFormat;
 import com.neverland.engbook.level2.AlFormatCOMICS;
 import com.neverland.engbook.level2.AlFormatDOC;
@@ -59,6 +61,7 @@ import com.neverland.engbook.level2.AlFormatODT;
 import com.neverland.engbook.level2.AlFormatRTF;
 import com.neverland.engbook.level2.AlFormatTXT;
 import com.neverland.engbook.level2.AlScanMOBI;
+import com.neverland.engbook.level2.JEBFormatEPUB;
 import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.AlArabicReverse;
 import com.neverland.engbook.util.AlBookState;
@@ -2417,6 +2420,9 @@ public class AlBookEng{
         if (AlFormatEPUB.isEPUB(activeFile)) {
             formatMetaData = new AlFormatEPUB();
         } else
+		if (JEBFormatEPUB.isJEB(activeFile)) {
+			formatMetaData = new JEBFormatEPUB();
+		} else
         if (AlFormatFB2.isFB2(activeFile)) {
             formatMetaData = new AlFormatFB2();
         } else {
@@ -2582,6 +2588,14 @@ public class AlBookEng{
 				activeFile = new AlFilesODT();
 				lastInitState = activeFile.initState(currName, a, fList);
 				break;
+			}else
+			if (ft == TAL_FILE_TYPE.JEB) {
+				activeFile = new JEBFilesZIP();
+				activeFile.initState(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB, a, fList);
+				a = activeFile;
+				activeFile = new JEBFilesEPUB();
+				lastInitState = activeFile.initState(currName, a, fList);
+				break;
 			}
 
 
@@ -2623,9 +2637,12 @@ public class AlBookEng{
         } else
         if (AlFormatMOBI.isMOBI(activeFile)) {
             format = new AlFormatMOBI();
-        } else
+        }else
 		if (AlFormatEPUB.isEPUB(activeFile)) {
 			format = new AlFormatEPUB();
+		} else
+		if(JEBFormatEPUB.isJEB(activeFile)){
+			format = new JEBFormatEPUB();
 		} else
         if (AlFormatDOCX.isDOCX(activeFile)) {
             format = new AlFormatDOCX();
@@ -2650,8 +2667,9 @@ public class AlBookEng{
 		} else
 		if (AlFormatNativeImages.isImage(activeFile, prevExt)) {
 			format = new AlFormatNativeImages();
-		} else
+		} else {
 			format = new AlFormatTXT();
+		}
 
 		bookOptions.formatOptions &= ~AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG;
 		if (preferences.calcPagesModeRequest != TAL_SCREEN_PAGES_COUNT.SIZE)

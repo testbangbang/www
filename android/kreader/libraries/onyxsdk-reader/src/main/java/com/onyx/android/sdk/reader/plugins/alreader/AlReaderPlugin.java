@@ -100,6 +100,7 @@ public class AlReaderPlugin implements ReaderPlugin,
             extensionFilters.add("sxw");
             extensionFilters.add("trc");
             extensionFilters.add("txt");
+            extensionFilters.add("jeb");
         }
         return extensionFilters;
     }
