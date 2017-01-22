@@ -160,12 +160,13 @@ public class AlReaderWrapper {
         engineOptions = new AlEngineOptions();
         engineOptions.appInstance = context;
         engineOptions.runInOneThread = true;
-        engineOptions.font_catalog = pluginOptions.getFontDirectories().toArray(new String[0]);
+        engineOptions.font_catalogs_addon = pluginOptions.getFontDirectories().toArray(new String[0]);
         engineOptions.hyph_lang = EngBookMyType.TAL_HYPH_LANG.ENGRUS;
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
         engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
         engineOptions.chinezeFormatting = true;
-        engineOptions.drawLinkStyle = false;
+        engineOptions.drawLinkInternal = false;
+        engineOptions.externalBitmap = new AlBitmap();
 
         float dpiMultiplex = context.getResources().getDisplayMetrics().density;
         engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_160;

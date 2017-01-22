@@ -4,15 +4,42 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.util.Log;
+
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.Annotation;
-import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.sdk.reader.api.*;
-import com.onyx.android.sdk.utils.Benchmark;
-import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
+import com.onyx.android.sdk.reader.api.ReaderDocument;
+import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.api.ReaderDrmManager;
+import com.onyx.android.sdk.reader.api.ReaderException;
+import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
+import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
+import com.onyx.android.sdk.reader.api.ReaderHitTestOptions;
+import com.onyx.android.sdk.reader.api.ReaderNavigator;
+import com.onyx.android.sdk.reader.api.ReaderPlugin;
+import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
+import com.onyx.android.sdk.reader.api.ReaderRenderer;
+import com.onyx.android.sdk.reader.api.ReaderRendererFeatures;
+import com.onyx.android.sdk.reader.api.ReaderSearchManager;
+import com.onyx.android.sdk.reader.api.ReaderSearchOptions;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.api.ReaderSentence;
+import com.onyx.android.sdk.reader.api.ReaderTextSplitter;
+import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
+import com.onyx.android.sdk.reader.api.ReaderView;
+import com.onyx.android.sdk.reader.api.ReaderViewOptions;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.utils.Benchmark;
+import com.onyx.android.sdk.utils.ComparatorUtils;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,6 +98,12 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         documentPath = path;
         final String baseDir = FileUtils.getParent(path);
         FileUtils.collectFiles(baseDir, getExtensionFilters(), false, pageList);
+        Collections.sort(pageList, new Comparator<String>() {
+            @Override
+            public int compare(String lhs, String rhs) {
+                return ComparatorUtils.stringComparator(lhs, rhs, SortOrder.Asc);
+            }
+        });
         return this;
     }
 

@@ -34,6 +34,8 @@ public class AlOneImage {
 
 	public boolean				lowQuality = false;
 
+	public long					tm = 0;
+
 	/*public static String getExtension(AlOneImage a) {
 		switch (a.iType & 0x0f) {
 		case IMG_JPG: return ".jpg";
@@ -52,6 +54,7 @@ public class AlOneImage {
 		a.positionE = posE;
 		a.iType = iT;
 		a.needScan = true;
+		a.lowQuality = false;
 		return a;
 	}
 

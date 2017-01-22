@@ -18,13 +18,16 @@ import com.onyx.android.sdk.utils.DimenUtils;
 public class DialogHelp {
 
     public static Builder getDialog(Context context) {
-        Builder builder = new Builder(context);
+        Builder builder = new Builder(context, R.style.base_dialog);
         return builder;
     }
 
     public static Builder getConfirmDialog(Context context, String message, DialogInterface.OnClickListener onClickListener) {
         Builder builder = getDialog(context);
-        builder.setTitle(message);
+
+        TextView titleView = getCustomTitle(context);
+        titleView.setText(message);
+        builder.setCustomTitle(titleView);
         builder.setPositiveButton(context.getString(R.string.ok), onClickListener);
         builder.setNegativeButton(context.getString(R.string.cancel), null);
         builder.setCancelable(false);
@@ -34,19 +37,22 @@ public class DialogHelp {
     public static Builder getInputDialog(Context context, String title, EditText editText, DialogInterface.OnClickListener onClickListener) {
         Builder builder = getDialog(context);
 
-        TextView titleView = new TextView(context);
+        TextView titleView = getCustomTitle(context);
         titleView.setText(title);
-        int padding = DimenUtils.dip2px(context, 10);
-        titleView.setPadding(padding, padding, padding, padding);
-        titleView.setGravity(Gravity.LEFT);
-        titleView.setTextColor(Color.BLACK);
-        titleView.setTextSize(context.getResources().getDimension(R.dimen.custom_dialog_title_text_size));
         builder.setCustomTitle(titleView);
-
         builder.setPositiveButton(context.getString(R.string.ok), onClickListener);
         builder.setNegativeButton(context.getString(R.string.cancel), null);
         builder.setView(editText);
         return builder;
+    }
+
+    private static TextView getCustomTitle(Context context) {
+        TextView titleView = new TextView(context);
+        int padding = (int) context.getResources().getDimension(R.dimen.alert_dialog_padding);
+        titleView.setPadding(padding, padding, padding, padding);
+        titleView.setTextColor(Color.BLACK);
+        titleView.setTextSize(context.getResources().getDimension(R.dimen.alert_dialog_text_size));
+        return titleView;
     }
 
     public static class Builder extends AlertDialog.Builder {

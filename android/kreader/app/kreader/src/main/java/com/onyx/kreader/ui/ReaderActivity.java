@@ -623,13 +623,17 @@ public class ReaderActivity extends ActionBarActivity {
         }
 
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
-        if (isFileAlreadyOpened(path)) {
+        if (isDocumentOpening() || isFileAlreadyOpened(path)) {
             return;
         }
 
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
         action.execute(getReaderDataHolder(), null);
         releaseStartupWakeLock();
+    }
+
+    private boolean isDocumentOpening() {
+        return getReaderDataHolder().isDocumentOpening();
     }
 
     private boolean isFileAlreadyOpened(final String path) {

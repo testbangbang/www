@@ -139,7 +139,7 @@ public class AlFormatRTF extends AlFormat {
                         formatAddonInt();
                         parStart = size;
                         allState.text_present = true;
-                        allState.letter_present = (allState.letter_present) || (ch != 0xa0 && ch != 0x20);
+                        allState.letter_present = (allState.letter_present) || (ch != 0xa0/* && ch != 0x20*/);
                         size++;
                         parPositionE = allState.start_position;
                     }

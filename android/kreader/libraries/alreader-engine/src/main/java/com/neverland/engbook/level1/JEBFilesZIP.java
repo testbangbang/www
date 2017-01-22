@@ -95,7 +95,7 @@ public class JEBFilesZIP extends AlFiles {
 		a.read_pos = scd;
 		while (a.read_pos < ecd) {
 
-			ZIP_LCD.ReadLCD(zipLCD, a);
+			zipLZH.ReadLZH(a);
 			if (zipLCD.sig != 0x02014b50 || zipLCD.namelength == 0)				
 				return cnt_files > 0 ? res : TAL_FILE_TYPE.TXT;		
 		
@@ -123,7 +123,7 @@ public class JEBFilesZIP extends AlFiles {
 
 				if (zipLCD.csize == 0xffffffff && zipLCD.usize == 0xffffffff) {
 					if (zipLCD.extralength >= 40) {
-						ZIP_EXLZH.ReadEXLZH(zipExLZH, a);						
+						zipLZH.ReadLZH(a);
 						
 						if (zipExLZH.cs > 0 && zipExLZH.us > 0 && zipExLZH.cs <= zipExLZH.us) {
 							zipLCD.csize = zipExLZH.cs;
@@ -141,7 +141,7 @@ public class JEBFilesZIP extends AlFiles {
 				{
 					int saved = a.read_pos;
 					a.read_pos = (int) zipLCD.offset;
-					ZIP_LZH.ReadLZH(zipLZH, a);
+					zipLZH.ReadLZH(a);
 					a.read_pos += 
 							zipLZH.extralength +
 							zipLZH.namelength;
