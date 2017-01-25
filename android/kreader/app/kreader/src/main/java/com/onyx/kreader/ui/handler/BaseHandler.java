@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.handler;
 
+import android.app.admin.DeviceAdminInfo;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.RectF;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.model.Device;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;

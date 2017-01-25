@@ -33,6 +33,7 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
@@ -399,12 +400,24 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void prepareUpdateMode(final RequestFinishEvent event) {
+        if (isAnyPopup()) {
+            ReaderDeviceManager.resetUpdateMode(surfaceView);
+            return;
+        }
+
         boolean update = (event != null && event.isApplyGCIntervalUpdate());
         if (update) {
             ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
         } else {
             ReaderDeviceManager.resetUpdateMode(surfaceView);
         }
+    }
+
+    private boolean isAnyPopup() {
+        if (ShowReaderMenuAction.isReaderMenuShown() || getReaderDataHolder().isAnyActiveDialog()) {
+            return true;
+        }
+        return false;
     }
 
     private void afterDrawPage() {
