@@ -137,24 +137,12 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
         }
         clearCheckbox();
 
-        if (isChecked) {
-            for (int i = 0; i < checkBoxes.length; i++) {
-                CheckBox checkBox = checkBoxes[i];
-                checkBox.setChecked(true);
-                if (checkBox.equals(buttonView)) {
-                    boldSize = i;
-                    break;
-                }
-            }
-        } else {
-            for (int i = 0; i < checkBoxes.length; i++) {
-                CheckBox checkBox = checkBoxes[i];
-                if (checkBox.equals(buttonView)) {
-                    boldSize = i - 1;
-                    checkBox.setChecked(false);
-                    break;
-                }
-                checkBox.setChecked(true);
+        for (int i = 0; i < checkBoxes.length; i++) {
+            CheckBox checkBox = checkBoxes[i];
+            checkBox.setChecked(true);
+            if (checkBox.equals(buttonView)) {
+                boldSize = i;
+                break;
             }
         }
 

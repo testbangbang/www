@@ -42,6 +42,8 @@ import java.util.Set;
  */
 public class ReaderDataHolder {
 
+    public enum DocumentOpenState { INIT, OPENING, OPENED }
+
     private Context context;
     private String documentPath;
     private Reader reader;
@@ -58,7 +60,7 @@ public class ReaderDataHolder {
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
-    private boolean documentOpened = false;
+    private DocumentOpenState documentOpenState = DocumentOpenState.INIT;
 
     private int displayWidth;
     private int displayHeight;
@@ -143,13 +145,17 @@ public class ReaderDataHolder {
     }
 
     public void initReaderFromPath(final String path) {
-        documentOpened = false;
+        documentOpenState = DocumentOpenState.OPENING;
         documentPath = path;
         reader = ReaderManager.getReader(documentPath);
     }
 
+    public boolean isDocumentOpening() {
+        return documentOpenState == DocumentOpenState.OPENING;
+    }
+
     public boolean isDocumentOpened() {
-        return documentOpened && reader != null;
+        return documentOpenState == DocumentOpenState.OPENED && reader != null;
     }
 
     public boolean inNoteWritingProvider() {
@@ -493,7 +499,7 @@ public class ReaderDataHolder {
     }
 
     private void closeDocument(final BaseCallback callback) {
-        documentOpened = false;
+        documentOpenState = DocumentOpenState.INIT;
         if (reader == null || reader.getDocument() == null) {
             BaseCallback.invoke(callback, null, null);
             return;
@@ -547,13 +553,15 @@ public class ReaderDataHolder {
     public void onDocumentOpened() {
         prepareEventReceiver();
         registerDeviceReceiver();
-        documentOpened = true;
+        documentOpenState = DocumentOpenState.OPENED;
         getEventBus().post(new DocumentOpenEvent(getContext(), documentPath, getReader().getDocumentMd5()));
     }
 
     public void onDocumentClosed() {
         getEventBus().post(new DocumentCloseEvent(getContext()));
-        getEventBus().unregister(eventReceiver);
+        if (eventReceiver != null) {
+            getEventBus().unregister(eventReceiver);
+        }
     }
 
     public void onDocumentInitRendered() {
