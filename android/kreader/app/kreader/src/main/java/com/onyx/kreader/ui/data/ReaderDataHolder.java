@@ -480,6 +480,10 @@ public class ReaderDataHolder {
         activeDialogs.clear();
     }
 
+    public boolean isAnyActiveDialog() {
+        return activeDialogs.size() > 0;
+    }
+
     public void destroy(final BaseCallback callback) {
         unregisterReceiver();
         closeActiveDialogs();
