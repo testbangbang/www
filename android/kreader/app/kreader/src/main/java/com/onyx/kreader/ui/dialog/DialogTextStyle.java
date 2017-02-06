@@ -66,7 +66,9 @@ public class DialogTextStyle extends DialogBase {
     }
 
     public interface TextStyleCallback {
-        void onSaveReaderStyle(ReaderTextStyle readerTextStyle);
+        void onSaveReaderStyle(final DialogTextStyle dialog, ReaderTextStyle readerTextStyle);
+
+        void onCancel(final DialogTextStyle dialog);
     }
 
     private static Pair<Integer, Integer>[] CODE_PAGES = new Pair[] {
@@ -179,7 +181,7 @@ public class DialogTextStyle extends DialogBase {
             public void onClick(View v) {
                 dismiss();
                 if (callback != null) {
-                    callback.onSaveReaderStyle(getReaderStyle());
+                    callback.onSaveReaderStyle(DialogTextStyle.this, getReaderStyle());
                 }
             }
         });
@@ -187,6 +189,9 @@ public class DialogTextStyle extends DialogBase {
             @Override
             public void onClick(View v) {
                 restoreAndDismiss();
+                if (callback != null) {
+                    callback.onCancel(DialogTextStyle.this);
+                }
             }
         });
 

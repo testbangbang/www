@@ -44,18 +44,21 @@ public class RK3026Device extends BaseDevice {
     private static int sViewA2 = DEFAULT_VIEW_MODE;
     private static int sViewAuto = DEFAULT_VIEW_MODE;
     private static int sViewPart = DEFAULT_VIEW_MODE;
+    private static int sViewRegla = DEFAULT_VIEW_MODE;
 
     private static final int INDEX_EPD_NULL = 0;
     private static final int INDEX_EPD_AUTO = 1;
     private static final int INDEX_EPD_FULL = 2;
     private static final int INDEX_EPD_A2 = 3;
     private static final int INDEX_EPD_PART = 4;
+    private static final int INDEX_EPD_REGLA = 16;
 
     private static final String NAME_EPD_NULL = "EPD_NULL";
     private static final String NAME_EPD_AUTO = "EPD_AUTO";
     private static final String NAME_EPD_FULL = "EPD_FULL";
     private static final String NAME_EPD_A2 = "EPD_A2";
     private static final String NAME_EPD_PART = "EPD_PART";
+    private static final String NAME_EPD_REGLA = "EPD_REGLA";
 
     private Context mContext = null;
 
@@ -114,6 +117,11 @@ public class RK3026Device extends BaseDevice {
                 sViewFull = (Integer) mth.invoke(einkModeConstants[INDEX_EPD_FULL]);
                 sViewA2 = (Integer) mth.invoke(einkModeConstants[INDEX_EPD_A2]);
                 sViewPart = (Integer) mth.invoke(einkModeConstants[INDEX_EPD_PART]);
+                if (einkModeConstants.length > INDEX_EPD_REGLA) {
+                    sViewRegla = (Integer) mth.invoke(einkModeConstants[INDEX_EPD_REGLA]);
+                } else {
+                    sViewRegla = sViewPart;
+                }
 
                 @SuppressWarnings("rawtypes")
                 Class class_device_controller = Class.forName("android.hardware.DeviceController");
@@ -240,6 +248,9 @@ public class RK3026Device extends BaseDevice {
             case AUTO_A2:
                 einkModeString = NAME_EPD_A2;
                 break;
+            case EPD_REGLA:
+                einkModeString = NAME_EPD_REGLA;
+                break;
             default:
                 assert (false);
                 break;
@@ -261,6 +272,9 @@ public class RK3026Device extends BaseDevice {
                 break;
             case DU:
                 einkModeString = NAME_EPD_A2;
+                break;
+            case REGAL:
+                einkModeString = NAME_EPD_REGLA;
                 break;
             default:
                 assert (false);
@@ -468,9 +482,11 @@ public class RK3026Device extends BaseDevice {
         this.invokeDeviceControllerMethod(context, sMethodLed, on);
     }
 
+    public boolean supportRegal() {
+        return true;
+    }
+
     @Override
-
-
     public int getVCom(Context context, String path) {
 
         String value = FileUtils.readContentOfFile(new File(path));
