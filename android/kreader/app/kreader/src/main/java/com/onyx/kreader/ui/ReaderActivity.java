@@ -155,7 +155,7 @@ public class ReaderActivity extends ActionBarActivity {
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
                 if (!getReaderDataHolder().isDocumentOpened()) {
-                    handleActivityIntent();
+                    openFileFromIntentImpl();
                 }
             }
         });
@@ -639,6 +639,13 @@ public class ReaderActivity extends ActionBarActivity {
         if (isDocumentOpening() || isFileAlreadyOpened(path)) {
             return;
         }
+
+        openFileFromIntentImpl();
+    }
+
+    private void openFileFromIntentImpl() {
+        final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this,
+                getIntent().getData());
 
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
         action.execute(getReaderDataHolder(), null);
