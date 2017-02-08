@@ -46,6 +46,24 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
+        if (!readerDataHolder.isDocumentOpened()) {
+            openDocumentImpl(readerDataHolder, callback);
+            return;
+        }
+
+        readerDataHolder.destroy(new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    showErrorDialog(readerDataHolder);
+                    return;
+                }
+                openDocumentImpl(readerDataHolder, callback);
+            }
+        });
+    }
+
+    private void openDocumentImpl(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerDataHolder.initReaderFromPath(documentPath);
         readerDataHolder.getEventBus().post(new BeforeDocumentOpenEvent(documentPath));
 

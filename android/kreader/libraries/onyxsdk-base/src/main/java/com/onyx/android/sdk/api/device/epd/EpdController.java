@@ -3,6 +3,7 @@
  */
 package com.onyx.android.sdk.api.device.epd;
 
+import android.graphics.Paint;
 import android.view.View;
 import com.onyx.android.sdk.device.Device;
 
@@ -128,6 +129,10 @@ public abstract class EpdController
         Device.currentDevice().setStrokeWidth(width);
     }
 
+    public static void setStrokeStyle(int style) {
+        Device.currentDevice().setStrokeStyle(style);
+    }
+
     public static void setStrokeColor(int color) {
         Device.currentDevice().setStrokeColor(color);
     }
@@ -140,8 +145,32 @@ public abstract class EpdController
         Device.currentDevice().setScreenHandWritingRegionLimit(view, left, top, right, bottom);
     }
 
+    public static float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
+        return Device.currentDevice().startStroke(baseWidth, x, y, pressure, size, time);
+    }
+
+    public static float addStrokePoint(float baseWidth, float x, float y, float pressure, float size, float time) {
+        return Device.currentDevice().addStrokePoint(baseWidth, x, y, pressure, size, time);
+    }
+
+    public static float finishStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
+        return Device.currentDevice().finishStroke(baseWidth, x, y, pressure, size, time);
+    }
+
+    public static void enterScribbleMode(View view) {
+        Device.currentDevice().enterScribbleMode(view);
+    }
+
+    public static void leaveScribbleMode(View view) {
+        Device.currentDevice().leaveScribbleMode(view);
+    }
+
     public static void enablePost(View view, int enable) {
         Device.currentDevice().enablePost(view, enable);
+    }
+
+    public static void setPainterStyle(boolean antiAlias, Paint.Style strokeStyle, Paint.Join joinStyle, Paint.Cap capStyle) {
+        Device.currentDevice().setPainterStyle(antiAlias, strokeStyle, joinStyle, capStyle);
     }
 
     public static void moveTo(float x, float y, float width) {
