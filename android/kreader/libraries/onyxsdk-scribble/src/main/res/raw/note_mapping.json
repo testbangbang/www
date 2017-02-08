@@ -261,10 +261,10 @@
 
 
   "pl107": {"mappingList":  [
-      { "orientation" : 270,  "tx" : 0, "ty" : 960},
-      { "orientation" : 0,  "tx" : 0, "ty" : 0},
-      { "orientation" : 90,  "tx" : 1280, "ty" : 0},
-      { "orientation" : 180,  "tx" : 1280, "ty" : 960}],
+    { "orientation" : 90,  "tx" : 1280, "ty" : 0,  "epd": 270, "etx": 0, "ety": 1280},
+    { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 1280, "ety": 960},
+    { "orientation" : 270,  "tx" : 0, "ty" : 960, "epd": 90, "etx": 960, "ety": 0},
+    { "orientation" : 180,  "tx" : 1280, "ty" : 960,  "epd": 0, "etx": 0, "ety": 0}],
 
     "pressureList" : [
       {"pressure": 64, "ratio": 0.30},
