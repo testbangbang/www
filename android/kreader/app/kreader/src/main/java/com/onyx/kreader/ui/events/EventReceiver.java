@@ -3,8 +3,10 @@ package com.onyx.kreader.ui.events;
 
 import android.content.Context;
 
+import com.onyx.android.sdk.statistics.OnyxStatistics;
 import com.onyx.android.sdk.statistics.StatisticsBase;
 import com.onyx.android.sdk.statistics.StatisticsManager;
+import com.onyx.android.sdk.statistics.UMeng;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.device.DeviceConfig;
 
@@ -23,17 +25,26 @@ public class EventReceiver {
     private StatisticsManager statisticsManager = new StatisticsManager();
     private long lastTimestamp = 0;
 
+    private StatisticsManager.StatisticsType statisticsType = StatisticsManager.StatisticsType.Onyx;
+
     public EventReceiver(final Context context) {
         Map<String, String> args = new HashedMap<>();
-        final String key = DeviceConfig.sharedInstance(context).getUmengKey();
-        final String channel = DeviceConfig.sharedInstance(context).getChannel();
-        if (StringUtils.isBlank(key) || StringUtils.isBlank(channel)) {
-            setEnable(false);
-            return;
+        switch (statisticsType) {
+            case UMeng:
+                final String key = DeviceConfig.sharedInstance(context).getUmengKey();
+                final String channel = DeviceConfig.sharedInstance(context).getChannel();
+                if (StringUtils.isBlank(key) || StringUtils.isBlank(channel)) {
+                    setEnable(false);
+                    return;
+                }
+                args.put(StatisticsBase.KEY_TAG, key);
+                args.put(StatisticsBase.CHANNEL_TAG, channel);
+                break;
+            case Onyx:
+                break;
         }
-        args.put(StatisticsBase.KEY_TAG, key);
-        args.put(StatisticsBase.CHANNEL_TAG, channel);
-        statisticsManager.init(context, args);
+
+        statisticsManager.init(context, args, statisticsType);
     }
 
     public void setEnable(boolean enable) {
@@ -53,7 +64,7 @@ public class EventReceiver {
         if (!isEnable()) {
             return;
         }
-        statisticsManager.onDocumentOpenedEvent(event.getContext(), event.getPath(), event.getMd5());
+        statisticsManager.onDocumentOpenedEvent(event.getContext(), event.getDocumentInfo());
         updateLastTimestamp();
     }
 
@@ -62,7 +73,7 @@ public class EventReceiver {
         if (!isEnable()) {
             return;
         }
-        event.setDuration((int)(System.currentTimeMillis() - lastTimestamp));
+        event.setDuration((System.currentTimeMillis() - lastTimestamp));
         updateLastTimestamp();
         statisticsManager.onPageChangedEvent(event.getContext(), event.getLastPage(), event.getCurrentPage(), event.getDuration());
     }
@@ -91,4 +102,11 @@ public class EventReceiver {
         statisticsManager.onDictionaryLookupEvent(event.getContext(), event.getText());
     }
 
+    @Subscribe
+    public void onNetworkChanged(final NetworkChangedEvent event) {
+        if (!isEnable()) {
+            return;
+        }
+        statisticsManager.onNetworkChangedEvent(event.getContext(), event.isConnected(), event.getNetworkType());
+    }
 }

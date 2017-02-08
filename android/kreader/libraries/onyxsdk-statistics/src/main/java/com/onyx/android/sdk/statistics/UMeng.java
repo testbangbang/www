@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+
+import com.onyx.android.sdk.data.model.DocumentInfo;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -36,20 +39,25 @@ public class UMeng implements StatisticsBase {
         MobclickAgent.onPause(context);
     }
 
+    @Override
+    public void onNetworkChanged(Context context, boolean connected, int networkType) {
+
+    }
+
     public void addHardwareInfo(final Map<String, String> map) {
         map.put("model", Build.MODEL);
         map.put("fp", Build.FINGERPRINT);
     }
 
-    public void onDocumentOpenedEvent(final Context context, final String path, final String md5) {
+    public void onDocumentOpenedEvent(final Context context, final DocumentInfo documentInfo) {
         if (context == null) {
             return;
         }
 
         MobclickAgent.onResume(context);
         Map<String,String> map = new HashMap<String,String>();
-        map.put("path", path);
-        map.put("md5", md5);
+        map.put("path", documentInfo.getPath());
+        map.put("md5", documentInfo.getMd5());
         addHardwareInfo(map);
         MobclickAgent.onEvent(context, "documentOpen", map);
     }
@@ -58,7 +66,7 @@ public class UMeng implements StatisticsBase {
         MobclickAgent.onPause(context);
     }
 
-    public void onPageChangedEvent(final Context context, final String last, final String current, int duration) {
+    public void onPageChangedEvent(final Context context, final String last, final String current, long duration) {
         if (context == null) {
             return;
         }
@@ -68,7 +76,7 @@ public class UMeng implements StatisticsBase {
         map.put("current", current);
         map.put("duration", String.valueOf(duration));
         addHardwareInfo(map);
-        MobclickAgent.onEventValue(context, "pageChange", map, duration);
+        MobclickAgent.onEvent(context, "pageChange", map);
     }
 
     public void onTextSelectedEvent(final Context context, final String text) {

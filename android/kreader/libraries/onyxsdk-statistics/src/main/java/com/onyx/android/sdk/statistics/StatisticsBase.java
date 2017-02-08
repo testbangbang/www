@@ -3,6 +3,7 @@ package com.onyx.android.sdk.statistics;
 import android.content.Context;
 import android.os.Build;
 
+import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -23,11 +24,13 @@ public interface StatisticsBase {
 
     void onActivityPause(final Context context);
 
-    void onDocumentOpenedEvent(final Context context, final String path, final String md5);
+    void onNetworkChanged(final Context context, boolean connected, int networkType);
+
+    void onDocumentOpenedEvent(final Context context, final DocumentInfo documentInfo);
 
     void onDocumentClosed(final Context context);
 
-    void onPageChangedEvent(final Context context, final String last, final String current, int duration);
+    void onPageChangedEvent(final Context context, final String last, final String current, long duration);
 
     void onTextSelectedEvent(final Context context, final String text);
 

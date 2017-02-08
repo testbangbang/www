@@ -44,6 +44,6 @@ android {
 
 dependencies {
     compile project(':libraries:onyxsdk-base')
+    compile project(':libraries:onyxsdk-data')
     compile 'com.umeng.analytics:analytics:latest.integration'
-
 }
