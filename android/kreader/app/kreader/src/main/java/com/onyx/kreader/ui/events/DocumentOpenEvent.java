@@ -2,27 +2,24 @@ package com.onyx.kreader.ui.events;
 
 import android.content.Context;
 
+import com.onyx.android.sdk.data.model.DocumentInfo;
+
+import java.util.Set;
+
 /**
  * Created by zhuzeng on 7/29/16.
  */
 public class DocumentOpenEvent {
     private Context context;
-    private String path;
-    private String md5;
+    private DocumentInfo documentInfo;
 
-
-    public DocumentOpenEvent(final Context c, final String p, final String uniqueId) {
+    public DocumentOpenEvent(final Context c,final DocumentInfo documentInfo) {
         context = c;
-        path = p;
-        md5 = uniqueId;
+        this.documentInfo = documentInfo;
     }
 
-    public final String getPath() {
-        return path;
-    }
-
-    public String getMd5() {
-        return md5;
+    public DocumentInfo getDocumentInfo() {
+        return documentInfo;
     }
 
     public Context getContext() {
