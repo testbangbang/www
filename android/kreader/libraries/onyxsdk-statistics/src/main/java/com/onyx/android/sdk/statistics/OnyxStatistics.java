@@ -16,7 +16,9 @@ import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,13 +36,12 @@ public class OnyxStatistics implements StatisticsBase {
     private String md5short;
     private String mac;
 
-    private int newAddCounter = 0;
-    private boolean flushing = false;
+    private List<OnyxStatisticsModel> statisticsQueue;
 
     @Override
     public boolean init(Context context, Map<String, String> args) {
         cloudStore = new CloudStore();
-        setFlushing(false);
+        statisticsQueue = new ArrayList<>();
         return false;
     }
 
@@ -58,25 +59,19 @@ public class OnyxStatistics implements StatisticsBase {
         return statisticsData;
     }
 
-    private void saveToCloud(final Context context, final OnyxStatisticsModel statisticsData) {
-        StatisticsUtils.saveStatistics(context, statisticsData);
-        increaseCounter();
-        if (getNewAddCounter() >= PUSH_THRESHOLD_VALUE) {
+    private void saveToCloud(final Context context, final OnyxStatisticsModel statisticsModel) {
+        statisticsQueue.add(statisticsModel);
+        if (statisticsQueue.size() >= PUSH_THRESHOLD_VALUE) {
             flushStatistics(context);
         }
     }
 
     private void flushStatistics(final Context context) {
-        if (!DeviceUtils.isWifiConnected(context) || isFlushing()) {
-            return;
-        }
-        setFlushing(true);
-        PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(context);
+        PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(context, statisticsQueue);
         cloudStore.submitRequest(context, statisticsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                setFlushing(false);
-                resetCounter();
+                statisticsQueue.clear();
             }
         });
     }
@@ -119,14 +114,14 @@ public class OnyxStatistics implements StatisticsBase {
                 public void done(BaseRequest request, Throwable e) {
                     statisticsData.setMd5(md5Request.getMd5());
                     OnyxStatistics.this.md5 = md5Request.getMd5();
-                    StatisticsUtils.saveStatistics(context, statisticsData);
+                    statisticsQueue.add(statisticsData);
                     flushStatistics(context);
                 }
             });
         }else {
             statisticsData.setMd5(md5);
             this.md5 = md5;
-            StatisticsUtils.saveStatistics(context, statisticsData);
+            statisticsQueue.add(statisticsData);
             flushStatistics(context);
         }
     }
@@ -134,7 +129,7 @@ public class OnyxStatistics implements StatisticsBase {
     @Override
     public void onDocumentClosed(Context context) {
         OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_CLOSE);
-        StatisticsUtils.saveStatistics(context, statisticsData);
+        statisticsQueue.add(statisticsData);
         flushStatistics(context);
     }
 
@@ -169,23 +164,4 @@ public class OnyxStatistics implements StatisticsBase {
         saveToCloud(context, statisticsData);
     }
 
-    public int getNewAddCounter() {
-        return newAddCounter;
-    }
-
-    private void resetCounter() {
-        newAddCounter = 0;
-    }
-
-    private void increaseCounter() {
-        newAddCounter++;
-    }
-
-    public boolean isFlushing() {
-        return flushing;
-    }
-
-    public void setFlushing(boolean flushing) {
-        this.flushing = flushing;
-    }
 }
