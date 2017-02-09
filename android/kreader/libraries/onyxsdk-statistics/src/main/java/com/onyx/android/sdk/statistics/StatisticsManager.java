@@ -47,6 +47,10 @@ public class StatisticsManager {
         getImpl().onDocumentOpenedEvent(context, documentInfo);
     }
 
+    public void onDocumentClosed(final Context context) {
+        getImpl().onDocumentClosed(context);
+    }
+
     public void onPageChangedEvent(final Context context, final String last, final String current, long duration) {
         getImpl().onPageChangedEvent(context, last, current, duration);
     }

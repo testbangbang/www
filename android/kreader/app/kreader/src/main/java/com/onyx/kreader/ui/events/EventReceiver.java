@@ -69,6 +69,14 @@ public class EventReceiver {
     }
 
     @Subscribe
+    public void onDocumentClosed(final DocumentCloseEvent event) {
+        if (!isEnable()) {
+            return;
+        }
+        statisticsManager.onDocumentClosed(event.getContext());
+    }
+
+    @Subscribe
     public void onPageChanged(final PageChangedEvent event) {
         if (!isEnable()) {
             return;

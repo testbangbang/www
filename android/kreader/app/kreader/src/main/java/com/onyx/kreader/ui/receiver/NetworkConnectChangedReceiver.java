@@ -17,7 +17,6 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class NetworkConnectChangedReceiver extends BroadcastReceiver {
 
     private static final String TAG = "NetworkConnectChangedRe";
-
     private ReaderDataHolder readerDataHolder;
 
     public NetworkConnectChangedReceiver() {

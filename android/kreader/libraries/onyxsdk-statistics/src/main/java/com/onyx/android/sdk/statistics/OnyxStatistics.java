@@ -35,10 +35,12 @@ public class OnyxStatistics implements StatisticsBase {
     private String mac;
 
     private int newAddCounter = 0;
+    private boolean flushing = false;
 
     @Override
     public boolean init(Context context, Map<String, String> args) {
         cloudStore = new CloudStore();
+        setFlushing(false);
         return false;
     }
 
@@ -56,21 +58,24 @@ public class OnyxStatistics implements StatisticsBase {
         return statisticsData;
     }
 
-    private void judgePushStatistics(final Context context) {
+    private void saveToCloud(final Context context, final OnyxStatisticsModel statisticsData) {
+        StatisticsUtils.saveStatistics(context, statisticsData);
         increaseCounter();
         if (getNewAddCounter() >= PUSH_THRESHOLD_VALUE) {
-            pushStatistics(context);
+            flushStatistics(context);
         }
     }
 
-    private void pushStatistics(final Context context) {
-        if (!DeviceUtils.isWifiConnected(context)) {
+    private void flushStatistics(final Context context) {
+        if (!DeviceUtils.isWifiConnected(context) || isFlushing()) {
             return;
         }
+        setFlushing(true);
         PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(context);
         cloudStore.submitRequest(context, statisticsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                setFlushing(false);
                 resetCounter();
             }
         });
@@ -78,7 +83,7 @@ public class OnyxStatistics implements StatisticsBase {
 
     @Override
     public void onActivityResume(Context context) {
-        pushStatistics(context);
+        flushStatistics(context);
     }
 
     @Override
@@ -89,7 +94,7 @@ public class OnyxStatistics implements StatisticsBase {
     @Override
     public void onNetworkChanged(Context context, boolean connected, int networkType) {
         if (connected && networkType == ConnectivityManager.TYPE_WIFI) {
-            pushStatistics(context);
+            flushStatistics(context);
         }
     }
 
@@ -115,12 +120,14 @@ public class OnyxStatistics implements StatisticsBase {
                     statisticsData.setMd5(md5Request.getMd5());
                     OnyxStatistics.this.md5 = md5Request.getMd5();
                     StatisticsUtils.saveStatistics(context, statisticsData);
+                    flushStatistics(context);
                 }
             });
         }else {
             statisticsData.setMd5(md5);
             this.md5 = md5;
             StatisticsUtils.saveStatistics(context, statisticsData);
+            flushStatistics(context);
         }
     }
 
@@ -128,6 +135,7 @@ public class OnyxStatistics implements StatisticsBase {
     public void onDocumentClosed(Context context) {
         OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_CLOSE);
         StatisticsUtils.saveStatistics(context, statisticsData);
+        flushStatistics(context);
     }
 
     @Override
@@ -136,16 +144,14 @@ public class OnyxStatistics implements StatisticsBase {
         statisticsData.setLastPage(Integer.valueOf(last));
         statisticsData.setCurrPage(Integer.valueOf(current));
         statisticsData.setDurationTime(duration);
-        StatisticsUtils.saveStatistics(context, statisticsData);
-        judgePushStatistics(context);
+        saveToCloud(context, statisticsData);
     }
 
     @Override
     public void onTextSelectedEvent(Context context, String text) {
         OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_TEXT_SELECTED);
         statisticsData.setOrgText(text);
-        StatisticsUtils.saveStatistics(context, statisticsData);
-        judgePushStatistics(context);
+        saveToCloud(context, statisticsData);
     }
 
     @Override
@@ -153,16 +159,14 @@ public class OnyxStatistics implements StatisticsBase {
         OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_ANNOTATION);
         statisticsData.setOrgText(originText);
         statisticsData.setNote(userNote);
-        StatisticsUtils.saveStatistics(context, statisticsData);
-        judgePushStatistics(context);
+        saveToCloud(context, statisticsData);
     }
 
     @Override
     public void onDictionaryLookupEvent(Context context, String originText) {
         OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_LOOKUP_DIC);
         statisticsData.setOrgText(originText);
-        StatisticsUtils.saveStatistics(context, statisticsData);
-        judgePushStatistics(context);
+        saveToCloud(context, statisticsData);
     }
 
     public int getNewAddCounter() {
@@ -175,5 +179,13 @@ public class OnyxStatistics implements StatisticsBase {
 
     private void increaseCounter() {
         newAddCounter++;
+    }
+
+    public boolean isFlushing() {
+        return flushing;
+    }
+
+    public void setFlushing(boolean flushing) {
+        this.flushing = flushing;
     }
 }
