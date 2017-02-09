@@ -245,7 +245,7 @@
             <ImageView
                 style="@style/popup_selection_menu_image_view"
                 android:id="@+id/imageview_translate"
-                android:contentDescription="@drawable/ic_popup_selection_menu_translate_default"
+                android:contentDescription="@drawable/ic_dialog_reader_choose_dictionary"
                 android:src="@drawable/ic_dialog_reader_choose_dictionary" />
 
             <TextView
@@ -276,8 +276,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:contentDescription=""
-                android:src="@drawable/ic_popup_selection_menu_tts" />
+                android:contentDescription=""/>
 
             <TextView
                 android:layout_width="fill_parent"
