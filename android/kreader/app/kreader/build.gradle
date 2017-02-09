@@ -74,7 +74,6 @@ dependencies {
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
     compile project(':libraries:onyxsdk-reader')
     compile project(':libraries:onyxsdk-base')
-    compile project(':libraries:onyxsdk-data')
     compile project(':libraries:onyxsdk-statistics')
     compile project(':libraries:onyxsdk-ui')
     compile project(':libraries:cropimage')

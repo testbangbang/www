@@ -11,6 +11,7 @@ public class CloudConf {
     private String hostBase = Constant.CN_HOST_BASE;
     private String apiBase = Constant.CN_API_BASE;
     private String cloudStorage = Constant.DEFAULT_CLOUD_STORAGE;
+    private String statistics = Constant.STATISTICS_API_BASE;
 
     public CloudConf(final String host, final String api, final String cloud) {
         hostBase = host;
@@ -30,6 +31,7 @@ public class CloudConf {
         return cloudStorage;
     }
 
-
-
+    public String getStatistics() {
+        return statistics;
+    }
 }

@@ -4,7 +4,7 @@
     <dimen name="contentView_button_X_axis_margin">30dp</dimen>
     <dimen name="contentView_button_progress_minWidth">100dp</dimen>
     <dimen name="global_dialog_imageView_tittle_size">70dp</dimen>
-    <dimen name="alert_dialog_title_text_size">20sp</dimen>
+    <dimen name="alert_dialog_title_text_size">26sp</dimen>
     <dimen name="onyx_alert_dialog_width_margin">45dp</dimen>
     <dimen name="global_activities_back_function_layout_padding">7dp</dimen>
     <dimen name="settings_title_text_size">25sp</dimen>
@@ -50,6 +50,7 @@
     <dimen name="abc_text_size_large_material" tools:override="true">30sp</dimen>
     <dimen name="abc_text_size_medium_material" tools:override="true">26sp</dimen>
     <dimen name="abc_text_size_small_material" tools:override="true">18sp</dimen>
+    <dimen name="abc_text_size_caption_material" tools:override="true">18sp</dimen>
 
     <dimen name="preference_title_text_size">25sp</dimen>
     <dimen name="preference_category_text_size">@dimen/abc_text_size_small_material</dimen>
