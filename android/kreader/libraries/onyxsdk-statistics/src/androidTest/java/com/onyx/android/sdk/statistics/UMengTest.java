@@ -28,7 +28,7 @@ public class UMengTest extends ApplicationTestCase<Application> {
         uMeng.init(getContext(), args);
         for (int i = 0; i < 10; ++i) {
             uMeng.onActivityResume(getContext());
-            uMeng.onDocumentOpenedEvent(getContext(), UUID.randomUUID().toString(), UUID.randomUUID().toString());
+//            uMeng.onDocumentOpenedEvent(getContext(), UUID.randomUUID().toString(), UUID.randomUUID().toString());
             uMeng.onActivityPause(getContext());
         }
         TestUtils.sleep(10 * 1000);
