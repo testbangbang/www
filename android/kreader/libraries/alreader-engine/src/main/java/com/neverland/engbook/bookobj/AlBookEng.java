@@ -11,6 +11,7 @@ import com.neverland.engbook.forpublic.AlEngineNotifyForUI;
 import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.AlOneBookmark;
+import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.AlOneSearchResult;
 import com.neverland.engbook.forpublic.AlPoint;
 import com.neverland.engbook.forpublic.AlPublicProfileOptions;
@@ -29,20 +30,19 @@ import com.neverland.engbook.forpublic.EngBookMyType.TAL_SCREEN_SELECTION_MODE;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_THREAD_TASK;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.level1.AlFileDoc;
+import com.neverland.engbook.level1.AlFileZipEntry;
+import com.neverland.engbook.level1.AlFiles;
+import com.neverland.engbook.level1.AlFilesBypassDecrypt;
+import com.neverland.engbook.level1.AlFilesBypassNative;
 import com.neverland.engbook.level1.AlFilesBypassRAR;
 import com.neverland.engbook.level1.AlFilesCBZ;
 import com.neverland.engbook.level1.AlFilesDocx;
+import com.neverland.engbook.level1.AlFilesEPUB;
 import com.neverland.engbook.level1.AlFilesFB3;
 import com.neverland.engbook.level1.AlFilesMOBI;
 import com.neverland.engbook.level1.AlFilesODT;
 import com.neverland.engbook.level1.AlFilesPDB;
 import com.neverland.engbook.level1.AlFilesPDBUnk;
-import com.neverland.engbook.level1.AlFileZipEntry;
-import com.neverland.engbook.level1.AlFiles;
-import com.neverland.engbook.level1.AlFilesBypassDecrypt;
-import com.neverland.engbook.level1.AlFilesBypassNative;
-import com.neverland.engbook.level1.AlFilesEPUB;
-
 import com.neverland.engbook.level1.AlFilesRAR;
 import com.neverland.engbook.level1.AlFilesZIP;
 import com.neverland.engbook.level1.JEBFilesEPUB;
@@ -69,7 +69,6 @@ import com.neverland.engbook.util.AlCalc;
 import com.neverland.engbook.util.AlFonts;
 import com.neverland.engbook.util.AlHyph;
 import com.neverland.engbook.util.AlImage;
-import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlOneImageParam;
 import com.neverland.engbook.util.AlOneItem;
@@ -2408,7 +2407,16 @@ public class AlBookEng{
                 activeFile = new AlFilesEPUB();
                 lastInitState = activeFile.initState(currName, a, fList);
                 break;
-            } else
+            }else
+			if(ft == TAL_FILE_TYPE.JEB){
+				activeFile = new JEBFilesZIP();
+				activeFile.initState(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB, a, fList);
+				a = activeFile;
+				activeFile = new JEBFilesEPUB();
+				lastInitState = activeFile.initState(currName, a, fList);
+				break;
+			}
+			else
             if (ft == TAL_FILE_TYPE.DOCX) {
                 return bookMetaData;
             } else

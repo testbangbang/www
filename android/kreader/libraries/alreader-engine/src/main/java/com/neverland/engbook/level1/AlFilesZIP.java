@@ -176,10 +176,13 @@ public class AlFilesZIP extends AlFiles {
 					res = TAL_FILE_TYPE.EPUB;
 				if ((ext == null || ext.equalsIgnoreCase(".fb3")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_FB3))
 					res = TAL_FILE_TYPE.FB3;
-				if ((ext == null || ext.equalsIgnoreCase(".JEB")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB)) {
+				if ((ext == null || ext.equalsIgnoreCase(".JEB"))) {
 					res = TAL_FILE_TYPE.JEB;
 					if(of.compress == 8) {
-						of.uSize = gitCompressDataSize(a, zipLCD.offset, zipLCD.csize, zipLCD.usize);
+						of.uSize = JEBFilesZIP.gitCompressDataSize(a, zipLCD.offset, zipLCD.csize, zipLCD.usize);
+						if(of.uSize <= 0){
+							of.uSize = (int) zipLCD.usize;
+						}
 					}
 				}
 
@@ -192,40 +195,6 @@ public class AlFilesZIP extends AlFiles {
 		}
 
 		return cnt_files > 0 ? res : TAL_FILE_TYPE.TXT;
-	}
-
-	public static int gitCompressDataSize(final AlFiles a,final long offset,final long compressionSize,final long uncompressionSize) {
-		DecryptHelper.create();
-		byte[] in_buff = new byte[ZIP_CHUNK_SIZE], decrypt_out_buff = new byte[ZIP_CHUNK_SIZE * 32], read_out_buff = new byte[ZIP_CHUNK_SIZE];
-		int in_buff_size, decrypt_out_buff_size = 0, read_out_buff_size;
-		Inflater infl = new Inflater(true);
-		if (infl.needsInput()) {
-			in_buff_size = a.getByteBuffer((int)offset, in_buff, ZIP_CHUNK_SIZE);
-			infl.setInput(in_buff, 0, in_buff_size);
-		}
-
-		try {
-			read_out_buff_size = infl.inflate(read_out_buff, 0, ZIP_CHUNK_SIZE);
-			String html = new String(read_out_buff);
-			//decrypt
-			decrypt_out_buff_size = DecryptHelper.decrypt(read_out_buff, read_out_buff_size, decrypt_out_buff, decrypt_out_buff.length, 1);
-			if (decrypt_out_buff_size < 0) {
-				return 0;
-			}
-
-			String decryptString = new String(decrypt_out_buff);
-			if (decrypt_out_buff_size == 0 && infl.finished()) {
-
-			}
-
-		} catch (DataFormatException e) {
-			e.printStackTrace();
-		}finally {
-			DecryptHelper.close();
-		}
-		infl.end();
-		infl = null;
-		return decrypt_out_buff_size;
 	}
 
 	public int initState(String file, AlFiles myParent, ArrayList<AlFileZipEntry> fList) {
