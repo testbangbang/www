@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -69,6 +70,9 @@ public class NoteManager {
     private AtomicBoolean noteDirty = new AtomicBoolean(false);
     private volatile boolean enableShortcutDrawing = false;
     private volatile boolean enableShortcutErasing = false;
+    private boolean checkPointRange = true;
+    private float lastX, lastY;
+    private float xLimit, yLimit;
 
     public NoteManager(final ReaderDataHolder p) {
         parent = p;
@@ -83,6 +87,7 @@ public class NoteManager {
     }
 
     public void startRawEventProcessor() {
+        resetLastPoint();
         getNoteEventProcessorManager().start();
     }
 
@@ -465,6 +470,10 @@ public class NoteManager {
     }
 
     public Shape collectPoint(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, boolean createShape, boolean up) {
+        if (!checkPointRange(screen)) {
+            return onShapeUp(pageInfo, normal, screen);
+        }
+
         if (pageInfo == null) {
             return onShapeUp(pageInfo, normal, screen);
         }
@@ -479,6 +488,26 @@ public class NoteManager {
             return onShapeMove(pageInfo, normal, screen);
         }
         return onShapeUp(pageInfo, normal, screen);
+    }
+
+    private boolean checkPointRange(final TouchPoint screen) {
+        if (!checkPointRange) {
+            return true;
+        }
+        if (lastX < 0 || lastY < 0 || (Math.abs(screen.getX() - lastX) < xLimit && Math.abs(screen.getY() - lastY) < yLimit)) {
+            lastX = screen.getX();
+            lastY = screen.getY();
+            return true;
+        }
+        Log.e("#######", " out of range lastX: " + lastX + " x: " + screen.getX() + " lastY: " + lastY + " y: " + screen.getY());
+        return false;
+    }
+
+    private void resetLastPoint() {
+        lastX = -1;
+        lastY = -1;
+        xLimit = getViewportSize().width() / 10;
+        yLimit = getViewportSize().height() / 10;
     }
 
     private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
@@ -500,6 +529,7 @@ public class NoteManager {
     }
 
     private Shape onShapeUp(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
+        resetLastPoint();
         final Shape shape = getCurrentShape();
         if (shape == null) {
             return null;
