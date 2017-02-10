@@ -60,7 +60,6 @@ import com.onyx.kreader.ui.actions.OpenDocumentAction;
 import com.onyx.kreader.ui.actions.SaveDocumentOptionsAction;
 import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
-import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -201,7 +200,6 @@ public class ReaderActivity extends ActionBarActivity {
     private void resetMenus() {
         hideAllPopupMenu(null);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
-        ShowSearchMenuAction.resetSearchMenu();
         ShowTextSelectionMenuAction.resetSelectionMenu();
     }
 

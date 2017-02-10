@@ -3,6 +3,6 @@
     <solid android:color="@android:color/white" />
     <corners android:radius="5dp" />
     <stroke
-        android:width="2dp"
+        android:width="@dimen/dialog_border_width"
         android:color="@android:color/black" />
 </shape>
