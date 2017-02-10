@@ -121,7 +121,7 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
 
         private void updateAutoSleepListSummary(int ms) {
             autoSleepListPreference.setSummary(ms == -1 ? getString(R.string.never_sleep) :
-                    getString(R.string.sleep_summary, CommonUtil.msToMinuteStringWithUnit(getContext(), ms)));
+                    getString(R.string.sleep_summary, CommonUtil.msToTimeStringWithUnit(getContext(), ms)));
         }
 
         private void hidePreferenceByDeviceFeature() {
