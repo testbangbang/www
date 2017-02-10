@@ -139,4 +139,8 @@ public class ReaderDeviceManager {
         epdDevice.cleanUpdate(view);
     }
 
+    public static void holdDisplay(boolean hold) {
+        epdDevice.holdDisplay(hold);
+    }
+
 }

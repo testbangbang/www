@@ -20,6 +20,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author jim
@@ -90,6 +91,8 @@ public class RK3026Device extends BaseDevice {
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
     private static Method sMethodSystemIntegrityCheck;
+    private static Method sMethodSupportRegal;
+    private static Method sMethodHoldDisplay;
 
     private static final String UNKNOWN = "unknown";
     private static final String DEVICE_ID = "ro.deviceid";
@@ -122,6 +125,8 @@ public class RK3026Device extends BaseDevice {
                 } else {
                     sViewRegla = sViewPart;
                 }
+                sMethodSupportRegal = ReflectUtil.getMethodSafely(class_view, "supportRegal");
+                sMethodHoldDisplay = ReflectUtil.getMethodSafely(class_view, "holdDisplay", int.class);
 
                 @SuppressWarnings("rawtypes")
                 Class class_device_controller = Class.forName("android.hardware.DeviceController");
@@ -483,12 +488,19 @@ public class RK3026Device extends BaseDevice {
     }
 
     public boolean supportRegal() {
-        return true;
+        Object object = ReflectUtil.invokeMethodSafely(sMethodSupportRegal, null);
+        if (object != null) {
+            return (Boolean) object;
+        }
+        return false;
+    }
+
+    public void holdDisplay(boolean hold) {
+        ReflectUtil.invokeMethodSafely(sMethodHoldDisplay, hold);
     }
 
     @Override
     public int getVCom(Context context, String path) {
-
         String value = FileUtils.readContentOfFile(new File(path));
         if (StringUtils.isNullOrEmpty(value)) {
             return Integer.MIN_VALUE;
