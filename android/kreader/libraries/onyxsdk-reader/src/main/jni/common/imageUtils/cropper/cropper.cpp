@@ -42,8 +42,8 @@ extern "C" {
 #include "JNIUtils.h"
 
 #define COLUMN_HALF_HEIGHT 15
-#define V_LINE_SIZE 5
-#define H_LINE_SIZE 5
+#define V_LINE_SIZE 2
+#define H_LINE_SIZE 2
 #define LINE_MARGIN 20
 #define COLUMN_WIDTH 5
 

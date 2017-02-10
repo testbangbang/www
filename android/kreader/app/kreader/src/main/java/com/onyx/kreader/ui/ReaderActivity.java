@@ -2,6 +2,7 @@ package com.onyx.kreader.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -58,7 +59,6 @@ import com.onyx.kreader.ui.actions.OpenDocumentAction;
 import com.onyx.kreader.ui.actions.SaveDocumentOptionsAction;
 import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
-import com.onyx.kreader.ui.actions.ShowSearchMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -91,6 +91,7 @@ import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
+import com.onyx.kreader.ui.receiver.NetworkConnectChangedReceiver;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
 import com.onyx.kreader.device.DeviceConfig;
@@ -116,6 +117,7 @@ public class ReaderActivity extends ActionBarActivity {
     private ReaderDataHolder dataHolder;
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
+    private NetworkConnectChangedReceiver networkConnectChangedReceiver;
     private final ReaderPainter readerPainter = new ReaderPainter();
 
     private PinchZoomingPopupMenu pinchZoomingPopupMenu;
@@ -155,7 +157,7 @@ public class ReaderActivity extends ActionBarActivity {
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
                 if (!getReaderDataHolder().isDocumentOpened()) {
-                    handleActivityIntent();
+                    openFileFromIntentImpl();
                 }
             }
         });
@@ -185,6 +187,9 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
+        if (networkConnectChangedReceiver !=null) {
+            unregisterReceiver(networkConnectChangedReceiver);
+        }
         ReaderActivity.super.onDestroy();
         if (getReaderDataHolder().isDocumentOpened()) {
             quitApplication(null);
@@ -194,7 +199,6 @@ public class ReaderActivity extends ActionBarActivity {
     private void resetMenus() {
         hideAllPopupMenu(null);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
-        ShowSearchMenuAction.resetSearchMenu();
         ShowTextSelectionMenuAction.resetSelectionMenu();
     }
 
@@ -237,6 +241,16 @@ public class ReaderActivity extends ActionBarActivity {
         initStatusBar();
         initReaderDataHolder();
         initSurfaceView();
+        initReceiver();
+    }
+
+    private void initReceiver() {
+        networkConnectChangedReceiver = new NetworkConnectChangedReceiver(getReaderDataHolder());
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        filter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+        filter.addAction("android.net.wifi.STATE_CHANGE");
+        registerReceiver(networkConnectChangedReceiver, filter);
     }
 
     private void initReaderMenu(){
@@ -639,6 +653,13 @@ public class ReaderActivity extends ActionBarActivity {
         if (isDocumentOpening() || isFileAlreadyOpened(path)) {
             return;
         }
+
+        openFileFromIntentImpl();
+    }
+
+    private void openFileFromIntentImpl() {
+        final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this,
+                getIntent().getData());
 
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
         action.execute(getReaderDataHolder(), null);

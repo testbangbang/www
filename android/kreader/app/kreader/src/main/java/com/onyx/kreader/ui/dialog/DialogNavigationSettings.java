@@ -228,6 +228,7 @@ public class DialogNavigationSettings extends DialogBase {
 
     private GAdapter buildSubScreenAdapter() {
         mSubScreenAdapter = new GAdapter();
+        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_1_2, SubScreenMode.SUB_SCREEN_1_2));
         mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_2_1, SubScreenMode.SUB_SCREEN_2_1));
         mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_2_2, SubScreenMode.SUB_SCREEN_2_2));
         mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_3_2, SubScreenMode.SUB_SCREEN_3_2));

@@ -36,9 +36,18 @@ public class CommonUtil {
         return new ContextThemeWrapper(context, themeTypedValue.resourceId);
     }
 
-    public static String msToMinuteStringWithUnit(Context context, int ms) {
+    public static String msToTimeStringWithUnit(Context context, int ms) {
         if (ms > 0) {
-            return context.getResources().getQuantityString(R.plurals.minute, ms / 60000, ms / 60000);
+            if (ms < 86400000) {
+                //Minute
+                if (ms < 3600000) {
+                    return context.getResources().getQuantityString(R.plurals.minute, ms / 60000, ms / 60000);
+                }
+                //Hour
+                return context.getResources().getQuantityString(R.plurals.hour, ms / 3600000, ms / 3600000);
+            }
+            //Day
+            return context.getResources().getQuantityString(R.plurals.day, ms / 86400000, ms / 86400000);
         } else {
             return context.getResources().getString(R.string.never_sleep);
         }

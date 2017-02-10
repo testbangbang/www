@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
@@ -183,6 +184,13 @@
             </intent-filter>
         </service>
 
+        <provider
+            android:authorities="com.onyx.kreader.statistics.provider"
+            android:exported="true"
+            android:name="com.onyx.android.sdk.data.db.OnyxStatisticsContentProvider_Provider"/>
+
+        <receiver android:name=".ui.receiver.NetworkConnectChangedReceiver">
+        </receiver>
     </application>
 
 

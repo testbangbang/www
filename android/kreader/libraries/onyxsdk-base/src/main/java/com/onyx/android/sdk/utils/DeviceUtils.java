@@ -1,7 +1,12 @@
 package com.onyx.android.sdk.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.view.View;
 import android.view.Window;
@@ -52,4 +57,24 @@ public class DeviceUtils {
         System.exit(1);
     }
 
+    public static String getMacAddress(Context mContext) {
+        String macStr = "";
+        WifiManager wifiManager = (WifiManager) mContext
+                .getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        if (wifiInfo != null) {
+            macStr = wifiInfo.getMacAddress();
+        }
+        return macStr;
+    }
+
+    public static boolean isWifiConnected(Context context) {
+        if (context != null) {
+            ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI)
+                return networkInfo.isAvailable();
+        }
+        return false;
+    }
 }
