@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
@@ -556,7 +557,7 @@ public class ReaderDataHolder {
         prepareEventReceiver();
         registerDeviceReceiver();
         documentOpenState = DocumentOpenState.OPENED;
-        ReaderDocumentMetadata metadata = getReader().getDocumentMetadata();
+        ReaderDocumentMetadata metadata = getReader().getDocumentMetadataSafely();
         DocumentInfo documentInfo = DocumentInfo.create(metadata.getAuthors(),
                 getReader().getDocumentMd5(),
                 getBookName(),
