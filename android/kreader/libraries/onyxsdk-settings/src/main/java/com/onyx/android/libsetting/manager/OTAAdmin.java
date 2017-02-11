@@ -1,40 +1,61 @@
 package com.onyx.android.libsetting.manager;
 
-import android.app.DownloadManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+
+import com.onyx.android.libsetting.util.OTAUtil;
+import com.onyx.android.sdk.device.Device;
+
+import java.io.File;
 
 /**
- * Created with IntelliJ IDEA. User: john Date: 6/12/13 Time: 10:21 AM To change
- * this template use File | Settings | File Templates.
+ * Created by solskjaer49 on 2017/2/11 16:15.
  */
-public class OTAAdmin {
 
+public class OTAAdmin {
     private static final String TAG = OTAAdmin.class.getSimpleName();
     private static OTAAdmin instance;
-    private OTAAdmin updateFirmware;
-    private boolean inCheckingNewFirmware = false;
-    static private boolean installationSaved = false;
 
-    private DownloadManager downloadManager;
+    private static final String OTA_SERVICE_PACKAGE = "com.onyx.android.onyxotaservice";
+    private static final String OTA_SERVICE_ACTIVITY = "com.onyx.android.onyxotaservice.OtaInfoActivity";
+    private static final String OTA_SERVICE_PACKAGE_PATH_KEY = "updatePath";
 
-    // unit : MB
-    static private final int MINIMUM_STORAGE_SIZE_REQUEST_FOR_UPGRADE = 250;
-    static private final int MINIMUM_BATTERY_REQUEST_FOR_UPGRADE = 50;
-    static private final int BATTERY_NO_CHARGING = 3;
+    private static final String UPDATE_FILE_NAME = "update.zip";
+    private static final String LOCAL_PATH_SDCARD = Device.currentDevice.getExternalStorageDirectory()
+            .getAbsolutePath() + File.separator + UPDATE_FILE_NAME;
+    private static final String LOCAL_PATH_EXTSD = Device.currentDevice.getRemovableSDCardDirectory()
+            .getAbsolutePath() + File.separator + UPDATE_FILE_NAME;
 
-    public static final String OTA_SERVICE_PACKAGE = "com.onyx.android.onyxotaservice";
-    public static final String OTA_SERVICE_ACTIVITY = "com.onyx.android.onyxotaservice.OtaInfoActivity";
+    public interface FirmwareCheckCallback {
+        void preCheck();
 
-    public static final String OTA_SERVICE_PACKAGE_PATH_KEY = "updatePath";
-//    public static final String LOCAL_PATH_SDCARD = DeviceInfo.currentDevice.getExternalStorageDirectory()
-//            .getAbsolutePath() + "/update.zip";
-//    public static final String LOCAL_PATH_EXTSD = DeviceInfo.currentDevice.getRemovableSDCardDirectory()
-//            .getAbsolutePath() + "/update.zip";
+        void stateChanged(int state, long finished, long total, long percentage);
 
-    static public abstract class FirmwareCallback {
-        abstract public void stateChanged(int state, long finished, long total, long percentage);
+        /**
+         * @param targetPath If not found any zip(success return false),targetPath is null.
+         * @param success
+         */
+        void onPostCheck(final String targetPath, boolean success);
+    }
 
-        public void checkLocalFirmwareFinished(final String path, boolean success) {
-        }
+
+    /**
+     * TODO:should clean up all test resource before update,but wait further design with both new setting/launcher coop.
+     * Temp empty implement here.
+    */
+    private void preFirmwareUpdate() {
+//        ContentBrowserUtils.clearAllTestResource(OnyxOTAActivity.this, DeviceConfig.sharedInstance(this));
+    }
+
+    //TODO:maybe ota service pkg/activity should be custom?
+    public void startFirmwareUpdate(Context context, String path) {
+        preFirmwareUpdate();
+        Intent i = new Intent();
+        i.putExtra(OTA_SERVICE_PACKAGE_PATH_KEY, path);
+        i.setClassName(OTA_SERVICE_PACKAGE, OTA_SERVICE_ACTIVITY);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(i);
     }
 
     static public OTAAdmin sharedInstance() {
@@ -44,4 +65,35 @@ public class OTAAdmin {
         return instance;
     }
 
+    public void checkLocalFirmware(final FirmwareCheckCallback callback) {
+        CheckLocalFirmWareTask task = new CheckLocalFirmWareTask(callback);
+        task.execute();
+    }
+
+    private static class CheckLocalFirmWareTask extends AsyncTask<Void, Integer, Boolean> {
+        FirmwareCheckCallback callback;
+        String[] pathArray = new String[]{LOCAL_PATH_SDCARD, LOCAL_PATH_EXTSD};
+        String targetPath = null;
+
+        CheckLocalFirmWareTask(FirmwareCheckCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            for (String path : pathArray) {
+                if (OTAUtil.checkLocalUpdateZipLegality(path)) {
+                    targetPath = path;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            callback.onPostCheck(targetPath, aBoolean);
+        }
+    }
 }

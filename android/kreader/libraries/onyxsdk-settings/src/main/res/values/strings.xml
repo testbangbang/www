@@ -199,6 +199,9 @@
     <string name="ota_auto_summary">Check for updates automatically</string>
     <string name="model_number_title">Model number : </string>
     <string name="firmware_number_title">Build number : </string>
+    <string name="find_package_from_local">New update package found, do you want to update?</string>
+    <string name="title_update">OTA update</string>
+    <string name="no_update">No update package available.</string>
 
 </resources>
 
