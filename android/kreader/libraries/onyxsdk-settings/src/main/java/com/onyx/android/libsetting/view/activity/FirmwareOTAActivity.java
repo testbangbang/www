@@ -51,7 +51,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     private void onCheckOTAFromLocal() {
-        OTAAdmin.checkLocalFirmware(new OTAAdmin.FirmwareCheckCallback() {
+        OTAAdmin.sharedInstance().checkLocalFirmware(this,new OTAAdmin.FirmwareCheckCallback() {
             @Override
             public void preCheck() {
 

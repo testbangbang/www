@@ -2,12 +2,14 @@ package com.onyx.android.libsetting.manager;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 
-import com.onyx.android.libsetting.util.OTAUtil;
+import com.onyx.android.libsetting.SettingManager;
+import com.onyx.android.libsetting.action.CheckLocalFirmwareLegalityAction;
 import com.onyx.android.sdk.device.Device;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by solskjaer49 on 2017/2/11 16:15.
@@ -65,35 +67,12 @@ public class OTAAdmin {
         return instance;
     }
 
-    public void checkLocalFirmware(final FirmwareCheckCallback callback) {
-        CheckLocalFirmWareTask task = new CheckLocalFirmWareTask(callback);
-        task.execute();
+    public void checkLocalFirmware(Context context,final FirmwareCheckCallback callback) {
+        List<String> pathList= new ArrayList<>();
+        pathList.add(LOCAL_PATH_SDCARD);
+        pathList.add(LOCAL_PATH_EXTSD);
+        CheckLocalFirmwareLegalityAction action = new CheckLocalFirmwareLegalityAction(callback, pathList);
+        action.execute(context, SettingManager.sharedInstance(), null);
     }
 
-    private static class CheckLocalFirmWareTask extends AsyncTask<Void, Integer, Boolean> {
-        FirmwareCheckCallback callback;
-        String[] pathArray = new String[]{LOCAL_PATH_SDCARD, LOCAL_PATH_EXTSD};
-        String targetPath = null;
-
-        CheckLocalFirmWareTask(FirmwareCheckCallback callback) {
-            this.callback = callback;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            for (String path : pathArray) {
-                if (OTAUtil.checkLocalUpdateZipLegality(path)) {
-                    targetPath = path;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            callback.onPostCheck(targetPath, aBoolean);
-        }
-    }
 }
