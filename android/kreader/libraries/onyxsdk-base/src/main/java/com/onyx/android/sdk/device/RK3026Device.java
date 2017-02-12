@@ -126,7 +126,7 @@ public class RK3026Device extends BaseDevice {
                     sViewRegla = sViewPart;
                 }
                 sMethodSupportRegal = ReflectUtil.getMethodSafely(class_view, "supportRegal");
-                sMethodHoldDisplay = ReflectUtil.getMethodSafely(class_view, "holdDisplay", int.class);
+                sMethodHoldDisplay = ReflectUtil.getMethodSafely(class_view, "holdDisplay", boolean.class);
 
                 @SuppressWarnings("rawtypes")
                 Class class_device_controller = Class.forName("android.hardware.DeviceController");
