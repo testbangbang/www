@@ -126,7 +126,7 @@ public class RK3026Device extends BaseDevice {
                     sViewRegla = sViewPart;
                 }
                 sMethodSupportRegal = ReflectUtil.getMethodSafely(class_view, "supportRegal");
-                sMethodHoldDisplay = ReflectUtil.getMethodSafely(class_view, "holdDisplay", boolean.class);
+                sMethodHoldDisplay = ReflectUtil.getMethodSafely(class_view, "holdDisplay", boolean.class, int.class);
 
                 @SuppressWarnings("rawtypes")
                 Class class_device_controller = Class.forName("android.hardware.DeviceController");
@@ -495,8 +495,9 @@ public class RK3026Device extends BaseDevice {
         return false;
     }
 
-    public void holdDisplay(boolean hold) {
-        ReflectUtil.invokeMethodSafely(sMethodHoldDisplay, hold);
+    public void holdDisplay(boolean hold, UpdateMode updateMode) {
+        int mode = (int)getEinkModeFromUpdateMode(updateMode);
+        ReflectUtil.invokeMethodSafely(sMethodHoldDisplay, hold, mode);
     }
 
     @Override
