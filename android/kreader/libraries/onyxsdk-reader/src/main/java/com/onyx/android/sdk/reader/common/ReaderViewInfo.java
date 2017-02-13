@@ -34,7 +34,7 @@ public class ReaderViewInfo {
     public RectF pagesBoundingRect = new RectF();
     public PointF lastViewportOverlayPosition = null;
     public ReaderTextStyle readerTextStyle = null;
-    public NavigationArgs navigationArgs = null;
+    public int subScreenCount = 1;
     public boolean layoutChanged = false;
 
     public final List<PageInfo> getVisiblePages() {

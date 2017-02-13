@@ -113,9 +113,7 @@ public class ReaderPainter {
     }
 
     private boolean skipCropRectIndicator(final ReaderViewInfo viewInfo) {
-        return viewInfo.navigationArgs != null &&
-                viewInfo.navigationArgs.getList() != null &&
-                viewInfo.navigationArgs.getList().getSubScreenCount() <= 1;
+        return viewInfo.subScreenCount <= 1;
     }
 
     private void drawCropRectIndicator(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
