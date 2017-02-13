@@ -310,7 +310,7 @@ public class PageRecyclerView extends RecyclerView {
             return;
         }
 
-        if (pageTurningCycled && paginator.pages() > 0 && paginator.isFirstPage()) {
+        if (pageTurningCycled && paginator.pages() > 1 && paginator.isFirstPage()) {
             gotoPage(paginator.lastPage());
         }
     }
@@ -321,7 +321,7 @@ public class PageRecyclerView extends RecyclerView {
             return;
         }
 
-        if (pageTurningCycled && paginator.pages() > 0 && paginator.isLastPage()) {
+        if (pageTurningCycled && paginator.pages() > 1 && paginator.isLastPage()) {
             gotoPage(0);
         }
     }
