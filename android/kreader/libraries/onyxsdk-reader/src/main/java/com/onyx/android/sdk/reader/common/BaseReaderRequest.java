@@ -30,6 +30,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private boolean loadPageAnnotation = true;
     private boolean loadBookmark = true;
     private boolean loadPageLinks = true;
+    private boolean loadPageImages = true;
 
     public BaseReaderRequest() {
         super();
@@ -204,6 +205,9 @@ public abstract class BaseReaderRequest extends BaseRequest {
         }
         if (readerViewInfo != null && loadPageLinks) {
             getReaderUserDataInfo().loadPageLinks(getContext(), reader, readerViewInfo.getVisiblePages());
+        }
+        if (readerViewInfo != null && loadPageImages) {
+            getReaderUserDataInfo().loadPageImages(getContext(), reader, readerViewInfo.getVisiblePages());
         }
     }
 

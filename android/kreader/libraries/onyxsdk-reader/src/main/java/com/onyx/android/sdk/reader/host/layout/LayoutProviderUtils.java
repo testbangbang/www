@@ -2,16 +2,10 @@ package com.onyx.android.sdk.reader.host.layout;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.host.math.PageManager;
-import com.onyx.android.sdk.reader.host.math.PageUtils;
-import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
-import com.onyx.android.sdk.reader.host.navigation.NavigationList;
-import com.onyx.android.sdk.reader.host.wrapper.Reader;
-import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderRenderer;
 import com.onyx.android.sdk.reader.cache.BitmapSoftLruCache;
@@ -19,7 +13,14 @@ import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
 import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.host.math.PageManager;
+import com.onyx.android.sdk.reader.host.math.PageUtils;
+import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
+import com.onyx.android.sdk.reader.host.navigation.NavigationList;
+import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
 
@@ -143,6 +144,10 @@ public class LayoutProviderUtils {
         readerViewInfo.scale = layoutManager.getSpecialScale();
         if (layoutManager.getTextStyleManager() != null && layoutManager.getTextStyleManager().getStyle() != null) {
             readerViewInfo.readerTextStyle = ReaderTextStyle.copy(layoutManager.getTextStyleManager().getStyle());
+        }
+        if (layoutManager.getCurrentLayoutProvider().getNavigationArgs() != null &&
+                layoutManager.getCurrentLayoutProvider().getNavigationArgs().getList() != null) {
+            readerViewInfo.subScreenCount = layoutManager.getCurrentLayoutProvider().getNavigationArgs().getList().getSubScreenCount();
         }
         readerViewInfo.layoutChanged = layoutManager.isLayoutChanged();
     }

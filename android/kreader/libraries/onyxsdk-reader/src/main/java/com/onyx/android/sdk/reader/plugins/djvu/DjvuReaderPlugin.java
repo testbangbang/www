@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
@@ -305,6 +306,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
 
     @Override
     public List<ReaderSelection> getLinks(String position) {
+        return null;
+    }
+
+    @Override
+    public List<ReaderImage> getImages(String position) {
         return null;
     }
 

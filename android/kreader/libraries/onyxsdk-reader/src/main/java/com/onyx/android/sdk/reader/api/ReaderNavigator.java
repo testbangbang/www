@@ -121,5 +121,13 @@ public interface ReaderNavigator {
      */
     public List<ReaderSelection> getLinks(final String position);
 
+    /**
+     * image list on the page
+     *
+     * @param position
+     * @return
+     */
+    public List<ReaderImage> getImages(final String position);
+
 
 }

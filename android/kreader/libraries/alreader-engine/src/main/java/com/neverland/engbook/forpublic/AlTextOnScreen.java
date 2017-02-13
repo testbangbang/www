@@ -1,5 +1,7 @@
 package com.neverland.engbook.forpublic;
 
+import com.neverland.engbook.util.AlImage;
+
 import java.util.ArrayList;
 
 public class AlTextOnScreen {
@@ -48,14 +50,28 @@ public class AlTextOnScreen {
         }
     }
 
+    public class AlPieceOfImage {
+        public int pos;
+        public final AlRect rect = new AlRect();
+        public final AlBitmap bitmap;
+
+        public AlPieceOfImage(int p, AlRect r, AlBitmap b) {
+            pos = p;
+            rect.set(r.x0, r.y0, r.x1, r.y1);
+            bitmap = b;
+        }
+    }
+
     public final ArrayList<AlPieceOfText> regionList = new ArrayList<>();
     public final ArrayList<AlPieceOfLink> linkList = new ArrayList<>();
+    public final ArrayList<AlPieceOfImage> imageList = new ArrayList<>();
 
     public void clear() {
         numWordWithStartSelection = numWordWithEndSelection = -1;
         needCorrectStart = needCorrectEnd = false;
         regionList.clear();
         linkList.clear();
+        imageList.clear();
     }
 
     public void addText(StringBuilder word, AlRect rect, ArrayList<Integer> pos) {
@@ -77,6 +93,12 @@ public class AlTextOnScreen {
         if (p >= 0) {
             AlPieceOfLink a = new AlPieceOfLink(p, rect);
             linkList.add(a);
+        }
+    }
+
+    public void addImage(int p, AlRect rect, AlBitmap bitmap) {
+        if (p >= 0) {
+            imageList.add(new AlPieceOfImage(p, rect, bitmap));
         }
     }
 
