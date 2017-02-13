@@ -496,8 +496,7 @@ public class RK3026Device extends BaseDevice {
     }
 
     public void holdDisplay(boolean hold, UpdateMode updateMode) {
-        int mode = (int)getEinkModeFromUpdateMode(updateMode);
-        ReflectUtil.invokeMethodSafely(sMethodHoldDisplay, hold, mode);
+        ReflectUtil.invokeMethodSafely(sMethodHoldDisplay, null, hold, sViewRegla);
     }
 
     @Override
