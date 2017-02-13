@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.provider.SearchHistoryProvider;
+import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
@@ -44,6 +45,7 @@ public class ReaderUserDataInfo {
     private Map<String, List<PageAnnotation>> pageAnnotationMap = new HashMap<>();
     private List<SearchHistory> searchHistoryList = new ArrayList<>();
     private Map<String, List<ReaderSelection>> pageLinkMap = new HashMap<>();
+    private Map<String, List<ReaderImage>> pageImageMap = new HashMap<>();
 
     public void setDocumentPath(final String path) {
         documentPath = path;
@@ -303,6 +305,34 @@ public class ReaderUserDataInfo {
             }
         }
         return true;
+    }
+
+    public boolean hasPageImages(final PageInfo pageInfo) {
+        return pageImageMap.containsKey(pageInfo.getName());
+    }
+
+    public List<ReaderImage> getPageImages(final PageInfo pageInfo) {
+        return pageImageMap.get(pageInfo.getName());
+    }
+
+    public boolean loadPageImages(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+        for (PageInfo pageInfo : visiblePages) {
+            List<ReaderImage> list = reader.getNavigator().getImages(pageInfo.getName());
+            if (!CollectionUtils.isNullOrEmpty(list)) {
+                for (ReaderImage image : list) {
+                    translateToScreen(pageInfo, image.getRectangle());
+                }
+                pageImageMap.put(pageInfo.getName(), list);
+            }
+        }
+        return true;
+    }
+
+    private void translateToScreen(PageInfo pageInfo, RectF rect) {
+        PageUtils.translate(pageInfo.getDisplayRect().left,
+                pageInfo.getDisplayRect().top,
+                pageInfo.getActualScale(),
+                rect);
     }
 
     private void translateToScreen(PageInfo pageInfo, List<RectF> list) {
