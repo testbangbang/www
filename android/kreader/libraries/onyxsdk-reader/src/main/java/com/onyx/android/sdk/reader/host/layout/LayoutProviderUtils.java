@@ -144,6 +144,7 @@ public class LayoutProviderUtils {
         if (layoutManager.getTextStyleManager() != null && layoutManager.getTextStyleManager().getStyle() != null) {
             readerViewInfo.readerTextStyle = ReaderTextStyle.copy(layoutManager.getTextStyleManager().getStyle());
         }
+        readerViewInfo.navigationArgs = layoutManager.getCurrentLayoutProvider().getNavigationArgs();
         readerViewInfo.layoutChanged = layoutManager.isLayoutChanged();
     }
 
