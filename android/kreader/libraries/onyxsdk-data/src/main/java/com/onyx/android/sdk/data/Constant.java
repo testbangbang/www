@@ -31,6 +31,7 @@ public class Constant {
     static public final String PASSWORD_TAG = "password";
     static public final String AVATAR_TAG = "avatar";
     static public final String ID_TAG = "id";
+    static public final String URL_TAG = "url";
 
     public static final String COVER_TYPE_SMALL = "small";
     public static final String COVER_TYPE_NORMAL = "normal";
@@ -41,4 +42,7 @@ public class Constant {
     public static final String DEFAULT_COVER_EXT = "png";
 
     public static final String PUSH_KEY = "leanCloud";
+    public static final String APP_ID = "50ed40debbdc4bb1bfdddcd4791d862c";
+
+    public static final String PLATFORM_WECHAT = "wechat";
 }

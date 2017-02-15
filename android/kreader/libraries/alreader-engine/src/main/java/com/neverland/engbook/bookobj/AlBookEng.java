@@ -6265,6 +6265,50 @@ public class AlBookEng{
 					}
 				}
 
+				if ((oi.style[i] & AlStyles.SL_IMAGE) != 0) {
+					Log.e("alengine", "found image: " + x + ", " + y + ", " + oi.width[i] + ", " + oi.height);
+					long style = oi.style[i];
+					int widthImage = oi.width[i];
+					AlOneImage ai = null;
+					String link;
+					int scale = (int) ((style & AlStyles.SL_COLOR_MASK) >> AlStyles.SL_COLOR_SHIFT);
+
+					link = format.getLinkNameByPos(oi.pos[i], InternalConst.TAL_LINK_TYPE.IMAGE);
+					if ((style & AlStyles.SL_IMAGE_MASK) == AlStyles.SL_IMAGE_OK) {
+						if (link != null)
+							ai = format.getImageByName(link);
+
+						if (ai != null) {
+							AlBitmap b = images.getImage(ai, scale);
+							if (b != null) {
+								int th = ai.height;
+								int tw = ai.width;
+								for (int k = 0; k < scale; k++) {
+									th >>= 1;
+									tw >>= 1;
+								}
+
+								final int w;
+								final int h;
+								final float f = (float) widthImage / tw;
+								if (f <= 1.02f && f >= 0.99f) {
+									w = tw;
+									h = th;
+								} else {
+									w = (int) (tw * f);
+									h = (int) (th * f);
+								}
+
+								AlRect rect = new AlRect();
+								rect.set(x, y - h, x + w, y);
+								Log.e("alengine", "scaled image: " + rect.x0 + ", " + rect.y0 +
+										", " + rect.x1 + ", " + rect.y1);
+								textOnScreen.addImage(oi.pos[i], rect, b);
+							}
+						}
+					}
+				}
+
 				if (oi.text[i] <= 0x20 || oi.pos[i] < 0) {
 					textOnScreen.addText(word_text, word_rect, word_pos);
 

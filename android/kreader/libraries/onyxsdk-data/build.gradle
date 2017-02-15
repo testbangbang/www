@@ -54,4 +54,6 @@ dependencies {
     compile "com.liulishuo.filedownloader:library:$rootProject.filedownloaderVersion"
     compile "com.squareup.okhttp:okhttp-urlconnection:$rootProject.okhttpurlconnectionVersion"
 
+    compile "com.aliyun.dpa:oss-android-sdk:$rootProject.aliyunOssSdkVersion"
+    compile "com.tencent.mm.opensdk:wechat-sdk-android-with-mta:$rootProject.wechatSdkWithMtaVersion"
 }

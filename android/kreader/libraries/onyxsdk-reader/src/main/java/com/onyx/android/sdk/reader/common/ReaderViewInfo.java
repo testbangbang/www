@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class ReaderViewInfo {
     public RectF pagesBoundingRect = new RectF();
     public PointF lastViewportOverlayPosition = null;
     public ReaderTextStyle readerTextStyle = null;
+    public int subScreenCount = 1;
     public boolean layoutChanged = false;
 
     public final List<PageInfo> getVisiblePages() {

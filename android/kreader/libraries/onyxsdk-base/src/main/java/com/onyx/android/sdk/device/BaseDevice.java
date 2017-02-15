@@ -199,7 +199,7 @@ public class BaseDevice {
         return false;
     }
 
-    public void holdDisplay(boolean hold) {}
+    public void holdDisplay(boolean hold, UpdateMode updateMode) {}
 
     public void setStrokeColor(int color) {
     }

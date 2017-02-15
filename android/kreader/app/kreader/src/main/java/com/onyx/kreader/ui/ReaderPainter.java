@@ -112,8 +112,14 @@ public class ReaderPainter {
         paint.setPathEffect(null);
     }
 
+    private boolean skipCropRectIndicator(final ReaderViewInfo viewInfo) {
+        return viewInfo.subScreenCount <= 1;
+    }
+
     private void drawCropRectIndicator(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
-        if (viewInfo.cropRegionInViewport == null || viewInfo.cropRegionInViewport.isEmpty()) {
+        if (viewInfo.cropRegionInViewport == null ||
+                viewInfo.cropRegionInViewport.isEmpty() ||
+                skipCropRectIndicator(viewInfo)) {
             return;
         }
         initPaintWithAuxiliaryLineStyle(paint);

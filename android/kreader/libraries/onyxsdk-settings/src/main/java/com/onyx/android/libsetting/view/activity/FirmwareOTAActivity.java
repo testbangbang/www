@@ -7,11 +7,14 @@ import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.View;
+import android.widget.Toast;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.databinding.ActivityFirmwareOtaBinding;
+import com.onyx.android.libsetting.manager.OTAAdmin;
 import com.onyx.android.libsetting.util.DeviceFeatureUtil;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 
 public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     ActivityFirmwareOtaBinding binding;
@@ -48,7 +51,40 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     private void onCheckOTAFromLocal() {
+        OTAAdmin.sharedInstance().checkLocalFirmware(this,new OTAAdmin.FirmwareCheckCallback() {
+            @Override
+            public void preCheck() {
 
+            }
+
+            @Override
+            public void stateChanged(int state, long finished, long total, long percentage) {
+
+            }
+
+            @Override
+            public void onPostCheck(String targetPath, boolean success) {
+                if (success) {
+                    showLocalUpdateDialog(targetPath);
+                } else {
+                    showToast(R.string.no_update, Toast.LENGTH_SHORT);
+                }
+            }
+        });
+    }
+
+    private void showLocalUpdateDialog(final String path) {
+        final OnyxAlertDialog dlgOtaLocal = new OnyxAlertDialog();
+        dlgOtaLocal.setParams(new OnyxAlertDialog.Params().setAlertMsgString(getString(R.string.find_package_from_local))
+                .setTittleString(getString(R.string.title_update))
+                .setPositiveAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        OTAAdmin.sharedInstance().startFirmwareUpdate(FirmwareOTAActivity.this, path);
+                        dlgOtaLocal.dismiss();
+                    }
+                }));
+        dlgOtaLocal.show(getFragmentManager(), "OTADialog");
     }
 
     public static class OTASettingPreferenceFragment extends PreferenceFragmentCompat {
