@@ -29,6 +29,7 @@ import com.neverland.engbook.util.EngBitmap;
 import com.neverland.engbook.util.TTFInfo;
 import com.neverland.engbook.util.TTFScan;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -155,6 +156,20 @@ public class AlReaderWrapper {
         textStyle = style;
 
         resetScreenState();
+    }
+
+    public void setChineseConvertType(ReaderChineseConvertType convertType) {
+        switch (convertType) {
+            case NONE:
+                bookEng.chineseConvert = AlBookEng.SimplifiedAndTraditionalChineseConvert.NONE;
+                break;
+            case SIMPLIFIED_TO_TRADITIONAL:
+                bookEng.chineseConvert = AlBookEng.SimplifiedAndTraditionalChineseConvert.SIMPLIFIED_TO_TRADITIONAL;
+                break;
+            case TRADITIONAL_TO_SIMPLIFIED:
+                bookEng.chineseConvert = AlBookEng.SimplifiedAndTraditionalChineseConvert.TRADITIONAL_TO_SIMPLIFIED;
+                break;
+        }
     }
 
     private AlEngineOptions createEngineOptions(final Context context, final ReaderPluginOptions pluginOptions) {
