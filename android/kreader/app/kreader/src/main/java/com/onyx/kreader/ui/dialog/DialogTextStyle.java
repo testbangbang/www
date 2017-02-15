@@ -26,6 +26,7 @@ import com.onyx.android.sdk.data.FontInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.ReaderTextStyle.PageMargin;
 import com.onyx.android.sdk.data.ReaderTextStyle.Percentage;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.AlignTextView;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
@@ -33,8 +34,10 @@ import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.OnyxRadioButton;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.KReaderApp;
+import com.onyx.kreader.ui.actions.ChangeChineseConvertTypeAction;
 import com.onyx.kreader.ui.actions.ChangeCodePageAction;
 import com.onyx.kreader.ui.actions.ChangeStyleAction;
 import com.onyx.kreader.ui.actions.GetFontsAction;
@@ -547,7 +550,6 @@ public class DialogTextStyle extends DialogBase {
         spacingViewMap.put(LARGE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_large_line_spacing));
         spacingViewMap.put(DECREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_decrease_line_spacing));
         spacingViewMap.put(INCREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_increase_line_spacing));
-        updateFontSpacingView(spacingViewMap, getReaderStyle());
 
         Map<FontLevel, ImageView> marginViewMap = new HashMap<>();
         marginViewMap.put(SMALL, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_small_page_margins));
@@ -555,8 +557,30 @@ public class DialogTextStyle extends DialogBase {
         marginViewMap.put(LARGE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_large_page_margins));
         marginViewMap.put(DECREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_decrease_page_margins));
         marginViewMap.put(INCREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_increase_page_margins));
+
+        if (LocaleUtils.isChinese()) {
+            fontSpacingViewHolder.getView(R.id.text_view_chinese_convert).setVisibility(View.VISIBLE);
+            fontSpacingViewHolder.getView(R.id.layout_chinese_convert).setVisibility(View.VISIBLE);
+            fontSpacingViewHolder.getView(R.id.button_simplified).requestFocusFromTouch();
+
+            fontSpacingViewHolder.getView(R.id.button_simplified).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new ChangeChineseConvertTypeAction(ReaderChineseConvertType.TRADITIONAL_TO_SIMPLIFIED).execute(readerDataHolder, null);
+                }
+            });
+
+            fontSpacingViewHolder.getView(R.id.button_traditional).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new ChangeChineseConvertTypeAction(ReaderChineseConvertType.SIMPLIFIED_TO_TRADITIONAL).execute(readerDataHolder, null);
+                }
+            });
+        }
+
         updateFontSpacingView(marginViewMap, getReaderStyle());
         updateFontMarginView(marginViewMap, getReaderStyle());
+
         return view;
     }
 
