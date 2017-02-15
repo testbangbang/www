@@ -495,8 +495,8 @@ public class RK3026Device extends BaseDevice {
         return false;
     }
 
-    public void holdDisplay(boolean hold, int ignoreFrame, UpdateMode updateMode) {
-        ReflectUtil.invokeMethodSafely(sMethodHoldDisplay, null, hold, ignoreFrame, sViewRegla);
+    public void holdDisplay(boolean hold,  UpdateMode updateMode, int ignoreFrame) {
+        ReflectUtil.invokeMethodSafely(sMethodHoldDisplay, null, hold, sViewRegla, ignoreFrame);
     }
 
     @Override

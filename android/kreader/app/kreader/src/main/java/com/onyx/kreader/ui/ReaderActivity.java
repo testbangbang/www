@@ -436,7 +436,6 @@ public class ReaderActivity extends ActionBarActivity {
     private void afterDrawPage() {
         ReaderDeviceManager.cleanUpdateMode(surfaceView);
         updateAllStatusBars();
-        releaseDisplayUpdate();
     }
 
     private void updateAllStatusBars() {
@@ -449,13 +448,6 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
         ReaderDeviceManager.holdDisplay(true);
-    }
-
-    private void releaseDisplayUpdate() {
-        if (!getStatusBar().isShown()) {
-            return;
-        }
-        ReaderDeviceManager.holdDisplay(false);
     }
 
     @Subscribe
