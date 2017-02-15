@@ -125,8 +125,8 @@ public abstract class EpdController
         return Device.currentDevice().supportRegal();
     }
 
-    public static void holdDisplay(boolean hold, UpdateMode updateMode) {
-        Device.currentDevice().holdDisplay(hold, updateMode);
+    public static void holdDisplay(boolean hold, int ignoreFrame, UpdateMode updateMode) {
+        Device.currentDevice().holdDisplay(hold, ignoreFrame, updateMode);
     }
 
     public static void setStrokeWidth(float width) {
