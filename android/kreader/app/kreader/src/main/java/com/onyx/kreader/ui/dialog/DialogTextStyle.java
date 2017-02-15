@@ -243,6 +243,8 @@ public class DialogTextStyle extends DialogBase {
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
         ImageView nextIcon = (ImageView) view.findViewById(R.id.next_icon);
 
+        pageView.setPageTurningCycled(true);
+
         nextIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -351,6 +353,8 @@ public class DialogTextStyle extends DialogBase {
         final TextView pageSizeIndicator = (TextView) view.findViewById(R.id.page_size_indicator);
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
         ImageView nextIcon = (ImageView) view.findViewById(R.id.next_icon);
+
+        pageView.setPageTurningCycled(true);
 
         nextIcon.setOnClickListener(new View.OnClickListener() {
             @Override

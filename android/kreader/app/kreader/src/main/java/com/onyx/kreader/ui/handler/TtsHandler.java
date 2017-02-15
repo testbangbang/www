@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.utils.ChineseTextUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderSentence;
@@ -85,7 +86,7 @@ public class TtsHandler extends BaseHandler {
         readerDataHolder.getTtsManager().stop();
         readerDataHolder.getTtsManager().setSpeechRate(rate);
         if (currentSentence != null) {
-            readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
+            readerDataHolder.getTtsManager().supplyText(cleanUpText(currentSentence.getReaderSelection().getText()));
             readerDataHolder.getTtsManager().play();
         }
     }
@@ -163,16 +164,23 @@ public class TtsHandler extends BaseHandler {
                     return;
                 }
                 dumpCurrentSentence();
-                readerDataHolder.getTtsManager().supplyText(currentSentence.getReaderSelection().getText());
+                readerDataHolder.getTtsManager().supplyText(cleanUpText(currentSentence.getReaderSelection().getText()));
                 readerDataHolder.getTtsManager().play();
             }
         });
         return true;
     }
 
+    private String cleanUpText(String text) {
+        if (StringUtils.isBlank(text)) {
+            return "";
+        }
+        return ChineseTextUtils.removeWhiteSpacesBetweenChineseText(text);
+    }
+
     private void dumpCurrentSentence() {
-        Debug.d(TAG, "current sentence: %s, [%s, %s], %b, %b",
-                StringUtils.deleteNewlineSymbol(currentSentence.getReaderSelection().getText()),
+        Debug.e(TAG, "current sentence: %s, [%s, %s], %b, %b",
+                StringUtils.deleteNewlineSymbol(cleanUpText(currentSentence.getReaderSelection().getText())),
                 currentSentence.getReaderSelection().getStartPosition(),
                 currentSentence.getReaderSelection().getEndPosition(),
                 currentSentence.isEndOfScreen(),

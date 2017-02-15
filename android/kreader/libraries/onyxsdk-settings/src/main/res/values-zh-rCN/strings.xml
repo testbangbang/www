@@ -133,5 +133,8 @@
     <string name="ota_auto_summary">自动检查升级</string>
     <string name="model_number_title">设备型号 : </string>
     <string name="firmware_number_title">版本号 : </string>
+    <string name="find_package_from_local">在本地存储中发现升级包，确定升级?</string>
+    <string name="title_update">OTA 升级</string>
+    <string name="no_update">没有升级包.</string>
 
 </resources>
