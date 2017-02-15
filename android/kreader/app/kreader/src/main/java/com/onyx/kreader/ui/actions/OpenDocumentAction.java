@@ -106,6 +106,11 @@ public class OpenDocumentAction extends BaseAction {
         Debug.d("current orientation: " + current + ", target orientation: " + target);
         if (current != target) {
             readerDataHolder.getEventBus().post(new ChangeOrientationEvent(target));
+            if (target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+                // reverse portrait will not trigger onConfigurationChanged() in activity,
+                // so we process as orientation not changed
+                return true;
+            }
             hideLoadingDialog();
             return false;
         }
