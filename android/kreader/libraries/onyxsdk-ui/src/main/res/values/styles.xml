@@ -32,6 +32,7 @@
         <item name="preferenceTheme">@style/OnyxAppCompat.PreferenceTheme</item>
         <item name="alertDialogTheme">@style/OnyxAppCompat.AlertDialog</item>
         <item name="buttonStyle">@style/OnyxAppCompat.ButtonStyle</item>
+        <item name="dialogTheme">@style/OnyxAppCompat.Light.Dialog</item>
     </style>
 
     <style name="OnyxAppCompat.PreferenceFragment.Material" parent="PreferenceFragment.Material">
@@ -45,6 +46,7 @@
     </style>
 
     <style name="OnyxAppCompat.AlertDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_border</item>
         <item name="colorAccent">@android:color/black</item>
         <item name="colorPrimaryDark">@android:color/black</item>
          <item name="colorControlNormal">@android:color/black</item> 
@@ -56,7 +58,7 @@
 
     <style name="OnyxAppCompat.ButtonStyle" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/default_button_background</item>
-        <item name="android:textColor">@color/primary_text_device_default_light</item>
+        <item name="android:textAppearance">@style/OnyxAppCompat.TextAppearance.Light.Medium</item>
     </style>
 
     <style name="OnyxAppCompat.TextAppearance.Light" parent="TextAppearance.AppCompat">
@@ -145,6 +147,10 @@
 
     <style name="OnyxAppCompat.TextAppearance.AppCompat.Title" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="OnyxAppCompat.Light.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_border</item>
     </style>
 
     <!---->

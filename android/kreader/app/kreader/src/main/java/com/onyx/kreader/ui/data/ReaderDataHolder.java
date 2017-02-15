@@ -9,6 +9,9 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.model.DocumentInfo;
+import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
@@ -480,6 +483,10 @@ public class ReaderDataHolder {
         activeDialogs.clear();
     }
 
+    public boolean isAnyActiveDialog() {
+        return activeDialogs.size() > 0;
+    }
+
     public void destroy(final BaseCallback callback) {
         unregisterReceiver();
         closeActiveDialogs();
@@ -550,7 +557,13 @@ public class ReaderDataHolder {
         prepareEventReceiver();
         registerDeviceReceiver();
         documentOpenState = DocumentOpenState.OPENED;
-        getEventBus().post(new DocumentOpenEvent(getContext(), documentPath, getReader().getDocumentMd5()));
+        ReaderDocumentMetadata metadata = getReader().getDocumentMetadataSafely();
+        DocumentInfo documentInfo = DocumentInfo.create(metadata.getAuthors(),
+                getReader().getDocumentMd5(),
+                getBookName(),
+                documentPath,
+                metadata.getTitle());
+        getEventBus().post(new DocumentOpenEvent(getContext(), documentInfo));
     }
 
     public void onDocumentClosed() {
@@ -586,6 +599,11 @@ public class ReaderDataHolder {
 
     public void onDictionaryLookup(final String text) {
         final DictionaryLookupEvent event = DictionaryLookupEvent.create(getContext(), text);
+        getEventBus().post(event);
+    }
+
+    public void onNetworkChanged(boolean connected, int networkType) {
+        final NetworkChangedEvent event = NetworkChangedEvent.create(getContext(), connected, networkType);
         getEventBus().post(event);
     }
 }

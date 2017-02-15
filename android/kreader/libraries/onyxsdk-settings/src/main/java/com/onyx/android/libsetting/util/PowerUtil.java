@@ -36,7 +36,7 @@ public class PowerUtil {
             if (ms == -1) {
                 entriesArray[i] = (context.getString(R.string.never_sleep));
             } else {
-                entriesArray[i] = CommonUtil.msToMinuteStringWithUnit(context, ms);
+                entriesArray[i] = CommonUtil.msToTimeStringWithUnit(context, ms);
             }
 
         }

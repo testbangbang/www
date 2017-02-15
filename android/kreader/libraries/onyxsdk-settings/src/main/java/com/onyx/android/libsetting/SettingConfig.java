@@ -95,6 +95,8 @@ public class SettingConfig {
      * <p>
      * model json:contain all custom properties which only effect on this model.(Do not copy the common properties to the json file!).
      * manufacture based json:contain all default properties which will be different by manufacture.
+     *                       (Special case:imx6 platform has 2 different sdk version(ics and kitkat),
+     *                       all imx6 special items should implement both json.
      * non manufacture based json:contain all default properties which are not depend on manufacture.
      *
      * @param context
@@ -143,7 +145,8 @@ public class SettingConfig {
         String name = "";
         switch (currentDeviceType) {
             case DeviceType.IMX6:
-                name = Constant.IMX6_BASED_CONFIG_NAME;
+                name = CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT)?Constant.IMX6_KIT_KAT_BASED_CONFIG_NAME:
+                        Constant.IMX6_ICS_BASED_CONFIG_NAME;
                 break;
             case DeviceType.RK:
                 name = Constant.RK3026_BASED_CONFIG_NAME;

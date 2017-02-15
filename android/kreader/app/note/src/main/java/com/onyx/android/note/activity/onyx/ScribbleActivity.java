@@ -50,6 +50,7 @@ import com.onyx.android.note.view.LinedEditText;
 import com.onyx.android.note.view.ScribbleSubMenu;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
@@ -89,6 +90,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private SpanTextHandler spanTextHandler;
     private boolean isKeyboardInput = false;
     private boolean buildingSpan = false;
+    private WakeLockHolder wakeLockHolder = new WakeLockHolder();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +104,14 @@ public class ScribbleActivity extends BaseScribbleActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        wakeLockHolder.acquireWakeLock(this, TAG);
         DeviceUtils.setFullScreenOnResume(this, true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        wakeLockHolder.releaseWakeLock();
     }
 
     private void initToolbarButtons() {

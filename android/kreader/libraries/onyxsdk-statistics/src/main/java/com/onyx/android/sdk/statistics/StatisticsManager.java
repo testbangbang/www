@@ -2,6 +2,8 @@ package com.onyx.android.sdk.statistics;
 
 import android.content.Context;
 
+import com.onyx.android.sdk.data.model.DocumentInfo;
+
 import java.util.Map;
 
 /**
@@ -10,10 +12,26 @@ import java.util.Map;
 
 public class StatisticsManager {
 
-    private StatisticsBase impl = new UMeng();
+    private StatisticsBase impl;
 
+    public enum StatisticsType {
+        UMeng,
+        Onyx,
+    }
 
-    public boolean init(final Context context, final Map<String, String> args) {
+    public void setImpl(StatisticsBase impl) {
+        this.impl = impl;
+    }
+
+    public boolean init(final Context context, final Map<String, String> args, final StatisticsType type) {
+        switch (type) {
+            case UMeng:
+                setImpl(new UMeng());
+                break;
+            case Onyx:
+                setImpl(new OnyxStatistics());
+                break;
+        }
         return getImpl().init(context, args);
     }
 
@@ -25,11 +43,15 @@ public class StatisticsManager {
         getImpl().onActivityPause(context);
     }
 
-    public void onDocumentOpenedEvent(final Context context, final String path, final String md5) {
-        getImpl().onDocumentOpenedEvent(context, path, md5);
+    public void onDocumentOpenedEvent(final Context context, final DocumentInfo documentInfo) {
+        getImpl().onDocumentOpenedEvent(context, documentInfo);
     }
 
-    public void onPageChangedEvent(final Context context, final String last, final String current, int duration) {
+    public void onDocumentClosed(final Context context) {
+        getImpl().onDocumentClosed(context);
+    }
+
+    public void onPageChangedEvent(final Context context, final String last, final String current, long duration) {
         getImpl().onPageChangedEvent(context, last, current, duration);
     }
 
@@ -45,8 +67,11 @@ public class StatisticsManager {
         getImpl().onDictionaryLookupEvent(context, originText);
     }
 
+    public void onNetworkChangedEvent(final Context context, boolean connected, int networkType) {
+        getImpl().onNetworkChanged(context, connected, networkType);
+    }
+
     private StatisticsBase getImpl() {
         return impl;
     }
-
 }

@@ -29,6 +29,7 @@ import com.neverland.engbook.util.EngBitmap;
 import com.neverland.engbook.util.TTFInfo;
 import com.neverland.engbook.util.TTFScan;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
@@ -254,7 +255,7 @@ public class AlReaderWrapper {
 
     public String getScreenText() {
         AlTextOnScreen screenText = getTextOnScreen();
-        if (!checkTextOnScreen(screenText)) {
+        if (!checkScreenText(screenText)) {
             return null;
         }
         return combineSelectionText(screenText, 0, screenText.regionList.size() - 1);
@@ -266,7 +267,7 @@ public class AlReaderWrapper {
             return null;
         }
         AlTextOnScreen screenText = getTextOnScreen();
-        if (!checkTextOnScreen(screenText)) {
+        if (!checkScreenText(screenText)) {
             return null;
         }
         final int MAX_SENTENCE_LENGTH = 200;
@@ -316,7 +317,7 @@ public class AlReaderWrapper {
         List<ReaderSelection> result = new ArrayList<>();
 
         AlTextOnScreen screenText = getTextOnScreen();
-        if (!checkTextOnScreen(screenText)) {
+        if (!checkScreenText(screenText)) {
             return result;
         }
         for (AlTextOnScreen.AlPieceOfLink link : screenText.linkList) {
@@ -332,6 +333,29 @@ public class AlReaderWrapper {
             selection.setEndPosition(PagePositionUtils.fromPosition(link.pos));
             selection.setDisplayRects(Arrays.asList(new RectF[]{ createRect(link.rect) }));
             result.add(selection);
+        }
+        return result;
+    }
+
+    public List<ReaderImage> getPageImages() {
+        List<ReaderImage> result = new ArrayList<>();
+        AlTextOnScreen screenText = getTextOnScreen();
+        if (!checkScreenImage(screenText)) {
+            return result;
+        }
+        for (final AlTextOnScreen.AlPieceOfImage image : screenText.imageList) {
+            result.add(new ReaderImage() {
+                @Override
+                public RectF getRectangle() {
+                    return new RectF(image.rect.x0, image.rect.y0,
+                            image.rect.x1, image.rect.y1);
+                }
+
+                @Override
+                public Bitmap getBitmap() {
+                    return image.bitmap.bmp;
+                }
+            });
         }
         return result;
     }
@@ -518,7 +542,7 @@ public class AlReaderWrapper {
 
     public ReaderSelection selectTextOnScreen(PointF start, PointF end) {
         AlTextOnScreen screenText = getTextOnScreen();
-        if (!checkTextOnScreen(screenText)) {
+        if (!checkScreenText(screenText)) {
             return null;
         }
 
@@ -535,7 +559,7 @@ public class AlReaderWrapper {
 
     public ReaderSelection selectWordOnScreen(PointF point, final ReaderTextSplitter splitter) {
         AlTextOnScreen screenText = getTextOnScreen();
-        if (!checkTextOnScreen(screenText)) {
+        if (!checkScreenText(screenText)) {
             return null;
         }
         int pos = hitTest((int)point.x, (int)point.y);
@@ -641,7 +665,7 @@ public class AlReaderWrapper {
 
     public ReaderSelection selectTextOnScreen(int startPos, int endPos) {
         AlTextOnScreen screenText = getTextOnScreen();
-        if (!checkTextOnScreen(screenText)) {
+        if (!checkScreenText(screenText)) {
             return null;
         }
 
@@ -663,8 +687,12 @@ public class AlReaderWrapper {
         return screenText;
     }
 
-    private boolean checkTextOnScreen(AlTextOnScreen textOnScreen) {
+    private boolean checkScreenText(AlTextOnScreen textOnScreen) {
         return textOnScreen != null && textOnScreen.regionList.size() > 0;
+    }
+
+    private boolean checkScreenImage(AlTextOnScreen textOnScreen) {
+        return textOnScreen != null && textOnScreen.imageList != null;
     }
 
     private int hitTest(int x, int y) {

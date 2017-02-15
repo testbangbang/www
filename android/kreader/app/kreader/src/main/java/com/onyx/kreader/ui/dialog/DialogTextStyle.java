@@ -66,7 +66,9 @@ public class DialogTextStyle extends DialogBase {
     }
 
     public interface TextStyleCallback {
-        void onSaveReaderStyle(ReaderTextStyle readerTextStyle);
+        void onSaveReaderStyle(final DialogTextStyle dialog, ReaderTextStyle readerTextStyle);
+
+        void onCancel(final DialogTextStyle dialog);
     }
 
     private static Pair<Integer, Integer>[] CODE_PAGES = new Pair[] {
@@ -179,7 +181,7 @@ public class DialogTextStyle extends DialogBase {
             public void onClick(View v) {
                 dismiss();
                 if (callback != null) {
-                    callback.onSaveReaderStyle(getReaderStyle());
+                    callback.onSaveReaderStyle(DialogTextStyle.this, getReaderStyle());
                 }
             }
         });
@@ -187,6 +189,9 @@ public class DialogTextStyle extends DialogBase {
             @Override
             public void onClick(View v) {
                 restoreAndDismiss();
+                if (callback != null) {
+                    callback.onCancel(DialogTextStyle.this);
+                }
             }
         });
 
@@ -237,6 +242,8 @@ public class DialogTextStyle extends DialogBase {
         final TextView pageSizeIndicator = (TextView) view.findViewById(R.id.page_size_indicator);
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
         ImageView nextIcon = (ImageView) view.findViewById(R.id.next_icon);
+
+        pageView.setPageTurningCycled(true);
 
         nextIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -346,6 +353,8 @@ public class DialogTextStyle extends DialogBase {
         final TextView pageSizeIndicator = (TextView) view.findViewById(R.id.page_size_indicator);
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
         ImageView nextIcon = (ImageView) view.findViewById(R.id.next_icon);
+
+        pageView.setPageTurningCycled(true);
 
         nextIcon.setOnClickListener(new View.OnClickListener() {
             @Override

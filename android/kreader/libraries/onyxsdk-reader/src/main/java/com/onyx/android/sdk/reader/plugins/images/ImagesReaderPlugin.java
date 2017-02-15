@@ -17,6 +17,7 @@ import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestOptions;
+import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.api.ReaderPlugin;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
@@ -230,6 +231,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
      * @return
      */
     public List<ReaderSelection> getLinks(final String position) {
+        return null;
+    }
+
+    @Override
+    public List<ReaderImage> getImages(String position) {
         return null;
     }
 

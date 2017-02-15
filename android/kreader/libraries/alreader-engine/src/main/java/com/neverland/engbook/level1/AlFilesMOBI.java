@@ -620,7 +620,7 @@ public class AlFilesMOBI extends AlFilesPDB {
             }
         }
 
-        if (m.label.trim().isEmpty())
+        if (m.label == null || m.label.trim().isEmpty())
             m.label = "* * *";
 
         m.pos = getTagValue(indNCX.entries.get(i), 1, 0) + MOBI_LINK_SHIFT;

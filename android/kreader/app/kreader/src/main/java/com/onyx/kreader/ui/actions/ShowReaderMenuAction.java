@@ -520,12 +520,16 @@ public class ShowReaderMenuAction extends BaseAction {
         return true;
     }
 
-    private void showTextStyleDialog(ReaderDataHolder readerDataHolder) {
+    private void showTextStyleDialog(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         final Dialog dialog = new DialogTextStyle(readerDataHolder, new DialogTextStyle.TextStyleCallback() {
             @Override
-            public void onSaveReaderStyle(ReaderTextStyle readerStyle) {
+            public void onSaveReaderStyle(final DialogTextStyle dialogTextStyle, ReaderTextStyle readerStyle) {
+                readerDataHolder.removeActiveDialog(dialogTextStyle);
+            }
 
+            public void onCancel(final DialogTextStyle dialogTextStyle) {
+                readerDataHolder.removeActiveDialog(dialogTextStyle);
             }
         });
         dialog.show();

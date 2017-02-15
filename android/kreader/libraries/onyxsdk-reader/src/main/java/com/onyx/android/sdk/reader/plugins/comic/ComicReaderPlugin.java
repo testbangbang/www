@@ -408,6 +408,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return null;
     }
 
+    @Override
+    public List<ReaderImage> getImages(String position) {
+        return null;
+    }
+
     /**
      * Return the plugin display name.
      *

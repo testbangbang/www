@@ -34,4 +34,7 @@ public class EpdDevice {
     public void refreshScreen(View view, UpdateMode updateMode) {
         EpdController.refreshScreenRegion(view, 0, 0, 1000, 1000, updateMode);
     }
+
+    public void holdDisplay(boolean hold, UpdateMode updateMode) {
+    }
 }

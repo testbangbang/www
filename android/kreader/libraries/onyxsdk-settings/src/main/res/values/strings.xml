@@ -111,6 +111,14 @@
         <item quantity="one">%1$d Minute</item>
         <item quantity="other">%1$d Minutes</item>
     </plurals>
+    <plurals name="hour">
+        <item quantity="one">%1$d Hour</item>
+        <item quantity="other">%1$d Hours</item>
+    </plurals>
+    <plurals name="day">
+        <item quantity="one">%1$d Day</item>
+        <item quantity="other">%1$d Days</item>
+    </plurals>
     <string name="never_sleep">Never</string>
     <string name="sleep_summary">After %1$s of inactivity</string>
     <string name="power_off_timeout_summary">Adjust the delay before the power off automatically</string>
@@ -191,6 +199,9 @@
     <string name="ota_auto_summary">Check for updates automatically</string>
     <string name="model_number_title">Model number : </string>
     <string name="firmware_number_title">Build number : </string>
+    <string name="find_package_from_local">New update package found, do you want to update?</string>
+    <string name="title_update">OTA update</string>
+    <string name="no_update">No update package available.</string>
 
 </resources>
 

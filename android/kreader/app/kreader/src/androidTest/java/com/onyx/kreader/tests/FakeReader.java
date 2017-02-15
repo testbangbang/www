@@ -254,6 +254,11 @@ public class FakeReader implements ReaderDocument,
     }
 
     @Override
+    public List<ReaderImage> getImages(String position) {
+        return null;
+    }
+
+    @Override
     public ReaderTextStyle getStyle() {
         return null;
     }

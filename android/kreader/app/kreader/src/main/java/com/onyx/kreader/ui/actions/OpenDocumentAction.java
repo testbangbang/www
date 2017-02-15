@@ -46,13 +46,38 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
+        if (!readerDataHolder.isDocumentOpened()) {
+            openDocumentImpl(readerDataHolder, callback);
+            return;
+        }
+
+        readerDataHolder.destroy(new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    showErrorDialog(readerDataHolder);
+                    return;
+                }
+                openDocumentImpl(readerDataHolder, callback);
+            }
+        });
+    }
+
+    private void openDocumentImpl(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerDataHolder.initReaderFromPath(documentPath);
         readerDataHolder.getEventBus().post(new BeforeDocumentOpenEvent(documentPath));
-        showLoadingDialog(readerDataHolder, R.string.loading_document, new DialogLoading.Callback() {
+
+        //LoadingDialog shows only after the decorview is drawn,preventing the dialog from swinging.
+        activity.getWindow().getDecorView().post(new Runnable() {
             @Override
-            public void onCanceled() {
-                canceled = true;
-                cleanup(readerDataHolder);
+            public void run() {
+                showLoadingDialog(readerDataHolder, R.string.loading_document, new DialogLoading.Callback() {
+                    @Override
+                    public void onCanceled() {
+                        canceled = true;
+                        cleanup(readerDataHolder);
+                    }
+                });
             }
         });
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
@@ -81,6 +106,11 @@ public class OpenDocumentAction extends BaseAction {
         Debug.d("current orientation: " + current + ", target orientation: " + target);
         if (current != target) {
             readerDataHolder.getEventBus().post(new ChangeOrientationEvent(target));
+            if (target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+                // reverse portrait will not trigger onConfigurationChanged() in activity,
+                // so we process as orientation not changed
+                return true;
+            }
             hideLoadingDialog();
             return false;
         }
