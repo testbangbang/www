@@ -177,12 +177,12 @@ public class PageManager {
     }
 
     private void setScaleImpl(final String pagePosition, final float scale) {
-        if (scale < 0) {
-            return;
-        }
+        // even scale is invalid, we need to update page position to maintain visible page data
         firstVisiblePagePosition = pagePosition;
-        actualScale = scale;
-        onScaleChanged();
+        if (scale > 0) {
+            actualScale = scale;
+            onScaleChanged();
+        }
         gotoPageImpl(getPageInfo(pagePosition));
     }
 
