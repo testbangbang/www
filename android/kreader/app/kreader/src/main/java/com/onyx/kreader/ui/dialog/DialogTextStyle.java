@@ -13,8 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +36,7 @@ import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.OnyxRadioButton;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.ui.view.RadioButtonCenter;
 import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.KReaderApp;
@@ -119,6 +122,7 @@ public class DialogTextStyle extends DialogBase {
 
     private ReaderTextStyle originalStyle;
     private int originalCodePage;
+    private ReaderChineseConvertType originalChineseConvertType = ReaderChineseConvertType.NONE;
 
     private PinchZoomingPopupMenu pinchZoomingPopupMenu;
     private Handler handler;
@@ -132,6 +136,7 @@ public class DialogTextStyle extends DialogBase {
         this.callback = callback;
         this.originalStyle = ReaderTextStyle.copy(readerDataHolder.getReaderViewInfo().getReaderTextStyle());
         this.originalCodePage = readerDataHolder.getReaderUserDataInfo().getDocumentCodePage();
+        this.originalChineseConvertType = readerDataHolder.getReaderUserDataInfo().getChineseConvertType();
         setContentView(R.layout.dialog_text_style_view);
         init();
     }
@@ -227,6 +232,9 @@ public class DialogTextStyle extends DialogBase {
     private void restoreAndDismiss() {
         if (originalCodePage != CODE_PAGES[selectCodePageIndex].first) {
             new ChangeCodePageAction(originalCodePage).execute(readerDataHolder, null);
+        }
+        if (originalChineseConvertType != readerDataHolder.getReaderUserDataInfo().getChineseConvertType()) {
+            new ChangeChineseConvertTypeAction(originalChineseConvertType).execute(readerDataHolder, null);
         }
         updateReaderStyle(originalStyle, new BaseCallback() {
             @Override
@@ -542,7 +550,7 @@ public class DialogTextStyle extends DialogBase {
 
     private View initPageSpacingView() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_text_style_sub_font_spacing_view, null, false);
-        CommonViewHolder fontSpacingViewHolder = new CommonViewHolder(view);
+        final CommonViewHolder fontSpacingViewHolder = new CommonViewHolder(view);
 
         Map<FontLevel, ImageView> spacingViewMap = new HashMap<>();
         spacingViewMap.put(SMALL, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_small_line_spacing));
@@ -561,11 +569,17 @@ public class DialogTextStyle extends DialogBase {
         if (LocaleUtils.isChinese()) {
             fontSpacingViewHolder.getView(R.id.text_view_chinese_convert).setVisibility(View.VISIBLE);
             fontSpacingViewHolder.getView(R.id.layout_chinese_convert).setVisibility(View.VISIBLE);
-            fontSpacingViewHolder.getView(R.id.button_simplified).requestFocusFromTouch();
+
+            if (originalChineseConvertType == ReaderChineseConvertType.TRADITIONAL_TO_SIMPLIFIED) {
+                ((RadioButton) fontSpacingViewHolder.getView(R.id.button_simplified)).setChecked(true);
+            } else if (originalChineseConvertType == ReaderChineseConvertType.SIMPLIFIED_TO_TRADITIONAL) {
+                ((RadioButton) fontSpacingViewHolder.getView(R.id.button_traditional)).setChecked(true);
+            }
 
             fontSpacingViewHolder.getView(R.id.button_simplified).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ((RadioButton)fontSpacingViewHolder.getView(R.id.button_simplified)).setChecked(true);
                     new ChangeChineseConvertTypeAction(ReaderChineseConvertType.TRADITIONAL_TO_SIMPLIFIED).execute(readerDataHolder, null);
                 }
             });
@@ -573,6 +587,7 @@ public class DialogTextStyle extends DialogBase {
             fontSpacingViewHolder.getView(R.id.button_traditional).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ((RadioButton)fontSpacingViewHolder.getView(R.id.button_traditional)).setChecked(true);
                     new ChangeChineseConvertTypeAction(ReaderChineseConvertType.SIMPLIFIED_TO_TRADITIONAL).execute(readerDataHolder, null);
                 }
             });
