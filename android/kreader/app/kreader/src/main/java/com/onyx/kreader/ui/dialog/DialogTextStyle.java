@@ -558,6 +558,7 @@ public class DialogTextStyle extends DialogBase {
         spacingViewMap.put(LARGE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_large_line_spacing));
         spacingViewMap.put(DECREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_decrease_line_spacing));
         spacingViewMap.put(INCREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_increase_line_spacing));
+        updateFontSpacingView(spacingViewMap, getReaderStyle());
 
         Map<FontLevel, ImageView> marginViewMap = new HashMap<>();
         marginViewMap.put(SMALL, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_small_page_margins));
@@ -565,6 +566,7 @@ public class DialogTextStyle extends DialogBase {
         marginViewMap.put(LARGE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_large_page_margins));
         marginViewMap.put(DECREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_decrease_page_margins));
         marginViewMap.put(INCREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_increase_page_margins));
+        updateFontMarginView(marginViewMap, getReaderStyle());
 
         if (LocaleUtils.isChinese()) {
             fontSpacingViewHolder.getView(R.id.text_view_chinese_convert).setVisibility(View.VISIBLE);
@@ -593,8 +595,6 @@ public class DialogTextStyle extends DialogBase {
             });
         }
 
-        updateFontSpacingView(marginViewMap, getReaderStyle());
-        updateFontMarginView(marginViewMap, getReaderStyle());
 
         return view;
     }
