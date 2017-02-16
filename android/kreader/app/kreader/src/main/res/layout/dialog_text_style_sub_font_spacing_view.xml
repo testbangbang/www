@@ -22,6 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_toRightOf="@id/text_view_spacing_title"
             android:orientation="horizontal" android:layout_gravity="center">
             <ImageView android:id="@+id/image_view_small_line_spacing"
@@ -65,7 +67,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/layout_line_spacing"
             android:layout_toRightOf="@id/text_view_margin_title"
-            android:orientation="horizontal" android:layout_gravity="center">
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
             <ImageView android:id="@+id/image_view_small_page_margins"
                        android:layout_width="wrap_content" android:layout_height="wrap_content"
                        style="@style/fontStyle_imageView_style"
@@ -106,7 +111,7 @@
         android:id="@+id/layout_chinese_convert"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_below="@id/layout_page_margin"
@@ -126,7 +131,7 @@
                 android:gravity="center"
                 android:background="@drawable/all_line_check_bg"
                 android:textColor="@drawable/checkbox_as_button_text_selector"
-                android:textSize="@dimen/dialog_common_text_size"
+                android:textSize="@dimen/dialog_text_style_chinese_convert_font_size"
                 android:text="简体" />
 
             <RadioButton
@@ -139,7 +144,7 @@
                 android:gravity="center"
                 android:background="@drawable/checkbox_as_button_bg"
                 android:textColor="@drawable/checkbox_as_button_text_selector"
-                android:textSize="@dimen/dialog_common_text_size"
+                android:textSize="@dimen/dialog_text_style_chinese_convert_font_size"
                 android:text="繁体"/>
 
         </RadioGroup>
