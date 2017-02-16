@@ -9,12 +9,10 @@ import com.onyx.android.sdk.reader.host.wrapper.Reader;
 public class ChangeViewConfigRequest extends BaseReaderRequest {
 
     private int newWidth, newHeight;
-    private String position;
 
-    public ChangeViewConfigRequest(int nw, int nh, final String position) {
+    public ChangeViewConfigRequest(int nw, int nh) {
         newWidth = nw;
         newHeight = nh;
-        this.position = position;
     }
 
     public void execute(final Reader reader) throws Exception {
