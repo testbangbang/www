@@ -79,6 +79,10 @@ public class UMeng implements StatisticsBase {
         MobclickAgent.onEvent(context, "pageChange", map);
     }
 
+    public void onDocumentFinished(final Context context, final String comment, final int score) {
+
+    }
+
     public void onTextSelectedEvent(final Context context, final String text) {
         if (context == null) {
             return;

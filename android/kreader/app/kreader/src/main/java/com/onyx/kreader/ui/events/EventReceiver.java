@@ -117,4 +117,12 @@ public class EventReceiver {
         }
         statisticsManager.onNetworkChangedEvent(event.getContext(), event.isConnected(), event.getNetworkType());
     }
+
+    @Subscribe
+    public void onDocumentCFinished(final DocumentFinishEvent event) {
+        if (!isEnable()) {
+            return;
+        }
+        statisticsManager.onDocumentFinished(event.getContext(), event.getComment(), event.getScore());
+    }
 }

@@ -327,6 +327,9 @@ public class PageRecyclerView extends RecyclerView {
 
     public void notifyDataSetChanged() {
         PageAdapter pageAdapter = getPageAdapter();
+        if (pageAdapter == null) {
+            return;
+        }
         int gotoPage = paginator.getCurrentPage() == -1 ? 0 : paginator.getCurrentPage();
         resize(pageAdapter.getRowCount(), pageAdapter.getColumnCount(), getPageAdapter().getDataCount());
         if (gotoPage > getPaginator().lastPage()) {

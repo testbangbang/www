@@ -19,6 +19,7 @@ public abstract class BaseStatisticsModel extends BaseModel {
     public static final int DATA_TYPE_LOOKUP_DIC = 3;
     public static final int DATA_TYPE_TEXT_SELECTED = 4;
     public static final int DATA_TYPE_CLOSE = 5;
+    public static final int DATA_TYPE_FINISH = 6;
 
     public static final int DATA_STATUS_NOT_PUSH = 0;
     public static final int DATA_STATUS_PUSHED = 1;
