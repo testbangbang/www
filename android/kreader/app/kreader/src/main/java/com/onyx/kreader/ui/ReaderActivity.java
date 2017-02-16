@@ -34,7 +34,6 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
@@ -45,7 +44,6 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
-import com.onyx.kreader.device.EpdDevice;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
@@ -442,7 +440,6 @@ public class ReaderActivity extends ActionBarActivity {
     private void afterDrawPage() {
         ReaderDeviceManager.cleanUpdateMode(surfaceView);
         updateAllStatusBars();
-        afterMergeDisplayUpdate();
     }
 
     private void updateAllStatusBars() {
@@ -450,18 +447,11 @@ public class ReaderActivity extends ActionBarActivity {
         getReaderDataHolder().notifyUpdateSlideshowStatusBar();
     }
 
-    private void beforeMergeDisplayUpdate() {
+    private void holdDisplayUpdate() {
         if (!getStatusBar().isShown()) {
             return;
         }
         ReaderDeviceManager.holdDisplay(true);
-    }
-
-    private void afterMergeDisplayUpdate() {
-        if (!getStatusBar().isShown()) {
-            return;
-        }
-        ReaderDeviceManager.holdDisplay(false);
     }
 
     @Subscribe
@@ -482,7 +472,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void beforeDrawPage() {
-        beforeMergeDisplayUpdate();
+        holdDisplayUpdate();
         enablePost(true);
     }
 

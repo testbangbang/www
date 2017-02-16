@@ -142,7 +142,7 @@ public class ReaderDeviceManager {
 
     public static void holdDisplay(boolean hold) {
         if (enableHoldDisplay) {
-            epdDevice.holdDisplay(hold, UpdateMode.REGAL);
+            epdDevice.holdDisplay(hold, UpdateMode.REGAL, 1);
         }
     }
 
