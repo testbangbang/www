@@ -23,9 +23,7 @@ public class DeviceUtils {
 
     public static void setFullScreenOnResume(Activity activity, boolean fullScreen) {
         if (Build.VERSION.SDK_INT >= 19) {
-            if (fullScreen) {
-                setFullScreenForAPIAbove19(activity);
-            }
+            adjustFullScreenStatusForAPIAbove19(activity,fullScreen);
             return;
         }
 
@@ -38,11 +36,21 @@ public class DeviceUtils {
         activity.sendBroadcast(intent);
     }
 
-    public static void setFullScreenForAPIAbove19(final Activity activity) {
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    static void adjustFullScreenStatusForAPIAbove19(final Activity activity, boolean fullScreen) {
+        int clearFlag, targetFlag, uiOption;
+        if (fullScreen) {
+            clearFlag = WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
+            targetFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            uiOption = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        } else {
+            clearFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            targetFlag = WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
+            uiOption = View.SYSTEM_UI_FLAG_VISIBLE;
+        }
+        activity.getWindow().clearFlags(clearFlag);
+        activity.getWindow().setFlags(targetFlag, targetFlag);
         View decorView = activity.getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
+        decorView.setSystemUiVisibility(uiOption);
     }
 
     public static void setFullScreenOnCreate(final Activity activity, boolean fullScreen) {
