@@ -103,9 +103,9 @@
         android:layout_alignTop="@+id/layout_chinese_convert"
         android:layout_alignBottom="@+id/layout_chinese_convert"
         android:gravity="center"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:textStyle="bold"
-        android:text="简  繁"/>
+        android:text="简　繁"/>
 
     <RadioGroup
         android:id="@+id/layout_chinese_convert"
@@ -118,7 +118,7 @@
         android:layout_alignLeft="@id/layout_page_margin"
         android:layout_alignRight="@id/layout_page_margin"
         android:orientation="horizontal"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:focusable="false">
 
             <RadioButton
