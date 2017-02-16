@@ -88,51 +88,60 @@
                        android:src="@drawable/ic_dialog_reader_menu_font_margin_expand"/>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_view_chinese_convert"
-            android:textSize="@dimen/dialog_common_text_size"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignTop="@+id/layout_chinese_convert"
-            android:layout_alignBottom="@+id/layout_chinese_convert"
-            android:gravity="center"
-            android:layout_margin="5dp"
-            android:visibility="invisible"
-            android:text="简  繁"/>
+    <TextView
+        android:id="@+id/text_view_chinese_convert"
+        android:textSize="@dimen/dialog_common_text_size"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/layout_chinese_convert"
+        android:layout_alignBottom="@+id/layout_chinese_convert"
+        android:gravity="center"
+        android:visibility="visible"
+        android:textStyle="bold"
+        android:text="简  繁"/>
 
-        <LinearLayout
-            android:id="@+id/layout_chinese_convert"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_below="@id/layout_page_margin"
-            android:layout_alignLeft="@id/layout_page_margin"
-            android:layout_alignRight="@id/layout_page_margin"
-            android:visibility="invisible">
+    <RadioGroup
+        android:id="@+id/layout_chinese_convert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@id/layout_page_margin"
+        android:layout_alignLeft="@id/layout_page_margin"
+        android:layout_alignRight="@id/layout_page_margin"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        android:focusable="false">
 
-            <Button
+            <RadioButton
                 android:id="@+id/button_simplified"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/square_bg"
+                android:button="@null"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:background="@drawable/all_line_check_bg"
+                android:textColor="@drawable/checkbox_as_button_text_selector"
+                android:textSize="@dimen/dialog_common_text_size"
                 android:text="简体" />
 
-            <Button
+            <RadioButton
                 android:id="@+id/button_traditional"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/square_bg"
+                android:button="@null"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:background="@drawable/checkbox_as_button_bg"
+                android:textColor="@drawable/checkbox_as_button_text_selector"
+                android:textSize="@dimen/dialog_common_text_size"
                 android:text="繁体"/>
 
-        </LinearLayout>
+        </RadioGroup>
 
 </RelativeLayout>

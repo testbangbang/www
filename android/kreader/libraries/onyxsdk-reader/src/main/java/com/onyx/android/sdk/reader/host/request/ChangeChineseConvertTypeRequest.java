@@ -16,6 +16,8 @@ public class ChangeChineseConvertTypeRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        reader.getDocumentOptions().setChineseConvertType(convertType);
+        saveReaderOptions(reader);
         reader.getRenderer().setChineseConvertType(convertType);
         reader.getBitmapCache().clear();
         drawVisiblePages(reader);

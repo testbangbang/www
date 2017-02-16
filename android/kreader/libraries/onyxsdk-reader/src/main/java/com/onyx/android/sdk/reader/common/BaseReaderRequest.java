@@ -191,6 +191,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private void loadUserData(final Reader reader) {
         getReaderUserDataInfo().setDocumentPath(reader.getDocumentPath());
         getReaderUserDataInfo().setDocumentCodePage(reader.getDocumentOptions().getCodePage());
+        getReaderUserDataInfo().setChineseConvertType(reader.getDocumentOptions().getChineseConvertType());
         getReaderUserDataInfo().setDocumentMetadata(reader.getDocumentMetadata());
         if (readerViewInfo != null && loadPageAnnotation) {
             getReaderUserDataInfo().loadPageAnnotations(getContext(), reader, readerViewInfo.getVisiblePages());
