@@ -371,7 +371,7 @@ public class AlReaderWrapper {
 
                 @Override
                 public Bitmap getBitmap() {
-                    return image.bitmap.bmp;
+                    return image.bitmap;
                 }
             });
         }

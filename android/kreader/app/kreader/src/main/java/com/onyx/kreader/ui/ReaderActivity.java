@@ -35,6 +35,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -297,6 +298,9 @@ public class ReaderActivity extends ActionBarActivity {
                 clearCanvas(holder);
                 if (!getReaderDataHolder().isDocumentOpened()) {
                     getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
+                    return;
+                }
+                if (!getReaderDataHolder().isDocumentInitRendered()) {
                     return;
                 }
                 if (surfaceView.getWidth() == getReaderDataHolder().getDisplayWidth() &&
@@ -685,7 +689,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void onSurfaceViewSizeChanged() {
-        if (!getReaderDataHolder().isDocumentOpened()) {
+        if (!getReaderDataHolder().isDocumentInitRendered()) {
             return;
         }
         updateNoteHostView();
