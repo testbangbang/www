@@ -225,9 +225,9 @@ public class ReadRecordFragment extends StatisticsFragment {
 
                 setDashLineVisibility(viewHolder, position, count, cols);
                 String title = "";
-                int value = 0;
+                double value = 0;
                 if (statisticsResult != null && statisticsResult.getBookTypeAgg() != null ) {
-                    LinkedMap<String, Integer> bookTypeAgg = statisticsResult.getBookTypeAgg();
+                    LinkedMap<String, Double> bookTypeAgg = statisticsResult.getBookTypeAgg();
                     if (position < bookTypeAgg.size()) {
                         String typeId = bookTypeAgg.get(position);
                         if (categoryMap != null) {
@@ -235,7 +235,7 @@ public class ReadRecordFragment extends StatisticsFragment {
                             title = BookCategoryUtils.getCategoryName(getContext(), category);
                             hasCategorys.add(category);
                         }
-                        value = bookTypeAgg.getValue(position);
+                        value = bookTypeAgg.getValue(position) * 100;
                     }else {
                         for (BookCategory category : BookCategory.values()) {
                             if (!hasCategorys.contains(category)) {
@@ -249,7 +249,7 @@ public class ReadRecordFragment extends StatisticsFragment {
                     title = getString(categoryTitleIDs[position]);
                 }
                 viewHolder.setText(R.id.text_category, title);
-                viewHolder.setText(R.id.text_proportion, String.format("%d%%", value));
+                viewHolder.setText(R.id.text_proportion, String.format("%d%%", (int) value));
             }
         });
     }
