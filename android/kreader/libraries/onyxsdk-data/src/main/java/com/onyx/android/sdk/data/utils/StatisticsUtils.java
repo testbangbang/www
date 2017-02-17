@@ -12,6 +12,7 @@ import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,9 +41,70 @@ public class StatisticsUtils {
 
     public static Collection<OnyxStatisticsModel> loadStatisticsList(final Context context,
                                                                      final int count,
-                                                                     final int state) {
+                                                                     final int status) {
         Select select = new Select();
-        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.status.eq(BaseStatisticsModel.DATA_STATUS_NOT_PUSH)).limit(count);
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.status.eq(status)).limit(count);
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsList(final Context context,
+                                                                     final String md5short,
+                                                                     final int type) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.type.eq(type)).and(OnyxStatisticsModel_Table.md5short.eq(md5short));
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsList(final Context context,
+                                                                     final int type) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.type.eq(type));
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsList(final Context context,
+                                                                     final Date fromTime) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.eventTime.greaterThan(fromTime));
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsList(final Context context,
+                                                                     final Date fromTime,
+                                                                     final int type) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.eventTime.greaterThan(fromTime)).and(OnyxStatisticsModel_Table.type.eq(type));
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsListByMd5short(final Context context,
+                                                                     final String md5short) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.md5short.eq(md5short));
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsListOrderByTime(final Context context,
+                                                                                final int type,
+                                                                                final boolean ascending) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.type.eq(type)).orderBy(OnyxStatisticsModel_Table.eventTime, ascending);
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsListOrderByTime(final Context context,
+                                                                                final String md5short,
+                                                                                final int type,
+                                                                                final boolean ascending) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.type.eq(type)).and(OnyxStatisticsModel_Table.md5short.eq(md5short)).orderBy(OnyxStatisticsModel_Table.eventTime, ascending);
         List<OnyxStatisticsModel> list = where.queryList();
         return list;
     }

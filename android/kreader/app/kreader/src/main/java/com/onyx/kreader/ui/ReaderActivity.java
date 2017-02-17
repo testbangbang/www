@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -38,6 +39,7 @@ import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -243,7 +245,6 @@ public class ReaderActivity extends ActionBarActivity {
         initSurfaceView();
         initReceiver();
     }
-
     private void initReceiver() {
         networkConnectChangedReceiver = new NetworkConnectChangedReceiver(getReaderDataHolder());
         IntentFilter filter = new IntentFilter();

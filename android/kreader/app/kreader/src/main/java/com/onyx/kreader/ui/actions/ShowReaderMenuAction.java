@@ -61,6 +61,7 @@ import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.dialog.DialogTextStyle;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.kreader.ui.statistics.StatisticsActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
