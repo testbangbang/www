@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/back_function_layout"
+                style="@style/global_activities_back_function_layout">
+
+                <ImageView
+                    android:id="@+id/imageView_back"
+                    style="@style/global_activities_back_btn_image" />
+
+                <TextView
+                    android:id="@+id/textView_main_title"
+                    style="@style/global_activities_back_btn_category_tittle"
+                    android:layout_toRightOf="@+id/imageView_back"
+                    android:text="@string/application_list" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/page_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

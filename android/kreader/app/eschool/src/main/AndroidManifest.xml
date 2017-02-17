@@ -58,6 +58,10 @@
             android:name=".activity.StudentInfoSettingActivity"
             android:windowSoftInputMode="adjustPan"/>
 
+        <activity
+            android:name=".activity.ApplicationsActivity" />
+
+
     </application>
 
 </manifest>
