@@ -95,7 +95,6 @@ import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.receiver.NetworkConnectChangedReceiver;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
-import com.onyx.kreader.ui.statistics.StatisticsActivity;
 import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
