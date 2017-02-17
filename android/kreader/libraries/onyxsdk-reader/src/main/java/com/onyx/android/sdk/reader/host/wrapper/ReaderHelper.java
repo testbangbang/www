@@ -108,6 +108,7 @@ public class ReaderHelper {
         getDocumentOptions().setZipPassword(options.getZipPassword());
         getDocumentOptions().setPassword(options.getPassword());
         getDocumentOptions().setCodePage(options.getCodePage());
+        getDocumentOptions().setChineseConvertType(options.getChineseConvertType());
         this.pluginOptions = pluginOptions;
         saveMetadata(context, documentPath);
         saveThumbnail(context, documentPath);

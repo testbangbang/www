@@ -13,6 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/image_button_bg"
+        android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light"
         android:gravity="left|center_vertical"
+        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
         android:text="@{localeInfo.label}" />
 </layout>

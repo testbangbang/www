@@ -98,4 +98,14 @@ public class RawResourceUtil {
         }
     }
 
+    public static String contentFromRawResource(Context context, String name) {
+        String content = "";
+        try {
+            int res = context.getResources().getIdentifier(name.toLowerCase(), "raw", context.getPackageName());
+            content = contentOfRawResource(context, res);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return content;
+    }
 }

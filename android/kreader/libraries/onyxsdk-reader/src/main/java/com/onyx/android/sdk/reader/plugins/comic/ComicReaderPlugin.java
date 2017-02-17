@@ -491,6 +491,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public void setChineseConvertType(ReaderChineseConvertType convertType) {
+
+    }
+
     /**
      * draw content. There are two coordinates system.
      * host coordinates system, the viewportInPage is specified in host coordinates system
@@ -551,6 +556,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
      */
     @Override
     public boolean supportTypefaceAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportConvertBetweenSimplifiedAndTraditionalChineseText() {
         return false;
     }
 

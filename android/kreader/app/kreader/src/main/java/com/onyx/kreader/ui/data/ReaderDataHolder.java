@@ -64,6 +64,7 @@ public class ReaderDataHolder {
     private boolean preRender = true;
     private boolean preRenderNext = true;
     private DocumentOpenState documentOpenState = DocumentOpenState.INIT;
+    private boolean documentInitRendered = false;
 
     private int displayWidth;
     private int displayHeight;
@@ -502,6 +503,7 @@ public class ReaderDataHolder {
     }
 
     private void closeDocument(final BaseCallback callback) {
+        documentInitRendered = false;
         documentOpenState = DocumentOpenState.INIT;
         if (reader == null || reader.getDocument() == null) {
             BaseCallback.invoke(callback, null, null);
@@ -574,7 +576,12 @@ public class ReaderDataHolder {
     }
 
     public void onDocumentInitRendered() {
+        documentInitRendered = true;
         getEventBus().post(new DocumentInitRenderedEvent());
+    }
+
+    public boolean isDocumentInitRendered() {
+        return documentInitRendered;
     }
 
     public final PageChangedEvent beforePageChange() {
@@ -585,6 +592,10 @@ public class ReaderDataHolder {
     public void afterPageChange(final PageChangedEvent pageChangedEvent) {
         pageChangedEvent.afterPageChange(this);
         getEventBus().post(pageChangedEvent);
+        if (!getReaderViewInfo().canNextScreen) {
+            // TODO: 2017/2/16 default value because  not finish comment
+            getEventBus().post(new DocumentFinishEvent(getContext(), "", 100));
+        }
     }
 
     public void onTextSelected(final String originText, final String userNote) {

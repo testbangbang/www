@@ -44,8 +44,13 @@ public class PushStatisticsRequest extends BaseCloudRequest {
             return;
         }
 
-        Response<JsonRespone> response = executeCall(ServiceFactory.getStatisticsService(parent.getCloudConf().getStatistics()).pushStatistics(onyxStatisticseModels));
-        if (response.isSuccessful()) {
+        Response<JsonRespone> response = null;
+        try {
+            response = executeCall(ServiceFactory.getStatisticsService(parent.getCloudConf().getStatistics()).pushStatistics(onyxStatisticseModels));
+        } catch (Exception e) {
+
+        }
+        if (response != null && response.isSuccessful()) {
             for (OnyxStatisticsModel onyxStatisticseModel : onyxStatisticseModels) {
                 onyxStatisticseModel.setStatus(BaseStatisticsModel.DATA_STATUS_PUSHED);
             }

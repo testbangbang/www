@@ -30,6 +30,8 @@ public interface StatisticsBase {
 
     void onDocumentClosed(final Context context);
 
+    void onDocumentFinished(final Context context, final String comment, final int score);
+
     void onPageChangedEvent(final Context context, final String last, final String current, long duration);
 
     void onTextSelectedEvent(final Context context, final String text);

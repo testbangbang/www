@@ -4,6 +4,7 @@ package com.onyx.android.sdk.data.model;
 import com.onyx.android.sdk.data.converter.ListStringConverter;
 import com.onyx.android.sdk.data.converter.SetStringConverter;
 import com.onyx.android.sdk.data.db.OnyxStatisticsDatabase;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
@@ -30,13 +31,17 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
     @Column
     private String name;
     @Column(typeConverter = ListStringConverter.class)
-    private List<String> author = new ArrayList<>();
+    private List<String> author;
     @Column
     private Integer lastPage;
     @Column
     private Integer currPage;
     @Column
     private Long durationTime;
+    @Column
+    private String comment;
+    @Column
+    private Integer score;
 
     public List<String> getAuthor() {
         return author;
@@ -91,7 +96,7 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
     }
 
     public void setOrgText(String orgText) {
-        this.orgText = orgText;
+        this.orgText =  orgText;
     }
 
     public String getPath() {
@@ -110,4 +115,19 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
         this.title = title;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
 }
