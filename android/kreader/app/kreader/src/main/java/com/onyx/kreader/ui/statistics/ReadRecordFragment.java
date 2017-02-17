@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.data.model.Book;
 import com.onyx.android.sdk.data.model.StatisticsResult;
-import com.onyx.android.sdk.data.request.cloud.GetStatisticsRequest;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -258,12 +257,12 @@ public class ReadRecordFragment extends StatisticsFragment {
         if (statisticsResult == null) {
             return;
         }
-        final List<Book> recentBooks = statisticsResult.getRecentBooks();
+        final List<Book> recentBooks = statisticsResult.getRecentReadingBooks();
         if (recentBooks == null || recentBooks.size() == 0) {
             return;
         }
         final int cols = 1;
-        final int rows = GetStatisticsRequest.RECENT_BOOK_MAX_COUNT;
+        final int rows = getResources().getInteger(R.integer.statistics_recently_book_count);
         final int count = cols * rows;
         pageContent.setLayoutManager(new DisableScrollGridManager(getContext()));
         pageContent.setAdapter(new PageRecyclerView.PageAdapter() {

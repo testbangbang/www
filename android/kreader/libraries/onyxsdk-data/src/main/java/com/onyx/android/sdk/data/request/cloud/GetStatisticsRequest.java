@@ -6,7 +6,6 @@ import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.Book;
 import com.onyx.android.sdk.data.model.EventTypeAggBean;
-import com.onyx.android.sdk.data.model.JsonRespone;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
 import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
@@ -57,7 +56,6 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         if (response != null && response.isSuccessful()) {
             statisticsResult = response.body();
             statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());
-            statisticsResult.setRecentBooks(getRecentBooks());
         }
     }
 
@@ -71,7 +69,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         statisticsResult.setDailyAvgReadTime(getReadTimeEveryDay());
         statisticsResult.setLongestReadTimeBook(getLongestBook());
         statisticsResult.setMostCarefulBook(getMostCarefullyBook());
-        statisticsResult.setRecentBooks(getRecentBooks());
+        statisticsResult.setRecentReadingBooks(getRecentBooks());
     }
 
     private long getTotalReadTime() {
