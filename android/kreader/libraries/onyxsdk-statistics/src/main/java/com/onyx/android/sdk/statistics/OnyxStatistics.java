@@ -5,8 +5,10 @@ import android.net.ConnectivityManager;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.StatisticsCloudManager;
 import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
@@ -30,7 +32,7 @@ public class OnyxStatistics implements StatisticsBase {
 
     private final static int PUSH_THRESHOLD_VALUE = 5;
 
-    private CloudStore cloudStore;
+    private StatisticsCloudManager cloudManager;
     private String sessionId;
     private String md5;
     private String md5short;
@@ -40,7 +42,7 @@ public class OnyxStatistics implements StatisticsBase {
 
     @Override
     public boolean init(Context context, Map<String, String> args) {
-        cloudStore = new CloudStore();
+        cloudManager = new StatisticsCloudManager();
         statisticsQueue = new ArrayList<>();
         return true;
     }
@@ -68,7 +70,7 @@ public class OnyxStatistics implements StatisticsBase {
 
     private void flushStatistics(final Context context) {
         PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(context, statisticsQueue);
-        cloudStore.submitRequest(context, statisticsRequest, new BaseCallback() {
+        cloudManager.submitRequest(context, statisticsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 statisticsQueue.clear();

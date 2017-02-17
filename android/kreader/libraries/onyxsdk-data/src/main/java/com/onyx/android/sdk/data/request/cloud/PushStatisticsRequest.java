@@ -2,10 +2,16 @@ package com.onyx.android.sdk.data.request.cloud;
 
 import android.content.Context;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.StatisticsCloudManager;
 import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.JsonRespone;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
+import com.onyx.android.sdk.data.request.data.BaseDataRequest;
+import com.onyx.android.sdk.data.utils.ResultCode;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -13,13 +19,14 @@ import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
 
+import retrofit2.Call;
 import retrofit2.Response;
 
 /**
  * Created by ming on 2017/2/7.
  */
 
-public class PushStatisticsRequest extends BaseCloudRequest {
+public class PushStatisticsRequest extends BaseStatisticsRequest {
 
     private final static int MAX_PUSH_COUNT = 1000;
     private Context context;
@@ -31,7 +38,7 @@ public class PushStatisticsRequest extends BaseCloudRequest {
     }
 
     @Override
-    public void execute(CloudManager parent) throws Exception {
+    public void execute(StatisticsCloudManager parent) throws Exception {
         if (saveStatistic != null) {
             StatisticsUtils.saveStatisticsList(context, saveStatistic);
         }
@@ -46,7 +53,7 @@ public class PushStatisticsRequest extends BaseCloudRequest {
 
         Response<JsonRespone> response = null;
         try {
-            response = executeCall(ServiceFactory.getStatisticsService(parent.getCloudConf().getStatistics()).pushStatistics(modelList));
+            response = executeCall(ServiceFactory.getStatisticsService(Constant.STATISTICS_API_BASE).pushStatistics(modelList));
         } catch (Exception e) {
 
         }
@@ -67,4 +74,5 @@ public class PushStatisticsRequest extends BaseCloudRequest {
             onyxStatisticsModel.setMac(mac);
         }
     }
+
 }
