@@ -592,6 +592,10 @@ public class ReaderDataHolder {
     public void afterPageChange(final PageChangedEvent pageChangedEvent) {
         pageChangedEvent.afterPageChange(this);
         getEventBus().post(pageChangedEvent);
+        if (!getReaderViewInfo().canNextScreen) {
+            // TODO: 2017/2/16 default value because  not finish comment
+            getEventBus().post(new DocumentFinishEvent(getContext(), "", 100));
+        }
     }
 
     public void onTextSelected(final String originText, final String userNote) {
