@@ -263,7 +263,7 @@ public class ReadRecordFragment extends StatisticsFragment {
             return;
         }
         final int cols = 1;
-        final int rows = GetStatisticsRequest.RECENT_BOOK_MAX_COUNT;
+        final int rows = getResources().getInteger(R.integer.statistics_recently_book_count);
         final int count = cols * rows;
         pageContent.setLayoutManager(new DisableScrollGridManager(getContext()));
         pageContent.setAdapter(new PageRecyclerView.PageAdapter() {
