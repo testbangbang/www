@@ -1,5 +1,6 @@
 package com.neverland.engbook.bookobj;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.neverland.engbook.forpublic.AlBitmap;
@@ -82,6 +83,7 @@ import com.neverland.engbook.util.AlProfileOptions;
 import com.neverland.engbook.util.AlScreenParameters;
 import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.AlStylesOptions;
+import com.neverland.engbook.util.ChineseTextUtils;
 import com.neverland.engbook.util.EngBitmap;
 import com.neverland.engbook.util.InternalConst;
 import com.neverland.engbook.util.InternalConst.TAL_CALC_MODE;
@@ -192,7 +194,13 @@ public class AlBookEng{
 	}
 
 	private final AlSelection selection = new AlSelection();
-	
+
+	public enum SimplifiedAndTraditionalChineseConvert {
+		NONE, SIMPLIFIED_TO_TRADITIONAL, TRADITIONAL_TO_SIMPLIFIED
+	}
+
+	public SimplifiedAndTraditionalChineseConvert chineseConvert = SimplifiedAndTraditionalChineseConvert.NONE;
+
 	////////////////////////////////////////////////////////
 
     /**
@@ -2068,10 +2076,10 @@ public class AlBookEng{
 							x2 = fontParam.color;
 							fontParam.color = profiles.colors[InternalConst.TAL_PROFILE_COLOR_SHADOW];
 							calc.drawText(x + preferences.picture_need_tuneK, y + preferences.picture_need_tuneK, 
-								oi.text, start, end - start + 1);
+								convertChineseText(oi.text), start, end - start + 1);
 							fontParam.color = x2;
 						}
-						calc.drawText(x, y, oi.text, i, 1);
+						calc.drawText(x, y, convertChineseText(oi.text), i, 1);
 					//}
 					x += oi.width[i];
 				}
@@ -2102,10 +2110,10 @@ public class AlBookEng{
 						x2 = calc.fontPaint.getColor();
 						calc.fontPaint.setColor(profiles.colors[InternalConst.TAL_PROFILE_COLOR_SHADOW] | 0xff000000);
 						calc.drawText(x + preferences.picture_need_tuneK, y + preferences.picture_need_tuneK, 
-							oi.text, start, end - start + 1);
+							convertChineseText(oi.text), start, end - start + 1);
 						calc.fontPaint.setColor(x2);
 					}
-					calc.drawText(x, y, oi.text, start, end - start + 1);
+					calc.drawText(x, y, convertChineseText(oi.text), start, end - start + 1);
 
 				//}
 				
@@ -2200,7 +2208,7 @@ public class AlBookEng{
 						case 0x03: case 0x06: case 0x09: case 0x0c: case 0x0f: ch = (char)0x25AA; break;
 						}
 						
-						calc.drawText(x - screen_parameters.redList, y, ch);
+						calc.drawText(x - screen_parameters.redList, y, convertChineseText(ch));
 					}
 					
 					for (i = 0; i < oi.count; i++) {
@@ -6266,7 +6274,6 @@ public class AlBookEng{
 				}
 
 				if ((oi.style[i] & AlStyles.SL_IMAGE) != 0) {
-					Log.e("alengine", "found image: " + x + ", " + y + ", " + oi.width[i] + ", " + oi.height);
 					long style = oi.style[i];
 					int widthImage = oi.width[i];
 					AlOneImage ai = null;
@@ -6301,9 +6308,7 @@ public class AlBookEng{
 
 								AlRect rect = new AlRect();
 								rect.set(x, y - h, x + w, y);
-								Log.e("alengine", "scaled image: " + rect.x0 + ", " + rect.y0 +
-										", " + rect.x1 + ", " + rect.y1);
-								textOnScreen.addImage(oi.pos[i], rect, b);
+								textOnScreen.addImage(oi.pos[i], rect, b.bmp.copy(Bitmap.Config.ARGB_8888, false));
 							}
 						}
 					}
@@ -7001,5 +7006,32 @@ public class AlBookEng{
 
         return returnOkWithRedraw();
     }
+
+	private char convertChineseText(char text) {
+		switch (chineseConvert) {
+			case SIMPLIFIED_TO_TRADITIONAL:
+				return ChineseTextUtils.convertToTraditional(text);
+			case TRADITIONAL_TO_SIMPLIFIED:
+				return ChineseTextUtils.convertToSimplified(text);
+			default:
+				return text;
+		}
+	}
+
+	private char[] convertChineseText(char[] text) {
+		char[] result = text;
+		switch (chineseConvert) {
+			case SIMPLIFIED_TO_TRADITIONAL:
+				result = text.clone();
+				ChineseTextUtils.convertToTraditional(result);
+				break;
+			case TRADITIONAL_TO_SIMPLIFIED:
+				result = text.clone();
+				ChineseTextUtils.convertToSimplified(result);
+			default:
+				break;
+		}
+		return result;
+	}
 
 }

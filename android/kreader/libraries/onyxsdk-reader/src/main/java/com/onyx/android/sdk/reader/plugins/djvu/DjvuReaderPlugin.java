@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
@@ -353,6 +354,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public void setChineseConvertType(ReaderChineseConvertType convertType) {
+
+    }
+
+    @Override
     public boolean draw(String pagePosition, float scale, int rotation, Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
         benchmark.restart();
         try {
@@ -377,6 +383,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
 
     @Override
     public boolean supportTypefaceAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportConvertBetweenSimplifiedAndTraditionalChineseText() {
         return false;
     }
 

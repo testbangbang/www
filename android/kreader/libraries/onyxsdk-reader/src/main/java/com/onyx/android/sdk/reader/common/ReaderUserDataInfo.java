@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.provider.SearchHistoryProvider;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -37,6 +38,7 @@ public class ReaderUserDataInfo {
 
     private String documentPath;
     private int documentCodePage;
+    public ReaderChineseConvertType chineseConvertType = ReaderChineseConvertType.NONE;
     private ReaderDocumentMetadata documentMetadata;
 
     private ReaderDocumentTableOfContent toc;
@@ -61,6 +63,14 @@ public class ReaderUserDataInfo {
 
     public int getDocumentCodePage() {
         return documentCodePage;
+    }
+
+    public void setChineseConvertType(ReaderChineseConvertType chineseConvertType) {
+        this.chineseConvertType = chineseConvertType;
+    }
+
+    public ReaderChineseConvertType getChineseConvertType() {
+        return chineseConvertType;
     }
 
     public void setDocumentMetadata(ReaderDocumentMetadata documentMetadata) {

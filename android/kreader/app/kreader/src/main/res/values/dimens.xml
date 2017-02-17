@@ -78,5 +78,6 @@
     <dimen name="dialog_contrast_seek_bar_width">300dp</dimen>
     <dimen name="view_pinch_zooming_message_font_size">25sp</dimen>
     <dimen name="view_pinch_zooming_message_scale_size">48sp</dimen>
+    <dimen name="dialog_text_style_chinese_convert_font_size">24sp</dimen>
 
 </resources>
