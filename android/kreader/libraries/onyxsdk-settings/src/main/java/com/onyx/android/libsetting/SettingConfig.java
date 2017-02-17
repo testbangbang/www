@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.preference.PreferenceActivity;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.onyx.android.libsetting.data.DeviceType;
@@ -130,6 +131,7 @@ public class SettingConfig {
         }
     }
 
+    @Nullable
     private <T> T getData(String dataKey, Class<T> clazz) {
         GObject backend = new GObject();
         for (GObject object : backendList) {
@@ -198,15 +200,27 @@ public class SettingConfig {
     }
 
     private List<Integer> getSystemScreenOffValues() {
-        return getData(Custom.SCREEN_OFF_VALUES_TAG, List.class);
+        List<Integer> result = getData(Custom.SCREEN_OFF_VALUES_TAG, List.class);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        return result;
     }
 
     private List<Integer> getSystemAutoPowerOffValues() {
-        return getData(Custom.AUTO_POWER_OFF_VALUES_TAG, List.class);
+        List<Integer> result = getData(Custom.AUTO_POWER_OFF_VALUES_TAG, List.class);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        return result;
     }
 
     private List<Integer> getSystemWifiInactivityTimeoutValues() {
-        return getData(Custom.WIFI_INACTIVITY_VALUES_TAG, List.class);
+        List<Integer> result = getData(Custom.WIFI_INACTIVITY_VALUES_TAG, List.class);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        return result;
     }
 
     public String getSystemScreenOffKey() {
@@ -309,7 +323,7 @@ public class SettingConfig {
         if (settingItemTAGList == null) {
             settingItemTAGList = new ArrayList<>();
             List<String> rawResourceList = getData(Custom.ITEM_LIST_TAG, List.class);
-            if (rawResourceList == null) {
+            if (rawResourceList == null || rawResourceList.size() == 0) {
                 buildDefaultSettingTAGList();
             } else {
                 settingItemTAGList.addAll(rawResourceList);
@@ -327,7 +341,7 @@ public class SettingConfig {
         if (settingIconsMap == null) {
             buildDefaultSettingsIconsMap();
             Map<String, String> rawResourceMap = (Map<String, String>) (getData(Custom.ICON_MAPS_TAG, Map.class));
-            if (rawResourceMap != null) {
+            if (rawResourceMap != null && rawResourceMap.size() != 0) {
                 settingIconsMap.putAll(rawResourceMap);
             }
         }
@@ -338,7 +352,7 @@ public class SettingConfig {
         if (settingTittleMap == null) {
             buildDefaultSettingsTittleMap();
             Map<String, String> rawResourceMap = (Map<String, String>) (getData(Custom.TITTLE_MAPS_TAG, Map.class));
-            if (rawResourceMap != null) {
+            if (rawResourceMap != null && rawResourceMap.size() != 0) {
                 settingTittleMap.putAll(rawResourceMap);
             }
         }
@@ -394,6 +408,10 @@ public class SettingConfig {
     }
 
     public boolean isEnableKeyBinding() {
-        return getData(Custom.ENABLE_KEY_BINDING_TAG, Boolean.class);
+        Boolean result = getData(Custom.ENABLE_KEY_BINDING_TAG, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
     }
 }
