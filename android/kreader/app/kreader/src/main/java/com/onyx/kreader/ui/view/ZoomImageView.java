@@ -254,6 +254,8 @@ public class ZoomImageView extends ImageView {
      */
     private Runnable mWaitReverseReset;
 
+    private long lastActionDownTime = -1;
+
     /**
      * callback listener called when rotation started.
      */
@@ -487,6 +489,7 @@ public class ZoomImageView extends ImageView {
         switch (actionCode) {
             case MotionEvent.ACTION_DOWN:
                 // single touch
+                lastActionDownTime = System.currentTimeMillis();
                 startWaiting(event);
                 return true;
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -541,6 +544,11 @@ public class ZoomImageView extends ImageView {
                 removeCallbacks(mWaitImageReset);
                 removeCallbacks(mStartCheckRotate);
                 resetColorFilter();
+                if (mState == STATE_WAITING &&
+                        hasOnClickListeners() &&
+                        System.currentTimeMillis() - lastActionDownTime < ViewConfiguration.getTapTimeout()) {
+                    callOnClick();
+                }
             case MotionEvent.ACTION_POINTER_UP:
                 setState(STATE_NON);
                 break;
