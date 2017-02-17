@@ -5,5 +5,5 @@ package com.onyx.kreader.ui.statistics;
  */
 
 public enum BookCategory {
-    science, art, social_science, life, education, children_book, finance_and_economics, magazine, fiction, unknown
+    SCIENCE, ART, SOCIAL_SCIENCE, LIFE, EDUCATION, CHILDREN_BOOK, FINANCE_AND_ECONOMICS, MAGAZINE, FICTION, UNKNOWN
 }

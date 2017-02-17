@@ -4,13 +4,11 @@ import android.content.Context;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,7 +27,7 @@ public class BookCategoryUtils {
     }
 
     public static BookCategory getBookCategory(final Map<String, String> categoryMap, final String categoryId) {
-        BookCategory category = BookCategory.unknown;
+        BookCategory category = BookCategory.UNKNOWN;
         String value = categoryMap.get(categoryId);
         if (!StringUtils.isNullOrEmpty(value)) {
             category = BookCategory.valueOf(value);
@@ -39,25 +37,25 @@ public class BookCategoryUtils {
 
     public static String getCategoryName(final Context context, final BookCategory category) {
         switch (category) {
-            case science:
+            case SCIENCE:
                 return context.getString(R.string.science);
-            case art:
+            case ART:
                 return context.getString(R.string.art);
-            case social_science:
+            case SOCIAL_SCIENCE:
                 return context.getString(R.string.social_science);
-            case life:
+            case LIFE:
                 return context.getString(R.string.life);
-            case education:
+            case EDUCATION:
                 return context.getString(R.string.education);
-            case magazine:
+            case MAGAZINE:
                 return context.getString(R.string.magazine);
-            case fiction:
+            case FICTION:
                 return context.getString(R.string.fiction);
-            case finance_and_economics:
+            case FINANCE_AND_ECONOMICS:
                 return context.getString(R.string.finance_and_economics);
-            case children_book:
+            case CHILDREN_BOOK:
                 return context.getString(R.string.children_book);
-            case unknown:
+            case UNKNOWN:
                 return context.getString(R.string.other);
         }
         return context.getString(R.string.other);
