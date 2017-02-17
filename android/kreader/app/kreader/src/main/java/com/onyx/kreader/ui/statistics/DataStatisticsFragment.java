@@ -204,7 +204,7 @@ public class DataStatisticsFragment extends StatisticsFragment {
                 otherVals.add(new Entry(i, otherReadTimeDis.get(i)));
             }
         }
-        readingChart.setData(generateLineData(selfVals, otherVals));
+        readingChart.setData(generateLineData(otherVals, selfVals));
         readingChart.invalidate();
     }
 
@@ -243,11 +243,11 @@ public class DataStatisticsFragment extends StatisticsFragment {
         LineDataSet ds1 = new LineDataSet(yVals1, "");
         LineDataSet ds2 = new LineDataSet(yVals2, "");
 
-        ds1.setColor(Color.BLACK);
-        ds2.setColor(Color.GRAY);
+        ds1.setColor(Color.GRAY);
+        ds2.setColor(Color.BLACK);
 
-        ds1.setFillColor(Color.BLACK);
-        ds2.setFillColor(Color.GRAY);
+        ds1.setFillColor(Color.GRAY);
+        ds2.setFillColor(Color.BLACK);
 
         ds1.setLineWidth(4.0f);
         ds2.setLineWidth(4.0f);
