@@ -78,4 +78,14 @@ public class DeviceUtils {
         }
         return false;
     }
+
+    public static boolean isFullScreen(Activity activity) {
+        int flag = activity.getWindow().getAttributes().flags;
+        if((flag & WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                == WindowManager.LayoutParams.FLAG_FULLSCREEN) {
+            return true;
+        }else {
+            return false;
+        }
+    }
 }
