@@ -1,5 +1,10 @@
 package com.onyx.android.eschool.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,6 +42,9 @@ public class ApplicationsActivity extends BaseActivity {
     @Bind(R.id.page_view)
     PageRecyclerView contentPageView;
 
+    private BroadcastReceiver appStatusReceiver;
+    private IntentFilter appStatusFilter;
+
     private List<AppDataInfo> appDataInfoList = new ArrayList<>();
     private boolean showCleanTestAppMenu = false;
 
@@ -47,6 +55,7 @@ public class ApplicationsActivity extends BaseActivity {
 
     @Override
     protected void initConfig() {
+        initAppStatusReceiver();
     }
 
     @Override
@@ -118,6 +127,28 @@ public class ApplicationsActivity extends BaseActivity {
         contentPageView.notifyDataSetChanged();
     }
 
+    private void initAppStatusReceiver() {
+        appStatusReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (action.equals(Intent.ACTION_PACKAGE_ADDED) || action.equals(Intent.ACTION_PACKAGE_REPLACED) ||
+                        action.equals(Intent.ACTION_PACKAGE_REMOVED) || action.equals(Intent.ACTION_PACKAGE_FULLY_REMOVED)) {
+                    loadData();
+                }
+            }
+        };
+        appStatusFilter = new IntentFilter();
+        appStatusFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        appStatusFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
+        appStatusFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        appStatusFilter.addDataScheme("package");
+        if (Build.VERSION.SDK_INT >= 14) {
+            appStatusFilter.addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED);
+        }
+        this.registerReceiver(appStatusReceiver, appStatusFilter);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = this.getMenuInflater();
@@ -173,6 +204,21 @@ public class ApplicationsActivity extends BaseActivity {
 
     private void processContentItemClick(int position) {
         ActivityUtil.startActivitySafely(this, appDataInfoList.get(position).intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        clearReceiverRegistered();
+    }
+
+    private void clearReceiverRegistered() {
+        try {
+            if (appStatusReceiver != null) {
+                unregisterReceiver(appStatusReceiver);
+            }
+        } catch (Exception e) {
+        }
     }
 
     class AppItemViewHolder extends RecyclerView.ViewHolder {
