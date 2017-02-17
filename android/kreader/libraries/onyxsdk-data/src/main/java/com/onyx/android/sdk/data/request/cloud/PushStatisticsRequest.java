@@ -45,32 +45,32 @@ public class PushStatisticsRequest extends BaseStatisticsRequest {
         if (!DeviceUtils.isWifiConnected(context)) {
             return;
         }
-        List<OnyxStatisticsModel> modelList = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, MAX_PUSH_COUNT, BaseStatisticsModel.DATA_STATUS_NOT_PUSH);
-        if (modelList == null || modelList.size() <= 0) {
-            return;
-        }
-        updateStatisticsMac(context, modelList);
-
-        Response<JsonRespone> response = null;
-        try {
-            response = executeCall(ServiceFactory.getStatisticsService(Constant.STATISTICS_API_BASE).pushStatistics(modelList));
-        } catch (Exception e) {
-
-        }
-        if (response != null && response.isSuccessful()) {
-            for (OnyxStatisticsModel model : modelList) {
-                model.setStatus(BaseStatisticsModel.DATA_STATUS_PUSHED);
-            }
-            StatisticsUtils.saveStatisticsList(context, modelList);
-        }
-    }
-
-    private void updateStatisticsMac(final Context context, final List<OnyxStatisticsModel> saveStatistic) {
         String mac = DeviceUtils.getMacAddress(context);
         if (StringUtils.isNullOrEmpty(mac)) {
             return;
         }
-        for (OnyxStatisticsModel onyxStatisticsModel : saveStatistic) {
+        List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, MAX_PUSH_COUNT, BaseStatisticsModel.DATA_STATUS_NOT_PUSH);
+        if (statisticsModels == null || statisticsModels.size() <= 0) {
+            return;
+        }
+        updateStatisticsMac(statisticsModels, mac);
+
+        Response<JsonRespone> response = null;
+        try {
+            response = executeCall(ServiceFactory.getStatisticsService(Constant.STATISTICS_API_BASE).pushStatistics(statisticsModels));
+        } catch (Exception e) {
+
+        }
+        if (response != null && response.isSuccessful()) {
+            for (OnyxStatisticsModel model : statisticsModels) {
+                model.setStatus(BaseStatisticsModel.DATA_STATUS_PUSHED);
+            }
+            StatisticsUtils.saveStatisticsList(context, statisticsModels);
+        }
+    }
+
+    private void updateStatisticsMac(final List<OnyxStatisticsModel> statistics, final String mac) {
+        for (OnyxStatisticsModel onyxStatisticsModel : statistics) {
             onyxStatisticsModel.setMac(mac);
         }
     }
