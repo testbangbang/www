@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.reader.host.impl;
 
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
 
 /**
@@ -13,6 +14,7 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
     private int codePage;
     private int codePageFallback;
     private String language;
+    private ReaderChineseConvertType chineseConvertType = ReaderChineseConvertType.NONE;
 
     public ReaderDocumentOptionsImpl(final String dp, final String ap) {
         documentPassword = dp;
@@ -21,11 +23,13 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
     }
 
     public ReaderDocumentOptionsImpl(final String dp, final String ap,
-                                     final int codePage, final int codePageFallback) {
+                                     final int codePage, final int codePageFallback,
+                                     final ReaderChineseConvertType chineseConvertType) {
         documentPassword = dp;
         archivePassword = ap;
         this.codePage = codePage;
         this.codePageFallback = codePageFallback;
+        this.chineseConvertType = chineseConvertType;
     }
 
     public void setDocumentPath(final String path) {
@@ -77,5 +81,14 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    @Override
+    public ReaderChineseConvertType getChineseConvertType() {
+        return chineseConvertType;
+    }
+
+    public void setChineseConvertType(ReaderChineseConvertType chineseConvertType) {
+        this.chineseConvertType = chineseConvertType;
     }
 }

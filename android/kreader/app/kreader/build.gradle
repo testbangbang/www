@@ -100,6 +100,7 @@ dependencies {
     compile "org.apache.lucene:lucene-core:$rootProject.lucenecoreVersion"
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
     compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    compile "com.github.PhilJay:MPAndroidChart:v$rootProject.mpAndroidChart"
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"

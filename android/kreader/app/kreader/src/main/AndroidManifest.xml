@@ -159,6 +159,15 @@
         <activity android:name=".ui.settings.ScribbleBarSettingsActivity"/>
         <activity android:name=".ui.settings.ControlSettingsActivity"/>
         <activity android:name=".ui.settings.StatusBarSettingsActivity"/>
+        <activity
+            android:label="@string/statistics_shortcut_name"
+            android:icon="@drawable/statistics_icon"
+            android:name=".ui.statistics.StatisticsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service android:name="com.onyx.kreader.ui.ReaderMetadataService"
                  android:process=":metadataservice"

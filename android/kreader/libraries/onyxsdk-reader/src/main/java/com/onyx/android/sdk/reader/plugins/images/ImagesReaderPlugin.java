@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -180,6 +181,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     public ReaderRendererFeatures getRendererFeatures() {
         return this;
+    }
+
+    @Override
+    public void setChineseConvertType(ReaderChineseConvertType convertType) {
+
     }
 
     public void close() {
@@ -473,6 +479,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportTypefaceAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportConvertBetweenSimplifiedAndTraditionalChineseText() {
         return false;
     }
 

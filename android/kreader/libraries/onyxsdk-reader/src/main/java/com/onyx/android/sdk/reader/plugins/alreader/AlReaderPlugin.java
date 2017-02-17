@@ -7,6 +7,7 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
@@ -205,6 +206,11 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     public ReaderRendererFeatures getRendererFeatures() {
         return this;
+    }
+
+    @Override
+    public void setChineseConvertType(ReaderChineseConvertType convertType) {
+        getPluginImpl().setChineseConvertType(convertType);
     }
 
     public void close() {
@@ -499,6 +505,11 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportTypefaceAdjustment() {
+        return true;
+    }
+
+    @Override
+    public boolean supportConvertBetweenSimplifiedAndTraditionalChineseText() {
         return true;
     }
 

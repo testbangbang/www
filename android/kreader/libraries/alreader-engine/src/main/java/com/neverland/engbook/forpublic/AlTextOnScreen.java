@@ -1,5 +1,7 @@
 package com.neverland.engbook.forpublic;
 
+import android.graphics.Bitmap;
+
 import com.neverland.engbook.util.AlImage;
 
 import java.util.ArrayList;
@@ -53,9 +55,9 @@ public class AlTextOnScreen {
     public class AlPieceOfImage {
         public int pos;
         public final AlRect rect = new AlRect();
-        public final AlBitmap bitmap;
+        public final Bitmap bitmap;
 
-        public AlPieceOfImage(int p, AlRect r, AlBitmap b) {
+        public AlPieceOfImage(int p, AlRect r, Bitmap b) {
             pos = p;
             rect.set(r.x0, r.y0, r.x1, r.y1);
             bitmap = b;
@@ -96,7 +98,7 @@ public class AlTextOnScreen {
         }
     }
 
-    public void addImage(int p, AlRect rect, AlBitmap bitmap) {
+    public void addImage(int p, AlRect rect, Bitmap bitmap) {
         if (p >= 0) {
             imageList.add(new AlPieceOfImage(p, rect, bitmap));
         }

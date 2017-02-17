@@ -83,7 +83,7 @@ public class OnyxStatistics implements StatisticsBase {
 
     @Override
     public void onActivityPause(Context context) {
-
+        flushStatistics(context);
     }
 
     @Override
@@ -136,8 +136,8 @@ public class OnyxStatistics implements StatisticsBase {
     @Override
     public void onPageChangedEvent(Context context, String last, String current, long duration) {
         OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE);
-        statisticsData.setLastPage(Integer.valueOf(last));
-        statisticsData.setCurrPage(Integer.valueOf(current));
+        statisticsData.setLastPage(StringUtils.isNullOrEmpty(last) ? 0 : Integer.valueOf(last));
+        statisticsData.setCurrPage(StringUtils.isNullOrEmpty(current) ? 0 : Integer.valueOf(current));
         statisticsData.setDurationTime(duration);
         saveToCloud(context, statisticsData);
     }
@@ -164,4 +164,10 @@ public class OnyxStatistics implements StatisticsBase {
         saveToCloud(context, statisticsData);
     }
 
+    public void onDocumentFinished(final Context context, final String comment, final int score) {
+        OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_FINISH);
+        statisticsData.setComment(comment);
+        statisticsData.setScore(score);
+        saveToCloud(context, statisticsData);
+    }
 }

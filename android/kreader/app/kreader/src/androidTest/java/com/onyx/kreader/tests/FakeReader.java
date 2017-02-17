@@ -150,6 +150,11 @@ public class FakeReader implements ReaderDocument,
         return false;
     }
 
+    @Override
+    public boolean supportConvertBetweenSimplifiedAndTraditionalChineseText() {
+        return false;
+    }
+
     public String getInitPosition() {
         return firstPage();
     }

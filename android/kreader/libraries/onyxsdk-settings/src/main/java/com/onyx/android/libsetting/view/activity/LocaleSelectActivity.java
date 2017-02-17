@@ -4,13 +4,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
-import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
-import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
-
-import java.util.List;
-
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.databinding.ActivityLocaleSelectBinding;
 import com.onyx.android.libsetting.databinding.LocaleInfoItemBinding;
@@ -20,6 +13,12 @@ import com.onyx.android.libsetting.util.SettingRecyclerViewUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.PageRecyclerViewItemClickListener;
 import com.onyx.android.libsetting.view.SettingPageAdapter;
+import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
+import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
+import com.onyx.android.sdk.ui.view.PageRecyclerView;
+
+import java.util.List;
 
 public class LocaleSelectActivity extends OnyxAppCompatActivity {
     ActivityLocaleSelectBinding binding;
@@ -48,7 +47,7 @@ public class LocaleSelectActivity extends OnyxAppCompatActivity {
     private void updateData() {
         dataList = InputMethodLanguageSettingUtil.buildLanguageList(this);
         adapter.setDataList(dataList);
-        adapter.notifyDataSetChanged();
+        binding.languageSelectRecyclerView.notifyDataSetChanged();
     }
 
     private void initRecyclerView() {

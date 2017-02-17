@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentOptionsImpl;
@@ -29,6 +30,7 @@ public class BaseOptions {
     transient static public final String MANUAL_CROP_REGION_TAG = "manual_crop_region";
     transient static public final String SCREEN_SPLIT_POINT_TAG = "screen_split_point";
     transient static public final String CODE_PAGE_TAG = "code_page";
+    transient static public final String CHINESE_CONVERT_TYPE_TAG = "chinese_convert_type";
     transient static public final String FONT_SIZE_TAG = "font_size";
     transient static public final String DEFAULT_FONT_SIZE = "default_font_size";
     transient static public final String FONT_FACE_TAG = "font_face";
@@ -302,6 +304,17 @@ public class BaseOptions {
         backend.putInt(CODE_PAGE_TAG, codePage);
     }
 
+    public ReaderChineseConvertType getChineseConvertType() {
+        if (!backend.hasKey(CHINESE_CONVERT_TYPE_TAG)) {
+            return ReaderChineseConvertType.NONE;
+        }
+        return ReaderChineseConvertType.valueOf(backend.getString(CHINESE_CONVERT_TYPE_TAG));
+    }
+
+    public void setChineseConvertType(ReaderChineseConvertType convertType) {
+        backend.putObject(CHINESE_CONVERT_TYPE_TAG, convertType.toString());
+    }
+
     public float getFontSize() {
         if (!backend.hasKey(FONT_SIZE_TAG)) {
             return INVALID_FLOAT_VALUE;
@@ -564,7 +577,8 @@ public class BaseOptions {
 
     public final ReaderDocumentOptionsImpl documentOptions() {
         return new ReaderDocumentOptionsImpl(getPassword(), getZipPassword(),
-                getCodePage(), LocaleUtils.getLocaleDefaultCodePage());
+                getCodePage(), LocaleUtils.getLocaleDefaultCodePage(),
+                getChineseConvertType());
     }
 
     public final ReaderPluginOptions pluginOptions() {
