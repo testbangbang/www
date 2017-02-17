@@ -544,9 +544,10 @@ public class ZoomImageView extends ImageView {
                 removeCallbacks(mWaitImageReset);
                 removeCallbacks(mStartCheckRotate);
                 resetColorFilter();
+                final long delta = System.currentTimeMillis() - lastActionDownTime;
                 if (mState == STATE_WAITING &&
                         hasOnClickListeners() &&
-                        System.currentTimeMillis() - lastActionDownTime < ViewConfiguration.getTapTimeout()) {
+                        delta < ViewConfiguration.getTapTimeout()) {
                     callOnClick();
                 }
             case MotionEvent.ACTION_POINTER_UP:
