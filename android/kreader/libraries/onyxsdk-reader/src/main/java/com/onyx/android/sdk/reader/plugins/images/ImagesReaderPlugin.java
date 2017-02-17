@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -17,6 +18,7 @@ import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestOptions;
+import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.api.ReaderPlugin;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
@@ -181,6 +183,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public void setChineseConvertType(ReaderChineseConvertType convertType) {
+
+    }
+
     public void close() {
         getPluginImpl().closeAll();
         pageList.clear();
@@ -230,6 +237,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
      * @return
      */
     public List<ReaderSelection> getLinks(final String position) {
+        return null;
+    }
+
+    @Override
+    public List<ReaderImage> getImages(String position) {
         return null;
     }
 
@@ -467,6 +479,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportTypefaceAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportConvertBetweenSimplifiedAndTraditionalChineseText() {
         return false;
     }
 

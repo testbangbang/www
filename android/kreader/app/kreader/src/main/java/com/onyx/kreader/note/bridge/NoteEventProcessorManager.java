@@ -1,5 +1,6 @@
 package com.onyx.kreader.note.bridge;
 
+import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.view.MotionEvent;

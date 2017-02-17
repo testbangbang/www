@@ -23,6 +23,10 @@ public interface ReaderRendererFeatures {
      */
     public boolean supportTypefaceAdjustment();
 
-
+    /**
+     * convert between simplified and traditional chinese text
+     * @return
+     */
+    public boolean supportConvertBetweenSimplifiedAndTraditionalChineseText();
 
 }

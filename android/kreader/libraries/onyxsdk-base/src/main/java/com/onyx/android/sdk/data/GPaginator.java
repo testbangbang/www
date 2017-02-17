@@ -203,6 +203,10 @@ public class GPaginator {
         return index - getColumns();
     }
 
+    public boolean isFirstPage() {
+        return currentPage == 0;
+    }
+
     public boolean isLastPage() {
         return lastPage() == currentPage;
     }

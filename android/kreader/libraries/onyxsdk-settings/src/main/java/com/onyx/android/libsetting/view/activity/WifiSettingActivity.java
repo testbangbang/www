@@ -78,19 +78,19 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
             public void onScanResultReady(List<AccessPoint> scanResult) {
                 adapter.setDataList(scanResult);
                 updateSummary(true);
-                adapter.notifyDataSetChanged();
+                binding.wifiScanResultRecyclerView.notifyDataSetChanged();
             }
 
             @Override
             public void onSupplicantStateChanged(NetworkInfo.DetailedState state) {
                 updateAccessPointDetailedState(state);
-                adapter.notifyDataSetChanged();
+                binding.wifiScanResultRecyclerView.notifyDataSetChanged();
             }
 
             @Override
             public void onNetworkConnectionChange(NetworkInfo.DetailedState state) {
                 updateAccessPointDetailedState(state);
-                adapter.notifyDataSetChanged();
+                binding.wifiScanResultRecyclerView.notifyDataSetChanged();
             }
         });
     }
@@ -136,7 +136,7 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         binding.wifiScanResultRecyclerView.setVisibility(isWifiEnable ? View.VISIBLE : View.GONE);
         if (!isWifiEnable) {
             adapter.getDataList().clear();
-            adapter.notifyDataSetChanged();
+            binding.wifiScanResultRecyclerView.notifyDataSetChanged();
         }
         updateSummary(isWifiEnable);
         binding.rescanBtn.setVisibility(isWifiEnable ? View.VISIBLE : View.GONE);

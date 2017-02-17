@@ -199,6 +199,8 @@ public class BaseDevice {
         return false;
     }
 
+    public void holdDisplay(boolean hold, UpdateMode updateMode, int ignoreFrame) {}
+
     public void setStrokeColor(int color) {
     }
 

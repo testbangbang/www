@@ -78,6 +78,12 @@
     <plurals name="minute">
         <item quantity="other">%1$d 分钟</item>
     </plurals>
+    <plurals name="hour">
+        <item quantity="other">%1$d 小时</item>
+    </plurals>
+    <plurals name="day">
+        <item quantity="other">%1$d 天</item>
+    </plurals>
     <string name="never_sleep">永不</string>
     <string name="sleep_summary">无操作 %1$s 后</string>
     <string name="wifi_timeout_summary">在阅读时自动关闭Wifi</string>
@@ -127,5 +133,8 @@
     <string name="ota_auto_summary">自动检查升级</string>
     <string name="model_number_title">设备型号 : </string>
     <string name="firmware_number_title">版本号 : </string>
+    <string name="find_package_from_local">在本地存储中发现升级包，确定升级?</string>
+    <string name="title_update">OTA 升级</string>
+    <string name="no_update">没有升级包.</string>
 
 </resources>

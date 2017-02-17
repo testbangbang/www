@@ -408,6 +408,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return null;
     }
 
+    @Override
+    public List<ReaderImage> getImages(String position) {
+        return null;
+    }
+
     /**
      * Return the plugin display name.
      *
@@ -486,6 +491,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public void setChineseConvertType(ReaderChineseConvertType convertType) {
+
+    }
+
     /**
      * draw content. There are two coordinates system.
      * host coordinates system, the viewportInPage is specified in host coordinates system
@@ -546,6 +556,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
      */
     @Override
     public boolean supportTypefaceAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportConvertBetweenSimplifiedAndTraditionalChineseText() {
         return false;
     }
 

@@ -18,6 +18,7 @@ import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.cache.BitmapSoftLruCache;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.layout.ReaderLayoutManager;
@@ -136,6 +137,15 @@ public class Reader {
     public ReaderDocumentMetadata getDocumentMetadata() {
         return getReaderHelper().getDocumentMetadata();
     }
+
+    public ReaderDocumentMetadata getDocumentMetadataSafely() {
+        ReaderDocumentMetadata metadata = getReaderHelper().getDocumentMetadata();
+        if (metadata != null) {
+            return metadata;
+        }
+        return new ReaderDocumentMetadataImpl();
+    }
+
 
     public ReaderLayoutManager getReaderLayoutManager() {
         return getReaderHelper().getReaderLayoutManager();

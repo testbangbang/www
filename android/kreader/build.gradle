@@ -66,5 +66,7 @@ ext {
     compatibleSdkVersion = 23 // for projects which can't be built with sdk 24+
     compatibleSupportLibraryVersion = '23.4.0' // for projects which can't be built with sdk 24+
 
+    aliyunOssSdkVersion = '2.3.0'
+    wechatSdkWithMtaVersion = '1.0.2'
 }
 
