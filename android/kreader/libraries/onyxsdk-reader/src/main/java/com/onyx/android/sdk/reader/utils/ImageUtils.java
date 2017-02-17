@@ -28,6 +28,7 @@ public class ImageUtils {
     static public native void releaseReflowedPages();
 
     static public native void toRgbwBitmap(final Bitmap dst, final Bitmap src, int orientation);
+    static public native void toColorBitmap(final Bitmap dst, final Bitmap src, int orientation);
 
     static public native boolean isValidPage();
 

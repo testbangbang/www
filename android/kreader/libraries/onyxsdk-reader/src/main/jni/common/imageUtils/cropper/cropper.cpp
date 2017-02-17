@@ -914,6 +914,37 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_toRgbwB
     }
 }
 
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_toColorBitmap
+  (JNIEnv *env, jclass thiz, jobject dstBitmap, jobject srcBitmap, jint orientation) {
+    JNIBitmap dst(env);
+    JNIBitmap src(env);
+    if (!dst.attach(dstBitmap) || !src.attach(srcBitmap)) {
+        return;
+    }
+
+    int sw = src.getInfo().width;
+    int sh = src.getInfo().height;
+    int ss = src.getInfo().stride;
+    int * srcData = src.getPixels();
+
+    int * dstData = dst.getPixels();
+    int ds = dst.getInfo().stride;
+
+    for(int y = 0; y < sh / 2; ++y) {
+        int * srcLine1 = srcData + ss * y * 2 / 4;
+        int * srcLine2 = srcLine1 + ss / 4;
+        int * dstLine = dstData + ds * y / 4;
+        for(int x = 0; x < sw / 2; ++x) {
+            int r = ColorUtils::red(*srcLine1++);
+            int g = ColorUtils::green(*srcLine1++);
+            int w = ColorUtils::alpha(*srcLine2++);
+            int b = ColorUtils::blue(*srcLine2++);
+
+            *dstLine++ = ColorUtils::argb(0xff, r, g, b);
+        }
+    }
+}
+
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_isValidPage
   (JNIEnv *env, jclass thiz) {
     return DeviceUtils::isValid(env);
