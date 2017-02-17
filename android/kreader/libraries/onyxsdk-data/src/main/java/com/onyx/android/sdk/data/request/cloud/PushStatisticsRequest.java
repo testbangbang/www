@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
 
@@ -41,6 +42,7 @@ public class PushStatisticsRequest extends BaseCloudRequest {
         if (modelList == null || modelList.size() <= 0) {
             return;
         }
+        updateStatisticsMac(context, modelList);
 
         Response<JsonRespone> response = null;
         try {
@@ -56,4 +58,13 @@ public class PushStatisticsRequest extends BaseCloudRequest {
         }
     }
 
+    private void updateStatisticsMac(final Context context, final List<OnyxStatisticsModel> saveStatistic) {
+        String mac = DeviceUtils.getMacAddress(context);
+        if (StringUtils.isNullOrEmpty(mac)) {
+            return;
+        }
+        for (OnyxStatisticsModel onyxStatisticsModel : saveStatistic) {
+            onyxStatisticsModel.setMac(mac);
+        }
+    }
 }
