@@ -9,6 +9,7 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +43,13 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
     private String comment;
     @Column
     private Integer score;
+
+    public OnyxStatisticsModel() {
+    }
+
+    public OnyxStatisticsModel(String md5, String md5short, String sid, Integer type, Date eventTime) {
+        super(md5, md5short, sid, type, eventTime);
+    }
 
     public List<String> getAuthor() {
         return author;
@@ -129,5 +137,9 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
 
     public void setScore(Integer score) {
         this.score = score;
+    }
+
+    public static OnyxStatisticsModel create(String md5, String md5short, String sid, Integer type, Date eventTime) {
+        return new OnyxStatisticsModel(md5, md5short, sid, type, eventTime);
     }
 }
