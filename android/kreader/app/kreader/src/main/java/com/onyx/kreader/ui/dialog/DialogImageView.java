@@ -1,10 +1,12 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.view.View;
 
 import com.onyx.kreader.R;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.view.ZoomImageView;
 
 /**
@@ -33,6 +35,13 @@ public class DialogImageView extends DialogBase {
             }
         });
         imageView.setImageBitmap(bitmap);
+
+        this.setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                ReaderDeviceManager.exitAnimationUpdate(true);
+            }
+        });
     }
 
 }
