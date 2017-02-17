@@ -69,13 +69,18 @@ public class DataStatisticsFragment extends StatisticsFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_data_analysis, container, false);
         ButterKnife.bind(this, view);
+        initView();
         fillLineChart();
         initGrid();
         return view;
     }
 
-    private void loadReadRank() {
-        double readingLevel = statisticsResult == null ? 0 : statisticsResult.getReadingLevel();
+    private void initView() {
+        readingTimeText.setText(getContext().getString(R.string.reading_time_every_day, 0.00f, 0, 0));
+        loadReadRank(0.00f);
+    }
+
+    private void loadReadRank(double readingLevel) {
         String title = getContext().getString(R.string.reading_level);
         title = String.format(title, readingLevel);
         SpannableString str = new SpannableString(title);
@@ -279,7 +284,7 @@ public class DataStatisticsFragment extends StatisticsFragment {
         if (pageStatistics != null) {
             pageStatistics.notifyDataSetChanged();
         }
-        loadReadRank();
+        loadReadRank(statisticsResult == null ? 0 : statisticsResult.getReadingLevel());
         loadReadTimeDistribution();
         loadAverageReadTime();
     }

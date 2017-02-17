@@ -58,10 +58,16 @@ public class ReadRecordFragment extends StatisticsFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_read_record, container, false);
         ButterKnife.bind(this, view);
+        initView();
         initCategoryPage();
         initReadMostPage();
         initReadCarefullyPage();
         return view;
+    }
+
+    private void initView() {
+        textReadMost.setText(getContext().getString(R.string.read_longest_book, ""));
+        textReadCarefully.setText(getContext().getString(R.string.read_most_carefully_book, ""));
     }
 
     private void loadBookName() {
