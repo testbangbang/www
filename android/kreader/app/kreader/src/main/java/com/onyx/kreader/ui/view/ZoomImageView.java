@@ -256,6 +256,8 @@ public class ZoomImageView extends ImageView {
      */
     private Runnable mWaitReverseReset;
 
+    private ScaleType defaultScaleType = ScaleType.FIT_CENTER;
+
     private long lastActionDownTime = -1;
 
     /**
@@ -445,6 +447,7 @@ public class ZoomImageView extends ImageView {
     @Override
     public void setScaleType(final ScaleType scaleType) {
 
+        defaultScaleType = scaleType;
         super.setScaleType(ImageView.ScaleType.MATRIX);
         Log.w(TAG, "setScaleType: ignore this parameter on ZoomImageView, fixed to ScaleType.MATRIX.");
     }
@@ -686,7 +689,7 @@ public class ZoomImageView extends ImageView {
             // to or less than the corresponding dimension of the view (minus padding).
             // The image is then centered in the view
             // leave to super class
-            super.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            super.setScaleType(defaultScaleType);
             // the internal Matrix in the super class(that can get with ImageView#getImageMatrix)
             // never updated when called setScaleType on current implementation.
             // therefore call setFrame to update internal Matrix.
@@ -1258,6 +1261,17 @@ public class ZoomImageView extends ImageView {
         super.setColorFilter(mSavedColorFilter);
     }
 
+    private final float getDefaultScale() {
+        if (defaultScaleType == ScaleType.FIT_XY && getDrawable() != null) {
+            if (getWidth() > 0 && getHeight() > 0) {
+                float zx = getDrawable().getIntrinsicWidth() / (float) getWidth();
+                float zy = getDrawable().getIntrinsicHeight() / (float) getHeight();
+                return Math.min(zx, zy);
+            }
+        }
+        return DEFAULT_SCALE;
+    }
+
     /**
      * get the zooming scale</br>
      * return minimum one of MSCALE_X and MSCALE_Y
@@ -1268,7 +1282,7 @@ public class ZoomImageView extends ImageView {
         final float scale = Math.min(mMatrixCache[Matrix.MSCALE_X], mMatrixCache[Matrix.MSCALE_X]);
         if (scale <= 0f) {	// for prevent disappearing reversing
             if (DEBUG) Log.w(TAG, "getMatrixScale:scale<=0, set to default");
-            return DEFAULT_SCALE;
+            return getDefaultScale();
         }
         return scale;
     }
