@@ -48,7 +48,7 @@ public abstract class ReaderMenu {
         return fullscreen;
     }
 
-    public void fullScreen(boolean fullscreen) {
+    public void setFullScreen(boolean fullscreen) {
         this.fullscreen = fullscreen;
     }
 }

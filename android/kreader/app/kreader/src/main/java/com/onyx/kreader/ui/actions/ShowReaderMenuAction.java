@@ -112,7 +112,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void showReaderMenu(final ReaderDataHolder readerDataHolder, boolean fullscreen) {
         ReaderMenu readerMenu = getReaderMenu(readerDataHolder);
-        readerMenu.fullScreen(fullscreen);
+        readerMenu.setFullScreen(fullscreen);
         readerMenu.show(getReaderMenuState(readerDataHolder));
     }
 
