@@ -74,6 +74,13 @@ public class ReaderDeviceManager {
         }
     }
 
+    public static void applyRegalUpdate(final Context context, final View view) {
+        if (!isUsingRegal(context)) {
+            return;
+        }
+        epdDevice.setUpdateMode(view, UpdateMode.REGAL);
+    }
+
     public static boolean isUsingRegal(Context context) {
         boolean useRegal = SingletonSharedPreference.isEnableRegal(context);
         return EpdController.supportRegal() && useRegal;

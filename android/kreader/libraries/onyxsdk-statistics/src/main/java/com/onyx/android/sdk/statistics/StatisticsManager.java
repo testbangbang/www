@@ -67,6 +67,10 @@ public class StatisticsManager {
         getImpl().onDictionaryLookupEvent(context, originText);
     }
 
+    public void onDocumentFinished(final Context context, final String comment, final int score) {
+        getImpl().onDocumentFinished(context, comment, score);
+    }
+
     public void onNetworkChangedEvent(final Context context, boolean connected, int networkType) {
         getImpl().onNetworkChanged(context, connected, networkType);
     }
