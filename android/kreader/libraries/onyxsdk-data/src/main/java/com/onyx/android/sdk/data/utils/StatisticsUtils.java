@@ -30,7 +30,7 @@ public class StatisticsUtils {
 
     public static void saveStatisticsList(final Context context,
                                           final Collection<OnyxStatisticsModel> list) {
-        final DatabaseWrapper database= FlowManager.getDatabase(OnyxStatisticsDatabase.NAME).getWritableDatabase();
+        final DatabaseWrapper database = FlowManager.getDatabase(OnyxStatisticsDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
         for(OnyxStatisticsModel statisticsData : list) {
             statisticsData.save();
