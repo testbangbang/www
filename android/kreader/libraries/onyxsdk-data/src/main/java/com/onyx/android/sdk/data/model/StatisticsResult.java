@@ -19,7 +19,7 @@ public class StatisticsResult {
     private Book longestReadTimeBook;
     private Book mostCarefulBook;
     private List<Book> recentBooks;
-    private LinkedMap<String, Integer> bookTypeAgg;
+    private LinkedMap<String, Double> bookTypeAgg;
 
     private EventTypeAggBean eventTypeAgg = new EventTypeAggBean();
 
@@ -95,11 +95,11 @@ public class StatisticsResult {
         this.eventTypeAgg = eventTypeAgg;
     }
 
-    public LinkedMap<String, Integer> getBookTypeAgg() {
+    public LinkedMap<String, Double> getBookTypeAgg() {
         return bookTypeAgg;
     }
 
-    public void setBookTypeAgg(LinkedMap<String, Integer> bookTypeAgg) {
+    public void setBookTypeAgg(LinkedMap<String, Double> bookTypeAgg) {
         this.bookTypeAgg = bookTypeAgg;
     }
 }

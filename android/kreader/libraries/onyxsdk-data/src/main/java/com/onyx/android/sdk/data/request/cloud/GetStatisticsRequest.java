@@ -33,7 +33,7 @@ import retrofit2.Response;
 
 public class GetStatisticsRequest extends BaseCloudRequest {
 
-    private final static int RECENT_BOOK_MAX_COUNT = 7;
+    public final static int RECENT_BOOK_MAX_COUNT = 5;
 
     private Context context;
     private StatisticsResult statisticsResult;
@@ -66,7 +66,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         statisticsResult.setTotalReadTime(getTotalReadTime());
         eventTypeAggBean.setRead(getReadCount());
         eventTypeAggBean.setFinish(getFinishCount());
-        eventTypeAggBean.setLookupDic(getLookupDicCount());
+        eventTypeAggBean.setAnnotation(getAnnotaionCount());
         statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());
         statisticsResult.setDailyAvgReadTime(getReadTimeEveryDay());
         statisticsResult.setLongestReadTimeBook(getLongestBook());
@@ -103,6 +103,11 @@ public class GetStatisticsRequest extends BaseCloudRequest {
 
     private int getLookupDicCount() {
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_LOOKUP_DIC);
+        return statisticsModels.size();
+    }
+
+    private int getAnnotaionCount() {
+        List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_ANNOTATION);
         return statisticsModels.size();
     }
 
