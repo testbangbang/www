@@ -698,7 +698,7 @@ public class ZoomImageView extends ImageView {
             // set the initial state to idle, get and save the internal Matrix.
             mState = -1; setState(STATE_NON);
             // get the internally calculated zooming scale to fit the view
-            mMinScale = getMatrixScale();
+//            mMinScale = getMatrixScale();
             mCurrentDegrees = 0.f;
         }
         mIsRestored = false;
