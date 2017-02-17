@@ -119,7 +119,7 @@ public class EventReceiver {
     }
 
     @Subscribe
-    public void onDocumentCFinished(final DocumentFinishEvent event) {
+    public void onDocumentFinished(final DocumentFinishEvent event) {
         if (!isEnable()) {
             return;
         }
