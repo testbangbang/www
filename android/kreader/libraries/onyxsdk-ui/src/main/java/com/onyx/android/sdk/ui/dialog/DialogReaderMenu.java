@@ -29,7 +29,6 @@ public class DialogReaderMenu extends Dialog {
     private ImageButton nextButton;
 
     public DialogReaderMenu(Context context, ReaderMenu.ReaderMenuCallback menuCallback, boolean fullscreen) {
-//        super(context, android.R.style.Theme_Translucent_NoTitleBar);
         super(context, fullscreen ? android.R.style.Theme_Translucent_NoTitleBar_Fullscreen : android.R.style.Theme_Translucent_NoTitleBar);
         this.context = context;
         readerMenuCallback = menuCallback;

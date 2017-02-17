@@ -62,7 +62,6 @@ import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.dialog.DialogTextStyle;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.device.DeviceConfig;
-import com.onyx.kreader.ui.statistics.StatisticsActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,7 +112,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void showReaderMenu(final ReaderDataHolder readerDataHolder, boolean fullscreen) {
         ReaderMenu readerMenu = getReaderMenu(readerDataHolder);
-        readerMenu.setFullscreen(fullscreen);
+        readerMenu.fullScreen(fullscreen);
         readerMenu.show(getReaderMenuState(readerDataHolder));
     }
 
