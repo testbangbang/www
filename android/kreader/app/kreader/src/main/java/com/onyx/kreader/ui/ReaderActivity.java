@@ -415,6 +415,7 @@ public class ReaderActivity extends ActionBarActivity {
     private void prepareUpdateMode(final RequestFinishEvent event) {
         if (isAnyPopup()) {
             ReaderDeviceManager.resetUpdateMode(surfaceView);
+            ReaderDeviceManager.resetUpdateMode(getStatusBar());
             return;
         }
 
@@ -447,6 +448,7 @@ public class ReaderActivity extends ActionBarActivity {
         if (!getStatusBar().isShown()) {
             return;
         }
+        ReaderDeviceManager.applyRegalUpdate(this, getStatusBar());
         ReaderDeviceManager.holdDisplay(true);
     }
 
