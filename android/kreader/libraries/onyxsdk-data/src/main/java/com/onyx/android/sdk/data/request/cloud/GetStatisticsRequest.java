@@ -145,7 +145,6 @@ public class GetStatisticsRequest extends BaseCloudRequest {
     }
 
     private Book getLongestBook() {
-        Book book = new Book();
         Map<String, Long> timeMap = new HashMap<>();
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE);
         for (OnyxStatisticsModel statisticsModel : statisticsModels) {
@@ -158,8 +157,9 @@ public class GetStatisticsRequest extends BaseCloudRequest {
             timeMap.put(md5short, times);
         }
         if (timeMap.size() == 0) {
-            return book;
+            return null;
         }
+        Book book = new Book();
 
         Collection<Long> c = timeMap.values();
         Object[] obj = c.toArray();
@@ -191,7 +191,6 @@ public class GetStatisticsRequest extends BaseCloudRequest {
     }
 
     private Book getMostCarefullyBook() {
-        Book book = new Book();
         Map<String, Long> countMap = new HashMap<>();
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_LOOKUP_DIC);
         statisticsModels.addAll(StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_ANNOTATION));
@@ -206,8 +205,9 @@ public class GetStatisticsRequest extends BaseCloudRequest {
             countMap.put(md5short, count);
         }
         if (countMap.size() == 0) {
-            return book;
+            return null;
         }
+        Book book = new Book();
 
         Collection<Long> c = countMap.values();
         Object[] obj = c.toArray();

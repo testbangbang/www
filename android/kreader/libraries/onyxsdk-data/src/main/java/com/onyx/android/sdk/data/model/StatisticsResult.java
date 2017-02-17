@@ -64,7 +64,7 @@ public class StatisticsResult {
     }
 
     public Book getMostCarefulBook() {
-        return mostCarefulBook;
+        return mostCarefulBook == null ? longestReadTimeBook : mostCarefulBook;
     }
 
     public void setMostCarefulBook(Book mostCarefulBook) {
