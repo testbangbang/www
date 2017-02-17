@@ -53,9 +53,9 @@ public class DashedLine extends View {
         Path path = new Path();
         path.moveTo(0, 0);
         if (orientation == Orientation.horizontal) {
-            path.lineTo(900, 0);
+            path.lineTo(getMeasuredWidth(), 0);
         }else {
-            path.lineTo(0, 900);
+            path.lineTo(0, getMeasuredHeight());
         }
         PathEffect effects = new DashPathEffect(new float[]{4, 4, 4, 4}, 2);
         paint.setPathEffect(effects);
