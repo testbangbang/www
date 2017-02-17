@@ -258,10 +258,11 @@
   <string name="view_slideshow_status_bar_battery" formatted="false">电量: %d/%d (%%)</string>
   <string name="slideshow_quit_warning">按Back键退出自动翻页!</string>
   <string name="code_page">设置文字编码...</string>
-  <string name="read_count">阅读数量</string>
-  <string name="read_record">阅读记录(条)</string>
+  <string name="read_count">读过的书(本)</string>
+  <string name="finish_count">读完的书(本)</string>
   <string name="read_time">阅读时长(h)</string>
   <string name="look_up_dictionary_count">查阅字典次数</string>
+  <string name="statistics_annotation_count">批注数量</string>
   <string name="data_analysis">数据分析</string>
   <string name="reading_record">阅读记录</string>
   <string name="reading_level" formatted="false">你的阅读排名超过了%.2f%%的人</string>

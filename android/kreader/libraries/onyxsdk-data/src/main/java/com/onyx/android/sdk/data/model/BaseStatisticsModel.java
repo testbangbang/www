@@ -46,6 +46,17 @@ public abstract class BaseStatisticsModel extends BaseModel {
     @Column
     private Integer status = DATA_STATUS_NOT_PUSH;
 
+    public BaseStatisticsModel() {
+    }
+
+    public BaseStatisticsModel(String md5, String md5short, String sid, Integer type, Date eventTime) {
+        this.md5 = md5;
+        this.md5short = md5short;
+        this.sid = sid;
+        this.type = type;
+        this.eventTime = eventTime;
+    }
+
     public Date getEventTime() {
         return eventTime;
     }
