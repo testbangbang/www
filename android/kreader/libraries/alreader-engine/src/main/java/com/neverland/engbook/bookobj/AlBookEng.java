@@ -1,5 +1,6 @@
 package com.neverland.engbook.bookobj;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.neverland.engbook.forpublic.AlBitmap;
@@ -6273,7 +6274,6 @@ public class AlBookEng{
 				}
 
 				if ((oi.style[i] & AlStyles.SL_IMAGE) != 0) {
-					Log.e("alengine", "found image: " + x + ", " + y + ", " + oi.width[i] + ", " + oi.height);
 					long style = oi.style[i];
 					int widthImage = oi.width[i];
 					AlOneImage ai = null;
@@ -6308,9 +6308,7 @@ public class AlBookEng{
 
 								AlRect rect = new AlRect();
 								rect.set(x, y - h, x + w, y);
-								Log.e("alengine", "scaled image: " + rect.x0 + ", " + rect.y0 +
-										", " + rect.x1 + ", " + rect.y1);
-								textOnScreen.addImage(oi.pos[i], rect, b);
+								textOnScreen.addImage(oi.pos[i], rect, b.bmp.copy(Bitmap.Config.ARGB_8888, false));
 							}
 						}
 					}

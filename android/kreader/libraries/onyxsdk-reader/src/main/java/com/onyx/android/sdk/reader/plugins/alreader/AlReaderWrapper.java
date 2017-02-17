@@ -98,7 +98,10 @@ public class AlReaderWrapper {
         bookOpt.codePageDefault = documentOptions.getCodePageFallback();
         bookOpt.formatOptions = 0;
         bookOpt.readPosition = 0;
-        bookEng.openBook(path, bookOpt);
+        if (bookEng.openBook(path, bookOpt) != TAL_RESULT.OK) {
+            return ERROR_FILE_INVALID;
+        }
+        setChineseConvertType(documentOptions.getChineseConvertType());
         return NO_ERROR;
     }
 
@@ -368,7 +371,7 @@ public class AlReaderWrapper {
 
                 @Override
                 public Bitmap getBitmap() {
-                    return image.bitmap.bmp;
+                    return image.bitmap;
                 }
             });
         }
