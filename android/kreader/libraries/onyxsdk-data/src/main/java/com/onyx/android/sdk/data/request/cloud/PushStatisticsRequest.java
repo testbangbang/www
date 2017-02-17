@@ -20,8 +20,6 @@ import retrofit2.Response;
 
 public class PushStatisticsRequest extends BaseCloudRequest {
 
-    private static final String TAG = "PushStatisticsRequest";
-
     private final static int MAX_PUSH_COUNT = 1000;
     private Context context;
     private List<OnyxStatisticsModel> saveStatistic;
@@ -33,28 +31,28 @@ public class PushStatisticsRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        if (saveStatistic !=null) {
+        if (saveStatistic != null) {
             StatisticsUtils.saveStatisticsList(context, saveStatistic);
         }
         if (!DeviceUtils.isWifiConnected(context)) {
             return;
         }
-        List<OnyxStatisticsModel> onyxStatisticseModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, MAX_PUSH_COUNT, BaseStatisticsModel.DATA_STATUS_NOT_PUSH);
-        if (onyxStatisticseModels == null || onyxStatisticseModels.size() == 0) {
+        List<OnyxStatisticsModel> modelList = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, MAX_PUSH_COUNT, BaseStatisticsModel.DATA_STATUS_NOT_PUSH);
+        if (modelList == null || modelList.size() <= 0) {
             return;
         }
 
         Response<JsonRespone> response = null;
         try {
-            response = executeCall(ServiceFactory.getStatisticsService(parent.getCloudConf().getStatistics()).pushStatistics(onyxStatisticseModels));
+            response = executeCall(ServiceFactory.getStatisticsService(parent.getCloudConf().getStatistics()).pushStatistics(modelList));
         } catch (Exception e) {
 
         }
         if (response != null && response.isSuccessful()) {
-            for (OnyxStatisticsModel onyxStatisticseModel : onyxStatisticseModels) {
-                onyxStatisticseModel.setStatus(BaseStatisticsModel.DATA_STATUS_PUSHED);
+            for (OnyxStatisticsModel model : modelList) {
+                model.setStatus(BaseStatisticsModel.DATA_STATUS_PUSHED);
             }
-            StatisticsUtils.saveStatisticsList(context, onyxStatisticseModels);
+            StatisticsUtils.saveStatisticsList(context, modelList);
         }
     }
 

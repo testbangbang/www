@@ -42,7 +42,7 @@ public class OnyxStatistics implements StatisticsBase {
     public boolean init(Context context, Map<String, String> args) {
         cloudStore = new CloudStore();
         statisticsQueue = new ArrayList<>();
-        return false;
+        return true;
     }
 
     private OnyxStatisticsModel getStatisticsData(Context context, int type) {
