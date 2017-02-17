@@ -52,13 +52,8 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         }
     }
 
-    private void readCloudData(CloudManager parent) {
-        Response<StatisticsResult> response = null;
-        try {
-            response = executeCall(ServiceFactory.getStatisticsService(parent.getCloudConf().getStatistics()).getStatistics(DeviceUtils.getMacAddress(context)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void readCloudData(CloudManager parent) throws Exception {
+        Response<StatisticsResult> response = executeCall(ServiceFactory.getStatisticsService(parent.getCloudConf().getStatistics()).getStatistics(DeviceUtils.getMacAddress(context)));
         if (response != null && response.isSuccessful()) {
             statisticsResult = response.body();
             statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());

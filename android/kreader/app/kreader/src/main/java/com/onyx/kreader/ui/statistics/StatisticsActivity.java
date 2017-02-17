@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -101,12 +102,16 @@ public class StatisticsActivity extends ActionBarActivity {
         cloudStore.submitRequest(this, statisticsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                StatisticsResult statisticsResult = statisticsRequest.getStatisticsResult();
-                dataStatisticsFragment.setStatisticsResult(statisticsResult);
-                readRecordFragment.setStatisticsResult(statisticsResult);
                 if (dialogLoading != null) {
                     dialogLoading.dismiss();
                 }
+                if (e != null) {
+                    Toast.makeText(StatisticsActivity.this, R.string.load_statistical_data_failed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                StatisticsResult statisticsResult = statisticsRequest.getStatisticsResult();
+                dataStatisticsFragment.setStatisticsResult(statisticsResult);
+                readRecordFragment.setStatisticsResult(statisticsResult);
             }
         });
     }

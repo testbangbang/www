@@ -290,4 +290,5 @@
   <string name="magazine">期刊杂志</string>
   <string name="fiction">小说</string>
   <string name="other">其他</string>
+  <string name="load_statistical_data_failed">加载统计数据失败</string>
 </resources>
