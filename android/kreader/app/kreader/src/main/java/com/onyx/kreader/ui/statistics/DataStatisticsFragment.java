@@ -32,7 +32,6 @@ import com.onyx.kreader.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -180,7 +179,7 @@ public class DataStatisticsFragment extends StatisticsFragment {
         readingChart.getLegend().setEnabled(false);
     }
 
-    private void loadReadTimeDis() {
+    private void loadReadTimeDistribution() {
         if (statisticsResult == null) {
             return;
         }
@@ -281,7 +280,7 @@ public class DataStatisticsFragment extends StatisticsFragment {
             pageStatistics.notifyDataSetChanged();
         }
         loadReadRank();
-        loadReadTimeDis();
+        loadReadTimeDistribution();
         loadAverageReadTime();
     }
 }
