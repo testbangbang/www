@@ -69,6 +69,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.ImageView;
 
+import com.onyx.kreader.device.ReaderDeviceManager;
+
 /**
  * ImageView with zooming/dragging/rotating image with touch
  */
@@ -296,6 +298,7 @@ public class ZoomImageView extends ImageView {
         @Override
         public void run() {
             if (mState == STATE_CHECKING) {
+                ReaderDeviceManager.enterAnimationUpdate(false);
                 setState(STATE_ROTATING);
                 callOnStartRotationListener();
             }
@@ -513,6 +516,7 @@ public class ZoomImageView extends ImageView {
                 switch (mState) {
                     case STATE_WAITING:
                         if (checkTouchMoved(event)) {
+                            ReaderDeviceManager.enterAnimationUpdate(false);
                             removeCallbacks(mWaitImageReset);
                             setState(STATE_DRAGING);
                             return true;
@@ -524,6 +528,7 @@ public class ZoomImageView extends ImageView {
                         break;
                     case STATE_CHECKING:
                         if (checkTouchMoved(event)) {
+                            ReaderDeviceManager.enterAnimationUpdate(false);
                             startZoom(event);
                             return true;
                         }
@@ -552,6 +557,7 @@ public class ZoomImageView extends ImageView {
                 }
             case MotionEvent.ACTION_POINTER_UP:
                 setState(STATE_NON);
+                ReaderDeviceManager.exitAnimationUpdate(true);
                 break;
         }
         return super.onTouchEvent(event);
