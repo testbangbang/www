@@ -81,12 +81,13 @@ public class DataStatisticsFragment extends StatisticsFragment {
     }
 
     private void loadReadRank(double readingLevel) {
+        readingLevel = readingLevel * 100;
         String title = getContext().getString(R.string.reading_level);
         title = String.format(title, readingLevel);
         SpannableString str = new SpannableString(title);
         String level = String.format("%.2f", readingLevel);
         int start = title.indexOf(level);
-        str.setSpan(new RelativeSizeSpan(4f), title.indexOf(level), start + level.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        str.setSpan(new RelativeSizeSpan(4f), start, start + level.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         readingRankText.setText(str);
     }
 
