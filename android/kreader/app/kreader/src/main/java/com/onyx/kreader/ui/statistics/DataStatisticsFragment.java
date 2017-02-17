@@ -129,7 +129,7 @@ public class DataStatisticsFragment extends StatisticsFragment {
                         viewHolder.setText(R.id.value, String.valueOf(value));
                         break;
                     case 1:
-                        title = R.string.read_record;
+                        title = R.string.finish_count;
                         value = statisticsResult == null ? 0 : statisticsResult.getEventTypeAgg().getFinish();
                         viewHolder.setText(R.id.value, String.valueOf(value));
                         break;
@@ -143,8 +143,8 @@ public class DataStatisticsFragment extends StatisticsFragment {
                         viewHolder.setText(R.id.value, str);
                         break;
                     case 3:
-                        title = R.string.look_up_dictionary_count;
-                        value = statisticsResult == null ? 0 : statisticsResult.getEventTypeAgg().getLookupDic();
+                        title = R.string.statistics_annotation_count;
+                        value = statisticsResult == null ? 0 : statisticsResult.getEventTypeAgg().getAnnotation();
                         viewHolder.setText(R.id.value, String.valueOf(value));
                         break;
                 }
