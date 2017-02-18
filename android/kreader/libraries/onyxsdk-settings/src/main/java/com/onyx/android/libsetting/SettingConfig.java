@@ -147,30 +147,34 @@ public class SettingConfig {
         String name = "";
         switch (currentDeviceType) {
             case DeviceType.IMX6:
-                name = CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT)?Constant.IMX6_KIT_KAT_BASED_CONFIG_NAME:
+                name = CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ? Constant.IMX6_KIT_KAT_BASED_CONFIG_NAME :
                         Constant.IMX6_ICS_BASED_CONFIG_NAME;
                 break;
             case DeviceType.RK:
                 name = Constant.RK3026_BASED_CONFIG_NAME;
                 break;
         }
-        return objectFromRawResource(context, name);
+        return objectFromRawResource(context, buildJsonConfigName(name));
     }
 
     private GObject objectFromDebugModel(Context context) {
         if (BuildConfig.DEBUG && useDebugConfig) {
-            return objectFromRawResource(context, Constant.DEBUG_CONFIG_NAME);
+            return objectFromRawResource(context, buildJsonConfigName(Constant.DEBUG_CONFIG_NAME));
         }
         return null;
     }
 
     private GObject objectFromModel(Context context) {
         final String name = Build.MODEL;
-        return objectFromRawResource(context, name);
+        return objectFromRawResource(context, buildJsonConfigName(name));
     }
 
     private GObject objectFromNonManufactureBasedDefaultConfig(Context context) {
-        return objectFromRawResource(context, Constant.NON_MANUFACTURE_BASED_CONFIG_NAME);
+        return objectFromRawResource(context, buildJsonConfigName(Constant.NON_MANUFACTURE_BASED_CONFIG_NAME));
+    }
+
+    private String buildJsonConfigName(String target) {
+        return Constant.SETTING_JSON_PREFIX + target;
     }
 
     private GObject objectFromRawResource(Context context, final String name) {
