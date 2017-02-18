@@ -179,10 +179,7 @@ public class StatisticsUtils {
     }
 
     public static List<Integer> getEventHourlyAgg(final List<OnyxStatisticsModel> statisticsList, final int count) {
-        List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            result.add(0);
-        }
+        List<Integer> result = new ArrayList<>(count);
         for (OnyxStatisticsModel statisticsModel : statisticsList) {
             int hour = statisticsModel.getEventTime().getHours();
             if (hour < result.size()) {
