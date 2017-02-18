@@ -1,0 +1,55 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        sourceSets.main {
+            aidl.srcDirs = ['src/main/java']
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../proguard-rules.pro', 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            minifyEnabled false
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':libraries:onyxsdk-base')
+    compile files('src/main/libs/htmlcleaner-2.19.jar')
+
+    compile "org.jsoup:jsoup:$rootProject.jsoupVersion"
+    compile "nl.siegmann.epublib:epub-core:$rootProject.epublibVersion@aar"
+
+    compile "org.slf4j:slf4j-api:$rootProject.slf4jVersion"
+    debugCompile "org.slf4j:slf4j-android:$rootProject.slf4jVersion"
+    releaseCompile "org.slf4j:slf4j-nop:$rootProject.slf4jVersion"
+}
