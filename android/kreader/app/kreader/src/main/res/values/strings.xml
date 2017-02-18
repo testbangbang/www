@@ -332,7 +332,7 @@
     <string name="data_analysis">Data analysis</string>
     <string name="reading_record">Reading record</string>
     <string name="reading_level" formatted="false">You read no more than %.2f%%of the people</string>
-    <string name="reading_time_every_day" formatted="false">On an average day you read %.2 f hours, mainly reading time distribution in %d:00 - %d:00</string>
+    <string name="reading_time_every_day" formatted="false">On an average day you read %.2f hours, mainly reading time distribution in %d:00 - %d:00</string>
     <string name="read_longest_book" formatted="false">A book to read for the longest: %s</string>
     <string name="read_most_carefully_book" formatted="false">Read the book carefully : %s</string>
     <string name="read_start_time" formatted="false">%s start</string>
