@@ -11,7 +11,12 @@
     "com.android.development",
     "com.android.speechrecorder",
     "com.android.vpndialogs",
-    "com.android.settings"
+    "com.android.settings",
+    "com.android.browser",
+    "com.android.email",
+    "com.android.calendar",
+    "com.android.deskclock",
+    "com.onyx.deskclock"
   ],
   "test_apps": [
     "com.onyx.test",

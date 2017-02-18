@@ -154,6 +154,7 @@ public class DeviceConfig {
             defaultCustomizedIconAppsMap.put("com.android.soundrecorder", "app_recorder");
             defaultCustomizedIconAppsMap.put("com.google.android.gms", "app_google_setting");
             defaultCustomizedIconAppsMap.put("com.onyx.android.note", "app_note");
+            defaultCustomizedIconAppsMap.put("com.onyx.calculator", "app_calculator");
         }
         if (backend.hasKey(CUSTOMIZED_ICON_APPS_MAPS)) {
             defaultCustomizedIconAppsMap.putAll((Map<String, String>) (backend.getObject(CUSTOMIZED_ICON_APPS_MAPS)));
