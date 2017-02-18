@@ -52,18 +52,7 @@ public class StatisticsTest extends ActivityInstrumentationTestCase2<ReaderTestA
 
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListByStatus(getActivity(), BaseStatisticsModel.DATA_STATUS_TEST);
         assertTrue(statisticsModels.size() > 0);
-        List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < maxHour; i++) {
-            result.add(0);
-        }
-        for (OnyxStatisticsModel statisticsModel : statisticsModels) {
-            int hour = statisticsModel.getEventTime().getHours();
-            if (hour < result.size()) {
-                int value = result.get(hour);
-                value ++;
-                result.set(hour, value);
-            }
-        }
+        List<Integer> result = StatisticsUtils.getEventHourlyAgg(statisticsModels, maxHour);
         StatisticsUtils.deleteStatisticsList(getActivity(), statisticsModels);
 
         for (int i = 0; i < result.size(); i++) {
@@ -86,31 +75,11 @@ public class StatisticsTest extends ActivityInstrumentationTestCase2<ReaderTestA
         }
         StatisticsUtils.saveStatisticsList(getActivity(), testStatistics);
 
-        Map<String, Long> timeMap = new HashMap<>();
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(getActivity(), BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE, BaseStatisticsModel.DATA_STATUS_TEST);
-        for (OnyxStatisticsModel statisticsModel : statisticsModels) {
-            String md5short = statisticsModel.getMd5short();
-            long times = statisticsModel.getDurationTime();
-            if (timeMap.containsKey(md5short)) {
-                times = timeMap.get(md5short);
-                times += statisticsModel.getDurationTime();
-            }
-            timeMap.put(md5short, times);
-        }
+        Book longestBook = StatisticsUtils.getLongestBook(statisticsModels);
         StatisticsUtils.deleteStatisticsList(getActivity(), testStatistics);
-        assertTrue(timeMap.size() >= 0);
-
-        Collection<Long> c = timeMap.values();
-        Object[] obj = c.toArray();
-        Arrays.sort(obj);
-        long maxValue = (long) obj[obj.length-1];
-        String md5shortOfMaxValue = "";
-        for (String md5 : timeMap.keySet()) {
-            if (maxValue == timeMap.get(md5)) {
-                md5shortOfMaxValue = md5;
-            }
-        }
-        assertTrue(randomMd5short.equals(md5shortOfMaxValue));
+        assertTrue(longestBook != null);
+        assertTrue(randomMd5short.equals(longestBook.getMd5short()));
     }
 
     public void testCarefullyBook() {
@@ -128,62 +97,41 @@ public class StatisticsTest extends ActivityInstrumentationTestCase2<ReaderTestA
         }
         StatisticsUtils.saveStatisticsList(getActivity(), testStatistics);
 
-        Map<String, Long> countMap = new HashMap<>();
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(getActivity(), BaseStatisticsModel.DATA_TYPE_LOOKUP_DIC, BaseStatisticsModel.DATA_STATUS_TEST);
         statisticsModels.addAll(StatisticsUtils.loadStatisticsList(getActivity(), BaseStatisticsModel.DATA_TYPE_ANNOTATION, BaseStatisticsModel.DATA_STATUS_TEST));
         statisticsModels.addAll(StatisticsUtils.loadStatisticsList(getActivity(), BaseStatisticsModel.DATA_TYPE_TEXT_SELECTED, BaseStatisticsModel.DATA_STATUS_TEST));
-        for (OnyxStatisticsModel statisticsModel : statisticsModels) {
-            String md5short = statisticsModel.getMd5short();
-            long count = 1;
-            if (countMap.containsKey(md5short)) {
-                count = countMap.get(md5short);
-                count++;
-            }
-            countMap.put(md5short, count);
-        }
+        Book mostCarefullyBook = StatisticsUtils.getMostCarefullyBook(statisticsModels);
         StatisticsUtils.deleteStatisticsList(getActivity(), testStatistics);
-        assertTrue(countMap.size() > 0);
-
-        Collection<Long> c = countMap.values();
-        Object[] obj = c.toArray();
-        Arrays.sort(obj);
-        long maxValue = (long) obj[obj.length-1];
-        String md5shortOfMaxValue = "";
-        for (String md5 : countMap.keySet()) {
-            if (maxValue == countMap.get(md5)) {
-                md5shortOfMaxValue = md5;
-            }
-        }
-        assertTrue(randomMd5short.equals(md5shortOfMaxValue));
+        assertTrue(mostCarefullyBook != null);
+        assertTrue(randomMd5short.equals(mostCarefullyBook.getMd5short()));
     }
 
     public void testRecentBooks() {
         StatisticsUtils.deleteStatisticsListByStatus(getActivity(), BaseStatisticsModel.DATA_STATUS_TEST);
         int testCount = 20;
-        String md5 = "";
+        String md5short;
         List<OnyxStatisticsModel> testStatistics = new ArrayList<>();
         List<String> md5List = new ArrayList<>();
         for (int i = 0; i < testCount; i++) {
-            md5 = UUID.randomUUID().toString();
+            md5short = UUID.randomUUID().toString();
             Date date = new Date();
             date.setSeconds(i);
-            OnyxStatisticsModel statistics = OnyxStatisticsModel.create(md5, null, null, BaseStatisticsModel.DATA_TYPE_OPEN, date, BaseStatisticsModel.DATA_STATUS_TEST);
+            OnyxStatisticsModel statistics = OnyxStatisticsModel.create(null, md5short, null, BaseStatisticsModel.DATA_TYPE_OPEN, date, BaseStatisticsModel.DATA_STATUS_TEST);
             testStatistics.add(statistics);
-            md5List.add(md5);
+            md5List.add(md5short);
         }
         StatisticsUtils.saveStatisticsList(getActivity(), testStatistics);
 
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(getActivity(), BaseStatisticsModel.DATA_TYPE_OPEN, BaseStatisticsModel.DATA_STATUS_TEST, false);
-        LinkedHashSet<String> bookMd5shorts = new LinkedHashSet<>();
-        for (OnyxStatisticsModel statisticsModel : statisticsModels) {
-            bookMd5shorts.add(statisticsModel.getMd5());
-        }
-
         StatisticsUtils.deleteStatisticsList(getActivity(), testStatistics);
-
+        List<Book> recentBooks = StatisticsUtils.getRecentBooks(statisticsModels, testCount);
         assertTrue(md5List.size() == statisticsModels.size());
+        assertTrue(recentBooks != null);
+        assertTrue(recentBooks.size() == statisticsModels.size());
         int index = 0;
-        for (String bookMd5short : bookMd5shorts) {
+        for (Book book : recentBooks) {
+            String bookMd5short = book.getMd5short();
+            assertTrue(bookMd5short != null);
             assertTrue(bookMd5short.equals(md5List.get(md5List.size() - index - 1)));
             index++;
         }

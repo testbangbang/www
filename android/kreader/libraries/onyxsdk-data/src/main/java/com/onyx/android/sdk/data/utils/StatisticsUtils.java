@@ -177,4 +177,98 @@ public class StatisticsUtils {
         }
         return md5;
     }
+
+    public static List<Integer> getEventHourlyAgg(final List<OnyxStatisticsModel> statisticsList, final int count) {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            result.add(0);
+        }
+        for (OnyxStatisticsModel statisticsModel : statisticsList) {
+            int hour = statisticsModel.getEventTime().getHours();
+            if (hour < result.size()) {
+                int value = result.get(hour);
+                value ++;
+                result.set(hour, value);
+            }
+        }
+        return result;
+    }
+
+    public static Book getLongestBook(final List<OnyxStatisticsModel> statisticsModels) {
+        Map<String, Long> timeMap = new HashMap<>();
+        for (OnyxStatisticsModel statisticsModel : statisticsModels) {
+            String md5short = statisticsModel.getMd5short();
+            long times = statisticsModel.getDurationTime();
+            if (timeMap.containsKey(md5short)) {
+                times = timeMap.get(md5short);
+                times += statisticsModel.getDurationTime();
+            }
+            timeMap.put(md5short, times);
+        }
+        if (timeMap.size() == 0) {
+            return null;
+        }
+
+        Collection<Long> c = timeMap.values();
+        Object[] obj = c.toArray();
+        Arrays.sort(obj);
+        long maxValue = (long) obj[obj.length-1];
+        String md5shortOfMaxValue = "";
+        for (String md5 : timeMap.keySet()) {
+            if (maxValue == timeMap.get(md5)) {
+                md5shortOfMaxValue = md5;
+            }
+        }
+        Book book = new Book();
+        book.setMd5short(md5shortOfMaxValue);
+        book.setReadingTime(maxValue);
+        return book;
+    }
+
+    public static Book getMostCarefullyBook(final List<OnyxStatisticsModel> statisticsModels) {
+        Map<String, Long> countMap = new HashMap<>();
+        for (OnyxStatisticsModel statisticsModel : statisticsModels) {
+            String md5short = statisticsModel.getMd5short();
+            long count = 1;
+            if (countMap.containsKey(md5short)) {
+                count = countMap.get(md5short);
+                count++;
+            }
+            countMap.put(md5short, count);
+        }
+        if (countMap.size() == 0) {
+            return null;
+        }
+        Book book = new Book();
+
+        Collection<Long> c = countMap.values();
+        Object[] obj = c.toArray();
+        Arrays.sort(obj);
+        long maxValue = (long) obj[obj.length-1];
+        String md5shortOfMaxValue = "";
+        for (String md5 : countMap.keySet()) {
+            if (maxValue == countMap.get(md5)) {
+                md5shortOfMaxValue = md5;
+            }
+        }
+        book.setMd5short(md5shortOfMaxValue);
+        return book;
+    }
+
+    public static List<Book> getRecentBooks(final List<OnyxStatisticsModel> statisticsModels, int count) {
+        List<Book> recentBooks = new ArrayList<>();
+        Set<String> bookMd5shorts = new LinkedHashSet<>();
+        for (OnyxStatisticsModel statisticsModel : statisticsModels) {
+            if (bookMd5shorts.size() >= count) {
+                break;
+            }
+            bookMd5shorts.add(statisticsModel.getMd5short());
+        }
+        for (String bookMd5short : bookMd5shorts) {
+            Book book = new Book();
+            book.setMd5short(bookMd5short);
+            recentBooks.add(book);
+        }
+        return recentBooks;
+    }
 }
