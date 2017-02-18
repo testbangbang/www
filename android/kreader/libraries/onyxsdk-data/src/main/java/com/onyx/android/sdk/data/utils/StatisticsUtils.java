@@ -3,20 +3,21 @@ package com.onyx.android.sdk.data.utils;
 import android.content.Context;
 
 import com.onyx.android.sdk.data.db.OnyxStatisticsDatabase;
-import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.Book;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel_Table;
+import com.onyx.android.sdk.utils.MapUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -206,19 +207,11 @@ public class StatisticsUtils {
             return null;
         }
 
-        Collection<Long> c = timeMap.values();
-        Object[] obj = c.toArray();
-        Arrays.sort(obj);
-        long maxValue = (long) obj[obj.length-1];
-        String md5shortOfMaxValue = "";
-        for (String md5 : timeMap.keySet()) {
-            if (maxValue == timeMap.get(md5)) {
-                md5shortOfMaxValue = md5;
-            }
-        }
+        LinkedHashMap<String, Long> sortedMap = (LinkedHashMap<String, Long>) MapUtils.sortByValue(timeMap);
         Book book = new Book();
-        book.setMd5short(md5shortOfMaxValue);
-        book.setReadingTime(maxValue);
+        Map.Entry last = MapUtils.getLast(sortedMap);
+        book.setMd5short((String) last.getKey());
+        book.setReadingTime((Long) last.getValue());
         return book;
     }
 
@@ -236,19 +229,11 @@ public class StatisticsUtils {
         if (countMap.size() == 0) {
             return null;
         }
-        Book book = new Book();
 
-        Collection<Long> c = countMap.values();
-        Object[] obj = c.toArray();
-        Arrays.sort(obj);
-        long maxValue = (long) obj[obj.length-1];
-        String md5shortOfMaxValue = "";
-        for (String md5 : countMap.keySet()) {
-            if (maxValue == countMap.get(md5)) {
-                md5shortOfMaxValue = md5;
-            }
-        }
-        book.setMd5short(md5shortOfMaxValue);
+        LinkedHashMap<String, Long> sortedMap = (LinkedHashMap<String, Long>) MapUtils.sortByValue(countMap);
+        Book book = new Book();
+        Map.Entry last = MapUtils.getLast(sortedMap);
+        book.setMd5short((String) last.getKey());
         return book;
     }
 
@@ -268,4 +253,5 @@ public class StatisticsUtils {
         }
         return recentBooks;
     }
+
 }
