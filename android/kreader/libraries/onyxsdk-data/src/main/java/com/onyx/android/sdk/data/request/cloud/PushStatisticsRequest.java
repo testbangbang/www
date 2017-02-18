@@ -2,16 +2,11 @@ package com.onyx.android.sdk.data.request.cloud;
 
 import android.content.Context;
 
-import com.alibaba.fastjson.JSON;
-import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.Constant;
-import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.StatisticsCloudManager;
 import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.JsonRespone;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
-import com.onyx.android.sdk.data.request.data.BaseDataRequest;
-import com.onyx.android.sdk.data.utils.ResultCode;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -19,7 +14,6 @@ import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
 
-import retrofit2.Call;
 import retrofit2.Response;
 
 /**
@@ -49,7 +43,7 @@ public class PushStatisticsRequest extends BaseStatisticsRequest {
         if (StringUtils.isNullOrEmpty(mac)) {
             return;
         }
-        List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, MAX_PUSH_COUNT, BaseStatisticsModel.DATA_STATUS_NOT_PUSH);
+        List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListByStatus(context, MAX_PUSH_COUNT, BaseStatisticsModel.DATA_STATUS_NOT_PUSH);
         if (statisticsModels == null || statisticsModels.size() <= 0) {
             return;
         }

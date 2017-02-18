@@ -114,20 +114,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         calendar.add(Calendar.MONTH, -1);
         Date date = calendar.getTime();
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, date);
-        List<Integer> selfReadTimeDis = new ArrayList<>();
-        for (int i = 0; i < 24; i++) {
-            selfReadTimeDis.add(0);
-        }
-        for (OnyxStatisticsModel statisticsModel : statisticsModels) {
-            int hour = statisticsModel.getEventTime().getHours();
-            if (hour < selfReadTimeDis.size()) {
-                int value = selfReadTimeDis.get(hour);
-                value ++;
-                selfReadTimeDis.set(hour, value);
-            }
-
-        }
-        return selfReadTimeDis;
+        return StatisticsUtils.getEventHourlyAgg(statisticsModels, 24);
     }
 
     private long getReadTimeEveryDay() {
@@ -148,45 +135,22 @@ public class GetStatisticsRequest extends BaseCloudRequest {
     }
 
     private Book getLongestBook() {
-        Map<String, Long> timeMap = new HashMap<>();
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE);
-        for (OnyxStatisticsModel statisticsModel : statisticsModels) {
-            String md5short = statisticsModel.getMd5short();
-            long times = statisticsModel.getDurationTime();
-            if (timeMap.containsKey(md5short)) {
-                times = timeMap.get(md5short);
-                times += statisticsModel.getDurationTime();
-            }
-            timeMap.put(md5short, times);
-        }
-        if (timeMap.size() == 0) {
+        Book book = StatisticsUtils.getLongestBook(statisticsModels);
+        if (book == null) {
             return null;
         }
-        Book book = new Book();
+        String md5short = book.getMd5short();
 
-        Collection<Long> c = timeMap.values();
-        Object[] obj = c.toArray();
-        Arrays.sort(obj);
-        long maxValue = (long) obj[obj.length-1];
-        String md5shortOfMaxValue = "";
-        for (String md5 : timeMap.keySet()) {
-            if (maxValue == timeMap.get(md5)) {
-                md5shortOfMaxValue = md5;
-            }
-        }
-
-        book.setReadingTime(maxValue);
-        book.setMd5short(md5shortOfMaxValue);
-
-        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5shortOfMaxValue, BaseStatisticsModel.DATA_TYPE_OPEN, true);
+        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5short, BaseStatisticsModel.DATA_TYPE_OPEN, true);
         if (statisticsModels != null && statisticsModels.size() > 0) {
             book.setBegin(statisticsModels.get(0).getEventTime());
         }
-        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5shortOfMaxValue, BaseStatisticsModel.DATA_TYPE_CLOSE, true);
+        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5short, BaseStatisticsModel.DATA_TYPE_CLOSE, true);
         if (statisticsModels != null && statisticsModels.size() > 0) {
             book.setEnd(statisticsModels.get(statisticsModels.size() - 1).getEventTime());
         }
-        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListByMd5short(context, md5shortOfMaxValue);
+        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListByMd5short(context, md5short);
         if (statisticsModels.size() > 0) {
             book.setName(statisticsModels.get(0).getName());
         }
@@ -194,43 +158,22 @@ public class GetStatisticsRequest extends BaseCloudRequest {
     }
 
     private Book getMostCarefullyBook() {
-        Map<String, Long> countMap = new HashMap<>();
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_LOOKUP_DIC);
         statisticsModels.addAll(StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_ANNOTATION));
         statisticsModels.addAll(StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_TEXT_SELECTED));
-        for (OnyxStatisticsModel statisticsModel : statisticsModels) {
-            String md5short = statisticsModel.getMd5short();
-            long count = 1;
-            if (countMap.containsKey(md5short)) {
-                count = countMap.get(md5short);
-                count++;
-            }
-            countMap.put(md5short, count);
-        }
-        if (countMap.size() == 0) {
+        Book book = StatisticsUtils.getMostCarefullyBook(statisticsModels);
+        if (book == null) {
             return null;
         }
-        Book book = new Book();
+        String md5short = book.getMd5short();
 
-        Collection<Long> c = countMap.values();
-        Object[] obj = c.toArray();
-        Arrays.sort(obj);
-        long maxValue = (long) obj[obj.length-1];
-        String md5shortOfMaxValue = "";
-        for (String md5 : countMap.keySet()) {
-            if (maxValue == countMap.get(md5)) {
-                md5shortOfMaxValue = md5;
-            }
-        }
-        book.setMd5short(md5shortOfMaxValue);
-
-        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, md5shortOfMaxValue, BaseStatisticsModel.DATA_TYPE_LOOKUP_DIC);
+        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, md5short, BaseStatisticsModel.DATA_TYPE_LOOKUP_DIC);
         book.setLookupDic(statisticsModels.size());
-        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, md5shortOfMaxValue, BaseStatisticsModel.DATA_TYPE_ANNOTATION);
+        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, md5short, BaseStatisticsModel.DATA_TYPE_ANNOTATION);
         book.setAnnotation(statisticsModels.size());
-        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, md5shortOfMaxValue, BaseStatisticsModel.DATA_TYPE_TEXT_SELECTED);
+        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, md5short, BaseStatisticsModel.DATA_TYPE_TEXT_SELECTED);
         book.setTextSelect(statisticsModels.size());
-        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListByMd5short(context, md5shortOfMaxValue);
+        statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListByMd5short(context, md5short);
         if (statisticsModels.size() > 0) {
             book.setName(statisticsModels.get(0).getName());
         }
@@ -238,40 +181,31 @@ public class GetStatisticsRequest extends BaseCloudRequest {
     }
 
     public List<Book> getRecentBooks() {
-        List<Book> recentBooks = new ArrayList<>();
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, BaseStatisticsModel.DATA_TYPE_OPEN, false);
-        Set<String> bookMd5shorts = new LinkedHashSet<>();
-        for (OnyxStatisticsModel statisticsModel : statisticsModels) {
-            if (bookMd5shorts.size() >= RECENT_BOOK_MAX_COUNT) {
-                break;
-            }
-            bookMd5shorts.add(statisticsModel.getMd5short());
-        }
+        List<Book> recentBooks = StatisticsUtils.getRecentBooks(statisticsModels, RECENT_BOOK_MAX_COUNT);
 
-        for (String bookMd5short : bookMd5shorts) {
-            Book book = new Book();
-            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListByMd5short(context, bookMd5short);
+        for (Book book : recentBooks) {
+            String md5short = book.getMd5short();
+            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListByMd5short(context, md5short);
             if (statisticsModels.size() > 0) {
                 book.setName(statisticsModels.get(0).getName());
             }
 
-            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, bookMd5short, BaseStatisticsModel.DATA_TYPE_OPEN, true);
+            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5short, BaseStatisticsModel.DATA_TYPE_OPEN, true);
             if (statisticsModels != null && statisticsModels.size() > 0) {
                 book.setBegin(statisticsModels.get(0).getEventTime());
             }
-            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, bookMd5short, BaseStatisticsModel.DATA_TYPE_CLOSE, true);
+            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5short, BaseStatisticsModel.DATA_TYPE_CLOSE, true);
             if (statisticsModels != null && statisticsModels.size() > 0) {
                 book.setEnd(statisticsModels.get(statisticsModels.size() - 1).getEventTime());
             }
 
-            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, bookMd5short, BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE);
+            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, md5short, BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE);
             long useTime = 0;
             for (OnyxStatisticsModel statisticsModel : statisticsModels) {
                 useTime += statisticsModel.getDurationTime();
             }
             book.setReadingTime(useTime);
-
-            recentBooks.add(book);
         }
 
         return recentBooks;
