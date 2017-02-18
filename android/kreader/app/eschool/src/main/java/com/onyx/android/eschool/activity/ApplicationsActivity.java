@@ -162,13 +162,13 @@ public class ApplicationsActivity extends BaseActivity {
             switch (menu.getItem(i).getItemId()) {
                 case R.id.menu_clear_test_apps:
                     if (showCleanTestAppMenu) {
-                        menu.getItem(i).setVisible(true);
+                        menu.getItem(i).setEnabled(true);
                     } else {
-                        menu.getItem(i).setVisible(false);
+                        menu.getItem(i).setEnabled(false);
                     }
                     break;
                 default:
-                    menu.getItem(i).setVisible(true);
+                    menu.getItem(i).setEnabled(true);
                     break;
             }
         }
