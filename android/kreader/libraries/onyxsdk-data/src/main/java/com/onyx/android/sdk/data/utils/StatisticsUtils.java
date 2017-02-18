@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.onyx.android.sdk.data.db.OnyxStatisticsDatabase;
 import com.onyx.android.sdk.data.model.BaseStatisticsModel;
+import com.onyx.android.sdk.data.model.Book;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel_Table;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -11,9 +12,15 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by ming on 2017/2/7.
@@ -39,11 +46,42 @@ public class StatisticsUtils {
         database.endTransaction();
     }
 
-    public static Collection<OnyxStatisticsModel> loadStatisticsList(final Context context,
-                                                                     final int count,
-                                                                     final int status) {
+    public static void deleteStatisticsList(final Context context,
+                                          final Collection<OnyxStatisticsModel> list) {
+        final DatabaseWrapper database = FlowManager.getDatabase(OnyxStatisticsDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for(OnyxStatisticsModel statisticsData : list) {
+            statisticsData.delete();
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
+    public static void deleteStatisticsListByStatus(final Context context,
+                                            final int status) {
+        List<OnyxStatisticsModel> list = (List<OnyxStatisticsModel>) loadStatisticsListByStatus(context, status);
+        final DatabaseWrapper database = FlowManager.getDatabase(OnyxStatisticsDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for(OnyxStatisticsModel statisticsData : list) {
+            statisticsData.delete();
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsListByStatus(final Context context,
+                                                                             final int count,
+                                                                             final int status) {
         Select select = new Select();
         Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.status.eq(status)).limit(count);
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsListByStatus(final Context context,
+                                                                             final int status) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.status.eq(status));
         List<OnyxStatisticsModel> list = where.queryList();
         return list;
     }
@@ -61,6 +99,15 @@ public class StatisticsUtils {
                                                                      final int type) {
         Select select = new Select();
         Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.type.eq(type));
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsList(final Context context,
+                                                                     final int type,
+                                                                     final int status) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.type.eq(type)).and(OnyxStatisticsModel_Table.status.eq(status));
         List<OnyxStatisticsModel> list = where.queryList();
         return list;
     }
@@ -95,6 +142,16 @@ public class StatisticsUtils {
                                                                                 final boolean ascending) {
         Select select = new Select();
         Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.type.eq(type)).orderBy(OnyxStatisticsModel_Table.eventTime, ascending);
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsListOrderByTime(final Context context,
+                                                                                final int type,
+                                                                                final int status,
+                                                                                final boolean ascending) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.type.eq(type)).and(OnyxStatisticsModel_Table.status.eq(status)).orderBy(OnyxStatisticsModel_Table.eventTime, ascending);
         List<OnyxStatisticsModel> list = where.queryList();
         return list;
     }

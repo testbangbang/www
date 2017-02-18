@@ -51,6 +51,10 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
         super(md5, md5short, sid, type, eventTime);
     }
 
+    public OnyxStatisticsModel(String md5, String md5short, String sid, Integer type, Date eventTime, int status) {
+        super(md5, md5short, sid, type, eventTime, status);
+    }
+
     public List<String> getAuthor() {
         return author;
     }
@@ -141,5 +145,9 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
 
     public static OnyxStatisticsModel create(String md5, String md5short, String sid, Integer type, Date eventTime) {
         return new OnyxStatisticsModel(md5, md5short, sid, type, eventTime);
+    }
+
+    public static OnyxStatisticsModel create(String md5, String md5short, String sid, Integer type, Date eventTime, int status) {
+        return new OnyxStatisticsModel(md5, md5short, sid, type, eventTime, status);
     }
 }
