@@ -38,6 +38,25 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
         return -1;
     }
 
+    // convert screencap to normal color image.
+    public void testAReverseCfa() throws Exception {
+        Set<String> filter = new HashSet<>();
+        filter.add("jpg");
+        filter.add("png");
+        List<String> fileList = new ArrayList<>();
+        FileUtils.collectFiles("/mnt/sdcard/screencap/", filter, true, fileList);
+
+        for(String path : fileList) {
+            if (path.contains(".color.")) {
+                continue;
+            }
+            final Bitmap origin = BitmapUtils.loadBitmapFromFile(path);
+            final Bitmap result = Bitmap.createBitmap(origin.getWidth() / 2, origin.getHeight() / 2, Bitmap.Config.ARGB_8888);
+            ImageUtils.toColorBitmap(result, origin, 0);
+            BitmapUtils.saveBitmap(result, path + ".color.png");
+        }
+    }
+
     public void testCfaResource() throws Exception {
         Set<String> filter = new HashSet<>();
         filter.add("jpg");

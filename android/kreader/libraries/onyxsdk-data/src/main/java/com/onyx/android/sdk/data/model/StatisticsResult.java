@@ -3,7 +3,6 @@ package com.onyx.android.sdk.data.model;
 import org.apache.commons.collections4.map.LinkedMap;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by ming on 2017/2/14.
@@ -18,8 +17,8 @@ public class StatisticsResult {
     private long dailyAvgReadTime;
     private Book longestReadTimeBook;
     private Book mostCarefulBook;
-    private List<Book> recentBooks;
-    private LinkedMap<String, Integer> bookTypeAgg;
+    private List<Book> recentReadingBooks;
+    private LinkedMap<String, Double> bookTypeAgg;
 
     private EventTypeAggBean eventTypeAgg = new EventTypeAggBean();
 
@@ -79,12 +78,12 @@ public class StatisticsResult {
         this.longestReadTimeBook = longestReadTimeBook;
     }
 
-    public List<Book> getRecentBooks() {
-        return recentBooks;
+    public List<Book> getRecentReadingBooks() {
+        return recentReadingBooks;
     }
 
-    public void setRecentBooks(List<Book> recentBooks) {
-        this.recentBooks = recentBooks;
+    public void setRecentReadingBooks(List<Book> recentReadingBooks) {
+        this.recentReadingBooks = recentReadingBooks;
     }
 
     public EventTypeAggBean getEventTypeAgg() {
@@ -95,11 +94,11 @@ public class StatisticsResult {
         this.eventTypeAgg = eventTypeAgg;
     }
 
-    public LinkedMap<String, Integer> getBookTypeAgg() {
+    public LinkedMap<String, Double> getBookTypeAgg() {
         return bookTypeAgg;
     }
 
-    public void setBookTypeAgg(LinkedMap<String, Integer> bookTypeAgg) {
+    public void setBookTypeAgg(LinkedMap<String, Double> bookTypeAgg) {
         this.bookTypeAgg = bookTypeAgg;
     }
 }

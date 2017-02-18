@@ -6,7 +6,6 @@ import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.Book;
 import com.onyx.android.sdk.data.model.EventTypeAggBean;
-import com.onyx.android.sdk.data.model.JsonRespone;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
 import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
@@ -33,7 +32,7 @@ import retrofit2.Response;
 
 public class GetStatisticsRequest extends BaseCloudRequest {
 
-    private final static int RECENT_BOOK_MAX_COUNT = 7;
+    public final static int RECENT_BOOK_MAX_COUNT = 5;
 
     private Context context;
     private StatisticsResult statisticsResult;
@@ -57,7 +56,6 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         if (response != null && response.isSuccessful()) {
             statisticsResult = response.body();
             statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());
-            statisticsResult.setRecentBooks(getRecentBooks());
         }
     }
 
@@ -66,12 +64,12 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         statisticsResult.setTotalReadTime(getTotalReadTime());
         eventTypeAggBean.setRead(getReadCount());
         eventTypeAggBean.setFinish(getFinishCount());
-        eventTypeAggBean.setLookupDic(getLookupDicCount());
+        eventTypeAggBean.setAnnotation(getAnnotaionCount());
         statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());
         statisticsResult.setDailyAvgReadTime(getReadTimeEveryDay());
         statisticsResult.setLongestReadTimeBook(getLongestBook());
         statisticsResult.setMostCarefulBook(getMostCarefullyBook());
-        statisticsResult.setRecentBooks(getRecentBooks());
+        statisticsResult.setRecentReadingBooks(getRecentBooks());
     }
 
     private long getTotalReadTime() {
@@ -103,6 +101,11 @@ public class GetStatisticsRequest extends BaseCloudRequest {
 
     private int getLookupDicCount() {
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_LOOKUP_DIC);
+        return statisticsModels.size();
+    }
+
+    private int getAnnotaionCount() {
+        List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_ANNOTATION);
         return statisticsModels.size();
     }
 

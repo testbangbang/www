@@ -6,14 +6,14 @@
                 android:background="#14000000">
 
     <LinearLayout
-        android:gravity="center"
-        android:layout_centerInParent="true"
+        android:paddingLeft="20dp"
+        android:gravity="left|center_vertical"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
-            android:textSize="30sp"
+            android:textSize="@dimen/activity_statistics_read_key_text_size"
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -22,7 +22,7 @@
             android:layout_marginLeft="10dp"
             android:textColor="@android:color/black"
             android:textStyle="bold"
-            android:textSize="60sp"
+            android:textSize="@dimen/activity_statistics_read_value_text_size"
             android:id="@+id/value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

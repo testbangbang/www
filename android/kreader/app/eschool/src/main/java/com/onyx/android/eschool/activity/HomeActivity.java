@@ -222,9 +222,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private Intent getApplicationListIntent() {
-        Intent intent = new Intent(this, ApplicationsActivity.class);
-        ActivityUtil.startActivitySafely(this, intent);
-        return intent;
+        return new Intent(this, ApplicationsActivity.class);
     }
 
     private Intent getEduIntent() {
