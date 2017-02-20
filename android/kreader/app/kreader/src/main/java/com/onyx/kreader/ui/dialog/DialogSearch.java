@@ -38,9 +38,12 @@ import com.onyx.kreader.ui.actions.GotoSearchPageAction;
 import com.onyx.kreader.ui.actions.SearchContentAction;
 import com.onyx.kreader.ui.actions.ToggleSearchHistoryAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.requests.GotoSearchLocationRequest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by ming on 16/7/21.
@@ -72,8 +75,15 @@ public class DialogSearch extends Dialog{
     private LinearLayout loadingLayout;
     private RelativeLayout searchHistory;
     private RelativeLayout searchEditLayout;
+    private RelativeLayout searchInputLayout;
     private TextView deleteHistory;
     private TextView closeHistory;
+    private RelativeLayout floatToolBar;
+    private ImageButton back;
+    private ImageButton prev;
+    private ImageButton next;
+    private ImageButton close;
+    private View dividerLine;
 
     private List<ReaderSelection> searchList = new ArrayList<>();
     private List<ReaderSelection> showSearchList = new ArrayList<>();
@@ -82,6 +92,8 @@ public class DialogSearch extends Dialog{
     private int searchRows = 0;
     private int searchChineseContentLength = 0;
     private int searchAlphaContentLength = 0;
+    private int currentSearchIndex = 0;
+    private Set<Integer> translatedSet = new HashSet<>();
 
     public DialogSearch(final ReaderDataHolder readerDataHolder) {
         super(readerDataHolder.getContext(), android.R.style.Theme_Translucent_NoTitleBar);
@@ -106,6 +118,7 @@ public class DialogSearch extends Dialog{
         loadingLayout = (LinearLayout) findViewById(R.id.loading_layout);
         searchHistory = (RelativeLayout) findViewById(R.id.search_history_layout);
         searchEditLayout = (RelativeLayout) findViewById(R.id.search_edit_layout);
+        searchInputLayout = (RelativeLayout) findViewById(R.id.search_input_layout);
         preIcon = (ImageButton) findViewById(R.id.pre_icon);
         nextIcon = (ImageButton) findViewById(R.id.next_icon);
         closeSearch = (ImageButton) findViewById(R.id.close_search);
@@ -115,6 +128,12 @@ public class DialogSearch extends Dialog{
         searchContent.setVisibility(View.INVISIBLE);
         deleteHistory.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         closeHistory.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        floatToolBar = (RelativeLayout) findViewById(R.id.search_float_layout);
+        back = (ImageButton) findViewById(R.id.search_back);
+        prev = (ImageButton) findViewById(R.id.search_prev);
+        next = (ImageButton) findViewById(R.id.search_next);
+        close = (ImageButton) findViewById(R.id.search_close);
+        dividerLine = findViewById(R.id.divider_line);
 
         searchEditLayout.post(new Runnable() {
             @Override
@@ -205,6 +224,50 @@ public class DialogSearch extends Dialog{
             }
         });
         searchEditText.requestFocus();
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideFloatToolBar();
+                pageRecyclerView.gotoPageByIndex(currentSearchIndex);
+            }
+        });
+
+        prev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentSearchIndex == 0) {
+                    Toast.makeText(getContext(), getContext().getString(R.string.no_more_search_results), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                gotoSearchPage(currentSearchIndex - 1, null);
+            }
+        });
+
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentSearchIndex == (showSearchList.size() - 1)) {
+                    Toast.makeText(getContext(), getContext().getString(R.string.no_more_search_results), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                gotoSearchPage(currentSearchIndex + 1, null);
+            }
+        });
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 
     private void showSearchHistoryView(){
@@ -240,7 +303,7 @@ public class DialogSearch extends Dialog{
 
             @Override
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                ((SearchViewHolder)holder).bindView(showSearchList.get(position),searchText);
+                ((SearchViewHolder)holder).bindView(showSearchList.get(position), searchText, position);
             }
         });
         pageRecyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
@@ -341,6 +404,7 @@ public class DialogSearch extends Dialog{
     private void reset(){
         searchList.clear();
         showSearchList.clear();
+        translatedSet.clear();
         nextRequestPage = SEARCH_PAGE_ONE_TIME;
         updatePageIndicator(0,0);
         pageRecyclerView.setCurrentPage(0);
@@ -373,6 +437,28 @@ public class DialogSearch extends Dialog{
         imm.showSoftInput(searchEditText,0);
     }
 
+    private void gotoSearchPage(final int searchIndex, final BaseCallback callback) {
+        if (showSearchList == null || searchIndex >= showSearchList.size() || searchIndex < 0) {
+            return;
+        }
+        ReaderSelection selection = showSearchList.get(searchIndex);
+        if (selection == null) {
+            return;
+        }
+        List<ReaderSelection> readerSelections = new ArrayList<>();
+        readerSelections.add(selection);
+        GotoSearchPageAction.execute(readerDataHolder, selection.getPagePosition(), readerSelections, !translatedSet.contains(searchIndex), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                translatedSet.add(searchIndex);
+                currentSearchIndex = searchIndex;
+                if (callback != null) {
+                    callback.done(request, e);
+                }
+            }
+        });
+    }
+
     private class SearchViewHolder extends RecyclerView.ViewHolder{
 
         private TextView contentTextView;
@@ -381,24 +467,11 @@ public class DialogSearch extends Dialog{
 
         public SearchViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    List<ReaderSelection> readerSelections = new ArrayList<>();
-                    readerSelections.add(readerSelection);
-                    GotoSearchPageAction.execute(readerDataHolder, readerSelection.getPagePosition(), readerSelections, new BaseCallback() {
-                        @Override
-                        public void done(BaseRequest request, Throwable e) {
-                            dismiss();
-                        }
-                    });
-                }
-            });
             contentTextView = (TextView)itemView.findViewById(R.id.search_content);
             contentPage = (TextView)itemView.findViewById(R.id.search_page);
         }
 
-        public void bindView(ReaderSelection selection,String search){
+        public void bindView(ReaderSelection selection,String search, final int position){
             readerSelection = selection;
             String leftText = StringUtils.deleteNewlineSymbol(StringUtils.leftTrim(selection.getLeftText()));
             String rightText = StringUtils.deleteNewlineSymbol(StringUtils.rightTrim(selection.getRightText()));
@@ -417,6 +490,18 @@ public class DialogSearch extends Dialog{
             int pageNumber = Integer.valueOf(readerSelection.getPageName());
             String page = String.format(getContext().getString(R.string.page), pageNumber + 1);
             contentPage.setText(page);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gotoSearchPage(position, new BaseCallback() {
+                        @Override
+                        public void done(BaseRequest request, Throwable e) {
+                            showFloatToolBar();
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -472,6 +557,22 @@ public class DialogSearch extends Dialog{
 
     private void hideLoadingLayout(){
         loadingLayout.setVisibility(View.GONE);
+    }
+
+    private void showFloatToolBar() {
+        floatToolBar.setVisibility(View.VISIBLE);
+        searchInputLayout.setVisibility(View.INVISIBLE);
+        searchContent.setVisibility(View.GONE);
+        searchHistory.setVisibility(View.GONE);
+        loadingLayout.setVisibility(View.GONE);
+        dividerLine.setVisibility(View.INVISIBLE);
+    }
+
+    private void hideFloatToolBar() {
+        floatToolBar.setVisibility(View.GONE);
+        searchContent.setVisibility(View.VISIBLE);
+        searchInputLayout.setVisibility(View.VISIBLE);
+        dividerLine.setVisibility(View.VISIBLE);
     }
 
     private void nextSearch(){

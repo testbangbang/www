@@ -17,17 +17,19 @@ public class GotoSearchLocationRequest extends GotoPositionRequest {
 
     private List<ReaderSelection> searchResults;
     private ReaderDataHolder readerDataHolder;
+    private boolean translate;
 
-    public GotoSearchLocationRequest(String p, ReaderDataHolder readerDataHolder, List<ReaderSelection> searchResults) {
+    public GotoSearchLocationRequest(String p, ReaderDataHolder readerDataHolder, List<ReaderSelection> searchResults, boolean translate) {
         super(p);
         this.searchResults = searchResults;
         this.readerDataHolder = readerDataHolder;
+        this.translate = translate;
     }
 
     @Override
     public void execute(Reader reader) throws Exception {
         super.execute(reader);
-        getReaderUserDataInfo().saveSearchResults(translateToScreen(reader, searchResults));
+        getReaderUserDataInfo().saveSearchResults(translate ? translateToScreen(reader, searchResults) : searchResults);
     }
 
     private List<ReaderSelection> translateToScreen(final Reader reader, final List<ReaderSelection> list) {
