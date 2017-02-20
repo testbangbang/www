@@ -93,7 +93,6 @@ public class DialogSearch extends Dialog{
     private int searchChineseContentLength = 0;
     private int searchAlphaContentLength = 0;
     private int currentSearchIndex = 0;
-    private Set<Integer> translatedSet = new HashSet<>();
 
     public DialogSearch(final ReaderDataHolder readerDataHolder) {
         super(readerDataHolder.getContext(), android.R.style.Theme_Translucent_NoTitleBar);
@@ -404,7 +403,6 @@ public class DialogSearch extends Dialog{
     private void reset(){
         searchList.clear();
         showSearchList.clear();
-        translatedSet.clear();
         nextRequestPage = SEARCH_PAGE_ONE_TIME;
         updatePageIndicator(0,0);
         pageRecyclerView.setCurrentPage(0);
@@ -447,10 +445,9 @@ public class DialogSearch extends Dialog{
         }
         List<ReaderSelection> readerSelections = new ArrayList<>();
         readerSelections.add(selection);
-        GotoSearchPageAction.execute(readerDataHolder, selection.getPagePosition(), readerSelections, !translatedSet.contains(searchIndex), new BaseCallback() {
+        GotoSearchPageAction.execute(readerDataHolder, selection.getPagePosition(), readerSelections, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                translatedSet.add(searchIndex);
                 currentSearchIndex = searchIndex;
                 if (callback != null) {
                     callback.done(request, e);

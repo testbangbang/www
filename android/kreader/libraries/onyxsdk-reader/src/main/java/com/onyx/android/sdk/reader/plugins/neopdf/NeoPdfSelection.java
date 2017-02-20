@@ -13,7 +13,7 @@ import java.util.List;
  * Created by zhuzeng on 2/14/16.
  * javap -classpath ./bin/classes:/opt/adt-bundle-linux/sdk/platforms/android-8/android.jar:./com/onyx/kreader/plugins/pdfium/ -s com.onyx.kreader.plugins.pdfium.NeoPdfSelection
  */
-public class NeoPdfSelection implements ReaderSelection, Cloneable {
+public class NeoPdfSelection extends ReaderSelection {
 
     private String pagePosition;
     private int startCharIndex;
@@ -52,7 +52,7 @@ public class NeoPdfSelection implements ReaderSelection, Cloneable {
     }
 
     @Override
-    protected NeoPdfSelection clone() {
+    public NeoPdfSelection clone() {
         List<RectF> rectList = new ArrayList<>();
         for (RectF rect : rectangles) {
             rectList.add(new RectF(rect));
