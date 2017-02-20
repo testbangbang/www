@@ -358,4 +358,5 @@
     <string name="fiction">Fiction</string>
     <string name="other">Other</string>
     <string name="load_statistical_data_failed">Load statistical data failed</string>
+    <string name="no_more_search_results">No more search results</string>
 </resources>

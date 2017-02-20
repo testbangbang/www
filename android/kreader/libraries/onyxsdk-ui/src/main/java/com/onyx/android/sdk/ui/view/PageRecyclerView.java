@@ -332,6 +332,12 @@ public class PageRecyclerView extends RecyclerView {
         }
     }
 
+    public void gotoPageByIndex(final int index) {
+        if (paginator.gotoPageByIndex(index)) {
+            onPageChange();
+        }
+    }
+
     private void onPageChange() {
         int position =  paginator.getCurrentPageBegin();
         if (!paginator.isItemInCurrentPage(currentFocusedPosition)){

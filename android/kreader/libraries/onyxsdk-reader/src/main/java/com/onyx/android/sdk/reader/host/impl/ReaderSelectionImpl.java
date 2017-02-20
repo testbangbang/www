@@ -3,12 +3,13 @@ package com.onyx.android.sdk.reader.host.impl;
 import android.graphics.RectF;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by zhuzeng on 10/14/15.
  */
-public class ReaderSelectionImpl implements ReaderSelection {
+public class ReaderSelectionImpl extends ReaderSelection {
 
     private String pageName;
     private String pagePosition;
@@ -27,6 +28,26 @@ public class ReaderSelectionImpl implements ReaderSelection {
         ReaderSelectionImpl object = new ReaderSelectionImpl();
         object.text = string;
         return object;
+    }
+
+    public ReaderSelectionImpl(List<RectF> displayRects, String endPosition, String leftText, String pageName, String pagePosition, String rightText, String startPosition, String text) {
+        this.displayRects = displayRects;
+        this.endPosition = endPosition;
+        this.leftText = leftText;
+        this.pageName = pageName;
+        this.pagePosition = pagePosition;
+        this.rightText = rightText;
+        this.startPosition = startPosition;
+        this.text = text;
+    }
+
+    @Override
+    public ReaderSelectionImpl clone() {
+        List<RectF> copy = new ArrayList<>();
+        for (RectF displayRect : this.displayRects) {
+            copy.add(new RectF(displayRect));
+        }
+        return new ReaderSelectionImpl(copy, endPosition, leftText, pageName, pagePosition, rightText, startPosition, text);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.onyx.android.sdk.reader.host.request.GotoPositionRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,9 +19,12 @@ public class GotoSearchLocationRequest extends GotoPositionRequest {
     private List<ReaderSelection> searchResults;
     private ReaderDataHolder readerDataHolder;
 
-    public GotoSearchLocationRequest(String p, ReaderDataHolder readerDataHolder, List<ReaderSelection> searchResults) {
+    public GotoSearchLocationRequest(String p, ReaderDataHolder readerDataHolder, List<ReaderSelection> results) {
         super(p);
-        this.searchResults = searchResults;
+        searchResults = new ArrayList<>();
+        for (ReaderSelection searchResult : results) {
+            this.searchResults.add(searchResult.clone());
+        }
         this.readerDataHolder = readerDataHolder;
     }
 
