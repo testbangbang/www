@@ -50,4 +50,5 @@
     <dimen name="dict_name_text_view_layout_width">400dp</dimen>
     <dimen name="view_pinch_zooming_message_font_size">25sp</dimen>
     <dimen name="view_pinch_zooming_message_scale_size">48sp</dimen>
+    <dimen name="dialog_text_style_view_page_width">700dp</dimen>
 </resources>
