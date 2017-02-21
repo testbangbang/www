@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -40,6 +41,7 @@ import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.kreader.ui.actions.GetTableOfContentAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
+import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.view.PreviewViewHolder;
@@ -247,7 +249,6 @@ public class DialogQuickPreview extends Dialog {
     private int currentPage;
     private String currentPagePosition;
     private Callback callback;
-    private List<Integer> tocChapterNodeList;
     private ScheduledExecutorService scheduledExecutor;
     private TouchHandler touchHandler;
     private long touchDownTime;
@@ -526,6 +527,7 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void prepareGotoChapterIndex(final boolean back) {
+        List<Integer> tocChapterNodeList = ShowReaderMenuAction.getTocChapterNodeList();
         if (tocChapterNodeList == null) {
             new GetTableOfContentAction().execute(readerDataHolder, new BaseCallback() {
                 @Override
@@ -540,32 +542,33 @@ public class DialogQuickPreview extends Dialog {
                         return;
                     }
 
-                    buildChapterNodeList(toc);
-                    gotoChapterIndex(back);
+                    List<Integer> readTocChapterNodeList = TocUtils.buildChapterNodeList(toc);
+                    ShowReaderMenuAction.setTocChapterNodeList(readTocChapterNodeList);
+                    gotoChapterIndex(back, readTocChapterNodeList);
                 }
             });
         }else {
-            gotoChapterIndex(back);
+            gotoChapterIndex(back, tocChapterNodeList);
         }
     }
 
-    private void gotoChapterIndex(boolean back) {
+    private void gotoChapterIndex(final boolean back, final List<Integer> tocChapterNodeList) {
         if (tocChapterNodeList.size() <= 0) {
             return;
         }
         int chapterPosition;
         if (back) {
             int pageBegin = getPaginator().getCurrentPageBegin();
-            chapterPosition = getChapterPositionByPage(pageBegin, back);
+            chapterPosition = getChapterPositionByPage(pageBegin, back, tocChapterNodeList);
         } else {
             int pageEnd = getPaginator().getCurrentPageEnd();
-            chapterPosition = getChapterPositionByPage(pageEnd, back);
+            chapterPosition = getChapterPositionByPage(pageEnd, back, tocChapterNodeList );
         }
 
         gridRecyclerView.gotoPage(getGridPage(chapterPosition));
     }
 
-    private int getChapterPositionByPage(int page, boolean back) {
+    private int getChapterPositionByPage(final int page, final boolean back, final List<Integer> tocChapterNodeList) {
         int size = tocChapterNodeList.size();
         for (int i = 0; i < size; i++) {
             if (page < tocChapterNodeList.get(i)) {
@@ -576,14 +579,14 @@ public class DialogQuickPreview extends Dialog {
                     }
                     int position = tocChapterNodeList.get(Math.max(0, index));
                     if (getPaginator().isItemInCurrentPage(position)) {
-                        return getChapterPositionByPage(page - 1, back);
+                        return getChapterPositionByPage(page - 1, back, tocChapterNodeList);
                     } else {
                         return position;
                     }
                 } else {
                     int position = tocChapterNodeList.get(i);
                     if (getPaginator().isItemInCurrentPage(position)) {
-                        return getChapterPositionByPage(page + 1, back);
+                        return getChapterPositionByPage(page + 1, back, tocChapterNodeList);
                     } else {
                         return position;
                     }
@@ -597,27 +600,6 @@ public class DialogQuickPreview extends Dialog {
             return page + 1;
         }
 
-    }
-
-    private void buildChapterNodeList(ReaderDocumentTableOfContent toc) {
-        tocChapterNodeList = new ArrayList<>();
-        ReaderDocumentTableOfContentEntry rootEntry = toc.getRootEntry();
-        if (rootEntry.getChildren() != null) {
-            buildChapterNode(rootEntry.getChildren());
-        }
-    }
-
-    private void buildChapterNode(List<ReaderDocumentTableOfContentEntry> entries) {
-        for (ReaderDocumentTableOfContentEntry entry : entries) {
-            if (entry.getChildren() != null) {
-                buildChapterNode(entry.getChildren());
-            } else {
-                int position = Integer.valueOf(entry.getPosition());
-                if (!tocChapterNodeList.contains(position)) {
-                    tocChapterNodeList.add(Integer.valueOf(entry.getPosition()));
-                }
-            }
-        }
     }
 
     private void onPressedImageView(int gridType) {

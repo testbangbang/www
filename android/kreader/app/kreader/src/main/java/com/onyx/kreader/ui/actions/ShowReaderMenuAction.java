@@ -18,6 +18,8 @@ import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
@@ -84,7 +86,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
     private static List<String> fontFaces = new ArrayList<>();
     private static Map<Float, ReaderMenuAction> strokeMapping;
-
+    private static List<Integer> tocChapterNodeList;
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -108,6 +110,14 @@ public class ShowReaderMenuAction extends BaseAction {
         if (isReaderMenuShown()) {
             readerMenu.hide();
         }
+    }
+
+    public static List<Integer> getTocChapterNodeList() {
+        return tocChapterNodeList;
+    }
+
+    public static void setTocChapterNodeList(List<Integer> tocChapterNodeList) {
+        ShowReaderMenuAction.tocChapterNodeList = tocChapterNodeList;
     }
 
     private void showReaderMenu(final ReaderDataHolder readerDataHolder, boolean fullscreen) {
@@ -317,6 +327,12 @@ public class ShowReaderMenuAction extends BaseAction {
                     case EXIT:
                         readerDataHolder.getEventBus().post(new QuitEvent());
                         break;
+                    case PREV_CHAPTER:
+                        prepareGotoChapter(readerDataHolder, true);
+                        break;
+                    case NEXT_CHAPTER:
+                        prepareGotoChapter(readerDataHolder, false);
+                        break;
                 }
             }
 
@@ -325,7 +341,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 Debug.d("onMenuItemValueChanged: " + menuItem.getAction() + ", " + oldValue + ", " + newValue);
                 switch (menuItem.getAction()) {
                     case JUMP_PAGE:
-                        gotoPage(readerDataHolder, newValue);
+                        gotoPage(readerDataHolder, newValue, true);
                         break;
                 }
             }
@@ -461,12 +477,12 @@ public class ShowReaderMenuAction extends BaseAction {
         new ForwardAction().execute(readerDataHolder, null);
     }
 
-    private void gotoPage(final ReaderDataHolder readerDataHolder, Object o) {
+    private void gotoPage(final ReaderDataHolder readerDataHolder, Object o, final boolean abortPendingTasks) {
         if (o == null) {
             return;
         }
         int page = (int) o;
-        new GotoPageAction(page).execute(readerDataHolder);
+        new GotoPageAction(page, abortPendingTasks).execute(readerDataHolder);
     }
 
     private void showScreenRefreshDialog(final ReaderDataHolder readerDataHolder) {
@@ -543,6 +559,77 @@ public class ShowReaderMenuAction extends BaseAction {
         Dialog dlg = new DialogSearch(readerDataHolder);
         dlg.show();
         readerDataHolder.addActiveDialog(dlg);
+    }
+
+    private void prepareGotoChapter(final ReaderDataHolder readerDataHolder, final boolean back) {
+        List<Integer> tocChapterNodeList = getTocChapterNodeList();
+        if (tocChapterNodeList == null) {
+            new GetTableOfContentAction().execute(readerDataHolder, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    BaseReaderRequest readerRequest = (BaseReaderRequest) request;
+                    ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
+                    boolean hasToc = toc != null && toc.getRootEntry() != null;
+                    if (!hasToc) {
+                        return;
+                    }
+                    List<Integer> readTocChapterNodeList = TocUtils.buildChapterNodeList(toc);
+                    setTocChapterNodeList(readTocChapterNodeList);
+                    gotoChapter(readerDataHolder, back, readTocChapterNodeList);
+                }
+            });
+        }else {
+            gotoChapter(readerDataHolder, back, tocChapterNodeList);
+        }
+    }
+
+    private void gotoChapter(final ReaderDataHolder readerDataHolder, final boolean back, final List<Integer> tocChapterNodeList) {
+        if (tocChapterNodeList.size() <= 0) {
+            return;
+        }
+        int currentPage = readerDataHolder.getCurrentPage();
+        int chapterPosition;
+        if (back) {
+            chapterPosition = getChapterPositionByPage(currentPage, back, tocChapterNodeList);
+        } else {
+            chapterPosition = getChapterPositionByPage(currentPage, back, tocChapterNodeList);
+        }
+        gotoPage(readerDataHolder, chapterPosition, true);
+    }
+
+    private int getChapterPositionByPage(int pagePosition, boolean back, List<Integer> tocChapterNodeList) {
+        int size = tocChapterNodeList.size();
+        for (int i = 0; i < size; i++) {
+            if (pagePosition < tocChapterNodeList.get(i)) {
+                if (back) {
+                    int index = i - 1;
+                    if (index < 0) {
+                        return 0;
+                    }
+                    int position = tocChapterNodeList.get(Math.max(0, index));
+                    if (position < pagePosition) {
+                        return position;
+                    }else {
+                        return getChapterPositionByPage(pagePosition - 1, back, tocChapterNodeList);
+                    }
+                } else {
+                    int position = tocChapterNodeList.get(i);
+                    if (position > pagePosition) {
+                        return position;
+                    }else {
+                        return getChapterPositionByPage(pagePosition + 1, back, tocChapterNodeList);
+                    }
+                }
+
+            }
+        }
+
+        if (back) {
+            return pagePosition - 1;
+        } else {
+            return pagePosition + 1;
+        }
+
     }
 
     private void showTtsDialog(final ReaderDataHolder readerDataHolder){
