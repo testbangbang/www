@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;
@@ -26,9 +27,14 @@ public class PushStatisticsRequest extends BaseStatisticsRequest {
     private Context context;
     private List<OnyxStatisticsModel> saveStatistic;
 
-    public PushStatisticsRequest(Context context, List<OnyxStatisticsModel> saveStatistic) {
+    public PushStatisticsRequest(Context context, List<OnyxStatisticsModel> statistic) {
         this.context = context;
-        this.saveStatistic = saveStatistic;
+        if (statistic != null) {
+            saveStatistic = new ArrayList<>();
+            for (OnyxStatisticsModel onyxStatisticsModel : statistic) {
+                saveStatistic.add(onyxStatisticsModel.clone());
+            }
+        }
     }
 
     @Override
