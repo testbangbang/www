@@ -7,11 +7,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -44,11 +47,16 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by joy on 7/15/16.
  */
 public class DialogQuickPreview extends Dialog {
+
+    private static final int LONG_CLICK_TIME_INTERVAL = 2000;
 
     public static abstract class Callback {
         public abstract void abort();
@@ -103,6 +111,34 @@ public class DialogQuickPreview extends Dialog {
 
         public int getGridSize() {
             return getRows() * getColumns();
+        }
+    }
+
+    private static class TouchHandler extends Handler {
+
+        private PageRecyclerView pageRecyclerView;
+
+        public TouchHandler(PageRecyclerView pageRecyclerView) {
+            this.pageRecyclerView = pageRecyclerView;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            int viewId = msg.what;
+            switch (viewId){
+                case R.id.image_view_next_page:{
+                    int currentPage = pageRecyclerView.getPaginator().getCurrentPage();
+                    int pages = pageRecyclerView.getPaginator().pages();
+                    pageRecyclerView.gotoPage(Math.min(currentPage + 10, pages));
+                }
+                    break;
+                case R.id.image_view_prev_page:{
+                    int currentPage = pageRecyclerView.getPaginator().getCurrentPage();
+                    pageRecyclerView.gotoPage(Math.max(currentPage - 10, 0));
+                }
+                    break;
+            }
         }
     }
 
@@ -200,6 +236,8 @@ public class DialogQuickPreview extends Dialog {
     private ImageView nineImageGrid;
     private ImageButton chapterBack;
     private ImageButton chapterForward;
+    private ImageButton btnNext;
+    private ImageButton btnPrev;
 
     private Grid grid = new Grid();
     private SparseArray<Bitmap> previewMap = new SparseArray<>();
@@ -210,6 +248,9 @@ public class DialogQuickPreview extends Dialog {
     private String currentPagePosition;
     private Callback callback;
     private List<Integer> tocChapterNodeList;
+    private ScheduledExecutorService scheduledExecutor;
+    private TouchHandler touchHandler;
+    private long touchDownTime;
 
     public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, Callback callback) {
         super(readerDataHolder.getContext(), R.style.android_dialog_no_title);
@@ -256,21 +297,31 @@ public class DialogQuickPreview extends Dialog {
         nineImageGrid = (ImageView) findViewById(R.id.image_view_nine_grids);
         chapterBack = (ImageButton) findViewById(R.id.chapter_back);
         chapterForward = (ImageButton) findViewById(R.id.chapter_forward);
+        btnNext = (ImageButton) findViewById(R.id.image_view_next_page);
+        btnPrev = (ImageButton) findViewById(R.id.image_view_prev_page);
         textViewProgress.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        touchHandler = new TouchHandler(gridRecyclerView);
 
-        findViewById(R.id.image_view_prev_page).setOnClickListener(new View.OnClickListener() {
+        View.OnTouchListener onTouchListener = new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                prevPage();
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    touchDownTime = System.currentTimeMillis();
+                    handleTouchDownEvent(v.getId());
+                    v.setBackgroundResource(R.drawable.pressed_btn_bg);
+                }else if(event.getAction() == MotionEvent.ACTION_UP){
+                    v.setBackgroundResource(R.drawable.imagebtn_bg);
+                    long current = System.currentTimeMillis();
+                    boolean onClick = current - touchDownTime < LONG_CLICK_TIME_INTERVAL;
+                    handleTouchUpEvent(v.getId(), onClick);
+                }
+                return true;
             }
-        });
+        };
 
-        findViewById(R.id.image_view_next_page).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                nextPage();
-            }
-        });
+        btnPrev.setOnTouchListener(onTouchListener);
+
+        btnNext.setOnTouchListener(onTouchListener);
 
         findViewById(R.id.image_view_close).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -400,6 +451,35 @@ public class DialogQuickPreview extends Dialog {
                 onPageDataChanged();
             }
         });
+    }
+
+    private void handleTouchDownEvent(final int viewId) {
+        scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutor.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                Message msg = new Message();
+                msg.what = viewId;
+                touchHandler.sendMessage(msg);
+            }
+        }, LONG_CLICK_TIME_INTERVAL, LONG_CLICK_TIME_INTERVAL, TimeUnit.MILLISECONDS);
+    }
+
+    private void handleTouchUpEvent(final int viewId, final boolean onClick) {
+        if (onClick) {
+            switch (viewId) {
+                case R.id.image_view_next_page:
+                    nextPage();
+                    break;
+                case R.id.image_view_prev_page:
+                    prevPage();
+                    break;
+            }
+        }
+        if (scheduledExecutor != null) {
+            scheduledExecutor.shutdownNow();
+            scheduledExecutor = null;
+        }
     }
 
     private void initGridType() {
