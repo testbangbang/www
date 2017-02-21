@@ -41,12 +41,6 @@ extern "C" {
 
 #include "JNIUtils.h"
 
-#define COLUMN_HALF_HEIGHT 15
-#define V_LINE_SIZE 2
-#define H_LINE_SIZE 2
-#define LINE_MARGIN 20
-#define COLUMN_WIDTH 5
-
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
@@ -114,8 +108,6 @@ bool JNIBitmap::attach(jobject bitmap) {
 
 namespace {
 
-double WHITE_THRESHOLD  = 0.05;
-
 // use std::list to simulate FIFO queue
 std::list<std::pair<std::string, std::shared_ptr<WILLUSBITMAP>>> reflowedPages;
 std::mutex pagesMutex;
@@ -152,148 +144,12 @@ std::shared_ptr<WILLUSBITMAP> getReflowedPage(const std::string &pageName) {
     return found->second;
 }
 
-int calculateAvgLum(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h);
-float getLeftBound(uint8_t* src, int width, int height, int avgLum);
-float getLeftColumnBound(uint8_t* src, int width, int height, int avgLum, float x, float y);
-float getTopBound(uint8_t* src, int width, int height, int avgLum);
-float getRightBound(uint8_t* src, int width, int height, int avgLum);
-float getRightColumnBound(uint8_t* src, int width, int height, int avgLum, float x, float y);
-float getBottomBound(uint8_t* src, int width, int height, int avgLum);
-int isRectWhite(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h, int avgLum);
-
-int calculateAvgLum(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h) {
-    int i, a;
-    int midBright = 0;
-
-    int x, y;
-    for (y = 0; y < sub_h; y++) {
-        for (x = 0; x < sub_w; x++) {
-            i = ((y + sub_y) * width + sub_x + x) * 4;
-            midBright += (MIN(src[i+2], MIN(src[i + 1],src[i])) + MAX(src[i+2], MAX(src[i + 1], src[i]))) / 2;
-        }
-    }
-    midBright /= (sub_w * sub_h);
-    return midBright;
-}
-
-float getLeftBound(uint8_t* src, int width, int height, int avgLum) {
-    int w = width / 3;
-    int whiteCount = 0;
-    int x = 0;
-
-    for (x = 0; x < w; x += V_LINE_SIZE) {
-        // LOGI("getLeftBound: %d", x);
-        int white = isRectWhite(src, width, height, x, LINE_MARGIN, V_LINE_SIZE, height - 2 * LINE_MARGIN, avgLum);
-        if (white) {
-            whiteCount++;
-        } else {
-            if (whiteCount >= 1) {
-                return (float) (MAX(0, x - V_LINE_SIZE)) / width;
-            }
-            whiteCount = 0;
-        }
-    }
-    return whiteCount > 0 ? (float) (MAX(0, x - V_LINE_SIZE)) / width : 0;
-}
-
-float getLeftColumnBound(uint8_t* src, int width, int height, int avgLum, float x, float y) {
-    int blackFound = 0;
-    int pointX = (int) (width * x);
-    int pointY = (int) (height * y);
-    int top = MAX(0, pointY - COLUMN_HALF_HEIGHT);
-    int bottom = MIN(height - 1, pointY + COLUMN_HALF_HEIGHT);
-
-    int left;
-    for (left = pointX; left >= 0; left -= COLUMN_WIDTH) {
-        if (isRectWhite(src, width, height, left, top, COLUMN_WIDTH, bottom - top, avgLum)) {
-            if (blackFound) {
-                return ((float) left / width);
-            }
-        } else {
-            blackFound = 1;
-        }
-    }
-    return 0;
-}
-
-float getTopBound(uint8_t* src, int width, int height, int avgLum) {
-    int h = height / 3;
-    int whiteCount = 0;
-    int y = 0;
-
-    for (y = 0; y < h; y += H_LINE_SIZE) {
-        // LOGI("getTopBound: %d", y);
-        int white = isRectWhite(src, width, height, LINE_MARGIN, y, width - 2 * LINE_MARGIN, H_LINE_SIZE, avgLum);
-        if (white) {
-            whiteCount++;
-        } else {
-            if (whiteCount >= 1) {
-                return (float) (MAX(0, y - H_LINE_SIZE)) / height;
-            }
-            whiteCount = 0;
-        }
-    }
-    return whiteCount > 0 ? (float) (MAX(0, y - H_LINE_SIZE)) / height : 0;
-}
-
-float getRightBound(uint8_t* src, int width, int height, int avgLum) {
-    int w = width / 3;
-    int whiteCount = 0;
-    int x = 0;
-
-    for (x = width - V_LINE_SIZE; x > width - w; x -= V_LINE_SIZE) {
-        // LOGI("getRightBound: %d", x);
-        int white = isRectWhite(src, width, height, x, LINE_MARGIN, V_LINE_SIZE, height - 2 * LINE_MARGIN, avgLum);
-        if (white) {
-            whiteCount++;
-        } else {
-            if (whiteCount >= 1) {
-                return (float) (MIN(width, x + 2 * V_LINE_SIZE)) / width;
-            }
-            whiteCount = 0;
-        }
-    }
-    return whiteCount > 0 ? (float) (MIN(width, x + 2 * V_LINE_SIZE)) / width : 1;
-}
-
-float getRightColumnBound(uint8_t* src, int width, int height, int avgLum, float x, float y) {
-    int blackFound = 0;
-    int pointX = (int) (width * x);
-    int pointY = (int) (height * y);
-    int top = MAX(0, pointY - COLUMN_HALF_HEIGHT);
-    int bottom = MIN(height - 1, pointY + COLUMN_HALF_HEIGHT);
-
-    int left;
-    for (left = pointX; left < width - COLUMN_WIDTH; left += COLUMN_WIDTH) {
-        if (isRectWhite(src, width, height, left, top, COLUMN_WIDTH, bottom - top, avgLum)) {
-            if (blackFound) {
-                return ((float) (left + COLUMN_WIDTH) / width);
-            }
-        } else {
-            blackFound = 1;
-        }
-    }
-    return 1;
-}
-
-float getBottomBound(uint8_t* src, int width, int height, int avgLum) {
-    int h = height / 3;
-    int whiteCount = 0;
-    int y = 0;
-    for (y = height - H_LINE_SIZE; y > height - h; y -= H_LINE_SIZE) {
-        int white = isRectWhite(src, width, height, LINE_MARGIN, y, width - 2 * LINE_MARGIN, H_LINE_SIZE, avgLum);
-        // LOGI("getBottomBound: %d white %d", y, white);
-        if (white) {
-            whiteCount++;
-        } else {
-            if (whiteCount >= 1) {
-                return (float) (MIN(height, y + 2 * H_LINE_SIZE)) / height;
-            }
-            whiteCount = 0;
-        }
-    }
-    return whiteCount > 0 ? (float) (MIN(height, y + 2 * H_LINE_SIZE)) / height : 1;
-}
+const int COLUMN_HALF_HEIGHT = 15;
+const int V_LINE_SIZE = 2;
+const int H_LINE_SIZE = 2;
+const int LINE_MARGIN = 20;
+const int COLUMN_WIDTH = 5;
+double WHITE_THRESHOLD  = 0.01;
 
 int isRectWhite(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h, int avgLum) {
     int count = 0;
@@ -310,9 +166,106 @@ int isRectWhite(uint8_t* src, int width, int height, int sub_x, int sub_y, int s
             }
         }
     }
-    float white = (float) count / (sub_w * sub_h);
+    double white = (double) count / (sub_w * sub_h);
     //LOGI("White: %f %d %f", white, count, WHITE_THRESHOLD);
     return white < WHITE_THRESHOLD ? 1 : 0;
+}
+
+int calculateAvgLum(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h) {
+    int i, a;
+    int midBright = 0;
+
+    int x, y;
+    for (y = 0; y < sub_h; y++) {
+        for (x = 0; x < sub_w; x++) {
+            i = ((y + sub_y) * width + sub_x + x) * 4;
+            midBright += (MIN(src[i+2], MIN(src[i + 1],src[i])) + MAX(src[i+2], MAX(src[i + 1], src[i]))) / 2;
+        }
+    }
+    midBright /= (sub_w * sub_h);
+    return midBright;
+}
+
+int getLeftBound(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h, int avgLum) {
+    int w = sub_w / 3;
+    int whiteCount = 0;
+    int x = 0;
+
+    for (x = sub_x; x < w; x += V_LINE_SIZE) {
+        // LOGI("getLeftBound: %d", x);
+        int white = isRectWhite(src, width, height, x, sub_y + LINE_MARGIN, V_LINE_SIZE, sub_h - 2 * LINE_MARGIN, avgLum);
+        if (white) {
+            whiteCount++;
+        } else {
+            if (whiteCount >= 1) {
+                return MAX(sub_x, x - V_LINE_SIZE);
+            }
+            whiteCount = 0;
+        }
+    }
+    return whiteCount > 0 ? MAX(sub_x, x - V_LINE_SIZE) : sub_x;
+}
+
+int getTopBound(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h, int avgLum) {
+    int h = sub_h / 3;
+    int whiteCount = 0;
+    int y = 0;
+
+    for (y = sub_y; y < h; y += H_LINE_SIZE) {
+        // LOGI("getTopBound: %d", y);
+        int white = isRectWhite(src, width, height, sub_x + LINE_MARGIN, y, sub_w - 2 * LINE_MARGIN, H_LINE_SIZE, avgLum);
+        if (white) {
+            whiteCount++;
+        } else {
+            if (whiteCount >= 1) {
+                return MAX(sub_y, y - H_LINE_SIZE);
+            }
+            whiteCount = 0;
+        }
+    }
+    return whiteCount > 0 ? MAX(sub_y, y - H_LINE_SIZE) : sub_y;
+}
+
+int getRightBound(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h, int avgLum) {
+    int w = sub_w / 3;
+    int whiteCount = 0;
+    int x = 0;
+    int subRight = sub_x + sub_w;
+
+    for (x = subRight - V_LINE_SIZE; x > subRight - w; x -= V_LINE_SIZE) {
+        // LOGI("getRightBound: %d", x);
+        int white = isRectWhite(src, width, height, x, sub_y + LINE_MARGIN, V_LINE_SIZE, sub_h - 2 * LINE_MARGIN, avgLum);
+        if (white) {
+            whiteCount++;
+        } else {
+            if (whiteCount >= 1) {
+                return MIN(subRight, x + 2 * V_LINE_SIZE);
+            }
+            whiteCount = 0;
+        }
+    }
+    return whiteCount > 0 ? MIN(subRight, x + 2 * V_LINE_SIZE) : subRight;
+}
+
+int getBottomBound(uint8_t* src, int width, int height, int sub_x, int sub_y, int sub_w, int sub_h, int avgLum) {
+    int h = sub_h / 3;
+    int whiteCount = 0;
+    int y = 0;
+    int subBottom = sub_y + sub_h;
+
+    for (y = subBottom - H_LINE_SIZE; y > subBottom - h; y -= H_LINE_SIZE) {
+        int white = isRectWhite(src, width, height, sub_x + LINE_MARGIN, y, sub_w - 2 * LINE_MARGIN, H_LINE_SIZE, avgLum);
+        // LOGI("getBottomBound: %d white %d", y, white);
+        if (white) {
+            whiteCount++;
+        } else {
+            if (whiteCount >= 1) {
+                return MIN(subBottom, y + 2 * H_LINE_SIZE);
+            }
+            whiteCount = 0;
+        }
+    }
+    return whiteCount > 0 ? MIN(subBottom, y + 2 * H_LINE_SIZE) : subBottom;
 }
 
 jdoubleArray doubleArrayFromRect(JNIEnv * env, double left, double top, double right, double bottom) {
@@ -690,13 +643,13 @@ JNIEXPORT jdoubleArray JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils
     uint8_t * src = (uint8_t*)pixels;
     int width = right - left;
     int height = bottom - top;
-    int avgLum = calculateAvgLum(src, info.width, info.height, 0, 0, info.width, info.height);
+    int avgLum = calculateAvgLum(src, info.width, info.height, left, top, width, height);
 
     double coords[4];
-    coords[0] = getLeftBound(src, width, height, avgLum) * (right - left) + left;
-    coords[1] = getTopBound(src, width, height, avgLum) * (bottom - top) + top;
-    coords[2] = getRightBound(src, width, height, avgLum) * (right - left) + left;
-    coords[3] = getBottomBound(src, width, height, avgLum) * (bottom - top) + top;
+    coords[0] = getLeftBound(src, info.width, info.height, left, top, width, height, avgLum);
+    coords[1] = getTopBound(src, info.width, info.height, left, top, width, height, avgLum);
+    coords[2] = getRightBound(src, info.width, info.height, left, top, width, height, avgLum);
+    coords[3] = getBottomBound(src, info.width, info.height, left, top, width, height, avgLum);
     return doubleArrayFromRect(env, coords[0], coords[1], coords[2], coords[3]);
 }
 
