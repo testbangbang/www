@@ -32,7 +32,7 @@
 
             <TextView
                 android:id="@+id/reading_rank_text"
-                android:textSize="20sp"
+                android:textSize="@dimen/activity_statistics_small_text_size"
                 android:text="@string/reading_level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -44,7 +44,7 @@
         android:background="@drawable/square_bg_no_focused"
         android:id="@+id/page_statistics"
         android:focusable="false"
-        android:layout_margin="20dp"
+        android:layout_margin="@dimen/activity_statistics_spacing"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp">
@@ -71,14 +71,14 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:textSize="26sp"
+                android:textSize="@dimen/activity_statistics_big_text_size"
                 android:text="@string/time_distribution"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/textView"/>
 
             <TextView
                 android:id="@+id/reading_time_text"
-                android:textSize="22sp"
+                android:textSize="@dimen/activity_statistics_small_text_size"
                 android:text="@string/reading_time_every_day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

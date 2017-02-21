@@ -324,14 +324,15 @@
     <string name="view_slideshow_status_bar_battery" formatted="false">Battery: %d/%d (%%)</string>
     <string name="slideshow_quit_warning">Press back to quit slideshow mode!</string>
     <string name="code_page">Setting Code page...</string>
-    <string name="read_count">Read count</string>
-    <string name="read_record">Read record</string>
+    <string name="read_count">Reading book count</string>
+    <string name="finish_count">Finished book count</string>
     <string name="read_time">Read time</string>
     <string name="look_up_dictionary_count">Look up dictionary count</string>
+    <string name="statistics_annotation_count">Annotation Count</string>
     <string name="data_analysis">Data analysis</string>
     <string name="reading_record">Reading record</string>
     <string name="reading_level" formatted="false">You read no more than %.2f%%of the people</string>
-    <string name="reading_time_every_day" formatted="false">On an average day you read %.2 f hours, mainly reading time distribution in %d:00 - %d:00</string>
+    <string name="reading_time_every_day" formatted="false">On an average day you read %.2f hours, mainly reading time distribution in %d:00 - %d:00</string>
     <string name="read_longest_book" formatted="false">A book to read for the longest: %s</string>
     <string name="read_most_carefully_book" formatted="false">Read the book carefully : %s</string>
     <string name="read_start_time" formatted="false">%s start</string>
@@ -357,4 +358,5 @@
     <string name="fiction">Fiction</string>
     <string name="other">Other</string>
     <string name="load_statistical_data_failed">Load statistical data failed</string>
+    <string name="no_more_search_results">No more search results</string>
 </resources>

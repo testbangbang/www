@@ -83,6 +83,16 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_release
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_toRgbwBitmap
   (JNIEnv *, jclass, jobject, jobject, jint);
 
+
+/*
+ * Class:     com_onyx_android_sdk_reader_utils_ImageUtils
+ * Method:    toColorBitmap
+ * Signature: (Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;I)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_toColorBitmap
+  (JNIEnv *, jclass, jobject, jobject, jint);
+
+
 /*
  * Class:     com_onyx_android_sdk_reader_utils_ImageUtils
  * Method:    isTextPage

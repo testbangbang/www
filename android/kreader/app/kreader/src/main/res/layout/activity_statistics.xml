@@ -17,8 +17,8 @@
         android:layout_height="1dp"/>
 
     <RelativeLayout
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="@dimen/activity_statistics_bottom_bar_margin"
+        android:layout_marginBottom="@dimen/activity_statistics_bottom_bar_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
