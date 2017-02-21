@@ -148,7 +148,7 @@ public class HomeActivity extends BaseActivity {
 
     private void initNormalItem() {
         initNormalView(R.id.home_note_item, R.string.home_item_note_text, R.drawable.home_note, getNoteIntent());
-        initNormalView(R.id.home_dictionary_item, R.string.home_item_dictionary_text, R.drawable.home_dictionary, getDictIntent());
+        initNormalView(R.id.home_dictionary_item, R.string.home_item_application_text, R.drawable.home_application, getApplicationListIntent());
         initNormalView(R.id.home_practice_item, R.string.home_item_practice_text, R.drawable.home_practice, getEduIntent());
         initNormalView(R.id.home_setting_item, R.string.home_item_setting_text, R.drawable.home_setting, getSettingIntent());
     }
@@ -219,6 +219,10 @@ public class HomeActivity extends BaseActivity {
 
     private Intent getDictIntent() {
         return getPackageManager().getLaunchIntentForPackage("com.onyx.dict");
+    }
+
+    private Intent getApplicationListIntent() {
+        return new Intent(this, ApplicationsActivity.class);
     }
 
     private Intent getEduIntent() {

@@ -18,6 +18,7 @@ public class ReaderDeviceManager {
     private static int gcInterval;
     private static int refreshCount;
     private static boolean inFastUpdateMode = false;
+    private static boolean enableHoldDisplay = false;
 
     private final static EpdDevice epdDevice;
 
@@ -71,6 +72,13 @@ public class ReaderDeviceManager {
         } else {
             applyWithGCIntervalWithoutRegal(view);
         }
+    }
+
+    public static void applyRegalUpdate(final Context context, final View view) {
+        if (!isUsingRegal(context)) {
+            return;
+        }
+        epdDevice.setUpdateMode(view, UpdateMode.REGAL);
     }
 
     public static boolean isUsingRegal(Context context) {
@@ -127,6 +135,10 @@ public class ReaderDeviceManager {
         }
     }
 
+    public static void applyWithGcUpdate(View view) {
+        epdDevice.applyGCUpdate(view);
+    }
+
     public static void setUpdateMode(final View view, UpdateMode mode) {
         epdDevice.setUpdateMode(view, mode);
     }
@@ -137,6 +149,12 @@ public class ReaderDeviceManager {
 
     public static void cleanUpdateMode(final View view) {
         epdDevice.cleanUpdate(view);
+    }
+
+    public static void holdDisplay(boolean hold) {
+        if (enableHoldDisplay) {
+            epdDevice.holdDisplay(hold, UpdateMode.REGAL, 1);
+        }
     }
 
 }

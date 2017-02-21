@@ -1,4 +1,5 @@
 {
+  "has_front_light": true,
   "system_wake_up_front_light_key": "wake_up_brightness",
   "system_screen_off_key": "screen_off_timeout",
   "system_power_off_key": "auto_poweroff_timeout",

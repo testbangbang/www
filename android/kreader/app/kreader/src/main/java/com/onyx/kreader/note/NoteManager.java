@@ -4,12 +4,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
@@ -47,6 +49,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class NoteManager {
 
+    private static final String TAG = NoteManager.class.getSimpleName();
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
     private NoteEventProcessorManager noteEventProcessorManager;
     private ReaderNoteDocument noteDocument = new ReaderNoteDocument();
@@ -69,6 +72,8 @@ public class NoteManager {
     private AtomicBoolean noteDirty = new AtomicBoolean(false);
     private volatile boolean enableShortcutDrawing = false;
     private volatile boolean enableShortcutErasing = false;
+    private boolean useWakeLock = true;
+    private WakeLockHolder wakeLockHolder = new WakeLockHolder(false);
 
     public NoteManager(final ReaderDataHolder p) {
         parent = p;
@@ -88,18 +93,36 @@ public class NoteManager {
 
     public void enableRawEventProcessor(boolean enable) {
         enableRawEventProcessor = enable;
+        if (!enable) {
+            releaseWakeLock();
+        }
     }
 
     public void stopRawEventProcessor() {
+        releaseWakeLock();
         getNoteEventProcessorManager().stop();
     }
 
     public void pauseRawEventProcessor() {
+        releaseWakeLock();
         getNoteEventProcessorManager().pause();
     }
 
-    public void resumeRawEventProcessor() {
+    public void resumeRawEventProcessor(final Context context) {
+        if (enableRawEventProcessor) {
+            acquireWakeLock(context);
+        }
         getNoteEventProcessorManager().resume();
+    }
+
+    private void acquireWakeLock(final Context context) {
+        if (useWakeLock) {
+            wakeLockHolder.acquireWakeLock(context, TAG);
+        }
+    }
+
+    private void releaseWakeLock() {
+        wakeLockHolder.releaseWakeLock();
     }
 
     private void initNoteArgs(final Context context) {

@@ -150,6 +150,11 @@ public class FakeReader implements ReaderDocument,
         return false;
     }
 
+    @Override
+    public boolean supportConvertBetweenSimplifiedAndTraditionalChineseText() {
+        return false;
+    }
+
     public String getInitPosition() {
         return firstPage();
     }
@@ -250,6 +255,11 @@ public class FakeReader implements ReaderDocument,
     }
 
     public List<ReaderSelection> getLinks(final String position) {
+        return null;
+    }
+
+    @Override
+    public List<ReaderImage> getImages(String position) {
         return null;
     }
 

@@ -65,3 +65,7 @@
 -keep class **$$ViewBinder { *; }
 -keepclasseswithmembernames class * { @butterknife.* <methods>; }
 -keepclasseswithmembernames class * { @butterknife.* <fields>; }
+
+# for aliyun-oss
+-keep class com.alibaba.sdk.android.oss.** { *; }
+-dontwarn org.apache.commons.codec.binary.**

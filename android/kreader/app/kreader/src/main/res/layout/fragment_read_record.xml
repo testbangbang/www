@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="@dimen/fragment_read_record_padding">
+
+
+    <TextView
+        style="@style/statistics_text_view"
+        android:text="@string/reading_content_analysis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/page_category"
+        android:background="@drawable/square_bg_no_focused"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+    </com.onyx.android.sdk.ui.view.PageRecyclerView>
+
+    <TextView
+        android:maxLines="1"
+        style="@style/statistics_text_view"
+        android:id="@+id/text_read_most"
+        android:text="@string/read_longest_book"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/page_read_most"
+        android:background="@drawable/square_bg_no_focused"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+    </com.onyx.android.sdk.ui.view.PageRecyclerView>
+
+    <TextView
+        android:maxLines="1"
+        style="@style/statistics_text_view"
+        android:id="@+id/text_read_carefully"
+        android:text="@string/read_most_carefully_book"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/page_read_carefully"
+        android:background="@drawable/square_bg_no_focused"
+        android:layout_weight="0.5"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+    </com.onyx.android.sdk.ui.view.PageRecyclerView>
+
+    <TextView
+        style="@style/statistics_text_view"
+        android:text="@string/recently_read_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/page_content"
+        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+    </com.onyx.android.sdk.ui.view.PageRecyclerView>
+
+</LinearLayout>

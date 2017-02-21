@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by zhuzeng on 10/3/15.
  */
-public interface ReaderSelection {
+public abstract class ReaderSelection implements Cloneable{
 
     static public enum SelectionType {
         TEXT,
@@ -18,51 +18,54 @@ public interface ReaderSelection {
         VIDEO,
     }
 
-    public String getPageName();
+    @Override
+    public abstract ReaderSelection clone();
 
-    public String getPagePosition();
+    public abstract String getPageName();
+
+    public abstract String getPagePosition();
 
     /**
      * Retrieve the start position inside document.
      * @return
      */
-    public String getStartPosition();
+    public abstract String getStartPosition();
 
     /**
      * Retrieve end position.
      * @return
      */
-    public String getEndPosition();
+    public abstract String getEndPosition();
 
     /**
      * Retrieve selected text.
      * @return
      */
-    public String getText();
+    public abstract String getText();
 
-    public String getLeftText();
+    public abstract String getLeftText();
 
-    public String getRightText();
+    public abstract String getRightText();
 
     /**
      * return true if selected text is a single word
      *
      * @return
      */
-    public boolean isSelectedOnWord();
+    public abstract boolean isSelectedOnWord();
 
     /**
      * Retrieve selected rectangle list in page coordinates system.
      * @return
      */
-    public List<RectF> getRectangles();
+    public abstract List<RectF> getRectangles();
 
 
     /**
      * Get selection type.
      * @return
      */
-    public SelectionType getSelectionType();
+    public abstract SelectionType getSelectionType();
 
 
 

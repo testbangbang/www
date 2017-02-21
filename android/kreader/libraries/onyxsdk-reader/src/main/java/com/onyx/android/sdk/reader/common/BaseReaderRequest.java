@@ -30,6 +30,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private boolean loadPageAnnotation = true;
     private boolean loadBookmark = true;
     private boolean loadPageLinks = true;
+    private boolean loadPageImages = true;
 
     public BaseReaderRequest() {
         super();
@@ -190,6 +191,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private void loadUserData(final Reader reader) {
         getReaderUserDataInfo().setDocumentPath(reader.getDocumentPath());
         getReaderUserDataInfo().setDocumentCodePage(reader.getDocumentOptions().getCodePage());
+        getReaderUserDataInfo().setChineseConvertType(reader.getDocumentOptions().getChineseConvertType());
         getReaderUserDataInfo().setDocumentMetadata(reader.getDocumentMetadata());
         if (readerViewInfo != null && loadPageAnnotation) {
             getReaderUserDataInfo().loadPageAnnotations(getContext(), reader, readerViewInfo.getVisiblePages());
@@ -204,6 +206,9 @@ public abstract class BaseReaderRequest extends BaseRequest {
         }
         if (readerViewInfo != null && loadPageLinks) {
             getReaderUserDataInfo().loadPageLinks(getContext(), reader, readerViewInfo.getVisiblePages());
+        }
+        if (readerViewInfo != null && loadPageImages) {
+            getReaderUserDataInfo().loadPageImages(getContext(), reader, readerViewInfo.getVisiblePages());
         }
     }
 

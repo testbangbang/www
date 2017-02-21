@@ -324,4 +324,39 @@
     <string name="view_slideshow_status_bar_battery" formatted="false">Battery: %d/%d (%%)</string>
     <string name="slideshow_quit_warning">Press back to quit slideshow mode!</string>
     <string name="code_page">Setting Code page...</string>
+    <string name="read_count">Reading book count</string>
+    <string name="finish_count">Finished book count</string>
+    <string name="read_time">Read time</string>
+    <string name="look_up_dictionary_count">Look up dictionary count</string>
+    <string name="statistics_annotation_count">Annotation Count</string>
+    <string name="data_analysis">Data analysis</string>
+    <string name="reading_record">Reading record</string>
+    <string name="reading_level" formatted="false">You read no more than %.2f%%of the people</string>
+    <string name="reading_time_every_day" formatted="false">On an average day you read %.2f hours, mainly reading time distribution in %d:00 - %d:00</string>
+    <string name="read_longest_book" formatted="false">A book to read for the longest: %s</string>
+    <string name="read_most_carefully_book" formatted="false">Read the book carefully : %s</string>
+    <string name="read_start_time" formatted="false">%s start</string>
+    <string name="read_use_time" formatted="false">The book reading total times %s</string>
+    <string name="read_end_time" formatted="false">%s end</string>
+    <string name="high_light_count" formatted="false">Highlight: %d</string>
+    <string name="annotation_count" formatted="false">Annotation: %d</string>
+    <string name="look_up_dict_count" formatted="false">Look Up dictionary count: %d</string>
+    <string name="time_distribution">Time distribution</string>
+    <string name="self_time_distribution">Your reading time distribution</string>
+    <string name="other_time_distribution">Other students of intensive reading time distribution</string>
+    <string name="reading_content_analysis">Reading content analysis</string>
+    <string name="recently_read_content">Recently read content</string>
+    <string name="statistics_shortcut_name">Data statistics</string>
+    <string name="science">Science</string>
+    <string name="social_science">Social Science</string>
+    <string name="art">Art</string>
+    <string name="life">Life</string>
+    <string name="education">Education</string>
+    <string name="children_book">Children Book</string>
+    <string name="finance_and_economics">Finance and Economics</string>
+    <string name="magazine">Magazine</string>
+    <string name="fiction">Fiction</string>
+    <string name="other">Other</string>
+    <string name="load_statistical_data_failed">Load statistical data failed</string>
+    <string name="no_more_search_results">No more search results</string>
 </resources>

@@ -25,6 +25,7 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
@@ -88,7 +89,7 @@ public class ShowReaderMenuAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerActivity = (ReaderActivity)readerDataHolder.getContext();
-        showReaderMenu(readerDataHolder);
+        showReaderMenu(readerDataHolder, DeviceUtils.isFullScreen(readerActivity));
         BaseCallback.invoke(callback, null, null);
     }
 
@@ -109,8 +110,10 @@ public class ShowReaderMenuAction extends BaseAction {
         }
     }
 
-    private void showReaderMenu(final ReaderDataHolder readerDataHolder) {
-        getReaderMenu(readerDataHolder).show(getReaderMenuState(readerDataHolder));
+    private void showReaderMenu(final ReaderDataHolder readerDataHolder, boolean fullscreen) {
+        ReaderMenu readerMenu = getReaderMenu(readerDataHolder);
+        readerMenu.setFullScreen(fullscreen);
+        readerMenu.show(getReaderMenuState(readerDataHolder));
     }
 
     private ReaderMenu getReaderMenu(final ReaderDataHolder readerDataHolder) {

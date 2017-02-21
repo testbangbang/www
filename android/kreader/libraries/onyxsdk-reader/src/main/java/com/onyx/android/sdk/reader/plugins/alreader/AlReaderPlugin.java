@@ -7,6 +7,8 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.BitmapUtils;
@@ -149,8 +151,19 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (cover == null) {
             return false;
         }
+        //Create a rectangular area that scales proportionally on the original cover.
+        Rect rect = null;
+        float ratioSrc = cover.getWidth()/cover.getHeight();
+        float ratioDest = bitmap.getWidth()/bitmap.getHeight();
+        if(ratioSrc >= ratioDest){
+            int hh = (int)(cover.getHeight() * bitmap.getWidth()/cover.getWidth());
+            rect = new Rect(0, Math.abs((bitmap.getHeight()-hh)/2), bitmap.getWidth(), hh);
+        } else {
+            int ww = (int)(cover.getWidth() * bitmap.getHeight()/cover.getHeight());
+            rect = new Rect(Math.abs((bitmap.getWidth()-ww)/2), 0, ww, bitmap.getHeight());
+        }
         BitmapUtils.scaleBitmap(cover, new Rect(0, 0, cover.getWidth(), cover.getHeight()),
-                bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()));
+                bitmap, rect);
         cover.recycle();
         return true;
     }
@@ -205,6 +218,11 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     public ReaderRendererFeatures getRendererFeatures() {
         return this;
+    }
+
+    @Override
+    public void setChineseConvertType(ReaderChineseConvertType convertType) {
+        getPluginImpl().setChineseConvertType(convertType);
     }
 
     public void close() {
@@ -269,6 +287,11 @@ public class AlReaderPlugin implements ReaderPlugin,
      */
     public List<ReaderSelection> getLinks(final String position) {
         return getPluginImpl().getPageLinks();
+    }
+
+    @Override
+    public List<ReaderImage> getImages(String position) {
+        return getPluginImpl().getPageImages();
     }
 
     /**
@@ -494,6 +517,11 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportTypefaceAdjustment() {
+        return true;
+    }
+
+    @Override
+    public boolean supportConvertBetweenSimplifiedAndTraditionalChineseText() {
         return true;
     }
 

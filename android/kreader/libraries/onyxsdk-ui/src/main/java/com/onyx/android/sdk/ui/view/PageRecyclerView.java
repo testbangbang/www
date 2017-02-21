@@ -6,7 +6,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,6 +37,7 @@ public class PageRecyclerView extends RecyclerView {
     private Map<Integer, String> keyBindingMap = new Hashtable<>();
     private int originPaddingBottom;
     private int itemDecorationHeight = 0;
+    private boolean pageTurningCycled = false;
 
     public interface OnPagingListener {
         void onPageChange(int position,int itemCount,int pageSize);
@@ -296,20 +296,44 @@ public class PageRecyclerView extends RecyclerView {
         this.onPagingListener = listener;
     }
 
+    public boolean isPageTurningCycled() {
+        return pageTurningCycled;
+    }
+
+    public void setPageTurningCycled(boolean cycled) {
+        this.pageTurningCycled = cycled;
+    }
+
     public void prevPage() {
         if (paginator.prevPage()){
             onPageChange();
+            return;
+        }
+
+        if (pageTurningCycled && paginator.pages() > 1 && paginator.isFirstPage()) {
+            gotoPage(paginator.lastPage());
         }
     }
 
     public void nextPage() {
         if (paginator.nextPage()){
             onPageChange();
+            return;
+        }
+
+        if (pageTurningCycled && paginator.pages() > 1 && paginator.isLastPage()) {
+            gotoPage(0);
         }
     }
 
     public void gotoPage(int page) {
         if (paginator.gotoPage(page)) {
+            onPageChange();
+        }
+    }
+
+    public void gotoPageByIndex(final int index) {
+        if (paginator.gotoPageByIndex(index)) {
             onPageChange();
         }
     }
@@ -327,6 +351,9 @@ public class PageRecyclerView extends RecyclerView {
 
     public void notifyDataSetChanged() {
         PageAdapter pageAdapter = getPageAdapter();
+        if (pageAdapter == null) {
+            return;
+        }
         int gotoPage = paginator.getCurrentPage() == -1 ? 0 : paginator.getCurrentPage();
         resize(pageAdapter.getRowCount(), pageAdapter.getColumnCount(), getPageAdapter().getDataCount());
         if (gotoPage > getPaginator().lastPage()) {

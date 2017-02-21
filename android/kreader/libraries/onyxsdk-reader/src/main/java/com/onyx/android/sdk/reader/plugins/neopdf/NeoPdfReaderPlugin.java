@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -187,6 +189,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public void setChineseConvertType(ReaderChineseConvertType convertType) {
+
+    }
+
     public void close() {
         getPluginImpl().closeDocument();
     }
@@ -260,6 +267,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
             copy.add(((NeoPdfSelection)link).clone());
         }
         return copy;
+    }
+
+    @Override
+    public List<ReaderImage> getImages(String position) {
+        return null;
     }
 
     /**
@@ -534,6 +546,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportTypefaceAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportConvertBetweenSimplifiedAndTraditionalChineseText() {
         return false;
     }
 

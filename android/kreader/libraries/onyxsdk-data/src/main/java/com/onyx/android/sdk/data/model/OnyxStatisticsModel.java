@@ -4,10 +4,12 @@ package com.onyx.android.sdk.data.model;
 import com.onyx.android.sdk.data.converter.ListStringConverter;
 import com.onyx.android.sdk.data.converter.SetStringConverter;
 import com.onyx.android.sdk.data.db.OnyxStatisticsDatabase;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,13 +32,28 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
     @Column
     private String name;
     @Column(typeConverter = ListStringConverter.class)
-    private List<String> author = new ArrayList<>();
+    private List<String> author;
     @Column
     private Integer lastPage;
     @Column
     private Integer currPage;
     @Column
     private Long durationTime;
+    @Column
+    private String comment;
+    @Column
+    private Integer score;
+
+    public OnyxStatisticsModel() {
+    }
+
+    public OnyxStatisticsModel(String md5, String md5short, String sid, Integer type, Date eventTime) {
+        super(md5, md5short, sid, type, eventTime);
+    }
+
+    public OnyxStatisticsModel(String md5, String md5short, String sid, Integer type, Date eventTime, int status) {
+        super(md5, md5short, sid, type, eventTime, status);
+    }
 
     public List<String> getAuthor() {
         return author;
@@ -91,7 +108,7 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
     }
 
     public void setOrgText(String orgText) {
-        this.orgText = orgText;
+        this.orgText =  orgText;
     }
 
     public String getPath() {
@@ -110,4 +127,27 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
         this.title = title;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public static OnyxStatisticsModel create(String md5, String md5short, String sid, Integer type, Date eventTime) {
+        return new OnyxStatisticsModel(md5, md5short, sid, type, eventTime);
+    }
+
+    public static OnyxStatisticsModel create(String md5, String md5short, String sid, Integer type, Date eventTime, int status) {
+        return new OnyxStatisticsModel(md5, md5short, sid, type, eventTime, status);
+    }
 }

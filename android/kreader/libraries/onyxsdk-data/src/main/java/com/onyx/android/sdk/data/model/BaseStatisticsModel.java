@@ -19,9 +19,11 @@ public abstract class BaseStatisticsModel extends BaseModel {
     public static final int DATA_TYPE_LOOKUP_DIC = 3;
     public static final int DATA_TYPE_TEXT_SELECTED = 4;
     public static final int DATA_TYPE_CLOSE = 5;
+    public static final int DATA_TYPE_FINISH = 6;
 
     public static final int DATA_STATUS_NOT_PUSH = 0;
     public static final int DATA_STATUS_PUSHED = 1;
+    public static final int DATA_STATUS_TEST = 2;
 
     public static final int INVALID_ID = -1;
 
@@ -44,6 +46,26 @@ public abstract class BaseStatisticsModel extends BaseModel {
     private String sid;
     @Column
     private Integer status = DATA_STATUS_NOT_PUSH;
+
+    public BaseStatisticsModel() {
+    }
+
+    public BaseStatisticsModel(String md5, String md5short, String sid, Integer type, Date eventTime) {
+        this.md5 = md5;
+        this.md5short = md5short;
+        this.sid = sid;
+        this.type = type;
+        this.eventTime = eventTime;
+    }
+
+    public BaseStatisticsModel(String md5, String md5short, String sid, Integer type, Date eventTime, int status) {
+        this.md5 = md5;
+        this.md5short = md5short;
+        this.sid = sid;
+        this.type = type;
+        this.eventTime = eventTime;
+        this.status = status;
+    }
 
     public Date getEventTime() {
         return eventTime;
