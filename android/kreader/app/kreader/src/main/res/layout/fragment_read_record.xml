@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              android:padding="20dp">
+              android:padding="@dimen/fragment_read_record_padding">
 
 
     <TextView
@@ -15,12 +15,14 @@
     <com.onyx.android.sdk.ui.view.PageRecyclerView
         android:id="@+id/page_category"
         android:background="@drawable/square_bg_no_focused"
+        android:layout_weight="2"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="0dp">
 
     </com.onyx.android.sdk.ui.view.PageRecyclerView>
 
     <TextView
+        android:maxLines="1"
         style="@style/statistics_text_view"
         android:id="@+id/text_read_most"
         android:text="@string/read_longest_book"
@@ -30,12 +32,14 @@
     <com.onyx.android.sdk.ui.view.PageRecyclerView
         android:id="@+id/page_read_most"
         android:background="@drawable/square_bg_no_focused"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="0dp">
 
     </com.onyx.android.sdk.ui.view.PageRecyclerView>
 
     <TextView
+        android:maxLines="1"
         style="@style/statistics_text_view"
         android:id="@+id/text_read_carefully"
         android:text="@string/read_most_carefully_book"
@@ -45,8 +49,9 @@
     <com.onyx.android.sdk.ui.view.PageRecyclerView
         android:id="@+id/page_read_carefully"
         android:background="@drawable/square_bg_no_focused"
+        android:layout_weight="0.5"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="0dp">
 
     </com.onyx.android.sdk.ui.view.PageRecyclerView>
 
@@ -58,7 +63,7 @@
 
     <com.onyx.android.sdk.ui.view.PageRecyclerView
         android:id="@+id/page_content"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:layout_width="match_parent"
         android:layout_height="0dp">
 

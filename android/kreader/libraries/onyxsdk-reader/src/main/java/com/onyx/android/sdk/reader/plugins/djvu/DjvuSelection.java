@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by joy on 3/3/16.
  */
-public class DjvuSelection implements ReaderSelection {
+public class DjvuSelection extends ReaderSelection {
 
     @SuppressWarnings("unused")
     public static void addToSelectionList(List<ReaderSelection> list, String text, int [] rectangles) {
@@ -26,6 +26,20 @@ public class DjvuSelection implements ReaderSelection {
         for(int i = 0; i < data.length / 4; ++i) {
             rectangles.add(new RectF(data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3]));
         }
+    }
+
+    public DjvuSelection(List<RectF> rectangles, String text) {
+        this.rectangles = rectangles;
+        this.text = text;
+    }
+
+    @Override
+    public DjvuSelection clone() {
+        List<RectF> copy = new ArrayList<>();
+        for (RectF rectangle : rectangles) {
+            copy.add(new RectF(rectangle));
+        }
+        return new DjvuSelection(copy, text);
     }
 
     @Override

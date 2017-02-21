@@ -5,15 +5,14 @@ import android.net.ConnectivityManager;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.StatisticsCloudManager;
 import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
 import com.onyx.android.sdk.data.request.cloud.PushStatisticsRequest;
 import com.onyx.android.sdk.data.request.data.GetFileMd5Request;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
-import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -30,33 +29,22 @@ public class OnyxStatistics implements StatisticsBase {
 
     private final static int PUSH_THRESHOLD_VALUE = 5;
 
-    private CloudStore cloudStore;
+    private StatisticsCloudManager cloudManager;
     private String sessionId;
     private String md5;
     private String md5short;
-    private String mac;
 
     private List<OnyxStatisticsModel> statisticsQueue;
 
     @Override
     public boolean init(Context context, Map<String, String> args) {
-        cloudStore = new CloudStore();
+        cloudManager = new StatisticsCloudManager();
         statisticsQueue = new ArrayList<>();
-        return false;
+        return true;
     }
 
-    private OnyxStatisticsModel getStatisticsData(Context context, int type) {
-        if (StringUtils.isNullOrEmpty(mac)) {
-            mac = DeviceUtils.getMacAddress(context);
-        }
-        OnyxStatisticsModel statisticsData = new OnyxStatisticsModel();
-        statisticsData.setMd5(md5);
-        statisticsData.setMd5short(md5short);
-        statisticsData.setMac(mac);
-        statisticsData.setSid(sessionId);
-        statisticsData.setType(type);
-        statisticsData.setEventTime(new Date());
-        return statisticsData;
+    private OnyxStatisticsModel createStatisticsData(Context context, int type) {
+        return OnyxStatisticsModel.create(md5, md5short, sessionId, type, new Date());
     }
 
     private void saveToCloud(final Context context, final OnyxStatisticsModel statisticsModel) {
@@ -68,7 +56,7 @@ public class OnyxStatistics implements StatisticsBase {
 
     private void flushStatistics(final Context context) {
         PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(context, statisticsQueue);
-        cloudStore.submitRequest(context, statisticsRequest, new BaseCallback() {
+        cloudManager.submitRequest(context, statisticsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 statisticsQueue.clear();
@@ -101,7 +89,7 @@ public class OnyxStatistics implements StatisticsBase {
         sessionId = UUID.randomUUID().toString();
         this.md5short = documentInfo.getMd5();
         String md5 = StatisticsUtils.getBookMd5(context, md5short);
-        final OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_OPEN);
+        final OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_OPEN);
         statisticsData.setPath(documentInfo.getPath());
         statisticsData.setTitle(documentInfo.getTitle());
         statisticsData.setName(documentInfo.getName());
@@ -128,14 +116,14 @@ public class OnyxStatistics implements StatisticsBase {
 
     @Override
     public void onDocumentClosed(Context context) {
-        OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_CLOSE);
+        OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_CLOSE);
         statisticsQueue.add(statisticsData);
         flushStatistics(context);
     }
 
     @Override
     public void onPageChangedEvent(Context context, String last, String current, long duration) {
-        OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE);
+        OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE);
         statisticsData.setLastPage(StringUtils.isNullOrEmpty(last) ? 0 : Integer.valueOf(last));
         statisticsData.setCurrPage(StringUtils.isNullOrEmpty(current) ? 0 : Integer.valueOf(current));
         statisticsData.setDurationTime(duration);
@@ -144,14 +132,14 @@ public class OnyxStatistics implements StatisticsBase {
 
     @Override
     public void onTextSelectedEvent(Context context, String text) {
-        OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_TEXT_SELECTED);
+        OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_TEXT_SELECTED);
         statisticsData.setOrgText(text);
         saveToCloud(context, statisticsData);
     }
 
     @Override
     public void onAddAnnotationEvent(Context context, String originText, String userNote) {
-        OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_ANNOTATION);
+        OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_ANNOTATION);
         statisticsData.setOrgText(originText);
         statisticsData.setNote(userNote);
         saveToCloud(context, statisticsData);
@@ -159,13 +147,13 @@ public class OnyxStatistics implements StatisticsBase {
 
     @Override
     public void onDictionaryLookupEvent(Context context, String originText) {
-        OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_LOOKUP_DIC);
+        OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_LOOKUP_DIC);
         statisticsData.setOrgText(originText);
         saveToCloud(context, statisticsData);
     }
 
     public void onDocumentFinished(final Context context, final String comment, final int score) {
-        OnyxStatisticsModel statisticsData = getStatisticsData(context, BaseStatisticsModel.DATA_TYPE_FINISH);
+        OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_FINISH);
         statisticsData.setComment(comment);
         statisticsData.setScore(score);
         saveToCloud(context, statisticsData);

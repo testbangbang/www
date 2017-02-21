@@ -13,6 +13,7 @@ public abstract class ReaderMenu {
     }
 
     private ReaderMenuCallback callback = null;
+    private boolean fullscreen;
 
     public abstract boolean isShown();
     public abstract void show(ReaderMenuState state);
@@ -43,4 +44,11 @@ public abstract class ReaderMenu {
         }
     }
 
+    public boolean isFullscreen() {
+        return fullscreen;
+    }
+
+    public void setFullScreen(boolean fullscreen) {
+        this.fullscreen = fullscreen;
+    }
 }

@@ -69,6 +69,7 @@
     <string name="home_item_setting_text">设置</string>
     <string name="home_item_pic_display_text">图片展示</string>
     <string name="home_item_video_display_text">视频展示</string>
+    <string name="home_item_application_text">应用</string>
     <string name="study_preview_person">个人\n材料</string>
     <string name="current_reading_location">阅读位置</string>
     <string name="home_time_date_format">yyyy年MM月dd日</string>
@@ -98,4 +99,7 @@
 
     <string name="download_link_invalid">下载链接为空或者有误</string>
     <string name="category_below_content_empty_tip">该分类内容为空</string>
+
+    <string name="application_list">应用列表</string>
+    <string name="menu_app_npi_clear">清除测试应用</string>
 </resources>

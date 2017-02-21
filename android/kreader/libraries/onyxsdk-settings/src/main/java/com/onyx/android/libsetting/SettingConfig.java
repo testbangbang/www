@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.preference.PreferenceActivity;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.onyx.android.libsetting.data.DeviceType;
@@ -56,6 +57,9 @@ public class SettingConfig {
         static private final String AUTO_POWER_OFF_KEY_TAG = "system_power_off_key";
         static private final String WIFI_INACTIVITY_KEY_TAG = "system_wifi_inactivity_key";
         static private final String ENABLE_KEY_BINDING_TAG = "enable_key_binding_key";
+
+        static private final String HAS_FRONT_LIGHT_TAG = "has_front_light";
+
     }
 
     static class Default {
@@ -130,6 +134,7 @@ public class SettingConfig {
         }
     }
 
+    @Nullable
     private <T> T getData(String dataKey, Class<T> clazz) {
         GObject backend = new GObject();
         for (GObject object : backendList) {
@@ -145,30 +150,34 @@ public class SettingConfig {
         String name = "";
         switch (currentDeviceType) {
             case DeviceType.IMX6:
-                name = CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT)?Constant.IMX6_KIT_KAT_BASED_CONFIG_NAME:
+                name = CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ? Constant.IMX6_KIT_KAT_BASED_CONFIG_NAME :
                         Constant.IMX6_ICS_BASED_CONFIG_NAME;
                 break;
             case DeviceType.RK:
                 name = Constant.RK3026_BASED_CONFIG_NAME;
                 break;
         }
-        return objectFromRawResource(context, name);
+        return objectFromRawResource(context, buildJsonConfigName(name));
     }
 
     private GObject objectFromDebugModel(Context context) {
         if (BuildConfig.DEBUG && useDebugConfig) {
-            return objectFromRawResource(context, Constant.DEBUG_CONFIG_NAME);
+            return objectFromRawResource(context, buildJsonConfigName(Constant.DEBUG_CONFIG_NAME));
         }
         return null;
     }
 
     private GObject objectFromModel(Context context) {
         final String name = Build.MODEL;
-        return objectFromRawResource(context, name);
+        return objectFromRawResource(context, buildJsonConfigName(name));
     }
 
     private GObject objectFromNonManufactureBasedDefaultConfig(Context context) {
-        return objectFromRawResource(context, Constant.NON_MANUFACTURE_BASED_CONFIG_NAME);
+        return objectFromRawResource(context, buildJsonConfigName(Constant.NON_MANUFACTURE_BASED_CONFIG_NAME));
+    }
+
+    private String buildJsonConfigName(String target) {
+        return Constant.SETTING_JSON_PREFIX + target;
     }
 
     private GObject objectFromRawResource(Context context, final String name) {
@@ -198,15 +207,27 @@ public class SettingConfig {
     }
 
     private List<Integer> getSystemScreenOffValues() {
-        return getData(Custom.SCREEN_OFF_VALUES_TAG, List.class);
+        List<Integer> result = getData(Custom.SCREEN_OFF_VALUES_TAG, List.class);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        return result;
     }
 
     private List<Integer> getSystemAutoPowerOffValues() {
-        return getData(Custom.AUTO_POWER_OFF_VALUES_TAG, List.class);
+        List<Integer> result = getData(Custom.AUTO_POWER_OFF_VALUES_TAG, List.class);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        return result;
     }
 
     private List<Integer> getSystemWifiInactivityTimeoutValues() {
-        return getData(Custom.WIFI_INACTIVITY_VALUES_TAG, List.class);
+        List<Integer> result = getData(Custom.WIFI_INACTIVITY_VALUES_TAG, List.class);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        return result;
     }
 
     public String getSystemScreenOffKey() {
@@ -309,7 +330,7 @@ public class SettingConfig {
         if (settingItemTAGList == null) {
             settingItemTAGList = new ArrayList<>();
             List<String> rawResourceList = getData(Custom.ITEM_LIST_TAG, List.class);
-            if (rawResourceList == null) {
+            if (rawResourceList == null || rawResourceList.size() == 0) {
                 buildDefaultSettingTAGList();
             } else {
                 settingItemTAGList.addAll(rawResourceList);
@@ -327,7 +348,7 @@ public class SettingConfig {
         if (settingIconsMap == null) {
             buildDefaultSettingsIconsMap();
             Map<String, String> rawResourceMap = (Map<String, String>) (getData(Custom.ICON_MAPS_TAG, Map.class));
-            if (rawResourceMap != null) {
+            if (rawResourceMap != null && rawResourceMap.size() != 0) {
                 settingIconsMap.putAll(rawResourceMap);
             }
         }
@@ -338,7 +359,7 @@ public class SettingConfig {
         if (settingTittleMap == null) {
             buildDefaultSettingsTittleMap();
             Map<String, String> rawResourceMap = (Map<String, String>) (getData(Custom.TITTLE_MAPS_TAG, Map.class));
-            if (rawResourceMap != null) {
+            if (rawResourceMap != null && rawResourceMap.size() != 0) {
                 settingTittleMap.putAll(rawResourceMap);
             }
         }
@@ -394,6 +415,18 @@ public class SettingConfig {
     }
 
     public boolean isEnableKeyBinding() {
-        return getData(Custom.ENABLE_KEY_BINDING_TAG, Boolean.class);
+        Boolean result = getData(Custom.ENABLE_KEY_BINDING_TAG, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
+    }
+
+    public boolean hasFrontLight() {
+        Boolean result = getData(Custom.HAS_FRONT_LIGHT_TAG, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
     }
 }
