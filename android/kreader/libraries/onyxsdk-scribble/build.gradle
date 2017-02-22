@@ -3,7 +3,8 @@ import org.apache.tools.ant.taskdefs.condition.Os
 apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
 
-
+def artifact = new Properties()
+artifact.load(new FileInputStream("$projectDir/deploy.settings"))
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -52,9 +53,12 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../proguard-rules.pro', 'proguard-rules.pro'
         }
-
+        bintrayRelease {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../proguard-rules.pro', 'proguard-rules.pro'
+        }
         debug {
             debuggable true
             jniDebuggable true
@@ -93,3 +97,5 @@ dependencies {
     compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.dbflowVersion"
     compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.dbflowVersion"
 }
+
+apply from: file(rootProject.projectDir.absolutePath + '/deploy.gradle')

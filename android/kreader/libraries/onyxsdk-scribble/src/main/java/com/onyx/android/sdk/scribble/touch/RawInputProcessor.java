@@ -5,8 +5,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
-
-import com.onyx.android.sdk.scribble.api.RawInputCallback;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -45,6 +43,20 @@ public class RawInputProcessor {
 
     private static final int PEN_SIZE = 0;
 
+    public static abstract class RawInputCallback {
+
+        // when received pen down or stylus button
+        public abstract void onBeginRawData();
+
+        // when pen released.
+        public abstract void onRawTouchPointListReceived(final Shape shape, final TouchPointList pointList);
+
+        // caller should render the page here.
+        public abstract void onBeginErasing();
+
+        // caller should do hit test in current page, remove shapes hit-tested.
+        public abstract void onEraseTouchPointListReceived(final TouchPointList pointList);
+    }
 
     private volatile int px, py, pressure;
     private volatile boolean erasing = false;
@@ -328,7 +340,7 @@ public class RawInputProcessor {
                 if (erasing) {
                     rawInputCallback.onEraseTouchPointListReceived(touchPointList);
                 } else {
-                    rawInputCallback.onRawTouchPointListReceived(touchPointList);
+                    rawInputCallback.onRawTouchPointListReceived(null, touchPointList);
                 }
             }
         });

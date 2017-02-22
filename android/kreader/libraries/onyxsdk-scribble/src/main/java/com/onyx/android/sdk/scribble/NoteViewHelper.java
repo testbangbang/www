@@ -15,7 +15,6 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.scribble.api.RawInputCallback;
 import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -462,7 +461,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-        rawInputProcessor.setRawInputCallback(new RawInputCallback() {
+        rawInputProcessor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
             public void onBeginRawData() {
                 if (callback != null) {
@@ -471,7 +470,7 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onRawTouchPointListReceived(TouchPointList pointList) {
+            public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
                 NoteViewHelper.this.onNewTouchPointListReceived(pointList);
             }
 
