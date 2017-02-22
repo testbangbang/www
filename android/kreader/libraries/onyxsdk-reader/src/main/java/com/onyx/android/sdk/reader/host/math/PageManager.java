@@ -42,9 +42,11 @@ public class PageManager {
 
     static public abstract class PageCropProvider {
 
-        public abstract float cropPage(final float displayWidth, final float displayHeight, final PageInfo pageInfo);
+        public abstract RectF cropPage(final PageInfo pageInfo);
 
-        public abstract float cropWidth(final float displayWidth, final float displayHeight, final PageInfo pageInfo);
+        public abstract RectF cropPage(final PageInfo pageInfo, final RectF targetRatioRegion);
+
+        public abstract RectF cropWidth(final PageInfo pageInfo);
     }
 
     public void clear() {
@@ -57,6 +59,10 @@ public class PageManager {
 
     public void setCropProvider(final PageCropProvider provider) {
         cropProvider = provider;
+    }
+
+    public PageCropProvider getCropProvider() {
+        return cropProvider;
     }
 
     public void setViewportRect(final RectF rect) {
@@ -284,7 +290,7 @@ public class PageManager {
                 Log.w(TAG, "Crop provider is null, use scale to page instead.");
             }
             if (cropProvider != null) {
-                cropProvider.cropPage(viewportRect.width(), viewportRect.height(), pageInfo);
+                cropProvider.cropPage(pageInfo);
             }
         }
 
