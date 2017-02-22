@@ -29,10 +29,13 @@ public class PageCropper extends PageManager.PageCropProvider {
         return readerRenderer;
     }
 
-    public float cropPage(final float displayWidth, final float displayHeight, final PageInfo pageInfo) {
+    public RectF cropPage(final PageInfo pageInfo) {
+        return cropPage(pageInfo, null);
+    }
+
+    public RectF cropPage(final PageInfo pageInfo, final RectF targetRatioRegion) {
         // step1: render in a small bitmap.
         final RectF viewport = getCropDisplay(pageInfo.getOriginWidth(), pageInfo.getOriginHeight());
-        float scale = PageUtils.scaleToPage(pageInfo.getOriginWidth(), pageInfo.getOriginHeight(), viewport.width(), viewport.height());
         final ReaderBitmapImpl bitmapWrapper = ReaderBitmapImpl.create((int) viewport.width(), (int) viewport.height(), Bitmap.Config.ARGB_8888);
         final Bitmap bitmap = bitmapWrapper.getBitmap();
 
@@ -42,8 +45,13 @@ public class PageCropper extends PageManager.PageCropProvider {
             BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/before-crop.png");
         }
 
+        final int left = targetRatioRegion == null ? 0 : (int)(bitmap.getWidth() * targetRatioRegion.left);
+        final int top = targetRatioRegion == null ? 0 : (int)(bitmap.getHeight() * targetRatioRegion.top);
+        final int right = targetRatioRegion == null ? bitmap.getWidth() : (int)(bitmap.getWidth() * targetRatioRegion.right);
+        final int bottom = targetRatioRegion == null ? bitmap.getHeight() : (int)(bitmap.getHeight() * targetRatioRegion.bottom);
+
         // step3: crop the image.
-        RectF cropRegion = ImageUtils.cropPage(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), PageConstants.DEFAULT_AUTO_CROP_VALUE);
+        RectF cropRegion = ImageUtils.cropPage(bitmap, left, top, right, bottom, PageConstants.DEFAULT_AUTO_CROP_VALUE);
         if (debugCrop && BuildConfig.DEBUG) {
             BitmapUtils.drawRectOnBitmap(bitmap, cropRegion);
             BitmapUtils.saveBitmap(bitmap, "/mnt/sdcard/with-crop.png");
@@ -54,13 +62,15 @@ public class PageCropper extends PageManager.PageCropProvider {
         // for caller, PageUtils.scaleRect(cropRegion, viewport);
         float delta = PageUtils.scaleByRect(viewport, new RectF(0, 0, pageInfo.getOriginWidth(), pageInfo.getOriginHeight()));
         PageUtils.scaleRect(cropRegion, delta);
-        pageInfo.setAutoCropContentRegion(cropRegion);
-        return scale * delta;
+        if (targetRatioRegion == null || (targetRatioRegion.width() >= 1 &&
+                targetRatioRegion.height() >= 1)) {
+            pageInfo.setAutoCropContentRegion(cropRegion);
+        }
+        return cropRegion;
     }
 
-    public float cropWidth(final float displayWidth, final float displayHeight, final PageInfo pageInfo) {
-        float value = cropPage(displayWidth, displayHeight, pageInfo);
-        return value;
+    public RectF cropWidth(final PageInfo pageInfo) {
+        return cropPage(pageInfo);
     }
 
     public static RectF getCropDisplay(final float pw, final float ph) {

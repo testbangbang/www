@@ -194,9 +194,12 @@ bool DeviceUtils::isValid(JNIEnv * env) {
         jboolean validPage = env->CallStaticBooleanMethod(dc.getClazz(), dc.getMethodId());
         return calculateCount(validPage) >= 0.0f;
     }
-    if (dc.findStaticMethod("android/onyx/hardware/DeviceController", "systemIntegrityCheck", "()Z", false)) {
-        jboolean validPage = env->CallStaticBooleanMethod(dc.getClazz(), dc.getMethodId());
-        return calculateCount(validPage) >= 0.0f;
+    if(env->ExceptionCheck()) {
+        env->ExceptionClear();
+        if (dc.findStaticMethod("android/onyx/hardware/DeviceController", "systemIntegrityCheck", "()Z", false)) {
+            jboolean validPage = env->CallStaticBooleanMethod(dc.getClazz(), dc.getMethodId());
+            return calculateCount(validPage) >= 0.0f;
+        }
     }
 }
 

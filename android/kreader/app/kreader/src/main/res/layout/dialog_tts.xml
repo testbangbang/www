@@ -9,8 +9,8 @@
     <LinearLayout
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:paddingLeft="@dimen/dialog_tts_padding"
-        android:paddingRight="@dimen/dialog_tts_padding"
+        android:paddingLeft="@dimen/ellipse_view_padding"
+        android:paddingRight="@dimen/ellipse_view_padding"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/tts_button_layout"

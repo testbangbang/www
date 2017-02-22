@@ -12,6 +12,6 @@ public class OnyxStatisticsDatabase {
 
     public static final String NAME = "OnyxStatisticsModel";
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
 }

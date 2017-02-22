@@ -20,3 +20,4 @@
 -keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig$* { *; }
 -keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig { *; }
 -keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig$* { *; }
+-keep com.onyx.android.sdk.scribble.api.** { *; }

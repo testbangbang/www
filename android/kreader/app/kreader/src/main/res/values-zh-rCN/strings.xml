@@ -292,4 +292,5 @@
   <string name="fiction">小说</string>
   <string name="other">其他</string>
   <string name="load_statistical_data_failed">加载统计数据失败</string>
+  <string name="no_more_search_results">没有更多的搜索结果</string>
 </resources>
