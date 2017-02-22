@@ -26,13 +26,16 @@ public class TocUtils {
             if (entry.getChildren() != null) {
                 buildChapterNode(entry.getChildren(), tocChapterNodeList);
             } else {
-                int position = Integer.valueOf(entry.getPosition());
-                if (!tocChapterNodeList.contains(position)) {
-                    tocChapterNodeList.add(Integer.valueOf(entry.getPosition()));
+                try {
+                    int position = PagePositionUtils.getPosition(entry.getPosition());
+                    if (!tocChapterNodeList.contains(position)) {
+                        tocChapterNodeList.add(position);
+                    }
+                }catch (Exception e) {
+                    break;
                 }
             }
         }
     }
-
 
 }

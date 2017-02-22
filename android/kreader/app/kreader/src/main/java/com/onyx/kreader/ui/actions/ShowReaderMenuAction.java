@@ -19,6 +19,7 @@ import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -99,6 +100,10 @@ public class ShowReaderMenuAction extends BaseAction {
         if (readerMenu != null) {
             readerMenu.hide();
             readerMenu = null;
+        }
+        if (tocChapterNodeList != null) {
+            tocChapterNodeList.clear();
+            tocChapterNodeList = null;
         }
     }
 
@@ -477,6 +482,14 @@ public class ShowReaderMenuAction extends BaseAction {
         new ForwardAction().execute(readerDataHolder, null);
     }
 
+    private void gotoPosition(final ReaderDataHolder readerDataHolder, Object o, final boolean abortPendingTasks) {
+        if (o == null) {
+            return;
+        }
+        int page = (int) o;
+        new GotoPositionAction(page, abortPendingTasks).execute(readerDataHolder);
+    }
+
     private void gotoPage(final ReaderDataHolder readerDataHolder, Object o, final boolean abortPendingTasks) {
         if (o == null) {
             return;
@@ -587,14 +600,14 @@ public class ShowReaderMenuAction extends BaseAction {
         if (tocChapterNodeList.size() <= 0) {
             return;
         }
-        int currentPage = readerDataHolder.getCurrentPage();
+        int currentPage = PagePositionUtils.getPosition(readerDataHolder.getCurrentPagePosition());
         int chapterPosition;
         if (back) {
             chapterPosition = getChapterPositionByPage(currentPage, back, tocChapterNodeList);
         } else {
             chapterPosition = getChapterPositionByPage(currentPage, back, tocChapterNodeList);
         }
-        gotoPage(readerDataHolder, chapterPosition, true);
+        gotoPosition(readerDataHolder, chapterPosition, true);
     }
 
     private int getChapterPositionByPage(int pagePosition, boolean back, List<Integer> tocChapterNodeList) {
