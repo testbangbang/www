@@ -29,12 +29,7 @@ public class PushStatisticsRequest extends BaseStatisticsRequest {
 
     public PushStatisticsRequest(Context context, List<OnyxStatisticsModel> statistic) {
         this.context = context;
-        if (statistic != null) {
-            saveStatistic = new ArrayList<>();
-            for (OnyxStatisticsModel onyxStatisticsModel : statistic) {
-                saveStatistic.add(onyxStatisticsModel.clone());
-            }
-        }
+        this.saveStatistic = statistic;
     }
 
     @Override

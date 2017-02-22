@@ -55,39 +55,6 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
         super(md5, md5short, sid, type, eventTime, status);
     }
 
-    public OnyxStatisticsModel(Date eventTime,
-                               long id,
-                               String mac,
-                               String md5,
-                               String md5short,
-                               String sid,
-                               Integer status,
-                               Integer type,
-                               List<String> author,
-                               String comment,
-                               Integer currPage,
-                               Long durationTime,
-                               Integer lastPage,
-                               String name,
-                               String note,
-                               String orgText,
-                               String path,
-                               Integer score,
-                               String title) {
-        super(eventTime, id, mac, md5, md5short, sid, status, type);
-        this.author = author;
-        this.comment = comment;
-        this.currPage = currPage;
-        this.durationTime = durationTime;
-        this.lastPage = lastPage;
-        this.name = name;
-        this.note = note;
-        this.orgText = orgText;
-        this.path = path;
-        this.score = score;
-        this.title = title;
-    }
-
     public List<String> getAuthor() {
         return author;
     }
@@ -182,19 +149,5 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
 
     public static OnyxStatisticsModel create(String md5, String md5short, String sid, Integer type, Date eventTime, int status) {
         return new OnyxStatisticsModel(md5, md5short, sid, type, eventTime, status);
-    }
-
-    @Override
-    public OnyxStatisticsModel clone() {
-        List<String> copyAuthor = null;
-        if (author != null) {
-            copyAuthor = new ArrayList<>();
-            for (String s : author) {
-                copyAuthor.add(s);
-            }
-        }
-        return new OnyxStatisticsModel(eventTime, id, mac, md5, md5short, sid, status,
-                type, copyAuthor, comment, currPage, durationTime,
-                lastPage, name, note, orgText, path, score, title);
     }
 }
