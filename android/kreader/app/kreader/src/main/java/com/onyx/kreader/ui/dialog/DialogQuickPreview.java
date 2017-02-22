@@ -49,6 +49,8 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -249,9 +251,9 @@ public class DialogQuickPreview extends Dialog {
     private int currentPage;
     private String currentPagePosition;
     private Callback callback;
-    private ScheduledExecutorService scheduledExecutor;
     private TouchHandler touchHandler;
     private long touchDownTime;
+    private Timer timer;
 
     public DialogQuickPreview(@NonNull final ReaderDataHolder readerDataHolder, Callback callback) {
         super(readerDataHolder.getContext(), R.style.android_dialog_no_title);
@@ -455,15 +457,15 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void handleTouchDownEvent(final int viewId) {
-        scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutor.scheduleWithFixedDelay(new Runnable() {
-            @Override
+        timer = new Timer(true);
+        TimerTask task = new TimerTask(){
             public void run() {
                 Message msg = new Message();
                 msg.what = viewId;
                 touchHandler.sendMessage(msg);
             }
-        }, LONG_CLICK_TIME_INTERVAL, LONG_CLICK_TIME_INTERVAL, TimeUnit.MILLISECONDS);
+        };
+        timer.schedule(task, LONG_CLICK_TIME_INTERVAL, LONG_CLICK_TIME_INTERVAL);
     }
 
     private void handleTouchUpEvent(final int viewId, final boolean onClick) {
@@ -477,9 +479,9 @@ public class DialogQuickPreview extends Dialog {
                     break;
             }
         }
-        if (scheduledExecutor != null) {
-            scheduledExecutor.shutdownNow();
-            scheduledExecutor = null;
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
         }
     }
 
