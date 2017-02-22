@@ -211,6 +211,13 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     }
 
     @Override
+    public void updateViewportRect(RectF rect) throws ReaderException {
+        getPageManager().setViewportRect(rect);
+        RectF subScreen = autoCrop(getNavigationList(getCurrentPageNumber()).getCurrent());
+        getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
+    }
+
+    @Override
     public RectF getCropRect() throws ReaderException {
         return getPageManager().getChildRectFromRatio(getCurrentPagePosition(),
                 getNavigationList(getCurrentPageNumber()).getCurrent());
