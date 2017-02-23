@@ -33,6 +33,7 @@
 -dontwarn retrofit2.**
 -dontwarn com.github.junrar.**
 -dontwarn com.squareup.**
+-dontwarn com.raizlabs.**
 
 -dontwarn butterknife.internal.ButterKnifeProcessor
 
