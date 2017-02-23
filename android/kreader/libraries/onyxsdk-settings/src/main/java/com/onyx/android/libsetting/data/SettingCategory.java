@@ -28,6 +28,7 @@ public class SettingCategory {
     static public final String SETTING_ITEM_LANG_INPUT_TAG = "setting_item_lang_input";
     static public final String SETTING_ITEM_DATE_TIME_TAG = "setting_item_date_time";
     static public final String SETTING_ITEM_APPLICATION_TAG = "setting_item_application";
+    static public final String SETTING_ITEM_STORAGE_TAG = "setting_item_storage";
     static public final String SETTING_ITEM_SECURITY_TAG = "setting_item_security";
     static public final String SETTING_ITEM_ERROR_REPORT_TAG = "setting_item_error_report";
 
@@ -63,6 +64,8 @@ public class SettingCategory {
                 return DATE_TIME_SETTING;
             case SETTING_ITEM_APPLICATION_TAG:
                 return APPLICATION_MANAGEMENT;
+            case SETTING_ITEM_STORAGE_TAG:
+                return STORAGE;
             case SETTING_ITEM_SECURITY_TAG:
                 return SECURITY;
             case SETTING_ITEM_ERROR_REPORT_TAG:

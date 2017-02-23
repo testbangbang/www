@@ -30,6 +30,7 @@ import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_LANG
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_NETWORK_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_POWER_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_SECURITY_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_STORAGE_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_USER_SETTING_TAG;
 
 /**
@@ -374,6 +375,7 @@ public class SettingConfig {
         settingItemTAGList.add(SETTING_ITEM_LANG_INPUT_TAG);
         settingItemTAGList.add(SETTING_ITEM_DATE_TIME_TAG);
         settingItemTAGList.add(SETTING_ITEM_APPLICATION_TAG);
+        settingItemTAGList.add(SETTING_ITEM_STORAGE_TAG);
         settingItemTAGList.add(SETTING_ITEM_SECURITY_TAG);
         settingItemTAGList.add(SETTING_ITEM_ERROR_REPORT_TAG);
     }
@@ -386,6 +388,7 @@ public class SettingConfig {
         settingIconsMap.put(SETTING_ITEM_LANG_INPUT_TAG, "ic_setting_language");
         settingIconsMap.put(SETTING_ITEM_DATE_TIME_TAG, "ic_setting_date");
         settingIconsMap.put(SETTING_ITEM_APPLICATION_TAG, "ic_setting_application");
+        settingIconsMap.put(SETTING_ITEM_STORAGE_TAG, "ic_setting_storage");
         settingIconsMap.put(SETTING_ITEM_SECURITY_TAG, "ic_security");
         settingIconsMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "ic_error_report");
     }
@@ -398,6 +401,7 @@ public class SettingConfig {
         settingTittleMap.put(SETTING_ITEM_LANG_INPUT_TAG, "setting_lang_input");
         settingTittleMap.put(SETTING_ITEM_DATE_TIME_TAG, "setting_date_time");
         settingTittleMap.put(SETTING_ITEM_APPLICATION_TAG, "setting_application");
+        settingTittleMap.put(SETTING_ITEM_STORAGE_TAG, "setting_storage");
         settingTittleMap.put(SETTING_ITEM_SECURITY_TAG, "setting_security");
         settingTittleMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "setting_error_report");
     }
