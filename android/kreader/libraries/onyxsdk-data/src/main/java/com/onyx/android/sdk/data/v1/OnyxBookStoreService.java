@@ -6,6 +6,7 @@ import com.onyx.android.sdk.data.model.Comment;
 import com.onyx.android.sdk.data.model.DownloadLink;
 import com.onyx.android.sdk.data.model.Product;
 import com.onyx.android.sdk.data.model.ProductResult;
+import com.onyx.android.sdk.data.model.ProductShared;
 
 import java.util.List;
 
@@ -104,4 +105,6 @@ public interface OnyxBookStoreService {
                                       @Path("cid") final String commentId,
                                       @Header(Constant.SESSION_TOKEN_TAG) final String sessionToken);
 
+    @GET("book/share/list")
+    Call<ProductResult<ProductShared>> productSharedList(@Query(Constant.WHERE_TAG) final String queryParam);
 }
