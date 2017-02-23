@@ -18,7 +18,7 @@ public class ReaderDeviceManager {
     private static int gcInterval;
     private static int refreshCount;
     private static boolean inFastUpdateMode = false;
-    private static boolean enableHoldDisplay = false;
+    private static boolean enableHoldDisplay = true;
 
     private final static EpdDevice epdDevice;
 
