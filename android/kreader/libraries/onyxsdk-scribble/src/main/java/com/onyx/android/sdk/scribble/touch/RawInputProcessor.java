@@ -341,7 +341,7 @@ public class RawInputProcessor {
         }
 
         if (isMoveFeedback()) {
-            RawInputProcessor.this.touchPointList = null;
+            resetPointList();
         }
         handler.post(new Runnable() {
             @Override
@@ -354,7 +354,6 @@ public class RawInputProcessor {
             }
         });
     }
-
 
     public boolean isMoveFeedback() {
         return moveFeedback;
