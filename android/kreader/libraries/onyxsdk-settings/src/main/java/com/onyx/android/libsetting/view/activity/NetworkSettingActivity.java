@@ -131,6 +131,10 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
                     return true;
                 }
             });
+
+            if (SettingConfig.sharedInstance(getContext()).hideVPNSettings()) {
+                getPreferenceScreen().removePreference(vpnPreference);
+            }
         }
 
         private void updateData() {
