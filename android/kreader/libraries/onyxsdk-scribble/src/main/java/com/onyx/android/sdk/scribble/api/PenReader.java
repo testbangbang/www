@@ -2,8 +2,9 @@ package com.onyx.android.sdk.scribble.api;
 
 import android.content.Context;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 
-import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
@@ -34,6 +35,7 @@ public class PenReader {
     }
 
     private void init(final Context context) {
+        rawInputProcessor.setMoveFeedback(true);
         deviceConfig = DeviceConfig.sharedInstance(context, "note");
         rawInputProcessor.setViewMatrix(new Matrix());
         final Matrix screenMatrix = new Matrix();
@@ -42,6 +44,7 @@ public class PenReader {
         screenMatrix.preScale(deviceConfig.getEpdWidth() / getTouchWidth(),
                 deviceConfig.getEpdHeight() / getTouchHeight());
         rawInputProcessor.setScreenMatrix(screenMatrix);
+        rawInputProcessor.setLimitRect(new Rect(0, 0, (int) getTouchWidth(), (int) getTouchHeight()));
     }
 
     public void start() {
@@ -86,7 +89,7 @@ public class PenReader {
     }
 
     private float getTouchWidth() {
-        float value = Device.currentDevice().getTouchWidth();
+        float value = EpdController.getTouchWidth();
         if (value <= 0) {
             return deviceConfig.getTouchWidth();
         }
@@ -94,7 +97,7 @@ public class PenReader {
     }
 
     private float getTouchHeight() {
-        float value = Device.currentDevice().getTouchHeight();
+        float value = EpdController.getTouchHeight();
         if (value <= 0) {
             return deviceConfig.getTouchHeight();
         }
