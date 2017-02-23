@@ -18,8 +18,11 @@
 
 -keepparameternames
 
--keep class com.onyx.android.sdk.api.** {
-    *;
-}
+-keep class com.onyx.android.sdk.api.** { *; }
+-keepnames class com.onyx.android.sdk.utils.StringUtils { *; }
+-keepnames class com.onyx.android.sdk.utils.RawResourceUtil { *; }
+-keepnames class com.onyx.android.sdk.data.GObject { *; }
+-keepnames class com.onyx.android.sdk.utils.FileUtils { *; }
+-keepnames class com.onyx.android.sdk.device.EnvironmentUtil { *; }
 
 -dontshrink
