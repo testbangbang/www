@@ -29,6 +29,36 @@
             @style/OnyxAppCompat.TextAppearance.Light.PopupMenu.Small
         </item>
         <item name="editTextStyle">@style/OnyxAppCompat.EditTextStyle</item>
+        <item name="preferenceTheme">@style/OnyxAppCompat.PreferenceTheme</item>
+        <item name="alertDialogTheme">@style/OnyxAppCompat.AlertDialog</item>
+        <item name="buttonStyle">@style/OnyxAppCompat.ButtonStyle</item>
+        <item name="dialogTheme">@style/OnyxAppCompat.Light.Dialog</item>
+    </style>
+
+    <style name="OnyxAppCompat.PreferenceFragment.Material" parent="PreferenceFragment.Material">
+        <item name="android:divider">@drawable/onyx_preference_list_divider_material</item>
+    </style>
+
+    <style name="OnyxAppCompat.PreferenceTheme" parent="PreferenceThemeOverlay.v14.Material">
+        <item name="android:overScrollMode">never</item>
+        <item name="android:listDivider">@android:color/black</item>
+        <item name="preferenceFragmentCompatStyle">@style/OnyxAppCompat.PreferenceFragment.Material</item>
+    </style>
+
+    <style name="OnyxAppCompat.AlertDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_border</item>
+        <item name="colorAccent">@android:color/black</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+         <item name="colorControlNormal">@android:color/black</item> 
+    </style>
+
+    <style name="OnyxAppCompat.ButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/default_button_background</item>
+        <item name="android:textAppearance">@style/OnyxAppCompat.TextAppearance.Light.Medium</item>
+    </style>
+
+    <style name="OnyxAppCompat.Light.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_border</item>
     </style>
 
     <style name="OnyxAppCompat.EditTextStyle" parent="Widget.AppCompat.EditText">
