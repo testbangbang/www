@@ -1,21 +1,23 @@
 package com.neverland.engbook.level1;
 
-import java.util.ArrayList;
-import java.util.zip.DataFormatException;
-import java.util.zip.Inflater;
-
 import com.jingdong.app.reader.epub.paging.DecryptHelper;
+import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_FILE_TYPE;
-import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
 
-public class AlFilesZIP extends AlFiles {
-	
+import java.util.ArrayList;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
+
+public class JEBFilesZIP extends AlFiles {
+
+
+
 	private static final int ZIP_CHUNK_SIZE = 16384;
-	
+
 	/*ZIP_LCD zipLCD = new ZIP_LCD();
 	ZIP_LZH zipLZH = new ZIP_LZH();
 	ZIP_EXLZH zipExLZH = new ZIP_EXLZH();*/
@@ -40,13 +42,13 @@ public class AlFilesZIP extends AlFiles {
 		int			arr_size = 0x1000f;
 		int			ecd = 0, scd = -1, tmp;
 		int			cnt_files = 0;
-		
+
 		byte[]		fname = new byte [AlFiles.LEVEL1_FILE_NAME_MAX_LENGTH];
 
 
 		for (int dw = 0; dw < 16; dw++) {
 			if (a.getByte(dw)     == 0x50 &&
-				a.getByte(dw + 1) == 0x4b) {
+					a.getByte(dw + 1) == 0x4b) {
 				ecd = 1;
 				break;
 			}
@@ -60,16 +62,16 @@ public class AlFilesZIP extends AlFiles {
 
 		if (fsize < 16)
 			return res;
-		if (fsize < arr_size) 
+		if (fsize < arr_size)
 			arr_size = fsize;
 
 		ecd = fsize - arr_size;
 
 		for (int dw = fsize - 16; dw > ecd; dw--) {
 			if (a.getByte(dw)     == 0x50 &&
-				a.getByte(dw + 1) == 0x4b &&
-				a.getByte(dw + 2) == 0x05 &&
-				a.getByte(dw + 3) == 0x06) {
+					a.getByte(dw + 1) == 0x4b &&
+					a.getByte(dw + 2) == 0x05 &&
+					a.getByte(dw + 3) == 0x06) {
 
 				scd =  a.getUByte(dw + 16);
 				scd |= a.getUByte(dw + 17) << 8;
@@ -83,7 +85,7 @@ public class AlFilesZIP extends AlFiles {
 
 		if (scd == -1)
 			return res;
-		
+
 		res = TAL_FILE_TYPE.ZIP;
 
 		a.read_pos = scd;
@@ -91,16 +93,16 @@ public class AlFilesZIP extends AlFiles {
 
 			//ZIP_LCD.ReadLCD0(zipLCD, a);
 			zipLCD.ReadLCD(a);
-			if (zipLCD.sig != 0x02014b50 || zipLCD.namelength == 0)				
-				return cnt_files > 0 ? res : TAL_FILE_TYPE.TXT;		
-		
-			if ((zipLCD.compressed == 0 || zipLCD.compressed == 8) && 
-				 zipLCD.csize != 0 && 
-				 zipLCD.usize != 0) {
+			if (zipLCD.sig != 0x02014b50 || zipLCD.namelength == 0)
+				return cnt_files > 0 ? res : TAL_FILE_TYPE.TXT;
 
-			    tmp = zipLCD.namelength > EngBookMyType.AL_MAX_FILENAME_LENGTH - 1 ? 
-			    		EngBookMyType.AL_MAX_FILENAME_LENGTH - 1 : zipLCD.namelength;
-			    
+			if ((zipLCD.compressed == 0 || zipLCD.compressed == 8) &&
+					zipLCD.csize != 0 &&
+					zipLCD.usize != 0) {
+
+				tmp = zipLCD.namelength > EngBookMyType.AL_MAX_FILENAME_LENGTH - 1 ?
+						EngBookMyType.AL_MAX_FILENAME_LENGTH - 1 : zipLCD.namelength;
+
 				a.getBuffer(a.read_pos, fname, tmp);
 				if (fname[0] != EngBookMyType.AL_ROOT_WRONGPATH && fname[0] != EngBookMyType.AL_ROOT_RIGHTPATH) {
 					System.arraycopy(fname, 0, fname, 1, tmp);
@@ -112,15 +114,15 @@ public class AlFilesZIP extends AlFiles {
 
 				for (int i = 0; i < tmp; i++)
 					if (fname[i] == EngBookMyType.AL_ROOT_WRONGPATH)
-						fname[i] = EngBookMyType.AL_ROOT_RIGHTPATH;			
-				
+						fname[i] = EngBookMyType.AL_ROOT_RIGHTPATH;
+
 
 
 				if (zipLCD.csize == 0xffffffff && zipLCD.usize == 0xffffffff) {
 					if (zipLCD.extralength >= 40) {
 						//ZIP_EXLZH.ReadEXLZH0(zipExLZH, a);
 						zipExLZH.ReadEXLZH(a);
-						
+
 						if (zipExLZH.cs > 0 && zipExLZH.us > 0 && zipExLZH.cs <= zipExLZH.us) {
 							zipLCD.csize = zipExLZH.cs;
 							zipLCD.usize = zipExLZH.us;
@@ -131,21 +133,21 @@ public class AlFilesZIP extends AlFiles {
 				} else {
 					a.read_pos += zipLCD.extralength;
 				}
-				
+
 				cnt_files++;
-				
+
 				{
 					int saved = a.read_pos;
 					a.read_pos = (int) zipLCD.offset;
 					//ZIP_LZH.ReadLZH0(zipLZH, a);
 					zipLZH.ReadLZH(a);
-					a.read_pos += 
+					a.read_pos +=
 							zipLZH.extralength +
-							zipLZH.namelength;
-					zipLCD.offset = a.read_pos;					
-					a.read_pos = saved;					
-				}				
-							
+									zipLZH.namelength;
+					zipLCD.offset = a.read_pos;
+					a.read_pos = saved;
+				}
+
 				AlFileZipEntry of = new AlFileZipEntry();
 
 				of.compress = zipLCD.compressed;
@@ -179,7 +181,7 @@ public class AlFilesZIP extends AlFiles {
 				if ((ext == null || ext.equalsIgnoreCase(".JEB"))) {
 					res = TAL_FILE_TYPE.JEB;
 					if(of.compress == 8) {
-						of.uSize = JEBFilesZIP.gitCompressDataSize(a, zipLCD.offset, zipLCD.csize, zipLCD.usize);
+						of.uSize = gitCompressDataSize(a, zipLCD.offset, zipLCD.csize, zipLCD.usize);
 						if(of.uSize <= 0){
 							of.uSize = (int) zipLCD.usize;
 						}
@@ -187,14 +189,48 @@ public class AlFilesZIP extends AlFiles {
 				}
 
 				fList.add(of);
-				
-				a.read_pos += zipLCD.commlength;			
+
+				a.read_pos += zipLCD.commlength;
 			} else {
 				a.read_pos += zipLCD.namelength + zipLCD.extralength + zipLCD.commlength;
 			}
 		}
 
 		return cnt_files > 0 ? res : TAL_FILE_TYPE.TXT;
+	}
+
+	public static int gitCompressDataSize(final AlFiles a,final long offset,final long compressionSize,final long uncompressionSize) {
+		DecryptHelper.create();
+		byte[] in_buff = new byte[ZIP_CHUNK_SIZE], decrypt_out_buff = new byte[ZIP_CHUNK_SIZE * 32], read_out_buff = new byte[ZIP_CHUNK_SIZE];
+		int in_buff_size, decrypt_out_buff_size = 0, read_out_buff_size;
+		Inflater infl = new Inflater(true);
+		if (infl.needsInput()) {
+			in_buff_size = a.getByteBuffer((int)offset, in_buff, ZIP_CHUNK_SIZE);
+			infl.setInput(in_buff, 0, in_buff_size);
+		}
+
+		try {
+			read_out_buff_size = infl.inflate(read_out_buff, 0, ZIP_CHUNK_SIZE);
+			String html = new String(read_out_buff);
+			//decrypt
+			decrypt_out_buff_size = DecryptHelper.decrypt(read_out_buff, read_out_buff_size, decrypt_out_buff, decrypt_out_buff.length, 1);
+			if (decrypt_out_buff_size < 0) {
+				return 0;
+			}
+
+			String decryptString = new String(decrypt_out_buff);
+			if (decrypt_out_buff_size == 0 && infl.finished()) {
+
+			}
+
+		} catch (DataFormatException e) {
+			e.printStackTrace();
+		}finally {
+			DecryptHelper.close();
+		}
+		infl.end();
+		infl = null;
+		return decrypt_out_buff_size;
 	}
 
 	public int initState(String file, AlFiles myParent, ArrayList<AlFileZipEntry> fList) {
@@ -214,11 +250,11 @@ public class AlFilesZIP extends AlFiles {
 					break;
 				}
 			}
-		} 
+		}
 
 		if (fileName.length() == 0) {
 			for (int i = 0; i < fileList.size(); i++) {
-				if (AlFiles.isValidExt(fileList.get(i).name)) {				
+				if (AlFiles.isValidExt(fileList.get(i).name)) {
 					fileName = fileList.get(i).name;
 					size = fileList.get(i).uSize;
 					zip_position = fileList.get(i).position;
@@ -246,7 +282,7 @@ public class AlFilesZIP extends AlFiles {
 		//if (file == LEVEL1_ZIP_FIRSTNAME_EPUB)
 		//	fileName.clear();
 
-		return TAL_RESULT.OK;	
+		return TAL_RESULT.OK;
 	}
 
 	@Override
@@ -259,8 +295,8 @@ public class AlFilesZIP extends AlFiles {
 	public void	needUnpackData() {
 		if (useUnpack)
 			return;
-		useUnpack = true;	
-		
+		useUnpack = true;
+
 		try {
 			unpack_buffer = new byte[size];
 		} catch (Exception e) {
@@ -273,31 +309,31 @@ public class AlFilesZIP extends AlFiles {
 			useUnpack = false;
 		}
 	}
-	
+
 	protected int getBuffer(int pos, byte[] dst, int cnt) {
 
 		int tmp;
 		int res = 0;
-		
+
 		if (zip_compression == 8) {
-			
+
 			if (pos < zip_total_out) {
 				if (inflater != null) {
-					inflater.reset();				
+					inflater.reset();
 				}
-				zip_total_out = zip_out_buff_size = 0;				
+				zip_total_out = zip_out_buff_size = 0;
 			}
 
 			if (inflater == null) {
 				inflater = new Inflater(true);
 				inflater.reset();
 			}
-			
+
 			while (res < cnt && pos < size) {
 				if (pos >= zip_total_out && pos < (zip_total_out + zip_out_buff_size)) {
 					tmp = Math.min((zip_total_out + zip_out_buff_size) - pos, cnt - res);
 					System.arraycopy(zip_out_buff, pos - zip_total_out, dst, res, tmp);
-					res += tmp; 
+					res += tmp;
 					pos += tmp;
 				} else {
 					zip_total_out += zip_out_buff_size;
@@ -305,13 +341,13 @@ public class AlFilesZIP extends AlFiles {
 					if (inflater.needsInput()) {
 						zip_in_buff_size = //parent.getBuffer(
 								parent.getByteBuffer(
-									inflater.getTotalIn() + zip_position, zip_in_buff, ZIP_CHUNK_SIZE);
+										inflater.getTotalIn() + zip_position, zip_in_buff, ZIP_CHUNK_SIZE);
 						inflater.setInput(zip_in_buff, 0, zip_in_buff_size);
 					}
-					
+
 					try {
 						zip_out_buff_size = inflater.inflate(zip_out_buff, 0, ZIP_CHUNK_SIZE);
-						
+
 						if (zip_out_buff_size == 0 && inflater.finished()) {
 							zip_out_buff_size = zip_out_buff.length;
 							for (int err = 0; err < zip_out_buff_size; err++)
@@ -327,7 +363,7 @@ public class AlFilesZIP extends AlFiles {
 
 				}
 			}
-		} else 
+		} else
 		if (zip_compression == 0) {
 			res = parent.getBuffer(zip_position + pos, dst, Math.min(cnt, zip_csize - pos));
 		} else {
@@ -340,6 +376,7 @@ public class AlFilesZIP extends AlFiles {
 
 	private byte[] in_external_buff = null;
 	private byte[] out_external_buff = null;
+	private byte[] unzip_external_buff = null;
 	private Inflater external_infl = null;
 
 	@Override
@@ -347,7 +384,7 @@ public class AlFilesZIP extends AlFiles {
 		int res = 0;
 
 		if (num >= 0 && num < fileList.size()) {
-
+			DecryptHelper.create();
 			if (fileName != null && fileList.get(num).name.contentEquals(fileName)) {
 				res = getByteBuffer(pos, dst, dst_pos, cnt);
 			} else {
@@ -358,18 +395,21 @@ public class AlFilesZIP extends AlFiles {
 						external_infl = new Inflater(true);
 					external_infl.reset();
 
-					int	total_out, in_buff_size, out_buff_size, tmp;
+					int	total_out, in_buff_size, out_buff_size, tmp,unzip_out_buff_size;
 
 					if (in_external_buff == null)
 						in_external_buff = new byte [ZIP_CHUNK_SIZE];
 					if (out_external_buff == null)
-						out_external_buff = new byte [ZIP_CHUNK_SIZE];
+						out_external_buff = new byte [ZIP_CHUNK_SIZE * 3];
+					if (unzip_external_buff == null)
+						unzip_external_buff = new byte [ZIP_CHUNK_SIZE];
 
 					int	position = fileList.get(num).position;
 
 					external_infl.reset();
 					total_out = out_buff_size = 0;
-
+					boolean isDecrypt = true;
+					int deend = 0;
 					while (res < cnt && pos < fileList.get(num).uSize) {
 						if (pos >= total_out && pos < (total_out + out_buff_size)) {
 							tmp = Math.min((total_out + out_buff_size) - pos, cnt - res);
@@ -387,7 +427,49 @@ public class AlFilesZIP extends AlFiles {
 							}
 
 							try {
-								out_buff_size = external_infl.inflate(out_external_buff, 0, ZIP_CHUNK_SIZE);
+								unzip_out_buff_size = external_infl.inflate(unzip_external_buff, 0, ZIP_CHUNK_SIZE);
+								if(cnt - res < ZIP_CHUNK_SIZE ){
+									deend = 1;
+								}else{
+									deend = 0;
+								}
+								if(isDecrypt) {
+									int decryptSize = 0;
+									byte[] encryptBuff = new byte[ZIP_CHUNK_SIZE];
+									byte[] decryptBuff = new byte[ZIP_CHUNK_SIZE * 3];
+									int srcPosition = 0;
+									int destPosition = 0;
+									int encryptSize = 0;
+									while(srcPosition < unzip_out_buff_size){
+										if(unzip_out_buff_size - (srcPosition + ZIP_CHUNK_SIZE) >= ZIP_CHUNK_SIZE){
+											System.arraycopy(unzip_external_buff,srcPosition,encryptBuff,0,ZIP_CHUNK_SIZE);
+											srcPosition += ZIP_CHUNK_SIZE;
+											encryptSize = ZIP_CHUNK_SIZE;
+										}else{
+											encryptSize = unzip_out_buff_size - srcPosition;
+											System.arraycopy(unzip_external_buff,srcPosition,encryptBuff,0,encryptSize);
+											srcPosition += encryptSize;
+										}
+
+										decryptSize = DecryptHelper.decrypt(encryptBuff, encryptSize,decryptBuff , ZIP_CHUNK_SIZE * 3, deend);
+										if(decryptSize <= 0){
+											destPosition = -1;
+											break;
+										}else {
+											System.arraycopy(decryptBuff, 0, out_external_buff, destPosition, decryptSize);
+											destPosition += decryptSize;
+										}
+									}
+									out_buff_size = destPosition;
+								}else{
+									out_buff_size = -1;
+								}
+
+								if (out_buff_size <= 0) {
+									System.arraycopy(unzip_external_buff, 0, out_external_buff, 0, unzip_out_buff_size);
+									out_buff_size = unzip_out_buff_size;
+									isDecrypt = false;
+								}
 
 								if (out_buff_size == 0 && external_infl.finished()) {
 									out_buff_size = out_external_buff.length;
@@ -401,7 +483,6 @@ public class AlFilesZIP extends AlFiles {
 									out_external_buff[err] = 0x00;
 								e.printStackTrace();
 							}
-
 						}
 					}
 
@@ -412,6 +493,7 @@ public class AlFilesZIP extends AlFiles {
 					res = parent.getByteBuffer(fileList.get(num).position + pos, dst, dst_pos, cnt);
 				}
 			}
+			DecryptHelper.close();
 		}
 		return res == cnt;
 	}
