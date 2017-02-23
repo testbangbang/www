@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="title_background">#FFE9E9E9</color>
+    <color name="search_view_background">#55FFFFFF</color>
+    <color name="read_menu_item_background_color">@android:color/white</color>
+    <color name="background_black">#FF000000</color>
+    <color name="background_white">@android:color/white</color>
+    <color name="divider_color">#AFAFAF</color>
+</resources>
