@@ -1,4 +1,4 @@
-include ':libraries:cropimage',
+include ':libraries:cropimage', ':libraries:onyxsdk-appcompat',
         ':libraries:onyxsdk-reader',
         ':libraries:onyxsdk-ui',
         ':libraries:onyxsdk-base',
