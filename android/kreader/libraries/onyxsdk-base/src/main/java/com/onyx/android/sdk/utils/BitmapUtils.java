@@ -6,6 +6,7 @@ import android.os.Build;
 import android.util.Log;
 import com.onyx.android.sdk.data.Size;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -185,6 +186,16 @@ public class BitmapUtils {
             }
         }
         return data;
+    }
+
+    public static byte[] bitmapToBytes(Bitmap bitmap) {
+        return bitmapToBytes(bitmap, Bitmap.CompressFormat.PNG);
+    }
+
+    public static byte[] bitmapToBytes(Bitmap bitmap, Bitmap.CompressFormat format) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        bitmap.compress(format, 100, os);
+        return os.toByteArray();
     }
 
 }

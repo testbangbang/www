@@ -76,3 +76,8 @@
 -dontwarn nl.siegmann.epublib.**
 -dontnote org.apache.**
 -dontnote org.jsoup
+
+# for wechat
+-keep class com.tencent.mm.opensdk.** { *; }
+-keep class com.tencent.wxop.** { *; }
+-keep class com.tencent.mm.sdk.** { *; }
