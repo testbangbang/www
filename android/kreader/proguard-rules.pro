@@ -69,3 +69,10 @@
 # for aliyun-oss
 -keep class com.alibaba.sdk.android.oss.** { *; }
 -dontwarn org.apache.commons.codec.binary.**
+
+# for ebookservice
+-keep class org.slf4j.** { *; }
+-dontwarn org.htmlcleaner.**
+-dontwarn nl.siegmann.epublib.**
+-dontnote org.apache.**
+-dontnote org.jsoup
