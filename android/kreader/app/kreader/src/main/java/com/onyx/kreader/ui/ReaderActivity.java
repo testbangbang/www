@@ -15,6 +15,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -83,6 +84,7 @@ import com.onyx.kreader.ui.events.PinchZoomEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
+import com.onyx.kreader.ui.events.ResizeReaderWindowEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
@@ -140,6 +142,7 @@ public class ReaderActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Debug.d(getClass(), "onCreate");
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
         setContentView(R.layout.activity_reader);
@@ -148,15 +151,91 @@ public class ReaderActivity extends Activity {
     }
 
     @Override
+    protected void onStart() {
+        Debug.d(getClass(), "onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onRestart() {
+        Debug.d(getClass(), "onRestart");
+        super.onRestart();
+    }
+
+    @Override
     protected void onResume() {
+        Debug.d(getClass(), "onResume");
         super.onResume();
         afterResume();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
+        Debug.d(getClass(), "onPause");
         disablePenShortcut();
+        new SaveDocumentOptionsAction().execute(getReaderDataHolder(), null);
+        super.onPause();
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        Debug.d(getClass(), "startActivity: " + intent);
+        // check if search intent
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            intent.putExtra(DOCUMENT_PATH_TAG, getReaderDataHolder().getDocumentPath());
+        }
+
+        super.startActivity(intent);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Debug.d(getClass(), "onNewIntent: " + intent);
+        try {
+            setIntent(intent);
+            handleActivityIntent();
+        } catch (java.lang.Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        Debug.d(getClass(), "onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Debug.d(getClass(), "onDestroy: finishing? " + isFinishing());
+        if (networkConnectChangedReceiver !=null) {
+            unregisterReceiver(networkConnectChangedReceiver);
+        }
+        if (closeReceiver != null) {
+            unregisterReceiver(closeReceiver);
+        }
+        ReaderActivity.super.onDestroy();
+        if (getReaderDataHolder().isDocumentOpened()) {
+            quitApplication(null);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Debug.d(getClass(), "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        Debug.d(getClass(), "onRestoreInstanceState");
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onLowMemory() {
+        Debug.e(getClass(), "onLowMemory");
+        super.onLowMemory();
     }
 
     @Override
@@ -174,46 +253,6 @@ public class ReaderActivity extends Activity {
         });
 
         super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public void startActivity(Intent intent) {
-        // check if search intent
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            intent.putExtra(DOCUMENT_PATH_TAG, getReaderDataHolder().getDocumentPath());
-        }
-
-        super.startActivity(intent);
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        try {
-            setIntent(intent);
-            handleActivityIntent();
-        } catch (java.lang.Exception exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (networkConnectChangedReceiver !=null) {
-            unregisterReceiver(networkConnectChangedReceiver);
-        }
-        if (closeReceiver != null) {
-            unregisterReceiver(closeReceiver);
-        }
-        ReaderActivity.super.onDestroy();
-        if (getReaderDataHolder().isDocumentOpened()) {
-            quitApplication(null);
-        }
-    }
-
-    @Override
-    public void onLowMemory() {
-        Debug.e(getClass(), "onLowMemory");
-        super.onLowMemory();
     }
 
     private void resetMenus() {
@@ -275,7 +314,7 @@ public class ReaderActivity extends Activity {
     private void initWindow() {
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.gravity = Gravity.BOTTOM;
-        layoutParams.height = getIntent().getIntExtra(TAG_WINDOW_HEIGHT, 1000);
+        layoutParams.height = getIntent().getIntExtra(TAG_WINDOW_HEIGHT, WindowManager.LayoutParams.MATCH_PARENT);
         layoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         getWindow().setAttributes(layoutParams);
 
@@ -801,6 +840,11 @@ public class ReaderActivity extends Activity {
     public void onDocumentOpened(final DocumentOpenEvent event) {
         prepareGCUpdateInterval();
         prepareFrontLight();
+    }
+
+    @Subscribe
+    public void onResizeReaderWindow(final ResizeReaderWindowEvent event) {
+        getWindow().setLayout(event.width, event.height);
     }
 
     private void prepareGCUpdateInterval() {

@@ -154,7 +154,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
 
-        <receiver android:name=".ui.Close_Tab_1_BroadcastReceiver"
+        <receiver android:name=".ui.Reader_Tab_1_BroadcastReceiver"
             android:process=":reader_tab_1">
             <intent-filter>
                 <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
@@ -169,7 +169,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
 
-        <receiver android:name=".ui.Close_Tab_2_BroadcastReceiver"
+        <receiver android:name=".ui.Reader_Tab_2_BroadcastReceiver"
             android:process=":reader_tab_2">
             <intent-filter>
                 <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
@@ -184,7 +184,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
 
-        <receiver android:name=".ui.Close_Tab_3_BroadcastReceiver"
+        <receiver android:name=".ui.Reader_Tab_3_BroadcastReceiver"
             android:process=":reader_tab_3">
             <intent-filter>
                 <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
@@ -199,7 +199,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
 
-        <receiver android:name=".ui.Close_Tab_4_BroadcastReceiver"
+        <receiver android:name=".ui.Reader_Tab_4_BroadcastReceiver"
             android:process=":reader_tab_4">
             <intent-filter>
                 <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />

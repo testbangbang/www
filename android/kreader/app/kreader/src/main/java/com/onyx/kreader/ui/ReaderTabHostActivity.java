@@ -15,6 +15,7 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -32,6 +33,8 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     private static final String TAG = ReaderTabHostActivity.class.getSimpleName();
 
+    private static final String TAG_OPENED_TABS = "opzned_tabs";
+
     private enum ReaderTab {
         TAB_1, TAB_2, TAB_3, TAB_4
     }
@@ -39,9 +42,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     private static HashMap<ReaderTab, Class<?>> tabActivityList = new HashMap<>();
     private static HashMap<ReaderTab, Class<?>> tabReceiverList = new HashMap<>();
     private static Queue<ReaderTab> freeTabList = new LinkedList<>();
-    private static Queue<ReaderTab> openedTabList = new LinkedList<>();
-    private static HashMap<Uri, ReaderTab> openedFiles = new LinkedHashMap<>();
-    private static HashMap<ReaderTab, Intent> cachedTabIntentList = new HashMap<>();
+    private static LinkedHashMap<ReaderTab, String> openedTabs = new LinkedHashMap<>();
 
     static {
         tabActivityList.put(ReaderTab.TAB_1, Reader_Tab_1_Activity.class);
@@ -49,10 +50,10 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         tabActivityList.put(ReaderTab.TAB_3, Reader_Tab_3_Activity.class);
         tabActivityList.put(ReaderTab.TAB_4, Reader_Tab_4_Activity.class);
 
-        tabReceiverList.put(ReaderTab.TAB_1, Close_Tab_1_BroadcastReceiver.class);
-        tabReceiverList.put(ReaderTab.TAB_2, Close_Tab_2_BroadcastReceiver.class);
-        tabReceiverList.put(ReaderTab.TAB_3, Close_Tab_3_BroadcastReceiver.class);
-        tabReceiverList.put(ReaderTab.TAB_4, Close_Tab_4_BroadcastReceiver.class);
+        tabReceiverList.put(ReaderTab.TAB_1, Reader_Tab_1_BroadcastReceiver.class);
+        tabReceiverList.put(ReaderTab.TAB_2, Reader_Tab_2_BroadcastReceiver.class);
+        tabReceiverList.put(ReaderTab.TAB_3, Reader_Tab_3_BroadcastReceiver.class);
+        tabReceiverList.put(ReaderTab.TAB_4, Reader_Tab_4_BroadcastReceiver.class);
 
         freeTabList.add(ReaderTab.TAB_1);
         freeTabList.add(ReaderTab.TAB_2);
@@ -96,6 +97,23 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG, "onSaveInstanceState: " + JSON.toJSONString(openedTabs));
+        outState.putString(TAG_OPENED_TABS, JSON.toJSONString(openedTabs));
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        Log.d(TAG, "onRestoreInstanceState: " + savedInstanceState.getString(TAG_OPENED_TABS));
+        openedTabs = JSON.parseObject(savedInstanceState.getString(TAG_OPENED_TABS), openedTabs.getClass());
+        for (ReaderTab tab : openedTabs.keySet()) {
+            freeTabList.remove(tab);
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
     public void onLowMemory() {
         Log.e(TAG, "onLowMemory");
         super.onLowMemory();
@@ -105,7 +123,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         tabHost = (TabHost) findViewById(R.id.tab_host);
         tabHost.setup();
 
-        addTabToHost(ReaderTab.TAB_1, "TAB 1");
+        addTabToHost(ReaderTab.TAB_1, "TAB");
 
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -179,7 +197,9 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     private void updateCurrentTab(ReaderTab tab) {
-        tabHost.setCurrentTabByTag(tab.toString());
+        if (!tabHost.getCurrentTabTag().equals(tab.toString())) {
+            tabHost.setCurrentTabByTag(tab.toString());
+        }
     }
 
     private void acquireStartupWakeLock() {
@@ -218,7 +238,9 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     private void handleViewActionIntent() {
-        ReaderTab tab = openedFiles.get(getIntent().getData());
+        final String path = FileUtils.getRealFilePathFromUri(this, getIntent().getData());
+
+        ReaderTab tab = findOpenedTabByPath(path);
         if (tab == null) {
             tab = getFreeTab();
         } else {
@@ -239,10 +261,12 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         intent.setDataAndType(getIntent().getData(), getIntent().getType());
         intent.putExtra(ReaderActivity.TAG_WINDOW_HEIGHT, tabContentHeight);
         startActivity(intent);
-        appendOpenedTab(getIntent().getData(), tab);
-        cachedTabIntentList.put(tab, intent);
 
-        final String path = FileUtils.getRealFilePathFromUri(this, getIntent().getData());
+        addReaderTab(tab, path);
+    }
+
+    private void addReaderTab(ReaderTab tab, String path) {
+        addOpenedTab(tab, path);
         addTabToHost(tab, path);
         updateCurrentTab(tab);
     }
@@ -255,7 +279,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     private void closeTabActivity(ReaderTab tab) {
         Intent intent = new Intent(this, getTabReceiver(tab));
-        intent.setAction(ReaderCloseBroadcastReceiver.ACTION_CLOSE);
+        intent.setAction(ReaderBroadcastReceiver.ACTION_CLOSE);
         Log.d(TAG, "sendBroadcast: " + intent);
         sendBroadcast(intent);
     }
@@ -264,23 +288,25 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         if (!freeTabList.isEmpty()) {
             return freeTabList.poll();
         }
-        return openedTabList.poll();
+        return openedTabs.keySet().iterator().next();
     }
 
-    private void appendOpenedTab(Uri uri, ReaderTab tab) {
-        openedTabList.add(tab);
-        openedFiles.put(uri, tab);
+    private void addOpenedTab(ReaderTab tab, String path) {
+        openedTabs.put(tab, path);
     }
 
     private void removeOpenedTab(ReaderTab tab) {
         freeTabList.add(tab);
-        openedTabList.remove(tab);
-        for (Map.Entry<Uri, ReaderTab> entry : openedFiles.entrySet()) {
-            if (entry.getValue() == tab) {
-                openedFiles.remove(entry.getKey());
-                return;
+        openedTabs.remove(tab);
+    }
+
+    private ReaderTab findOpenedTabByPath(String path) {
+        for (Map.Entry<ReaderTab, String> entry : openedTabs.entrySet()) {
+            if (entry.getValue().compareTo(path) == 0) {
+                return entry.getKey();
             }
         }
+        return null;
     }
 
     private Class getTabActivity(ReaderTab tab) {
@@ -292,12 +318,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     private boolean isTabOpened(ReaderTab tab) {
-        for (ReaderTab t : openedTabList) {
-            if (t == tab) {
-                return true;
-            }
-        }
-        return false;
+        return openedTabs.containsKey(tab);
     }
 
     private void reopenTab(ReaderTab tab) {
