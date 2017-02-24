@@ -106,9 +106,13 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         Log.d(TAG, "onRestoreInstanceState: " + savedInstanceState.getString(TAG_OPENED_TABS));
-        openedTabs = JSON.parseObject(savedInstanceState.getString(TAG_OPENED_TABS), openedTabs.getClass());
-        for (ReaderTab tab : openedTabs.keySet()) {
-            freeTabList.remove(tab);
+        LinkedHashMap<String, String> map = JSON.parseObject(savedInstanceState.getString(TAG_OPENED_TABS), openedTabs.getClass());
+        for (LinkedHashMap.Entry<String, String> entry : map.entrySet()) {
+            openedTabs.put(Enum.valueOf(ReaderTab.class, entry.getKey()), entry.getValue());
+        }
+        for (LinkedHashMap.Entry<ReaderTab, String> entry : openedTabs.entrySet()) {
+            freeTabList.remove(entry.getKey());
+            addTabToHost(entry.getKey(), entry.getValue());
         }
         super.onRestoreInstanceState(savedInstanceState);
     }
