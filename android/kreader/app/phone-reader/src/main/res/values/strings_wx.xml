@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wx_success">WeChat success</string>
+    <string name="wx_cancel">WeChat cancel</string>
+    <string name="wx_denied">WeChat denied</string>
+    <string name="wx_back">WeChat back</string>
+    <string name="wx_fail">WeChat fail</string>
+    <string name="wx_nonsupport">WeChat nonsupport</string>
+</resources>
