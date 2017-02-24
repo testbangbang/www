@@ -277,7 +277,7 @@
   <string name="look_up_dict_count" formatted="false">字典查阅: %d次</string>
   <string name="time_distribution">时间分布</string>
   <string name="self_time_distribution">你的阅读时间分布</string>
-  <string name="other_time_distribution">其他同学的集中阅读时间分布</string>
+  <string name="other_time_distribution">其他用户平均阅读时间分布</string>
   <string name="reading_content_analysis">阅读内容分析</string>
   <string name="recently_read_content">最近阅读内容</string>
   <string name="statistics_shortcut_name">数据统计</string>

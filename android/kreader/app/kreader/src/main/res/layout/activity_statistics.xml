@@ -40,6 +40,7 @@
             android:layout_height="wrap_content"/>
 
         <TextView
+            android:textColor="@android:color/black"
             android:id="@+id/page"
             android:layout_marginRight="20dp"
             style="@style/statistics_text_view"

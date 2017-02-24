@@ -343,7 +343,7 @@
     <string name="look_up_dict_count" formatted="false">Look Up dictionary count: %d</string>
     <string name="time_distribution">Time distribution</string>
     <string name="self_time_distribution">Your reading time distribution</string>
-    <string name="other_time_distribution">Other students of intensive reading time distribution</string>
+    <string name="other_time_distribution">The average reading time distribution to other users</string>
     <string name="reading_content_analysis">Reading content analysis</string>
     <string name="recently_read_content">Recently read content</string>
     <string name="statistics_shortcut_name">Data statistics</string>
