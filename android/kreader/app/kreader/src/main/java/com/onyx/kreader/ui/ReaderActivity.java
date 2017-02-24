@@ -1,6 +1,8 @@
 package com.onyx.kreader.ui;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -16,9 +18,10 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -27,6 +30,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -37,15 +41,16 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
-import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
-import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
@@ -96,8 +101,6 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.receiver.NetworkConnectChangedReceiver;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
-import com.onyx.kreader.device.DeviceConfig;
-import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -106,8 +109,12 @@ import java.util.List;
 /**
  * Created by Joy on 2016/4/14.
  */
-public class ReaderActivity extends ActionBarActivity {
+public class ReaderActivity extends Activity {
     private static final String DOCUMENT_PATH_TAG = "document";
+
+    public static final String ACTION_CLOSE = ReaderActivity.class.getCanonicalName() + ".action_close";
+
+    public static final String TAG_WINDOW_HEIGHT = ReaderActivity.class.getCanonicalName() + ".window_height";
 
     private PowerManager.WakeLock startupWakeLock;
     private SurfaceView surfaceView;
@@ -120,6 +127,7 @@ public class ReaderActivity extends ActionBarActivity {
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
+    private BroadcastReceiver closeReceiver;
     private final ReaderPainter readerPainter = new ReaderPainter();
 
     private PinchZoomingPopupMenu pinchZoomingPopupMenu;
@@ -135,6 +143,7 @@ public class ReaderActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
         setContentView(R.layout.activity_reader);
+        initWindow();
         initComponents();
     }
 
@@ -192,10 +201,19 @@ public class ReaderActivity extends ActionBarActivity {
         if (networkConnectChangedReceiver !=null) {
             unregisterReceiver(networkConnectChangedReceiver);
         }
+        if (closeReceiver != null) {
+            unregisterReceiver(closeReceiver);
+        }
         ReaderActivity.super.onDestroy();
         if (getReaderDataHolder().isDocumentOpened()) {
             quitApplication(null);
         }
+    }
+
+    @Override
+    public void onLowMemory() {
+        Debug.e(getClass(), "onLowMemory");
+        super.onLowMemory();
     }
 
     private void resetMenus() {
@@ -206,12 +224,27 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Debug.d(getClass(), "onKeyDown: " + keyCode);
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            onBackPressed();
+            return true;
+        }
         return processKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        Debug.d(getClass(), "onKeyUp: " + keyCode);
         return processKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Debug.d(getClass(), "onBackPressed");
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
     }
 
     private final ReaderDataHolder getReaderDataHolder() {
@@ -239,6 +272,16 @@ public class ReaderActivity extends ActionBarActivity {
         DeviceUtils.setFullScreenOnCreate(this, fullScreen);
     }
 
+    private void initWindow() {
+        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+        layoutParams.gravity = Gravity.BOTTOM;
+        layoutParams.height = getIntent().getIntExtra(TAG_WINDOW_HEIGHT, 1000);
+        layoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+        getWindow().setAttributes(layoutParams);
+
+        Debug.d(getClass(), "target window height:" + layoutParams.height);
+    }
+
     private void initComponents() {
         initStatusBar();
         initReaderDataHolder();
@@ -252,6 +295,18 @@ public class ReaderActivity extends ActionBarActivity {
         filter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
         filter.addAction("android.net.wifi.STATE_CHANGE");
         registerReceiver(networkConnectChangedReceiver, filter);
+
+        closeReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Debug.d(getClass(), "receive close intent: " + intent);
+                finish();
+            }
+        };
+        filter = new IntentFilter();
+        filter.addAction(ACTION_CLOSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(closeReceiver, filter);
     }
 
     private void initReaderMenu(){
@@ -621,11 +676,7 @@ public class ReaderActivity extends ActionBarActivity {
     private boolean handleActivityIntent() {
         try {
             String action = getIntent().getAction();
-            if (StringUtils.isNullOrEmpty(action)) {
-                openBuiltInDoc();
-            } else if (action.equals(Intent.ACTION_MAIN)) {
-                quitApplication(null);
-            } else if (action.equals(Intent.ACTION_VIEW)) {
+            if (action.equals(Intent.ACTION_VIEW)) {
                 handleViewActionIntent();
             }
             return true;
@@ -880,6 +931,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void quitApplication(final QuitEvent event) {
+        Debug.d(getClass(), "quitApplication");
         enablePost(true);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         final CloseActionChain closeAction = new CloseActionChain();

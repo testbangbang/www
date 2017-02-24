@@ -21,7 +21,7 @@ public class Debug {
     }
 
     public static void d(final String tag, final String msg, final Object... args) {
-        if (BuildConfig.DEBUG && debug) {
+        if (debug) {
             Log.d(verifyTag(tag), formatString(msg, args));
         }
     }
