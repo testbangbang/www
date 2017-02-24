@@ -335,9 +335,9 @@
     <string name="reading_time_every_day" formatted="false">On an average day you read %.2f hours, mainly reading time distribution in %d:00 - %d:00</string>
     <string name="read_longest_book" formatted="false">A book to read for the longest: %s</string>
     <string name="read_most_carefully_book" formatted="false">Read the book carefully : %s</string>
-    <string name="read_start_time" formatted="false">%s start</string>
-    <string name="read_use_time" formatted="false">The book reading total times %s</string>
-    <string name="read_end_time" formatted="false">%s end</string>
+    <string name="read_start_time" formatted="false">%s \n start</string>
+    <string name="read_use_time" formatted="false">The book reading total times \n %s</string>
+    <string name="read_end_time" formatted="false">%s \n end</string>
     <string name="high_light_count" formatted="false">Highlight: %d</string>
     <string name="annotation_count" formatted="false">Annotation: %d</string>
     <string name="look_up_dict_count" formatted="false">Look Up dictionary count: %d</string>
