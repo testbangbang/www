@@ -582,7 +582,12 @@ public class AlBookEng{
 		adaptProfileParameters();
 	}
 
-	public int updateBookStyles(AlBookStyles val) {
+	/**
+	 * Обновление стилей отображения в книге
+	 * @param val - новые параметы стилей, если null - устанавливаются параметры по умолчанию
+	 * @return результат выполнения
+	 */
+	public int updateBookStyles(AlBookStyles val, EngBookMyType.TAL_HYPH_LANG hyphLang) {
         if (preferences.isASRoll)
             return TAL_RESULT.ERROR;
 
@@ -618,6 +623,9 @@ public class AlBookEng{
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK4] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK4];
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK5] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK5];
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK6] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK6];
+
+		if (hyphLang != null)
+			hyphen.setLang(hyphLang);
 
 		shtamp.value++;
 		return returnOkWithRedraw();
@@ -1514,10 +1522,10 @@ public class AlBookEng{
 				
 				count_space = 0;
 
-
 				for (i = 0; i < oilen - 1; i++) {
 					ch = oi.text[i];
-					if (ch == 0x20 || (AlUnicode.isChineze(ch) && !AlUnicode.isLetterOrDigit(ch)))
+					//if (ch == 0x20 || (AlUnicode.isChineze(ch) && !AlUnicode.isLetterOrDigit(ch)))
+					if (ch == 0x20 || (AlUnicode.isChineze(ch)/* && !AlUnicode.isLetterOrDigit(ch)*/))
 						count_space++;
 				}
 
@@ -1550,8 +1558,9 @@ public class AlBookEng{
 							count_space--;
 							ext_len -= add;
 						} else
-						if (AlUnicode.isChineze(ch) && !AlUnicode.isLetterOrDigit(ch)) {
-							add = (int) (ext_len / count_space);
+						//if (AlUnicode.isChineze(ch) && !AlUnicode.isLetterOrDigit(ch)) {
+						if (AlUnicode.isChineze(ch)/* && !AlUnicode.isLetterOrDigit(ch)*/) {
+							add = ext_len / count_space;
 							oi.width[i] += add;
 							count_space--;
 							ext_len -= add;
@@ -2562,6 +2571,11 @@ public class AlBookEng{
 				prevExt = null;
 			} else {
 				prevExt = currName.substring(tmp);
+				if (activeFile.getIdentStr().contentEquals("decrypt")) {
+					String newExt = ((AlFilesBypassDecrypt)activeFile).getDecriptFileExt();
+					if (newExt != null)
+						prevExt = newExt;
+				}
 			}
 
 			tmp = fName.indexOf(EngBookMyType.AL_FILENAMES_SEPARATOR);
@@ -6798,8 +6812,46 @@ public class AlBookEng{
 		return TAL_RESULT.ERROR;
 	}
 
+	private void getTextRectInPage(AlOnePage page, int textStart, int textStop, AlRect rect, int margLeft) {
+		if (page.start_position > textStop || page.end_position < textStart)
+			return;
+
+		int x, y;
+		for (int j = 0; j < page.countItems; j++) {
+			AlOneItem oi = page.items.get(j);
+			if (oi.isNote)
+				continue;
+
+			y = oi.yDrawPosition;
+			x = margLeft + oi.isLeft + oi.isRed;
+
+			for (int i = 0; i < oi.count; i++) {
+				if (rect.x0 == -1 && oi.pos[i] >= textStart) {
+					rect.x0 = x;
+					rect.y0 = y - oi.base_line_up;
+				} else
+				if (rect.x0 != -1 && oi.pos[i] >= 0 && oi.pos[i] <= textStop) {
+					rect.x1 = x;
+					rect.y1 = y + oi.base_line_down;
+				} else
+				if (oi.pos[i] > textStop)
+					return;
+
+				x += oi.width[i];
+			}
+		}
+	}
+
 	public int getTextRect(int textStart, int textStop, AlRect rect) {
-		if (openState.getState() == AlBookState.OPEN) {
+		if (openState.getState() == AlBookState.OPEN || rect == null ||
+				textStart > textStop) {
+
+			rect.x0 = rect.y0 = -1;
+			rect.x1 = rect.y1 = -1;
+
+			getTextRectInPage(mpage[0][0], textStart, textStop, rect, screen_parameters.marginL);
+			if (profiles.twoColumnUsed)
+				getTextRectInPage(mpage[0][1], textStart, textStop, rect, (screenWidth >> 1) + screen_parameters.marginR);
 
 			return TAL_RESULT.OK;
 		}

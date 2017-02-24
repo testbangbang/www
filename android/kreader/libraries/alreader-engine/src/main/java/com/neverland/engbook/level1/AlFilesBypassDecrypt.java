@@ -45,4 +45,8 @@ public class AlFilesBypassDecrypt extends AlFilesBypass {
             dst[i] = 0;
         return cnt;
     }
+
+    public String getDecriptFileExt() {
+        return decrypt.getOutFileExt();
+    }
 }
