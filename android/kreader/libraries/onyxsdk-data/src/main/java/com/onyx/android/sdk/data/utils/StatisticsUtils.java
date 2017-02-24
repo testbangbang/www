@@ -97,6 +97,18 @@ public class StatisticsUtils {
     }
 
     public static Collection<OnyxStatisticsModel> loadStatisticsList(final Context context,
+                                                                     final String md5short,
+                                                                     final int type,
+                                                                     final Date fromTime) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.type.eq(type))
+                .and(OnyxStatisticsModel_Table.md5short.eq(md5short))
+                .and(OnyxStatisticsModel_Table.eventTime.greaterThan(fromTime));
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsList(final Context context,
                                                                      final int type) {
         Select select = new Select();
         Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.type.eq(type));
