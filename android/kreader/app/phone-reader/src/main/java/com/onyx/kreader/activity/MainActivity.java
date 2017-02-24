@@ -2,6 +2,7 @@ package com.onyx.kreader.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -11,8 +12,9 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.utils.DoubleClickExitHelper;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends AppCompatActivity {
     private static final String REABBLE_URL = "http://reabble.com/";
 
     @Bind(R.id.reabble_webView)
@@ -23,20 +25,23 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(getLayoutId());
+        ButterKnife.bind(this);
+
+        initConfig();
+        initView();
+        initData();
     }
 
-    @Override
-    protected int getLayoutId() {
+    private int getLayoutId() {
         return R.layout.activity_main;
     }
 
-    @Override
-    protected void initConfig() {
+    private void initConfig() {
         doubleClickExitHelper = new DoubleClickExitHelper(this);
     }
 
-    @Override
-    protected void initView() {
+    private void initView() {
         initWebView();
     }
 
@@ -57,8 +62,7 @@ public class MainActivity extends BaseActivity {
         webView.getSettings().setUseWideViewPort(true);
     }
 
-    @Override
-    protected void initData() {
+    private void initData() {
         webView.loadUrl(REABBLE_URL);
     }
 
@@ -73,6 +77,12 @@ public class MainActivity extends BaseActivity {
             return doubleClickExitHelper.onKeyDown(keyCode, event);
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
     }
 }
 

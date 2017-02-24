@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,24 +37,27 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ReaderApplication;
+import com.onyx.kreader.dialog.DialogProgressHolder;
+import com.onyx.kreader.manager.PermissionManager;
 import com.onyx.kreader.utils.TextUtils;
 import com.onyx.kreader.utils.ToastUtils;
-import com.onyx.kreader.utils.WifiUtils;
+import com.onyx.kreader.utils.NetworkUtils;
 import com.onyx.sdk.ebookservice.CoverWrapper;
 import com.onyx.sdk.ebookservice.HtmlManager;
 import com.onyx.sdk.ebookservice.request.HtmlParseEpubRequest;
 
 import java.io.File;
+import java.util.List;
 
 import butterknife.Bind;
-import butterknife.OnClick;
+import butterknife.ButterKnife;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Created by wang.suicheng on 2017/1/21.
  */
-public class ShareFileActivity extends BaseActivity {
+public class ShareFileActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private static final String PUSH_TYPE = "digital_content";
 
     private static final int STORAGE_PHONE_PERMS_REQUEST_CODE = 1;
@@ -65,6 +68,7 @@ public class ShareFileActivity extends BaseActivity {
     @Bind(R.id.message_textView)
     TextView messageTextView;
 
+    private DialogProgressHolder progressDialogHolder = new DialogProgressHolder();
     private Object dialogObject = new Object();
     private Object weChatOauthObject = new Object();
     private String uploadFilePath;
@@ -72,24 +76,17 @@ public class ShareFileActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(getLayoutId());
+        ButterKnife.bind(this);
+        initData();
     }
 
-    @Override
-    protected int getLayoutId() {
+    private int getLayoutId() {
         return R.layout.activity_share_file;
     }
 
-    @Override
-    protected void initConfig() {
-    }
-
-    @Override
-    protected void initView() {
-    }
-
-    @Override
-    protected void initData() {
-        if (WifiUtils.isWifiConnected(this)) {
+    private void initData() {
+        if (NetworkUtils.isWifiConnected(this)) {
             requestPermission();
         } else {
             showWifiDisconnectedDialog();
@@ -158,7 +155,7 @@ public class ShareFileActivity extends BaseActivity {
         htmlManager.submitRequest(this, parseEpubRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                dismissProgressDialog(request);
+                progressDialogHolder.dismissProgressDialog(request);
                 if (e != null || StringUtils.isNullOrEmpty(parseEpubRequest.getOutputFilePath())) {
                     ToastUtils.showToast(ShareFileActivity.this, getString(R.string.generate_epub_file_failed),
                             Toast.LENGTH_SHORT);
@@ -167,7 +164,7 @@ public class ShareFileActivity extends BaseActivity {
                 startToUploadFile(parseEpubRequest.getOutputFilePath());
             }
         });
-        showIndeterminateProgressDialog(parseEpubRequest, R.string.generating_epub_file);
+        progressDialogHolder.showIndeterminateProgressDialog(this, parseEpubRequest, R.string.generating_epub_file);
     }
 
     private File getTextFile(String content) {
@@ -217,7 +214,7 @@ public class ShareFileActivity extends BaseActivity {
                 processWeChatUserInfo(resp);
             }
         });
-        showIndeterminateProgressDialog(weChatOauthObject);
+        progressDialogHolder.showIndeterminateProgressDialog(this, weChatOauthObject, R.string.loading);
     }
 
     private void processWeChatUserInfo(WeChatOauthResp resp) {
@@ -257,7 +254,7 @@ public class ShareFileActivity extends BaseActivity {
         getCloudStore().submitRequest(this, oAuthRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                dismissProgressDialog(weChatOauthObject);
+                progressDialogHolder.dismissProgressDialog(weChatOauthObject);
                 OnyxAccount account = oAuthRequest.getOnyxAccount();
                 if (e != null || account == null) {
                     processOAuthErrorResult(R.string.get_onyx_account_bound_failed);
@@ -272,12 +269,7 @@ public class ShareFileActivity extends BaseActivity {
 
     private void processOAuthErrorResult(int errorResId) {
         ToastUtils.showLongToast(this, errorResId);
-        dismissProgressDialog(weChatOauthObject);
-    }
-
-    @Override
-    protected int getPermissionRequestCode() {
-        return STORAGE_PHONE_PERMS_REQUEST_CODE;
+        progressDialogHolder.dismissProgressDialog(weChatOauthObject);
     }
 
     @AfterPermissionGranted(STORAGE_PHONE_PERMS_REQUEST_CODE)
@@ -300,19 +292,19 @@ public class ShareFileActivity extends BaseActivity {
     }
 
     private void startToUploadFile(final String uploadFilePath) {
-        showProgressDialog(dialogObject, R.string.upload_file);
+        progressDialogHolder.showProgressDialog(this, dialogObject, R.string.upload_file);
         OssManager.sharedInstance(this).asyncUploadFile(this, uploadFilePath, new BaseCallback() {
             @Override
             public void progress(BaseRequest request, final ProgressInfo info) {
                 if (info != null) {
                     int progress = (int) info.progress;
-                    setProgressDialogProgress(dialogObject, progress);
+                    progressDialogHolder.setProgress(dialogObject, progress);
                 }
             }
 
             @Override
             public void done(BaseRequest request, Throwable e) {
-                dismissProgressDialog(dialogObject);
+                progressDialogHolder.dismissProgressDialog(dialogObject);
                 boolean success = e == null;
                 String uploadResult = getString(R.string.upload_file) + (success ? getString(R.string.success) : getString(R.string.failed));
                 ToastUtils.showShortToast(ShareFileActivity.this, uploadResult);
@@ -382,6 +374,7 @@ public class ShareFileActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ButterKnife.unbind(this);
         try {
             unregisterReceiver(authReceiver);
         } catch (Exception e) {
@@ -393,5 +386,21 @@ public class ShareFileActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == STORAGE_PHONE_PERMS_REQUEST_CODE) {
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        PermissionManager.processPermissionPermanentlyDenied(this, getString(R.string.tip_of_permissions_request),
+                requestCode, perms);
     }
 }

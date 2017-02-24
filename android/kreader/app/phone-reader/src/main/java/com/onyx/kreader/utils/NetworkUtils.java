@@ -15,7 +15,7 @@ import com.onyx.kreader.R;
 /**
  * Created by suicheng on 2017/2/16.
  */
-public class WifiUtils {
+public class NetworkUtils {
 
     public static boolean requestWifi(final Context context) {
         if (isWifiConnected(context)) {
