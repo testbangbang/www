@@ -2,6 +2,7 @@ package com.onyx.android.sdk.reader.host.layout;
 
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.reader.host.navigation.NavigationList;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -13,6 +14,8 @@ import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 
+import java.util.HashMap;
+
 /**
  * Created by zhuzeng on 10/19/15.
  * Single hard page with sub screen navigation list support.
@@ -20,6 +23,9 @@ import com.onyx.android.sdk.reader.host.wrapper.Reader;
 public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 
     private NavigationArgs navigationArgs;
+
+    // rect in percentage unit
+    private HashMap<String, RectF> autoCropRatioRegions = new HashMap<>();
 
     public LayoutSinglePageNavigationListProvider(final ReaderLayoutManager lm) {
         super(lm);
@@ -45,10 +51,31 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
         return getNavigationArgs().getListByType(getPageType(pageIndex));
     }
 
+    private RectF autoCrop(RectF rect) {
+        RectF cropRegion = autoCropRatioRegions.get(getCurrentPagePosition());
+        if (cropRegion == null) {
+            RectF limitedRect = getNavigationList(getCurrentPageNumber()).getLimitedRect();
+            cropRegion = cropTargetRegion(getPageManager().getFirstVisiblePage(), limitedRect);
+            autoCropRatioRegions.put(getCurrentPagePosition(), cropRegion);
+        }
+        rect.intersect(cropRegion);
+        return rect;
+    }
+
+    // ratio rect in percentage unit
+    private RectF cropTargetRegion(PageInfo pageInfo, RectF targetRatioRect) {
+        RectF cropRect = getPageManager().getCropProvider().cropPage(pageInfo, targetRatioRect);
+        cropRect.set(cropRect.left / pageInfo.getOriginWidth(),
+                cropRect.top / pageInfo.getOriginHeight(),
+                cropRect.right / pageInfo.getOriginWidth(),
+                cropRect.bottom / pageInfo.getOriginHeight());
+        return cropRect;
+    }
+
     public boolean setNavigationArgs(final NavigationArgs args) throws ReaderException {
         navigationArgs = args;
         if (getLayoutManager().getCurrentPageInfo() != null) {
-            RectF subScreen = getNavigationList(getCurrentPageNumber()).first();
+            RectF subScreen = autoCrop(getNavigationList(getCurrentPageNumber()).first());
             getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
         }
         return true;
@@ -61,7 +88,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 
     public boolean prevScreen() throws ReaderException {
         if (getNavigationList(getCurrentPageNumber()).hasPrevious()) {
-            RectF subScreen = getNavigationList(getCurrentPageNumber()).previous();
+            RectF subScreen = autoCrop(getNavigationList(getCurrentPageNumber()).previous());
             getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
             return true;
         }
@@ -75,7 +102,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 
     public boolean nextScreen() throws ReaderException {
         if (getNavigationList(getCurrentPageNumber()).hasNext()) {
-            RectF subScreen = getNavigationList(getCurrentPageNumber()).next();
+            RectF subScreen = autoCrop(getNavigationList(getCurrentPageNumber()).next());
             getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
             return true;
         }
@@ -139,7 +166,7 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
             return false;
         }
 
-        RectF subScreen = getNavigationList(getCurrentPageNumber()).gotoSubScreen(index);
+        RectF subScreen = autoCrop(getNavigationList(getCurrentPageNumber()).gotoSubScreen(index));
         getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
         return true;
     }
@@ -181,6 +208,13 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
 
     public RectF getViewportRect() throws ReaderException {
         return getPageManager().getViewportRect();
+    }
+
+    @Override
+    public void updateViewportRect(RectF rect) throws ReaderException {
+        getPageManager().setViewportRect(rect);
+        RectF subScreen = autoCrop(getNavigationList(getCurrentPageNumber()).getCurrent());
+        getPageManager().scaleByRatioRect(getCurrentPagePosition(), subScreen);
     }
 
     @Override

@@ -72,7 +72,7 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     PowerUtil.setCurrentTimeoutValue(getContext(),
-                            PowerSettingTimeoutCategory.POWER_OFF_TIMEOUT, (Integer) newValue);
+                            PowerSettingTimeoutCategory.POWER_OFF_TIMEOUT, Integer.parseInt((String) newValue));
                     return true;
                 }
             });
@@ -80,7 +80,7 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     PowerUtil.setCurrentTimeoutValue(getContext(),
-                            PowerSettingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT, (Integer) newValue);
+                            PowerSettingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT, Integer.parseInt((String) newValue));
                     return true;
                 }
             });

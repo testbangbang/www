@@ -48,6 +48,7 @@ public class OnyxToolbar extends ViewGroup {
     private FillStyle fillStyle = FillStyle.WrapContent;
     private boolean clickedDismissToolbar = false;
     private OnSizeChangeListener onSizeChangeListener;
+    private boolean adjustLayoutForColorDevices = false;
 
     private int paddingLeft;
     private int paddingRight;
@@ -270,7 +271,28 @@ public class OnyxToolbar extends ViewGroup {
                     totalWidth = layoutChildBottom(childView, totalWidth, measuredWidth, measureHeight);
                     break;
             }
+
+            adjustChildLayoutForColorDevices(childView);
         }
+    }
+
+    private void adjustChildLayoutForColorDevices(View view) {
+        if (!isAdjustLayoutForColorDevices()) {
+            return;
+        }
+        int[] locationOnScreen = new int[2];
+        view.getLocationOnScreen(locationOnScreen);
+        int top = view.getTop();
+        int left = view.getLeft();
+
+        if (locationOnScreen[0] % 2 != 0) {
+            left++;
+        }
+
+        if (locationOnScreen[1] % 2 != 0) {
+            top++;
+        }
+        view.layout(left, top, view.getRight(), view.getBottom());
     }
 
     /**
@@ -289,6 +311,7 @@ public class OnyxToolbar extends ViewGroup {
         LayoutParams lp = (LayoutParams) childView.getLayoutParams();
 
         if (childView == currentExpandedToolbar) {
+
             childView.layout(lp.leftMargin
                     , lp.topMargin
                     , getMeasuredWidth() - lp.rightMargin
@@ -494,5 +517,13 @@ public class OnyxToolbar extends ViewGroup {
             view.setLayoutParams(lp);
         }
 
+    }
+
+    public boolean isAdjustLayoutForColorDevices() {
+        return adjustLayoutForColorDevices;
+    }
+
+    public void setAdjustLayoutForColorDevices(boolean adjustLayoutForColorDevices) {
+        this.adjustLayoutForColorDevices = adjustLayoutForColorDevices;
     }
 }

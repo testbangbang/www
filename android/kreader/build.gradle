@@ -19,6 +19,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
+        maven { url  "http://dl.bintray.com/dasar/maven" }
         repositories {
             flatDir {
                 dirs 'libs' //this way we can find the .aar file in libs folder
@@ -68,5 +69,9 @@ ext {
 
     aliyunOssSdkVersion = '2.3.0'
     wechatSdkWithMtaVersion = '1.0.2'
+
+    jsoupVersion = '1.10.2'
+    slf4jVersion = '1.7.12'
+    epublibVersion = "1.0"
 }
 

@@ -12,6 +12,7 @@ import com.neverland.engbook.forpublic.AlEngineNotifyForUI;
 import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.AlOneBookmark;
+import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.AlOneSearchResult;
 import com.neverland.engbook.forpublic.AlPoint;
 import com.neverland.engbook.forpublic.AlPublicProfileOptions;
@@ -30,22 +31,23 @@ import com.neverland.engbook.forpublic.EngBookMyType.TAL_SCREEN_SELECTION_MODE;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_THREAD_TASK;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.level1.AlFileDoc;
+import com.neverland.engbook.level1.AlFileZipEntry;
+import com.neverland.engbook.level1.AlFiles;
+import com.neverland.engbook.level1.AlFilesBypassDecrypt;
+import com.neverland.engbook.level1.AlFilesBypassNative;
 import com.neverland.engbook.level1.AlFilesBypassRAR;
 import com.neverland.engbook.level1.AlFilesCBZ;
 import com.neverland.engbook.level1.AlFilesDocx;
+import com.neverland.engbook.level1.AlFilesEPUB;
 import com.neverland.engbook.level1.AlFilesFB3;
 import com.neverland.engbook.level1.AlFilesMOBI;
 import com.neverland.engbook.level1.AlFilesODT;
 import com.neverland.engbook.level1.AlFilesPDB;
 import com.neverland.engbook.level1.AlFilesPDBUnk;
-import com.neverland.engbook.level1.AlFileZipEntry;
-import com.neverland.engbook.level1.AlFiles;
-import com.neverland.engbook.level1.AlFilesBypassDecrypt;
-import com.neverland.engbook.level1.AlFilesBypassNative;
-import com.neverland.engbook.level1.AlFilesEPUB;
-
 import com.neverland.engbook.level1.AlFilesRAR;
 import com.neverland.engbook.level1.AlFilesZIP;
+import com.neverland.engbook.level1.JEBFilesEPUB;
+import com.neverland.engbook.level1.JEBFilesZIP;
 import com.neverland.engbook.level2.AlFormat;
 import com.neverland.engbook.level2.AlFormatCOMICS;
 import com.neverland.engbook.level2.AlFormatDOC;
@@ -60,6 +62,7 @@ import com.neverland.engbook.level2.AlFormatODT;
 import com.neverland.engbook.level2.AlFormatRTF;
 import com.neverland.engbook.level2.AlFormatTXT;
 import com.neverland.engbook.level2.AlScanMOBI;
+import com.neverland.engbook.level2.JEBFormatEPUB;
 import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.AlArabicReverse;
 import com.neverland.engbook.util.AlBookState;
@@ -67,7 +70,6 @@ import com.neverland.engbook.util.AlCalc;
 import com.neverland.engbook.util.AlFonts;
 import com.neverland.engbook.util.AlHyph;
 import com.neverland.engbook.util.AlImage;
-import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlOneImageParam;
 import com.neverland.engbook.util.AlOneItem;
@@ -580,7 +582,12 @@ public class AlBookEng{
 		adaptProfileParameters();
 	}
 
-	public int updateBookStyles(AlBookStyles val) {
+	/**
+	 * Обновление стилей отображения в книге
+	 * @param val - новые параметы стилей, если null - устанавливаются параметры по умолчанию
+	 * @return результат выполнения
+	 */
+	public int updateBookStyles(AlBookStyles val, EngBookMyType.TAL_HYPH_LANG hyphLang) {
         if (preferences.isASRoll)
             return TAL_RESULT.ERROR;
 
@@ -616,6 +623,9 @@ public class AlBookEng{
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK4] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK4];
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK5] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK5];
 		profiles.colors[InternalConst.TAL_PROFILE_COLOR_MARK6] = styles.color[InternalConst.TAL_PROFILE_COLOR_MARK6];
+
+		if (hyphLang != null)
+			hyphen.setLang(hyphLang);
 
 		shtamp.value++;
 		return returnOkWithRedraw();
@@ -1512,10 +1522,10 @@ public class AlBookEng{
 				
 				count_space = 0;
 
-
 				for (i = 0; i < oilen - 1; i++) {
 					ch = oi.text[i];
-					if (ch == 0x20 || (AlUnicode.isChineze(ch) && !AlUnicode.isLetterOrDigit(ch)))
+					//if (ch == 0x20 || (AlUnicode.isChineze(ch) && !AlUnicode.isLetterOrDigit(ch)))
+					if (ch == 0x20 || (AlUnicode.isChineze(ch)/* && !AlUnicode.isLetterOrDigit(ch)*/))
 						count_space++;
 				}
 
@@ -1548,8 +1558,9 @@ public class AlBookEng{
 							count_space--;
 							ext_len -= add;
 						} else
-						if (AlUnicode.isChineze(ch) && !AlUnicode.isLetterOrDigit(ch)) {
-							add = (int) (ext_len / count_space);
+						//if (AlUnicode.isChineze(ch) && !AlUnicode.isLetterOrDigit(ch)) {
+						if (AlUnicode.isChineze(ch)/* && !AlUnicode.isLetterOrDigit(ch)*/) {
+							add = ext_len / count_space;
 							oi.width[i] += add;
 							count_space--;
 							ext_len -= add;
@@ -2413,7 +2424,16 @@ public class AlBookEng{
                 activeFile = new AlFilesEPUB();
                 lastInitState = activeFile.initState(currName, a, fList);
                 break;
-            } else
+            }else
+			if(ft == TAL_FILE_TYPE.JEB){
+				activeFile = new JEBFilesZIP();
+				activeFile.initState(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB, a, fList);
+				a = activeFile;
+				activeFile = new JEBFilesEPUB();
+				lastInitState = activeFile.initState(currName, a, fList);
+				break;
+			}
+			else
             if (ft == TAL_FILE_TYPE.DOCX) {
                 return bookMetaData;
             } else
@@ -2460,6 +2480,9 @@ public class AlBookEng{
         if (AlFormatEPUB.isEPUB(activeFile)) {
             formatMetaData = new AlFormatEPUB();
         } else
+		if (JEBFormatEPUB.isJEB(activeFile)) {
+			formatMetaData = new JEBFormatEPUB();
+		} else
         if (AlFormatFB2.isFB2(activeFile)) {
             formatMetaData = new AlFormatFB2();
         } else {
@@ -2548,6 +2571,11 @@ public class AlBookEng{
 				prevExt = null;
 			} else {
 				prevExt = currName.substring(tmp);
+				if (activeFile.getIdentStr().contentEquals("decrypt")) {
+					String newExt = ((AlFilesBypassDecrypt)activeFile).getDecriptFileExt();
+					if (newExt != null)
+						prevExt = newExt;
+				}
 			}
 
 			tmp = fName.indexOf(EngBookMyType.AL_FILENAMES_SEPARATOR);
@@ -2624,6 +2652,14 @@ public class AlBookEng{
 				activeFile = new AlFilesODT();
 				lastInitState = activeFile.initState(currName, a, fList);
 				break;
+			}else
+			if (ft == TAL_FILE_TYPE.JEB) {
+				activeFile = new JEBFilesZIP();
+				activeFile.initState(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB, a, fList);
+				a = activeFile;
+				activeFile = new JEBFilesEPUB();
+				lastInitState = activeFile.initState(currName, a, fList);
+				break;
 			}
 
 
@@ -2665,9 +2701,12 @@ public class AlBookEng{
         } else
         if (AlFormatMOBI.isMOBI(activeFile)) {
             format = new AlFormatMOBI();
-        } else
+        }else
 		if (AlFormatEPUB.isEPUB(activeFile)) {
 			format = new AlFormatEPUB();
+		} else
+		if(JEBFormatEPUB.isJEB(activeFile)){
+			format = new JEBFormatEPUB();
 		} else
         if (AlFormatDOCX.isDOCX(activeFile) || AlFormatDOCX.isDOCX_XML(activeFile) > 0) {
             format = new AlFormatDOCX();
@@ -2692,8 +2731,9 @@ public class AlBookEng{
 		} else
 		if (AlFormatNativeImages.isImage(activeFile, prevExt)) {
 			format = new AlFormatNativeImages();
-		} else
+		} else {
 			format = new AlFormatTXT();
+		}
 
 		activeFile.setLoadTime1(false);
 
@@ -6772,8 +6812,46 @@ public class AlBookEng{
 		return TAL_RESULT.ERROR;
 	}
 
+	private void getTextRectInPage(AlOnePage page, int textStart, int textStop, AlRect rect, int margLeft) {
+		if (page.start_position > textStop || page.end_position < textStart)
+			return;
+
+		int x, y;
+		for (int j = 0; j < page.countItems; j++) {
+			AlOneItem oi = page.items.get(j);
+			if (oi.isNote)
+				continue;
+
+			y = oi.yDrawPosition;
+			x = margLeft + oi.isLeft + oi.isRed;
+
+			for (int i = 0; i < oi.count; i++) {
+				if (rect.x0 == -1 && oi.pos[i] >= textStart) {
+					rect.x0 = x;
+					rect.y0 = y - oi.base_line_up;
+				} else
+				if (rect.x0 != -1 && oi.pos[i] >= 0 && oi.pos[i] <= textStop) {
+					rect.x1 = x;
+					rect.y1 = y + oi.base_line_down;
+				} else
+				if (oi.pos[i] > textStop)
+					return;
+
+				x += oi.width[i];
+			}
+		}
+	}
+
 	public int getTextRect(int textStart, int textStop, AlRect rect) {
-		if (openState.getState() == AlBookState.OPEN) {
+		if (openState.getState() == AlBookState.OPEN || rect == null ||
+				textStart > textStop) {
+
+			rect.x0 = rect.y0 = -1;
+			rect.x1 = rect.y1 = -1;
+
+			getTextRectInPage(mpage[0][0], textStart, textStop, rect, screen_parameters.marginL);
+			if (profiles.twoColumnUsed)
+				getTextRectInPage(mpage[0][1], textStart, textStop, rect, (screenWidth >> 1) + screen_parameters.marginR);
 
 			return TAL_RESULT.OK;
 		}

@@ -301,7 +301,7 @@ public class AlHyph {
 		return TAL_RESULT.OK;
 	}
 
-	void setLang(TAL_HYPH_LANG lng) {
+	public void setLang(TAL_HYPH_LANG lng) {
 		if (lang == lng)
 			return;
 
