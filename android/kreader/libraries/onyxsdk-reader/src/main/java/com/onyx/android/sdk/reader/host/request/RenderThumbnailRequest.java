@@ -22,17 +22,26 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
     private String page;
     private ReaderBitmap bitmap;
     private PageInfo pageInfo;
+    private boolean useNextScreen = false;
 
-    public RenderThumbnailRequest(final String p, final ReaderBitmap bmp) {
+    public RenderThumbnailRequest(final String p, final ReaderBitmap bmp, final boolean nextMode) {
         super();
         page = p;
         bitmap = bmp;
+        this.useNextScreen = nextMode;
         setAbortPendingTasks(true);
     }
 
     public void execute(final Reader reader) throws Exception {
         final RectF origin = reader.getDocument().getPageOriginSize(page);
-        reader.getNavigator().gotoPage(PagePositionUtils.getPageNumber(page));
+
+        String pagePosition = reader.getNavigator().getPositionByPageNumber(PagePositionUtils.getPageNumber(page));
+        if (useNextScreen) {
+            reader.getNavigator().nextScreen(pagePosition);
+        }else {
+            reader.getNavigator().gotoPosition(pagePosition);
+        }
+
         String position = reader.getNavigator().getScreenStartPosition();
         PageInfo pageInfo = new PageInfo(page, position, origin.width(), origin.height());
         if (reader.getRendererFeatures().supportScale()) {
