@@ -397,6 +397,7 @@ public class ReaderActivity extends ActionBarActivity {
     @Subscribe
     public void onResetEpdUpdateMode(final ResetEpdUpdateModeEvent event) {
         ReaderDeviceManager.resetUpdateMode(surfaceView);
+        ReaderDeviceManager.resetUpdateMode(getStatusBar());
     }
 
     @Subscribe

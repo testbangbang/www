@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wx_success">微信操作成功</string>
+    <string name="wx_cancel">微信操作取消</string>
+    <string name="wx_denied">微信操作拒绝</string>
+    <string name="wx_back">微信操作返回</string>
+    <string name="wx_fail">微信操作失败</string>
+    <string name="wx_nonsupport">微信操作不支持</string>
+</resources>
