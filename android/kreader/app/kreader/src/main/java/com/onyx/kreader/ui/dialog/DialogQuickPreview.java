@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.InputType;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,7 +26,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
@@ -38,11 +36,9 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
-import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
-import com.onyx.kreader.ui.actions.GetDocumentPageAction;
-import com.onyx.kreader.ui.actions.GetDocumentPositionAction;
-import com.onyx.kreader.ui.actions.GetDocumentPositionChain;
+import com.onyx.kreader.ui.actions.GetPageNumberFromPositionAction;
+import com.onyx.kreader.ui.actions.GetPositionFromPageNumberAction;
 import com.onyx.kreader.ui.actions.GetTableOfContentAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
@@ -56,9 +52,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by joy on 7/15/16.
@@ -567,11 +560,11 @@ public class DialogQuickPreview extends Dialog {
         List<Integer> pages = new ArrayList<>();
         pages.add(Math.max(getPaginator().getCurrentPageBegin() - 1, 0));
         pages.add(Math.min(getPaginator().getCurrentPageEnd() + 1, getPaginator().getSize()));
-        final GetDocumentPositionChain positionChain =  new GetDocumentPositionChain(pages);
-        positionChain.execute(readerDataHolder, new BaseCallback() {
+        final GetPositionFromPageNumberAction action =  new GetPositionFromPageNumberAction(pages);
+        action.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                List<String> documentPositions = positionChain.getDocumentPositions();
+                List<String> documentPositions = action.getDocumentPositions();
                 if (documentPositions != null && documentPositions.size() >= 2) {
                     int pageStartPosition = PagePositionUtils.getPosition(documentPositions.get(0));
                     int pageEndPosition = PagePositionUtils.getPosition(documentPositions.get(1));
@@ -583,7 +576,7 @@ public class DialogQuickPreview extends Dialog {
     }
 
     private void gotoPage(int position) {
-        final GetDocumentPageAction pageAction = new GetDocumentPageAction(PagePositionUtils.fromPosition(position));
+        final GetPageNumberFromPositionAction pageAction = new GetPageNumberFromPositionAction(PagePositionUtils.fromPosition(position));
         pageAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

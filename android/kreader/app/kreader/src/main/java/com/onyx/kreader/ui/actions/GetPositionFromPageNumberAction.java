@@ -2,7 +2,7 @@ package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.reader.host.request.GetDocumentPositionRequest;
+import com.onyx.android.sdk.reader.host.request.GetPositionFromPageNumberRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.List;
@@ -11,28 +11,28 @@ import java.util.List;
  * Created by ming on 2017/2/24.
  */
 
-public class GetDocumentPositionAction extends BaseAction {
+public class GetPositionFromPageNumberAction extends BaseAction {
 
-    private String documentPosition;
-    private int pageNumber;
+    private List<String> documentPositions;
+    private List<Integer> pageNumbers;
 
-    public GetDocumentPositionAction(int pageNumbers) {
-        this.pageNumber = pageNumbers;
+    public GetPositionFromPageNumberAction(List<Integer> pageNumbers) {
+        this.pageNumbers = pageNumbers;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        final GetDocumentPositionRequest readerRequest = new GetDocumentPositionRequest(pageNumber);
+        final GetPositionFromPageNumberRequest readerRequest = new GetPositionFromPageNumberRequest(pageNumbers);
         readerDataHolder.submitNonRenderRequest(readerRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                documentPosition = readerRequest.getDocumentPosition();
+                documentPositions = readerRequest.getDocumentPositions();
                 callback.invoke(callback, request, e);
             }
         });
     }
 
-    public String getDocumentPosition() {
-        return documentPosition;
+    public List<String> getDocumentPositions() {
+        return documentPositions;
     }
 }

@@ -7,13 +7,13 @@ import com.onyx.android.sdk.reader.host.wrapper.Reader;
  * Created by ming on 2017/2/24.
  */
 
-public class GetDocumentPageRequest extends BaseReaderRequest {
+public class GetPageNumberFromPositionRequest extends BaseReaderRequest {
 
     private String documentPosition;
 
     private int pageNumber;
 
-    public GetDocumentPageRequest(String documentPosition) {
+    public GetPageNumberFromPositionRequest(String documentPosition) {
         this.documentPosition = documentPosition;
     }
 
