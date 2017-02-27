@@ -146,6 +146,14 @@
 
         </activity>
 
+        <receiver android:name=".ui.ReaderTabHostBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.onyx.kreader.action.CHANGE_SCREEN_ORIENTATION" />
+                <action android:name="com.onyx.kreader.action.ENTER_FULL_SCREEN" />
+                <action android:name="com.onyx.kreader.action.QUIT_FULL_SCREEN" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".ui.Reader_Tab_1_Activity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:launchMode="singleInstance"

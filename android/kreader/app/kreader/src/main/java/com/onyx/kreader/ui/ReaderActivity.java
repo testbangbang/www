@@ -114,10 +114,6 @@ import java.util.List;
 public class ReaderActivity extends Activity {
     private static final String DOCUMENT_PATH_TAG = "document";
 
-    public static final String ACTION_CLOSE = ReaderActivity.class.getCanonicalName() + ".action_close";
-
-    public static final String TAG_WINDOW_HEIGHT = ReaderActivity.class.getCanonicalName() + ".window_height";
-
     private PowerManager.WakeLock startupWakeLock;
     private SurfaceView surfaceView;
     private RelativeLayout mainView;
@@ -129,7 +125,6 @@ public class ReaderActivity extends Activity {
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleDetector;
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
-    private BroadcastReceiver closeReceiver;
     private final ReaderPainter readerPainter = new ReaderPainter();
 
     private PinchZoomingPopupMenu pinchZoomingPopupMenu;
@@ -210,9 +205,6 @@ public class ReaderActivity extends Activity {
         Debug.d(getClass(), "onDestroy: finishing? " + isFinishing());
         if (networkConnectChangedReceiver !=null) {
             unregisterReceiver(networkConnectChangedReceiver);
-        }
-        if (closeReceiver != null) {
-            unregisterReceiver(closeReceiver);
         }
         ReaderActivity.super.onDestroy();
         if (getReaderDataHolder().isDocumentOpened()) {
@@ -314,7 +306,7 @@ public class ReaderActivity extends Activity {
     private void initWindow() {
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.gravity = Gravity.BOTTOM;
-        layoutParams.height = getIntent().getIntExtra(TAG_WINDOW_HEIGHT, WindowManager.LayoutParams.MATCH_PARENT);
+        layoutParams.height = getIntent().getIntExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, WindowManager.LayoutParams.MATCH_PARENT);
         layoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         getWindow().setAttributes(layoutParams);
 
@@ -334,18 +326,6 @@ public class ReaderActivity extends Activity {
         filter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
         filter.addAction("android.net.wifi.STATE_CHANGE");
         registerReceiver(networkConnectChangedReceiver, filter);
-
-        closeReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Debug.d(getClass(), "receive close intent: " + intent);
-                finish();
-            }
-        };
-        filter = new IntentFilter();
-        filter.addAction(ACTION_CLOSE);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(closeReceiver, filter);
     }
 
     private void initReaderMenu(){
@@ -845,6 +825,7 @@ public class ReaderActivity extends Activity {
 
     @Subscribe
     public void onResizeReaderWindow(final ResizeReaderWindowEvent event) {
+        Debug.d(getClass(), "onResizeReaderWindow: " + event.width + ", " + event.height);
         getWindow().setLayout(event.width, event.height);
     }
 
@@ -1059,7 +1040,11 @@ public class ReaderActivity extends Activity {
     }
 
     public void setFullScreen(boolean fullScreen) {
-        DeviceUtils.setFullScreenOnResume(this, fullScreen);
+        Intent intent = new Intent(this, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(fullScreen ?
+                ReaderTabHostBroadcastReceiver.ACTION_ENTER_FULL_SCREEN :
+                ReaderTabHostBroadcastReceiver.ACTION_QUIT_FULL_SCREEN);
+        sendBroadcast(intent);
     }
 
     public SurfaceView getSurfaceView() {

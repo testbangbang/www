@@ -2,7 +2,6 @@ package com.onyx.kreader.ui;
 
 import android.app.ActivityManager;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
@@ -18,9 +17,12 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -73,12 +75,31 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reader_host);
 
         initTabHost();
+
+        ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
+            @Override
+            public void onChangeOrientation(int orientation) {
+                setRequestedOrientation(orientation);
+            }
+
+            @Override
+            public void onEnterFullScreen() {
+                syncFullScreenState();
+            }
+
+            @Override
+            public void onQuitFullScreen() {
+                syncFullScreenState();
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
+
+        syncFullScreenState();
     }
 
     @Override
@@ -195,6 +216,28 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         }
     }
 
+    private void syncFullScreenState() {
+        boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
+        Log.d(TAG, "syncFullScreenState: " + fullScreen);
+        DeviceUtils.setFullScreenOnResume(this, fullScreen);
+        tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                Log.d(TAG, "syncFullScreenState -> onGlobalLayout");
+                TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
+                updateWindowHeight();
+            }
+        });
+    }
+
+    private int getTabContentHeight() {
+        Log.d(TAG, "tab host height: " + tabHost.getHeight() +
+                ", tab widget height: " + tabHost.getTabWidget().getHeight() +
+                ", tab content height: " + tabHost.getTabContentView().getHeight());
+        return tabHost.getHeight() - tabHost.getTabWidget().getHeight();
+    }
+
     private void acquireStartupWakeLock() {
         if (startupWakeLock == null) {
             startupWakeLock = Device.currentDevice().newWakeLock(this, ReaderActivity.class.getSimpleName());
@@ -243,16 +286,12 @@ public class ReaderTabHostActivity extends AppCompatActivity {
                 return;
             }
         }
-        Log.d(TAG, "TAB to open: " + tab +
-                ", tab height: " + tabHost.getHeight() +
-                ", tab widget height: " + tabHost.getTabWidget().getHeight() +
-                ", tab content height: " + tabHost.getTabContentView().getHeight());
-        final int tabContentHeight = tabHost.getHeight() - tabHost.getTabWidget().getHeight();
+        final int tabContentHeight = getTabContentHeight();
 
         Intent intent = new Intent(this, getTabActivity(tab));
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(getIntent().getData(), getIntent().getType());
-        intent.putExtra(ReaderActivity.TAG_WINDOW_HEIGHT, tabContentHeight);
+        intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
         startActivity(intent);
 
         addReaderTab(tab, path);
@@ -322,10 +361,21 @@ public class ReaderTabHostActivity extends AppCompatActivity {
             int nSize = tasksList.size();
             for(int i = 0; i < nSize;  i++){
                 if(tasksList.get(i).topActivity.getClassName().equals(clzName)){
+                    updateWindowHeight();
                     am.moveTaskToFront(tasksList.get(i).id, 0);
                     updateCurrentTab(tab);
                 }
             }
+        }
+    }
+
+    private void updateWindowHeight() {
+        final int tabContentHeight = getTabContentHeight();
+        for (ReaderTab tab : openedTabs.keySet()) {
+            Intent intent = new Intent(this, getTabReceiver(tab));
+            intent.setAction(ReaderBroadcastReceiver.ACTION_RESIZE_WINDOW);
+            intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
+            sendBroadcast(intent);
         }
     }
 
