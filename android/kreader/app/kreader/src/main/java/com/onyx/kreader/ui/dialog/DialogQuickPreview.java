@@ -36,8 +36,9 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
-import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.kreader.ui.actions.GetPageNumberFromPositionAction;
+import com.onyx.kreader.ui.actions.GetPositionFromPageNumberAction;
 import com.onyx.kreader.ui.actions.GetTableOfContentAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
@@ -51,15 +52,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by joy on 7/15/16.
  */
 public class DialogQuickPreview extends Dialog {
 
+    private static final String TAG = "DialogQuickPreview";
     private static final int LONG_CLICK_TIME_INTERVAL = 2000;
 
     public static abstract class Callback {
@@ -558,48 +557,72 @@ public class DialogQuickPreview extends Dialog {
         if (tocChapterNodeList.size() <= 0) {
             return;
         }
-        int chapterPosition;
-        if (back) {
-            int pageBegin = getPaginator().getCurrentPageBegin();
-            chapterPosition = getChapterPositionByPage(pageBegin, back, tocChapterNodeList);
-        } else {
-            int pageEnd = getPaginator().getCurrentPageEnd();
-            chapterPosition = getChapterPositionByPage(pageEnd, back, tocChapterNodeList );
-        }
-
-        gridRecyclerView.gotoPage(getGridPage(chapterPosition));
+        List<Integer> pages = new ArrayList<>();
+        pages.add(Math.max(getPaginator().getCurrentPageBegin() - 1, 0));
+        pages.add(Math.min(getPaginator().getCurrentPageEnd() + 1, getPaginator().getSize()));
+        final GetPositionFromPageNumberAction action =  new GetPositionFromPageNumberAction(pages);
+        action.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                List<String> documentPositions = action.getDocumentPositions();
+                if (documentPositions != null && documentPositions.size() >= 2) {
+                    int pageStartPosition = PagePositionUtils.getPosition(documentPositions.get(0));
+                    int pageEndPosition = PagePositionUtils.getPosition(documentPositions.get(1));
+                    int chapterPosition = getChapterPosition(pageStartPosition, pageEndPosition, back, tocChapterNodeList);
+                    gotoPage(chapterPosition);
+                }
+            }
+        });
     }
 
-    private int getChapterPositionByPage(final int page, final boolean back, final List<Integer> tocChapterNodeList) {
+    private void gotoPage(int position) {
+        final GetPageNumberFromPositionAction pageAction = new GetPageNumberFromPositionAction(PagePositionUtils.fromPosition(position));
+        pageAction.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                gridRecyclerView.gotoPage(getGridPage(pageAction.getPageNumber()));
+            }
+        });
+
+    }
+
+    private int getChapterPosition(final int pageStartPosition, final int pageEndPosition, final boolean back, final List<Integer> tocChapterNodeList) {
+        int count = pageEndPosition - pageStartPosition;
         int size = tocChapterNodeList.size();
+        int position;
+        if (back) {
+            position = pageStartPosition;
+        }else {
+            position = pageEndPosition;
+        }
         for (int i = 0; i < size; i++) {
-            if (page < tocChapterNodeList.get(i)) {
+            if (position <= tocChapterNodeList.get(i)) {
                 if (back) {
                     int index = i - 1;
                     if (index < 0) {
                         return 0;
                     }
-                    int position = tocChapterNodeList.get(Math.max(0, index));
-                    if (getPaginator().isItemInCurrentPage(position)) {
-                        return getChapterPositionByPage(page - 1, back, tocChapterNodeList);
+                    int result = tocChapterNodeList.get(Math.max(0, index));
+                    if (result > pageStartPosition && result < pageEndPosition) {
+                        return getChapterPosition(pageStartPosition - count, pageStartPosition, back, tocChapterNodeList);
                     } else {
-                        return position;
+                        return result;
                     }
                 } else {
-                    int position = tocChapterNodeList.get(i);
-                    if (getPaginator().isItemInCurrentPage(position)) {
-                        return getChapterPositionByPage(page + 1, back, tocChapterNodeList);
+                    int result = tocChapterNodeList.get(i);
+                    if (result > pageStartPosition && result < pageEndPosition) {
+                        return getChapterPosition(pageEndPosition, pageEndPosition + count, back, tocChapterNodeList);
                     } else {
-                        return position;
+                        return result;
                     }
                 }
             }
         }
 
         if (back) {
-            return page - 1;
+            return position - 1;
         } else {
-            return page + 1;
+            return position + 1;
         }
 
     }
