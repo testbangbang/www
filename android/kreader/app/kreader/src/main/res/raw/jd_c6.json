@@ -1,5 +1,7 @@
 {
-    "ttsEnabled" : false,
+    "defaultFontSizeIndex" : 6,
+    "defaultLineSpacingIndex" : 2,
+    "ttsEnabled" : true,
     "hasFrontLight" : false,
     "disableNoteFunc" : true,
     "keyBinding": {

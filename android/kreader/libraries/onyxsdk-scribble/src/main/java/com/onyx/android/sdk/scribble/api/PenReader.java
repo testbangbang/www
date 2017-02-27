@@ -19,9 +19,13 @@ public class PenReader {
     public interface PenReaderCallback {
         void onBeginRawData();
 
+        void onEndRawData();
+
         void onRawTouchPointListReceived(final TouchPointList pointList);
 
         void onBeginErasing();
+
+        void onEndErasing();
 
         void onEraseTouchPointListReceived(final TouchPointList pointList);
     }
@@ -84,6 +88,16 @@ public class PenReader {
             @Override
             public void onEraseTouchPointListReceived(TouchPointList pointList) {
                 penReaderCallback.onEraseTouchPointListReceived(pointList);
+            }
+
+            @Override
+            public void onEndErasing() {
+                penReaderCallback.onEndErasing();
+            }
+
+            @Override
+            public void onEndRawData() {
+                penReaderCallback.onEndRawData();
             }
         });
     }

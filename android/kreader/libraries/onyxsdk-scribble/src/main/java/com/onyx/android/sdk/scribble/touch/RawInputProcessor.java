@@ -50,14 +50,19 @@ public class RawInputProcessor {
         // when received pen down or stylus button
         public abstract void onBeginRawData();
 
+        public abstract void onEndRawData();
+
         // when pen released.
         public abstract void onRawTouchPointListReceived(final Shape shape, final TouchPointList pointList);
 
         // caller should render the page here.
         public abstract void onBeginErasing();
 
+        public abstract void onEndErasing();
+
         // caller should do hit test in current page, remove shapes hit-tested.
         public abstract void onEraseTouchPointListReceived(final TouchPointList pointList);
+
     }
 
     private volatile int px, py, pressure;
@@ -311,6 +316,7 @@ public class RawInputProcessor {
             invokeTouchPointListReceived(touchPointList, erasing);
         }
         resetPointList();
+        invokeTouchPointListEnd(erasing);
         //Log.d(TAG, "release received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
@@ -335,11 +341,27 @@ public class RawInputProcessor {
         });
     }
 
+    private void invokeTouchPointListEnd(final boolean erasing) {
+        if (rawInputCallback == null || (!isReportData() && !erasing)) {
+            return;
+        }
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (erasing) {
+                    rawInputCallback.onEndErasing();
+                } else {
+                    rawInputCallback.onEndRawData();
+                }
+            }
+        });
+    }
+
     private void invokeTouchPointListReceived(final TouchPointList touchPointList, final boolean erasing) {
         if (rawInputCallback == null || touchPointList == null || (!isReportData() && !erasing)) {
             return;
         }
-
         if (isMoveFeedback()) {
             resetPointList();
         }
