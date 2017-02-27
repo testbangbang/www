@@ -540,6 +540,7 @@ public class DialogQuickPreview extends Dialog {
                     chapterBack.setEnabled(hasToc);
                     chapterForward.setEnabled(hasToc);
                     if (!hasToc) {
+                        Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.no_chapters), Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -557,6 +558,15 @@ public class DialogQuickPreview extends Dialog {
         if (tocChapterNodeList.size() <= 0) {
             return;
         }
+        if (back && getPaginator().isFirstPage()) {
+            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.first_chapter), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!back && getPaginator().isLastPage()) {
+            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.last_chapter), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         List<Integer> pages = new ArrayList<>();
         pages.add(Math.max(getPaginator().getCurrentPageBegin() - 1, 0));
         pages.add(Math.min(getPaginator().getCurrentPageEnd() + 1, getPaginator().getSize()));

@@ -584,6 +584,7 @@ public class ShowReaderMenuAction extends BaseAction {
                     ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
                     boolean hasToc = toc != null && toc.getRootEntry() != null;
                     if (!hasToc) {
+                        Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.no_chapters), Toast.LENGTH_SHORT).show();
                         return;
                     }
                     List<Integer> readTocChapterNodeList = TocUtils.buildChapterNodeList(toc);
@@ -600,12 +601,22 @@ public class ShowReaderMenuAction extends BaseAction {
         if (tocChapterNodeList.size() <= 0) {
             return;
         }
-        int currentPage = PagePositionUtils.getPosition(readerDataHolder.getCurrentPagePosition());
+        int currentPagePosition = PagePositionUtils.getPosition(readerDataHolder.getCurrentPagePosition());
+        if (back && !readerDataHolder.getReaderViewInfo().canPrevScreen) {
+            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.first_chapter), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!back && !readerDataHolder.getReaderViewInfo().canNextScreen) {
+            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.last_chapter), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         int chapterPosition;
         if (back) {
-            chapterPosition = getChapterPositionByPage(currentPage, back, tocChapterNodeList);
+            chapterPosition = getChapterPositionByPage(currentPagePosition, back, tocChapterNodeList);
         } else {
-            chapterPosition = getChapterPositionByPage(currentPage, back, tocChapterNodeList);
+            chapterPosition = getChapterPositionByPage(currentPagePosition, back, tocChapterNodeList);
         }
         gotoPosition(readerDataHolder, chapterPosition, true);
     }
