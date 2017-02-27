@@ -406,7 +406,8 @@ public class TreeRecyclerView extends PageRecyclerView {
         this.post(new Runnable() {
             @Override
             public void run() {
-                gotoPage(getPaginator().pageByIndex(list.getCurrentNotePosition(node)));
+                int position = Math.max(list.getCurrentNotePosition(node) - 1, 0);
+                gotoPage(getPaginator().pageByIndex(position));
             }
         });
     }
