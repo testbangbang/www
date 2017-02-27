@@ -166,7 +166,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
         tabHost.addTab(tabHost.newTabSpec(tab.toString())
                 .setIndicator(tabIndicator)
-                .setContent(R.id.view_blank_tab_content));
+                .setContent(android.R.id.tabcontent));
         tabWidget.getChildTabViewAt(tabWidget.getTabCount() - 1).setTag(tab);
         tabIndicator.findViewById(R.id.image_button_close).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,25 +177,14 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     private void removeTabFromHost(ReaderTab tab) {
-        final TabWidget tabWidget = tabHost.getTabWidget();
-        int i = 0;
-        for (; i < tabWidget.getTabCount(); i++) {
-            if (tabWidget.getChildTabViewAt(i).getTag() == tab) {
-                break;
+        tabHost.clearAllTabs();
+
+        for (LinkedHashMap.Entry<ReaderTab, String> entry : openedTabs.entrySet()) {
+            if (entry.getKey() == tab) {
+                continue;
             }
+            addTabToHost(entry.getKey(), entry.getValue());
         }
-        if (i >= tabWidget.getTabCount()) {
-            return;
-        }
-
-        if (tabWidget.getTabCount() <= 1) {
-            finish();
-            return;
-        }
-
-        int nextFocus = i == 0 ? 1 : i - 1;
-        updateCurrentTab((ReaderTab)tabWidget.getChildTabViewAt(nextFocus).getTag());
-        tabWidget.removeView(tabWidget.getChildTabViewAt(i));
 
         return;
     }
