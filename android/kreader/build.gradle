@@ -73,5 +73,8 @@ ext {
     jsoupVersion = '1.10.2'
     slf4jVersion = '1.7.12'
     epublibVersion = "1.0"
+
+    phone_supportLibraryVersion = '25.1.1'
+    phone_materialDialogsCommonVersion= '0.9.3.0'
 }
 
