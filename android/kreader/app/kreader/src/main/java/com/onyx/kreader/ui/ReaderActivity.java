@@ -491,6 +491,7 @@ public class ReaderActivity extends Activity {
     @Subscribe
     public void onResetEpdUpdateMode(final ResetEpdUpdateModeEvent event) {
         ReaderDeviceManager.resetUpdateMode(surfaceView);
+        ReaderDeviceManager.resetUpdateMode(getStatusBar());
     }
 
     @Subscribe

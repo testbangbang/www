@@ -60,5 +60,5 @@
     <dimen name="activity_statistics_read_value_text_size">60sp</dimen>
     <dimen name="fragment_read_record_padding">20dp</dimen>
     <dimen name="activity_statistics_item_text_size">22sp</dimen>
-    <dimen name="activity_statistics_item_margin">10dp</dimen>
+    <dimen name="activity_statistics_item_margin">6dp</dimen>
 </resources>

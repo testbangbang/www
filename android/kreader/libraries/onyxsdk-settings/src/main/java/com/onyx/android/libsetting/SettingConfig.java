@@ -14,6 +14,7 @@ import com.onyx.android.libsetting.data.SettingCategory;
 import com.onyx.android.libsetting.model.SettingItem;
 import com.onyx.android.libsetting.util.CommonUtil;
 import com.onyx.android.libsetting.util.Constant;
+import com.onyx.android.libsetting.view.activity.StorageSettingActivity;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 
@@ -61,6 +62,8 @@ public class SettingConfig {
         static private final String HIDE_VPN_SETTING_TAG = "hide_vpn_setting";
 
         static private final String HAS_FRONT_LIGHT_TAG = "has_front_light";
+
+        static private final String USE_SYSTEM_STORAGE_PAGE_TAG = "use_system_storage_page";
     }
 
     static class Default {
@@ -327,6 +330,11 @@ public class SettingConfig {
                 new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS) : intent;
     }
 
+    public Intent getStorageSettingIntent(Context context) {
+        return isUseSystemStoragePage() ? new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS) :
+                new Intent(context, StorageSettingActivity.class);
+    }
+
     private List<String> getSettingItemTAGList() {
         if (settingItemTAGList == null) {
             settingItemTAGList = new ArrayList<>();
@@ -438,6 +446,14 @@ public class SettingConfig {
         Boolean result = getData(Custom.HIDE_VPN_SETTING_TAG, Boolean.class);
         if (result == null) {
             return false;
+        }
+        return result;
+    }
+
+    private boolean isUseSystemStoragePage(){
+        Boolean result = getData(Custom.USE_SYSTEM_STORAGE_PAGE_TAG, Boolean.class);
+        if (result == null) {
+            return true;
         }
         return result;
     }
