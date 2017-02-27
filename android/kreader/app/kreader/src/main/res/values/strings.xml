@@ -359,4 +359,7 @@
     <string name="other">Other</string>
     <string name="load_statistical_data_failed">Load statistical data failed</string>
     <string name="no_more_search_results">No more search results</string>
+    <string name="no_chapters">This article does not contain section information</string>
+    <string name="first_chapter">Is the first chapter</string>
+    <string name="last_chapter">Is the last chapter</string>
 </resources>
