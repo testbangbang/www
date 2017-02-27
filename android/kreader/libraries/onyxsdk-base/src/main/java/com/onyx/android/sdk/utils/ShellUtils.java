@@ -147,7 +147,6 @@ public class ShellUtils {
                 os.writeBytes(COMMAND_EXIT);
                 os.flush();
 
-                result = process.waitFor();
                 // get command result
                 if (isNeedResultMsg) {
                     successMsg = new StringBuilder();
@@ -162,6 +161,7 @@ public class ShellUtils {
                         errorMsg.append(s).append(COMMAND_NEW_LINE);
                     }
                 }
+                result = process.waitFor();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (Exception e) {
