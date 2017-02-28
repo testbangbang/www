@@ -6,24 +6,21 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.host.layout.LayoutProviderUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
-import com.onyx.android.sdk.reader.utils.PagePositionUtils;
-import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.BitmapUtils;
 
 /**
- * Created by zengzhu on 3/11/16.
- * Render thumbnail without using layout manager.
+ * Created by ming on 2017/2/28.
  */
-public class RenderThumbnailRequest extends BaseReaderRequest {
+
+public abstract class RenderThumbnailRequest extends BaseReaderRequest {
 
     private String page;
     private ReaderBitmap bitmap;
     private PageInfo pageInfo;
-    private boolean nextPage = false;
 
     public RenderThumbnailRequest(final String p, final ReaderBitmap bmp) {
         super();
@@ -32,31 +29,11 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
         setAbortPendingTasks(true);
     }
 
-    public RenderThumbnailRequest(final String p, final ReaderBitmap bmp, final boolean nextPage) {
-        super();
-        page = p;
-        bitmap = bmp;
-        this.nextPage = nextPage;
-        setAbortPendingTasks(true);
-    }
-
-    public static RenderThumbnailRequest nextPageThumbnailRequest(final String p, final ReaderBitmap bmp) {
-        return new RenderThumbnailRequest(p, bmp, true);
-    }
-
-    public static RenderThumbnailRequest pageThumbnailRequest(final String p, final ReaderBitmap bmp) {
-        return new RenderThumbnailRequest(p, bmp);
-    }
-
-    public void execute(final Reader reader) throws Exception {
+    @Override
+    public void execute(Reader reader) throws Exception {
         final RectF origin = reader.getDocument().getPageOriginSize(page);
 
-        String pagePosition = reader.getNavigator().getPositionByPageNumber(PagePositionUtils.getPageNumber(page));
-        if (isNextPage()) {
-            reader.getNavigator().nextScreen(pagePosition);
-        }else {
-            reader.getNavigator().gotoPosition(pagePosition);
-        }
+        locationThumbnailRange(reader);
 
         String position = reader.getNavigator().getScreenStartPosition();
         PageInfo pageInfo = new PageInfo(page, position, origin.width(), origin.height());
@@ -75,11 +52,17 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
         }
     }
 
-    public boolean isNextPage() {
-        return nextPage;
+    protected abstract void locationThumbnailRange(final Reader reader);
+
+    public String getPage() {
+        return page;
     }
 
     public PageInfo getPageInfo() {
         return pageInfo;
+    }
+
+    public ReaderBitmap getBitmap() {
+        return bitmap;
     }
 }

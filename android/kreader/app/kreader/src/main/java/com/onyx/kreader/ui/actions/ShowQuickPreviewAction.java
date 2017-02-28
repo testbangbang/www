@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.android.sdk.reader.host.request.RenderThumbnailRequest;
+import com.onyx.android.sdk.reader.host.request.RenderThumbnailRequestByPosition;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogQuickPreview;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
@@ -22,6 +22,7 @@ public class ShowQuickPreviewAction extends BaseAction {
 
     private DialogQuickPreview dialogQuickPreview;
     private List<Integer> pagesToPreview;
+    private List<String> positionsToPreview;
     private List<ReaderBitmapImpl> bitmaps = new ArrayList<>();
     private int index = 0;
     private int width = 300;
@@ -47,8 +48,9 @@ public class ShowQuickPreviewAction extends BaseAction {
             }
 
             @Override
-            public void requestPreview(final List<Integer> pages) {
+            public void requestPreview(final List<String> positions, final List<Integer> pages) {
                 pagesToPreview = pages;
+                positionsToPreview = positions;
                 index = 0;
                 requestPreviewBySequence(readerDataHolder);
             }
@@ -66,10 +68,11 @@ public class ShowQuickPreviewAction extends BaseAction {
     }
 
     private void requestPreviewBySequence(final ReaderDataHolder readerDataHolder) {
-        if (pagesToPreview.size() <= 0) {
+        if (pagesToPreview.size() <= 0 || positionsToPreview.size() <= 0) {
             return;
         }
         final int current = pagesToPreview.remove(0);
+        final String position = positionsToPreview.remove(0);
         final ReaderBitmapImpl readerBitmap;
         if (index >= bitmaps.size()) {
             readerBitmap = new ReaderBitmapImpl(width, height, Bitmap.Config.ARGB_8888);
@@ -78,13 +81,13 @@ public class ShowQuickPreviewAction extends BaseAction {
             readerBitmap = bitmaps.get(index);
         }
         String pageName = PagePositionUtils.fromPageNumber(current);
-        RenderThumbnailRequest thumbnailRequest = index > 0 ? RenderThumbnailRequest.nextPageThumbnailRequest(pageName, readerBitmap) :
-                RenderThumbnailRequest.pageThumbnailRequest(pageName, readerBitmap);
+        final RenderThumbnailRequestByPosition thumbnailRequest = index > 0 ? RenderThumbnailRequestByPosition.nextPageThumbnailRequest(pageName, position, readerBitmap) :
+                RenderThumbnailRequestByPosition.pageThumbnailRequest(pageName, position, readerBitmap);
         index++;
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), thumbnailRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                dialogQuickPreview.updatePreview(current, readerBitmap.getBitmap());
+                dialogQuickPreview.updatePreview(thumbnailRequest.getPageInfo(), readerBitmap.getBitmap());
                 requestPreviewBySequence(readerDataHolder);
             }
         });
