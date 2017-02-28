@@ -12,6 +12,7 @@ import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.utils.DeviceConfig;
 import com.onyx.kreader.utils.DeviceUtils;
 
 /**
@@ -82,7 +83,12 @@ public class ReaderDeviceManager {
 
     public static boolean isUsingRegal(Context context) {
         boolean useRegal = SingletonSharedPreference.isEnableRegal(context);
-        return EpdController.supportRegal() && useRegal;
+        return supportRegal(context) && useRegal;
+    }
+
+    public static boolean supportRegal(final Context context) {
+        boolean regalEnable = DeviceConfig.sharedInstance(context).isRegalEnable();
+        return EpdController.supportRegal() && regalEnable;
     }
 
     public static void enableScreenUpdate(View view, boolean enable) {
