@@ -6,7 +6,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.reader.host.request.NextScreenRequest;
-import com.onyx.android.sdk.reader.host.request.RenderThumbnailRequestByPosition;
+import com.onyx.android.sdk.reader.host.request.RenderThumbnailRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogQuickPreview;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
@@ -98,7 +98,7 @@ public class ShowQuickPreviewAction extends BaseAction {
     }
 
     private void renderThumbnailRequest(final ReaderDataHolder readerDataHolder, final ReaderBitmapImpl readerBitmap, final String pageName, final String position) {
-        final RenderThumbnailRequestByPosition thumbnailRequest = RenderThumbnailRequestByPosition.pageThumbnailRequest(pageName, position, readerBitmap);
+        final RenderThumbnailRequest thumbnailRequest = RenderThumbnailRequest.renderByPosition(pageName, position, readerBitmap);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), thumbnailRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

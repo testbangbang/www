@@ -10,6 +10,7 @@ import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.host.layout.LayoutProviderUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -17,24 +18,44 @@ import com.onyx.android.sdk.utils.StringUtils;
  * Created by ming on 2017/2/28.
  */
 
-public abstract class RenderThumbnailRequest extends BaseReaderRequest {
+public class RenderThumbnailRequest extends BaseReaderRequest {
 
     private String page;
     private ReaderBitmap bitmap;
     private PageInfo pageInfo;
+    private String pagePosition;
+    private boolean renderByPage = false;
 
-    public RenderThumbnailRequest(final String p, final ReaderBitmap bmp) {
+    public RenderThumbnailRequest(final String p, final String pagePosition, final ReaderBitmap bmp) {
         super();
         page = p;
         bitmap = bmp;
+        this.pagePosition = pagePosition;
         setAbortPendingTasks(true);
+    }
+
+    public RenderThumbnailRequest(final String p, final String pagePosition, final ReaderBitmap bmp, final boolean renderByPage) {
+        this(p, pagePosition, bmp);
+        this.renderByPage = renderByPage;
+    }
+
+    public static RenderThumbnailRequest renderByPage(final String p, final String pagePosition, final ReaderBitmap bmp) {
+        return new RenderThumbnailRequest(p, pagePosition, bmp, true);
+    }
+
+    public static RenderThumbnailRequest renderByPosition(final String p, final String pagePosition, final ReaderBitmap bmp) {
+        return new RenderThumbnailRequest(p, pagePosition, bmp, false);
     }
 
     @Override
     public void execute(Reader reader) throws Exception {
         final RectF origin = reader.getDocument().getPageOriginSize(page);
 
-        locationThumbnailRange(reader);
+        if (renderByPage) {
+            reader.getNavigator().gotoPage(PagePositionUtils.getPageNumber(page));
+        }else if (!StringUtils.isNullOrEmpty(pagePosition)){
+            reader.getNavigator().gotoPosition(pagePosition);
+        }
 
         String position = reader.getNavigator().getScreenStartPosition();
         if (StringUtils.isNullOrEmpty(position)) {
@@ -56,8 +77,6 @@ public abstract class RenderThumbnailRequest extends BaseReaderRequest {
         }
     }
 
-    protected abstract void locationThumbnailRange(final Reader reader);
-
     public String getPage() {
         return page;
     }
@@ -69,4 +88,6 @@ public abstract class RenderThumbnailRequest extends BaseReaderRequest {
     public ReaderBitmap getBitmap() {
         return bitmap;
     }
+
+
 }
