@@ -116,7 +116,15 @@ public class BaseDevice {
         return new ArrayList<Integer>();
     }
 
+    public List<Integer> getNaturalLightValueList(Context context) {
+        return new ArrayList<Integer>();
+    }
+
     public boolean setFrontLightDeviceValue(Context context, int value) {
+        return false;
+    }
+
+    public boolean setNaturalLightConfigValue(Context context, int value) {
         return false;
     }
 
