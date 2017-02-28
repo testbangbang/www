@@ -168,7 +168,9 @@ public class ReaderActivity extends Activity {
     protected void onPause() {
         Debug.d(getClass(), "onPause");
         disablePenShortcut();
-        new SaveDocumentOptionsAction().execute(getReaderDataHolder(), null);
+        if (getReaderDataHolder().isDocumentOpened()) {
+            new SaveDocumentOptionsAction().execute(getReaderDataHolder(), null);
+        }
         super.onPause();
     }
 
