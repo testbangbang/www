@@ -28,6 +28,7 @@ public class SingletonSharedPreference {
     private final static String LAST_TOP_MARGIN = "last_top_margin";
     private final static String LAST_RIGHT_MARGIN = "last_right_margin";
     private final static String LAST_BOTTOM_MARGIN = "last_bottom_margin";
+    private final static String SCREEN_ORIENTATION = "screen_orientation";
 
     private static SharedPreferences sPreferences;
     private static SharedPreferences.Editor sDefaultEditor;
@@ -345,5 +346,13 @@ public class SingletonSharedPreference {
 
     public static int getLastLineSpacing(int defaultValue) {
         return sPreferences.getInt(LAST_LINE_SPACING, defaultValue);
+    }
+
+    public static void setScreenOrientation(int screenOrientation) {
+        setIntValue(SCREEN_ORIENTATION, screenOrientation);
+    }
+
+    public static int getScreenOrientation(int defaultValue) {
+        return sPreferences.getInt(SCREEN_ORIENTATION, defaultValue);
     }
 }

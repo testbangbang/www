@@ -2,6 +2,7 @@ package com.onyx.kreader.ui;
 
 import android.app.ActivityManager;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
@@ -78,9 +79,10 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
         ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
             @Override
-            public void onChangeOrientation(int orientation) {
-                Log.d(TAG, "onChangeOrientation");
+            public void onChangeOrientation(final int orientation) {
+                Log.d(TAG, "onChangeOrientation: " + orientation);
                 setRequestedOrientation(orientation);
+                SingletonSharedPreference.setScreenOrientation(orientation);
                 tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
                     @Override
@@ -110,6 +112,11 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         super.onResume();
 
         syncFullScreenState();
+
+        int orientation = SingletonSharedPreference.getScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        if (orientation != DeviceUtils.getScreenOrientation(this)) {
+            setRequestedOrientation(orientation);
+        }
     }
 
     @Override
@@ -137,6 +144,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         Log.d(TAG, "onRestoreInstanceState: " + savedInstanceState.getString(TAG_OPENED_TABS));
+        super.onRestoreInstanceState(savedInstanceState);
         LinkedHashMap<String, String> map = JSON.parseObject(savedInstanceState.getString(TAG_OPENED_TABS), openedTabs.getClass());
         for (LinkedHashMap.Entry<String, String> entry : map.entrySet()) {
             openedTabs.put(Enum.valueOf(ReaderTab.class, entry.getKey()), entry.getValue());
@@ -145,7 +153,6 @@ public class ReaderTabHostActivity extends AppCompatActivity {
             freeTabList.remove(entry.getKey());
             addTabToHost(entry.getKey(), entry.getValue());
         }
-        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override

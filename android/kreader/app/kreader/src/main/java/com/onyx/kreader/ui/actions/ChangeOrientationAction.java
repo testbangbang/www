@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.actions;
 import android.content.pm.ActivityInfo;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.android.sdk.reader.host.request.UpdateScreenOrientationOptionRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
@@ -15,6 +16,7 @@ public class ChangeOrientationAction extends BaseAction {
     private int currentOrientation;
 
     public ChangeOrientationAction(int current, int targetOrientation) {
+        Debug.d(getClass(), "ChangeOrientationAction: %d -> %d", current, targetOrientation);
         newOrientation = targetOrientation;
         currentOrientation = current;
     }
