@@ -95,6 +95,16 @@ public class ReaderTabHostActivity extends AppCompatActivity {
                     }
                 });
             }
+
+            @Override
+            public void onEnterFullScreen() {
+                syncFullScreenState();
+            }
+
+            @Override
+            public void onQuitFullScreen() {
+                syncFullScreenState();
+            }
         });
     }
 
