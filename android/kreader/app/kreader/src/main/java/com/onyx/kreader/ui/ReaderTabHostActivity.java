@@ -79,7 +79,17 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
             @Override
             public void onChangeOrientation(int orientation) {
+                Log.d(TAG, "onChangeOrientation");
                 setRequestedOrientation(orientation);
+                tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+                    @Override
+                    public void onGlobalLayout() {
+                        Log.d(TAG, "onChangeOrientation -> onGlobalLayout");
+                        TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
+                        updateWindowHeight();
+                    }
+                });
             }
 
             @Override

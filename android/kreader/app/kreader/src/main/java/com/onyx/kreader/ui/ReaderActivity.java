@@ -847,7 +847,11 @@ public class ReaderActivity extends Activity {
 
     @Subscribe
     public void onChangeOrientation(final ChangeOrientationEvent event) {
-        setRequestedOrientation(event.getOrientation());
+//        setRequestedOrientation(event.getOrientation());
+        Intent intent = new Intent(this, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ReaderTabHostBroadcastReceiver.ACTION_CHANGE_SCREEN_ORIENTATION);
+        intent.putExtra(ReaderTabHostBroadcastReceiver.TAG_SCREEN_ORIENTATION, event.getOrientation());
+        sendBroadcast(intent);
     }
 
     @Subscribe
