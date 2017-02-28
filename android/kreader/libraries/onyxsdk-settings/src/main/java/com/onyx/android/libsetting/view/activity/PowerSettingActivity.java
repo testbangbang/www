@@ -131,6 +131,10 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
             if (!DeviceFeatureUtil.hasFrontLight(getContext())) {
                 wakeupPreference.setVisible(false);
             }
+
+            if (!DeviceFeatureUtil.hasNaturalLight(getContext())) {
+                wakeupPreference.setVisible(false);
+            }
         }
 
         @Override
