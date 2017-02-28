@@ -16,6 +16,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:background="@android:color/white"
         android:id="@+id/statusbar_info_layout">
 
         <RelativeLayout
