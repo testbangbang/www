@@ -436,7 +436,6 @@ public class ReaderActivity extends Activity {
     }
 
     private void afterResume() {
-        syncSystemStatusBar();
         syncReaderPainter();
         reconfigStatusBar();
         enablePenShortcut();
@@ -1046,11 +1045,7 @@ public class ReaderActivity extends Activity {
     }
 
     public void setFullScreen(boolean fullScreen) {
-        Intent intent = new Intent(this, ReaderTabHostBroadcastReceiver.class);
-        intent.setAction(fullScreen ?
-                ReaderTabHostBroadcastReceiver.ACTION_ENTER_FULL_SCREEN :
-                ReaderTabHostBroadcastReceiver.ACTION_QUIT_FULL_SCREEN);
-        sendBroadcast(intent);
+        DeviceUtils.setFullScreenOnResume(this, fullScreen);
     }
 
     public SurfaceView getSurfaceView() {
