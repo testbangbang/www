@@ -77,8 +77,10 @@ public class ShowQuickPreviewAction extends BaseAction {
         }else {
             readerBitmap = bitmaps.get(index);
         }
+        String pageName = PagePositionUtils.fromPageNumber(current);
+        RenderThumbnailRequest thumbnailRequest = index > 0 ? RenderThumbnailRequest.nextPageThumbnailRequest(pageName, readerBitmap) :
+                RenderThumbnailRequest.pageThumbnailRequest(pageName, readerBitmap);
         index++;
-        RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(PagePositionUtils.fromPageNumber(current), readerBitmap);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), thumbnailRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

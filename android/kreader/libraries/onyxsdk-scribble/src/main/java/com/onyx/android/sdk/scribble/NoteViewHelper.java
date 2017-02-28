@@ -483,7 +483,13 @@ public class NoteViewHelper {
             public void onEraseTouchPointListReceived(final TouchPointList pointList) {
             }
 
+            @Override
+            public void onEndRawData() {
+            }
 
+            @Override
+            public void onEndErasing() {
+            }
         });
         startDrawing();
     }

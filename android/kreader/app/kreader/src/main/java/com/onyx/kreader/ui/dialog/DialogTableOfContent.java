@@ -560,7 +560,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         }, row);
 
         if (toc != null && hasChildren(toc.getRootEntry())) {
-            ReaderDocumentTableOfContentEntry entry = locateEntry(toc.getRootEntry().getChildren(), readerDataHolder.getCurrentPage());
+            ReaderDocumentTableOfContentEntry entry = locateEntry(toc.getRootEntry().getChildren(), PagePositionUtils.getPosition(readerDataHolder.getCurrentPagePosition()));
             TreeRecyclerView.TreeNode treeNode = findTreeNodeByTag(rootNodes, entry);
             if (treeNode != null) {
                 treeRecyclerView.setCurrentNode(treeNode);
@@ -837,30 +837,30 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         }
     }
 
-    private ReaderDocumentTableOfContentEntry locateEntry(List<ReaderDocumentTableOfContentEntry> entries, int page) {
+    private ReaderDocumentTableOfContentEntry locateEntry(List<ReaderDocumentTableOfContentEntry> entries, int pagePosition) {
         for (int i = 0; i < entries.size() - 1; i++) {
             ReaderDocumentTableOfContentEntry current = entries.get(i);
-            int currentPage = PagePositionUtils.getPageNumber(current.getPageName());
-            int nextPage = PagePositionUtils.getPageNumber(entries.get(i + 1).getPageName());
-            if (currentPage <= page && page < nextPage) {
-                return locateEntryWithChildren(current, page);
+            int currentPagePosition = PagePositionUtils.getPosition(current.getPosition());
+            int nextPagePosition = PagePositionUtils.getPosition(entries.get(i + 1).getPosition());
+            if (currentPagePosition <= pagePosition && pagePosition < nextPagePosition) {
+                return locateEntryWithChildren(current, pagePosition);
             }
         }
 
         ReaderDocumentTableOfContentEntry current = entries.get(entries.size() - 1);
-        return locateEntryWithChildren(current, page);
+        return locateEntryWithChildren(current, pagePosition);
     }
 
-    private ReaderDocumentTableOfContentEntry locateEntryWithChildren(ReaderDocumentTableOfContentEntry entry, int page) {
-        int currentPage = PagePositionUtils.getPageNumber(entry.getPageName());
+    private ReaderDocumentTableOfContentEntry locateEntryWithChildren(ReaderDocumentTableOfContentEntry entry, int pagePosition) {
+        int currentPagePosition = PagePositionUtils.getPosition(entry.getPosition());
         if (!hasChildren(entry)) {
             return entry;
         }
-        int firstChildPage = PagePositionUtils.getPageNumber(entry.getChildren().get(0).getPageName());
-        if (currentPage <= page && page < firstChildPage) {
+        int firstChildPagePosition = PagePositionUtils.getPosition(entry.getChildren().get(0).getPosition());
+        if (currentPagePosition <= pagePosition && pagePosition < firstChildPagePosition) {
             return entry;
         }
-        return locateEntry(entry.getChildren(), page);
+        return locateEntry(entry.getChildren(), pagePosition);
     }
 
     private TreeRecyclerView.TreeNode findTreeNodeByTag(List<TreeRecyclerView.TreeNode> nodeList, ReaderDocumentTableOfContentEntry entry) {

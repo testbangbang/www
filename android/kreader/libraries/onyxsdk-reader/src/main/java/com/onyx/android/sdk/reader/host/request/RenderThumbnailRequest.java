@@ -12,6 +12,7 @@ import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.host.layout.LayoutProviderUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 /**
  * Created by zengzhu on 3/11/16.
@@ -22,6 +23,7 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
     private String page;
     private ReaderBitmap bitmap;
     private PageInfo pageInfo;
+    private boolean nextPage = false;
 
     public RenderThumbnailRequest(final String p, final ReaderBitmap bmp) {
         super();
@@ -30,9 +32,32 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
         setAbortPendingTasks(true);
     }
 
+    public RenderThumbnailRequest(final String p, final ReaderBitmap bmp, final boolean nextPage) {
+        super();
+        page = p;
+        bitmap = bmp;
+        this.nextPage = nextPage;
+        setAbortPendingTasks(true);
+    }
+
+    public static RenderThumbnailRequest nextPageThumbnailRequest(final String p, final ReaderBitmap bmp) {
+        return new RenderThumbnailRequest(p, bmp, true);
+    }
+
+    public static RenderThumbnailRequest pageThumbnailRequest(final String p, final ReaderBitmap bmp) {
+        return new RenderThumbnailRequest(p, bmp);
+    }
+
     public void execute(final Reader reader) throws Exception {
         final RectF origin = reader.getDocument().getPageOriginSize(page);
-        reader.getNavigator().gotoPage(PagePositionUtils.getPageNumber(page));
+
+        String pagePosition = reader.getNavigator().getPositionByPageNumber(PagePositionUtils.getPageNumber(page));
+        if (isNextPage()) {
+            reader.getNavigator().nextScreen(pagePosition);
+        }else {
+            reader.getNavigator().gotoPosition(pagePosition);
+        }
+
         String position = reader.getNavigator().getScreenStartPosition();
         PageInfo pageInfo = new PageInfo(page, position, origin.width(), origin.height());
         if (reader.getRendererFeatures().supportScale()) {
@@ -48,6 +73,10 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
             }
             originalPage.getBitmap().recycle();
         }
+    }
+
+    public boolean isNextPage() {
+        return nextPage;
     }
 
     public PageInfo getPageInfo() {

@@ -12,8 +12,9 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:maxLines="1"
-            android:ellipsize="end"
+            android:textColor="@android:color/black"
+            android:singleLine="true"
+            android:ellipsize="middle"
             android:layout_gravity="center_vertical"
             android:padding="@dimen/activity_statistics_item_margin"
             android:text=""
@@ -30,6 +31,7 @@
             android:layout_height="match_parent"/>
 
         <TextView
+            android:textColor="@android:color/black"
             android:maxLines="1"
             android:ellipsize="middle"
             android:layout_gravity="center_vertical"
