@@ -36,7 +36,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     private static final String TAG = ReaderTabHostActivity.class.getSimpleName();
 
-    private static final String TAG_OPENED_TABS = "opzned_tabs";
+    private static final String TAG_OPENED_TABS = "opened_tabs";
 
     private enum ReaderTab {
         TAB_1, TAB_2, TAB_3, TAB_4
@@ -165,7 +165,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         tabHost = (TabHost) findViewById(R.id.tab_host);
         tabHost.setup();
 
-        addTabToHost(ReaderTab.TAB_1, "TAB");
+//        addTabToHost(ReaderTab.TAB_1, "TAB");
 
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -228,7 +228,8 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     private void updateCurrentTab(ReaderTab tab) {
-        if (!tabHost.getCurrentTabTag().equals(tab.toString())) {
+        if (tabHost.getTabWidget().getTabCount() > 1 &&
+                !tabHost.getCurrentTabTag().equals(tab.toString())) {
             tabHost.setCurrentTabByTag(tab.toString());
         }
     }
@@ -294,20 +295,19 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         final String path = FileUtils.getRealFilePathFromUri(this, getIntent().getData());
 
         ReaderTab tab = findOpenedTabByPath(path);
-        if (tab == null) {
-            tab = getFreeTab();
-        } else {
+        if (tab != null) {
             Log.d(TAG, "file already opened in tab: " + tab + ", " + getIntent().getDataString());
             if (isTabOpened(tab)) {
                 reopenTab(tab);
                 return;
             }
         }
-        final int tabContentHeight = getTabContentHeight();
 
+        tab = getFreeTab();
         Intent intent = new Intent(this, getTabActivity(tab));
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(getIntent().getData(), getIntent().getType());
+        final int tabContentHeight = getTabContentHeight();
         intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
         startActivity(intent);
 
@@ -316,14 +316,27 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     private void addReaderTab(ReaderTab tab, String path) {
         addOpenedTab(tab, path);
+        if (openedTabs.size() < 2) {
+            return;
+        } else if (openedTabs.size() == 2) {
+             ReaderTab firstTab = openedTabs.keySet().iterator().next();
+            addTabToHost(firstTab, openedTabs.get(firstTab));
+            updateWindowHeight();
+        }
         addTabToHost(tab, path);
         updateCurrentTab(tab);
     }
 
     private void closeReaderTab(ReaderTab tab) {
-        removeTabFromHost(tab);
         closeTabActivity(tab);
         removeOpenedTab(tab);
+
+        if (openedTabs.size() > 1) {
+            removeTabFromHost(tab);
+        } else {
+            tabHost.clearAllTabs();
+            updateWindowHeight();
+        }
     }
 
     private void closeTabActivity(ReaderTab tab) {
