@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.host.request.NextScreenRequest;
 import com.onyx.android.sdk.reader.host.request.RenderThumbnailRequestByPosition;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogQuickPreview;
@@ -80,10 +81,24 @@ public class ShowQuickPreviewAction extends BaseAction {
         }else {
             readerBitmap = bitmaps.get(index);
         }
-        String pageName = PagePositionUtils.fromPageNumber(current);
-        final RenderThumbnailRequestByPosition thumbnailRequest = index > 0 ? RenderThumbnailRequestByPosition.nextPageThumbnailRequest(pageName, position, readerBitmap) :
-                RenderThumbnailRequestByPosition.pageThumbnailRequest(pageName, position, readerBitmap);
-        index++;
+        final String pageName = PagePositionUtils.fromPageNumber(current);
+        if (index > 0) {
+            NextScreenRequest screenRequest = new NextScreenRequest(true);
+            readerDataHolder.submitNonRenderRequest(screenRequest, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    index++;
+                    renderThumbnailRequest(readerDataHolder, readerBitmap, pageName, null);
+                }
+            });
+        }else {
+            index++;
+            renderThumbnailRequest(readerDataHolder, readerBitmap, pageName, position);
+        }
+    }
+
+    private void renderThumbnailRequest(final ReaderDataHolder readerDataHolder, final ReaderBitmapImpl readerBitmap, final String pageName, final String position) {
+        final RenderThumbnailRequestByPosition thumbnailRequest = RenderThumbnailRequestByPosition.pageThumbnailRequest(pageName, position, readerBitmap);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), thumbnailRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

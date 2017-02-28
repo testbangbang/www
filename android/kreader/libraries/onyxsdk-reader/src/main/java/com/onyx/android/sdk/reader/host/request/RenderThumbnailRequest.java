@@ -11,6 +11,7 @@ import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.host.layout.LayoutProviderUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 /**
  * Created by ming on 2017/2/28.
@@ -36,6 +37,9 @@ public abstract class RenderThumbnailRequest extends BaseReaderRequest {
         locationThumbnailRange(reader);
 
         String position = reader.getNavigator().getScreenStartPosition();
+        if (StringUtils.isNullOrEmpty(position)) {
+            position = page;
+        }
         PageInfo pageInfo = new PageInfo(page, position, origin.width(), origin.height());
         if (reader.getRendererFeatures().supportScale()) {
             this.pageInfo = LayoutProviderUtils.drawPageWithScaleToPage(pageInfo, bitmap, reader.getRenderer());
