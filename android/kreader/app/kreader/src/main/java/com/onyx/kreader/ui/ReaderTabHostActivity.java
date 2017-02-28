@@ -3,6 +3,7 @@ package com.onyx.kreader.ui;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
@@ -25,6 +26,7 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -384,9 +386,17 @@ public class ReaderTabHostActivity extends AppCompatActivity {
                     updateWindowHeight();
                     am.moveTaskToFront(tasksList.get(i).id, 0);
                     updateCurrentTab(tab);
+                    return;
                 }
             }
         }
+
+        Intent intent = new Intent(this, getTabActivity(tab));
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(new File(openedTabs.get(tab))), getIntent().getType());
+        final int tabContentHeight = getTabContentHeight();
+        intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
+        startActivity(intent);
     }
 
     private void updateWindowHeight() {
