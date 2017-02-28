@@ -25,6 +25,7 @@ public class DeviceConfig {
 
     private boolean ttsEnabled = false;
     private boolean hasFrontLight = true;
+    private boolean hasNaturalLight = true;
 
     private Map<String, Map<String, JSONObject>> keyBinding = null;
 
@@ -181,8 +182,16 @@ public class DeviceConfig {
         return hasFrontLight;
     }
 
+    public boolean hasNaturalLight() {
+        return hasNaturalLight;
+    }
+
     public void setHasFrontLight(boolean hasFrontLight) {
         this.hasFrontLight = hasFrontLight;
+    }
+
+    public void setHasNaturalLight(boolean hasNaturalLight) {
+        this.hasNaturalLight = hasNaturalLight;
     }
 
     public Map<String, Map<String, JSONObject>> getKeyBinding() {

@@ -61,6 +61,7 @@ public class SettingConfig {
         static private final String HIDE_VPN_SETTING_TAG = "hide_vpn_setting";
 
         static private final String HAS_FRONT_LIGHT_TAG = "has_front_light";
+        static private final String HAS_NATURAL_LIGHT_TAG = "has_natural_light";
     }
 
     static class Default {
@@ -428,6 +429,14 @@ public class SettingConfig {
 
     public boolean hasFrontLight() {
         Boolean result = getData(Custom.HAS_FRONT_LIGHT_TAG, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
+    }
+
+    public boolean hasNaturalLight() {
+        Boolean result = getData(Custom.HAS_NATURAL_LIGHT_TAG, Boolean.class);
         if (result == null) {
             return false;
         }

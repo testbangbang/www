@@ -38,4 +38,8 @@ public class DeviceFeatureUtil {
     public static boolean hasFrontLight(Context context) {
         return SettingConfig.sharedInstance(context).hasFrontLight();
     }
+
+    public static boolean hasNaturalLight(Context context) {
+        return SettingConfig.sharedInstance(context).hasNaturalLight();
+    }
 }
