@@ -55,6 +55,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="gamma_correction">Contrast</string>
+    <string name="manual_crop">Manual Crop</string>
     <string name="outOfRangRerror">Out of Range</string>
     <string name="illegalInput">Illegal Input</string>
 

@@ -54,6 +54,7 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderCropArgs;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogContrast;
@@ -168,12 +169,10 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
             disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
-            disableMenus.add(ReaderMenuAction.GAMMA_CORRECTION);
             disableMenus.add(ReaderMenuAction.NOTE);
             disableMenus.add(ReaderMenuAction.NAVIGATION);
         } else if (!readerDataHolder.isFlowDocument()) {
             disableMenus.add(ReaderMenuAction.FONT);
-            disableMenus.add(ReaderMenuAction.GROUP_GAMMA_CORRECTION);
         }
 
         if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportBrushPen()) {
@@ -269,8 +268,10 @@ public class ShowReaderMenuAction extends BaseAction {
                         showNavigationSettingsDialog(readerDataHolder);
                         break;
                     case GAMMA_CORRECTION:
-                    case GROUP_GAMMA_CORRECTION:
                         adjustContrast(readerDataHolder);
+                        break;
+                    case MANUAL_CROP:
+                        manualCrop(readerDataHolder);
                         break;
                     case GLYPH_EMBOLDEN:
                         adjustEmbolden(readerDataHolder);
@@ -424,6 +425,12 @@ public class ShowReaderMenuAction extends BaseAction {
         RectF limit = new RectF(0, 0, 0, 0);
         args.rowsRightToLeft(NavigationArgs.Type.ALL, 2, 2, limit);
         switchPageNavigationMode(readerDataHolder, args);
+    }
+
+    private void manualCrop(final ReaderDataHolder readerDataHolder) {
+        ReaderCropArgs navigationArgs = new ReaderCropArgs();
+        navigationArgs.setCropPageMode(ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE);
+        new ChangeNavigationSettingsAction(navigationArgs).execute(readerDataHolder, null);
     }
 
     private void switchPageNavigationMode(final ReaderDataHolder readerDataHolder, NavigationArgs args) {
