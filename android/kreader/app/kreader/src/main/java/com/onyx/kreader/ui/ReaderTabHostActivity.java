@@ -497,6 +497,8 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         final int tabContentHeight = getTabContentHeight();
         intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
         startActivity(intent);
+        
+        updateCurrentTab(tab);
     }
 
     private void updateWindowHeight() {
