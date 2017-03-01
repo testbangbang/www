@@ -219,7 +219,7 @@ public class DialogNavigationSettings extends DialogBase {
 
     private GAdapter buildCropModeAdapter() {
         mCropAdapter = new GAdapter();
-        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_four,getContext().getString(R.string.four), ReaderCropArgs.CropPageMode.AUTO_CROP_PAGE));
+        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_four,getContext().getString(R.string.auto), ReaderCropArgs.CropPageMode.AUTO_CROP_PAGE));
         mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_single,getContext().getString(R.string.single_page), ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE));
         mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_double,getContext().getString(R.string.double_page), ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE_BY_ODD_AND_EVEN));
         mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_nothing,getContext().getString(R.string.nothing), ReaderCropArgs.CropPageMode.None));
