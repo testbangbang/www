@@ -9,10 +9,20 @@ import com.onyx.android.sdk.reader.host.wrapper.Reader;
  */
 public class NextScreenRequest extends BaseReaderRequest {
 
+    private boolean noRender = false;
+
     public NextScreenRequest() {
     }
 
+    public NextScreenRequest(boolean noRender) {
+        this.noRender = noRender;
+    }
+
     public void execute(final Reader reader) throws Exception {
+        if (noRender) {
+            reader.getReaderLayoutManager().nextScreen();
+            return;
+        }
         setSaveOptions(true);
         reader.getReaderLayoutManager().setSavePosition(true);
         PageOverlayMarker.saveCurrentPageAndViewport(reader);

@@ -28,6 +28,7 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
+import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
@@ -153,6 +154,10 @@ public class ShowReaderMenuAction extends BaseAction {
         }
         if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).hasFrontLight()) {
             disableMenus.add(ReaderMenuAction.FRONT_LIGHT);
+        }
+
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).hasNaturalLight()) {
+            disableMenus.add(ReaderMenuAction.NATURAL_LIGHT);
         }
 
         if (!readerDataHolder.supportTextPage()) {
@@ -307,6 +312,9 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case FRONT_LIGHT:
                         showBrightnessDialog(readerDataHolder);
+                        break;
+                    case NATURAL_LIGHT:
+                        showNaturalBrightnessDialog(readerDataHolder);
                         break;
                     case GOTO_PAGE:
                         gotoPage(readerDataHolder);
@@ -520,6 +528,13 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showBrightnessDialog(ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         Dialog dlg = new DialogBrightness(readerDataHolder.getContext());
+        dlg.show();
+        readerDataHolder.addActiveDialog(dlg);
+    }
+
+    private void showNaturalBrightnessDialog(ReaderDataHolder readerDataHolder){
+        hideReaderMenu();
+        Dialog dlg = new DialogNaturalLightBrightness(readerDataHolder.getContext());
         dlg.show();
         readerDataHolder.addActiveDialog(dlg);
     }

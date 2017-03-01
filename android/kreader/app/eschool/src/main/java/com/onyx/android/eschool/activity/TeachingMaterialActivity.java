@@ -231,7 +231,9 @@ public class TeachingMaterialActivity extends BaseActivity {
 
     private Metadata loadRandomMetadata() {
         Metadata metadata = new Metadata();
-        metadata.setTitle(syllabusList.get(syllabusCurrentIndex));
+        if (!CollectionUtils.isNullOrEmpty(syllabusList)) {
+            metadata.setTitle(syllabusList.get(syllabusCurrentIndex));
+        }
         metadata.setUpdatedAt(getRandomTime());
         metadata.setProgress(getRandomProgress());
         metadata.setPublisher(TestUtils.randString());
