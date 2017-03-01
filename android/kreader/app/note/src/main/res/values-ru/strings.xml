@@ -44,4 +44,13 @@
     <string name="versionName">Версия кода</string>
     <string name="clear">Очистить</string>
     <string name="clear_confirm">Вы уверены, что хотите полностью очистить страницу?</string>
+    <string name="export_current_page">Экспортировать текущую страницу</string>
+    <string name="export_all_pages">Экспортировать все страницы</string>
+    <string name="import_scribble">Импорт</string>
+    <string name="exporting_info">Экспорт заметки....</string>
+    <string name="export_location" formatted="false">Место записи: %s </string>
+    <string name="export_success">Экспорт успешно завершён</string>
+    <string name="export_fail">Экспортировать не удалось</string>
+    <string name="span_scribble">Рисунок по площади</string>
+    <string name="shape_out_of_range">Вы вышли за пределы страницы. Пожалуйста, создайте новую.</string>
 </resources>
