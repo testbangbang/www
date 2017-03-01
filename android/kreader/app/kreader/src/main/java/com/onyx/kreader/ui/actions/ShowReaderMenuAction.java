@@ -28,6 +28,7 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
+import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
@@ -153,6 +154,10 @@ public class ShowReaderMenuAction extends BaseAction {
         }
         if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).hasFrontLight()) {
             disableMenus.add(ReaderMenuAction.FRONT_LIGHT);
+        }
+
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).hasNaturalLight()) {
+            disableMenus.add(ReaderMenuAction.NATURAL_LIGHT);
         }
 
         if (!readerDataHolder.supportTextPage()) {
@@ -307,6 +312,9 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case FRONT_LIGHT:
                         showBrightnessDialog(readerDataHolder);
+                        break;
+                    case NATURAL_LIGHT:
+                        showNaturalBrightnessDialog(readerDataHolder);
                         break;
                     case GOTO_PAGE:
                         gotoPage(readerDataHolder);
@@ -524,6 +532,13 @@ public class ShowReaderMenuAction extends BaseAction {
         readerDataHolder.addActiveDialog(dlg);
     }
 
+    private void showNaturalBrightnessDialog(ReaderDataHolder readerDataHolder){
+        hideReaderMenu();
+        Dialog dlg = new DialogNaturalLightBrightness(readerDataHolder.getContext());
+        dlg.show();
+        readerDataHolder.addActiveDialog(dlg);
+    }
+
     private void showExportDialog(ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         Dialog exportDialog = new DialogExport(readerDataHolder);
@@ -584,6 +599,7 @@ public class ShowReaderMenuAction extends BaseAction {
                     ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
                     boolean hasToc = toc != null && toc.getRootEntry() != null;
                     if (!hasToc) {
+                        Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.no_chapters), Toast.LENGTH_SHORT).show();
                         return;
                     }
                     List<Integer> readTocChapterNodeList = TocUtils.buildChapterNodeList(toc);
@@ -600,12 +616,22 @@ public class ShowReaderMenuAction extends BaseAction {
         if (tocChapterNodeList.size() <= 0) {
             return;
         }
-        int currentPage = PagePositionUtils.getPosition(readerDataHolder.getCurrentPagePosition());
+        int currentPagePosition = PagePositionUtils.getPosition(readerDataHolder.getCurrentPagePosition());
+        if (back && !readerDataHolder.getReaderViewInfo().canPrevScreen) {
+            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.first_chapter), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!back && !readerDataHolder.getReaderViewInfo().canNextScreen) {
+            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.last_chapter), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         int chapterPosition;
         if (back) {
-            chapterPosition = getChapterPositionByPage(currentPage, back, tocChapterNodeList);
+            chapterPosition = getChapterPositionByPage(currentPagePosition, back, tocChapterNodeList);
         } else {
-            chapterPosition = getChapterPositionByPage(currentPage, back, tocChapterNodeList);
+            chapterPosition = getChapterPositionByPage(currentPagePosition, back, tocChapterNodeList);
         }
         gotoPosition(readerDataHolder, chapterPosition, true);
     }
