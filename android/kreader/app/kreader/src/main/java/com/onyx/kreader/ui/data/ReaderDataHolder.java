@@ -58,7 +58,7 @@ public class ReaderDataHolder {
     private ReaderTtsManager ttsManager;
     private NoteManager noteManager;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
-    private EventBus eventBus = new EventBus();
+    private static EventBus eventBus = new EventBus();
     private EventReceiver eventReceiver;
 
     private boolean preRender = true;
@@ -84,7 +84,7 @@ public class ReaderDataHolder {
         return context;
     }
 
-    public EventBus getEventBus() {
+    public static EventBus getEventBus() {
         return eventBus;
     }
 
