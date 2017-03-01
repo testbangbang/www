@@ -495,7 +495,7 @@ public class ShowReaderMenuAction extends BaseAction {
             return;
         }
         int page = (int) o;
-        new GotoPositionAction(page, abortPendingTasks).execute(readerDataHolder);
+        new GotoPositionAction(page, abortPendingTasks).execute(readerDataHolder, null);
     }
 
     private void gotoPage(final ReaderDataHolder readerDataHolder, Object o, final boolean abortPendingTasks) {
@@ -597,7 +597,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 public void done(BaseRequest request, Throwable e) {
                     BaseReaderRequest readerRequest = (BaseReaderRequest) request;
                     ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
-                    boolean hasToc = toc != null && toc.getRootEntry() != null;
+                    boolean hasToc = toc != null && !toc.isEmpty();
                     if (!hasToc) {
                         Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.no_chapters), Toast.LENGTH_SHORT).show();
                         return;
@@ -617,12 +617,12 @@ public class ShowReaderMenuAction extends BaseAction {
             return;
         }
         int currentPagePosition = PagePositionUtils.getPosition(readerDataHolder.getCurrentPagePosition());
-        if (back && !readerDataHolder.getReaderViewInfo().canPrevScreen) {
+        if (back && currentPagePosition <= tocChapterNodeList.get(0)) {
             Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.first_chapter), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (!back && !readerDataHolder.getReaderViewInfo().canNextScreen) {
+        if (!back && currentPagePosition >= tocChapterNodeList.get(tocChapterNodeList.size() - 1)) {
             Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.last_chapter), Toast.LENGTH_SHORT).show();
             return;
         }
