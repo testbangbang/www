@@ -568,7 +568,7 @@ public class DialogQuickPreview extends Dialog {
                     BaseReaderRequest readerRequest = (BaseReaderRequest) request;
                     ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
                     
-                    boolean hasToc = toc != null && toc.getRootEntry() != null;
+                    boolean hasToc = toc != null && !toc.isEmpty();
                     chapterBack.setEnabled(hasToc);
                     chapterForward.setEnabled(hasToc);
                     if (!hasToc) {
