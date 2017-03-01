@@ -50,4 +50,7 @@
     <dimen name="minimum_margin_top_bottom">24dip</dimen>
     <dimen name="picker_dimen">400dip</dimen>
 
+    <dimen name="global_activities_back_btn_category_tittle_max_width">324dp</dimen>
+    <dimen name="settings_title_text_size">23sp</dimen>
+
 </resources>
