@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="global_activities_back_btn_category_tittle_max_width">308dp</dimen>
+    <dimen name="settings_title_text_size">23sp</dimen>
+</resources>
