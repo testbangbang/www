@@ -22,7 +22,7 @@
                 android:background="@drawable/imagebtn_bg"
                 android:gravity="center_horizontal"
                 android:id="@+id/font_face_layout"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content">
