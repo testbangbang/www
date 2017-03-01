@@ -29,6 +29,8 @@ import com.onyx.android.note.actions.scribble.RemoveByPointListAction;
 import com.onyx.android.note.receiver.DeviceReceiver;
 import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
@@ -64,6 +66,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected int currentVisualPageIndex;
     protected int totalPageCount;
     protected boolean isLineLayoutMode = false;
+    protected boolean fullUpdate = false;
 
     private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY}
     private ActivityState activityState;
@@ -417,6 +420,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         Rect rect = getViewportSize();
         Canvas canvas = beforeDraw(rect);
         if (canvas == null) {
+            resetFullUpdate();
             return;
         }
 
@@ -450,11 +454,17 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected Canvas beforeDraw(final Rect rect) {
+        if (isFullUpdate()) {
+            EpdController.setViewDefaultUpdateMode(surfaceView, UpdateMode.GC);
+        } else {
+            EpdController.resetUpdateMode(surfaceView);
+        }
         return surfaceView.getHolder().lockCanvas(rect);
     }
 
     protected void afterDraw(final Canvas canvas) {
         surfaceView.getHolder().unlockCanvasAndPost(canvas);
+        resetFullUpdate();
     }
 
     protected void onNextPage() {
@@ -571,5 +581,17 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     public SurfaceView getSurfaceView() {
         return surfaceView;
+    }
+
+    public boolean isFullUpdate() {
+        return fullUpdate;
+    }
+
+    public void setFullUpdate(boolean fullUpdate) {
+        this.fullUpdate = fullUpdate;
+    }
+
+    public void resetFullUpdate() {
+        this.fullUpdate = false;
     }
 }
