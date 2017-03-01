@@ -554,8 +554,8 @@ public class ReaderDataHolder {
     public void prepareEventReceiver() {
         if (eventReceiver == null) {
             eventReceiver = new EventReceiver(getContext());
+            getEventBus().register(eventReceiver);
         }
-        getEventBus().register(eventReceiver);
     }
 
     public void onDocumentOpened() {
