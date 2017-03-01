@@ -391,7 +391,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
             return tab;
         }
         tab = tabManager.reuseOpenedTab();
-        closeTabActivity(tab);
+//        closeTabActivity(tab);
         return tab;
     }
 
