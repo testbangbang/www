@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -50,7 +49,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate");
+        Debug.d(TAG, "onCreate");
         acquireStartupWakeLock();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader_host);
@@ -60,7 +59,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        Log.d(TAG, "onResume, tab count: " + tabHost.getTabWidget().getTabCount());
+        Debug.d(TAG, "onResume, tab count: " + tabHost.getTabWidget().getTabCount());
         super.onResume();
 
         syncFullScreenState();
@@ -73,12 +72,12 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.d(TAG, "onConfigurationChanged, tab count: " + tabHost.getTabWidget().getTabCount());
+        Debug.d(TAG, "onConfigurationChanged, tab count: " + tabHost.getTabWidget().getTabCount());
         tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
             @Override
             public void onGlobalLayout() {
-                Log.d(TAG, "onChangeOrientation -> onGlobalLayout");
+                Debug.d(TAG, "onChangeOrientation -> onGlobalLayout");
                 TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
                 updateReaderTabWindowHeight();
                 if (StringUtils.isNotBlank(pathToContinueOpenAfterRotation)) {
@@ -92,44 +91,44 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Log.d(TAG, "onPause");
+        Debug.d(TAG, "onPause");
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        Log.d(TAG, "onStop");
+        Debug.d(TAG, "onStop");
         super.onStop();
     }
 
     @Override
     protected void onStart() {
-        Log.d(TAG, "onStart");
+        Debug.d(TAG, "onStart");
         super.onStart();
     }
 
     @Override
     protected void onRestart() {
-        Log.d(TAG, "onRestart");
+        Debug.d(TAG, "onRestart");
         super.onRestart();
     }
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy");
+        Debug.d(TAG, "onDestroy");
         super.onDestroy();
         releaseStartupWakeLock();
     }
 
     @Override
     public void onLowMemory() {
-        Log.e(TAG, "onLowMemory");
+        Debug.e(TAG, "onLowMemory");
         super.onLowMemory();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.d(TAG, "onNewIntent");
+        Debug.d(TAG, "onNewIntent");
         super.onNewIntent(intent);
         setIntent(intent);
         handleActivityIntent();
@@ -137,14 +136,14 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.d(TAG, "onSaveInstanceState: " + tabManager.toJson());
+        Debug.d(TAG, "onSaveInstanceState: " + tabManager.toJson());
         outState.putString(TAG_TAB_MANAGER, tabManager.toJson());
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.d(TAG, "onRestoreInstanceState: " + savedInstanceState.getString(TAG_TAB_MANAGER));
+        Debug.d(TAG, "onRestoreInstanceState: " + savedInstanceState.getString(TAG_TAB_MANAGER));
         super.onRestoreInstanceState(savedInstanceState);
         tabManager = ReaderTabManager.createFromJson(savedInstanceState.getString(TAG_TAB_MANAGER));
         for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
@@ -191,14 +190,14 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
             @Override
             public void onChangeOrientation(final int orientation) {
-                Log.d(TAG, "onChangeOrientation: " + orientation);
+                Debug.d(TAG, "onChangeOrientation: " + orientation);
                 setRequestedOrientation(orientation);
                 SingletonSharedPreference.setScreenOrientation(orientation);
                 tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
                     @Override
                     public void onGlobalLayout() {
-                        Log.d(TAG, "onChangeOrientation -> onGlobalLayout");
+                        Debug.d(TAG, "onChangeOrientation -> onGlobalLayout");
                         TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
                         updateReaderTabWindowHeight();
                     }
@@ -266,7 +265,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     private int getTabContentHeight() {
-        Log.d(TAG, "tab host height: " + tabHost.getHeight() +
+        Debug.d(TAG, "tab host height: " + tabHost.getHeight() +
                 ", tab widget height: " + tabHost.getTabWidget().getHeight() +
                 ", tab content height: " + tabHost.getTabContentView().getHeight());
         return tabHost.getHeight() - tabHost.getTabWidget().getHeight();
@@ -290,13 +289,13 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     private void syncFullScreenState() {
         boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
-        Log.d(TAG, "syncFullScreenState: " + fullScreen);
+        Debug.d(TAG, "syncFullScreenState: " + fullScreen);
         DeviceUtils.setFullScreenOnResume(this, fullScreen);
         tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
             @Override
             public void onGlobalLayout() {
-                Log.d(TAG, "syncFullScreenState -> onGlobalLayout");
+                Debug.d(TAG, "syncFullScreenState -> onGlobalLayout");
                 TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
                 updateReaderTabWindowHeight();
             }
@@ -365,7 +364,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     private void openDocWithTab(String path) {
         ReaderTabManager.ReaderTab tab = tabManager.findOpenedTabByPath(path);
         if (tab != null) {
-            Log.d(TAG, "file already opened in tab: " + tab + ", " + path);
+            Debug.d(TAG, "file already opened in tab: " + tab + ", " + path);
             reopenReaderTab(tab);
             return;
         }
@@ -417,7 +416,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     private void closeTabActivity(ReaderTabManager.ReaderTab tab) {
         Intent intent = new Intent(this, tabManager.getTabReceiver(tab));
         intent.setAction(ReaderBroadcastReceiver.ACTION_CLOSE);
-        Log.d(TAG, "sendBroadcast: " + intent);
+        Debug.d(TAG, "sendBroadcast: " + intent);
         sendBroadcast(intent);
     }
 
