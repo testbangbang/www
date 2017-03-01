@@ -10,6 +10,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.ui.actions.GetSearchHistoryAction;
+import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.GotoSearchPageAction;
 import com.onyx.kreader.ui.actions.SearchContentAction;
 import com.onyx.kreader.ui.actions.ToggleSearchHistoryAction;
@@ -157,7 +159,7 @@ public class DialogSearch extends Dialog{
         backLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                closeDialog();
             }
         });
 
@@ -227,7 +229,7 @@ public class DialogSearch extends Dialog{
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                closeDialog();
             }
         });
 
@@ -264,7 +266,7 @@ public class DialogSearch extends Dialog{
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                closeDialog();
             }
         });
     }
@@ -361,43 +363,38 @@ public class DialogSearch extends Dialog{
             return;
         }
 
-        showLoadingLayout();
         new ToggleSearchHistoryAction(searchText, true).execute(readerDataHolder, null);
-        pageRecyclerView.postDelayed(new Runnable() {
+        showLoadingLayout();
+        reset();
+        int contentLength = ReaderTextSplitterImpl.isAlpha(searchText.charAt(0)) ? searchAlphaContentLength : searchChineseContentLength;
+        searchContentAction = new SearchContentAction(searchText, contentLength, startPage, SEARCH_PAGE_ONE_TIME * searchRows);
+        searchContentAction.execute(readerDataHolder, new SearchContentAction.OnSearchContentCallBack() {
             @Override
-            public void run() {
-                reset();
-                int contentLength = ReaderTextSplitterImpl.isAlpha(searchText.charAt(0)) ? searchAlphaContentLength : searchChineseContentLength;
-                searchContentAction = new SearchContentAction(searchText, contentLength, startPage, SEARCH_PAGE_ONE_TIME * searchRows);
-                searchContentAction.execute(readerDataHolder, new SearchContentAction.OnSearchContentCallBack() {
-                    @Override
-                    public void OnNext(final List<ReaderSelection> results,int page) {
-                        updateSearchingText(page);
-                        if (results == null || results.size() < 1){
-                            return;
-                        }
+            public void OnNext(final List<ReaderSelection> results,int page) {
+                updateSearchingText(page);
+                if (results == null || results.size() < 1){
+                    return;
+                }
 
-                        nextIcon.setEnabled(true);
-                        searchList.addAll(results);
-                        mergeSearchList();
-                        updatePageIndicator(currentPagePosition,pageRecyclerView.getAdapter().getItemCount());
-                        pageRecyclerView.getAdapter().notifyDataSetChanged();
-                        if (nextPageAction && pageRecyclerView.getPaginator().hasNextPage()){
-                            nextPageAction = false;
-                            pageRecyclerView.nextPage();
-                        }
-                    }
-
-                    @Override
-                    public void OnFinishedSearch(int endPage) {
-                        startPage = endPage;
-                        nextIcon.setEnabled(true);
-                        hideLoadingLayout();
-                        finishSearchTips();
-                    }
-                });
+                nextIcon.setEnabled(true);
+                searchList.addAll(results);
+                mergeSearchList();
+                updatePageIndicator(currentPagePosition,pageRecyclerView.getAdapter().getItemCount());
+                pageRecyclerView.getAdapter().notifyDataSetChanged();
+                if (nextPageAction && pageRecyclerView.getPaginator().hasNextPage()){
+                    nextPageAction = false;
+                    pageRecyclerView.nextPage();
+                }
             }
-        },500);
+
+            @Override
+            public void OnFinishedSearch(int endPage) {
+                startPage = endPage;
+                nextIcon.setEnabled(true);
+                hideLoadingLayout();
+                finishSearchTips();
+            }
+        });
     }
 
     private void reset(){
@@ -491,6 +488,7 @@ public class DialogSearch extends Dialog{
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    stopSearch();
                     gotoSearchPage(position, new BaseCallback() {
                         @Override
                         public void done(BaseRequest request, Throwable e) {
@@ -547,9 +545,18 @@ public class DialogSearch extends Dialog{
         stopSearch();
     }
 
+
+    private void closeDialog() {
+        new GotoPositionAction(readerDataHolder.getCurrentPagePosition()).execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                DialogSearch.this.dismiss();
+            }
+        });
+    }
+
     private void showLoadingLayout(){
         loadingLayout.setVisibility(View.VISIBLE);
-        closeSearch.requestFocus();
     }
 
     private void hideLoadingLayout(){
@@ -567,9 +574,9 @@ public class DialogSearch extends Dialog{
 
     private void hideFloatToolBar() {
         floatToolBar.setVisibility(View.GONE);
-        searchContent.setVisibility(View.VISIBLE);
         searchInputLayout.setVisibility(View.VISIBLE);
         dividerLine.setVisibility(View.VISIBLE);
+        searchContent.setVisibility(View.VISIBLE);
     }
 
     private void nextSearch(){
