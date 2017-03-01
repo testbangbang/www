@@ -222,6 +222,41 @@
     <string name="already_at_minimum_line_spacing">Межстрочное расстояние минимально</string>
     <string name="already_at_maximum_page_margins">Поля страницы максимальны</string>
     <string name="already_at_minimum_page_margins">Поля страницы минимальны</string>
+    <string name="make_text_bold">Жирный</string>
+    <string name="dialog_slideshow_title">Слайд-шоу</string>
+    <string name="settings_regal_mode_tittle">SNOW Field</string>
+    <string name="dialog_slideshow_intervals_title">Интервал (в секундах)</string>
+    <string name="dialog_slideshow_max_page_count_title">Максимальный номер страница</string>
+    <string name="dialog_slideshow_statistic_duration">Длительность:</string>
+    <string name="dialog_slideshow_statistic_page_count">Номер страницы:</string>
+    <string name="dialog_slideshow_statistic_start_battery">Стартовый заряд батареи:</string>
+    <string name="dialog_slideshow_statistic_end_battery">Заряд батареи в конце:</string>
+    <string name="view_pinch_zooming_menu_font_size">Размер шрифта:</string>
+    <string name="view_pinch_zooming_menu_scale_factor">Масштаб:</string>
+    <string name="slide_setting">Настройки слайд-шоу</string>
+    <string name="dialog_text_style_view_code_page">Кодировка</string>
+    <string name="code_page_simplified_chinese">Китайский упрощённый</string>
+    <string name="code_page_utf8">UTF-8 </string>
+    <string name="code_page_traditional_chinese">Китайский традиционный</string>
+    <string name="code_page_utf16_le">UTF-16LE </string>
+    <string name="code_page_utf16_be">UTF-16BE </string>
+    <string name="code_page_japanese">Японский</string>
+    <string name="code_page_korean">Корейский</string>
+    <string name="code_page_russian_oem">Русский OEM</string>
+    <string name="code_page_russian_ansi">Русский ANSI</string>
+    <string name="code_page_russian_koi8_r">Русский KOI8-R </string>
+    <string name="code_page_thai">Тайский ANSI/OEM</string>
+    <string name="code_page_latin_i">Латинский ANSI </string>
+    <string name="code_page_hebrew">Иврит ANSI </string>
+    <string name="code_page_arabic">Арабский ANSI </string>
+    <string name="code_page_vietnam">Вьетнамский ANSI/OEM</string>
+    <string name="code_page_cyrillic_mac">Кириллица MAC</string>
+    <string name="code_page_ukraine_mac">Украинский MAC</string>
+    <string name="code_page_auto">Авто</string>
+    <string name="view_slideshow_status_bar_page" formatted="false">Страница: %d/%d </string>
+    <string name="view_slideshow_status_bar_battery" formatted="false">Заряд: %d/%d (%%) </string>
+    <string name="slideshow_quit_warning">Для завершения слайд-шоу нажмите кнопку НАЗАД </string>
+    <string name="code_page">Установка кодировки...</string>
 </resources>
 
 

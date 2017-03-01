@@ -144,6 +144,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodCloseFrontLight;
     private static Method sMethodGetFrontLightValue;
     private static Method sMethodSetFrontLightValue;
+    private static Method sMethodSetNaturalLightValue;
     private static Method sMethodGetFrontLightConfigValue;
     private static Method sMethodSetFrontLightConfigValue;
     private static Method sMethodLed;
@@ -560,6 +561,7 @@ public class IMX6Device extends BaseDevice {
             sMethodCloseFrontLight = ReflectUtil.getMethodSafely(deviceControllerClass, "closeFrontLight", Context.class);
             sMethodGetFrontLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "getFrontLightValue", Context.class);
             sMethodSetFrontLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setFrontLightValue", Context.class, int.class);
+            sMethodSetNaturalLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setNaturalLightValue", Context.class, int.class);
             sMethodGetFrontLightConfigValue = ReflectUtil.getMethodSafely(deviceControllerClass, "getFrontLightConfigValue", Context.class);
             sMethodSetFrontLightConfigValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setFrontLightConfigValue", Context.class, int.class);
             sMethodUseBigPen = ReflectUtil.getMethodSafely(deviceControllerClass, "useBigPen", boolean.class);
@@ -759,6 +761,12 @@ public class IMX6Device extends BaseDevice {
     }
 
     @Override
+    public boolean setNaturalLightConfigValue(Context context, int value) {
+        Object res = this.invokeDeviceControllerMethod(context, sMethodSetNaturalLightValue, context, Integer.valueOf(value));
+        return res != null;
+    }
+
+    @Override
     public int getFrontLightConfigValue(Context context) {
         Integer res = (Integer) this.invokeDeviceControllerMethod(context, sMethodGetFrontLightConfigValue, context);
         return res.intValue();
@@ -773,6 +781,12 @@ public class IMX6Device extends BaseDevice {
     @Override
     public List<Integer> getFrontLightValueList(Context context) {
         Integer intValues[] = {0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160};
+        return Arrays.asList(intValues);
+    }
+
+    @Override
+    public List<Integer> getNaturalLightValueList(Context context) {
+        Integer intValues[] = {0,3,6,9,12,15,17,19,21,23,25,26,27,28,29,30,31};
         return Arrays.asList(intValues);
     }
 
