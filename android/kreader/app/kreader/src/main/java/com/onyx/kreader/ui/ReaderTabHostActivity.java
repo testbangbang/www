@@ -374,14 +374,14 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     private void openDocWithTab(ReaderTabManager.ReaderTab tab, String path) {
+        addReaderTab(tab, path);
+
         Intent intent = new Intent(this, tabManager.getTabActivity(tab));
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File(path)), getIntent().getType());
         final int tabContentHeight = getTabContentHeight();
         intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
         startActivity(intent);
-
-        addReaderTab(tab, path);
     }
 
     private ReaderTabManager.ReaderTab getFreeReaderTab() {
@@ -434,9 +434,9 @@ public class ReaderTabHostActivity extends AppCompatActivity {
             int nSize = tasksList.size();
             for(int i = 0; i < nSize;  i++){
                 if(tasksList.get(i).topActivity.getClassName().equals(clzName)){
-                    am.moveTaskToFront(tasksList.get(i).id, 0);
                     updateCurrentTabInHost(tab);
                     updateReaderTabWindowHeight(tab);
+                    am.moveTaskToFront(tasksList.get(i).id, 0);
                     return true;
                 }
             }
