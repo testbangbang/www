@@ -17,7 +17,6 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
@@ -34,47 +33,18 @@ import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
 
 public class ReaderTabHostActivity extends AppCompatActivity {
 
     private static final String TAG = ReaderTabHostActivity.class.getSimpleName();
 
-    private static final String TAG_OPENED_TABS = "opened_tabs";
-
-    private enum ReaderTab {
-        TAB_1, TAB_2, TAB_3, TAB_4
-    }
-
-    private static HashMap<ReaderTab, Class<?>> tabActivityList = new HashMap<>();
-    private static HashMap<ReaderTab, Class<?>> tabReceiverList = new HashMap<>();
-    private static Queue<ReaderTab> freeTabList = new LinkedList<>();
-    private static LinkedHashMap<ReaderTab, String> openedTabs = new LinkedHashMap<>();
-
-    static {
-        tabActivityList.put(ReaderTab.TAB_1, Reader_Tab_1_Activity.class);
-        tabActivityList.put(ReaderTab.TAB_2, Reader_Tab_2_Activity.class);
-        tabActivityList.put(ReaderTab.TAB_3, Reader_Tab_3_Activity.class);
-        tabActivityList.put(ReaderTab.TAB_4, Reader_Tab_4_Activity.class);
-
-        tabReceiverList.put(ReaderTab.TAB_1, Reader_Tab_1_BroadcastReceiver.class);
-        tabReceiverList.put(ReaderTab.TAB_2, Reader_Tab_2_BroadcastReceiver.class);
-        tabReceiverList.put(ReaderTab.TAB_3, Reader_Tab_3_BroadcastReceiver.class);
-        tabReceiverList.put(ReaderTab.TAB_4, Reader_Tab_4_BroadcastReceiver.class);
-
-        freeTabList.add(ReaderTab.TAB_1);
-        freeTabList.add(ReaderTab.TAB_2);
-        freeTabList.add(ReaderTab.TAB_3);
-        freeTabList.add(ReaderTab.TAB_4);
-    }
+    private static final String TAG_TAB_MANAGER = "tab_manager";
 
     private PowerManager.WakeLock startupWakeLock;
 
+    private ReaderTabManager tabManager = ReaderTabManager.create();
     private TabHost tabHost;
     private String pathToContinueOpenAfterRotation;
 
@@ -85,35 +55,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader_host);
 
-        initTabHost();
-
-        ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
-            @Override
-            public void onChangeOrientation(final int orientation) {
-                Log.d(TAG, "onChangeOrientation: " + orientation);
-                setRequestedOrientation(orientation);
-                SingletonSharedPreference.setScreenOrientation(orientation);
-                tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-                    @Override
-                    public void onGlobalLayout() {
-                        Log.d(TAG, "onChangeOrientation -> onGlobalLayout");
-                        TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
-                        updateWindowHeight();
-                    }
-                });
-            }
-
-            @Override
-            public void onEnterFullScreen() {
-                syncFullScreenState();
-            }
-
-            @Override
-            public void onQuitFullScreen() {
-                syncFullScreenState();
-            }
-        });
+        initComponents();
     }
 
     @Override
@@ -138,7 +80,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
             public void onGlobalLayout() {
                 Log.d(TAG, "onChangeOrientation -> onGlobalLayout");
                 TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
-                updateWindowHeight();
+                updateReaderTabWindowHeight();
                 if (StringUtils.isNotBlank(pathToContinueOpenAfterRotation)) {
                     openDocWithTab(pathToContinueOpenAfterRotation);
                     pathToContinueOpenAfterRotation = null;
@@ -195,59 +137,87 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.d(TAG, "onSaveInstanceState: " + JSON.toJSONString(openedTabs));
-        outState.putString(TAG_OPENED_TABS, JSON.toJSONString(openedTabs));
+        Log.d(TAG, "onSaveInstanceState: " + tabManager.toJson());
+        outState.putString(TAG_TAB_MANAGER, tabManager.toJson());
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.d(TAG, "onRestoreInstanceState: " + savedInstanceState.getString(TAG_OPENED_TABS));
+        Log.d(TAG, "onRestoreInstanceState: " + savedInstanceState.getString(TAG_TAB_MANAGER));
         super.onRestoreInstanceState(savedInstanceState);
-        LinkedHashMap<String, String> map = JSON.parseObject(savedInstanceState.getString(TAG_OPENED_TABS), openedTabs.getClass());
-        for (LinkedHashMap.Entry<String, String> entry : map.entrySet()) {
-            openedTabs.put(Enum.valueOf(ReaderTab.class, entry.getKey()), entry.getValue());
-        }
-        for (LinkedHashMap.Entry<ReaderTab, String> entry : openedTabs.entrySet()) {
-            freeTabList.remove(entry.getKey());
+        tabManager = ReaderTabManager.createFromJson(savedInstanceState.getString(TAG_TAB_MANAGER));
+        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
             addTabToHost(entry.getKey(), entry.getValue());
         }
     }
 
-    private boolean isMultipleTabbed() {
-       return tabActivityList.size() > 0;
+    private void initComponents() {
+        initTabHost();
+        initReceiver();
     }
 
     private void initTabHost() {
         tabHost = (TabHost) findViewById(R.id.tab_host);
         tabHost.setup();
 
-        if (isMultipleTabbed()) {
-            addTabToHost(ReaderTab.TAB_1, "TAB");
-        }
-
-        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
-            @Override
-            public void onTabChanged(String tabId) {
-                ReaderTab tab = Enum.valueOf(ReaderTab.class, tabId);
-                if (isTabOpened(tab)) {
-                    reopenTab(tab);
-                }
-            }
-        });
-
         tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                // delay the handling of activity intent from onCreate()
                 TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
                 handleActivityIntent();
             }
         });
 
+        if (!tabManager.supportMultipleTabs()) {
+            return;
+        }
+
+        addTabToHost(ReaderTabManager.ReaderTab.TAB_1, "");
+        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                ReaderTabManager.ReaderTab tab = Enum.valueOf(ReaderTabManager.ReaderTab.class, tabId);
+                if (tabManager.isTabOpened(tab)) {
+                    reopenReaderTab(tab);
+                }
+            }
+        });
         tabHost.setCurrentTab(0);
     }
 
-    private void addTabToHost(final ReaderTab tab, final String path) {
+    private void initReceiver() {
+        ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
+            @Override
+            public void onChangeOrientation(final int orientation) {
+                Log.d(TAG, "onChangeOrientation: " + orientation);
+                setRequestedOrientation(orientation);
+                SingletonSharedPreference.setScreenOrientation(orientation);
+                tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+                    @Override
+                    public void onGlobalLayout() {
+                        Log.d(TAG, "onChangeOrientation -> onGlobalLayout");
+                        TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
+                        updateReaderTabWindowHeight();
+                    }
+                });
+            }
+
+            @Override
+            public void onEnterFullScreen() {
+                syncFullScreenState();
+            }
+
+            @Override
+            public void onQuitFullScreen() {
+                syncFullScreenState();
+            }
+        });
+    }
+
+    private void addTabToHost(final ReaderTabManager.ReaderTab tab, final String path) {
         final String name = FileUtils.getFileName(path);
 
         final TabWidget tabWidget = tabHost.getTabWidget();
@@ -273,39 +243,26 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         });
     }
 
-    private void removeTabFromHost(ReaderTab tab) {
+    private void removeTabFromHost(ReaderTabManager.ReaderTab tab) {
+        // clear first, or we'll get incorrect tab host state
         tabHost.clearAllTabs();
-
-        for (LinkedHashMap.Entry<ReaderTab, String> entry : openedTabs.entrySet()) {
+        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
             if (entry.getKey() == tab) {
                 continue;
             }
             addTabToHost(entry.getKey(), entry.getValue());
         }
-
-        return;
     }
 
-    private void updateCurrentTab(ReaderTab tab) {
-        if (tabHost.getTabWidget().getTabCount() > 1 &&
+    private void updateCurrentTabInHost(ReaderTabManager.ReaderTab tab) {
+        if (tabHost.getTabWidget().getTabCount() > 0 &&
                 !tabHost.getCurrentTabTag().equals(tab.toString())) {
             tabHost.setCurrentTabByTag(tab.toString());
         }
     }
 
-    private void syncFullScreenState() {
-        boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
-        Log.d(TAG, "syncFullScreenState: " + fullScreen);
-        DeviceUtils.setFullScreenOnResume(this, fullScreen);
-        tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-            @Override
-            public void onGlobalLayout() {
-                Log.d(TAG, "syncFullScreenState -> onGlobalLayout");
-                TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
-                updateWindowHeight();
-            }
-        });
+    private ReaderTabManager.ReaderTab getCurrentTabInHost() {
+        return Enum.valueOf(ReaderTabManager.ReaderTab.class, tabHost.getCurrentTabTag());
     }
 
     private int getTabContentHeight() {
@@ -329,6 +286,21 @@ public class ReaderTabHostActivity extends AppCompatActivity {
             startupWakeLock.release();
             startupWakeLock = null;
         }
+    }
+
+    private void syncFullScreenState() {
+        boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
+        Log.d(TAG, "syncFullScreenState: " + fullScreen);
+        DeviceUtils.setFullScreenOnResume(this, fullScreen);
+        tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                Log.d(TAG, "syncFullScreenState -> onGlobalLayout");
+                TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
+                updateReaderTabWindowHeight();
+            }
+        });
     }
 
     private boolean handleActivityIntent() {
@@ -391,17 +363,19 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     private void openDocWithTab(String path) {
-        ReaderTab tab = findOpenedTabByPath(path);
+        ReaderTabManager.ReaderTab tab = tabManager.findOpenedTabByPath(path);
         if (tab != null) {
-            Log.d(TAG, "file already opened in tab: " + tab + ", " + getIntent().getDataString());
-            if (isTabOpened(tab)) {
-                reopenTab(tab);
-                return;
-            }
+            Log.d(TAG, "file already opened in tab: " + tab + ", " + path);
+            reopenReaderTab(tab);
+            return;
         }
 
-        tab = getFreeTab();
-        Intent intent = new Intent(this, getTabActivity(tab));
+        tab = getFreeReaderTab();
+        openDocWithTab(tab, path);
+    }
+
+    private void openDocWithTab(ReaderTabManager.ReaderTab tab, String path) {
+        Intent intent = new Intent(this, tabManager.getTabActivity(tab));
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File(path)), getIntent().getType());
         final int tabContentHeight = getTabContentHeight();
@@ -411,104 +385,76 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         addReaderTab(tab, path);
     }
 
-    private void addReaderTab(ReaderTab tab, String path) {
-        addOpenedTab(tab, path);
-        if (!isMultipleTabbed()) {
-            return;
+    private ReaderTabManager.ReaderTab getFreeReaderTab() {
+        ReaderTabManager.ReaderTab tab = tabManager.pollFreeTab();
+        if (tab != null) {
+            return tab;
         }
-
-        addTabToHost(tab, path);
-        updateCurrentTab(tab);
+        tab = tabManager.reuseOpenedTab();
+        closeTabActivity(tab);
+        return tab;
     }
 
-    private void closeReaderTab(ReaderTab tab) {
+    private void addReaderTab(ReaderTabManager.ReaderTab tab, String path) {
+        tabManager.addOpenedTab(tab, path);
+        if (tabManager.supportMultipleTabs()) {
+            addTabToHost(tab, path);
+            updateCurrentTabInHost(tab);
+            updateReaderTabWindowHeight(tab);
+        }
+    }
+
+    private void closeReaderTab(ReaderTabManager.ReaderTab tab) {
         closeTabActivity(tab);
-        removeOpenedTab(tab);
+        tabManager.removeOpenedTab(tab);
         removeTabFromHost(tab);
 
-        if (openedTabs.size() <= 0) {
+        if (tabManager.getOpenedTabs().size() <= 0) {
             finish();
         }
     }
 
-    private void closeTabActivity(ReaderTab tab) {
-        Intent intent = new Intent(this, getTabReceiver(tab));
+    private void closeTabActivity(ReaderTabManager.ReaderTab tab) {
+        Intent intent = new Intent(this, tabManager.getTabReceiver(tab));
         intent.setAction(ReaderBroadcastReceiver.ACTION_CLOSE);
         Log.d(TAG, "sendBroadcast: " + intent);
         sendBroadcast(intent);
     }
 
-    private ReaderTab getFreeTab() {
-        if (!freeTabList.isEmpty()) {
-            return freeTabList.poll();
+    private void reopenReaderTab(ReaderTabManager.ReaderTab tab) {
+        if (!bringReaderTabToFront(tab)) {
+            openDocWithTab(tab, tabManager.getOpenedTabs().get(tab));
         }
-        return openedTabs.keySet().iterator().next();
     }
 
-    private void addOpenedTab(ReaderTab tab, String path) {
-        openedTabs.put(tab, path);
-    }
-
-    private void removeOpenedTab(ReaderTab tab) {
-        freeTabList.add(tab);
-        openedTabs.remove(tab);
-    }
-
-    private ReaderTab findOpenedTabByPath(String path) {
-        for (Map.Entry<ReaderTab, String> entry : openedTabs.entrySet()) {
-            if (entry.getValue().compareTo(path) == 0) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
-
-    private Class getTabActivity(ReaderTab tab) {
-        return tabActivityList.get(tab);
-    }
-
-    private Class getTabReceiver(ReaderTab tab) {
-        return tabReceiverList.get(tab);
-    }
-
-    private boolean isTabOpened(ReaderTab tab) {
-        return openedTabs.containsKey(tab);
-    }
-
-    private void reopenTab(ReaderTab tab) {
-        String clzName = getTabActivity(tab).getName();
+    private boolean bringReaderTabToFront(ReaderTabManager.ReaderTab tab) {
+        String clzName = tabManager.getTabActivity(tab).getName();
         ActivityManager am = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
         if(!tasksList.isEmpty()){
             int nSize = tasksList.size();
             for(int i = 0; i < nSize;  i++){
                 if(tasksList.get(i).topActivity.getClassName().equals(clzName)){
-                    updateWindowHeight();
                     am.moveTaskToFront(tasksList.get(i).id, 0);
-                    updateCurrentTab(tab);
-                    return;
+                    updateCurrentTabInHost(tab);
+                    updateReaderTabWindowHeight(tab);
+                    return true;
                 }
             }
         }
-
-        Intent intent = new Intent(this, getTabActivity(tab));
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(openedTabs.get(tab))), getIntent().getType());
-        final int tabContentHeight = getTabContentHeight();
-        intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
-        startActivity(intent);
-        
-        updateCurrentTab(tab);
+        return false;
     }
 
-    private void updateWindowHeight() {
+    private void updateReaderTabWindowHeight() {
+        updateReaderTabWindowHeight(getCurrentTabInHost());
+    }
+
+    private void updateReaderTabWindowHeight(ReaderTabManager.ReaderTab tab) {
         final int tabContentHeight = getTabContentHeight();
-        for (ReaderTab tab : openedTabs.keySet()) {
-            Intent intent = new Intent(this, getTabReceiver(tab));
-            intent.setAction(ReaderBroadcastReceiver.ACTION_RESIZE_WINDOW);
-            intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
-            sendBroadcast(intent);
-        }
+        Intent intent = new Intent(this, tabManager.getTabReceiver(tab));
+        intent.setAction(ReaderBroadcastReceiver.ACTION_RESIZE_WINDOW);
+        intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
+        sendBroadcast(intent);
     }
 
 }
