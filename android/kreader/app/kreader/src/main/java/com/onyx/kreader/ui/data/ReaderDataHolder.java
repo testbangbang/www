@@ -376,7 +376,10 @@ public class ReaderDataHolder {
                 callback.invoke(callback, request, e);
                 onPageDrawFinished(renderRequest, e);
 
-                updateReaderMenuState();
+                if (!renderRequest.isAbort()) {
+                    updateReaderMenuState();
+                }
+
             }
         });
     }

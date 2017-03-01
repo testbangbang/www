@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>  
+
+    <style name="OnyxAppCompat" parent="Theme.AppCompat.Light.NoActionBar"> 
+        <item name="colorAccent">@android:color/black</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+         <item name="colorControlNormal">@android:color/black</item> 
+        <!--Disable OverFlown Button(3-dot button)-->
+        <item name="actionOverflowButtonStyle">@null</item>
+        <!--Remove 1px shadow between status bar and window content-->
+        <item name="android:windowContentOverlay">@android:color/transparent</item>
+        <item name="popupMenuStyle">@style/OnyxAppCompat.ToolBar.Popup</item>
+        <item name="android:dropDownListViewStyle">@style/OnyxAppCompat.PopupMenuListView</item>
+        <item name="android:textColorPrimary">@color/primary_text_device_default_light</item>
+        <item name="android:textAppearance">@style/OnyxAppCompat.TextAppearance.Light</item>
+        <item name="android:textAppearanceLarge">@style/OnyxAppCompat.TextAppearance.Light.Large
+        </item>
+        <item name="android:textAppearanceMedium">@style/OnyxAppCompat.TextAppearance.Light.Medium
+        </item>
+        <item name="android:textAppearanceSmall">@style/OnyxAppCompat.TextAppearance.Light.Small
+        </item>
+        <item name="android:textAppearanceButton">@style/OnyxAppCompat.TextAppearance.Light.Button
+        </item>
+        <item name="android:listDivider">@android:color/black</item>
+        <item name="textAppearanceLargePopupMenu">
+            @style/OnyxAppCompat.TextAppearance.Light.PopupMenu.Large
+        </item>
+        <item name="textAppearanceSmallPopupMenu">
+            @style/OnyxAppCompat.TextAppearance.Light.PopupMenu.Small
+        </item>
+        <item name="editTextStyle">@style/OnyxAppCompat.EditTextStyle</item>
+        <item name="preferenceTheme">@style/OnyxAppCompat.PreferenceTheme</item>
+        <item name="alertDialogTheme">@style/OnyxAppCompat.AlertDialog</item>
+        <item name="buttonStyle">@style/OnyxAppCompat.ButtonStyle</item>
+        <item name="dialogTheme">@style/OnyxAppCompat.Light.Dialog</item>
+    </style>
+
+    <style name="OnyxAppCompat.PreferenceFragment.Material" parent="PreferenceFragment.Material">
+        <item name="android:divider">@drawable/onyx_preference_list_divider_material</item>
+    </style>
+
+    <style name="OnyxAppCompat.PreferenceTheme" parent="PreferenceThemeOverlay.v14.Material">
+        <item name="android:overScrollMode">never</item>
+        <item name="android:listDivider">@android:color/black</item>
+        <item name="preferenceFragmentCompatStyle">@style/OnyxAppCompat.PreferenceFragment.Material</item>
+    </style>
+
+    <style name="OnyxAppCompat.AlertDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_border</item>
+        <item name="colorAccent">@android:color/black</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+         <item name="colorControlNormal">@android:color/black</item> 
+    </style>
+
+    <style name="OnyxAppCompat.ButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/default_button_background</item>
+        <item name="android:textAppearance">@style/OnyxAppCompat.TextAppearance.Light.Medium</item>
+    </style>
+
+    <style name="OnyxAppCompat.Light.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_border</item>
+    </style>
+
+    <style name="OnyxAppCompat.EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/primary_text_device_default_light</item>
+    </style>
+
+    <style name="OnyxAppCompat.TextAppearance.Light" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/primary_text_device_default_light</item>
+    </style>
+
+    <style name="OnyxAppCompat.TextAppearance.Light.Large" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@color/primary_text_device_default_light</item>
+    </style>
+
+    <style name="OnyxAppCompat.TextAppearance.Light.Medium" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/primary_text_device_default_light</item>
+    </style>
+
+    <style name="OnyxAppCompat.TextAppearance.Light.Small" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/primary_text_device_default_light</item>
+    </style>
+
+    <style name="OnyxAppCompat.TextAppearance.Light.Button" parent="TextAppearance.AppCompat.Widget.Button">
+        <item name="android:textColor">@color/primary_text_device_default_light</item>
+    </style>
+
+    <style name="OnyxAppCompat.TextAppearance.Light.PopupMenu.Large" parent="TextAppearance.AppCompat.Light.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/primary_text_device_default_light</item>
+    </style>
+
+    <style name="OnyxAppCompat.TextAppearance.Light.PopupMenu.Small" parent="TextAppearance.AppCompat.Light.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/primary_text_device_default_light</item>
+    </style>
+
+    <style name="OnyxAppCompat.PopupMenuListView" parent="@style/Widget.AppCompat.ListView.DropDown">
+        <item name="android:divider">@android:color/black</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:background">@drawable/image_border</item>
+    </style>
+
+    <style name="OnyxAppCompat.ToolBar" parent="OnyxAppCompat"> 
+        <item name="selectableItemBackground">@drawable/imagebtn_bg</item> 
+        <item name="android:selectableItemBackground">@drawable/imagebtn_bg</item> 
+        <item name="colorPrimary">@android:color/black</item>
+    </style>
+
+    <style name="OnyxAppCompat.PopupMenuListView.Light" parent="Widget.AppCompat.Light.ListPopupWindow">
+        <item name="android:background">@android:color/black</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="OnyxAppCompat.ToolBar.Popup" parent="OnyxAppCompat"> 
+        <item name="android:textSize">20sp</item>
+         <item name="selectableItemBackground">@drawable/popup_menu_item_bg</item> 
+        <item name="itemBackground">@drawable/popup_menu_item_bg</item> 
+        <item name="android:itemBackground">@drawable/popup_menu_item_bg</item>
+         <item name="android:selectableItemBackground">@drawable/popup_menu_item_bg</item> 
+    </style>
+
+    <style name="OnyxToolBarStyle">
+        <!--Remove Toolbar Default left margin.
+        ref:http://stackoverflow.com/questions/26455027/android-api-21-toolbar-padding-->
+        <item name="contentInsetStart">0dp</item>
+        <item name="popupTheme">@style/OnyxAppCompat.ToolBar.Popup</item>
+        <item name="theme">@style/OnyxAppCompat.ToolBar</item>
+        <item name="android:background">@drawable/toolbar_bg</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:id">@id/tool_bar</item>
+        <item name="titleTextAppearance">@style/OnyxAppCompat.TextAppearance.AppCompat.Title</item>
+    </style>
+
+    <style name="OnyxAppCompat.TextAppearance.AppCompat.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="time_label">
+        <item name="android:textSize">@dimen/time_label_size</item>
+        <item name="android:textColor">@color/numbers_text_color</item>
+    </style>
+
+    <style name="ampm_label">
+        <item name="android:textSize">@dimen/ampm_label_size</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/ampm_text_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="day_of_week_label_condensed" />
+
+    <style name="global_activities_back_function_layout">
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/global_activities_back_function_layout_padding</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="global_activities_back_btn_image">
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:src">@drawable/title_back</item>
+    </style>
+
+    <style name="global_activities_back_btn_category_tittle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:maxWidth">@dimen/global_activities_back_btn_category_tittle_max_width</item>
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textSize">@dimen/settings_title_text_size</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">middle</item>
+    </style>
+</resources>

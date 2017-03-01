@@ -429,7 +429,9 @@ public abstract class AlFiles {
 
 		if (fName.charAt(0) == EngBookMyType.AL_ROOT_RIGHTPATH)
 			return fName.toString();
-
+		if(baseName == null){
+			return fName.toString();
+		}
 		// need base
         StringBuilder bName = new StringBuilder(baseName.trim());
 

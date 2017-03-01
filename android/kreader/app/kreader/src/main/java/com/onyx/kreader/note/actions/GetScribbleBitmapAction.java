@@ -62,7 +62,7 @@ public class GetScribbleBitmapAction {
 
         final String currentPage = requestPages.remove(0);
         contentBitmap = ReaderBitmapImpl.create(width, height, Bitmap.Config.ARGB_8888);
-        final RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(currentPage, contentBitmap);
+        final RenderThumbnailRequest thumbnailRequest = RenderThumbnailRequest.renderByPage(currentPage, null, contentBitmap);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), thumbnailRequest, new BaseCallback() {
 
             @Override

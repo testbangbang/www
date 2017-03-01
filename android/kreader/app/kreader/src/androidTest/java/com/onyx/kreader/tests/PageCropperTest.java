@@ -29,7 +29,7 @@ public class PageCropperTest extends ActivityInstrumentationTestCase2<ReaderTest
         final String pageName = String.valueOf(0);
         final RectF size  = document.getPageOriginSize(pageName);
         PageInfo pageInfo = new PageInfo(pageName, size.width(), size.height());
-        cropper.cropPage(1024, 768, pageInfo);
+        cropper.cropPage(pageInfo);
 
     }
 

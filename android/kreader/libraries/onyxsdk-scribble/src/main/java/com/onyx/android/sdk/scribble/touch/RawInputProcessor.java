@@ -5,6 +5,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -48,14 +50,19 @@ public class RawInputProcessor {
         // when received pen down or stylus button
         public abstract void onBeginRawData();
 
+        public abstract void onEndRawData();
+
         // when pen released.
         public abstract void onRawTouchPointListReceived(final Shape shape, final TouchPointList pointList);
 
         // caller should render the page here.
         public abstract void onBeginErasing();
 
+        public abstract void onEndErasing();
+
         // caller should do hit test in current page, remove shapes hit-tested.
         public abstract void onEraseTouchPointListReceived(final TouchPointList pointList);
+
     }
 
     private volatile int px, py, pressure;
@@ -65,6 +72,7 @@ public class RawInputProcessor {
     private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
     private volatile boolean reportData = false;
+    private volatile boolean moveFeedback = false;
     private String systemPath = "/dev/input/event1";
     private volatile Matrix screenMatrix;
     private volatile Matrix viewMatrix;
@@ -296,15 +304,19 @@ public class RawInputProcessor {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         mapInputToScreenPoint(touchPoint);
         mapScreenPointToPage(touchPoint);
-        addToList(touchPoint, false);
-        // Log.d(TAG, "move received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
+        addToList(touchPoint, isMoveFeedback());
+        if (isMoveFeedback() && touchPointList != null && touchPointList.size() > 0) {
+            invokeTouchPointListReceived(touchPointList, erasing);
+        }
+//         Log.d(TAG, "move received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
     private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
         if (touchPointList != null && touchPointList.size() > 0) {
-            invokeTouchPointListFinished(touchPointList, erasing);
+            invokeTouchPointListReceived(touchPointList, erasing);
         }
         resetPointList();
+        invokeTouchPointListEnd(erasing);
         //Log.d(TAG, "release received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
@@ -329,11 +341,30 @@ public class RawInputProcessor {
         });
     }
 
-    private void invokeTouchPointListFinished(final TouchPointList touchPointList, final boolean erasing) {
-        if (rawInputCallback == null || touchPointList == null || (!isReportData() && !erasing)) {
+    private void invokeTouchPointListEnd(final boolean erasing) {
+        if (rawInputCallback == null || (!isReportData() && !erasing)) {
             return;
         }
 
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (erasing) {
+                    rawInputCallback.onEndErasing();
+                } else {
+                    rawInputCallback.onEndRawData();
+                }
+            }
+        });
+    }
+
+    private void invokeTouchPointListReceived(final TouchPointList touchPointList, final boolean erasing) {
+        if (rawInputCallback == null || touchPointList == null || (!isReportData() && !erasing)) {
+            return;
+        }
+        if (isMoveFeedback()) {
+            resetPointList();
+        }
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -346,5 +377,11 @@ public class RawInputProcessor {
         });
     }
 
+    public boolean isMoveFeedback() {
+        return moveFeedback;
+    }
 
+    public void setMoveFeedback(boolean moveFeedback) {
+        this.moveFeedback = moveFeedback;
+    }
 }

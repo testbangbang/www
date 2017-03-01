@@ -9,6 +9,8 @@ import com.neverland.engbook.util.InternalFunc;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class AlFilesMOBI extends AlFilesPDB {
     private static final boolean UNPACK_FIRST = true;
@@ -118,6 +120,8 @@ public class AlFilesMOBI extends AlFilesPDB {
         public int childend;
 
         public int real;
+
+        //public int postitle;
 
         public void clear() {
             label = null;
@@ -590,6 +594,12 @@ public class AlFilesMOBI extends AlFilesPDB {
         int maxoff = recordList.get(indNCX.cncx_record).start + recordList.get(indNCX.cncx_record).len1;
         int start = recordList.get(indNCX.cncx_record).start;
 
+        // hack. try later
+        for (int i = 1; i < indNCX.cncx_records_count; i++) {
+            maxoff += recordList.get(indNCX.cncx_record + 1).len1;
+        }
+        //
+
         for (int i = 0; i < indNCX.total_entries_count; i++) {
             MOBITOC t = new MOBITOC();
 
@@ -602,6 +612,14 @@ public class AlFilesMOBI extends AlFilesPDB {
         }
 
         indNCX.entries.clear();
+
+        Collections.sort(toc, new Comparator<MOBITOC>() {
+            public int compare(MOBITOC o1, MOBITOC o2) {
+                return o2.pos > o1.pos ? -1 : (o2.pos < o1.pos ? 1 : 0);
+            }
+        });
+
+
         return true;
     }
 
@@ -612,11 +630,22 @@ public class AlFilesMOBI extends AlFilesPDB {
         int cnt;
         pos.value = getTagValue(indNCX.entries.get(i), 3, 0);
         if (pos.value != -1) {
+
+            // hack. try later
+            int pos_hi = pos.value >> 16;
+            while ((pos_hi--) > 0) {
+                pos.value -= 0x10000;
+                pos.value += recordList.get(indNCX.cncx_record + pos_hi).len1;
+            }
+            //
+
             cnt = getVarlen(start, pos, maxoff, 1);
-            if (pos.value + cnt < maxoff && cnt < 1024) {
+            if (start + pos.value + cnt <= maxoff && cnt < 1024) {
                 StringBuilder tmp_sb = new StringBuilder();
                 getByteArray(text, start + pos.value, cnt);
                 m.label = getEncodeString(text, cnt, tmp_sb);
+            } else {
+                m.label = "";
             }
         }
 
@@ -659,7 +688,7 @@ public class AlFilesMOBI extends AlFilesPDB {
         return true;
     }
 
-    private boolean  readRealTOC() {
+    /*private boolean  readRealTOC() {
         int maxoff = recordList.get(indNCX.cncx_record).start + recordList.get(indNCX.cncx_record).len1;
         int start = recordList.get(indNCX.cncx_record).start;
 
@@ -703,7 +732,7 @@ public class AlFilesMOBI extends AlFilesPDB {
         indNCX.entries.clear();
 
         return true;
-    }
+    }*/
 
     private boolean  readRealIndex(MOBIIndex indx, MOBITagx tagx, MOBIOrdt ordt, int nrec) {
         int maxoff = recordList.get(nrec).start + recordList.get(nrec).len1;

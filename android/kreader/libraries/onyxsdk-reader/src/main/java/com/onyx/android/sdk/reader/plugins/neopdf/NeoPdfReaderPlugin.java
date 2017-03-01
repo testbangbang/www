@@ -317,7 +317,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     @Override
     public int getPageNumberByPosition(String position) {
-        return -1;
+        return PagePositionUtils.getPageNumber(position);
     }
 
     /**
