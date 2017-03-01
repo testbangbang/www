@@ -44,6 +44,10 @@ public class FrontLightController
     public static List<Integer> getFrontLightValueList(Context context) {
         return Device.currentDevice().getFrontLightValueList(context);
     }
+
+    public static List<Integer> getNaturalLightValueList(Context context) {
+        return Device.currentDevice().getNaturalLightValueList(context);
+    }
     
     /**
      * value is valid only when light is on
@@ -70,6 +74,17 @@ public class FrontLightController
             return dev.setFrontLightConfigValue(context, level);
         }
         
+        return false;
+    }
+
+    public static boolean setNaturalBrightness(Context context, int level)
+    {
+        BaseDevice dev = Device.currentDevice();
+        if (dev.setNaturalLightConfigValue(context, level)) {
+
+            return dev.setNaturalLightConfigValue(context, level);
+        }
+
         return false;
     }
 }
