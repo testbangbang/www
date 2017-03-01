@@ -77,7 +77,7 @@
     <string name="crop">Обрезать</string>
     <string name="column">Колонка</string>
     <string name="direction">Направление</string>
-    <string name="four">Авто</string>
+    <string name="auto">Авто\n</string>
     <string name="six">Шесть</string>
     <string name="nine">Девять</string>
     <string name="single_page">Одиночная \n страница</string>

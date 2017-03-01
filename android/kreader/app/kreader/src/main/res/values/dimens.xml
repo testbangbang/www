@@ -89,4 +89,5 @@
     <dimen name="fragment_read_record_padding">10dp</dimen>
     <dimen name="activity_statistics_item_text_size">18sp</dimen>
     <dimen name="activity_statistics_item_margin">5dp</dimen>
+    <dimen name="dialog_text_style_margin_left">20dp</dimen>
 </resources>
