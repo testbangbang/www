@@ -53,6 +53,7 @@ public class PopupSelectionMenu extends LinearLayout {
         public abstract void highLight();
         public abstract void addAnnotation();
         public abstract void showDictionary();
+        public abstract void startTts();
         public abstract boolean supportSelectionMode();
         public abstract void closeMenu();
     }
@@ -213,6 +214,15 @@ public class PopupSelectionMenu extends LinearLayout {
             public void onClick(View v) {
                 mMenuCallback.showDictionary();
                 mMenuCallback.resetSelection();
+                PopupSelectionMenu.this.hide();
+            }
+        });
+
+        findViewById(R.id.imagebutton_tts).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMenuCallback.resetSelection();
+                mMenuCallback.startTts();
                 PopupSelectionMenu.this.hide();
             }
         });

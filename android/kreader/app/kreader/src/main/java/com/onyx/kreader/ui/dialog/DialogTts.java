@@ -101,6 +101,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         readerDataHolder.getEventBus().register(this);
 
         ttsHandler = (TtsHandler) readerDataHolder.getHandlerManager().getActiveProvider();
+        ttsHandler.setInitialPosition(startPosition);
 
         ButterKnife.bind(this);
         fitDialogToWindow();

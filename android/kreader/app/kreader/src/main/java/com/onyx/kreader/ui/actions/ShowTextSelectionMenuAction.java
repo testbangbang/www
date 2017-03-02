@@ -101,6 +101,15 @@ public class ShowTextSelectionMenuAction{
                 }
 
                 @Override
+                public void startTts() {
+                    closeMenu();
+
+                    ReaderSelection readerSelection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
+                    String startPosition = readerSelection == null ? null : readerSelection.getStartPosition();
+                    new StartTtsAction(startPosition).execute(readerDataHolder, null);
+                }
+
+                @Override
                 public boolean supportSelectionMode() {
                     return false;
                 }
