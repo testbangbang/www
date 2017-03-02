@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -63,7 +62,7 @@ public class StatisticsActivity extends ActionBarActivity {
         initView();
         initData();
         registerReceiver();
-        DeviceUtils.toggleWiFi(this, true);
+        DeviceUtils.changeWiFi(this, true);
     }
 
     private void initView() {

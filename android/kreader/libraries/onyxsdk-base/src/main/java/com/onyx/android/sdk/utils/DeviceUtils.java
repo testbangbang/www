@@ -92,7 +92,7 @@ public class DeviceUtils {
         return (flag & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN;
     }
 
-    public static void toggleWiFi(Context context, boolean enabled) {
+    public static void changeWiFi(Context context, boolean enabled) {
         WifiManager wm = (WifiManager) context
                 .getSystemService(Context.WIFI_SERVICE);
         wm.setWifiEnabled(enabled);
