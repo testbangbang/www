@@ -120,7 +120,6 @@ public class StatisticsActivity extends ActionBarActivity {
     }
 
     private void pushStatistics() {
-        Log.d(TAG, "pushStatistics: ");
         final PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(this, null, DeviceConfig.sharedInstance(this).getStatisticsUrl());
         getCloudManager().submitRequest(this, statisticsRequest, new BaseCallback() {
             @Override
@@ -131,7 +130,6 @@ public class StatisticsActivity extends ActionBarActivity {
     }
 
     private void pullStatistics() {
-        Log.d(TAG, "pullStatistics: ");
         dialogLoading = new DialogLoading(this,
                 getString(R.string.loading), false, null);
         dialogLoading.show();
