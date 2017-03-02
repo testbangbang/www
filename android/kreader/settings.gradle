@@ -1,4 +1,4 @@
-include ':libraries:cropimage',
+include ':libraries:cropimage', ':libraries:onyxsdk-appcompat',
         ':libraries:onyxsdk-reader',
         ':libraries:onyxsdk-ui',
         ':libraries:onyxsdk-base',
@@ -9,7 +9,9 @@ include ':libraries:cropimage',
         ':libraries:alreader-engine',
         ':libraries:onyxsdk-statistics',
         ':libraries:libedu',
+        ':libraries:onyxsdk-ebookservice',
         ':app:note',
         ':app:kreader',
         ':app:eschool',
-        ':app:edu'
+        ':app:edu',
+        ':app:phone-reader'

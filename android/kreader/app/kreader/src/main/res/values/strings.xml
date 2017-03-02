@@ -64,7 +64,7 @@
     <string name="Copy">Copy</string>
     <string name="Highlight">Highlight</string>
     <string name="Dictionary">Dictionary</string>
-    <string name="popup_selection_menu_start_tts">Start TTS</string>
+    <string name="popup_selection_menu_start_tts">TTS</string>
     <string name="toc">TOC</string>
     <string name="bookmark">Bookmark</string>
     <string name="annotation">Annotation</string>
@@ -77,7 +77,7 @@
     <string name="crop">Crop</string>
     <string name="column">Column</string>
     <string name="direction">Direction</string>
-    <string name="four">Auto</string>
+    <string name="auto">Auto\n</string>
     <string name="six">Six</string>
     <string name="nine">Nine</string>
     <string name="single_page">Single\npage</string>
@@ -335,15 +335,15 @@
     <string name="reading_time_every_day" formatted="false">On an average day you read %.2f hours, mainly reading time distribution in %d:00 - %d:00</string>
     <string name="read_longest_book" formatted="false">A book to read for the longest: %s</string>
     <string name="read_most_carefully_book" formatted="false">Read the book carefully : %s</string>
-    <string name="read_start_time" formatted="false">%s start</string>
-    <string name="read_use_time" formatted="false">The book reading total times %s</string>
-    <string name="read_end_time" formatted="false">%s end</string>
+    <string name="read_start_time" formatted="false">%s \n start</string>
+    <string name="read_use_time" formatted="false">The book reading total times \n %s</string>
+    <string name="read_end_time" formatted="false">%s \n end</string>
     <string name="high_light_count" formatted="false">Highlight: %d</string>
     <string name="annotation_count" formatted="false">Annotation: %d</string>
     <string name="look_up_dict_count" formatted="false">Look Up dictionary count: %d</string>
     <string name="time_distribution">Time distribution</string>
     <string name="self_time_distribution">Your reading time distribution</string>
-    <string name="other_time_distribution">Other students of intensive reading time distribution</string>
+    <string name="other_time_distribution">The average reading time distribution to other users</string>
     <string name="reading_content_analysis">Reading content analysis</string>
     <string name="recently_read_content">Recently read content</string>
     <string name="statistics_shortcut_name">Data statistics</string>
@@ -359,4 +359,7 @@
     <string name="other">Other</string>
     <string name="load_statistical_data_failed">Load statistical data failed</string>
     <string name="no_more_search_results">No more search results</string>
+    <string name="no_chapters">This article does not contain section information</string>
+    <string name="first_chapter">Is the first chapter</string>
+    <string name="last_chapter">Is the last chapter</string>
 </resources>

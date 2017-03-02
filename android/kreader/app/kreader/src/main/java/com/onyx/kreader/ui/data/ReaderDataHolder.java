@@ -28,6 +28,7 @@ import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.receiver.DeviceReceiver;
 import com.onyx.kreader.tts.ReaderTtsManager;
+import com.onyx.kreader.ui.ReaderBroadcastReceiver;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.events.TextSelectionEvent;
 import com.onyx.kreader.ui.events.*;
@@ -78,6 +79,9 @@ public class ReaderDataHolder {
 
     public ReaderDataHolder(Context context) {
         this.context = context;
+
+        // we want receive global event from the receiver
+        ReaderBroadcastReceiver.setEventBus(eventBus);
     }
 
     public Context getContext() {
@@ -376,7 +380,10 @@ public class ReaderDataHolder {
                 callback.invoke(callback, request, e);
                 onPageDrawFinished(renderRequest, e);
 
-                updateReaderMenuState();
+                if (!renderRequest.isAbort()) {
+                    updateReaderMenuState();
+                }
+
             }
         });
     }
@@ -551,8 +558,8 @@ public class ReaderDataHolder {
     public void prepareEventReceiver() {
         if (eventReceiver == null) {
             eventReceiver = new EventReceiver(getContext());
+            getEventBus().register(eventReceiver);
         }
-        getEventBus().register(eventReceiver);
     }
 
     public void onDocumentOpened() {

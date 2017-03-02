@@ -17,15 +17,17 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class NetworkConnectChangedReceiver extends BroadcastReceiver {
 
     private static final String TAG = "NetworkConnectChangedRe";
-    private ReaderDataHolder readerDataHolder;
-
-    public NetworkConnectChangedReceiver() {
-
+    public interface NetworkChangedListener {
+        void onNetworkChanged(boolean connected, int networkType);
+        void onNoNetwork();
     }
 
-    public NetworkConnectChangedReceiver(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    private NetworkChangedListener networkChangedListener;
+
+    public NetworkConnectChangedReceiver(final NetworkChangedListener networkChangedListener) {
+        this.networkChangedListener = networkChangedListener;
     }
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -36,7 +38,13 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
 
             NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
             if (activeNetwork != null) { // connected to the internet
-                readerDataHolder.onNetworkChanged(activeNetwork.isConnected(), activeNetwork.getType());
+                if (networkChangedListener != null) {
+                    networkChangedListener.onNetworkChanged(activeNetwork.isConnected(), activeNetwork.getType());
+                }
+            }else {
+                if (networkChangedListener != null) {
+                    networkChangedListener.onNoNetwork();
+                }
             }
 
         }

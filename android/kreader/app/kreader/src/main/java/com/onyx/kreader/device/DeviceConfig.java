@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.common.Debug;
@@ -25,6 +26,8 @@ public class DeviceConfig {
 
     private boolean ttsEnabled = false;
     private boolean hasFrontLight = true;
+    private boolean hasNaturalLight = false;
+    private boolean regalEnable = false;
 
     private Map<String, Map<String, JSONObject>> keyBinding = null;
 
@@ -72,7 +75,7 @@ public class DeviceConfig {
     private int defaultSlideshowPages = 2000;
 
     private String defaultFontFileForChinese = "/system/fonts/OnyxCustomFont-Regular.ttf";
-
+    private String statisticsUrl = "http://dev.onyx-international.cn/api/1/";
     private String defaultAnnotationHighlightStyle = "Highlight";
     private Float[] defaultFontSizes = {20.0f, 24.0f, 28.0f, 32.0f, 36.0f, 40.0f, 44.0f, 48.0f};
 
@@ -181,8 +184,25 @@ public class DeviceConfig {
         return hasFrontLight;
     }
 
+    public boolean hasNaturalLight() {
+        return hasNaturalLight;
+    }
+
     public void setHasFrontLight(boolean hasFrontLight) {
         this.hasFrontLight = hasFrontLight;
+    }
+
+
+    public void setHasNaturalLight(boolean hasNaturalLight) {
+        this.hasNaturalLight = hasNaturalLight;
+    }
+
+    public boolean isRegalEnable() {
+        return regalEnable;
+    }
+
+    public void setRegalEnable(boolean regalEnable) {
+        this.regalEnable = regalEnable;
     }
 
     public Map<String, Map<String, JSONObject>> getKeyBinding() {
@@ -529,6 +549,14 @@ public class DeviceConfig {
 
     public void setChannel(String channel) {
         this.channel = channel;
+    }
+
+    public String getStatisticsUrl() {
+        return statisticsUrl;
+    }
+
+    public void setStatisticsUrl(String statisticsUrl) {
+        this.statisticsUrl = statisticsUrl;
     }
 }
 

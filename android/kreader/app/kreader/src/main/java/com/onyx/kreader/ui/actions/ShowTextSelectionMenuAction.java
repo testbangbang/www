@@ -47,7 +47,7 @@ public class ShowTextSelectionMenuAction{
             popupSelectionMenu = new PopupSelectionMenu(readerDataHolder, (RelativeLayout) readerActivity.findViewById(R.id.main_view), new PopupSelectionMenu.MenuCallback() {
                 @Override
                 public void resetSelection() {
-
+                    readerDataHolder.getSelectionManager().clear();
                 }
 
                 @Override
@@ -98,6 +98,15 @@ public class ShowTextSelectionMenuAction{
                     }
                     lookupInDictionary(readerActivity, readerDataHolder, text);
                     closeMenu();
+                }
+
+                @Override
+                public void startTts() {
+                    closeMenu();
+
+                    ReaderSelection readerSelection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
+                    String startPosition = readerSelection == null ? null : readerSelection.getStartPosition();
+                    new StartTtsAction(startPosition).execute(readerDataHolder, null);
                 }
 
                 @Override

@@ -11,10 +11,16 @@ import com.onyx.kreader.ui.handler.HandlerManager;
  */
 public class StartTtsAction extends BaseAction {
 
+    private String startPosition;
+
+    public StartTtsAction(final String startPosition) {
+        this.startPosition = startPosition;
+    }
+
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER);
-        Dialog dialog = new DialogTts(readerDataHolder);
+        Dialog dialog = new DialogTts(readerDataHolder, startPosition);
         dialog.show();
         readerDataHolder.addActiveDialog(dialog);
         BaseCallback.invoke(callback, null, null);

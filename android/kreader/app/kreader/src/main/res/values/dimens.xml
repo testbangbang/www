@@ -47,7 +47,6 @@
     <dimen name="ellipse_view_padding">6dp</dimen>
     <dimen name="dialog_tts_voice_height">150dp</dimen>
     <dimen name="dialog_search_edit_padding">7dp</dimen>
-    <dimen name="seebar_thumb_height">30dp</dimen>
     <dimen name="dialog_quick_preview_padding">5dp</dimen>
     <dimen name="move_point_offset_height">40dp</dimen>
     <dimen name="reflow_checkbox_height">12dp</dimen>
@@ -90,4 +89,8 @@
     <dimen name="fragment_read_record_padding">10dp</dimen>
     <dimen name="activity_statistics_item_text_size">18sp</dimen>
     <dimen name="activity_statistics_item_margin">5dp</dimen>
+    <dimen name="dialog_text_style_margin_left">20dp</dimen>
+    <dimen name="preview_item_page_text_size">15sp</dimen>
+    <dimen name="dialog_table_of_content_list_item_text_size">20sp</dimen>
+    <dimen name="dialog_search_list_item_page_text_size">20sp</dimen>
 </resources>

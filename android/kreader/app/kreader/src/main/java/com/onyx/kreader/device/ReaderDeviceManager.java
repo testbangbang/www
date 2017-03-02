@@ -5,7 +5,7 @@ import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.android.sdk.reader.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 /**
  * Created by Joy on 2016/5/6.
@@ -18,7 +18,7 @@ public class ReaderDeviceManager {
     private static int gcInterval;
     private static int refreshCount;
     private static boolean inFastUpdateMode = false;
-    private static boolean enableHoldDisplay = false;
+    private static boolean enableHoldDisplay = true;
 
     private final static EpdDevice epdDevice;
 
@@ -83,7 +83,12 @@ public class ReaderDeviceManager {
 
     public static boolean isUsingRegal(Context context) {
         boolean useRegal = SingletonSharedPreference.isEnableRegal(context);
-        return EpdController.supportRegal() && useRegal;
+        return supportRegal(context) && useRegal;
+    }
+
+    public static boolean supportRegal(final Context context) {
+        boolean regalEnable = DeviceConfig.sharedInstance(context).isRegalEnable();
+        return EpdController.supportRegal() && regalEnable;
     }
 
     public static void enableScreenUpdate(View view, boolean enable) {

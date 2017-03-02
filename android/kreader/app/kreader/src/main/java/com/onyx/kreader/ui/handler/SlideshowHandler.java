@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.PowerManager;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -24,7 +23,7 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogSlideshowStatistic;
 import com.onyx.kreader.ui.events.UpdateSlideshowEvent;
 import com.onyx.kreader.ui.view.SlideshowStatusBar;
-import com.onyx.android.sdk.reader.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 

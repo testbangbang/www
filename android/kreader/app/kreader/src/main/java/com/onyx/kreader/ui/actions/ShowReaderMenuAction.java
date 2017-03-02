@@ -18,6 +18,9 @@ import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
@@ -25,6 +28,7 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
+import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
@@ -51,6 +55,7 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderCropArgs;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogContrast;
@@ -84,7 +89,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
     private static List<String> fontFaces = new ArrayList<>();
     private static Map<Float, ReaderMenuAction> strokeMapping;
-
+    private static List<Integer> tocChapterNodeList;
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -98,6 +103,10 @@ public class ShowReaderMenuAction extends BaseAction {
             readerMenu.hide();
             readerMenu = null;
         }
+        if (tocChapterNodeList != null) {
+            tocChapterNodeList.clear();
+            tocChapterNodeList = null;
+        }
     }
 
     public static boolean isReaderMenuShown() {
@@ -108,6 +117,14 @@ public class ShowReaderMenuAction extends BaseAction {
         if (isReaderMenuShown()) {
             readerMenu.hide();
         }
+    }
+
+    public static List<Integer> getTocChapterNodeList() {
+        return tocChapterNodeList;
+    }
+
+    public static void setTocChapterNodeList(List<Integer> tocChapterNodeList) {
+        ShowReaderMenuAction.tocChapterNodeList = tocChapterNodeList;
     }
 
     private void showReaderMenu(final ReaderDataHolder readerDataHolder, boolean fullscreen) {
@@ -140,6 +157,10 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.FRONT_LIGHT);
         }
 
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).hasNaturalLight()) {
+            disableMenus.add(ReaderMenuAction.NATURAL_LIGHT);
+        }
+
         if (!readerDataHolder.supportTextPage()) {
             disableMenus.add(ReaderMenuAction.TTS);
         }
@@ -153,12 +174,10 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
             disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
-            disableMenus.add(ReaderMenuAction.GAMMA_CORRECTION);
             disableMenus.add(ReaderMenuAction.NOTE);
             disableMenus.add(ReaderMenuAction.NAVIGATION);
         } else if (!readerDataHolder.isFlowDocument()) {
             disableMenus.add(ReaderMenuAction.FONT);
-            disableMenus.add(ReaderMenuAction.GROUP_GAMMA_CORRECTION);
         }
 
         if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportBrushPen()) {
@@ -254,8 +273,10 @@ public class ShowReaderMenuAction extends BaseAction {
                         showNavigationSettingsDialog(readerDataHolder);
                         break;
                     case GAMMA_CORRECTION:
-                    case GROUP_GAMMA_CORRECTION:
                         adjustContrast(readerDataHolder);
+                        break;
+                    case MANUAL_CROP:
+                        manualCrop(readerDataHolder);
                         break;
                     case GLYPH_EMBOLDEN:
                         adjustEmbolden(readerDataHolder);
@@ -293,6 +314,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case FRONT_LIGHT:
                         showBrightnessDialog(readerDataHolder);
                         break;
+                    case NATURAL_LIGHT:
+                        showNaturalBrightnessDialog(readerDataHolder);
+                        break;
                     case GOTO_PAGE:
                         gotoPage(readerDataHolder);
                         break;
@@ -317,6 +341,12 @@ public class ShowReaderMenuAction extends BaseAction {
                     case EXIT:
                         readerDataHolder.getEventBus().post(new QuitEvent());
                         break;
+                    case PREV_CHAPTER:
+                        prepareGotoChapter(readerDataHolder, true);
+                        break;
+                    case NEXT_CHAPTER:
+                        prepareGotoChapter(readerDataHolder, false);
+                        break;
                 }
             }
 
@@ -325,7 +355,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 Debug.d("onMenuItemValueChanged: " + menuItem.getAction() + ", " + oldValue + ", " + newValue);
                 switch (menuItem.getAction()) {
                     case JUMP_PAGE:
-                        gotoPage(readerDataHolder, newValue);
+                        gotoPage(readerDataHolder, newValue, true);
                         break;
                 }
             }
@@ -337,7 +367,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
-        final ChangeOrientationAction action = new ChangeOrientationAction(readerActivity.getRequestedOrientation(), rotationOperation);
+        final ChangeOrientationAction action = new ChangeOrientationAction(DeviceUtils.getScreenOrientation(readerActivity), rotationOperation);
         action.execute(readerDataHolder, null);
     }
 
@@ -405,6 +435,12 @@ public class ShowReaderMenuAction extends BaseAction {
         switchPageNavigationMode(readerDataHolder, args);
     }
 
+    private void manualCrop(final ReaderDataHolder readerDataHolder) {
+        ReaderCropArgs navigationArgs = new ReaderCropArgs();
+        navigationArgs.setCropPageMode(ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE);
+        new ChangeNavigationSettingsAction(navigationArgs).execute(readerDataHolder, null);
+    }
+
     private void switchPageNavigationMode(final ReaderDataHolder readerDataHolder, NavigationArgs args) {
         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
         readerDataHolder.submitRenderRequest(request);
@@ -461,12 +497,20 @@ public class ShowReaderMenuAction extends BaseAction {
         new ForwardAction().execute(readerDataHolder, null);
     }
 
-    private void gotoPage(final ReaderDataHolder readerDataHolder, Object o) {
+    private void gotoPosition(final ReaderDataHolder readerDataHolder, Object o, final boolean abortPendingTasks) {
         if (o == null) {
             return;
         }
         int page = (int) o;
-        new GotoPageAction(page).execute(readerDataHolder);
+        new GotoPositionAction(page, abortPendingTasks).execute(readerDataHolder, null);
+    }
+
+    private void gotoPage(final ReaderDataHolder readerDataHolder, Object o, final boolean abortPendingTasks) {
+        if (o == null) {
+            return;
+        }
+        int page = (int) o;
+        new GotoPageAction(page, abortPendingTasks).execute(readerDataHolder);
     }
 
     private void showScreenRefreshDialog(final ReaderDataHolder readerDataHolder) {
@@ -491,6 +535,13 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showBrightnessDialog(ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         Dialog dlg = new DialogBrightness(readerDataHolder.getContext());
+        dlg.show();
+        readerDataHolder.addActiveDialog(dlg);
+    }
+
+    private void showNaturalBrightnessDialog(ReaderDataHolder readerDataHolder){
+        hideReaderMenu();
+        Dialog dlg = new DialogNaturalLightBrightness(readerDataHolder.getContext());
         dlg.show();
         readerDataHolder.addActiveDialog(dlg);
     }
@@ -545,9 +596,91 @@ public class ShowReaderMenuAction extends BaseAction {
         readerDataHolder.addActiveDialog(dlg);
     }
 
+    private void prepareGotoChapter(final ReaderDataHolder readerDataHolder, final boolean back) {
+        List<Integer> tocChapterNodeList = getTocChapterNodeList();
+        if (tocChapterNodeList == null) {
+            new GetTableOfContentAction().execute(readerDataHolder, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    BaseReaderRequest readerRequest = (BaseReaderRequest) request;
+                    ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
+                    boolean hasToc = toc != null && !toc.isEmpty();
+                    if (!hasToc) {
+                        Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.no_chapters), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    List<Integer> readTocChapterNodeList = TocUtils.buildChapterNodeList(toc);
+                    setTocChapterNodeList(readTocChapterNodeList);
+                    gotoChapter(readerDataHolder, back, readTocChapterNodeList);
+                }
+            });
+        }else {
+            gotoChapter(readerDataHolder, back, tocChapterNodeList);
+        }
+    }
+
+    private void gotoChapter(final ReaderDataHolder readerDataHolder, final boolean back, final List<Integer> tocChapterNodeList) {
+        if (tocChapterNodeList.size() <= 0) {
+            return;
+        }
+        int currentPagePosition = PagePositionUtils.getPosition(readerDataHolder.getCurrentPagePosition());
+        if (back && currentPagePosition <= tocChapterNodeList.get(0)) {
+            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.first_chapter), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!back && currentPagePosition >= tocChapterNodeList.get(tocChapterNodeList.size() - 1)) {
+            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.last_chapter), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int chapterPosition;
+        if (back) {
+            chapterPosition = getChapterPositionByPage(currentPagePosition, back, tocChapterNodeList);
+        } else {
+            chapterPosition = getChapterPositionByPage(currentPagePosition, back, tocChapterNodeList);
+        }
+        gotoPosition(readerDataHolder, chapterPosition, true);
+    }
+
+    private int getChapterPositionByPage(int pagePosition, boolean back, List<Integer> tocChapterNodeList) {
+        int size = tocChapterNodeList.size();
+        for (int i = 0; i < size; i++) {
+            if (pagePosition < tocChapterNodeList.get(i)) {
+                if (back) {
+                    int index = i - 1;
+                    if (index < 0) {
+                        return 0;
+                    }
+                    int position = tocChapterNodeList.get(Math.max(0, index));
+                    if (position < pagePosition) {
+                        return position;
+                    }else {
+                        return getChapterPositionByPage(pagePosition - 1, back, tocChapterNodeList);
+                    }
+                } else {
+                    int position = tocChapterNodeList.get(i);
+                    if (position > pagePosition) {
+                        return position;
+                    }else {
+                        return getChapterPositionByPage(pagePosition + 1, back, tocChapterNodeList);
+                    }
+                }
+
+            }
+        }
+
+        if (back) {
+            return pagePosition - 1;
+        } else {
+            return pagePosition + 1;
+        }
+
+    }
+
     private void showTtsDialog(final ReaderDataHolder readerDataHolder){
         hideReaderMenu();
-        StartTtsAction action = new StartTtsAction();
+        StartTtsAction action = new StartTtsAction(null);
         action.execute(readerDataHolder, null);
     }
 

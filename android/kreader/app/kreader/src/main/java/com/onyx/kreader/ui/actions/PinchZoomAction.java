@@ -22,6 +22,7 @@ import com.onyx.android.sdk.reader.host.request.ScaleRequest;
 import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.events.PinchZoomEvent;
 
 /**
@@ -171,6 +172,9 @@ public class PinchZoomAction extends BaseAction {
         new ChangeStyleAction(style).execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (e == null) {
+                    SingletonSharedPreference.setLastFontSize(lastFontSize);
+                }
             }
         });
         hideFontSizeInfo(readerDataHolder);

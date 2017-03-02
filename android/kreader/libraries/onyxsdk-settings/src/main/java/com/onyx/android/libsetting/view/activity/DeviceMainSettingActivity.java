@@ -83,7 +83,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                         intent = new Intent(DeviceMainSettingActivity.this, SecuritySettingActivity.class);
                         break;
                     case SettingCategory.STORAGE:
-                        intent = new Intent(DeviceMainSettingActivity.this, StorageSettingActivity.class);
+                        intent = config.getStorageSettingIntent(DeviceMainSettingActivity.this);
                         break;
                     case SettingCategory.LANGUAGE_AND_INPUT:
                         intent = new Intent(DeviceMainSettingActivity.this, LanguageInputSettingActivity.class);

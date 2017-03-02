@@ -12,8 +12,12 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
     <uses-permission android:name="com.onyx.android.dict.TOKEN_SEARCH" />
+
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
 
     <application
         android:icon="@drawable/icon"
@@ -32,18 +36,9 @@
 
         </activity>
 
-        <activity android:name=".ui.ReaderActivity"
+        <activity android:name=".ui.ReaderTabHostActivity"
                   android:launchMode="singleInstance"
                   android:configChanges="keyboardHidden|orientation|screenSize">
-
-            <meta-data
-                    android:name="android.app.searchable"
-                    android:resource="@xml/searchable" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -151,6 +146,74 @@
             </intent-filter>
 
         </activity>
+
+        <receiver android:name=".ui.ReaderTabHostBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.onyx.kreader.action.CHANGE_SCREEN_ORIENTATION" />
+                <action android:name="com.onyx.kreader.action.ENTER_FULL_SCREEN" />
+                <action android:name="com.onyx.kreader.action.QUIT_FULL_SCREEN" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".ui.ReaderTab1Activity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleInstance"
+            android:taskAffinity=""
+            android:process=":reader_tab_1"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+        </activity>
+
+        <receiver android:name=".ui.ReaderTab1BroadcastReceiver"
+            android:process=":reader_tab_1">
+            <intent-filter>
+                <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".ui.ReaderTab2Activity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleInstance"
+            android:taskAffinity=""
+            android:process=":reader_tab_2"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+        </activity>
+
+        <receiver android:name=".ui.ReaderTab2BroadcastReceiver"
+            android:process=":reader_tab_2">
+            <intent-filter>
+                <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".ui.ReaderTab3Activity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleInstance"
+            android:taskAffinity=""
+            android:process=":reader_tab_3"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+        </activity>
+
+        <receiver android:name=".ui.ReaderTab3BroadcastReceiver"
+            android:process=":reader_tab_3">
+            <intent-filter>
+                <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".ui.ReaderTab4Activity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleInstance"
+            android:taskAffinity=""
+            android:process=":reader_tab_4"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+        </activity>
+
+        <receiver android:name=".ui.ReaderTab4BroadcastReceiver"
+            android:process=":reader_tab_4">
+            <intent-filter>
+                <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
+            </intent-filter>
+        </receiver>
 
         <activity android:name="com.onyx.android.cropimage.CropImageActivity" />
 

@@ -14,6 +14,7 @@ import com.onyx.kreader.R;
  */
 public class PreviewViewHolder extends RecyclerView.ViewHolder {
     private int page;
+    private String pagePosition;
     private ImageView imageView;
     private TextView pageTextView;
     private TextView pageText;
@@ -41,12 +42,21 @@ public class PreviewViewHolder extends RecyclerView.ViewHolder {
         pageText.setText(String.valueOf(page + 1));
     }
 
+    public void bindPreview(Bitmap bitmap, int page, String pagePosition) {
+        bindPreview(bitmap, page);
+        this.pagePosition = pagePosition;
+    }
+
     public RelativeLayout getContainer() {
         return container;
     }
 
     public int getPage() {
         return page;
+    }
+
+    public String getPagePosition() {
+        return pagePosition;
     }
 
     public Bitmap getBitmap() {

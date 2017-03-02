@@ -14,6 +14,7 @@ import com.onyx.android.libsetting.data.SettingCategory;
 import com.onyx.android.libsetting.model.SettingItem;
 import com.onyx.android.libsetting.util.CommonUtil;
 import com.onyx.android.libsetting.util.Constant;
+import com.onyx.android.libsetting.view.activity.StorageSettingActivity;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 
@@ -30,6 +31,7 @@ import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_LANG
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_NETWORK_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_POWER_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_SECURITY_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_STORAGE_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_USER_SETTING_TAG;
 
 /**
@@ -57,9 +59,12 @@ public class SettingConfig {
         static private final String AUTO_POWER_OFF_KEY_TAG = "system_power_off_key";
         static private final String WIFI_INACTIVITY_KEY_TAG = "system_wifi_inactivity_key";
         static private final String ENABLE_KEY_BINDING_TAG = "enable_key_binding_key";
+        static private final String HIDE_VPN_SETTING_TAG = "hide_vpn_setting";
 
         static private final String HAS_FRONT_LIGHT_TAG = "has_front_light";
+        static private final String HAS_NATURAL_LIGHT_TAG = "has_natural_light";
 
+        static private final String USE_SYSTEM_STORAGE_PAGE_TAG = "use_system_storage_page";
     }
 
     static class Default {
@@ -326,6 +331,11 @@ public class SettingConfig {
                 new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS) : intent;
     }
 
+    public Intent getStorageSettingIntent(Context context) {
+        return isUseSystemStoragePage() ? new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS) :
+                new Intent(context, StorageSettingActivity.class);
+    }
+
     private List<String> getSettingItemTAGList() {
         if (settingItemTAGList == null) {
             settingItemTAGList = new ArrayList<>();
@@ -374,6 +384,7 @@ public class SettingConfig {
         settingItemTAGList.add(SETTING_ITEM_LANG_INPUT_TAG);
         settingItemTAGList.add(SETTING_ITEM_DATE_TIME_TAG);
         settingItemTAGList.add(SETTING_ITEM_APPLICATION_TAG);
+        settingItemTAGList.add(SETTING_ITEM_STORAGE_TAG);
         settingItemTAGList.add(SETTING_ITEM_SECURITY_TAG);
         settingItemTAGList.add(SETTING_ITEM_ERROR_REPORT_TAG);
     }
@@ -386,6 +397,7 @@ public class SettingConfig {
         settingIconsMap.put(SETTING_ITEM_LANG_INPUT_TAG, "ic_setting_language");
         settingIconsMap.put(SETTING_ITEM_DATE_TIME_TAG, "ic_setting_date");
         settingIconsMap.put(SETTING_ITEM_APPLICATION_TAG, "ic_setting_application");
+        settingIconsMap.put(SETTING_ITEM_STORAGE_TAG, "ic_setting_storage");
         settingIconsMap.put(SETTING_ITEM_SECURITY_TAG, "ic_security");
         settingIconsMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "ic_error_report");
     }
@@ -398,6 +410,7 @@ public class SettingConfig {
         settingTittleMap.put(SETTING_ITEM_LANG_INPUT_TAG, "setting_lang_input");
         settingTittleMap.put(SETTING_ITEM_DATE_TIME_TAG, "setting_date_time");
         settingTittleMap.put(SETTING_ITEM_APPLICATION_TAG, "setting_application");
+        settingTittleMap.put(SETTING_ITEM_STORAGE_TAG, "setting_storage");
         settingTittleMap.put(SETTING_ITEM_SECURITY_TAG, "setting_security");
         settingTittleMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "setting_error_report");
     }
@@ -426,6 +439,30 @@ public class SettingConfig {
         Boolean result = getData(Custom.HAS_FRONT_LIGHT_TAG, Boolean.class);
         if (result == null) {
             return false;
+        }
+        return result;
+    }
+
+    public boolean hasNaturalLight() {
+        Boolean result = getData(Custom.HAS_NATURAL_LIGHT_TAG, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
+    }
+
+    public boolean hideVPNSettings(){
+        Boolean result = getData(Custom.HIDE_VPN_SETTING_TAG, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
+    }
+
+    private boolean isUseSystemStoragePage(){
+        Boolean result = getData(Custom.USE_SYSTEM_STORAGE_PAGE_TAG, Boolean.class);
+        if (result == null) {
+            return true;
         }
         return result;
     }
