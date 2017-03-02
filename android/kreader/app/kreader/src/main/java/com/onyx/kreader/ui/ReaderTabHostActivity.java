@@ -407,7 +407,9 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     private void updateReaderTabWindowHeight() {
-        updateReaderTabWindowHeight(getCurrentTabInHost());
+        if (tabHost.getTabWidget().getTabCount() > 0) {
+            updateReaderTabWindowHeight(getCurrentTabInHost());
+        }
     }
 
     private void updateReaderTabWindowHeight(ReaderTabManager.ReaderTab tab) {
