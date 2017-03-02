@@ -10,7 +10,7 @@ import com.onyx.android.sdk.utils.StringUtils;
  */
 public class Debug {
     private static final String TAG = Debug.class.getSimpleName();
-    private static boolean debug = true;
+    private static boolean debug = false;
 
     public static void d(final String msg, final Object... args) {
         d(TAG, msg, args);
@@ -21,7 +21,7 @@ public class Debug {
     }
 
     public static void d(final String tag, final String msg, final Object... args) {
-        if (BuildConfig.DEBUG && debug) {
+        if (debug) {
             Log.d(verifyTag(tag), formatString(msg, args));
         }
     }
