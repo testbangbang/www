@@ -85,4 +85,5 @@
     <dimen name="seebar_thumb_height">30dp</dimen>
     <dimen name="menu_seek_bar_height">25dp</dimen>
     <dimen name="tree_item_text_size">20sp</dimen>
+    <dimen name="main_menu_page_progress_margin">5dp</dimen>
 </resources>
