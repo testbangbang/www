@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui;
 
 import com.alibaba.fastjson.JSON;
+import com.onyx.kreader.device.DeviceConfig;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -26,19 +27,20 @@ public class ReaderTabManager {
 
     private ReaderTabManager() {
         tabActivityList.put(ReaderTab.TAB_1, ReaderTab1Activity.class);
-        tabActivityList.put(ReaderTab.TAB_2, ReaderTab2Activity.class);
-        tabActivityList.put(ReaderTab.TAB_3, ReaderTab3Activity.class);
-        tabActivityList.put(ReaderTab.TAB_4, ReaderTab4Activity.class);
-
         tabReceiverList.put(ReaderTab.TAB_1, ReaderTab1BroadcastReceiver.class);
-        tabReceiverList.put(ReaderTab.TAB_2, ReaderTab2BroadcastReceiver.class);
-        tabReceiverList.put(ReaderTab.TAB_3, ReaderTab3BroadcastReceiver.class);
-        tabReceiverList.put(ReaderTab.TAB_4, ReaderTab4BroadcastReceiver.class);
-
         freeTabList.add(ReaderTab.TAB_1);
-        freeTabList.add(ReaderTab.TAB_2);
-        freeTabList.add(ReaderTab.TAB_3);
-        freeTabList.add(ReaderTab.TAB_4);
+
+        if (DeviceConfig.sharedInstance(KReaderApp.instance()).isSupportMultipleTabs()) {
+            tabActivityList.put(ReaderTab.TAB_2, ReaderTab2Activity.class);
+            tabActivityList.put(ReaderTab.TAB_3, ReaderTab3Activity.class);
+            tabActivityList.put(ReaderTab.TAB_4, ReaderTab4Activity.class);
+            tabReceiverList.put(ReaderTab.TAB_2, ReaderTab2BroadcastReceiver.class);
+            tabReceiverList.put(ReaderTab.TAB_3, ReaderTab3BroadcastReceiver.class);
+            tabReceiverList.put(ReaderTab.TAB_4, ReaderTab4BroadcastReceiver.class);
+            freeTabList.add(ReaderTab.TAB_2);
+            freeTabList.add(ReaderTab.TAB_3);
+            freeTabList.add(ReaderTab.TAB_4);
+        }
     }
 
     public static ReaderTabManager create() {
