@@ -26,16 +26,21 @@ public class PushStatisticsRequest extends BaseStatisticsRequest {
     private final static int MAX_PUSH_COUNT = 1000;
     private Context context;
     private List<OnyxStatisticsModel> saveStatistic;
+    private String url;
 
-    public PushStatisticsRequest(Context context, List<OnyxStatisticsModel> statistic) {
+    public PushStatisticsRequest(Context context, List<OnyxStatisticsModel> statistic, final String url) {
         this.context = context;
         this.saveStatistic = statistic;
+        this.url = url;
     }
 
     @Override
     public void execute(StatisticsCloudManager parent) throws Exception {
         if (saveStatistic != null) {
             StatisticsUtils.saveStatisticsList(context, saveStatistic);
+        }
+        if (StringUtils.isNullOrEmpty(url)) {
+            return;
         }
         if (!DeviceUtils.isWifiConnected(context)) {
             return;
@@ -52,7 +57,7 @@ public class PushStatisticsRequest extends BaseStatisticsRequest {
 
         Response<JsonRespone> response = null;
         try {
-            response = executeCall(ServiceFactory.getStatisticsService(Constant.STATISTICS_API_BASE).pushStatistics(statisticsModels));
+            response = executeCall(ServiceFactory.getStatisticsService(url).pushStatistics(statisticsModels));
         } catch (Exception e) {
 
         }

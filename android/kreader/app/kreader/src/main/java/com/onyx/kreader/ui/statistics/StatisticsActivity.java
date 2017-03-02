@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.statistics;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,11 +17,16 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.data.StatisticsCloudManager;
 import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.data.request.cloud.GetStatisticsRequest;
+import com.onyx.android.sdk.data.request.cloud.PushStatisticsRequest;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.dialog.DialogLoading;
+import com.onyx.kreader.ui.receiver.NetworkConnectChangedReceiver;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,6 +36,8 @@ import butterknife.ButterKnife;
  */
 
 public class StatisticsActivity extends ActionBarActivity {
+
+    private static final String TAG = "StatisticsActivity";
 
     @Bind(R.id.back_icon)
     ImageView backIcon;
@@ -40,9 +49,11 @@ public class StatisticsActivity extends ActionBarActivity {
     TextView page;
 
     private CloudStore cloudStore;
+    private StatisticsCloudManager cloudManager;
     private DataStatisticsFragment dataStatisticsFragment;
     private ReadRecordFragment readRecordFragment;
     private DialogLoading dialogLoading;
+    private NetworkConnectChangedReceiver networkConnectChangedReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,6 +62,8 @@ public class StatisticsActivity extends ActionBarActivity {
         ButterKnife.bind(this);
         initView();
         initData();
+        registerReceiver();
+        DeviceUtils.toggleWiFi(this, true);
     }
 
     private void initView() {
@@ -91,15 +104,39 @@ public class StatisticsActivity extends ActionBarActivity {
         });
     }
 
-    private void initData() {
-        cloudStore = new CloudStore();
-        dataStatisticsFragment = DataStatisticsFragment.newInstance();
-        readRecordFragment = ReadRecordFragment.newInstance();
+    private void registerReceiver() {
+        networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
+            @Override
+            public void onNetworkChanged(boolean connected, int networkType) {
+                if (connected) {
+                    pushStatistics();
+                    pullStatistics();
+                }
+            }
+        });
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(networkConnectChangedReceiver, filter);
+    }
+
+    private void pushStatistics() {
+        Log.d(TAG, "pushStatistics: ");
+        final PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(this, null, DeviceConfig.sharedInstance(this).getStatisticsUrl());
+        getCloudManager().submitRequest(this, statisticsRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+
+            }
+        });
+    }
+
+    private void pullStatistics() {
+        Log.d(TAG, "pullStatistics: ");
         dialogLoading = new DialogLoading(this,
                 getString(R.string.loading), false, null);
         dialogLoading.show();
-        final GetStatisticsRequest statisticsRequest = new GetStatisticsRequest(this);
-        cloudStore.submitRequest(this, statisticsRequest, new BaseCallback() {
+        final GetStatisticsRequest statisticsRequest = new GetStatisticsRequest(this, DeviceConfig.sharedInstance(this).getStatisticsUrl());
+        getCloudStore().submitRequest(this, statisticsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (dialogLoading != null) {
@@ -116,6 +153,25 @@ public class StatisticsActivity extends ActionBarActivity {
         });
     }
 
+    private CloudStore getCloudStore() {
+        if (cloudStore == null) {
+            cloudStore = new CloudStore();
+        }
+        return cloudStore;
+    }
+
+    private StatisticsCloudManager getCloudManager() {
+        if (cloudManager == null) {
+            cloudManager = new StatisticsCloudManager();
+        }
+        return cloudManager;
+    }
+
+    private void initData() {
+        dataStatisticsFragment = DataStatisticsFragment.newInstance();
+        readRecordFragment = ReadRecordFragment.newInstance();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -124,6 +180,9 @@ public class StatisticsActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (networkConnectChangedReceiver != null) {
+            unregisterReceiver(networkConnectChangedReceiver);
+        }
         ButterKnife.unbind(this);
     }
 
