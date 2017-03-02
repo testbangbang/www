@@ -23,7 +23,7 @@ import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
-import com.onyx.android.sdk.reader.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 /**
  * Created by zhuzeng on 5/17/16.
