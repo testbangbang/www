@@ -367,7 +367,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
-        final ChangeOrientationAction action = new ChangeOrientationAction(readerActivity.getRequestedOrientation(), rotationOperation);
+        final ChangeOrientationAction action = new ChangeOrientationAction(DeviceUtils.getScreenOrientation(readerActivity), rotationOperation);
         action.execute(readerDataHolder, null);
     }
 

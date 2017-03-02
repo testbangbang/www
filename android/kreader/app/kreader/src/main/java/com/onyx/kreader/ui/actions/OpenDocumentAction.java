@@ -89,9 +89,10 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup(readerDataHolder);
                     return;
                 }
-                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
-                    return;
-                }
+                // ignore document's orientation temporary for multi-document
+//                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
+//                    return;
+//                }
                 openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
             }
         });

@@ -1,7 +1,7 @@
 package com.onyx.kreader.ui;
 
 import android.Manifest;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -16,9 +16,9 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -27,6 +27,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -37,15 +38,16 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
-import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
-import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
@@ -78,6 +80,7 @@ import com.onyx.kreader.ui.events.PinchZoomEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
+import com.onyx.kreader.ui.events.ResizeReaderWindowEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
@@ -96,8 +99,6 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.receiver.NetworkConnectChangedReceiver;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
-import com.onyx.kreader.device.DeviceConfig;
-import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -106,7 +107,7 @@ import java.util.List;
 /**
  * Created by Joy on 2016/4/14.
  */
-public class ReaderActivity extends ActionBarActivity {
+public class ReaderActivity extends Activity {
     private static final String DOCUMENT_PATH_TAG = "document";
 
     private PowerManager.WakeLock startupWakeLock;
@@ -135,6 +136,7 @@ public class ReaderActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
         setContentView(R.layout.activity_reader);
+        initWindow();
         initComponents();
     }
 
@@ -142,29 +144,6 @@ public class ReaderActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         afterResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        disablePenShortcut();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        final ViewTreeObserver observer = surfaceView.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-            @Override
-            public void onGlobalLayout() {
-                TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
-                if (!getReaderDataHolder().isDocumentOpened()) {
-                    openFileFromIntentImpl();
-                }
-            }
-        });
-
-        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -188,6 +167,15 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onPause() {
+        disablePenShortcut();
+        if (getReaderDataHolder().isDocumentOpened()) {
+            new SaveDocumentOptionsAction().execute(getReaderDataHolder(), null);
+        }
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         if (networkConnectChangedReceiver !=null) {
             unregisterReceiver(networkConnectChangedReceiver);
@@ -198,6 +186,23 @@ public class ReaderActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        final ViewTreeObserver observer = surfaceView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
+                if (!getReaderDataHolder().isDocumentOpened()) {
+                    openFileFromIntentImpl();
+                }
+            }
+        });
+
+        super.onConfigurationChanged(newConfig);
+    }
+
     private void resetMenus() {
         hideAllPopupMenu(null);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
@@ -206,12 +211,24 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            onBackPressed();
+            return true;
+        }
         return processKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         return processKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
     }
 
     private final ReaderDataHolder getReaderDataHolder() {
@@ -237,6 +254,16 @@ public class ReaderActivity extends ActionBarActivity {
     private void beforeSetContentView() {
         boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
         DeviceUtils.setFullScreenOnCreate(this, fullScreen);
+    }
+
+    private void initWindow() {
+        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+        layoutParams.gravity = Gravity.BOTTOM;
+        layoutParams.height = getIntent().getIntExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, WindowManager.LayoutParams.MATCH_PARENT);
+        layoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+        getWindow().setAttributes(layoutParams);
+
+        Debug.d(getClass(), "target window height:" + layoutParams.height);
     }
 
     private void initComponents() {
@@ -622,11 +649,7 @@ public class ReaderActivity extends ActionBarActivity {
     private boolean handleActivityIntent() {
         try {
             String action = getIntent().getAction();
-            if (StringUtils.isNullOrEmpty(action)) {
-                openBuiltInDoc();
-            } else if (action.equals(Intent.ACTION_MAIN)) {
-                quitApplication(null);
-            } else if (action.equals(Intent.ACTION_VIEW)) {
+            if (action.equals(Intent.ACTION_VIEW)) {
                 handleViewActionIntent();
             }
             return true;
@@ -753,6 +776,12 @@ public class ReaderActivity extends ActionBarActivity {
         prepareFrontLight();
     }
 
+    @Subscribe
+    public void onResizeReaderWindow(final ResizeReaderWindowEvent event) {
+        Debug.d(getClass(), "onResizeReaderWindow: " + event.width + ", " + event.height);
+        getWindow().setLayout(event.width, event.height);
+    }
+
     private void prepareGCUpdateInterval() {
         int value = DeviceConfig.sharedInstance(this).getGcInterval();
         if (value <= 0) {
@@ -771,7 +800,11 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void onChangeOrientation(final ChangeOrientationEvent event) {
-        setRequestedOrientation(event.getOrientation());
+//        setRequestedOrientation(event.getOrientation());
+        Intent intent = new Intent(this, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ReaderTabHostBroadcastReceiver.ACTION_CHANGE_SCREEN_ORIENTATION);
+        intent.putExtra(ReaderTabHostBroadcastReceiver.TAG_SCREEN_ORIENTATION, event.getOrientation());
+        sendBroadcast(intent);
     }
 
     @Subscribe
@@ -881,6 +914,7 @@ public class ReaderActivity extends ActionBarActivity {
 
     @Subscribe
     public void quitApplication(final QuitEvent event) {
+        Debug.d(getClass(), "quitApplication");
         enablePost(true);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         final CloseActionChain closeAction = new CloseActionChain();
@@ -963,7 +997,11 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     public void setFullScreen(boolean fullScreen) {
-        DeviceUtils.setFullScreenOnResume(this, fullScreen);
+        Intent intent = new Intent(this, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(fullScreen ?
+                ReaderTabHostBroadcastReceiver.ACTION_ENTER_FULL_SCREEN :
+                ReaderTabHostBroadcastReceiver.ACTION_QUIT_FULL_SCREEN);
+        sendBroadcast(intent);
     }
 
     public SurfaceView getSurfaceView() {
