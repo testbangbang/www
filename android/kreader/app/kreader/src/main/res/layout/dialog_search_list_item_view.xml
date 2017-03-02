@@ -20,6 +20,7 @@
         android:layout_height="match_parent"/>
 
     <TextView
+        android:textSize="22sp"
         android:layout_above="@+id/split_line"
         android:textColor="@color/normal_black"
         android:gravity="right"
