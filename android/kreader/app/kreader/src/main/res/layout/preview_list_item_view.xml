@@ -40,7 +40,7 @@
             android:id="@+id/btn_page"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:textSize="15sp"
+            android:textSize="@dimen/preview_item_page_text_size"
             android:textColor="@android:color/white"
             android:text="1"
             android:gravity="center"

@@ -22,7 +22,6 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:padding="1dp"
                 android:focusable="true"
                 android:background="@drawable/quick_view_item_bg"
                 android:id="@+id/image_view_one_grids"
@@ -36,7 +35,6 @@
                 android:layout_height="match_parent"/>
 
             <ImageView
-                android:padding="1dp"
                 android:focusable="true"
                 android:background="@drawable/quick_view_item_bg"
                 android:id="@+id/image_view_four_grids"
@@ -50,7 +48,6 @@
                 android:layout_height="match_parent"/>
 
             <ImageView
-                android:padding="1dp"
                 android:focusable="true"
                 android:background="@drawable/quick_view_item_bg"
                 android:id="@+id/image_view_nine_grids"
