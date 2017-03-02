@@ -165,7 +165,8 @@
         <receiver android:name=".ui.ReaderTab1BroadcastReceiver"
             android:process=":reader_tab_1">
             <intent-filter>
-                <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
+                <action android:name="com.onyx.kreader.action.CLOSE_READER" />
+                <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
             </intent-filter>
         </receiver>
 
@@ -180,7 +181,8 @@
         <receiver android:name=".ui.ReaderTab2BroadcastReceiver"
             android:process=":reader_tab_2">
             <intent-filter>
-                <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
+                <action android:name="com.onyx.kreader.action.CLOSE_READER" />
+                <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
             </intent-filter>
         </receiver>
 
@@ -195,7 +197,8 @@
         <receiver android:name=".ui.ReaderTab3BroadcastReceiver"
             android:process=":reader_tab_3">
             <intent-filter>
-                <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
+                <action android:name="com.onyx.kreader.action.CLOSE_READER" />
+                <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
             </intent-filter>
         </receiver>
 
@@ -210,7 +213,8 @@
         <receiver android:name=".ui.ReaderTab4BroadcastReceiver"
             android:process=":reader_tab_4">
             <intent-filter>
-                <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
+                <action android:name="com.onyx.kreader.action.CLOSE_READER" />
+                <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
             </intent-filter>
         </receiver>
 

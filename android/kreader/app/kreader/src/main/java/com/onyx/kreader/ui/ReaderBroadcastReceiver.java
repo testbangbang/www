@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.ResizeReaderWindowEvent;
 
@@ -17,7 +16,7 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class ReaderBroadcastReceiver extends BroadcastReceiver {
-    public static final String ACTION_CLOSE = "com.onyx.kreader.action.CLOSE";
+    public static final String ACTION_CLOSE_READER = "com.onyx.kreader.action.CLOSE_READER";
     public static final String ACTION_RESIZE_WINDOW = "com.onyx.kreader.action.RESIZE_WINDOW";
 
     public static final String TAG_WINDOW_WIDTH = "com.onyx.kreader.WINDOW_WIDTH";
@@ -32,7 +31,7 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(getClass().getSimpleName(), "onReceive: " + intent);
-        if (intent.getAction().equals(ACTION_CLOSE)) {
+        if (intent.getAction().equals(ACTION_CLOSE_READER)) {
             if (eventBus != null) {
                 eventBus.post(new QuitEvent());
             }

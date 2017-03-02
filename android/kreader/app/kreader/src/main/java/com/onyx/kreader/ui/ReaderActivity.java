@@ -914,7 +914,6 @@ public class ReaderActivity extends Activity {
 
     @Subscribe
     public void quitApplication(final QuitEvent event) {
-        Debug.d(getClass(), "quitApplication");
         enablePost(true);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         final CloseActionChain closeAction = new CloseActionChain();
