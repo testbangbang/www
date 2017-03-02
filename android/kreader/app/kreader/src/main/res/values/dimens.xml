@@ -92,4 +92,5 @@
     <dimen name="dialog_text_style_margin_left">20dp</dimen>
     <dimen name="preview_item_page_text_size">15sp</dimen>
     <dimen name="dialog_table_of_content_list_item_text_size">20sp</dimen>
+    <dimen name="dialog_search_list_item_page_text_size">20sp</dimen>
 </resources>
