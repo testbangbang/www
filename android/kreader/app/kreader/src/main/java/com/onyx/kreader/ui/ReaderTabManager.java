@@ -25,15 +25,15 @@ public class ReaderTabManager {
     private LinkedHashMap<ReaderTab, String> openedTabs = new LinkedHashMap<>();
 
     private ReaderTabManager() {
-        tabActivityList.put(ReaderTab.TAB_1, Reader_Tab_1_Activity.class);
-        tabActivityList.put(ReaderTab.TAB_2, Reader_Tab_2_Activity.class);
-        tabActivityList.put(ReaderTab.TAB_3, Reader_Tab_3_Activity.class);
-        tabActivityList.put(ReaderTab.TAB_4, Reader_Tab_4_Activity.class);
+        tabActivityList.put(ReaderTab.TAB_1, ReaderTab1Activity.class);
+        tabActivityList.put(ReaderTab.TAB_2, ReaderTab2Activity.class);
+        tabActivityList.put(ReaderTab.TAB_3, ReaderTab3Activity.class);
+        tabActivityList.put(ReaderTab.TAB_4, ReaderTab4Activity.class);
 
-        tabReceiverList.put(ReaderTab.TAB_1, Reader_Tab_1_BroadcastReceiver.class);
-        tabReceiverList.put(ReaderTab.TAB_2, Reader_Tab_2_BroadcastReceiver.class);
-        tabReceiverList.put(ReaderTab.TAB_3, Reader_Tab_3_BroadcastReceiver.class);
-        tabReceiverList.put(ReaderTab.TAB_4, Reader_Tab_4_BroadcastReceiver.class);
+        tabReceiverList.put(ReaderTab.TAB_1, ReaderTab1BroadcastReceiver.class);
+        tabReceiverList.put(ReaderTab.TAB_2, ReaderTab2BroadcastReceiver.class);
+        tabReceiverList.put(ReaderTab.TAB_3, ReaderTab3BroadcastReceiver.class);
+        tabReceiverList.put(ReaderTab.TAB_4, ReaderTab4BroadcastReceiver.class);
 
         freeTabList.add(ReaderTab.TAB_1);
         freeTabList.add(ReaderTab.TAB_2);

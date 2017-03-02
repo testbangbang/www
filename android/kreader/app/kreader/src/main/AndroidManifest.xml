@@ -154,7 +154,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.Reader_Tab_1_Activity"
+        <activity android:name=".ui.ReaderTab1Activity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:launchMode="singleInstance"
             android:taskAffinity=""
@@ -162,14 +162,14 @@
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
 
-        <receiver android:name=".ui.Reader_Tab_1_BroadcastReceiver"
+        <receiver android:name=".ui.ReaderTab1BroadcastReceiver"
             android:process=":reader_tab_1">
             <intent-filter>
                 <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.Reader_Tab_2_Activity"
+        <activity android:name=".ui.ReaderTab2Activity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:launchMode="singleInstance"
             android:taskAffinity=""
@@ -177,14 +177,14 @@
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
 
-        <receiver android:name=".ui.Reader_Tab_2_BroadcastReceiver"
+        <receiver android:name=".ui.ReaderTab2BroadcastReceiver"
             android:process=":reader_tab_2">
             <intent-filter>
                 <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.Reader_Tab_3_Activity"
+        <activity android:name=".ui.ReaderTab3Activity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:launchMode="singleInstance"
             android:taskAffinity=""
@@ -192,14 +192,14 @@
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
 
-        <receiver android:name=".ui.Reader_Tab_3_BroadcastReceiver"
+        <receiver android:name=".ui.ReaderTab3BroadcastReceiver"
             android:process=":reader_tab_3">
             <intent-filter>
                 <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.Reader_Tab_4_Activity"
+        <activity android:name=".ui.ReaderTab4Activity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:launchMode="singleInstance"
             android:taskAffinity=""
@@ -207,7 +207,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
 
-        <receiver android:name=".ui.Reader_Tab_4_BroadcastReceiver"
+        <receiver android:name=".ui.ReaderTab4BroadcastReceiver"
             android:process=":reader_tab_4">
             <intent-filter>
                 <action android:name="com.onyx.kreader.ui.ReaderActivity.action_close" />
