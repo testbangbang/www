@@ -19,6 +19,7 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
     private static final String TAG = "NetworkConnectChangedRe";
     public interface NetworkChangedListener {
         void onNetworkChanged(boolean connected, int networkType);
+        void onNoNetwork();
     }
 
     private NetworkChangedListener networkChangedListener;
@@ -39,6 +40,10 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
             if (activeNetwork != null) { // connected to the internet
                 if (networkChangedListener != null) {
                     networkChangedListener.onNetworkChanged(activeNetwork.isConnected(), activeNetwork.getType());
+                }
+            }else {
+                if (networkChangedListener != null) {
+                    networkChangedListener.onNoNetwork();
                 }
             }
 

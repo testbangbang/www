@@ -251,6 +251,11 @@ public class ReaderActivity extends ActionBarActivity {
             public void onNetworkChanged(boolean connected, int networkType) {
                 getReaderDataHolder().onNetworkChanged(connected, networkType);
             }
+
+            @Override
+            public void onNoNetwork() {
+
+            }
         });
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
