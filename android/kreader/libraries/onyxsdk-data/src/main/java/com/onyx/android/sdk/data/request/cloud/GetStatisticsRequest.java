@@ -203,7 +203,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
                 beginTime = statisticsModels.get(0).getEventTime();
                 book.setBegin(beginTime);
             }
-            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5short, BaseStatisticsModel.DATA_TYPE_CLOSE, false);
+            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5short, false);
             if (statisticsModels != null && statisticsModels.size() > 0) {
                 endTime = statisticsModels.get(0).getEventTime();
                 book.setEnd(endTime);

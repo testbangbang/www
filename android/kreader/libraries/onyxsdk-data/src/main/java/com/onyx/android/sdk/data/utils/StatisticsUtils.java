@@ -171,6 +171,15 @@ public class StatisticsUtils {
 
     public static Collection<OnyxStatisticsModel> loadStatisticsListOrderByTime(final Context context,
                                                                                 final String md5short,
+                                                                                final boolean ascending) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.md5short.eq(md5short)).orderBy(OnyxStatisticsModel_Table.eventTime, ascending);
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsListOrderByTime(final Context context,
+                                                                                final String md5short,
                                                                                 final int type,
                                                                                 final boolean ascending) {
         Select select = new Select();
