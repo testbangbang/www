@@ -980,7 +980,7 @@ public class ReaderActivity extends Activity {
                 title = getReaderDataHolder().getBookTitle();
             }
         }
-        int endBatteryPercent = com.onyx.android.sdk.reader.utils.DeviceUtils.getBatteryPecentLevel(getReaderDataHolder().getContext());
+        int endBatteryPercent = DeviceUtils.getBatteryPecentLevel(getReaderDataHolder().getContext());
         statusBar.updateStatusBar(new ReaderStatusInfo(pageRect, displayRect,
                 current, total, endBatteryPercent, title));
     }

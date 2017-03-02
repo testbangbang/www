@@ -93,7 +93,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
 
     private int gcInterval = 0;
 
-    public DialogTts(ReaderDataHolder readerDataHolder) {
+    public DialogTts(ReaderDataHolder readerDataHolder, String startPosition) {
         super(readerDataHolder.getContext(), R.style.dialog_transparent_no_title);
         setContentView(R.layout.dialog_tts);
 
@@ -101,6 +101,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         readerDataHolder.getEventBus().register(this);
 
         ttsHandler = (TtsHandler) readerDataHolder.getHandlerManager().getActiveProvider();
+        ttsHandler.setInitialPosition(startPosition);
 
         ButterKnife.bind(this);
         fitDialogToWindow();

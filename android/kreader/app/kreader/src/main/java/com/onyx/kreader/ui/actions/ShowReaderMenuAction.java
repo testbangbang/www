@@ -680,7 +680,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void showTtsDialog(final ReaderDataHolder readerDataHolder){
         hideReaderMenu();
-        StartTtsAction action = new StartTtsAction();
+        StartTtsAction action = new StartTtsAction(null);
         action.execute(readerDataHolder, null);
     }
 

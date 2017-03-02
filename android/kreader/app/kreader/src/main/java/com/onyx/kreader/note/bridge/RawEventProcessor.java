@@ -13,7 +13,7 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.kreader.note.NoteManager;
-import com.onyx.android.sdk.reader.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
