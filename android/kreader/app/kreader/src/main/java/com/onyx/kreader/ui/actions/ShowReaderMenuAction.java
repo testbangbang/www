@@ -338,6 +338,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         startNoteDrawing(readerDataHolder, readerActivity);
                         break;
                     case EXIT:
+                        hideReaderMenu();
                         readerDataHolder.getEventBus().post(new QuitEvent());
                         break;
                     case PREV_CHAPTER:

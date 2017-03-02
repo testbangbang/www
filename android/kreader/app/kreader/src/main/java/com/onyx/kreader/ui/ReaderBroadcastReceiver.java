@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.ResizeReaderWindowEvent;
 
@@ -33,7 +34,7 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         Log.d(getClass().getSimpleName(), "onReceive: " + intent);
         if (intent.getAction().equals(ACTION_CLOSE_READER)) {
             if (eventBus != null) {
-                eventBus.post(new QuitEvent());
+                eventBus.post(new ForceCloseEvent());
             }
         } else if (intent.getAction().equals(ACTION_RESIZE_WINDOW)) {
             if (eventBus != null) {

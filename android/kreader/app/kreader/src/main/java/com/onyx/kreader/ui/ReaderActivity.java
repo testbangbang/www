@@ -74,6 +74,7 @@ import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
 import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
+import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.HomeClickEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
 import com.onyx.kreader.ui.events.PinchZoomEvent;
@@ -182,7 +183,7 @@ public class ReaderActivity extends Activity {
         }
         ReaderActivity.super.onDestroy();
         if (getReaderDataHolder().isDocumentOpened()) {
-            quitApplication(null);
+            forceCloseApplication(null);
         }
     }
 
@@ -914,6 +915,11 @@ public class ReaderActivity extends Activity {
 
     @Subscribe
     public void quitApplication(final QuitEvent event) {
+        onBackPressed();
+    }
+
+    @Subscribe
+    public void forceCloseApplication(final ForceCloseEvent event) {
         enablePost(true);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         final CloseActionChain closeAction = new CloseActionChain();
@@ -939,10 +945,7 @@ public class ReaderActivity extends Activity {
     }
 
     private void postFinish() {
-        boolean exit = DeviceConfig.sharedInstance(this).isExitAfterFinish();
-        if (exit) {
-            DeviceUtils.exit();
-        }
+        DeviceUtils.exit();
     }
 
     private boolean hasPopupWindow() {
