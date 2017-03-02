@@ -41,6 +41,8 @@ public class EventReceiver {
                 args.put(StatisticsBase.CHANNEL_TAG, channel);
                 break;
             case Onyx:
+                final String url = DeviceConfig.sharedInstance(context).getStatisticsUrl();
+                args.put(StatisticsBase.STATISTICS_URL, url);
                 break;
         }
 

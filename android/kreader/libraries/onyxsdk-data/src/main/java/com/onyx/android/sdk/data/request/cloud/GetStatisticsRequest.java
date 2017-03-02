@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -30,9 +31,11 @@ public class GetStatisticsRequest extends BaseCloudRequest {
 
     private Context context;
     private StatisticsResult statisticsResult;
+    private String url;
 
-    public GetStatisticsRequest(Context context) {
+    public GetStatisticsRequest(final Context context, final String url) {
         this.context = context;
+        this.url = url;
     }
 
     @Override
@@ -46,7 +49,14 @@ public class GetStatisticsRequest extends BaseCloudRequest {
     }
 
     private void readCloudData(CloudManager parent) throws Exception {
-        Response<StatisticsResult> response = executeCall(ServiceFactory.getStatisticsService(parent.getCloudConf().getStatistics()).getStatistics(DeviceUtils.getMacAddress(context)));
+        if (StringUtils.isNullOrEmpty(url)) {
+            return;
+        }
+        String mac = DeviceUtils.getMacAddress(context);
+        if (StringUtils.isNullOrEmpty(mac)) {
+            return;
+        }
+        Response<StatisticsResult> response = executeCall(ServiceFactory.getStatisticsService(url).getStatistics(mac));
         if (response != null && response.isSuccessful()) {
             statisticsResult = response.body();
             statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());

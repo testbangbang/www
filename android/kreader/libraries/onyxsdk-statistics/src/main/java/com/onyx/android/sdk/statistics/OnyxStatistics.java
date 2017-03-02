@@ -33,6 +33,7 @@ public class OnyxStatistics implements StatisticsBase {
     private String sessionId;
     private String md5;
     private String md5short;
+    private String url;
 
     private List<OnyxStatisticsModel> statisticsQueue;
 
@@ -40,6 +41,7 @@ public class OnyxStatistics implements StatisticsBase {
     public boolean init(Context context, Map<String, String> args) {
         cloudManager = new StatisticsCloudManager();
         statisticsQueue = new ArrayList<>();
+        url = args.get(STATISTICS_URL);
         return true;
     }
 
@@ -55,7 +57,7 @@ public class OnyxStatistics implements StatisticsBase {
     }
 
     private void flushStatistics(final Context context) {
-        PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(context, statisticsQueue);
+        PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(context, statisticsQueue, url);
         statisticsQueue = new ArrayList<>();
         cloudManager.submitRequest(context, statisticsRequest, null);
     }
