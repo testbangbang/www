@@ -47,7 +47,7 @@ public class ShowTextSelectionMenuAction{
             popupSelectionMenu = new PopupSelectionMenu(readerDataHolder, (RelativeLayout) readerActivity.findViewById(R.id.main_view), new PopupSelectionMenu.MenuCallback() {
                 @Override
                 public void resetSelection() {
-
+                    readerDataHolder.getSelectionManager().clear();
                 }
 
                 @Override
