@@ -88,6 +88,7 @@
                 <data android:mimeType="application/x-fictionbook+zip" />
                 <data android:mimeType="application/epub+zip" />
                 <data android:mimeType="application/epub" />
+                <data android:mimeType="application/JEB" />
                 <data android:mimeType="application/x-mobipocket-ebook" />
                 <data android:mimeType="application/azw3" />
                 <data android:mimeType="application/mobi" />
@@ -134,6 +135,7 @@
                 <data android:pathPattern=".*\\.txt"/>
                 <data android:pathPattern=".*\\.[eE][pP][uU][bB]"/>
                 <data android:pathPattern=".*\\.epub"/>
+                <data android:pathPattern=".*\\.JEB"/>
                 <data android:pathPattern=".*\\.rtf"/>
                 <data android:pathPattern=".*\\.odt"/>
                 <data android:pathPattern=".*\\.doc"/>

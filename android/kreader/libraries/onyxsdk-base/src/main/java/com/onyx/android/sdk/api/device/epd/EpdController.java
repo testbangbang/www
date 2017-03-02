@@ -196,4 +196,12 @@ public abstract class EpdController
     public static void enableA2ForSpecificView(View view) {
         Device.currentDevice().enableA2ForSpecificView(view);
     }
+
+    public static float getTouchWidth() {
+        return Device.currentDevice().getTouchWidth();
+    }
+
+    public static float getTouchHeight() {
+        return Device.currentDevice().getTouchHeight();
+    }
 }

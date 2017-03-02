@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
+import com.jingdong.app.reader.epub.paging.DecryptHelper;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_FILE_TYPE;
 import com.neverland.engbook.forpublic.AlIntHolder;
@@ -31,7 +32,7 @@ public class AlFilesZIP extends AlFiles {
 	private int		zip_out_buff_size;
 	private final byte[]	zip_in_buff = new byte [ZIP_CHUNK_SIZE];
 	private final byte[] 	zip_out_buff = new byte [ZIP_CHUNK_SIZE];
-	
+
 	static public TAL_FILE_TYPE isZIPFile(String fName, AlFiles a, ArrayList<AlFileZipEntry> fList, String ext) {
 		TAL_FILE_TYPE res = TAL_FILE_TYPE.TXT;
 
@@ -146,7 +147,7 @@ public class AlFilesZIP extends AlFiles {
 				}				
 							
 				AlFileZipEntry of = new AlFileZipEntry();
-				
+
 				of.compress = zipLCD.compressed;
 				of.cSize = (int) zipLCD.csize;
 				of.uSize = (int) zipLCD.usize;
@@ -164,6 +165,7 @@ public class AlFilesZIP extends AlFiles {
 
 				of.name = newName.toString();
 
+
 				/*if (ext != null && (ext.equalsIgnoreCase(".odt") || ext.equalsIgnoreCase(".sxw")) && zipLCD.fName.equalsIgnoreCase(FIRSTNAME_ODT))
 					res = ArchiveType.ODT;*/
 				if ((ext == null || ext.equalsIgnoreCase(".odt") || ext.equalsIgnoreCase(".sxw")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_ODT))
@@ -174,6 +176,15 @@ public class AlFilesZIP extends AlFiles {
 					res = TAL_FILE_TYPE.EPUB;
 				if ((ext == null || ext.equalsIgnoreCase(".fb3")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_FB3))
 					res = TAL_FILE_TYPE.FB3;
+				if ((ext == null || ext.equalsIgnoreCase(".JEB"))) {
+					res = TAL_FILE_TYPE.JEB;
+					if(of.compress == 8) {
+						of.uSize = JEBFilesZIP.gitCompressDataSize(a, zipLCD.offset, zipLCD.csize, zipLCD.usize);
+						if(of.uSize <= 0){
+							of.uSize = (int) zipLCD.usize;
+						}
+					}
+				}
 
 				fList.add(of);
 				

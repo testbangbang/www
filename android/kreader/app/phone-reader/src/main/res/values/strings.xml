@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">PhoneReader</string>
+
+    <string name="double_back_press_tip">Press again to quit</string>
+    <string name="waiting_for_wechat_oauth">Requesting WeChat login authorization, please wait&#8230;</string>
+    <string name="get_wx_token_failed">Failed to get the WeChat token</string>
+    <string name="get_wx_user_info_failed">Failed to get WeChat userInfo</string>
+    <string name="get_onyx_account_oauth_failed">Failed to get Onyx oauth</string>
+    <string name="get_onyx_account_bound_failed">Failed to get Onyx Account bound</string>
+    <string name="request_permission_rationale">WeChat login requires access to the memory card and phone status of the permissions to facilitate the file sharing</string>
+    <string name="upload_file">Upload file</string>
+    <string name="push_to_device">Push to device</string>
+    <string name="success">Success</string>
+    <string name="failed">Failed</string>
+    <string name="go_to">go to</string>
+    <string name="warning_of_permissions_denied">Request permission denied, can not process</string>
+    <string name="tip_of_permissions_request">This application involves file upload, Can not operate down as you do not open the permissions</string>
+    <string name="goto_permission_setting">Go to the Permission Management Settings interface</string>
+
+    <string name="generating_epub_file">Generating epub file...&#8230;</string>
+    <string name="generate_epub_file_failed">Generate epub file failed</string>
+
+    <string name="loading">loading</string>
+    <string name="cancel">cancel</string>
+    <string name="ok">ok</string>
+
+    <string name="wifi_dialog_title">Wifi connection</string>
+    <string name="wifi_dialog_content">WiFi connection is needed. Turn on WiFi?</string>
+    <string name="share_file_warning_as_wifi_disconnect">You are not currently using WiFi traffic, are you sure you want to share it?</string>
+
+</resources>

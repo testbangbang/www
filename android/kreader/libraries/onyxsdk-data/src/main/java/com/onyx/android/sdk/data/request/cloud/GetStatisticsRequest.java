@@ -12,16 +12,10 @@ import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.DeviceUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import retrofit2.Response;
@@ -64,7 +58,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         statisticsResult.setTotalReadTime(getTotalReadTime());
         eventTypeAggBean.setRead(getReadCount());
         eventTypeAggBean.setFinish(getFinishCount());
-        eventTypeAggBean.setAnnotation(getAnnotaionCount());
+        eventTypeAggBean.setAnnotation(getAnnotationCount());
         statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());
         statisticsResult.setDailyAvgReadTime(getReadTimeEveryDay());
         statisticsResult.setLongestReadTimeBook(getLongestBook());
@@ -104,9 +98,10 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         return statisticsModels.size();
     }
 
-    private int getAnnotaionCount() {
-        List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_ANNOTATION);
-        return statisticsModels.size();
+    private int getAnnotationCount() {
+        List<OnyxStatisticsModel> annotationStatistics = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_ANNOTATION);
+        List<OnyxStatisticsModel> highLightStatistics = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_TEXT_SELECTED);
+        return annotationStatistics.size() + highLightStatistics.size();
     }
 
     private List<Integer> getSelfReadTimeDis() {
@@ -191,21 +186,32 @@ public class GetStatisticsRequest extends BaseCloudRequest {
                 book.setName(statisticsModels.get(0).getName());
             }
 
-            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5short, BaseStatisticsModel.DATA_TYPE_OPEN, true);
+            Date beginTime = null;
+            Date endTime = null;
+            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5short, BaseStatisticsModel.DATA_TYPE_OPEN, false);
             if (statisticsModels != null && statisticsModels.size() > 0) {
-                book.setBegin(statisticsModels.get(0).getEventTime());
+                beginTime = statisticsModels.get(0).getEventTime();
+                book.setBegin(beginTime);
             }
-            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5short, BaseStatisticsModel.DATA_TYPE_CLOSE, true);
+            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5short, BaseStatisticsModel.DATA_TYPE_CLOSE, false);
             if (statisticsModels != null && statisticsModels.size() > 0) {
-                book.setEnd(statisticsModels.get(statisticsModels.size() - 1).getEventTime());
+                endTime = statisticsModels.get(0).getEventTime();
+                book.setEnd(endTime);
             }
 
-            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, md5short, BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE);
             long useTime = 0;
-            for (OnyxStatisticsModel statisticsModel : statisticsModels) {
-                useTime += statisticsModel.getDurationTime();
+            if (beginTime != null) {
+                statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, md5short, BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE, beginTime);
+                for (OnyxStatisticsModel statisticsModel : statisticsModels) {
+                    useTime += statisticsModel.getDurationTime();
+                }
             }
-            book.setReadingTime(useTime);
+
+            if (useTime <= 0 && beginTime != null & endTime != null) {
+                useTime = endTime.getTime() - beginTime.getTime();
+            }
+
+            book.setReadingTime(Math.max(useTime, 0));
         }
 
         return recentBooks;

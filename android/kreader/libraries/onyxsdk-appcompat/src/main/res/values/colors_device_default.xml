@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright 2006, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources>
+    <!-- For DeviceDefault theme -->
+    <drawable name="screen_background_device_default_light">#ffffffff</drawable>
+    <drawable name="screen_background_device_default_dark">#ff000000</drawable>
+    <color name="background_device_default_dark">#ff000000</color>
+    <color name="background_device_default_light">#ffffffff</color>
+    <color name="bright_foreground_device_default_dark">@color/background_device_default_light</color>
+    <color name="bright_foreground_device_default_light">@color/background_device_default_dark</color>
+    <color name="bright_foreground_disabled_device_default_dark">#ff4c4c4c</color>
+    <color name="bright_foreground_disabled_device_default_light">#ffb2b2b2</color>
+    <color name="bright_foreground_inverse_device_default_dark">@color/bright_foreground_device_default_light</color>
+    <color name="bright_foreground_inverse_device_default_light">@color/bright_foreground_device_default_dark</color>
+    <color name="dim_foreground_device_default_dark">#bebebe</color>
+    <color name="dim_foreground_disabled_device_default_dark">#80bebebe</color>
+    <color name="dim_foreground_inverse_device_default_dark">#323232</color>
+    <color name="dim_foreground_inverse_disabled_device_default_dark">#80323232</color>
+    <color name="hint_foreground_device_default_dark">#808080</color>
+    <color name="dim_foreground_device_default_light">#323232</color>
+    <color name="dim_foreground_disabled_device_default_light">#80323232</color>
+    <color name="dim_foreground_inverse_device_default_light">#bebebe</color>
+    <color name="dim_foreground_inverse_disabled_device_default_light">#80bebebe</color>
+    <color name="hint_foreground_device_default_light">#808080</color>
+    <color name="highlighted_text_device_default_dark">#6633b5e5</color>
+    <color name="highlighted_text_device_default_light">#6633b5e5</color>
+    <color name="link_text_device_default_dark">#5c5cff</color>
+    <color name="link_text_device_default_light">#0000ee</color>
+
+    <!-- Group buttons -->
+    <eat-comment />
+    <color name="group_button_dialog_pressed_device_default_dark">#46c5c1ff</color>
+    <color name="group_button_dialog_focused_device_default_dark">#2699cc00</color>
+
+    <color name="group_button_dialog_pressed_device_default_light">#ffffffff</color>
+    <color name="group_button_dialog_focused_device_default_light">#4699cc00</color>
+
+</resources>
+

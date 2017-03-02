@@ -167,7 +167,7 @@ public class ChangeNavigationSettingsAction extends BaseAction {
             nextPage = currentPage + 1;
         }
         BaseReaderRequest request = new GotoPositionRequest(PagePositionUtils.fromPageNumber(nextPage));
-        readerDataHolder.submitRenderRequest(request, new BaseCallback() {
+        readerDataHolder.submitNonRenderRequest(request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 setupNavigationSettings(readerDataHolder, nextPage);

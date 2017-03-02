@@ -53,6 +53,7 @@ public class StatisticsTest extends ActivityInstrumentationTestCase2<ReaderTestA
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListByStatus(getActivity(), BaseStatisticsModel.DATA_STATUS_TEST);
         assertTrue(statisticsModels.size() > 0);
         List<Integer> result = StatisticsUtils.getEventHourlyAgg(statisticsModels, maxHour);
+        assertTrue(result.size() == maxHour);
         StatisticsUtils.deleteStatisticsList(getActivity(), statisticsModels);
 
         for (int i = 0; i < result.size(); i++) {

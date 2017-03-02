@@ -1,3 +1,4 @@
 {
-  "has_front_light": false
+  "has_front_light": false,
+  "hide_vpn_setting": true
 }

@@ -226,6 +226,9 @@ public class StudentInfoSettingActivity extends BaseActivity {
                     updateCheckTextViews();
                 }
                 gradeList = gradeMap.get(schoolSelected);
+                if (!CollectionUtils.isNullOrEmpty(gradeList)) {
+                    gradeSelected = gradeList.get(0);
+                }
             }
         }
         gradePageView.getAdapter().notifyDataSetChanged();
@@ -235,6 +238,9 @@ public class StudentInfoSettingActivity extends BaseActivity {
         String content = RawResourceUtil.contentOfRawResource(this, R.raw.teaching_material);
         materialList = JSON.parseObject(content, new TypeReference<List<String>>() {
         });
+        if (StringUtils.isNullOrEmpty(publisherSelected) && !CollectionUtils.isNullOrEmpty(materialList)) {
+            publisherSelected = materialList.get(0);
+        }
     }
 
     private int getSortLevel(String s) {

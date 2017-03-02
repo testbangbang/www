@@ -11,7 +11,7 @@ import java.util.Date;
  * Created by ming on 2017/2/7.
  */
 
-public abstract class BaseStatisticsModel extends BaseModel {
+public abstract class BaseStatisticsModel extends BaseModel implements Cloneable{
 
     public static final int DATA_TYPE_OPEN = 0;
     public static final int DATA_TYPE_PAGE_CHANGE = 1;
@@ -21,9 +21,10 @@ public abstract class BaseStatisticsModel extends BaseModel {
     public static final int DATA_TYPE_CLOSE = 5;
     public static final int DATA_TYPE_FINISH = 6;
 
+    public static final int DATA_STATUS_TEST = -1;
     public static final int DATA_STATUS_NOT_PUSH = 0;
     public static final int DATA_STATUS_PUSHED = 1;
-    public static final int DATA_STATUS_TEST = 2;
+
 
     public static final int INVALID_ID = -1;
 
@@ -33,21 +34,32 @@ public abstract class BaseStatisticsModel extends BaseModel {
     long id = INVALID_ID;
 
     @Column
-    private Integer type;
+    protected Integer type;
     @Column
-    private String mac;
+    protected String mac;
     @Column
-    private String md5;
+    protected String md5;
     @Column
-    private String md5short;
+    protected String md5short;
     @Column
-    private Date eventTime;
+    protected Date eventTime;
     @Column
-    private String sid;
+    protected String sid;
     @Column
-    private Integer status = DATA_STATUS_NOT_PUSH;
+    protected Integer status = DATA_STATUS_NOT_PUSH;
 
     public BaseStatisticsModel() {
+    }
+
+    public BaseStatisticsModel(Date eventTime, long id, String mac, String md5, String md5short, String sid, Integer status, Integer type) {
+        this.eventTime = eventTime;
+        this.id = id;
+        this.mac = mac;
+        this.md5 = md5;
+        this.md5short = md5short;
+        this.sid = sid;
+        this.status = status;
+        this.type = type;
     }
 
     public BaseStatisticsModel(String md5, String md5short, String sid, Integer type, Date eventTime) {
