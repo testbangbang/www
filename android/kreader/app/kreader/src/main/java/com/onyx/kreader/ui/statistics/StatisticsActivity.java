@@ -109,13 +109,13 @@ public class StatisticsActivity extends ActionBarActivity {
             public void onNetworkChanged(boolean connected, int networkType) {
                 if (connected) {
                     pushStatistics();
-                    pullStatistics();
+                    getStatistics();
                 }
             }
 
             @Override
             public void onNoNetwork() {
-                pullStatistics();
+                getStatistics();
             }
         });
         IntentFilter filter = new IntentFilter();
@@ -133,7 +133,7 @@ public class StatisticsActivity extends ActionBarActivity {
         });
     }
 
-    private void pullStatistics() {
+    private void getStatistics() {
         dialogLoading = new DialogLoading(this,
                 getString(R.string.loading), false, null);
         dialogLoading.show();
