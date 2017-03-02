@@ -10,6 +10,8 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.ResizeReaderWindowEvent;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by joy on 2/23/17.
  */
@@ -21,15 +23,25 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String TAG_WINDOW_WIDTH = "com.onyx.kreader.WINDOW_WIDTH";
     public static final String TAG_WINDOW_HEIGHT = "com.onyx.kreader.WINDOW_HEIGHT";
 
+    private static EventBus eventBus;
+
+    public static void setEventBus(EventBus eventBus) {
+        ReaderBroadcastReceiver.eventBus = eventBus;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(getClass().getSimpleName(), "onReceive: " + intent);
         if (intent.getAction().equals(ACTION_CLOSE)) {
-            ReaderDataHolder.getEventBus().post(new QuitEvent());
+            if (eventBus != null) {
+                eventBus.post(new QuitEvent());
+            }
         } else if (intent.getAction().equals(ACTION_RESIZE_WINDOW)) {
-            ReaderDataHolder.getEventBus().post(new ResizeReaderWindowEvent(
-                    intent.getIntExtra(TAG_WINDOW_WIDTH, WindowManager.LayoutParams.MATCH_PARENT),
-                    intent.getIntExtra(TAG_WINDOW_HEIGHT, WindowManager.LayoutParams.MATCH_PARENT)));
+            if (eventBus != null) {
+                eventBus.post(new ResizeReaderWindowEvent(
+                        intent.getIntExtra(TAG_WINDOW_WIDTH, WindowManager.LayoutParams.MATCH_PARENT),
+                        intent.getIntExtra(TAG_WINDOW_HEIGHT, WindowManager.LayoutParams.MATCH_PARENT)));
+            }
         }
     }
 }
