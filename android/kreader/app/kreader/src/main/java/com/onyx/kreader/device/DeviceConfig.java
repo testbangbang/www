@@ -25,7 +25,7 @@ public class DeviceConfig {
 
     private boolean ttsEnabled = false;
     private boolean hasFrontLight = true;
-    private boolean hasNaturalLight = true;
+    private boolean hasNaturalLight = false;
     private boolean regalEnable = false;
 
     private Map<String, Map<String, JSONObject>> keyBinding = null;
