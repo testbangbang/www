@@ -133,7 +133,6 @@ public class ReaderActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Debug.d(getClass(), "onCreate");
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
         setContentView(R.layout.activity_reader);
@@ -142,37 +141,13 @@ public class ReaderActivity extends Activity {
     }
 
     @Override
-    protected void onStart() {
-        Debug.d(getClass(), "onStart");
-        super.onStart();
-    }
-
-    @Override
-    protected void onRestart() {
-        Debug.d(getClass(), "onRestart");
-        super.onRestart();
-    }
-
-    @Override
     protected void onResume() {
-        Debug.d(getClass(), "onResume");
         super.onResume();
         afterResume();
     }
 
     @Override
-    protected void onPause() {
-        Debug.d(getClass(), "onPause");
-        disablePenShortcut();
-        if (getReaderDataHolder().isDocumentOpened()) {
-            new SaveDocumentOptionsAction().execute(getReaderDataHolder(), null);
-        }
-        super.onPause();
-    }
-
-    @Override
     public void startActivity(Intent intent) {
-        Debug.d(getClass(), "startActivity: " + intent);
         // check if search intent
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             intent.putExtra(DOCUMENT_PATH_TAG, getReaderDataHolder().getDocumentPath());
@@ -183,7 +158,6 @@ public class ReaderActivity extends Activity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Debug.d(getClass(), "onNewIntent: " + intent);
         try {
             setIntent(intent);
             handleActivityIntent();
@@ -193,14 +167,16 @@ public class ReaderActivity extends Activity {
     }
 
     @Override
-    protected void onStop() {
-        Debug.d(getClass(), "onStop");
-        super.onStop();
+    protected void onPause() {
+        disablePenShortcut();
+        if (getReaderDataHolder().isDocumentOpened()) {
+            new SaveDocumentOptionsAction().execute(getReaderDataHolder(), null);
+        }
+        super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        Debug.d(getClass(), "onDestroy: finishing? " + isFinishing());
         if (networkConnectChangedReceiver !=null) {
             unregisterReceiver(networkConnectChangedReceiver);
         }
@@ -208,24 +184,6 @@ public class ReaderActivity extends Activity {
         if (getReaderDataHolder().isDocumentOpened()) {
             quitApplication(null);
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        Debug.d(getClass(), "onSaveInstanceState");
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Debug.d(getClass(), "onRestoreInstanceState");
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public void onLowMemory() {
-        Debug.e(getClass(), "onLowMemory");
-        super.onLowMemory();
     }
 
     @Override
@@ -253,7 +211,6 @@ public class ReaderActivity extends Activity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Debug.d(getClass(), "onKeyDown: " + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             onBackPressed();
             return true;
@@ -263,13 +220,11 @@ public class ReaderActivity extends Activity {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        Debug.d(getClass(), "onKeyUp: " + keyCode);
         return processKeyUp(keyCode, event);
     }
 
     @Override
     public void onBackPressed() {
-        Debug.d(getClass(), "onBackPressed");
         Intent setIntent = new Intent(Intent.ACTION_MAIN);
         setIntent.addCategory(Intent.CATEGORY_HOME);
         setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

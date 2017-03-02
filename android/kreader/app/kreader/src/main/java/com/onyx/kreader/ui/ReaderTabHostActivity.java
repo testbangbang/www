@@ -49,7 +49,6 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        Debug.d(TAG, "onCreate");
         acquireStartupWakeLock();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader_host);
@@ -59,7 +58,6 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        Debug.d(TAG, "onResume, tab count: " + tabHost.getTabWidget().getTabCount());
         super.onResume();
 
         syncFullScreenState();
@@ -72,12 +70,10 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Debug.d(TAG, "onConfigurationChanged, tab count: " + tabHost.getTabWidget().getTabCount());
         tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
             @Override
             public void onGlobalLayout() {
-                Debug.d(TAG, "onChangeOrientation -> onGlobalLayout");
                 TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
                 updateReaderTabWindowHeight();
                 if (StringUtils.isNotBlank(pathToContinueOpenAfterRotation)) {
@@ -90,45 +86,13 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        Debug.d(TAG, "onPause");
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        Debug.d(TAG, "onStop");
-        super.onStop();
-    }
-
-    @Override
-    protected void onStart() {
-        Debug.d(TAG, "onStart");
-        super.onStart();
-    }
-
-    @Override
-    protected void onRestart() {
-        Debug.d(TAG, "onRestart");
-        super.onRestart();
-    }
-
-    @Override
     protected void onDestroy() {
-        Debug.d(TAG, "onDestroy");
         super.onDestroy();
         releaseStartupWakeLock();
     }
 
     @Override
-    public void onLowMemory() {
-        Debug.e(TAG, "onLowMemory");
-        super.onLowMemory();
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
-        Debug.d(TAG, "onNewIntent");
         super.onNewIntent(intent);
         setIntent(intent);
         handleActivityIntent();
@@ -136,14 +100,12 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Debug.d(TAG, "onSaveInstanceState: " + tabManager.toJson());
         outState.putString(TAG_TAB_MANAGER, tabManager.toJson());
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Debug.d(TAG, "onRestoreInstanceState: " + savedInstanceState.getString(TAG_TAB_MANAGER));
         super.onRestoreInstanceState(savedInstanceState);
         tabManager = ReaderTabManager.createFromJson(savedInstanceState.getString(TAG_TAB_MANAGER));
         for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
