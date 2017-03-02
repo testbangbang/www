@@ -28,6 +28,7 @@ public class TtsHandler extends BaseHandler {
     private static final String TAG = TtsHandler.class.getSimpleName();
 
     private ReaderDataHolder readerDataHolder;
+    private String initialPosition;
     private ReaderSentence currentSentence;
     private boolean stopped;
 
@@ -79,6 +80,10 @@ public class TtsHandler extends BaseHandler {
         stopped = true;
         readerDataHolder.getTtsManager().stop();
         readerDataHolder.submitRenderRequest(new RenderRequest());
+    }
+
+    public void setInitialPosition(String initialPosition) {
+        this.initialPosition = initialPosition;
     }
 
     public void setSpeechRate(float rate) {
@@ -138,7 +143,14 @@ public class TtsHandler extends BaseHandler {
             }
         }
 
-        String startPosition = currentSentence == null ? "" : currentSentence.getNextPosition();
+        String startPosition = null;
+        if (StringUtils.isNotBlank(initialPosition)) {
+            startPosition = initialPosition;
+            initialPosition = null;
+        }
+        if (startPosition == null) {
+            startPosition = currentSentence == null ? "" : currentSentence.getNextPosition();
+        }
         final GetSentenceRequest sentenceRequest = new GetSentenceRequest(readerDataHolder.getCurrentPagePosition(), startPosition);
         readerDataHolder.submitRenderRequest(sentenceRequest, new BaseCallback() {
             @Override
