@@ -112,6 +112,11 @@ public class StatisticsActivity extends ActionBarActivity {
                     pullStatistics();
                 }
             }
+
+            @Override
+            public void onNoNetwork() {
+                pullStatistics();
+            }
         });
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
