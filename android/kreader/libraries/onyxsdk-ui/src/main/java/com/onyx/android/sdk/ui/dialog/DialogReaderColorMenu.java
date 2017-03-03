@@ -16,6 +16,7 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
+import com.onyx.android.sdk.ui.compat.AppCompatLinearLayout;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class DialogReaderColorMenu extends Dialog {
     private ImageView undoView;
     private TextView positionView;
     private TextView totalView;
+    private ImageView closeMenu;
 
     private ReaderMenuState readerMenuState;
     private List<Integer> jumpPages = new ArrayList<>();
@@ -59,6 +61,7 @@ public class DialogReaderColorMenu extends Dialog {
         undoView = (ImageView) findViewById(R.id.undo_view);
         positionView = (TextView) findViewById(R.id.position_text);
         totalView = (TextView) findViewById(R.id.total_text);
+        closeMenu = (ImageView) findViewById(R.id.close_menu);
         undoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +70,12 @@ public class DialogReaderColorMenu extends Dialog {
                     readerMenuCallback.onMenuItemValueChanged(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.JUMP_PAGE), null, lastPage);
                     updatePageProgress(lastPage);
                 }
+            }
+        });
+        closeMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.EXIT));
             }
         });
 
