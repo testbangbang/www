@@ -37,6 +37,10 @@ public class ProductQuery extends BaseQuery{
         category = value;
     }
 
+    public void resetKey() {
+        key = null;
+    }
+
     public void resetOffset() {
         offset = 0;
     }
