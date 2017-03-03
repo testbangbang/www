@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="http://schemas.android.com/tools">
+
+    <string-array name="app_sort_by">
+        <item>按时间</item>
+        <item>按名称</item>
+        <item>按类型</item>
+        <item>按热度</item>
+    </string-array>
+
+</resources>

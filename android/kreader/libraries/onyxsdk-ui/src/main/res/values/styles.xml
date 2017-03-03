@@ -312,4 +312,15 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="radio_button_style">
+        <item name="android:background">@drawable/radio_button_background_no_stroke</item>
+        <item name="android:button">@null</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">@dimen/dialog_sort_by_order_radio_button_text_size</item>
+        <item name="android:textColor">@drawable/radio_button_text_color</item>
+    </style>
+
 </resources>
