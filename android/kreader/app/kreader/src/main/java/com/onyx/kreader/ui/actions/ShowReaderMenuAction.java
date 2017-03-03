@@ -193,9 +193,9 @@ public class ShowReaderMenuAction extends BaseAction {
 
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_DRAG);
-        }else {
-            disableMenus.add(ReaderMenuAction.SCRIBBLE_COLOR);
         }
+
+        disableMenus.add(ReaderMenuAction.SCRIBBLE_COLOR);
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
