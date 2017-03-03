@@ -229,7 +229,10 @@ public class NoteManager {
             }
 
             public boolean enableShortcutDrawing() {
-                return enableShortcutDrawing;
+                if (getNoteDataInfo() == null) {
+                    return enableShortcutDrawing;
+                }
+                return enableShortcutDrawing && getNoteDataInfo().getCurrentShapeType() != ShapeFactory.SHAPE_SELECTOR;
             }
 
             public boolean enableShortcutErasing() {
