@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.common.request;
 
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -31,11 +32,11 @@ public class SingleThreadExecutor {
         return provider;
     }
 
-    public synchronized void shutdown() {
+    public synchronized void shutdownNow() {
         if (provider == null) {
             return;
         }
-        provider.shutdown();
+        provider.shutdownNow();
     }
 
 }

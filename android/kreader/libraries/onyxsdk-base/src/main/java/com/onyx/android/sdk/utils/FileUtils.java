@@ -3,7 +3,6 @@ package com.onyx.android.sdk.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.util.Log;
 

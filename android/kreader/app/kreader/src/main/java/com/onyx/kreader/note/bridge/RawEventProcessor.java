@@ -117,7 +117,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     private void shutdown() {
         if (singleThreadExecutor != null) {
-            singleThreadExecutor.shutdown();
+            singleThreadExecutor.shutdownNow();
             singleThreadExecutor = null;
         }
     }
