@@ -156,7 +156,7 @@
         </receiver>
 
         <activity android:name=".ui.ReaderTab1Activity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"
             android:launchMode="singleInstance"
             android:taskAffinity=""
             android:process=":reader_tab_1"
@@ -172,7 +172,7 @@
         </receiver>
 
         <activity android:name=".ui.ReaderTab2Activity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"
             android:launchMode="singleInstance"
             android:taskAffinity=""
             android:process=":reader_tab_2"
@@ -188,7 +188,7 @@
         </receiver>
 
         <activity android:name=".ui.ReaderTab3Activity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"
             android:launchMode="singleInstance"
             android:taskAffinity=""
             android:process=":reader_tab_3"
@@ -204,7 +204,7 @@
         </receiver>
 
         <activity android:name=".ui.ReaderTab4Activity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"
             android:launchMode="singleInstance"
             android:taskAffinity=""
             android:process=":reader_tab_4"
