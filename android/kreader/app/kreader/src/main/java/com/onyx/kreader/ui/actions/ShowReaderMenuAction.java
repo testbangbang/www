@@ -440,6 +440,8 @@ public class ShowReaderMenuAction extends BaseAction {
         ReaderCropArgs navigationArgs = new ReaderCropArgs();
         navigationArgs.setNavigationMode(ReaderCropArgs.NavigationMode.SINGLE_PAGE_MODE);
         navigationArgs.setCropPageMode(ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE);
+        navigationArgs.setRows(1);
+        navigationArgs.setColumns(1);
         new ChangeNavigationSettingsAction(navigationArgs).execute(readerDataHolder, null);
     }
 
