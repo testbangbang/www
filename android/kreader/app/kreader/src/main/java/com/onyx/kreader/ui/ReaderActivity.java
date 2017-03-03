@@ -1,7 +1,6 @@
 package com.onyx.kreader.ui;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -16,6 +15,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -108,7 +108,7 @@ import java.util.List;
 /**
  * Created by Joy on 2016/4/14.
  */
-public class ReaderActivity extends Activity {
+public class ReaderActivity extends AppCompatActivity {
     private static final String DOCUMENT_PATH_TAG = "document";
 
     private PowerManager.WakeLock startupWakeLock;
