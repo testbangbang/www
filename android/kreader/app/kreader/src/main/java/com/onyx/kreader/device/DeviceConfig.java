@@ -49,6 +49,7 @@ public class DeviceConfig {
     private int defaultGamma = 150;
     private int fixedGamma = 0;
     private boolean supportBrushPen = false;
+    private boolean supportMultipleTabs = false;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -275,6 +276,14 @@ public class DeviceConfig {
 
     public void setSupportBrushPen(boolean supportBrushPen) {
         this.supportBrushPen = supportBrushPen;
+    }
+
+    public boolean isSupportMultipleTabs() {
+        return supportMultipleTabs;
+    }
+
+    public void setSupportMultipleTabs(boolean supportMultipleTabs) {
+        this.supportMultipleTabs = supportMultipleTabs;
     }
 
     public boolean isDefaultUseSystemStatusBar() {

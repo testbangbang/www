@@ -377,7 +377,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     private void closeTabActivity(ReaderTabManager.ReaderTab tab) {
         Intent intent = new Intent(this, tabManager.getTabReceiver(tab));
-        intent.setAction(ReaderBroadcastReceiver.ACTION_CLOSE);
+        intent.setAction(ReaderBroadcastReceiver.ACTION_CLOSE_READER);
         Debug.d(TAG, "sendBroadcast: " + intent);
         sendBroadcast(intent);
     }
@@ -407,7 +407,9 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     private void updateReaderTabWindowHeight() {
-        updateReaderTabWindowHeight(getCurrentTabInHost());
+        if (tabHost.getTabWidget().getTabCount() > 0) {
+            updateReaderTabWindowHeight(getCurrentTabInHost());
+        }
     }
 
     private void updateReaderTabWindowHeight(ReaderTabManager.ReaderTab tab) {
