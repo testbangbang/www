@@ -46,6 +46,7 @@ public class JEBFilesZIP extends AlFiles {
     private static final String TAG_KEY = "key";
     private static final String TAG_RANDOM = "random";
     private static final String TAG_UU_ID = "UU_ID";
+    public static final String JEB_TAG = ".JEB";
 
     public static boolean queryJEBDecrypt(final Context context, final String bookPath) {
         Cursor cursor = null;
