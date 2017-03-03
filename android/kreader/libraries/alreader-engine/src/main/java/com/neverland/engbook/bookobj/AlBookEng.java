@@ -2605,8 +2605,8 @@ public class AlBookEng{
 				}
 				continue;
 			}
-			if ((prevExt != null && prevExt.equalsIgnoreCase(".JEB"))) {
-				if(!JEBFilesZIP.queryJEBDecrypt(engOptions.appInstance,currName)){
+			if ((prevExt != null && prevExt.equalsIgnoreCase(JEBFilesZIP.JEB_TAG))) {
+				if(!JEBFilesZIP.queryJEBDecrypt(engOptions.appInstance,activeFile.fileName)){
 					return TAL_NOTIFY_RESULT.ERROR;
 				}
 			}
