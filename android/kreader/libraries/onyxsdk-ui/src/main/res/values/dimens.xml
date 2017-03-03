@@ -86,4 +86,12 @@
     <dimen name="menu_seek_bar_height">25dp</dimen>
     <dimen name="tree_item_text_size">20sp</dimen>
     <dimen name="main_menu_page_progress_margin">5dp</dimen>
+
+    <dimen name="dialog_sort_by_item_radioButton_text_size">19sp</dimen>
+    <dimen name="dialog_sort_by_item_radioButton_margin">11dp</dimen>
+    <dimen name="dialog_sort_by_x_pos">32dp</dimen>
+    <dimen name="dialog_sort_by_y_pos">44dp</dimen>
+    <dimen name="dialog_sort_by_width">260dp</dimen>
+    <dimen name="dialog_sort_by_height">290dp</dimen>
+    <dimen name="dialog_sort_by_order_radio_button_text_size">22sp</dimen>
 </resources>

@@ -80,4 +80,8 @@
     <string name="expand">Expand</string>
     <string name="collapse">Collapse</string>
     <string name="jump">Jump</string>
+
+    <string name="filter">Filter</string>
+    <string name="order_asc">Ascend</string>
+    <string name="order_desc">Descend</string>
 </resources>

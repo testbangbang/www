@@ -86,6 +86,7 @@ public class OnyxAlertDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(params.customLayoutResID == -1 ?
                 params.defaultLayoutResID : params.customLayoutResID, container, false);
+        ViewGroup viewGroup = (ViewGroup) view.findViewById(R.id.layout_dialog);
         alertTittleBarLayout = (RelativeLayout) view.findViewById(R.id.dialog_tittleBar);
         tittleTextView = (TextView) alertTittleBarLayout.findViewById(R.id.textView_title);
         pageSizeIndicator = (TextView) alertTittleBarLayout.findViewById(R.id.page_size_indicator);
@@ -191,6 +192,10 @@ public class OnyxAlertDialog extends DialogFragment {
         } else {
             alertMessageView.setText(params.alertMsgString);
         }
+        if (params.customLayoutBackgroundResId != -1) {
+            ViewGroup viewGroup = (ViewGroup) parentView.findViewById(R.id.layout_dialog);
+            viewGroup.setBackgroundResource(params.customLayoutBackgroundResId);
+        }
     }
 
     private void setCustomContentLayout(View parentView, int layoutID, int layoutHeight, int layoutWidth) {
@@ -253,6 +258,7 @@ public class OnyxAlertDialog extends DialogFragment {
         boolean usePercentageWidth = true;
         int customContentLayoutResID = -1;
         int customLayoutResID = -1;
+        int customLayoutBackgroundResId = -1;
         String neutralButtonText = "";
         String positiveButtonText = "";
         String negativeButtonText = "";
@@ -316,6 +322,15 @@ public class OnyxAlertDialog extends DialogFragment {
 
         public Params setCustomContentLayoutResID(int customContentLayoutResID) {
             this.customContentLayoutResID = customContentLayoutResID;
+            return this;
+        }
+
+        public int getCustomLayoutBackgroundResId() {
+            return customLayoutBackgroundResId;
+        }
+
+        public Params setCustomLayoutBackgroundResId(int customBackgroundLayoutResId) {
+            this.customLayoutBackgroundResId = customBackgroundLayoutResId;
             return this;
         }
 

@@ -74,4 +74,8 @@
     <string name="expand">展开</string>
     <string name="collapse">收缩</string>
     <string name="jump">跳转</string>
+    
+    <string name="filter">筛选</string>
+    <string name="order_asc">升序</string>
+    <string name="order_desc">降序</string>
 </resources>
