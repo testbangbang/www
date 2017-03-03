@@ -5,6 +5,7 @@
   "hasFrontLight" : false,
   "disableNoteFunc" : false,
   "supportBrushPen": true,
+  "supportMultipleTabs": true,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
