@@ -16,15 +16,21 @@ import java.util.List;
 public class ExportAnnotationAction extends BaseAction {
 
     private List<Annotation> annotations;
+    private boolean append = false;
+    private boolean showLoading = false;
 
-    public ExportAnnotationAction(List<Annotation> annotations) {
+    public ExportAnnotationAction(final List<Annotation> annotations, final boolean append, final boolean showLoading) {
         this.annotations = annotations;
+        this.append = append;
+        this.showLoading = showLoading;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        showLoadingDialog(readerDataHolder, R.string.exporting);
-        final ExportAnnotationRequest request = new ExportAnnotationRequest(annotations);
+        if (showLoading) {
+            showLoadingDialog(readerDataHolder, R.string.exporting);
+        }
+        final ExportAnnotationRequest request = new ExportAnnotationRequest(annotations, append);
         readerDataHolder.submitNonRenderRequest(request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

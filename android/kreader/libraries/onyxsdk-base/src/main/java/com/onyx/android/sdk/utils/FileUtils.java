@@ -180,11 +180,11 @@ public class FileUtils {
         return null;
     }
 
-    public static boolean saveContentToFile(String content, File fileForSave) {
+    public static boolean saveContentToFile(String content, File fileForSave, boolean append) {
         boolean succeed = true;
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream(fileForSave);
+            out = new FileOutputStream(fileForSave, append);
             out.write(content.getBytes("utf-8"));
         } catch (Exception e) {
             e.printStackTrace();

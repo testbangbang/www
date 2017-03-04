@@ -106,7 +106,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         for (int i = 0; i < limit; ++i) {
             builder.append(UUID.randomUUID().toString());
         }
-        FileUtils.saveContentToFile(builder.toString(), file);
+        FileUtils.saveContentToFile(builder.toString(), file, false);
         return file;
     }
 

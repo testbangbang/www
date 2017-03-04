@@ -35,10 +35,11 @@ public class AddAnnotationAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        readerDataHolder.submitRenderRequest(new AddAnnotationRequest(pageInfo, locationBegin, locationEnd, rects, quote, note), new BaseCallback() {
+        final AddAnnotationRequest addAnnotationRequest = new AddAnnotationRequest(pageInfo, locationBegin, locationEnd, rects, quote, note);
+        readerDataHolder.submitRenderRequest(addAnnotationRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                readerDataHolder.onTextSelected(quote, note);
+                readerDataHolder.onTextSelected(addAnnotationRequest.getAnnotation());
                 BaseCallback.invoke(callback, request, e);
             }
         });
