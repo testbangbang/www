@@ -510,7 +510,7 @@ public class RK3026Device extends BaseDevice {
 
     @Override
     public void setVCom(Context context, int value, String path) {
-        FileUtils.saveContentToFile(String.valueOf(value), new File(path), false);
+        FileUtils.saveContentToFile(String.valueOf(value), new File(path));
     }
 
     @Override

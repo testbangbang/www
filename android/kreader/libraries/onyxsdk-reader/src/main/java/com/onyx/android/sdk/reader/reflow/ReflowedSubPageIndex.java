@@ -179,7 +179,7 @@ public class ReflowedSubPageIndex {
                 }
                 File file = indexFile;
                 String json = JSON.toJSONString(map);
-                FileUtils.saveContentToFile(json, file, false);
+                FileUtils.saveContentToFile(json, file);
             } catch (Exception e) {
                 Debug.w(TAG, e);
             }

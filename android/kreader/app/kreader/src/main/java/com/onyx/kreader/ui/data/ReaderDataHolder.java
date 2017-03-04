@@ -614,9 +614,6 @@ public class ReaderDataHolder {
         }
         String originText = annotation.getQuote();
         String userNote = annotation.getNote();
-        List<Annotation> annotations = new ArrayList<>();
-        annotations.add(annotation);
-        new ExportAnnotationAction(annotations, true, false).execute(this, null);
         if (StringUtils.isBlank(userNote)) {
             final TextSelectionEvent event = TextSelectionEvent.onTextSelected(getContext(), originText);
             getEventBus().post(event);
@@ -624,6 +621,15 @@ public class ReaderDataHolder {
         }
         final AnnotationEvent event = AnnotationEvent.onAddAnnotation(getContext(), originText, userNote);
         getEventBus().post(event);
+    }
+
+    public void exportAnnotation(final Annotation annotation) {
+        if (annotation == null) {
+            return;
+        }
+        List<Annotation> annotations = new ArrayList<>();
+        annotations.add(annotation);
+        new ExportAnnotationAction(annotations, true, false).execute(this, null);
     }
 
     public void onDictionaryLookup(final String text) {

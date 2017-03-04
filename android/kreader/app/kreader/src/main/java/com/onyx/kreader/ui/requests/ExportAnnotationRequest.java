@@ -34,6 +34,10 @@ public class ExportAnnotationRequest extends BaseReaderRequest {
         }
 
         File file = new File(ExportUtils.getExportAnnotationPath(reader.getDocumentPath()));
-        FileUtils.saveContentToFile(content.toString(), file, append);
+        if (append) {
+            FileUtils.appendContentToFile(content.toString(), file);
+        }else {
+            FileUtils.saveContentToFile(content.toString(), file);
+        }
     }
 }

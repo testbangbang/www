@@ -180,11 +180,26 @@ public class FileUtils {
         return null;
     }
 
-    public static boolean saveContentToFile(String content, File fileForSave, boolean append) {
+    public static boolean saveContentToFile(String content, File fileForSave) {
         boolean succeed = true;
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream(fileForSave, append);
+            out = new FileOutputStream(fileForSave);
+            out.write(content.getBytes("utf-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            succeed = false;
+        } finally {
+            closeQuietly(out);
+        }
+        return succeed;
+    }
+
+    public static boolean appendContentToFile(String content, File fileForSave) {
+        boolean succeed = true;
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(fileForSave, true);
             out.write(content.getBytes("utf-8"));
         } catch (Exception e) {
             e.printStackTrace();
