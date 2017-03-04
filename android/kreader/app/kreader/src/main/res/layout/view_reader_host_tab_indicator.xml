@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@android:color/white">
+    android:background="@drawable/reader_host_tab_indicator_selector">
 
         <ImageView
             android:id="@+id/image_button_close"
@@ -13,9 +13,10 @@
             android:layout_alignParentRight="true"
             android:padding="10dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_dialog_reader_page_closed" />
+            android:src="@drawable/ic_dialog_close" />
 
         <TextView
+            android:layout_marginLeft="5dp"
             android:id="@+id/text_view_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -26,7 +27,6 @@
             android:textColor="@android:color/black"
             android:ellipsize="middle"
             android:gravity="left|center_vertical"
-            android:background="@drawable/reader_host_tab_indicator_selector"
             android:singleLine="true"
             android:text="" />
 
