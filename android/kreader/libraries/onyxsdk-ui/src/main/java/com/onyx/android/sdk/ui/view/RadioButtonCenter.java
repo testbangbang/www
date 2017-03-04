@@ -73,6 +73,5 @@ public class RadioButtonCenter extends AppCompatRadioButton {
             buttonDrawable.setBounds(buttonLeft, y, buttonLeft + buttonWidth, y + height);
             buttonDrawable.draw(canvas);
         }
-//        AppCompatUtils.processViewLayoutEvenPosition(this);
     }
 }

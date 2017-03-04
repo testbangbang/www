@@ -37,19 +37,6 @@ public class AppCompatUtils {
                 continue;
             }
             processViewLayoutEvenPosition(imageView);
-//            int[] locationOnScreen = new int[2];
-//            imageView.getLocationOnScreen(locationOnScreen);
-//            int top = imageView.getTop();
-//            int left = imageView.getLeft();
-//
-//            if (locationOnScreen[0] % 2 != 0) {
-//                left++;
-//            }
-//
-//            if (locationOnScreen[1] % 2 != 0) {
-//                top++;
-//            }
-//            imageView.layout(left, top, left + imageView.getWidth(), top + imageView.getHeight());
         }
     }
 
