@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/imagebtn_bg"
-                android:orientation="vertical">
+<com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/apk/res-auto"
+    appCompat:alwaysLayoutImageView="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/imagebtn_bg"
+    android:orientation="vertical">
 
     <ImageView
             android:visibility="invisible"
@@ -19,4 +22,4 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-</RelativeLayout>
+</com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
