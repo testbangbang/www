@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -18,8 +17,8 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
@@ -41,7 +40,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     private static final String TAG_TAB_MANAGER = "tab_manager";
 
-    private PowerManager.WakeLock startupWakeLock;
+    private WakeLockHolder startupWakeLock = new WakeLockHolder();
 
     private ReaderTabManager tabManager = ReaderTabManager.create();
     private TabHost tabHost;
@@ -52,7 +51,6 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         acquireStartupWakeLock();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader_host);
-
         initComponents();
     }
 
@@ -143,6 +141,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
                 if (tabManager.isTabOpened(tab)) {
                     reopenReaderTab(tab);
                 }
+                onTabSwitched(tab);
             }
         });
         tabHost.setCurrentTab(0);
@@ -235,18 +234,14 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     private void acquireStartupWakeLock() {
         if (startupWakeLock == null) {
-            startupWakeLock = Device.currentDevice().newWakeLock(this, ReaderActivity.class.getSimpleName());
+            startupWakeLock = new WakeLockHolder();
         }
-        if (startupWakeLock != null) {
-            startupWakeLock.acquire();
-        }
+
+        startupWakeLock.acquireWakeLock(this, ReaderActivity.class.getSimpleName());
     }
 
     private void releaseStartupWakeLock() {
-        if (startupWakeLock != null && startupWakeLock.isHeld()) {
-            startupWakeLock.release();
-            startupWakeLock = null;
-        }
+        startupWakeLock.releaseWakeLock();
     }
 
     private void syncFullScreenState() {
@@ -420,4 +415,13 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         sendBroadcast(intent);
     }
 
+    private void onTabSwitched(final ReaderTabManager.ReaderTab tab) {
+        final String path = tabManager.getOpenedTabs().get(tab);
+        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
+            Intent intent = new Intent(this, tabManager.getTabReceiver(entry.getKey()));
+            intent.setAction(ReaderBroadcastReceiver.ACTION_DOCUMENT_ACTIVATED);
+            intent.putExtra(ReaderBroadcastReceiver.TAG_DOCUMENT_PATH, path);
+            sendBroadcast(intent);
+        }
+    }
 }

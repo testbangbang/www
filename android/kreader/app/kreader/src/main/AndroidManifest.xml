@@ -168,6 +168,7 @@
             <intent-filter>
                 <action android:name="com.onyx.kreader.action.CLOSE_READER" />
                 <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
+                <action android:name="com.onyx.kreader.action.DOCUMENT_ACTIVATED" />
             </intent-filter>
         </receiver>
 
@@ -184,6 +185,7 @@
             <intent-filter>
                 <action android:name="com.onyx.kreader.action.CLOSE_READER" />
                 <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
+                <action android:name="com.onyx.kreader.action.DOCUMENT_ACTIVATED" />
             </intent-filter>
         </receiver>
 
@@ -200,6 +202,7 @@
             <intent-filter>
                 <action android:name="com.onyx.kreader.action.CLOSE_READER" />
                 <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
+                <action android:name="com.onyx.kreader.action.DOCUMENT_ACTIVATED" />
             </intent-filter>
         </receiver>
 
@@ -216,6 +219,7 @@
             <intent-filter>
                 <action android:name="com.onyx.kreader.action.CLOSE_READER" />
                 <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
+                <action android:name="com.onyx.kreader.action.DOCUMENT_ACTIVATED" />
             </intent-filter>
         </receiver>
 

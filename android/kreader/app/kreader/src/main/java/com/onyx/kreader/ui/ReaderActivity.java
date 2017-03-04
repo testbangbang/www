@@ -17,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -49,9 +50,11 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
+import com.onyx.kreader.note.actions.StopNoteAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
@@ -93,6 +96,7 @@ import com.onyx.kreader.ui.events.ShortcutErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
+import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
@@ -269,6 +273,7 @@ public class ReaderActivity extends AppCompatActivity {
         initSurfaceView();
         initReceiver();
     }
+
     private void initReceiver() {
         networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
             @Override
@@ -555,6 +560,17 @@ public class ReaderActivity extends AppCompatActivity {
         }
     }
 
+    @Subscribe
+    public void onDocumentActivated(final DocumentActivatedEvent event) {
+        if (getReaderDataHolder() == null) {
+            return;
+        }
+        if (getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
+            return;
+        }
+        onDocumentDeactivated();
+    }
+
     private PinchZoomingPopupMenu getPinchZoomPopupMenu() {
         if (pinchZoomingPopupMenu == null) {
             DisplayMetrics dm = getResources().getDisplayMetrics();
@@ -579,6 +595,21 @@ public class ReaderActivity extends AppCompatActivity {
             public void done(BaseRequest request, Throwable e) {
                 saveDocumentOptions();
                 baseCallback.invoke(baseCallback, request, e);
+            }
+        });
+    }
+
+    private void onDocumentDeactivated() {
+        enablePost(true);
+        if (!verifyReader()) {
+            return;
+        }
+
+        final StopNoteActionChain actionChain = new StopNoteActionChain(true, true, true, false, false, true);
+        actionChain.execute(getReaderDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                saveDocumentOptions();
             }
         });
     }

@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Rect;
+import android.util.Log;
+
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -79,8 +81,6 @@ public class ReaderDataHolder {
 
     public ReaderDataHolder(Context context) {
         this.context = context;
-
-        // we want receive global event from the receiver
         ReaderBroadcastReceiver.setEventBus(eventBus);
     }
 
