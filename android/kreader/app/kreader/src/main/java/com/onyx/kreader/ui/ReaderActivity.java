@@ -504,8 +504,14 @@ public class ReaderActivity extends AppCompatActivity {
         if (event.getUniqueId() < getReaderDataHolder().getLastRequestSequence()) {
             return;
         }
+        if (event.isUseFullUpdate()) {
+            ReaderDeviceManager.applyWithGcUpdate(getSurfaceView());
+        }
         beforeDrawPage();
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        if (event.isUseFullUpdate()) {
+            ReaderDeviceManager.resetUpdateMode(getSurfaceView());
+        }
     }
 
     private boolean verifyReader() {
