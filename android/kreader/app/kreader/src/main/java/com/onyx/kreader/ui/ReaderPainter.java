@@ -269,7 +269,8 @@ public class ReaderPainter {
                             final Paint paint,
                             final ReaderUserDataInfo userDataInfo,
                             final NoteManager noteManager) {
-        if (!SingletonSharedPreference.isShowNote(context) || userDataInfo.hasHighlightResult()) {
+        boolean showNote = SingletonSharedPreference.isShowNote(context);
+        if (!showNote || userDataInfo.hasHighlightResult()) {
             return;
         }
         final ReaderNoteDataInfo noteDataInfo = noteManager.getNoteDataInfo();

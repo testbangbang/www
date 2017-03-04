@@ -53,6 +53,10 @@ public class NoteDrawingArgs {
         currentShapeType = newShape;
     }
 
+    public void resetCurrentShapeType() {
+        currentShapeType = defaultShape();
+    }
+
     public int getLineLayoutBackground() {
         return lineLayoutBackground;
     }

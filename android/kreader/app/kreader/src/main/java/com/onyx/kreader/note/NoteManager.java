@@ -232,7 +232,7 @@ public class NoteManager {
                 if (getNoteDataInfo() == null) {
                     return enableShortcutDrawing;
                 }
-                return enableShortcutDrawing && getNoteDataInfo().getCurrentShapeType() != ShapeFactory.SHAPE_SELECTOR;
+                return enableShortcutDrawing && !isInSelection();
             }
 
             public boolean enableShortcutErasing() {
@@ -386,6 +386,12 @@ public class NoteManager {
 
     public boolean isInSelection() {
         return getNoteDrawingArgs().getCurrentShapeType() == ShapeFactory.SHAPE_SELECTOR;
+    }
+
+    public void resetSelection() {
+        if (isInSelection()) {
+            getNoteDrawingArgs().resetCurrentShapeType();
+        }
     }
 
     public void resetCurrentShape() {
