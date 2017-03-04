@@ -11,7 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -122,6 +124,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         tabHost = (TabHost) findViewById(R.id.tab_host);
         tabHost.setup();
 
+        tabHost.getTabWidget().setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
         tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
