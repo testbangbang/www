@@ -447,7 +447,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 return;
             }
 
-            new ExportAnnotationAction(annotationList).execute(readerDataHolder, new BaseCallback() {
+            new ExportAnnotationAction(annotationList, false, true).execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     String text = getContext().getString(e == null ? R.string.export_success : R.string.export_fail);
