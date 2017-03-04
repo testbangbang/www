@@ -15,7 +15,7 @@
             android:layout_height="match_parent">
         </com.onyx.android.sdk.ui.view.OnyxCustomViewPager>
 
-        <LinearLayout
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
             android:visibility="gone"
             android:id="@+id/empty_layout"
             android:gravity="center"
@@ -26,7 +26,7 @@
                 android:src="@drawable/ic_dialog_empty_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
     </FrameLayout>
 
@@ -87,7 +87,7 @@
         </LinearLayout>
 
 
-        <LinearLayout
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
             android:focusable="false"
             android:layout_toLeftOf="@+id/back_layout"
             android:id="@+id/export_layout"
@@ -115,9 +115,9 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
-        <LinearLayout
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
             android:focusable="false"
             android:id="@+id/back_layout"
             android:layout_centerVertical="true"
@@ -148,7 +148,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
 
     </RelativeLayout>

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.onyx.android.sdk.ui.R;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.DimenUtils;
 
 import java.util.List;
@@ -280,19 +281,7 @@ public class OnyxToolbar extends ViewGroup {
         if (!isAdjustLayoutForColorDevices()) {
             return;
         }
-        int[] locationOnScreen = new int[2];
-        view.getLocationOnScreen(locationOnScreen);
-        int top = view.getTop();
-        int left = view.getLeft();
-
-        if (locationOnScreen[0] % 2 != 0) {
-            left++;
-        }
-
-        if (locationOnScreen[1] % 2 != 0) {
-            top++;
-        }
-        view.layout(left, top, view.getRight(), view.getBottom());
+        AppCompatUtils.processViewLayoutEvenPosition(view);
     }
 
     /**

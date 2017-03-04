@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 
 import com.onyx.android.sdk.ui.R;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 
 /**
  * Created by ming on 16/10/8.
@@ -60,8 +61,18 @@ public class RadioButtonCenter extends AppCompatRadioButton {
 
             int buttonWidth = buttonDrawable.getIntrinsicWidth();
             int buttonLeft = (getWidth() - buttonWidth) / 2;
+
+            if (buttonLeft % 2 != 0) {
+                buttonLeft++;
+            }
+
+            if (y % 2 != 0) {
+                y++;
+            }
+
             buttonDrawable.setBounds(buttonLeft, y, buttonLeft + buttonWidth, y + height);
             buttonDrawable.draw(canvas);
         }
+//        AppCompatUtils.processViewLayoutEvenPosition(this);
     }
 }

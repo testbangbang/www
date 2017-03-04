@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.reader.ReaderBaseApp;
+import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.ReaderNoteGeneratedDatabaseHolder;
@@ -26,8 +28,10 @@ public class KReaderApp extends ReaderBaseApp {
     @Override
     public void onCreate() {
         super.onCreate();
+        initPl107DeviceConfig();
         DataManager.init(this, databaseHolderList());
         SingletonSharedPreference.init(this);
+
 //        LeakCanary.install(this);
         instance = this;
     }
@@ -41,5 +45,10 @@ public class KReaderApp extends ReaderBaseApp {
         list.add(ReaderNoteGeneratedDatabaseHolder.class);
         return list;
     }
+
+    public void initPl107DeviceConfig() {
+        AppCompatImageViewCollection.isPl107Device = AppCompatUtils.isPL107Device(this);
+    }
+
 
 }
