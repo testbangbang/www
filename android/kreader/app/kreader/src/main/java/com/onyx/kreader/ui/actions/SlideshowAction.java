@@ -35,7 +35,7 @@ public class SlideshowAction extends BaseAction {
                         handler.start(parent, maxPageCount);
                     }
                 });
-        readerDataHolder.addActiveDialog(dlg);
+        readerDataHolder.trackDialog(dlg);
         dlg.show();
     }
 
