@@ -1,0 +1,29 @@
+{
+  "defaultFontSizeIndex" : 6,
+  "defaultLineSpacingIndex" : 2,
+  "ttsEnabled" : true,
+  "hasFrontLight" : true,
+  "disableNoteFunc" : true,
+  "regalEnable" : true,
+  "keyBinding": {
+    "HandlerManager": {
+      "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
+      "KEYCODE_PAGE_UP":  {"action": "prevScreen", "args": ""},
+      "KEYCODE_VOLUME_DOWN":  {"action": "nextScreen", "args": ""},
+      "KEYCODE_VOLUME_UP":  {"action": "prevScreen", "args": ""},
+      "KEYCODE_DPAD_RIGHT":  {"action": "moveRight", "args": ""},
+      "KEYCODE_DPAD_LEFT":  {"action": "moveLeft", "args": ""},
+      "KEYCODE_DPAD_UP":  {"action": "moveUp", "args": ""},
+      "KEYCODE_DPAD_DOWN":  {"action": "moveDown", "args": ""},
+      "KEYCODE_MENU":  {"action": "showMenu", "args": ""},
+      "KEYCODE_DPAD_CENTER":  {"action": "toggleBookmark", "args": ""},
+      "KEYCODE_CLEAR":  {"action": "changeToEraseMode", "args": ""},
+      "KEYCODE_ALT_LEFT":  {"action": "changeToScribbleMode", "args": ""},
+      "KEYCODE_ALT_RIGHT":  {"action": "changeToScribbleMode", "args": ""},
+      "KEYCODE_BUTTON_START":  {"action": "changeToScribbleMode", "args": ""},
+      "KEYCODE_ERASER": {"action": "changeToEraseMode", "args": ""},
+      "KEYCODE_SCRIBBLER":  {"action": "changeToScribbleMode", "args": ""},
+      "KEYCODE_BACK": {"action": "close", "args": ""}
+    }
+  }
+}
