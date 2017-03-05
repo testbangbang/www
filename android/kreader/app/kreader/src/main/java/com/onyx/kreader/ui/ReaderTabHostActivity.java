@@ -133,6 +133,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
         });
 
         if (!tabManager.supportMultipleTabs()) {
+            tabHost.getTabWidget().setVisibility(View.GONE);
             return;
         }
 
