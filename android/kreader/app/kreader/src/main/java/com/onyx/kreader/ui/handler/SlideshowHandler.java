@@ -243,7 +243,7 @@ public class SlideshowHandler extends BaseHandler {
         int endBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
         DialogSlideshowStatistic dlg = new DialogSlideshowStatistic(readerDataHolder.getContext(), startTime, endTime,
                 pageCount, startBatteryPercent, endBatteryPercent);
-        readerDataHolder.addActiveDialog(dlg);
+        readerDataHolder.trackDialog(dlg);
         dlg.show();
     }
 }

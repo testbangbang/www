@@ -1,5 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
+import android.content.DialogInterface;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
@@ -44,7 +46,7 @@ public class ImageReflowAction extends BaseAction {
                     }
                 }
             });
-            readerDataHolder.addActiveDialog(reflowSettingsDialog);
+            readerDataHolder.trackDialog(reflowSettingsDialog);
             reflowSettingsDialog.show();
         }
     }
@@ -52,7 +54,6 @@ public class ImageReflowAction extends BaseAction {
     private void hideReflowSettingsDialog(final ReaderDataHolder readerDataHolder) {
         if (reflowSettingsDialog != null) {
             reflowSettingsDialog.dismiss();
-            readerDataHolder.removeActiveDialog(reflowSettingsDialog);
             reflowSettingsDialog = null;
         }
     }

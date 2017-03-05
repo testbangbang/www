@@ -3,11 +3,14 @@ package com.onyx.kreader.ui.actions;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
@@ -459,15 +462,15 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showNavigationSettingsDialog(ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         Dialog dlg = new DialogNavigationSettings(readerDataHolder);
+        readerDataHolder.trackDialog(dlg);
         dlg.show();
-        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void adjustContrast(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         Dialog dialogContrast = new DialogContrast(readerDataHolder);
+        readerDataHolder.trackDialog(dialogContrast);
         dialogContrast.show();
-        readerDataHolder.addActiveDialog(dialogContrast);
     }
 
     private void adjustEmbolden(final ReaderDataHolder readerDataHolder) {
@@ -484,8 +487,8 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void showTocDialog(final ReaderDataHolder readerDataHolder, DialogTableOfContent.DirectoryTab tab) {
         Dialog dialog = new DialogTableOfContent(readerDataHolder, tab);
+        readerDataHolder.trackDialog(dialog);
         dialog.show();
-        readerDataHolder.addActiveDialog(dialog);
     }
 
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
@@ -528,7 +531,6 @@ public class ShowReaderMenuAction extends BaseAction {
             }
         });
         dlg.show(readerActivity.getFragmentManager());
-        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void enterSlideshow(final ReaderDataHolder readerDataHolder) {
@@ -540,21 +542,19 @@ public class ShowReaderMenuAction extends BaseAction {
         hideReaderMenu();
         Dialog dlg = new DialogBrightness(readerDataHolder.getContext());
         dlg.show();
-        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void showNaturalBrightnessDialog(ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         Dialog dlg = new DialogNaturalLightBrightness(readerDataHolder.getContext());
         dlg.show();
-        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void showExportDialog(ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         Dialog exportDialog = new DialogExport(readerDataHolder);
+        readerDataHolder.trackDialog(exportDialog);
         exportDialog.show();
-        readerDataHolder.addActiveDialog(exportDialog);
     }
 
     private void importScribbleData(final ReaderDataHolder readerDataHolder) {
@@ -590,14 +590,14 @@ public class ShowReaderMenuAction extends BaseAction {
                 readerDataHolder.removeActiveDialog(dialogTextStyle);
             }
         });
+        readerDataHolder.trackDialog(dialog);
         dialog.show();
-        readerDataHolder.addActiveDialog(dialog);
     }
 
     private void showSearchDialog(final ReaderDataHolder readerDataHolder){
-        Dialog dlg = new DialogSearch(readerDataHolder);
+        final Dialog dlg = new DialogSearch(readerDataHolder);
+        readerDataHolder.trackDialog(dlg);
         dlg.show();
-        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void prepareGotoChapter(final ReaderDataHolder readerDataHolder, final boolean back) {
