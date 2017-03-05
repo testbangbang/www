@@ -365,13 +365,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             }
         });
 
-        setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                readerDataHolder.removeActiveDialog(DialogTableOfContent.this);
-            }
-        });
-
         exportLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

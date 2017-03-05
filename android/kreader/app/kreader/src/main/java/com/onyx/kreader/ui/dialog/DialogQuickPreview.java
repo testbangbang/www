@@ -23,6 +23,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
@@ -248,6 +249,8 @@ public class DialogQuickPreview extends Dialog {
         chapterForward = (ImageButton) findViewById(R.id.chapter_forward);
         textViewProgress.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
 
+        EpdController.resetUpdateMode(gridRecyclerView);
+
         findViewById(R.id.image_view_prev_page).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -296,7 +299,6 @@ public class DialogQuickPreview extends Dialog {
                 if (callback != null) {
                     callback.abort();
                 }
-                readerDataHolder.removeActiveDialog(DialogQuickPreview.this);
             }
         });
 
@@ -306,7 +308,6 @@ public class DialogQuickPreview extends Dialog {
                 if (callback != null) {
                     callback.abort();
                 }
-                readerDataHolder.removeActiveDialog(DialogQuickPreview.this);
                 new GotoPositionAction(currentPagePosition, true).execute(readerDataHolder);
             }
         });
@@ -352,14 +353,9 @@ public class DialogQuickPreview extends Dialog {
                             Toast.makeText(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number_empty_error), Toast.LENGTH_SHORT).show();
                         }
                     }
-                }).show();
-                dlg.setOnDismissListener(new OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        readerDataHolder.removeActiveDialog(dlg);
-                    }
-                });
-                readerDataHolder.addActiveDialog(dlg);
+                }).create();
+                readerDataHolder.trackDialog(dlg);
+                dlg.show();
             }
         });
 

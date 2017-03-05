@@ -1,5 +1,7 @@
 package com.onyx.kreader.ui.actions;
 
+import android.content.DialogInterface;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.R;
 import com.onyx.kreader.host.options.BaseOptions;
@@ -45,14 +47,13 @@ public class EmboldenAction extends BaseAction {
                     readerDataHolder.getContext().getString(R.string.embolden_level), callback);
         }
         emboldenDialog.show();
-        readerDataHolder.addActiveDialog(emboldenDialog);
+        readerDataHolder.trackDialog(emboldenDialog);
         return emboldenDialog;
     }
 
     private void hideEmboldenDialog(final ReaderDataHolder readerDataHolder) {
         if (emboldenDialog != null) {
             emboldenDialog.dismiss();
-            readerDataHolder.removeActiveDialog(emboldenDialog);
             emboldenDialog = null;
         }
     }

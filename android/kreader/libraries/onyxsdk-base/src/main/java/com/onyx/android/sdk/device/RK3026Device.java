@@ -87,6 +87,7 @@ public class RK3026Device extends BaseDevice {
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
     private static Method sMethodSystemIntegrityCheck;
+    private static Method sMethodSupportRegal;
 
     private static final String UNKNOWN = "unknown";
     private static final String DEVICE_ID = "ro.deviceid";
@@ -145,7 +146,7 @@ public class RK3026Device extends BaseDevice {
                 // signature of "public void disableA2()"
                 sMethodDisableA2 = ReflectUtil.getMethodSafely(class_view, "disableA2");
 
-
+                sMethodSupportRegal = ReflectUtil.getMethodSafely(class_view, "supportRegal");
             } catch (ClassNotFoundException e) {
                 Log.w(TAG, e);
             } catch (SecurityException e) {
@@ -501,5 +502,14 @@ public class RK3026Device extends BaseDevice {
             return true;
         }
         return (Boolean)this.invokeDeviceControllerMethod(context, sMethodSystemIntegrityCheck);
+    }
+
+    @Override
+    public boolean supportRegal() {
+        Object object = ReflectUtil.invokeMethodSafely(sMethodSupportRegal, null);
+        if (object != null) {
+            return (Boolean) object;
+        }
+        return false;
     }
 }
