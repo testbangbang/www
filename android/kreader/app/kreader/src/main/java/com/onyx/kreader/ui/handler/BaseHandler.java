@@ -77,7 +77,7 @@ public abstract class BaseHandler {
         return parent;
     }
 
-    public void onActivate(final ReaderDataHolder readerDataHolder) {}
+    public void onActivate(final ReaderDataHolder readerDataHolder, final Object initialState) {}
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {}
 

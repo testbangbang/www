@@ -154,9 +154,13 @@ public class HandlerManager {
     }
 
     public void setActiveProvider(final String providerName) {
+        setActiveProvider(providerName, null);
+    }
+
+    public void setActiveProvider(final String providerName, final Object initialState) {
         getActiveProvider().onDeactivate(readerDataHolder);
         activeProviderName = providerName;
-        getActiveProvider().onActivate(readerDataHolder);
+        getActiveProvider().onActivate(readerDataHolder, initialState);
     }
 
     public BaseHandler getActiveProvider() {
