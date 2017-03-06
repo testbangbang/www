@@ -19,6 +19,7 @@ import com.onyx.kreader.ui.actions.PreviousScreenAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.kreader.ui.dialog.DialogTts;
 
 /**
  * Created by joy on 7/29/16.
@@ -32,10 +33,28 @@ public class TtsHandler extends BaseHandler {
     private ReaderSentence currentSentence;
     private boolean stopped;
 
+    private DialogTts dialogTts;
+
     public TtsHandler(HandlerManager parent) {
         super(parent);
-
         readerDataHolder = getParent().getReaderDataHolder();
+    }
+
+    @Override
+    public void onActivate(ReaderDataHolder readerDataHolder, final Object initialState) {
+        initialPosition = (String) initialState;
+        getDialogTts().show();
+    }
+
+    @Override
+    public void onDeactivate(ReaderDataHolder readerDataHolder) {
+        if (dialogTts == null) {
+            return;
+        }
+        if (dialogTts.isShowing()) {
+            dialogTts.dismiss();
+        }
+        dialogTts = null;
     }
 
     @Override
@@ -117,6 +136,13 @@ public class TtsHandler extends BaseHandler {
                 ttsPlay();
             }
         });
+    }
+
+    private DialogTts getDialogTts() {
+        if (dialogTts == null) {
+            dialogTts = new DialogTts(readerDataHolder);
+        }
+        return dialogTts;
     }
 
     private void gotoPage(final ReaderDataHolder readerDataHolder, final int page) {

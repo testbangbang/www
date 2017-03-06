@@ -19,9 +19,7 @@ public class StartTtsAction extends BaseAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER);
-        Dialog dialog = new DialogTts(readerDataHolder, startPosition);
-        dialog.show();
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER, startPosition);
         BaseCallback.invoke(callback, null, null);
     }
 }
