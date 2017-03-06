@@ -35,14 +35,22 @@ public class TtsHandler extends BaseHandler {
 
     private DialogTts dialogTts;
 
+    public static HandlerInitialState createInitialState(String initialPosition) {
+        HandlerInitialState state = new HandlerInitialState();
+        state.ttsInitialPosition = initialPosition;
+        return state;
+    }
+
     public TtsHandler(HandlerManager parent) {
         super(parent);
         readerDataHolder = getParent().getReaderDataHolder();
     }
 
     @Override
-    public void onActivate(ReaderDataHolder readerDataHolder, final Object initialState) {
-        initialPosition = (String) initialState;
+    public void onActivate(ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
+        if (initialState != null) {
+            initialPosition = initialState.ttsInitialPosition;
+        }
         getDialogTts().show();
     }
 

@@ -25,7 +25,7 @@ public class ScribbleHandler extends BaseHandler {
         return true;
     }
 
-    public void onActivate(final ReaderDataHolder readerDataHolder, final Object initialState) {
+    public void onActivate(final ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
         final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
     }
