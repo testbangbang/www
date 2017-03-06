@@ -3,17 +3,14 @@ package com.onyx.kreader.ui.dialog;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Pair;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -29,22 +26,18 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.ReaderTextStyle.PageMargin;
 import com.onyx.android.sdk.data.ReaderTextStyle.Percentage;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
-import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.AlignTextView;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
-import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.OnyxRadioButton;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.ui.view.RadioButtonCenter;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.ui.KReaderApp;
 import com.onyx.kreader.ui.actions.ChangeChineseConvertTypeAction;
 import com.onyx.kreader.ui.actions.ChangeCodePageAction;
 import com.onyx.kreader.ui.actions.ChangeStyleAction;
 import com.onyx.kreader.ui.actions.GetFontsAction;
-import com.onyx.kreader.ui.actions.PinchZoomAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
@@ -100,21 +93,23 @@ public class DialogTextStyle extends DialogBase {
 
     private FontInfo defaultFont = new FontInfo();
 
-    private View fontFaceLine;
+    private View chineseFontFaceLine;
+    private View englishFontFaceLine;
     private View fontSpacingLine;
     private View codePageLine;
     private OnyxCustomViewPager viewPager;
     private Button btnOk;
     private Button btnCancel;
-    private LinearLayout fontFaceLayout;
+    private LinearLayout englishFaceLayout;
+    private LinearLayout chineseFontFaceLayout;
     private LinearLayout fontSpacingLayout;
     private LinearLayout codePageLayout;
     private ImageView decreaseIcon;
     private ImageView increaseIcon;
 
-    private List<FontInfo> fonts = new ArrayList<>();
-    private int selectFontIndex = -1;
     private int selectCodePageIndex = 0;
+    private SelectFontIndex chineseSelectFontIndex = new SelectFontIndex();
+    private SelectFontIndex englishSelectFontIndex = new SelectFontIndex();
     private List<View> pageViews = new ArrayList<>();
     private ReaderDataHolder readerDataHolder;
     List<AlignTextView> fontSizeTexts = new ArrayList<>();
@@ -143,16 +138,18 @@ public class DialogTextStyle extends DialogBase {
 
     private void init() {
         handler = new Handler(getMainLooper());
-        defaultFont.setName(getContext().getString(R.string.default_font));
-        defaultFont.setId("serif"); // magic code from alreader engine
 
-        fontFaceLine = findViewById(R.id.font_face_bottom_view);
+
+        chineseFontFaceLine = findViewById(R.id.font_face_bottom_view);
+        englishFontFaceLine = findViewById(R.id.english_font_face_bottom_view);
         fontSpacingLine = findViewById(R.id.page_spacing_bottom_view);
         codePageLine = findViewById(R.id.code_page_bottom_view);
-        fontFaceLayout = (LinearLayout) findViewById(R.id.font_face_layout);
+        chineseFontFaceLayout = (LinearLayout) findViewById(R.id.font_face_layout);
+        englishFaceLayout = (LinearLayout) findViewById(R.id.english_font_face_layout);
         fontSpacingLayout = (LinearLayout) findViewById(R.id.page_spacing_layout);
         codePageLayout = (LinearLayout) findViewById(R.id.code_page_layout);
-        fontFaceLine.setVisibility(View.VISIBLE);
+        chineseFontFaceLine.setVisibility(View.VISIBLE);
+        englishFontFaceLine.setVisibility(View.INVISIBLE);
         fontSpacingLine.setVisibility(View.INVISIBLE);
         codePageLine.setVisibility(View.INVISIBLE);
 
@@ -160,27 +157,34 @@ public class DialogTextStyle extends DialogBase {
         btnOk = (Button) findViewById(R.id.btn_ok);
         btnCancel = (Button) findViewById(R.id.btn_cancel);
 
-        pageViews.add(initFontFaceView());
+        pageViews.add(initFontFaceView(DeviceUtils.FontType.CHINESE));
+        pageViews.add(initFontFaceView(DeviceUtils.FontType.ENGLISH));
         pageViews.add(initPageSpacingView());
         pageViews.add(initCodePageView());
 
         viewPager.setAdapter(new ViewPagerAdapter());
-        fontFaceLayout.setOnClickListener(new View.OnClickListener() {
+        chineseFontFaceLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switchViewPage(0);
             }
         });
-        fontSpacingLayout.setOnClickListener(new View.OnClickListener() {
+        englishFaceLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switchViewPage(1);
             }
         });
-        codePageLayout.setOnClickListener(new View.OnClickListener() {
+        fontSpacingLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switchViewPage(2);
+            }
+        });
+        codePageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchViewPage(3);
             }
         });
 
@@ -215,9 +219,19 @@ public class DialogTextStyle extends DialogBase {
 
     private void switchViewPage(final int index) {
         viewPager.setCurrentItem(index, false);
-        fontFaceLine.setVisibility(index == 0 ? View.VISIBLE : View.INVISIBLE);
-        fontSpacingLine.setVisibility(index == 1 ? View.VISIBLE : View.INVISIBLE);
-        codePageLine.setVisibility(index == 2 ? View.VISIBLE : View.INVISIBLE);
+        chineseFontFaceLine.setVisibility(index == 0 ? View.VISIBLE : View.INVISIBLE);
+        englishFontFaceLine.setVisibility(index == 1 ? View.VISIBLE : View.INVISIBLE);
+        fontSpacingLine.setVisibility(index == 2 ? View.VISIBLE : View.INVISIBLE);
+        codePageLine.setVisibility(index == 3 ? View.VISIBLE : View.INVISIBLE);
+
+        if (index == 0) {
+            updateFontSizeView(pageViews.get(0));
+            updateFontPageView(pageViews.get(0));
+        }
+        if (index == 1) {
+            updateFontSizeView(pageViews.get(1));
+            updateFontPageView(pageViews.get(1));
+        }
     }
 
     @Override
@@ -244,11 +258,8 @@ public class DialogTextStyle extends DialogBase {
         });
     }
 
-    private View initFontFaceView() {
+    private View initFontFaceView(final DeviceUtils.FontType fontType) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_text_style_sub_font_face_view, null, false);
-        CommonViewHolder fontFaceViewHolder = new CommonViewHolder(view);
-        decreaseIcon = (ImageView) view.findViewById(R.id.image_view_decrease_font_size);
-        increaseIcon = (ImageView) view.findViewById(R.id.image_view_increase_font_size);
         final PageRecyclerView pageView = (PageRecyclerView) view.findViewById(R.id.font_page_view);
         final TextView pageSizeIndicator = (TextView) view.findViewById(R.id.page_size_indicator);
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
@@ -270,6 +281,39 @@ public class DialogTextStyle extends DialogBase {
             }
         });
 
+        pageView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPageChange(int position, int itemCount, int pageSize) {
+                updatePageIndicator(pageView, pageSizeIndicator);
+            }
+        });
+
+        final String fontFace = getReaderStyle().getFontFace();
+        final GetFontsAction getFontsAction = new GetFontsAction(fontFace, fontType);
+        getFontsAction.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                initFontPageView(pageView, fontFace, getFontsAction.getFonts(), fontType, fontType == DeviceUtils.FontType.ENGLISH ? englishSelectFontIndex : chineseSelectFontIndex);
+                updatePageIndicator(pageView, pageSizeIndicator);
+            }
+        });
+
+        updateFontSizeView(view);
+        return view;
+    }
+
+    private void updateFontPageView(View parentView) {
+        final PageRecyclerView pageView = (PageRecyclerView) parentView.findViewById(R.id.font_page_view);
+        pageView.notifyDataSetChanged();
+    }
+
+    private void updateFontSizeView(View parentView) {
+        CommonViewHolder fontFaceViewHolder = new CommonViewHolder(parentView);
+        decreaseIcon = (ImageView) parentView.findViewById(R.id.image_view_decrease_font_size);
+        increaseIcon = (ImageView) parentView.findViewById(R.id.image_view_increase_font_size);
         increaseIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -288,26 +332,7 @@ public class DialogTextStyle extends DialogBase {
             }
         });
 
-        pageView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
-            @Override
-            public void onPageChange(int position, int itemCount, int pageSize) {
-                updatePageIndicator(pageView, pageSizeIndicator);
-            }
-        });
-
-        final String fontFace = getReaderStyle().getFontFace();
-        final GetFontsAction getFontsAction = new GetFontsAction(fontFace);
-        getFontsAction.execute(readerDataHolder, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-                initFontPageView(pageView, fontFace, getFontsAction.getFonts());
-                updatePageIndicator(pageView, pageSizeIndicator);
-            }
-        });
-
+        fontSizeTexts.clear();
         fontSizeTexts.add((AlignTextView) fontFaceViewHolder.getView(com.onyx.android.sdk.ui.R.id.text_view_font_size_0));
         fontSizeTexts.add((AlignTextView) fontFaceViewHolder.getView(com.onyx.android.sdk.ui.R.id.text_view_font_size_1));
         fontSizeTexts.add((AlignTextView) fontFaceViewHolder.getView(com.onyx.android.sdk.ui.R.id.text_view_font_size_2));
@@ -317,8 +342,6 @@ public class DialogTextStyle extends DialogBase {
         fontSizeTexts.add((AlignTextView) fontFaceViewHolder.getView(com.onyx.android.sdk.ui.R.id.text_view_font_size_6));
         fontSizeTexts.add((AlignTextView) fontFaceViewHolder.getView(com.onyx.android.sdk.ui.R.id.text_view_font_size_7));
         updateFontSizeTextView(fontSizeTexts, getReaderStyle());
-
-        return view;
     }
 
     private PinchZoomingPopupMenu getPinchZoomPopupMenu() {
@@ -476,19 +499,48 @@ public class DialogTextStyle extends DialogBase {
         new ChangeStyleAction(style).execute(readerDataHolder, callback);
     }
 
-    private void initFontPageView(final PageRecyclerView pageView, String fontFace, List<FontInfo> fontsList) {
-        fonts.clear();
-        fonts.add(defaultFont);
-        fonts.addAll(fontsList);
+    private int updateSelectFontIndex(final SelectFontIndex selectFontIndex, final List<FontInfo> fonts, final String fontFace, final DeviceUtils.FontType fontType) {
+        int fontIndex = -1;
         if (fontFace == null) {
-            selectFontIndex = 0; // choose default
+            if (fontType == DeviceUtils.FontType.ENGLISH) {
+                fontIndex = 0; // choose default
+            }
         } else {
             for (int i = 0; i < fonts.size(); i++) {
                 if (fontFace.equals(fonts.get(i).getId())) {
-                    selectFontIndex = i;
+                    fontIndex = i;
                 }
             }
         }
+        selectFontIndex.setIndex(fontIndex);
+        return fontIndex;
+    }
+
+    private static class SelectFontIndex {
+        private int index;
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public boolean equals(int o) {
+            return index == o;
+        }
+    }
+
+    private void initFontPageView(final PageRecyclerView pageView, String fontFace, List<FontInfo> fontsList, final DeviceUtils.FontType fontType, final SelectFontIndex selectFontIndex) {
+        final List<FontInfo> fonts = new ArrayList<>();
+        if (fontType == DeviceUtils.FontType.ENGLISH) {
+            defaultFont.setName(getContext().getString(R.string.default_font));
+            defaultFont.setId("serif"); // magic code from alreader engine
+            fonts.add(defaultFont);
+        }
+        fonts.addAll(fontsList);
+        updateSelectFontIndex(selectFontIndex, fonts, fontFace, fontType);
 
         pageView.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override
@@ -519,16 +571,21 @@ public class DialogTextStyle extends DialogBase {
                 final FontInfo fontInfo = fonts.get(position);
                 button.setText(fontInfo.getName());
                 button.setTypeface(fontInfo.getTypeface());
-                button.setChecked(selectFontIndex == position);
+                button.setChecked(selectFontIndex.equals(position));
 
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        pageView.getPageAdapter().notifyItemChanged(selectFontIndex);
-                        selectFontIndex = position;
-                        pageView.getPageAdapter().notifyItemChanged(selectFontIndex);
+                        pageView.getPageAdapter().notifyItemChanged(selectFontIndex.getIndex());
+                        selectFontIndex.setIndex(position);
+                        pageView.getPageAdapter().notifyItemChanged(selectFontIndex.getIndex());
                         getReaderStyle().setFontFace(fonts.get(position).getId());
                         updateReaderStyle(getReaderStyle());
+                        if (fontType == DeviceUtils.FontType.ENGLISH) {
+                            chineseSelectFontIndex.setIndex(-1);
+                        }else {
+                            englishSelectFontIndex.setIndex(-1);
+                        }
                     }
                 });
                 viewHolder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -539,7 +596,7 @@ public class DialogTextStyle extends DialogBase {
                                 decreaseIcon.requestFocus();
                             }
                             if (pageView.getPaginator().isInPrevPage(position)) {
-                                fontFaceLayout.requestFocus();
+                                chineseFontFaceLayout.requestFocus();
                             }
                         }
                     }

@@ -78,4 +78,7 @@
     <string name="filter">筛选</string>
     <string name="order_asc">升序</string>
     <string name="order_desc">降序</string>
+
+    <string name="chinese_font_face">中文字体</string>
+    <string name="english_font_face">英文字体</string>
 </resources>

@@ -50,6 +50,10 @@ public class DeviceUtils {
         return Build.HARDWARE.startsWith("rk");
     }
 
+    public enum FontType {
+        CHINESE,ENGLISH,ALL
+    }
+
     public static String getDeviceSerial(Context context) {
         UUID uuid = null;
 
@@ -183,7 +187,7 @@ public class DeviceUtils {
                 path.toLowerCase(Locale.getDefault()).endsWith(".ttf");
     }
 
-    public static List<FontInfo> buildFontItemAdapter(List<String> fontsFolderList, String currentFont, final List<String> preferredFonts) {
+    public static List<FontInfo> buildFontItemAdapter(List<String> fontsFolderList, String currentFont, final List<String> preferredFonts, final FontType fontType) {
         List<FontInfo> fontInfoList = new ArrayList<>();
         FilenameFilter fontFilter = new FilenameFilter() {
             @Override
@@ -213,11 +217,17 @@ public class DeviceUtils {
                             ? f.getName() : fontName);
                     fontInfo.setId(f.getAbsolutePath());
                     fontInfo.setTypeface(createTypefaceFromFile(f));
+                    boolean isAlphaWord =  StringUtils.isAlpha(fontInfo.getName().charAt(0));
+                    if (fontType == FontType.ENGLISH && !isAlphaWord) {
+                        continue;
+                    }
+                    if (fontType == FontType.CHINESE && isAlphaWord) {
+                        continue;
+                    }
                     if (f.getName().equalsIgnoreCase(currentFont)) {
                         fontInfoList.add(0, fontInfo);
                         continue;
                     }
-                    boolean isAlphaWord =  StringUtils.isAlpha(fontInfo.getName().charAt(0));
                     if ((preferredFonts != null && (preferredFonts.contains(fontName) || preferredFonts.contains(f.getName())))
                             || !isAlphaWord) {
                         fontInfoList.add(0, fontInfo);
