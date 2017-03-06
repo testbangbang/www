@@ -108,6 +108,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         initView();
         initData();
 
+        setCanceledOnTouchOutside(false);
     }
 
     private void fitDialogToWindow() {
@@ -116,8 +117,8 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         mParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         mParams.gravity = Gravity.BOTTOM;
         mWindow.setAttributes(mParams);
-        //force use all space in the screen.
-        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
     }
 
     public void show() {
