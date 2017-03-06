@@ -2,6 +2,8 @@ package com.onyx.android.sdk.data.model;
 
 import android.os.Build;
 
+import com.onyx.android.sdk.data.utils.FirmwareUtils;
+
 import java.util.List;
 
 /**
