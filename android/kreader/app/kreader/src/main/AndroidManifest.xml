@@ -38,7 +38,7 @@
 
         <activity android:name=".ui.ReaderTabHostActivity"
                   android:launchMode="singleInstance"
-                  android:configChanges="keyboardHidden|orientation|screenSize">
+                  android:configChanges="keyboardHidden|orientation|screenSize|locale">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -160,7 +160,7 @@
             android:launchMode="singleInstance"
             android:taskAffinity=""
             android:process=":reader_tab_1"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:configChanges="keyboardHidden|orientation|screenSize|locale">
         </activity>
 
         <receiver android:name=".ui.ReaderTab1BroadcastReceiver"
@@ -177,7 +177,7 @@
             android:launchMode="singleInstance"
             android:taskAffinity=""
             android:process=":reader_tab_2"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:configChanges="keyboardHidden|orientation|screenSize|locale">
         </activity>
 
         <receiver android:name=".ui.ReaderTab2BroadcastReceiver"
@@ -194,7 +194,7 @@
             android:launchMode="singleInstance"
             android:taskAffinity=""
             android:process=":reader_tab_3"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:configChanges="keyboardHidden|orientation|screenSize|locale">
         </activity>
 
         <receiver android:name=".ui.ReaderTab3BroadcastReceiver"
@@ -211,7 +211,7 @@
             android:launchMode="singleInstance"
             android:taskAffinity=""
             android:process=":reader_tab_4"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:configChanges="keyboardHidden|orientation|screenSize|locale">
         </activity>
 
         <receiver android:name=".ui.ReaderTab4BroadcastReceiver"
