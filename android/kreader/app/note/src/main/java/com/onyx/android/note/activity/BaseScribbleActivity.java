@@ -1,5 +1,6 @@
 package com.onyx.android.note.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -43,6 +44,7 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+import com.onyx.android.sdk.ui.utils.DialogHelp;
 
 import java.io.File;
 import java.util.List;
@@ -516,19 +518,24 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onDeletePage() {
-        syncWithCallback(false, false, new BaseCallback() {
+        DialogHelp.getConfirmDialog(this, getString(R.string.ask_for_delete_page), new DialogInterface.OnClickListener() {
             @Override
-            public void done(BaseRequest request, Throwable e) {
-                final DocumentDeletePageAction<BaseScribbleActivity> action = new DocumentDeletePageAction<>();
-                action.execute(BaseScribbleActivity.this, new BaseCallback() {
+            public void onClick(DialogInterface dialog, int which) {
+                syncWithCallback(false, false, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, true);
-                        reloadLineLayoutData();
+                        final DocumentDeletePageAction<BaseScribbleActivity> action = new DocumentDeletePageAction<>();
+                        action.execute(BaseScribbleActivity.this, new BaseCallback() {
+                            @Override
+                            public void done(BaseRequest request, Throwable e) {
+                                onRequestFinished((BaseNoteRequest) request, true);
+                                reloadLineLayoutData();
+                            }
+                        });
                     }
                 });
             }
-        });
+        }).show();
     }
 
     protected void reloadLineLayoutData() {

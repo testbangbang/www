@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
@@ -46,6 +47,8 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     private ReaderTabManager tabManager = ReaderTabManager.create();
     private TabHost tabHost;
+    private TabWidget tabWidget;
+    private ImageView btnSwitch;
     private String pathToContinueOpenAfterRotation;
 
     @Override
@@ -119,6 +122,17 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     private void initTabHost() {
+        tabWidget = (TabWidget) findViewById(android.R.id.tabs);
+        btnSwitch = (ImageView) findViewById(R.id.btn_switch);
+        btnSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isShowed = tabWidget.getVisibility() == View.VISIBLE;
+                tabWidget.setVisibility(isShowed ? View.INVISIBLE : View.VISIBLE);
+                btnSwitch.setImageResource(isShowed ? R.drawable.ic_pack_up : R.drawable.ic_unfold);
+            }
+        });
+
         tabHost = (TabHost) findViewById(R.id.tab_host);
         tabHost.setup();
 

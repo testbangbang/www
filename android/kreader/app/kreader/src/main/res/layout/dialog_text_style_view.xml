@@ -32,12 +32,38 @@
                     android:textSize="@dimen/dialog_common_text_size"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:text="@string/font_face"
+                    android:text="@string/chinese_font_face"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
                 <View
                     android:id="@+id/font_face_bottom_view"
+                    android:background="@android:color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="5dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:focusable="true"
+                android:background="@drawable/imagebtn_bg"
+                android:gravity="center_horizontal"
+                android:id="@+id/english_font_face_layout"
+                android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
+                android:orientation="vertical"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/english_font_face_text"
+                    android:textSize="@dimen/dialog_common_text_size"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/english_font_face"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <View
+                    android:id="@+id/english_font_face_bottom_view"
                     android:background="@android:color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="5dp"/>
