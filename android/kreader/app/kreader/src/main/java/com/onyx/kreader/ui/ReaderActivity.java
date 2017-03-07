@@ -109,7 +109,7 @@ import java.util.List;
 /**
  * Created by Joy on 2016/4/14.
  */
-public class ReaderActivity extends AppCompatActivity {
+public class ReaderActivity extends OnyxBaseActivity {
     private static final String DOCUMENT_PATH_TAG = "document";
 
     private PowerManager.WakeLock startupWakeLock;
@@ -170,7 +170,6 @@ public class ReaderActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Log.d(getClass().getSimpleName(), "onPause");
         onDocumentDeactivated();
         super.onPause();
     }

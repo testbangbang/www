@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
@@ -36,7 +35,7 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class ReaderTabHostActivity extends AppCompatActivity {
+public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private static final String TAG = ReaderTabHostActivity.class.getSimpleName();
 
@@ -335,6 +334,7 @@ public class ReaderTabHostActivity extends AppCompatActivity {
     }
 
     private void openDocWithTab(ReaderTabManager.ReaderTab tab, String path) {
+        Debug.d(TAG, "openDocWithTab: " + tab + ", " + path);
         addReaderTab(tab, path);
 
         Intent intent = new Intent(this, tabManager.getTabActivity(tab));
@@ -389,12 +389,13 @@ public class ReaderTabHostActivity extends AppCompatActivity {
 
     private boolean bringReaderTabToFront(ReaderTabManager.ReaderTab tab) {
         String clzName = tabManager.getTabActivity(tab).getName();
-        ActivityManager am = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
+        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
-        if(!tasksList.isEmpty()){
+        if (!tasksList.isEmpty()) {
             int nSize = tasksList.size();
-            for(int i = 0; i < nSize;  i++){
-                if(tasksList.get(i).topActivity.getClassName().equals(clzName)){
+            for (int i = 0; i < nSize; i++) {
+                if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
+                    Debug.d(TAG, "reader tab already in task list, bring it to front: " + tab);
                     updateCurrentTabInHost(tab);
                     updateReaderTabWindowHeight(tab);
                     am.moveTaskToFront(tasksList.get(i).id, 0);
