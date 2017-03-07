@@ -62,6 +62,7 @@ public class StatisticsActivity extends ActionBarActivity {
         initView();
         initData();
         registerReceiver();
+        getStatistics();
         DeviceUtils.changeWiFi(this, true);
     }
 
@@ -134,8 +135,7 @@ public class StatisticsActivity extends ActionBarActivity {
     }
 
     private void getStatistics() {
-        dialogLoading = new DialogLoading(this,
-                getString(R.string.loading), false, null);
+        dialogLoading = getDialogLoading();
         dialogLoading.show();
         final GetStatisticsRequest statisticsRequest = new GetStatisticsRequest(this, DeviceConfig.sharedInstance(this).getStatisticsUrl());
         getCloudStore().submitRequest(this, statisticsRequest, new BaseCallback() {
@@ -153,6 +153,14 @@ public class StatisticsActivity extends ActionBarActivity {
                 readRecordFragment.setStatisticsResult(statisticsResult);
             }
         });
+    }
+
+    private DialogLoading getDialogLoading() {
+        if (dialogLoading == null) {
+            dialogLoading = new DialogLoading(this,
+                    getString(R.string.loading), false, null);
+        }
+        return dialogLoading;
     }
 
     private CloudStore getCloudStore() {

@@ -69,6 +69,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         eventTypeAggBean.setRead(getReadCount());
         eventTypeAggBean.setFinish(getFinishCount());
         eventTypeAggBean.setAnnotation(getAnnotationCount());
+        eventTypeAggBean.setTextSelect(getSelectTextCount());
         statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());
         statisticsResult.setDailyAvgReadTime(getReadTimeEveryDay());
         statisticsResult.setLongestReadTimeBook(getLongestBook());
@@ -110,8 +111,12 @@ public class GetStatisticsRequest extends BaseCloudRequest {
 
     private int getAnnotationCount() {
         List<OnyxStatisticsModel> annotationStatistics = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_ANNOTATION);
+        return annotationStatistics.size();
+    }
+
+    private int getSelectTextCount() {
         List<OnyxStatisticsModel> highLightStatistics = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_TEXT_SELECTED);
-        return annotationStatistics.size() + highLightStatistics.size();
+        return highLightStatistics.size();
     }
 
     private List<Integer> getSelfReadTimeDis() {

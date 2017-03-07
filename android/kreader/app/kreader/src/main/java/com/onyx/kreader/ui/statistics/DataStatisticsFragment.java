@@ -144,7 +144,7 @@ public class DataStatisticsFragment extends StatisticsFragment {
                         break;
                     case 3:
                         title = R.string.statistics_annotation_count;
-                        value = statisticsResult == null ? 0 : statisticsResult.getEventTypeAgg().getAnnotation();
+                        value = statisticsResult == null ? 0 : statisticsResult.getEventTypeAgg().getAnnotation() + statisticsResult.getEventTypeAgg().getTextSelect();
                         viewHolder.setText(R.id.value, String.valueOf(value));
                         break;
                 }

@@ -28,6 +28,8 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
         this.networkChangedListener = networkChangedListener;
     }
 
+    public NetworkConnectChangedReceiver() {
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
