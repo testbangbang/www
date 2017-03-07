@@ -329,12 +329,15 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public void quitWordSelection(ReaderDataHolder readerDataHolder) {
+        getParent().resetToDefaultProvider();
+        clearWordSelection(readerDataHolder);
+    }
+
+    private void clearWordSelection(ReaderDataHolder readerDataHolder) {
         readerDataHolder.resetEpdUpdateMode();
         ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(readerDataHolder,true);
-        getParent().resetToDefaultProvider();
         readerDataHolder.redrawPage();
         readerDataHolder.getSelectionManager().clear();
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
     }
 
     public void onSelectWordFinished(ReaderDataHolder readerDataHolder, SelectWordRequest request, Throwable e) {
@@ -360,5 +363,10 @@ public class WordSelectionHandler extends BaseHandler{
         readerDataHolder.getSelectionManager().setEnable(true);
         readerDataHolder.onRenderRequestFinished(request, null, false, false);
         showSelectionCursor = true;
+    }
+
+    @Override
+    public void onDeactivate(ReaderDataHolder readerDataHolder) {
+        clearWordSelection(readerDataHolder);
     }
 }
