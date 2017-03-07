@@ -267,7 +267,7 @@
                 android:id="@+id/imageview_start_tts"
                 style="@style/popup_selection_menu_image_view"
                 android:contentDescription="@drawable/ic_dialog_reader_choose_tts"
-                android:src="@drawable/ic_dialog_reader_menu_tts_black" />
+                android:src="@drawable/ic_dialog_reader_choose_tts" />
 
             <TextView
                 style="@style/popup_selection_menu_text_view"

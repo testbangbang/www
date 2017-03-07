@@ -79,7 +79,7 @@ public class SlideshowHandler extends BaseHandler {
     }
 
     @Override
-    public void onActivate(ReaderDataHolder readerDataHolder) {
+    public void onActivate(ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
         activated = true;
         readerDataHolder.getContext().registerReceiver(broadcastReceiver, new IntentFilter(intent.getAction()));
         readerDataHolder.getEventBus().register(this);

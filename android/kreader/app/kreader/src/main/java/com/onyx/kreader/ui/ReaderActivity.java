@@ -50,11 +50,9 @@ import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
-import com.onyx.kreader.note.actions.StopNoteAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
@@ -78,7 +76,6 @@ import com.onyx.kreader.ui.events.ClosePopupEvent;
 import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
-import com.onyx.kreader.ui.events.HomeClickEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
 import com.onyx.kreader.ui.events.PinchZoomEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
@@ -173,10 +170,8 @@ public class ReaderActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        disablePenShortcut();
-        if (getReaderDataHolder().isDocumentOpened()) {
-            new SaveDocumentOptionsAction().execute(getReaderDataHolder(), null);
-        }
+        Log.d(getClass().getSimpleName(), "onPause");
+        onDocumentDeactivated();
         super.onPause();
     }
 
@@ -539,16 +534,6 @@ public class ReaderActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onHomeClick(final HomeClickEvent event) {
-        if (event == null || !getReaderDataHolder().inNoteWritingProvider()) {
-            getReaderDataHolder().getHandlerManager().resetToDefaultProvider();
-            saveDocumentOptions();
-            return;
-        }
-        afterPause(null);
-    }
-
-    @Subscribe
     public void pinchZoomMenuChanged(final PinchZoomEvent event) {
         if (event == null) {
             return;
@@ -574,7 +559,6 @@ public class ReaderActivity extends AppCompatActivity {
         if (getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
             return;
         }
-        onDocumentDeactivated();
     }
 
     private PinchZoomingPopupMenu getPinchZoomPopupMenu() {
@@ -588,36 +572,27 @@ public class ReaderActivity extends AppCompatActivity {
         return pinchZoomingPopupMenu;
     }
 
-    private void afterPause(final BaseCallback baseCallback) {
-        enablePost(true);
-        if (!verifyReader()) {
-            baseCallback.invoke(baseCallback, null, null);
-            return;
-        }
-
-        final StopNoteActionChain actionChain = new StopNoteActionChain(false, false, true, false, true, false);
-        actionChain.execute(getReaderDataHolder(), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                saveDocumentOptions();
-                baseCallback.invoke(baseCallback, request, e);
-            }
-        });
-    }
-
     private void onDocumentDeactivated() {
         enablePost(true);
         if (!verifyReader()) {
             return;
         }
 
-        final StopNoteActionChain actionChain = new StopNoteActionChain(true, true, true, false, false, true);
-        actionChain.execute(getReaderDataHolder(), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                saveDocumentOptions();
-            }
-        });
+        disablePenShortcut();
+        getReaderDataHolder().getHandlerManager().resetToDefaultProvider();
+        if (!getReaderDataHolder().isDocumentOpened()) {
+            return;
+        }
+        if (!getReaderDataHolder().inNoteWritingProvider()) {
+            saveDocumentOptions();
+        } else {
+            stopNoteWriting(new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    saveDocumentOptions();
+                }
+            });
+        }
     }
 
     private void enablePost(boolean enable) {
@@ -627,6 +602,11 @@ public class ReaderActivity extends AppCompatActivity {
     private void saveDocumentOptions() {
         final SaveDocumentOptionsAction action = new SaveDocumentOptionsAction();
         action.execute(getReaderDataHolder(), null);
+    }
+
+    private void stopNoteWriting(BaseCallback callback) {
+        final StopNoteActionChain actionChain = new StopNoteActionChain(false, false, true, false, true, false);
+        actionChain.execute(getReaderDataHolder(), callback);
     }
 
     @Subscribe
