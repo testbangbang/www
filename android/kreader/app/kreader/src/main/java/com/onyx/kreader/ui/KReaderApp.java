@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.reader.ReaderBaseApp;
+import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.PackageUtils;
+import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.ReaderNoteGeneratedDatabaseHolder;
@@ -29,6 +32,7 @@ public class KReaderApp extends ReaderBaseApp {
         DataManager.init(this, databaseHolderList());
         SingletonSharedPreference.init(this);
 //        LeakCanary.install(this);
+        Debug.setDebug(BuildConfig.DEBUG || PackageUtils.getAppType(this).equals(PackageUtils.APP_TYPE_DEBUG));
         instance = this;
     }
 

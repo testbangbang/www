@@ -110,7 +110,7 @@ import java.util.List;
 /**
  * Created by Joy on 2016/4/14.
  */
-public class ReaderActivity extends AppCompatActivity {
+public class ReaderActivity extends OnyxBaseActivity {
     private static final String DOCUMENT_PATH_TAG = "document";
 
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
@@ -171,7 +171,6 @@ public class ReaderActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Log.d(getClass().getSimpleName(), "onPause");
         onDocumentDeactivated();
         super.onPause();
     }
@@ -557,7 +556,8 @@ public class ReaderActivity extends AppCompatActivity {
         if (getReaderDataHolder() == null) {
             return;
         }
-        if (getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
+        if (!getReaderDataHolder().isDocumentOpened() ||
+                getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
             return;
         }
     }
