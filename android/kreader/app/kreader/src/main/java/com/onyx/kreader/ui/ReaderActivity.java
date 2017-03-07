@@ -580,7 +580,7 @@ public class ReaderActivity extends AppCompatActivity {
 
         disablePenShortcut();
         getReaderDataHolder().getHandlerManager().resetToDefaultProvider();
-        if (getReaderDataHolder().isDocumentOpened()) {
+        if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
         if (!getReaderDataHolder().inNoteWritingProvider()) {
