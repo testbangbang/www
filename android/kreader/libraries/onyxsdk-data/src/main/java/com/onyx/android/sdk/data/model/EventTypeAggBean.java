@@ -13,6 +13,7 @@ public class EventTypeAggBean {
     private int lookupDic;
     private int pageChange;
     private int close;
+    private int textSelect;
 
     public int getTotal() {
         return total;
@@ -70,4 +71,11 @@ public class EventTypeAggBean {
         this.close = close;
     }
 
+    public int getTextSelect() {
+        return textSelect;
+    }
+
+    public void setTextSelect(int textSelect) {
+        this.textSelect = textSelect;
+    }
 }

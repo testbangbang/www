@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.data.model;
+package com.onyx.android.sdk.data.utils;
 
 import com.onyx.android.sdk.utils.StringUtils;
 

@@ -4,6 +4,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
@@ -32,7 +34,12 @@ public class ScribbleHandler extends BaseHandler {
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
         final StopNoteRequest request = new StopNoteRequest(false);
-        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
+        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.closeNoteMenu();
+            }
+        });
     }
 
     @Override
