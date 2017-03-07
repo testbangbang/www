@@ -7,7 +7,6 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -46,6 +45,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private ReaderTabManager tabManager = ReaderTabManager.create();
     private TabHost tabHost;
     private String pathToContinueOpenAfterRotation;
+
+    private boolean insideTabChanging = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -141,10 +142,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             @Override
             public void onTabChanged(String tabId) {
                 ReaderTabManager.ReaderTab tab = Enum.valueOf(ReaderTabManager.ReaderTab.class, tabId);
-                if (tabManager.isTabOpened(tab)) {
+                if (!insideTabChanging && tabManager.isTabOpened(tab)) {
                     reopenReaderTab(tab);
                 }
                 onTabSwitched(tab);
+                insideTabChanging = false;
             }
         });
         tabHost.setCurrentTab(0);
@@ -220,6 +222,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void updateCurrentTabInHost(ReaderTabManager.ReaderTab tab) {
         if (tabHost.getTabWidget().getTabCount() > 0 &&
                 !tabHost.getCurrentTabTag().equals(tab.toString())) {
+            insideTabChanging = true;
             tabHost.setCurrentTabByTag(tab.toString());
         }
     }
