@@ -363,6 +363,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         Intent intent = new Intent(this, tabManager.getTabActivity(tab));
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File(path)), getIntent().getType());
+        intent.putExtras(getIntent());
         final int tabContentHeight = getTabContentHeight();
         intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
         startActivity(intent);
