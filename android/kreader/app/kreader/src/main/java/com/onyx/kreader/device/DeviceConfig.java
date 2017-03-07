@@ -49,7 +49,7 @@ public class DeviceConfig {
     private int defaultGamma = 150;
     private int fixedGamma = 0;
     private boolean supportBrushPen = false;
-    private boolean supportMultipleTabs = true;
+    private boolean supportMultipleTabs = false;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
