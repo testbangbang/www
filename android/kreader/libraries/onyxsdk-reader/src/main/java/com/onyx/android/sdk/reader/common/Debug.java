@@ -2,7 +2,6 @@ package com.onyx.android.sdk.reader.common;
 
 import android.util.Log;
 
-import com.onyx.android.sdk.reader.BuildConfig;
 import com.onyx.android.sdk.utils.StringUtils;
 
 /**
@@ -11,6 +10,10 @@ import com.onyx.android.sdk.utils.StringUtils;
 public class Debug {
     private static final String TAG = Debug.class.getSimpleName();
     private static boolean debug = false;
+
+    public static void setDebug(boolean debug) {
+        Debug.debug = debug;
+    }
 
     public static void d(final String msg, final Object... args) {
         d(TAG, msg, args);
