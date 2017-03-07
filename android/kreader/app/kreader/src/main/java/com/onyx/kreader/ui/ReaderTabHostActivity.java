@@ -245,10 +245,17 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return Enum.valueOf(ReaderTabManager.ReaderTab.class, tabHost.getCurrentTabTag());
     }
 
+    private boolean isShowingTabWidget() {
+        return tabManager.getOpenedTabs().size() > 1;
+    }
+
     private int getTabContentHeight() {
         Debug.d(TAG, "tab host height: " + tabHost.getHeight() +
                 ", tab widget height: " + tabHost.getTabWidget().getHeight() +
                 ", tab content height: " + tabHost.getTabContentView().getHeight());
+        if (!isShowingTabWidget()) {
+            return tabHost.getHeight();
+        }
         return tabHost.getHeight() - tabHost.getTabWidget().getHeight();
     }
 
