@@ -3,7 +3,10 @@ package com.onyx.kreader.ui.data;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Rect;
+import android.util.Log;
+
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -82,8 +85,6 @@ public class ReaderDataHolder {
 
     public ReaderDataHolder(Context context) {
         this.context = context;
-
-        // we want receive global event from the receiver
         ReaderBroadcastReceiver.setEventBus(eventBus);
     }
 
@@ -466,11 +467,7 @@ public class ReaderDataHolder {
         getEventBus().post(new ShowReaderSettingsEvent());
     }
 
-    public void addActiveDialog(Dialog dialog) {
-        activeDialogs.add(dialog);
-    }
-
-    public void addActiveDialog(DialogFragment dialog) {
+    private void addActiveDialog(Dialog dialog) {
         activeDialogs.add(dialog);
     }
 
@@ -478,8 +475,17 @@ public class ReaderDataHolder {
         activeDialogs.remove(dialog);
     }
 
-    public void removeActiveDialog(DialogFragment dialog) {
-        activeDialogs.remove(dialog);
+    public void trackDialog(final Dialog dialog) {
+        if (dialog == null) {
+            return;
+        }
+        addActiveDialog(dialog);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                removeActiveDialog(dialog);
+            }
+        });
     }
 
     public void closeActiveDialogs() {

@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.actions;
 
 import android.graphics.Bitmap;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
@@ -64,7 +65,6 @@ public class ShowQuickPreviewAction extends BaseAction {
             }
         });
         dialogQuickPreview.show();
-        readerDataHolder.addActiveDialog(dialogQuickPreview);
         BaseCallback.invoke(callback, null, null);
     }
 

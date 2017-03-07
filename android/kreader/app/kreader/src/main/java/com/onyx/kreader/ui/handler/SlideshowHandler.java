@@ -79,7 +79,7 @@ public class SlideshowHandler extends BaseHandler {
     }
 
     @Override
-    public void onActivate(ReaderDataHolder readerDataHolder) {
+    public void onActivate(ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
         activated = true;
         readerDataHolder.getContext().registerReceiver(broadcastReceiver, new IntentFilter(intent.getAction()));
         readerDataHolder.getEventBus().register(this);
@@ -243,7 +243,7 @@ public class SlideshowHandler extends BaseHandler {
         int endBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
         DialogSlideshowStatistic dlg = new DialogSlideshowStatistic(readerDataHolder.getContext(), startTime, endTime,
                 pageCount, startBatteryPercent, endBatteryPercent);
-        readerDataHolder.addActiveDialog(dlg);
+        readerDataHolder.trackDialog(dlg);
         dlg.show();
     }
 }
