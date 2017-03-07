@@ -36,6 +36,7 @@ import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.common.Debug;
@@ -112,7 +113,7 @@ import java.util.List;
 public class ReaderActivity extends AppCompatActivity {
     private static final String DOCUMENT_PATH_TAG = "document";
 
-    private PowerManager.WakeLock startupWakeLock;
+    private WakeLockHolder startupWakeLock = new WakeLockHolder();
     private SurfaceView surfaceView;
     private RelativeLayout mainView;
     private SurfaceHolder.Callback surfaceHolderCallback;
@@ -653,19 +654,11 @@ public class ReaderActivity extends AppCompatActivity {
     }
 
     private void acquireStartupWakeLock() {
-        if (startupWakeLock == null) {
-            startupWakeLock = Device.currentDevice().newWakeLock(this, ReaderActivity.class.getSimpleName());
-        }
-        if (startupWakeLock != null) {
-            startupWakeLock.acquire();
-        }
+        startupWakeLock.acquireWakeLock(this, ReaderActivity.class.getSimpleName());
     }
 
     private void releaseStartupWakeLock() {
-        if (startupWakeLock != null && startupWakeLock.isHeld()) {
-            startupWakeLock.release();
-            startupWakeLock = null;
-        }
+        startupWakeLock.releaseWakeLock();
     }
 
     private boolean handleActivityIntent() {
