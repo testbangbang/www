@@ -147,7 +147,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         });
 
         if (!tabManager.supportMultipleTabs()) {
-            tabHost.getTabWidget().setVisibility(View.GONE);
             return;
         }
 
