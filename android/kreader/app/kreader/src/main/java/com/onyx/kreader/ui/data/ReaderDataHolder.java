@@ -582,6 +582,7 @@ public class ReaderDataHolder {
         getEventBus().post(new DocumentCloseEvent(getContext()));
         if (eventReceiver != null) {
             getEventBus().unregister(eventReceiver);
+            eventReceiver = null;
         }
     }
 
