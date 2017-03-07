@@ -555,7 +555,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (getReaderDataHolder() == null) {
             return;
         }
-        if (getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
+        if (!getReaderDataHolder().isDocumentOpened() ||
+                getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
             return;
         }
     }
