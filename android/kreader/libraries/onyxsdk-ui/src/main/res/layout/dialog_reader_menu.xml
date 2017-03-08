@@ -140,7 +140,6 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_marginTop="5dp"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_width="match_parent"
@@ -157,12 +156,15 @@
                 android:layout_height="wrap_content"/>
 
             <SeekBar
+                android:minHeight="@dimen/menu_seek_bar_height"
+                android:maxHeight="@dimen/menu_seek_bar_height"
+                android:padding="5dp"
                 android:background="@drawable/focused_bg"
                 android:thumb="@drawable/seekbar_thumb"
                 android:id="@+id/seek_bar_page"
                 android:layout_weight="8"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/menu_seek_bar_height"
+                android:layout_height="wrap_content"
                 android:progressDrawable="@drawable/seekbar_progress"
                 android:max="20"/>
 

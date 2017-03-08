@@ -55,5 +55,4 @@
     <dimen name="preference_title_text_size">16sp</dimen>
     <dimen name="preference_category_text_size">14sp</dimen>
 
-    <dimen name="menu_seek_bar_height">20dp</dimen>
 </resources>
