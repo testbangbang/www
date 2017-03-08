@@ -335,6 +335,7 @@ public class DialogQuickPreview extends Dialog {
         btnNext = (ImageButton) findViewById(R.id.image_view_next_page);
         btnPrev = (ImageButton) findViewById(R.id.image_view_prev_page);
         textViewProgress.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        textViewProgress.getPaint().setAntiAlias(true);
         touchHandler = new TouchHandler(gridRecyclerView);
 
         EpdController.resetUpdateMode(gridRecyclerView);
