@@ -85,3 +85,7 @@
 
 # for onxysdk-data model
 -keepclasseswithmembernames public class com.onyx.android.sdk.data.model.** { *;}
+
+# for leanCloud
+-keep class com.avos.** { *; }
+-dontwarn com.avos.**
