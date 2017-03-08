@@ -156,6 +156,7 @@ public class ShowTextSelectionMenuAction{
     private static void lookupInDictionary(final ReaderActivity activity, final ReaderDataHolder readerDataHolder, String text) {
         readerDataHolder.onDictionaryLookup(text);
         text = StringUtils.trim(text);
+        text = StringUtils.trimPunctuation(text);
         OnyxDictionaryInfo info = OnyxDictionaryInfo.getDefaultDictionary();
         Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
         intent.setAction(Intent.ACTION_VIEW);

@@ -28,10 +28,9 @@ public class ViewDocumentUtils {
 
     public static Intent autoSlideShowIntent(final File file, final int maxPageCount,
                                              final int intervalInSeconds) {
-        final Intent intent = new Intent();
+        final Intent intent = viewActionIntentWithMimeType(file);
         intent.setComponent(getKreaderComponentName());
-        intent.setData(Uri.fromFile(file));
-        intent.setAction(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(TAG_AUTO_SLIDE_SHOW_MODE, true);
         intent.putExtra(TAG_SLIDE_SHOW_MAX_PAGE_COUNT, maxPageCount);
         intent.putExtra(TAG_SLIDE_SHOW_INTERVAL_IN_SECONDS, intervalInSeconds);

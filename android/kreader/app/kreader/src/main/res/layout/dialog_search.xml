@@ -88,6 +88,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:textSize="20sp"
                 android:textColor="@color/normal_black"
                 android:layout_margin="10dp"
                 android:gravity="center_horizontal"
