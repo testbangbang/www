@@ -78,11 +78,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             @Override
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
-                updateReaderTabWindowHeight();
-                if (StringUtils.isNotBlank(pathToContinueOpenAfterRotation)) {
-                    openDocWithTab(pathToContinueOpenAfterRotation);
-                    pathToContinueOpenAfterRotation = null;
-                }
+                onScreenOrientationChanged();
             }
         });
         super.onConfigurationChanged(newConfig);
@@ -169,22 +165,13 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
             @Override
             public void onChangeOrientation(final int orientation) {
+                final int current = DeviceUtils.getScreenOrientation(ReaderTabHostActivity.this);
+                Debug.d("onChangeOrientation, current: " + current + ", target: " + orientation);
                 setRequestedOrientation(orientation);
                 SingletonSharedPreference.setScreenOrientation(orientation);
-                tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-                    @Override
-                    public void onGlobalLayout() {
-                        Debug.d(TAG, "onChangeOrientation -> onGlobalLayout");
-                        TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
-                        if (isShowingTabWidget()) {
-                            showTabWidget();
-                        } else {
-                            hideTabWidget();
-                        }
-                        updateReaderTabWindowHeight();
-                    }
-                });
+                if (current != orientation && isReverseOrientation(current, orientation)) {
+                    onScreenOrientationChanged();
+                }
             }
 
             @Override
@@ -197,6 +184,28 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 syncFullScreenState();
             }
         });
+    }
+
+    private boolean isReverseOrientation(int current, int target) {
+        return (current == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT && target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) ||
+                (current == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT && target == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) ||
+                (current == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE && target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) ||
+                (current == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE && target == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    private void onScreenOrientationChanged() {
+        Debug.d(TAG, "onScreenOrientationChanged");
+        if (isShowingTabWidget()) {
+            showTabWidget();
+        } else {
+            hideTabWidget();
+        }
+        updateReaderTabWindowHeight();
+
+        if (StringUtils.isNotBlank(pathToContinueOpenAfterRotation)) {
+            openDocWithTab(pathToContinueOpenAfterRotation);
+            pathToContinueOpenAfterRotation = null;
+        }
     }
 
     private void addTabToHost(final ReaderTabManager.ReaderTab tab, final String path) {
@@ -329,7 +338,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 if (e != null) {
                     return;
                 }
-                if (!processOrientation(loadDocumentOptionsRequest.getDocumentOptions())) {
+                if (waitScreenOrientationChanging(loadDocumentOptionsRequest.getDocumentOptions())) {
                     pathToContinueOpenAfterRotation = path;
                     return;
                 }
@@ -339,7 +348,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     }
 
-    private boolean processOrientation(final BaseOptions options) {
+    private boolean waitScreenOrientationChanging(final BaseOptions options) {
         int target = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         if (options != null && options.getOrientation() >= 0) {
             target = options.getOrientation();
@@ -348,14 +357,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         Debug.d("current orientation: " + current + ", target orientation: " + target);
         if (current != target) {
             setRequestedOrientation(target);
-            if (target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-                // reverse portrait will not trigger onConfigurationChanged() in activity,
+            if (isReverseOrientation(current, target)) {
+                // reverse orientation will not trigger onConfigurationChanged() in activity,
                 // so we process as orientation not changed
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     private void openDocWithTab(String path) {
