@@ -72,6 +72,14 @@ public class SlideshowHandler extends BaseHandler {
         }
     };
 
+    public static HandlerInitialState createInitialState(RelativeLayout parentLayout, int maxPageCount, int intervalInSeconds) {
+        HandlerInitialState state = new HandlerInitialState();
+        state.slideShowParentLayout = parentLayout;
+        state.slideShowMaxPageCount = maxPageCount;
+        state.slideShowIntervalInSeconds = intervalInSeconds;
+        return state;
+    }
+
     public SlideshowHandler(HandlerManager parent) {
         super(parent);
         readerDataHolder = getParent().getReaderDataHolder();
@@ -80,9 +88,19 @@ public class SlideshowHandler extends BaseHandler {
 
     @Override
     public void onActivate(ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
+        if (initialState == null) {
+            throw new IllegalArgumentException();
+        }
+
+        parent = initialState.slideShowParentLayout;
+        maxPageCount = initialState.slideShowMaxPageCount;
+        intervalInSeconds = initialState.slideShowIntervalInSeconds;
+
         activated = true;
         readerDataHolder.getContext().registerReceiver(broadcastReceiver, new IntentFilter(intent.getAction()));
         readerDataHolder.getEventBus().register(this);
+
+        startSlideShow();
     }
 
     @Override
@@ -182,13 +200,7 @@ public class SlideshowHandler extends BaseHandler {
         return true;
     }
 
-    public void setInterval(int seconds) {
-        intervalInSeconds = seconds;
-    }
-
-    public void start(RelativeLayout parent, int maxPageCount) {
-        this.parent = parent;
-        this.maxPageCount = maxPageCount;
+    public void startSlideShow() {
         pageCount = 0;
         startBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
         startTime = Calendar.getInstance();

@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -39,6 +40,9 @@ public abstract class BaseHandler {
 
     public static class HandlerInitialState {
         public String ttsInitialPosition;
+        public RelativeLayout slideShowParentLayout;
+        public int slideShowMaxPageCount;
+        public int slideShowIntervalInSeconds;
     }
 
     public static  final int KEYCDOE_SCRIBE = 213;

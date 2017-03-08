@@ -12,12 +12,9 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -38,7 +35,6 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
@@ -47,6 +43,7 @@ import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
@@ -98,7 +95,9 @@ import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
+import com.onyx.kreader.ui.handler.BaseHandler;
 import com.onyx.kreader.ui.handler.HandlerManager;
+import com.onyx.kreader.ui.handler.SlideshowHandler;
 import com.onyx.kreader.ui.receiver.NetworkConnectChangedReceiver;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
@@ -751,6 +750,17 @@ public class ReaderActivity extends OnyxBaseActivity {
         initReaderMenu();
         updateNoteHostView();
         getReaderDataHolder().updateRawEventProcessor();
+
+        postDocumentInitRendered();
+    }
+
+    private void postDocumentInitRendered() {
+        if (getIntent().getBooleanExtra(ViewDocumentUtils.TAG_AUTO_SLIDE_SHOW_MODE, false)) {
+            int maxPageCount = getIntent().getIntExtra(ViewDocumentUtils.TAG_SLIDE_SHOW_MAX_PAGE_COUNT, 2000);
+            int interval = getIntent().getIntExtra(ViewDocumentUtils.TAG_SLIDE_SHOW_INTERVAL_IN_SECONDS, 5);
+            BaseHandler.HandlerInitialState state = SlideshowHandler.createInitialState(mainView, maxPageCount, interval);
+            getHandlerManager().setActiveProvider(HandlerManager.SLIDESHOW_PROVIDER, state);
+        }
     }
 
     @Subscribe
