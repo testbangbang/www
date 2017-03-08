@@ -248,6 +248,16 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return tabManager.getOpenedTabs().size() > 1;
     }
 
+    private void showTabWidget() {
+        tabHost.getTabWidget().setVisibility(View.VISIBLE);
+        btnSwitch.setVisibility(View.VISIBLE);
+    }
+
+    private void hideTabWidget() {
+        tabHost.getTabWidget().setVisibility(View.INVISIBLE);
+        btnSwitch.setVisibility(View.INVISIBLE);
+    }
+
     private int getTabContentHeight() {
         Debug.d(TAG, "tab host height: " + tabHost.getHeight() +
                 ", tab widget height: " + tabHost.getTabWidget().getHeight() +
@@ -385,6 +395,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             addTabToHost(tab, path);
             updateCurrentTabInHost(tab);
             updateReaderTabWindowHeight(tab);
+
+            if (isShowingTabWidget()) {
+                showTabWidget();
+            }
         }
     }
 
@@ -392,6 +406,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         closeTabActivity(tab);
         tabManager.removeOpenedTab(tab);
         removeTabFromHost(tab);
+
+        if (!isShowingTabWidget()) {
+            hideTabWidget();
+        }
 
         if (tabManager.getOpenedTabs().size() <= 0) {
             finish();
