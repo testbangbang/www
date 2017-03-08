@@ -182,7 +182,6 @@ public abstract class OnyxAppCompatActivity extends AppCompatActivity implements
 
     public void dismissProgressDialog(final Object object) {
         if (progressDialogHolder != null) {
-            EpdController.waitForUpdateFinished();
             progressDialogHolder.dismissProgressDialog(object);
         }
     }
