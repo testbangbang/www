@@ -431,6 +431,7 @@ public class MainActivity extends OnyxAppCompatActivity {
                         showWhiteToast(e == null ? R.string.download_success : R.string.download_fail, Toast.LENGTH_SHORT);
                         getDownLoaderManager().removeTask(product.getGuid());
                         notifyDataChanged();
+                        PackageUtils.install(MainActivity.this, file.getAbsolutePath());
                     }
                 });
         task.setForceReDownload(true);
