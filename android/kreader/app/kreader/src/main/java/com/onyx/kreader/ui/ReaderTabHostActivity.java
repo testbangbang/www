@@ -169,7 +169,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
             @Override
             public void onChangeOrientation(final int orientation) {
-                Debug.d(TAG, "onChangeOrientation: " + orientation);
                 setRequestedOrientation(orientation);
                 SingletonSharedPreference.setScreenOrientation(orientation);
                 tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -178,6 +177,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     public void onGlobalLayout() {
                         Debug.d(TAG, "onChangeOrientation -> onGlobalLayout");
                         TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
+                        if (isShowingTabWidget()) {
+                            showTabWidget();
+                        } else {
+                            hideTabWidget();
+                        }
                         updateReaderTabWindowHeight();
                     }
                 });
