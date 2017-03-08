@@ -94,6 +94,7 @@ public class AlReaderPlugin implements ReaderPlugin,
             extensionFilters.add("fb2");
             extensionFilters.add("fbz");
             extensionFilters.add("html");
+            extensionFilters.add("jeb");
             extensionFilters.add("mobi");
             extensionFilters.add("odt");
             extensionFilters.add("pdb");
@@ -102,7 +103,7 @@ public class AlReaderPlugin implements ReaderPlugin,
             extensionFilters.add("sxw");
             extensionFilters.add("trc");
             extensionFilters.add("txt");
-            extensionFilters.add("jeb");
+            extensionFilters.add("zip");
         }
         return extensionFilters;
     }
