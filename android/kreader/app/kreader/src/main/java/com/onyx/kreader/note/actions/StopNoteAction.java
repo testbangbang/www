@@ -13,9 +13,18 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 public class StopNoteAction extends BaseAction {
 
+    private boolean stop = true;
+
+    public StopNoteAction() {
+    }
+
+    public StopNoteAction(boolean stop) {
+        this.stop = stop;
+    }
+
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        final StopNoteRequest stopNoteRequest = new StopNoteRequest(true);
+        final StopNoteRequest stopNoteRequest = new StopNoteRequest(stop);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), stopNoteRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
