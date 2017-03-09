@@ -163,4 +163,8 @@ public abstract class EpdController
     public static void enableA2ForSpecificView(View view) {
         Device.currentDevice().enableA2ForSpecificView(view);
     }
+
+    public static void holdDisplay(boolean hold, UpdateMode updateMode, int ignoreFrame) {
+        Device.currentDevice().holdDisplay(hold, updateMode, ignoreFrame);
+    }
 }
