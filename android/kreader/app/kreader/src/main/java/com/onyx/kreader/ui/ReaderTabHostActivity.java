@@ -32,8 +32,10 @@ import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReaderTabHostActivity extends OnyxBaseActivity {
 
@@ -107,9 +109,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         tabManager = ReaderTabManager.createFromJson(savedInstanceState.getString(TAG_TAB_MANAGER));
-        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            addTabToHost(entry.getKey(), entry.getValue());
-        }
+        rebuildTabWidget();
     }
 
     private void initComponents() {
@@ -234,13 +234,18 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         });
     }
 
-    private void removeTabFromHost(ReaderTabManager.ReaderTab tab) {
-        // clear first, or we'll get incorrect tab host state
+    private void rebuildTabWidget() {
+        insideTabChanging = true;
         tabHost.clearAllTabs();
+
+        ArrayList<LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String>> reverseList = new ArrayList<>();
         for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            if (entry.getKey() == tab) {
-                continue;
-            }
+            reverseList.add(0, entry);
+        }
+
+        Debug.d(TAG, "rebuilding tab widget:");
+        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : reverseList) {
+            Debug.d(TAG, "rebuilding: " + entry.getKey());
             addTabToHost(entry.getKey(), entry.getValue());
         }
     }
@@ -405,7 +410,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void addReaderTab(ReaderTabManager.ReaderTab tab, String path) {
         tabManager.addOpenedTab(tab, path);
         if (tabManager.supportMultipleTabs()) {
-            addTabToHost(tab, path);
+            rebuildTabWidget();
             updateCurrentTabInHost(tab);
             updateReaderTabWindowHeight(tab);
 
@@ -418,7 +423,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void closeReaderTab(ReaderTabManager.ReaderTab tab) {
         closeTabActivity(tab);
         tabManager.removeOpenedTab(tab);
-        removeTabFromHost(tab);
+        rebuildTabWidget();
 
         if (!isShowingTabWidget()) {
             hideTabWidget();
@@ -426,6 +431,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
         if (tabManager.getOpenedTabs().size() <= 0) {
             finish();
+        } else {
+            reopenReaderTab(getCurrentTabInHost());
         }
     }
 

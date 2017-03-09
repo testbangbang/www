@@ -88,7 +88,9 @@ public class ReaderTabManager {
     }
 
     public ReaderTab reuseOpenedTab() {
-        return openedTabs.keySet().iterator().next();
+        ReaderTab tab = openedTabs.keySet().iterator().next();
+        openedTabs.remove(tab);
+        return tab;
     }
 
     public void addOpenedTab(ReaderTab tab, String path) {
