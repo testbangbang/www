@@ -16,7 +16,12 @@ public class StopNoteActionChain  {
     private boolean quit;
     private boolean closeMenu;
 
-    public StopNoteActionChain(boolean render, boolean transfer, boolean saveToDatabase, boolean showDialog, boolean stop, boolean closeMenu) {
+    public StopNoteActionChain(boolean render,
+                               boolean transfer,
+                               boolean saveToDatabase,
+                               boolean showDialog,
+                               boolean stop,
+                               boolean closeMenu) {
         this.render = render;
         this.transfer = transfer;
         save = saveToDatabase;

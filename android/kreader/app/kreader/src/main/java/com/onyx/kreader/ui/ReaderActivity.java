@@ -395,6 +395,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         syncReaderPainter();
         reconfigStatusBar();
         enablePenShortcut();
+        updateRawEventProcessor();
     }
 
     private void enablePenShortcut() {
@@ -403,6 +404,14 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private void disablePenShortcut() {
         getReaderDataHolder().disablePenShortcut();
+    }
+
+    private void stopRawEventProcessor() {
+        getReaderDataHolder().stopRawEventProcessor();
+    }
+
+    private void updateRawEventProcessor() {
+        getReaderDataHolder().updateRawEventProcessor();
     }
 
     private void syncReaderPainter() {
@@ -579,6 +588,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         disablePenShortcut();
+        stopRawEventProcessor();
         getReaderDataHolder().getHandlerManager().resetToDefaultProvider();
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
