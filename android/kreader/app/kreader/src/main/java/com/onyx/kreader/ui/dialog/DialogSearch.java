@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.SearchHistory;
@@ -87,6 +88,7 @@ public class DialogSearch extends Dialog{
         super(readerDataHolder.getContext(), android.R.style.Theme_Translucent_NoTitleBar);
 
         setContentView(R.layout.dialog_search);
+        EpdController.resetUpdateMode(findViewById(R.layout.dialog_search));
         this.readerDataHolder = readerDataHolder;
         searchRows = getContext().getResources().getInteger(R.integer.search_row);
         searchChineseContentLength = getContext().getResources().getInteger(R.integer.search_chinese_content_length);

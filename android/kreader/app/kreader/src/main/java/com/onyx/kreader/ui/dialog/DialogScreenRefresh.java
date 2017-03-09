@@ -20,6 +20,7 @@ import java.util.HashMap;
  * Created by solskjaer49 on 16/1/9 15:19.
  */
 public class DialogScreenRefresh extends OnyxAlertDialog {
+
     public interface onScreenRefreshChangedListener {
         void onRefreshIntervalChanged(int oldValue, int newValue);
     }

@@ -106,7 +106,7 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogExport.this.dismiss();
+                dismiss();
             }
         });
 

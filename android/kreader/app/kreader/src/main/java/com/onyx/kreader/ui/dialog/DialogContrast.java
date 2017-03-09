@@ -100,6 +100,7 @@ public class DialogContrast extends Dialog implements CompoundButton.OnCheckedCh
     }
 
     private void resetAndDismiss() {
+        readerDataHolder.removeActiveDialog(this);
         GammaCorrectionRequest request = new GammaCorrectionRequest(originalGamma, originalBoldSize);
         readerDataHolder.submitRenderRequest(request, new BaseCallback() {
             @Override
