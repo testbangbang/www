@@ -22,4 +22,16 @@ public class EpdRk3026 extends EpdDevice {
     public void resetUpdate(View view) {
         EpdController.setViewDefaultUpdateMode(view, UpdateMode.GU);
     }
+
+    public void applyRegalUpdate(View view) {
+        EpdController.setViewDefaultUpdateMode(view, UpdateMode.REGAL);
+    }
+
+    public void applyRegalClearUpdate(View view) {
+        EpdController.setViewDefaultUpdateMode(view, UpdateMode.REGAL);
+    }
+
+    public void holdDisplay(boolean hold, UpdateMode mode, int ignoreFrame) {
+        EpdController.holdDisplay(hold, mode, ignoreFrame);
+    }
 }

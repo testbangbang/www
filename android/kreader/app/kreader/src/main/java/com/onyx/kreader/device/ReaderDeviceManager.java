@@ -26,6 +26,7 @@ public class ReaderDeviceManager {
     private static int gcInterval;
     private static int refreshCount;
     private static boolean inFastUpdateMode = false;
+    private static boolean enableHoldDisplay = true;
 
     private final static EpdDevice epdDevice;
 
@@ -152,4 +153,16 @@ public class ReaderDeviceManager {
         epdDevice.cleanUpdate(view);
     }
 
+    public static void holdDisplay(boolean hold) {
+        if (enableHoldDisplay) {
+            epdDevice.holdDisplay(hold, UpdateMode.REGAL, 1);
+        }
+    }
+
+    public static void applyRegalUpdate(final Context context, final View view) {
+        if (!isUsingRegal(context)) {
+            return;
+        }
+        epdDevice.setUpdateMode(view, UpdateMode.REGAL);
+    }
 }

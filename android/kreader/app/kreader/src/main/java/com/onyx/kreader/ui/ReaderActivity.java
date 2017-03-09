@@ -414,6 +414,14 @@ public class ReaderActivity extends ActionBarActivity {
         getReaderDataHolder().notifyUpdateSlideshowStatusBar();
     }
 
+    private void holdDisplayUpdate() {
+        if (!getStatusBar().isShown()) {
+            return;
+        }
+        ReaderDeviceManager.applyRegalUpdate(this, getStatusBar());
+        ReaderDeviceManager.holdDisplay(true);
+    }
+
     @Subscribe
     public void onShapeRendered(final ShapeRenderFinishEvent event) {
         final ReaderNoteDataInfo noteDataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
@@ -432,6 +440,7 @@ public class ReaderActivity extends ActionBarActivity {
     }
 
     private void beforeDrawPage() {
+        holdDisplayUpdate();
         enablePost(true);
     }
 
