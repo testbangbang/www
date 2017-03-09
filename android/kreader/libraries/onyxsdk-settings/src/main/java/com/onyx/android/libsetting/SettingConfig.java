@@ -80,6 +80,8 @@ public class SettingConfig {
         static private final String MASTER_CLEAR_ACTION = "android.settings.MASTER_CLEAR";
         static private final String TIME_ZONE_PICKER_ACTION = "android.settings.TIME_ZONE_SETTING";
         static private final String PRE_N_VPN_SETTING_ACTION = "android.net.vpn.SETTINGS";
+        static private final String SETTING_CALIBRATION_PACKAGE_NAME = "com.onyx.android.tscalibration";
+        static private final String SETTING_CALIBRATION_CLASS_NAME = "com.onyx.android.tscalibration.MainActivity";
     }
 
 
@@ -311,7 +313,12 @@ public class SettingConfig {
     }
 
     public Intent getCalibrationIntent() {
-        return null;
+        Intent intent = new Intent();
+        intent.setClassName(Default.SETTING_CALIBRATION_PACKAGE_NAME, Default.SETTING_CALIBRATION_CLASS_NAME);
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        return intent;
     }
 
     public Intent getBluetoothSettingIntent() {
