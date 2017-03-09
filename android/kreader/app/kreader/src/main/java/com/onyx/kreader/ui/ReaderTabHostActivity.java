@@ -32,8 +32,10 @@ import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReaderTabHostActivity extends OnyxBaseActivity {
 
@@ -78,11 +80,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             @Override
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
-                updateReaderTabWindowHeight();
-                if (StringUtils.isNotBlank(pathToContinueOpenAfterRotation)) {
-                    openDocWithTab(pathToContinueOpenAfterRotation);
-                    pathToContinueOpenAfterRotation = null;
-                }
+                onScreenOrientationChanged();
             }
         });
         super.onConfigurationChanged(newConfig);
@@ -111,9 +109,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         tabManager = ReaderTabManager.createFromJson(savedInstanceState.getString(TAG_TAB_MANAGER));
-        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            addTabToHost(entry.getKey(), entry.getValue());
-        }
+        rebuildTabWidget();
     }
 
     private void initComponents() {
@@ -169,18 +165,13 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
             @Override
             public void onChangeOrientation(final int orientation) {
-                Debug.d(TAG, "onChangeOrientation: " + orientation);
+                final int current = DeviceUtils.getScreenOrientation(ReaderTabHostActivity.this);
+                Debug.d("onChangeOrientation, current: " + current + ", target: " + orientation);
                 setRequestedOrientation(orientation);
                 SingletonSharedPreference.setScreenOrientation(orientation);
-                tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-                    @Override
-                    public void onGlobalLayout() {
-                        Debug.d(TAG, "onChangeOrientation -> onGlobalLayout");
-                        TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
-                        updateReaderTabWindowHeight();
-                    }
-                });
+                if (current != orientation && isReverseOrientation(current, orientation)) {
+                    onScreenOrientationChanged();
+                }
             }
 
             @Override
@@ -193,6 +184,28 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 syncFullScreenState();
             }
         });
+    }
+
+    private boolean isReverseOrientation(int current, int target) {
+        return (current == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT && target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) ||
+                (current == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT && target == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) ||
+                (current == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE && target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) ||
+                (current == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE && target == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    private void onScreenOrientationChanged() {
+        Debug.d(TAG, "onScreenOrientationChanged");
+        if (isShowingTabWidget()) {
+            showTabWidget();
+        } else {
+            hideTabWidget();
+        }
+        updateReaderTabWindowHeight();
+
+        if (StringUtils.isNotBlank(pathToContinueOpenAfterRotation)) {
+            openDocWithTab(pathToContinueOpenAfterRotation);
+            pathToContinueOpenAfterRotation = null;
+        }
     }
 
     private void addTabToHost(final ReaderTabManager.ReaderTab tab, final String path) {
@@ -221,13 +234,18 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         });
     }
 
-    private void removeTabFromHost(ReaderTabManager.ReaderTab tab) {
-        // clear first, or we'll get incorrect tab host state
+    private void rebuildTabWidget() {
+        insideTabChanging = true;
         tabHost.clearAllTabs();
+
+        ArrayList<LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String>> reverseList = new ArrayList<>();
         for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            if (entry.getKey() == tab) {
-                continue;
-            }
+            reverseList.add(0, entry);
+        }
+
+        Debug.d(TAG, "rebuilding tab widget:");
+        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : reverseList) {
+            Debug.d(TAG, "rebuilding: " + entry.getKey());
             addTabToHost(entry.getKey(), entry.getValue());
         }
     }
@@ -246,6 +264,16 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private boolean isShowingTabWidget() {
         return tabManager.getOpenedTabs().size() > 1;
+    }
+
+    private void showTabWidget() {
+        tabHost.getTabWidget().setVisibility(View.VISIBLE);
+        btnSwitch.setVisibility(View.VISIBLE);
+    }
+
+    private void hideTabWidget() {
+        tabHost.getTabWidget().setVisibility(View.INVISIBLE);
+        btnSwitch.setVisibility(View.INVISIBLE);
     }
 
     private int getTabContentHeight() {
@@ -315,7 +343,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 if (e != null) {
                     return;
                 }
-                if (!processOrientation(loadDocumentOptionsRequest.getDocumentOptions())) {
+                if (waitScreenOrientationChanging(loadDocumentOptionsRequest.getDocumentOptions())) {
                     pathToContinueOpenAfterRotation = path;
                     return;
                 }
@@ -325,7 +353,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     }
 
-    private boolean processOrientation(final BaseOptions options) {
+    private boolean waitScreenOrientationChanging(final BaseOptions options) {
         int target = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         if (options != null && options.getOrientation() >= 0) {
             target = options.getOrientation();
@@ -334,14 +362,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         Debug.d("current orientation: " + current + ", target orientation: " + target);
         if (current != target) {
             setRequestedOrientation(target);
-            if (target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-                // reverse portrait will not trigger onConfigurationChanged() in activity,
+            if (isReverseOrientation(current, target)) {
+                // reverse orientation will not trigger onConfigurationChanged() in activity,
                 // so we process as orientation not changed
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     private void openDocWithTab(String path) {
@@ -382,19 +410,29 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void addReaderTab(ReaderTabManager.ReaderTab tab, String path) {
         tabManager.addOpenedTab(tab, path);
         if (tabManager.supportMultipleTabs()) {
-            addTabToHost(tab, path);
+            rebuildTabWidget();
             updateCurrentTabInHost(tab);
             updateReaderTabWindowHeight(tab);
+
+            if (isShowingTabWidget()) {
+                showTabWidget();
+            }
         }
     }
 
     private void closeReaderTab(ReaderTabManager.ReaderTab tab) {
         closeTabActivity(tab);
         tabManager.removeOpenedTab(tab);
-        removeTabFromHost(tab);
+        rebuildTabWidget();
+
+        if (!isShowingTabWidget()) {
+            hideTabWidget();
+        }
 
         if (tabManager.getOpenedTabs().size() <= 0) {
             finish();
+        } else {
+            reopenReaderTab(getCurrentTabInHost());
         }
     }
 

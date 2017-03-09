@@ -61,6 +61,7 @@ import butterknife.OnClick;
 public class MainActivity extends OnyxAppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String CATEGORY_APPS_GUID = "ed21e3b0ab744025b6447e82315b9398";
+    private static final int INVALID_VALUE = -1;
 
     private OnyxPageDividerItemDecoration itemDecoration;
 
@@ -75,6 +76,7 @@ public class MainActivity extends OnyxAppCompatActivity {
 
     private ProductQuery productQuery;
     private List<AppProduct> productList = new ArrayList<>();
+    private int currentCategoryIndex = INVALID_VALUE;
 
     private int pageViewRowCount = 5;
     private int pageViewColCount = 1;
@@ -338,6 +340,7 @@ public class MainActivity extends OnyxAppCompatActivity {
         InputMethodUtils.hideInputKeyboard(this);
         String search = searchText.getText().toString();
         productQuery.resetCategory();
+        resetCategoryIndex();
         if (StringUtils.isNullOrEmpty(search)) {
             loadAppList();
             return;
@@ -351,6 +354,10 @@ public class MainActivity extends OnyxAppCompatActivity {
         loadAppCategory();
     }
 
+    private void resetCategoryIndex() {
+        currentCategoryIndex = INVALID_VALUE;
+    }
+
     private void showCategoryDialog(final Category category) {
         List<String> categoryList = new ArrayList<>();
         for (Category child : category.children) {
@@ -359,12 +366,17 @@ public class MainActivity extends OnyxAppCompatActivity {
         if (CollectionUtils.isNullOrEmpty(categoryList)) {
             return;
         }
+        if (currentCategoryIndex >= categoryList.size()) {
+            resetCategoryIndex();
+        }
         DialogSortBy dialogSortBy = new DialogSortBy(null, categoryList);
         dialogSortBy.setShowSortOrderLayout(false);
+        dialogSortBy.setCurrentSortBySelectedIndex(currentCategoryIndex);
         dialogSortBy.setOnSortByListener(new DialogSortBy.OnSortByListener() {
             @Override
             public void onSortBy(int position, String sortBy, SortOrder sortOrder) {
-                productQuery.setCategory(category.children.get(position).getGuid());
+                currentCategoryIndex = position;
+                productQuery.setCategory(category.children.get(currentCategoryIndex ).getGuid());
                 productQuery.resetKey();
                 loadAppList();
             }
@@ -402,8 +414,7 @@ public class MainActivity extends OnyxAppCompatActivity {
 
                     @Override
                     public void start(BaseRequest request) {
-                        setProgressDialogToastMessage(product.getGuid(), FileUtils.getFileName(file.getAbsolutePath()) +
-                                " " + getString(R.string.downloading));
+                        showDownloadingDialog(product);
                     }
 
                     @Override
@@ -420,6 +431,7 @@ public class MainActivity extends OnyxAppCompatActivity {
                         showWhiteToast(e == null ? R.string.download_success : R.string.download_fail, Toast.LENGTH_SHORT);
                         getDownLoaderManager().removeTask(product.getGuid());
                         notifyDataChanged();
+                        PackageUtils.install(MainActivity.this, file.getAbsolutePath());
                     }
                 });
         task.setForceReDownload(true);
@@ -454,7 +466,16 @@ public class MainActivity extends OnyxAppCompatActivity {
                 startDownload(product, link);
             }
         });
+        showDownloadingDialog(product);
+    }
+
+    private void showDownloadingDialog(AppProduct product) {
         showProgressDialog(product.getGuid(), null);
+        File file = getApkFilePath(product);
+        if (file != null) {
+            setProgressDialogToastMessage(product.getGuid(), FileUtils.getFileName(file.getAbsolutePath()) +
+                    " " + getString(R.string.downloading));
+        }
     }
 
     private CloudStore getCloudStore() {
