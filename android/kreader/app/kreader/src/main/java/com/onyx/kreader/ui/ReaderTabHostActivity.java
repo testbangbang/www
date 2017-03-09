@@ -35,7 +35,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ReaderTabHostActivity extends OnyxBaseActivity {
 
@@ -109,6 +108,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         tabManager = ReaderTabManager.createFromJson(savedInstanceState.getString(TAG_TAB_MANAGER));
+
+        showTabWidgetOnCondition();
         rebuildTabWidget();
     }
 
@@ -195,11 +196,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void onScreenOrientationChanged() {
         Debug.d(TAG, "onScreenOrientationChanged");
-        if (isShowingTabWidget()) {
-            showTabWidget();
-        } else {
-            hideTabWidget();
-        }
+        showTabWidgetOnCondition();
         updateReaderTabWindowHeight();
 
         if (StringUtils.isNotBlank(pathToContinueOpenAfterRotation)) {
@@ -266,14 +263,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return tabManager.getOpenedTabs().size() > 1;
     }
 
-    private void showTabWidget() {
-        tabHost.getTabWidget().setVisibility(View.VISIBLE);
-        btnSwitch.setVisibility(View.VISIBLE);
-    }
-
-    private void hideTabWidget() {
-        tabHost.getTabWidget().setVisibility(View.INVISIBLE);
-        btnSwitch.setVisibility(View.INVISIBLE);
+    private void showTabWidgetOnCondition() {
+        if (isShowingTabWidget()) {
+            tabHost.getTabWidget().setVisibility(View.VISIBLE);
+            btnSwitch.setVisibility(View.VISIBLE);
+        } else {
+            tabHost.getTabWidget().setVisibility(View.INVISIBLE);
+            btnSwitch.setVisibility(View.INVISIBLE);
+        }
     }
 
     private int getTabContentHeight() {
@@ -409,25 +406,21 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void addReaderTab(ReaderTabManager.ReaderTab tab, String path) {
         tabManager.addOpenedTab(tab, path);
+
         if (tabManager.supportMultipleTabs()) {
+            showTabWidgetOnCondition();
             rebuildTabWidget();
             updateCurrentTabInHost(tab);
             updateReaderTabWindowHeight(tab);
-
-            if (isShowingTabWidget()) {
-                showTabWidget();
-            }
         }
     }
 
     private void closeReaderTab(ReaderTabManager.ReaderTab tab) {
         closeTabActivity(tab);
         tabManager.removeOpenedTab(tab);
-        rebuildTabWidget();
 
-        if (!isShowingTabWidget()) {
-            hideTabWidget();
-        }
+        showTabWidgetOnCondition();
+        rebuildTabWidget();
 
         if (tabManager.getOpenedTabs().size() <= 0) {
             finish();
