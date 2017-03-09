@@ -587,14 +587,6 @@ public class DialogQuickPreview extends Dialog {
         if (tocChapterNodeList.size() <= 0) {
             return;
         }
-        if (back && getPaginator().isFirstPage()) {
-            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.first_chapter), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!back && getPaginator().isLastPage()) {
-            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.last_chapter), Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         List<Integer> pages = new ArrayList<>();
         pages.add(Math.max(getPaginator().getCurrentPageBegin() - 1, 0));
@@ -607,6 +599,15 @@ public class DialogQuickPreview extends Dialog {
                 if (documentPositions != null && documentPositions.size() >= 2) {
                     int pageStartPosition = PagePositionUtils.getPosition(documentPositions.get(0));
                     int pageEndPosition = PagePositionUtils.getPosition(documentPositions.get(1));
+                    if (back && (getPaginator().isFirstPage() || pageStartPosition <= tocChapterNodeList.get(0))) {
+                        Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.first_chapter), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (!back && (getPaginator().isLastPage() || pageEndPosition >= tocChapterNodeList.get(tocChapterNodeList.size() - 1 ))) {
+                        Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.last_chapter), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     chapterPosition = getChapterPosition(pageStartPosition, pageEndPosition, back, tocChapterNodeList);
                     jumpToChapter(chapterPosition);
                 }
