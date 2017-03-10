@@ -13,6 +13,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+
+import static android.content.Context.POWER_SERVICE;
 
 /**
  * Created by ming on 2016/12/3.
@@ -346,6 +349,13 @@ public class DeviceUtils {
     public static boolean isFullScreen(Activity activity) {
         int flag = activity.getWindow().getAttributes().flags;
         return (flag & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN;
+    }
+
+    public static boolean isDeviceInteractive(Context context) {
+        PowerManager powerManager = (PowerManager)context.getSystemService(POWER_SERVICE);
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH
+                ? powerManager.isInteractive()
+                : powerManager.isScreenOn();
     }
 
     public static void changeWiFi(Context context, boolean enabled) {
