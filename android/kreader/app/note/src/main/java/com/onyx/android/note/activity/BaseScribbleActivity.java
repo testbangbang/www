@@ -518,22 +518,31 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onDeletePage() {
+        syncWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                deletePage();
+            }
+        });
+    }
+
+    private void deletePage() {
         DialogHelp.getConfirmDialog(this, getString(R.string.ask_for_delete_page), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                syncWithCallback(false, false, new BaseCallback() {
+                final DocumentDeletePageAction<BaseScribbleActivity> action = new DocumentDeletePageAction<>();
+                action.execute(BaseScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        final DocumentDeletePageAction<BaseScribbleActivity> action = new DocumentDeletePageAction<>();
-                        action.execute(BaseScribbleActivity.this, new BaseCallback() {
-                            @Override
-                            public void done(BaseRequest request, Throwable e) {
-                                onRequestFinished((BaseNoteRequest) request, true);
-                                reloadLineLayoutData();
-                            }
-                        });
+                        onRequestFinished((BaseNoteRequest) request, true);
+                        reloadLineLayoutData();
                     }
                 });
+            }
+        }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                syncWithCallback(false, true, null);
             }
         }).show();
     }

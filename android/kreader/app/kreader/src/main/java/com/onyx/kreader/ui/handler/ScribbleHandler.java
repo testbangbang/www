@@ -33,7 +33,7 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
-        StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, false, false, true, true);
+        StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, false, false, false, true);
         stopNoteActionChain.execute(readerDataHolder, null);
     }
 

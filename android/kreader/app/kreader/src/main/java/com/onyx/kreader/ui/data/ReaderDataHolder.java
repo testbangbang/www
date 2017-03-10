@@ -305,6 +305,13 @@ public class ReaderDataHolder {
         getNoteManager().pauseRawEventProcessor();
     }
 
+    public void stopRawEventProcessor() {
+        if (!supportScalable()) {
+            return;
+        }
+        getNoteManager().stopRawEventProcessor();
+    }
+
     public void enablePenShortcut()  {
         if (!supportScalable()) {
             return;
@@ -514,7 +521,7 @@ public class ReaderDataHolder {
         closeDocument(callback);
     }
 
-    private void resetHandlerManager() {
+    public void resetHandlerManager() {
         getHandlerManager().resetToDefaultProvider();
     }
 
