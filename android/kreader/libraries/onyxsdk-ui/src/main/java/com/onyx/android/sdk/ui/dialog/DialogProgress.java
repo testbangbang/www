@@ -3,6 +3,7 @@ package com.onyx.android.sdk.ui.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -16,7 +17,7 @@ public class DialogProgress extends Dialog {
 
     private TextView titleView;
     private TextView subTitleView;
-    private SeekBar progressBar;
+    private ProgressBar progressBar;
 
     private int progress;
     private int maxValue;
@@ -32,7 +33,7 @@ public class DialogProgress extends Dialog {
     private void initView() {
         titleView = (TextView) findViewById(R.id.title);
         subTitleView = (TextView) findViewById(R.id.sub_title);
-        progressBar = (SeekBar) findViewById(R.id.progress);
+        progressBar = (ProgressBar) findViewById(R.id.progress);
 
         titleView.setVisibility(View.GONE);
         subTitleView.setVisibility(View.GONE);
@@ -60,7 +61,7 @@ public class DialogProgress extends Dialog {
         subTitleView.setVisibility(View.VISIBLE);
     }
 
-    public SeekBar getProgressBar() {
+    public ProgressBar getProgressBar() {
         return progressBar;
     }
 }
