@@ -246,11 +246,19 @@ public class ReaderActivity extends ActionBarActivity {
         initReceiver();
     }
     private void initReceiver() {
-        networkConnectChangedReceiver = new NetworkConnectChangedReceiver(getReaderDataHolder());
+        networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
+            @Override
+            public void onNetworkChanged(boolean connected, int networkType) {
+                getReaderDataHolder().onNetworkChanged(connected, networkType);
+            }
+
+            @Override
+            public void onNoNetwork() {
+
+            }
+        });
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        filter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
-        filter.addAction("android.net.wifi.STATE_CHANGE");
         registerReceiver(networkConnectChangedReceiver, filter);
     }
 

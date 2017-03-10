@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -30,9 +31,11 @@ public class GetStatisticsRequest extends BaseCloudRequest {
 
     private Context context;
     private StatisticsResult statisticsResult;
+    private String url;
 
-    public GetStatisticsRequest(Context context) {
+    public GetStatisticsRequest(final Context context, final String url) {
         this.context = context;
+        this.url = url;
     }
 
     @Override
@@ -46,7 +49,14 @@ public class GetStatisticsRequest extends BaseCloudRequest {
     }
 
     private void readCloudData(CloudManager parent) throws Exception {
-        Response<StatisticsResult> response = executeCall(ServiceFactory.getStatisticsService(parent.getCloudConf().getStatistics()).getStatistics(DeviceUtils.getMacAddress(context)));
+        if (StringUtils.isNullOrEmpty(url)) {
+            return;
+        }
+        String mac = DeviceUtils.getMacAddress(context);
+        if (StringUtils.isNullOrEmpty(mac)) {
+            return;
+        }
+        Response<StatisticsResult> response = executeCall(ServiceFactory.getStatisticsService(url).getStatistics(mac));
         if (response != null && response.isSuccessful()) {
             statisticsResult = response.body();
             statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());
@@ -59,6 +69,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         eventTypeAggBean.setRead(getReadCount());
         eventTypeAggBean.setFinish(getFinishCount());
         eventTypeAggBean.setAnnotation(getAnnotationCount());
+        eventTypeAggBean.setTextSelect(getSelectTextCount());
         statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());
         statisticsResult.setDailyAvgReadTime(getReadTimeEveryDay());
         statisticsResult.setLongestReadTimeBook(getLongestBook());
@@ -100,8 +111,12 @@ public class GetStatisticsRequest extends BaseCloudRequest {
 
     private int getAnnotationCount() {
         List<OnyxStatisticsModel> annotationStatistics = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_ANNOTATION);
+        return annotationStatistics.size();
+    }
+
+    private int getSelectTextCount() {
         List<OnyxStatisticsModel> highLightStatistics = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, BaseStatisticsModel.DATA_TYPE_TEXT_SELECTED);
-        return annotationStatistics.size() + highLightStatistics.size();
+        return highLightStatistics.size();
     }
 
     private List<Integer> getSelfReadTimeDis() {
@@ -193,7 +208,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
                 beginTime = statisticsModels.get(0).getEventTime();
                 book.setBegin(beginTime);
             }
-            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5short, BaseStatisticsModel.DATA_TYPE_CLOSE, false);
+            statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListOrderByTime(context, md5short, false);
             if (statisticsModels != null && statisticsModels.size() > 0) {
                 endTime = statisticsModels.get(0).getEventTime();
                 book.setEnd(endTime);
