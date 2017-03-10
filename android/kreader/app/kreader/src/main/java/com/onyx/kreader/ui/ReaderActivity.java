@@ -170,7 +170,9 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     protected void onPause() {
-        onDocumentDeactivated();
+        if (DeviceUtils.isDeviceInteractive(this)) {
+            onDocumentDeactivated();
+        }
         super.onPause();
     }
 
