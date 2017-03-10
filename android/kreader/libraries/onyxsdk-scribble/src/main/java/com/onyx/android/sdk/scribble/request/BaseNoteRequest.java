@@ -21,6 +21,7 @@ import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
@@ -274,12 +275,8 @@ public class BaseNoteRequest extends BaseRequest {
         Rect dest;
         if (resID == Integer.MIN_VALUE && !TextUtils.isEmpty(bgFilePath)) {
             bitmap = BitmapFactory.decodeFile(bgFilePath);
-            // fit screen ration and center image.
-            float ratio =  ((float) (canvas.getHeight() - 1)) / ((float) (bitmap.getHeight() - 1));
-            int targetWidth = (int)((canvas.getWidth() - 1) * ratio);
-            int left = (bitmap.getWidth() - 1 - targetWidth) / 2;
-            dest = new Rect(left, 0, targetWidth + left,
-                    canvas.getHeight() - 1);
+            dest = BitmapUtils.getScaleInSideAndCenterRect(
+                    canvas.getHeight(), canvas.getWidth(), bitmap.getHeight(), bitmap.getWidth(), false);
         } else {
             bitmap = BitmapFactory.decodeResource(getContext().getResources(), resID);
             dest = new Rect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);

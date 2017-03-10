@@ -17,18 +17,16 @@ public class ExportEditedPicRequest extends BaseNoteRequest {
 
     private Bitmap bitmap;
     private String document;
-    private String page;
 
-    public ExportEditedPicRequest(Bitmap bitmap, String document, String page) {
+    public ExportEditedPicRequest(Bitmap bitmap, String document) {
         this.bitmap = bitmap;
         this.document = document;
-        this.page = page;
     }
 
     @Override
     public void execute(NoteViewHelper helper) throws Exception {
         super.execute(helper);
-        File file = new File(ExportUtils.getExportPicPath(document, page));
+        File file = new File(ExportUtils.getExportPicPath(document));
         FileUtils.saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.PNG, 100);
     }
 

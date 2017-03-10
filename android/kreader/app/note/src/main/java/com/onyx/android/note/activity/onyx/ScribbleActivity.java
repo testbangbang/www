@@ -3,6 +3,8 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -10,13 +12,11 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -72,6 +72,7 @@ import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -543,8 +544,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             public void done(BaseRequest request, Throwable e) {
                 new ExportEditedPicAction<>(ScribbleActivity.this,
                         shapeDataInfo.getDocumentUniqueId(),
-                        shapeDataInfo.getPageNameList().getPageNameList().get(0),
-                        FileUtils.getBaseName(FileUtils.getRealFilePathFromUri(ScribbleActivity.this, editPictUri))).execute(ScribbleActivity.this, new BaseCallback() {
+                        shapeDataInfo.getPageNameList().getPageNameList().get(0),editPictUri).execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         syncWithCallback(false, false, new BaseCallback() {
@@ -832,7 +832,18 @@ public class ScribbleActivity extends BaseScribbleActivity {
             final NoteSetBackgroundAsLocalFileAction<ScribbleActivity> changeBGAction =
                     new NoteSetBackgroundAsLocalFileAction<>(FileUtils.getRealFilePathFromUri(this, editPictUri),
                             !getNoteViewHelper().inUserErasing());
-            changeBGAction.execute(ScribbleActivity.this, null);
+            changeBGAction.execute(ScribbleActivity.this, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(FileUtils.getRealFilePathFromUri(ScribbleActivity.this, editPictUri), options);
+                    int imageHeight = options.outHeight;
+                    int imageWidth = options.outWidth;
+                    getNoteViewHelper().setCustomLimitRect(BitmapUtils.getScaleInSideAndCenterRect(
+                            surfaceView.getHeight(), surfaceView.getWidth(), imageHeight, imageWidth, false));
+                }
+            });
         }
 
         if (isLineLayoutMode()) {

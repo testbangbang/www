@@ -10,12 +10,20 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
+
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.scribble.data.*;
+import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
+import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.data.NoteDocument;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
@@ -96,6 +104,8 @@ public class NoteViewHelper {
     private boolean supportBigPen = false;
     private boolean isLineLayoutMode = false;
     private volatile boolean isDrawing = false;
+
+    private Rect customLimitRect = null;
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, PEN_PAUSE);
@@ -260,21 +270,47 @@ public class NoteViewHelper {
         return viewToEpdMatrix;
     }
 
+    public void setCustomLimitRect(Rect targetRect){
+        customLimitRect = targetRect;
+        updateLimitRect();
+    }
+
     private void updateLimitRect() {
         Rect dfbLimitRect = new Rect();
         softwareLimitRect = new Rect();
+        int xAxisOffset = 0, yAxisOffset = 0;
 
-        //for software render limit rect
-        surfaceView.getLocalVisibleRect(softwareLimitRect);
 
-        //for dfb render limit rect
-        surfaceView.getGlobalVisibleRect(dfbLimitRect);
+        if (customLimitRect == null) {
+            //for software render limit rect
+            surfaceView.getLocalVisibleRect(softwareLimitRect);
+            //for dfb render limit rect
+            surfaceView.getGlobalVisibleRect(dfbLimitRect);
+        } else {
+            Rect surfaceLocalVisibleRect = new Rect();
+
+            surfaceView.getLocalVisibleRect(surfaceLocalVisibleRect);
+            softwareLimitRect = customLimitRect;
+
+            //a little tricky here,we assume target rect is always smaller than visible rect.
+            xAxisOffset = customLimitRect.left - surfaceLocalVisibleRect.left;
+            yAxisOffset = surfaceLocalVisibleRect.bottom - customLimitRect.bottom;
+
+            surfaceView.getGlobalVisibleRect(dfbLimitRect);
+
+            //do the transform here.
+            dfbLimitRect.set(dfbLimitRect.left + xAxisOffset,
+                    dfbLimitRect.top + yAxisOffset,
+                    dfbLimitRect.right - xAxisOffset,
+                    dfbLimitRect.bottom - yAxisOffset);
+        }
+
         dfbLimitRect.offsetTo(0, 0);
-        rawInputProcessor.setLimitRect(dfbLimitRect);
+        rawInputProcessor.setLimitRect(customLimitRect == null ? dfbLimitRect : customLimitRect);
 
         int viewPosition[] = {0, 0};
         surfaceView.getLocationOnScreen(viewPosition);
-        dfbLimitRect.offsetTo(viewPosition[0], viewPosition[1]);
+        dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, viewPosition[1] + yAxisOffset);
 
         final OnyxMatrix matrix = matrixFromViewToEpd();
         matrix.mapInPlace(dfbLimitRect);

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.net.Uri;
 import android.view.View;
 
 import com.onyx.android.note.R;
@@ -16,6 +17,7 @@ import com.onyx.android.sdk.scribble.request.navigation.ExportEditedPicRequest;
 import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
 import com.onyx.android.sdk.ui.dialog.DialogProgress;
 import com.onyx.android.sdk.utils.ExportUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class ExportEditedPicAction<T extends BaseScribbleActivity> extends BaseN
     private String noteTitle;
     private int count;
 
-    public ExportEditedPicAction(final T activity, String douId, String currentPageUniqueId, String noteTitle) {
+    public ExportEditedPicAction(final T activity, String douId, String currentPageUniqueId, Uri exportedPicUri) {
         pageUniqueIds = new ArrayList<>();
         pageUniqueIds.add(currentPageUniqueId);
 
@@ -41,7 +43,7 @@ public class ExportEditedPicAction<T extends BaseScribbleActivity> extends BaseN
         int width = activity.getWindowManager().getDefaultDisplay().getWidth();
         int height = activity.getWindowManager().getDefaultDisplay().getHeight();
         this.size = new Rect(0, 0, width, height);
-        this.noteTitle = noteTitle.replaceAll(":", " ");
+        this.noteTitle = FileUtils.getBaseName(FileUtils.getRealFilePathFromUri(activity, exportedPicUri)).replaceAll(":", " ");
     }
 
     @Override
@@ -52,7 +54,7 @@ public class ExportEditedPicAction<T extends BaseScribbleActivity> extends BaseN
         progress.setTitle(activity.getString(R.string.exporting_info));
         String location = null;
         try {
-            location = activity.getString(R.string.export_location, ExportUtils.getExportPicPath(noteTitle, "0"));
+            location = activity.getString(R.string.export_location, ExportUtils.getExportPicPath(noteTitle));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,7 +95,7 @@ public class ExportEditedPicAction<T extends BaseScribbleActivity> extends BaseN
     }
 
     private void exportPage(final T activity, final Bitmap bitmap, final int index) {
-        ExportEditedPicRequest exportNoteRequest = new ExportEditedPicRequest(bitmap, noteTitle, String.valueOf(index));
+        ExportEditedPicRequest exportNoteRequest = new ExportEditedPicRequest(bitmap, noteTitle);
         activity.submitRequest(exportNoteRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

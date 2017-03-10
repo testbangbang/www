@@ -35,7 +35,7 @@ public class NoteBackgroundType {
     public static final int LINE_2_0 = 12;
     public static final int CALENDAR = 13;
 
-    public static final int FILE = 14;
+    public static final int FILE = 26;
 
     public
     @NoteBackgroundDef
