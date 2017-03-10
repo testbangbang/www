@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.TextUtils;
 
 import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -178,7 +179,8 @@ public class BaseNoteRequest extends BaseRequest {
             Paint paint = preparePaint(parent);
 
             if (!parent.isLineLayoutMode()) {
-                drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
+                drawBackground(canvas, paint, parent.getNoteDocument().getBackground(),
+                        parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
             }
             prepareRenderingBuffer(bitmap);
 
@@ -215,7 +217,7 @@ public class BaseNoteRequest extends BaseRequest {
     private void flushRenderingBuffer(final Bitmap bitmap) {
     }
 
-    private void drawBackground(final Canvas canvas, final Paint paint,int bgType) {
+    private void drawBackground(final Canvas canvas, final Paint paint,int bgType,String bgFilePath) {
         int bgResID = 0;
         switch (bgType) {
             case NoteBackgroundType.EMPTY:
@@ -259,15 +261,30 @@ public class BaseNoteRequest extends BaseRequest {
             case NoteBackgroundType.CALENDAR:
                 bgResID = R.drawable.scribble_back_ground_calendar;
                 break;
+            case NoteBackgroundType.FILE:
+                bgResID = Integer.MIN_VALUE;
+                break;
         }
-        drawBackgroundResource(canvas, paint, bgResID);
+        drawBackgroundResource(canvas, paint, bgResID, bgFilePath);
 
     }
 
-    private void drawBackgroundResource(Canvas canvas, Paint paint, int resID) {
-        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resID);
+    private void drawBackgroundResource(Canvas canvas, Paint paint, int resID, String bgFilePath) {
+        Bitmap bitmap;
+        Rect dest;
+        if (resID == Integer.MIN_VALUE && !TextUtils.isEmpty(bgFilePath)) {
+            bitmap = BitmapFactory.decodeFile(bgFilePath);
+            // fit screen ration and center image.
+            float ratio =  ((float) (canvas.getHeight() - 1)) / ((float) (bitmap.getHeight() - 1));
+            int targetWidth = (int)((canvas.getWidth() - 1) * ratio);
+            int left = (bitmap.getWidth() - 1 - targetWidth) / 2;
+            dest = new Rect(left, 0, targetWidth + left,
+                    canvas.getHeight() - 1);
+        } else {
+            bitmap = BitmapFactory.decodeResource(getContext().getResources(), resID);
+            dest = new Rect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);
+        }
         Rect src = new Rect(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
-        Rect dest = new Rect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);
         canvas.drawBitmap(bitmap, src, dest, paint);
         if (!bitmap.isRecycled()) {
             bitmap.recycle();

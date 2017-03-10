@@ -331,6 +331,10 @@ public class NoteViewHelper {
         getNoteDocument().setBackground(bgType);
     }
 
+    public void setBackgroundFilePath(String filePath){
+        getNoteDocument().setBackgroundFilePath(filePath);
+    }
+
     public void setLineLayoutBackground(int bgType) {
         getNoteDocument().setLineLayoutBackground(bgType);
     }
