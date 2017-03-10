@@ -53,4 +53,5 @@
 
     <dimen name="seebar_thumb_height">30dp</dimen>
     <dimen name="menu_seek_bar_height">18dp</dimen>
+    <dimen name="alert_dialog_text_size">14sp</dimen>
 </resources>
