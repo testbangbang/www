@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.onyx.appmarket">
 
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES"/>
+
     <application
         android:name=".MarketApplication"
         android:allowBackup="true"
