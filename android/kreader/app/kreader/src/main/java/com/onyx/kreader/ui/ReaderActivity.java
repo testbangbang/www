@@ -362,6 +362,10 @@ public class ReaderActivity extends OnyxBaseActivity {
                     getHandlerManager().onActionUp(getReaderDataHolder(), event);
                     getHandlerManager().resetTouchStartPosition();
                 }
+                if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+                    getHandlerManager().onActionCancel(getReaderDataHolder(), event);
+                    getHandlerManager().resetTouchStartPosition();
+                }
 
                 getHandlerManager().onTouchEvent(getReaderDataHolder(), event);
                 return true;

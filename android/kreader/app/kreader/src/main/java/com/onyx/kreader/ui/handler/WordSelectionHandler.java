@@ -98,6 +98,17 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public boolean onActionUp(final ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
+        onReleaseClick(readerDataHolder);
+        return true;
+    }
+
+    @Override
+    public boolean onActionCancel(ReaderDataHolder readerDataHolder, float startX, float startY, float endX, float endY) {
+        onReleaseClick(readerDataHolder);
+        return true;
+    }
+
+    private void onReleaseClick(final ReaderDataHolder readerDataHolder) {
         if (readerDataHolder.getReaderUserDataInfo().hasHighlightResult() && !isSingleTapUp()) {
             String text = readerDataHolder.getReaderUserDataInfo().getHighlightResult().getText();
             if (!StringUtils.isNullOrEmpty(text)) {
@@ -109,7 +120,6 @@ public class WordSelectionHandler extends BaseHandler{
         updateHighLightRect(readerDataHolder);
         setSingleTapUp(false);
         setActionUp(true);
-        return true;
     }
 
     private boolean isWord(String text) {
