@@ -76,7 +76,7 @@
     <dimen name="dialog_custom_line_width_tittle_margin">8dp</dimen>
     <dimen name="dialog_brightness_rating_bar_min_max_value">63px</dimen>
     <dimen name="dialog_brightness_margin">4dp</dimen>
-    <dimen name="alert_dialog_text_size">20sp</dimen>
+    <dimen name="alert_dialog_text_size">12sp</dimen>
     <dimen name="alert_dialog_padding">10dp</dimen>
     <dimen name="preference_title_text_size">16sp</dimen>
     <dimen name="preference_category_text_size">14sp</dimen>

@@ -295,7 +295,6 @@
     </style>
 
     <style name="base_dialog" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:textSize">@dimen/alert_dialog_text_size</item>
     </style>
 
     <style name="Preference_TextAppearanceMaterialSubhead" tools:override="true">

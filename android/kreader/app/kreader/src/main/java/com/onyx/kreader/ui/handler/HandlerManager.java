@@ -208,6 +208,16 @@ public class HandlerManager {
         return getActiveProvider().onActionUp(readerDataHolder, getTouchStartPosition().x, getTouchStartPosition().y, e.getX(), e.getY());
     }
 
+    public boolean onActionCancel(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        if (!isEnable()) {
+            return false;
+        }
+        if (!isEnableTouch()) {
+            return false;
+        }
+        return getActiveProvider().onActionCancel(readerDataHolder, getTouchStartPosition().x, getTouchStartPosition().y, e.getX(), e.getY());
+    }
+
     public boolean onDown(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (!isEnable()) {
             return false;
