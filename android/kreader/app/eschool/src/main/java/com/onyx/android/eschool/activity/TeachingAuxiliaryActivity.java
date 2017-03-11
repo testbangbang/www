@@ -457,7 +457,9 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_MENU:
-                toggleCategoryPageView();
+                if (!displayMode) {
+                    toggleCategoryPageView();
+                }
                 return true;
         }
         return super.onKeyDown(keyCode, event);
