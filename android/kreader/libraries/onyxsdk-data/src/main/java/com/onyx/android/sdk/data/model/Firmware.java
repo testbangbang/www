@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data.model;
 
 import android.os.Build;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -52,6 +53,7 @@ public class Firmware extends BaseData {
         fwType = TESTING_TAG;
     }
 
+    @JSONField(serialize=false)
     public String getChangeLog() {
         if (!CollectionUtils.isNullOrEmpty(changeList)) {
             return StringUtils.join(changeList, "\n");
@@ -63,6 +65,7 @@ public class Firmware extends BaseData {
         return fingerprint;
     }
 
+    @JSONField(serialize=false)
     public String getUrl() {
         if (downloadUrlList.size() > 0) {
             return downloadUrlList.get(0);
