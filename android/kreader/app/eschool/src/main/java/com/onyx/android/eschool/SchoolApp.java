@@ -1,11 +1,21 @@
 package com.onyx.android.eschool;
 
 import android.app.Application;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.onyx.android.eschool.device.DeviceConfig;
+import com.onyx.android.eschool.receiver.DeviceReceiver;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
+import com.onyx.android.libsetting.manager.OTAAdmin;
+import com.onyx.android.libsetting.manager.SettingsPreferenceManager;
+import com.onyx.android.libsetting.view.activity.FirmwareOTAActivity;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.model.OTAFirmware;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
@@ -14,10 +24,14 @@ import com.onyx.android.sdk.ui.compat.AppCompatUtils;
  * Created by zhuzeng on 14/11/2016.
  */
 public class SchoolApp extends Application {
+    private static final int OTA_CHECK_DELAY_MS = 1500;
 
     static private SchoolApp sInstance = null;
     static private CloudStore cloudStore = new CloudStore();
     static private DataManager dataManager;
+
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private DeviceReceiver receiver = new DeviceReceiver();
 
     @Override
     public void onCreate() {
@@ -33,6 +47,7 @@ public class SchoolApp extends Application {
             initPl107DeviceConfig();
             initDeviceConfig();
             initSystemInBackground();
+            registerDeviceReceiver();
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace();
@@ -59,6 +74,63 @@ public class SchoolApp extends Application {
 
     public void turnOffLed() {
         Device.currentDevice().led(this, false);
+    }
+
+    private void registerDeviceReceiver() {
+        receiver.setWifiStateListener(new DeviceReceiver.WifiStateListener() {
+            @Override
+            public void onWifiStateChanged(Intent intent) {
+            }
+
+            @Override
+            public void onWifiConnected(Intent intent) {
+                checkOTAFirmwareUpdate();
+            }
+        });
+        receiver.enable(this, true);
+    }
+
+    private void checkOTAFirmwareUpdate() {
+        if (SettingsPreferenceManager.isCheckFirmwareWhenWifiConnected(sInstance)) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startOTAFirmwareUpdateCheck();
+                }
+            }, OTA_CHECK_DELAY_MS);
+        }
+    }
+
+    private void startOTAFirmwareUpdateCheck() {
+        OTAAdmin.sharedInstance().checkCloudFirmware(sInstance, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    e.printStackTrace();
+                    return;
+                }
+                final OTAFirmware otaFirmware = OTAAdmin.sharedInstance().checkCloudOTAFirmware(sInstance, request);
+                if (otaFirmware == null) {
+                    return;
+                }
+                Intent intent = new Intent(sInstance, FirmwareOTAActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setAction(FirmwareOTAActivity.ACTION_OTA_DOWNLOAD);
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public void onTerminate() {
+        terminateCloudDatabase();
+        receiver.enable(this, false);
+        super.onTerminate();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
     }
 
     public void initCloudDatabase() {
