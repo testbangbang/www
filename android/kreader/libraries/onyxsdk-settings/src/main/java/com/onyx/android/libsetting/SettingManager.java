@@ -5,6 +5,8 @@ import android.content.Context;
 import com.onyx.android.libsetting.request.BaseSettingRequest;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 
 /**
  * Created by solskjaer49 on 2017/2/11 18:44.
@@ -16,10 +18,12 @@ public class SettingManager {
     }
 
     private RequestManager requestManager;
+    private CloudStore cloudStoreManager;
     private static SettingManager instance;
 
     private SettingManager() {
         requestManager = new RequestManager(Thread.NORM_PRIORITY);
+        cloudStoreManager = new CloudStore();
     }
 
     static public SettingManager sharedInstance() {
@@ -50,5 +54,9 @@ public class SettingManager {
 
     public boolean submitRequest(final Context context, final BaseSettingRequest request, final BaseCallback callback) {
         return requestManager.submitRequestToMultiThreadPool(context, request, generateRunnable(request), callback);
+    }
+
+    public boolean submitCloudRequest(final Context context, final BaseCloudRequest request, final BaseCallback callback) {
+        return cloudStoreManager.submitRequest(context, request, callback);
     }
 }

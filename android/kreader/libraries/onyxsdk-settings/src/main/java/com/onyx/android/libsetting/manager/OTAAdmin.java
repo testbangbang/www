@@ -2,14 +2,25 @@ package com.onyx.android.libsetting.manager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 
 import com.onyx.android.libsetting.SettingManager;
+import com.onyx.android.libsetting.action.CheckCloudFirmwareLegalityAction;
 import com.onyx.android.libsetting.action.CheckLocalFirmwareLegalityAction;
-import com.onyx.android.sdk.device.Device;
+import com.onyx.android.libsetting.util.DeviceInfoUtil;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.Device;
+import com.onyx.android.sdk.data.model.Firmware;
+import com.onyx.android.sdk.data.model.OTAFirmware;
+import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by solskjaer49 on 2017/2/11 16:15.
@@ -24,9 +35,9 @@ public class OTAAdmin {
     private static final String OTA_SERVICE_PACKAGE_PATH_KEY = "updatePath";
 
     private static final String UPDATE_FILE_NAME = "update.zip";
-    private static final String LOCAL_PATH_SDCARD = Device.currentDevice.getExternalStorageDirectory()
+    public static final String LOCAL_PATH_SDCARD = DeviceInfoUtil.getExternalStorageDirectory()
             .getAbsolutePath() + File.separator + UPDATE_FILE_NAME;
-    private static final String LOCAL_PATH_EXTSD = Device.currentDevice.getRemovableSDCardDirectory()
+    public static final String LOCAL_PATH_EXTSD = DeviceInfoUtil.getRemovableSDCardDirectory()
             .getAbsolutePath() + File.separator + UPDATE_FILE_NAME;
 
     public interface FirmwareCheckCallback {
@@ -75,4 +86,33 @@ public class OTAAdmin {
         action.execute(context, SettingManager.sharedInstance(), null);
     }
 
+    public void checkCloudFirmware(Context context, final BaseCallback callback) {
+        Point point = DeviceInfoUtil.getScreenResolution(context);
+        Firmware firmware = Firmware.currentFirmware();
+        firmware.lang = Locale.getDefault().toString();
+        firmware.widthPixels = point.x;
+        firmware.heightPixels = point.y;
+        Device device = Device.updateCurrentDeviceInfo(context);
+        if (device != null) {
+            firmware.deviceMAC = device.macAddress;
+        }
+        CheckCloudFirmwareLegalityAction action = new CheckCloudFirmwareLegalityAction(firmware);
+        action.execute(context, SettingManager.sharedInstance(), callback);
+    }
+
+    public OTAFirmware checkCloudOTAFirmware(Context context, BaseRequest request) {
+        if (!(request instanceof FirmwareUpdateRequest)) {
+            return null;
+        }
+        final FirmwareUpdateRequest updateRequest = (FirmwareUpdateRequest) request;
+        Firmware firmware = updateRequest.getResultFirmware();
+        if (firmware == null || CollectionUtils.isNullOrEmpty(firmware.downloadUrlList)) {
+            return null;
+        }
+        final OTAFirmware otaFirmware = OTAFirmware.otaFirmware(firmware);
+        if (otaFirmware == null || StringUtils.isNullOrEmpty(otaFirmware.url)) {
+            return null;
+        }
+        return otaFirmware;
+    }
 }

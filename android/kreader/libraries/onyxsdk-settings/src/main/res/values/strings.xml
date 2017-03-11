@@ -202,6 +202,7 @@
     <string name="find_package_from_local">New update package found, do you want to update?</string>
     <string name="title_update">OTA update</string>
     <string name="no_update">No update package available.</string>
+    <string name="wait_for_checking_update">Waiting for checking update&#8230;</string>
 
 </resources>
 
