@@ -1,20 +1,19 @@
-package com.onyx.android.libsetting.manager;
+package com.onyx.android.sdk.data.manager;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 
-import com.onyx.android.libsetting.SettingManager;
-import com.onyx.android.libsetting.action.CheckCloudFirmwareLegalityAction;
-import com.onyx.android.libsetting.action.CheckLocalFirmwareLegalityAction;
-import com.onyx.android.libsetting.util.DeviceInfoUtil;
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.model.OTAFirmware;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
+import com.onyx.android.sdk.data.request.data.FirmwareLocalCheckLegalityRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.DeviceInfoUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.File;
@@ -26,9 +25,9 @@ import java.util.Locale;
  * Created by solskjaer49 on 2017/2/11 16:15.
  */
 
-public class OTAAdmin {
-    private static final String TAG = OTAAdmin.class.getSimpleName();
-    private static OTAAdmin instance;
+public class OTAManager {
+    private static final String TAG = OTAManager.class.getSimpleName();
+    private static OTAManager instance;
 
     private static final String OTA_SERVICE_PACKAGE = "com.onyx.android.onyxotaservice";
     private static final String OTA_SERVICE_ACTIVITY = "com.onyx.android.onyxotaservice.OtaInfoActivity";
@@ -39,19 +38,6 @@ public class OTAAdmin {
             .getAbsolutePath() + File.separator + UPDATE_FILE_NAME;
     public static final String LOCAL_PATH_EXTSD = DeviceInfoUtil.getRemovableSDCardDirectory()
             .getAbsolutePath() + File.separator + UPDATE_FILE_NAME;
-
-    public interface FirmwareCheckCallback {
-        void preCheck();
-
-        void stateChanged(int state, long finished, long total, long percentage);
-
-        /**
-         * @param targetPath If not found any zip(success return false),targetPath is null.
-         * @param success
-         */
-        void onPostCheck(final String targetPath, boolean success);
-    }
-
 
     /**
      * TODO:should clean up all test resource before update,but wait further design with both new setting/launcher coop.
@@ -71,22 +57,21 @@ public class OTAAdmin {
         context.startActivity(i);
     }
 
-    static public OTAAdmin sharedInstance() {
+    static public OTAManager sharedInstance() {
         if (instance == null) {
-            instance = new OTAAdmin();
+            instance = new OTAManager();
         }
         return instance;
     }
 
-    public void checkLocalFirmware(Context context,final FirmwareCheckCallback callback) {
-        List<String> pathList= new ArrayList<>();
+    public FirmwareLocalCheckLegalityRequest getLocalFirmwareCheckRequest(Context context) {
+        List<String> pathList = new ArrayList<>();
         pathList.add(LOCAL_PATH_SDCARD);
         pathList.add(LOCAL_PATH_EXTSD);
-        CheckLocalFirmwareLegalityAction action = new CheckLocalFirmwareLegalityAction(callback, pathList);
-        action.execute(context, SettingManager.sharedInstance(), null);
+        return new FirmwareLocalCheckLegalityRequest(pathList);
     }
 
-    public void checkCloudFirmware(Context context, final BaseCallback callback) {
+    public FirmwareUpdateRequest getCloudFirmwareCheckRequest(Context context) {
         Point point = DeviceInfoUtil.getScreenResolution(context);
         Firmware firmware = Firmware.currentFirmware();
         firmware.lang = Locale.getDefault().toString();
@@ -96,16 +81,11 @@ public class OTAAdmin {
         if (device != null) {
             firmware.deviceMAC = device.macAddress;
         }
-        CheckCloudFirmwareLegalityAction action = new CheckCloudFirmwareLegalityAction(firmware);
-        action.execute(context, SettingManager.sharedInstance(), callback);
+        return new FirmwareUpdateRequest(firmware);
     }
 
-    public OTAFirmware checkCloudOTAFirmware(Context context, BaseRequest request) {
-        if (!(request instanceof FirmwareUpdateRequest)) {
-            return null;
-        }
-        final FirmwareUpdateRequest updateRequest = (FirmwareUpdateRequest) request;
-        Firmware firmware = updateRequest.getResultFirmware();
+    public OTAFirmware checkCloudOTAFirmware(Context context, FirmwareUpdateRequest request) {
+        Firmware firmware = request.getResultFirmware();
         if (firmware == null || CollectionUtils.isNullOrEmpty(firmware.downloadUrlList)) {
             return null;
         }

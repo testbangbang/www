@@ -11,18 +11,22 @@ import android.widget.Toast;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.libsetting.R;
+import com.onyx.android.libsetting.SettingManager;
 import com.onyx.android.libsetting.databinding.ActivityFirmwareOtaBinding;
-import com.onyx.android.libsetting.manager.OTAAdmin;
 import com.onyx.android.libsetting.manager.SettingsPreferenceManager;
 import com.onyx.android.libsetting.util.DeviceFeatureUtil;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
+import com.onyx.android.sdk.data.manager.OTAManager;
 import com.onyx.android.sdk.data.model.OTAFirmware;
 import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
+import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
+import com.onyx.android.sdk.data.request.data.FirmwareLocalCheckLegalityRequest;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.StringUtils;
 
 public class FirmwareOTAActivity extends OnyxAppCompatActivity {
@@ -43,6 +47,11 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         binding.buttonCloudOta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!NetworkHelper.isWifiConnected(FirmwareOTAActivity.this)) {
+                    NetworkHelper.enableWifi(FirmwareOTAActivity.this, true);
+                    showToast(R.string.opening_wifi, Toast.LENGTH_LONG);
+                    return;
+                }
                 onCheckOTAFromCloud();
             }
         });
@@ -65,12 +74,13 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     private void onCheckOTAFromCloud() {
-        final OTAAdmin otaAdmin = OTAAdmin.sharedInstance();
-        otaAdmin.checkCloudFirmware(this, new BaseCallback() {
+        final FirmwareUpdateRequest updateRequest = OTAManager.sharedInstance().getCloudFirmwareCheckRequest(this);
+        SettingManager.sharedInstance().submitCloudRequest(this, updateRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 OTAFirmware otaFirmware;
-                if (e != null || (otaFirmware = otaAdmin.checkCloudOTAFirmware(FirmwareOTAActivity.this, request)) == null) {
+                if (e != null || (otaFirmware = OTAManager.sharedInstance().checkCloudOTAFirmware(
+                        FirmwareOTAActivity.this, updateRequest)) == null) {
                     printStackTrace(e);
                     showToast(R.string.no_update, Toast.LENGTH_SHORT);
                     return;
@@ -82,20 +92,12 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     private void onCheckOTAFromLocal() {
-        OTAAdmin.sharedInstance().checkLocalFirmware(this,new OTAAdmin.FirmwareCheckCallback() {
+        final FirmwareLocalCheckLegalityRequest localRequest = OTAManager.sharedInstance().getLocalFirmwareCheckRequest(this);
+        SettingManager.sharedInstance().submitDataRequest(this, localRequest, new BaseCallback() {
             @Override
-            public void preCheck() {
-
-            }
-
-            @Override
-            public void stateChanged(int state, long finished, long total, long percentage) {
-
-            }
-
-            @Override
-            public void onPostCheck(String targetPath, boolean success) {
-                if (success) {
+            public void done(BaseRequest request, Throwable e) {
+                String targetPath = localRequest.getLegalityTargetPath();
+                if (StringUtils.isNotBlank(targetPath)) {
                     showLocalUpdateDialog(targetPath);
                 } else {
                     showToast(R.string.no_update, Toast.LENGTH_SHORT);
@@ -111,7 +113,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                 .setPositiveAction(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        OTAAdmin.sharedInstance().startFirmwareUpdate(FirmwareOTAActivity.this, path);
+                        OTAManager.sharedInstance().startFirmwareUpdate(FirmwareOTAActivity.this, path);
                         dlgOtaLocal.dismiss();
                     }
                 }));
@@ -138,7 +140,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     private void startOTAFirmwareDownload(OTAFirmware otaFirmware) {
-        String filePath = OTAAdmin.LOCAL_PATH_SDCARD;
+        String filePath = OTAManager.LOCAL_PATH_SDCARD;
         CloudFileDownloadRequest downloadRequest = new CloudFileDownloadRequest(otaFirmware.url, filePath, filePath) {
             @Override
             public void execute(CloudManager parent) throws Exception {
@@ -162,7 +164,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                 dismissProgressDialog(request);
                 if (e != null) {
                     printStackTrace(e);
-                    showToast(R.string.no_update, Toast.LENGTH_SHORT);
+                    showToast(R.string.download_interrupted, Toast.LENGTH_SHORT);
                     return;
                 }
                 onCheckOTAFromLocal();

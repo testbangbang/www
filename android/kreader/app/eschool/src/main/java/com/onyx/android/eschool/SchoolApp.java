@@ -8,14 +8,15 @@ import android.os.Looper;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.receiver.DeviceReceiver;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
-import com.onyx.android.libsetting.manager.OTAAdmin;
 import com.onyx.android.libsetting.manager.SettingsPreferenceManager;
 import com.onyx.android.libsetting.view.activity.FirmwareOTAActivity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.manager.OTAManager;
 import com.onyx.android.sdk.data.model.OTAFirmware;
+import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
@@ -102,14 +103,15 @@ public class SchoolApp extends Application {
     }
 
     private void startOTAFirmwareUpdateCheck() {
-        OTAAdmin.sharedInstance().checkCloudFirmware(sInstance, new BaseCallback() {
+        final FirmwareUpdateRequest updateRequest = OTAManager.sharedInstance().getCloudFirmwareCheckRequest(sInstance);
+        getCloudStore().submitRequest(sInstance, updateRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     e.printStackTrace();
                     return;
                 }
-                final OTAFirmware otaFirmware = OTAAdmin.sharedInstance().checkCloudOTAFirmware(sInstance, request);
+                final OTAFirmware otaFirmware = OTAManager.sharedInstance().checkCloudOTAFirmware(sInstance, updateRequest);
                 if (otaFirmware == null) {
                     return;
                 }

@@ -1,8 +1,6 @@
-package com.onyx.android.libsetting.util;
+package com.onyx.android.sdk.utils;
 
 import android.os.Build;
-
-import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

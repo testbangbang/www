@@ -1,4 +1,4 @@
-package com.onyx.android.libsetting.util;
+package com.onyx.android.sdk.utils;
 
 import android.content.Context;
 import android.graphics.Point;
