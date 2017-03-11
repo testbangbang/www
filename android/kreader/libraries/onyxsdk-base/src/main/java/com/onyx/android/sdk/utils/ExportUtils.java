@@ -47,16 +47,8 @@ public class ExportUtils {
         return new File(getExportFolderPath(documentPath), page + ".png").getAbsolutePath();
     }
 
-    public static String getExportPicPath(String document, String page) throws IOException {
-        String documentPath = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES) + File.separator + "Edited";
-        File editDir = new File(documentPath);
-        boolean editDirCanWrite = false;
-        if (!editDir.exists()) {
-            editDirCanWrite = editDir.mkdirs();
-        } else if (editDir.isDirectory()) {
-            editDirCanWrite = true;
-        }
-        return editDirCanWrite ? new File(documentPath, document + "-edited.png").getAbsolutePath() :
-                getExportNotePath(document, page);
+    public static String getExportPicPath(String document) throws IOException {
+        String documentPath = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).getAbsolutePath() + File.separator +"Screenshots";
+        return new File(documentPath, document + ".png").getAbsolutePath();
     }
 }
