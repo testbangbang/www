@@ -6,15 +6,12 @@ import android.graphics.Point;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.CloudStore;
-import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.model.Firmware;
-import com.onyx.android.sdk.data.model.OTAFirmware;
+import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
 import com.onyx.android.sdk.data.request.data.FirmwareLocalCheckLegalityRequest;
-import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceInfoUtil;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,6 +25,7 @@ import java.util.Locale;
 public class OTAManager {
     private static final String TAG = OTAManager.class.getSimpleName();
     private static OTAManager instance;
+    private CloudStore cloudStore = new CloudStore();
 
     private static final String OTA_SERVICE_PACKAGE = "com.onyx.android.onyxotaservice";
     private static final String OTA_SERVICE_ACTIVITY = "com.onyx.android.onyxotaservice.OtaInfoActivity";
@@ -40,14 +38,11 @@ public class OTAManager {
             .getAbsolutePath() + File.separator + UPDATE_FILE_NAME;
 
     /**
-     * TODO:should clean up all test resource before update,but wait further design with both new setting/launcher coop.
      * Temp empty implement here.
     */
     private void preFirmwareUpdate() {
-//        ContentBrowserUtils.clearAllTestResource(OnyxOTAActivity.this, DeviceConfig.sharedInstance(this));
     }
 
-    //TODO:maybe ota service pkg/activity should be custom?
     public void startFirmwareUpdate(Context context, String path) {
         preFirmwareUpdate();
         Intent i = new Intent();
@@ -64,14 +59,14 @@ public class OTAManager {
         return instance;
     }
 
-    public FirmwareLocalCheckLegalityRequest getLocalFirmwareCheckRequest(Context context) {
+    public static FirmwareLocalCheckLegalityRequest localFirmwareCheckRequest(Context context) {
         List<String> pathList = new ArrayList<>();
         pathList.add(LOCAL_PATH_SDCARD);
         pathList.add(LOCAL_PATH_EXTSD);
         return new FirmwareLocalCheckLegalityRequest(pathList);
     }
 
-    public FirmwareUpdateRequest getCloudFirmwareCheckRequest(Context context) {
+    public static FirmwareUpdateRequest cloudFirmwareCheckRequest(Context context) {
         Point point = DeviceInfoUtil.getScreenResolution(context);
         Firmware firmware = Firmware.currentFirmware();
         firmware.lang = Locale.getDefault().toString();
@@ -84,15 +79,12 @@ public class OTAManager {
         return new FirmwareUpdateRequest(firmware);
     }
 
-    public OTAFirmware checkCloudOTAFirmware(Context context, FirmwareUpdateRequest request) {
-        Firmware firmware = request.getResultFirmware();
-        if (firmware == null || CollectionUtils.isNullOrEmpty(firmware.downloadUrlList)) {
-            return null;
-        }
-        final OTAFirmware otaFirmware = OTAFirmware.otaFirmware(firmware);
-        if (otaFirmware == null || StringUtils.isNullOrEmpty(otaFirmware.url)) {
-            return null;
-        }
-        return otaFirmware;
+    public void submitRequest(final Context context, final BaseCloudRequest request, final BaseCallback callback) {
+        getCloudStore().submitRequest(context, request, callback);
     }
+
+    public CloudStore getCloudStore() {
+        return cloudStore;
+    }
+
 }

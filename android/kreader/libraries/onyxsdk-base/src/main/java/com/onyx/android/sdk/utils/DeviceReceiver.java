@@ -1,4 +1,4 @@
-package com.onyx.android.eschool.receiver;
+package com.onyx.android.sdk.utils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,8 +12,6 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.device.EnvironmentUtil;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;

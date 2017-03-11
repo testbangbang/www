@@ -2,6 +2,9 @@ package com.onyx.android.sdk.data.model;
 
 import android.os.Build;
 
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
+
 import java.util.List;
 
 /**
@@ -47,5 +50,23 @@ public class Firmware extends BaseData {
         buildNumber = FirmwareUtils.getBuildIdFromFingerprint(fingerprint);
         buildType = FirmwareUtils.getBuildTypeFromFingerprint(fingerprint);
         fwType = TESTING_TAG;
+    }
+
+    public String getChangeLog() {
+        if (!CollectionUtils.isNullOrEmpty(changeList)) {
+            return StringUtils.join(changeList, "\n");
+        }
+        return "";
+    }
+
+    public String getFingerprint() {
+        return fingerprint;
+    }
+
+    public String getUrl() {
+        if (downloadUrlList.size() > 0) {
+            return downloadUrlList.get(0);
+        }
+        return null;
     }
 }
