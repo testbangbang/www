@@ -247,6 +247,10 @@ public abstract class BaseHandler {
         return true;
     }
 
+    public boolean onActionCancel(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
+        return true;
+    }
+
     public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (isPinchZooming()) {
             // scrolling may happens after pinch zoom, so we always reset scroll state to avoid conflicts
