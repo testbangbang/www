@@ -78,7 +78,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                 showCloudUpdateDialog(otaFirmware);
             }
         });
-        showToast("正在检查网络更新...", Toast.LENGTH_SHORT);
+        showToast(R.string.wait_for_checking_update, Toast.LENGTH_SHORT);
     }
 
     private void onCheckOTAFromLocal() {
