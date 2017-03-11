@@ -118,6 +118,10 @@ public class NoteDocument {
         noteDrawingArgs.background = background;
     }
 
+    public void setBackgroundFilePath(String backgroundPath) {
+        noteDrawingArgs.bgFilePath = backgroundPath;
+    }
+
     public void setLineLayoutBackground(int background) {
         noteDrawingArgs.setLineLayoutBackground(background);
     }

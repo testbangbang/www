@@ -3,13 +3,15 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,7 +23,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
@@ -30,10 +31,12 @@ import com.onyx.android.note.actions.scribble.ClearAllFreeShapesAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.android.note.actions.scribble.DocumentFlushAction;
 import com.onyx.android.note.actions.scribble.DocumentSaveAction;
+import com.onyx.android.note.actions.scribble.ExportEditedPicAction;
 import com.onyx.android.note.actions.scribble.ExportNoteAction;
 import com.onyx.android.note.actions.scribble.GotoTargetPageAction;
 import com.onyx.android.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.android.note.actions.scribble.NoteLineLayoutBackgroundChangeAction;
+import com.onyx.android.note.actions.scribble.NoteSetBackgroundAsLocalFileAction;
 import com.onyx.android.note.actions.scribble.PenColorChangeAction;
 import com.onyx.android.note.actions.scribble.RedoAction;
 import com.onyx.android.note.actions.scribble.RemoveByGroupIdAction;
@@ -65,10 +68,13 @@ import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.HashMap;
@@ -90,6 +96,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private SpanTextHandler spanTextHandler;
     private boolean isKeyboardInput = false;
     private boolean buildingSpan = false;
+    private boolean isPictureEditMode = false;
+    private Uri editPictUri;
     private WakeLockHolder wakeLockHolder = new WakeLockHolder();
 
     @Override
@@ -98,6 +106,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         DeviceUtils.setFullScreenOnCreate(this, true);
         setContentView(R.layout.onyx_activity_scribble);
         initSupportActionBarWithCustomBackFunction();
+        checkPictureEditMode();
         initToolbarButtons();
     }
 
@@ -112,6 +121,14 @@ public class ScribbleActivity extends BaseScribbleActivity {
     protected void onPause() {
         super.onPause();
         wakeLockHolder.releaseWakeLock();
+    }
+
+    private void checkPictureEditMode() {
+        Intent editIntent = getIntent();
+        if (Intent.ACTION_EDIT.equalsIgnoreCase(editIntent.getAction())) {
+            isPictureEditMode = true;
+            editPictUri = editIntent.getData();
+        }
     }
 
     private void initToolbarButtons() {
@@ -238,6 +255,16 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
         switchBtn.setVisibility(NoteAppConfig.sharedInstance(this).useLineLayout() ? View.VISIBLE : View.GONE);
         initSpanTextView();
+
+        //avoid creating global variable, just clean up ui here instead of creating new method.
+        if (isPictureEditMode){
+            findViewById(R.id.page_count_control).setVisibility(View.GONE);
+            findViewById(R.id.page_indicator).setVisibility(View.GONE);
+            exportBtn.setVisibility(View.GONE);
+            switchBtn.setVisibility(View.GONE);
+            settingBtn.setVisibility(View.GONE);
+            saveBtn.setVisibility(View.GONE);
+        }
     }
 
     private void initSpanTextView() {
@@ -511,6 +538,27 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     }
 
+    private void onExportEditedPic() {
+        syncWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new ExportEditedPicAction<>(ScribbleActivity.this,
+                        shapeDataInfo.getDocumentUniqueId(),
+                        shapeDataInfo.getPageNameList().getPageNameList().get(0),editPictUri).execute(ScribbleActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        syncWithCallback(false, false, new BaseCallback() {
+                                    @Override
+                                    public void done(BaseRequest request, Throwable e) {
+                                        ScribbleActivity.this.finish();
+                                    }
+                                });
+                    }
+                });
+            }
+        });
+    }
+
     private void showExportMenu() {
         hideSoftInput();
         syncWithCallback(true, false, new BaseCallback() {
@@ -526,7 +574,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                saveDocument(finishAfterSave);
+                if (isPictureEditMode){
+                    saveEditPic(finishAfterSave);
+                }else {
+                    saveDocument(finishAfterSave);
+                }
             }
         });
     }
@@ -772,6 +824,28 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onBackgroundChanged(int type) {
+        if (type == NoteBackgroundType.FILE){
+            if (!isPictureEditMode){
+                return;
+            }
+            setBackgroundType(type);
+            final NoteSetBackgroundAsLocalFileAction<ScribbleActivity> changeBGAction =
+                    new NoteSetBackgroundAsLocalFileAction<>(FileUtils.getRealFilePathFromUri(this, editPictUri),
+                            !getNoteViewHelper().inUserErasing());
+            changeBGAction.execute(ScribbleActivity.this, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(FileUtils.getRealFilePathFromUri(ScribbleActivity.this, editPictUri), options);
+                    int imageHeight = options.outHeight;
+                    int imageWidth = options.outWidth;
+                    getNoteViewHelper().setCustomLimitRect(BitmapUtils.getScaleInSideAndCenterRect(
+                            surfaceView.getHeight(), surfaceView.getWidth(), imageHeight, imageWidth, false));
+                }
+            });
+        }
+
         if (isLineLayoutMode()) {
             shapeDataInfo.setLineLayoutBackground(type);
             spanTextView.setShowLineBackground(type == NoteBackgroundType.LINE);
@@ -802,7 +876,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private GAdapter getFunctionAdapter(boolean isLineLayoutMode) {
         GAdapter adapter = new GAdapter();
         adapter.addObject(createFunctionItem(R.drawable.ic_shape, ScribbleMenuCategory.PEN_STYLE));
-        adapter.addObject(createFunctionItem(R.drawable.ic_template, ScribbleMenuCategory.BG));
+        if (!isPictureEditMode) {
+            adapter.addObject(createFunctionItem(R.drawable.ic_template, ScribbleMenuCategory.BG));
+        }
         if (!isLineLayoutMode) {
             adapter.addObject(createFunctionItem(R.drawable.ic_eraser, ScribbleMenuCategory.ERASER));
             adapter.addObject(createFunctionItem(R.drawable.ic_width, ScribbleMenuCategory.PEN_WIDTH));
@@ -824,6 +900,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
         if (StringUtils.isNotBlank(noteTitle)) {
             titleTextView.setText(noteTitle);
         }
+        if (isPictureEditMode){
+            onBackgroundChanged(NoteBackgroundType.FILE);
+        }
     }
 
     @Override
@@ -837,6 +916,41 @@ public class ScribbleActivity extends BaseScribbleActivity {
     public void onBackPressed() {
         getNoteViewHelper().pauseDrawing();
         onSave(true);
+    }
+
+    private void saveEditPic(boolean finishAfterSave) {
+        final OnyxAlertDialog saveEditPicDialog = new OnyxAlertDialog();
+        saveEditPicDialog.setParams(new OnyxAlertDialog.Params().setTittleString(getString(R.string.save))
+                .setAlertMsgString(getString(R.string.save_and_exit))
+                .setCanceledOnTouchOutside(false)
+                .setEnableNeutralButton(true)
+                .setNeutralButtonText(getString(R.string.discard))
+                .setPositiveAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onExportEditedPic();
+                    }
+                })
+                .setNegativeAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        saveEditPicDialog.dismiss();
+                        syncWithCallback(true, true, null);
+                    }
+                })
+                .setNeutralAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        saveEditPicDialog.dismiss();
+                        ScribbleActivity.this.finish();
+                    }
+                }));
+        syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                saveEditPicDialog.show(getFragmentManager(),"SaveEditPicDialog");
+            }
+        });
     }
 
     private void saveDocument(boolean finishAfterSave) {
