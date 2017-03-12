@@ -33,7 +33,7 @@ public class OTAUtil {
                         baos.write(buffer, 0, count);
                     }
                     String[] arr = baos.toString().split("=");
-                    return arr[1] != null && arr[1].trim().equals(Build.DEVICE);
+                    return arr.length >= 2 && arr[1] != null && arr[1].trim().equals(Build.MODEL);
                 }
             }
         } catch (IOException e) {

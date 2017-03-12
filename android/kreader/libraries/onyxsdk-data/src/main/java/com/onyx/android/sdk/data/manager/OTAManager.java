@@ -10,7 +10,7 @@ import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
-import com.onyx.android.sdk.data.request.data.FirmwareLocalCheckLegalityRequest;
+import com.onyx.android.sdk.data.request.cloud.FirmwareLocalCheckLegalityRequest;
 import com.onyx.android.sdk.utils.DeviceInfoUtil;
 
 import java.io.File;

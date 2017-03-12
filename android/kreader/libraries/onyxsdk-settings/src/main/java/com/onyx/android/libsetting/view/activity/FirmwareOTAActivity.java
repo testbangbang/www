@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.libsetting.R;
-import com.onyx.android.libsetting.SettingManager;
 import com.onyx.android.libsetting.databinding.ActivityFirmwareOtaBinding;
 import com.onyx.android.libsetting.manager.SettingsPreferenceManager;
 import com.onyx.android.libsetting.util.DeviceFeatureUtil;
@@ -24,7 +23,7 @@ import com.onyx.android.sdk.data.manager.OTAManager;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
-import com.onyx.android.sdk.data.request.data.FirmwareLocalCheckLegalityRequest;
+import com.onyx.android.sdk.data.request.cloud.FirmwareLocalCheckLegalityRequest;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.wifi.NetworkHelper;
@@ -102,7 +101,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
             public void done(BaseRequest request, Throwable e) {
                 setOtaGuard(false);
                 Firmware otaFirmware = updateRequest.getResultFirmware();
-                if (e != null || otaFirmware == null) {
+                if (e != null || otaFirmware == null || !updateRequest.isResultFirmwareValid()) {
                     printStackTrace(e);
                     showToast(R.string.no_update, Toast.LENGTH_SHORT);
                     return;
@@ -123,7 +122,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
 
     private void onCheckOTAFromLocal() {
         final FirmwareLocalCheckLegalityRequest localRequest = OTAManager.localFirmwareCheckRequest(this);
-        SettingManager.sharedInstance().submitDataRequest(this, localRequest, new BaseCallback() {
+        OTAManager.sharedInstance().submitRequest(this, localRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 String targetPath = localRequest.getLegalityTargetPath();
