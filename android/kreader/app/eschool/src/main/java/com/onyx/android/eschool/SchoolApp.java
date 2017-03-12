@@ -23,12 +23,9 @@ import com.onyx.android.sdk.ui.compat.AppCompatUtils;
  * Created by zhuzeng on 14/11/2016.
  */
 public class SchoolApp extends Application {
-    private static final int OTA_CHECK_DELAY_MS = 1500;
 
     static private SchoolApp sInstance = null;
     static private DataManager dataManager;
-    private Handler handler = new Handler(Looper.getMainLooper());
-
 
     @Override
     public void onCreate() {
