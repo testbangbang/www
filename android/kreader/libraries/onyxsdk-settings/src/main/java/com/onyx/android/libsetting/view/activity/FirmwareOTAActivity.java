@@ -52,7 +52,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
 
             @Override
             public void onWifiConnected(Intent intent) {
-                onCheckOTAFromCloud();
+                checkUpdateFromCloud();
             }
         });
         receiver.enable(this, true);
@@ -69,13 +69,13 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                     showToast(R.string.opening_wifi, Toast.LENGTH_LONG);
                     return;
                 }
-                onCheckOTAFromCloud();
+                checkUpdateFromCloud();
             }
         });
         binding.buttonLocalOta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onCheckOTAFromLocal();
+                checkUpdateFromLocalStorage();
             }
         });
         getSupportFragmentManager().beginTransaction().replace(R.id.ota_info_preference,
@@ -86,11 +86,11 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     private void processIntent() {
         String action = getIntent().getAction();
         if (ACTION_OTA_DOWNLOAD.equals(action)) {
-            onCheckOTAFromCloud();
+            checkUpdateFromCloud();
         }
     }
 
-    private void onCheckOTAFromCloud() {
+    private void checkUpdateFromCloud() {
         if (isOtaGuard()) {
             return;
         }
@@ -120,7 +120,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         this.otaGuard = otaGuard;
     }
 
-    private void onCheckOTAFromLocal() {
+    private void checkUpdateFromLocalStorage() {
         final FirmwareLocalCheckLegalityRequest localRequest = OTAManager.localFirmwareCheckRequest(this);
         OTAManager.sharedInstance().submitRequest(this, localRequest, new BaseCallback() {
             @Override
@@ -196,7 +196,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                     showToast(R.string.download_interrupted, Toast.LENGTH_SHORT);
                     return;
                 }
-                onCheckOTAFromLocal();
+                checkUpdateFromLocalStorage();
             }
         });
         OnyxDownloadManager.getInstance().startDownload(task);

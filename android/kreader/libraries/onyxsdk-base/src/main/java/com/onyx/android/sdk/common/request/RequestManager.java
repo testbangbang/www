@@ -119,5 +119,7 @@ public class RequestManager {
         return true;
     }
 
-
+    public Handler getHandler() {
+        return handler;
+    }
 }

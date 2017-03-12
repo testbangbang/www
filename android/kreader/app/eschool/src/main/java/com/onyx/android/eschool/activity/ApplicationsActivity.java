@@ -110,7 +110,6 @@ public class ApplicationsActivity extends BaseActivity {
         SchoolApp.getDataManager().submit(this, listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                dismissProgressDialog(request);
                 if (e != null) {
                     e.printStackTrace();
                     return;
@@ -120,7 +119,6 @@ public class ApplicationsActivity extends BaseActivity {
                 notifyDataChanged();
             }
         });
-        showProgressDialog(listRequest, null);
     }
 
     private void notifyDataChanged() {

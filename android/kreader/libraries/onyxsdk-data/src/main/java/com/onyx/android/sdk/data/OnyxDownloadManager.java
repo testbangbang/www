@@ -24,7 +24,6 @@ public class OnyxDownloadManager {
     private static int DEFAULT_PROGRESS_MIN_INTERVAL = 1200;
     private static OnyxDownloadManager instance;
     private FileDownloadNotificationHelper<NotificationItem> helper = new FileDownloadNotificationHelper<>();
-    private Handler handler = new Handler(Looper.getMainLooper());
 
     private LinkedHashMap<Object, BaseDownloadTask> taskMap = new LinkedHashMap<>();
 
