@@ -187,9 +187,13 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         showTabWidgetOnCondition();
         updateReaderTabWindowHeight();
 
+        // in some cases, tab host activity will be blocked by tab activity, so force it to be front
+        bringSelfToFront();
         if (StringUtils.isNotBlank(pathToContinueOpenAfterRotation)) {
             openDocWithTab(pathToContinueOpenAfterRotation);
             pathToContinueOpenAfterRotation = null;
+        } else if (tabManager.getOpenedTabs().size() > 0) {
+            bringReaderTabToFront(getCurrentTabInHost());
         }
     }
 
@@ -438,7 +442,28 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
     }
 
+    private boolean bringSelfToFront() {
+        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
+        if (!tasksList.isEmpty()) {
+            int nSize = tasksList.size();
+            for (int i = 0; i < nSize; i++) {
+                if (tasksList.get(i).topActivity.getClassName().equals(getClass().getName())) {
+                    Debug.d(TAG, "bringSelfToFront: success!");
+                    am.moveTaskToFront(tasksList.get(i).id, 0);
+                    return true;
+                }
+            }
+        }
+        Debug.d(TAG, "bringSelfToFront: failed!");
+        return false;
+    }
+
     private boolean bringReaderTabToFront(ReaderTabManager.ReaderTab tab) {
+        if (!tabManager.getOpenedTabs().containsKey(tab)) {
+            return false;
+        }
+
         String clzName = tabManager.getTabActivity(tab).getName();
         ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
@@ -446,7 +471,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             int nSize = tasksList.size();
             for (int i = 0; i < nSize; i++) {
                 if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
-                    Debug.d(TAG, "reader tab already in task list, bring it to front: " + tab);
+                    Debug.d(TAG, "bring tab to front succeeded: " + tab);
                     updateCurrentTabInHost(tab);
                     updateReaderTabWindowHeight(tab);
                     am.moveTaskToFront(tasksList.get(i).id, 0);
@@ -454,6 +479,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 }
             }
         }
+        Debug.d(TAG, "bring tab to front failed: " + tab);
         return false;
     }
 
