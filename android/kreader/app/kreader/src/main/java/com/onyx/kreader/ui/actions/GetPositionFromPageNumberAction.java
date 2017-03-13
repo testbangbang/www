@@ -15,14 +15,16 @@ public class GetPositionFromPageNumberAction extends BaseAction {
 
     private List<String> documentPositions;
     private List<Integer> pageNumbers;
+    private boolean abortPendingTasks = false;
 
-    public GetPositionFromPageNumberAction(List<Integer> pageNumbers) {
+    public GetPositionFromPageNumberAction(List<Integer> pageNumbers, final boolean abortPendingTasks) {
         this.pageNumbers = pageNumbers;
+        this.abortPendingTasks = abortPendingTasks;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        final GetPositionFromPageNumberRequest readerRequest = new GetPositionFromPageNumberRequest(pageNumbers);
+        final GetPositionFromPageNumberRequest readerRequest = new GetPositionFromPageNumberRequest(pageNumbers, abortPendingTasks);
         readerDataHolder.submitNonRenderRequest(readerRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

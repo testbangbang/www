@@ -14,9 +14,11 @@ public class GetPositionFromPageNumberRequest extends BaseReaderRequest {
 
     private List<String> documentPositions;
     private List<Integer> pageNumbers;
+    private boolean abortPendingTasks = false;
 
-    public GetPositionFromPageNumberRequest(List<Integer> pageNumbers) {
+    public GetPositionFromPageNumberRequest(List<Integer> pageNumbers, final boolean abortPendingTasks) {
         this.pageNumbers = pageNumbers;
+        setAbortPendingTasks(abortPendingTasks);
     }
 
     @Override

@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -165,7 +166,7 @@ public class DialogQuickPreview extends Dialog {
                 toRequest.add(i);
             }
 
-            final GetPositionFromPageNumberAction action = new GetPositionFromPageNumberAction(toRequest);
+            final GetPositionFromPageNumberAction action = new GetPositionFromPageNumberAction(toRequest, true);
             action.execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -591,7 +592,7 @@ public class DialogQuickPreview extends Dialog {
         List<Integer> pages = new ArrayList<>();
         pages.add(Math.max(getPaginator().getCurrentPageBegin() - 1, 0));
         pages.add(Math.min(getPaginator().getCurrentPageEnd() + 1, getPaginator().getSize()));
-        final GetPositionFromPageNumberAction action =  new GetPositionFromPageNumberAction(pages);
+        final GetPositionFromPageNumberAction action =  new GetPositionFromPageNumberAction(pages, true);
         action.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
