@@ -29,6 +29,7 @@ public class SingletonSharedPreference {
     private final static String LAST_RIGHT_MARGIN = "last_right_margin";
     private final static String LAST_BOTTOM_MARGIN = "last_bottom_margin";
     private final static String SCREEN_ORIENTATION = "screen_orientation";
+    private final static String MULTIPLE_TAB_STATE = "multiple_tab_state";
 
     private static Context sContext;
     private static SharedPreferences.Editor sDefaultEditor;
@@ -111,6 +112,10 @@ public class SingletonSharedPreference {
 
     public static int getIntByStringResource(String keyString, int defaultValue) {
         return getPrefs().getInt(keyString, defaultValue);
+    }
+
+    public static String getStringValue(String keyString) {
+        return getPrefs().getString(keyString, "");
     }
 
     public static boolean isSystemStatusBarEnabled(Context context) {
@@ -354,5 +359,13 @@ public class SingletonSharedPreference {
 
     public static int getScreenOrientation(int defaultValue) {
         return getPrefs().getInt(SCREEN_ORIENTATION, defaultValue);
+    }
+
+    public static void setMultipleTabState(String state) {
+        setStringValue(MULTIPLE_TAB_STATE, state);
+    }
+
+    public static String getMultipleTabState() {
+        return getStringValue(MULTIPLE_TAB_STATE);
     }
 }
