@@ -58,6 +58,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader_host);
         initComponents();
+        restoreReaderTabState();
     }
 
     @Override
@@ -65,11 +66,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         super.onResume();
 
         syncFullScreenState();
-
-//        int orientation = SingletonSharedPreference.getScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//        if (orientation != DeviceUtils.getScreenOrientation(this)) {
-//            setRequestedOrientation(orientation);
-//        }
     }
 
     @Override
@@ -86,6 +82,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     @Override
+    protected void onPause() {
+        saveReaderTabState();
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         releaseStartupWakeLock();
@@ -96,21 +98,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         super.onNewIntent(intent);
         setIntent(intent);
         handleActivityIntent();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(TAG_TAB_MANAGER, tabManager.toJson());
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        tabManager = ReaderTabManager.createFromJson(savedInstanceState.getString(TAG_TAB_MANAGER));
-
-        showTabWidgetOnCondition();
-        rebuildTabWidget();
     }
 
     private void initComponents() {
@@ -144,6 +131,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         });
 
         if (!tabManager.supportMultipleTabs()) {
+            hideTabWidget();
             return;
         }
 
@@ -265,12 +253,20 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void showTabWidgetOnCondition() {
         if (isShowingTabWidget()) {
-            tabHost.getTabWidget().setVisibility(View.VISIBLE);
-            btnSwitch.setVisibility(View.VISIBLE);
+            showTabWidget();
         } else {
-            tabHost.getTabWidget().setVisibility(View.INVISIBLE);
-            btnSwitch.setVisibility(View.INVISIBLE);
+            hideTabWidget();
         }
+    }
+
+    private void showTabWidget() {
+        tabHost.getTabWidget().setVisibility(View.VISIBLE);
+        btnSwitch.setVisibility(View.VISIBLE);
+    }
+
+    private void hideTabWidget() {
+        tabHost.getTabWidget().setVisibility(View.INVISIBLE);
+        btnSwitch.setVisibility(View.INVISIBLE);
     }
 
     private int getTabContentHeight() {
@@ -483,5 +479,15 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             intent.putExtra(ReaderBroadcastReceiver.TAG_DOCUMENT_PATH, path);
             sendBroadcast(intent);
         }
+    }
+
+    private void saveReaderTabState() {
+        SingletonSharedPreference.setMultipleTabState(tabManager.toJson());
+    }
+
+    private void restoreReaderTabState() {
+        tabManager = ReaderTabManager.createFromJson(SingletonSharedPreference.getMultipleTabState());
+        showTabWidgetOnCondition();
+        rebuildTabWidget();
     }
 }

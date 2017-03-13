@@ -296,8 +296,7 @@ public class BaseOptions {
     }
 
     public int getCodePage() {
-        return backend.getInt(CODE_PAGE_TAG, LocaleUtils.isChinese() ? TAL_CODE_PAGES.CP936 :
-                TAL_CODE_PAGES.AUTO);
+        return backend.getInt(CODE_PAGE_TAG, TAL_CODE_PAGES.AUTO);
     }
 
     public void setCodePage(int codePage) {
