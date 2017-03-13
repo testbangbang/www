@@ -58,6 +58,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader_host);
         initComponents();
+        restoreReaderTabState();
     }
 
     @Override
@@ -81,6 +82,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     @Override
+    protected void onPause() {
+        saveReaderTabState();
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         releaseStartupWakeLock();
@@ -91,21 +98,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         super.onNewIntent(intent);
         setIntent(intent);
         handleActivityIntent();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putString(TAG_TAB_MANAGER, tabManager.toJson());
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        tabManager = ReaderTabManager.createFromJson(savedInstanceState.getString(TAG_TAB_MANAGER));
-
-        showTabWidgetOnCondition();
-        rebuildTabWidget();
     }
 
     private void initComponents() {
@@ -487,5 +479,15 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             intent.putExtra(ReaderBroadcastReceiver.TAG_DOCUMENT_PATH, path);
             sendBroadcast(intent);
         }
+    }
+
+    private void saveReaderTabState() {
+        SingletonSharedPreference.setMultipleTabState(tabManager.toJson());
+    }
+
+    private void restoreReaderTabState() {
+        tabManager = ReaderTabManager.createFromJson(SingletonSharedPreference.getMultipleTabState());
+        showTabWidgetOnCondition();
+        rebuildTabWidget();
     }
 }
