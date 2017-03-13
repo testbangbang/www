@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui;
 
 import com.alibaba.fastjson.JSON;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.device.DeviceConfig;
 
 import java.util.HashMap;
@@ -50,6 +51,10 @@ public class ReaderTabManager {
 
     public static ReaderTabManager createFromJson(String json) {
         ReaderTabManager manager = new ReaderTabManager();
+        if (StringUtils.isBlank(json)) {
+            return manager;
+        }
+
         LinkedHashMap<String, String> map = JSON.parseObject(json, manager.openedTabs.getClass());
         for (LinkedHashMap.Entry<String, String> entry : map.entrySet()) {
             manager.openedTabs.put(Enum.valueOf(ReaderTab.class, entry.getKey()), entry.getValue());
