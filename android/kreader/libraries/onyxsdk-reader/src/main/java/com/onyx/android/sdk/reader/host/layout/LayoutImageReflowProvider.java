@@ -65,6 +65,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public boolean nextScreen() throws ReaderException {
+        reverseOrder = false;
         if (atLastSubPage()) {
             return nextPage();
         }
