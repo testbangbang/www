@@ -65,11 +65,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         super.onResume();
 
         syncFullScreenState();
-
-//        int orientation = SingletonSharedPreference.getScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//        if (orientation != DeviceUtils.getScreenOrientation(this)) {
-//            setRequestedOrientation(orientation);
-//        }
     }
 
     @Override
