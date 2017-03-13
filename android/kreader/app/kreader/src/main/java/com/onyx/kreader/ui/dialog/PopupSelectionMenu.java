@@ -239,21 +239,13 @@ public class PopupSelectionMenu extends LinearLayout {
         pronounce1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (soundDictionaryQueries.size() <= 0) {
-                    return;
-                }
-                DictionaryQuery query = soundDictionaryQueries.get(0);
-                playSound(query);
+                playSoundDictionary(soundDictionaryQueries, 0);
             }
         });
         pronounce2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (soundDictionaryQueries.size() <= 1) {
-                    return;
-                }
-                DictionaryQuery query = soundDictionaryQueries.get(1);
-                playSound(query);
+                playSoundDictionary(soundDictionaryQueries, 1);
             }
         });
 
@@ -515,7 +507,11 @@ public class PopupSelectionMenu extends LinearLayout {
         mWebView.loadDataWithBaseURL(url, dictionaryQuery.getExplanation(), "text/html", "utf-8", "about:blank");
     }
 
-    private void playSound(final DictionaryQuery query) {
+    private void playSoundDictionary(final List<DictionaryQuery> soundDictionaryQueries, final int index) {
+        if (soundDictionaryQueries.size() <= index) {
+            return;
+        }
+        DictionaryQuery query = soundDictionaryQueries.get(index);
         String soundPath = query.getSoundPath();
         if (StringUtils.isNullOrEmpty(soundPath)) {
             return;
