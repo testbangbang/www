@@ -11,6 +11,7 @@ import android.provider.Settings;
 
 import com.onyx.android.sdk.ui.R;
 
+
 /**
  * @author Simon
  */
@@ -21,7 +22,7 @@ public class NetworkHelper {
             return true;
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(R.string.wifi_dialog_title).setPositiveButton(R.string.ok,
+            builder.setTitle(R.string.wifi_dialog_title).setPositiveButton(android.R.string.ok,
                     new DialogInterface.OnClickListener() {
 
                         @Override
@@ -32,7 +33,7 @@ public class NetworkHelper {
                             context.startActivity(intent);
                         }
                     })
-                    .setNegativeButton(R.string.cancel, null)
+                    .setNegativeButton(android.R.string.cancel, null)
                     .setMessage(R.string.wifi_dialog_content)
                     .show();
             return false;
