@@ -139,6 +139,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         });
 
         if (!tabManager.supportMultipleTabs()) {
+            hideTabWidget();
             return;
         }
 
@@ -260,12 +261,20 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void showTabWidgetOnCondition() {
         if (isShowingTabWidget()) {
-            tabHost.getTabWidget().setVisibility(View.VISIBLE);
-            btnSwitch.setVisibility(View.VISIBLE);
+            showTabWidget();
         } else {
-            tabHost.getTabWidget().setVisibility(View.INVISIBLE);
-            btnSwitch.setVisibility(View.INVISIBLE);
+            hideTabWidget();
         }
+    }
+
+    private void showTabWidget() {
+        tabHost.getTabWidget().setVisibility(View.VISIBLE);
+        btnSwitch.setVisibility(View.VISIBLE);
+    }
+
+    private void hideTabWidget() {
+        tabHost.getTabWidget().setVisibility(View.INVISIBLE);
+        btnSwitch.setVisibility(View.INVISIBLE);
     }
 
     private int getTabContentHeight() {

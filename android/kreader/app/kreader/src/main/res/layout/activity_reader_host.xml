@@ -25,14 +25,12 @@
                     android:layout_gravity="center"
                     android:src="@drawable/ic_unfold"
                     android:layout_width="@dimen/activity_multiple_reader_tab_height"
-                    android:layout_height="@dimen/activity_multiple_reader_tab_height"
-                    android:visibility="invisible"/>
+                    android:layout_height="@dimen/activity_multiple_reader_tab_height" />
 
                 <TabWidget
                     android:id="@android:id/tabs"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible"/>
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
