@@ -1,6 +1,8 @@
 package com.onyx.android.sdk.reader.host.layout;
 
 import android.graphics.RectF;
+
+import com.onyx.android.sdk.reader.host.math.PageManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
@@ -31,7 +33,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public void activate()  {
-        getPageManager().setPageRepeat(50);
+        getPageManager().setPageRepeat(PageManager.PAGE_REPEAT);
         getPageManager().scaleToPage(null);
     }
 

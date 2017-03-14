@@ -3,6 +3,8 @@ package com.onyx.android.sdk.reader.reflow;
 import android.graphics.Bitmap;
 
 import android.graphics.Color;
+
+import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.reader.utils.HashUtils;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
@@ -27,6 +29,8 @@ public class ImageReflowManager {
     public static final String TAG = ImageReflowManager.class.getSimpleName();
 
     static private final String INDEX_FILE_NAME = "reflow-index.json";
+
+    private int pageRepeat;
 
     private String documentMd5;
     private File cacheRoot;
@@ -54,6 +58,10 @@ public class ImageReflowManager {
 
     public ImageReflowSettings getSettings() {
         return settings;
+    }
+
+    public void setPageRepeat(int pageRepeat) {
+        this.pageRepeat = pageRepeat;
     }
 
     public void updateViewportSize(int dw, int dh) {
@@ -119,12 +127,21 @@ public class ImageReflowManager {
         }
     }
 
+    private int subPageWidth() {
+        return settings.dev_width;
+    }
+
+    private int subPageHeight() {
+        return settings.dev_height;
+    }
+
     private void splitSubPages(final String pageName) {
         int[] size = new int[2];
         if (!ImageUtils.getReflowedPageSize(pageName, size)) {
             return;
         }
-        int pageCount = size[1] / settings.dev_height + (size[1] % settings.dev_height != 0 ? 1 : 0);
+        final int height = size[1];
+        int pageCount = PageUtils.countSubPagesRegardingPageRepeat(height, subPageHeight(), pageRepeat);
         if (!subPageIndex.isSubPageListReflowComplete(pageName)) {
             for (int i = 0; i < pageCount; i++) {
                 subPageIndex.addSubPageBitmap(pageName, null);
@@ -225,11 +242,12 @@ public class ImageReflowManager {
         if (!ImageUtils.getReflowedPageSize(pageName, size)) {
             return null;
         }
-        int top = settings.dev_height * subPage;
-        int bottom = Math.min(top + settings.dev_height, size[1]);
-        Bitmap bitmap = Bitmap.createBitmap(settings.dev_width, settings.dev_height, Bitmap.Config.ARGB_8888);
+        final int height = size[1];
+        int top = PageUtils.getSubPageTopRegardingPageRepeat(subPageHeight(), pageRepeat, subPage);
+        int bottom = Math.min(top + subPageHeight(), height);
+        Bitmap bitmap = Bitmap.createBitmap(subPageWidth(), subPageHeight(), Bitmap.Config.ARGB_8888);
         bitmap.eraseColor(Color.WHITE);
-        if (!ImageUtils.renderReflowedPage(pageName, 0, top, settings.dev_width, bottom, bitmap)) {
+        if (!ImageUtils.renderReflowedPage(pageName, 0, top, subPageWidth(), bottom, bitmap)) {
             bitmap.recycle();
             return null;
         }
