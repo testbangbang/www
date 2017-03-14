@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
@@ -47,6 +48,7 @@ import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.handler.SpanTextHandler;
+import com.onyx.android.note.receiver.DeviceReceiver;
 import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.note.view.LinedEditText;
@@ -544,15 +546,23 @@ public class ScribbleActivity extends BaseScribbleActivity {
             public void done(BaseRequest request, Throwable e) {
                 new ExportEditedPicAction<>(ScribbleActivity.this,
                         shapeDataInfo.getDocumentUniqueId(),
-                        shapeDataInfo.getPageNameList().getPageNameList().get(0),editPictUri).execute(ScribbleActivity.this, new BaseCallback() {
+                        shapeDataInfo.getPageNameList().getPageNameList().get(0), editPictUri).
+                        execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         syncWithCallback(false, false, new BaseCallback() {
+                            @Override
+                            public void done(BaseRequest request, Throwable e) {
+                                Handler handler = new Handler(getMainLooper());
+                                handler.postDelayed(new Runnable() {
                                     @Override
-                                    public void done(BaseRequest request, Throwable e) {
-                                        ScribbleActivity.this.finish();
+                                    public void run() {
+                                        sendBroadcast(new Intent(DeviceReceiver.SYSTEM_UI_SCREEN_SHOT_END_ACTION));
                                     }
-                                });
+                                }, 2000);
+                                ScribbleActivity.this.finish();
+                            }
+                        });
                     }
                 });
             }
@@ -575,7 +585,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (isPictureEditMode){
-                    saveEditPic(finishAfterSave);
+                    saveEditPic();
                 }else {
                     saveDocument(finishAfterSave);
                 }
@@ -918,7 +928,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         onSave(true);
     }
 
-    private void saveEditPic(boolean finishAfterSave) {
+    private void saveEditPic() {
         final OnyxAlertDialog saveEditPicDialog = new OnyxAlertDialog();
         saveEditPicDialog.setParams(new OnyxAlertDialog.Params().setTittleString(getString(R.string.save))
                 .setAlertMsgString(getString(R.string.save_and_exit))
@@ -942,6 +952,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void onClick(View v) {
                         saveEditPicDialog.dismiss();
+                        Handler handler = new Handler(getMainLooper());
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendBroadcast(new Intent(DeviceReceiver.SYSTEM_UI_SCREEN_SHOT_END_ACTION));
+                            }
+                        }, 2000);
                         ScribbleActivity.this.finish();
                     }
                 }));
