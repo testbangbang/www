@@ -3,7 +3,7 @@ package com.onyx.kreader.ui.handler;
 
 import android.content.DialogInterface;
 
-import com.onyx.android.sdk.ui.utils.DialogHelp;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -33,7 +33,7 @@ public class ReadingHandler extends BaseHandler {
     public void close(final ReaderDataHolder readerDataHolder) {
         final DeviceConfig deviceConfig = DeviceConfig.sharedInstance(readerDataHolder.getContext());
         if (SingletonSharedPreference.isShowQuitDialog(readerDataHolder.getContext()) || deviceConfig.isAskForClose()) {
-            DialogHelp.getConfirmDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.sure_exit), new DialogInterface.OnClickListener() {
+            OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.sure_exit), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     postQuitEvent(readerDataHolder);

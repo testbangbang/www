@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -32,7 +30,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.utils.TocUtils;
-import com.onyx.android.sdk.ui.utils.DialogHelp;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -447,13 +445,11 @@ public class DialogQuickPreview extends Dialog {
         textViewProgress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final EditText editText = new EditText(getContext());
-                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                editText.setHint("1-" + readerDataHolder.getPageCount());
-                final Dialog dlg = DialogHelp.getInputDialog(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number), editText, new OnClickListener() {
+                final OnyxCustomDialog dlg = OnyxCustomDialog.getInputDialog(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number), new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String page = editText.getText().toString();
+                        OnyxCustomDialog onyxCustomDialog = (OnyxCustomDialog) dialog;
+                        String page = onyxCustomDialog.getInputValue().toString();
                         if (!StringUtils.isNullOrEmpty(page)) {
                             int pageNumber = PagePositionUtils.getPageNumber(page);
                             pageNumber--;
@@ -471,7 +467,9 @@ public class DialogQuickPreview extends Dialog {
                             Toast.makeText(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number_empty_error), Toast.LENGTH_SHORT).show();
                         }
                     }
-                }).create();
+                });
+                dlg.getInputEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+                dlg.getInputEditText().setHint("1-" + readerDataHolder.getPageCount());
                 readerDataHolder.trackDialog(dlg);
                 dlg.show();
             }
