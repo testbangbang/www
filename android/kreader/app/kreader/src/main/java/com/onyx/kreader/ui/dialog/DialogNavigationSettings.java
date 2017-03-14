@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.dialog;
 
 import android.content.DialogInterface;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -165,7 +166,7 @@ public class DialogNavigationSettings extends DialogBase {
     }
 
     private void setupContentView(final ContentView view, int layoutId, final ObjectSelectedCallback callback) {
-        setupContentView(view, 1, 6, layoutId, callback);
+        setupContentView(view, 1, 4, layoutId, callback);
     }
 
     private HashMap<String, Integer> getDefaultMap() {
