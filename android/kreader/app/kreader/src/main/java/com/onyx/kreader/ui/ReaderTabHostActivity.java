@@ -324,6 +324,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 Debug.d(TAG, "syncFullScreenState -> onGlobalLayout");
                 TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
                 updateReaderTabWindowHeight();
+                bringSelfToFront();
+                bringReaderTabToFront(getCurrentTabInHost());
             }
         });
     }
