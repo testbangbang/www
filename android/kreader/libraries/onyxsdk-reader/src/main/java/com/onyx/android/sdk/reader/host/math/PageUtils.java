@@ -190,4 +190,18 @@ public class PageUtils {
         return rectInScreen;
     }
 
+    public static int countSubPagesRegardingPageRepeat(int totalHeight, int subHeight, int pageRepeat) {
+        int pageCount = 1;
+        int left = totalHeight - subHeight;
+        if (left > 0) {
+            int h = subHeight - pageRepeat;
+            pageCount += left / h + (left % h != 0 ? 1 : 0);
+        }
+        return pageCount;
+    }
+
+    public static int getSubPageTopRegardingPageRepeat(int subHeight, int pageRepeat, int subIndex) {
+        return subIndex * (subHeight - pageRepeat);
+    }
+
 }
