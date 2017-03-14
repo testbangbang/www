@@ -100,6 +100,15 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         handleActivityIntent();
     }
 
+    @Override
+    public void onBackPressed() {
+        Debug.d(getClass(), "onBackPressed");
+        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
+            moveReaderTabToBack(entry.getKey());
+        }
+        moveTaskToBack(true);
+    }
+
     private void initComponents() {
         initTabHost();
         initReceiver();
@@ -152,6 +161,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void initReceiver() {
         ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
+            @Override
+            public void onTabBackPressed() {
+                onBackPressed();
+            }
+
             @Override
             public void onChangeOrientation(final int orientation) {
                 final int current = DeviceUtils.getScreenOrientation(ReaderTabHostActivity.this);
@@ -480,6 +494,30 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             }
         }
         Debug.d(TAG, "bring tab to front failed: " + tab);
+        return false;
+    }
+
+    private boolean moveReaderTabToBack(ReaderTabManager.ReaderTab tab) {
+        if (!tabManager.getOpenedTabs().containsKey(tab)) {
+            return false;
+        }
+
+        String clzName = tabManager.getTabActivity(tab).getName();
+        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
+        if (!tasksList.isEmpty()) {
+            int nSize = tasksList.size();
+            for (int i = 0; i < nSize; i++) {
+                if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
+                    Debug.d(TAG, "move tab to back succeeded: " + tab);
+                    Intent intent = new Intent(this, tabManager.getTabReceiver(tab));
+                    intent.setAction(ReaderBroadcastReceiver.ACTION_MOVE_TASK_TO_BACK);
+                    sendBroadcast(intent);
+                    return true;
+                }
+            }
+        }
+        Debug.d(TAG, "move tab to back failed: " + tab);
         return false;
     }
 

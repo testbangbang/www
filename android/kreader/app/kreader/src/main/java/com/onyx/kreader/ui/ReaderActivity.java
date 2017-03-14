@@ -75,6 +75,7 @@ import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
+import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
 import com.onyx.kreader.ui.events.PinchZoomEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
@@ -222,10 +223,9 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     public void onBackPressed() {
-        Intent setIntent = new Intent(Intent.ACTION_MAIN);
-        setIntent.addCategory(Intent.CATEGORY_HOME);
-        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(setIntent);
+        Intent intent = new Intent(this, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ReaderTabHostBroadcastReceiver.ACTION_TAB_BACK_PRESSED);
+        sendBroadcast(intent);
     }
 
     private final ReaderDataHolder getReaderDataHolder() {
@@ -972,6 +972,11 @@ public class ReaderActivity extends OnyxBaseActivity {
                 postFinish();
             }
         });
+    }
+
+    @Subscribe
+    public void onMoveTaskToBackRequest(final MoveTaskToBackEvent event) {
+        moveTaskToBack(true);
     }
 
     private void openBuiltInDoc() {

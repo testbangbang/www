@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.onyx.kreader.ui.events.ForceCloseEvent;
+import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
 import com.onyx.kreader.ui.events.ResizeReaderWindowEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 
@@ -18,6 +19,7 @@ import org.greenrobot.eventbus.EventBus;
 
 public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_CLOSE_READER = "com.onyx.kreader.action.CLOSE_READER";
+    public static final String ACTION_MOVE_TASK_TO_BACK = "com.onyx.kreader.action.MOVE_TASK_TO_BACK";
     public static final String ACTION_RESIZE_WINDOW = "com.onyx.kreader.action.RESIZE_WINDOW";
     public static final String ACTION_DOCUMENT_ACTIVATED = "com.onyx.kreader.action.DOCUMENT_ACTIVATED";
 
@@ -40,6 +42,8 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         }
         if (intent.getAction().equals(ACTION_CLOSE_READER)) {
             eventBus.post(new ForceCloseEvent());
+        } else if (intent.getAction().equals(ACTION_MOVE_TASK_TO_BACK)) {
+            eventBus.post(new MoveTaskToBackEvent());
         } else if (intent.getAction().equals(ACTION_RESIZE_WINDOW)) {
             eventBus.post(new ResizeReaderWindowEvent(
                     intent.getIntExtra(TAG_WINDOW_WIDTH, WindowManager.LayoutParams.MATCH_PARENT),
