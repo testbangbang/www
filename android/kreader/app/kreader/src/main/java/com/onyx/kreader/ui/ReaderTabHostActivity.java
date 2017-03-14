@@ -420,12 +420,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void addReaderTab(ReaderTabManager.ReaderTab tab, String path) {
         tabManager.addOpenedTab(tab, path);
 
-        if (tabManager.supportMultipleTabs()) {
-            showTabWidgetOnCondition();
-            rebuildTabWidget();
-            updateCurrentTabInHost(tab);
-            updateReaderTabWindowHeight(tab);
-        }
+        showTabWidgetOnCondition();
+        rebuildTabWidget();
+        updateCurrentTabInHost(tab);
+        updateReaderTabWindowHeight(tab);
     }
 
     private void closeReaderTab(ReaderTabManager.ReaderTab tab) {
