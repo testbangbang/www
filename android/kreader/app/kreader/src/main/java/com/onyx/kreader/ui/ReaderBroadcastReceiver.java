@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.onyx.kreader.ui.events.ForceCloseEvent;
+import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
 import com.onyx.kreader.ui.events.ResizeReaderWindowEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 
@@ -18,6 +19,7 @@ import org.greenrobot.eventbus.EventBus;
 
 public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_CLOSE_READER = "com.onyx.kreader.action.CLOSE_READER";
+    public static final String ACTION_MOVE_TASK_TO_BACK = "com.onyx.kreader.action.MOVE_TASK_TO_BACK";
     public static final String ACTION_RESIZE_WINDOW = "com.onyx.kreader.action.RESIZE_WINDOW";
     public static final String ACTION_DOCUMENT_ACTIVATED = "com.onyx.kreader.action.DOCUMENT_ACTIVATED";
 
@@ -31,6 +33,33 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         ReaderBroadcastReceiver.eventBus = eventBus;
     }
 
+    public static void sendCloseReaderIntent(Context context, Class clazz) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_CLOSE_READER);
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendMoveTaskToBackIntent(Context context, Class clazz) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_MOVE_TASK_TO_BACK);
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendResizeReaderWindowIntent(Context context, Class clazz, int width, int height) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_RESIZE_WINDOW);
+        intent.putExtra(TAG_WINDOW_WIDTH, width);
+        intent.putExtra(TAG_WINDOW_HEIGHT, height);
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendDocumentActivatedIntent(Context context, Class clazz, String path) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_DOCUMENT_ACTIVATED);
+        intent.putExtra(TAG_DOCUMENT_PATH, path);
+        context.sendBroadcast(intent);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(getClass().getSimpleName(), "onReceive: " + intent);
@@ -40,6 +69,8 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         }
         if (intent.getAction().equals(ACTION_CLOSE_READER)) {
             eventBus.post(new ForceCloseEvent());
+        } else if (intent.getAction().equals(ACTION_MOVE_TASK_TO_BACK)) {
+            eventBus.post(new MoveTaskToBackEvent());
         } else if (intent.getAction().equals(ACTION_RESIZE_WINDOW)) {
             eventBus.post(new ResizeReaderWindowEvent(
                     intent.getIntExtra(TAG_WINDOW_WIDTH, WindowManager.LayoutParams.MATCH_PARENT),

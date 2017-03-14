@@ -75,6 +75,7 @@ import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
+import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
 import com.onyx.kreader.ui.events.PinchZoomEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
@@ -222,10 +223,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     public void onBackPressed() {
-        Intent setIntent = new Intent(Intent.ACTION_MAIN);
-        setIntent.addCategory(Intent.CATEGORY_HOME);
-        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(setIntent);
+        ReaderTabHostBroadcastReceiver.sendTabBackPressedIntent(this);
     }
 
     private final ReaderDataHolder getReaderDataHolder() {
@@ -841,11 +839,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onChangeOrientation(final ChangeOrientationEvent event) {
-//        setRequestedOrientation(event.getOrientation());
-        Intent intent = new Intent(this, ReaderTabHostBroadcastReceiver.class);
-        intent.setAction(ReaderTabHostBroadcastReceiver.ACTION_CHANGE_SCREEN_ORIENTATION);
-        intent.putExtra(ReaderTabHostBroadcastReceiver.TAG_SCREEN_ORIENTATION, event.getOrientation());
-        sendBroadcast(intent);
+        ReaderTabHostBroadcastReceiver.sendChangeOrientationIntent(this, event.getOrientation());
     }
 
     @Subscribe
@@ -974,6 +968,11 @@ public class ReaderActivity extends OnyxBaseActivity {
         });
     }
 
+    @Subscribe
+    public void onMoveTaskToBackRequest(final MoveTaskToBackEvent event) {
+        moveTaskToBack(true);
+    }
+
     private void openBuiltInDoc() {
         if (!BuildConfig.DEBUG) {
             return;
@@ -1039,11 +1038,11 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     public void setFullScreen(boolean fullScreen) {
-        Intent intent = new Intent(this, ReaderTabHostBroadcastReceiver.class);
-        intent.setAction(fullScreen ?
-                ReaderTabHostBroadcastReceiver.ACTION_ENTER_FULL_SCREEN :
-                ReaderTabHostBroadcastReceiver.ACTION_QUIT_FULL_SCREEN);
-        sendBroadcast(intent);
+        if (fullScreen) {
+            ReaderTabHostBroadcastReceiver.sendEnterFullScreenIntent(this);
+        } else {
+            ReaderTabHostBroadcastReceiver.sendQuitFullScreenIntent(this);
+        }
     }
 
     public SurfaceView getSurfaceView() {
