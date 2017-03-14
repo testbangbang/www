@@ -3,6 +3,7 @@ package com.onyx.android.sdk.reader.host.layout;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageConstants;
+import com.onyx.android.sdk.reader.host.math.PageManager;
 import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
@@ -32,8 +33,11 @@ public class LayoutImageReflowProvider extends LayoutProvider {
 
     public void activate() {
         reverseOrder = false;
-        getPageManager().setPageRepeat(0);
+
+        getPageManager().setPageRepeat(PageManager.PAGE_REPEAT);
         getPageManager().scaleToPage(getCurrentPagePosition());
+
+        getImageReflowManager().setPageRepeat(PageManager.PAGE_REPEAT);
     }
 
     @Override
