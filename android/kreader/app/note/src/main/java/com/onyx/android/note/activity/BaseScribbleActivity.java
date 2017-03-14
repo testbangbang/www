@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -44,7 +43,7 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
-import com.onyx.android.sdk.ui.utils.DialogHelp;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 
 import java.io.File;
 import java.util.List;
@@ -527,7 +526,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     private void deletePage() {
-        DialogHelp.getConfirmDialog(this, getString(R.string.ask_for_delete_page), new DialogInterface.OnClickListener() {
+        OnyxCustomDialog dialog = OnyxCustomDialog.getConfirmDialog(this, getString(R.string.ask_for_delete_page), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 final DocumentDeletePageAction<BaseScribbleActivity> action = new DocumentDeletePageAction<>();
@@ -539,12 +538,14 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                     }
                 });
             }
-        }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+        });
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 syncWithCallback(false, true, null);
             }
-        }).show();
+        });
+        dialog.show();
     }
 
     protected void reloadLineLayoutData() {
