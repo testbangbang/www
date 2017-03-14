@@ -148,6 +148,7 @@ public class LayoutProviderUtils {
         if (layoutManager.getCurrentLayoutProvider().getNavigationArgs() != null &&
                 layoutManager.getCurrentLayoutProvider().getNavigationArgs().getList() != null) {
             readerViewInfo.subScreenCount = layoutManager.getCurrentLayoutProvider().getNavigationArgs().getList().getSubScreenCount();
+            readerViewInfo.autoCropForEachBlock = layoutManager.getCurrentLayoutProvider().getNavigationArgs().isAutoCropForEachBlock();
         }
         readerViewInfo.layoutChanged = layoutManager.isLayoutChanged();
     }
