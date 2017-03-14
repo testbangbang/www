@@ -102,9 +102,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     @Override
     public void onBackPressed() {
         Debug.d(getClass(), "onBackPressed");
+        // move background reader tabs to back first, so we can avoid unintended screen update
+        ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
         for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            moveReaderTabToBack(entry.getKey());
+            if (entry.getKey() != currentTab) {
+                moveReaderTabToBack(entry.getKey());
+            }
         }
+        moveReaderTabToBack(currentTab);
         moveTaskToBack(true);
     }
 
