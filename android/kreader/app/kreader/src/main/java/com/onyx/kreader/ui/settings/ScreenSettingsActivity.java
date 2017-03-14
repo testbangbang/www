@@ -12,9 +12,7 @@ import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.kreader.R;
-import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.device.DeviceConfig;
 
@@ -70,7 +68,8 @@ public class ScreenSettingsActivity extends PreferenceActivity implements Shared
         }
 
         Preference regal = findPreference(getString(R.string.settings_regal_mode_key));
-        if (!(ReaderDeviceManager.supportRegal(getBaseContext())) && regal != null) {
+        // remove regal setting preference asked by MC
+        if (regal != null) {
             getPreferenceScreen().removePreference(regal);
         }
     }
