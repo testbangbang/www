@@ -31,6 +31,31 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         ReaderTabHostBroadcastReceiver.callback = callback;
     }
 
+    public static void sendTabBackPressedIntent(Context context) {
+        Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ACTION_TAB_BACK_PRESSED);
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendChangeOrientationIntent(Context context, int orientation) {
+        Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ACTION_CHANGE_SCREEN_ORIENTATION);
+        intent.putExtra(TAG_SCREEN_ORIENTATION, orientation);
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendEnterFullScreenIntent(Context context) {
+        Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ACTION_ENTER_FULL_SCREEN);
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendQuitFullScreenIntent(Context context) {
+        Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ACTION_QUIT_FULL_SCREEN);
+        context.sendBroadcast(intent);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(getClass().getSimpleName(), "onReceive: " + intent);

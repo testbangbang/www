@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
@@ -39,8 +40,6 @@ import java.util.List;
 public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private static final String TAG = ReaderTabHostActivity.class.getSimpleName();
-
-    private static final String TAG_TAB_MANAGER = "tab_manager";
 
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
 
@@ -444,10 +443,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void closeTabActivity(ReaderTabManager.ReaderTab tab) {
-        Intent intent = new Intent(this, tabManager.getTabReceiver(tab));
-        intent.setAction(ReaderBroadcastReceiver.ACTION_CLOSE_READER);
-        Debug.d(TAG, "sendBroadcast: " + intent);
-        sendBroadcast(intent);
+        ReaderBroadcastReceiver.sendCloseReaderIntent(this, tabManager.getTabReceiver(tab));
     }
 
     private void reopenReaderTab(ReaderTabManager.ReaderTab tab) {
@@ -510,9 +506,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             for (int i = 0; i < nSize; i++) {
                 if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
                     Debug.d(TAG, "move tab to back succeeded: " + tab);
-                    Intent intent = new Intent(this, tabManager.getTabReceiver(tab));
-                    intent.setAction(ReaderBroadcastReceiver.ACTION_MOVE_TASK_TO_BACK);
-                    sendBroadcast(intent);
+                    ReaderBroadcastReceiver.sendMoveTaskToBackIntent(this, tabManager.getTabReceiver(tab));
                     return true;
                 }
             }
@@ -529,19 +523,17 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void updateReaderTabWindowHeight(ReaderTabManager.ReaderTab tab) {
         final int tabContentHeight = getTabContentHeight();
-        Intent intent = new Intent(this, tabManager.getTabReceiver(tab));
-        intent.setAction(ReaderBroadcastReceiver.ACTION_RESIZE_WINDOW);
-        intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
-        sendBroadcast(intent);
+        ReaderBroadcastReceiver.sendResizeReaderWindowIntent(this,
+                tabManager.getTabReceiver(tab),
+                WindowManager.LayoutParams.MATCH_PARENT,
+                tabContentHeight);
     }
 
     private void onTabSwitched(final ReaderTabManager.ReaderTab tab) {
         final String path = tabManager.getOpenedTabs().get(tab);
         for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            Intent intent = new Intent(this, tabManager.getTabReceiver(entry.getKey()));
-            intent.setAction(ReaderBroadcastReceiver.ACTION_DOCUMENT_ACTIVATED);
-            intent.putExtra(ReaderBroadcastReceiver.TAG_DOCUMENT_PATH, path);
-            sendBroadcast(intent);
+            ReaderBroadcastReceiver.sendDocumentActivatedIntent(this,
+                    tabManager.getTabReceiver(entry.getKey()), path);
         }
     }
 

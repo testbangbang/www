@@ -33,6 +33,33 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         ReaderBroadcastReceiver.eventBus = eventBus;
     }
 
+    public static void sendCloseReaderIntent(Context context, Class clazz) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_CLOSE_READER);
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendMoveTaskToBackIntent(Context context, Class clazz) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_MOVE_TASK_TO_BACK);
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendResizeReaderWindowIntent(Context context, Class clazz, int width, int height) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_RESIZE_WINDOW);
+        intent.putExtra(TAG_WINDOW_WIDTH, width);
+        intent.putExtra(TAG_WINDOW_HEIGHT, height);
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendDocumentActivatedIntent(Context context, Class clazz, String path) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_DOCUMENT_ACTIVATED);
+        intent.putExtra(TAG_DOCUMENT_PATH, path);
+        context.sendBroadcast(intent);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(getClass().getSimpleName(), "onReceive: " + intent);
