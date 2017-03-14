@@ -34,6 +34,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public void activate() {
+        reverseOrder = false;
         getPageManager().setPageRepeat(0);
         getPageManager().scaleToPage(getCurrentPagePosition());
     }
@@ -68,7 +69,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public boolean nextScreen() throws ReaderException {
-        reverseOrder = false;
         if (atLastSubPage()) {
             return nextPage();
         }
@@ -104,6 +104,9 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         drawContext.renderingBitmap = new ReaderBitmapImpl();
 
         if (drawContext.asyncDraw) {
+            if (reverseOrder) {
+                reverseOrder = false;
+            }
             if (getCurrentSubPageIndex() == 1) {
                 // pre-render request of next sub page with index 1 means
                 // we actually want to pre-render next page of document
