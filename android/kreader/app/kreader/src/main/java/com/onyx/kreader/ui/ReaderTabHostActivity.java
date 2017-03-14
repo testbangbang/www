@@ -61,9 +61,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
+    protected void onStart() {
+        super.onStart();
         syncFullScreenState();
     }
 
@@ -183,12 +182,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
             @Override
             public void onEnterFullScreen() {
-                syncFullScreenState();
             }
 
             @Override
             public void onQuitFullScreen() {
-                syncFullScreenState();
             }
         });
     }
@@ -316,8 +313,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void syncFullScreenState() {
         boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
         Debug.d(TAG, "syncFullScreenState: " + fullScreen);
-        DeviceUtils.setFullScreenOnResume(this, fullScreen);
-        tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        final ViewTreeObserver.OnGlobalLayoutListener listener = new ViewTreeObserver.OnGlobalLayoutListener() {
 
             @Override
             public void onGlobalLayout() {
@@ -327,7 +323,19 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 bringSelfToFront();
                 bringReaderTabToFront(getCurrentTabInHost());
             }
-        });
+        };
+        tabHost.getViewTreeObserver().addOnGlobalLayoutListener(listener);
+        DeviceUtils.setFullScreenOnResume(this, fullScreen);
+
+        // there is no reliable method to tell that OnGlobalLayoutListener will be called after setFullScreenOnResume()
+        // so force it to be removed after a long enough time
+        tabHost.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Debug.d(TAG, "syncFullScreenState -> post removeGlobalOnLayoutListener");
+                TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), listener);
+            }
+        }, 1000);
     }
 
     private boolean handleActivityIntent() {
