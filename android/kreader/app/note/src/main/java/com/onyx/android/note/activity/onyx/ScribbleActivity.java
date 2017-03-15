@@ -13,6 +13,8 @@ import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,6 +51,7 @@ import com.onyx.android.note.data.ScribbleSubMenuID;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
 import com.onyx.android.note.handler.SpanTextHandler;
 import com.onyx.android.note.receiver.DeviceReceiver;
+import com.onyx.android.note.utils.Constant;
 import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.note.view.LinedEditText;
@@ -557,7 +560,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        sendBroadcast(new Intent(DeviceReceiver.SYSTEM_UI_SCREEN_SHOT_END_ACTION));
+                                        sendBroadcast(new Intent(DeviceReceiver.SYSTEM_UI_SCREEN_SHOT_END_ACTION)
+                                                .putExtra(Constant.RELOAD_DOCUMENT_TAG, true));
                                     }
                                 }, 2000);
                                 ScribbleActivity.this.finish();
@@ -956,7 +960,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                sendBroadcast(new Intent(DeviceReceiver.SYSTEM_UI_SCREEN_SHOT_END_ACTION));
+                                sendBroadcast(new Intent(DeviceReceiver.SYSTEM_UI_SCREEN_SHOT_END_ACTION)
+                                        .putExtra(Constant.RELOAD_DOCUMENT_TAG, true));
                             }
                         }, 2000);
                         ScribbleActivity.this.finish();
@@ -1119,5 +1124,19 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     public void setBuildingSpan(boolean buildingSpan) {
         this.buildingSpan = buildingSpan;
+    }
+
+    @Override
+    protected void onScreenShotStart() {
+        onSave(false);
+        super.onScreenShotStart();
+    }
+
+    @Override
+    protected void onScreenShotEnd(boolean reloadDocument) {
+        super.onScreenShotEnd(reloadDocument);
+        if (reloadDocument && !TextUtils.isEmpty(uniqueID)) {
+            handleDocumentEdit(uniqueID, parentID);
+        }
     }
 }
