@@ -68,6 +68,7 @@
 
     <string name="importing">正在导入旧手写板数据...</string>
     <string name="import_success">导入成功！</string>
+    <string name="no_old_scribble_data">没有找到旧手写数据</string>
     <string name="import_fail">导入失败</string>
     <string name="import_success_info" formatted="false">总共导入%d条数据</string>
 
