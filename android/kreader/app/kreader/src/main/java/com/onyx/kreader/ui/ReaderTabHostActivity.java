@@ -142,12 +142,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             }
         });
 
-        if (!tabManager.supportMultipleTabs()) {
-            hideTabWidget();
-            return;
-        }
-
-        addTabToHost(ReaderTabManager.ReaderTab.TAB_1, "");
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
@@ -159,7 +153,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 insideTabChanging = false;
             }
         });
-        tabHost.setCurrentTab(0);
+
+        addDummyTabToHost();
+
+        if (tabManager.supportMultipleTabs()) {
+            hideTabWidget();
+        }
     }
 
     private void initReceiver() {
@@ -238,6 +237,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         });
     }
 
+    private void addDummyTabToHost() {
+        addTabToHost(ReaderTabManager.ReaderTab.TAB_1, "");
+        tabHost.setCurrentTab(0);
+    }
+
     private void rebuildTabWidget() {
         insideTabChanging = true;
         tabHost.clearAllTabs();
@@ -251,6 +255,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : reverseList) {
             Debug.d(TAG, "rebuilding: " + entry.getKey());
             addTabToHost(entry.getKey(), entry.getValue());
+        }
+
+        if (tabWidget.getTabCount() <= 0) {
+            addDummyTabToHost();
         }
     }
 
