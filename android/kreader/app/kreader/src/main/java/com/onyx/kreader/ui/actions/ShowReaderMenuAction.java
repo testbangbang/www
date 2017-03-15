@@ -294,7 +294,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         showTocDialog(readerDataHolder, DialogTableOfContent.DirectoryTab.Annotation);
                         break;
                     case DIRECTORY_SCRIBBLE:
-                        startNoteDrawing(readerDataHolder, readerActivity);
+                        startNoteDrawing(readerDataHolder, readerActivity, false);
                         break;
                     case NOTE_EXPORT:
                         showExportDialog(readerDataHolder);
@@ -339,7 +339,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         showReaderSettings(readerDataHolder);
                         break;
                     case NOTE_WRITING:
-                        startNoteDrawing(readerDataHolder, readerActivity);
+                        startNoteDrawing(readerDataHolder, readerActivity, false);
                         break;
                     case EXIT:
                         hideReaderMenu();
@@ -704,11 +704,12 @@ public class ShowReaderMenuAction extends BaseAction {
         readerMenu.updateReaderMenuState(getReaderMenuState(readerDataHolder));
     }
 
-    public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
+    public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean showFullToolbar) {
         hideReaderMenu();
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
                 getScribbleActionCallback(readerDataHolder),
-                disableMenus);
+                disableMenus,
+                showFullToolbar);
         ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
         if (noteDataInfo != null) {
             int currentShapeType = noteDataInfo.getCurrentShapeType();
