@@ -346,7 +346,7 @@
     <string name="other_time_distribution">The average reading time distribution to other users</string>
     <string name="reading_content_analysis">Reading content analysis</string>
     <string name="recently_read_content">Recently read content</string>
-    <string name="statistics_shortcut_name">Data statistics</string>
+    <string name="statistics_shortcut_name">Read statistics</string>
     <string name="science">Science</string>
     <string name="social_science">Social Science</string>
     <string name="art">Art</string>
