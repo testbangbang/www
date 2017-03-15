@@ -26,6 +26,8 @@ public class DeviceReceiver extends BroadcastReceiver {
     public static abstract class SystemUIChangeListener {
         public abstract void onSystemUIChanged(final String type, boolean open);
         public abstract void onHomeClicked();
+
+        public abstract void onScreenShot(Intent intent, final boolean end);
     }
 
     public void setSystemUIChangeListener(final SystemUIChangeListener listener) {
@@ -61,18 +63,22 @@ public class DeviceReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         switch (action) {
             case SYSTEM_UI_DIALOG_OPEN_ACTION:
-            case SYSTEM_UI_SCREEN_SHOT_START_ACTION:
             case STATUS_BAR_ICON_REFRESH_START_ACTION:
                 notifySystemUIChange(intent, true);
                 break;
             case SYSTEM_UI_DIALOG_CLOSE_ACTION:
-            case SYSTEM_UI_SCREEN_SHOT_END_ACTION:
             case SYSTEM_WAKE_UP:
             case STATUS_BAR_ICON_REFRESH_FINISH_ACTION:
                 notifySystemUIChange(intent, false);
                 break;
             case SYSTEM_HOME:
                 notifyHomeClicked(intent);
+                break;
+            case SYSTEM_UI_SCREEN_SHOT_START_ACTION:
+                notifyScreenShot(intent, false);
+                break;
+            case SYSTEM_UI_SCREEN_SHOT_END_ACTION:
+                notifyScreenShot(intent, true);
                 break;
         }
     }
@@ -89,6 +95,13 @@ public class DeviceReceiver extends BroadcastReceiver {
             return;
         }
         getSystemUIChangeListener().onHomeClicked();
+    }
+
+    private void notifyScreenShot(final Intent intent,boolean end){
+        if (getSystemUIChangeListener() == null) {
+            return;
+        }
+        getSystemUIChangeListener().onScreenShot(intent, end);
     }
 
 
