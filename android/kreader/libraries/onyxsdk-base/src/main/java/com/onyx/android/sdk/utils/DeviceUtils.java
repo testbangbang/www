@@ -351,6 +351,17 @@ public class DeviceUtils {
         return (flag & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN;
     }
 
+    /**
+     * Check if fullscreen is activated by a position of a top left View
+     * @param topLeftView View which position will be compared with 0,0
+     * @return
+     */
+    public static boolean isFullScreen(View topLeftView) {
+        int location[] = new int[2];
+        topLeftView.getLocationOnScreen(location);
+        return location[0] == 0 && location[1] == 0;
+    }
+
     public static boolean isDeviceInteractive(Context context) {
         PowerManager powerManager = (PowerManager)context.getSystemService(POWER_SERVICE);
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH
