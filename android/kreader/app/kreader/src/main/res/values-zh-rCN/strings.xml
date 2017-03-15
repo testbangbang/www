@@ -280,7 +280,7 @@
   <string name="other_time_distribution">其他用户平均阅读时间分布</string>
   <string name="reading_content_analysis">阅读内容分析</string>
   <string name="recently_read_content">最近阅读内容</string>
-  <string name="statistics_shortcut_name">数据统计</string>
+  <string name="statistics_shortcut_name">阅读统计</string>
   <string name="science">科学</string>
   <string name="social_science">社科</string>
   <string name="art">文艺</string>

@@ -845,7 +845,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onShortcutErasingStart(final ShortcutErasingStartEvent event) {
         if (!getReaderDataHolder().inNoteWritingProvider()) {
-            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
+            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this, true);
         }
     }
 
@@ -887,7 +887,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 getHandlerManager().setEnableTouch(true);
-                ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
+                ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this, true);
             }
         });
     }
@@ -956,6 +956,10 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void forceCloseApplication(final ForceCloseEvent event) {
         enablePost(true);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
+        if (event.byUser) {
+            onBackPressed();
+        }
+
         final CloseActionChain closeAction = new CloseActionChain();
         closeAction.execute(getReaderDataHolder(), new BaseCallback() {
             @Override

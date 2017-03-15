@@ -14,7 +14,9 @@ public abstract class StatisticsFragment extends Fragment {
 
     public void setStatisticsResult(StatisticsResult statisticsResult) {
         this.statisticsResult = statisticsResult;
-        refreshStatistics(statisticsResult);
+        if (isAdded()) {
+            refreshStatistics(statisticsResult);
+        }
     }
 
     public abstract void refreshStatistics(StatisticsResult statisticsResult);

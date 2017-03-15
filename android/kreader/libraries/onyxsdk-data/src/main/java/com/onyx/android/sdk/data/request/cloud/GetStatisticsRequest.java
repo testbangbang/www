@@ -56,11 +56,19 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         if (StringUtils.isNullOrEmpty(mac)) {
             return;
         }
-        Response<StatisticsResult> response = executeCall(ServiceFactory.getStatisticsService(url).getStatistics(mac));
-        if (response != null && response.isSuccessful()) {
-            statisticsResult = response.body();
-            statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());
+        try {
+            Response<StatisticsResult> response = executeCall(ServiceFactory.getStatisticsService(url).getStatistics(mac));
+            if (response != null && response.isSuccessful()) {
+                statisticsResult = response.body();
+                statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());
+            }else {
+                readLocalData();
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            readLocalData();
         }
+
     }
 
     private void readLocalData() {
