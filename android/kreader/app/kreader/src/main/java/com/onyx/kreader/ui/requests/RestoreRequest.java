@@ -73,30 +73,21 @@ public class RestoreRequest extends BaseReaderRequest {
             // only scalable document need restore viewport
             return;
         }
+        RectF viewport = baseOptions.getViewport();
         int viewWidth = reader.getViewOptions().getViewWidth();
         int viewHeight = reader.getViewOptions().getViewHeight();
-        if (baseOptions.getViewport() != null &&
-            baseOptions.getViewport().width() > 0 &&
-            baseOptions.getViewport().height() > 0) {
-            if (viewWidth != baseOptions.getViewport().width() || viewHeight != baseOptions.getViewport().height()) {
-                Debug.e(this.getClass(),
-                    "Restore with" +
-                    " width: " + baseOptions.getViewport().width() +
-                    " height: " + baseOptions.getViewport().height() +
-                    " view width: " + viewWidth +
-                    " view height: " + viewHeight);
-                normalizeViewport(reader, baseOptions.getViewport(), viewWidth, viewHeight);
+        if (viewport != null && viewport.width() > 0 && viewport.height() > 0) {
+            if (viewWidth != viewport.width() || viewHeight != viewport.height()) {
+                normalizeViewport(viewport, viewWidth, viewHeight);
             }
-            reader.getReaderLayoutManager().getPageManager().setViewportRect(baseOptions.getViewport());
+            Debug.d(getClass(), "normalized viewport: " + viewport);
+            reader.getReaderLayoutManager().getPageManager().setViewportRect(viewport);
         }
     }
 
-    private void normalizeViewport(final Reader reader, RectF viewport, int dstWidth, int dstHeight) {
-        PageManager pageManager = reader.getReaderLayoutManager().getPageManager();
-        viewport.right = Math.min(viewport.left + dstWidth,
-                pageManager.getPagesBoundingRect().right);
-        viewport.bottom = Math.min(viewport.top + dstHeight,
-                pageManager.getPagesBoundingRect().bottom);
+    private void normalizeViewport(RectF viewport, int dstWidth, int dstHeight) {
+        viewport.right = viewport.left + dstWidth;
+        viewport.bottom = viewport.top + dstHeight;
     }
 
     private void restoreReflowSettings(final Reader reader) {
