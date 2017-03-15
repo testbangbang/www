@@ -20,9 +20,9 @@ import retrofit2.http.Path;
 
 public interface OnyxStatisticsService {
 
-    @POST("statistics")
+    @POST("statistics/person/")
     Call<JsonRespone> pushStatistics(@Body final List<OnyxStatisticsModel> onyxStatisticseModels);
 
-    @GET("statistics/{mac}")
+    @GET("statistics/person/{mac}")
     Call<StatisticsResult> getStatistics(@Path("mac") final String mac);
 }
