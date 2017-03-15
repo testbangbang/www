@@ -74,6 +74,7 @@
 
     <string name="importing">Importing old scribble data...</string>
     <string name="import_success">Import success！</string>
+    <string name="no_old_scribble_data">There is no old scribble data</string>
     <string name="import_fail">Import failure</string>
     <string name="import_success_info" formatted="false">Import total of %d data</string>
 

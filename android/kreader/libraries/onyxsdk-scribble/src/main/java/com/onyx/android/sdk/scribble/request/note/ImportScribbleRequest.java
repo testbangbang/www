@@ -3,6 +3,7 @@ package com.onyx.android.sdk.scribble.request.note;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -133,7 +134,9 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         byte[] pts = CursorUtil.getBlob(c, sColumnPointsBlob);
         String uniqueId = CursorUtil.getString(c, sColumnUniqueId);
 
-        if (StringUtils.isNullOrEmpty(uniqueId)) {
+        if (StringUtils.isNullOrEmpty(uniqueId)
+                || StringUtils.isNullOrEmpty(md5)
+                || StringUtils.isNullOrEmpty(position)) {
             return;
         }
         if (StringUtils.isNullOrEmpty(application) || !application.equals(OLD_SCRIBBLE_APPLICATION)) {
@@ -146,7 +149,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         shapeModel.setPageUniqueId(position);
         shapeModel.setThickness((float) thickness);
         shapeModel.setAppId(application);
-        shapeModel.setColor(color);
+        shapeModel.setColor(color != null ? color : Color.BLACK);
         if (!StringUtils.isNullOrEmpty(update_time)) {
             Date date = new Date(Long.valueOf(update_time));
             shapeModel.setUpdatedAt(date);
