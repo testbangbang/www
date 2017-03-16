@@ -93,6 +93,7 @@ public class RK3026Device extends BaseDevice {
     private static Method sMethodSystemIntegrityCheck;
     private static Method sMethodSupportRegal;
     private static Method sMethodHoldDisplay;
+    private static Method sMethodEnableRegal;
 
     private static final String UNKNOWN = "unknown";
     private static final String DEVICE_ID = "ro.deviceid";
@@ -127,6 +128,7 @@ public class RK3026Device extends BaseDevice {
                 }
                 sMethodSupportRegal = ReflectUtil.getMethodSafely(class_view, "supportRegal");
                 sMethodHoldDisplay = ReflectUtil.getMethodSafely(class_view, "holdDisplay", boolean.class, int.class, int.class);
+                sMethodEnableRegal = ReflectUtil.getMethodSafely(class_view, "enableRegal", boolean.class);
 
                 @SuppressWarnings("rawtypes")
                 Class class_device_controller = Class.forName("android.hardware.DeviceController");
@@ -548,5 +550,10 @@ public class RK3026Device extends BaseDevice {
             e.printStackTrace();
         }
         return touchable.booleanValue();
+    }
+
+    @Override
+    public void enableRegal(boolean enable) {
+        ReflectUtil.invokeMethodSafely(sMethodEnableRegal, null, enable);
     }
 }

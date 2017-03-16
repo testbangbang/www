@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DialogNaturalLightBrightness extends Dialog {
+public class DialogNaturalLightBrightness extends OnyxBaseDialog {
 
     static final String TAG = DialogNaturalLightBrightness.class.getSimpleName();
 

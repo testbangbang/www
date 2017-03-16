@@ -1,8 +1,6 @@
 package com.onyx.android.sdk.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +17,10 @@ import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by joy on 6/28/16.
  */
-public class DialogReaderMenu extends Dialog {
+public class DialogReaderMenu extends OnyxBaseDialog {
 
     private Context context;
     private ReaderMenu.ReaderMenuCallback readerMenuCallback;
