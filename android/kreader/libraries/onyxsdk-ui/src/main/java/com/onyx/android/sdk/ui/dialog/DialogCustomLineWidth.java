@@ -21,7 +21,7 @@ import com.onyx.android.sdk.utils.DimenUtils;
  * Created by ming on 2016/11/24.
  */
 
-public class DialogCustomLineWidth extends Dialog {
+public class DialogCustomLineWidth extends OnyxBaseDialog {
 
     public interface Callback {
         void done(int lineWidth);

@@ -25,7 +25,7 @@ import java.util.List;
  * Created by ming on 2016/11/21.
  */
 
-public class DialogReaderColorMenu extends Dialog {
+public class DialogReaderColorMenu extends OnyxBaseDialog {
 
     private Context context;
     private ReaderMenu.ReaderMenuCallback readerMenuCallback;

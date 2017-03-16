@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.utils.InputMethodUtils;
 

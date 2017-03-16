@@ -167,4 +167,8 @@ public abstract class EpdController
     public static void holdDisplay(boolean hold, UpdateMode updateMode, int ignoreFrame) {
         Device.currentDevice().holdDisplay(hold, updateMode, ignoreFrame);
     }
+
+    public static void enableRegal(boolean enable) {
+        Device.currentDevice().enableRegal(enable);
+    }
 }
