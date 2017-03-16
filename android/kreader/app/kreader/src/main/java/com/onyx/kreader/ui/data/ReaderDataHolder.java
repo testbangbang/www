@@ -305,6 +305,15 @@ public class ReaderDataHolder {
         getNoteManager().pauseRawEventProcessor();
     }
 
+    public void resumeRawEventProcessor() {
+        if (!supportScalable()) {
+            getNoteManager().stopRawEventProcessor();
+            return;
+        }
+        getNoteManager().startRawEventProcessor();
+        getNoteManager().resumeRawEventProcessor(getContext());
+    }
+
     public void stopRawEventProcessor() {
         if (!supportScalable()) {
             return;
