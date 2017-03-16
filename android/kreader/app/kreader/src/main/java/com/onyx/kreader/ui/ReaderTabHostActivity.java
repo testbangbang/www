@@ -137,6 +137,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             @Override
             public void onGlobalLayout() {
                 // delay the handling of activity intent from onCreate()
+                Debug.d(TAG, "initTabHost -> onGlobalLayout");
                 TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
                 handleActivityIntent();
             }
@@ -397,6 +398,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void openDocWithTab(String path) {
+        // ensure tab host is visible before opening the doc
+        bringSelfToFront();
+
         ReaderTabManager.ReaderTab tab = tabManager.findOpenedTabByPath(path);
         if (tab != null) {
             Debug.d(TAG, "file already opened in tab: " + tab + ", " + path);
