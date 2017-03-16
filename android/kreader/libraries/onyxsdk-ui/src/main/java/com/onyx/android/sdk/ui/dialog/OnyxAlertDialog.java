@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.ui.dialog;
 
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -210,6 +212,17 @@ public class OnyxAlertDialog extends DialogFragment {
         }
     }
 
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        EpdController.enableRegal(false);
+        super.show(manager, tag);
+    }
+
+    @Override
+    public void dismiss() {
+        EpdController.enableRegal(true);
+        super.dismiss();
+    }
 
     public static class Params {
         /**

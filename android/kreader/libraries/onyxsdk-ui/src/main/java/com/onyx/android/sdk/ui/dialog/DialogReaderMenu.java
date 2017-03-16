@@ -20,7 +20,7 @@ import com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout;
 /**
  * Created by joy on 6/28/16.
  */
-public class DialogReaderMenu extends Dialog {
+public class DialogReaderMenu extends OnyxBaseDialog {
 
     private Context context;
     private ReaderMenu.ReaderMenuCallback readerMenuCallback;

@@ -353,4 +353,8 @@ public class BaseDevice {
     public boolean isLegalSystem(final Context context){
         return true;
     }
+
+    public void enableRegal(boolean enable) {
+
+    }
 }

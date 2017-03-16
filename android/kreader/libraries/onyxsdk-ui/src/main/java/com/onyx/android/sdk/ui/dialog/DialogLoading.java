@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.view.EllipsizingTextView;
 
-public class DialogLoading extends Dialog {
+public class DialogLoading extends OnyxBaseDialog {
     private static final String TAG = DialogLoading.class.getSimpleName();
 
     private EllipsizingTextView mTextViewToastMessage, mTextViewProgressMessage;

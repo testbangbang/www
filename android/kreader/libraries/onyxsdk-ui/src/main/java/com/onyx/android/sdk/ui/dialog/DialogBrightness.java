@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DialogBrightness extends Dialog {
+public class DialogBrightness extends OnyxBaseDialog {
 
     static final String TAG = DialogBrightness.class.getSimpleName();
 
