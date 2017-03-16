@@ -1,27 +1,20 @@
 package com.onyx.android.sdk.ui.dialog;
 
-import android.app.Dialog;
+
 import android.content.Context;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.view.BesselCurveView;
 import com.onyx.android.sdk.ui.view.SeekBarWithEditTextView;
-import com.onyx.android.sdk.utils.DimenUtils;
-
 
 /**
  * Created by ming on 2016/11/24.
  */
 
-public class DialogCustomLineWidth extends Dialog {
+public class DialogCustomLineWidth extends OnyxBaseDialog {
 
     public interface Callback {
         void done(int lineWidth);

@@ -1,10 +1,8 @@
 package com.onyx.android.sdk.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.R;
@@ -13,7 +11,7 @@ import com.onyx.android.sdk.ui.R;
  * Created by ming on 2016/12/2.
  */
 
-public class DialogProgress extends Dialog {
+public class DialogProgress extends OnyxBaseDialog {
 
     private TextView titleView;
     private TextView subTitleView;
