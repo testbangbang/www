@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.FontInfo;
@@ -110,7 +109,6 @@ public class DialogTextStyle extends DialogBase {
         this.originalStyle = ReaderTextStyle.copy(readerDataHolder.getReaderViewInfo().getReaderTextStyle());
         this.originalCodePage = readerDataHolder.getReaderUserDataInfo().getDocumentCodePage();
         setContentView(R.layout.dialog_text_style_view);
-        EpdController.resetUpdateMode(findViewById(R.layout.dialog_text_style_view));
         init();
     }
 

@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.widget.SeekBar;

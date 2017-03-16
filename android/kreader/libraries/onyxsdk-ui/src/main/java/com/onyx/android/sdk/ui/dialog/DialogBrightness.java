@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.ui.dialog;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.view.Window;
 import android.widget.*;
 import android.widget.RatingBar.OnRatingBarChangeListener;
 import com.onyx.android.sdk.api.device.FrontLightController;
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.utils.IntentFilterFactory;
 
@@ -72,7 +70,6 @@ public class DialogBrightness extends OnyxBaseDialog {
         dialogTittleBar.findViewById(R.id.page_size_indicator).setVisibility(View.GONE);
         mRatingBarLightSettings = (RatingBar) findViewById(R.id.ratingbar_light_settings);
         mRatingBarLightSettings.setFocusable(false);
-        EpdController.resetUpdateMode(findViewById(targetLayoutID));
 
         mOpenAndCloseFrontLightReceiver = new BroadcastReceiver() {
             @Override
