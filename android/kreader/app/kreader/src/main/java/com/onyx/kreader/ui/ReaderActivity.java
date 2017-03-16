@@ -399,7 +399,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         syncReaderPainter();
         reconfigStatusBar();
         enablePenShortcut();
-        resumeRawEventProcessor();
+        updateRawEventProcessor();
     }
 
     private void enablePenShortcut() {
@@ -414,8 +414,11 @@ public class ReaderActivity extends OnyxBaseActivity {
         getReaderDataHolder().stopRawEventProcessor();
     }
 
-    private void resumeRawEventProcessor() {
-        getReaderDataHolder().resumeRawEventProcessor();
+    private void updateRawEventProcessor() {
+        if (getReaderDataHolder().inNoteWritingProvider()) {
+            return;
+        }
+        getReaderDataHolder().updateRawEventProcessor();
     }
 
     private void syncReaderPainter() {
