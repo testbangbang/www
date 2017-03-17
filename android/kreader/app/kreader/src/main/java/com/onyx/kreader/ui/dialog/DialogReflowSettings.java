@@ -68,11 +68,11 @@ public class DialogReflowSettings extends DialogBase {
 
     private ImageReflowSettings settings;
     private ReflowCallback callback;
-    private double[] fontSizeValues = {0.7, 0.6, 0.5, 0.4};
+    private double[] fontSizeValues = {0.75, 1.0, 1.2, 1.5};
     private int[] autoStraightenValues = {0, 5, 10};
     private int[] justificationValues = {0, 3, 2};
     private int[] columnValues = {1, 2, 3};
-    private double[][] formatValues = {{0.05, 1.0, 0.05}, {0.15, 1.2, 0.10}, {0.375, 1.4, 0.15}};
+    private double[][] formatValues = {{1.0, 0.05}, {1.2, 0.10}, {1.4, 0.15}};
 
     private final String[] fontSizes = {"1", "2", "3", "4"};
     private final String[] upgradeSizes = {"0", "5", "10",};
@@ -134,7 +134,7 @@ public class DialogReflowSettings extends DialogBase {
     private void updateFontSize(ImageReflowSettings s) {
         int index = fontSizeDefaultIndex;
         for (int i = 0; i < fontSizeValues.length; i++) {
-            if (fontSizeValues[i] == s.quality) {
+            if (fontSizeValues[i] == s.zoom) {
                 index = i;
                 break;
             }
@@ -178,9 +178,8 @@ public class DialogReflowSettings extends DialogBase {
     private void updateFormat(ImageReflowSettings s) {
         int index = formatDefaultIndex;
         for (int i = 0; i < formatValues.length; i++) {
-            if (formatValues[i][0] == s.word_spacing
-                    && formatValues[i][1] == s.line_spacing
-                    && formatValues[i][2] == s.margin) {
+            if (formatValues[i][0] == s.line_spacing
+                    && formatValues[i][1] == s.margin) {
                 index = i;
                 break;
             }
@@ -208,7 +207,7 @@ public class DialogReflowSettings extends DialogBase {
 
     private void syncFontSize(ImageReflowSettings s, int checkIndex) {
         if (checkIndex < fontSizeValues.length) {
-            s.quality = fontSizeValues[checkIndex];
+            s.zoom = fontSizeValues[checkIndex];
         }
     }
 
@@ -226,9 +225,8 @@ public class DialogReflowSettings extends DialogBase {
 
     private void syncFormat(ImageReflowSettings s, int focusPosition) {
         if (focusPosition < formatValues.length) {
-            s.word_spacing = formatValues[focusPosition][0];
-            s.line_spacing = formatValues[focusPosition][1];
-            s.margin = formatValues[focusPosition][2];
+            s.line_spacing = formatValues[focusPosition][0];
+            s.margin = formatValues[focusPosition][1];
         }
     }
 
