@@ -24,7 +24,7 @@
                 android:id="@+id/font_face_layout"
                 android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/dialog_text_style_title_view_width"
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -50,7 +50,7 @@
                 android:id="@+id/english_font_face_layout"
                 android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/dialog_text_style_title_view_width"
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -74,9 +74,9 @@
                 android:background="@drawable/imagebtn_bg"
                 android:id="@+id/page_spacing_layout"
                 android:gravity="center_horizontal"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/dialog_text_style_title_view_width"
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -100,9 +100,9 @@
                 android:background="@drawable/imagebtn_bg"
                 android:id="@+id/code_page_layout"
                 android:gravity="center_horizontal"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/dialog_text_style_title_view_width"
                 android:layout_height="wrap_content">
 
                 <TextView
