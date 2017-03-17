@@ -7,6 +7,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.neverland.engbook.level1.JEBFilesZIP;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.ReaderBaseApp;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
@@ -50,6 +51,7 @@ public class ReaderHelper {
     private static final String TAG = ReaderHelper.class.getSimpleName();
 
     private String documentPath;
+    private String bookName;
     private String documentMd5;
     private ReaderDocumentMetadata documentMetadata;
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
@@ -259,6 +261,9 @@ public class ReaderHelper {
         initImageReflowManager(context);
         initBitmapCache();
         initWordAnalyzerInBackground();
+        if(AlReaderPlugin.isJEB(documentPath)){
+            bookName = JEBFilesZIP.bookName;
+        }
     }
 
     private void initLayoutManager() {
@@ -375,6 +380,14 @@ public class ReaderHelper {
 
     public final String getDocumentPath() {
         return documentPath;
+    }
+
+    public final String getBookName(){
+        return bookName;
+    }
+
+    public void setBookName(String bookName){
+        this.bookName = bookName;
     }
 
     public final String getDocumentMd5() {

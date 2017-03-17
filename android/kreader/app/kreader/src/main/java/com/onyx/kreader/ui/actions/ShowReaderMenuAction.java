@@ -34,6 +34,7 @@ import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.common.Debug;
@@ -960,7 +961,11 @@ public class ShowReaderMenuAction extends BaseAction {
         return new ReaderMenuState() {
             @Override
             public String getTitle() {
-                return FileUtils.getFileName(readerDataHolder.getReader().getDocumentPath());
+                String bookName = readerDataHolder.getReader().getBookName();
+                if(StringUtils.isNullOrEmpty(bookName)){
+                    bookName = readerDataHolder.getReader().getDocumentPath();
+                }
+                return FileUtils.getFileName(bookName);
             }
 
             @Override
