@@ -34,6 +34,7 @@ public class KReaderApp extends ReaderBaseApp {
 //        LeakCanary.install(this);
         Debug.setDebug(BuildConfig.DEBUG || PackageUtils.getAppType(this).equals(PackageUtils.APP_TYPE_DEBUG));
         instance = this;
+        Debug.d(getClass(), "onCreate: " + PackageUtils.getAppVersionName(this));
     }
 
     public static KReaderApp instance() {
