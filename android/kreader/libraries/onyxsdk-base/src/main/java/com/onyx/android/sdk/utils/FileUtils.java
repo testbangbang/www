@@ -336,9 +336,7 @@ public class FileUtils {
 
             return hexToString(md.digest());
         } finally {
-            if (fis != null) {
-                FileUtils.closeQuietly(fis);
-            }
+            FileUtils.closeQuietly(fis);
         }
     }
 
