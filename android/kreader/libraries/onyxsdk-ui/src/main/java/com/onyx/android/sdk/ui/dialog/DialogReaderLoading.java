@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.PowerManager;
@@ -16,7 +15,7 @@ import com.onyx.android.sdk.ui.view.OnyxProgressBar;
 /**
  * @author qingyue
  */
-public class DialogReaderLoading extends Dialog {
+public class DialogReaderLoading extends OnyxBaseDialog {
     private static final String TAG = DialogReaderLoading.class.getSimpleName();
 
     private PowerManager.WakeLock mWakeLock = null;

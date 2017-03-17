@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
@@ -15,7 +14,7 @@ import com.onyx.android.sdk.ui.R;
  * Created by ming on 2017/3/14.
  */
 
-public class OnyxCustomDialog extends Dialog implements DialogInterface{
+public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
 
     private TextView title;
     private Button btnCancel;
