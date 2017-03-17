@@ -106,9 +106,9 @@ public class PopupSelectionMenu extends LinearLayout {
         inflater.inflate(R.layout.popup_selection_menu, this, true);
         mMenuCallback = menuCallback;
 
-        int heightDenominator = getResources().getInteger(R.integer.dict_height_denominator_value);
+        int heightDenominator = getResources().getInteger(R.integer.dict_height_absolutely_value);
         dictViewWidth = layout.getMeasuredWidth();
-        dictViewHeight = (layout.getMeasuredHeight() / heightDenominator);
+        dictViewHeight = (layout.getMeasuredHeight() * heightDenominator / 100);
         layout.addView(this);
 
         highlightView = (ImageView) findViewById(R.id.imageview_highlight);
