@@ -17,9 +17,21 @@ public class Debug {
         Debug.debug = debug;
     }
 
-    public static void d(final String msg, final Object... args) {
+    public static void i(final String msg) {
         if (debug) {
-            Log.d(TAG, formatString(msg, args));
+            Log.i(TAG, msg);
+        }
+    }
+
+    public static void i(final Class<?> cls, final String msg, final Object... args) {
+        if (debug) {
+            Log.i(cls.getSimpleName(), formatString(msg, args));
+        }
+    }
+
+    public static void d(final String msg) {
+        if (debug) {
+            Log.d(TAG, msg);
         }
     }
 
@@ -29,8 +41,8 @@ public class Debug {
         }
     }
 
-    public static void w(final String msg, final Object... args) {
-        Log.w(TAG, formatString(msg, args));
+    public static void w(final String msg) {
+        Log.w(TAG, msg);
     }
 
     public static void w(final Class<?> cls, final String msg, final Object... args) {
@@ -45,8 +57,8 @@ public class Debug {
         Log.w(cls.getSimpleName(), throwable);
     }
 
-    public static void e(final String msg, final Object... args) {
-        Log.e(TAG, formatString(msg, args));
+    public static void e(final String msg) {
+        Log.e(TAG, msg);
     }
 
     public static void e(final Class<?> cls, final String msg, final Object... args) {
