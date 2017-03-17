@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 
 public class DialogContrast extends OnyxBaseDialog implements CompoundButton.OnCheckedChangeListener {
 
-    private static final String TAG = "DialogContrast";
+    private static final Class TAG = DialogContrast.class;
 
     @Bind(R.id.btn_zero)
     CheckBox btnZero;

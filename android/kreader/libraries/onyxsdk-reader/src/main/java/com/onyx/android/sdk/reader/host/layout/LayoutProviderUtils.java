@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class LayoutProviderUtils {
 
-    private static final String TAG = LayoutProviderUtils.class.getSimpleName();
+    private static final Class TAG = LayoutProviderUtils.class;
     static boolean ENABLE_CACHE = true;
 
     /**

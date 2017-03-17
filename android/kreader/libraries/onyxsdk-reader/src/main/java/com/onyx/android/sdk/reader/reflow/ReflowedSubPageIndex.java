@@ -17,7 +17,7 @@ import java.util.Set;
  * Created by joy on 10/10/16.
  */
 public class ReflowedSubPageIndex {
-    private final String TAG = ReflowedSubPageIndex.class.getSimpleName();
+    private final Class TAG = ReflowedSubPageIndex.class;
 
     private File indexFile;
 

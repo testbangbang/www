@@ -31,7 +31,7 @@ import java.io.OutputStreamWriter;
 public class HTMLReaderWebView extends WebView
 {
 
-    private static final String TAG = "HTMLReaderWebView";
+    private static final Class TAG = HTMLReaderWebView.class;
 
     private int mCurrentPage;
     private int mTotalPage;

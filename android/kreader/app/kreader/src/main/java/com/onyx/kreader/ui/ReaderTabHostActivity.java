@@ -39,7 +39,7 @@ import java.util.List;
 
 public class ReaderTabHostActivity extends OnyxBaseActivity {
 
-    private static final String TAG = ReaderTabHostActivity.class.getSimpleName();
+    private static final Class TAG = ReaderTabHostActivity.class;
 
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
 

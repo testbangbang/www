@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class NeoPdfJniWrapper {
 
-    public static final String TAG = NeoPdfJniWrapper.class.getSimpleName();
+    public static final Class TAG = NeoPdfJniWrapper.class;
 
     static{
         System.loadLibrary("neo_pdf");

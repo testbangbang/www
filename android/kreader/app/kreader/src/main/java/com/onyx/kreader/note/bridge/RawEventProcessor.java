@@ -137,7 +137,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
                     detectInputDevicePath();
                     readLoop();
                 } catch (Exception e) {
-                    Debug.d(RawEventProcessor.class.getSimpleName(), e.toString());
+                    Debug.d(RawEventProcessor.class, e.toString());
                 } finally {
                     finishCurrentShape();
                     closeInputDevice();

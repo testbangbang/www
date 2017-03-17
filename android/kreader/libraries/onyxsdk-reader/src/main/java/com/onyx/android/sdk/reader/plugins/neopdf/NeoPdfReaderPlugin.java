@@ -55,7 +55,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
-    private static final String TAG = NeoPdfReaderPlugin.class.getSimpleName();
+    private static final Class TAG = NeoPdfReaderPlugin.class;
     private Benchmark benchmark = new Benchmark();
 
     private NeoPdfJniWrapper impl;
