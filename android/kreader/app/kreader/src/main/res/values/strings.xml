@@ -363,4 +363,6 @@
     <string name="first_chapter">Is the first chapter</string>
     <string name="last_chapter">Is the last chapter</string>
     <string name="auto_crop_for_each_block">Auto crop for each block after manual setting</string>
+    <string name="network_data">Network data</string>
+    <string name="local_data">Local data</string>
 </resources>

@@ -55,6 +55,7 @@ public class StatisticsActivity extends ActionBarActivity {
     private ReadRecordFragment readRecordFragment;
     private DialogLoading dialogLoading;
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
+    private int[] pageTitles = {R.string.data_analysis, R.string.reading_record};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,15 +84,7 @@ public class StatisticsActivity extends ActionBarActivity {
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                switch (position) {
-                    case 0:
-                        page.setText("1/2");
-                        title.setText(R.string.data_analysis);
-                        break;
-                    case 1:
-                        page.setText("2/2");
-                        title.setText(R.string.reading_record);
-                }
+                updatePageTitle();
             }
 
             @Override
@@ -117,10 +110,22 @@ public class StatisticsActivity extends ActionBarActivity {
         }
     }
 
+    private void updatePageTitle() {
+        int index = pager.getCurrentItem();
+        int count = pager.getChildCount();
+        String pagePosition = String.format("%d/%d", index + 1, count);
+        page.setText(pagePosition);
+        String pageTitle = getString(pageTitles[index]);
+        String network = String.format("(%s)", DeviceUtils.isWifiConnected(this) ? getString(R.string.network_data) : getString(R.string.local_data));
+        String text = pageTitle + network;
+        title.setText(text);
+    }
+
     private void registerReceiver() {
         networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
             @Override
             public void onNetworkChanged(boolean connected, int networkType) {
+                updatePageTitle();
                 if (connected) {
                     pushStatistics();
                     getStatistics();
@@ -221,14 +226,11 @@ public class StatisticsActivity extends ActionBarActivity {
             switch (position) {
                 case 0:
                     f = dataStatisticsFragment;
-                    page.setText("1/2");
-                    title.setText(R.string.data_analysis);
                     break;
                 case 1:
-                    page.setText("2/2");
-                    title.setText(R.string.reading_record);
                     f = readRecordFragment;
             }
+            updatePageTitle();
             return f;
         }
 
