@@ -96,12 +96,12 @@ public class ReaderLayoutManager {
         if (supportTextFlow) {
             provider.put(PageConstants.TEXT_REFLOW_PAGE, new LayoutTextReflowProvider(this));
         }
-        if (supportScale) {
-            currentProvider = PageConstants.SINGLE_PAGE;
-        } else {
+
+        String layoutName = PageConstants.SINGLE_PAGE;
+        if (!supportScale) {
             currentProvider = PageConstants.TEXT_REFLOW_PAGE;
         }
-        getCurrentLayoutProvider().activate();
+        setActiveProvider(layoutName);
     }
 
     public void updateViewportSize() throws ReaderException {
@@ -129,8 +129,7 @@ public class ReaderLayoutManager {
 
         // before change layout, record current position.
         String pagePosition = getCurrentPagePosition();
-        currentProvider = layoutName;
-        getCurrentLayoutProvider().activate();
+        setActiveProvider(layoutName);
         getCurrentLayoutProvider().setNavigationArgs(navigationArgs);
 
         // goto the stored page
@@ -139,6 +138,14 @@ public class ReaderLayoutManager {
         }
         readerHelper.onLayoutChanged();
         return true;
+    }
+
+    private void setActiveProvider(String layoutName) {
+        if (currentProvider != null) {
+            getCurrentLayoutProvider().deactivate();
+        }
+        currentProvider = layoutName;
+        getCurrentLayoutProvider().activate();
     }
 
     public boolean isScaleToPage() {
@@ -278,8 +285,7 @@ public class ReaderLayoutManager {
     private boolean restoreBySnapshot(final String snapshot) {
         try {
             PositionSnapshot positionSnapshot = PositionSnapshot.fromSnapshotKey(snapshot);
-            currentProvider = positionSnapshot.layoutType;
-            getCurrentLayoutProvider().activate();
+            setActiveProvider(positionSnapshot.layoutType);
             getCurrentLayoutProvider().restoreBySnapshot(positionSnapshot);
         } catch (Exception e) {
             return false;

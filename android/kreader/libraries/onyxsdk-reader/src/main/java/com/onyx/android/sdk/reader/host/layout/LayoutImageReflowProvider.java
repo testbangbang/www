@@ -34,6 +34,11 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return PageConstants.IMAGE_REFLOW_PAGE;
     }
 
+    @Override
+    public void deactivate() {
+        getImageReflowManager().releaseCache();
+    }
+
     public void activate() {
         reverseOrder = false;
 
