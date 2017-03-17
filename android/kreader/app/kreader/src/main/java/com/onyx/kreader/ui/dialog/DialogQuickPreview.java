@@ -23,10 +23,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -49,7 +49,7 @@ import java.util.List;
 /**
  * Created by joy on 7/15/16.
  */
-public class DialogQuickPreview extends Dialog {
+public class DialogQuickPreview extends OnyxBaseDialog {
 
     public static abstract class Callback {
         public abstract void abort();
@@ -248,8 +248,6 @@ public class DialogQuickPreview extends Dialog {
         chapterBack = (ImageButton) findViewById(R.id.chapter_back);
         chapterForward = (ImageButton) findViewById(R.id.chapter_forward);
         textViewProgress.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-
-        EpdController.resetUpdateMode(gridRecyclerView);
 
         findViewById(R.id.image_view_prev_page).setOnClickListener(new View.OnClickListener() {
             @Override
