@@ -63,16 +63,19 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private ReaderDataHolder readerDataHolder;
     private boolean isDrag = false;
     private Set<ReaderMenuAction> disableMenuActions;
+    private boolean showFullToolbar = false;
 
     public ShowScribbleMenuAction(ViewGroup parent,
                                   final ActionCallback actionCallback,
-                                  Set<ReaderMenuAction> disableMenuActions) {
+                                  Set<ReaderMenuAction> disableMenuActions,
+                                  boolean showFullToolbar) {
         this.parent = parent;
         this.actionCallback = actionCallback;
         this.disableMenuActions = disableMenuActions;
+        this.showFullToolbar = showFullToolbar;
     }
 
-    public void execute(ReaderDataHolder readerDataHolder, BaseCallback callback) {
+    public void execute(ReaderDataHolder readerDataHolder,  BaseCallback callback) {
         this.callback = callback;
         readerDataHolder.getEventBus().register(this);
         show(readerDataHolder);
@@ -89,7 +92,17 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
         fullToolbar = createFullScreenToolbar(readerDataHolder);
         parent.addView(fullToolbar);
-        fullToolbar.setVisibility(View.GONE);
+
+        fullToolbar.setVisibility(showFullToolbar ? View.VISIBLE : View.GONE);
+        topToolbar.setVisibility(showFullToolbar ? View.GONE : View.VISIBLE);
+        bottomToolbar.setVisibility(showFullToolbar ? View.GONE : View.VISIBLE);
+
+        fullToolbar.post(new Runnable() {
+            @Override
+            public void run() {
+                postMenuChangedEvent(readerDataHolder);
+            }
+        });
 
         topToolbar.setOnSizeChangeListener(new OnyxToolbar.OnSizeChangeListener() {
             @Override

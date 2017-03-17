@@ -36,6 +36,7 @@ public class ReaderViewInfo {
     public ReaderTextStyle readerTextStyle = null;
     public int subScreenCount = 1;
     public boolean layoutChanged = false;
+    public boolean autoCropForEachBlock = false;
 
     public final List<PageInfo> getVisiblePages() {
         return visiblePages;

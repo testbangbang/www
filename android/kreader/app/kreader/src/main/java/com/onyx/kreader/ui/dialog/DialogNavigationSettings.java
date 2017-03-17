@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
@@ -54,6 +56,8 @@ public class DialogNavigationSettings extends DialogBase {
     private GAdapter mCropAdapter;
     private GAdapter mSubScreenAdapter;
     private GAdapter mNavigationAdapter;
+    private boolean autoCropForEachBlock = false;
+    private CheckBox autoCropForEachBlockCheckBox;
     private ReaderCropArgs.CropPageMode currentChoosingCropMode = ReaderCropArgs.CropPageMode.None;
     private ReaderCropArgs.CropPageMode currentUsingCropMode = ReaderCropArgs.CropPageMode.None;
     private SubScreenMode currentChoosingSubScreenMode = SubScreenMode.SUB_SCREEN_1_1;
@@ -80,6 +84,7 @@ public class DialogNavigationSettings extends DialogBase {
         currentUsingNavigationMode = ReaderCropArgs.NavigationMode.ROWS_LEFT_TO_RIGHT_MODE;
 
         mCropContentView = (ContentView) findViewById(R.id.crop_contentView);
+        autoCropForEachBlockCheckBox = (CheckBox) findViewById(R.id.auto_crop_for_each_block);
         setupContentView(mCropContentView, R.layout.dialog_navigation_settings_mode_icon_view, new ObjectSelectedCallback() {
             @Override
             public void onObjectSelected(GObject object) {
@@ -126,7 +131,7 @@ public class DialogNavigationSettings extends DialogBase {
                 navigationArgs.setCropPageMode(currentChoosingCropMode);
                 navigationArgs.setRows(getRowNumber());
                 navigationArgs.setColumns(getColumnNumber());
-                new ChangeNavigationSettingsAction(navigationArgs).execute(readerDataHolder, null);
+                new ChangeNavigationSettingsAction(navigationArgs, autoCropForEachBlock).execute(readerDataHolder, null);
                 DialogNavigationSettings.this.dismiss();
             }
         });
@@ -136,6 +141,13 @@ public class DialogNavigationSettings extends DialogBase {
                 DialogNavigationSettings.this.dismiss();
             }
         });
+        autoCropForEachBlockCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                autoCropForEachBlock = isChecked;
+            }
+        });
+        autoCropForEachBlockCheckBox.setChecked(readerDataHolder.getReaderViewInfo().autoCropForEachBlock);
         buildCropModeAdapter();
         buildSubScreenAdapter();
         buildNavigationModeAdapter();
