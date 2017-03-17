@@ -321,8 +321,9 @@ public class FileUtils {
     }
 
     public static String computeFullMD5Checksum(File file) throws IOException, NoSuchAlgorithmException {
-        InputStream fis = new FileInputStream(file);
+        InputStream fis = null;
         try {
+            fis = new FileInputStream(file);
             byte[] buffer = new byte[64 * 1024];
             MessageDigest md = MessageDigest.getInstance("MD5");
             int numRead;
@@ -335,7 +336,9 @@ public class FileUtils {
 
             return hexToString(md.digest());
         } finally {
-            FileUtils.closeQuietly(fis);
+            if (fis != null) {
+                FileUtils.closeQuietly(fis);
+            }
         }
     }
 
