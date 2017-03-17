@@ -297,4 +297,6 @@
   <string name="first_chapter">已是首章</string>
   <string name="last_chapter">已是尾章</string>
   <string name="auto_crop_for_each_block">以上手动设置后，自动裁剪可见范围内空白区域</string>
+  <string name="network_data">联网数据</string>
+  <string name="local_data">本地数据</string>
 </resources>

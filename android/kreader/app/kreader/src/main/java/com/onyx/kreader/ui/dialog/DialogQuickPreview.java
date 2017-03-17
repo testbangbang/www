@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -24,12 +23,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.utils.TocUtils;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -58,7 +57,7 @@ import java.util.TimerTask;
 /**
  * Created by joy on 7/15/16.
  */
-public class DialogQuickPreview extends Dialog {
+public class DialogQuickPreview extends OnyxBaseDialog {
 
     private static final String TAG = "DialogQuickPreview";
     private static final int LONG_CLICK_TIME_INTERVAL = 2000;
@@ -336,8 +335,6 @@ public class DialogQuickPreview extends Dialog {
         textViewProgress.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         textViewProgress.getPaint().setAntiAlias(true);
         touchHandler = new TouchHandler(gridRecyclerView);
-
-        EpdController.resetUpdateMode(gridRecyclerView);
 
         View.OnTouchListener onTouchListener = new View.OnTouchListener() {
             @Override

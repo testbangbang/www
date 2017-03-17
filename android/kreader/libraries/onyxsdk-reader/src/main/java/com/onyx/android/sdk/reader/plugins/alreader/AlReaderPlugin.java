@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.neverland.engbook.level1.JEBFilesEPUB;
+import com.neverland.engbook.level2.JEBFormatEPUB;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
@@ -111,6 +113,14 @@ public class AlReaderPlugin implements ReaderPlugin,
     static public boolean accept(final String path) {
         String extension = FileUtils.getFileExtension(path);
         return getExtensionFilters().contains(extension);
+    }
+
+    static public boolean isJEB(final String path){
+        String extension = FileUtils.getFileExtension(path);
+        if(extension.contentEquals("jeb")){
+            return true;
+        }
+        return false;
     }
 
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
