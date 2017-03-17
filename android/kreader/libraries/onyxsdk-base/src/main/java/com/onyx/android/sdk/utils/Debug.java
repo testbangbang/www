@@ -1,8 +1,6 @@
-package com.onyx.android.sdk.reader.common;
+package com.onyx.android.sdk.utils;
 
 import android.util.Log;
-
-import com.onyx.android.sdk.utils.StringUtils;
 
 /**
  * Created by Joy on 2016/5/13.

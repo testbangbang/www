@@ -10,7 +10,7 @@ import com.onyx.android.sdk.utils.ChineseTextUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderSentence;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.request.GetSentenceRequest;
 import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.kreader.ui.actions.GotoPositionAction;

@@ -13,7 +13,7 @@ import android.util.Log;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 
 import java.io.File;
 import java.util.HashMap;

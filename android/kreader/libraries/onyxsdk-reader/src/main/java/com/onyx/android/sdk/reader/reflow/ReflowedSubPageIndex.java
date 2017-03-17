@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.reader.api.ReaderBitmapList;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 
 import java.io.File;
 import java.util.HashMap;
