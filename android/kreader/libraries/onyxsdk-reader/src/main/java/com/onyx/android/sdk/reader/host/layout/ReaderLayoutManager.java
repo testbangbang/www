@@ -99,7 +99,7 @@ public class ReaderLayoutManager {
 
         String layoutName = PageConstants.SINGLE_PAGE;
         if (!supportScale) {
-            currentProvider = PageConstants.TEXT_REFLOW_PAGE;
+            layoutName = PageConstants.TEXT_REFLOW_PAGE;
         }
         setActiveProvider(layoutName);
     }
