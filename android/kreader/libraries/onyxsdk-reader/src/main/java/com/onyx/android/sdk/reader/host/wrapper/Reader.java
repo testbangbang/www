@@ -130,6 +130,10 @@ public class Reader {
         return getReaderHelper().getDocumentPath();
     }
 
+    public String getBookName(){
+        return getReaderHelper().getBookName();
+    }
+
     public String getDocumentMd5() {
         return getReaderHelper().getDocumentMd5();
     }
