@@ -179,9 +179,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     protected void onDestroy() {
-        if (networkConnectChangedReceiver !=null) {
-            unregisterReceiver(networkConnectChangedReceiver);
-        }
+        cleanupReceiver();
         ReaderActivity.super.onDestroy();
         if (getReaderDataHolder().isDocumentOpened()) {
             forceCloseApplication(null);
@@ -283,6 +281,13 @@ public class ReaderActivity extends OnyxBaseActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(networkConnectChangedReceiver, filter);
+    }
+
+    private void cleanupReceiver() {
+        if (networkConnectChangedReceiver != null) {
+            unregisterReceiver(networkConnectChangedReceiver);
+            networkConnectChangedReceiver = null;
+        }
     }
 
     private void initReaderMenu(){
