@@ -10,7 +10,9 @@ import android.util.Log;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.utils.DetectInputDeviceUtil;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -182,15 +184,10 @@ public class RawInputProcessor {
     }
 
     private void detectInputDevicePath() {
-        final int DEVICE_MAX = 3;
-        String last = systemPath;
-        for(int i = 1; i < DEVICE_MAX; ++i) {
-            String path = String.format("/dev/input/event%d", i);
-            if (FileUtils.fileExist(path)) {
-                last = path;
-            }
+        String index = DetectInputDeviceUtil.detectInputDevicePath();
+        if (StringUtils.isNotBlank(index)) {
+            systemPath = String.format("/dev/input/event%s", index);
         }
-        systemPath = last;
     }
 
     private void processInputEvent(long ts, int type, int code, int value) {
