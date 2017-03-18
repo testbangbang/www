@@ -10,7 +10,7 @@ import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderRenderer;
 import com.onyx.android.sdk.reader.cache.BitmapSoftLruCache;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.host.math.PageManager;
@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class LayoutProviderUtils {
 
-    private static final String TAG = LayoutProviderUtils.class.getSimpleName();
+    private static final Class TAG = LayoutProviderUtils.class;
     static boolean ENABLE_CACHE = true;
 
     /**

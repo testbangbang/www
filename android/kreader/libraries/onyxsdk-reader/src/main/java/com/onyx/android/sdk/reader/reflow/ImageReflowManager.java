@@ -92,6 +92,10 @@ public class ImageReflowManager {
         documentMd5 = null;
     }
 
+    public void releaseCache() {
+        ImageUtils.releaseReflowedPages();
+    }
+
     public void reflowBitmapAsync(final Bitmap bitmap, final String pageName, final boolean abortPendingTasks) {
         ReflowTask task = new ReflowTask(this, pageName, bitmap);
         task.setAbortPendingTasks(abortPendingTasks);

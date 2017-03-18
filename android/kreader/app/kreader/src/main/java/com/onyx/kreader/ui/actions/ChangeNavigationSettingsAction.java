@@ -8,7 +8,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;

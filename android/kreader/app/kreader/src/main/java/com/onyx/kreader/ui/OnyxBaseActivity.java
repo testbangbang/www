@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 
 /**
  * Created by joy on 3/7/17.

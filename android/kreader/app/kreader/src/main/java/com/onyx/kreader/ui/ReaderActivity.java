@@ -35,7 +35,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
@@ -323,10 +323,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         surfaceHolderCallback = new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
+                Debug.d(getClass(), "surfaceCreated");
             }
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                Debug.d(getClass(), "surfaceChanged: " + format + ", " + width + ", " + height);
                 clearCanvas(holder);
                 if (!getReaderDataHolder().isDocumentOpened()) {
                     getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
@@ -345,6 +347,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
+                Debug.d(getClass(), "surfaceDestroyed");
             }
         };
 
