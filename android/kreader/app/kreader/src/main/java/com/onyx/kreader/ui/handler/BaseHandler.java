@@ -309,9 +309,6 @@ public abstract class BaseHandler {
         if (tryPageLink(readerDataHolder, x, y)) {
             return true;
         }
-        if (tryPageImage(readerDataHolder, x, y)) {
-            return true;
-        }
         return false;
     }
 
@@ -358,22 +355,6 @@ public abstract class BaseHandler {
                         new GotoPositionAction(link.getPagePosition()).execute(readerDataHolder);
                         return true;
                     }
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean tryPageImage(ReaderDataHolder readerDataHolder, final float x, final float y) {
-        for (PageInfo pageInfo : readerDataHolder.getReaderViewInfo().getVisiblePages()) {
-            if (!readerDataHolder.getReaderUserDataInfo().hasPageImages(pageInfo)) {
-                continue;
-            }
-            List<ReaderImage> images = readerDataHolder.getReaderUserDataInfo().getPageImages(pageInfo);
-            for (ReaderImage image : images) {
-                if (image.getRectangle().contains(x, y)) {
-                    new ViewImageAction(image.getBitmap()).execute(readerDataHolder, null);
-                    return true;
                 }
             }
         }
