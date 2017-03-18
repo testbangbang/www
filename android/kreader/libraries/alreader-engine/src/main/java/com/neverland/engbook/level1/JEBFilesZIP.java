@@ -21,7 +21,7 @@ import java.util.zip.Inflater;
 public class JEBFilesZIP extends AlFiles {
 
 
-    private static final int ZIP_CHUNK_SIZE = 16384;
+    private static final int ZIP_CHUNK_SIZE = 65535;
 
 	/*ZIP_LCD zipLCD = new ZIP_LCD();
     ZIP_LZH zipLZH = new ZIP_LZH();
