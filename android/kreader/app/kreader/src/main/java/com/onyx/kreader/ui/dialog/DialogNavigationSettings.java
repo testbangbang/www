@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.content.DialogInterface;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;

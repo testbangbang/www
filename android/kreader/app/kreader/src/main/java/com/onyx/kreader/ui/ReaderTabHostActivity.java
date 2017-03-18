@@ -137,6 +137,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             @Override
             public void onGlobalLayout() {
                 // delay the handling of activity intent from onCreate()
+                Debug.d(TAG, "initTabHost -> onGlobalLayout");
                 TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
                 handleActivityIntent();
             }
@@ -320,30 +321,21 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void syncFullScreenState() {
         boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
-        Debug.d(TAG, "syncFullScreenState: " + fullScreen);
-        final ViewTreeObserver.OnGlobalLayoutListener listener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        Debug.d(TAG, "syncFullScreenState: " + DeviceUtils.isFullScreen(tabHost) + " -> " + fullScreen);
+        if (fullScreen != DeviceUtils.isFullScreen(tabHost)) {
+            tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
-            @Override
-            public void onGlobalLayout() {
-                Debug.d(TAG, "syncFullScreenState -> onGlobalLayout");
-                TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
-                updateReaderTabWindowHeight();
-                bringSelfToFront();
-                bringReaderTabToFront(getCurrentTabInHost());
-            }
-        };
-        tabHost.getViewTreeObserver().addOnGlobalLayoutListener(listener);
+                @Override
+                public void onGlobalLayout() {
+                    Debug.d(TAG, "syncFullScreenState -> onGlobalLayout");
+                    TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
+                    updateReaderTabWindowHeight();
+                    bringSelfToFront();
+                    bringReaderTabToFront(getCurrentTabInHost());
+                }
+            });
+        }
         DeviceUtils.setFullScreenOnResume(this, fullScreen);
-
-        // there is no reliable method to tell that OnGlobalLayoutListener will be called after setFullScreenOnResume()
-        // so force it to be removed after a long enough time
-        tabHost.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Debug.d(TAG, "syncFullScreenState -> post removeGlobalOnLayoutListener");
-                TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), listener);
-            }
-        }, 1000);
     }
 
     private boolean handleActivityIntent() {
@@ -406,6 +398,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void openDocWithTab(String path) {
+        // ensure tab host is visible before opening the doc
+        bringSelfToFront();
+
         ReaderTabManager.ReaderTab tab = tabManager.findOpenedTabByPath(path);
         if (tab != null) {
             Debug.d(TAG, "file already opened in tab: " + tab + ", " + path);

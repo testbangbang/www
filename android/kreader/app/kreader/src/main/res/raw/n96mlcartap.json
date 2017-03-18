@@ -1,8 +1,10 @@
 {
+  "defaultFontSizeIndex" : 3,
+  "defaultLineSpacingIndex" : 2,
   "ttsEnabled" : true,
   "hasFrontLight" : true,
-  "disableNoteFunc" : true,
-  "defaultUseSystemStatusBar" : true,
+  "disableNoteFunc" : false,
+  "supportBrushPen": true,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},

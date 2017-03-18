@@ -204,4 +204,8 @@ public abstract class EpdController
     public static float getTouchHeight() {
         return Device.currentDevice().getTouchHeight();
     }
+
+    public static void enableRegal(boolean enable) {
+        Device.currentDevice().enableRegal(enable);
+    }
 }
