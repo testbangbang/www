@@ -24,6 +24,7 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.scribble.data.UndoRedoManager;
+import com.onyx.android.sdk.scribble.utils.DetectInputDeviceUtil;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
@@ -167,13 +168,10 @@ public class DeviceUtils {
     }
 
     public static String detectInputDevicePath() {
-        final int DEVICE_MAX = 3;
         String last = DEFAULT_TOUCH_DEVICE_PATH;
-        for(int i = 1; i < DEVICE_MAX; ++i) {
-            String path = String.format("/dev/input/event%d", i);
-            if (FileUtils.fileExist(path)) {
-                last = path;
-            }
+        String index = DetectInputDeviceUtil.detectInputDevicePath();
+        if (StringUtils.isNotBlank(index)) {
+            last = String.format("/dev/input/event%s", index);
         }
         return last;
     }
