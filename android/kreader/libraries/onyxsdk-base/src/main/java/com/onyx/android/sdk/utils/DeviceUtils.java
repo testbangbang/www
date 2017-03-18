@@ -174,13 +174,10 @@ public class DeviceUtils {
     }
 
     public static String detectInputDevicePath() {
-        final int DEVICE_MAX = 3;
         String last = DEFAULT_TOUCH_DEVICE_PATH;
-        for(int i = 1; i < DEVICE_MAX; ++i) {
-            String path = String.format("/dev/input/event%d", i);
-            if (FileUtils.fileExist(path)) {
-                last = path;
-            }
+        String index = DetectInputDeviceUtil.detectInputDevicePath();
+        if (StringUtils.isNotBlank(index)) {
+            last = String.format("/dev/input/event%s", index);
         }
         return last;
     }
