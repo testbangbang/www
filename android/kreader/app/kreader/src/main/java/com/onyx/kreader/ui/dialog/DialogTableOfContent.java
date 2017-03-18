@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -33,6 +32,7 @@ import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.DialogChoose;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -51,7 +51,6 @@ import com.onyx.kreader.note.actions.GetScribbleBitmapAction;
 import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ExportScribbleAction;
 import com.onyx.kreader.ui.actions.GetDocumentInfoChain;
-import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -67,7 +66,7 @@ import java.util.List;
 /**
  * Created by joy on 7/6/16.
  */
-public class DialogTableOfContent extends Dialog implements CompoundButton.OnCheckedChangeListener, PageRecyclerView.OnPagingListener {
+public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButton.OnCheckedChangeListener, PageRecyclerView.OnPagingListener {
 
     private static final String TAG = DialogTableOfContent.class.getSimpleName();
 

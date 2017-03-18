@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +10,7 @@ import com.onyx.android.sdk.ui.R;
  * Created by ming on 2017/1/12.
  */
 
-public class DialogChoose extends Dialog{
+public class DialogChoose extends OnyxBaseDialog{
 
     public interface Callback {
         void onClickListener(int index);
