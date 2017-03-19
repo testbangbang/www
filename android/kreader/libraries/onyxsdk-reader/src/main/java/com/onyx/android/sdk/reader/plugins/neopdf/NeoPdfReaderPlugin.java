@@ -551,6 +551,14 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return selection;
     }
 
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
+        int page = PagePositionUtils.getPageNumber(pagePosition);
+        final List<ReaderSelection> list = new ArrayList<>();
+        getPluginImpl().getPageTextRegions(page, list);
+        return list;
+    }
+
     public boolean supportScale() {
         if (StringUtils.isNullOrEmpty(documentPath)) {
             return false;

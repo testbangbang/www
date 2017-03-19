@@ -2,6 +2,7 @@ package com.onyx.android.sdk.reader.host.wrapper;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.RectF;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
@@ -11,7 +12,6 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderException;
-import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
@@ -20,11 +20,13 @@ import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.api.ReaderRenderer;
 import com.onyx.android.sdk.reader.api.ReaderRendererFeatures;
 import com.onyx.android.sdk.reader.api.ReaderSearchManager;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils;
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
@@ -44,6 +46,8 @@ import com.onyx.android.sdk.utils.StringUtils;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -366,15 +370,28 @@ public class ReaderHelper {
         return formManager;
     }
 
-    public void applyPostBitmapProcess(ReaderBitmapReferenceImpl bitmap) {
-        applyGamma(bitmap);
+    public List<RectF> collectTextRectangleList(final ReaderViewInfo viewInfo) {
+        final List<ReaderSelection> selectionList = getHitTestManager().allText(viewInfo.getFirstVisiblePageName());
+        if (selectionList == null) {
+            return null;
+        }
+        final List<RectF> list = new ArrayList<>();
+        for(ReaderSelection selection : selectionList) {
+            list.addAll(selection.getRectangles());
+        }
+        return list;
+    }
+
+    public void applyPostBitmapProcess(final ReaderViewInfo viewInfo, ReaderBitmapReferenceImpl bitmap) {
+        final List<RectF> regions = collectTextRectangleList(viewInfo);
+        applyGamma(bitmap, null);
         applyEmbolden(bitmap);
         applySaturation(bitmap);
     }
 
-    private void applyGamma(final ReaderBitmapReferenceImpl bitmap) {
+    private void applyGamma(final ReaderBitmapReferenceImpl bitmap, final List<RectF> regions) {
         applyTextGamma(bitmap);
-        applyImageGamma(bitmap);
+        applyImageGamma(bitmap, regions);
     }
 
     private void applyTextGamma(final ReaderBitmapReferenceImpl bitmap) {
@@ -384,11 +401,10 @@ public class ReaderHelper {
         }
     }
 
-    private void applyImageGamma(final ReaderBitmapReferenceImpl bitmap) {
+    private void applyImageGamma(final ReaderBitmapReferenceImpl bitmap, final List<RectF> regions) {
         if (getDocumentOptions().isGammaCorrectionEnabled() &&
-                !bitmap.isGammaIgnored() &&
-                Float.compare(bitmap.gammaCorrection(), getDocumentOptions().getGammaLevel()) != 0) {
-            if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel())) {
+                !bitmap.isGammaIgnored()) {
+            if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel(), regions)) {
                 bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
             }
         }
