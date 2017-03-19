@@ -206,6 +206,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return null;
     }
 
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
+        return null;
+    }
+
     /**
      * Get document position for specified point.
      *

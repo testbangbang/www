@@ -32,6 +32,36 @@ bool ImageGammaFilter::doFilterInPlace(AndroidBitmapFormat format, unsigned char
     return false;
 }
 
+bool ImageGammaFilter::doRegionFilterInPlace(AndroidBitmapFormat format,
+                                             unsigned char *data,
+                                             const int left,
+                                             const int top,
+                                             const int right,
+                                             const int bottom,
+                                             const int strideInBytes) {
+    if (gamma < 0) {
+        return false;
+    }
+
+    if (format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+        return false;
+    }
+
+    for(int j = top; j < bottom; ++j) {
+        unsigned char * line = data + j * strideInBytes;
+        int begin = 4 * left;
+        int end = 4 * right;
+        for(int i = begin; i < end; ++i) {
+            if (i % 4 == 3) {
+                line[i] = ALPHA;
+            } else  {
+                line[i] = gamma_lut[line[i]];
+            }
+        }
+    }
+    return true;
+}
+
 void ImageGammaFilter::setGamma(float g) {
     if (gamma == g) {
         return;

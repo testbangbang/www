@@ -20,6 +20,15 @@ public:
      */
     void setGamma(float gamma);
 
+    bool doRegionFilterInPlace(AndroidBitmapFormat format,
+                                 unsigned char *data,
+                                 const int x,
+                                 const int y,
+                                 const int width,
+                                 const int height,
+                                 const int strideInBytes);
+
+
 private:
     int gamma;
 };

@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.reader.api;
 
+import java.util.List;
+
 /**
  * Created by zhuzeng on 10/3/15.
  */
@@ -28,7 +30,7 @@ public interface ReaderHitTestManager {
      */
     public ReaderSelection selectOnScreen(final ReaderHitTestArgs start, final ReaderHitTestArgs end, final ReaderHitTestOptions hitTestOptions);
 
-    public ReaderSelection selectOnScreen(String pagePosition, final String startPosition, final String endPosition);
+    public ReaderSelection selectOnScreen(final String pagePosition, final String startPosition, final String endPosition);
 
-
+    List<ReaderSelection> allText(final String pagePosition);
 }

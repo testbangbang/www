@@ -30,10 +30,10 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_emb
 /*
  * Class:     com_onyx_android_sdk_reader_utils_ImageUtils
  * Method:    gammaCorrection
- * Signature: (Landroid/graphics/Bitmap;F)Z
+ * Signature: (Landroid/graphics/Bitmap;F[F)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_gammaCorrection
-  (JNIEnv *, jclass, jobject, jfloat);
+  (JNIEnv *, jclass, jobject, jfloat, jfloatArray);
 
 /*
  * Class:     com_onyx_android_sdk_reader_utils_ImageUtils
@@ -83,7 +83,6 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_release
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_toRgbwBitmap
   (JNIEnv *, jclass, jobject, jobject, jint);
 
-
 /*
  * Class:     com_onyx_android_sdk_reader_utils_ImageUtils
  * Method:    toColorBitmap
@@ -92,10 +91,9 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_toRgbwB
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_toColorBitmap
   (JNIEnv *, jclass, jobject, jobject, jint);
 
-
 /*
  * Class:     com_onyx_android_sdk_reader_utils_ImageUtils
- * Method:    isTextPage
+ * Method:    isValidPage
  * Signature: ()Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_isValidPage
