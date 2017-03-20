@@ -1,7 +1,5 @@
 package com.onyx.android.sdk.utils;
 
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.File;
 
