@@ -80,6 +80,7 @@ bool initAnnotationAndPainter(PoDoFo::PdfDocument *document,
     painter->SetPage(*xobj);
     painter->SetStrokeWidth(strokeThickness);
     painter->SetStrokingColor(pdfColor);
+    painter->SetLineCapStyle(ePdfLineCapStyle_Round);
     return true;
 }
 
