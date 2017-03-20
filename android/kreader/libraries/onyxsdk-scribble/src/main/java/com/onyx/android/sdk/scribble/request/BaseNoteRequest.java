@@ -218,7 +218,7 @@ public class BaseNoteRequest extends BaseRequest {
     private void flushRenderingBuffer(final Bitmap bitmap) {
     }
 
-    private void drawBackground(final Canvas canvas, final Paint paint,int bgType,String bgFilePath) {
+    private void drawBackground(final Canvas canvas, final Paint paint, int bgType, String bgFilePath) {
         int bgResID = 0;
         switch (bgType) {
             case NoteBackgroundType.EMPTY:
@@ -275,6 +275,10 @@ public class BaseNoteRequest extends BaseRequest {
         Rect dest;
         if (resID == Integer.MIN_VALUE && !TextUtils.isEmpty(bgFilePath)) {
             bitmap = BitmapFactory.decodeFile(bgFilePath);
+            //TODO:use dynamic rotation angle?(if does,need more info from screenshot).
+            if (bitmap.getHeight() < bitmap.getWidth()) {
+                bitmap = BitmapUtils.rotateBmp(bitmap, 90);
+            }
             dest = BitmapUtils.getScaleInSideAndCenterRect(
                     canvas.getHeight(), canvas.getWidth(), bitmap.getHeight(), bitmap.getWidth(), false);
         } else {
