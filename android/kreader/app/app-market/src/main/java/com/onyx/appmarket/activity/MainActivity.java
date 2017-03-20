@@ -3,6 +3,7 @@ package com.onyx.appmarket.activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -41,6 +42,7 @@ import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.wifi.NetworkHelper;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
@@ -49,6 +51,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.appmarket.MarketApplication;
 import com.onyx.appmarket.R;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -76,7 +79,7 @@ public class MainActivity extends OnyxAppCompatActivity {
 
     private ProductQuery productQuery;
     private List<AppProduct> productList = new ArrayList<>();
-    private int currentCategoryIndex = INVALID_VALUE;
+    private int currentCategoryIndex = 0;
 
     private int pageViewRowCount = 5;
     private int pageViewColCount = 1;
@@ -184,7 +187,7 @@ public class MainActivity extends OnyxAppCompatActivity {
                 holder.descLabel.setText(StringUtils.isNullOrEmpty(product.summary) ? product.description : product.summary);
                 holder.typeLabel.setText(product.type);
                 holder.sizeLabel.setText(getString(R.string.size_of_app, product.size * 1.0f / 1024 / 1024));
-                readerIconImageView(holder.iconImageLabel, product.coverUrl);
+                readerIconImageView(holder.iconImageLabel, product);
                 renderButton(holder.downloadButton, product);
             }
         });
@@ -209,10 +212,26 @@ public class MainActivity extends OnyxAppCompatActivity {
         return file != null && file.exists();
     }
 
-    private void readerIconImageView(ImageView imageView, String url) {
-        Picasso.with(this).load(url)
+    private void readerIconImageView(ImageView imageView, final AppProduct product) {
+        Picasso.with(this).load(product.coverUrl)
                 .error(R.mipmap.ic_launcher)
                 .placeholder(R.mipmap.ic_launcher)
+                .transform(new Transformation() {
+                    @Override
+                    public Bitmap transform(Bitmap source) {
+                        // save cloud icon file for cb loading custom icon
+                        File coverFile = getApkIconFilePath(product);
+                        if (!coverFile.exists()) {
+                            BitmapUtils.saveBitmap(source, coverFile.getAbsolutePath());
+                        }
+                        return source;
+                    }
+
+                    @Override
+                    public String key() {
+                        return product.packageName;
+                    }
+                })
                 .into(imageView);
     }
 
@@ -359,12 +378,13 @@ public class MainActivity extends OnyxAppCompatActivity {
     }
 
     private void showCategoryDialog(final Category category) {
+        Category allCategory = new Category();
+        allCategory.name = getString(R.string.all);
+        category.children.add(0, allCategory);
+
         List<String> categoryList = new ArrayList<>();
         for (Category child : category.children) {
             categoryList.add(child.name);
-        }
-        if (CollectionUtils.isNullOrEmpty(categoryList)) {
-            return;
         }
         if (currentCategoryIndex >= categoryList.size()) {
             resetCategoryIndex();
@@ -376,7 +396,7 @@ public class MainActivity extends OnyxAppCompatActivity {
             @Override
             public void onSortBy(int position, String sortBy, SortOrder sortOrder) {
                 currentCategoryIndex = position;
-                productQuery.setCategory(category.children.get(currentCategoryIndex ).getGuid());
+                productQuery.setCategory(category.children.get(currentCategoryIndex).getGuid());
                 productQuery.resetKey();
                 loadAppList();
             }
@@ -397,6 +417,15 @@ public class MainActivity extends OnyxAppCompatActivity {
         if (!dir.exists()) {
             dir.mkdirs();
         }
+        return new File(dir, fileName);
+    }
+
+    public File getApkIconFilePath(AppProduct product) {
+        File dir = new File(EnvironmentUtil.getExternalStorageDirectory() + "/Download/AppMarket/icon");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        String fileName = product.packageName.replaceAll("\\.", "_") + ".png";
         return new File(dir, fileName);
     }
 
