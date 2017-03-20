@@ -53,8 +53,8 @@ bool ImageGammaFilter::doRegionFilterInPlace(AndroidBitmapFormat format,
         int end = 4 * right;
         for(int i = begin; i < end; ++i) {
             if (i % 4 == 3) {
-                line[i] = ALPHA;
-            } else  {
+                // line[i] = ALPHA;
+            } else if (line[i] < 192) {
                 line[i] = gamma_lut[line[i]];
             }
         }
