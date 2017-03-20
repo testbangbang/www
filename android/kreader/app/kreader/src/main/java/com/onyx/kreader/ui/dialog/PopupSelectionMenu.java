@@ -6,8 +6,10 @@ package com.onyx.kreader.ui.dialog;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.RectF;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,9 +22,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.ui.wifi.NetworkHelper;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.actions.DictionaryQueryAction;
@@ -42,6 +47,7 @@ public class PopupSelectionMenu extends LinearLayout {
     private static final String TAG = PopupSelectionMenu.class.getSimpleName();
     private static final int MAX_DICTIONARY_LOAD_COUNT = 6;
     private static final int DELAY_DICTIONARY_LOAD_TIME = 2000;
+    public static final String BAIDU_BAIKE = "https://wapbaike.baidu.com/item/";
 
     public enum SelectionType {
         SingleWordType,
@@ -83,6 +89,7 @@ public class PopupSelectionMenu extends LinearLayout {
     private ImageView markerView;
     private ImageView pronounce1;
     private ImageView pronounce2;
+    private ImageView webSearch;
     private int dictViewHeight;
     private int dictViewWidth;
     private int dictionaryLoadCount;
@@ -126,6 +133,7 @@ public class PopupSelectionMenu extends LinearLayout {
         markerView = (ImageView) findViewById(R.id.marker_view);
         pronounce1 = (ImageView) findViewById(R.id.pronounce_1);
         pronounce2 = (ImageView) findViewById(R.id.pronounce_2);
+        webSearch = (ImageView) findViewById(R.id.web_search);
         pronounce1.setEnabled(false);
         pronounce2.setEnabled(false);
         mDictNextPage.setOnClickListener(new OnClickListener() {
@@ -248,6 +256,12 @@ public class PopupSelectionMenu extends LinearLayout {
                 playSoundDictionary(soundDictionaryQueries, 1);
             }
         });
+        webSearch.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openBaiduBaike();
+            }
+        });
 
         final ImageView buttonCloseMenu = (ImageView) findViewById(R.id.button_close);
         buttonCloseMenu.setOnClickListener(new OnClickListener() {
@@ -265,6 +279,19 @@ public class PopupSelectionMenu extends LinearLayout {
         });
         setVisibility(View.GONE);
         initDictList();
+    }
+
+    private void openBaiduBaike(){
+        if (!NetworkHelper.requestWifi(getActivity())) {
+            return;
+        }
+
+        String headWord = mDictTitle.getText().toString();
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        Uri content_url = Uri.parse(BAIDU_BAIKE + headWord);
+        intent.setData(content_url);
+        getActivity().startActivity(intent);
     }
 
     private void toggleDictList() {
