@@ -12,4 +12,5 @@
     <string name="size_of_app" translatable="false">%.2fM</string>
     <string name="search_hint">Search (empty string to search all)</string>
     <string name="no_category_found">No category found</string>
+    <string name="all">All</string>
 </resources>
