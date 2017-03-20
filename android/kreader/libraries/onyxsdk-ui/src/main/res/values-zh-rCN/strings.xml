@@ -53,7 +53,7 @@
     <string name="ok">确认</string>
     <string name="cancel">取消</string>
     <string name="gamma_correction">对比度</string>
-    <string name="manual_crop">手动裁边</string>
+    <string name="manual_crop">选切模式</string>
     <string name="outOfRangRerror">超出区域</string>
     <string name="illegalInput">无效输入</string>
     <string name="save">保存</string>
