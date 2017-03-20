@@ -215,7 +215,8 @@ public class BitmapUtils {
      * @param zoomToWidth if true means zoomToWidth,otherwise means zoomToHeight
      * @return
      */
-    public static Rect getScaleInSideAndCenterRect(int renderTargetHeight, int renderTargetWidth,int sourceHeight, int sourceWidth ,boolean zoomToWidth) {
+    public static Rect getScaleInSideAndCenterRect(int renderTargetHeight, int renderTargetWidth,
+                                                   int sourceHeight, int sourceWidth, boolean zoomToWidth) {
         Rect resultRect;
         float ratio;
         if (zoomToWidth) {
@@ -232,6 +233,12 @@ public class BitmapUtils {
                     renderTargetHeight - 1);
         }
         return resultRect;
+    }
+
+    public static Bitmap rotateBmp(Bitmap bmp, int degrees) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        return Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
     }
 
 }
