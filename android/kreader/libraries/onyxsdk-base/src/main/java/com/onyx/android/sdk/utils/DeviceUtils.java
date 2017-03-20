@@ -80,9 +80,9 @@ public class DeviceUtils {
         return uuid.toString();
     }
 
-    public static float getDensity(Context context) {
+    public static float getDensityDPI(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return displayMetrics.density * 160;
+        return displayMetrics.densityDpi;
     }
 
     public static String getApplicationFingerprint(Context context) {
@@ -96,10 +96,11 @@ public class DeviceUtils {
         return null;
     }
 
-    public static int getScreenOrientation(final Activity activity) {
-        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+    public static int getScreenOrientation(final Context context) {
+        WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        int rotation = windowManager.getDefaultDisplay().getRotation();
         DisplayMetrics dm = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        windowManager.getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
         int height = dm.heightPixels;
         int orientation;
