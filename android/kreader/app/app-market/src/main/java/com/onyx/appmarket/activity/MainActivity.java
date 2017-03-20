@@ -79,7 +79,7 @@ public class MainActivity extends OnyxAppCompatActivity {
 
     private ProductQuery productQuery;
     private List<AppProduct> productList = new ArrayList<>();
-    private int currentCategoryIndex = INVALID_VALUE;
+    private int currentCategoryIndex = 0;
 
     private int pageViewRowCount = 5;
     private int pageViewColCount = 1;
@@ -378,12 +378,13 @@ public class MainActivity extends OnyxAppCompatActivity {
     }
 
     private void showCategoryDialog(final Category category) {
+        Category allCategory = new Category();
+        allCategory.name = getString(R.string.all);
+        category.children.add(0, allCategory);
+
         List<String> categoryList = new ArrayList<>();
         for (Category child : category.children) {
             categoryList.add(child.name);
-        }
-        if (CollectionUtils.isNullOrEmpty(categoryList)) {
-            return;
         }
         if (currentCategoryIndex >= categoryList.size()) {
             resetCategoryIndex();
@@ -395,7 +396,7 @@ public class MainActivity extends OnyxAppCompatActivity {
             @Override
             public void onSortBy(int position, String sortBy, SortOrder sortOrder) {
                 currentCategoryIndex = position;
-                productQuery.setCategory(category.children.get(currentCategoryIndex ).getGuid());
+                productQuery.setCategory(category.children.get(currentCategoryIndex).getGuid());
                 productQuery.resetKey();
                 loadAppList();
             }
