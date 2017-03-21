@@ -510,7 +510,8 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         ReaderDeviceManager.applyRegalUpdate(this, getStatusBar());
-        ReaderDeviceManager.holdDisplay(true);
+        boolean hold = !ReaderDeviceManager.isApplyFullUpdate();
+        ReaderDeviceManager.holdDisplay(hold);
     }
 
     @Subscribe
