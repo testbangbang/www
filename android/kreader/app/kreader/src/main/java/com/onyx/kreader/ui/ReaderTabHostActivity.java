@@ -58,6 +58,15 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         setContentView(R.layout.activity_reader_host);
         initComponents();
         restoreReaderTabState();
+
+        tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                Debug.d(TAG, "onCreate -> tab host onLayoutChange");
+                updateReaderTabWindowHeight();
+            }
+        });
     }
 
     @Override
@@ -538,6 +547,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void updateReaderTabWindowHeight(ReaderTabManager.ReaderTab tab) {
+        Debug.d(TAG, "updateReaderTabWindowHeight: " + tab);
+        if (!tabManager.getOpenedTabs().containsKey(tab)) {
+            return;
+        }
         final int tabContentHeight = getTabContentHeight();
         ReaderBroadcastReceiver.sendResizeReaderWindowIntent(this,
                 tabManager.getTabReceiver(tab),
