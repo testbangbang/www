@@ -75,4 +75,7 @@
     <string name="import_fail">Import failure</string>
     <string name="import_success_info" formatted="false">Import total of %d data</string>
 
+    <string name="expand">Expand</string>
+    <string name="collapse">Collapse</string>
+    <string name="jump">Jump</string>
 </resources>

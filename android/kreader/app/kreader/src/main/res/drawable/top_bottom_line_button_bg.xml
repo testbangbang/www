@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <solid android:color="@android:color/white" />
+            <corners android:radius="5dp" />
+            <stroke android:width="5dp" android:color="@android:color/black" />
+        </shape>
+    </item>
+    <item android:state_focused="false"
         android:top="0dp"
         android:right="-2dp"
         android:bottom="0dp"
@@ -12,4 +19,4 @@
                 android:color="@android:color/black"/>
         </shape>
     </item>
-</layer-list>
+</selector>

@@ -91,11 +91,27 @@ public class ReaderLayerMenuRepository {
                 ReaderLayerMenuItem group = new ReaderLayerMenuItem(item);
                 menuGroupList.add(group);
                 currentGroup = group;
-            } else {
+            } else if (isChildItem(currentGroup.getAction(), item.getAction())){
                 (currentGroup.getChildren()).add(new ReaderLayerMenuItem(item.getItemType(),
                         item.getAction(), currentGroup, item.getTitleResourceId(), item.getTitle(), item.getDrawableResourceId(), item.getItemId()));
             }
         }
         return menuGroupList;
+    }
+
+    private static boolean isChildItem(ReaderMenuAction groupAction, ReaderMenuAction childAction) {
+        boolean findGroup = false;
+        for (ReaderLayerMenuItem fixedPageMenuItem : fixedPageMenuItems) {
+            if (findGroup && fixedPageMenuItem.getItemType() == ReaderMenuItem.ItemType.Group) {
+                break;
+            }
+            if (fixedPageMenuItem.getAction() == groupAction) {
+                findGroup = true;
+            }
+            if (findGroup && fixedPageMenuItem.getAction() == childAction) {
+                return true;
+            }
+        }
+        return false;
     }
 }

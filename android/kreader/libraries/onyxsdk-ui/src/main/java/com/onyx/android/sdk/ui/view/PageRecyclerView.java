@@ -192,6 +192,11 @@ public class PageRecyclerView extends RecyclerView {
         setDefaultPageKeyBinding();
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return processKeyAction(event) || super.dispatchKeyEvent(event);
+    }
+
     private TouchDirection touchDirection = TouchDirection.Vertical;
 
     private int detectDirection(MotionEvent currentEvent) {
@@ -236,13 +241,11 @@ public class PageRecyclerView extends RecyclerView {
         return super.onTouchEvent(ev);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return processKeyAction(keyCode);
-    }
-
-    private boolean processKeyAction(final int keyCode){
-        final String args = keyBindingMap.get(keyCode);
+    private boolean processKeyAction(KeyEvent event){
+        if (event.getAction() == KeyEvent.ACTION_UP) {
+            return false;
+        }
+        final String args = keyBindingMap.get(event.getKeyCode());
         if (args == null){
             return false;
         }
@@ -380,11 +383,15 @@ public class PageRecyclerView extends RecyclerView {
             if (view != null){
                 if (position < getDataCount()){
                     view.setVisibility(VISIBLE);
-                    onPageBindViewHolder(holder,adapterPosition);
                     view.setFocusable(true);
                     setupListener(view,adapterPosition);
                     updateFocusView(view,adapterPosition);
+                    if (getPagePaginator().offsetInCurrentPage(position) == 0) {
+                        view.requestFocus();
+                    }
+                    onPageBindViewHolder(holder,adapterPosition);
                 }else {
+                    view.setFocusable(false);
                     view.setVisibility(INVISIBLE);
                 }
 
@@ -449,18 +456,22 @@ public class PageRecyclerView extends RecyclerView {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
-                        pageRecyclerView.setCurrentFocusedPosition(position);
-                    }else if (position == pageRecyclerView.getCurrentFocusedPosition()) {
-                        pageRecyclerView.setCurrentFocusedPosition(-1);
+                        if (!getPagePaginator().isItemInCurrentPage(position)) {
+                            getPageRecyclerView().gotoPage(getPagePaginator().pageByIndex(position));
+                        }
                     }
                 }
             });
+
         }
 
         public PageRecyclerView getPageRecyclerView() {
             return pageRecyclerView;
         }
 
+        private GPaginator getPagePaginator() {
+            return getPageRecyclerView().getPaginator();
+        }
 
     }
 }

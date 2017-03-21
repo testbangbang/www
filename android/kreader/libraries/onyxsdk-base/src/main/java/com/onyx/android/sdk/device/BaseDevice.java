@@ -357,4 +357,8 @@ public class BaseDevice {
     public void enableRegal(boolean enable) {
 
     }
+
+    public boolean isTouchable(Context context) {
+        return true;
+    }
 }

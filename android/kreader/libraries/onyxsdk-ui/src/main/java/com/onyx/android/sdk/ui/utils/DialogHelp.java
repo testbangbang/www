@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -64,7 +65,6 @@ public class DialogHelp {
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.alert_bg);
             return dialog;
         }
-
     }
 
 }

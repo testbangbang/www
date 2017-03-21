@@ -154,7 +154,7 @@ public class DialogQuickPreview extends OnyxBaseDialog {
         @Override
         public PreviewViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
             final PreviewViewHolder previewViewHolder = new PreviewViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.preview_list_item_view, parent, false));
-            previewViewHolder.getContainer().setOnClickListener(new View.OnClickListener() {
+            previewViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     new GotoPageAction(previewViewHolder.getPage(), true).execute(readerDataHolder, new BaseCallback() {
@@ -169,11 +169,21 @@ public class DialogQuickPreview extends OnyxBaseDialog {
         }
 
         @Override
-        public void onPageBindViewHolder(PreviewViewHolder holder, int position) {
+        public void onPageBindViewHolder(PreviewViewHolder holder, final int position) {
             Bitmap bmp = previewMap.get(position);
 
             holder.bindPreview(bmp, position);
             holder.getContainer().setActivated(readerDataHolder.getCurrentPage() == position);
+            holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        if (gridRecyclerView.getPaginator().isInNextPage(position)) {
+                            oneImageGrid.requestFocus();
+                        }
+                    }
+                }
+            });
         }
 
         @Override

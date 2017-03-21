@@ -10,11 +10,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,9 +28,12 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
+import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.ui.dialog.DialogChoose;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
@@ -95,6 +100,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
     private GetScribbleBitmapAction getScribbleBitmapAction;
     private List<String> requestPages;
     private boolean loadedScribble = false;
+    private View.OnFocusChangeListener onFocusChangeListener;
 
     public enum DirectoryTab {TOC, Bookmark, Annotation, Scribble}
 
@@ -148,12 +154,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new GotoPositionAction(pagePosition).execute(readerDataHolder, new BaseCallback() {
-                        @Override
-                        public void done(BaseRequest request, Throwable e) {
-                            DialogTableOfContent.this.dismiss();
-                        }
-                    });
+                    onItemClick(v, pagePosition, position);
                 }
             });
         }
@@ -172,6 +173,50 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
 
             editLayout.setVisibility(currentTab == DirectoryTab.Annotation ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private void onDelete(final int position) {
+        DialogHelp.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (currentTab == DirectoryTab.Bookmark) {
+                    deleteBookmark(readerDataHolder, position);
+                } else {
+                    deleteAnnotation(readerDataHolder, position);
+                }
+            }
+        }).show();
+    }
+
+    private void onItemClick(View v, final String pagePosition, final int position) {
+        if (v.isPressed()) {
+            onJump(pagePosition);
+            return;
+        }
+        if (currentTab == DirectoryTab.Bookmark) {
+            new DialogChoose(getContext(), R.string.jump, R.string.delete, new DialogChoose.Callback() {
+                @Override
+                public void onClickListener(int index) {
+                    switch (index) {
+                        case 0:
+                            onJump(pagePosition);
+                            break;
+                        case 1:
+                            onDelete(position);
+                            break;
+                    }
+                }
+            }).show();
+        }
+    }
+
+    private void onJump(final String pagePosition) {
+        new GotoPositionAction(pagePosition).execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                DialogTableOfContent.this.dismiss();
+            }
+        });
     }
 
     private void showAnnotationEditDialog(final int position) {
@@ -280,6 +325,21 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
         btnAnt.setTag(DirectoryTab.Annotation);
         btnScribble.setTag(DirectoryTab.Scribble);
 
+        this.setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_DPAD_LEFT:
+                        btnToc.setChecked(true);
+                        return true;
+                    case KeyEvent.KEYCODE_DPAD_RIGHT:
+                        btnBookmark.setChecked(true);
+                        return true;
+                }
+                return false;
+            }
+        });
+
         showExportLayout(currentTab);
         setViewListener();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
@@ -288,7 +348,9 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                 !readerDataHolder.isFixedPageDocument()) {
             btnScribble.setVisibility(View.GONE);
         }
-
+        if (!Device.detectDevice().isTouchable(readerDataHolder.getContext())){
+            btnAnt.setVisibility(View.GONE);
+        }
     }
 
     @Override

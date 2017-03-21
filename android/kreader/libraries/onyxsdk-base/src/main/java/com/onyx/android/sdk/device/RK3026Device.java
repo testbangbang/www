@@ -541,4 +541,23 @@ public class RK3026Device extends BaseDevice {
     public void enableRegal(boolean enable) {
         ReflectUtil.invokeMethodSafely(sMethodEnableRegal, null, enable);
     }
+
+    @Override
+    public boolean isTouchable(Context context) {
+        Boolean touchable = true;
+        try {
+            Object instance = sDeviceControllerConstructor.newInstance(context);
+            touchable = (Boolean) sMethodIsTouchable.invoke(instance);
+            if (touchable == null) {
+                return true;
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return touchable.booleanValue();
+    }
 }
