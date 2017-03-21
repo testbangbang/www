@@ -786,6 +786,8 @@ public class ReaderActivity extends OnyxBaseActivity {
             BaseHandler.HandlerInitialState state = SlideshowHandler.createInitialState(mainView, maxPageCount, interval);
             getHandlerManager().setActiveProvider(HandlerManager.SLIDESHOW_PROVIDER, state);
         }
+
+        Debug.setDebug(getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_ENABLE_DEBUG, Debug.getDebug()));
     }
 
     @Subscribe
