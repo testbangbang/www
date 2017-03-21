@@ -105,6 +105,10 @@ public class ReaderDeviceManager {
         }
     }
 
+    public static boolean isApplyFullUpdate() {
+        return refreshCount == 0;
+    }
+
     public static void refreshScreenWithGCIntervalWithRegal(View view) {
         if (refreshCount++ >= gcInterval) {
             refreshCount = 0;
