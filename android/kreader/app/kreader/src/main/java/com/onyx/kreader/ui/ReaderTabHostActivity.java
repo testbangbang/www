@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -36,10 +37,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private static final Class TAG = ReaderTabHostActivity.class;
+
+    public static AtomicBoolean enableDebugLog = null;
 
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
 
@@ -50,6 +54,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private String pathToContinueOpenAfterRotation;
 
     private boolean insideTabChanging = false;
+
+    public static void setEnableDebugLog(boolean enabled) {
+        Debug.setDebug(enabled);
+        enableDebugLog = new AtomicBoolean(enabled);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -195,6 +204,16 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
             @Override
             public void onQuitFullScreen() {
+            }
+
+            @Override
+            public void onEnableDebugLog() {
+                enableDebugLog(true);
+            }
+
+            @Override
+            public void onDisableDebugLog() {
+                enableDebugLog(false);
             }
         });
     }
@@ -431,6 +450,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         intent.putExtras(getIntent());
         final int tabContentHeight = getTabContentHeight();
         intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
+        if (enableDebugLog != null) {
+            intent.putExtra(ReaderBroadcastReceiver.TAG_ENABLE_DEBUG, enableDebugLog.get());
+        }
+
         startActivity(intent);
     }
 
@@ -575,4 +598,33 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         showTabWidgetOnCondition();
         rebuildTabWidget();
     }
+
+    private void enableDebugLog(boolean enabled) {
+        Log.d(TAG.getSimpleName(), "enableDebugLog: " + enabled);
+        setEnableDebugLog(enabled);
+        enableDebugLogOnOpenedReaderTabs(enabled);
+    }
+
+    private void enableDebugLogOnOpenedReaderTabs(boolean enabled) {
+        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
+        if (!tasksList.isEmpty()) {
+            int nSize = tasksList.size();
+            for (int i = 0; i < nSize; i++) {
+                for (ReaderTabManager.ReaderTab tab : tabManager.getOpenedTabs().keySet()) {
+                    String clzName = tabManager.getTabActivity(tab).getName();
+                    if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
+                        Debug.d(TAG, "set debug log: " + tab + ", " + enabled);
+                        if (enabled) {
+                            ReaderBroadcastReceiver.sendEnableDebugLogIntent(this, tabManager.getTabReceiver(tab));
+                        } else {
+                            ReaderBroadcastReceiver.sendDisableDebugLogIntent(this, tabManager.getTabReceiver(tab));
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
 }

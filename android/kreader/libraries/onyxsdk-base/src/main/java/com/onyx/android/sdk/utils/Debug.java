@@ -17,6 +17,10 @@ public class Debug {
         Debug.debug = debug;
     }
 
+    public static boolean getDebug() {
+        return debug;
+    }
+
     public static void i(final String msg) {
         if (debug) {
             Log.i(TAG, msg);
