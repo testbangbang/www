@@ -455,7 +455,8 @@ public class ReaderActivity extends ActionBarActivity {
             return;
         }
         ReaderDeviceManager.applyRegalUpdate(this, getStatusBar());
-        ReaderDeviceManager.holdDisplay(true);
+        boolean hold = !ReaderDeviceManager.isApplyFullUpdate();
+        ReaderDeviceManager.holdDisplay(hold);
     }
 
     @Subscribe
