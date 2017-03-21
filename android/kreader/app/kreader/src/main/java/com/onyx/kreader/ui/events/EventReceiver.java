@@ -79,6 +79,22 @@ public class EventReceiver {
     }
 
     @Subscribe
+    public void onActivityPause(final ActivityPauseEvent event) {
+        if (!isEnable()) {
+            return;
+        }
+        statisticsManager.onActivityPause(event.getContext());
+    }
+
+    @Subscribe
+    public void onActivityResume(final ActivityResumeEvent event) {
+        if (!isEnable()) {
+            return;
+        }
+        statisticsManager.onActivityResume(event.getContext());
+    }
+
+    @Subscribe
     public void onPageChanged(final PageChangedEvent event) {
         if (!isEnable()) {
             return;
