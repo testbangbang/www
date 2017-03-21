@@ -37,7 +37,8 @@
 
         <activity
             android:name=".activity.onyx.ScribbleActivity"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustNothing"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
                 <category android:name="android.intent.category.DEFAULT" />

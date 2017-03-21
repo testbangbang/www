@@ -25,7 +25,7 @@ public class Debug {
 
     public static void i(final Class<?> cls, final String msg, final Object... args) {
         if (debug) {
-            Log.i(cls.getSimpleName(), formatString(msg, args));
+            Log.i(verifyTag(cls.getSimpleName()), formatString(msg, args));
         }
     }
 
@@ -37,7 +37,7 @@ public class Debug {
 
     public static void d(final Class<?> cls, final String msg, final Object... args) {
         if (debug) {
-            Log.d(cls.getSimpleName(), formatString(msg, args));
+            Log.d(verifyTag(cls.getSimpleName()), formatString(msg, args));
         }
     }
 
@@ -46,7 +46,7 @@ public class Debug {
     }
 
     public static void w(final Class<?> cls, final String msg, final Object... args) {
-        Log.w(cls.getSimpleName(), formatString(msg, args));
+        Log.w(verifyTag(cls.getSimpleName()), formatString(msg, args));
     }
 
     public static void w(final Throwable throwable) {
@@ -54,7 +54,7 @@ public class Debug {
     }
 
     public static void w(final Class<?> cls, final Throwable throwable) {
-        Log.w(cls.getSimpleName(), throwable);
+        Log.w(verifyTag(cls.getSimpleName()), throwable);
     }
 
     public static void e(final String msg) {
@@ -62,7 +62,7 @@ public class Debug {
     }
 
     public static void e(final Class<?> cls, final String msg, final Object... args) {
-        Log.e(cls.getSimpleName(), formatString(msg, args));
+        Log.e(verifyTag(cls.getSimpleName()), formatString(msg, args));
     }
 
     public static void e(final Throwable throwable) {
@@ -74,10 +74,17 @@ public class Debug {
     public static void e(final Class<?> cls, final Throwable throwable) {
         StringWriter sw = new StringWriter();
         throwable.printStackTrace(new PrintWriter(sw));
-        Log.e(cls.getSimpleName(), sw.toString());
+        Log.e(verifyTag(cls.getSimpleName()), sw.toString());
     }
 
     private static String formatString(final String str, final Object... args) {
         return String.format(null, str, args);
+    }
+
+    private static String verifyTag(String tag) {
+        if (!StringUtils.isBlank(tag)) {
+            return tag;
+        }
+        return TAG;
     }
 }

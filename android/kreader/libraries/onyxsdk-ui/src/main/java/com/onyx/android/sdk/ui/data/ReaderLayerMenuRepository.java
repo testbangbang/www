@@ -25,7 +25,7 @@ public class ReaderLayerMenuRepository {
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.ZOOM_BY_CROP_WIDTH, null, R.string.reader_layer_menu_zoom_by_crop_width, "", R.drawable.ic_dialog_reader_menu_scale_cut_two),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.NAVIGATION, null, R.string.reader_layer_menu_navigation, "", R.drawable.ic_dialog_reader_menu_browse),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.IMAGE_REFLOW, null, R.string.reader_layer_menu_font_reflow, "", R.drawable.ic_dialog_reader_menu_scale_reset),
-            new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.MANUAL_CROP, null, R.string.manual_crop, "", R.drawable.ic_dialog_reader_browse_cut_single),
+            new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.MANUAL_CROP, null, R.string.manual_crop, "", R.drawable.ic_dialog_reader_menu_cut),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_COMIC_MODE, null, R.string.reader_layer_menu_navigation_comic_mode, "", R.drawable.ic_dialog_reader_menu_browse_cartoon),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_ARTICLE_MODE, null, R.string.reader_layer_menu_navigation_article_mode, "", R.drawable.ic_dialog_reader_menu_browse_thesis),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_RESET, null, R.string.reader_layer_menu_navigation_reset, "", R.drawable.ic_dialog_reader_menu_browse_reset),

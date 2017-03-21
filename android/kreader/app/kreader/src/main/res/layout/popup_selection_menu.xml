@@ -39,6 +39,18 @@
                 android:textSize="@dimen/control_panel_floating_tittle_text_size" />
 
             <ImageView
+                android:background="@drawable/imagebtn_bg"
+                android:padding="5dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@+id/pronounce_1"
+                android:src="@drawable/ic_dialog_reader_dic_i_search"
+                android:id="@+id/web_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:background="@drawable/imagebtn_bg"
                 android:padding="5dp"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
@@ -49,6 +61,7 @@
                 android:layout_height="wrap_content"/>
 
             <ImageView
+                android:background="@drawable/imagebtn_bg"
                 android:padding="5dp"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
@@ -85,14 +98,14 @@
                 android:layout_height="wrap_content"/>
 
             <ImageView
+                android:background="@drawable/imagebtn_bg"
                 android:id="@+id/button_close"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/ic_dialog_close"
+                android:src="@drawable/ic_close"
                 android:layout_marginRight="10dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/ic_close"
                 />
 
         </RelativeLayout>
@@ -124,11 +137,12 @@
         </FrameLayout>
 
         <RelativeLayout
-            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <ImageView
+                android:padding="5dp"
+                android:background="@drawable/imagebtn_bg"
                 android:visibility="invisible"
                 android:layout_toLeftOf="@+id/page_indicator"
                 android:id="@+id/dict_prev_page"
@@ -155,6 +169,8 @@
                 android:textSize="@dimen/control_panel_floating_tittle_text_size" />
 
             <ImageView
+                android:padding="5dp"
+                android:background="@drawable/imagebtn_bg"
                 android:visibility="invisible"
                 android:layout_alignParentRight="true"
                 android:id="@+id/dict_next_page"
