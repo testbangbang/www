@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.util.Log;
 
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.ViewDocumentUtils;
+
 /**
  * Created by joy on 2/23/17.
  */
@@ -23,6 +26,8 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         public abstract void onChangeOrientation(int orientation);
         public abstract void onEnterFullScreen();
         public abstract void onQuitFullScreen();
+        public abstract void onEnableDebugLog();
+        public abstract void onDisableDebugLog();
     }
 
     private static Callback callback;
@@ -59,19 +64,33 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(getClass().getSimpleName(), "onReceive: " + intent);
-        if (callback == null) {
-            return;
-        }
-
         if (intent.getAction().equals(ACTION_TAB_BACK_PRESSED)) {
-            callback.onTabBackPressed();
+            if (callback != null) {
+                callback.onTabBackPressed();
+            }
         } else if (intent.getAction().equals(ACTION_CHANGE_SCREEN_ORIENTATION)) {
-            callback.onChangeOrientation(intent.getIntExtra(TAG_SCREEN_ORIENTATION,
-                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+            if (callback != null) {
+                callback.onChangeOrientation(intent.getIntExtra(TAG_SCREEN_ORIENTATION,
+                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+            }
         } else if (intent.getAction().equals(ACTION_ENTER_FULL_SCREEN)) {
-            callback.onEnterFullScreen();
+            if (callback != null) {
+                callback.onEnterFullScreen();
+            }
         } else if (intent.getAction().equals(ACTION_QUIT_FULL_SCREEN)) {
-            callback.onQuitFullScreen();
+            if (callback != null) {
+                callback.onQuitFullScreen();
+            }
+        } else if (intent.getAction().equals(ViewDocumentUtils.ACTION_ENABLE_READER_DEBUG_LOG)) {
+            ReaderTabHostActivity.setEnableDebugLog(true);
+            if (callback != null) {
+                callback.onEnableDebugLog();
+            }
+        } else if (intent.getAction().equals(ViewDocumentUtils.ACTION_DISABLE_READER_DEBUG_LOG)) {
+            ReaderTabHostActivity.setEnableDebugLog(false);
+            if (callback != null) {
+                callback.onDisableDebugLog();
+            }
         }
     }
 }

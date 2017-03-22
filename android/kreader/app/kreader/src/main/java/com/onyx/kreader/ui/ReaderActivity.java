@@ -73,6 +73,7 @@ import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
 import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
+import com.onyx.kreader.ui.events.ActivityPauseEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
 import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
@@ -174,6 +175,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (DeviceUtils.isDeviceInteractive(this)) {
             onDocumentDeactivated();
         }
+        getReaderDataHolder().onActivityPause();
         super.onPause();
     }
 
@@ -408,6 +410,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         reconfigStatusBar();
         enablePenShortcut();
         updateRawEventProcessor();
+        getReaderDataHolder().onActivityResume();
     }
 
     private void enablePenShortcut() {
@@ -510,7 +513,8 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         ReaderDeviceManager.applyRegalUpdate(this, getStatusBar());
-        ReaderDeviceManager.holdDisplay(true);
+        boolean hold = !ReaderDeviceManager.isApplyFullUpdate();
+        ReaderDeviceManager.holdDisplay(hold);
     }
 
     @Subscribe
@@ -786,6 +790,8 @@ public class ReaderActivity extends OnyxBaseActivity {
             BaseHandler.HandlerInitialState state = SlideshowHandler.createInitialState(mainView, maxPageCount, interval);
             getHandlerManager().setActiveProvider(HandlerManager.SLIDESHOW_PROVIDER, state);
         }
+
+        Debug.setDebug(getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_ENABLE_DEBUG, Debug.getDebug()));
     }
 
     @Subscribe

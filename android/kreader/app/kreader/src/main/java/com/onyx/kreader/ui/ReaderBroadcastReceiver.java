@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
 import com.onyx.kreader.ui.events.ResizeReaderWindowEvent;
@@ -22,10 +23,13 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_MOVE_TASK_TO_BACK = "com.onyx.kreader.action.MOVE_TASK_TO_BACK";
     public static final String ACTION_RESIZE_WINDOW = "com.onyx.kreader.action.RESIZE_WINDOW";
     public static final String ACTION_DOCUMENT_ACTIVATED = "com.onyx.kreader.action.DOCUMENT_ACTIVATED";
+    public static final String ACTION_ENABLE_DEBUG_LOG = "com.onyx.kreader.action.ENABLE_DEBUG_LOG";
+    public static final String ACTION_DISABLE_DEBUG_LOG = "com.onyx.kreader.action.DISABLE_DEBUG_LOG";
 
     public static final String TAG_WINDOW_WIDTH = "com.onyx.kreader.WINDOW_WIDTH";
     public static final String TAG_WINDOW_HEIGHT = "com.onyx.kreader.WINDOW_HEIGHT";
     public static final String TAG_DOCUMENT_PATH = "com.onyx.kreader.DOCUMENT_PATH";
+    public static final String TAG_ENABLE_DEBUG = "com.onyx.kreader.ENABLE_DEBUG";
 
     private static EventBus eventBus;
 
@@ -60,6 +64,18 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         context.sendBroadcast(intent);
     }
 
+    public static void sendEnableDebugLogIntent(Context context, Class clazz) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_ENABLE_DEBUG_LOG);
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendDisableDebugLogIntent(Context context, Class clazz) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_DISABLE_DEBUG_LOG);
+        context.sendBroadcast(intent);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(getClass().getSimpleName(), "onReceive: " + intent);
@@ -77,6 +93,10 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
                     intent.getIntExtra(TAG_WINDOW_HEIGHT, WindowManager.LayoutParams.MATCH_PARENT)));
         } else if (intent.getAction().equals(ACTION_DOCUMENT_ACTIVATED)) {
             eventBus.post(new DocumentActivatedEvent(intent.getStringExtra(TAG_DOCUMENT_PATH)));
+        } else if (intent.getAction().equals(ACTION_ENABLE_DEBUG_LOG)) {
+            Debug.setDebug(true);
+        } else if (intent.getAction().equals(ACTION_DISABLE_DEBUG_LOG)) {
+            Debug.setDebug(false);
         }
     }
 }

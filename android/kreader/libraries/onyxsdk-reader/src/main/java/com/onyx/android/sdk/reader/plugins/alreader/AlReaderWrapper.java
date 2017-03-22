@@ -32,6 +32,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.Benchmark;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
@@ -381,6 +382,7 @@ public class AlReaderWrapper {
     public int getTotalPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "getTotalPage: get page count failed!");
             return -1;
         }
         return position.pageCount;
@@ -389,6 +391,7 @@ public class AlReaderWrapper {
     public int getScreenStartPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "getScreenStartPage: get page count failed!");
             return -1;
         }
         return getPageNumberOfPosition(position.readPositionStart);
@@ -397,6 +400,7 @@ public class AlReaderWrapper {
     public int getScreenEndPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "getScreenEndPage: get page count failed!");
             return -1;
         }
         return getPageNumberOfPosition(position.readPositionEnd);
@@ -405,6 +409,7 @@ public class AlReaderWrapper {
     public int getScreenStartPosition() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "getScreenStartPosition: get page count failed!");
             return -1;
         }
         return position.readPositionStart;
@@ -413,6 +418,7 @@ public class AlReaderWrapper {
     public int getScreenEndPosition() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "getScreenEndPosition: get page count failed!");
             return -1;
         }
         return position.readPositionEnd - 1;
@@ -421,6 +427,7 @@ public class AlReaderWrapper {
     public boolean isFirstPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "isFirstPage: get page count failed!");
             return false;
         }
         return position.isFirstPage;
@@ -429,6 +436,7 @@ public class AlReaderWrapper {
     public boolean isLastPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "isLastPage: get page count failed!");
             return false;
         }
         return position.isLastPage;

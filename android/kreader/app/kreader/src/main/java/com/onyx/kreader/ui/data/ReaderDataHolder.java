@@ -5,7 +5,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -15,7 +14,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
-import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
@@ -448,6 +447,7 @@ public class ReaderDataHolder {
                                         Throwable e,
                                         boolean applyGCIntervalUpdate,
                                         boolean renderShapeData) {
+        Debug.d(getClass(), "onRenderRequestFinished: " + request);
         if (e != null || request.isAbort()) {
             return;
         }
@@ -597,6 +597,14 @@ public class ReaderDataHolder {
             getEventBus().unregister(eventReceiver);
             eventReceiver = null;
         }
+    }
+
+    public void onActivityPause() {
+        getEventBus().post(new ActivityPauseEvent(getContext()));
+    }
+
+    public void onActivityResume() {
+        getEventBus().post(new ActivityResumeEvent(getContext()));
     }
 
     public void onDocumentInitRendered() {

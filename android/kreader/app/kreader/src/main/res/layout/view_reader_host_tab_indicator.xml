@@ -13,7 +13,7 @@
             android:layout_alignParentRight="true"
             android:padding="10dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_dialog_close" />
+            android:src="@drawable/reader_tab_close_image_selector" />
 
         <TextView
             android:layout_marginLeft="5dp"
@@ -24,7 +24,7 @@
             android:layout_alignTop="@id/image_button_close"
             android:layout_alignBottom="@id/image_button_close"
             android:textSize="20sp"
-            android:textColor="@android:color/black"
+            android:textColor="@drawable/tab_text_selector"
             android:ellipsize="middle"
             android:gravity="left|center_vertical"
             android:singleLine="true"

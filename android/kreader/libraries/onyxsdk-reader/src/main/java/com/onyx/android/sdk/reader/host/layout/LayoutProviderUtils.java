@@ -117,6 +117,7 @@ public class LayoutProviderUtils {
     static public void updateReaderViewInfo(final Reader reader,
                                             final ReaderViewInfo readerViewInfo,
                                             final ReaderLayoutManager layoutManager) throws ReaderException {
+        Debug.d(TAG, "updateReaderViewInfo");
         if (!reader.getRendererFeatures().supportScale()) {
             updateVisiblePagesForFlowDocument(reader, readerViewInfo, layoutManager);
         }

@@ -93,4 +93,13 @@
         <item name="android:layout_marginBottom">@dimen/activity_statistics_spacing</item>
         <item name="android:textSize">@dimen/activity_statistics_small_text_size</item>
     </style>
+    <style name="dialog_text_style_title_text_view">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textSize">@dimen/dialog_text_style_title_text_size</item>
+    </style>
 </resources>
