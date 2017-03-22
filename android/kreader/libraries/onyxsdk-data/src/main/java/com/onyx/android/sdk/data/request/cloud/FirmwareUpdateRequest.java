@@ -23,6 +23,12 @@ public class FirmwareUpdateRequest extends BaseCloudRequest {
         return resultFirmware;
     }
 
+    public boolean isResultFirmwareValid() {
+        return resultFirmware != null &&
+                resultFirmware.downloadUrlList != null &&
+                resultFirmware.downloadUrlList.size() > 0;
+    }
+
     @Override
     public void execute(final CloudManager parent) throws Exception {
         Call<Firmware> call = ServiceFactory.getOTAService(parent.getCloudConf().getApiBase())
