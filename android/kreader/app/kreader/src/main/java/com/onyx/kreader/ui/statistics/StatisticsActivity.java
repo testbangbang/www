@@ -159,8 +159,9 @@ public class StatisticsActivity extends ActionBarActivity {
         getCloudStore().submitRequest(this, statisticsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (dialogLoading != null) {
+                if (dialogLoading != null && dialogLoading.isShowing()) {
                     dialogLoading.dismiss();
+                    dialogLoading = null;
                 }
                 if (e != null) {
                     Toast.makeText(StatisticsActivity.this, R.string.load_statistical_data_failed, Toast.LENGTH_SHORT).show();
