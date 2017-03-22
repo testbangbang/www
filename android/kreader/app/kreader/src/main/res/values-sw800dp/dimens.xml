@@ -64,4 +64,5 @@
     <dimen name="dialog_quick_view_page_text_size">22sp</dimen>
     <dimen name="dialog_search_list_item_text_size">20sp</dimen>
     <dimen name="view_common_statistics_item_text_size">22sp</dimen>
+    <dimen name="dialog_text_style_title_text_size">20sp</dimen>
 </resources>
