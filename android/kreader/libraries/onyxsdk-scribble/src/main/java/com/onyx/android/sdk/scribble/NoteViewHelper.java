@@ -136,6 +136,15 @@ public class NoteViewHelper {
         setLineLayoutMode(false);
     }
 
+    public void flushTouchPointList() {
+        TouchPointList touchPointList = getRawInputProcessor().getTouchPointList();
+        boolean erasing = getRawInputProcessor().isErasing();
+        if (touchPointList == null || erasing) {
+            return;
+        }
+        onNewTouchPointListReceived(touchPointList);
+    }
+
     public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
         getNoteDocument().open(context, documentUniqueId, parentUniqueId);
         onDocumentOpened();
