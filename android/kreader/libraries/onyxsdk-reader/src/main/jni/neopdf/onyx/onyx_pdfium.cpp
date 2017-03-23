@@ -6,6 +6,7 @@
 #include "JNIUtils.h"
 
 #include "fpdf_doc.h"
+#include "fpdf_formfill.h"
 
 #include "core/fpdfapi/fpdf_page/include/cpdf_pageobject.h"
 #include "fpdf_edit.h"
@@ -26,8 +27,10 @@ OnyxPdfiumContext * OnyxPdfiumManager::getContext(JNIEnv *env, jint id) {
     return contextHolder.findContext(env, id);
 }
 
-OnyxPdfiumContext * OnyxPdfiumManager::createContext(JNIEnv *env, jint id, FPDF_DOCUMENT document) {
-    OnyxPdfiumContext *context = new OnyxPdfiumContext(document);
+OnyxPdfiumContext * OnyxPdfiumManager::createContext(JNIEnv *env, jint id,
+                                                     FPDF_DOCUMENT document,
+                                                     FPDF_FORMHANDLE formHandle) {
+    OnyxPdfiumContext *context = new OnyxPdfiumContext(document, formHandle);
     contextHolder.insertContext(env, id, std::unique_ptr<OnyxPdfiumContext>(context));
     return context;
 }
@@ -83,7 +86,19 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
         LOGE("load document failed error code %d", errorCode);
         return errorCode;
     }
-    OnyxPdfiumManager::createContext(env, id, document);
+
+    FPDF_FORMFILLINFO formInfo;
+    formInfo.version = 1;
+    FPDF_FORMHANDLE formHandle = FPDFDOC_InitFormFillEnvironment(document, &formInfo);
+    if (!formHandle) {
+        LOGE("init form fill environment failed!");
+        FPDF_CloseDocument(document);
+        return -1;
+    }
+    FPDF_SetFormFieldHighlightColor(formHandle, 0, 0xFFE4DD);
+    FPDF_SetFormFieldHighlightAlpha(formHandle, 100);
+
+    OnyxPdfiumManager::createContext(env, id, document, formHandle);
     return 0;
 }
 
@@ -96,6 +111,10 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 
     // make sure we close all pages before closing document.
     OnyxPdfiumManager::releaseContext(env, id);
+
+    FPDF_FORMHANDLE formHandle = OnyxPdfiumManager::getFormHandle(env, id);
+    FPDFDOC_ExitFormFillEnvironment(formHandle);
+
     FPDF_CloseDocument(document);
     return true;
 }
@@ -189,6 +208,8 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
         return false;
     }
     FPDF_RenderPageBitmap(pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
+    FPDF_FORMHANDLE formHandle = OnyxPdfiumManager::getFormHandle(env, id);
+    FPDF_FFLDraw(formHandle, pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
     AndroidBitmap_unlockPixels(env, bitmap);
     return true;
 }

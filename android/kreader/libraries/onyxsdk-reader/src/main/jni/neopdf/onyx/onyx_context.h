@@ -26,6 +26,7 @@
 #include "fpdf_doc.h"
 #include "fpdfview.h"
 #include "fpdf_text.h"
+#include "fpdf_formfill.h"
 
 class OnyxPdfiumPage {
 
@@ -68,16 +69,18 @@ class OnyxPdfiumContext {
 
 private:
     FPDF_DOCUMENT document;
+    FPDF_FORMHANDLE formHandle;
     FPDF_BITMAP bitmap;
     std::list<std::pair<int, OnyxPdfiumPage *>> pageQueue; // use std::queue to simulate FIFO queue
     std::unordered_map<void *, FPDF_BITMAP> bitmapMap;
 
 public:
-    OnyxPdfiumContext(FPDF_DOCUMENT doc)
-        : document(doc) {
+    OnyxPdfiumContext(FPDF_DOCUMENT doc, FPDF_FORMHANDLE formHandle)
+        : document(doc), formHandle(formHandle) {
     }
     ~OnyxPdfiumContext() {
         document = NULL;
+        formHandle = NULL;
         clearBitmaps();
         clearPages();
     }
@@ -85,6 +88,10 @@ public:
 public:
     FPDF_DOCUMENT getDocument() {
         return document;
+    }
+
+    FPDF_FORMHANDLE getFormHandle() {
+        return formHandle;
     }
 
     FPDF_BITMAP getBitmap(int width, int height, void * pixels, int stride) {
@@ -159,7 +166,9 @@ private:
 
 public:
     static OnyxPdfiumContext * getContext(JNIEnv *env, jint id);
-    static OnyxPdfiumContext * createContext(JNIEnv *env, jint id, FPDF_DOCUMENT document);
+    static OnyxPdfiumContext * createContext(JNIEnv *env, jint id,
+                                             FPDF_DOCUMENT document,
+                                             FPDF_FORMHANDLE formHandle);
     static void releaseContext(JNIEnv *env, jint id);
 
     static FPDF_DOCUMENT getDocument(JNIEnv *env, jint id) {
@@ -168,6 +177,14 @@ public:
             return NULL;
         }
         return context->getDocument();
+    }
+
+    static FPDF_FORMHANDLE getFormHandle(JNIEnv *env, jint id) {
+        OnyxPdfiumContext * context = getContext(env, id);
+        if (context == NULL) {
+            return NULL;
+        }
+        return context->getFormHandle();
     }
 
     static FPDF_BITMAP getBitmap(JNIEnv *env, jint id, int width, int height, void * pixels, int stride) {
