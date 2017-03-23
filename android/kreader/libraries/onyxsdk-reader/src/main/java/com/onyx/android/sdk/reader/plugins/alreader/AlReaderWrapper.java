@@ -145,6 +145,8 @@ public class AlReaderWrapper {
             return bookProperties.title;
         } else if ("Author".compareTo(tag) == 0) {
             return authorListToString(bookProperties.authors);
+        } else {
+            Debug.d(getClass(), "metadataString: unknown tag -> " + tag);
         }
         return "";
     }
