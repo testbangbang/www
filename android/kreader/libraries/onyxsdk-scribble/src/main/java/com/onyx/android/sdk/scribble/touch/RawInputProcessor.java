@@ -178,7 +178,9 @@ public class RawInputProcessor {
         while (!stop) {
             dataInputStream.readFully(data);
             ByteBuffer wrapped = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
-            processInputEvent(wrapped.getLong(), wrapped.getShort(), wrapped.getShort(), wrapped.getInt());
+            if (!stop) {
+                processInputEvent(wrapped.getLong(), wrapped.getShort(), wrapped.getShort(), wrapped.getInt());
+            }
         }
     }
 

@@ -83,7 +83,7 @@ public class NoteViewHelper {
     }
 
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
-    private RawInputProcessor rawInputProcessor = new RawInputProcessor();
+    private RawInputProcessor rawInputProcessor = null;
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
@@ -243,7 +243,7 @@ public class NoteViewHelper {
         screenMatrix.postTranslate(deviceConfig.getEpdPostTx(), deviceConfig.getEpdPostTy());
         screenMatrix.preScale(deviceConfig.getEpdWidth() / getTouchWidth(),
                 deviceConfig.getEpdHeight() / getTouchHeight());
-        rawInputProcessor.setScreenMatrix(screenMatrix);
+        getRawInputProcessor().setScreenMatrix(screenMatrix);
     }
 
     // consider view offset to screen.
@@ -255,7 +255,7 @@ public class NoteViewHelper {
 
         final Matrix viewMatrix = new Matrix();
         viewMatrix.postTranslate(-viewPosition[0], -viewPosition[1]);
-        rawInputProcessor.setViewMatrix(viewMatrix);
+        getRawInputProcessor().setViewMatrix(viewMatrix);
     }
 
     private OnyxMatrix initViewToEpdMatrix() {
@@ -273,6 +273,10 @@ public class NoteViewHelper {
     public void setCustomLimitRect(Rect targetRect){
         customLimitRect = targetRect;
         updateLimitRect();
+    }
+
+    private void resetRawInputProcessor() {
+        rawInputProcessor = null;
     }
 
     private void updateLimitRect() {
@@ -306,7 +310,7 @@ public class NoteViewHelper {
         }
 
         dfbLimitRect.offsetTo(0, 0);
-        rawInputProcessor.setLimitRect(customLimitRect == null ? dfbLimitRect : customLimitRect);
+        getRawInputProcessor().setLimitRect(customLimitRect == null ? dfbLimitRect : customLimitRect);
 
         int viewPosition[] = {0, 0};
         surfaceView.getLocationOnScreen(viewPosition);
@@ -361,6 +365,7 @@ public class NoteViewHelper {
         }
 
         getRawInputProcessor().quit();
+        resetRawInputProcessor();
     }
 
     public void setBackground(int bgType) {
@@ -442,6 +447,9 @@ public class NoteViewHelper {
     }
 
     public final RawInputProcessor getRawInputProcessor() {
+        if (rawInputProcessor == null) {
+            rawInputProcessor = new RawInputProcessor();
+        }
         return rawInputProcessor;
     }
 
@@ -501,7 +509,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-        rawInputProcessor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
+        getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
             public void onBeginRawData() {
                 if (callback != null) {
