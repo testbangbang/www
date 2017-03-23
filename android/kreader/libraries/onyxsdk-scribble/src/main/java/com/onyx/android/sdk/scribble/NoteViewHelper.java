@@ -127,7 +127,7 @@ public class NoteViewHelper {
     }
 
     public void flushTouchPointList() {
-        TouchPointList touchPointList = getRawInputProcessor().getTouchPointList();
+        TouchPointList touchPointList = getRawInputProcessor().detachTouchPointList();
         boolean erasing = getRawInputProcessor().isErasing();
         if (touchPointList == null || erasing) {
             return;
