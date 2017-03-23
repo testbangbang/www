@@ -523,6 +523,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void onSave(final boolean finishAfterSave) {
         hideSoftInput();
+        getNoteViewHelper().flushTouchPointList();
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

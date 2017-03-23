@@ -377,6 +377,14 @@ public class RawInputProcessor {
         });
     }
 
+    public TouchPointList getTouchPointList() {
+        return touchPointList;
+    }
+
+    public boolean isErasing() {
+        return erasing;
+    }
+
     public boolean isMoveFeedback() {
         return moveFeedback;
     }
