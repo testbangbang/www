@@ -26,22 +26,25 @@ public class ReaderTabManager {
     private Queue<ReaderTab> freeTabList = new LinkedList<>();
     private LinkedHashMap<ReaderTab, String> openedTabs = new LinkedHashMap<>();
 
+    public static boolean supportMultipleTabs() {
+        return DeviceConfig.sharedInstance(KReaderApp.instance()).isSupportMultipleTabs();
+    }
+
     private ReaderTabManager() {
         tabActivityList.put(ReaderTab.TAB_1, ReaderTab1Activity.class);
-        tabReceiverList.put(ReaderTab.TAB_1, ReaderTab1BroadcastReceiver.class);
-        freeTabList.add(ReaderTab.TAB_1);
+        tabActivityList.put(ReaderTab.TAB_2, ReaderTab2Activity.class);
+        tabActivityList.put(ReaderTab.TAB_3, ReaderTab3Activity.class);
+        tabActivityList.put(ReaderTab.TAB_4, ReaderTab4Activity.class);
 
-        if (DeviceConfig.sharedInstance(KReaderApp.instance()).isSupportMultipleTabs()) {
-            tabActivityList.put(ReaderTab.TAB_2, ReaderTab2Activity.class);
-            tabActivityList.put(ReaderTab.TAB_3, ReaderTab3Activity.class);
-            tabActivityList.put(ReaderTab.TAB_4, ReaderTab4Activity.class);
-            tabReceiverList.put(ReaderTab.TAB_2, ReaderTab2BroadcastReceiver.class);
-            tabReceiverList.put(ReaderTab.TAB_3, ReaderTab3BroadcastReceiver.class);
-            tabReceiverList.put(ReaderTab.TAB_4, ReaderTab4BroadcastReceiver.class);
-            freeTabList.add(ReaderTab.TAB_2);
-            freeTabList.add(ReaderTab.TAB_3);
-            freeTabList.add(ReaderTab.TAB_4);
-        }
+        tabReceiverList.put(ReaderTab.TAB_1, ReaderTab1BroadcastReceiver.class);
+        tabReceiverList.put(ReaderTab.TAB_2, ReaderTab2BroadcastReceiver.class);
+        tabReceiverList.put(ReaderTab.TAB_3, ReaderTab3BroadcastReceiver.class);
+        tabReceiverList.put(ReaderTab.TAB_4, ReaderTab4BroadcastReceiver.class);
+
+        freeTabList.add(ReaderTab.TAB_1);
+        freeTabList.add(ReaderTab.TAB_2);
+        freeTabList.add(ReaderTab.TAB_3);
+        freeTabList.add(ReaderTab.TAB_4);
     }
 
     public static ReaderTabManager create() {
@@ -52,7 +55,7 @@ public class ReaderTabManager {
     public static ReaderTabManager createFromJson(String json) {
         ReaderTabManager manager = new ReaderTabManager();
         if (StringUtils.isBlank(json)) {
-            return manager;
+            return buildForMultipleTabState(manager);
         }
 
         LinkedHashMap<String, String> map = JSON.parseObject(json, manager.openedTabs.getClass());
@@ -62,15 +65,32 @@ public class ReaderTabManager {
         for (LinkedHashMap.Entry<ReaderTab, String> entry : manager.openedTabs.entrySet()) {
             manager.freeTabList.remove(entry.getKey());
         }
+
+        return buildForMultipleTabState(manager);
+    }
+
+    private static ReaderTabManager buildForMultipleTabState(ReaderTabManager manager) {
+        if (supportMultipleTabs()) {
+            return manager;
+        }
+
+        LinkedHashMap.Entry<ReaderTab, String> lastEntry = null;
+        for (LinkedHashMap.Entry<ReaderTab, String> entry : manager.getOpenedTabs().entrySet()) {
+            lastEntry = entry;
+        }
+
+        manager.openedTabs.clear();
+        manager.freeTabList.clear();
+        if (lastEntry == null) {
+            manager.freeTabList.add(ReaderTab.TAB_1);
+        } else {
+            manager.openedTabs.put(lastEntry.getKey(), lastEntry.getValue());
+        }
         return manager;
     }
 
     public String toJson() {
         return JSON.toJSONString(openedTabs);
-    }
-
-    public boolean supportMultipleTabs() {
-        return tabActivityList.size() > 1;
     }
 
     public Class getTabActivity(ReaderTab tab) {

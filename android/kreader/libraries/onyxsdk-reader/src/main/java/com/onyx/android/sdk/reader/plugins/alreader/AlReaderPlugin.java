@@ -113,6 +113,14 @@ public class AlReaderPlugin implements ReaderPlugin,
         return getExtensionFilters().contains(extension);
     }
 
+    static public boolean isJEB(final String path){
+        String extension = FileUtils.getFileExtension(path);
+        if(extension.contentEquals("jeb")){
+            return true;
+        }
+        return false;
+    }
+
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
         String docPassword = "";
         String archivePassword = "";

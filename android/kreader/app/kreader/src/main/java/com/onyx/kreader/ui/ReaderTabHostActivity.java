@@ -7,9 +7,11 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
@@ -20,7 +22,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -35,12 +37,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ReaderTabHostActivity extends OnyxBaseActivity {
 
-    private static final String TAG = ReaderTabHostActivity.class.getSimpleName();
+    private static final Class TAG = ReaderTabHostActivity.class;
 
-    private static final String TAG_TAB_MANAGER = "tab_manager";
+    public static AtomicBoolean enableDebugLog = null;
 
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
 
@@ -51,6 +54,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private String pathToContinueOpenAfterRotation;
 
     private boolean insideTabChanging = false;
+    private boolean isManualShowTab = true;
+
+    public static void setEnableDebugLog(boolean enabled) {
+        Debug.setDebug(enabled);
+        enableDebugLog = new AtomicBoolean(enabled);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,12 +68,20 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         setContentView(R.layout.activity_reader_host);
         initComponents();
         restoreReaderTabState();
+
+        tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                Debug.d(TAG, "onCreate -> tab host onLayoutChange");
+                updateReaderTabWindowHeight();
+            }
+        });
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
+    protected void onStart() {
+        super.onStart();
         syncFullScreenState();
     }
 
@@ -100,6 +117,20 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         handleActivityIntent();
     }
 
+    @Override
+    public void onBackPressed() {
+        Debug.d(getClass(), "onBackPressed");
+        // move background reader tabs to back first, so we can avoid unintended screen update
+        ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
+        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
+            if (entry.getKey() != currentTab) {
+                moveReaderTabToBack(entry.getKey());
+            }
+        }
+        moveReaderTabToBack(currentTab);
+        moveTaskToBack(true);
+    }
+
     private void initComponents() {
         initTabHost();
         initReceiver();
@@ -111,9 +142,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         btnSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isShowed = tabWidget.getVisibility() == View.VISIBLE;
-                tabWidget.setVisibility(isShowed ? View.INVISIBLE : View.VISIBLE);
-                btnSwitch.setImageResource(isShowed ? R.drawable.ic_pack_up : R.drawable.ic_unfold);
+                updateTabLayoutState(!isManualShowTab);
             }
         });
 
@@ -125,17 +154,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             @Override
             public void onGlobalLayout() {
                 // delay the handling of activity intent from onCreate()
+                Debug.d(TAG, "initTabHost -> onGlobalLayout");
                 TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
                 handleActivityIntent();
             }
         });
 
-        if (!tabManager.supportMultipleTabs()) {
-            hideTabWidget();
-            return;
-        }
-
-        addTabToHost(ReaderTabManager.ReaderTab.TAB_1, "");
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
@@ -147,11 +171,27 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 insideTabChanging = false;
             }
         });
-        tabHost.setCurrentTab(0);
+
+        addDummyTabToHost();
+
+        if (tabManager.supportMultipleTabs()) {
+            hideTabWidget();
+        }
+    }
+
+    private void updateTabLayoutState(boolean show) {
+        isManualShowTab = show;
+        tabWidget.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+        btnSwitch.setImageResource(show ? R.drawable.ic_unfold : R.drawable.ic_pack_up);
     }
 
     private void initReceiver() {
         ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
+            @Override
+            public void onTabBackPressed() {
+                onBackPressed();
+            }
+
             @Override
             public void onChangeOrientation(final int orientation) {
                 final int current = DeviceUtils.getScreenOrientation(ReaderTabHostActivity.this);
@@ -165,12 +205,20 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
             @Override
             public void onEnterFullScreen() {
-                syncFullScreenState();
             }
 
             @Override
             public void onQuitFullScreen() {
-                syncFullScreenState();
+            }
+
+            @Override
+            public void onEnableDebugLog() {
+                enableDebugLog(true);
+            }
+
+            @Override
+            public void onDisableDebugLog() {
+                enableDebugLog(false);
             }
         });
     }
@@ -223,6 +271,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         });
     }
 
+    private void addDummyTabToHost() {
+        addTabToHost(ReaderTabManager.ReaderTab.TAB_1, "");
+        tabHost.setCurrentTab(0);
+    }
+
     private void rebuildTabWidget() {
         insideTabChanging = true;
         tabHost.clearAllTabs();
@@ -236,6 +289,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : reverseList) {
             Debug.d(TAG, "rebuilding: " + entry.getKey());
             addTabToHost(entry.getKey(), entry.getValue());
+        }
+
+        if (tabWidget.getTabCount() <= 0) {
+            addDummyTabToHost();
         }
     }
 
@@ -258,6 +315,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void showTabWidgetOnCondition() {
         if (isShowingTabWidget()) {
             showTabWidget();
+            updateTabLayoutState(isManualShowTab);
         } else {
             hideTabWidget();
         }
@@ -297,17 +355,21 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void syncFullScreenState() {
         boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
-        Debug.d(TAG, "syncFullScreenState: " + fullScreen);
-        DeviceUtils.setFullScreenOnResume(this, fullScreen);
-        tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        Debug.d(TAG, "syncFullScreenState: " + DeviceUtils.isFullScreen(tabHost) + " -> " + fullScreen);
+        if (fullScreen != DeviceUtils.isFullScreen(tabHost)) {
+            tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
-            @Override
-            public void onGlobalLayout() {
-                Debug.d(TAG, "syncFullScreenState -> onGlobalLayout");
-                TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
-                updateReaderTabWindowHeight();
-            }
-        });
+                @Override
+                public void onGlobalLayout() {
+                    Debug.d(TAG, "syncFullScreenState -> onGlobalLayout");
+                    TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
+                    updateReaderTabWindowHeight();
+                    bringSelfToFront();
+                    bringReaderTabToFront(getCurrentTabInHost());
+                }
+            });
+        }
+        DeviceUtils.setFullScreenOnResume(this, fullScreen);
     }
 
     private boolean handleActivityIntent() {
@@ -370,6 +432,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void openDocWithTab(String path) {
+        // ensure tab host is visible before opening the doc
+        bringSelfToFront();
+
         ReaderTabManager.ReaderTab tab = tabManager.findOpenedTabByPath(path);
         if (tab != null) {
             Debug.d(TAG, "file already opened in tab: " + tab + ", " + path);
@@ -391,6 +456,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         intent.putExtras(getIntent());
         final int tabContentHeight = getTabContentHeight();
         intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
+        if (enableDebugLog != null) {
+            intent.putExtra(ReaderBroadcastReceiver.TAG_ENABLE_DEBUG, enableDebugLog.get());
+        }
+
         startActivity(intent);
     }
 
@@ -407,12 +476,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void addReaderTab(ReaderTabManager.ReaderTab tab, String path) {
         tabManager.addOpenedTab(tab, path);
 
-        if (tabManager.supportMultipleTabs()) {
-            showTabWidgetOnCondition();
-            rebuildTabWidget();
-            updateCurrentTabInHost(tab);
-            updateReaderTabWindowHeight(tab);
-        }
+        showTabWidgetOnCondition();
+        rebuildTabWidget();
+        updateCurrentTabInHost(tab);
+        updateReaderTabWindowHeight(tab);
     }
 
     private void closeReaderTab(ReaderTabManager.ReaderTab tab) {
@@ -430,10 +497,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void closeTabActivity(ReaderTabManager.ReaderTab tab) {
-        Intent intent = new Intent(this, tabManager.getTabReceiver(tab));
-        intent.setAction(ReaderBroadcastReceiver.ACTION_CLOSE_READER);
-        Debug.d(TAG, "sendBroadcast: " + intent);
-        sendBroadcast(intent);
+        ReaderBroadcastReceiver.sendCloseReaderIntent(this, tabManager.getTabReceiver(tab));
     }
 
     private void reopenReaderTab(ReaderTabManager.ReaderTab tab) {
@@ -483,6 +547,28 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return false;
     }
 
+    private boolean moveReaderTabToBack(ReaderTabManager.ReaderTab tab) {
+        if (!tabManager.getOpenedTabs().containsKey(tab)) {
+            return false;
+        }
+
+        String clzName = tabManager.getTabActivity(tab).getName();
+        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
+        if (!tasksList.isEmpty()) {
+            int nSize = tasksList.size();
+            for (int i = 0; i < nSize; i++) {
+                if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
+                    Debug.d(TAG, "move tab to back succeeded: " + tab);
+                    ReaderBroadcastReceiver.sendMoveTaskToBackIntent(this, tabManager.getTabReceiver(tab));
+                    return true;
+                }
+            }
+        }
+        Debug.d(TAG, "move tab to back failed: " + tab);
+        return false;
+    }
+
     private void updateReaderTabWindowHeight() {
         if (tabHost.getTabWidget().getTabCount() > 0) {
             updateReaderTabWindowHeight(getCurrentTabInHost());
@@ -490,20 +576,22 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void updateReaderTabWindowHeight(ReaderTabManager.ReaderTab tab) {
+        Debug.d(TAG, "updateReaderTabWindowHeight: " + tab);
+        if (!tabManager.getOpenedTabs().containsKey(tab)) {
+            return;
+        }
         final int tabContentHeight = getTabContentHeight();
-        Intent intent = new Intent(this, tabManager.getTabReceiver(tab));
-        intent.setAction(ReaderBroadcastReceiver.ACTION_RESIZE_WINDOW);
-        intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
-        sendBroadcast(intent);
+        ReaderBroadcastReceiver.sendResizeReaderWindowIntent(this,
+                tabManager.getTabReceiver(tab),
+                WindowManager.LayoutParams.MATCH_PARENT,
+                tabContentHeight);
     }
 
     private void onTabSwitched(final ReaderTabManager.ReaderTab tab) {
         final String path = tabManager.getOpenedTabs().get(tab);
         for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            Intent intent = new Intent(this, tabManager.getTabReceiver(entry.getKey()));
-            intent.setAction(ReaderBroadcastReceiver.ACTION_DOCUMENT_ACTIVATED);
-            intent.putExtra(ReaderBroadcastReceiver.TAG_DOCUMENT_PATH, path);
-            sendBroadcast(intent);
+            ReaderBroadcastReceiver.sendDocumentActivatedIntent(this,
+                    tabManager.getTabReceiver(entry.getKey()), path);
         }
     }
 
@@ -516,4 +604,33 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         showTabWidgetOnCondition();
         rebuildTabWidget();
     }
+
+    private void enableDebugLog(boolean enabled) {
+        Log.d(TAG.getSimpleName(), "enableDebugLog: " + enabled);
+        setEnableDebugLog(enabled);
+        enableDebugLogOnOpenedReaderTabs(enabled);
+    }
+
+    private void enableDebugLogOnOpenedReaderTabs(boolean enabled) {
+        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
+        if (!tasksList.isEmpty()) {
+            int nSize = tasksList.size();
+            for (int i = 0; i < nSize; i++) {
+                for (ReaderTabManager.ReaderTab tab : tabManager.getOpenedTabs().keySet()) {
+                    String clzName = tabManager.getTabActivity(tab).getName();
+                    if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
+                        Debug.d(TAG, "set debug log: " + tab + ", " + enabled);
+                        if (enabled) {
+                            ReaderBroadcastReceiver.sendEnableDebugLogIntent(this, tabManager.getTabReceiver(tab));
+                        } else {
+                            ReaderBroadcastReceiver.sendDisableDebugLogIntent(this, tabManager.getTabReceiver(tab));
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
 }

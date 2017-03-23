@@ -80,9 +80,9 @@ public class DeviceUtils {
         return uuid.toString();
     }
 
-    public static float getDensity(Context context) {
+    public static float getDensityDPI(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return displayMetrics.density * 160;
+        return displayMetrics.densityDpi;
     }
 
     public static String getApplicationFingerprint(Context context) {
@@ -96,10 +96,11 @@ public class DeviceUtils {
         return null;
     }
 
-    public static int getScreenOrientation(final Activity activity) {
-        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+    public static int getScreenOrientation(final Context context) {
+        WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        int rotation = windowManager.getDefaultDisplay().getRotation();
         DisplayMetrics dm = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        windowManager.getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
         int height = dm.heightPixels;
         int orientation;
@@ -174,13 +175,10 @@ public class DeviceUtils {
     }
 
     public static String detectInputDevicePath() {
-        final int DEVICE_MAX = 3;
         String last = DEFAULT_TOUCH_DEVICE_PATH;
-        for(int i = 1; i < DEVICE_MAX; ++i) {
-            String path = String.format("/dev/input/event%d", i);
-            if (FileUtils.fileExist(path)) {
-                last = path;
-            }
+        String index = DetectInputDeviceUtil.detectInputDevicePath();
+        if (StringUtils.isNotBlank(index)) {
+            last = String.format("/dev/input/event%s", index);
         }
         return last;
     }
@@ -349,6 +347,17 @@ public class DeviceUtils {
     public static boolean isFullScreen(Activity activity) {
         int flag = activity.getWindow().getAttributes().flags;
         return (flag & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN;
+    }
+
+    /**
+     * Check if fullscreen is activated by a position of a top left View
+     * @param topLeftView View which position will be compared with 0,0
+     * @return
+     */
+    public static boolean isFullScreen(View topLeftView) {
+        int location[] = new int[2];
+        topLeftView.getLocationOnScreen(location);
+        return location[0] == 0 && location[1] == 0;
     }
 
     public static boolean isDeviceInteractive(Context context) {

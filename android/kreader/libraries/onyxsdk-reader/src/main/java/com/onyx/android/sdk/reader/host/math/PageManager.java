@@ -19,6 +19,9 @@ import java.util.Map;
  */
 public class PageManager {
     static private final String TAG = PageManager.class.getSimpleName();
+
+    public final static int PAGE_REPEAT = 50;
+
     private int specialScale = PageConstants.SCALE_TO_PAGE;
     private float actualScale = 1.0f;
     private float topMargin = 0;

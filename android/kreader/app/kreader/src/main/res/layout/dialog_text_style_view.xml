@@ -21,20 +21,17 @@
                 android:focusable="true"
                 android:background="@drawable/imagebtn_bg"
                 android:gravity="center_horizontal"
+                android:layout_gravity="center_vertical"
                 android:id="@+id/font_face_layout"
                 android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content">
+                android:layout_width="@dimen/dialog_text_style_title_view_width"
+                android:layout_height="match_parent">
 
                 <TextView
+                    style="@style/dialog_text_style_title_text_view"
                     android:id="@+id/font_face_text"
-                    android:textSize="@dimen/dialog_common_text_size"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="@string/chinese_font_face"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:text="@string/chinese_font_face"/>
 
                 <View
                     android:id="@+id/font_face_bottom_view"
@@ -44,23 +41,20 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_gravity="center_vertical"
                 android:focusable="true"
                 android:background="@drawable/imagebtn_bg"
                 android:gravity="center_horizontal"
                 android:id="@+id/english_font_face_layout"
                 android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content">
+                android:layout_width="@dimen/dialog_text_style_title_view_width"
+                android:layout_height="match_parent">
 
                 <TextView
+                    style="@style/dialog_text_style_title_text_view"
                     android:id="@+id/english_font_face_text"
-                    android:textSize="@dimen/dialog_common_text_size"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="@string/english_font_face"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:text="@string/english_font_face"/>
 
                 <View
                     android:id="@+id/english_font_face_bottom_view"
@@ -70,23 +64,20 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_gravity="center_vertical"
                 android:focusable="true"
                 android:background="@drawable/imagebtn_bg"
                 android:id="@+id/page_spacing_layout"
                 android:gravity="center_horizontal"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content">
+                android:layout_width="@dimen/dialog_text_style_title_view_width"
+                android:layout_height="match_parent">
 
                 <TextView
+                    style="@style/dialog_text_style_title_text_view"
                     android:id="@+id/page_spacing_text"
-                    android:textSize="@dimen/dialog_common_text_size"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="@string/text_style"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:text="@string/text_style"/>
 
                 <View
                     android:id="@+id/page_spacing_bottom_view"
@@ -96,23 +87,20 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_gravity="center_vertical"
                 android:focusable="true"
                 android:background="@drawable/imagebtn_bg"
                 android:id="@+id/code_page_layout"
                 android:gravity="center_horizontal"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content">
+                android:layout_width="@dimen/dialog_text_style_title_view_width"
+                android:layout_height="match_parent">
 
                 <TextView
+                    style="@style/dialog_text_style_title_text_view"
                     android:id="@+id/code_page_text"
-                    android:textSize="@dimen/dialog_common_text_size"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="@string/dialog_text_style_view_code_page"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:text="@string/dialog_text_style_view_code_page"/>
 
                 <View
                     android:id="@+id/code_page_bottom_view"

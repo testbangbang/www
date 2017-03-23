@@ -152,6 +152,8 @@
                 <action android:name="com.onyx.kreader.action.CHANGE_SCREEN_ORIENTATION" />
                 <action android:name="com.onyx.kreader.action.ENTER_FULL_SCREEN" />
                 <action android:name="com.onyx.kreader.action.QUIT_FULL_SCREEN" />
+                <action android:name="com.onyx.android.sdk.action_enable_reader_debug_log" />
+                <action android:name="com.onyx.android.sdk.action_disable_reader_debug_log" />
             </intent-filter>
         </receiver>
 
@@ -169,6 +171,8 @@
                 <action android:name="com.onyx.kreader.action.CLOSE_READER" />
                 <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
                 <action android:name="com.onyx.kreader.action.DOCUMENT_ACTIVATED" />
+                <action android:name="com.onyx.kreader.action.ENABLE_DEBUG_LOG" />
+                <action android:name="com.onyx.kreader.action.DISABLE_DEBUG_LOG" />
             </intent-filter>
         </receiver>
 
@@ -186,6 +190,8 @@
                 <action android:name="com.onyx.kreader.action.CLOSE_READER" />
                 <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
                 <action android:name="com.onyx.kreader.action.DOCUMENT_ACTIVATED" />
+                <action android:name="com.onyx.kreader.action.ENABLE_DEBUG_LOG" />
+                <action android:name="com.onyx.kreader.action.DISABLE_DEBUG_LOG" />
             </intent-filter>
         </receiver>
 
@@ -203,6 +209,8 @@
                 <action android:name="com.onyx.kreader.action.CLOSE_READER" />
                 <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
                 <action android:name="com.onyx.kreader.action.DOCUMENT_ACTIVATED" />
+                <action android:name="com.onyx.kreader.action.ENABLE_DEBUG_LOG" />
+                <action android:name="com.onyx.kreader.action.DISABLE_DEBUG_LOG" />
             </intent-filter>
         </receiver>
 
@@ -220,6 +228,8 @@
                 <action android:name="com.onyx.kreader.action.CLOSE_READER" />
                 <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
                 <action android:name="com.onyx.kreader.action.DOCUMENT_ACTIVATED" />
+                <action android:name="com.onyx.kreader.action.ENABLE_DEBUG_LOG" />
+                <action android:name="com.onyx.kreader.action.DISABLE_DEBUG_LOG" />
             </intent-filter>
         </receiver>
 
@@ -234,7 +244,13 @@
         <activity android:name=".ui.settings.StatusBarSettingsActivity"/>
         <activity
             android:exported="true"
+            android:label="@string/statistics_shortcut_name"
+            android:icon="@drawable/statistics_icon"
             android:name=".ui.statistics.StatisticsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <service android:name="com.onyx.kreader.ui.ReaderMetadataService"

@@ -6,7 +6,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.api.ReaderSentence;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.api.ReaderTextSplitter;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 
@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class NeoPdfJniWrapper {
 
-    public static final String TAG = NeoPdfJniWrapper.class.getSimpleName();
+    public static final Class TAG = NeoPdfJniWrapper.class;
 
     static{
         System.loadLibrary("neo_pdf");

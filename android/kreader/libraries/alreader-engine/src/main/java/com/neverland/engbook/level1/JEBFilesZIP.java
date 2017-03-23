@@ -21,7 +21,7 @@ import java.util.zip.Inflater;
 public class JEBFilesZIP extends AlFiles {
 
 
-    private static final int ZIP_CHUNK_SIZE = 16384;
+    private static final int ZIP_CHUNK_SIZE = 65535;
 
 	/*ZIP_LCD zipLCD = new ZIP_LCD();
     ZIP_LZH zipLZH = new ZIP_LZH();
@@ -42,11 +42,13 @@ public class JEBFilesZIP extends AlFiles {
     public static String key = "";
     public static String deviceUUID;
     public static String random;
+    public static String bookName;
     private static final String JEB_URI = "content://com.onyx.android.jdread.provider/BookDetailEntity";
     private static final String TAG_KEY = "key";
     private static final String TAG_RANDOM = "random";
     private static final String TAG_UU_ID = "UU_ID";
     public static final String JEB_TAG = ".JEB";
+    public static final String TAG_BOOK_NAME = "BookName";
 
     public static boolean queryJEBDecrypt(final Context context, final String bookPath) {
         Cursor cursor = null;
@@ -54,11 +56,12 @@ public class JEBFilesZIP extends AlFiles {
         try {
             ContentResolver resolver = context.getContentResolver();
             Uri uri = Uri.parse(JEB_URI);
-            cursor = resolver.query(uri, new String[]{TAG_KEY, TAG_RANDOM, TAG_UU_ID}, "localPath=?", new String[]{bookPath}, null);
+            cursor = resolver.query(uri, new String[]{TAG_KEY, TAG_RANDOM, TAG_UU_ID,TAG_BOOK_NAME}, "localPath=?", new String[]{bookPath}, null);
             if (cursor.moveToFirst()) {
                 key = cursor.getString(0);
                 random = cursor.getString(1);
                 deviceUUID = cursor.getString(2);
+                bookName = cursor.getString(3);
             }
         } catch (Exception e) {
             e.printStackTrace();

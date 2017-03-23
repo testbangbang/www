@@ -35,7 +35,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
@@ -73,8 +73,10 @@ import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
 import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
+import com.onyx.kreader.ui.events.ActivityPauseEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
+import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
 import com.onyx.kreader.ui.events.PinchZoomEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
@@ -173,14 +175,13 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (DeviceUtils.isDeviceInteractive(this)) {
             onDocumentDeactivated();
         }
+        getReaderDataHolder().onActivityPause();
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        if (networkConnectChangedReceiver !=null) {
-            unregisterReceiver(networkConnectChangedReceiver);
-        }
+        cleanupReceiver();
         ReaderActivity.super.onDestroy();
         if (getReaderDataHolder().isDocumentOpened()) {
             forceCloseApplication(null);
@@ -222,10 +223,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     public void onBackPressed() {
-        Intent setIntent = new Intent(Intent.ACTION_MAIN);
-        setIntent.addCategory(Intent.CATEGORY_HOME);
-        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(setIntent);
+        ReaderTabHostBroadcastReceiver.sendTabBackPressedIntent(this);
     }
 
     private final ReaderDataHolder getReaderDataHolder() {
@@ -287,6 +285,13 @@ public class ReaderActivity extends OnyxBaseActivity {
         registerReceiver(networkConnectChangedReceiver, filter);
     }
 
+    private void cleanupReceiver() {
+        if (networkConnectChangedReceiver != null) {
+            unregisterReceiver(networkConnectChangedReceiver);
+            networkConnectChangedReceiver = null;
+        }
+    }
+
     private void initReaderMenu(){
         ShowReaderMenuAction.initDisableMenus(getReaderDataHolder());
     }
@@ -325,10 +330,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         surfaceHolderCallback = new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
+                Debug.d(getClass(), "surfaceCreated");
             }
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                Debug.d(getClass(), "surfaceChanged: " + format + ", " + width + ", " + height);
                 clearCanvas(holder);
                 if (!getReaderDataHolder().isDocumentOpened()) {
                     getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
@@ -347,6 +354,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
+                Debug.d(getClass(), "surfaceDestroyed");
             }
         };
 
@@ -402,6 +410,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         reconfigStatusBar();
         enablePenShortcut();
         updateRawEventProcessor();
+        getReaderDataHolder().onActivityResume();
     }
 
     private void enablePenShortcut() {
@@ -417,6 +426,9 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void updateRawEventProcessor() {
+        if (getReaderDataHolder().inNoteWritingProvider()) {
+            return;
+        }
         getReaderDataHolder().updateRawEventProcessor();
     }
 
@@ -501,7 +513,8 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         ReaderDeviceManager.applyRegalUpdate(this, getStatusBar());
-        ReaderDeviceManager.holdDisplay(true);
+        boolean hold = !ReaderDeviceManager.isApplyFullUpdate();
+        ReaderDeviceManager.holdDisplay(hold);
     }
 
     @Subscribe
@@ -777,6 +790,8 @@ public class ReaderActivity extends OnyxBaseActivity {
             BaseHandler.HandlerInitialState state = SlideshowHandler.createInitialState(mainView, maxPageCount, interval);
             getHandlerManager().setActiveProvider(HandlerManager.SLIDESHOW_PROVIDER, state);
         }
+
+        Debug.setDebug(getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_ENABLE_DEBUG, Debug.getDebug()));
     }
 
     @Subscribe
@@ -841,17 +856,13 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onChangeOrientation(final ChangeOrientationEvent event) {
-//        setRequestedOrientation(event.getOrientation());
-        Intent intent = new Intent(this, ReaderTabHostBroadcastReceiver.class);
-        intent.setAction(ReaderTabHostBroadcastReceiver.ACTION_CHANGE_SCREEN_ORIENTATION);
-        intent.putExtra(ReaderTabHostBroadcastReceiver.TAG_SCREEN_ORIENTATION, event.getOrientation());
-        sendBroadcast(intent);
+        ReaderTabHostBroadcastReceiver.sendChangeOrientationIntent(this, event.getOrientation());
     }
 
     @Subscribe
     public void onShortcutErasingStart(final ShortcutErasingStartEvent event) {
         if (!getReaderDataHolder().inNoteWritingProvider()) {
-            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
+            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this, true);
         }
     }
 
@@ -893,7 +904,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 getHandlerManager().setEnableTouch(true);
-                ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
+                ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this, true);
             }
         });
     }
@@ -962,6 +973,10 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void forceCloseApplication(final ForceCloseEvent event) {
         enablePost(true);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
+        if (event.byUser) {
+            onBackPressed();
+        }
+
         final CloseActionChain closeAction = new CloseActionChain();
         closeAction.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
@@ -972,6 +987,11 @@ public class ReaderActivity extends OnyxBaseActivity {
                 postFinish();
             }
         });
+    }
+
+    @Subscribe
+    public void onMoveTaskToBackRequest(final MoveTaskToBackEvent event) {
+        moveTaskToBack(true);
     }
 
     private void openBuiltInDoc() {
@@ -1039,11 +1059,11 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     public void setFullScreen(boolean fullScreen) {
-        Intent intent = new Intent(this, ReaderTabHostBroadcastReceiver.class);
-        intent.setAction(fullScreen ?
-                ReaderTabHostBroadcastReceiver.ACTION_ENTER_FULL_SCREEN :
-                ReaderTabHostBroadcastReceiver.ACTION_QUIT_FULL_SCREEN);
-        sendBroadcast(intent);
+        if (fullScreen) {
+            ReaderTabHostBroadcastReceiver.sendEnterFullScreenIntent(this);
+        } else {
+            ReaderTabHostBroadcastReceiver.sendQuitFullScreenIntent(this);
+        }
     }
 
     public SurfaceView getSurfaceView() {

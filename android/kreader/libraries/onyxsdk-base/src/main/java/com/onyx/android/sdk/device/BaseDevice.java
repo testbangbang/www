@@ -367,4 +367,8 @@ public class BaseDevice {
     }
 
     public void gotoSleep(final Context context) {}
+
+    public void enableRegal(boolean enable) {
+    }
+
 }

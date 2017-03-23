@@ -32,6 +32,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.Benchmark;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
@@ -70,6 +71,7 @@ public class AlReaderWrapper {
     private AlBookEng bookEng;
     private AlEngineOptions engineOptions;
     private AlPublicProfileOptions profile = new AlPublicProfileOptions();
+    private AlBookProperties bookProperties;
     private ReaderTextStyle textStyle = null;
 
     private AlTextOnScreen screenText;
@@ -121,26 +123,36 @@ public class AlReaderWrapper {
     }
 
     public Bitmap readCover() {
-        AlBookOptions bookOpt = new AlBookOptions();
-        bookOpt.codePage = TAL_CODE_PAGES.AUTO;
-        bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
-        bookOpt.formatOptions = 0;
-        bookOpt.readPosition = 0;
-        bookOpt.needCoverData = true;
-        AlBookProperties properties = bookEng.scanMetaData(filePath, bookOpt);
-        if (properties.coverImageData == null) {
+        bookProperties = readerBookProperties(true);
+        if (bookProperties.coverImageData == null) {
             return null;
         }
         try {
-            return BitmapFactory.decodeByteArray(properties.coverImageData, 0, properties.coverImageData.length);
+            return BitmapFactory.decodeByteArray(bookProperties.coverImageData, 0,
+                    bookProperties.coverImageData.length);
         } catch (Throwable tr) {
             return null;
         }
     }
 
     public String metadataString(final String tag) {
-        byte [] data  = new byte[4096];
-        return StringUtils.utf16le(data).trim();
+        if (bookProperties == null) {
+            bookProperties = readerBookProperties(false);
+            if (bookProperties == null) {
+                return "";
+            }
+        }
+        if ("Title".compareTo(tag) == 0) {
+            return bookProperties.title;
+        } else if ("Author".compareTo(tag) == 0) {
+            if (bookProperties.authors == null) {
+                return "";
+            }
+            return StringUtils.join(bookProperties.authors, ", ");
+        } else {
+            Debug.d(getClass(), "metadataString: unknown tag -> " + tag);
+        }
+        return "";
     }
 
     public ReaderTextStyle getStyle() {
@@ -225,6 +237,16 @@ public class AlReaderWrapper {
         profile.justify = true;
         profile.notesOnPage = true;
         return profile;
+    }
+
+    private AlBookProperties readerBookProperties(boolean readCover) {
+        AlBookOptions bookOpt = new AlBookOptions();
+        bookOpt.codePage = TAL_CODE_PAGES.AUTO;
+        bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
+        bookOpt.formatOptions = 0;
+        bookOpt.readPosition = 0;
+        bookOpt.needCoverData = readCover;
+        return bookEng.scanMetaData(filePath, bookOpt);
     }
 
     private void updateFontFace(final String fontface) {
@@ -381,6 +403,7 @@ public class AlReaderWrapper {
     public int getTotalPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "getTotalPage: get page count failed!");
             return -1;
         }
         return position.pageCount;
@@ -389,6 +412,7 @@ public class AlReaderWrapper {
     public int getScreenStartPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "getScreenStartPage: get page count failed!");
             return -1;
         }
         return getPageNumberOfPosition(position.readPositionStart);
@@ -397,6 +421,7 @@ public class AlReaderWrapper {
     public int getScreenEndPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "getScreenEndPage: get page count failed!");
             return -1;
         }
         return getPageNumberOfPosition(position.readPositionEnd);
@@ -405,6 +430,7 @@ public class AlReaderWrapper {
     public int getScreenStartPosition() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "getScreenStartPosition: get page count failed!");
             return -1;
         }
         return position.readPositionStart;
@@ -413,6 +439,7 @@ public class AlReaderWrapper {
     public int getScreenEndPosition() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "getScreenEndPosition: get page count failed!");
             return -1;
         }
         return position.readPositionEnd - 1;
@@ -421,6 +448,7 @@ public class AlReaderWrapper {
     public boolean isFirstPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "isFirstPage: get page count failed!");
             return false;
         }
         return position.isFirstPage;
@@ -429,6 +457,7 @@ public class AlReaderWrapper {
     public boolean isLastPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {
+            Debug.w(getClass(), "isLastPage: get page count failed!");
             return false;
         }
         return position.isLastPage;

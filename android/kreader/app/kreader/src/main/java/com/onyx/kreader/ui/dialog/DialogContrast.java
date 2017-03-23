@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.app.Dialog;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -10,9 +9,10 @@ import android.widget.RadioGroup;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.ui.view.SeekBarWithEditTextView;
 import com.onyx.kreader.R;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.GammaCorrectionRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -24,9 +24,9 @@ import butterknife.ButterKnife;
  * Created by ming on 2016/11/28.
  */
 
-public class DialogContrast extends Dialog implements CompoundButton.OnCheckedChangeListener {
+public class DialogContrast extends OnyxBaseDialog implements CompoundButton.OnCheckedChangeListener {
 
-    private static final String TAG = "DialogContrast";
+    private static final Class TAG = DialogContrast.class;
 
     @Bind(R.id.btn_zero)
     CheckBox btnZero;

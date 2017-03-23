@@ -11,7 +11,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.android.sdk.utils.DeviceUtils;
 
@@ -137,7 +137,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
                     detectInputDevicePath();
                     readLoop();
                 } catch (Exception e) {
-                    Debug.d(RawEventProcessor.class.getSimpleName(), e.toString());
+                    Debug.d(RawEventProcessor.class, e.toString());
                 } finally {
                     finishCurrentShape();
                     closeInputDevice();
@@ -153,7 +153,9 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         while (!stop) {
             dataInputStream.readFully(data);
             ByteBuffer wrapped = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
-            processInputEvent(wrapped.getLong(), wrapped.getShort(), wrapped.getShort(), wrapped.getInt());
+            if (!stop) {
+                processInputEvent(wrapped.getLong(), wrapped.getShort(), wrapped.getShort(), wrapped.getInt());
+            }
         }
     }
 
@@ -438,4 +440,5 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             }
         });
     }
+
 }

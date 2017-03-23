@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,7 +9,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +23,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.SearchHistory;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.ui.view.OnyxCustomEditText;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -41,17 +39,14 @@ import com.onyx.kreader.ui.actions.GotoSearchPageAction;
 import com.onyx.kreader.ui.actions.SearchContentAction;
 import com.onyx.kreader.ui.actions.ToggleSearchHistoryAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.requests.GotoSearchLocationRequest;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by ming on 16/7/21.
  */
-public class DialogSearch extends Dialog{
+public class DialogSearch extends OnyxBaseDialog{
 
     private static final String TAG = DialogSearch.class.getSimpleName();
     private static final int SEARCH_HISTORY_COUNT = 10;
@@ -101,7 +96,6 @@ public class DialogSearch extends Dialog{
         super(readerDataHolder.getContext(), android.R.style.Theme_Translucent_NoTitleBar);
 
         setContentView(R.layout.dialog_search);
-        EpdController.resetUpdateMode(findViewById(R.layout.dialog_search));
         this.readerDataHolder = readerDataHolder;
         searchRows = getContext().getResources().getInteger(R.integer.search_row);
         searchChineseContentLength = getContext().getResources().getInteger(R.integer.search_chinese_content_length);

@@ -83,10 +83,13 @@ public class ShowQuickPreviewAction extends BaseAction {
         }
         final String pageName = PagePositionUtils.fromPageNumber(current);
         if (index > 0) {
-            NextScreenRequest screenRequest = new NextScreenRequest(true);
+            final NextScreenRequest screenRequest = new NextScreenRequest(true);
             readerDataHolder.submitNonRenderRequest(screenRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
+                    if (screenRequest.isAbort()) {
+                        return;
+                    }
                     index++;
                     renderThumbnailRequest(readerDataHolder, readerBitmap, pageName, null);
                 }
@@ -102,6 +105,9 @@ public class ShowQuickPreviewAction extends BaseAction {
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), thumbnailRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (thumbnailRequest.isAbort()) {
+                    return;
+                }
                 dialogQuickPreview.updatePreview(thumbnailRequest.getPageInfo(), readerBitmap.getBitmap());
                 requestPreviewBySequence(readerDataHolder);
             }

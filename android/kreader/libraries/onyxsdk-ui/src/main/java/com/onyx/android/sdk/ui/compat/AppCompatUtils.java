@@ -55,4 +55,11 @@ public class AppCompatUtils {
     public static boolean isPL107Device(Context context) {
         return "pl107".equalsIgnoreCase(Build.MODEL) && context.getResources().getConfiguration().smallestScreenWidthDp == 960;
     }
+
+    public static float calculateEvenDigital(float value) {
+        if (value % 2 != 0) {
+            value++;
+        }
+        return value;
+    }
 }

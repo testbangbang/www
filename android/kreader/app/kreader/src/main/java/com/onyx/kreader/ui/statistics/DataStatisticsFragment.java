@@ -78,6 +78,7 @@ public class DataStatisticsFragment extends StatisticsFragment {
     private void initView() {
         readingTimeText.setText(getContext().getString(R.string.reading_time_every_day, 0.00f, 0, 0));
         loadReadRank(0.00f);
+        readingChart.setTouchEnabled(false);
     }
 
     private void loadReadRank(double readingLevel) {

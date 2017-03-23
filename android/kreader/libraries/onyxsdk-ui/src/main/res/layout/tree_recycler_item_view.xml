@@ -24,6 +24,8 @@
             android:layout_marginRight="5dp"/>
 
     <TextView
+            android:singleLine="true"
+            android:ellipsize="end"
             android:textSize="@dimen/tree_item_text_size"
             android:layout_centerVertical="true"
             android:id="@+id/text_view_title"

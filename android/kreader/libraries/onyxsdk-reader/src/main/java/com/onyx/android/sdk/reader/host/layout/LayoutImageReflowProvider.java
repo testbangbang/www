@@ -1,8 +1,12 @@
 package com.onyx.android.sdk.reader.host.layout;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageConstants;
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.reader.host.math.PageManager;
 import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
@@ -30,9 +34,18 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return PageConstants.IMAGE_REFLOW_PAGE;
     }
 
+    @Override
+    public void deactivate() {
+        getImageReflowManager().releaseCache();
+    }
+
     public void activate() {
-        getPageManager().setPageRepeat(0);
+        reverseOrder = false;
+
+        getPageManager().setPageRepeat(PageManager.PAGE_REPEAT);
         getPageManager().scaleToPage(getCurrentPagePosition());
+
+        getImageReflowManager().setPageRepeat(PageManager.PAGE_REPEAT);
     }
 
     @Override
@@ -65,7 +78,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public boolean nextScreen() throws ReaderException {
-        reverseOrder = false;
         if (atLastSubPage()) {
             return nextPage();
         }
@@ -101,6 +113,9 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         drawContext.renderingBitmap = new ReaderBitmapImpl();
 
         if (drawContext.asyncDraw) {
+            if (reverseOrder) {
+                reverseOrder = false;
+            }
             if (getCurrentSubPageIndex() == 1) {
                 // pre-render request of next sub page with index 1 means
                 // we actually want to pre-render next page of document
@@ -118,23 +133,42 @@ public class LayoutImageReflowProvider extends LayoutProvider {
             reverseOrder = false;
         }
 
+        // always update reader view info, even we can't get reflowed bitmap
+        LayoutProviderUtils.updateReaderViewInfo(reader, readerViewInfo, getLayoutManager());
+
         String key = getCurrentSubPageKey();
         Bitmap bmp = getCurrentSubPageBitmap();
         if (bmp == null) {
+            Debug.e(getClass(), "drawVisiblePages: get bitmap failed!");
             return false;
         }
         drawContext.renderingBitmap.attachWith(key, bmp);
-        LayoutProviderUtils.updateReaderViewInfo(reader, readerViewInfo, getLayoutManager());
         return true;
+    }
+
+    private Bitmap renderPageForReflow(final Reader reader,
+                                       final ReaderViewInfo readerViewInfo) throws ReaderException {
+        getPageManager().scaleToPage(getCurrentPagePosition());
+        getPageManager().scaleWithDelta(getCurrentPagePosition(),
+                (float)(getImageReflowManager().getSettings().zoom * getImageReflowManager().getSettings().columns));
+        PageInfo pageInfo = getPageManager().getPageInfo(getCurrentPagePosition());
+        Bitmap bitmap = reader.getBitmapCache().getFreeBitmap((int)pageInfo.getScaledWidth(),
+                (int)pageInfo.getScaledHeight(), Bitmap.Config.ARGB_8888).getBitmap();
+        bitmap.eraseColor(Color.WHITE);
+        reader.getRenderer().draw(getCurrentPagePosition(), pageInfo.getActualScale(),
+                pageInfo.getPageDisplayOrientation(), bitmap,
+                pageInfo.getPositionRect(), pageInfo.getPositionRect(),
+                pageInfo.getPositionRect());
+        getPageManager().scaleToPage(getCurrentPagePosition());
+        return bitmap;
     }
 
     private void reflowFirstVisiblePageAsync(final Reader reader,
                                              final ReaderDrawContext drawContext,
                                              final ReaderViewInfo readerViewInfo,
                                              final boolean abortPendingTasks) throws ReaderException {
-        LayoutProviderUtils.drawVisiblePages(reader, getLayoutManager(), drawContext, readerViewInfo);
-        getImageReflowManager().reflowBitmapAsync(drawContext.renderingBitmap.getBitmap(),
-                getCurrentPagePosition(), abortPendingTasks);
+        Bitmap bitmap = renderPageForReflow(reader, readerViewInfo);
+        getImageReflowManager().reflowBitmapAsync(bitmap, getCurrentPagePosition(), abortPendingTasks);
     }
 
     private void reflowNextPageInBackground(final Reader reader,

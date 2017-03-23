@@ -15,9 +15,18 @@ public class NavigationArgs {
 
     public Type type;
     public Map<Type, NavigationList> map = new HashMap();
+    private boolean autoCropForEachBlock = false;
 
     public enum Type {
         ALL, ODD, EVEN,
+    }
+
+    public boolean isAutoCropForEachBlock() {
+        return autoCropForEachBlock;
+    }
+
+    public void setAutoCropForEachBlock(boolean autoCropForEachBlock) {
+        this.autoCropForEachBlock = autoCropForEachBlock;
     }
 
     public NavigationList rowsLeftToRight(final Type t, PointMatrix pointMatrix, final RectF limit) {
