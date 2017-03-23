@@ -204,7 +204,7 @@ public class OssManager {
         }
     }
 
-    public class OssConfig {
+    public static class OssConfig {
         private String keyId;
         private String keySecret;
         private String endPoint;
