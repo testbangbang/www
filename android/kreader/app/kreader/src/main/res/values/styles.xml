@@ -89,11 +89,13 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
     <style name="statistics_text_view">
+        <item name="android:textColor">@android:color/black</item>
         <item name="android:layout_marginTop">@dimen/activity_statistics_spacing</item>
         <item name="android:layout_marginBottom">@dimen/activity_statistics_spacing</item>
         <item name="android:textSize">@dimen/activity_statistics_small_text_size</item>
     </style>
     <style name="dialog_text_style_title_text_view">
+        <item name="android:textColor">@android:color/black</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">0dp</item>
