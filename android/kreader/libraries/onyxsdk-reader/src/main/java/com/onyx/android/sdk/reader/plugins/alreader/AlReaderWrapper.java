@@ -31,6 +31,7 @@ import com.neverland.engbook.util.TTFScan;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
+import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
