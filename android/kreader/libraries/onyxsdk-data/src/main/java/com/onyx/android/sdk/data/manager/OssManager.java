@@ -32,11 +32,12 @@ import java.util.UUID;
  */
 public class OssManager {
     public static final String ENDPOINT = "http://content.onyx-international.cn";
+    public static final String LOG_ENDPOINT = "http://onyx-log-collection.onyx-international.cn";
     public static final String ACCESS_KEY_ID = "LTAIwdFPZhL5A7Zw";
     public static final String ACCESS_KEY_SECRET = "waNDOn4dsHuQ3qoNlJPBsQTCaJxTZ3";
 
     private static OssManager globalInstance;
-    private static OSS ossClientInstance;
+    private static Map<String, OSS> ossClientsMap = new HashMap<>();
     private Handler handler = new Handler(Looper.getMainLooper());
     private static Map<OssWrapRequest, BaseCallback.ProgressInfo> progressMap = new HashMap<>();
 
@@ -46,7 +47,8 @@ public class OssManager {
 
     private void initOss(Context context) {
         OSSCredentialProvider credentialProvider = new OSSPlainTextAKSKCredentialProvider(ACCESS_KEY_ID, ACCESS_KEY_SECRET);
-        ossClientInstance = new OSSClient(context.getApplicationContext(), ENDPOINT, credentialProvider);
+        ossClientsMap.put(getOssBucketName(), new OSSClient(context.getApplicationContext(), ENDPOINT, credentialProvider));
+        ossClientsMap.put(getOssLogBucketName(), new OSSClient(context.getApplicationContext(), LOG_ENDPOINT, credentialProvider));
     }
 
     static public OssManager sharedInstance(Context context) {
@@ -56,12 +58,16 @@ public class OssManager {
         return globalInstance;
     }
 
-    public OSS getOssClient() {
-        return ossClientInstance;
+    public OSS getOssClient(String bucketName) {
+        return ossClientsMap.get(bucketName);
     }
 
     public String getOssBucketName() {
         return "onyx-content";
+    }
+
+    public String getOssLogBucketName() {
+        return "onyx-log-collection";
     }
 
     public String getOssFileObjectKey(String fileName) {
@@ -70,12 +76,16 @@ public class OssManager {
         return objectKey;
     }
 
-    public void asyncUploadFile(Context context, String uploadFilePath, final BaseCallback callback) {
-        OSS oss = getOssClient();
-        PutObjectRequest putRequest = new PutObjectRequest(
-                getOssBucketName(),
+    private PutObjectRequest getPutObjectRequest(String bucketName, String uploadFilePath) {
+        return new PutObjectRequest(
+                bucketName,
                 getOssFileObjectKey(uploadFilePath),
                 uploadFilePath);
+    }
+
+    public void asyncUploadFile(Context context, String bucketName, String uploadFilePath, final BaseCallback callback) {
+        OSS oss = getOssClient(bucketName);
+        PutObjectRequest putRequest = getPutObjectRequest(bucketName, uploadFilePath);
         final OssWrapRequest wrapRequest = new OssWrapRequest<>(putRequest);
 
         putRequest.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
@@ -104,6 +114,24 @@ public class OssManager {
                 reportTaskDone(wrapRequest, callback, exception);
             }
         });
+    }
+
+    public void asyncUploadFile(Context context, String uploadFilePath, final BaseCallback callback) {
+        asyncUploadFile(context, getOssBucketName(), uploadFilePath, callback);
+    }
+
+    public String syncUploadFile(Context context, String uploadFilePath) throws Exception {
+        return syncUploadFile(context, getOssBucketName(), uploadFilePath);
+    }
+
+    public String syncUploadFile(Context context, String bucketName, String uploadFilePath) throws Exception {
+        PutObjectRequest putRequest = getPutObjectRequest(bucketName, uploadFilePath);
+        PutObjectResult putResult = getOssClient(bucketName).putObject(putRequest);
+        if (putResult.getStatusCode() == 200) {
+            return putRequest.getObjectKey();
+        } else {
+            return null;
+        }
     }
 
     private BaseCallback.ProgressInfo getProgressInfo(OssWrapRequest request) {
