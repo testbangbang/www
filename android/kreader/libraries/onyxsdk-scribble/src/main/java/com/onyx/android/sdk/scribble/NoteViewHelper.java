@@ -288,11 +288,7 @@ public class NoteViewHelper {
         //for dfb render limit rect
         surfaceView.getGlobalVisibleRect(dfbLimitRect);
         dfbLimitRect.offsetTo(0, 0);
-<<<<<<< HEAD
-        rawInputProcessor.setLimitRect(dfbLimitRect);
-=======
         getRawInputProcessor().setLimitRect(customLimitRect == null ? dfbLimitRect : customLimitRect);
->>>>>>> 2f976a3... fix fly line after  lost shape
 
         int viewPosition[] = {0, 0};
         surfaceView.getLocationOnScreen(viewPosition);
