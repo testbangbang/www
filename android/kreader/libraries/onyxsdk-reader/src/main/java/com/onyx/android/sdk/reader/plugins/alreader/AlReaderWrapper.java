@@ -144,7 +144,10 @@ public class AlReaderWrapper {
         if ("Title".compareTo(tag) == 0) {
             return bookProperties.title;
         } else if ("Author".compareTo(tag) == 0) {
-            return authorListToString(bookProperties.authors);
+            if (bookProperties.authors == null) {
+                return "";
+            }
+            return StringUtils.join(bookProperties.authors, ", ");
         } else {
             Debug.d(getClass(), "metadataString: unknown tag -> " + tag);
         }
@@ -243,22 +246,6 @@ public class AlReaderWrapper {
         bookOpt.readPosition = 0;
         bookOpt.needCoverData = readCover;
         return bookEng.scanMetaData(filePath, bookOpt);
-    }
-
-    private String authorListToString(List<String> authors) {
-        if (authors == null) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (String str : authors) {
-            if (sb.length() <= 0) {
-                sb.append(str);
-            } else {
-                sb.append(", ").append(str);
-            }
-        }
-        return sb.toString();
     }
 
     private void updateFontFace(final String fontface) {
