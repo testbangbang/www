@@ -18,6 +18,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
@@ -198,7 +199,9 @@ public class ReaderPainter {
         }
         Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(context, hasBookmark(userDataInfo, viewInfo));
         final Point point = BookmarkIconFactory.bookmarkPosition(canvas.getWidth(), bitmap);
-        canvas.drawBitmap(bitmap, point.x, point.y, null);
+        float left = AppCompatUtils.calculateEvenDigital(point.x);
+        float top = AppCompatUtils.calculateEvenDigital(point.y);
+        canvas.drawBitmap(bitmap, left, top, null);
     }
 
     private void drawReaderSelection(Context context, Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, ReaderSelection selection, AnnotationHighlightStyle highlightStyle) {

@@ -6,6 +6,7 @@
                 android:background="#14000000">
 
     <TextView
+        android:textColor="@android:color/black"
         android:layout_marginLeft="@dimen/activity_statistics_item_margin"
         android:layout_marginRight="@dimen/activity_statistics_item_margin"
         android:gravity="center"

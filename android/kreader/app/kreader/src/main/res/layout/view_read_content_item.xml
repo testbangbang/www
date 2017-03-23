@@ -35,7 +35,7 @@
             android:singleLine="true"
             android:ellipsize="middle"
             android:layout_gravity="center_vertical"
-            android:padding="10dp"
+            android:padding="@dimen/activity_statistics_item_margin"
             android:text=""
             android:textSize="@dimen/activity_statistics_item_text_size"
             android:id="@+id/value"
