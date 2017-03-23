@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">OnyxSDK</string>
-    <string name="hour_symbol">h</string>
-    <string name="minute_symbol">m</string>
-    <string name="second_symbol">s</string>
+    <string name="hour_symbol">\u0020h</string>
+    <string name="minute_symbol">\u0020m\u0020</string>
+    <string name="second_symbol">\u0020s\u0020</string>
 </resources>
