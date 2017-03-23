@@ -104,7 +104,7 @@
     <string name="settings_screen_tittle">Экран</string>
     <string name="settings_config_summary">Конфигурационный файл</string>
     <string name="settings_config_tittle">Конфигурация</string>
-    <string name="settings_status_bar_summary">Пиктограммы строки состояния</string>
+    <string name="settings_status_bar_summary">Настройка строки состояния</string>
     <string name="settings_status_bar_tittle">Строка состояния</string>
     <string name="settings_control_summary">Настройки кнопок</string>
     <string name="settings_control_tittle">Управление</string>
