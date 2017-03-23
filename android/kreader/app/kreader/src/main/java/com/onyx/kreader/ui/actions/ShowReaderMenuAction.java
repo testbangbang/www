@@ -443,7 +443,7 @@ public class ShowReaderMenuAction extends BaseAction {
         navigationArgs.setCropPageMode(ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE);
         navigationArgs.setRows(1);
         navigationArgs.setColumns(1);
-        new ChangeNavigationSettingsAction(navigationArgs, readerDataHolder.getReaderViewInfo().autoCropForEachBlock).execute(readerDataHolder, null);
+        new ChangeNavigationSettingsAction(navigationArgs, true).execute(readerDataHolder, null);
     }
 
     private void switchPageNavigationMode(final ReaderDataHolder readerDataHolder, NavigationArgs args) {

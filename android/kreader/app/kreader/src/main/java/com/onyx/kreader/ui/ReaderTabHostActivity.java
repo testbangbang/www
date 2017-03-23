@@ -54,6 +54,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private String pathToContinueOpenAfterRotation;
 
     private boolean insideTabChanging = false;
+    private boolean isManualShowTab = true;
 
     public static void setEnableDebugLog(boolean enabled) {
         Debug.setDebug(enabled);
@@ -141,9 +142,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         btnSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isShowed = tabWidget.getVisibility() == View.VISIBLE;
-                tabWidget.setVisibility(isShowed ? View.INVISIBLE : View.VISIBLE);
-                btnSwitch.setImageResource(isShowed ? R.drawable.ic_pack_up : R.drawable.ic_unfold);
+                updateTabLayoutState(!isManualShowTab);
             }
         });
 
@@ -178,6 +177,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         if (tabManager.supportMultipleTabs()) {
             hideTabWidget();
         }
+    }
+
+    private void updateTabLayoutState(boolean show) {
+        isManualShowTab = show;
+        tabWidget.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+        btnSwitch.setImageResource(show ? R.drawable.ic_unfold : R.drawable.ic_pack_up);
     }
 
     private void initReceiver() {
@@ -310,6 +315,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void showTabWidgetOnCondition() {
         if (isShowingTabWidget()) {
             showTabWidget();
+            updateTabLayoutState(isManualShowTab);
         } else {
             hideTabWidget();
         }
