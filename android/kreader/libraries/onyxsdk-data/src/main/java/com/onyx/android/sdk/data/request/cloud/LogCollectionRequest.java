@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data.request.cloud;
 
 import android.graphics.Point;
 import android.os.Build;
+import android.support.annotation.NonNull;
 
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.manager.OssManager;
@@ -26,9 +27,11 @@ import retrofit2.Response;
 public class LogCollectionRequest extends BaseCloudRequest {
 
     private String uploadFileUrl;
+    private OssManager ossManager;
     private String desc;
 
-    public LogCollectionRequest(String desc) {
+    public LogCollectionRequest(@NonNull OssManager ossManager, String desc) {
+        this.ossManager = ossManager;
         this.desc = desc;
     }
 
@@ -43,9 +46,7 @@ public class LogCollectionRequest extends BaseCloudRequest {
             throw new FileNotFoundException();
         }
         try {
-            OssManager ossManager = OssManager.sharedInstance(getContext());
-            String objectKey = ossManager.syncUploadFile(getContext(), ossManager.getOssLogBucketName(),
-                    zipFile.getAbsolutePath());
+            String objectKey = ossManager.syncUploadFile(getContext(), zipFile.getAbsolutePath());
             if (StringUtils.isNullOrEmpty(objectKey)) {
                 return;
             }
@@ -58,7 +59,7 @@ public class LogCollectionRequest extends BaseCloudRequest {
     }
 
     private void reportFeedbackInfo(CloudManager parent, String objectKey) throws Exception {
-        String fileUrl = OssManager.LOG_ENDPOINT + File.separator + objectKey;
+        String fileUrl = ossManager.getOssEndPoint() + File.separator + objectKey;
         Firmware firmware = getCurrentFirmware();
         LogCollection logCollection = new LogCollection();
         logCollection.firmware = firmware;
