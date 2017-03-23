@@ -70,6 +70,7 @@ public class AlReaderWrapper {
     private AlBookEng bookEng;
     private AlEngineOptions engineOptions;
     private AlPublicProfileOptions profile = new AlPublicProfileOptions();
+    private AlBookProperties bookProperties;
     private ReaderTextStyle textStyle = null;
 
     private AlTextOnScreen screenText;
@@ -121,26 +122,31 @@ public class AlReaderWrapper {
     }
 
     public Bitmap readCover() {
-        AlBookOptions bookOpt = new AlBookOptions();
-        bookOpt.codePage = TAL_CODE_PAGES.AUTO;
-        bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
-        bookOpt.formatOptions = 0;
-        bookOpt.readPosition = 0;
-        bookOpt.needCoverData = true;
-        AlBookProperties properties = bookEng.scanMetaData(filePath, bookOpt);
-        if (properties.coverImageData == null) {
+        bookProperties = readerBookProperties(true);
+        if (bookProperties.coverImageData == null) {
             return null;
         }
         try {
-            return BitmapFactory.decodeByteArray(properties.coverImageData, 0, properties.coverImageData.length);
+            return BitmapFactory.decodeByteArray(bookProperties.coverImageData, 0,
+                    bookProperties.coverImageData.length);
         } catch (Throwable tr) {
             return null;
         }
     }
 
     public String metadataString(final String tag) {
-        byte [] data  = new byte[4096];
-        return StringUtils.utf16le(data).trim();
+        if (bookProperties == null) {
+            bookProperties = readerBookProperties(false);
+            if (bookProperties == null) {
+                return "";
+            }
+        }
+        if ("Title".compareTo(tag) == 0) {
+            return bookProperties.title;
+        } else if ("Author".compareTo(tag) == 0) {
+            return authorListToString(bookProperties.authors);
+        }
+        return "";
     }
 
     public ReaderTextStyle getStyle() {
@@ -225,6 +231,32 @@ public class AlReaderWrapper {
         profile.justify = true;
         profile.notesOnPage = true;
         return profile;
+    }
+
+    private AlBookProperties readerBookProperties(boolean readCover) {
+        AlBookOptions bookOpt = new AlBookOptions();
+        bookOpt.codePage = TAL_CODE_PAGES.AUTO;
+        bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
+        bookOpt.formatOptions = 0;
+        bookOpt.readPosition = 0;
+        bookOpt.needCoverData = readCover;
+        return bookEng.scanMetaData(filePath, bookOpt);
+    }
+
+    private String authorListToString(List<String> authors) {
+        if (authors == null) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (String str : authors) {
+            if (sb.length() <= 0) {
+                sb.append(str);
+            } else {
+                sb.append(", ").append(str);
+            }
+        }
+        return sb.toString();
     }
 
     private void updateFontFace(final String fontface) {
