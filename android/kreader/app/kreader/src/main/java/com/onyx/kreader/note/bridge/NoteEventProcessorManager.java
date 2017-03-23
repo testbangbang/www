@@ -46,6 +46,8 @@ public class NoteEventProcessorManager {
     public void stop() {
         if (rawEventProcessor != null) {
             rawEventProcessor.quit();
+            rawEventProcessor = null;
+
         }
     }
 
