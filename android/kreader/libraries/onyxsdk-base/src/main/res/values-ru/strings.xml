@@ -1,0 +1,5 @@
+<resources>
+    <string name="hour_symbol">\u0020h</string>
+    <string name="minute_symbol">\u0020м\u0020</string>
+    <string name="second_symbol">\u0020с</string>
+</resources>

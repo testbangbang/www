@@ -229,10 +229,10 @@
   <string name="dialog_slideshow_title">自动翻页</string>
   <string name="dialog_slideshow_intervals_title">翻页间隔 (秒)</string>
   <string name="dialog_slideshow_max_page_count_title">页数设置</string>
-  <string name="dialog_slideshow_statistic_duration">用时: </string>
-  <string name="dialog_slideshow_statistic_page_count">翻页: </string>
-  <string name="dialog_slideshow_statistic_start_battery">初始电量: </string>
-  <string name="dialog_slideshow_statistic_end_battery">当前电量: </string>
+  <string name="dialog_slideshow_statistic_duration">用时:\u0020</string>
+  <string name="dialog_slideshow_statistic_page_count">翻页:\u0020</string>
+  <string name="dialog_slideshow_statistic_start_battery">初始电量:\u0020</string>
+  <string name="dialog_slideshow_statistic_end_battery">当前电量:\u0020</string>
   <string name="view_pinch_zooming_menu_font_size">字号:</string>
   <string name="view_pinch_zooming_menu_scale_factor">缩放:</string>
   <string name="slide_setting">幻灯片设置</string>

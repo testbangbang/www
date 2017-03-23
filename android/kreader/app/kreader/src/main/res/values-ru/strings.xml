@@ -227,10 +227,10 @@
     <string name="settings_regal_mode_tittle">SNOW Field</string>
     <string name="dialog_slideshow_intervals_title">Интервал (в секундах)</string>
     <string name="dialog_slideshow_max_page_count_title">Максимальный номер страница</string>
-    <string name="dialog_slideshow_statistic_duration">Длительность:</string>
-    <string name="dialog_slideshow_statistic_page_count">Номер страницы:</string>
-    <string name="dialog_slideshow_statistic_start_battery">Стартовый заряд батареи:</string>
-    <string name="dialog_slideshow_statistic_end_battery">Заряд батареи в конце:</string>
+    <string name="dialog_slideshow_statistic_duration">Длительность:\u0020</string>
+    <string name="dialog_slideshow_statistic_page_count">Номер страницы:\u0020</string>
+    <string name="dialog_slideshow_statistic_start_battery">Стартовый заряд батареи:\u0020</string>
+    <string name="dialog_slideshow_statistic_end_battery">Заряд батареи в конце:\u0020</string>
     <string name="view_pinch_zooming_menu_font_size">Размер шрифта:</string>
     <string name="view_pinch_zooming_menu_scale_factor">Масштаб:</string>
     <string name="slide_setting">Настройки слайд-шоу</string>
