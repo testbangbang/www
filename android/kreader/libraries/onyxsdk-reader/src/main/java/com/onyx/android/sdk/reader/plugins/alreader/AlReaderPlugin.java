@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import com.neverland.engbook.level1.JEBFilesEPUB;
-import com.neverland.engbook.level2.JEBFormatEPUB;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
