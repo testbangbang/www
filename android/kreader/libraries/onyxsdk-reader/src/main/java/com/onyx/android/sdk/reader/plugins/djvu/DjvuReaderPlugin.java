@@ -83,8 +83,12 @@ public class DjvuReaderPlugin implements ReaderPlugin,
             return false;
         }
         float zoom = PageUtils.scaleToPage(size[0], size[1], bitmap.getWidth(), bitmap.getHeight());
+
+        //Make sure that the cover is centrally aligned after zooming.
+        int x =(int)(size[0]* zoom - bitmap.getWidth())/2;
+        int y =(int)(size[1] * zoom - bitmap.getHeight())/2;
         return getPluginImpl().drawPage(0, bitmap, zoom, bitmap.getWidth(), bitmap.getHeight(),
-                0, 0, bitmap.getWidth(), bitmap.getHeight());
+                x, y, bitmap.getWidth(), bitmap.getHeight());
     }
 
     @Override
