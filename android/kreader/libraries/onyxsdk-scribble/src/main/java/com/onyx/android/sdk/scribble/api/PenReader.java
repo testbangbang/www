@@ -48,7 +48,7 @@ public class PenReader {
         screenMatrix.preScale(deviceConfig.getEpdWidth() / getTouchWidth(),
                 deviceConfig.getEpdHeight() / getTouchHeight());
         rawInputProcessor.setScreenMatrix(screenMatrix);
-        rawInputProcessor.setLimitRect(new Rect(0, 0, (int) getTouchWidth(), (int) getTouchHeight()));
+        rawInputProcessor.setLimitRect(new Rect(0, 0, (int) getTouchHeight(), (int) getTouchWidth()));
     }
 
     public void start() {
