@@ -33,12 +33,12 @@ public class ReadingHandler extends BaseHandler {
     public void close(final ReaderDataHolder readerDataHolder) {
         final DeviceConfig deviceConfig = DeviceConfig.sharedInstance(readerDataHolder.getContext());
         if (SingletonSharedPreference.isShowQuitDialog(readerDataHolder.getContext()) || deviceConfig.isAskForClose()) {
-            DialogHelp.getConfirmDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.sure_exit), new DialogInterface.OnClickListener() {
+            DialogHelp.showConfirmDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.sure_exit), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     postQuitEvent(readerDataHolder);
                 }
-            }).show();
+            });
         } else {
             postQuitEvent(readerDataHolder);
         }

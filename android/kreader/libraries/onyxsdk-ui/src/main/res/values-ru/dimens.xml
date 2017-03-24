@@ -2,4 +2,5 @@
     <dimen name="dialog_common_text_size">16sp</dimen>
     <dimen name="current_value_tittle_text_size">18sp</dimen>
     <dimen name="dialog_navigation_setting_item_text_size">12sp</dimen>
+    <dimen name="alert_dialog_text_size">14sp</dimen>
 </resources>
