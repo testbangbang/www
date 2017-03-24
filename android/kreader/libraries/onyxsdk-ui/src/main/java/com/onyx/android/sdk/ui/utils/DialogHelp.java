@@ -34,6 +34,15 @@ public class DialogHelp {
         return builder;
     }
 
+    public static void showConfirmDialog(Context context, String message, DialogInterface.OnClickListener onClickListener) {
+        Builder builder = getConfirmDialog(context, message, onClickListener);
+        AlertDialog alertDialog = builder.create();
+        int width = context.getResources().getDimensionPixelOffset(R.dimen.alert_dialog_layout_width);
+        int height = context.getResources().getDimensionPixelOffset(R.dimen.alert_dialog_layout_height);
+        alertDialog.show();
+        alertDialog.getWindow().setLayout(width,height);
+    }
+
     public static Builder getInputDialog(Context context, String title, EditText editText, DialogInterface.OnClickListener onClickListener) {
         Builder builder = getDialog(context);
 
