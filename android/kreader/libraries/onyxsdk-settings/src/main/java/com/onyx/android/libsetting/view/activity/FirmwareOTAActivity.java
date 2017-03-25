@@ -28,7 +28,10 @@ import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.DeviceReceiver;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import java.io.File;
 
 public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     public static final String ACTION_OTA_DOWNLOAD = "com.action.ota.download";
@@ -169,11 +172,17 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     private void startOTAFirmwareDownload(final Firmware otaFirmware) {
-        String filePath = OTAManager.LOCAL_PATH_SDCARD;
-        CloudFileDownloadRequest downloadRequest = new CloudFileDownloadRequest(otaFirmware.getUrl(), filePath, filePath) {
+        final String filePath = OTAManager.LOCAL_PATH_SDCARD;
+        final CloudFileDownloadRequest downloadRequest = new CloudFileDownloadRequest(otaFirmware.getUrl(), filePath, filePath) {
             @Override
             public void execute(CloudManager parent) throws Exception {
                 //checksum
+                File file = new File(filePath);
+                String md5 = FileUtils.computeFullMD5Checksum(file);
+                setMd5Valid(StringUtils.isNotBlank(md5) && md5.equals(otaFirmware.md5));
+                if (!isMd5Valid()) {
+                    file.delete();
+                }
             }
         };
         BaseDownloadTask task = OnyxDownloadManager.getInstance().download(downloadRequest, new BaseCallback() {
@@ -194,6 +203,10 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                 if (e != null) {
                     printStackTrace(e);
                     showToast(R.string.download_interrupted, Toast.LENGTH_SHORT);
+                    return;
+                }
+                if (!downloadRequest.isMd5Valid()) {
+                    showToast(R.string.md5_verify_fail, Toast.LENGTH_SHORT);
                     return;
                 }
                 checkUpdateFromLocalStorage();
