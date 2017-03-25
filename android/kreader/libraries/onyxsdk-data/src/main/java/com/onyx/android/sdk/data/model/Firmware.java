@@ -27,7 +27,7 @@ public class Firmware extends BaseData {
     public String brand;            // post by admin
     public String fwType;           // firmware type, testing or release.
     public String deviceMAC;        // device mac
-    public String md5Checksum;
+    public String md5;
     public int widthPixels, heightPixels;
 
     public List<String> changeList;
