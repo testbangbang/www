@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
@@ -254,20 +255,7 @@ public class FileUtils {
         md.update(digest_buffer);
         byte[] out = md.digest();
 
-        final char hex_digits[] = {
-                '0', '1', '2', '3',
-                '4', '5', '6', '7',
-                '8', '9', 'a', 'b',
-                'c', 'd', 'e', 'f' };
-
-        char str[] = new char[out.length * 2];
-        for (int i = 0; i < out.length; i++) {
-            int j = i << 1;
-            str[j] = hex_digits[(out[i] >> 4) & 0x0F];
-            str[j + 1] = hex_digits[out[i] & 0x0F];
-        }
-
-        return String.valueOf(str);
+        return hexToString(out);
     }
 
     public static byte[] getDigestBuffer(File file) throws IOException {
@@ -324,6 +312,41 @@ public class FileUtils {
         }
         BigInteger bigInt = new BigInteger(1, digest.digest());
         return bigInt.toString(16);
+    }
+
+    public static String computeFullMD5Checksum(File file) throws IOException, NoSuchAlgorithmException {
+        InputStream fis = new FileInputStream(file);
+        try {
+            byte[] buffer = new byte[64 * 1024];
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            int numRead;
+            do {
+                numRead = fis.read(buffer);
+                if (numRead > 0) {
+                    md.update(buffer, 0, numRead);
+                }
+            } while (numRead != -1);
+
+            return hexToString(md.digest());
+        } finally {
+            FileUtils.closeQuietly(fis);
+        }
+    }
+
+    public static String hexToString(byte[] out) {
+        final char hex_digits[] = {
+                '0', '1', '2', '3',
+                '4', '5', '6', '7',
+                '8', '9', 'a', 'b',
+                'c', 'd', 'e', 'f'};
+
+        char str[] = new char[out.length * 2];
+        for (int i = 0; i < out.length; i++) {
+            int j = i << 1;
+            str[j] = hex_digits[(out[i] >> 4) & 0x0F];
+            str[j + 1] = hex_digits[out[i] & 0x0F];
+        }
+        return String.valueOf(str);
     }
 
     public static boolean deleteFile(final String path) {
