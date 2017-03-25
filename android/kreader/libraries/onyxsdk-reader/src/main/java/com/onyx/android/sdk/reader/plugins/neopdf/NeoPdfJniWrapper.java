@@ -161,6 +161,7 @@ public class NeoPdfJniWrapper {
     }
 
     public boolean getPageTextRegions(int page, final List<ReaderSelection> list) {
-        return nativeGetPageTextRegions(id, page, list);
+        // return nativeGetPageTextRegions(id, page, list);
+        return false;
     }
 }

@@ -70,6 +70,7 @@ import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
+import com.onyx.kreader.ui.events.ConfirmCloseDialogEvent;
 import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.HomeClickEvent;
@@ -891,6 +892,13 @@ public class ReaderActivity extends ActionBarActivity {
 
     public SurfaceHolder getHolder() {
         return holder;
+    }
+
+    @Subscribe
+    public void onConfirmCloseDialogEvent(final ConfirmCloseDialogEvent event) {
+        boolean enable = !event.isOpen();
+        getReaderDataHolder().getNoteManager().setEnableShortcutDrawing(enable);
+        getReaderDataHolder().getNoteManager().setEnableShortcutErasing(enable);
     }
 
     @Subscribe

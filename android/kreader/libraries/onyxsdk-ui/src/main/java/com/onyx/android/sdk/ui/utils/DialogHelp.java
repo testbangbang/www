@@ -22,14 +22,17 @@ public class DialogHelp {
         return builder;
     }
 
-    public static Builder getConfirmDialog(Context context, String message, DialogInterface.OnClickListener onClickListener) {
+    public static Builder getConfirmDialog(Context context,
+                                           String message,
+                                           DialogInterface.OnClickListener onOkClickListener,
+                                           DialogInterface.OnClickListener onCancelClickListener) {
         Builder builder = getDialog(context);
 
         TextView titleView = getCustomTitle(context);
         titleView.setText(message);
         builder.setCustomTitle(titleView);
-        builder.setPositiveButton(context.getString(R.string.ok), onClickListener);
-        builder.setNegativeButton(context.getString(R.string.cancel), null);
+        builder.setPositiveButton(context.getString(R.string.ok), onOkClickListener);
+        builder.setNegativeButton(context.getString(R.string.cancel), onCancelClickListener);
         builder.setCancelable(false);
         return builder;
     }

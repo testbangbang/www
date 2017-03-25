@@ -139,7 +139,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                                 deleteAnnotation(readerDataHolder, position);
                             }
                         }
-                    }).show();
+                    }, null).show();
                 }
             });
 
@@ -184,7 +184,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                     deleteAnnotation(readerDataHolder, position);
                 }
             }
-        }).show();
+        }, null).show();
     }
 
     private void onItemClick(View v, final String pagePosition, final int position) {
@@ -714,12 +714,13 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 previewViewHolder.getCloseView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DialogHelp.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeScribble(page, position);
-                            }
-                        }).show();
+                        DialogHelp.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete),
+                                new OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        removeScribble(page, position);
+                                    }
+                                }, null).show();
                     }
                 });
                 previewViewHolder.bindPreview(scribbleBitmap, page);
