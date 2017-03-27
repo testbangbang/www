@@ -35,6 +35,7 @@ import com.onyx.android.sdk.data.request.cloud.WeChatOauthRequest;
 import com.onyx.android.sdk.data.request.cloud.WeChatUserInfoRequest;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ReaderApplication;
 import com.onyx.kreader.dialog.DialogProgressHolder;
@@ -119,14 +120,53 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
                 if (StringUtils.isNotBlank(url)) {
                     processWebUrlShared(url);
                 } else if (StringUtils.isNotBlank(bundle.getString(Intent.EXTRA_TEXT))) {
-                    processTextShared(bundle.getString(Intent.EXTRA_TEXT));
+                    String text = bundle.getString(Intent.EXTRA_TEXT, "");
+                    url = splitUrlString(text);
+                    if (StringUtils.isNotBlank(url)) {
+                        processWebUrlShared(url);
+                    } else {
+                        processTextShared(text);
+                    }
                 }
             }
         }
     }
 
+    private String splitUrlString(String text) {
+        String url = null;
+        int httpIndex = text.indexOf(Constant.HTTP_TAG);
+        if (httpIndex >= 0) {
+            url = text.substring(httpIndex);
+            int blankIndex = url.indexOf(" ");
+            if (blankIndex > 0) {
+                url = url.substring(0, blankIndex).trim();
+            }
+        }
+        return url;
+    }
+
     private void showSharedMessage(String message) {
-        messageTextView.setText(message);
+        messageTextView.setText(message + getIntentInfo());
+    }
+
+    private String getIntentInfo() {
+        if (BuildConfig.DEBUG) {
+            return TextUtils.NEW_LINE_DOUBLE + getIntent().toString() +
+                    TextUtils.NEW_LINE_DOUBLE + getBundleData(getIntent().getExtras());
+        }
+        return "";
+    }
+
+    private String getBundleData(Bundle bundle) {
+        if (bundle == null) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder("Bundle{\r\n");
+        for (String key : bundle.keySet()) {
+            sb.append(key).append(" => ").append(bundle.get(key)).append(";\r\n");
+        }
+        sb.append(" }Bundle");
+        return sb.toString();
     }
 
     private void processFileShared(Uri uri) {
@@ -291,9 +331,13 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
         }
     }
 
+    private OssManager getPushOssManager() {
+        return ReaderApplication.getPushOssManger(getApplicationContext());
+    }
+
     private void startToUploadFile(final String uploadFilePath) {
         progressDialogHolder.showProgressDialog(this, dialogObject, R.string.upload_file);
-        OssManager.sharedInstance(this).asyncUploadFile(this, uploadFilePath, new BaseCallback() {
+        getPushOssManager().asyncUploadFile(this, uploadFilePath, new BaseCallback() {
             @Override
             public void progress(BaseRequest request, final ProgressInfo info) {
                 if (info != null) {

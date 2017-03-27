@@ -11,6 +11,7 @@ import java.io.OutputStream;
  * Created by suicheng on 2017/2/13.
  */
 public class TextUtils {
+    public static final String NEW_LINE_DOUBLE = "\r\n\r\n";
 
     public static boolean writeTextToFile(File file, String text) {
         return writeTextToFile(file, text, "GBK");

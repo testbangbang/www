@@ -33,6 +33,7 @@ import com.onyx.android.sdk.reader.plugins.alreader.AlReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.comic.ComicReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.images.ImagesReaderPlugin;
+import com.onyx.android.sdk.reader.plugins.jeb.JEBReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
 import com.onyx.android.sdk.reader.reflow.ImageReflowManager;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
@@ -89,6 +90,8 @@ public class ReaderHelper {
             plugin = new ComicReaderPlugin(context, pluginOptions);
         } else if (AlReaderPlugin.accept(path)) {
             plugin = new AlReaderPlugin(context, pluginOptions);
+        } else if(JEBReaderPlugin.accept(path)){
+            plugin = new JEBReaderPlugin(context,pluginOptions);
         }
         return (plugin != null);
     }

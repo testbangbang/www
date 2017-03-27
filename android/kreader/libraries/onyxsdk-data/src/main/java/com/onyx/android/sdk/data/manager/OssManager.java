@@ -3,6 +3,7 @@ package com.onyx.android.sdk.data.manager;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.alibaba.sdk.android.oss.ClientException;
@@ -31,37 +32,43 @@ import java.util.UUID;
  * Created by wang.suicheng on 2017/1/21.
  */
 public class OssManager {
-    public static final String ENDPOINT = "http://content.onyx-international.cn";
-    public static final String ACCESS_KEY_ID = "LTAIwdFPZhL5A7Zw";
-    public static final String ACCESS_KEY_SECRET = "waNDOn4dsHuQ3qoNlJPBsQTCaJxTZ3";
 
-    private static OssManager globalInstance;
-    private static OSS ossClientInstance;
+    private OSS ossClient;
+    private OssConfig ossConfig;
+
     private Handler handler = new Handler(Looper.getMainLooper());
     private static Map<OssWrapRequest, BaseCallback.ProgressInfo> progressMap = new HashMap<>();
 
-    private OssManager(Context context) {
-        initOss(context);
+    public OssManager(Context context, @NonNull OssConfig config) {
+        ossClient = buildOssClient(context, config);
+        setOssConfig(config);
     }
 
-    private void initOss(Context context) {
-        OSSCredentialProvider credentialProvider = new OSSPlainTextAKSKCredentialProvider(ACCESS_KEY_ID, ACCESS_KEY_SECRET);
-        ossClientInstance = new OSSClient(context.getApplicationContext(), ENDPOINT, credentialProvider);
+    private void setOssConfig(OssConfig config) {
+        ossConfig = new OssConfig();
+        ossConfig.setBucketName(config.getBucketName());
+        ossConfig.setEndPoint(config.getEndPoint());
     }
 
-    static public OssManager sharedInstance(Context context) {
-        if (globalInstance == null) {
-            globalInstance = new OssManager(context);
-        }
-        return globalInstance;
+    static private OSSClient buildOssClient(Context context, OssConfig ossConfig) {
+        OSSCredentialProvider credentialProvider = new OSSPlainTextAKSKCredentialProvider(ossConfig.getKeyId(), ossConfig.getKeySecret());
+        return new OSSClient(context.getApplicationContext(), ossConfig.getEndPoint(), credentialProvider);
     }
 
     public OSS getOssClient() {
-        return ossClientInstance;
+        return ossClient;
+    }
+
+    public OssConfig getOssConfig() {
+        return ossConfig;
     }
 
     public String getOssBucketName() {
-        return "onyx-content";
+        return ossConfig.getBucketName();
+    }
+
+    public String getOssEndPoint() {
+        return ossConfig.getEndPoint();
     }
 
     public String getOssFileObjectKey(String fileName) {
@@ -70,12 +77,20 @@ public class OssManager {
         return objectKey;
     }
 
-    public void asyncUploadFile(Context context, String uploadFilePath, final BaseCallback callback) {
-        OSS oss = getOssClient();
-        PutObjectRequest putRequest = new PutObjectRequest(
-                getOssBucketName(),
+    private PutObjectRequest getPutObjectRequest(String bucketName, String uploadFilePath) {
+        return new PutObjectRequest(
+                bucketName,
                 getOssFileObjectKey(uploadFilePath),
                 uploadFilePath);
+    }
+
+    public void asyncUploadFile(Context context, String uploadFilePath, final BaseCallback callback) {
+        asyncUploadFile(context, getOssBucketName(), uploadFilePath, callback);
+    }
+
+    public void asyncUploadFile(Context context, String bucketName, String uploadFilePath, final BaseCallback callback) {
+        OSS oss = getOssClient();
+        PutObjectRequest putRequest = getPutObjectRequest(bucketName, uploadFilePath);
         final OssWrapRequest wrapRequest = new OssWrapRequest<>(putRequest);
 
         putRequest.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
@@ -104,6 +119,20 @@ public class OssManager {
                 reportTaskDone(wrapRequest, callback, exception);
             }
         });
+    }
+
+    public String syncUploadFile(Context context, String uploadFilePath) throws Exception {
+        return syncUploadFile(context, getOssBucketName(), uploadFilePath);
+    }
+
+    public String syncUploadFile(Context context, String bucketName, String uploadFilePath) throws Exception {
+        PutObjectRequest putRequest = getPutObjectRequest(bucketName, uploadFilePath);
+        PutObjectResult putResult = getOssClient().putObject(putRequest);
+        if (putResult.getStatusCode() == 200) {
+            return putRequest.getObjectKey();
+        } else {
+            return null;
+        }
     }
 
     private BaseCallback.ProgressInfo getProgressInfo(OssWrapRequest request) {
@@ -172,6 +201,45 @@ public class OssManager {
 
         @Override
         public void execute(CloudManager parent) throws Exception {
+        }
+    }
+
+    public static class OssConfig {
+        private String keyId;
+        private String keySecret;
+        private String endPoint;
+        private String bucketName;
+
+        public String getKeyId() {
+            return keyId;
+        }
+
+        public void setKeyId(String keyId) {
+            this.keyId = keyId;
+        }
+
+        public String getKeySecret() {
+            return keySecret;
+        }
+
+        public void setKeySecret(String keySecret) {
+            this.keySecret = keySecret;
+        }
+
+        public String getEndPoint() {
+            return endPoint;
+        }
+
+        public void setEndPoint(String endPoint) {
+            this.endPoint = endPoint;
+        }
+
+        public String getBucketName() {
+            return bucketName;
+        }
+
+        public void setBucketName(String bucketName) {
+            this.bucketName = bucketName;
         }
     }
 }
