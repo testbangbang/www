@@ -290,6 +290,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void rebuildTabWidget() {
         insideTabChanging = true;
+
+        ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
         tabHost.clearAllTabs();
 
         ArrayList<LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String>> reverseList = new ArrayList<>();
@@ -305,6 +307,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
         if (tabWidget.getTabCount() <= 0) {
             addDummyTabToHost();
+        }
+
+        if (currentTab != null) {
+            tabHost.setCurrentTabByTag(currentTab.toString());
         }
     }
 
@@ -399,6 +405,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         rebuildTabWidget();
 
         if (!tabManager.supportMultipleTabs()) {
+            tabWidgetVisible.set(true);
             updateTabWidgetVisibilityOnOpenedReaderTabs(true);
         }
     }
@@ -573,6 +580,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     updateCurrentTabInHost(tab);
                     updateReaderTabWindowHeight(tab);
                     am.moveTaskToFront(tasksList.get(i).id, 0);
+
+                    if (!tabManager.supportMultipleTabs() || tabManager.getOpenedTabs().size() <= 1) {
+                        ReaderBroadcastReceiver.sendUpdateTabWidgetVisibilityIntent(this,
+                                tabManager.getTabReceiver(tab), true);
+                    } else {
+                        ReaderBroadcastReceiver.sendUpdateTabWidgetVisibilityIntent(this,
+                                tabManager.getTabReceiver(tab), tabWidgetVisible.get());
+                    }
                     return true;
                 }
             }
@@ -610,11 +625,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void updateReaderTabWindowHeight(ReaderTabManager.ReaderTab tab) {
-        Debug.d(TAG, "updateReaderTabWindowHeight: " + tab);
+        final int tabContentHeight = getTabContentHeight();
+        Debug.d(TAG, "updateReaderTabWindowHeight: " + tab + ", " + tabContentHeight);
         if (!tabManager.getOpenedTabs().containsKey(tab)) {
             return;
         }
-        final int tabContentHeight = getTabContentHeight();
         ReaderBroadcastReceiver.sendResizeReaderWindowIntent(this,
                 tabManager.getTabReceiver(tab),
                 WindowManager.LayoutParams.MATCH_PARENT,
@@ -670,6 +685,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void updateTabWidgetVisibility(boolean visible) {
         setTabWidgetVisible(visible);
         updateReaderTabWindowHeight();
+        rebuildTabWidget();
         updateTabWidgetVisibilityOnOpenedReaderTabs(visible);
     }
 
