@@ -19,6 +19,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogSlideshowStatistic;
@@ -214,6 +215,7 @@ public class SlideshowHandler extends BaseHandler {
     }
 
     private void loopNextScreen() {
+        ReaderDeviceManager.holdDisplayUpdate(readerDataHolder.getContext(), getSlideshowStatusBar());
         pageCount++;
         if (readerDataHolder.getReaderViewInfo().canNextScreen) {
             nextScreen(readerDataHolder, pageLimitCallback);
