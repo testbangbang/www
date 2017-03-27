@@ -973,7 +973,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void forceCloseApplication(final ForceCloseEvent event) {
         enablePost(true);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
-        if (event.byUser) {
+        if (event != null && event.byUser) {
             onBackPressed();
         }
 
