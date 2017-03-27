@@ -397,6 +397,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
         tabManager.resetTabState(getCurrentTabInHost());
         rebuildTabWidget();
+
+        if (!tabManager.supportMultipleTabs()) {
+            updateTabWidgetVisibilityOnOpenedReaderTabs(true);
+        }
     }
 
     private boolean handleActivityIntent() {
