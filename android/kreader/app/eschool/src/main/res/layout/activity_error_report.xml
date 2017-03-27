@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tool_bar"
+        style="@style/OnyxToolBarStyle">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/back_function_layout"
+                style="@style/global_activities_back_function_layout">
+
+                <ImageView
+                    android:id="@+id/imageView_back"
+                    style="@style/global_activities_back_btn_image" />
+
+                <TextView
+                    android:id="@+id/textView_main_title"
+                    style="@style/global_activities_back_btn_category_tittle"
+                    android:layout_toRightOf="@+id/imageView_back"
+                    android:text="@string/setting_error_report" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <EditText
+        android:id="@+id/editText_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tool_bar"
+        android:layout_margin="@dimen/activity_log_collection_edit_margin"
+        android:background="@drawable/edit_background"
+        android:ellipsize="middle"
+        android:gravity="start"
+        android:minHeight="@dimen/activity_log_collection_edit_min_height"
+        android:padding="@dimen/activity_log_collection_edit_padding"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/activity_log_collection_edit_text_size" />
+
+    <Button
+        android:id="@+id/button_positive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/editText_description"
+        android:layout_below="@+id/editText_description"
+        android:minWidth="@dimen/activity_log_collection_button_min_width"
+        android:text="@android:string/ok"
+        android:textSize="@dimen/activity_log_collection_button_text_size" />
+
+</RelativeLayout>
