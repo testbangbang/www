@@ -10,6 +10,7 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
@@ -19,11 +20,14 @@ import com.onyx.kreader.ui.actions.AnalyzeWordAction;
 import com.onyx.android.sdk.reader.host.request.SelectWordRequest;
 import com.onyx.kreader.ui.actions.SelectWordAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
+import com.onyx.kreader.ui.actions.ViewImageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.android.sdk.reader.utils.MathUtils;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.android.sdk.reader.utils.RectUtils;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -59,6 +63,10 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
+        if (tryPageImage(readerDataHolder, x2, y2)){
+            quitWordSelection(readerDataHolder);
+            return;
+        }
         longPressPoint.set((int) x2, (int) y2);
         lastMovedPoint = new Point((int) x2, (int) y2);
         cursorSelected = getCursorSelected(readerDataHolder, (int) x2, (int) y2);
@@ -75,6 +83,22 @@ public class WordSelectionHandler extends BaseHandler{
             quitWordSelection(readerDataHolder);
         }
         readerDataHolder.changeEpdUpdateMode(UpdateMode.DU);
+    }
+
+    private boolean tryPageImage(ReaderDataHolder readerDataHolder, final float x, final float y) {
+        for (PageInfo pageInfo : readerDataHolder.getReaderViewInfo().getVisiblePages()) {
+            if (!readerDataHolder.getReaderUserDataInfo().hasPageImages(pageInfo)) {
+                continue;
+            }
+            List<ReaderImage> images = readerDataHolder.getReaderUserDataInfo().getPageImages(pageInfo);
+            for (ReaderImage image : images) {
+                if (image.getRectangle().contains(x, y)) {
+                    new ViewImageAction(image.getBitmap()).execute(readerDataHolder, null);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
