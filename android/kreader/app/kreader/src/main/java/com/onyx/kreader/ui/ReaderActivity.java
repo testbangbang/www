@@ -820,7 +820,10 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         boolean tabWidgetVisible = getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_TAB_WIDGET_VISIBLE,
                 true);
-        Debug.e(getClass(), "tab widget visible: " + tabWidgetVisible);
+        Debug.d(getClass(), "postDocumentInitRendered: tab widget visible -> " + tabWidgetVisible);
+        if (!tabWidgetVisible) {
+            buttonShowTabWidget.setVisibility(View.VISIBLE);
+        }
     }
 
     @Subscribe
