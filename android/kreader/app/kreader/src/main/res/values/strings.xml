@@ -160,6 +160,8 @@
     <string name="settings_enable_system_status_bar_tittle">Enable System Status Bar</string>
     <string name="settings_enable_reader_status_bar_key" translatable="false">setting_enable_reader_status_bar</string>
     <string name="setting_enable_reader_status_bar_tittle">Enable Reader Status Bar</string>
+    <string name="settings_enable_multiple_tabs_key" translatable="false">setting_enable_multiple_tabs</string>
+    <string name="settings_enable_multiple_tabs_title">Enable multiple documents</string>
     <string name="settings_search_menu_position_key" translatable="false">settings_search_menu_position</string>
     <string name="settings_search_menu_position_tittle">Set Search Menu Position</string>
     <string name="settings_bookmark_key" translatable="false">show_bookmark</string>

@@ -126,6 +126,10 @@ public class SingletonSharedPreference {
         return getBooleanByStringID(context, R.string.settings_enable_reader_status_bar_key, DeviceConfig.sharedInstance(context).isDefaultUseReaderStatusBar());
     }
 
+    public static boolean isMultipleTabsEnabled(Context context) {
+        return getBooleanByStringID(context, R.string.settings_enable_multiple_tabs_key, DeviceConfig.sharedInstance(context).isSupportMultipleTabs());
+    }
+
     public static boolean isAnimationEnabled(Context context) {
         return getBooleanByStringID(context, R.string.settings_animation_key, true);
     }

@@ -88,6 +88,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     protected void onStart() {
         super.onStart();
         syncFullScreenState();
+        syncTabState();
     }
 
     @Override
@@ -381,6 +382,21 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             });
         }
         DeviceUtils.setFullScreenOnResume(this, fullScreen);
+    }
+
+    private void syncTabState() {
+        ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
+        if (!tabManager.supportMultipleTabs()) {
+            for (ReaderTabManager.ReaderTab tab : tabManager.getOpenedTabs().keySet()) {
+                if (tab == currentTab) {
+                    continue;
+                }
+                closeTabActivity(tab);
+            }
+        }
+
+        tabManager.resetTabState(getCurrentTabInHost());
+        rebuildTabWidget();
     }
 
     private boolean handleActivityIntent() {
