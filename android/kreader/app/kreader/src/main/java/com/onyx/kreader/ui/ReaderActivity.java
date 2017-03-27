@@ -74,7 +74,6 @@ import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
 import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
-import com.onyx.kreader.ui.events.ActivityPauseEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
 import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
@@ -265,14 +264,14 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void initComponents() {
-        initButtons();
+        initTabButtons();
         initStatusBar();
         initReaderDataHolder();
         initSurfaceView();
         initReceiver();
     }
 
-    private void initButtons() {
+    private void initTabButtons() {
         buttonShowTabWidget = (ImageView) findViewById(R.id.button_show_tab_widget);
         buttonShowTabWidget.setOnClickListener(new View.OnClickListener() {
             @Override
