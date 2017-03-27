@@ -26,6 +26,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -95,6 +96,7 @@ import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
+import com.onyx.kreader.ui.events.UpdateTabWidgetVisibilityEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.BaseHandler;
@@ -117,6 +119,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
     private SurfaceView surfaceView;
     private RelativeLayout mainView;
+    private ImageView buttonShowTabWidget;
     private SurfaceHolder.Callback surfaceHolderCallback;
     private SurfaceHolder holder;
     private ReaderStatusBar statusBar;
@@ -262,10 +265,22 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void initComponents() {
+        initButtons();
         initStatusBar();
         initReaderDataHolder();
         initSurfaceView();
         initReceiver();
+    }
+
+    private void initButtons() {
+        buttonShowTabWidget = (ImageView) findViewById(R.id.button_show_tab_widget);
+        buttonShowTabWidget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonShowTabWidget.setVisibility(View.GONE);
+                ReaderTabHostBroadcastReceiver.sendShowTabWidgetEvent(ReaderActivity.this);
+            }
+        });
     }
 
     private void initReceiver() {
@@ -589,6 +604,16 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
     }
 
+    @Subscribe
+    public void onUpdateTabWidgetVisibility(final UpdateTabWidgetVisibilityEvent event) {
+        Debug.d(getClass(), "onUpdateTabWidgetVisibility: " + event.visible);
+        if (!event.visible) {
+            buttonShowTabWidget.setVisibility(View.VISIBLE);
+        } else {
+            buttonShowTabWidget.setVisibility(View.GONE);
+        }
+    }
+
     private PinchZoomingPopupMenu getPinchZoomPopupMenu() {
         if (pinchZoomingPopupMenu == null) {
             DisplayMetrics dm = getResources().getDisplayMetrics();
@@ -792,6 +817,10 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         Debug.setDebug(getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_ENABLE_DEBUG, Debug.getDebug()));
+
+        boolean tabWidgetVisible = getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_TAB_WIDGET_VISIBLE,
+                true);
+        Debug.e(getClass(), "tab widget visible: " + tabWidgetVisible);
     }
 
     @Subscribe

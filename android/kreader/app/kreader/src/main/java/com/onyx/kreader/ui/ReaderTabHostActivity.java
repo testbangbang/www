@@ -43,6 +43,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private static final Class TAG = ReaderTabHostActivity.class;
 
+    public static AtomicBoolean tabWidgetVisible = new AtomicBoolean(true);
     public static AtomicBoolean enableDebugLog = null;
 
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
@@ -55,6 +56,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private boolean insideTabChanging = false;
     private boolean isManualShowTab = true;
+
+    public static void setTabWidgetVisible(boolean visible) {
+        ReaderTabHostActivity.tabWidgetVisible.set(visible);
+    }
 
     public static void setEnableDebugLog(boolean enabled) {
         Debug.setDebug(enabled);
@@ -142,7 +147,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         btnSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateTabLayoutState(!isManualShowTab);
+//                updateTabLayoutState(!isManualShowTab);
+                updateTabWidgetVisibility(false);
             }
         });
 
@@ -209,6 +215,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
             @Override
             public void onQuitFullScreen() {
+            }
+
+            @Override
+            public void onUpdateTabWidgetVisibility(boolean visible) {
+                updateTabWidgetVisibility(visible);
             }
 
             @Override
@@ -309,7 +320,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private boolean isShowingTabWidget() {
-        return tabManager.getOpenedTabs().size() > 1;
+        return tabWidgetVisible.get() && tabManager.getOpenedTabs().size() > 1;
     }
 
     private void showTabWidgetOnCondition() {
@@ -458,6 +469,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
         if (enableDebugLog != null) {
             intent.putExtra(ReaderBroadcastReceiver.TAG_ENABLE_DEBUG, enableDebugLog.get());
+        }
+        if (tabManager.getOpenedTabs().size() > 1) {
+            intent.putExtra(ReaderBroadcastReceiver.TAG_TAB_WIDGET_VISIBLE, tabWidgetVisible.get());
         }
 
         startActivity(intent);
@@ -626,6 +640,30 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                         } else {
                             ReaderBroadcastReceiver.sendDisableDebugLogIntent(this, tabManager.getTabReceiver(tab));
                         }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateTabWidgetVisibility(boolean visible) {
+        setTabWidgetVisible(visible);
+        updateReaderTabWindowHeight();
+        updateTabWidgetVisibilityOnOpenedReaderTabs(visible);
+    }
+
+    private void updateTabWidgetVisibilityOnOpenedReaderTabs(boolean visible) {
+        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
+        if (!tasksList.isEmpty()) {
+            int nSize = tasksList.size();
+            for (int i = 0; i < nSize; i++) {
+                for (ReaderTabManager.ReaderTab tab : tabManager.getOpenedTabs().keySet()) {
+                    String clzName = tabManager.getTabActivity(tab).getName();
+                    if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
+                        Debug.d(TAG, "update tab widget visibility: " + tab + ", " + visible);
+                        ReaderBroadcastReceiver.sendUpdateTabWidgetVisibilityIntent(this, tabManager.getTabReceiver(tab), visible);
                         break;
                     }
                 }
