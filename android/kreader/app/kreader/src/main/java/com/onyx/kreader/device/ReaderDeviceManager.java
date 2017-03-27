@@ -166,4 +166,13 @@ public class ReaderDeviceManager {
         }
     }
 
+    public static void holdDisplayUpdate(Context context, View view) {
+        if (!view.isShown()) {
+            return;
+        }
+        applyRegalUpdate(context, view);
+        boolean hold = !isApplyFullUpdate();
+        holdDisplay(hold);
+    }
+
 }
