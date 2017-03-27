@@ -508,14 +508,6 @@ public class ReaderActivity extends OnyxBaseActivity {
         getReaderDataHolder().notifyUpdateSlideshowStatusBar();
     }
 
-    private void holdDisplayUpdate() {
-        if (!getStatusBar().isShown()) {
-            return;
-        }
-        ReaderDeviceManager.applyRegalUpdate(this, getStatusBar());
-        boolean hold = !ReaderDeviceManager.isApplyFullUpdate();
-        ReaderDeviceManager.holdDisplay(hold);
-    }
 
     @Subscribe
     public void onShapeRendered(final ShapeRenderFinishEvent event) {
@@ -541,7 +533,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void beforeDrawPage() {
-        holdDisplayUpdate();
+        ReaderDeviceManager.holdDisplayUpdate(this, getStatusBar());
         enablePost(true);
     }
 
