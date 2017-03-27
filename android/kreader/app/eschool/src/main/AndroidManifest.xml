@@ -61,6 +61,13 @@
         <activity
             android:name=".activity.ApplicationsActivity" />
 
+        <activity android:name=".activity.ErrorReportActivity">
+            <intent-filter>
+                <action android:name="onyx.eschool.intent.action.ERROR_REPORT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
     </application>
 
