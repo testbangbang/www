@@ -249,7 +249,7 @@ public class DialogReflowSettings extends DialogBase {
     private void resetSettings(ImageReflowSettings settings) {
         upgradeLayout.getMultiAdapter().resetItemChecked(autoStraightenDefaultIndex, fontSizes.length);
         fontSizeLayout.getMultiAdapter().resetItemChecked(fontSizeDefaultIndex, fontSizes.length);
-        columnsLayout.getMultiAdapter().resetItemChecked( columnDefaultIndex,columnsSize.length);
+        columnsLayout.getMultiAdapter().resetItemChecked(columnDefaultIndex, columnsSize.length);
         alignRecycler.setCurrentFocusedPosition(justificationDefaultIndex);
         formatRecycler.setCurrentFocusedPosition(formatDefaultIndex);
     }
@@ -311,7 +311,7 @@ public class DialogReflowSettings extends DialogBase {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked, int position) {
                 if (buttonView.isPressed() || buttonView.isFocused()) {
-                    columnsLayout.getMultiAdapter().resetItemChecked(position,columnsSize.length);
+                    columnsLayout.getMultiAdapter().resetItemChecked(position, columnsSize.length);
                 }
             }
         });
