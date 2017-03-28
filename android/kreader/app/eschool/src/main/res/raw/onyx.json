@@ -22,5 +22,14 @@
     "com.onyx.test",
     "com.onyx.android.production.test",
     "com.onyx.android.screenmanager"
+  ],
+  "media_scan_support": false,
+  "music_dir": [
+    "Music",
+    "Movies"
+  ],
+  "gallery_dir": [
+    "Pictures",
+    "DCIM"
   ]
 }

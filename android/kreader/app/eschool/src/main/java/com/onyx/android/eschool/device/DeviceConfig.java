@@ -35,6 +35,10 @@ public class DeviceConfig {
     static public final String VERIFY_BOOKS_TAG = "verify_books";
     static public final String VERIFY_TTS_TAG = "verify_tts";
 
+    static public final String MEDIA_SCAN_SUPPORT = "media_scan_support";
+    static public final String GALLERY_DIR = "gallery_dir";
+    static public final String MUSIC_DIR = "music_dir";
+
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
             globalInstance = new DeviceConfig(context);
@@ -160,5 +164,23 @@ public class DeviceConfig {
             defaultCustomizedIconAppsMap.putAll((Map<String, String>) (backend.getObject(CUSTOMIZED_ICON_APPS_MAPS)));
         }
         return defaultCustomizedIconAppsMap;
+    }
+
+    public List<String> getMusicDir() {
+        if (backend.hasKey(MUSIC_DIR)) {
+            return backend.getList(MUSIC_DIR);
+        }
+        return null;
+    }
+
+    public List<String> getGalleryDir() {
+        if (backend.hasKey(GALLERY_DIR)) {
+            return backend.getList(GALLERY_DIR);
+        }
+        return null;
+    }
+
+    public boolean supportMediaScan() {
+        return backend.getBoolean(MEDIA_SCAN_SUPPORT, true);
     }
 }
