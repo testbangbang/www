@@ -150,7 +150,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             public void onClick(View v) {
 //                updateTabLayoutState(!isManualShowTab);
                 updateTabWidgetVisibility(false);
-                saveReaderTabState();
             }
         });
 
@@ -695,6 +694,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         updateReaderTabWindowHeight();
         rebuildTabWidget();
         updateTabWidgetVisibilityOnOpenedReaderTabs(visible);
+
+        saveReaderTabState();
     }
 
     private void updateTabWidgetVisibilityOnOpenedReaderTabs(boolean visible) {
