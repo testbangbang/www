@@ -16,6 +16,7 @@
     "com.android.email",
     "com.android.calendar",
     "com.android.deskclock",
+    "com.android.quicksearchbox",
     "com.onyx.deskclock"
   ],
   "test_apps": [
