@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.reader.plugins.alreader;
+package com.onyx.android.sdk.reader.plugins.jeb;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,12 +8,6 @@ import android.graphics.RectF;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
-import com.onyx.android.sdk.reader.api.ReaderImage;
-import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.utils.Benchmark;
-import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -24,6 +18,7 @@ import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestOptions;
+import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.api.ReaderPlugin;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
@@ -39,6 +34,11 @@ import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.api.ReaderViewOptions;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.utils.Benchmark;
+import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -49,7 +49,7 @@ import java.util.Set;
  * Created by zhuzeng on 29/10/2016.
  */
 
-public class AlReaderPlugin implements ReaderPlugin,
+public class JEBReaderPlugin implements ReaderPlugin,
         ReaderDocument,
         ReaderView,
         ReaderRenderer,
@@ -60,22 +60,22 @@ public class AlReaderPlugin implements ReaderPlugin,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
-    private static final String TAG = AlReaderPlugin.class.getSimpleName();
+    private static final String TAG = JEBReaderPlugin.class.getSimpleName();
     private static Set<String> extensionFilters = new HashSet<String>();
     private Benchmark benchmark = new Benchmark();
-    private AlReaderWrapper impl;
+    private JEBReaderWrapper impl;
     private String documentPath;
     private List<ReaderSelection> searchResults = new ArrayList<>();
 
     private ReaderViewOptions readerViewOptions;
 
-    public AlReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
+    public JEBReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
         if (impl == null) {
-            impl = new AlReaderWrapper(context, pluginOptions);
+            impl = new JEBReaderWrapper(context, pluginOptions);
         }
     }
 
-    public AlReaderWrapper getPluginImpl() {
+    public JEBReaderWrapper getPluginImpl() {
         return impl;
     }
 
@@ -85,24 +85,7 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     static public Set<String> getExtensionFilters() {
         if (extensionFilters.size() <= 0) {
-            extensionFilters.add("azw");
-            extensionFilters.add("azw3");
-            extensionFilters.add("doc");
-            extensionFilters.add("docm");
-            extensionFilters.add("docx");
-            extensionFilters.add("epub");
-            extensionFilters.add("fb2");
-            extensionFilters.add("fbz");
-            extensionFilters.add("html");
-            extensionFilters.add("mobi");
-            extensionFilters.add("odt");
-            extensionFilters.add("pdb");
-            extensionFilters.add("prc");
-            extensionFilters.add("rtf");
-            extensionFilters.add("sxw");
-            extensionFilters.add("trc");
-            extensionFilters.add("txt");
-            extensionFilters.add("zip");
+            extensionFilters.add("jeb");
         }
         return extensionFilters;
     }
@@ -129,12 +112,12 @@ public class AlReaderPlugin implements ReaderPlugin,
             archivePassword = documentOptions.getDocumentPassword();
         }
         long ret = getPluginImpl().openDocument(path, documentOptions);
-        if (ret  == AlReaderWrapper.NO_ERROR) {
+        if (ret  == JEBReaderWrapper.NO_ERROR) {
             return this;
         }
-        if (ret == AlReaderWrapper.ERROR_PASSWORD_INVALID) {
+        if (ret == JEBReaderWrapper.ERROR_PASSWORD_INVALID) {
             throw ReaderException.passwordRequired();
-        } else if (ret == AlReaderWrapper.ERROR_UNKNOWN) {
+        } else if (ret == JEBReaderWrapper.ERROR_UNKNOWN) {
             throw ReaderException.cannotOpen();
         }
         return null;
