@@ -276,5 +276,9 @@ public class DynamicMultiRadioGroupView extends LinearLayout {
             compoundButtons.get(position).setChecked(checked);
         }
 
+        public void resetItemChecked(int positionChecked, int itemCount) {
+            setItemRangeChecked(true, 0, positionChecked + 1);
+            setItemRangeChecked(false, positionChecked + 1, itemCount-positionChecked-1);
+        }
     }
 }
