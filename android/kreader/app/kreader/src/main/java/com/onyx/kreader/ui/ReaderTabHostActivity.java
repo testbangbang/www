@@ -150,6 +150,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             public void onClick(View v) {
 //                updateTabLayoutState(!isManualShowTab);
                 updateTabWidgetVisibility(false);
+                saveReaderTabState();
             }
         });
 
@@ -648,11 +649,15 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void saveReaderTabState() {
+        Debug.d(TAG, "saveReaderTabState");
         SingletonSharedPreference.setMultipleTabState(tabManager.toJson());
+        SingletonSharedPreference.setMultipleTabVisibility(tabWidgetVisible.get());
     }
 
     private void restoreReaderTabState() {
+        Debug.d(TAG, "restoreReaderTabState");
         tabManager = ReaderTabManager.createFromJson(SingletonSharedPreference.getMultipleTabState());
+        tabWidgetVisible.set(SingletonSharedPreference.getMultipleTabVisibility());
         showTabWidgetOnCondition();
         rebuildTabWidget();
     }
