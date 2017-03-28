@@ -175,7 +175,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     reopenReaderTab(tab);
                 }
                 onTabSwitched(tab);
-                insideTabChanging = false;
             }
         });
 
@@ -290,27 +289,30 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void rebuildTabWidget() {
         insideTabChanging = true;
+        try {
+            ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
+            tabHost.clearAllTabs();
 
-        ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
-        tabHost.clearAllTabs();
+            ArrayList<LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String>> reverseList = new ArrayList<>();
+            for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
+                reverseList.add(0, entry);
+            }
 
-        ArrayList<LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String>> reverseList = new ArrayList<>();
-        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            reverseList.add(0, entry);
-        }
+            Debug.d(TAG, "rebuilding tab widget:");
+            for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : reverseList) {
+                Debug.d(TAG, "rebuilding: " + entry.getKey());
+                addTabToHost(entry.getKey(), entry.getValue());
+            }
 
-        Debug.d(TAG, "rebuilding tab widget:");
-        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : reverseList) {
-            Debug.d(TAG, "rebuilding: " + entry.getKey());
-            addTabToHost(entry.getKey(), entry.getValue());
-        }
+            if (tabWidget.getTabCount() <= 0) {
+                addDummyTabToHost();
+            }
 
-        if (tabWidget.getTabCount() <= 0) {
-            addDummyTabToHost();
-        }
-
-        if (currentTab != null) {
-            tabHost.setCurrentTabByTag(currentTab.toString());
+            if (currentTab != null) {
+                tabHost.setCurrentTabByTag(currentTab.toString());
+            }
+        } finally {
+            insideTabChanging = false;
         }
     }
 
@@ -319,6 +321,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 !tabHost.getCurrentTabTag().equals(tab.toString())) {
             insideTabChanging = true;
             tabHost.setCurrentTabByTag(tab.toString());
+            insideTabChanging = false;
         }
     }
 
