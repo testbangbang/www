@@ -11,6 +11,7 @@ import android.media.ExifInterface;
 import android.opengl.GLES10;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -100,9 +101,10 @@ public class CropImageDialog extends Dialog {
     }
 
     private void setupBitmap() {
-        sampleSize=calculateBitmapSampleSize(image);
+        sampleSize = calculateBitmapSampleSize(image);
         Matrix matrix=new Matrix();
-        matrix.postScale((float)(1/sampleSize),(float)(1/sampleSize));
+        float scale = 1.0f / sampleSize;
+        matrix.postScale(scale, scale);
         rotateBitmap= new RotateBitmap(Bitmap.createBitmap(image,
                 0,0, image.getWidth(), image.getHeight(),matrix,true)
                 , ExifInterface.ORIENTATION_UNDEFINED);
