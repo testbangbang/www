@@ -691,8 +691,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void updateTabWidgetVisibility(boolean visible) {
         setTabWidgetVisible(visible);
+        showTabWidgetOnCondition();
         updateReaderTabWindowHeight();
-        rebuildTabWidget();
         updateTabWidgetVisibilityOnOpenedReaderTabs(visible);
 
         saveReaderTabState();
