@@ -22,6 +22,7 @@ public class AddAnnotationRequest extends BaseReaderRequest {
     private String quote;
     private String note;
     private List<RectF> rects;
+    private Annotation annotation;
 
     public AddAnnotationRequest(PageInfo pageInfo, String locationBegin, String locationEnd,
                                 List<RectF> rects, String quote, String note) {
@@ -34,7 +35,8 @@ public class AddAnnotationRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        DataProviderManager.getDataProvider().addAnnotation(createAnnotation(reader));
+        annotation = createAnnotation(reader);
+        DataProviderManager.getDataProvider().addAnnotation(annotation);
         LayoutProviderUtils.updateReaderViewInfo(reader, createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 
@@ -49,6 +51,10 @@ public class AddAnnotationRequest extends BaseReaderRequest {
         annotation.setQuote(quote);
         annotation.setNote(note);
         annotation.setRectangles(rects);
+        return annotation;
+    }
+
+    public Annotation getAnnotation() {
         return annotation;
     }
 }

@@ -1,22 +1,21 @@
 package com.onyx.kreader.ui.handler;
 
-import android.app.admin.DeviceAdminInfo;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.reader.api.ReaderImage;
-import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
+import com.onyx.kreader.R;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.NextScreenAction;
 import com.onyx.kreader.ui.actions.PanAction;
@@ -38,6 +37,13 @@ import java.util.List;
  * Created by ming on 16/7/27.
  */
 public abstract class BaseHandler {
+
+    public static class HandlerInitialState {
+        public String ttsInitialPosition;
+        public RelativeLayout slideShowParentLayout;
+        public int slideShowMaxPageCount;
+        public int slideShowIntervalInSeconds;
+    }
 
     public static  final int KEYCDOE_SCRIBE = 213;
     public static  final int KEYCDOE_ERASE = 214;
@@ -77,7 +83,7 @@ public abstract class BaseHandler {
         return parent;
     }
 
-    public void onActivate(final ReaderDataHolder readerDataHolder) {}
+    public void onActivate(final ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {}
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {}
 
@@ -238,6 +244,10 @@ public abstract class BaseHandler {
             panFinished(readerDataHolder,(int) (getStartPoint().x - endX), (int) (getStartPoint().y - endY));
         }
         resetState();
+        return true;
+    }
+
+    public boolean onActionCancel(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
         return true;
     }
 

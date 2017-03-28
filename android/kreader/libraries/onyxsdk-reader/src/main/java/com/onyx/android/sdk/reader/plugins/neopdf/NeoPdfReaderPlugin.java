@@ -32,7 +32,7 @@ import com.onyx.android.sdk.reader.api.ReaderTextSplitter;
 import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.api.ReaderViewOptions;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
@@ -55,7 +55,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
-    private static final String TAG = NeoPdfReaderPlugin.class.getSimpleName();
+    private static final Class TAG = NeoPdfReaderPlugin.class;
     private Benchmark benchmark = new Benchmark();
 
     private NeoPdfJniWrapper impl;

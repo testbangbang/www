@@ -16,4 +16,7 @@ public class ReaderDocumentTableOfContent {
         return rootEntry;
     }
 
+    public boolean isEmpty() {
+        return rootEntry == null || rootEntry.getChildren() == null || rootEntry.getChildren().size() == 0;
+    }
 }

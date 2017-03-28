@@ -63,7 +63,7 @@
     <dimen name="dialog_navigation_setting_item_text_size">16sp</dimen>
     <dimen name="dict_name_text_view_layout_width">200dp</dimen>
     <dimen name="dialog_text_style_view_page_width">460dp</dimen>
-    <dimen name="dialog_text_style_view_page_height">400dp</dimen>
+    <dimen name="dialog_text_style_view_page_height">360dp</dimen>
     <dimen name="scribble_bottom_menu_margin">20dp</dimen>
     <dimen name="scribble_bottom_expand_menu_padding_left_right">15dp</dimen>
     <dimen name="scribble_bottom_expand_menu_padding_top_bottom">8dp</dimen>
@@ -87,9 +87,19 @@
     <dimen name="activity_statistics_read_key_text_size">20sp</dimen>
     <dimen name="activity_statistics_read_value_text_size">40sp</dimen>
     <dimen name="fragment_read_record_padding">10dp</dimen>
-    <dimen name="activity_statistics_item_text_size">18sp</dimen>
+    <dimen name="activity_statistics_item_text_size">14sp</dimen>
     <dimen name="activity_statistics_item_margin">5dp</dimen>
-
     <dimen name="dialog_slideshow_text_size">22sp</dimen>
     <dimen name="dialog_slideshow_layout_width">300dp</dimen>
+    <dimen name="dialog_text_style_margin_left">15dp</dimen>
+    <dimen name="preview_item_page_text_size">15sp</dimen>
+    <dimen name="dialog_table_of_content_list_item_text_size">20sp</dimen>
+    <dimen name="dialog_search_list_item_page_text_size">20sp</dimen>
+    <dimen name="activity_multiple_reader_tab_height">40dp</dimen>
+    <dimen name="dialog_quick_view_page_text_size">20sp</dimen>
+    <dimen name="dialog_search_list_item_text_size">18sp</dimen>
+    <dimen name="view_common_statistics_item_text_size">18sp</dimen>
+    <dimen name="dialog_text_style_title_view_width">90dp</dimen>
+    <dimen name="dialog_reflow_setting_margin">10dp</dimen>
+    <dimen name="dialog_text_style_title_text_size">18sp</dimen>
 </resources>

@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -18,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -30,8 +28,8 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.utils.TocUtils;
-import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -165,7 +163,7 @@ public class DialogQuickPreview extends OnyxBaseDialog {
                 toRequest.add(i);
             }
 
-            final GetPositionFromPageNumberAction action = new GetPositionFromPageNumberAction(toRequest);
+            final GetPositionFromPageNumberAction action = new GetPositionFromPageNumberAction(toRequest, true);
             action.execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -335,6 +333,7 @@ public class DialogQuickPreview extends OnyxBaseDialog {
         btnNext = (ImageButton) findViewById(R.id.image_view_next_page);
         btnPrev = (ImageButton) findViewById(R.id.image_view_prev_page);
         textViewProgress.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        textViewProgress.getPaint().setAntiAlias(true);
         touchHandler = new TouchHandler(gridRecyclerView);
 
         View.OnTouchListener onTouchListener = new View.OnTouchListener() {
@@ -443,13 +442,11 @@ public class DialogQuickPreview extends OnyxBaseDialog {
         textViewProgress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final EditText editText = new EditText(getContext());
-                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                editText.setHint("1-" + readerDataHolder.getPageCount());
-                final Dialog dlg = DialogHelp.getInputDialog(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number), editText, new OnClickListener() {
+                final OnyxCustomDialog dlg = OnyxCustomDialog.getInputDialog(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number), new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String page = editText.getText().toString();
+                        OnyxCustomDialog onyxCustomDialog = (OnyxCustomDialog) dialog;
+                        String page = onyxCustomDialog.getInputValue().toString();
                         if (!StringUtils.isNullOrEmpty(page)) {
                             int pageNumber = PagePositionUtils.getPageNumber(page);
                             pageNumber--;
@@ -467,7 +464,9 @@ public class DialogQuickPreview extends OnyxBaseDialog {
                             Toast.makeText(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number_empty_error), Toast.LENGTH_SHORT).show();
                         }
                     }
-                }).create();
+                });
+                dlg.getInputEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+                dlg.getInputEditText().setHint("1-" + readerDataHolder.getPageCount());
                 readerDataHolder.trackDialog(dlg);
                 dlg.show();
             }
@@ -562,7 +561,7 @@ public class DialogQuickPreview extends OnyxBaseDialog {
                     BaseReaderRequest readerRequest = (BaseReaderRequest) request;
                     ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
                     
-                    boolean hasToc = toc != null && toc.getRootEntry() != null;
+                    boolean hasToc = toc != null && !toc.isEmpty();
                     chapterBack.setEnabled(hasToc);
                     chapterForward.setEnabled(hasToc);
                     if (!hasToc) {
@@ -584,19 +583,11 @@ public class DialogQuickPreview extends OnyxBaseDialog {
         if (tocChapterNodeList.size() <= 0) {
             return;
         }
-        if (back && getPaginator().isFirstPage()) {
-            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.first_chapter), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!back && getPaginator().isLastPage()) {
-            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.last_chapter), Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         List<Integer> pages = new ArrayList<>();
         pages.add(Math.max(getPaginator().getCurrentPageBegin() - 1, 0));
         pages.add(Math.min(getPaginator().getCurrentPageEnd() + 1, getPaginator().getSize()));
-        final GetPositionFromPageNumberAction action =  new GetPositionFromPageNumberAction(pages);
+        final GetPositionFromPageNumberAction action =  new GetPositionFromPageNumberAction(pages, true);
         action.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -604,6 +595,15 @@ public class DialogQuickPreview extends OnyxBaseDialog {
                 if (documentPositions != null && documentPositions.size() >= 2) {
                     int pageStartPosition = PagePositionUtils.getPosition(documentPositions.get(0));
                     int pageEndPosition = PagePositionUtils.getPosition(documentPositions.get(1));
+                    if (back && (getPaginator().isFirstPage() || pageStartPosition <= tocChapterNodeList.get(0))) {
+                        Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.first_chapter), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (!back && (getPaginator().isLastPage() || pageEndPosition >= tocChapterNodeList.get(tocChapterNodeList.size() - 1 ))) {
+                        Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.last_chapter), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     chapterPosition = getChapterPosition(pageStartPosition, pageEndPosition, back, tocChapterNodeList);
                     jumpToChapter(chapterPosition);
                 }

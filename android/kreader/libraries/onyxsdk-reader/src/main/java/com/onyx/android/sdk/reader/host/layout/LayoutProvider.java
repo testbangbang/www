@@ -27,6 +27,10 @@ public class LayoutProvider {
         return null;
     }
 
+    public void deactivate() {
+
+    }
+
     public void activate() {
     }
 

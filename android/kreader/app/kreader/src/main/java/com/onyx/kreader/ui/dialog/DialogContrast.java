@@ -12,7 +12,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.ui.view.SeekBarWithEditTextView;
 import com.onyx.kreader.R;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.GammaCorrectionRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 
 public class DialogContrast extends OnyxBaseDialog implements CompoundButton.OnCheckedChangeListener {
 
-    private static final String TAG = "DialogContrast";
+    private static final Class TAG = DialogContrast.class;
 
     @Bind(R.id.btn_zero)
     CheckBox btnZero;

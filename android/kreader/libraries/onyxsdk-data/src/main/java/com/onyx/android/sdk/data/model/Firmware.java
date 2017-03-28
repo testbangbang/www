@@ -2,6 +2,11 @@ package com.onyx.android.sdk.data.model;
 
 import android.os.Build;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.onyx.android.sdk.data.utils.FirmwareUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
+
 import java.util.List;
 
 /**
@@ -23,6 +28,8 @@ public class Firmware extends BaseData {
     public String brand;            // post by admin
     public String fwType;           // firmware type, testing or release.
     public String deviceMAC;        // device mac
+    public String md5;
+    public int widthPixels, heightPixels;
 
     public List<String> changeList;
     public List<String> downloadUrlList;
@@ -45,5 +52,25 @@ public class Firmware extends BaseData {
         buildNumber = FirmwareUtils.getBuildIdFromFingerprint(fingerprint);
         buildType = FirmwareUtils.getBuildTypeFromFingerprint(fingerprint);
         fwType = TESTING_TAG;
+    }
+
+    @JSONField(serialize=false)
+    public String getChangeLog() {
+        if (!CollectionUtils.isNullOrEmpty(changeList)) {
+            return StringUtils.join(changeList, "\n");
+        }
+        return "";
+    }
+
+    public String getFingerprint() {
+        return fingerprint;
+    }
+
+    @JSONField(serialize=false)
+    public String getUrl() {
+        if (downloadUrlList.size() > 0) {
+            return downloadUrlList.get(0);
+        }
+        return null;
     }
 }

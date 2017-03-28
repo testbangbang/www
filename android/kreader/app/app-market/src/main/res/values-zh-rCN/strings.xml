@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">应用市场</string>
+    <string name="get_empty_download_link">无法取得下载链接</string>
+    <string name="get_empty_content">没有取得内容</string>
+    <string name="download_success">下载成功</string>
+    <string name="download_fail">下载失败</string>
+    <string name="downloading">下载中&#8230;</string>
+    <string name="total">总计：%d</string>
+    <string name="download">下载</string>
+    <string name="install">安装</string>
+    <string name="updated">已是最新</string>
+    <string name="search_hint">搜索(空白字符搜索全部)</string>
+    <string name="no_category_found">查不到分类</string>
+    <string name="all">全部</string>
+</resources>

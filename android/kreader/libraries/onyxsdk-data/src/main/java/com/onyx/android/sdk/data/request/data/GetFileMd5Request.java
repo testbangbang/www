@@ -21,7 +21,7 @@ public class GetFileMd5Request extends BaseDataRequest {
     @Override
     public void execute(DataManager dataManager) throws Exception {
         File file = new File(filePath);
-        md5 = FileUtils.getFileMD5(file);
+        md5 = FileUtils.computeFullMD5Checksum(file);
     }
 
     public String getMd5() {

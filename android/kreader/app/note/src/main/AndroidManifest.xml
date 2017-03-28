@@ -34,8 +34,23 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.onyx.ManagerActivity" />
-        <activity android:name=".activity.onyx.ScribbleActivity"
-            android:windowSoftInputMode="adjustNothing"/>
+
+        <activity
+            android:name=".activity.onyx.ScribbleActivity"
+            android:windowSoftInputMode="adjustNothing"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/jpeg" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/bmp" />
+                <data android:mimeType="image/x-ms-bmp" />
+                <data android:mimeType="image/x-windows-bmp" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".activity.onyx.SpanScribbleActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustNothing"/>

@@ -41,6 +41,8 @@ public class EventReceiver {
                 args.put(StatisticsBase.CHANNEL_TAG, channel);
                 break;
             case Onyx:
+                final String url = DeviceConfig.sharedInstance(context).getStatisticsUrl();
+                args.put(StatisticsBase.STATISTICS_URL, url);
                 break;
         }
 
@@ -74,6 +76,22 @@ public class EventReceiver {
             return;
         }
         statisticsManager.onDocumentClosed(event.getContext());
+    }
+
+    @Subscribe
+    public void onActivityPause(final ActivityPauseEvent event) {
+        if (!isEnable()) {
+            return;
+        }
+        statisticsManager.onActivityPause(event.getContext());
+    }
+
+    @Subscribe
+    public void onActivityResume(final ActivityResumeEvent event) {
+        if (!isEnable()) {
+            return;
+        }
+        statisticsManager.onActivityResume(event.getContext());
     }
 
     @Subscribe

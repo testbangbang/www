@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
-import com.onyx.android.sdk.reader.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.util.HashMap;
 

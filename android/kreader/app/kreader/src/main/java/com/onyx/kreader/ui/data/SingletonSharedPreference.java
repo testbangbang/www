@@ -2,7 +2,7 @@ package com.onyx.kreader.ui.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.requests.ExportNotesRequest;
 import com.onyx.kreader.device.DeviceConfig;
@@ -28,50 +28,52 @@ public class SingletonSharedPreference {
     private final static String LAST_TOP_MARGIN = "last_top_margin";
     private final static String LAST_RIGHT_MARGIN = "last_right_margin";
     private final static String LAST_BOTTOM_MARGIN = "last_bottom_margin";
+    private final static String SCREEN_ORIENTATION = "screen_orientation";
+    private final static String MULTIPLE_TAB_STATE = "multiple_tab_state";
 
-    private static SharedPreferences sPreferences;
+    private static Context sContext;
     private static SharedPreferences.Editor sDefaultEditor;
 
     public static void init(Context context) {
-        sPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sContext = context;
     }
 
     public static SharedPreferences getPrefs() {
-        return sPreferences;
+        return sContext.getSharedPreferences(sContext.getPackageName() + "_preferences", Context.MODE_MULTI_PROCESS);
     }
 
     public static void setBooleanValue(String key, boolean value) {
-        sDefaultEditor = sPreferences.edit();
+        sDefaultEditor = getPrefs().edit();
         sDefaultEditor.putBoolean(key, value);
         sDefaultEditor.apply();
     }
 
     public static void setIntValue(String key, int value) {
-        sDefaultEditor = sPreferences.edit();
+        sDefaultEditor = getPrefs().edit();
         sDefaultEditor.putInt(key, value);
         sDefaultEditor.apply();
     }
 
     public static void setFloatValue(String key, float value) {
-        sDefaultEditor = sPreferences.edit();
+        sDefaultEditor = getPrefs().edit();
         sDefaultEditor.putFloat(key, value);
         sDefaultEditor.apply();
     }
 
     public static void setStringValue(String key, String value) {
-        sDefaultEditor = sPreferences.edit();
+        sDefaultEditor = getPrefs().edit();
         sDefaultEditor.putString(key, value);
         sDefaultEditor.apply();
     }
 
     public static void removeValueByKey(String key){
-        sDefaultEditor = sPreferences.edit();
+        sDefaultEditor = getPrefs().edit();
         sDefaultEditor.remove(key);
         sDefaultEditor.apply();
     }
 
     public static void removeValueByKey(Context context,int resID){
-        sDefaultEditor = sPreferences.edit();
+        sDefaultEditor = getPrefs().edit();
         sDefaultEditor.remove(context.getResources().getString(resID));
         sDefaultEditor.apply();
     }
@@ -93,23 +95,27 @@ public class SingletonSharedPreference {
     }
 
     public static boolean getBooleanByStringID(Context context, int ResID, boolean defaultValue) {
-        return sPreferences.getBoolean(context.getString(ResID), defaultValue);
+        return getPrefs().getBoolean(context.getString(ResID), defaultValue);
     }
 
     public static int getIntByStringID(Context context, int ResID, int defaultValue) {
-        return sPreferences.getInt(context.getString(ResID), defaultValue);
+        return getPrefs().getInt(context.getString(ResID), defaultValue);
     }
 
     public static float getFloatByStringID(Context context, int ResID, float defaultValue) {
-        return sPreferences.getFloat(context.getString(ResID), defaultValue);
+        return getPrefs().getFloat(context.getString(ResID), defaultValue);
     }
 
     public static boolean getBooleanByStringResource(String keyString, boolean defaultValue) {
-        return sPreferences.getBoolean(keyString, defaultValue);
+        return getPrefs().getBoolean(keyString, defaultValue);
     }
 
     public static int getIntByStringResource(String keyString, int defaultValue) {
-        return sPreferences.getInt(keyString, defaultValue);
+        return getPrefs().getInt(keyString, defaultValue);
+    }
+
+    public static String getStringValue(String keyString) {
+        return getPrefs().getString(keyString, "");
     }
 
     public static boolean isSystemStatusBarEnabled(Context context) {
@@ -149,7 +155,7 @@ public class SingletonSharedPreference {
     }
 
     public static int getSearchPopUpMenuPosition(Context context){
-        return Integer.parseInt(sPreferences.getString(context.getString(R.string.settings_search_menu_position_key), "1"));
+        return Integer.parseInt(getPrefs().getString(context.getString(R.string.settings_search_menu_position_key), "1"));
     }
 
     public static boolean isShowNote(Context context) {
@@ -193,7 +199,7 @@ public class SingletonSharedPreference {
     }
 
     public static AnnotationHighlightStyle getAnnotationHighlightStyle(Context context) {
-        String value = sPreferences.getString(context.getString(R.string.settings_annotation_highlight_style_key), null);
+        String value = getPrefs().getString(context.getString(R.string.settings_annotation_highlight_style_key), null);
         if (value != null) {
             try {
                 return Enum.valueOf(AnnotationHighlightStyle.class, value);
@@ -229,7 +235,7 @@ public class SingletonSharedPreference {
 
     public static float getBaseLineWidth(Context context) {
         float defaultValue = 1.0f;
-        String value = sPreferences.getString(context.getString( R.string.settings_scribble_base_width_key), String.valueOf(defaultValue));
+        String value = getPrefs().getString(context.getString( R.string.settings_scribble_base_width_key), String.valueOf(defaultValue));
         try {
             defaultValue = Float.parseFloat(value);
         } catch (Exception e) {
@@ -243,7 +249,7 @@ public class SingletonSharedPreference {
     }
 
     public static float getTtsSpeechRate(Context context) {
-        return sPreferences.getFloat(TTS_SPEECH_RATE_KEY, 1.0f);
+        return getPrefs().getFloat(TTS_SPEECH_RATE_KEY, 1.0f);
     }
 
     public static void setQuickViewGridType(Context context, int value) {
@@ -251,7 +257,7 @@ public class SingletonSharedPreference {
     }
 
     public static int getQuickViewGridType(Context context, int defaultValue) {
-        return sPreferences.getInt(QUICK_VIEW_GRID_TYPE, defaultValue);
+        return getPrefs().getInt(QUICK_VIEW_GRID_TYPE, defaultValue);
     }
 
     public static void setDialogTableOfContentTab(Context context, int value) {
@@ -259,7 +265,7 @@ public class SingletonSharedPreference {
     }
 
     public static int getDialogTableOfContentTab(Context context, int defaultValue) {
-        return sPreferences.getInt(DIALOG_TABLE_OF_CONTENT_TAB, defaultValue);
+        return getPrefs().getInt(DIALOG_TABLE_OF_CONTENT_TAB, defaultValue);
     }
 
     public static void setExportWithAnnotation(boolean value) {
@@ -267,7 +273,7 @@ public class SingletonSharedPreference {
     }
 
     public static boolean isExportWithAnnotation() {
-        return sPreferences.getBoolean(EXPORT_WITH_ANNOTATION, true);
+        return getPrefs().getBoolean(EXPORT_WITH_ANNOTATION, true);
     }
 
     public static void setExportWithScribble(boolean value) {
@@ -275,7 +281,7 @@ public class SingletonSharedPreference {
     }
 
     public static boolean isExportWithScribble() {
-        return sPreferences.getBoolean(EXPORT_WITH_SCRIBBLE, true);
+        return getPrefs().getBoolean(EXPORT_WITH_SCRIBBLE, true);
     }
 
     public static void setExportScribbleColor(ExportNotesRequest.BrushColor color) {
@@ -283,7 +289,7 @@ public class SingletonSharedPreference {
     }
 
     public static ExportNotesRequest.BrushColor getExportScribbleColor() {
-        int ordinal = sPreferences.getInt(EXPORT_SCRIBBLE_COLOR, 0);
+        int ordinal = getPrefs().getInt(EXPORT_SCRIBBLE_COLOR, 0);
         ExportNotesRequest.BrushColor[] values = ExportNotesRequest.BrushColor.values();
         if (ordinal > values.length) {
             return ExportNotesRequest.BrushColor.Original;
@@ -296,7 +302,7 @@ public class SingletonSharedPreference {
     }
 
     public static boolean isExportAllPages() {
-        return sPreferences.getBoolean(EXPORT_ALL_PAGES, true);
+        return getPrefs().getBoolean(EXPORT_ALL_PAGES, true);
     }
 
     public static void setLastFontSize(float value) {
@@ -304,7 +310,7 @@ public class SingletonSharedPreference {
     }
 
     public static float getLastFontSize(float defaultValue) {
-        return sPreferences.getFloat(LAST_FONT_SIZE, defaultValue);
+        return getPrefs().getFloat(LAST_FONT_SIZE, defaultValue);
     }
 
     public static void setLastLeftMargin(int value) {
@@ -312,7 +318,7 @@ public class SingletonSharedPreference {
     }
 
     public static int getLastLeftMargin(int defaultValue) {
-        return sPreferences.getInt(LAST_LEFT_MARGIN, defaultValue);
+        return getPrefs().getInt(LAST_LEFT_MARGIN, defaultValue);
     }
 
     public static void setLastTopMargin(int value) {
@@ -320,7 +326,7 @@ public class SingletonSharedPreference {
     }
 
     public static int getLastTopMargin(int defaultValue) {
-        return sPreferences.getInt(LAST_TOP_MARGIN, defaultValue);
+        return getPrefs().getInt(LAST_TOP_MARGIN, defaultValue);
     }
 
     public static void setLastRightMargin(int value) {
@@ -328,7 +334,7 @@ public class SingletonSharedPreference {
     }
 
     public static int getLastRightMargin(int defaultValue) {
-        return sPreferences.getInt(LAST_RIGHT_MARGIN, defaultValue);
+        return getPrefs().getInt(LAST_RIGHT_MARGIN, defaultValue);
     }
 
     public static void setLastBottomMargin(int value) {
@@ -336,7 +342,7 @@ public class SingletonSharedPreference {
     }
 
     public static int getLastBottomMargin(int defaultValue) {
-        return sPreferences.getInt(LAST_BOTTOM_MARGIN, defaultValue);
+        return getPrefs().getInt(LAST_BOTTOM_MARGIN, defaultValue);
     }
 
     public static void setLastLineSpacing(int value) {
@@ -344,6 +350,22 @@ public class SingletonSharedPreference {
     }
 
     public static int getLastLineSpacing(int defaultValue) {
-        return sPreferences.getInt(LAST_LINE_SPACING, defaultValue);
+        return getPrefs().getInt(LAST_LINE_SPACING, defaultValue);
+    }
+
+    public static void setScreenOrientation(int screenOrientation) {
+        setIntValue(SCREEN_ORIENTATION, screenOrientation);
+    }
+
+    public static int getScreenOrientation(int defaultValue) {
+        return getPrefs().getInt(SCREEN_ORIENTATION, defaultValue);
+    }
+
+    public static void setMultipleTabState(String state) {
+        setStringValue(MULTIPLE_TAB_STATE, state);
+    }
+
+    public static String getMultipleTabState() {
+        return getStringValue(MULTIPLE_TAB_STATE);
     }
 }

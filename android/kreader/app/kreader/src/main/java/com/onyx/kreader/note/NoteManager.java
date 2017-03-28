@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -24,7 +23,7 @@ import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.note.bridge.NoteEventProcessorBase;
 import com.onyx.kreader.note.bridge.NoteEventProcessorManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
@@ -229,7 +228,10 @@ public class NoteManager {
             }
 
             public boolean enableShortcutDrawing() {
-                return enableShortcutDrawing;
+                if (getNoteDataInfo() == null) {
+                    return enableShortcutDrawing;
+                }
+                return enableShortcutDrawing && !isInSelection();
             }
 
             public boolean enableShortcutErasing() {
@@ -383,6 +385,12 @@ public class NoteManager {
 
     public boolean isInSelection() {
         return getNoteDrawingArgs().getCurrentShapeType() == ShapeFactory.SHAPE_SELECTOR;
+    }
+
+    public void resetSelection() {
+        if (isInSelection()) {
+            getNoteDrawingArgs().resetCurrentShapeType();
+        }
     }
 
     public void resetCurrentShape() {

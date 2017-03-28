@@ -8,10 +8,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.MimeTypeUtils;
-import com.onyx.android.sdk.utils.StringUtils;
-
 import java.io.File;
 
 /**
@@ -19,10 +15,29 @@ import java.io.File;
  */
 public class ViewDocumentUtils {
 
+    public static String ACTION_ENABLE_READER_DEBUG_LOG = "com.onyx.android.sdk.action_enable_reader_debug_log";
+    public static String ACTION_DISABLE_READER_DEBUG_LOG = "com.onyx.android.sdk.action_disable_reader_debug_log";
+
+    public static String TAG_AUTO_SLIDE_SHOW_MODE = "auto_slide_show";
+    public static String TAG_SLIDE_SHOW_MAX_PAGE_COUNT = "slide_show_page_count";
+    public static String TAG_SLIDE_SHOW_INTERVAL_IN_SECONDS = "slide_show_mode";
+
     public static Intent viewActionIntent(final File file) {
         final Intent intent = new Intent();
         intent.setData(Uri.fromFile(file));
         intent.setAction(Intent.ACTION_VIEW);
+        return intent;
+    }
+
+    public static Intent autoSlideShowIntent(final File file, final int maxPageCount,
+                                             final int intervalInSeconds) {
+        final Intent intent = viewActionIntentWithMimeType(file);
+        intent.setComponent(getKreaderComponentName());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(TAG_AUTO_SLIDE_SHOW_MODE, true);
+        intent.putExtra(TAG_SLIDE_SHOW_MAX_PAGE_COUNT, maxPageCount);
+        intent.putExtra(TAG_SLIDE_SHOW_INTERVAL_IN_SECONDS, intervalInSeconds);
+
         return intent;
     }
 
@@ -42,9 +57,19 @@ public class ViewDocumentUtils {
         return intent;
     }
 
+    public static Intent enableReaderDebugLogIntent() {
+        final Intent intent = new Intent(ACTION_ENABLE_READER_DEBUG_LOG);
+        return intent;
+    }
+
+    public static Intent disableReaderDebugLogIntent() {
+        final Intent intent = new Intent(ACTION_DISABLE_READER_DEBUG_LOG);
+        return intent;
+    }
+
     private static ComponentName getKreaderComponentName() {
         String packageName = "com.onyx.kreader";
-        String className = packageName + ".ui.ReaderActivity";
+        String className = packageName + ".ui.ReaderTabHostActivity";
         return new ComponentName(packageName, className);
     }
 

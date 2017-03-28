@@ -88,6 +88,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:textSize="20sp"
                 android:textColor="@color/normal_black"
                 android:layout_margin="10dp"
                 android:gravity="center_horizontal"
@@ -207,7 +208,7 @@
                 android:text="@string/searching"
                 android:id="@+id/textview_message"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textColor="@android:color/black"

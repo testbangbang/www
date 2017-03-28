@@ -1,14 +1,15 @@
 package com.onyx.android.note.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -27,6 +28,7 @@ import com.onyx.android.note.actions.scribble.GotoNextPageAction;
 import com.onyx.android.note.actions.scribble.GotoPrevPageAction;
 import com.onyx.android.note.actions.scribble.RemoveByPointListAction;
 import com.onyx.android.note.receiver.DeviceReceiver;
+import com.onyx.android.note.utils.Constant;
 import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -43,6 +45,7 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 
 import java.io.File;
 import java.util.List;
@@ -61,6 +64,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected String activityAction;
     protected String noteTitle;
     protected String parentID;
+    protected String uniqueID;
     protected Button pageIndicator;
     boolean isSurfaceViewFirstCreated = false;
     protected int currentVisualPageIndex;
@@ -219,8 +223,25 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                 getNoteViewHelper().enableScreenPost(true);
                 finish();
             }
+
+            @Override
+            public void onScreenShot(Intent intent, boolean end) {
+                if (end) {
+                    onScreenShotEnd(intent.getBooleanExtra(Constant.RELOAD_DOCUMENT_TAG, false));
+                } else {
+                    onScreenShotStart();
+                }
+            }
         });
         deviceReceiver.registerReceiver(this);
+    }
+
+    protected void onScreenShotStart(){
+        onSystemUIOpened();
+    }
+
+    protected void onScreenShotEnd(boolean reloadDocument){
+        onSystemUIClosed();
     }
 
     protected void unregisterDeviceReceiver() {
@@ -280,11 +301,12 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         activityAction = intent.getStringExtra(Utils.ACTION_TYPE);
         noteTitle = intent.getStringExtra(TAG_NOTE_TITLE);
         parentID = intent.getStringExtra(Utils.PARENT_LIBRARY_ID);
+        uniqueID = intent.getStringExtra(Utils.DOCUMENT_ID);
         if (Utils.ACTION_CREATE.equals(activityAction)) {
-            handleDocumentCreate(intent.getStringExtra(Utils.DOCUMENT_ID),
+            handleDocumentCreate(uniqueID,
                     parentID);
         } else if (Utils.ACTION_EDIT.equals(activityAction)) {
-            handleDocumentEdit(intent.getStringExtra(Utils.DOCUMENT_ID),
+            handleDocumentEdit(uniqueID,
                     parentID);
         }
     }
@@ -519,6 +541,15 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                deletePage();
+            }
+        });
+    }
+
+    private void deletePage() {
+        OnyxCustomDialog dialog = OnyxCustomDialog.getConfirmDialog(this, getString(R.string.ask_for_delete_page), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
                 final DocumentDeletePageAction<BaseScribbleActivity> action = new DocumentDeletePageAction<>();
                 action.execute(BaseScribbleActivity.this, new BaseCallback() {
                     @Override
@@ -529,6 +560,13 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                 });
             }
         });
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                syncWithCallback(false, true, null);
+            }
+        });
+        dialog.show();
     }
 
     protected void reloadLineLayoutData() {

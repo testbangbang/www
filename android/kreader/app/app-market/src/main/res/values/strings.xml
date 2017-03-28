@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">App Store</string>
+    <string name="get_empty_download_link">Empty Download-Link</string>
+    <string name="get_empty_content">Empty Content</string>
+    <string name="download_success">Download Success</string>
+    <string name="download_fail">Download Failed</string>
+    <string name="downloading">Download&#8230;</string>
+    <string name="total">Total：%d</string>
+    <string name="download">Download</string>
+    <string name="install">Install</string>
+    <string name="updated">Updated</string>
+    <string name="size_of_app" translatable="false">%.2fM</string>
+    <string name="search_hint">Search (empty string to search all)</string>
+    <string name="no_category_found">No category found</string>
+    <string name="all">All</string>
+</resources>

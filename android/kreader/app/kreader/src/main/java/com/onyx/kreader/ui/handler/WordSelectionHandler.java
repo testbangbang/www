@@ -122,6 +122,17 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public boolean onActionUp(final ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
+        onReleaseClick(readerDataHolder);
+        return true;
+    }
+
+    @Override
+    public boolean onActionCancel(ReaderDataHolder readerDataHolder, float startX, float startY, float endX, float endY) {
+        onReleaseClick(readerDataHolder);
+        return true;
+    }
+
+    private void onReleaseClick(final ReaderDataHolder readerDataHolder) {
         if (readerDataHolder.getReaderUserDataInfo().hasHighlightResult() && !isSingleTapUp()) {
             String text = readerDataHolder.getReaderUserDataInfo().getHighlightResult().getText();
             if (!StringUtils.isNullOrEmpty(text)) {
@@ -133,7 +144,6 @@ public class WordSelectionHandler extends BaseHandler{
         updateHighLightRect(readerDataHolder);
         setSingleTapUp(false);
         setActionUp(true);
-        return true;
     }
 
     private boolean isWord(String text) {
@@ -353,12 +363,15 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public void quitWordSelection(ReaderDataHolder readerDataHolder) {
+        getParent().resetToDefaultProvider();
+        clearWordSelection(readerDataHolder);
+    }
+
+    private void clearWordSelection(ReaderDataHolder readerDataHolder) {
         readerDataHolder.resetEpdUpdateMode();
         ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(readerDataHolder,true);
-        getParent().resetToDefaultProvider();
         readerDataHolder.redrawPage();
         readerDataHolder.getSelectionManager().clear();
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
     }
 
     public void onSelectWordFinished(ReaderDataHolder readerDataHolder, SelectWordRequest request, Throwable e) {
@@ -384,5 +397,10 @@ public class WordSelectionHandler extends BaseHandler{
         readerDataHolder.getSelectionManager().setEnable(true);
         readerDataHolder.onRenderRequestFinished(request, null, false, false);
         showSelectionCursor = true;
+    }
+
+    @Override
+    public void onDeactivate(ReaderDataHolder readerDataHolder) {
+        clearWordSelection(readerDataHolder);
     }
 }

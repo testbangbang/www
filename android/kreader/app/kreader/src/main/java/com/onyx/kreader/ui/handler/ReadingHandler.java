@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.handler;
 
 import android.content.DialogInterface;
 
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.ReaderDataHolder;

@@ -182,11 +182,19 @@ public class ShellUtils {
                 }
 
                 if (process != null && destroy) {
-                    process.destroy();
+                    destroyProcess(process);
                 }
             }
             return new CommandResult(result, successMsg == null ? null : successMsg.toString(), errorMsg == null ? null
                     : errorMsg.toString());
+        }
+
+        private static void destroyProcess(Process process) {
+            try {
+                process.exitValue();
+            } catch (IllegalThreadStateException e) {
+                process.destroy();
+            }
         }
 
         /**

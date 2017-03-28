@@ -13,6 +13,7 @@ public class NotePreference {
     public static final String KEY_NOTE_SORT_BY = "key_note_sort_by";
     public static final String KEY_NOTE_ASC_ORDER = "key_note_asc_order";
     public static final String KEY_IMPORT_MENU_VISIBLE = "key_import_menu_visible";
+    public static final String KEY_HAS_IMPORT_OLD_SCRIBBLE = "key_has_import_old_scribble";
 
     public static void init(Context context) {
         sDefaultPreferences = PreferenceManager.getDefaultSharedPreferences(context);

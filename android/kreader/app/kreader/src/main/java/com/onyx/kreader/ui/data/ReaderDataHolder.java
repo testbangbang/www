@@ -5,14 +5,16 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
+
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
-import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
@@ -29,6 +31,8 @@ import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.receiver.DeviceReceiver;
 import com.onyx.kreader.tts.ReaderTtsManager;
+import com.onyx.kreader.ui.ReaderBroadcastReceiver;
+import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.events.TextSelectionEvent;
 import com.onyx.kreader.ui.events.*;
@@ -37,6 +41,7 @@ import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -79,6 +84,7 @@ public class ReaderDataHolder {
 
     public ReaderDataHolder(Context context) {
         this.context = context;
+        ReaderBroadcastReceiver.setEventBus(eventBus);
     }
 
     public Context getContext() {
@@ -298,6 +304,13 @@ public class ReaderDataHolder {
         getNoteManager().pauseRawEventProcessor();
     }
 
+    public void stopRawEventProcessor() {
+        if (!supportScalable()) {
+            return;
+        }
+        getNoteManager().stopRawEventProcessor();
+    }
+
     public void enablePenShortcut()  {
         if (!supportScalable()) {
             return;
@@ -434,6 +447,7 @@ public class ReaderDataHolder {
                                         Throwable e,
                                         boolean applyGCIntervalUpdate,
                                         boolean renderShapeData) {
+        Debug.d(getClass(), "onRenderRequestFinished: " + request);
         if (e != null || request.isAbort()) {
             return;
         }
@@ -507,7 +521,7 @@ public class ReaderDataHolder {
         closeDocument(callback);
     }
 
-    private void resetHandlerManager() {
+    public void resetHandlerManager() {
         getHandlerManager().resetToDefaultProvider();
     }
 
@@ -560,8 +574,8 @@ public class ReaderDataHolder {
     public void prepareEventReceiver() {
         if (eventReceiver == null) {
             eventReceiver = new EventReceiver(getContext());
+            getEventBus().register(eventReceiver);
         }
-        getEventBus().register(eventReceiver);
     }
 
     public void onDocumentOpened() {
@@ -581,7 +595,16 @@ public class ReaderDataHolder {
         getEventBus().post(new DocumentCloseEvent(getContext()));
         if (eventReceiver != null) {
             getEventBus().unregister(eventReceiver);
+            eventReceiver = null;
         }
+    }
+
+    public void onActivityPause() {
+        getEventBus().post(new ActivityPauseEvent(getContext()));
+    }
+
+    public void onActivityResume() {
+        getEventBus().post(new ActivityResumeEvent(getContext()));
     }
 
     public void onDocumentInitRendered() {
@@ -607,7 +630,12 @@ public class ReaderDataHolder {
         }
     }
 
-    public void onTextSelected(final String originText, final String userNote) {
+    public void onTextSelected(final Annotation annotation) {
+        if (annotation == null) {
+            return;
+        }
+        String originText = annotation.getQuote();
+        String userNote = annotation.getNote();
         if (StringUtils.isBlank(userNote)) {
             final TextSelectionEvent event = TextSelectionEvent.onTextSelected(getContext(), originText);
             getEventBus().post(event);
@@ -615,6 +643,15 @@ public class ReaderDataHolder {
         }
         final AnnotationEvent event = AnnotationEvent.onAddAnnotation(getContext(), originText, userNote);
         getEventBus().post(event);
+    }
+
+    public void exportAnnotation(final Annotation annotation) {
+        if (annotation == null) {
+            return;
+        }
+        List<Annotation> annotations = new ArrayList<>();
+        annotations.add(annotation);
+        new ExportAnnotationAction(annotations, true, false).execute(this, null);
     }
 
     public void onDictionaryLookup(final String text) {
