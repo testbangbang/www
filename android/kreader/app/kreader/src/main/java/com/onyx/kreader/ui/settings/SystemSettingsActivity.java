@@ -39,6 +39,7 @@ public class SystemSettingsActivity extends PreferenceActivity {
         super.onResume();
         boolean isSystemBarEnabled = SingletonSharedPreference.isSystemStatusBarEnabled(this);
         boolean isReaderBarEnabled = SingletonSharedPreference.isReaderStatusBarEnabled(this);
+        boolean isMultipleTabsEnabled = SingletonSharedPreference.isMultipleTabsEnabled(this);
 
         mEnableSystemStatusBarCheckBox = (CheckBoxPreference)findPreference(getResources().getString(R.string.settings_enable_system_status_bar_key));
         mEnableReaderStatusBarCheckBox = (CheckBoxPreference)findPreference(getResources().getString(R.string.settings_enable_reader_status_bar_key));
@@ -46,6 +47,7 @@ public class SystemSettingsActivity extends PreferenceActivity {
 
         mEnableSystemStatusBarCheckBox.setChecked(isSystemBarEnabled);
         mEnableReaderStatusBarCheckBox.setChecked(isReaderBarEnabled);
+        mEnableMultipleTabsCheckBox.setChecked(isMultipleTabsEnabled);
 
         if (!DeviceConfig.sharedInstance(this).isSupportMultipleTabs()) {
             getPreferenceScreen().removePreference(mEnableMultipleTabsCheckBox);
