@@ -6,6 +6,8 @@ package com.onyx.android.sdk.data;
 public class GPaginator {
     private int rows;
     private int columns;
+    private int currentPage = -1;
+    private int size;
 
     public int getCurrentPage() {
         return currentPage;
@@ -14,9 +16,6 @@ public class GPaginator {
     public void setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
     }
-
-    private int currentPage = -1;
-    private int size;
 
     public GPaginator() {
         resize(1, 1, 0);
