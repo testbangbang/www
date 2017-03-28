@@ -16,8 +16,9 @@ import java.util.Set;
  */
 public class QueryArgs {
 
-    public int limit = Integer.MAX_VALUE;
     public int offset = 0;
+    public int limit = Integer.MAX_VALUE;
+
     @JSONField(serialize = false, deserialize = false)
     public ConditionGroup conditionGroup = ConditionGroup.clause();
     @JSONField(serialize = false, deserialize = false)
