@@ -215,6 +215,7 @@ public class DialogTextStyle extends DialogBase {
         });
 
         viewPager.setPagingEnabled(false);
+        switchViewPage(0);
     }
 
     private void switchViewPage(final int index) {
