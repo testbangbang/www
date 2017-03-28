@@ -2605,8 +2605,12 @@ public class AlBookEng{
 				}
 				continue;
 			}
-
-			ft = AlFilesZIP.isZIPFile(currName, a, fList, prevExt);		
+			if ((prevExt != null && prevExt.equalsIgnoreCase(JEBFilesZIP.JEB_TAG))) {
+				if(!JEBFilesZIP.queryJEBDecrypt(engOptions.appInstance,activeFile.fileName)){
+					return TAL_NOTIFY_RESULT.ERROR;
+				}
+			}
+			ft = AlFilesZIP.isZIPFile(currName, a, fList, prevExt);
 			if (ft == TAL_FILE_TYPE.ZIP) {
 				activeFile = new AlFilesZIP();
                 lastInitState = activeFile.initState(currName, a, fList);

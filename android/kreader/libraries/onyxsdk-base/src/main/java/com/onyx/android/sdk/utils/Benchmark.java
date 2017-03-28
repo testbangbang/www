@@ -1,14 +1,9 @@
 package com.onyx.android.sdk.utils;
 
-import android.util.Log;
-import com.onyx.android.sdk.BuildConfig;
-
 /**
  * Created by zhuzeng on 10/4/15.
  */
 public class Benchmark {
-    private static final String TAG = Benchmark.class.getSimpleName();
-
     private long benchmarkStart = 0;
     private long benchmarkEnd = 0;
 
@@ -21,9 +16,7 @@ public class Benchmark {
     }
 
     public void report(final String msg) {
-        if (BuildConfig.DEBUG) {
-            Log.i(TAG, msg + " ---> " + String.valueOf(duration()) + "ms");
-        }
+        Debug.i(getClass(), msg + " ---> " + String.valueOf(duration()) + "ms");
     }
 
     public long duration() {

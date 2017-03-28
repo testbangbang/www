@@ -51,4 +51,9 @@
     <dimen name="view_pinch_zooming_message_font_size">25sp</dimen>
     <dimen name="view_pinch_zooming_message_scale_size">48sp</dimen>
     <dimen name="dialog_text_style_view_page_width">700dp</dimen>
+    <dimen name="preview_item_page_text_size">24sp</dimen>
+    <dimen name="dialog_table_of_content_list_item_text_size">22sp</dimen>
+    <dimen name="dialog_search_list_item_page_text_size">22sp</dimen>
+    <dimen name="dialog_quick_view_page_text_size">24sp</dimen>
+    <dimen name="dialog_search_list_item_text_size">20sp</dimen>
 </resources>

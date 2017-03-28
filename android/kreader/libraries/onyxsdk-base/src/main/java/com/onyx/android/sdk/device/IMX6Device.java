@@ -2,6 +2,8 @@ package com.onyx.android.sdk.device;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
@@ -82,6 +84,8 @@ public class IMX6Device extends BaseDevice {
 
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
+
+    private static Method sMethodGetRemovableSDCardDirectory;
 
     /**
      * View.postInvalidate(int updateMode)
@@ -222,6 +226,9 @@ public class IMX6Device extends BaseDevice {
     @Override
     public File getExternalStorageDirectory() {
         // TODO or Environment.getExternalStorageDirectory()?
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return Environment.getExternalStorageDirectory();
+        }
         return new File("/mnt/sdcard");
     }
 
@@ -230,6 +237,9 @@ public class IMX6Device extends BaseDevice {
         // if system has an emulated SD card(/mnt/sdcard) provided by device's NAND flash,
         // then real SD card will be mounted as a child directory(/mnt/sdcard/extsd) in it, which names "extsd" here
         //final String SDCARD_MOUNTED_FOLDER = "extsd";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return (File) ReflectUtil.invokeMethodSafely(sMethodGetRemovableSDCardDirectory, null);
+        }
         return new File("/mnt/extsd");
     }
 
@@ -636,6 +646,8 @@ public class IMX6Device extends BaseDevice {
             sMethodEnableA2 = ReflectUtil.getMethodSafely(cls, "enableA2");
             // signature of "public void disableA2()"
             sMethodDisableA2 = ReflectUtil.getMethodSafely(cls, "disableA2");
+
+            sMethodGetRemovableSDCardDirectory = ReflectUtil.getMethodSafely(Environment.class,"getRemovableSDCardDirectory");
             Log.d(TAG, "init device EINK_ONYX_GC_MASK.");
             return sInstance;
         }

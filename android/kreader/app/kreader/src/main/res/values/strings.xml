@@ -64,7 +64,7 @@
     <string name="Copy">Copy</string>
     <string name="Highlight">Highlight</string>
     <string name="Dictionary">Dictionary</string>
-    <string name="popup_selection_menu_start_tts">Start TTS</string>
+    <string name="popup_selection_menu_start_tts">TTS</string>
     <string name="toc">TOC</string>
     <string name="bookmark">Bookmark</string>
     <string name="annotation">Annotation</string>
@@ -77,7 +77,7 @@
     <string name="crop">Crop</string>
     <string name="column">Column</string>
     <string name="direction">Direction</string>
-    <string name="four">Auto</string>
+    <string name="auto">Auto\n</string>
     <string name="six">Six</string>
     <string name="nine">Nine</string>
     <string name="single_page">Single\npage</string>
@@ -346,7 +346,7 @@
     <string name="other_time_distribution">The average reading time distribution to other users</string>
     <string name="reading_content_analysis">Reading content analysis</string>
     <string name="recently_read_content">Recently read content</string>
-    <string name="statistics_shortcut_name">Data statistics</string>
+    <string name="statistics_shortcut_name">Read statistics</string>
     <string name="science">Science</string>
     <string name="social_science">Social Science</string>
     <string name="art">Art</string>
@@ -362,4 +362,7 @@
     <string name="no_chapters">This article does not contain section information</string>
     <string name="first_chapter">Is the first chapter</string>
     <string name="last_chapter">Is the last chapter</string>
+    <string name="auto_crop_for_each_block">Auto crop for each block after manual setting</string>
+    <string name="network_data">Network data</string>
+    <string name="local_data">Local data</string>
 </resources>

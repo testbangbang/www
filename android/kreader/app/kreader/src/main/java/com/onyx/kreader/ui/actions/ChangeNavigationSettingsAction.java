@@ -8,7 +8,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
@@ -28,9 +28,11 @@ public class ChangeNavigationSettingsAction extends BaseAction {
 
     private ReaderCropArgs cropArgs;
     private CropByOddAndEventStep step = CropByOddAndEventStep.First;
+    private boolean autoCropForEachBlock;
 
-    public ChangeNavigationSettingsAction(ReaderCropArgs args) {
+    public ChangeNavigationSettingsAction(ReaderCropArgs args, boolean autoCropForEachBlock) {
         this.cropArgs = args;
+        this.autoCropForEachBlock = autoCropForEachBlock;
     }
 
     @Override
@@ -92,6 +94,7 @@ public class ChangeNavigationSettingsAction extends BaseAction {
                 }
 
                 NavigationArgs navigationArgs = new NavigationArgs();
+                navigationArgs.setAutoCropForEachBlock(autoCropForEachBlock);
                 buildNavigationArgs(dataHolder, request, navigationArgs);
                 dataHolder.submitRenderRequest(new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs));
             }

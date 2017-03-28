@@ -32,6 +32,7 @@ public class Constant {
     static public final String AVATAR_TAG = "avatar";
     static public final String ID_TAG = "id";
     static public final String URL_TAG = "url";
+    static public final String HTTP_TAG = "http";
 
     public static final String COVER_TYPE_SMALL = "small";
     public static final String COVER_TYPE_NORMAL = "normal";

@@ -24,6 +24,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:textColor="@android:color/black"
                 android:visibility="gone"
                 android:textSize="22sp"
                 android:text=""
@@ -31,6 +32,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:textColor="@android:color/black"
                 android:id="@+id/reading_rank_text"
                 android:textSize="@dimen/activity_statistics_small_text_size"
                 android:text="@string/reading_level"
@@ -71,12 +73,14 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/activity_statistics_big_text_size"
                 android:text="@string/time_distribution"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/textView"/>
 
             <TextView
+                android:textColor="@android:color/black"
                 android:id="@+id/reading_time_text"
                 android:textSize="@dimen/activity_statistics_small_text_size"
                 android:text="@string/reading_time_every_day"
@@ -107,6 +111,7 @@
             android:layout_height="20dp"/>
 
         <TextView
+            android:textColor="@android:color/black"
             android:layout_marginLeft="5dp"
             android:text="@string/self_time_distribution"
             android:layout_width="wrap_content"
@@ -119,6 +124,7 @@
             android:layout_height="20dp"/>
 
         <TextView
+            android:textColor="@android:color/black"
             android:layout_marginLeft="5dp"
             android:text="@string/other_time_distribution"
             android:layout_width="wrap_content"

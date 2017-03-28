@@ -10,7 +10,7 @@ import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderRenderer;
 import com.onyx.android.sdk.reader.cache.BitmapSoftLruCache;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.host.math.PageManager;
@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class LayoutProviderUtils {
 
-    private static final String TAG = LayoutProviderUtils.class.getSimpleName();
+    private static final Class TAG = LayoutProviderUtils.class;
     static boolean ENABLE_CACHE = true;
 
     /**
@@ -117,6 +117,7 @@ public class LayoutProviderUtils {
     static public void updateReaderViewInfo(final Reader reader,
                                             final ReaderViewInfo readerViewInfo,
                                             final ReaderLayoutManager layoutManager) throws ReaderException {
+        Debug.d(TAG, "updateReaderViewInfo");
         if (!reader.getRendererFeatures().supportScale()) {
             updateVisiblePagesForFlowDocument(reader, readerViewInfo, layoutManager);
         }
@@ -148,6 +149,7 @@ public class LayoutProviderUtils {
         if (layoutManager.getCurrentLayoutProvider().getNavigationArgs() != null &&
                 layoutManager.getCurrentLayoutProvider().getNavigationArgs().getList() != null) {
             readerViewInfo.subScreenCount = layoutManager.getCurrentLayoutProvider().getNavigationArgs().getList().getSubScreenCount();
+            readerViewInfo.autoCropForEachBlock = layoutManager.getCurrentLayoutProvider().getNavigationArgs().isAutoCropForEachBlock();
         }
         readerViewInfo.layoutChanged = layoutManager.isLayoutChanged();
     }

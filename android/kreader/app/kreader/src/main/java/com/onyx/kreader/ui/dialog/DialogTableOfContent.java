@@ -31,8 +31,8 @@ import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.DialogChoose;
-import com.onyx.android.sdk.ui.utils.DialogHelp;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -129,7 +129,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
             deleteLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogHelp.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
+                    OnyxCustomDialog.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (currentTab == DirectoryTab.Bookmark) {
@@ -174,7 +174,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
     }
 
     private void onDelete(final int position) {
-        DialogHelp.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
+        OnyxCustomDialog.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (currentTab == DirectoryTab.Bookmark) {
@@ -439,7 +439,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                 return;
             }
 
-            new ExportAnnotationAction(annotationList).execute(readerDataHolder, new BaseCallback() {
+            new ExportAnnotationAction(annotationList, false, true).execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     String text = getContext().getString(e == null ? R.string.export_success : R.string.export_fail);
@@ -706,7 +706,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                 previewViewHolder.getCloseView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DialogHelp.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
+                        OnyxCustomDialog.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 removeScribble(page, position);

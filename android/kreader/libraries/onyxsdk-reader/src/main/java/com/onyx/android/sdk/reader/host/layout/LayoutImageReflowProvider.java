@@ -5,7 +5,8 @@ import android.graphics.Color;
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.reader.host.math.PageManager;
 import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
@@ -33,9 +34,18 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return PageConstants.IMAGE_REFLOW_PAGE;
     }
 
+    @Override
+    public void deactivate() {
+        getImageReflowManager().releaseCache();
+    }
+
     public void activate() {
-        getPageManager().setPageRepeat(0);
+        reverseOrder = false;
+
+        getPageManager().setPageRepeat(PageManager.PAGE_REPEAT);
         getPageManager().scaleToPage(getCurrentPagePosition());
+
+        getImageReflowManager().setPageRepeat(PageManager.PAGE_REPEAT);
     }
 
     @Override
@@ -68,7 +78,6 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public boolean nextScreen() throws ReaderException {
-        reverseOrder = false;
         if (atLastSubPage()) {
             return nextPage();
         }
@@ -104,6 +113,9 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         drawContext.renderingBitmap = new ReaderBitmapImpl();
 
         if (drawContext.asyncDraw) {
+            if (reverseOrder) {
+                reverseOrder = false;
+            }
             if (getCurrentSubPageIndex() == 1) {
                 // pre-render request of next sub page with index 1 means
                 // we actually want to pre-render next page of document

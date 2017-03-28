@@ -82,3 +82,10 @@
 -keep class com.tencent.mm.opensdk.** { *; }
 -keep class com.tencent.wxop.** { *; }
 -keep class com.tencent.mm.sdk.** { *; }
+
+# for onxysdk-data model
+-keepclasseswithmembernames public class com.onyx.android.sdk.data.model.** { *;}
+
+# for leanCloud
+-keep class com.avos.** { *; }
+-dontwarn com.avos.**

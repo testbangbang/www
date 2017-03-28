@@ -78,6 +78,7 @@ public class DataStatisticsFragment extends StatisticsFragment {
     private void initView() {
         readingTimeText.setText(getContext().getString(R.string.reading_time_every_day, 0.00f, 0, 0));
         loadReadRank(0.00f);
+        readingChart.setTouchEnabled(false);
     }
 
     private void loadReadRank(double readingLevel) {
@@ -144,7 +145,7 @@ public class DataStatisticsFragment extends StatisticsFragment {
                         break;
                     case 3:
                         title = R.string.statistics_annotation_count;
-                        value = statisticsResult == null ? 0 : statisticsResult.getEventTypeAgg().getAnnotation();
+                        value = statisticsResult == null ? 0 : statisticsResult.getEventTypeAgg().getAnnotation() + statisticsResult.getEventTypeAgg().getTextSelect();
                         viewHolder.setText(R.id.value, String.valueOf(value));
                         break;
                 }

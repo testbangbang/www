@@ -154,9 +154,13 @@ public class HandlerManager {
     }
 
     public void setActiveProvider(final String providerName) {
+        setActiveProvider(providerName, null);
+    }
+
+    public void setActiveProvider(final String providerName, final BaseHandler.HandlerInitialState initialState) {
         getActiveProvider().onDeactivate(readerDataHolder);
         activeProviderName = providerName;
-        getActiveProvider().onActivate(readerDataHolder);
+        getActiveProvider().onActivate(readerDataHolder, initialState);
     }
 
     public BaseHandler getActiveProvider() {
@@ -202,6 +206,16 @@ public class HandlerManager {
             return false;
         }
         return getActiveProvider().onActionUp(readerDataHolder, getTouchStartPosition().x, getTouchStartPosition().y, e.getX(), e.getY());
+    }
+
+    public boolean onActionCancel(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        if (!isEnable()) {
+            return false;
+        }
+        if (!isEnableTouch()) {
+            return false;
+        }
+        return getActiveProvider().onActionCancel(readerDataHolder, getTouchStartPosition().x, getTouchStartPosition().y, e.getX(), e.getY());
     }
 
     public boolean onDown(ReaderDataHolder readerDataHolder, MotionEvent e) {

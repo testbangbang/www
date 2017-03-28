@@ -33,7 +33,6 @@ public class NoteDocument {
         setParentUniqueId(parentLibraryUniqueId);
         setup(context);
         ensureDocumentNotBlank(context);
-        gotoFirst();
         markDocumentOpen(true);
     }
 
@@ -91,6 +90,7 @@ public class NoteDocument {
         noteModel.background = noteDrawingArgs.background;
         noteModel.strokeColor = noteDrawingArgs.strokeColor;
         noteModel.setLineLayoutBackground(noteDrawingArgs.getLineLayoutBackground());
+        noteModel.setPosition(currentPageIndex);
         return noteModel;
     }
 
@@ -116,6 +116,10 @@ public class NoteDocument {
 
     public void setBackground(int background) {
         noteDrawingArgs.background = background;
+    }
+
+    public void setBackgroundFilePath(String backgroundPath) {
+        noteDrawingArgs.bgFilePath = backgroundPath;
     }
 
     public void setLineLayoutBackground(int background) {
@@ -199,6 +203,7 @@ public class NoteDocument {
                 noteDrawingArgs.setCurrentShapeType(currentShapeType);
             }
             noteDrawingArgs.strokeWidth = noteModel.getStrokeWidth();
+            currentPageIndex = noteModel.getPosition();
         }
     }
 

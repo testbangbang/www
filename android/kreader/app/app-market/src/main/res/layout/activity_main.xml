@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        style="@style/OnyxToolBarStyle"
+        android:background="@android:color/white">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/back_function_layout"
+                style="@style/global_activities_back_function_layout">
+
+                <ImageView
+                    android:id="@+id/imageView_back"
+                    style="@style/global_activities_back_btn_image" />
+
+                <ImageView
+                    android:id="@+id/imageView_main_title"
+                    style="@style/global_activities_back_btn_category_image"
+                    android:layout_toRightOf="@+id/imageView_back"
+                    android:src="@drawable/market_logo" />
+
+                <TextView
+                    android:id="@+id/textView_main_title"
+                    style="@style/global_activities_back_btn_category_tittle"
+                    android:layout_toRightOf="@+id/imageView_main_title"
+                    android:text="@string/app_name" />
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/imageView_type_filter"
+                style="@style/global_activities_right_function_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/imagebtn_bg"
+                android:padding="3dp"
+                android:src="@drawable/type_category" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_home_search_layout_height"
+        android:layout_marginBottom="@dimen/activity_home_search_layout_margin_bottom"
+        android:layout_marginLeft="@dimen/activity_home_search_layout_margin_top"
+        android:layout_marginRight="@dimen/activity_home_search_layout_margin_top"
+        android:layout_marginTop="@dimen/activity_home_search_layout_margin_top"
+        android:background="@drawable/background_white_rectangle_black_border"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <ImageView
+            android:id="@+id/button_search"
+            android:layout_width="@dimen/activity_home_search_button_size"
+            android:layout_height="@dimen/activity_home_search_button_size"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="2dp"
+            android:background="@drawable/imagebtn_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="center"
+            android:src="@drawable/search_open_icon" />
+
+        <View
+            android:id="@+id/search_divider_line"
+            style="@style/single_line_Y_axis_View"
+            android:layout_width="3dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_toLeftOf="@id/button_search" />
+
+        <EditText
+            android:id="@+id/editText_search_box"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/search_divider_line"
+            android:background="@android:color/transparent"
+            android:ellipsize="end"
+            android:gravity="left|center_vertical"
+            android:hint="@string/search_hint"
+            android:paddingLeft="@dimen/activity_home_search_edit_padding_left"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/activity_home_search_edit_text_size" />
+
+    </RelativeLayout>
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/content_pageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/activity_home_content_page_view_layout_margin"
+        android:layout_marginRight="@dimen/activity_home_content_page_view_layout_margin"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black" />
+
+    <RelativeLayout
+        android:id="@+id/page_indicator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/activity_home_indicator_layout_margin"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/total_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="0"
+            android:textSize="@dimen/activity_home_indicator_total_text_size" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/prev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/page_arrow_left" />
+
+            <TextView
+                android:id="@+id/page_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/activity_home_indicator_text_marin_left_right"
+                android:layout_marginRight="@dimen/activity_home_indicator_text_marin_left_right"
+                android:gravity="center_vertical"
+                android:text="0/0"
+                android:textSize="@dimen/activity_home_indicator_text_size" />
+
+            <ImageView
+                android:id="@+id/next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/page_arrow_right" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

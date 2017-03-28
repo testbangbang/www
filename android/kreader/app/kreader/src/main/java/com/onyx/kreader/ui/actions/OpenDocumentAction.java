@@ -9,9 +9,10 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
+import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.request.OpenRequest;
 import com.onyx.kreader.ui.requests.RestoreRequest;
@@ -22,8 +23,7 @@ import com.onyx.kreader.ui.dialog.DialogMessage;
 import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
-import com.onyx.kreader.ui.events.QuitEvent;
-import com.onyx.android.sdk.reader.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 /**
  * Created by zhuzeng on 5/17/16.
@@ -89,9 +89,10 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup(readerDataHolder);
                     return;
                 }
-                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
-                    return;
-                }
+                // ignore document's orientation temporary for multi-document
+//                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
+//                    return;
+//                }
                 openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
             }
         });
@@ -183,7 +184,7 @@ public class OpenDocumentAction extends BaseAction {
 
     private void cleanup(final ReaderDataHolder holder) {
         hideLoadingDialog();
-        holder.getEventBus().post(new QuitEvent());
+        holder.getEventBus().post(new ForceCloseEvent(true));
     }
 
     private void restoreWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {

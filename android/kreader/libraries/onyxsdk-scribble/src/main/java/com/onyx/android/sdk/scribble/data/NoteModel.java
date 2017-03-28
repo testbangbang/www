@@ -69,6 +69,9 @@ public class NoteModel extends BaseModel {
     @Column
     int lineLayoutBackground;
 
+    @Column
+    int position;
+
     @Column(typeConverter = ConverterStringList.class)
     PageNameList pageNameList = null;
 
@@ -275,6 +278,14 @@ public class NoteModel extends BaseModel {
 
     public void setSubDocCount(int subDocCount) {
         this.subDocCount = subDocCount;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public static NoteModel createNote(final String documentUniqueId, final String parentUniqueId, final String title) {

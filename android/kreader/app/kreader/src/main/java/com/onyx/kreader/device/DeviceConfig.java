@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.sdk.reader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -48,6 +48,7 @@ public class DeviceConfig {
     private int defaultGamma = 150;
     private int fixedGamma = 0;
     private boolean supportBrushPen = false;
+    private boolean supportMultipleTabs = false;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -74,7 +75,7 @@ public class DeviceConfig {
     private int defaultSlideshowPages = 2000;
 
     private String defaultFontFileForChinese = "/system/fonts/OnyxCustomFont-Regular.ttf";
-
+    private String statisticsUrl = "http://dev.onyx-international.cn/api/1/";
     private String defaultAnnotationHighlightStyle = "Highlight";
     private Float[] defaultFontSizes = {20.0f, 24.0f, 28.0f, 32.0f, 36.0f, 40.0f, 44.0f, 48.0f};
 
@@ -273,6 +274,14 @@ public class DeviceConfig {
 
     public void setSupportBrushPen(boolean supportBrushPen) {
         this.supportBrushPen = supportBrushPen;
+    }
+
+    public boolean isSupportMultipleTabs() {
+        return supportMultipleTabs;
+    }
+
+    public void setSupportMultipleTabs(boolean supportMultipleTabs) {
+        this.supportMultipleTabs = supportMultipleTabs;
     }
 
     public boolean isDefaultUseSystemStatusBar() {
@@ -547,6 +556,14 @@ public class DeviceConfig {
 
     public void setChannel(String channel) {
         this.channel = channel;
+    }
+
+    public String getStatisticsUrl() {
+        return statisticsUrl;
+    }
+
+    public void setStatisticsUrl(String statisticsUrl) {
+        this.statisticsUrl = statisticsUrl;
     }
 }
 

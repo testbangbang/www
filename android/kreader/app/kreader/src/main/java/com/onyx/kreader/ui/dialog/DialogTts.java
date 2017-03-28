@@ -7,7 +7,6 @@ import android.util.Pair;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
@@ -107,6 +106,7 @@ public class DialogTts extends OnyxBaseDialog implements View.OnClickListener, C
         initView();
         initData();
 
+        setCanceledOnTouchOutside(false);
     }
 
     private void fitDialogToWindow() {
@@ -115,8 +115,8 @@ public class DialogTts extends OnyxBaseDialog implements View.OnClickListener, C
         mParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         mParams.gravity = Gravity.BOTTOM;
         mWindow.setAttributes(mParams);
-        //force use all space in the screen.
-        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
     }
 
     public void show() {

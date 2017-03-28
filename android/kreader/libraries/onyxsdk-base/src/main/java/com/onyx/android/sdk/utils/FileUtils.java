@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
@@ -195,6 +196,21 @@ public class FileUtils {
         return succeed;
     }
 
+    public static boolean appendContentToFile(String content, File fileForSave) {
+        boolean succeed = true;
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(fileForSave, true);
+            out.write(content.getBytes("utf-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            succeed = false;
+        } finally {
+            closeQuietly(out);
+        }
+        return succeed;
+    }
+
     public static boolean saveContentToFile(final byte[] data, final File fileForSave) {
         boolean succeed = true;
         FileOutputStream output = null;
@@ -304,27 +320,40 @@ public class FileUtils {
         return digestBuffer;
     }
 
-    public static String getFileMD5(File file) {
-        if (!file.isFile()) {
-            return null;
-        }
-        MessageDigest digest = null;
-        FileInputStream in = null;
-        byte buffer[] = new byte[1024];
-        int len;
+    public static String computeFullMD5Checksum(File file) throws IOException, NoSuchAlgorithmException {
+        InputStream fis = null;
         try {
-            digest = MessageDigest.getInstance("MD5");
-            in = new FileInputStream(file);
-            while ((len = in.read(buffer, 0, 1024)) != -1) {
-                digest.update(buffer, 0, len);
-            }
-            in.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            fis = new FileInputStream(file);
+            byte[] buffer = new byte[64 * 1024];
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            int numRead;
+            do {
+                numRead = fis.read(buffer);
+                if (numRead > 0) {
+                    md.update(buffer, 0, numRead);
+                }
+            } while (numRead != -1);
+
+            return hexToString(md.digest());
+        } finally {
+            FileUtils.closeQuietly(fis);
         }
-        BigInteger bigInt = new BigInteger(1, digest.digest());
-        return bigInt.toString(16);
+    }
+
+    public static String hexToString(byte[] out) {
+        final char hex_digits[] = {
+                '0', '1', '2', '3',
+                '4', '5', '6', '7',
+                '8', '9', 'a', 'b',
+                'c', 'd', 'e', 'f'};
+
+        char str[] = new char[out.length * 2];
+        for (int i = 0; i < out.length; i++) {
+            int j = i << 1;
+            str[j] = hex_digits[(out[i] >> 4) & 0x0F];
+            str[j + 1] = hex_digits[out[i] & 0x0F];
+        }
+        return String.valueOf(str);
     }
 
     public static boolean deleteFile(final String path) {

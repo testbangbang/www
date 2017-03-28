@@ -17,6 +17,7 @@ public interface StatisticsBase {
 
     static final String KEY_TAG = "key";
     static final String CHANNEL_TAG = "channel";
+    static final String STATISTICS_URL = "url";
 
     boolean init(final Context context, final Map<String, String> args);
 

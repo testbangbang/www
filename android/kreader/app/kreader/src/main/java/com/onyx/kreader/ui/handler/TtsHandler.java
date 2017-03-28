@@ -1,40 +1,67 @@
 package com.onyx.kreader.ui.handler;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.utils.ChineseTextUtils;
-import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderSentence;
-import com.onyx.android.sdk.reader.common.Debug;
 import com.onyx.android.sdk.reader.host.request.GetSentenceRequest;
 import com.onyx.android.sdk.reader.host.request.RenderRequest;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.utils.ChineseTextUtils;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.R;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.NextScreenAction;
 import com.onyx.kreader.ui.actions.PreviousScreenAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.kreader.ui.dialog.DialogTts;
 
 /**
  * Created by joy on 7/29/16.
  */
 public class TtsHandler extends BaseHandler {
 
-    private static final String TAG = TtsHandler.class.getSimpleName();
+    private static final Class TAG = TtsHandler.class;
 
     private ReaderDataHolder readerDataHolder;
+    private String initialPosition;
     private ReaderSentence currentSentence;
     private boolean stopped;
 
+    private DialogTts dialogTts;
+
+    public static HandlerInitialState createInitialState(String initialPosition) {
+        HandlerInitialState state = new HandlerInitialState();
+        state.ttsInitialPosition = initialPosition;
+        return state;
+    }
+
     public TtsHandler(HandlerManager parent) {
         super(parent);
-
         readerDataHolder = getParent().getReaderDataHolder();
+    }
+
+    @Override
+    public void onActivate(ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
+        if (initialState != null) {
+            initialPosition = initialState.ttsInitialPosition;
+        }
+        getDialogTts().show();
+    }
+
+    @Override
+    public void onDeactivate(ReaderDataHolder readerDataHolder) {
+        if (dialogTts == null) {
+            return;
+        }
+        if (dialogTts.isShowing()) {
+            dialogTts.dismiss();
+        }
+        dialogTts = null;
     }
 
     @Override
@@ -81,6 +108,10 @@ public class TtsHandler extends BaseHandler {
         readerDataHolder.submitRenderRequest(new RenderRequest());
     }
 
+    public void setInitialPosition(String initialPosition) {
+        this.initialPosition = initialPosition;
+    }
+
     public void setSpeechRate(float rate) {
         SingletonSharedPreference.setTtsSpeechRate(readerDataHolder.getContext(),rate);
         readerDataHolder.getTtsManager().stop();
@@ -114,6 +145,13 @@ public class TtsHandler extends BaseHandler {
         });
     }
 
+    private DialogTts getDialogTts() {
+        if (dialogTts == null) {
+            dialogTts = new DialogTts(readerDataHolder);
+        }
+        return dialogTts;
+    }
+
     private void gotoPage(final ReaderDataHolder readerDataHolder, final int page) {
         new GotoPositionAction(PagePositionUtils.fromPageNumber(page)).execute(readerDataHolder, new BaseCallback() {
             @Override
@@ -138,7 +176,14 @@ public class TtsHandler extends BaseHandler {
             }
         }
 
-        String startPosition = currentSentence == null ? "" : currentSentence.getNextPosition();
+        String startPosition = null;
+        if (StringUtils.isNotBlank(initialPosition)) {
+            startPosition = initialPosition;
+            initialPosition = null;
+        }
+        if (startPosition == null) {
+            startPosition = currentSentence == null ? "" : currentSentence.getNextPosition();
+        }
         final GetSentenceRequest sentenceRequest = new GetSentenceRequest(readerDataHolder.getCurrentPagePosition(), startPosition);
         readerDataHolder.submitRenderRequest(sentenceRequest, new BaseCallback() {
             @Override
@@ -146,7 +191,7 @@ public class TtsHandler extends BaseHandler {
                 if (e != null) {
                     Toast.makeText(readerDataHolder.getContext(), R.string.get_page_text_failed, Toast.LENGTH_LONG).show();
                     ttsStop();
-                    Log.w(TAG, e);
+                    Debug.w(TAG, e);
                     return;
                 }
                 if (stopped) {
@@ -156,7 +201,7 @@ public class TtsHandler extends BaseHandler {
                 if (currentSentence == null) {
                     Toast.makeText(readerDataHolder.getContext(), R.string.get_page_text_failed, Toast.LENGTH_LONG).show();
                     ttsStop();
-                    Log.w(TAG, "get sentence failed");
+                    Debug.w(TAG, "get sentence failed");
                     return;
                 }
                 if (!currentSentence.isNonBlank()) {

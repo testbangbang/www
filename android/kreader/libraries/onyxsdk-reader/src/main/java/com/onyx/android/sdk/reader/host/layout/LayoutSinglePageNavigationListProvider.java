@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.reader.host.layout;
 
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
@@ -52,13 +53,15 @@ public class LayoutSinglePageNavigationListProvider extends LayoutProvider {
     }
 
     private RectF autoCrop(RectF rect) {
-        RectF cropRegion = autoCropRatioRegions.get(getCurrentPagePosition());
-        if (cropRegion == null) {
-            RectF limitedRect = getNavigationList(getCurrentPageNumber()).getLimitedRect();
-            cropRegion = cropTargetRegion(getPageManager().getFirstVisiblePage(), limitedRect);
-            autoCropRatioRegions.put(getCurrentPagePosition(), cropRegion);
+        if (navigationArgs.isAutoCropForEachBlock()) {
+            RectF cropRegion = autoCropRatioRegions.get(getCurrentPagePosition());
+            if (cropRegion == null) {
+                RectF limitedRect = getNavigationList(getCurrentPageNumber()).getLimitedRect();
+                cropRegion = cropTargetRegion(getPageManager().getFirstVisiblePage(), limitedRect);
+                autoCropRatioRegions.put(getCurrentPagePosition(), cropRegion);
+            }
+            rect.intersect(cropRegion);
         }
-        rect.intersect(cropRegion);
         return rect;
     }
 

@@ -20,9 +20,14 @@ public class DeviceReceiver extends BroadcastReceiver {
     public static final String SYSTEM_WAKE_UP = "com.android.system.WAKE_UP";
     public static final String SYSTEM_HOME = "com.android.systemui.HOME_BUTTON_CLICK";
 
+    public static final String SYSTEM_UI_SCREEN_SHOT_START_ACTION = "com.android.systemui.SYSTEM_UI_SCREEN_SHOT_START_ACTION";
+    public static final String SYSTEM_UI_SCREEN_SHOT_END_ACTION = "com.android.systemui.SYSTEM_UI_SCREEN_SHOT_END_ACTION";
+
     public static abstract class SystemUIChangeListener {
         public abstract void onSystemUIChanged(final String type, boolean open);
         public abstract void onHomeClicked();
+
+        public abstract void onScreenShot(Intent intent, final boolean end);
     }
 
     public void setSystemUIChangeListener(final SystemUIChangeListener listener) {
@@ -49,23 +54,32 @@ public class DeviceReceiver extends BroadcastReceiver {
         filter.addAction(SYSTEM_HOME);
         filter.addAction(STATUS_BAR_ICON_REFRESH_START_ACTION);
         filter.addAction(STATUS_BAR_ICON_REFRESH_FINISH_ACTION);
+        filter.addAction(SYSTEM_UI_SCREEN_SHOT_START_ACTION);
+        filter.addAction(SYSTEM_UI_SCREEN_SHOT_END_ACTION);
         return filter;
     }
 
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        if (SYSTEM_UI_DIALOG_OPEN_ACTION.equalsIgnoreCase(action)) {
-            notifySystemUIChange(intent, true);
-        } else if (SYSTEM_UI_DIALOG_CLOSE_ACTION.equalsIgnoreCase(action)) {
-            notifySystemUIChange(intent, false);
-        } else if (SYSTEM_WAKE_UP.equalsIgnoreCase(action)) {
-            notifySystemUIChange(intent, false);
-        } else if (SYSTEM_HOME.equalsIgnoreCase(action)) {
-            notifyHomeClicked(intent);
-        } else if (STATUS_BAR_ICON_REFRESH_START_ACTION.equalsIgnoreCase(action)) {
-            notifySystemUIChange(intent, true);
-        } else if (STATUS_BAR_ICON_REFRESH_FINISH_ACTION.equalsIgnoreCase(action)) {
-            notifySystemUIChange(intent, false);
+        switch (action) {
+            case SYSTEM_UI_DIALOG_OPEN_ACTION:
+            case STATUS_BAR_ICON_REFRESH_START_ACTION:
+                notifySystemUIChange(intent, true);
+                break;
+            case SYSTEM_UI_DIALOG_CLOSE_ACTION:
+            case SYSTEM_WAKE_UP:
+            case STATUS_BAR_ICON_REFRESH_FINISH_ACTION:
+                notifySystemUIChange(intent, false);
+                break;
+            case SYSTEM_HOME:
+                notifyHomeClicked(intent);
+                break;
+            case SYSTEM_UI_SCREEN_SHOT_START_ACTION:
+                notifyScreenShot(intent, false);
+                break;
+            case SYSTEM_UI_SCREEN_SHOT_END_ACTION:
+                notifyScreenShot(intent, true);
+                break;
         }
     }
 
@@ -81,6 +95,13 @@ public class DeviceReceiver extends BroadcastReceiver {
             return;
         }
         getSystemUIChangeListener().onHomeClicked();
+    }
+
+    private void notifyScreenShot(final Intent intent,boolean end){
+        if (getSystemUIChangeListener() == null) {
+            return;
+        }
+        getSystemUIChangeListener().onScreenShot(intent, end);
     }
 
 
