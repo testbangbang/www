@@ -27,6 +27,7 @@ public class DeviceConfig {
     private boolean hasFrontLight = true;
     private boolean hasNaturalLight = false;
     private boolean regalEnable = false;
+    private boolean pronounceEnable = true;
 
     private Map<String, Map<String, JSONObject>> keyBinding = null;
 
@@ -202,6 +203,14 @@ public class DeviceConfig {
 
     public void setRegalEnable(boolean regalEnable) {
         this.regalEnable = regalEnable;
+    }
+
+    public boolean isPronounceEnable() {
+        return pronounceEnable;
+    }
+
+    public void setPronounceEnable(boolean pronounceEnable) {
+        this.pronounceEnable = pronounceEnable;
     }
 
     public Map<String, Map<String, JSONObject>> getKeyBinding() {

@@ -118,7 +118,6 @@ public class PopupSelectionMenu extends LinearLayout {
         dictViewWidth = layout.getMeasuredWidth();
         dictViewHeight = (layout.getMeasuredHeight() * heightDenominator / 100);
         layout.addView(this);
-        disableMenuByConfig();
         highlightView = (ImageView) findViewById(R.id.imageview_highlight);
         highLightText = (TextView) findViewById(R.id.highLightText);
         mDictTitle = (TextView) findViewById(R.id.dict_title);
@@ -137,6 +136,7 @@ public class PopupSelectionMenu extends LinearLayout {
         webSearch = (ImageView) findViewById(R.id.web_search);
         pronounce1.setEnabled(false);
         pronounce2.setEnabled(false);
+        disableMenuByConfig();
         mDictNextPage.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -288,6 +288,15 @@ public class PopupSelectionMenu extends LinearLayout {
             findViewById(R.id.imagebutton_tts).setVisibility(View.GONE);
         } else {
             findViewById(R.id.imagebutton_tts).setVisibility(View.VISIBLE);
+        }
+
+        boolean pronounceEnable = DeviceConfig.sharedInstance(getContext()).isPronounceEnable();
+        if (!pronounceEnable) {
+            pronounce1.setVisibility(View.GONE);
+            pronounce2.setVisibility(View.GONE);
+        } else {
+            pronounce1.setVisibility(View.VISIBLE);
+            pronounce2.setVisibility(View.VISIBLE);
         }
     }
 
