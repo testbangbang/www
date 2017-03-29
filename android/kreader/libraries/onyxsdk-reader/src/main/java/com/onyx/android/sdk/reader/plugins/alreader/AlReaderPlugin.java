@@ -154,14 +154,16 @@ public class AlReaderPlugin implements ReaderPlugin,
         }
         //Create a rectangular area that scales proportionally on the original cover.
         Rect rect = null;
-        float ratioSrc = cover.getWidth()/cover.getHeight();
-        float ratioDest = bitmap.getWidth()/bitmap.getHeight();
-        if(ratioSrc >= ratioDest){
-            int hh = (int)(cover.getHeight() * bitmap.getWidth()/cover.getWidth());
+        double ratioSrc = cover.getWidth()*1.0/cover.getHeight();
+        double ratioDest = bitmap.getWidth()*1.0/bitmap.getHeight();
+        if(ratioSrc > (ratioDest + 0.05)) {
+            int hh = (int)(bitmap.getWidth()/ratioSrc+0.5);
             rect = new Rect(0, Math.abs((bitmap.getHeight()-hh)/2), bitmap.getWidth(), hh);
-        } else {
-            int ww = (int)(cover.getWidth() * bitmap.getHeight()/cover.getHeight());
+        } else if(ratioSrc < (ratioDest - 0.05)) {
+            int ww = (int)(bitmap.getHeight()*ratioSrc+0.5);
             rect = new Rect(Math.abs((bitmap.getWidth()-ww)/2), 0, ww, bitmap.getHeight());
+        } else {
+            rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         }
         BitmapUtils.scaleBitmap(cover, new Rect(0, 0, cover.getWidth(), cover.getHeight()),
                 bitmap, rect);
