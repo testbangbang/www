@@ -30,6 +30,8 @@ public interface DataProviderBase {
 
     List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs);
 
+    long count(final Context context, final QueryArgs queryArgs);
+
     void removeMetadata(final Context context, final Metadata metadata);
 
     boolean saveDocumentOptions(final Context context, final String path, String md5, final String json);

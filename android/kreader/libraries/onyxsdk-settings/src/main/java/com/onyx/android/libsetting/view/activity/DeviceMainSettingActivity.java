@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +76,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         adapter.setItemClickListener(new SettingFunctionAdapter.ItemClickListener() {
             @Override
             public void itemClick(@SettingCategory.SettingCategoryDef int itemCategory) {
-                Intent intent;
+                Intent intent = null;
                 switch (itemCategory) {
                     case SettingCategory.NETWORK:
                         intent = new Intent(DeviceMainSettingActivity.this, NetworkSettingActivity.class);
@@ -100,11 +102,18 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                     case SettingCategory.USER_SETTING:
                         intent = new Intent(DeviceMainSettingActivity.this, UserSettingActivity.class);
                         break;
+                    case SettingCategory.ERROR_REPORT:
+                        if (!TextUtils.isEmpty(config.getErrorReportAction())) {
+                            intent = new Intent(config.getErrorReportAction());
+                        }
+                        break;
                     default:
                         Toast.makeText(DeviceMainSettingActivity.this, "Under Construction", Toast.LENGTH_SHORT).show();
                         return;
                 }
-                startActivity(intent);
+                if (intent != null) {
+                    startActivity(intent);
+                }
             }
         });
         recyclerView.addItemDecoration(new DeviceMainSettingItemDecoration());

@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Environment;
 import android.test.ApplicationTestCase;
+import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -491,6 +492,47 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             }
         });
         awaitCountDownLatch(countDownLatch);
+    }
+
+
+    public void test00BookListPaginationRequest() {
+        init();
+
+        final DataProviderBase providerBase = DataProviderManager.getDataProvider();
+        providerBase.clearMetadata();
+        long total = 0;
+
+        for(int r = 0; r < 100; ++r) {
+            final int limit = TestUtils.randInt(100, 200);
+            for (int i = 0; i < limit; i++) {
+                getRandomMetadata().save();
+            }
+            total += limit;
+            final long value = total;
+            Log.e("###################", "record generated: " + limit);
+
+            for(int offset = 0; offset < limit / 10; ++offset) {
+                final CountDownLatch countDownLatch = new CountDownLatch(1);
+                final QueryArgs queryArgs = MetadataQueryArgsBuilder.allBooksQuery(defaultContentTypes(),
+                        OrderBy.fromProperty(Metadata_Table.createdAt).descending());
+                queryArgs.offset = offset;
+                queryArgs.limit = 10;
+                DataManager dataManager = new DataManager();
+                final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
+                dataManager.submit(getContext(), metadataRequest, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        assertNull(e);
+                        assertNotNull(metadataRequest.getList());
+                        assertTrue(metadataRequest.getList().size() <= queryArgs.limit);
+                        assertTrue(metadataRequest.getCount() == value);
+                        countDownLatch.countDown();
+                    }
+                });
+                awaitCountDownLatch(countDownLatch);
+            }
+            Log.e("###################", "round: " + r + " finished. ");
+        }
     }
 
     private void awaitCountDownLatch(CountDownLatch countDownLatch) {

@@ -11,6 +11,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -60,6 +61,13 @@ public class LocalDataProvider implements DataProviderBase {
             return where.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
         }
         return new ArrayList<>();
+    }
+
+    public long count(final Context context, final QueryArgs queryArgs) {
+        if (queryArgs.conditionGroup == null) {
+            return new Select(Method.count()).from(Metadata.class).count();
+        }
+        return new Select().from(Metadata.class).where(queryArgs.conditionGroup).queryList().size();
     }
 
     public void saveMetadata(final Context context, final Metadata metadata) {

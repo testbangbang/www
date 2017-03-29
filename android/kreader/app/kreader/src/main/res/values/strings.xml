@@ -160,6 +160,8 @@
     <string name="settings_enable_system_status_bar_tittle">Enable System Status Bar</string>
     <string name="settings_enable_reader_status_bar_key" translatable="false">setting_enable_reader_status_bar</string>
     <string name="setting_enable_reader_status_bar_tittle">Enable Reader Status Bar</string>
+    <string name="settings_enable_multiple_tabs_key" translatable="false">setting_enable_multiple_tabs</string>
+    <string name="settings_enable_multiple_tabs_title">Enable multiple documents</string>
     <string name="settings_search_menu_position_key" translatable="false">settings_search_menu_position</string>
     <string name="settings_search_menu_position_tittle">Set Search Menu Position</string>
     <string name="settings_bookmark_key" translatable="false">show_bookmark</string>
@@ -365,4 +367,5 @@
     <string name="auto_crop_for_each_block">Auto crop for each block after manual setting</string>
     <string name="network_data">Network data</string>
     <string name="local_data">Local data</string>
+    <string name="file_not_exists">File not exists!</string>
 </resources>

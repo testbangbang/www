@@ -162,6 +162,15 @@ public class DataManager {
         return list;
     }
 
+    public List<Metadata> getMetadataListWithLimit(Context context, QueryArgs queryArgs) {
+        return getDataProviderManager().getDataProvider().findMetadata(context, queryArgs);
+    }
+
+    public long countMetadataList(Context context, QueryArgs queryArgs) {
+        return getDataProviderManager().getDataProvider().count(context, queryArgs);
+    }
+
+
     public void addToLibrary(Context context, Library library, List<Metadata> addList) {
         DataManagerHelper.addCollections(context, library, addList);
         LibraryCache cache = dataCacheManager.getLibraryCache(library.getIdString());
