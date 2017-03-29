@@ -631,8 +631,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onDelete(boolean resume) {
+        String groupId = spanTextHandler.getLastGroupId();
+        if (StringUtils.isNullOrEmpty(groupId)) {
+            syncWithCallback(false, resume, null);
+            return;
+        }
         RemoveByGroupIdAction<BaseScribbleActivity> removeByPointListAction = new
-                RemoveByGroupIdAction<>(spanTextHandler.getLastGroupId(), resume);
+                RemoveByGroupIdAction<>(groupId, resume);
         removeByPointListAction.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
