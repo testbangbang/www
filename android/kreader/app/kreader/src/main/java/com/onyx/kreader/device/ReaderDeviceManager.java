@@ -131,6 +131,7 @@ public class ReaderDeviceManager {
             refreshCount = 0;
             epdDevice.applyGCUpdate(view);
         } else {
+            enableRegal();
             epdDevice.applyRegalUpdate(view);
         }
     }
@@ -173,6 +174,14 @@ public class ReaderDeviceManager {
         applyRegalUpdate(context, view);
         boolean hold = !isApplyFullUpdate();
         holdDisplay(hold);
+    }
+
+    public static void enableRegal() {
+        epdDevice.enableRegal();
+    }
+
+    public static void disableRegal() {
+        epdDevice.disableRegal();
     }
 
 }

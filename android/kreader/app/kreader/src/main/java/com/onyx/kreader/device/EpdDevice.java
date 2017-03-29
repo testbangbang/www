@@ -37,4 +37,12 @@ public class EpdDevice {
 
     public void holdDisplay(boolean hold, UpdateMode updateMode, int ignoreFrame) {
     }
+
+    public void enableRegal() {
+        EpdController.enableRegal();
+    }
+
+    public void disableRegal() {
+        EpdController.disableRegal();
+    }
 }
