@@ -30,6 +30,7 @@ import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.actions.DictionaryQueryAction;
 import com.onyx.kreader.ui.data.DictionaryQuery;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -117,7 +118,7 @@ public class PopupSelectionMenu extends LinearLayout {
         dictViewWidth = layout.getMeasuredWidth();
         dictViewHeight = (layout.getMeasuredHeight() * heightDenominator / 100);
         layout.addView(this);
-
+        disableMenuByConfig();
         highlightView = (ImageView) findViewById(R.id.imageview_highlight);
         highLightText = (TextView) findViewById(R.id.highLightText);
         mDictTitle = (TextView) findViewById(R.id.dict_title);
@@ -279,6 +280,15 @@ public class PopupSelectionMenu extends LinearLayout {
         });
         setVisibility(View.GONE);
         initDictList();
+    }
+
+    private void disableMenuByConfig() {
+        boolean ttsEnabled = DeviceConfig.sharedInstance(getContext()).isTtsEnabled();
+        if (!ttsEnabled) {
+            findViewById(R.id.imagebutton_tts).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.imagebutton_tts).setVisibility(View.VISIBLE);
+        }
     }
 
     private void openBaiduBaike(){
