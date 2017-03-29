@@ -64,10 +64,7 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     public long count(final Context context, final QueryArgs queryArgs) {
-        if (queryArgs.conditionGroup == null) {
-            return new Select(Method.count()).from(Metadata.class).count();
-        }
-        return new Select().from(Metadata.class).where(queryArgs.conditionGroup).queryList().size();
+        return new Select(Method.count()).from(Metadata.class).where(queryArgs.conditionGroup).count();
     }
 
     public void saveMetadata(final Context context, final Metadata metadata) {

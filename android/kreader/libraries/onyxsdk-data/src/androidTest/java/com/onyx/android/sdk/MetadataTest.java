@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
@@ -494,16 +495,33 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         awaitCountDownLatch(countDownLatch);
     }
 
+    private void clearTestFolder() {
+        deleteRecursive(testFolder());
+    }
+
+    private void deleteRecursive(final String path) {
+        File file = new File(path);
+
+        if (file.exists()) {
+            String deleteCmd = "rm -r " + path;
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec(deleteCmd);
+            } catch (IOException e) {
+            }
+        }
+    }
 
     public void test00BookListPaginationRequest() {
         init();
 
+        clearTestFolder();
         final DataProviderBase providerBase = DataProviderManager.getDataProvider();
         providerBase.clearMetadata();
         long total = 0;
 
         for(int r = 0; r < 100; ++r) {
-            final int limit = TestUtils.randInt(100, 200);
+            final int limit = TestUtils.randInt(300, 1000);
             for (int i = 0; i < limit; i++) {
                 getRandomMetadata().save();
             }
@@ -515,7 +533,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
                 final CountDownLatch countDownLatch = new CountDownLatch(1);
                 final QueryArgs queryArgs = MetadataQueryArgsBuilder.allBooksQuery(defaultContentTypes(),
                         OrderBy.fromProperty(Metadata_Table.createdAt).descending());
-                queryArgs.offset = offset;
+                queryArgs.offset = offset * limit / 10;
                 queryArgs.limit = 10;
                 DataManager dataManager = new DataManager();
                 final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
