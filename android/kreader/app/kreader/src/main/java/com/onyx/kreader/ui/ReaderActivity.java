@@ -463,13 +463,12 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onChangeEpdUpdateMode(final ChangeEpdUpdateModeEvent event) {
-        ReaderDeviceManager.setUpdateMode(surfaceView, event.getTargetMode());
+        ReaderDeviceManager.disableRegal();
     }
 
     @Subscribe
     public void onResetEpdUpdateMode(final ResetEpdUpdateModeEvent event) {
-        ReaderDeviceManager.resetUpdateMode(surfaceView);
-        ReaderDeviceManager.resetUpdateMode(getStatusBar());
+        ReaderDeviceManager.disableRegal();
     }
 
     @Subscribe
@@ -492,8 +491,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private void prepareUpdateMode(final RequestFinishEvent event) {
         if (isAnyPopup()) {
-            ReaderDeviceManager.resetUpdateMode(surfaceView);
-            ReaderDeviceManager.resetUpdateMode(getStatusBar());
+            ReaderDeviceManager.disableRegal();
             return;
         }
 
@@ -501,7 +499,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (update) {
             ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
         } else {
-            ReaderDeviceManager.resetUpdateMode(surfaceView);
+            ReaderDeviceManager.disableRegal();
         }
     }
 
@@ -538,7 +536,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         beforeDrawPage();
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         if (event.isUseFullUpdate()) {
-            ReaderDeviceManager.resetUpdateMode(getSurfaceView());
+            ReaderDeviceManager.disableRegal();
         }
     }
 
