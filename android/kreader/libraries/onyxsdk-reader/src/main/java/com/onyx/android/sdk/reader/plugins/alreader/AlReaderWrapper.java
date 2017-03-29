@@ -71,7 +71,6 @@ public class AlReaderWrapper {
     private AlBookEng bookEng;
     private AlEngineOptions engineOptions;
     private AlPublicProfileOptions profile = new AlPublicProfileOptions();
-    private AlBookProperties bookProperties;
     private ReaderTextStyle textStyle = null;
 
     private AlTextOnScreen screenText;
@@ -123,7 +122,7 @@ public class AlReaderWrapper {
     }
 
     public Bitmap readCover() {
-        bookProperties = readerBookProperties(true);
+        AlBookProperties bookProperties = bookEng.getBookProperties(false);
         if (bookProperties.coverImageData == null) {
             return null;
         }
@@ -136,12 +135,7 @@ public class AlReaderWrapper {
     }
 
     public String metadataString(final String tag) {
-        if (bookProperties == null) {
-            bookProperties = readerBookProperties(false);
-            if (bookProperties == null) {
-                return "";
-            }
-        }
+        AlBookProperties bookProperties = bookEng.getBookProperties(false);
         if ("Title".compareTo(tag) == 0) {
             return bookProperties.title;
         } else if ("Author".compareTo(tag) == 0) {
@@ -237,16 +231,6 @@ public class AlReaderWrapper {
         profile.justify = true;
         profile.notesOnPage = true;
         return profile;
-    }
-
-    private AlBookProperties readerBookProperties(boolean readCover) {
-        AlBookOptions bookOpt = new AlBookOptions();
-        bookOpt.codePage = TAL_CODE_PAGES.AUTO;
-        bookOpt.codePageDefault = TAL_CODE_PAGES.CP936;
-        bookOpt.formatOptions = 0;
-        bookOpt.readPosition = 0;
-        bookOpt.needCoverData = readCover;
-        return bookEng.scanMetaData(filePath, bookOpt);
     }
 
     private void updateFontFace(final String fontface) {
