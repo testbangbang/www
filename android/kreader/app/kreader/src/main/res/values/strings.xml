@@ -170,7 +170,7 @@
     <string name="settings_dithering_key" translatable="false">image_dithering</string>
     <string name="settings_dithering_tittle">Image dithering</string>
     <string name="settings_regal_mode_key" translatable="false">regal_mode</string>
-    <string name="settings_regal_mode_tittle">Use regal mode</string>
+    <string name="settings_regal_mode_tittle">SNOW Field</string>
     <string name="settings_version_key" translatable="false">version_key</string>
     <string name="settings_versionName">Version Name</string>
 
