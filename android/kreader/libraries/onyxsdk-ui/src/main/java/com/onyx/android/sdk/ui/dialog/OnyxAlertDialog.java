@@ -219,13 +219,13 @@ public class OnyxAlertDialog extends DialogFragment {
 
     @Override
     public void show(FragmentManager manager, String tag) {
-        EpdController.enableRegal(false);
+        EpdController.disableRegal();
         super.show(manager, tag);
     }
 
     @Override
     public void dismiss() {
-        EpdController.enableRegal(true);
+        EpdController.enableRegal();
         super.dismiss();
     }
 
