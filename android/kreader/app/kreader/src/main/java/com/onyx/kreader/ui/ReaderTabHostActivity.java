@@ -174,19 +174,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             public void onTabChanged(String tabId) {
                 final ReaderTabManager.ReaderTab tab = Enum.valueOf(ReaderTabManager.ReaderTab.class, tabId);
                 if (!insideTabChanging && tabManager.isTabOpened(tab)) {
-                    File file = new File(tabManager.getOpenedTabs().get(tab));
-                    if (!file.exists()) {
-                        final OnyxCustomDialog dlg = OnyxCustomDialog.getConfirmDialog(ReaderTabHostActivity.this,
-                                getResources().getString(R.string.file_not_exists),
-                                false,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        closeReaderTab(tab);
-                                    }
-                                });
-                        bringSelfToFront();
-                        dlg.show();
+                    if (closeTabIfFileNotExists(tab)) {
                         return;
                     }
 
@@ -201,6 +189,25 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         if (tabManager.supportMultipleTabs()) {
             hideTabWidget();
         }
+    }
+
+    private boolean closeTabIfFileNotExists(final ReaderTabManager.ReaderTab tab) {
+        File file = new File(tabManager.getOpenedTabs().get(tab));
+        if (file.exists()) {
+            return false;
+        }
+        final OnyxCustomDialog dlg = OnyxCustomDialog.getConfirmDialog(ReaderTabHostActivity.this,
+                getResources().getString(R.string.file_not_exists),
+                false,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        closeReaderTab(tab);
+                    }
+                });
+        bringSelfToFront();
+        dlg.show();
+        return true;
     }
 
     private void updateTabLayoutState(boolean show) {
