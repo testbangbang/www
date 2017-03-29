@@ -129,7 +129,7 @@
   <string name="settings_bookmark_tittle">显示书签</string>
   <string name="settings_hyperlink_tittle">显示超链接</string>
   <string name="settings_dithering_tittle">图像抖动</string>
-  <string name="settings_regal_mode_tittle">regal模式</string>
+  <string name="settings_regal_mode_tittle">SNOW Field</string>
   <string name="settings_versionName">版本号</string>
   <string name="settings_show_doc_title">状态栏中显示文档标题</string>
   <string name="settings_crop_to_width_in_landscape_title">横屏模式下按宽度切边</string>
