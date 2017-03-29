@@ -24,7 +24,7 @@
     "com.onyx.android.production.test",
     "com.onyx.android.screenmanager"
   ],
-  "media_scan_support": false,
+  "media_scan_support": true,
   "music_dir": [
     "Music",
     "Movies"
