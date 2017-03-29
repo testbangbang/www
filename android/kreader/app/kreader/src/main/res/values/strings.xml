@@ -367,4 +367,5 @@
     <string name="auto_crop_for_each_block">Auto crop for each block after manual setting</string>
     <string name="network_data">Network data</string>
     <string name="local_data">Local data</string>
+    <string name="file_not_exists">File not exists!</string>
 </resources>
