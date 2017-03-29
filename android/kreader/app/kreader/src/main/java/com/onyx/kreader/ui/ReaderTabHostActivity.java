@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui;
 
 import android.app.ActivityManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -22,6 +23,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
@@ -170,8 +172,24 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
-                ReaderTabManager.ReaderTab tab = Enum.valueOf(ReaderTabManager.ReaderTab.class, tabId);
+                final ReaderTabManager.ReaderTab tab = Enum.valueOf(ReaderTabManager.ReaderTab.class, tabId);
                 if (!insideTabChanging && tabManager.isTabOpened(tab)) {
+                    File file = new File(tabManager.getOpenedTabs().get(tab));
+                    if (!file.exists()) {
+                        final OnyxCustomDialog dlg = OnyxCustomDialog.getConfirmDialog(ReaderTabHostActivity.this,
+                                getResources().getString(R.string.file_not_exists),
+                                false,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        closeReaderTab(tab);
+                                    }
+                                });
+                        bringSelfToFront();
+                        dlg.show();
+                        return;
+                    }
+
                     reopenReaderTab(tab);
                 }
                 onTabSwitched(tab);
