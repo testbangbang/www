@@ -25,7 +25,8 @@
                 android:id="@+id/font_face_layout"
                 android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
-                android:layout_width="@dimen/dialog_text_style_title_view_width"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent">
 
                 <TextView
@@ -48,13 +49,14 @@
                 android:id="@+id/english_font_face_layout"
                 android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
-                android:layout_width="@dimen/dialog_text_style_title_view_width"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent">
 
                 <TextView
                     style="@style/dialog_text_style_title_text_view"
                     android:id="@+id/english_font_face_text"
-                    android:text="@string/english_font_face"/>
+                    android:text="@string/font_face"/>
 
                 <View
                     android:id="@+id/english_font_face_bottom_view"
@@ -71,7 +73,8 @@
                 android:gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
-                android:layout_width="@dimen/dialog_text_style_title_view_width"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent">
 
                 <TextView
@@ -93,8 +96,10 @@
                 android:id="@+id/code_page_layout"
                 android:gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
+                android:layout_marginRight="@dimen/dialog_text_style_margin_left"
                 android:orientation="vertical"
-                android:layout_width="@dimen/dialog_text_style_title_view_width"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent">
 
                 <TextView

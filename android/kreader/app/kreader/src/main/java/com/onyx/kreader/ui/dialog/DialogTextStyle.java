@@ -148,10 +148,11 @@ public class DialogTextStyle extends DialogBase {
         englishFaceLayout = (LinearLayout) findViewById(R.id.english_font_face_layout);
         fontSpacingLayout = (LinearLayout) findViewById(R.id.page_spacing_layout);
         codePageLayout = (LinearLayout) findViewById(R.id.code_page_layout);
-        chineseFontFaceLine.setVisibility(View.VISIBLE);
+        chineseFontFaceLine.setVisibility(View.GONE);
         englishFontFaceLine.setVisibility(View.INVISIBLE);
         fontSpacingLine.setVisibility(View.INVISIBLE);
         codePageLine.setVisibility(View.INVISIBLE);
+        chineseFontFaceLayout.setVisibility(View.GONE);
 
         viewPager = (OnyxCustomViewPager) findViewById(R.id.view_pager);
         btnOk = (Button) findViewById(R.id.btn_ok);
@@ -215,7 +216,7 @@ public class DialogTextStyle extends DialogBase {
         });
 
         viewPager.setPagingEnabled(false);
-        switchViewPage(0);
+        switchViewPage(1);
     }
 
     private void switchViewPage(final int index) {
