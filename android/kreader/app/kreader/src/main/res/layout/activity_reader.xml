@@ -22,4 +22,12 @@
             android:layout_height="match_parent"
             android:layout_above="@id/status_bar"/>
 
+    <ImageView android:id="@+id/button_show_tab_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:visibility="gone"
+        android:background="@drawable/ic_pack_up" />
+
 </RelativeLayout>

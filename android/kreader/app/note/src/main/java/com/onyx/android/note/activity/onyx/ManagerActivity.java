@@ -334,8 +334,8 @@ public class ManagerActivity extends BaseManagerActivity {
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
                     loadNoteList();
-                    NotePreference.setBooleanValue(NotePreference.KEY_HAS_IMPORT_OLD_SCRIBBLE, true);
                 }
+                NotePreference.setBooleanValue(NotePreference.KEY_HAS_IMPORT_OLD_SCRIBBLE, true);
             }
         });
     }

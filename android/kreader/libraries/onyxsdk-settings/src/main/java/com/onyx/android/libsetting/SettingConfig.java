@@ -94,6 +94,17 @@ public class SettingConfig {
     static private Map<String, String> settingIconsMap;
     static private Map<String, String> settingTittleMap;
 
+    public String getErrorReportAction() {
+        return errorReportAction;
+    }
+
+    public SettingConfig setErrorReportAction(String errorReportAction) {
+        this.errorReportAction = errorReportAction;
+        return this;
+    }
+
+    private String errorReportAction;
+
 
     /**
      * New backend logic,to avoid duplicate property copy in json.

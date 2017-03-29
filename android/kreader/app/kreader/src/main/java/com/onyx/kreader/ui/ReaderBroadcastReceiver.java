@@ -11,6 +11,7 @@ import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
 import com.onyx.kreader.ui.events.ResizeReaderWindowEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
+import com.onyx.kreader.ui.events.UpdateTabWidgetVisibilityEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,12 +24,14 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_MOVE_TASK_TO_BACK = "com.onyx.kreader.action.MOVE_TASK_TO_BACK";
     public static final String ACTION_RESIZE_WINDOW = "com.onyx.kreader.action.RESIZE_WINDOW";
     public static final String ACTION_DOCUMENT_ACTIVATED = "com.onyx.kreader.action.DOCUMENT_ACTIVATED";
+    public static final String ACTION_UPDATE_TAB_WIDGET_VISIBILITY = "com.onyx.kreader.action.UPDATE_TAB_WIDGET_VISIBILITY";
     public static final String ACTION_ENABLE_DEBUG_LOG = "com.onyx.kreader.action.ENABLE_DEBUG_LOG";
     public static final String ACTION_DISABLE_DEBUG_LOG = "com.onyx.kreader.action.DISABLE_DEBUG_LOG";
 
     public static final String TAG_WINDOW_WIDTH = "com.onyx.kreader.WINDOW_WIDTH";
     public static final String TAG_WINDOW_HEIGHT = "com.onyx.kreader.WINDOW_HEIGHT";
     public static final String TAG_DOCUMENT_PATH = "com.onyx.kreader.DOCUMENT_PATH";
+    public static final String TAG_TAB_WIDGET_VISIBLE = "com.onyx.kreader.TAB_WIDGET_VISIBLE";
     public static final String TAG_ENABLE_DEBUG = "com.onyx.kreader.ENABLE_DEBUG";
 
     private static EventBus eventBus;
@@ -64,6 +67,13 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         context.sendBroadcast(intent);
     }
 
+    public static void sendUpdateTabWidgetVisibilityIntent(Context context, Class clazz, boolean visible) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_UPDATE_TAB_WIDGET_VISIBILITY);
+        intent.putExtra(TAG_TAB_WIDGET_VISIBLE, visible);
+        context.sendBroadcast(intent);
+    }
+
     public static void sendEnableDebugLogIntent(Context context, Class clazz) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_ENABLE_DEBUG_LOG);
@@ -93,6 +103,9 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
                     intent.getIntExtra(TAG_WINDOW_HEIGHT, WindowManager.LayoutParams.MATCH_PARENT)));
         } else if (intent.getAction().equals(ACTION_DOCUMENT_ACTIVATED)) {
             eventBus.post(new DocumentActivatedEvent(intent.getStringExtra(TAG_DOCUMENT_PATH)));
+        } else if (intent.getAction().equals(ACTION_UPDATE_TAB_WIDGET_VISIBILITY)) {
+            boolean visible = intent.getBooleanExtra(ReaderBroadcastReceiver.TAG_TAB_WIDGET_VISIBLE, true);
+            eventBus.post(new UpdateTabWidgetVisibilityEvent(visible));
         } else if (intent.getAction().equals(ACTION_ENABLE_DEBUG_LOG)) {
             Debug.setDebug(true);
         } else if (intent.getAction().equals(ACTION_DISABLE_DEBUG_LOG)) {

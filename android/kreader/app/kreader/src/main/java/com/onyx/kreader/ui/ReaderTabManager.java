@@ -3,6 +3,7 @@ package com.onyx.kreader.ui;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -27,7 +28,8 @@ public class ReaderTabManager {
     private LinkedHashMap<ReaderTab, String> openedTabs = new LinkedHashMap<>();
 
     public static boolean supportMultipleTabs() {
-        return DeviceConfig.sharedInstance(KReaderApp.instance()).isSupportMultipleTabs();
+        return DeviceConfig.sharedInstance(KReaderApp.instance()).isSupportMultipleTabs() &&
+                SingletonSharedPreference.isMultipleTabsEnabled(KReaderApp.instance());
     }
 
     private ReaderTabManager() {
@@ -101,6 +103,25 @@ public class ReaderTabManager {
         return tabReceiverList.get(tab);
     }
 
+    public void resetTabState(ReaderTab currentTab) {
+        if (supportMultipleTabs()) {
+            addNewTabToFreeList(ReaderTab.TAB_1);
+            addNewTabToFreeList(ReaderTab.TAB_2);
+            addNewTabToFreeList(ReaderTab.TAB_3);
+            addNewTabToFreeList(ReaderTab.TAB_4);
+        } else {
+            freeTabList.clear();
+
+            String value = openedTabs.get(currentTab);
+            openedTabs.clear();
+            if (value != null) {
+                openedTabs.put(currentTab, value);
+            } else {
+                freeTabList.add(ReaderTab.TAB_1);
+            }
+        }
+    }
+
     public LinkedHashMap<ReaderTab, String> getOpenedTabs() {
         return openedTabs;
     }
@@ -138,5 +159,12 @@ public class ReaderTabManager {
             }
         }
         return null;
+    }
+
+    private void addNewTabToFreeList(ReaderTab tab) {
+        if (openedTabs.containsKey(tab) || freeTabList.contains(tab)) {
+            return;
+        }
+        freeTabList.add(tab);
     }
 }

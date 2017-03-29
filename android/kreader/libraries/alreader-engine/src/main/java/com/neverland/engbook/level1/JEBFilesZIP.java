@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
 
 import com.jingdong.app.reader.epub.paging.DecryptHelper;
 import com.neverland.engbook.forpublic.AlIntHolder;
@@ -21,7 +20,7 @@ import java.util.zip.Inflater;
 public class JEBFilesZIP extends AlFiles {
 
 
-    private static final int ZIP_CHUNK_SIZE = 65535;
+    private static final int ZIP_CHUNK_SIZE = 16384;
 
 	/*ZIP_LCD zipLCD = new ZIP_LCD();
     ZIP_LZH zipLZH = new ZIP_LZH();
@@ -218,12 +217,6 @@ public class JEBFilesZIP extends AlFiles {
                     res = TAL_FILE_TYPE.FB3;
                 if ((ext == null || ext.equalsIgnoreCase(".JEB"))) {
                     res = TAL_FILE_TYPE.JEB;
-                    if (of.compress == 8) {
-                        of.uSize = gitCompressDataSize(a, zipLCD.offset, zipLCD.csize, zipLCD.usize);
-                        if (of.uSize <= 0) {
-                            of.uSize = (int) zipLCD.usize;
-                        }
-                    }
                 }
 
                 fList.add(of);
@@ -235,40 +228,6 @@ public class JEBFilesZIP extends AlFiles {
         }
 
         return cnt_files > 0 ? res : TAL_FILE_TYPE.TXT;
-    }
-
-    public static int gitCompressDataSize(final AlFiles a, final long offset, final long compressionSize, final long uncompressionSize) {
-        DecryptHelper.init(key, deviceUUID, random);
-        byte[] in_buff = new byte[ZIP_CHUNK_SIZE], decrypt_out_buff = new byte[ZIP_CHUNK_SIZE * 32], read_out_buff = new byte[ZIP_CHUNK_SIZE];
-        int in_buff_size, decrypt_out_buff_size = 0, read_out_buff_size;
-        Inflater infl = new Inflater(true);
-        if (infl.needsInput()) {
-            in_buff_size = a.getByteBuffer((int) offset, in_buff, ZIP_CHUNK_SIZE);
-            infl.setInput(in_buff, 0, in_buff_size);
-        }
-
-        try {
-            read_out_buff_size = infl.inflate(read_out_buff, 0, ZIP_CHUNK_SIZE);
-            String html = new String(read_out_buff);
-            //decrypt
-            decrypt_out_buff_size = DecryptHelper.decrypt(read_out_buff, read_out_buff_size, decrypt_out_buff, decrypt_out_buff.length, 1);
-            if (decrypt_out_buff_size < 0) {
-                return 0;
-            }
-
-            String decryptString = new String(decrypt_out_buff);
-            if (decrypt_out_buff_size == 0 && infl.finished()) {
-
-            }
-
-        } catch (DataFormatException e) {
-            e.printStackTrace();
-        } finally {
-            DecryptHelper.close();
-        }
-        infl.end();
-        infl = null;
-        return decrypt_out_buff_size;
     }
 
     public int initState(String file, AlFiles myParent, ArrayList<AlFileZipEntry> fList) {
@@ -421,23 +380,23 @@ public class JEBFilesZIP extends AlFiles {
         int res = 0;
 
         if (num >= 0 && num < fileList.size()) {
-            DecryptHelper.init(key, deviceUUID, random);
+            DecryptHelper.initDecryptLibrary(key, deviceUUID, random);
             if (fileName != null && fileList.get(num).name.contentEquals(fileName)) {
                 res = getByteBuffer(pos, dst, dst_pos, cnt);
             } else {
 
                 if (fileList.get(num).compress == 8) {
-
                     if (external_infl == null)
                         external_infl = new Inflater(true);
                     external_infl.reset();
+                    int bufferSize = ZIP_CHUNK_SIZE * 16;
 
                     int total_out, in_buff_size, out_buff_size, tmp, unzip_out_buff_size;
 
                     if (in_external_buff == null)
                         in_external_buff = new byte[ZIP_CHUNK_SIZE];
                     if (out_external_buff == null)
-                        out_external_buff = new byte[ZIP_CHUNK_SIZE * 3];
+                        out_external_buff = new byte[bufferSize];
                     if (unzip_external_buff == null)
                         unzip_external_buff = new byte[ZIP_CHUNK_SIZE];
 
@@ -473,7 +432,7 @@ public class JEBFilesZIP extends AlFiles {
                                 if (isDecrypt) {
                                     int decryptSize = 0;
                                     byte[] encryptBuff = new byte[ZIP_CHUNK_SIZE];
-                                    byte[] decryptBuff = new byte[ZIP_CHUNK_SIZE * 3];
+                                    byte[] decryptBuff = new byte[bufferSize];
                                     int srcPosition = 0;
                                     int destPosition = 0;
                                     int encryptSize = 0;
@@ -488,7 +447,7 @@ public class JEBFilesZIP extends AlFiles {
                                             srcPosition += encryptSize;
                                         }
 
-                                        decryptSize = DecryptHelper.decrypt(encryptBuff, encryptSize, decryptBuff, ZIP_CHUNK_SIZE * 3, deend);
+                                        decryptSize = DecryptHelper.decrypt(encryptBuff, encryptSize, decryptBuff, bufferSize, deend);
                                         if (decryptSize <= 0) {
                                             destPosition = -1;
                                             break;
@@ -525,7 +484,6 @@ public class JEBFilesZIP extends AlFiles {
 
                     //external_infl.finished();
                     //external_infl = null;
-
                 } else if (fileList.get(num).compress == 0) {
                     res = parent.getByteBuffer(fileList.get(num).position + pos, dst, dst_pos, cnt);
                 }

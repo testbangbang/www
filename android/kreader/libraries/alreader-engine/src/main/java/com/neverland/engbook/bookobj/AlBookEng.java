@@ -2322,6 +2322,9 @@ public class AlBookEng{
         bProp.coverImageData = null;
     }
 
+    public AlBookProperties getBookProperties(){
+		return bookMetaData;
+	}
     public synchronized AlBookProperties scanMetaData(String fName, AlBookOptions bookOptions) {
 
         resultEmptyMetadata(bookMetaData);
@@ -2398,7 +2401,6 @@ public class AlBookEng{
 					return bookMetaData;
 				continue;
 			}
-
             ft = AlFilesZIP.isZIPFile(currName, a, fList, prevExt);
             if (ft == TAL_FILE_TYPE.ZIP) {
                 activeFile = new AlFilesZIP();
@@ -2519,7 +2521,7 @@ public class AlBookEng{
 
 
 	TAL_NOTIFY_RESULT openBookInThread(String fName, AlBookOptions bookOptions) {
-
+		resultEmptyMetadata(bookMetaData);
 		String currName;
 		String prevExt;
 		int	tmp;
@@ -2787,7 +2789,26 @@ public class AlBookEng{
 		
 		bookPosition = getCorrectScreenPagePosition(bookPosition);
 
-		openState.incState();		
+		openState.incState();
+		if(JEBFormatEPUB.isJEB(activeFile)){
+			bookMetaData.content = null;
+			bookMetaData.size = 0;
+			bookMetaData.title = format.bookTitle;
+			bookMetaData.authors = format.bookAuthors;
+			bookMetaData.genres = format.bookGenres;
+			bookMetaData.series = format.bookSeries;
+
+			bookMetaData.coverImageData = null;
+			if (bookOptions.needCoverData && format.coverName != null) {
+				AlOneImage a = format.getImageByName(AlFormat.LEVEL2_COVERTOTEXT_STR);
+				if (a != null) {
+					images.initWork(a, format);
+					if (a.data != null) {
+						bookMetaData.coverImageData = a.data;
+					}
+				}
+			}
+		}
 		return TAL_NOTIFY_RESULT.OK;
 	}
 

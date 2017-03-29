@@ -125,6 +125,7 @@
   <string name="settings_time_show_format_12hours">1:00 PM</string>
   <string name="settings_enable_system_status_bar_tittle">启用系统状态栏</string>
   <string name="setting_enable_reader_status_bar_tittle">启用阅读状态栏</string>
+  <string name="settings_enable_multiple_tabs_title">启用多文档</string>
   <string name="settings_search_menu_position_tittle">设置搜索菜单位置</string>
   <string name="settings_bookmark_tittle">显示书签</string>
   <string name="settings_hyperlink_tittle">显示超链接</string>
@@ -299,4 +300,5 @@
   <string name="auto_crop_for_each_block">以上手动设置后，自动裁剪可见范围内空白区域</string>
   <string name="network_data">联网数据</string>
   <string name="local_data">本地数据</string>
+    <string name="file_not_exists">文件不存在!</string>
 </resources>

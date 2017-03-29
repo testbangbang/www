@@ -257,6 +257,7 @@
     <string name="view_slideshow_status_bar_battery" formatted="false">Заряд: %d/%d (%%) </string>
     <string name="slideshow_quit_warning">Для завершения слайд-шоу нажмите кнопку НАЗАД </string>
     <string name="code_page">Установка кодировки...</string>
+    <string name="file_not_exists">File not exists!</string>
 </resources>
 
 

@@ -839,8 +839,14 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
             }
         }
 
-        ReaderDocumentTableOfContentEntry current = entries.get(entries.size() - 1);
+        int startEntryPosition = getDocumentTableOfContentEntryPosition(entries, 0);
+        ReaderDocumentTableOfContentEntry current = entries.get(pagePosition < startEntryPosition ? 0 : entries.size() - 1);
         return locateEntryWithChildren(current, pagePosition);
+    }
+
+    private int getDocumentTableOfContentEntryPosition(final List<ReaderDocumentTableOfContentEntry> entries, final int index) {
+        ReaderDocumentTableOfContentEntry entry = entries.get(index);
+        return PagePositionUtils.getPosition(entry.getPosition());
     }
 
     private ReaderDocumentTableOfContentEntry locateEntryWithChildren(ReaderDocumentTableOfContentEntry entry, int pagePosition) {

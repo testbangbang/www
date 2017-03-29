@@ -1,16 +1,17 @@
 package com.neverland.engbook.level1;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
-import com.jingdong.app.reader.epub.paging.DecryptHelper;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_FILE_TYPE;
 import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
+import com.neverland.engbook.util.ZipUtil;
 
 public class AlFilesZIP extends AlFiles {
 	
@@ -35,6 +36,11 @@ public class AlFilesZIP extends AlFiles {
 
 	static public TAL_FILE_TYPE isZIPFile(String fName, AlFiles a, ArrayList<AlFileZipEntry> fList, String ext) {
 		TAL_FILE_TYPE res = TAL_FILE_TYPE.TXT;
+		Map<String,Integer> fileSizeMap = null;
+		if ((ext == null || ext.equalsIgnoreCase(".JEB"))) {
+			fileSizeMap = ZipUtil.unzipFile(a.fileName, null, JEBFilesZIP.key,
+					JEBFilesZIP.deviceUUID, JEBFilesZIP.random);
+		}
 
 		int			fsize = a.getSize();
 		int			arr_size = 0x1000f;
@@ -177,11 +183,12 @@ public class AlFilesZIP extends AlFiles {
 				if ((ext == null || ext.equalsIgnoreCase(".fb3")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_FB3))
 					res = TAL_FILE_TYPE.FB3;
 				if ((ext == null || ext.equalsIgnoreCase(".JEB"))) {
-					res = TAL_FILE_TYPE.JEB;
+						res = TAL_FILE_TYPE.JEB;
+					Integer fileSize = 0;
 					if(of.compress == 8) {
-						of.uSize = JEBFilesZIP.gitCompressDataSize(a, zipLCD.offset, zipLCD.csize, zipLCD.usize);
-						if(of.uSize <= 0){
-							of.uSize = (int) zipLCD.usize;
+						fileSize = fileSizeMap.get(of.name);
+						if (fileSize != null && fileSize > 0) {
+							of.uSize = fileSize;
 						}
 					}
 				}
@@ -353,7 +360,6 @@ public class AlFilesZIP extends AlFiles {
 			} else {
 
 				if (fileList.get(num).compress == 8) {
-
 					if (external_infl == null)
 						external_infl = new Inflater(true);
 					external_infl.reset();
