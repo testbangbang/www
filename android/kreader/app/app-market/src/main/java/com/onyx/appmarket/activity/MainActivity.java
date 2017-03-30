@@ -340,6 +340,11 @@ public class MainActivity extends OnyxAppCompatActivity {
         pageIndicator.setText(currentPage + "/" + totalPage);
     }
 
+    private void shiftSearchEditFocus() {
+        searchText.clearFocus();
+        contentPageView.requestFocus();
+    }
+
     @OnClick(R.id.prev)
     void onPrevPageClick() {
         contentPageView.prevPage();
@@ -505,6 +510,15 @@ public class MainActivity extends OnyxAppCompatActivity {
             setProgressDialogToastMessage(product.getGuid(), FileUtils.getFileName(file.getAbsolutePath()) +
                     " " + getString(R.string.downloading));
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_PAGE_UP || event.getKeyCode() == KeyEvent.KEYCODE_PAGE_DOWN ||
+                event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP || event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN) {
+            shiftSearchEditFocus();
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     private CloudStore getCloudStore() {
