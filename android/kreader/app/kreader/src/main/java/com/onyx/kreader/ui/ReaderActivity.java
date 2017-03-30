@@ -72,6 +72,7 @@ import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
+import com.onyx.kreader.ui.events.ConfirmCloseDialogEvent;
 import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
