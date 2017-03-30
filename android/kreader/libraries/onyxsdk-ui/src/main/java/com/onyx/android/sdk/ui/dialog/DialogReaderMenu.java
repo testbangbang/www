@@ -178,7 +178,7 @@ public class DialogReaderMenu extends Dialog {
                     return;
                 }
 
-                int page = progress - 1;
+                int page = Math.max(progress - 1, 0);
                 currentPage = page;
                 updatePageProgress(page);
                 readerMenuCallback.onMenuItemValueChanged(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.JUMP_PAGE), null, currentPage);

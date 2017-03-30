@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="@dimen/common_dialog_width"
               android:layout_height="wrap_content"
-              android:background="@drawable/alert_bg"
               android:orientation="vertical">
 
     <LinearLayout
@@ -40,20 +39,23 @@
         android:background="@android:color/black" />
 
     <LinearLayout
+        android:layout_marginLeft="1dp"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="50dp">
 
         <Button
+            android:textColor="@drawable/button_text_selector"
             android:id="@+id/btn_cancel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/no_top_line_press_bg"
+            android:background="@drawable/no_left_top_line_press_bg"
             android:text="@string/cancel"
             android:textSize="20sp" />
 
         <Button
+            android:textColor="@drawable/button_text_selector"
             android:id="@+id/btn_ok"
             android:layout_width="0dp"
             android:layout_height="match_parent"
