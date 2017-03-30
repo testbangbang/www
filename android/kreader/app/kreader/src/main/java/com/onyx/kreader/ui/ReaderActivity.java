@@ -425,6 +425,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         enablePenShortcut();
         updateRawEventProcessor();
         getReaderDataHolder().onActivityResume();
+        updateNoteHostView();
     }
 
     private void enablePenShortcut() {
