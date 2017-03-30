@@ -251,6 +251,7 @@ public class DialogTextStyle extends DialogBase {
         if (originalChineseConvertType != readerDataHolder.getReaderUserDataInfo().getChineseConvertType()) {
             new ChangeChineseConvertTypeAction(originalChineseConvertType).execute(readerDataHolder, null);
         }
+        SingletonSharedPreference.setLastFontSize(originalStyle.getFontSize().getValue());
         updateReaderStyle(originalStyle, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
