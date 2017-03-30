@@ -15,19 +15,21 @@ import java.util.List;
 
 public class GetFontsAction extends BaseAction{
 
+    private List<Object> list;
     private List<FontInfo> fonts;
     private String currentFont;
     private DeviceUtils.FontType fontType;
 
-    public GetFontsAction(final String currentFont, final DeviceUtils.FontType fontType) {
+    public GetFontsAction(final String currentFont, final DeviceUtils.FontType fontType, final List<Object> list) {
         this.currentFont = currentFont;
         this.fontType = fontType;
+        this.list = list;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
 
-        final GetFontsRequest getFontsRequest = new GetFontsRequest(currentFont, fontType);
+        final GetFontsRequest getFontsRequest = new GetFontsRequest(currentFont, fontType, list);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), getFontsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
