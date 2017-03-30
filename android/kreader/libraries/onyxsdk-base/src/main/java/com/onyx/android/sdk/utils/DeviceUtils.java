@@ -188,7 +188,7 @@ public class DeviceUtils {
                 path.toLowerCase(Locale.getDefault()).endsWith(".ttf");
     }
 
-    public static List<FontInfo> buildFontItemAdapter(List<String> fontsFolderList, String currentFont, final List<String> preferredFonts, final FontType fontType, List<Object> list) {
+    public static List<FontInfo> buildFontItemAdapter(List<String> fontsFolderList, String currentFont, final List<String> preferredFonts, final FontType fontType, List<Object> disableFontsList) {
         List<FontInfo> fontInfoList = new ArrayList<>();
         FilenameFilter fontFilter = new FilenameFilter() {
             @Override
@@ -232,7 +232,7 @@ public class DeviceUtils {
                     if ((preferredFonts != null && (preferredFonts.contains(fontName) || preferredFonts.contains(f.getName())))
                             || !isAlphaWord) {
                         fontInfoList.add(0, fontInfo);
-                    } else if (!list.contains(f.getName())){
+                    } else if (!disableFontsList.contains(f.getName())){
                         fontInfoList.add(fontInfo);
                     }
                 }

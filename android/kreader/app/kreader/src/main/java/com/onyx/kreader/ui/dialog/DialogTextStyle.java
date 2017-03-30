@@ -294,8 +294,8 @@ public class DialogTextStyle extends DialogBase {
         });
 
         final String fontFace = getReaderStyle().getFontFace();
-        List<Object> disableFonts = getDisableFonts();
-        final GetFontsAction getFontsAction = new GetFontsAction(fontFace, fontType, disableFonts);
+        List<Object> disableFontsList = getDisableFonts();
+        final GetFontsAction getFontsAction = new GetFontsAction(fontFace, fontType, disableFontsList);
         getFontsAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

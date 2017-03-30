@@ -13,21 +13,21 @@ import java.util.List;
 
 public class GetFontsRequest extends BaseReaderRequest {
 
-    private List<Object> list;
+    private List<Object> disableFontsList;
     private List<FontInfo> fonts;
     private String currentFont;
     private DeviceUtils.FontType fontType;
 
-    public GetFontsRequest(String currentFont, DeviceUtils.FontType fontType, List<Object> list) {
+    public GetFontsRequest(String currentFont, DeviceUtils.FontType fontType, List<Object> disableFontsList) {
         this.currentFont = currentFont;
         this.fontType = fontType;
-        this.list = list;
+        this.disableFontsList = disableFontsList;
     }
 
     @Override
     public void execute(Reader reader) throws Exception {
         fonts = DeviceUtils.buildFontItemAdapter(reader.getPluginOptions().getFontDirectories(),
-                currentFont, null, fontType, list);
+                currentFont, null, fontType, disableFontsList);
     }
 
     public List<FontInfo> getFonts() {
