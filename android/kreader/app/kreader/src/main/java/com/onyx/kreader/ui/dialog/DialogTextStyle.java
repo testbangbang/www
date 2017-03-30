@@ -18,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -33,6 +35,7 @@ import com.onyx.android.sdk.ui.view.OnyxRadioButton;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.LocaleUtils;
+import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.actions.ChangeChineseConvertTypeAction;
 import com.onyx.kreader.ui.actions.ChangeCodePageAction;
@@ -291,7 +294,8 @@ public class DialogTextStyle extends DialogBase {
         });
 
         final String fontFace = getReaderStyle().getFontFace();
-        final GetFontsAction getFontsAction = new GetFontsAction(fontFace, fontType);
+        List<Object> disableFontsList = getDisableFonts();
+        final GetFontsAction getFontsAction = new GetFontsAction(fontFace, fontType, disableFontsList);
         getFontsAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -305,6 +309,17 @@ public class DialogTextStyle extends DialogBase {
 
         updateFontSizeView(view);
         return view;
+    }
+
+    private List<Object> getDisableFonts() {
+        int res = getContext().getResources().getIdentifier("fonts", "raw", getContext().getPackageName());
+        String rawResource = RawResourceUtil.contentOfRawResource(getContext(), res);
+        JSONObject jsonObject = JSON.parseObject(rawResource);
+        List<Object> fonts = jsonObject.getJSONArray("disableFonts");
+        if (fonts == null) {
+            return new ArrayList<Object>();
+        }
+        return fonts;
     }
 
     private void updateFontPageView(View parentView) {
