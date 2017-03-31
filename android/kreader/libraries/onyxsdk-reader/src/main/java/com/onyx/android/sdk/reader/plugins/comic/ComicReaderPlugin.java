@@ -510,26 +510,26 @@ public class ComicReaderPlugin implements ReaderPlugin,
      * @param pagePosition        the page position.
      * @param scale       the actual scale used to render page.
      * @param rotation    the rotation.
-     * @param bitmap      the target bitmap to draw content. Caller may use this method to draw part of content.
-     * @param displayRect the display rect in screen coordinate system.
+     * @param gamma
+     *@param displayRect the display rect in screen coordinate system.
      * @param pageRect    the page rect in doc coordinate system.
      * @param visibleRect the visible rect in doc coordinate system.
-     *                    <p/>
-     *                    bitmap  matrix
-     *                    (viewportX, viewportY)
-     *                    |--------------|
-     *                    |              |
-     *                    | (x,y)        |
-     *                    |  |------|    |
-     *                    |  |      |    |
-     *                    |  |      |    |
-     *                    |  |------|    |
-     *                    |        (w,h) |
-     *                    |--------------|
-     * @return
+*                    <p/>
+*                    bitmap  matrix
+*                    (viewportX, viewportY)
+*                    |--------------|
+*                    |              |
+*                    | (x,y)        |
+*                    |  |------|    |
+*                    |  |      |    |
+*                    |  |      |    |
+*                    |  |------|    |
+*                    |        (w,h) |
+*                    |--------------|
+     * @param bitmap      the target bitmap to draw content. Caller may use this method to draw part of content.     @return
      */
     @Override
-    public boolean draw(String pagePosition, float scale, int rotation, Bitmap bitmap, RectF displayRect, RectF pageRect, RectF visibleRect) {
+    public boolean draw(String pagePosition, float scale, int rotation, float gamma, RectF displayRect, RectF pageRect, RectF visibleRect, Bitmap bitmap) {
         final int pn = PagePositionUtils.getPageNumber(pagePosition);
         return getPluginImpl().drawPage(pn, scale, rotation, displayRect, pageRect, visibleRect, bitmap);
     }
@@ -551,6 +551,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
      */
     @Override
     public boolean supportFontSizeAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
         return false;
     }
 

@@ -25,6 +25,7 @@ public interface ReaderRenderer {
      * @param scale the actual scale used to render page.
      * @param rotation the rotation.
      * @param bitmap the target bitmap to draw content. Caller may use this method to draw part of content.
+     * @param gamma
      * @param displayRect the display rect in screen coordinate system.
      * @param pageRect the page rect in doc coordinate system.
      * @param visibleRect the visible rect in doc coordinate system.
@@ -40,9 +41,8 @@ public interface ReaderRenderer {
      *                |  |------|    |
      *                |        (w,h) |
      *                |--------------|
-     *
      * @return
      */
-    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect);
+    public boolean draw(final String pagePosition, final float scale, final int rotation, float gamma, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap);
 
 }

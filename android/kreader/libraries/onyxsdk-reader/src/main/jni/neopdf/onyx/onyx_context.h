@@ -27,6 +27,8 @@
 #include "fpdfview.h"
 #include "fpdf_text.h"
 
+#include "core/fxge/include/cfx_gemodule.h"
+
 class OnyxPdfiumPage {
 
 private:
@@ -71,10 +73,11 @@ private:
     FPDF_BITMAP bitmap;
     std::list<std::pair<int, OnyxPdfiumPage *>> pageQueue; // use std::queue to simulate FIFO queue
     std::unordered_map<void *, FPDF_BITMAP> bitmapMap;
+    float textGamma;
 
 public:
     OnyxPdfiumContext(FPDF_DOCUMENT doc)
-        : document(doc) {
+        : document(doc), textGamma(1.0f) {
     }
     ~OnyxPdfiumContext() {
         document = NULL;
@@ -135,6 +138,22 @@ public:
         return page->getTextPage();
     }
 
+    float getTextGamma() const {
+        return textGamma;
+    }
+
+    void setTextGamma(float gamma) {
+        if (std::abs(gamma - textGamma) <= 0.001) {
+            return;
+        }
+
+        // gamma used in pdfium is reciprocal of the value being passed in
+        float realGamma = 2.2f / gamma;
+        CFX_GEModule::Get()->SetTextGamma(realGamma);
+        textGamma = gamma;
+        clearPages();
+    }
+
 private:
     void clearPages() {
         for(auto iterator = pageQueue.begin(); iterator != pageQueue.end(); ++iterator) {
@@ -192,6 +211,14 @@ public:
             return NULL;
         }
         return context->getTextPage(pageIndex);
+    }
+
+    static void setTextGamma(JNIEnv *env, jint id, float gamma) {
+        OnyxPdfiumContext * context = getContext(env, id);
+        if (context == NULL) {
+            return;
+        }
+        context->setTextGamma(gamma);
     }
 
 };

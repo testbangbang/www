@@ -364,7 +364,7 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean draw(String pagePosition, float scale, int rotation, Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(String pagePosition, float scale, int rotation, float gamma, final RectF displayRect, final RectF pageRect, final RectF visibleRect, Bitmap bitmap) {
         benchmark.restart();
         try {
             final int pn = PagePositionUtils.getPageNumber(pagePosition);
@@ -383,6 +383,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
 
     @Override
     public boolean supportFontSizeAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
         return false;
     }
 
