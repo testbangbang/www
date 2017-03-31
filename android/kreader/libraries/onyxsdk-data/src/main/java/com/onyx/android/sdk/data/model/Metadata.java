@@ -83,6 +83,9 @@ public class Metadata extends BaseData {
     @Column
     String parentId;
 
+    @Column
+    int readingStatus = 0;
+
     public String getName() {
         return name;
     }
@@ -271,6 +274,14 @@ public class Metadata extends BaseData {
         this.parentId = id;
     }
 
+    public int getReadingStatus() {
+        return readingStatus;
+    }
+
+    public void setReadingStatus(int status) {
+        this.readingStatus = status;
+    }
+
     public static Metadata createFromFile(String path) {
         return createFromFile(new File(path));
     }
@@ -323,4 +334,9 @@ public class Metadata extends BaseData {
         return (lastAccess == null || lastAccess.getTime() <= 0) && (progress == null);
     }
 
+    public static class ReadingStatus {
+        public static int NEW = 0;
+        public static int READING = 1;
+        public static int READ_DONE = 2;
+    }
 }
