@@ -72,6 +72,7 @@ import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
+import com.onyx.kreader.ui.events.ConfirmCloseDialogEvent;
 import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
@@ -423,7 +424,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         syncReaderPainter();
         reconfigStatusBar();
         enablePenShortcut();
-        updateRawEventProcessor();
+        updateNoteState();
         getReaderDataHolder().onActivityResume();
     }
 
@@ -439,10 +440,11 @@ public class ReaderActivity extends OnyxBaseActivity {
         getReaderDataHolder().stopRawEventProcessor();
     }
 
-    private void updateRawEventProcessor() {
+    private void updateNoteState() {
         if (getReaderDataHolder().inNoteWritingProvider()) {
             return;
         }
+        updateNoteHostView();
         getReaderDataHolder().updateRawEventProcessor();
     }
 
@@ -556,12 +558,18 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
         if (event.isUiOpen()) {
-            FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, false, false);
+            FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(list);
             flushNoteAction.execute(getReaderDataHolder(), null);
         } else {
             ResumeDrawingAction action = new ResumeDrawingAction(list);
             action.execute(getReaderDataHolder(), null);
         }
+        enableShortcut(!event.isUiOpen());
+    }
+
+    private void enableShortcut(boolean enable) {
+        getReaderDataHolder().getNoteManager().setEnableShortcutDrawing(enable);
+        getReaderDataHolder().getNoteManager().setEnableShortcutErasing(enable);
     }
 
     @Subscribe
@@ -988,6 +996,11 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void quitApplication(final QuitEvent event) {
         onBackPressed();
+    }
+
+    @Subscribe
+    public void onConfirmCloseDialogEvent(final ConfirmCloseDialogEvent event) {
+        enableShortcut(!event.isOpen());
     }
 
     @Subscribe
