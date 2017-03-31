@@ -841,7 +841,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
                 Metadata meta = getRandomMetadata();
                 if (i < finishBookCount) {
                     meta.setLastAccess(new Date(System.currentTimeMillis()));
-                    meta.setReadingStatus(Metadata.ReadingStatus.READ_DONE);
+                    meta.setReadingStatus(Metadata.ReadingStatus.FINISHED);
                     meta.setProgress("100/100");
                 } else if (i < finishBookCount + readingBookCount) {
                     meta.setLastAccess(new Date(System.currentTimeMillis()));

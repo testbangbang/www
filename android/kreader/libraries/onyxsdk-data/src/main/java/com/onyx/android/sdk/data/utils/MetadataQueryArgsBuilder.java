@@ -20,7 +20,6 @@ import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -136,7 +135,7 @@ public class MetadataQueryArgsBuilder {
     }
 
     public static ConditionGroup finishReadCondition() {
-        return ConditionGroup.clause().and(Metadata_Table.readingStatus.eq(Metadata.ReadingStatus.READ_DONE));
+        return ConditionGroup.clause().and(Metadata_Table.readingStatus.eq(Metadata.ReadingStatus.FINISHED));
     }
 
     public static ConditionGroup recentReadingCondition() {

@@ -337,6 +337,6 @@ public class Metadata extends BaseData {
     public static class ReadingStatus {
         public static int NEW = 0;
         public static int READING = 1;
-        public static int READ_DONE = 2;
+        public static int FINISHED = 2;
     }
 }
