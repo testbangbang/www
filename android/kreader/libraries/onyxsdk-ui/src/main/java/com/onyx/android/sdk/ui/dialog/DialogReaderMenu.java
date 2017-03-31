@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.ui.dialog;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuState;
@@ -20,7 +22,7 @@ import com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout;
 /**
  * Created by joy on 6/28/16.
  */
-public class DialogReaderMenu extends OnyxBaseDialog {
+public class DialogReaderMenu extends Dialog {
 
     private Context context;
     private ReaderMenu.ReaderMenuCallback readerMenuCallback;
@@ -147,6 +149,7 @@ public class DialogReaderMenu extends OnyxBaseDialog {
     }
 
     public void show(ReaderMenuState state) {
+        EpdController.disableRegal();
         updateReaderState(state);
         show();
     }
