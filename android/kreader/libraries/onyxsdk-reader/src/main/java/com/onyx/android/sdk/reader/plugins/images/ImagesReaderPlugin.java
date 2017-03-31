@@ -246,7 +246,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(final String pagePosition, final float scale, final int rotation, float gamma, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         final String path = getImagePath(pagePosition);
         if (StringUtils.isNullOrEmpty(path)) {
             return false;
@@ -468,6 +468,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportFontSizeAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
         return false;
     }
 

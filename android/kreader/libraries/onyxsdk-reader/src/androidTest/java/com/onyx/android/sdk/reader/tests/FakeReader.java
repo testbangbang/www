@@ -139,6 +139,11 @@ public class FakeReader implements ReaderDocument,
         return false;
     }
 
+    @Override
+    public boolean supportFontGammaAdjustment() {
+        return false;
+    }
+
     public boolean supportTypefaceAdjustment() {
         return false;
     }

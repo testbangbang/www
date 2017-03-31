@@ -161,9 +161,9 @@ public class LayoutImageReflowProvider extends LayoutProvider {
                 (int)pageInfo.getScaledHeight(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
         bitmap.eraseColor(Color.WHITE);
         reader.getRenderer().draw(getCurrentPagePosition(), pageInfo.getActualScale(),
-                pageInfo.getPageDisplayOrientation(), bitmap.getBitmap(),
+                pageInfo.getPageDisplayOrientation(), 1.0f,
                 pageInfo.getPositionRect(), pageInfo.getPositionRect(),
-                pageInfo.getPositionRect());
+                pageInfo.getPositionRect(), bitmap.getBitmap());
         getPageManager().scaleToPage(getCurrentPagePosition());
         return bitmap;
     }
