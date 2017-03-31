@@ -157,7 +157,8 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeRenderPage
-  (JNIEnv * env, jobject thiz, jint id, jint pageIndex, jint x, jint y, jint width, jint height, jint rotation, jobject bitmap) {
+  (JNIEnv * env, jobject thiz, jint id, jint pageIndex, jint x, jint y, jint width, jint height, jint rotation, jfloat gamma, jobject bitmap) {
+    OnyxPdfiumManager::setTextGamma(env, id, gamma);
 
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
     if (page == NULL) {
