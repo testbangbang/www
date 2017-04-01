@@ -146,7 +146,7 @@ public class CFATest extends ApplicationTestCase<Application> {
                 }
                 Bitmap bitmap = readerBitmap.getBitmap();
                 long start = System.currentTimeMillis();
-                assertTrue(wrapper.drawPage(i, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
+                assertTrue(wrapper.drawPage(i, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, 1.0f, bitmap));
                 long end = System.currentTimeMillis();
                 Log.i(TAG, "Performance testing: " + path + " page: " + i + " ts: " + (end - start));
 
