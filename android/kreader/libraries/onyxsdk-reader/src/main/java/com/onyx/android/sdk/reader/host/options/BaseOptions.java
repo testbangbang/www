@@ -49,6 +49,7 @@ public class BaseOptions {
     transient static public final String CROP_LIST = "crop_list";
     transient static public final String CROP_VALUE = "crop_value";
     transient static public final String GAMMA_LEVEL = "gamma_level";
+    transient static public final String TEXT_GAMMA_LEVEL = "text_gamma_level";
     transient static public final String ENHANCE_LEVEL = "enhance_level";
     transient static public final String NAVIGATION_MODE = "navigation_mode";
     transient static public final String NAVIGATION_ROWS = "navigation_rows";
@@ -72,6 +73,7 @@ public class BaseOptions {
 
     transient private static int lowerGammaLimit = 100;
     transient private static int globalDefaultGamma = 100;
+    transient private static int globalDefaultTextGamma = 150;
     public static final float INVALID_FLOAT_VALUE = - 1;
     public static final int INVALID_INT_VALUE = - 1;
 
@@ -185,6 +187,29 @@ public class BaseOptions {
 
     public void setGamma(float gamma) {
         backend.putFloat(GAMMA_LEVEL, gamma);
+    }
+
+    public static int getGlobalDefaultTextGamma() {
+        return globalDefaultTextGamma;
+    }
+
+    public static void setGlobalDefaultTextGamma(int globalDefaultGamma) {
+        BaseOptions.globalDefaultTextGamma = globalDefaultGamma;
+    }
+
+    public boolean isTextGamaCorrectionEnabled() {
+        return getTextGammaLevel() > lowerGammaLimit;
+    }
+
+    public float getTextGammaLevel() {
+        if (!backend.hasKey(TEXT_GAMMA_LEVEL)) {
+            return getGlobalDefaultTextGamma();
+        }
+        return backend.getFloat(GAMMA_LEVEL);
+    }
+
+    public void setTextGamma(float gamma) {
+        backend.putFloat(TEXT_GAMMA_LEVEL, gamma);
     }
 
     public boolean isEmboldenLevelEnabled() {

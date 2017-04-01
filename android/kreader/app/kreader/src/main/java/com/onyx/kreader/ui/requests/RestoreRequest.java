@@ -109,10 +109,14 @@ public class RestoreRequest extends BaseReaderRequest {
         float value = baseOptions.getGammaLevel();
         if (value > ImageUtils.NO_GAMMA && value <= ImageUtils.MAX_GAMMA) {
             reader.getDocumentOptions().setGamma(value);
-            if (reader.getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
+        }
+        if (reader.getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
+            value = baseOptions.getTextGammaLevel();
+            if (value > ImageUtils.NO_GAMMA && value <= ImageUtils.MAX_GAMMA) {
                 reader.getRenderer().setTextGamma(value);
             }
         }
+
         reader.getDocumentOptions().setEmboldenLevel(baseOptions.getEmboldenLevel());
     }
 

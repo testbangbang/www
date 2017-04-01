@@ -217,7 +217,10 @@ public class LayoutProviderUtils {
 
     static public boolean checkCache(final BitmapSoftLruCache cache, final String key, final ReaderDrawContext context) {
         ReaderBitmapImpl result = cache.get(key);
-        if (result == null || !result.isGammaApplied(context.targetGammaCorrection) || !result.isEmboldenApplied(context.targetEmboldenLevel)) {
+        if (result == null ||
+                !result.isGammaApplied(context.targetGammaCorrection) ||
+                !result.isTextGammaApplied(context.targetTextGammaCorrection) ||
+                !result.isEmboldenApplied(context.targetEmboldenLevel)) {
             return false;
         }
 
