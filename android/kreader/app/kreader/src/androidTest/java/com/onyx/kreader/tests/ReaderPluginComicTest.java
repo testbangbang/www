@@ -205,7 +205,7 @@ public class ReaderPluginComicTest extends ActivityInstrumentationTestCase2<Read
         assertTrue(rect != null && rect.width() > 0 && rect.height() > 0);
         ReaderBitmap bitmap = ReaderBitmapImpl.create((int)rect.width(), (int)rect.height(), Bitmap.Config.ARGB_8888);
         assertTrue(bitmap != null && bitmap.getBitmap() != null);
-        assertTrue(plugin.draw(position, 1.0f, 0, 1.0f, rect, rect, rect, bitmap.getBitmap()));
+        assertTrue(plugin.draw(position, 1.0f, 0, rect, rect, rect, bitmap.getBitmap()));
         plugin.close();
     }
 

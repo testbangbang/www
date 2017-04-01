@@ -188,6 +188,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public void setTextGamma(float gamma) {
+
+    }
+
     public void close() {
         getPluginImpl().closeAll();
         pageList.clear();
@@ -253,7 +258,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String pagePosition, final float scale, final int rotation, float gamma, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         final String path = getImagePath(pagePosition);
         if (StringUtils.isNullOrEmpty(path)) {
             return false;

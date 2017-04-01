@@ -225,6 +225,11 @@ public class AlReaderPlugin implements ReaderPlugin,
         getPluginImpl().setChineseConvertType(convertType);
     }
 
+    @Override
+    public void setTextGamma(float gamma) {
+
+    }
+
     public void close() {
         getPluginImpl().closeDocument();
     }
@@ -302,7 +307,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String pagePosition, final float scale, final int rotation, float gamma, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         getPluginImpl().draw(bitmap, (int)displayRect.width(), (int)displayRect.height());
         return true;
     }

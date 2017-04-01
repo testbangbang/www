@@ -109,11 +109,8 @@ public class LayoutProviderUtils {
                         ", page rect: " + pageRect +
                         ", visible rect: " + visibleRect);
                 renderer.draw(documentPosition, pageInfo.getActualScale(),
-                        pageInfo.getPageDisplayOrientation(), drawContext.targetGammaCorrection, displayRect, pageRect, visibleRect, bitmap.getBitmap()
+                        pageInfo.getPageDisplayOrientation(), displayRect, pageRect, visibleRect, bitmap.getBitmap()
                 );
-                if (renderer.getRendererFeatures().supportFontGammaAdjustment()) {
-                    bitmap.setGammaCorrection(drawContext.targetGammaCorrection);
-                }
             }
         }
     }
@@ -175,7 +172,7 @@ public class LayoutProviderUtils {
 
     static public PageInfo drawReflowablePage(final PageInfo pageInfo, final ReaderBitmap bitmap, final ReaderRenderer readerRenderer) {
         final RectF viewport = new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight());
-        if (!readerRenderer.draw(pageInfo.getPositionSafely(), 1.0f, 0, 1.0f, viewport, viewport, viewport, bitmap.getBitmap())) {
+        if (!readerRenderer.draw(pageInfo.getPositionSafely(), 1.0f, 0, viewport, viewport, viewport, bitmap.getBitmap())) {
             return null;
         }
         return pageInfo;
@@ -203,7 +200,7 @@ public class LayoutProviderUtils {
         readerRenderer.draw(pageInfo.getPositionSafely(),
                 scale,
                 pageInfo.getPageDisplayOrientation(),
-                1.0f, visiblePage.getDisplayRect(), visiblePage.getPositionRect(), visibleRect, bitmap.getBitmap()
+                visiblePage.getDisplayRect(), visiblePage.getPositionRect(), visibleRect, bitmap.getBitmap()
         );
 
         List<PageInfo> pageInfos = internalPageManager.collectVisiblePages();

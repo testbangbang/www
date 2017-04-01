@@ -365,9 +365,13 @@ public class ReaderHelper {
     }
 
     public void applyPostBitmapProcess(final ReaderViewInfo viewInfo, ReaderBitmapImpl bitmap) {
-        if (!getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
-            final List<RectF> regions = collectTextRectangleList(viewInfo);
-            applyGammaCorrection(bitmap, regions);
+        if (getDocumentOptions().isGamaCorrectionEnabled()) {
+            if (getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
+                bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
+            } else {
+                final List<RectF> regions = collectTextRectangleList(viewInfo);
+                applyGammaCorrection(bitmap, regions);
+            }
         }
         applyEmbolden(bitmap);
         applySaturation(bitmap);

@@ -74,7 +74,7 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
         assertTrue(size[0] > 0);
         assertTrue(size[1] > 0);
         Bitmap bitmap = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
-        assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, 1.0f, bitmap));
+        assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
         assertFalse(wrapper.pageSize(page + 1, size));
         assertTrue(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
@@ -92,7 +92,7 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
         assertTrue(size[0] > 0);
         assertTrue(size[1] > 0);
         Bitmap bitmap = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
-        assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, 1.0f, bitmap));
+        assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
         assertFalse(wrapper.pageSize(page + 1, size));
         assertTrue(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
@@ -128,7 +128,7 @@ public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<Re
                 }
                 Bitmap bitmap = readerBitmap.getBitmap();
                 long start = System.currentTimeMillis();
-                assertTrue(wrapper.drawPage(i, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, 1.0f, bitmap));
+                assertTrue(wrapper.drawPage(i, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
                 long end = System.currentTimeMillis();
                 Log.i(TAG, "Performance testing: " + path +  " page: " + i + " ts: " + (end - start));
             }

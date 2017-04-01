@@ -501,17 +501,20 @@ public class ComicReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public void setTextGamma(float gamma) {
+
+    }
+
     /**
      * draw content. There are two coordinates system.
      * host coordinates system, the viewportInPage is specified in host coordinates system
      * the bitmapx, bitmapy, width and height can be regarded as viewportInPage coordinates system, whereas viewportInPage is the
      * origin point(0, 0)
-     *
-     * @param pagePosition        the page position.
+     *  @param pagePosition        the page position.
      * @param scale       the actual scale used to render page.
      * @param rotation    the rotation.
-     * @param gamma
-     *@param displayRect the display rect in screen coordinate system.
+     * @param displayRect the display rect in screen coordinate system.
      * @param pageRect    the page rect in doc coordinate system.
      * @param visibleRect the visible rect in doc coordinate system.
 *                    <p/>
@@ -527,9 +530,9 @@ public class ComicReaderPlugin implements ReaderPlugin,
 *                    |        (w,h) |
 *                    |--------------|
      * @param bitmap      the target bitmap to draw content. Caller may use this method to draw part of content.     @return
-     */
+     * */
     @Override
-    public boolean draw(String pagePosition, float scale, int rotation, float gamma, RectF displayRect, RectF pageRect, RectF visibleRect, Bitmap bitmap) {
+    public boolean draw(String pagePosition, float scale, int rotation, RectF displayRect, RectF pageRect, RectF visibleRect, Bitmap bitmap) {
         final int pn = PagePositionUtils.getPageNumber(pagePosition);
         return getPluginImpl().drawPage(pn, scale, rotation, displayRect, pageRect, visibleRect, bitmap);
     }
