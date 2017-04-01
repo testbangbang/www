@@ -65,8 +65,16 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 
 /*
  * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
+ * Method:    nativeSetTextGamma
+ * Signature: (IF)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetTextGamma
+  (JNIEnv *, jobject, jint, jfloat);
+
+/*
+ * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
  * Method:    nativeRenderPage
- * Signature: (IIIIIIILandroid/graphics/Bitmap;)Z
+ * Signature: (IIIIIIIFLandroid/graphics/Bitmap;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeRenderPage
   (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jfloat, jobject);

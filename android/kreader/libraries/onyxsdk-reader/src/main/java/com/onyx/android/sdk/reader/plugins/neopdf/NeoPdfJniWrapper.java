@@ -52,6 +52,8 @@ public class NeoPdfJniWrapper {
     private native int nativePageCount(int id);
     private native boolean nativePageSize(int id, int page, float []size);
 
+    private native void nativeSetTextGamma(int id, float gamma);
+
     private native boolean nativeRenderPage(int id, int page, int x, int y, int width, int height, int rotation, float gamma, final Bitmap bitmap);
 
     private native int nativeHitTest(int id, int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final ReaderTextSplitter splitter, final boolean selectingWord, final NeoPdfSelection selection);
@@ -101,8 +103,13 @@ public class NeoPdfJniWrapper {
     public int pageCount() {
         return nativePageCount(id);
     }
+
     public boolean pageSize(int page, float []size) {
         return nativePageSize(id, page, size);
+    }
+
+    public void setTextGamma(float gamma) {
+        nativeSetTextGamma(id, gamma);
     }
 
     /**

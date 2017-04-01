@@ -188,6 +188,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public void setTextGamma(float gamma) {
+        getPluginImpl().setTextGamma(gamma);
+    }
+
     public void close() {
         getPluginImpl().closeDocument();
     }

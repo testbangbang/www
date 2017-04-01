@@ -215,6 +215,11 @@ public class AlReaderPlugin implements ReaderPlugin,
         getPluginImpl().setChineseConvertType(convertType);
     }
 
+    @Override
+    public void setTextGamma(float gamma) {
+
+    }
+
     public void close() {
         getPluginImpl().closeDocument();
     }

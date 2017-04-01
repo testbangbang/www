@@ -181,6 +181,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public void setTextGamma(float gamma) {
+
+    }
+
     public void close() {
         getPluginImpl().closeAll();
         pageList.clear();

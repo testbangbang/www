@@ -489,6 +489,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public void setTextGamma(float gamma) {
+
+    }
+
     /**
      * draw content. There are two coordinates system.
      * host coordinates system, the viewportInPage is specified in host coordinates system
