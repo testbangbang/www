@@ -8,6 +8,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.cache.LibraryCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
+import com.onyx.android.sdk.data.model.BaseData;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.Thumbnail;
@@ -75,7 +76,11 @@ public class DataManager {
     }
 
     public void submit(final Context context, final BaseDataRequest request, final BaseCallback callback) {
-        requestManager.submitRequest(context, request, generateRunnable(request), callback);
+        requestManager.submitRequest(context, getIdentifier(request), request, generateRunnable(request), callback);
+    }
+
+    private final String getIdentifier(final BaseDataRequest request) {
+        return request.getIdentifier();
     }
 
     public final RequestManager getRequestManager() {
