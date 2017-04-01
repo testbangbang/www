@@ -36,6 +36,7 @@ public class LoadDocumentOptionsRequest extends BaseDataRequest {
 
     private void initBaseOptions() {
         BaseOptions.setGlobalDefaultGamma(DeviceConfig.sharedInstance(getContext()).getDefaultGamma());
+        BaseOptions.setGlobalDefaultTextGamma(DeviceConfig.sharedInstance(getContext()).getDefaultTextGamma());
     }
 
     public final BaseOptions getDocumentOptions() {

@@ -14,6 +14,7 @@ public class ReaderBitmapImpl implements ReaderBitmap {
     private String key;
     private Bitmap bitmap;
     private float gammaCorrection = BaseOptions.getLowerGammaLimit();
+    private float textGammaCorrection = BaseOptions.getLowerGammaLimit();
     private int emboldenLevel;
 
     public static ReaderBitmapImpl create(int width, int height, Bitmap.Config config) {
@@ -70,6 +71,18 @@ public class ReaderBitmapImpl implements ReaderBitmap {
 
     public boolean isGammaApplied(final float targetGammaCorrection) {
         return (Float.compare(gammaCorrection, targetGammaCorrection) == 0);
+    }
+
+    public void setTextGammaCorrection(float correction) {
+        this.textGammaCorrection = correction;
+    }
+
+    public float textGammaCorrection() {
+        return textGammaCorrection;
+    }
+
+    public boolean isTextGammaApplied(final float targetGammaCorrection) {
+        return (Float.compare(textGammaCorrection, targetGammaCorrection) == 0);
     }
 
     public boolean isEmboldenApplied(final float targetEmboldenLevel) {

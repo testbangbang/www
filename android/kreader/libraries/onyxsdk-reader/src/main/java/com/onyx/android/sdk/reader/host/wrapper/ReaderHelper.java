@@ -365,13 +365,13 @@ public class ReaderHelper {
     }
 
     public void applyPostBitmapProcess(final ReaderViewInfo viewInfo, ReaderBitmapImpl bitmap) {
+        if (getDocumentOptions().isTextGamaCorrectionEnabled() &&
+                getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
+            bitmap.setTextGammaCorrection(getDocumentOptions().getTextGammaLevel());
+        }
         if (getDocumentOptions().isGamaCorrectionEnabled()) {
-            if (getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
-                bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
-            } else {
-                final List<RectF> regions = collectTextRectangleList(viewInfo);
-                applyGammaCorrection(bitmap, regions);
-            }
+            final List<RectF> regions = collectTextRectangleList(viewInfo);
+            applyGammaCorrection(bitmap, regions);
         }
         applyEmbolden(bitmap);
         applySaturation(bitmap);
