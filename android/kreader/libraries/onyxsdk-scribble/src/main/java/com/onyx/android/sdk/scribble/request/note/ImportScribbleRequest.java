@@ -158,7 +158,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         points.scaleAllPoints(scaleValue);
         shapeModel.setPoints(points);
         Shape shape = new NormalPencilShape();
-        shapeModel.setShapeUniqueId(uniqueId);
+        shapeModel.generateShapeUniqueId();
         shapeModel.setShapeType(shape.getType());
         for (TouchPoint touchPoint : points.getPoints()) {
             shapeModel.updateBoundingRect(touchPoint.x, touchPoint.y);
