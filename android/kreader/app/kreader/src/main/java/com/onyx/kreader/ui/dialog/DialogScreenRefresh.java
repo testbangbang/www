@@ -24,7 +24,7 @@ public class DialogScreenRefresh extends OnyxAlertDialog {
         void onRefreshIntervalChanged(int oldValue, int newValue);
     }
 
-    public static final int DEFAULT_INTERVAL_COUNT = 5;
+    public static final int DEFAULT_INTERVAL_COUNT = Integer.MAX_VALUE;
 
     private GAdapter mAdapter = null;
     int interval = DEFAULT_INTERVAL_COUNT;

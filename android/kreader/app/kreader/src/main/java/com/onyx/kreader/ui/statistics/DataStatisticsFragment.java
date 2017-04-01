@@ -88,7 +88,7 @@ public class DataStatisticsFragment extends StatisticsFragment {
         SpannableString str = new SpannableString(title);
         String level = String.format("%.2f", readingLevel);
         int start = title.indexOf(level);
-        str.setSpan(new RelativeSizeSpan(4f), start, start + level.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        str.setSpan(new RelativeSizeSpan(3f), start, start + level.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         readingRankText.setText(str);
     }
 

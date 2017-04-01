@@ -258,6 +258,48 @@
     <string name="slideshow_quit_warning">Для завершения слайд-шоу нажмите кнопку НАЗАД </string>
     <string name="code_page">Установка кодировки...</string>
     <string name="file_not_exists">File not exists!</string>
+    <string name="settings_enable_multiple_tabs_title">Показывать несколько документов</string>
+    <string name="finish_count">Прочитанные книги</string>
+    <string name="read_count">Читавшиеся книги</string>
+    <string name="read_time">Время чтения</string>
+    <string name="look_up_dictionary_count">Поиск в словаре</string>
+    <string name="statistics_annotation_count">Количество заметок</string>
+    <string name="data_analysis">Анализ</string>
+    <string name="reading_record">Записи</string>
+    <string name="reading_level" formatted="false">Вы прочитали не больше, чем %.2f%% людей</string>
+    <string name="reading_time_every_day" formatted="false">В среднем вы читаете %.2f часов в день. В основном чтение происходило в интервале %d:00 - %d:00</string>
+    <string name="read_longest_book" formatted="false">Наиболее долгое чтение: %s</string>
+    <string name="read_most_carefully_book" formatted="false">Наиболее внимательное чтение: %s</string>
+    <string name="read_start_time" formatted="false">%s \n начало</string>
+    <string name="read_use_time" formatted="false">Количество попыток чтения \n %s</string>
+    <string name="read_end_time" formatted="false">%s \n окончание</string>
+    <string name="high_light_count" formatted="false">Выделено: %d</string>
+    <string name="annotation_count" formatted="false">Аннотации: %d</string>
+    <string name="look_up_dict_count" formatted="false">Количество вызовов словаря: %d</string>
+    <string name="time_distribution">Распределение времени</string>
+    <string name="self_time_distribution">Распределение времени чтения</string>
+    <string name="other_time_distribution">Сопоставление распределения времени с другими пользователями</string>
+    <string name="reading_content_analysis">Анализ прочитанного</string>
+    <string name="recently_read_content">Содержимое прочитанного</string>
+    <string name="statistics_shortcut_name">Статистика чтения</string>
+    <string name="science">Научная литература</string>
+    <string name="social_science">Общественные науки</string>
+    <string name="art">Искусство</string>
+    <string name="life">Жизнь</string>
+    <string name="education">Образование</string>
+    <string name="children_book">Детская литература</string>
+    <string name="finance_and_economics">Экономика и финансы</string>
+    <string name="magazine">Журналы</string>
+    <string name="fiction">Художественная\nлитература</string>
+    <string name="other">Прочее</string>
+    <string name="load_statistical_data_failed">Загрузить статистические данные не удалось</string>
+    <string name="no_more_search_results">Больше ничего не найдено</string>
+    <string name="no_chapters">Данная статья не содержит детальной информации</string>
+    <string name="first_chapter">Первая глава</string>
+    <string name="last_chapter">Последняя глава</string>
+    <string name="auto_crop_for_each_block">Автообрезка каждого блока после ручной настройки</string>
+    <string name="network_data">Данные сети</string>
+    <string name="local_data">Локальные данные</string>
 </resources>
 
 

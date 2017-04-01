@@ -2,4 +2,10 @@
 <resources>
     <dimen name="dialog_slideshow_text_size">20sp</dimen>
     <dimen name="dialog_slideshow_layout_width">350dp</dimen>
+    <dimen name="activity_statistics_read_key_text_size">18sp</dimen>
+    <dimen name="activity_statistics_read_value_text_size">22sp</dimen>
+    <dimen name="activity_statistics_small_text_size">16sp</dimen>
+    <dimen name="activity_statistics_big_text_size">20sp</dimen>
+    <dimen name="activity_statistics_spacing">5dp</dimen>
+    <dimen name="view_common_statistics_item_text_size">15sp</dimen>
 </resources>
