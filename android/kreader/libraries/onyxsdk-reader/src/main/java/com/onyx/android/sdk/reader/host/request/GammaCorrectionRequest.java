@@ -22,6 +22,7 @@ public class GammaCorrectionRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         setSaveOptions(true);
         reader.getDocumentOptions().setGamma(gamma);
+        reader.getDocumentOptions().setTextGamma(gamma);
         if (emboldenLevel >= BaseOptions.minEmboldenLevel()) {
             reader.getDocumentOptions().setEmboldenLevel(emboldenLevel);
         }

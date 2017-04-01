@@ -357,12 +357,11 @@ public class ReaderHelper {
     }
 
     public void applyPostBitmapProcess(ReaderBitmapReferenceImpl bitmap) {
-        if (getDocumentOptions().isGamaCorrectionEnabled()) {
-            if (getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
-                bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
-            } else {
-                applyGammaCorrection(bitmap);
-            }
+        if (getDocumentOptions().isTextGamaCorrectionEnabled() &&
+                getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
+            bitmap.setTextGammaCorrection(getDocumentOptions().getTextGammaLevel());
+        } else if (getDocumentOptions().isGamaCorrectionEnabled()) {
+            applyGammaCorrection(bitmap);
         }
         applyEmbolden(bitmap);
         applySaturation(bitmap);

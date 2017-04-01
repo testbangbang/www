@@ -49,7 +49,8 @@ public class DeviceConfig {
     private boolean hideControlSettings = false;
     private boolean askForClose = false;
     private boolean supportColor = false;
-    private int defaultGamma = 150;
+    private int defaultGamma = 100;
+    private int defaultTextGamma = 150;
     private int fixedGamma = 0;
     private boolean supportBrushPen = false;
     private boolean supportMultipleTabs = false;
@@ -431,6 +432,14 @@ public class DeviceConfig {
 
     public void setDefaultGamma(int defaultGamma) {
         this.defaultGamma = defaultGamma;
+    }
+
+    public int getDefaultTextGamma() {
+        return defaultTextGamma;
+    }
+
+    public void setDefaultTextGamma(int defaultGamma) {
+        this.defaultTextGamma = defaultGamma;
     }
 
     public int getFixedGamma() {
