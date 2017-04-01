@@ -45,7 +45,7 @@ public class ZipUtil {
                 String zipPath = entry.getName();
                 int fileSize = 0;
                 try {
-                    if (entry.isDirectory() || zipPath.contains("images")) {
+                    if (entry.isDirectory() || zipPath.toLowerCase().contains("images")) {
 
                     } else {
                         ByteArrayOutputStream os = new ByteArrayOutputStream();
