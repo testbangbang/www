@@ -1,7 +1,7 @@
 {
   "ttsEnabled" : true,
-  "hasFrontLight" : true,
-  "disableNoteFunc" : true,
+  "hasFrontLight" : false,
+  "disableNoteFunc" : false,
   "defaultUseSystemStatusBar" : true,
   "defaultFontSizeIndex" : 3,
   "defaultLineSpacingIndex" : 2,
