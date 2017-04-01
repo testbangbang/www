@@ -98,27 +98,33 @@
         android:layout_width="match_parent"
         android:layout_height="0dp" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_marginLeft="20dp"
-        android:gravity="bottom"
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/distribution_layout_height">
 
         <ImageView
             android:background="@android:color/black"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/self_time_distribution_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"/>
 
         <TextView
             android:textColor="@android:color/black"
             android:layout_marginLeft="5dp"
+            android:id="@+id/self_time_distribution"
+            android:layout_toRightOf="@id/self_time_distribution_icon"
+            android:layout_alignParentBottom="true"
             android:text="@string/self_time_distribution"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <ImageView
             android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/self_time_distribution"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/other_time_distribution_icon"
             android:background="@android:color/darker_gray"
             android:layout_width="20dp"
             android:layout_height="20dp"/>
@@ -126,10 +132,12 @@
         <TextView
             android:textColor="@android:color/black"
             android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/other_time_distribution_icon"
+            android:layout_alignParentBottom="true"
             android:text="@string/other_time_distribution"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

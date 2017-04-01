@@ -32,7 +32,7 @@
     <com.onyx.android.sdk.ui.view.PageRecyclerView
         android:id="@+id/page_read_most"
         android:background="@drawable/square_bg_no_focused"
-        android:layout_weight="1"
+        android:layout_weight="0.8"
         android:layout_width="match_parent"
         android:layout_height="0dp">
 
@@ -49,7 +49,7 @@
     <com.onyx.android.sdk.ui.view.PageRecyclerView
         android:id="@+id/page_read_carefully"
         android:background="@drawable/square_bg_no_focused"
-        android:layout_weight="0.5"
+        android:layout_weight="0.8"
         android:layout_width="match_parent"
         android:layout_height="0dp">
 
