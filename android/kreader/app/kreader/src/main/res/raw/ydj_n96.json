@@ -1,8 +1,18 @@
 {
+<<<<<<< HEAD
   "ttsEnabled" : true,
   "hasFrontLight" : true,
   "disableNoteFunc" : true,
   "defaultUseSystemStatusBar" : true,
+=======
+  "defaultFontSizeIndex" : 3,
+  "defaultLineSpacingIndex" : 2,
+  "ttsEnabled" : true,
+  "hasFrontLight" : false,
+  "disableNoteFunc" : false,
+  "supportBrushPen": true,
+  "supportMultipleTabs": true,
+>>>>>>> dba3cbb4ecde2729bcfbdd121f3081506ea5216b
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
