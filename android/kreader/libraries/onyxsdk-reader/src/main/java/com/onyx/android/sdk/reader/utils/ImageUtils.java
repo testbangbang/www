@@ -58,14 +58,7 @@ public class ImageUtils {
         return emboldenInPlace(bmp, emboldenLevel);
     }
 
-    /**
-     * modify bitmap in place
-     *
-     * @param bmp
-     * @param selection
-     * @return
-     */
-    public static boolean applyGammaCorrection(Bitmap bmp, float selection, final List<RectF> regions) {
+    public static float getGammaCorrectionBySelection(float selection) {
         // selection range [minGammaLevel, maxGammaLevel], the bigger the darker.
         // add mapping here. gamma range [0.5, 100]
         // selection 200 ->  gamma 0.5
@@ -74,7 +67,18 @@ public class ImageUtils {
         if (value <= 0) {
             value = 1;
         }
-        float gamma = (MAX_GAMMA / 2) / value;
+        return (MAX_GAMMA / 2) / value;
+    }
+
+    /**
+     * modify bitmap in place
+     *
+     * @param bmp
+     * @param selection
+     * @return
+     */
+    public static boolean applyGammaCorrection(Bitmap bmp, float selection, final List<RectF> regions) {
+        float gamma = getGammaCorrectionBySelection(selection);
 
         float [] array = null;
         if (regions != null) {

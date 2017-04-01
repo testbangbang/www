@@ -111,9 +111,6 @@ public class LayoutProviderUtils {
                 renderer.draw(documentPosition, pageInfo.getActualScale(),
                         pageInfo.getPageDisplayOrientation(), drawContext.targetGammaCorrection, displayRect, pageRect, visibleRect, bitmap.getBitmap()
                 );
-                if (renderer.getRendererFeatures().supportFontGammaAdjustment()) {
-                    bitmap.setGammaCorrection(drawContext.targetGammaCorrection);
-                }
             }
         }
     }

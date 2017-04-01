@@ -16,6 +16,8 @@ public interface ReaderRenderer {
 
     public void setChineseConvertType(ReaderChineseConvertType convertType);
 
+    public void setTextGamma(float gamma);
+
     /**
      * draw content. There are two coordinates system.
      * host coordinates system, the viewportInPage is specified in host coordinates system

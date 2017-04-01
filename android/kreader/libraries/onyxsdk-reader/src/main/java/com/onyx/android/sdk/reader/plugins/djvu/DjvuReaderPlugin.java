@@ -364,6 +364,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public void setTextGamma(float gamma) {
+
+    }
+
+    @Override
     public boolean draw(String pagePosition, float scale, int rotation, float gamma, final RectF displayRect, final RectF pageRect, final RectF visibleRect, Bitmap bitmap) {
         benchmark.restart();
         try {
