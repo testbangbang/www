@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
@@ -16,6 +17,7 @@ import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
+import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.io.File;
@@ -54,7 +56,7 @@ public class LocalDataProvider implements DataProviderBase {
 
     public List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs) {
         if (queryArgs.conditionGroup != null) {
-            Where<Metadata> where = new Select().from(Metadata.class).where(queryArgs.conditionGroup);
+            Where<Metadata> where = new Select(queryArgs.propertyList.toArray(new IProperty[0])).from(Metadata.class).where(queryArgs.conditionGroup);
             for (OrderBy orderBy : queryArgs.orderByList) {
                 where.orderBy(orderBy);
             }

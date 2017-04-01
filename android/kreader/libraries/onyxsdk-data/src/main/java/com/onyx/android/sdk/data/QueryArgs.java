@@ -5,6 +5,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
+import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,6 +22,8 @@ public class QueryArgs {
 
     @JSONField(serialize = false, deserialize = false)
     public ConditionGroup conditionGroup = ConditionGroup.clause();
+    @JSONField(serialize = false, deserialize = false)
+    public List<IProperty> propertyList = new ArrayList<>();
     @JSONField(serialize = false, deserialize = false)
     public List<OrderBy> orderByList = new ArrayList<>();
     public String libraryUniqueId = null;

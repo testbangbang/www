@@ -21,6 +21,7 @@ import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Library_Table;
 import com.onyx.android.sdk.data.model.MetadataCollection;
+import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
@@ -31,11 +32,15 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.data.MetadataRequest;
 import com.onyx.android.sdk.data.utils.MetaDataUtils;
 import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
+import com.onyx.android.sdk.utils.Benchmark;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.io.File;
@@ -512,45 +517,405 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
     }
 
-    public void test00BookListPaginationRequest() {
-        init();
+    private void runTestMetadataQueryArgs(final String benchTag, final long totalCount, int perCount, final QueryArgs queryArgs, final BaseCallback callBack) {
+        final Benchmark benchMark = new Benchmark();
+        DataManager dataManager = new DataManager();
+        int limit = 10;
+        queryArgs.limit = limit;
+        for (int offset = 0; offset < perCount / limit; ++offset) {
+            benchMark.restart();
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final int round = offset;
+            queryArgs.offset = offset;
+            final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
+            dataManager.submit(getContext(), metadataRequest, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    assertNull(e);
+                    assertNotNull(metadataRequest.getList());
+                    assertTrue(metadataRequest.getList().size() <= queryArgs.limit);
+                    assertTrue(metadataRequest.getCount() == totalCount);
+                    if (!CollectionUtils.isNullOrEmpty(metadataRequest.getList())) {
+                        BaseCallback.invoke(callBack, metadataRequest, e);
+                    }
+                    benchMark.report(benchTag + " count:" + totalCount + ",offset:" + round);
+                    countDownLatch.countDown();
+                }
+            });
+            awaitCountDownLatch(countDownLatch);
+        }
+    }
 
+    private void runTestAllBooksAndDescCreatedAt(final long totalCount, int perCount) {
+        final QueryArgs queryArgs = MetadataQueryArgsBuilder.allBooksQuery(defaultContentTypes(),
+                OrderBy.fromProperty(Metadata_Table.createdAt).descending());
+        runTestMetadataQueryArgs("####runTestAllBooksAndDescCreatedAt", totalCount, perCount, queryArgs, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                MetadataRequest metadataRequest = (MetadataRequest) request;
+                Metadata tmp = metadataRequest.getList().get(0);
+                for (Metadata metadata : metadataRequest.getList()) {
+                    assertTrue(tmp.getCreatedAt().getTime() >= metadata.getCreatedAt().getTime());
+                    tmp = metadata;
+                }
+            }
+        });
+    }
+
+    private void runTestNewBooksAndAscSize(final long totalCount, int perCount) {
+        final QueryArgs queryArgs = MetadataQueryArgsBuilder.newBookListQuery(SortBy.Size, SortOrder.Asc);
+        runTestMetadataQueryArgs("####runTestNewBooksAndAscSize", totalCount, perCount, queryArgs, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                MetadataRequest metadataRequest = (MetadataRequest) request;
+                Metadata tmp = metadataRequest.getList().get(0);
+                for (Metadata metadata : metadataRequest.getList()) {
+                    assertNull(metadata.getLastAccess());
+                    assertTrue(tmp.getSize() <= metadata.getSize());
+                    tmp = metadata;
+                }
+            }
+        });
+    }
+
+    private void runTestReadingBooksAndDescName(final long totalCount, int perCount) {
+        final QueryArgs queryArgs = MetadataQueryArgsBuilder.recentReadingQuery(SortBy.Name, SortOrder.Desc);
+        runTestMetadataQueryArgs("####runTestReadingBooksAndDescName", totalCount, perCount, queryArgs, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                MetadataRequest metadataRequest = (MetadataRequest) request;
+                Metadata tmp = metadataRequest.getList().get(0);
+                for (Metadata metadata : metadataRequest.getList()) {
+                    assertNotNull(metadata.getProgress());
+                    assertNotNull(metadata.getLastAccess());
+                    assertTrue(tmp.getName().compareTo(metadata.getName()) <= 0);
+                    tmp = metadata;
+                }
+            }
+        });
+    }
+
+    private void runTestReadedBooksAndDescAuthor(final long totalCount, int perCount) {
+        final QueryArgs queryArgs = MetadataQueryArgsBuilder.finishReadQuery(SortBy.Author, SortOrder.Desc);
+        runTestMetadataQueryArgs("####runTestReadedBooksAndDescAuthor", totalCount, perCount, queryArgs, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                MetadataRequest metadataRequest = (MetadataRequest) request;
+                Metadata tmp = metadataRequest.getList().get(0);
+                for (Metadata metadata : metadataRequest.getList()) {
+                    assertNotNull(metadata.getProgress());
+                    assertNotNull(metadata.getLastAccess());
+                    assertTrue(metadata.isReaded());
+                    assertTrue(tmp.getAuthors().compareTo(metadata.getAuthors()) >= 0);
+                    tmp = metadata;
+                }
+            }
+        });
+    }
+
+    private void runTestLibraryAllBooksAndCreatedAtDesc(String[] libraryIdSet, int libraryIndex, long totalCount, int perCount) {
+        String libraryIdString = null;
+        if (libraryIdSet != null && libraryIdSet.length > 0 && libraryIndex >= 0) {
+            libraryIdString = libraryIdSet[libraryIndex];
+        }
+        final QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryAllBookQuery(libraryIdString,
+                SortBy.CreationTime, SortOrder.Desc);
+        runTestMetadataQueryArgs("####AllBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
+                new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        MetadataRequest metadataRequest = (MetadataRequest) request;
+                        Metadata tmp = metadataRequest.getList().get(0);
+                        for (Metadata metadata : metadataRequest.getList()) {
+                            assertTrue(tmp.getCreatedAt().getTime() >= metadata.getCreatedAt().getTime());
+                            tmp = metadata;
+                        }
+                    }
+                });
+    }
+
+    private void runTestLibraryNewBooksAndAscSize(String[] libraryIdSet, int libraryIndex, long totalCount, int perCount) {
+        final QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryNewBookListQuery(libraryIdSet[libraryIndex],
+                SortBy.Size, SortOrder.Asc);
+        runTestMetadataQueryArgs("####NewBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
+                new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        MetadataRequest metadataRequest = (MetadataRequest) request;
+                        Metadata tmp = metadataRequest.getList().get(0);
+                        for (Metadata metadata : metadataRequest.getList()) {
+                            assertNull(metadata.getProgress());
+                            assertNull(metadata.getLastAccess());
+                            assertTrue(tmp.getSize() <= metadata.getSize());
+                            tmp = metadata;
+                        }
+                    }
+                });
+    }
+
+    private void runTestLibraryReadingBooksAndDescName(String[] libraryIdSet, int libraryIndex, long totalCount, int perCount) {
+        final QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryRecentReadingQuery(libraryIdSet[libraryIndex],
+                SortBy.Name, SortOrder.Desc);
+        runTestMetadataQueryArgs("####ReadingBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
+                new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        MetadataRequest metadataRequest = (MetadataRequest) request;
+                        Metadata tmp = metadataRequest.getList().get(0);
+                        for (Metadata metadata : metadataRequest.getList()) {
+                            assertNotNull(metadata.getProgress());
+                            assertNotNull(metadata.getLastAccess());
+                            assertTrue(tmp.getName().compareTo(metadata.getName()) <= 0);
+                            tmp = metadata;
+                        }
+                    }
+                });
+    }
+
+    private void runTestLibraryReadedBooksAndDescRecentlyRead(String[] libraryIdSet, int libraryIndex, long totalCount, int perCount) {
+        final QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryFinishReadQuery(libraryIdSet[libraryIndex],
+                SortBy.RecentlyRead, SortOrder.Desc);
+        runTestMetadataQueryArgs("####ReadedBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
+                new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        MetadataRequest metadataRequest = (MetadataRequest) request;
+                        Metadata tmp = metadataRequest.getList().get(0);
+                        for (Metadata metadata : metadataRequest.getList()) {
+                            assertNotNull(metadata.getProgress());
+                            assertNotNull(metadata.getLastAccess());
+                            assertTrue(tmp.getLastAccess().getTime() >= metadata.getLastAccess().getTime());
+                            tmp = metadata;
+                        }
+                    }
+                });
+    }
+
+    private void runTestLibraryTagsBooksAndDescFileType(String[] libraryIdSet, int libraryIndex, Set<String> tags,
+                                                        long totalCount, int perCount) {
+        final QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryTagsFilterQuery(libraryIdSet[libraryIndex],
+                tags, SortBy.FileType, SortOrder.Desc);
+        runTestMetadataQueryArgs("####TagsBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
+                new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        MetadataRequest metadataRequest = (MetadataRequest) request;
+                        Metadata tmp = metadataRequest.getList().get(0);
+                        for (Metadata metadata : metadataRequest.getList()) {
+                            assertNotNull(metadata.getType());
+                            assertTrue(tmp.getType().compareTo(metadata.getType()) >= 0);
+                            tmp = metadata;
+                        }
+                    }
+                });
+    }
+
+    private void runTestLibrarySearchBooksAndDescTitle(String[] libraryIdSet, int libraryIndex, String search,
+                                                          long totalCount, int perCount) {
+        final QueryArgs queryArgs = MetadataQueryArgsBuilder.librarySearchQuery(libraryIdSet[libraryIndex],
+                search, SortBy.BookTitle, SortOrder.Desc);
+        runTestMetadataQueryArgs("####SearchBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
+                new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        MetadataRequest metadataRequest = (MetadataRequest) request;
+                        Metadata tmp = metadataRequest.getList().get(0);
+                        for (Metadata metadata : metadataRequest.getList()) {
+                            assertNotNull(metadata.getTitle());
+                            assertTrue(tmp.getTitle().compareTo(metadata.getTitle()) >= 0);
+                            tmp = metadata;
+                        }
+                    }
+                });
+    }
+
+    public void test00BookListPaginationRequest() {
         clearTestFolder();
-        final DataProviderBase providerBase = DataProviderManager.getDataProvider();
+        Debug.setDebug(true);
+
+        final DataProviderBase providerBase = getProviderBase();
         providerBase.clearMetadata();
+
         long total = 0;
 
-        for(int r = 0; r < 100; ++r) {
-            final int limit = TestUtils.randInt(300, 1000);
+        for (int r = 0; r < 100; ++r) {
+            final int limit = TestUtils.randInt(100, 150);
+            final int newBookCount = 45;
+            final int finishBookCount = 55;
             for (int i = 0; i < limit; i++) {
-                getRandomMetadata().save();
+                Metadata meta = getRandomMetadata();
+                meta.setLastAccess(new Date(System.currentTimeMillis()));
+                if (i < newBookCount) {
+                    meta.setLastAccess(null);
+                }
+                if (i >= newBookCount && i < newBookCount + finishBookCount) {
+                    meta.setProgress("100/100");
+                }
+                meta.save();
             }
             total += limit;
             final long value = total;
-            Log.e("###################", "record generated: " + limit);
-
-            for(int offset = 0; offset < limit / 10; ++offset) {
-                final CountDownLatch countDownLatch = new CountDownLatch(1);
-                final QueryArgs queryArgs = MetadataQueryArgsBuilder.allBooksQuery(defaultContentTypes(),
-                        OrderBy.fromProperty(Metadata_Table.createdAt).descending());
-                queryArgs.offset = offset * limit / 10;
-                queryArgs.limit = 10;
-                DataManager dataManager = new DataManager();
-                final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
-                dataManager.submit(getContext(), metadataRequest, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        assertNull(e);
-                        assertNotNull(metadataRequest.getList());
-                        assertTrue(metadataRequest.getList().size() <= queryArgs.limit);
-                        assertTrue(metadataRequest.getCount() == value);
-                        countDownLatch.countDown();
-                    }
-                });
-                awaitCountDownLatch(countDownLatch);
-            }
-            Log.e("###################", "round: " + r + " finished. ");
+            Log.e("####BookListPagination", "record generated: " + limit);
+            runTestAllBooksAndDescCreatedAt(value, limit);
+            runTestNewBooksAndAscSize(newBookCount * (r + 1), limit);
+            runTestReadingBooksAndDescName(finishBookCount * (r + 1), limit);
+            runTestReadedBooksAndDescAuthor(finishBookCount * (r + 1), limit);
+            Log.e("####BookListPagination", "round: " + r + " finished. ");
         }
+    }
+
+    private static int currentFloor = 0;
+
+    private int getNestedLibrary(String parentIdString) {
+        if (currentFloor != 0 && currentFloor % 3 == 0) {//most 3
+            return 0;
+        }
+        currentFloor++;
+        int total = 0;
+        int randomCount = TestUtils.randInt(4, 7);
+        total += randomCount;
+        Library[] libraries = getRandomLibrary(randomCount);
+        for (Library library : libraries) {
+            library.setParentUniqueId(parentIdString);
+            library.save();
+            total += getNestedLibrary(library.getIdString());
+        }
+        Log.e("###perFloorCount:", String.valueOf(randomCount));
+        return total;
+    }
+
+    private List<Library> loadRecursiveLibraryList(DataProviderBase providerBase, String parentIdString) {
+        List<Library> libraryList = new ArrayList<>();
+        List<Library> libraries = providerBase.loadAllLibrary(parentIdString);
+        if (!CollectionUtils.isNullOrEmpty(libraries)) {
+            libraryList.addAll(libraries);
+            for (Library library : libraries) {
+                libraryList.addAll(loadRecursiveLibraryList(providerBase, library.getIdString()));
+            }
+        }
+        return libraryList;
+    }
+
+    public void test00LibraryIntegratedFunc() {
+        currentFloor = 0;
+        clearTestFolder();
+        Debug.setDebug(true);
+
+        final DataProviderBase providerBase = getProviderBase();
+        providerBase.clearMetadata();
+        providerBase.clearLibrary();
+        providerBase.clearMetadataCollection();
+
+        //get nestedIn Library
+        Library topLibrary = getRandomLibrary();
+        topLibrary.save();
+        final int libraryCount = getNestedLibrary(topLibrary.getIdString());
+        Log.e("###totalLibraryCount", String.valueOf(libraryCount));
+        List<Library> list = loadRecursiveLibraryList(providerBase, topLibrary.getIdString());
+        assertTrue(libraryCount == CollectionUtils.getSize(list));
+        final Map<String, Integer> libraryBookCountMap = new HashMap<>();
+        final Map<String, Integer> libraryAddBookFreqMap = new HashMap<>();
+        String[] libraryIdSet = new String[libraryCount];
+        for (int i = 0; i < libraryCount; i++) {
+            libraryIdSet[i] = list.get(i).getIdString();
+            libraryBookCountMap.put(libraryIdSet[i], 0);
+            libraryAddBookFreqMap.put(libraryIdSet[i], 0);
+        }
+
+        long total = 0;
+        for (int r = 0; r < 100; ++r) {
+            final int limit = TestUtils.randInt(100, 120);
+            final int finishBookCount = 35;
+            final int readingBookCount = 30;
+            final int tagsBooKCount = 50;
+            final int searchCount = 74;
+            final int addToLibraryCount = TestUtils.randInt(limit - 8, limit - 2);
+            final String search = "1234567890-=";
+            int libraryIndex = TestUtils.randInt(0, libraryIdSet.length - 1);
+            String libraryIdString = libraryIdSet[libraryIndex];
+            int originCount = libraryBookCountMap.get(libraryIdString);
+            libraryBookCountMap.put(libraryIdString, originCount + addToLibraryCount);
+            int originFreq = libraryAddBookFreqMap.get(libraryIdString);
+            libraryAddBookFreqMap.put(libraryIdString, originFreq + 1);
+            for (int i = 0; i < limit; i++) {
+                Metadata meta = getRandomMetadata();
+                if (i < finishBookCount) {
+                    meta.setLastAccess(new Date(System.currentTimeMillis()));
+                    meta.setReadingStatus(Metadata.ReadingStatus.FINISHED);
+                    meta.setProgress("100/100");
+                } else if (i < finishBookCount + readingBookCount) {
+                    meta.setLastAccess(new Date(System.currentTimeMillis()));
+                    meta.setReadingStatus(Metadata.ReadingStatus.READING);
+                    meta.setProgress("40/100");
+                }
+                if (i < tagsBooKCount) {
+                    Set<String> tagSet = getFormatTagSet();
+                    String tagsString = StringUtils.join(tagSet, Metadata.DELIMITER);
+                    int removeIndex = tagsString.indexOf(getRandomFormatTag());
+                    if (removeIndex != 0) {
+                        tagsString = tagsString.substring(0, removeIndex);
+                    }
+                    meta.setTags(tagsString);
+                }
+                if (i < searchCount) {
+                    String title = generateRandomUUID();
+                    int replaceIndex = TestUtils.randInt(0, title.length() - 1);
+                    int endIndex = TestUtils.randInt(replaceIndex, title.length() - 1);
+                    meta.setTitle(title.replaceAll(title.substring(replaceIndex, endIndex), search));
+                }
+                meta.save();
+
+                if (i < addToLibraryCount) {
+                    MetadataCollection metadataCollection = new MetadataCollection();
+                    metadataCollection.setLibraryUniqueId(libraryIdString);
+                    metadataCollection.setDocumentUniqueId(meta.getNativeAbsolutePath());
+                    metadataCollection.save();
+                }
+            }
+            total += limit;
+            final long totalCount = total;
+            int libraryBookTotalCount = 0;
+            for (String s : libraryIdSet) {
+                libraryBookTotalCount += libraryBookCountMap.get(s);
+            }
+
+            Log.e("##LibraryIntegratedFunc", "round generated: " + limit);
+            Log.e("##LibraryIntegratedFunc", "total round generated: " + totalCount);
+            Log.e("##LibraryIntegratedFunc", "addToLibraryBookTotalCount: " + libraryBookTotalCount);
+            runTestLibraryAllBooksAndCreatedAtDesc(null, -1, totalCount - libraryBookTotalCount, limit);
+            runTestLibraryAllBooksAndCreatedAtDesc(libraryIdSet, libraryIndex, libraryBookCountMap.get(libraryIdString), limit);
+            runTestLibraryNewBooksAndAscSize(libraryIdSet, libraryIndex, libraryBookCountMap.get(libraryIdString) - libraryAddBookFreqMap.get(libraryIdString) * (finishBookCount + readingBookCount), limit);
+            runTestLibraryReadingBooksAndDescName(libraryIdSet, libraryIndex, libraryAddBookFreqMap.get(libraryIdString) * readingBookCount, limit);
+            runTestLibraryReadedBooksAndDescRecentlyRead(libraryIdSet, libraryIndex, libraryAddBookFreqMap.get(libraryIdString) * finishBookCount, limit);
+            runTestLibraryTagsBooksAndDescFileType(libraryIdSet, libraryIndex, getFormatTagSet(), libraryAddBookFreqMap.get(libraryIdString) * tagsBooKCount, limit);
+            runTestLibrarySearchBooksAndDescTitle(libraryIdSet, libraryIndex, search, libraryAddBookFreqMap.get(libraryIdString) * searchCount, limit);
+            Log.e("##LibraryIntegratedFunc", "round: " + r + " finished. ");
+        }
+
+        //test path list query
+        final QueryArgs queryArgs = new QueryArgs();
+        queryArgs.propertyList.add(Metadata_Table.nativeAbsolutePath);
+        runTestMetadataQueryArgs("##OnlyPathListQuery", total, 100, queryArgs, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                MetadataRequest metadataRequest = (MetadataRequest) request;
+                assertNotNull(metadataRequest.getList().get(0).getNativeAbsolutePath());
+                assertNull(metadataRequest.getList().get(0).getName());
+            }
+        });
+
+        //test delete topLibrary
+        Benchmark benchMark = new Benchmark();
+        for (Library library : list) {
+            Benchmark perMark = new Benchmark();
+            SQLite.update(MetadataCollection.class)
+                    .set(MetadataCollection_Table.libraryUniqueId.eq(topLibrary.getParentUniqueId()))
+                    .where(MetadataCollection_Table.libraryUniqueId.is(library.getIdString()))
+                    .execute();
+            perMark.report("####deletePerLibrary");
+        }
+        benchMark.report("####deleteTopLibrary,totalCount:" + total);
+        runTestLibraryAllBooksAndCreatedAtDesc(null, -1, total, (int) (total / 11));
     }
 
     private void awaitCountDownLatch(CountDownLatch countDownLatch) {

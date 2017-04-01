@@ -7,6 +7,12 @@ public class Benchmark {
     private long benchmarkStart = 0;
     private long benchmarkEnd = 0;
 
+    private static Benchmark sInstance = new Benchmark();
+
+    public static Benchmark globalBenchmark() {
+        return sInstance;
+    }
+
     public Benchmark() {
         restart();
     }

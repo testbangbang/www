@@ -25,6 +25,7 @@ public class FlushNoteAction extends BaseAction {
     private boolean save;
     private boolean showDialog;
     private boolean transfer;
+    private boolean pauseNote = false;
 
     public FlushNoteAction(List<PageInfo> list, boolean renderShapes, boolean transferBitmap, boolean saveToDatabase, boolean show) {
         render = renderShapes;
@@ -35,6 +36,13 @@ public class FlushNoteAction extends BaseAction {
         showDialog = show;
         transfer = transferBitmap;
     }
+
+    public static FlushNoteAction pauseAfterFlush(List<PageInfo> list) {
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, false, false);
+        flushNoteAction.pauseNote = true;
+        return flushNoteAction;
+    }
+
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final NoteManager noteManager = readerDataHolder.getNoteManager();
@@ -49,6 +57,7 @@ public class FlushNoteAction extends BaseAction {
         }
 
         final FlushShapeListRequest flushRequest = new FlushShapeListRequest(visiblePages, stash, 0, render, transfer, save);
+        flushRequest.setPause(isPauseNote());
         final int id = readerDataHolder.getLastRequestSequence();
         noteManager.submitWithUniqueId(readerDataHolder.getContext(), id, flushRequest, new BaseCallback() {
             @Override
@@ -60,6 +69,10 @@ public class FlushNoteAction extends BaseAction {
                 BaseCallback.invoke(callback, request, e);
             }
         });
+    }
+
+    public boolean isPauseNote() {
+        return pauseNote;
     }
 
 }
