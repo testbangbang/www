@@ -70,7 +70,7 @@ public class ReaderPluginImagesTest extends ApplicationTestCase<Application> {
         assertNotNull(readerRenderer);
 
         ReaderBitmapImpl bitmap = ReaderBitmapImpl.create((int)rect.width(), (int)rect.height(), Bitmap.Config.ARGB_8888);
-        readerRenderer.draw(String.valueOf(0), 1.0f, 0, 1.0f, rect, null, null, bitmap.getBitmap());
+        readerRenderer.draw(String.valueOf(0), 1.0f, 0, rect, null, null, bitmap.getBitmap());
         BitmapUtils.saveBitmap(bitmap.getBitmap(), "/mnt/sdcard/imagePlugin.png");
         document.close();
     }

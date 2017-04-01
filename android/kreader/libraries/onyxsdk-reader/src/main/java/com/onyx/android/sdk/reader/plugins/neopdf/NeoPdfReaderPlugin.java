@@ -6,7 +6,6 @@ import android.graphics.RectF;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.Benchmark;
-import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
@@ -125,7 +124,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     public boolean readCover(final Bitmap bitmap) {
         return getPluginImpl().drawPage(0, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
-                0, 1.0f, bitmap);
+                0, bitmap);
     }
 
     public RectF getPageOriginSize(final String position) {
@@ -281,14 +280,14 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String pagePosition, final float scale, final int rotation, float gamma, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         benchmark.restart();
         boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(pagePosition),
                 (int)displayRect.left,
                 (int)displayRect.top,
                 (int)displayRect.width(),
                 (int)displayRect.height(),
-                rotation, gamma, bitmap);
+                rotation, bitmap);
         Debug.d(TAG, "rendering takes: " + benchmark.duration());
         return ret;
     }

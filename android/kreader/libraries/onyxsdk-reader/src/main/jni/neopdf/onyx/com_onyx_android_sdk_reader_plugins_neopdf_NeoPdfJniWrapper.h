@@ -77,7 +77,7 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJni
  * Signature: (IIIIIIIFLandroid/graphics/Bitmap;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeRenderPage
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jfloat, jobject);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jobject);
 
 /*
  * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper

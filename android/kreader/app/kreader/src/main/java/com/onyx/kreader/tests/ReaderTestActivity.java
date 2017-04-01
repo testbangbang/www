@@ -614,7 +614,7 @@ public class ReaderTestActivity extends Activity {
             return;
         }
         bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
-        wrapper.drawPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, 1.0f, bitmap);
+        wrapper.drawPage(currentPage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap);
         draw();
     }
 
