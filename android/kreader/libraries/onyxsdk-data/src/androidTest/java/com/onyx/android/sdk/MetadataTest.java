@@ -520,13 +520,14 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     private void runTestMetadataQueryArgs(final String benchTag, final long totalCount, int perCount, final QueryArgs queryArgs, final BaseCallback callBack) {
         final Benchmark benchMark = new Benchmark();
         DataManager dataManager = new DataManager();
-        int limit = 10;
+        int block = 10;
+        int limit = TestUtils.randInt(6, 20);
         queryArgs.limit = limit;
-        for (int offset = 0; offset < limit; ++offset) {
+        for (int i = 0; i < block; ++i) {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             benchMark.restart();
-            queryArgs.offset = (int) (offset * totalCount / limit);
-            final int round = queryArgs.offset;
+            queryArgs.offset = (int) (i * totalCount / block);
+            final int offset = queryArgs.offset;
             final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
             dataManager.submit(getContext(), metadataRequest, new BaseCallback() {
                 @Override
@@ -534,11 +535,14 @@ public class MetadataTest extends ApplicationTestCase<Application> {
                     assertNull(e);
                     assertNotNull(metadataRequest.getList());
                     assertTrue(metadataRequest.getList().size() <= queryArgs.limit);
+                    if (metadataRequest.getCount() != totalCount) {
+                        Log.e(benchTag, "count not matched: " + metadataRequest.getCount() +  "  " + totalCount);
+                    }
                     assertTrue(metadataRequest.getCount() == totalCount);
                     if (!CollectionUtils.isNullOrEmpty(metadataRequest.getList())) {
                         BaseCallback.invoke(callBack, metadataRequest, e);
                     }
-                    benchMark.report(benchTag + " count:" + totalCount + ",offset:" + round);
+                    benchMark.report(benchTag + " count:" + totalCount + ",offset:" + offset);
                     countDownLatch.countDown();
                 }
             });
@@ -737,21 +741,24 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         providerBase.clearMetadata();
 
         long total = 0;
+        int totalReadingBookCount = 0;
+        int totalFinishedBookCount = 0;
 
         for (int r = 0; r < 100; ++r) {
             final int limit = TestUtils.randInt(100, 150);
-            final int readingBookCount = 35;
-            final int finishBookCount = 55;
             for (int i = 0; i < limit; i++) {
                 Metadata meta = getRandomMetadata();
-                if (i < readingBookCount) {
-                    meta.setLastAccess(new Date(System.currentTimeMillis()));
-                    meta.setReadingStatus(Metadata.ReadingStatus.READING);
-                    meta.setProgress("40/100");
-                } else if (i < readingBookCount + finishBookCount) {
+                int side = TestUtils.randInt(100, 200);
+                if (side >= 166) {
+                    ++totalFinishedBookCount;
                     meta.setLastAccess(new Date(System.currentTimeMillis()));
                     meta.setReadingStatus(Metadata.ReadingStatus.FINISHED);
                     meta.setProgress("100/100");
+                } else if (side >= 133) {
+                    ++totalReadingBookCount;
+                    meta.setLastAccess(new Date(System.currentTimeMillis()));
+                    meta.setReadingStatus(Metadata.ReadingStatus.READING);
+                    meta.setProgress("" + side + "/100");
                 }
                 meta.save();
             }
@@ -759,9 +766,9 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             final long value = total;
             Log.e("####BookListPagination", "record generated: " + limit);
             runTestAllBooksAndDescCreatedAt(value, limit);
-            runTestNewBooksAndAscSize(total - (readingBookCount + finishBookCount) * (r + 1), limit);
-            runTestReadingBooksAndDescName(readingBookCount * (r + 1), limit);
-            runTestReadedBooksAndDescAuthor(finishBookCount * (r + 1), limit);
+            runTestNewBooksAndAscSize(total - totalReadingBookCount - totalFinishedBookCount, limit);
+            runTestReadingBooksAndDescName(totalReadingBookCount, limit);
+            runTestReadedBooksAndDescAuthor(totalFinishedBookCount, limit);
             Log.e("####BookListPagination", "round: " + r + " finished. ");
         }
     }
