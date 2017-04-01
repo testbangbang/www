@@ -54,7 +54,7 @@ public class NeoPdfJniWrapper {
 
     private native void nativeSetTextGamma(int id, float gamma);
 
-    private native boolean nativeRenderPage(int id, int page, int x, int y, int width, int height, int rotation, float gamma, final Bitmap bitmap);
+    private native boolean nativeRenderPage(int id, int page, int x, int y, int width, int height, int rotation, final Bitmap bitmap);
 
     private native int nativeHitTest(int id, int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final ReaderTextSplitter splitter, final boolean selectingWord, final NeoPdfSelection selection);
 
@@ -125,15 +125,8 @@ public class NeoPdfJniWrapper {
      * @param bitmap target bitmap
      * @return
      */
-    public boolean drawPage(int page, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap, int rotation, float gamma, final Bitmap bitmap) {
-        // 150 is reader's default, set it as max gamma as we want get best text gamma effect on PL107 devices
-        final int MAX_GAMMA = 150;
-        float value = MAX_GAMMA - gamma;
-        if (value <= 0) {
-            value = 1;
-        }
-        value = (MAX_GAMMA / 2) / value;
-        return nativeRenderPage(id, page, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, rotation, value, bitmap);
+    public boolean drawPage(int page, int xInBitmap, int yInBitmap, int widthInBitmap, int heightInBitmap, int rotation, final Bitmap bitmap) {
+        return nativeRenderPage(id, page, xInBitmap, yInBitmap, widthInBitmap, heightInBitmap, rotation, bitmap);
     }
 
     public int hitTest(int page, int x, int y, int width, int height, int rotation, int startX, int startY, int endX, int endY, final boolean selectingWord, final NeoPdfSelection selection) {
