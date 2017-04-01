@@ -8,18 +8,18 @@
     <string name="font_face">Шрифт</string>
     <string name="text_style">Оформление</string>
     <string name="reader_layer_menu_zoom">Масштаб</string>
-    <string name="reader_layer_menu_font_reflow">Reflow</string>
-    <string name="reader_layer_menu_zoom_in">Увеличить</string>
-    <string name="reader_layer_menu_zoom_out">Уменьшить</string>
+    <string name="reader_layer_menu_font_reflow">Reflow\n</string>
+    <string name="reader_layer_menu_zoom_in">Увеличить\n</string>
+    <string name="reader_layer_menu_zoom_out">Уменьшить\n</string>
     <string name="reader_layer_menu_navigation">Путь</string>
-    <string name="reader_layer_menu_zoom_to_page">В размер</string>
-    <string name="reader_layer_menu_zoom_to_width">По ширине</string>
-    <string name="reader_layer_menu_zoom_by_crop_page">Обрезать по странице</string>
-    <string name="reader_layer_menu_zoom_by_crop_width">Обрезать по ширине</string>
-    <string name="reader_layer_menu_zoom_by_rect">По двум точкам</string>
+    <string name="reader_layer_menu_zoom_to_page">В\nразмер</string>
+    <string name="reader_layer_menu_zoom_to_width">По\nширине</string>
+    <string name="reader_layer_menu_zoom_by_crop_page">Обрезать\nпо странице</string>
+    <string name="reader_layer_menu_zoom_by_crop_width">Обрезать\nпо ширине</string>
+    <string name="reader_layer_menu_zoom_by_rect">По двум\nточкам</string>
     <string name="reader_layer_menu_navigation_comic_mode">Режим комиксов</string>
     <string name="reader_layer_menu_navigation_article_mode">Режим статьи</string>
-    <string name="reader_layer_menu_navigation_reset">Сбросить</string>
+    <string name="reader_layer_menu_navigation_reset">Сбросить\n</string>
     <string name="reader_layer_menu_navigation_more_settings">Тонкие настройки</string>
     <string name="reader_layer_menu_notes">Заметки</string>
     <string name="reader_layer_menu_directory_toc">Содержание</string>
@@ -72,4 +72,5 @@
     <string name="expand">Расширение</string>
     <string name="collapse">Сужение</string>
     <string name="jump">Переход</string>
+    <string name="manual_crop">Ручная\nобрезка</string>
 </resources>

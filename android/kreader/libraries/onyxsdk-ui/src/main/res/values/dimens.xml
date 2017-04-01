@@ -15,6 +15,7 @@
     <dimen name="reader_layer_menu_font_style_font_size_button_margin">10dp</dimen>
     <dimen name="reader_layer_menu_font_style_font_face_height">100dp</dimen>
     <dimen name="reader_layer_menu_font_style_font_face_button_right_padding">25dp</dimen>
+    <dimen name="reader_layer_menu_item_button_height">71dp</dimen>
     <dimen name="font_size_item_margin">10dp</dimen>
     <dimen name="font_size_button_margin">10dp</dimen>
     <dimen name="dialog_brightness_button_width">50dp</dimen>
