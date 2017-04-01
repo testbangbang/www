@@ -76,7 +76,12 @@ public class DataManager {
     }
 
     public void submit(final Context context, final BaseDataRequest request, final BaseCallback callback) {
-        requestManager.submitRequest(context, getIdentifier(request), request, generateRunnable(request), callback);
+        final String identifier = getIdentifier(request);
+        if (StringUtils.isNullOrEmpty(identifier)) {
+            requestManager.submitRequest(context, request, generateRunnable(request), callback);
+        } else {
+            requestManager.submitRequest(context, identifier, request, generateRunnable(request), callback);
+        }
     }
 
     private final String getIdentifier(final BaseDataRequest request) {
