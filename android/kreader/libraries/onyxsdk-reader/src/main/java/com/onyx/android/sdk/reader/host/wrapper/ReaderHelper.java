@@ -365,23 +365,26 @@ public class ReaderHelper {
     }
 
     public void applyPostBitmapProcess(final ReaderViewInfo viewInfo, ReaderBitmapImpl bitmap) {
-        if (getDocumentOptions().isTextGamaCorrectionEnabled() &&
-                getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
-            bitmap.setTextGammaCorrection(getDocumentOptions().getTextGammaLevel());
-        }
-        if (getDocumentOptions().isGamaCorrectionEnabled()) {
-            final List<RectF> regions = collectTextRectangleList(viewInfo);
-            applyGammaCorrection(bitmap, regions);
-        }
+        applyTextGammaCorrection(bitmap);
+        applyPageGammaCorrection(viewInfo, bitmap);
         applyEmbolden(bitmap);
         applySaturation(bitmap);
     }
 
-    private void applyGammaCorrection(final ReaderBitmapImpl bitmap, final List<RectF> regions) {
-        if (getDocumentOptions().isGamaCorrectionEnabled() &&
-                Float.compare(bitmap.gammaCorrection(), getDocumentOptions().getGammaLevel()) != 0) {
-            if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel(), regions)) {
-                bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
+    private void applyTextGammaCorrection(final ReaderBitmapImpl bitmap) {
+        if (getDocumentOptions().isTextGamaCorrectionEnabled() &&
+                getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
+            bitmap.setTextGammaCorrection(getDocumentOptions().getTextGammaLevel());
+        }
+    }
+
+    private void applyPageGammaCorrection(final ReaderViewInfo viewInfo, final ReaderBitmapImpl bitmap) {
+        if (getDocumentOptions().isGamaCorrectionEnabled()) {
+            final List<RectF> regions = collectTextRectangleList(viewInfo);
+            if (Float.compare(bitmap.gammaCorrection(), getDocumentOptions().getGammaLevel()) != 0) {
+                if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel(), regions)) {
+                    bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
+                }
             }
         }
     }
