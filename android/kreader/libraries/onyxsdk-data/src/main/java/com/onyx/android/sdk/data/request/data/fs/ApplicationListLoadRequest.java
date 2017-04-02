@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.data.request.data;
+package com.onyx.android.sdk.data.request.data.fs;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -6,6 +6,7 @@ import android.content.pm.ResolveInfo;
 
 import com.onyx.android.sdk.data.AppDataInfo;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.onyx.android.sdk.utils.ApplicationUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 

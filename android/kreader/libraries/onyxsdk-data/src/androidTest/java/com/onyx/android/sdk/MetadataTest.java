@@ -11,12 +11,9 @@ import android.util.Log;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.SortOrder;
-import com.onyx.android.sdk.data.DataCacheManager;
-import com.onyx.android.sdk.data.BookFilter;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.cache.LibraryCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Library_Table;
@@ -29,8 +26,7 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.provider.LocalDataProvider;
 import com.onyx.android.sdk.data.model.ReadingProgress;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.data.MetadataRequest;
-import com.onyx.android.sdk.data.utils.MetaDataUtils;
+import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
 import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -47,6 +43,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+
+import static com.onyx.android.sdk.utils.TestUtils.defaultContentTypes;
+import static com.onyx.android.sdk.utils.TestUtils.deleteRecursive;
+import static com.onyx.android.sdk.utils.TestUtils.generateRandomFile;
+import static com.onyx.android.sdk.utils.TestUtils.randomStringList;
 
 /**
  * Created by zhuzeng on 8/26/16.
@@ -65,72 +66,6 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
         dbInit = true;
         DataManager.init(getContext(), null);
-    }
-
-    public static Set<String> defaultContentTypes() {
-        Set<String> defaultTypes = null;
-        if (defaultTypes == null) {
-            defaultTypes = new HashSet<String>();
-            defaultTypes.add("epub");
-            defaultTypes.add("pdf");
-            defaultTypes.add("mobi");
-            defaultTypes.add("prc");
-            defaultTypes.add("rtf");
-            defaultTypes.add("doc");
-            defaultTypes.add("fb2");
-            defaultTypes.add("txt");
-            defaultTypes.add("docx");
-            defaultTypes.add("chm");
-            defaultTypes.add("djvu");
-            defaultTypes.add("azw3");
-            defaultTypes.add("zip");
-        }
-        return defaultTypes;
-    }
-
-    public static File generateRandomFolder(final String parent) {
-        File dir = new File(parent);
-        dir.mkdirs();
-
-        File childFolder = new File(parent, Metadata.generateUniqueId());
-        childFolder.mkdirs();
-        return childFolder;
-    }
-
-    public static File generateRandomFile(final String parent, boolean hasExtension) {
-        File dir = new File(parent);
-        dir.mkdirs();
-
-        final String ext;
-        if (hasExtension) {
-            ext = "." + randomType();
-        } else {
-            ext = "";
-        }
-        File file = new File(parent, UUID.randomUUID().toString() + ext);
-        StringBuilder builder = new StringBuilder();
-        int limit = TestUtils.randInt(100, 1024);
-        for (int i = 0; i < limit; ++i) {
-            builder.append(UUID.randomUUID().toString());
-        }
-        FileUtils.saveContentToFile(builder.toString(), file);
-        return file;
-    }
-
-    public static String randomType() {
-        List<String> list = new ArrayList<String>();
-        list.addAll(defaultContentTypes());
-        int index = TestUtils.randInt(0, list.size() - 1);
-        return list.get(index);
-    }
-
-    public static List<String> randomStringList() {
-        int value = TestUtils.randInt(1, 5);
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < value; ++i) {
-            list.add(UUID.randomUUID().toString());
-        }
-        return list;
     }
 
     public static Metadata randomReadingMetadata(final String parent, boolean hasExtension) {
@@ -219,6 +154,10 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertNotNull(result);
         assertEquals(result.getIdString(), origin.getIdString());
         assertEquals(result.getExtraAttributes(), json);
+    }
+
+    public void testName() throws Exception {
+
     }
 
     public void testQueryCriteriaAuthor() {
@@ -502,19 +441,6 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
     private void clearTestFolder() {
         deleteRecursive(testFolder());
-    }
-
-    private void deleteRecursive(final String path) {
-        File file = new File(path);
-
-        if (file.exists()) {
-            String deleteCmd = "rm -r " + path;
-            Runtime runtime = Runtime.getRuntime();
-            try {
-                runtime.exec(deleteCmd);
-            } catch (IOException e) {
-            }
-        }
     }
 
     private void runTestMetadataQueryArgs(final String benchTag, final long totalCount, int perCount, final QueryArgs queryArgs, final BaseCallback callBack) {

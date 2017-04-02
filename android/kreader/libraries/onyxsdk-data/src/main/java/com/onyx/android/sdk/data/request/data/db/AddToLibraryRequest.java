@@ -1,8 +1,9 @@
-package com.onyx.android.sdk.data.request.data;
+package com.onyx.android.sdk.data.request.data.db;
 
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
 import java.util.ArrayList;
 import java.util.List;

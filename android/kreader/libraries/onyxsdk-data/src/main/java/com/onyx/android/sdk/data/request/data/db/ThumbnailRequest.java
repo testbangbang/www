@@ -1,10 +1,11 @@
-package com.onyx.android.sdk.data.request.data;
+package com.onyx.android.sdk.data.request.data.db;
 
 import android.graphics.Bitmap;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
 /**
  * Created by suicheng on 2016/9/7.

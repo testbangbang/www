@@ -11,7 +11,7 @@ import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
 import com.onyx.android.sdk.data.request.cloud.PushStatisticsRequest;
-import com.onyx.android.sdk.data.request.data.GetFileMd5Request;
+import com.onyx.android.sdk.data.request.data.fs.GetFileMd5Request;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 

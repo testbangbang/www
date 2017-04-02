@@ -3,8 +3,13 @@ package com.onyx.android.sdk.utils;
 import android.util.Log;
 import com.onyx.android.sdk.data.PageInfo;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -71,5 +76,90 @@ public class TestUtils {
         } catch (Exception e) {
         }
     }
+
+    public static Set<String> defaultContentTypes() {
+        Set<String> defaultTypes = null;
+        if (defaultTypes == null) {
+            defaultTypes = new HashSet<String>();
+            defaultTypes.add("epub");
+            defaultTypes.add("pdf");
+            defaultTypes.add("mobi");
+            defaultTypes.add("prc");
+            defaultTypes.add("rtf");
+            defaultTypes.add("doc");
+            defaultTypes.add("fb2");
+            defaultTypes.add("txt");
+            defaultTypes.add("docx");
+            defaultTypes.add("chm");
+            defaultTypes.add("djvu");
+            defaultTypes.add("azw3");
+            defaultTypes.add("zip");
+        }
+        return defaultTypes;
+    }
+
+
+    public static String randomType() {
+        List<String> list = new ArrayList<String>();
+        list.addAll(defaultContentTypes());
+        int index = TestUtils.randInt(0, list.size() - 1);
+        return list.get(index);
+    }
+
+    public static String generateUniqueId() {
+        return UUID.randomUUID().toString();
+    }
+
+    public static File generateRandomFolder(final String parent) {
+        File dir = new File(parent);
+        dir.mkdirs();
+
+        File childFolder = new File(parent, generateUniqueId());
+        childFolder.mkdirs();
+        return childFolder;
+    }
+
+    public static File generateRandomFile(final String parent, boolean hasExtension) {
+        File dir = new File(parent);
+        dir.mkdirs();
+
+        final String ext;
+        if (hasExtension) {
+            ext = "." + randomType();
+        } else {
+            ext = "";
+        }
+        File file = new File(parent, UUID.randomUUID().toString() + ext);
+        StringBuilder builder = new StringBuilder();
+        int limit = TestUtils.randInt(100, 1024);
+        for (int i = 0; i < limit; ++i) {
+            builder.append(UUID.randomUUID().toString());
+        }
+        FileUtils.saveContentToFile(builder.toString(), file);
+        return file;
+    }
+
+    public static List<String> randomStringList() {
+        int value = TestUtils.randInt(1, 5);
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < value; ++i) {
+            list.add(UUID.randomUUID().toString());
+        }
+        return list;
+    }
+
+    public static void deleteRecursive(final String path) {
+        File file = new File(path);
+
+        if (file.exists()) {
+            String deleteCmd = "rm -r " + path;
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec(deleteCmd);
+            } catch (IOException e) {
+            }
+        }
+    }
+
 
 }

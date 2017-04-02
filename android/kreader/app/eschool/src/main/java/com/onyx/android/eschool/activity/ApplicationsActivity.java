@@ -21,7 +21,7 @@ import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.AppDataInfo;
-import com.onyx.android.sdk.data.request.data.ApplicationListLoadRequest;
+import com.onyx.android.sdk.data.request.data.fs.ApplicationListLoadRequest;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;

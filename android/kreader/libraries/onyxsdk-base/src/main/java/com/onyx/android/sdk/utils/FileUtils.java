@@ -80,9 +80,11 @@ public class FileUtils {
                 continue;
             }
             final String absolutePath = file.getAbsolutePath();
-            final String extension = getFileExtension(absolutePath);
-            if (file.isFile() && extensionFilters.contains(extension)) {
-                fileList.add(absolutePath);
+            if (file.isFile()) {
+                final String extension = getFileExtension(absolutePath);
+                if (extensionFilters == null || extensionFilters.contains(extension)) {
+                    fileList.add(absolutePath);
+                }
             } else if (file.isDirectory() && recursive) {
                 collectFiles(absolutePath, extensionFilters, recursive, fileList);
             }

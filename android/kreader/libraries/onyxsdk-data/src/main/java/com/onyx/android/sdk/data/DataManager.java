@@ -37,10 +37,12 @@ public class DataManager {
     private RequestManager requestManager;
     private DataProviderManager dataProviderManager = new DataProviderManager();
     private DataCacheManager dataCacheManager;
+    private FileSystemManager fileSystemManager;
 
     public DataManager() {
         requestManager = new RequestManager();
         dataCacheManager = new DataCacheManager(getDataProviderBase());
+        fileSystemManager = new FileSystemManager();
     }
 
     public static void init(final Context context, final List<Class<? extends DatabaseHolder>> list) {
@@ -102,6 +104,10 @@ public class DataManager {
 
     public final DataCacheManager getDataCacheManager() {
         return dataCacheManager;
+    }
+
+    public final FileSystemManager getFileSystemManager() {
+        return fileSystemManager;
     }
 
     public void cacheUpdateMetaList(String oldUniqueId, String newUniqueId, List<Metadata> metadataList) {

@@ -1,6 +1,7 @@
-package com.onyx.android.sdk.data.request.data;
+package com.onyx.android.sdk.data.request.data.fs;
 
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.File;

@@ -1,7 +1,8 @@
-package com.onyx.android.sdk.data.request.data;
+package com.onyx.android.sdk.data.request.data.db;
 
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
 /**
  * Created by suicheng on 2016/9/10.
