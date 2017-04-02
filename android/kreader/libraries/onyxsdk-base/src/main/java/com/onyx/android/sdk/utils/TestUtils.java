@@ -155,8 +155,10 @@ public class TestUtils {
             String deleteCmd = "rm -r " + path;
             Runtime runtime = Runtime.getRuntime();
             try {
-                runtime.exec(deleteCmd);
-            } catch (IOException e) {
+                Process p = runtime.exec(deleteCmd);
+                p.wait();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

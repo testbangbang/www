@@ -440,7 +440,8 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     private void clearTestFolder() {
-        deleteRecursive(testFolder());
+        FileUtils.purgeDirectory(new File(testFolder()));
+        FileUtils.mkdirs(testFolder());
     }
 
     private void runTestMetadataQueryArgs(final String benchTag, final long totalCount, int perCount, final QueryArgs queryArgs, final BaseCallback callBack) {

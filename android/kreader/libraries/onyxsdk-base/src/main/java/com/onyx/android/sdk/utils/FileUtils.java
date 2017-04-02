@@ -22,6 +22,8 @@ import java.io.RandomAccessFile;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -69,7 +71,7 @@ public class FileUtils {
         return getFileExtension(file.getName());
     }
 
-    public static void collectFiles(final String parentPath, final Set<String> extensionFilters, boolean recursive, final List<String> fileList) {
+    public static void collectFiles(final String parentPath, final Set<String> extensionFilters, boolean recursive, final Collection<String> fileList) {
         File parent = new File(parentPath);
         File[] files = parent.listFiles();
         if (files == null) {

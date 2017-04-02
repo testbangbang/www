@@ -11,6 +11,7 @@ import java.util.List;
  */
 
 public class MetadataCache {
+
     private HashMap<String, Metadata> idMap = new HashMap<>();
     private HashMap<String, Metadata> pathMap = new HashMap<>();
 
