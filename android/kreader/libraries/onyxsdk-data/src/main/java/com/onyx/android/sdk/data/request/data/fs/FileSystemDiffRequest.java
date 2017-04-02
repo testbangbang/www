@@ -13,12 +13,12 @@ import java.util.List;
 
 public class FileSystemDiffRequest extends BaseFSRequest {
 
-    private HashSet<String> newSnapshot;
+    private HashSet<String> newSnapshot = new HashSet<>();
     private HashSet<String> added = new HashSet<>();
     private HashSet<String> removed = new HashSet<>();
 
     public FileSystemDiffRequest(final HashSet<String> s) {
-        newSnapshot = s;
+        newSnapshot.addAll(s);
     }
 
     public void execute(final DataManager dataManager) throws Exception {

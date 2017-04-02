@@ -3,7 +3,6 @@ package com.onyx.android.sdk.data.request.data.fs;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.utils.FileUtils;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -15,11 +14,11 @@ public class FileSystemScanRequest extends BaseFSRequest {
 
     private List<String> root;
     private HashSet<String> result;
-    private volatile boolean flush;
+    private volatile boolean overwrite;
 
-    public FileSystemScanRequest(final List<String> r, boolean f) {
+    public FileSystemScanRequest(final List<String> r, boolean overwriteSnapshot) {
         root = r;
-        flush = f;
+        overwrite = overwriteSnapshot;
     }
 
     public void execute(final DataManager dataManager) throws Exception {
@@ -27,7 +26,7 @@ public class FileSystemScanRequest extends BaseFSRequest {
         for(String path : root) {
             FileUtils.collectFiles(path, null, true, result);
         }
-        if (isFlush()) {
+        if (isOverwrite()) {
             dataManager.getFileSystemManager().clear();
             dataManager.getFileSystemManager().addAll(result);
         }
@@ -37,7 +36,7 @@ public class FileSystemScanRequest extends BaseFSRequest {
         return result;
     }
 
-    public boolean isFlush() {
-        return flush;
+    public boolean isOverwrite() {
+        return overwrite;
     }
 }

@@ -78,10 +78,12 @@ public class FSTest extends ApplicationTestCase<Application> {
             awaitCountDownLatch(countDownLatch);
         }
 
+        final HashSet<String> addedSet = new HashSet<>();
+        final HashSet<String> removeSet = new HashSet<>();
         {
             // add some files
             final int addedCount = TestUtils.randInt(100, 500);
-            final HashSet<String> addedSet = new HashSet<>();
+
             for (int i = 0; i < addedCount; ++i) {
                 final File file = TestUtils.generateRandomFile(docFolder(), true);
                 addedSet.add(file.getAbsolutePath());
@@ -89,22 +91,39 @@ public class FSTest extends ApplicationTestCase<Application> {
             }
 
             // remove some files.
-            final HashSet<String> removeSet = new HashSet<>();
             final int removedCount = TestUtils.randInt(10, origin.size());
-            for(int i = 0; i < removedCount; ++i) {
+            for (int i = 0; i < removedCount; ++i) {
                 removeSet.add(origin.get(i));
                 snapshot.remove(origin.get(i));
                 FileUtils.deleteFile(origin.get(i));
             }
 
+            // rescan
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final List<String> list = new ArrayList<>();
+            list.add(docFolder());
+
+            final FileSystemScanRequest scanRequest = new FileSystemScanRequest(list, false);
+            dataManager.submit(getContext(), scanRequest, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    assertNull(e);
+                    assertTrue(scanRequest.getResult().size() == snapshot.size());
+                    assertTrue(scanRequest.getResult().equals(snapshot));
+                    countDownLatch.countDown();
+                }
+            });
+            awaitCountDownLatch(countDownLatch);
+        }
+
+        {
+            // calculate diff.
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             final FileSystemDiffRequest diffRequest = new FileSystemDiffRequest(snapshot);
             dataManager.submit(getContext(), diffRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     assertNull(e);
-                    assertTrue(diffRequest.getAdded().size() == addedCount);
-                    assertTrue(diffRequest.getRemoved().size() == removedCount);
                     assertTrue(diffRequest.getAdded().equals(addedSet));
                     assertTrue(diffRequest.getRemoved().equals(removeSet));
                     countDownLatch.countDown();
