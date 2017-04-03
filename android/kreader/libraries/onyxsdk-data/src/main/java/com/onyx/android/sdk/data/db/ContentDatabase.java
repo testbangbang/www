@@ -25,6 +25,7 @@ public class ContentDatabase {
         @Override
         public void onPreMigrate() {
             addColumn(SQLiteType.INTEGER, Metadata_Table.readingStatus.getNameAlias().name());
+            addColumn(SQLiteType.TEXT, Metadata_Table.hashTag.getNameAlias().name());
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data.model;
 
+import android.support.annotation.ColorInt;
+
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -7,6 +9,7 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 
@@ -85,6 +88,9 @@ public class Metadata extends BaseData {
 
     @Column
     int readingStatus = 0;
+
+    @Column
+    String hashTag;
 
     public String getName() {
         return name;
@@ -282,6 +288,14 @@ public class Metadata extends BaseData {
         this.readingStatus = status;
     }
 
+    public String getHashTag() {
+        return hashTag;
+    }
+
+    public void setHashTag(String hashTag) {
+        this.hashTag = hashTag;
+    }
+
     public static Metadata createFromFile(String path) {
         return createFromFile(new File(path));
     }
@@ -295,7 +309,7 @@ public class Metadata extends BaseData {
             final Metadata data = new Metadata();
             if (computeMd5) {
                 String md5 = FileUtils.computeMD5(file);
-                data.setIdString(md5);
+                data.setHashTag(md5);
             }
             getBasicMetadataFromFile(data, file);
             return data;
@@ -322,16 +336,16 @@ public class Metadata extends BaseData {
         return progressSplit[0].equals(progressSplit[1]);
     }
 
-    public boolean isReaded() {
-        return (lastAccess != null && progress != null && internalProgressEqual(progress));
+    public boolean isFinished() {
+        return readingStatus == ReadingStatus.FINISHED;
     }
 
     public boolean isReading() {
-        return (lastAccess != null && lastAccess.getTime() > 0 && progress != null);
+        return readingStatus == ReadingStatus.READING;
     }
 
     public boolean isNew() {
-        return (lastAccess == null || lastAccess.getTime() <= 0) && (progress == null);
+        return readingStatus == ReadingStatus.NEW;
     }
 
     public static class ReadingStatus {
