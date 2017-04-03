@@ -1,30 +1,23 @@
 package com.onyx.android.sdk.data;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.cache.LibraryCache;
-import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
-import com.onyx.android.sdk.data.model.BaseData;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
-import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
-import com.onyx.android.sdk.data.utils.ThumbnailUtils;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,7 +112,7 @@ public class DataManager {
         List<Metadata> list = new ArrayList<>();
         LibraryCache cache = dataCacheManager.getLibraryCache(args.libraryUniqueId);
         if (CollectionUtils.isNullOrEmpty(cache.getIdList())) {
-            QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryAllBookQuery(args.libraryUniqueId, args.sortBy, args.order);
+            QueryArgs queryArgs = QueryBuilder.libraryAllBookQuery(args.libraryUniqueId, args.sortBy, args.order);
             list = cache.getList(context, queryArgs);
             dataCacheManager.addAll(args.libraryUniqueId, list);
             return list;
@@ -137,7 +130,7 @@ public class DataManager {
 
     public List<Metadata> getLibraryMetadataListWithParentId(Context context, String parentId) {
         List<Metadata> list = new ArrayList<>();
-        QueryArgs args = MetadataQueryArgsBuilder.libraryAllBookQuery(parentId, SortBy.Name, SortOrder.Asc);
+        QueryArgs args = QueryBuilder.libraryAllBookQuery(parentId, SortBy.Name, SortOrder.Asc);
         list.addAll(getLibraryMetadataList(context, args));
         return list;
     }
@@ -179,7 +172,7 @@ public class DataManager {
     }
 
     public List<Metadata> getMetadataListWithLimit(Context context, QueryArgs queryArgs) {
-        return getDataProviderManager().getDataProvider().findMetadata(context, queryArgs);
+        return getDataProviderManager().getDataProvider().findMetadataByQueryArgs(context, queryArgs);
     }
 
     public long countMetadataList(Context context, QueryArgs queryArgs) {
@@ -216,7 +209,7 @@ public class DataManager {
     }
 
     public void clearLibrary(Context context, Library library) {
-        List<Metadata> resultList = getLibraryMetadataListOfAll(context, MetadataQueryArgsBuilder.libraryAllBookQuery(library.getIdString(), SortBy.Name, SortOrder.Desc));
+        List<Metadata> resultList = getLibraryMetadataListOfAll(context, QueryBuilder.libraryAllBookQuery(library.getIdString(), SortBy.Name, SortOrder.Desc));
 
         if (resultList.size() <= 0) {
             return;
@@ -267,9 +260,9 @@ public class DataManager {
             }
             QueryArgs criteria = QueryArgs.fromQueryString(library.getQueryString());
             criteria.libraryUniqueId = library.getParentUniqueId();
-            MetadataQueryArgsBuilder.generateQueryArgs(criteria);
-            MetadataQueryArgsBuilder.generateMetadataInQueryArgs(criteria);
-            list = providerBase.findMetadata(context, criteria);
+            QueryBuilder.generateQueryArgs(criteria);
+            QueryBuilder.generateMetadataInQueryArgs(criteria);
+            list = providerBase.findMetadataByQueryArgs(context, criteria);
             if (!CollectionUtils.isNullOrEmpty(list)) {
                 dataCacheManager.addAll(library.getIdString(), list);
                 dataCacheManager.removeAll(library.getParentUniqueId(), list);

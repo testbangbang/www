@@ -24,11 +24,11 @@ public interface DataProviderBase {
 
     void saveMetadata(final Context context, final Metadata metadata);
 
-    Metadata findMetadata(final Context context, final String path, String md5);
+    List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs);
 
-    Metadata loadMetadata(final Context context, final String path, String md5);
+    Metadata findMetadataByHashTag(final Context context, final String path, String hashTag);
 
-    List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs);
+    Metadata loadMetadataByHashTag(final Context context, final String path, String hashTag);
 
     long count(final Context context, final QueryArgs queryArgs);
 

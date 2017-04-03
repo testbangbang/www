@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Created by suicheng on 2017/2/16.
  */
-public class ApplicationListLoadRequest extends BaseDataRequest {
+public class ApplicationListLoadRequest extends BaseFSRequest {
 
     private List<String> ignoreAppList;
     private List<String> testAppList;

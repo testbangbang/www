@@ -8,7 +8,6 @@ import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -51,7 +50,7 @@ public class LibraryCache {
     }
 
     public List<Metadata> getList(Context context, QueryArgs args) {
-        List<Metadata> list = dataProvider.findMetadata(context, args);
+        List<Metadata> list = dataProvider.findMetadataByQueryArgs(context, args);
         if (!CollectionUtils.isNullOrEmpty(list)) {
             for (Metadata metadata : list) {
                 md5List.add(metadata.getIdString());

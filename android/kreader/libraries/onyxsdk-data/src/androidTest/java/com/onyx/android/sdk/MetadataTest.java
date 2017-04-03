@@ -27,7 +27,7 @@ import com.onyx.android.sdk.data.provider.LocalDataProvider;
 import com.onyx.android.sdk.data.model.ReadingProgress;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
-import com.onyx.android.sdk.data.utils.MetadataQueryArgsBuilder;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
@@ -40,12 +40,10 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 import static com.onyx.android.sdk.utils.TestUtils.defaultContentTypes;
-import static com.onyx.android.sdk.utils.TestUtils.deleteRecursive;
 import static com.onyx.android.sdk.utils.TestUtils.generateRandomFile;
 import static com.onyx.android.sdk.utils.TestUtils.randomStringList;
 
@@ -104,8 +102,8 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         try {
             File file = generateRandomFile(parent, ext);
             metadata = new Metadata();
-            String md5 = FileUtils.computeMD5(file);
-            metadata.setIdString(md5);
+            metadata.setIdString(file.getAbsolutePath());
+            metadata.setHashTag(FileUtils.computeMD5(file));
             metadata.setName(file.getName());
             metadata.setLocation(file.getAbsolutePath());
             metadata.setNativeAbsolutePath(file.getAbsolutePath());
@@ -132,12 +130,12 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         origin.setAuthors(StringUtils.join(authors, Metadata.DELIMITER));
         dataProvider.saveMetadata(getContext(), origin);
 
-        final Metadata result = dataProvider.findMetadata(getContext(), origin.getNativeAbsolutePath(), origin.getIdString());
+        final Metadata result = dataProvider.findMetadataByHashTag(getContext(), origin.getNativeAbsolutePath(), origin.getHashTag());
         assertNotNull(result);
         assertEquals(result.getIdString(), origin.getIdString());
 
         dataProvider.removeMetadata(getContext(), origin);
-        final Metadata anotherResult = dataProvider.findMetadata(getContext(), origin.getNativeAbsolutePath(), origin.getIdString());
+        final Metadata anotherResult = dataProvider.findMetadataByHashTag(getContext(), origin.getNativeAbsolutePath(), origin.getHashTag());
         assertNull(anotherResult);
     }
 
@@ -148,9 +146,9 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final String json = UUID.randomUUID().toString();
         Metadata origin = randomMetadata(testFolder(), true);
-        dataProvider.saveDocumentOptions(getContext(), origin.getNativeAbsolutePath(), origin.getIdString(), json);
+        dataProvider.saveDocumentOptions(getContext(), origin.getNativeAbsolutePath(), origin.getHashTag(), json);
 
-        final Metadata result = dataProvider.findMetadata(getContext(), origin.getNativeAbsolutePath(), origin.getIdString());
+        final Metadata result = dataProvider.findMetadataByHashTag(getContext(), origin.getNativeAbsolutePath(), origin.getHashTag());
         assertNotNull(result);
         assertEquals(result.getIdString(), origin.getIdString());
         assertEquals(result.getExtraAttributes(), json);
@@ -178,16 +176,16 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             dataProvider.saveMetadata(getContext(), metadata);
         }
 
-        QueryArgs args = MetadataQueryArgsBuilder.allBooksQuery(defaultContentTypes(), SortBy.Name, SortOrder.Desc);
-        List<Metadata> testList = dataProvider.findMetadata(getContext(), args);
+        QueryArgs args = QueryBuilder.allBooksQuery(defaultContentTypes(), SortBy.Name, SortOrder.Desc);
+        List<Metadata> testList = dataProvider.findMetadataByQueryArgs(getContext(), args);
         assertNotNull(testList);
         assertTrue(testList.size() > 0);
 
         final QueryArgs queryCriteria = new QueryArgs();
         queryCriteria.author.addAll(authors);
-        MetadataQueryArgsBuilder.generateCriteriaCondition(queryCriteria);
+        QueryBuilder.generateCriteriaCondition(queryCriteria);
 
-        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        final List<Metadata> result = dataProvider.findMetadataByQueryArgs(getContext(), queryCriteria);
         assertNotNull(result);
         assertTrue(result.size() == 1);
 
@@ -195,7 +193,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(target.getIdString(), origin.getIdString());
 
         final QueryArgs dummyQueryCriteria = new QueryArgs();
-        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        final List<Metadata> list = dataProvider.findMetadataByQueryArgs(getContext(), dummyQueryCriteria);
         assertNotNull(list);
         assertTrue(list.size() == limit + 1);
     }
@@ -219,9 +217,9 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final QueryArgs queryCriteria = new QueryArgs();
         queryCriteria.title.addAll(title);
-        MetadataQueryArgsBuilder.generateCriteriaCondition(queryCriteria);
+        QueryBuilder.generateCriteriaCondition(queryCriteria);
 
-        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        final List<Metadata> result = dataProvider.findMetadataByQueryArgs(getContext(), queryCriteria);
         assertNotNull(result);
         assertTrue(result.size() == 1);
 
@@ -229,7 +227,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(target.getIdString(), origin.getIdString());
 
         final QueryArgs dummyQueryCriteria = new QueryArgs();
-        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        final List<Metadata> list = dataProvider.findMetadataByQueryArgs(getContext(), dummyQueryCriteria);
         assertNotNull(list);
         assertTrue(list.size() == limit + 1);
     }
@@ -253,9 +251,9 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         QueryArgs queryCriteria = new QueryArgs();
         queryCriteria.series.addAll(series);
-        MetadataQueryArgsBuilder.generateCriteriaCondition(queryCriteria);
+        QueryBuilder.generateCriteriaCondition(queryCriteria);
 
-        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        final List<Metadata> result = dataProvider.findMetadataByQueryArgs(getContext(), queryCriteria);
         assertNotNull(result);
         assertTrue(result.size() == 1);
 
@@ -263,7 +261,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(target.getIdString(), origin.getIdString());
 
         final QueryArgs dummyQueryCriteria = new QueryArgs();
-        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        final List<Metadata> list = dataProvider.findMetadataByQueryArgs(getContext(), dummyQueryCriteria);
         assertNotNull(list);
         assertTrue(list.size() == limit + 1);
     }
@@ -287,9 +285,9 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final QueryArgs queryCriteria = new QueryArgs();
         queryCriteria.tags.addAll(tags);
-        MetadataQueryArgsBuilder.generateCriteriaCondition(queryCriteria);
+        QueryBuilder.generateCriteriaCondition(queryCriteria);
 
-        final List<Metadata> result = dataProvider.findMetadata(getContext(), queryCriteria);
+        final List<Metadata> result = dataProvider.findMetadataByQueryArgs(getContext(), queryCriteria);
         assertNotNull(result);
         assertTrue(result.size() == 1);
 
@@ -297,7 +295,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertEquals(target.getIdString(), origin.getIdString());
 
         final QueryArgs dummyQueryCriteria = new QueryArgs();
-        final List<Metadata> list = dataProvider.findMetadata(getContext(), dummyQueryCriteria);
+        final List<Metadata> list = dataProvider.findMetadataByQueryArgs(getContext(), dummyQueryCriteria);
         assertNotNull(list);
         assertTrue(list.size() == limit + 1);
     }
@@ -322,7 +320,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     public static void assertRandomMetadata(Context context, DataProviderBase dataProvider, Metadata origin) {
-        final Metadata result = dataProvider.findMetadata(context, origin.getNativeAbsolutePath(), origin.getIdString());
+        final Metadata result = dataProvider.findMetadataByHashTag(context, origin.getNativeAbsolutePath(), origin.getHashTag());
         assertNotNull(result);
         assertEquals(result.getIdString(), origin.getIdString());
     }
@@ -364,7 +362,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         Set<String> tagSet = new HashSet<>();
         tagSet.add(indexTag);
 
-        QueryArgs queryArgs = MetadataQueryArgsBuilder.tagsFilterQuery(tagSet, SortBy.Name, SortOrder.Desc);
+        QueryArgs queryArgs = QueryBuilder.tagsFilterQuery(tagSet, SortBy.Name, SortOrder.Desc);
         DataManager dataManager = new DataManager();
         final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
         dataManager.submit(getContext(), metadataRequest, new BaseCallback() {
@@ -406,7 +404,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        QueryArgs queryArgs = MetadataQueryArgsBuilder.allBooksQuery(defaultContentTypes(),
+        QueryArgs queryArgs = QueryBuilder.allBooksQuery(defaultContentTypes(),
                 OrderBy.fromProperty(Metadata_Table.createdAt).descending());
         DataManager dataManager = new DataManager();
         final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
@@ -448,7 +446,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         final Benchmark benchMark = new Benchmark();
         DataManager dataManager = new DataManager();
         int block = 10;
-        int limit = TestUtils.randInt(6, 20);
+        final int limit = TestUtils.randInt(6, 20);
         queryArgs.limit = limit;
         for (int i = 0; i < block; ++i) {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -469,7 +467,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
                     if (!CollectionUtils.isNullOrEmpty(metadataRequest.getList())) {
                         BaseCallback.invoke(callBack, metadataRequest, e);
                     }
-                    benchMark.report(benchTag + " count:" + totalCount + ",offset:" + offset);
+                    benchMark.report(benchTag + " count:" + totalCount + ",offset:" + offset + ",limit:" + limit);
                     countDownLatch.countDown();
                 }
             });
@@ -478,7 +476,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     private void runTestAllBooksAndDescCreatedAt(final long totalCount, int perCount) {
-        final QueryArgs queryArgs = MetadataQueryArgsBuilder.allBooksQuery(defaultContentTypes(),
+        final QueryArgs queryArgs = QueryBuilder.allBooksQuery(defaultContentTypes(),
                 OrderBy.fromProperty(Metadata_Table.createdAt).descending());
         runTestMetadataQueryArgs("####runTestAllBooksAndDescCreatedAt", totalCount, perCount, queryArgs, new BaseCallback() {
             @Override
@@ -494,7 +492,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     private void runTestNewBooksAndAscSize(final long totalCount, int perCount) {
-        final QueryArgs queryArgs = MetadataQueryArgsBuilder.newBookListQuery(SortBy.Size, SortOrder.Asc);
+        final QueryArgs queryArgs = QueryBuilder.newBookListQuery(SortBy.Size, SortOrder.Asc);
         runTestMetadataQueryArgs("####runTestNewBooksAndAscSize", totalCount, perCount, queryArgs, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -510,7 +508,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     private void runTestReadingBooksAndDescName(final long totalCount, int perCount) {
-        final QueryArgs queryArgs = MetadataQueryArgsBuilder.recentReadingQuery(SortBy.Name, SortOrder.Desc);
+        final QueryArgs queryArgs = QueryBuilder.recentReadingQuery(SortBy.Name, SortOrder.Desc);
         runTestMetadataQueryArgs("####runTestReadingBooksAndDescName", totalCount, perCount, queryArgs, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -527,7 +525,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     private void runTestReadedBooksAndDescAuthor(final long totalCount, int perCount) {
-        final QueryArgs queryArgs = MetadataQueryArgsBuilder.finishReadQuery(SortBy.Author, SortOrder.Desc);
+        final QueryArgs queryArgs = QueryBuilder.finishReadQuery(SortBy.Author, SortOrder.Desc);
         runTestMetadataQueryArgs("####runTestReadedBooksAndDescAuthor", totalCount, perCount, queryArgs, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -536,7 +534,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
                 for (Metadata metadata : metadataRequest.getList()) {
                     assertNotNull(metadata.getProgress());
                     assertNotNull(metadata.getLastAccess());
-                    assertTrue(metadata.isReaded());
+                    assertTrue(metadata.isFinished());
                     assertTrue(tmp.getAuthors().compareTo(metadata.getAuthors()) >= 0);
                     tmp = metadata;
                 }
@@ -549,7 +547,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         if (libraryIdSet != null && libraryIdSet.length > 0 && libraryIndex >= 0) {
             libraryIdString = libraryIdSet[libraryIndex];
         }
-        final QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryAllBookQuery(libraryIdString,
+        final QueryArgs queryArgs = QueryBuilder.libraryAllBookQuery(libraryIdString,
                 SortBy.CreationTime, SortOrder.Desc);
         runTestMetadataQueryArgs("####AllBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
                 new BaseCallback() {
@@ -566,7 +564,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     private void runTestLibraryNewBooksAndAscSize(String[] libraryIdSet, int libraryIndex, long totalCount, int perCount) {
-        final QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryNewBookListQuery(libraryIdSet[libraryIndex],
+        final QueryArgs queryArgs = QueryBuilder.libraryBookListNewQuery(libraryIdSet[libraryIndex],
                 SortBy.Size, SortOrder.Asc);
         runTestMetadataQueryArgs("####NewBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
                 new BaseCallback() {
@@ -585,7 +583,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     private void runTestLibraryReadingBooksAndDescName(String[] libraryIdSet, int libraryIndex, long totalCount, int perCount) {
-        final QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryRecentReadingQuery(libraryIdSet[libraryIndex],
+        final QueryArgs queryArgs = QueryBuilder.libraryRecentReadingQuery(libraryIdSet[libraryIndex],
                 SortBy.Name, SortOrder.Desc);
         runTestMetadataQueryArgs("####ReadingBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
                 new BaseCallback() {
@@ -604,7 +602,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     private void runTestLibraryReadedBooksAndDescRecentlyRead(String[] libraryIdSet, int libraryIndex, long totalCount, int perCount) {
-        final QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryFinishReadQuery(libraryIdSet[libraryIndex],
+        final QueryArgs queryArgs = QueryBuilder.libraryFinishReadQuery(libraryIdSet[libraryIndex],
                 SortBy.RecentlyRead, SortOrder.Desc);
         runTestMetadataQueryArgs("####ReadedBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
                 new BaseCallback() {
@@ -624,7 +622,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
     private void runTestLibraryTagsBooksAndDescFileType(String[] libraryIdSet, int libraryIndex, Set<String> tags,
                                                         long totalCount, int perCount) {
-        final QueryArgs queryArgs = MetadataQueryArgsBuilder.libraryTagsFilterQuery(libraryIdSet[libraryIndex],
+        final QueryArgs queryArgs = QueryBuilder.libraryTagsFilterQuery(libraryIdSet[libraryIndex],
                 tags, SortBy.FileType, SortOrder.Desc);
         runTestMetadataQueryArgs("####TagsBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
                 new BaseCallback() {
@@ -643,7 +641,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
     private void runTestLibrarySearchBooksAndDescTitle(String[] libraryIdSet, int libraryIndex, String search,
                                                           long totalCount, int perCount) {
-        final QueryArgs queryArgs = MetadataQueryArgsBuilder.librarySearchQuery(libraryIdSet[libraryIndex],
+        final QueryArgs queryArgs = QueryBuilder.librarySearchQuery(libraryIdSet[libraryIndex],
                 search, SortBy.BookTitle, SortOrder.Desc);
         runTestMetadataQueryArgs("####SearchBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
                 new BaseCallback() {
@@ -660,7 +658,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
                 });
     }
 
-    public void test00BookListPaginationRequest() {
+    public void test00BookListWithoutLibraryRequest() {
         clearTestFolder();
         Debug.setDebug(true);
 
@@ -671,7 +669,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         int totalReadingBookCount = 0;
         int totalFinishedBookCount = 0;
 
-        for (int r = 0; r < 100; ++r) {
+        for (int r = 0; r < 10; ++r) {
             final int limit = TestUtils.randInt(100, 150);
             for (int i = 0; i < limit; i++) {
                 Metadata meta = getRandomMetadata();
@@ -697,6 +695,77 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             runTestReadingBooksAndDescName(totalReadingBookCount, limit);
             runTestReadedBooksAndDescAuthor(totalFinishedBookCount, limit);
             Log.e("####BookListPagination", "round: " + r + " finished. ");
+        }
+    }
+
+    // test query all
+    public void test001BookListWithLibraryRequest() {
+        clearTestFolder();
+        Debug.setDebug(true);
+
+        final DataProviderBase providerBase = getProviderBase();
+        providerBase.clearMetadata();
+        providerBase.clearLibrary();
+        providerBase.clearMetadataCollection();
+
+        // generate library
+        int libraryCount = TestUtils.randInt(10, 20);
+        final HashMap<String, Library> libraryMap = new HashMap<>();
+        final List<Library> libraryList = new ArrayList<>();
+        for (int i = 0; i < libraryCount; ++i) {
+            final Library library = getRandomLibrary();
+            library.save();
+            libraryMap.put(library.getIdString(), library);
+            libraryList.add(library);
+        }
+
+        // setup metadata collection with library and metadata.
+        final HashMap<String, HashSet<String>> metaCollectionMap = new HashMap<>();
+        int metadataCount = TestUtils.randInt(20, 40);
+        for (int i = 0; i < metadataCount; ++i) {
+            final Metadata metadata = getRandomMetadata();
+            metadata.save();
+            int index = TestUtils.randInt(0, libraryCount - 1);
+            final Library library = libraryList.get(index);
+            final MetadataCollection metadataCollection = MetadataCollection.create(metadata.getIdString(), library.getIdString());
+            metadataCollection.save();
+            providerBase.addMetadataCollection(getContext(), metadataCollection);
+            HashSet<String> list = metaCollectionMap.get(library.getIdString());
+            if (list == null) {
+                list = new HashSet<>();
+                metaCollectionMap.put(library.getIdString(), list);
+            }
+            list.add(metadata.getIdString());
+        }
+
+        DataManager dataManager = new DataManager();
+        for (int i = 0; i < libraryCount; ++i) {
+            final String libId = libraryList.get(i).getIdString();
+            final HashSet<String> mc = metaCollectionMap.get(libId);
+            if (mc == null) {
+                continue;
+            }
+            final QueryArgs queryArgs = QueryBuilder.libraryAllBookQuery(libId, SortBy.CreationTime, SortOrder.Desc);
+            final HashSet<String> set = new HashSet<>();
+            set.addAll(mc);
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
+            dataManager.submit(getContext(), metadataRequest, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    assertNull(e);
+                    assertNotNull(metadataRequest.getList());
+                    assertTrue(metadataRequest.getCount() == set.size());
+                    assertTrue(metadataRequest.getList().size() == set.size());
+                    for(Metadata metadata : metadataRequest.getList()) {
+                        assertTrue(set.contains(metadata.getIdString()));
+                        set.remove(metadata.getIdString());
+                    }
+                    assertTrue(set.isEmpty());
+                    countDownLatch.countDown();
+                }
+            });
+            awaitCountDownLatch(countDownLatch);
         }
     }
 
@@ -759,8 +828,8 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
 
         long total = 0;
-        for (int r = 0; r < 100; ++r) {
-            final int limit = TestUtils.randInt(100, 120);
+        for (int r = 0; r < 10; ++r) {
+            final int limit = TestUtils.randInt(10, 20);
             final int finishBookCount = 35;
             final int readingBookCount = 30;
             final int tagsBooKCount = 50;

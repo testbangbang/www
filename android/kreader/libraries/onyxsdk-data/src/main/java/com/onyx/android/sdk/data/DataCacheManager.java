@@ -117,13 +117,13 @@ public class DataCacheManager {
             case ALL:
                 list = getAll(originList, args);
                 break;
-            case READED:
+            case FINISHED:
                 list = getRead(originList, args);
                 break;
             case READING:
                 list = getReading(originList, args);
                 break;
-            case NEW_BOOKS:
+            case NEW:
                 list = getNewBookList(originList, args);
                 break;
             case TAG:
@@ -195,7 +195,7 @@ public class DataCacheManager {
             if (!containType(metadata, args)) {
                 continue;
             }
-            addMetadataToList(readList, metadata, metadata.isReaded());
+            addMetadataToList(readList, metadata, metadata.isFinished());
         }
         return readList;
     }

@@ -616,12 +616,12 @@ public class MetaDataUtils {
     }
 
     static public List<Metadata> verifyReadedStatus(List<Metadata> list, BookFilter filter) {
-        if (filter != BookFilter.READED) {
+        if (filter != BookFilter.FINISHED) {
             return list;
         }
         List<Metadata> readList = new ArrayList<>();
         for (Metadata metadata : list) {
-            if (metadata.isReaded()) {
+            if (metadata.isFinished()) {
                 readList.add(metadata);
             }
         }

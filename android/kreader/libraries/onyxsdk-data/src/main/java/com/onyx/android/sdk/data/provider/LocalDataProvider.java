@@ -2,7 +2,6 @@ package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
@@ -17,7 +16,6 @@ import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
-import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.io.File;
@@ -33,30 +31,34 @@ public class LocalDataProvider implements DataProviderBase {
         Delete.table(Metadata.class);
     }
 
-    public Metadata findMetadata(final Context context, final String path, String md5) {
+    public Metadata findMetadataByHashTag(final Context context, final String path, String hashTag) {
         Metadata metadata = null;
         try {
-            if (StringUtils.isNullOrEmpty(md5)) {
-                md5 = FileUtils.computeMD5(new File(path));
+            metadata = new Select().from(Metadata.class).where(Metadata_Table.nativeAbsolutePath.eq(path)).querySingle();
+            if (metadata != null) {
+                return metadata;
             }
-            metadata = new Select().from(Metadata.class).where(Metadata_Table.idString.eq(md5)).querySingle();
+            if (StringUtils.isNullOrEmpty(hashTag)) {
+                hashTag = FileUtils.computeMD5(new File(path));
+            }
+            metadata = new Select().from(Metadata.class).where(Metadata_Table.hashTag.eq(hashTag)).querySingle();
             return metadata;
         } catch (Exception e) {
         }
         return metadata;
     }
 
-    public Metadata loadMetadata(final Context context, final String path, String md5) {
-        Metadata metadata = findMetadata(context, path, md5);
+    public Metadata loadMetadataByHashTag(final Context context, final String path, String md5) {
+        Metadata metadata = findMetadataByHashTag(context, path, md5);
         if (metadata == null) {
             metadata = new Metadata();
         }
         return metadata;
     }
 
-    public List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs) {
+    public List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs) {
         if (queryArgs.conditionGroup != null) {
-            Where<Metadata> where = new Select(queryArgs.propertyList.toArray(new IProperty[0])).from(Metadata.class).where(queryArgs.conditionGroup);
+            Where<Metadata> where = new Select().from(Metadata.class).where(queryArgs.conditionGroup);
             for (OrderBy orderBy : queryArgs.orderByList) {
                 where.orderBy(orderBy);
             }
@@ -80,10 +82,10 @@ public class LocalDataProvider implements DataProviderBase {
     public boolean saveDocumentOptions(final Context context, final String path, String md5, final String json) {
         try {
             Metadata document;
-            final Metadata options = findMetadata(context, path, md5);
+            final Metadata options = findMetadataByHashTag(context, path, md5);
             if (options == null) {
                 document = new Metadata();
-                document.setIdString(md5);
+                document.setHashTag(md5);
             } else {
                 document = options;
             }

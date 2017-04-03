@@ -24,7 +24,7 @@ public class DocumentTest extends ActivityInstrumentationTestCase2<ReaderTestAct
         LocalDataProvider localDataProvider = new LocalDataProvider();
         assertTrue(localDataProvider.saveDocumentOptions(getActivity(), "", md5, JSON.toJSONString(origin)));
 
-        final Metadata result = localDataProvider.loadMetadata(getActivity(), "", md5);
+        final Metadata result = localDataProvider.loadMetadataByHashTag(getActivity(), "", md5);
         assertNotNull(result);
         final BaseOptions resultOptions = JSON.parseObject(result.getExtraAttributes(), BaseOptions.class);
         assertEquals(origin.getPassword(), resultOptions.getPassword());
@@ -39,7 +39,7 @@ public class DocumentTest extends ActivityInstrumentationTestCase2<ReaderTestAct
         assertTrue(localDataProvider.saveDocumentOptions(getActivity(), "", md5, JSON.toJSONString(origin)));
 
         final String wrongMd5 = UUID.randomUUID().toString();
-        final Metadata result = localDataProvider.loadMetadata(getActivity(), "", wrongMd5);
+        final Metadata result = localDataProvider.loadMetadataByHashTag(getActivity(), "", wrongMd5);
         assertNotNull(result);
         final BaseOptions resultOptions = JSON.parseObject(result.getExtraAttributes(), BaseOptions.class);
         assertNotNull(origin.getPassword(), resultOptions.getPassword());

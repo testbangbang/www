@@ -24,11 +24,8 @@ public class MetadataRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        long s = System.currentTimeMillis();
         count = dataManager.getDataProviderBase().count(getContext(), queryArgs);
         list.addAll(dataManager.getMetadataListWithLimit(getContext(), queryArgs));
-        long e = System.currentTimeMillis();
-        Log.e("################", "count: " + count + " offset: " + queryArgs.offset + " ts: " + (e - s));
     }
 
     public final List<Metadata> getList() {

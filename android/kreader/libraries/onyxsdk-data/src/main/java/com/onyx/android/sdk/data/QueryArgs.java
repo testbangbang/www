@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
@@ -172,4 +173,5 @@ public class QueryArgs {
         }
         return true;
     }
+
 }
