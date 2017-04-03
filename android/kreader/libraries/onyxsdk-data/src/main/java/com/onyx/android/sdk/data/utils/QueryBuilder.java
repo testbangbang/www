@@ -26,7 +26,7 @@ import java.util.Set;
 /**
  * Created by suicheng on 2016/9/2.
  */
-public class MetadataQueryArgsBuilder {
+public class QueryBuilder {
 
     public static QueryArgs libraryAllBookQuery(String libraryUniqueId, SortBy sortBy, SortOrder sortOrder) {
         QueryArgs args = allBooksQuery(sortBy, sortOrder);
@@ -46,7 +46,7 @@ public class MetadataQueryArgsBuilder {
         return generateMetadataInQueryArgs(args);
     }
 
-    public static QueryArgs libraryNewBookListQuery(String libraryUniqueId, SortBy sortBy, SortOrder sortOrder) {
+    public static QueryArgs libraryBookListNewQuery(String libraryUniqueId, SortBy sortBy, SortOrder sortOrder) {
         QueryArgs args = newBookListQuery(sortBy, sortOrder);
         args.libraryUniqueId = libraryUniqueId;
         return generateMetadataInQueryArgs(args);
@@ -99,12 +99,12 @@ public class MetadataQueryArgsBuilder {
     }
 
     public static QueryArgs newBookListQuery(SortBy sortBy, SortOrder sortOrder) {
-        QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.NEW_BOOKS);
+        QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.NEW);
         return generateQueryArgs(args);
     }
 
     public static QueryArgs finishReadQuery(SortBy sortBy, SortOrder sortOrder) {
-        QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.READED);
+        QueryArgs args = new QueryArgs(sortBy, sortOrder).appendFilter(BookFilter.FINISHED);
         return generateQueryArgs(args);
     }
 
@@ -245,8 +245,8 @@ public class MetadataQueryArgsBuilder {
         return compare == null ? property.isNull() : property.eq(compare);
     }
 
-    private static Condition getNotNullOrEqualCondition(Property<String> property, String compare) {
-        return compare == null ? property.isNotNull() : property.eq(compare);
+    private static Condition getNotNullOrEqualCondition(Property<String> property, String value) {
+        return value == null ? property.isNotNull() : property.eq(value);
     }
 
     private static Condition.In inCondition(Property property, Where in, boolean isIn) {
@@ -258,13 +258,13 @@ public class MetadataQueryArgsBuilder {
             case ALL:
                 args.conditionGroup = orTypeCondition(args.fileType);
                 break;
-            case NEW_BOOKS:
+            case NEW:
                 args.conditionGroup = newBookListCondition();
                 break;
             case READING:
                 args.conditionGroup = recentReadingCondition();
                 break;
-            case READED:
+            case FINISHED:
                 args.conditionGroup = finishReadCondition();
                 break;
             case TAG:
@@ -349,7 +349,7 @@ public class MetadataQueryArgsBuilder {
         Where<MetadataCollection> whereCollection = new Select(MetadataCollection_Table.documentUniqueId.withTable())
                 .from(MetadataCollection.class)
                 .where(getNotNullOrEqualCondition(MetadataCollection_Table.libraryUniqueId.withTable(), queryArgs.libraryUniqueId));
-        Condition.In inCondition = inCondition(Metadata_Table.nativeAbsolutePath.withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.libraryUniqueId));
+        Condition.In inCondition = inCondition(Metadata_Table.idString.withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.libraryUniqueId));
         ConditionGroup group = ConditionGroup.clause().and(inCondition);
         if (queryArgs.conditionGroup.size() > 0) {
             queryArgs.conditionGroup = group.and(queryArgs.conditionGroup);
