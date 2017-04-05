@@ -3,7 +3,6 @@ package com.onyx.android.sdk.data.request.data.db;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,7 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/8.
  */
-public class AddToLibraryRequest extends BaseDataRequest {
+public class AddToLibraryRequest extends BaseDBRequest {
     private Library library;
     private List<Metadata> addList = new ArrayList<>();
 
@@ -22,6 +21,6 @@ public class AddToLibraryRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        dataManager.addToLibrary(getContext(), library, addList);
+
     }
 }

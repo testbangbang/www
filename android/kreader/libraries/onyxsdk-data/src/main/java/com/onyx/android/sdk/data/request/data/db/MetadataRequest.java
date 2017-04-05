@@ -1,11 +1,8 @@
 package com.onyx.android.sdk.data.request.data.db;
 
-import android.util.Log;
-
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,7 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/2.
  */
-public class MetadataRequest extends BaseDataRequest {
+public class MetadataRequest extends BaseDBRequest {
     private List<Metadata> list = new ArrayList<>();
     private QueryArgs queryArgs;
     private long count;

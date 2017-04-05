@@ -5,7 +5,6 @@ import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/5.
  */
-public class LibraryRequest extends BaseDataRequest {
+public class LibraryRequest extends BaseDBRequest {
 
     private List<Metadata> bookList = new ArrayList<>();
     private List<Library> libraryList = new ArrayList<>();
@@ -33,7 +32,7 @@ public class LibraryRequest extends BaseDataRequest {
     public void execute(DataManager dataManager) throws Exception {
         DataManagerHelper.loadAllLibrary(libraryList, queryArgs.libraryUniqueId);
         if (loadMetadata) {
-            bookList = dataManager.getLibraryMetadataList(getContext(), queryArgs);
+
         }
     }
 
