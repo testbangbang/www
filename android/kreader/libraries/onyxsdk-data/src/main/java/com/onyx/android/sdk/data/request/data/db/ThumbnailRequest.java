@@ -5,12 +5,11 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Thumbnail;
-import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
 /**
  * Created by suicheng on 2016/9/7.
  */
-public class ThumbnailRequest extends BaseDataRequest {
+public class ThumbnailRequest extends BaseDbRequest {
     private ThumbnailKind thumbnailKind = ThumbnailKind.Middle;
     private String path;
     private String sourceMD5;
