@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/7.
  */
-public class BuildLibraryRequest extends BaseDbRequest {
+public class BuildLibraryRequest extends BaseDBRequest {
     private Library library;
     private QueryArgs criteria;
     private List<Metadata> bookList;

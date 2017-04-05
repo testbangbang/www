@@ -9,7 +9,7 @@ import com.onyx.android.sdk.data.model.Thumbnail;
 /**
  * Created by suicheng on 2016/9/7.
  */
-public class ThumbnailRequest extends BaseDbRequest {
+public class ThumbnailRequest extends BaseDBRequest {
     private ThumbnailKind thumbnailKind = ThumbnailKind.Middle;
     private String path;
     private String sourceMD5;

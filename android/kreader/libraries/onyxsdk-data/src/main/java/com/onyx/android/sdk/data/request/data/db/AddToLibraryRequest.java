@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/8.
  */
-public class AddToLibraryRequest extends BaseDbRequest {
+public class AddToLibraryRequest extends BaseDBRequest {
     private Library library;
     private List<Metadata> addList = new ArrayList<>();
 

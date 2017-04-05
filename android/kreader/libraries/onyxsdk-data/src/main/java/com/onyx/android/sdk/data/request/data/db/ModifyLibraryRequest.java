@@ -6,7 +6,7 @@ import com.onyx.android.sdk.data.model.Library;
 /**
  * Created by suicheng on 2016/9/12.
  */
-public class ModifyLibraryRequest extends BaseDbRequest {
+public class ModifyLibraryRequest extends BaseDBRequest {
     private Library library;
     private boolean modifyCriteria = false;
 

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/2.
  */
-public class MetadataRequest extends BaseDbRequest {
+public class MetadataRequest extends BaseDBRequest {
     private List<Metadata> list = new ArrayList<>();
     private QueryArgs queryArgs;
     private long count;

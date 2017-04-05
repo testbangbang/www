@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/8.
  */
-public class RemoveFromLibraryRequest extends BaseDbRequest {
+public class RemoveFromLibraryRequest extends BaseDBRequest {
 
     private Library library;
     private List<Metadata> removeList;

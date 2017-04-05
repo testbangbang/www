@@ -6,7 +6,7 @@ import com.onyx.android.sdk.data.model.Library;
 /**
  * Created by suicheng on 2016/9/10.
  */
-public class ClearLibraryRequest extends BaseDbRequest {
+public class ClearLibraryRequest extends BaseDBRequest {
     private Library library;
 
     public ClearLibraryRequest(Library library) {
