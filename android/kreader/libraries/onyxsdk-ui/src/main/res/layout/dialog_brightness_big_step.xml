@@ -61,8 +61,6 @@
             android:numStars="@integer/start_amount"
             android:layout_gravity="center_vertical"
             android:stepSize="1.0"
-            android:minHeight="80px"
-            android:minWidth="80px"
             android:layout_marginRight="@dimen/dialog_brightness_ratingbar_margin_right" />
 
         <ImageButton
