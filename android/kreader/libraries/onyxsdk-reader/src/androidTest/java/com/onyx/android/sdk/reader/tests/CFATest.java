@@ -1,7 +1,9 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ApplicationTestCase;
 import android.util.Log;
 
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
@@ -19,13 +21,13 @@ import java.util.Set;
  * Created by zhuzeng on 12/12/2016.
  */
 
-public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class CFATest extends ApplicationTestCase<Application> {
 
     static private String TAG = CFATest.class.getSimpleName();
     private boolean performanceTest = false;
 
     public CFATest() {
-        super("com.onyx.reader", ReaderTestActivity.class);
+        super(Application.class);
     }
 
 

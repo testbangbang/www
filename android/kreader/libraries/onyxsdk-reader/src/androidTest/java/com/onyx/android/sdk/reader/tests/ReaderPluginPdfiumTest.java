@@ -1,8 +1,10 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ApplicationTestCase;
 import android.test.suitebuilder.annotation.Suppress;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.PageInfo;
@@ -24,15 +26,15 @@ import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
 /**
  * Created by zhuzeng on 10/5/15.
  */
-public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class ReaderPluginPdfiumTest extends ApplicationTestCase<Application> {
 
     public ReaderPluginPdfiumTest() {
-        super(ReaderTestActivity.class);
+        super(Application.class);
     }
 
     @Suppress
     public void testPluginUsage() throws Exception {
-        ReaderPlugin plugin = new NeoPdfReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getContext(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/normal.pdf", null, null);
         assertNotNull(document);
         ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl(1024, 768);
@@ -51,7 +53,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
 
     @Suppress
     public void testPluginRendering() throws Exception {
-        ReaderPlugin plugin = new NeoPdfReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getContext(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/normal.pdf", null, null);
         assertNotNull(document);
 
@@ -84,7 +86,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
 
     @Suppress
     public void testReaderSentence() throws Exception {
-        ReaderPlugin plugin = new NeoPdfReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getContext(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/西游记.pdf", null, null);
         assertNotNull(document);
 
@@ -99,7 +101,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
     }
 
     public void testMetadata() throws Exception {
-        ReaderPlugin plugin = new NeoPdfReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getContext(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/pdf_reference_1-7.pdf", null, null);
         assertNotNull(document);
 
@@ -107,7 +109,7 @@ public class ReaderPluginPdfiumTest extends ActivityInstrumentationTestCase2<Rea
     }
 
     public void testCover() throws Exception {
-        ReaderPlugin plugin = new NeoPdfReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getContext(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/pdf_reference_1-7.pdf", null, null);
         assertNotNull(document);
 

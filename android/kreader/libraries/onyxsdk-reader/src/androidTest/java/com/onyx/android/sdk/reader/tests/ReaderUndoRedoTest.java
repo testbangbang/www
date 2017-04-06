@@ -1,6 +1,9 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
+import android.app.Application;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ApplicationTestCase;
+
 import com.onyx.android.sdk.reader.utils.HistoryManager;
 
 import java.util.HashSet;
@@ -9,13 +12,13 @@ import java.util.Set;
 /**
  * Created by zengzhu on 2/21/16.
  */
-public class ReaderUndoRedoTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class ReaderUndoRedoTest extends ApplicationTestCase<Application> {
 
     static private String TAG = ReaderUndoRedoTest.class.getSimpleName();
 
 
     public ReaderUndoRedoTest() {
-        super(ReaderTestActivity.class);
+        super(Application.class);
     }
 
     public void testUndo1() {
