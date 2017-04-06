@@ -55,6 +55,37 @@ public class BitmapUtils {
         canvas.drawBitmap(src, srcRegion, dstRegion, paint);
     }
 
+    static public void scaleBitmapEvenly(final Bitmap src, final Bitmap dst, float allowDeviation) {
+        Rect srcBitmapRegion = new Rect(0, 0, src.getWidth(), src.getHeight());
+        Rect dstScaleRegion = null;
+        int offsetValue = 0;
+        int scaleValue = 0;
+        float ratioSrc = src.getWidth()/(float)src.getHeight();
+        float ratioDest = dst.getWidth()/(float)dst.getHeight();
+
+        //Create a rectangular area that scales proportionally on the original bitmap.
+
+        //height scale
+        if(ratioSrc > (ratioDest + allowDeviation)) {
+            scaleValue = Math.round(dst.getWidth()/ratioSrc);
+            offsetValue = Math.abs((dst.getHeight()-scaleValue)/2);
+            dstScaleRegion = new Rect(0, offsetValue, dst.getWidth(), scaleValue + offsetValue);
+
+        //width scale
+        } else if(ratioSrc < (ratioDest - allowDeviation)) {
+            scaleValue = Math.round(dst.getHeight()*ratioSrc);
+            offsetValue =Math.abs((dst.getWidth()-scaleValue)/2);
+            dstScaleRegion = new Rect(offsetValue, 0, scaleValue + offsetValue, dst.getHeight());
+
+        //both scale
+        } else {
+            dstScaleRegion = new Rect(0, 0, dst.getWidth(), dst.getHeight());
+        }
+
+        //start to scale
+        BitmapUtils.scaleBitmap(src,srcBitmapRegion ,dst, dstScaleRegion);
+    }
+
     public static Bitmap createScaledBitmap(final Bitmap origin, int newWidth, int newHeight) {
         Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
 
