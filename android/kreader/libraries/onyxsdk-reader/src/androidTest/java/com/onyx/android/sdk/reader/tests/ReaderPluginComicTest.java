@@ -1,8 +1,10 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ApplicationTestCase;
 import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
 import com.onyx.android.sdk.api.ReaderBitmap;
@@ -24,7 +26,7 @@ import java.util.List;
 /**
  * Created by joy on 3/17/16.
  */
-public class ReaderPluginComicTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class ReaderPluginComicTest extends ApplicationTestCase<Application> {
     private static final String TAG = ReaderPluginComicTest.class.getSimpleName();
 
     private static final String RAR_FILE = "/mnt/sdcard/Books/a.cbr";
@@ -34,7 +36,7 @@ public class ReaderPluginComicTest extends ActivityInstrumentationTestCase2<Read
     private static final String RAR_ENCRYPTED_NAME_FILE = "/mnt/sdcard/Books/p2.cbr";
 
     public ReaderPluginComicTest() {
-        super(ReaderTestActivity.class);
+        super(Application.class);
     }
 
     private void testRarJniWrapper(String filePath, String password) {
@@ -123,7 +125,7 @@ public class ReaderPluginComicTest extends ActivityInstrumentationTestCase2<Read
     }
 
     private ComicReaderPlugin createPlugin() {
-        return new ComicReaderPlugin(getActivity(), new ReaderPluginOptionsImpl());
+        return new ComicReaderPlugin(getContext(), new ReaderPluginOptionsImpl());
     }
 
     private ReaderDocument openFile(ComicReaderPlugin plugin, String filePath, String password) throws ReaderException {

@@ -1,8 +1,10 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
+import android.app.Application;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ApplicationTestCase;
 import android.util.Log;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -16,10 +18,10 @@ import java.util.List;
 /**
  * Created by zhuzeng on 2/11/16.
  */
-public class ReaderPageManagerTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class ReaderPageManagerTest extends ApplicationTestCase<Application> {
 
     public ReaderPageManagerTest() {
-        super(ReaderTestActivity.class);
+        super(Application.class);
     }
 
     public void testPageManager() throws Exception {

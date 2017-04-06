@@ -1,8 +1,11 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ApplicationTestCase;
+
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.android.sdk.reader.cache.BitmapHolder;
 import com.onyx.android.sdk.reader.cache.BitmapLruCache;
@@ -16,10 +19,10 @@ import java.util.List;
 /**
  * Created by zhuzeng on 2/17/16.
  */
-public class ReaderCacheTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class ReaderCacheTest extends ApplicationTestCase<Application> {
 
     public ReaderCacheTest() {
-        super(ReaderTestActivity.class);
+        super(Application.class);
     }
     private PageManager pageManager = new PageManager();
 
@@ -42,7 +45,7 @@ public class ReaderCacheTest extends ActivityInstrumentationTestCase2<ReaderTest
     public void testCacheKey() throws Exception {
         BitmapLruCache.Builder builder = new BitmapLruCache.Builder();
         builder.setMemoryCacheEnabled(true).setMemoryCacheMaxSizeUsingHeapSize();
-        builder.setDiskCacheEnabled(true).setDiskCacheLocation(getActivity().getCacheDir());
+        builder.setDiskCacheEnabled(true).setDiskCacheLocation(getContext().getCacheDir());
         BitmapLruCache cache = builder.build();
         List<PageInfo> list = randPageList();
         final String key = PositionSnapshot.cacheKey(list);

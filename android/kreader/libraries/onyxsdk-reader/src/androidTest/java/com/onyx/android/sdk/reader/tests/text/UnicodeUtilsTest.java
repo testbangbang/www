@@ -1,18 +1,19 @@
-package com.onyx.kreader.tests.text;
+package com.onyx.android.sdk.reader.tests.text;
 
-import android.test.ActivityInstrumentationTestCase2;
-import com.onyx.kreader.tests.ReaderTestActivity;
+import android.app.Application;
+import android.test.ApplicationTestCase;
+
 import com.onyx.android.sdk.reader.utils.UnicodeUtils;
 
 /**
  * Created by zengzhu on 3/13/16.
  */
-public class UnicodeUtilsTest  extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class UnicodeUtilsTest  extends ApplicationTestCase<Application> {
 
     private String TAG = UnicodeUtilsTest.class.getSimpleName();
 
     public UnicodeUtilsTest() {
-        super(ReaderTestActivity.class);
+        super(Application.class);
     }{
 
     }
