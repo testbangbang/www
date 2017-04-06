@@ -1,7 +1,10 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
+import android.app.Application;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ApplicationTestCase;
+
 import com.onyx.android.sdk.reader.api.*;
 import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.android.sdk.reader.host.layout.PageCropper;
@@ -11,14 +14,14 @@ import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
 /**
  * Created by zhuzeng on 5/29/16.
  */
-public class PageCropperTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class PageCropperTest extends ApplicationTestCase<Application> {
 
     public PageCropperTest() {
-        super(ReaderTestActivity.class);
+        super(Application.class);
     }
 
     public void testCrop() throws Exception {
-        ReaderPlugin plugin = new NeoPdfReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getContext(), null);
         ReaderDocument document = plugin.open("/mnt/sdcard/Books/normal.pdf", null, null);
         assertNotNull(document);
         ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl(1024, 768);

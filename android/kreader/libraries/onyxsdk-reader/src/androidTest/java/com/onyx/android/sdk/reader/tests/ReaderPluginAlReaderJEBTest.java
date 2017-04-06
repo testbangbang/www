@@ -1,4 +1,4 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
 import android.app.Application;
 import android.test.ActivityInstrumentationTestCase2;
@@ -24,10 +24,10 @@ import java.util.List;
  * Created by joy on 12/16/16.
  */
 
-public class ReaderPluginAlReaderJEBTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class ReaderPluginAlReaderJEBTest extends ApplicationTestCase<Application> {
 
     public ReaderPluginAlReaderJEBTest() {
-        super(ReaderTestActivity.class);
+        super(Application.class);
     }
 
 
@@ -60,8 +60,8 @@ public class ReaderPluginAlReaderJEBTest extends ActivityInstrumentationTestCase
         bookPaths.add("/mnt/sdcard/JDBooks/b9d336328ee54215392ee9cca6f171bd.JEB");
 
         for(int i = 0;i < bookPaths.size();i++) {
-            AlReaderWrapper wrapper = new AlReaderWrapper(this.getActivity().getBaseContext(),
-                    ReaderPluginOptionsImpl.create(this.getActivity().getBaseContext()));
+            AlReaderWrapper wrapper = new AlReaderWrapper(getContext(),
+                    ReaderPluginOptionsImpl.create(getContext()));
 
 
             final ReaderDocumentOptionsImpl documentOptions = new ReaderDocumentOptionsImpl(null, null,
