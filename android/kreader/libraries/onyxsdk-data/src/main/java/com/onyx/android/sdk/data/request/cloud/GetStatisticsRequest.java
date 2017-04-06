@@ -41,11 +41,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         statisticsResult = new StatisticsResult();
-        if (DeviceUtils.isWifiConnected(context)) {
-            readCloudData(parent);
-        }else {
-            readLocalData();
-        }
+        readLocalData();
     }
 
     private void readCloudData(CloudManager parent) throws Exception {

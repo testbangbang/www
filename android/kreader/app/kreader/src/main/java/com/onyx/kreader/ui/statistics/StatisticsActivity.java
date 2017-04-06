@@ -64,9 +64,10 @@ public class StatisticsActivity extends ActionBarActivity {
         ButterKnife.bind(this);
         initView();
         initData();
-        registerReceiver();
+        //remove all data about internet
+        //registerReceiver();
         getStatistics();
-        checkWifi();
+        //checkWifi();
     }
 
     private void initView() {
@@ -117,7 +118,7 @@ public class StatisticsActivity extends ActionBarActivity {
         page.setText(pagePosition);
         String pageTitle = getString(pageTitles[index]);
         String network = String.format("(%s)", DeviceUtils.isWifiConnected(this) ? getString(R.string.network_data) : getString(R.string.local_data));
-        String text = pageTitle + network;
+        String text = pageTitle;
         title.setText(text);
     }
 
