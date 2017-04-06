@@ -159,22 +159,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (cover == null) {
             return false;
         }
-        //Create a rectangular area that scales proportionally on the original cover.
-        Rect rect = null;
-        float ratioSrc = cover.getWidth()/(float)cover.getHeight();
-        float ratioDest = bitmap.getWidth()/(float)bitmap.getHeight();
-        if(ratioSrc > (ratioDest + 0.05)) {
-            int hh = (int) Math.round(bitmap.getWidth()/ratioSrc);
-            rect = new Rect(0, Math.abs((bitmap.getHeight()-hh)/2), bitmap.getWidth(), hh);
-        } else if(ratioSrc < (ratioDest - 0.05)) {
-            int ww = (int) Math.round(bitmap.getHeight()*ratioSrc);
-            rect = new Rect(Math.abs((bitmap.getWidth()-ww)/2), 0, ww, bitmap.getHeight());
-        } else {
-            //In order to the cover display beautifully, we allow the cover to have a small zoom deviation.
-            rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        }
-        BitmapUtils.scaleBitmap(cover, new Rect(0, 0, cover.getWidth(), cover.getHeight()),
-                bitmap, rect);
+        BitmapUtils.scaleBitmapEvenly(cover, bitmap, 0.02f);
         cover.recycle();
         return true;
     }
