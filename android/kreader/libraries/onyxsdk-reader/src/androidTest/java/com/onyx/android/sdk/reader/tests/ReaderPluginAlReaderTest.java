@@ -1,4 +1,4 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

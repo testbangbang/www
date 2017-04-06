@@ -1,7 +1,10 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
+import android.app.Application;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ApplicationTestCase;
+
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
@@ -10,10 +13,10 @@ import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 /**
  * Created by zengzhu on 2/23/16.
  */
-public class ReaderNavigationListTest  extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class ReaderNavigationListTest  extends ApplicationTestCase<Application> {
 
     public ReaderNavigationListTest() {
-        super(ReaderTestActivity.class);
+        super(Application.class);
     }
 
     public void testNavigationList1() {

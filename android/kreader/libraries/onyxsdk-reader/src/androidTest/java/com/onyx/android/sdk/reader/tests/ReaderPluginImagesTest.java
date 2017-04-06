@@ -1,8 +1,11 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ApplicationTestCase;
+
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.android.sdk.reader.api.*;
@@ -13,15 +16,15 @@ import com.onyx.android.sdk.utils.BitmapUtils;
 /**
  * Created by zhuzeng on 2/18/16.
  */
-public class ReaderPluginImagesTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class ReaderPluginImagesTest extends ApplicationTestCase<Application> {
 
     public ReaderPluginImagesTest() {
-        super(ReaderTestActivity.class);
+        super(Application.class);
     }
 
     public void testImagePluginPngBase1() throws Exception {
         final String path = "/mnt/sdcard/Pictures/normal1.png";
-        ReaderPlugin plugin = new ImagesReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new ImagesReaderPlugin(getContext(), null);
         ReaderDocument document = plugin.open(path, null, null);
         assertNotNull(document);
         final String position = document.getView(null).getNavigator().getPositionByPageName(path);
@@ -33,7 +36,7 @@ public class ReaderPluginImagesTest extends ActivityInstrumentationTestCase2<Rea
 
     public void testImagePluginPngBase2() throws Exception {
         final String path = "/mnt/sdcard/Pictures/normal2.png";
-        ReaderPlugin plugin = new ImagesReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new ImagesReaderPlugin(getContext(), null);
         ReaderDocument document = plugin.open(path, null, null);
         assertNotNull(document);
         final ReaderNavigator navigator = document.getView(null).getNavigator();
@@ -49,7 +52,7 @@ public class ReaderPluginImagesTest extends ActivityInstrumentationTestCase2<Rea
 
     public void testImagePluginPngDraw() throws Exception {
         final String path = "/mnt/sdcard/Pictures/normal3.png";
-        ReaderPlugin plugin = new ImagesReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new ImagesReaderPlugin(getContext(), null);
         ReaderDocument document = plugin.open(path, null, null);
         assertNotNull(document);
         final ReaderView view = document.getView(null);
@@ -74,7 +77,7 @@ public class ReaderPluginImagesTest extends ActivityInstrumentationTestCase2<Rea
 
     public void testImagePluginJpegBase1() throws Exception {
         final String path = "/mnt/sdcard/Pictures/normal.jpg";
-        ReaderPlugin plugin = new ImagesReaderPlugin(getActivity(), null);
+        ReaderPlugin plugin = new ImagesReaderPlugin(getContext(), null);
         ReaderDocument document = plugin.open(path, null, null);
         assertNotNull(document);
         final String position = document.getView(null).getNavigator().getPositionByPageName(path);

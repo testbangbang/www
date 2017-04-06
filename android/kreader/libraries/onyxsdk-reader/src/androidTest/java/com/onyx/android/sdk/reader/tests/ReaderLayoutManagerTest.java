@@ -1,6 +1,9 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
+import android.app.Application;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ApplicationTestCase;
+
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
@@ -13,12 +16,12 @@ import com.onyx.android.sdk.reader.host.wrapper.ReaderHelper;
 /**
  * Created by zengzhu on 2/22/16.
  */
-public class ReaderLayoutManagerTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class ReaderLayoutManagerTest extends ApplicationTestCase<Application> {
 
     private NavigationArgs navigationArgs;
 
     public ReaderLayoutManagerTest() {
-        super(ReaderTestActivity.class);
+        super(Application.class);
     }
 
 
