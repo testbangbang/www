@@ -159,7 +159,8 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (cover == null) {
             return false;
         }
-        BitmapUtils.scaleBitmapEvenly(cover, bitmap, 0.02f);
+        BitmapUtils.scaleBitmap(cover, new Rect(0, 0, cover.getWidth(), cover.getHeight()),bitmap,
+                new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()));
         cover.recycle();
         return true;
     }
