@@ -15,3 +15,16 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-dontwarn com.github.junrar.**
+-keep class com.neverland.engbook.forpublic.** { *; }
+-keep class org.mozilla.universalchardet.** { *; }
+
+-keep class com.neverland.engbook.bookobj.AlBookEng { *; }
+-keep class com.neverland.engbook.util.AlStyles { *; }
+-keep class com.neverland.engbook.util.EngBitmap { *; }
+
+-keepnames enum com.neverland.engbook.bookobj.AlBookEng$** { *; }
+-keepnames class com.neverland.engbook.level1.JEBFilesZIP { *; }
+-keepnames class com.neverland.engbook.unicode.AlUnicode { *; }
+-keepnames class com.neverland.engbook.util.TTFInfo { *; }
+-keepnames class com.neverland.engbook.util.TTFScan { *; }
