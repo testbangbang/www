@@ -15,3 +15,23 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keepattributes Exceptions
+
+-keep class com.onyx.android.sdk.reader.api.** { *; }
+-keep class com.onyx.android.sdk.reader.host.impl.** { *; }
+-keep class com.onyx.android.sdk.reader.common.** { *; }
+-keep class com.onyx.android.sdk.reader.host.request.** { *; }
+-keep class com.onyx.android.sdk.reader.utils.** { *; }
+-keep class com.onyx.android.sdk.reader.host.options.** { *; }
+-keep class com.onyx.android.sdk.reader.host.wrapper.** { *; }
+-keep class com.onyx.android.sdk.reader.reflow.** { *; }
+-keep class com.onyx.android.sdk.reader.host.math.** { *; }
+
+-keepnames class com.onyx.android.sdk.reader.ReaderBaseApp { *; }
+-keepnames class com.onyx.android.sdk.reader.reflow.ImageReflowSettings { *; }
+-keepnames class com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfSelection { *; }
+-keepnames class com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfJniWrapper { *; }
+-keepnames class com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils { *; }
+-keepnames class com.onyx.android.sdk.reader.host.layout.LayoutProviderUtils { *; }
+-keepnames class com.onyx.android.sdk.reader.host.layout.ReaderLayoutManager { *; }
+-keepnames class com.onyx.android.sdk.reader.host.navigation.NavigationArgs { *; }

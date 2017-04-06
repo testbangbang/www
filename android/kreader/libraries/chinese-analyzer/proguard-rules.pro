@@ -15,3 +15,5 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keepnames class org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper { *; }
+-keepnames class org.apache.lucene.analysis.cn.BuildConfig { *; }
