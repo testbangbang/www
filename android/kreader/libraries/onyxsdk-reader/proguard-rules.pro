@@ -27,11 +27,12 @@
 -keep class com.onyx.android.sdk.reader.reflow.** { *; }
 -keep class com.onyx.android.sdk.reader.host.math.** { *; }
 
--keepnames class com.onyx.android.sdk.reader.ReaderBaseApp { *; }
 -keepnames class com.onyx.android.sdk.reader.reflow.ImageReflowSettings { *; }
 -keepnames class com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfSelection { *; }
 -keepnames class com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfJniWrapper { *; }
--keepnames class com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils { *; }
 -keepnames class com.onyx.android.sdk.reader.host.layout.LayoutProviderUtils { *; }
--keepnames class com.onyx.android.sdk.reader.host.layout.ReaderLayoutManager { *; }
--keepnames class com.onyx.android.sdk.reader.host.navigation.NavigationArgs { *; }
+
+-keepclasseswithmembers class com.onyx.android.sdk.reader.ReaderBaseApp { *; }
+-keepclasseswithmembers class com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils { *; }
+-keepclasseswithmembers class com.onyx.android.sdk.reader.host.layout.ReaderLayoutManager { *; }
+-keepclasseswithmembers class com.onyx.android.sdk.reader.host.navigation.NavigationArgs { *; }
