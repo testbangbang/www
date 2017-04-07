@@ -27,17 +27,22 @@ public class PushStatisticsRequest extends BaseStatisticsRequest {
     private Context context;
     private List<OnyxStatisticsModel> saveStatistic;
     private String url;
+    private boolean pushToServer;
 
-    public PushStatisticsRequest(Context context, List<OnyxStatisticsModel> statistic, final String url) {
+    public PushStatisticsRequest(Context context, List<OnyxStatisticsModel> statistic, final String url, boolean pushToServer) {
         this.context = context;
         this.saveStatistic = statistic;
         this.url = url;
+        this.pushToServer = pushToServer;
     }
 
     @Override
     public void execute(StatisticsCloudManager parent) throws Exception {
         if (saveStatistic != null) {
             StatisticsUtils.saveStatisticsList(context, saveStatistic);
+        }
+        if (!pushToServer) {
+            return;
         }
         if (StringUtils.isNullOrEmpty(url)) {
             return;

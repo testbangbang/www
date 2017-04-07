@@ -144,7 +144,7 @@ public class StatisticsActivity extends ActionBarActivity {
     }
 
     private void pushStatistics() {
-        final PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(this, null, DeviceConfig.sharedInstance(this).getStatisticsUrl());
+        final PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(this, null, DeviceConfig.sharedInstance(this).getStatisticsUrl(), false);
         getCloudManager().submitRequest(this, statisticsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
