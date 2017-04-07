@@ -1,7 +1,9 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ApplicationTestCase;
 import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -22,13 +24,13 @@ import java.util.List;
  * -e class ReaderPluginPdfiumTest2 \
  * com.onyx.reader.tests/android.test.InstrumentationTestRunner
  */
-public class ReaderPluginPdfiumTest2 extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class ReaderPluginPdfiumTest2 extends ApplicationTestCase<Application> {
 
     static private String TAG = ReaderPluginPdfiumTest2.class.getSimpleName();
     private boolean performanceTest = false;
 
     public ReaderPluginPdfiumTest2() {
-        super("com.onyx.reader", ReaderTestActivity.class);
+        super(Application.class);
     }
 
     public void testOpen() throws Exception {

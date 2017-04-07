@@ -1,4 +1,4 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
 import android.graphics.Bitmap;
 import android.graphics.Rect;

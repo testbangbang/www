@@ -1,8 +1,10 @@
-package com.onyx.kreader.tests;
+package com.onyx.android.sdk.reader.tests;
 
+import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.ApplicationTestCase;
 import android.util.Log;
 
 import com.onyx.android.sdk.api.ReaderBitmap;
@@ -23,13 +25,13 @@ import java.util.List;
 /**
  * Created by joy on 3/3/16.
  */
-public class ReaderPluginDjvuTest extends ActivityInstrumentationTestCase2<ReaderTestActivity> {
+public class ReaderPluginDjvuTest extends ApplicationTestCase<Application> {
 
     private static final String TAG = ReaderPluginDjvuTest.class.getSimpleName();
     private static final String FILE = "/mnt/sdcard/Books/a.djvu";
 
     public ReaderPluginDjvuTest() {
-        super(ReaderTestActivity.class);
+        super(Application.class);
     }
 
     public void testJniInterface() throws Exception {
@@ -101,7 +103,7 @@ public class ReaderPluginDjvuTest extends ActivityInstrumentationTestCase2<Reade
     }
 
     private ReaderDocument openTestFile() {
-        DjvuReaderPlugin plugin = new DjvuReaderPlugin(getActivity(), new ReaderPluginOptionsImpl());
+        DjvuReaderPlugin plugin = new DjvuReaderPlugin(getContext(), new ReaderPluginOptionsImpl());
         return openTestFile(plugin);
     }
 
@@ -112,7 +114,7 @@ public class ReaderPluginDjvuTest extends ActivityInstrumentationTestCase2<Reade
     }
 
     public void testCleanup() {
-        DjvuReaderPlugin plugin = new DjvuReaderPlugin(getActivity(), new ReaderPluginOptionsImpl());
+        DjvuReaderPlugin plugin = new DjvuReaderPlugin(getContext(), new ReaderPluginOptionsImpl());
         for (int i = 0; i < 100; i++) {
             ReaderDocument doc = openTestFile(plugin);
             assertNotNull(doc);
