@@ -57,7 +57,7 @@ public class OnyxStatistics implements StatisticsBase {
     }
 
     private void flushStatistics(final Context context) {
-        PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(context, statisticsQueue, url);
+        PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(context, statisticsQueue, url, false);
         statisticsQueue = new ArrayList<>();
         cloudManager.submitRequest(context, statisticsRequest, null);
     }
