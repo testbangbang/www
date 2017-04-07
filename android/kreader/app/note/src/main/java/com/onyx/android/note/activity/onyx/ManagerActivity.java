@@ -85,7 +85,8 @@ public class ManagerActivity extends BaseManagerActivity {
 
     private void checkOldScribbleData() {
         boolean imported = NotePreference.getBooleanValue(this, NotePreference.KEY_HAS_IMPORT_OLD_SCRIBBLE, false);
-        if (imported) {
+        boolean hasOpened = NotePreference.getBooleanValue(this, NotePreference.KEY_HAS_OPEN_IMPORT_OLD_SCRIBBLE_DIALOG, false);
+        if (imported || hasOpened) {
             return;
         }
         final GetOldScribbleCountAction action = new GetOldScribbleCountAction();
@@ -94,6 +95,7 @@ public class ManagerActivity extends BaseManagerActivity {
             public void done(BaseRequest request, Throwable e) {
                 int count = action.getCount();
                 if (count > 0) {
+                    NotePreference.setBooleanValue(NotePreference.KEY_HAS_OPEN_IMPORT_OLD_SCRIBBLE_DIALOG, true);
                     OnyxCustomDialog.getConfirmDialog(ManagerActivity.this, getString(R.string.find_old_scribble), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -328,6 +330,7 @@ public class ManagerActivity extends BaseManagerActivity {
     }
 
     private void importScribbleData() {
+        NotePreference.setBooleanValue(NotePreference.KEY_HAS_IMPORT_OLD_SCRIBBLE, true);
         final ImportScribbleAction<ManagerActivity> scribbleAction = new ImportScribbleAction();
         scribbleAction.execute(this, new BaseCallback() {
             @Override
@@ -335,7 +338,6 @@ public class ManagerActivity extends BaseManagerActivity {
                 if (e == null) {
                     loadNoteList();
                 }
-                NotePreference.setBooleanValue(NotePreference.KEY_HAS_IMPORT_OLD_SCRIBBLE, true);
             }
         });
     }

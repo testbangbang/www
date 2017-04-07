@@ -25,19 +25,19 @@ public class OnyxBaseDialog extends Dialog {
 
     @Override
     public void show() {
-        EpdController.enableRegal(false);
+        EpdController.disableRegal();
         super.show();
     }
 
     @Override
     public void dismiss() {
-        EpdController.enableRegal(true);
+        EpdController.enableRegal();
         super.dismiss();
     }
 
     @Override
     public void hide() {
-        EpdController.enableRegal(true);
+        EpdController.enableRegal();
         super.hide();
     }
 }
