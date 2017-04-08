@@ -94,6 +94,7 @@ public class RK3026Device extends BaseDevice {
     private static Method sMethodSupportRegal;
     private static Method sMethodHoldDisplay;
     private static Method sMethodEnableRegal;
+    private static Method sMethodForceEpdPart;
 
     private static final String UNKNOWN = "unknown";
     private static final String DEVICE_ID = "ro.deviceid";
@@ -129,6 +130,7 @@ public class RK3026Device extends BaseDevice {
                 sMethodSupportRegal = ReflectUtil.getMethodSafely(class_view, "supportRegal");
                 sMethodHoldDisplay = ReflectUtil.getMethodSafely(class_view, "holdDisplay", boolean.class, int.class, int.class);
                 sMethodEnableRegal = ReflectUtil.getMethodSafely(class_view, "enableRegal", boolean.class);
+                sMethodForceEpdPart = ReflectUtil.getMethodSafely(class_view, "forceEpdPart", boolean.class);
 
                 @SuppressWarnings("rawtypes")
                 Class class_device_controller = Class.forName("android.hardware.DeviceController");
@@ -556,4 +558,10 @@ public class RK3026Device extends BaseDevice {
     public void enableRegal(boolean enable) {
         ReflectUtil.invokeMethodSafely(sMethodEnableRegal, null, enable);
     }
+
+    @Override
+    public void setForcePartialUpdate(View view, boolean enabled) {
+        ReflectUtil.invokeMethodSafely(sMethodForceEpdPart, view, enabled);
+    }
+
 }

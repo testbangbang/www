@@ -9,6 +9,7 @@ import android.view.ScaleGestureDetector;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
