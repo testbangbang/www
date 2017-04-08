@@ -6,7 +6,7 @@
   "defaultFontSizeIndex" : 3,
   "defaultLineSpacingIndex" : 2,
   "supportBrushPen": true,
-  "supportMultipleTabs": true,
+  "supportMultipleTabs": false,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
