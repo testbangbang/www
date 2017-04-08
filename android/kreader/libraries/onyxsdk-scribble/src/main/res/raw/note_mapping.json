@@ -132,10 +132,10 @@
 
 
   "note": {"mappingList": [
-    { "orientation" : 270,  "tx" : 0, "ty" : 1200, "epd": 90, "etx": 1200, "ety": 0},
-    { "orientation" : 180,  "tx" : 1600, "ty" : 1200,  "epd": 0, "etx": 0, "ety": 0},
-    { "orientation" : 90,  "tx" : 1600, "ty" : 0,  "epd": 270, "etx": 0, "ety": 1600},
-    { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 1600, "ety": 1200}],
+    { "orientation" : 270,  "tx" : 0, "ty" : 1404, "epd": 90, "etx": 1404, "ety": 0},
+    { "orientation" : 180,  "tx" : 1872, "ty" : 1404,  "epd": 0, "etx": 0, "ety": 0},
+    { "orientation" : 90,  "tx" : 1872, "ty" : 0,  "epd": 270, "etx": 0, "ety": 1872},
+    { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 1872, "ety": 1404}],
 
     "pressureList" : [
       {"pressure": 64, "ratio": 0.30},
