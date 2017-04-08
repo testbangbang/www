@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.SortBy;
@@ -26,7 +27,13 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.provider.LocalDataProvider;
 import com.onyx.android.sdk.data.model.ReadingProgress;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.request.data.db.AddToLibraryRequest;
+import com.onyx.android.sdk.data.request.data.db.BuildLibraryRequest;
+import com.onyx.android.sdk.data.request.data.db.ClearLibraryRequest;
+import com.onyx.android.sdk.data.request.data.db.DeleteLibraryRequest;
+import com.onyx.android.sdk.data.request.data.db.LibraryRequest;
 import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
+import com.onyx.android.sdk.data.request.data.db.RemoveFromLibraryRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -56,6 +63,12 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
     public MetadataTest() {
         super(Application.class);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        createApplication();
     }
 
     public void init() {
@@ -640,7 +653,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     private void runTestLibrarySearchBooksAndDescTitle(String[] libraryIdSet, int libraryIndex, String search,
-                                                          long totalCount, int perCount) {
+                                                       long totalCount, int perCount) {
         final QueryArgs queryArgs = QueryBuilder.librarySearchQuery(libraryIdSet[libraryIndex],
                 search, SortBy.BookTitle, SortOrder.Desc);
         runTestMetadataQueryArgs("####SearchBooks,libraryIndex:" + libraryIndex, totalCount, perCount, queryArgs,
@@ -757,7 +770,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
                     assertNotNull(metadataRequest.getList());
                     assertTrue(metadataRequest.getCount() == set.size());
                     assertTrue(metadataRequest.getList().size() == set.size());
-                    for(Metadata metadata : metadataRequest.getList()) {
+                    for (Metadata metadata : metadataRequest.getList()) {
                         assertTrue(set.contains(metadata.getIdString()));
                         set.remove(metadata.getIdString());
                     }
@@ -769,40 +782,39 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
     }
 
-    private static int currentFloor = 0;
+    private static int maxFloor = 2;
 
-    private int getNestedLibrary(String parentIdString) {
-        if (currentFloor != 0 && currentFloor % 3 == 0) {//most 3
+    private int getNestedLibrary(String parentIdString, int currentFloor) {
+        if (currentFloor >= maxFloor) {
             return 0;
         }
         currentFloor++;
         int total = 0;
-        int randomCount = TestUtils.randInt(4, 7);
+        int randomCount = TestUtils.randInt(3, 5);
         total += randomCount;
+        Log.e("###perFloorCount:", String.valueOf(randomCount));
         Library[] libraries = getRandomLibrary(randomCount);
         for (Library library : libraries) {
             library.setParentUniqueId(parentIdString);
             library.save();
-            total += getNestedLibrary(library.getIdString());
+            total += getNestedLibrary(library.getIdString(), currentFloor);
         }
-        Log.e("###perFloorCount:", String.valueOf(randomCount));
         return total;
     }
 
-    private List<Library> loadRecursiveLibraryList(DataProviderBase providerBase, String parentIdString) {
-        List<Library> libraryList = new ArrayList<>();
-        List<Library> libraries = providerBase.loadAllLibrary(parentIdString);
-        if (!CollectionUtils.isNullOrEmpty(libraries)) {
-            libraryList.addAll(libraries);
-            for (Library library : libraries) {
-                libraryList.addAll(loadRecursiveLibraryList(providerBase, library.getIdString()));
-            }
+    private void loadRecursiveLibraryList(DataProviderBase providerBase, List<Library> resultList, String parentIdString) {
+        List<Library> libraryList = providerBase.loadAllLibrary(parentIdString);
+        if (CollectionUtils.isNullOrEmpty(libraryList)) {
+            return;
         }
-        return libraryList;
+        resultList.addAll(libraryList);
+        for (Library library : libraryList) {
+            loadRecursiveLibraryList(providerBase, resultList, library.getIdString());
+        }
     }
 
     public void test00LibraryIntegratedFunc() {
-        currentFloor = 0;
+        maxFloor = 2;
         clearTestFolder();
         Debug.setDebug(true);
 
@@ -814,9 +826,10 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         //get nestedIn Library
         Library topLibrary = getRandomLibrary();
         topLibrary.save();
-        final int libraryCount = getNestedLibrary(topLibrary.getIdString());
+        final int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
         Log.e("###totalLibraryCount", String.valueOf(libraryCount));
-        List<Library> list = loadRecursiveLibraryList(providerBase, topLibrary.getIdString());
+        List<Library> list = new ArrayList<>();
+        loadRecursiveLibraryList(providerBase, list, topLibrary.getIdString());
         assertTrue(libraryCount == CollectionUtils.getSize(list));
         final Map<String, Integer> libraryBookCountMap = new HashMap<>();
         final Map<String, Integer> libraryAddBookFreqMap = new HashMap<>();
@@ -828,8 +841,8 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
 
         long total = 0;
-        for (int r = 0; r < 10; ++r) {
-            final int limit = TestUtils.randInt(10, 20);
+        for (int r = 0; r < 70; ++r) {
+            final int limit = TestUtils.randInt(100, 200);
             final int finishBookCount = 35;
             final int readingBookCount = 30;
             final int tagsBooKCount = 50;
@@ -877,13 +890,13 @@ public class MetadataTest extends ApplicationTestCase<Application> {
                     metadataCollection.save();
                 }
             }
+
             total += limit;
             final long totalCount = total;
             int libraryBookTotalCount = 0;
             for (String s : libraryIdSet) {
                 libraryBookTotalCount += libraryBookCountMap.get(s);
             }
-
             Log.e("##LibraryIntegratedFunc", "round generated: " + limit);
             Log.e("##LibraryIntegratedFunc", "total round generated: " + totalCount);
             Log.e("##LibraryIntegratedFunc", "addToLibraryBookTotalCount: " + libraryBookTotalCount);
@@ -938,6 +951,15 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     public DataProviderBase getProviderBase() {
         init();
         return DataProviderManager.getDataProvider();
+    }
+
+    public DataProviderBase getProviderBaseAndClearTable() {
+        init();
+        DataProviderBase dataProviderBase = DataProviderManager.getDataProvider();
+        dataProviderBase.clearMetadata();
+        dataProviderBase.clearLibrary();
+        dataProviderBase.clearMetadataCollection();
+        return dataProviderBase;
     }
 
     public static Library getRandomLibrary() {
@@ -1130,6 +1152,485 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             int size = providerBase.loadMetadataCollection(getContext(), libraryList[i].getIdString()).size();
             assertTrue(size == 0);
         }
+    }
+
+    private int getRandomInt(int max, int filter) {
+        if (max == 0) {
+            return 0;
+        }
+        int result = TestUtils.randInt(0, max);
+        if (result != filter) {
+            return result;
+        }
+        return getRandomInt(max, filter);
+    }
+
+    public void testAddToLibraryRequest() {
+        maxFloor = 2;
+        Debug.setDebug(true);
+        clearTestFolder();
+
+        DataProviderBase providerBase = getProviderBase();
+        providerBase.clearLibrary();
+        providerBase.clearMetadataCollection();
+        providerBase.clearMetadata();
+
+        DataManager dataManager = new DataManager();
+
+        Library topLibrary = new Library();
+        int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
+        List<Library> list = new ArrayList<>();
+        DataManagerHelper.deepLoadAllLibrary(dataManager, list, topLibrary.getIdString());
+        assertTrue(libraryCount == CollectionUtils.getSize(list));
+
+        topLibrary.save();
+        list.add(0, topLibrary);
+        libraryCount++;
+
+        int metadataCount = TestUtils.randInt(300, 500);
+        int readingCount = TestUtils.randInt(metadataCount / 3, metadataCount / 2);
+        List<Metadata> metaList = new ArrayList<>();
+        for (int i = 0; i < metadataCount; i++) {
+            Metadata meta = getRandomMetadata();
+            if (i < readingCount) {
+                meta.setLastAccess(new Date());
+                meta.setProgress("40/100");
+                meta.setReadingStatus(Metadata.ReadingStatus.READING);
+            }
+            meta.save();
+            metaList.add(meta);
+        }
+        final Benchmark benchMark = new Benchmark();
+        int from = 0;
+        for (int i = 0; i <= 5; i++) {
+            int to = getRandomInt(libraryCount - 1, from);
+            final int r = i;
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            benchMark.restart();
+            AddToLibraryRequest addToLibraryRequest = new AddToLibraryRequest(list.get(from), list.get(to), metaList);
+            dataManager.submit(getContext(), addToLibraryRequest, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    assertNull(e);
+                    countDownLatch.countDown();
+                    benchMark.reportError("####testAddToLibraryRequest,round:" + r);
+                }
+            });
+            awaitCountDownLatch(countDownLatch);
+            from = to;
+            runTestLibraryAllBooksAndCreatedAtDesc(new String[]{list.get(to).getIdString()}, 0, metaList.size(), metaList.size() / 10);
+            runTestLibraryReadingBooksAndDescName(new String[]{list.get(to).getIdString()}, 0, readingCount, readingCount / 10);
+        }
+    }
+
+    public void testDeleteLibraryRequest() {
+        maxFloor = 2;
+        Debug.setDebug(true);
+        clearTestFolder();
+
+        DataProviderBase providerBase = getProviderBaseAndClearTable();
+
+        DataManager dataManager = new DataManager();
+
+        Library topLibrary = getRandomLibrary();
+        topLibrary.save();
+        int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
+        List<Library> libraryList = new ArrayList<>();
+        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, topLibrary.getIdString());
+        assertTrue(CollectionUtils.getSize(libraryList) == libraryCount);
+        libraryList.add(0, topLibrary);
+
+        int total = 0;
+        for (int i = 0; i < libraryList.size(); i++) {
+            Library library = libraryList.get(i);
+            int metadataCount = TestUtils.randInt(50, 55);
+            total += metadataCount;
+            for (int j = 0; j < metadataCount; j++) {
+                Metadata meta = getRandomMetadata();
+                meta.save();
+                MetadataCollection collection = MetadataCollection.create(meta.getIdString(), library.getIdString());
+                collection.save();
+            }
+        }
+
+        int libraryIndex = 1;
+        do {
+            List<Library> tmpList = new ArrayList<>();
+            libraryIndex = getRandomInt(libraryList.size() - 1, 0);
+            Library parentLibrary = libraryList.get(libraryIndex);
+            DataManagerHelper.deepLoadAllLibrary(dataManager, tmpList, parentLibrary.getIdString());
+            tmpList.add(0, parentLibrary);
+
+            int count = 0;
+            for (Library library : tmpList) {
+                count += providerBase.loadMetadataCollection(getContext(), library.getIdString()).size();
+            }
+            QueryArgs args = QueryBuilder.libraryAllBookQuery(parentLibrary.getParentUniqueId(), SortBy.CreationTime, SortOrder.Desc);
+            count += providerBase.count(getContext(), args);
+
+            //calculate time when deleting
+            final int calCount = count;
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final Benchmark benchMark = new Benchmark();
+            DeleteLibraryRequest deleteRequest = new DeleteLibraryRequest(parentLibrary);
+            dataManager.submit(getContext(), deleteRequest, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    assertNull(e);
+                    benchMark.reportError("##testDeleteLibraryRequest,metaCollectionCount:" + calCount);
+                    countDownLatch.countDown();
+                }
+            });
+            awaitCountDownLatch(countDownLatch);
+
+            //check metadata count after deleting
+            assertTrue(count == dataManager.countMetadataList(getContext(), QueryBuilder.libraryAllBookQuery(parentLibrary.getParentUniqueId(),
+                    SortBy.CreationTime, SortOrder.Desc)));
+            for (Library library : tmpList) {
+                for (Library tmp : libraryList) {
+                    if (tmp.getIdString().equalsIgnoreCase(library.getIdString())) {
+                        libraryList.remove(tmp);
+                        break;
+                    }
+                }
+            }
+        } while (libraryIndex != 0);
+
+        //test all book when all the library was deleted.
+        runTestLibraryAllBooksAndCreatedAtDesc(null, -1, total, total / 10);
+        libraryList.clear();
+        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, null);
+        assertTrue(libraryList.size() == 0);
+    }
+
+    public void testClearLibraryRequest() {
+        maxFloor = 2;
+        Debug.setDebug(true);
+        clearTestFolder();
+
+        DataProviderBase providerBase = getProviderBaseAndClearTable();
+
+        DataManager dataManager = new DataManager();
+
+        Library topLibrary = getRandomLibrary();
+        topLibrary.save();
+        int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
+        List<Library> libraryList = new ArrayList<>();
+        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, topLibrary.getIdString());
+        assertTrue(CollectionUtils.getSize(libraryList) == libraryCount);
+        libraryList.add(0, topLibrary);
+
+        int total = 0;
+        for (int i = 0; i < libraryList.size(); i++) {
+            Library library = libraryList.get(i);
+            int metadataCount = TestUtils.randInt(50, 55);
+            total += metadataCount;
+            for (int j = 0; j < metadataCount; j++) {
+                Metadata meta = getRandomMetadata();
+                meta.save();
+                MetadataCollection collection = MetadataCollection.create(meta.getIdString(), library.getIdString());
+                collection.save();
+            }
+        }
+
+        int libraryIndex = 1;
+        do {
+            List<Library> tmpList = new ArrayList<>();
+            libraryIndex = getRandomInt(libraryList.size() - 1, 0);
+            Library parentLibrary = libraryList.get(libraryIndex);
+            DataManagerHelper.deepLoadAllLibrary(dataManager, tmpList, parentLibrary.getIdString());
+
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final Benchmark benchMark = new Benchmark();
+            ClearLibraryRequest clearRequest = new ClearLibraryRequest(parentLibrary);
+            dataManager.submit(getContext(), clearRequest, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    assertNull(e);
+                    countDownLatch.countDown();
+                }
+            });
+            awaitCountDownLatch(countDownLatch);
+            if (!CollectionUtils.isNullOrEmpty(tmpList)) {
+                benchMark.reportError("##testClearLibraryRequest,libraryCount:" + CollectionUtils.getSize(tmpList));
+            }
+
+            //test if empty
+            QueryArgs args = QueryBuilder.libraryAllBookQuery(parentLibrary.getIdString(), SortBy.CreationTime, SortOrder.Desc);
+            assertTrue(providerBase.count(getContext(), args) == 0);
+            List<Library> checkEmptyLibraryList = new ArrayList<>();
+            DataManagerHelper.deepLoadAllLibrary(dataManager, checkEmptyLibraryList, parentLibrary.getIdString());
+            assertTrue(CollectionUtils.getSize(checkEmptyLibraryList) == 0);
+
+            if (tmpList.size() == 0) {
+                tmpList.add(parentLibrary);
+            }
+            for (Library library : tmpList) {
+                for (Library tmp : libraryList) {
+                    if (tmp.getIdString().equalsIgnoreCase(library.getIdString())) {
+                        libraryList.remove(tmp);
+                        break;
+                    }
+                }
+            }
+        } while (libraryIndex != 0);
+        //test all book when all the library does't contains metadata
+        runTestLibraryAllBooksAndCreatedAtDesc(null, -1, total, total / 10);
+        libraryList.clear();
+        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, null);
+        assertTrue(CollectionUtils.getSize(libraryList) == 1);// only topLibrary
+    }
+
+    public void testLibraryRequest() {
+        maxFloor = 2;
+        Debug.setDebug(true);
+        clearTestFolder();
+        getProviderBaseAndClearTable();
+
+        DataManager dataManager = new DataManager();
+
+        Library topLibrary = getRandomLibrary();
+        topLibrary.save();
+        int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
+        List<Library> libraryList = new ArrayList<>();
+        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, topLibrary.getIdString());
+        assertTrue(CollectionUtils.getSize(libraryList) == libraryCount);
+        libraryList.add(0, topLibrary);
+
+        final Map<String, Integer> libraryMetaCountMap = new HashMap<>();
+        for (int i = 0; i < libraryList.size(); i++) {
+            Library library = libraryList.get(i);
+            int metadataCount = TestUtils.randInt(120, 125);
+            libraryMetaCountMap.put(library.getIdString(), metadataCount);
+            for (int j = 0; j < metadataCount; j++) {
+                Metadata meta = getRandomMetadata();
+                meta.save();
+                MetadataCollection collection = MetadataCollection.create(meta.getIdString(), library.getIdString());
+                collection.save();
+            }
+        }
+
+        for (int i = 0; i < libraryList.size(); i++) {
+            final Library library = libraryList.get(i);
+            final int index = i;
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final Benchmark benchMark = new Benchmark();
+            final QueryArgs args = QueryBuilder.libraryAllBookQuery(library.getIdString(), SortBy.CreationTime, SortOrder.Desc);
+            final LibraryRequest libraryRequest = new LibraryRequest(args);
+            dataManager.submit(getContext(), libraryRequest, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    assertNull(e);
+                    benchMark.reportError("##testLibraryRequest,index:" + index);
+                    List<Library> childLibraryList = libraryRequest.getLibraryList();
+                    if (!CollectionUtils.isNullOrEmpty(childLibraryList)) {
+                        for (Library tmp : childLibraryList) {
+                            assertEquals(tmp.getParentUniqueId(), library.getIdString());
+                        }
+                    }
+                    assertTrue(libraryRequest.getTotalCount() == libraryMetaCountMap.get(library.getIdString()));
+                    Metadata tmp = libraryRequest.getBookList().get(0);
+                    for (Metadata metadata : libraryRequest.getBookList()) {
+                        assertTrue(tmp.getCreatedAt().getTime() >= metadata.getCreatedAt().getTime());
+                        tmp = metadata;
+                    }
+                    countDownLatch.countDown();
+                }
+            });
+            awaitCountDownLatch(countDownLatch);
+        }
+    }
+
+    public void testRemoveLibraryRequest() {
+        maxFloor = 2;
+        Debug.setDebug(true);
+        clearTestFolder();
+        getProviderBaseAndClearTable();
+
+        DataManager dataManager = new DataManager();
+
+        Library topLibrary = getRandomLibrary();
+        topLibrary.save();
+        int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
+        List<Library> libraryList = new ArrayList<>();
+        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, topLibrary.getIdString());
+        assertTrue(CollectionUtils.getSize(libraryList) == libraryCount);
+        libraryList.add(0, topLibrary);
+
+        Map<String, Integer> libraryMetaCountMap = new HashMap<>();
+        for (int i = 0; i < libraryList.size(); i++) {
+            Library library = libraryList.get(i);
+            int metadataCount = TestUtils.randInt(150, 155);
+            libraryMetaCountMap.put(library.getIdString(), metadataCount);
+            for (int j = 0; j < metadataCount; j++) {
+                Metadata meta = getRandomMetadata();
+                meta.save();
+                MetadataCollection collection = MetadataCollection.create(meta.getIdString(), library.getIdString());
+                collection.save();
+            }
+        }
+
+        int topTotalCount = 0;
+        for (int i = 0; i < libraryList.size(); i++) {
+            Library library = libraryList.get(i);
+            int limit = TestUtils.randInt(145, 150);
+            topTotalCount += limit;
+            QueryArgs args = QueryBuilder.libraryAllBookQuery(library.getIdString(), SortBy.CreationTime, SortOrder.Desc);
+            args.limit = limit;
+            List<Metadata> list = dataManager.getMetadataListWithLimit(getContext(), args);
+            final int index = i;
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            final Benchmark benchMark = new Benchmark();
+            RemoveFromLibraryRequest removeRequest = new RemoveFromLibraryRequest(library, list);
+            dataManager.submit(getContext(), removeRequest, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    assertNull(e);
+                    benchMark.reportError("##testRemoveFromLibraryRequest,index:" + index);
+                    countDownLatch.countDown();
+                }
+            });
+            awaitCountDownLatch(countDownLatch);
+
+            args.limit = Integer.MAX_VALUE;
+            assertTrue(dataManager.countMetadataList(getContext(), args) == libraryMetaCountMap.get(library.getIdString()) - limit);
+
+            //test top library count
+            args = QueryBuilder.libraryAllBookQuery(null, SortBy.CreationTime, SortOrder.Desc);
+            assertTrue(dataManager.countMetadataList(getContext(), args) == topTotalCount);
+        }
+    }
+
+    private Set<String> getRandomStringSet(int count) {
+        Set<String> set = new HashSet<>();
+        for (int i = 0; i < count; i++) {
+            set.add(generateRandomUUID());
+        }
+        return set;
+    }
+
+    private String getRandomString(Set<String> set) {
+        List<String> list = new ArrayList<>();
+        list.addAll(set);
+        int index = TestUtils.randInt(0, list.size() - 1);
+        return list.get(index);
+    }
+
+    public void testBuildLibraryRequest() {
+        Debug.setDebug(true);
+        clearTestFolder();
+
+        DataProviderBase providerBase = getProviderBaseAndClearTable();
+
+        Set<String> seriesSet = getRandomStringSet(10);
+        Set<String> tagSet = getFormatTagSet();
+        Set<String> titleSet = getRandomStringSet(10);
+        Set<String> authorSet = getRandomStringSet(10);
+
+        int typeSetCount = TestUtils.randInt(0, 10);
+        int seriesSetCount = TestUtils.randInt(typeSetCount, 20);
+        int tagSetCount = TestUtils.randInt(seriesSetCount, 30);
+        int titleSetCount = TestUtils.randInt(tagSetCount, 40);
+        int authorCount = TestUtils.randInt(titleSetCount, 50);
+
+        int count = TestUtils.randInt(150, 180);
+        for (int i = 0; i < count; i++) {
+            Metadata meta = getRandomMetadata();
+            meta.setType(null);
+            if (i < typeSetCount) {
+                meta.setType(TestUtils.randomType());
+            }
+            if (i < seriesSetCount) {
+                meta.setSeries(getRandomString(seriesSet));
+            }
+            if (i < tagSetCount) {
+                meta.setTags(getRandomString(tagSet));
+            }
+            if (i < titleSetCount) {
+                meta.setTitle(getRandomString(titleSet));
+            }
+            if (i < authorCount) {
+                meta.setAuthors(getRandomString(authorSet));
+            }
+            meta.save();
+        }
+
+        //test fileType
+        Library library = getRandomLibrary();
+        QueryArgs args = new QueryArgs();
+        args.fileType = TestUtils.defaultContentTypes();
+        runBuildLibraryAndCompare(library, args, typeSetCount);
+        providerBase.deleteMetadataCollection(getContext(), library.getIdString());
+
+        //test tags
+        args = new QueryArgs();
+        args.tags = tagSet;
+        runBuildLibraryAndCompare(library, args, tagSetCount);
+        providerBase.deleteMetadataCollection(getContext(), library.getIdString());
+
+        //test series
+        args = new QueryArgs();
+        args.series = seriesSet;
+        runBuildLibraryAndCompare(library, args, seriesSetCount);
+        providerBase.deleteMetadataCollection(getContext(), library.getIdString());
+
+        //test title
+        args = new QueryArgs();
+        args.title = titleSet;
+        runBuildLibraryAndCompare(library, args, titleSetCount);
+        providerBase.deleteMetadataCollection(getContext(), library.getIdString());
+
+        //test author
+        args = new QueryArgs();
+        args.author = authorSet;
+        runBuildLibraryAndCompare(library, args, authorCount);
+        providerBase.deleteMetadataCollection(getContext(), library.getIdString());
+
+        args = new QueryArgs();
+        args.title = titleSet;
+        args.author = authorSet;
+        runBuildLibraryAndCompare(library, args, titleSetCount);
+        providerBase.deleteMetadataCollection(getContext(), library.getIdString());
+
+        args = new QueryArgs();
+        args.tags = tagSet;
+        args.title = titleSet;
+        args.author = authorSet;
+        runBuildLibraryAndCompare(library, args, tagSetCount);
+        providerBase.deleteMetadataCollection(getContext(), library.getIdString());
+
+        args = new QueryArgs();
+        args.series = seriesSet;
+        args.tags = tagSet;
+        args.title = titleSet;
+        args.author = authorSet;
+        runBuildLibraryAndCompare(library, args, seriesSetCount);
+        providerBase.deleteMetadataCollection(getContext(), library.getIdString());
+
+        args = new QueryArgs();
+        args.fileType = TestUtils.defaultContentTypes();
+        args.series = seriesSet;
+        args.tags = tagSet;
+        args.title = titleSet;
+        args.author = authorSet;
+        runBuildLibraryAndCompare(library, args, typeSetCount);
+        providerBase.deleteMetadataCollection(getContext(), library.getIdString());
+    }
+
+    private void runBuildLibraryAndCompare(final Library library, QueryArgs args, final int compareCount) {
+        DataManager dataManager = new DataManager();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final BuildLibraryRequest buildRequest = new BuildLibraryRequest(library, args);
+        dataManager.submit(getContext(), buildRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                assertNull(e);
+                assertEquals(CollectionUtils.getSize(buildRequest.getBookList()), compareCount);
+                countDownLatch.countDown();
+            }
+        });
+        awaitCountDownLatch(countDownLatch);
+        runTestLibraryAllBooksAndCreatedAtDesc(new String[]{library.getIdString()}, 0, compareCount, compareCount / 10);
     }
 }
 

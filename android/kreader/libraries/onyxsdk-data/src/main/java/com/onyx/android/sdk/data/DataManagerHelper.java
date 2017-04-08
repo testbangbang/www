@@ -65,18 +65,18 @@ public class DataManagerHelper {
         }
     }
 
-    public static List<Library> loadAllLibrary(List<Library> list, String parentId) {
-        List<Library> tmpList = getDataProviderBase().loadAllLibrary(parentId);
+    public static List<Library> loadAllLibrary(DataManager dataManager, List<Library> list, String parentId) {
+        List<Library> tmpList = dataManager.getDataProviderBase().loadAllLibrary(parentId);
         if (tmpList.size() > 0) {
             list.addAll(tmpList);
         }
         return tmpList;
     }
 
-    public static void deepLoadAllLibrary(List<Library> list, String targetId) {
-        List<Library> tmpList = loadAllLibrary(list, targetId);
+    public static void deepLoadAllLibrary(DataManager dataManager, List<Library> list, String targetId) {
+        List<Library> tmpList = loadAllLibrary(dataManager, list, targetId);
         for (Library library : tmpList) {
-            deepLoadAllLibrary(list, library.getIdString());
+            deepLoadAllLibrary(dataManager, list, library.getIdString());
         }
     }
 
@@ -120,5 +120,34 @@ public class DataManagerHelper {
 
     public static Metadata getMetadataByMD5(Context context, String md5) {
         return new Select().from(Metadata.class).where(Metadata_Table.idString.eq(md5)).querySingle();
+    }
+
+    public static void deleteAllLibrary(Context context, DataManager dataManager, String parentUniqueId,
+                                        List<Library> libraryList) {
+        boolean isDeleteMetaCollection = StringUtils.isNullOrEmpty(parentUniqueId);
+        for (Library tmp : libraryList) {
+            if (isDeleteMetaCollection) {
+                dataManager.getDataProviderBase().deleteMetadataCollection(context, tmp.getIdString());
+            } else {
+                List<MetadataCollection> list = dataManager.getDataProviderBase().loadMetadataCollection(context, tmp.getIdString());
+                for (MetadataCollection metadataCollection : list) {
+                    metadataCollection.setLibraryUniqueId(parentUniqueId);
+                    metadataCollection.save();
+                }
+            }
+            tmp.delete();
+        }
+    }
+
+    public static void deleteMetadataCollection(Context context, DataManager dataManager, String libraryIdString){
+        dataManager.getDataProviderBase().deleteMetadataCollection(context, libraryIdString);
+    }
+
+    public static MetadataCollection loadMetadataCollection(Context context, DataManager dataManager, String libraryIdString, String metaIdString) {
+        return dataManager.getDataProviderBase().loadMetadataCollection(context, libraryIdString, metaIdString);
+    }
+
+    public static List<MetadataCollection> loadMetadataCollection(Context context, DataManager dataManager, String libraryIdString) {
+        return dataManager.getDataProviderBase().loadMetadataCollection(context, libraryIdString);
     }
 }

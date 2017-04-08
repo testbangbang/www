@@ -3,6 +3,7 @@ package com.onyx.android.sdk.data.request.data.db;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.MetadataCollection;
 
 import java.util.List;
 
@@ -21,6 +22,9 @@ public class RemoveFromLibraryRequest extends BaseDBRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-
+        for (Metadata metadata : removeList) {
+            dataManager.getDataProviderBase().deleteMetadataCollection(getContext(),
+                    library.getIdString(), metadata.getIdString());
+        }
     }
 }
