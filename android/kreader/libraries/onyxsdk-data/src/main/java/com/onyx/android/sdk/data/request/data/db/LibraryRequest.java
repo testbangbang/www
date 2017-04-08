@@ -33,7 +33,7 @@ public class LibraryRequest extends BaseDBRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        DataManagerHelper.loadAllLibrary(dataManager, libraryList, queryArgs.libraryUniqueId);
+        DataManagerHelper.loadLibraryList(dataManager, libraryList, queryArgs.libraryUniqueId);
         if (loadMetadata) {
             totalCount = dataManager.countMetadataList(getContext(), queryArgs);
             List<Metadata> metadataList = dataManager.getMetadataListWithLimit(getContext(), queryArgs);

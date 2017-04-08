@@ -92,14 +92,10 @@ public class DataManager {
     }
 
     public List<Metadata> getMetadataListWithLimit(Context context, QueryArgs queryArgs) {
-        return getDataProviderManager().getDataProvider().findMetadataByQueryArgs(context, queryArgs);
+        return getDataProviderBase().findMetadataByQueryArgs(context, queryArgs);
     }
 
     public long countMetadataList(Context context, QueryArgs queryArgs) {
-        return getDataProviderManager().getDataProvider().count(context, queryArgs);
-    }
-
-    public void saveLibrary(Library library) {
-        getDataProviderBase().addLibrary(library);
+        return getDataProviderBase().count(context, queryArgs);
     }
 }

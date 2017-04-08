@@ -21,7 +21,7 @@ public class DeleteLibraryRequest extends BaseDBRequest {
     @Override
     public void execute(DataManager dataManager) throws Exception {
         List<Library> libraryList = new ArrayList<>();
-        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, library.getIdString());
+        DataManagerHelper.loadLibraryRecursive(dataManager, libraryList, library.getIdString());
         libraryList.add(library);
         DataManagerHelper.deleteAllLibrary(getContext(), dataManager, library.getParentUniqueId(), libraryList);
     }

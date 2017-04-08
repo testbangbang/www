@@ -65,7 +65,7 @@ public class DataManagerHelper {
         }
     }
 
-    public static List<Library> loadAllLibrary(DataManager dataManager, List<Library> list, String parentId) {
+    public static List<Library> loadLibraryList(DataManager dataManager, List<Library> list, String parentId) {
         List<Library> tmpList = dataManager.getDataProviderBase().loadAllLibrary(parentId);
         if (tmpList.size() > 0) {
             list.addAll(tmpList);
@@ -73,10 +73,10 @@ public class DataManagerHelper {
         return tmpList;
     }
 
-    public static void deepLoadAllLibrary(DataManager dataManager, List<Library> list, String targetId) {
-        List<Library> tmpList = loadAllLibrary(dataManager, list, targetId);
+    public static void loadLibraryRecursive(DataManager dataManager, List<Library> list, String targetId) {
+        List<Library> tmpList = loadLibraryList(dataManager, list, targetId);
         for (Library library : tmpList) {
-            deepLoadAllLibrary(dataManager, list, library.getIdString());
+            loadLibraryRecursive(dataManager, list, library.getIdString());
         }
     }
 

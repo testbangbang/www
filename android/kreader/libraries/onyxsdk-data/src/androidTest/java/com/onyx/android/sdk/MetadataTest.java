@@ -27,7 +27,7 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.provider.LocalDataProvider;
 import com.onyx.android.sdk.data.model.ReadingProgress;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.data.db.AddToLibraryRequest;
+import com.onyx.android.sdk.data.request.data.db.MoveToLibrary;
 import com.onyx.android.sdk.data.request.data.db.BuildLibraryRequest;
 import com.onyx.android.sdk.data.request.data.db.ClearLibraryRequest;
 import com.onyx.android.sdk.data.request.data.db.DeleteLibraryRequest;
@@ -782,10 +782,10 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
     }
 
-    private static int maxFloor = 2;
+    private static int maxLevel = 2;
 
     private int getNestedLibrary(String parentIdString, int currentFloor) {
-        if (currentFloor >= maxFloor) {
+        if (currentFloor >= maxLevel) {
             return 0;
         }
         currentFloor++;
@@ -814,7 +814,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     public void test00LibraryIntegratedFunc() {
-        maxFloor = 2;
+        maxLevel = 2;
         clearTestFolder();
         Debug.setDebug(true);
 
@@ -1166,7 +1166,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     public void testAddToLibraryRequest() {
-        maxFloor = 2;
+        maxLevel = 2;
         Debug.setDebug(true);
         clearTestFolder();
 
@@ -1180,7 +1180,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         Library topLibrary = new Library();
         int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
         List<Library> list = new ArrayList<>();
-        DataManagerHelper.deepLoadAllLibrary(dataManager, list, topLibrary.getIdString());
+        DataManagerHelper.loadLibraryRecursive(dataManager, list, topLibrary.getIdString());
         assertTrue(libraryCount == CollectionUtils.getSize(list));
 
         topLibrary.save();
@@ -1207,7 +1207,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             final int r = i;
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             benchMark.restart();
-            AddToLibraryRequest addToLibraryRequest = new AddToLibraryRequest(list.get(from), list.get(to), metaList);
+            MoveToLibrary addToLibraryRequest = new MoveToLibrary(list.get(from), list.get(to), metaList);
             dataManager.submit(getContext(), addToLibraryRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -1224,7 +1224,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     public void testDeleteLibraryRequest() {
-        maxFloor = 2;
+        maxLevel = 2;
         Debug.setDebug(true);
         clearTestFolder();
 
@@ -1236,7 +1236,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         topLibrary.save();
         int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
         List<Library> libraryList = new ArrayList<>();
-        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, topLibrary.getIdString());
+        DataManagerHelper.loadLibraryRecursive(dataManager, libraryList, topLibrary.getIdString());
         assertTrue(CollectionUtils.getSize(libraryList) == libraryCount);
         libraryList.add(0, topLibrary);
 
@@ -1258,7 +1258,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             List<Library> tmpList = new ArrayList<>();
             libraryIndex = getRandomInt(libraryList.size() - 1, 0);
             Library parentLibrary = libraryList.get(libraryIndex);
-            DataManagerHelper.deepLoadAllLibrary(dataManager, tmpList, parentLibrary.getIdString());
+            DataManagerHelper.loadLibraryRecursive(dataManager, tmpList, parentLibrary.getIdString());
             tmpList.add(0, parentLibrary);
 
             int count = 0;
@@ -1299,12 +1299,12 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         //test all book when all the library was deleted.
         runTestLibraryAllBooksAndCreatedAtDesc(null, -1, total, total / 10);
         libraryList.clear();
-        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, null);
+        DataManagerHelper.loadLibraryRecursive(dataManager, libraryList, null);
         assertTrue(libraryList.size() == 0);
     }
 
     public void testClearLibraryRequest() {
-        maxFloor = 2;
+        maxLevel = 2;
         Debug.setDebug(true);
         clearTestFolder();
 
@@ -1316,7 +1316,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         topLibrary.save();
         int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
         List<Library> libraryList = new ArrayList<>();
-        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, topLibrary.getIdString());
+        DataManagerHelper.loadLibraryRecursive(dataManager, libraryList, topLibrary.getIdString());
         assertTrue(CollectionUtils.getSize(libraryList) == libraryCount);
         libraryList.add(0, topLibrary);
 
@@ -1338,7 +1338,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             List<Library> tmpList = new ArrayList<>();
             libraryIndex = getRandomInt(libraryList.size() - 1, 0);
             Library parentLibrary = libraryList.get(libraryIndex);
-            DataManagerHelper.deepLoadAllLibrary(dataManager, tmpList, parentLibrary.getIdString());
+            DataManagerHelper.loadLibraryRecursive(dataManager, tmpList, parentLibrary.getIdString());
 
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             final Benchmark benchMark = new Benchmark();
@@ -1359,7 +1359,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             QueryArgs args = QueryBuilder.libraryAllBookQuery(parentLibrary.getIdString(), SortBy.CreationTime, SortOrder.Desc);
             assertTrue(providerBase.count(getContext(), args) == 0);
             List<Library> checkEmptyLibraryList = new ArrayList<>();
-            DataManagerHelper.deepLoadAllLibrary(dataManager, checkEmptyLibraryList, parentLibrary.getIdString());
+            DataManagerHelper.loadLibraryRecursive(dataManager, checkEmptyLibraryList, parentLibrary.getIdString());
             assertTrue(CollectionUtils.getSize(checkEmptyLibraryList) == 0);
 
             if (tmpList.size() == 0) {
@@ -1377,12 +1377,12 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         //test all book when all the library does't contains metadata
         runTestLibraryAllBooksAndCreatedAtDesc(null, -1, total, total / 10);
         libraryList.clear();
-        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, null);
+        DataManagerHelper.loadLibraryRecursive(dataManager, libraryList, null);
         assertTrue(CollectionUtils.getSize(libraryList) == 1);// only topLibrary
     }
 
     public void testLibraryRequest() {
-        maxFloor = 2;
+        maxLevel = 2;
         Debug.setDebug(true);
         clearTestFolder();
         getProviderBaseAndClearTable();
@@ -1393,7 +1393,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         topLibrary.save();
         int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
         List<Library> libraryList = new ArrayList<>();
-        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, topLibrary.getIdString());
+        DataManagerHelper.loadLibraryRecursive(dataManager, libraryList, topLibrary.getIdString());
         assertTrue(CollectionUtils.getSize(libraryList) == libraryCount);
         libraryList.add(0, topLibrary);
 
@@ -1442,7 +1442,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     public void testRemoveLibraryRequest() {
-        maxFloor = 2;
+        maxLevel = 2;
         Debug.setDebug(true);
         clearTestFolder();
         getProviderBaseAndClearTable();
@@ -1453,7 +1453,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         topLibrary.save();
         int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
         List<Library> libraryList = new ArrayList<>();
-        DataManagerHelper.deepLoadAllLibrary(dataManager, libraryList, topLibrary.getIdString());
+        DataManagerHelper.loadLibraryRecursive(dataManager, libraryList, topLibrary.getIdString());
         assertTrue(CollectionUtils.getSize(libraryList) == libraryCount);
         libraryList.add(0, topLibrary);
 
