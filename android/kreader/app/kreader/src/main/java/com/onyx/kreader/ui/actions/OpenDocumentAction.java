@@ -189,6 +189,7 @@ public class OpenDocumentAction extends BaseAction {
 
     private void restoreWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
         final RestoreRequest restoreRequest = new RestoreRequest(options);
+        hideLoadingDialog();
         readerDataHolder.submitRenderRequest(restoreRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -196,7 +197,6 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup(readerDataHolder);
                     return;
                 }
-                hideLoadingDialog();
                 readerDataHolder.submitNonRenderRequest(new SaveDocumentOptionsRequest());
                 readerDataHolder.onDocumentInitRendered();
             }
