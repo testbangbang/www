@@ -212,4 +212,9 @@ public abstract class EpdController
     public static void disableRegal() {
         Device.currentDevice().enableRegal(false);
     }
+
+    public static void setForcePartialUpdate(View view, boolean enabled) {
+        Device.currentDevice().setForcePartialUpdate(view, enabled);
+    }
+
 }

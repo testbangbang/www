@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.RelativeLayout;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -90,6 +91,7 @@ public class MainSettingsActivity extends PreferenceActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            EpdController.setForcePartialUpdate(this.getWindow().getDecorView(), true);
             onBackPressed();
         }
         return super.onKeyDown(keyCode, event);

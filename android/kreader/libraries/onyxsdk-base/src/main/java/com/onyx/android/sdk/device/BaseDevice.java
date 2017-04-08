@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import com.onyx.android.sdk.api.device.epd.EPDMode;
@@ -369,6 +370,9 @@ public class BaseDevice {
     public void gotoSleep(final Context context) {}
 
     public void enableRegal(boolean enable) {
+    }
+
+    public void setForcePartialUpdate(View view, boolean enabled) {
     }
 
 }
