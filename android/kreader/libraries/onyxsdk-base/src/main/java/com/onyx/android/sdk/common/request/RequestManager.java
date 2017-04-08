@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -105,6 +106,9 @@ public class RequestManager {
     }
 
     private final ExecutorContext getExecutorByIdentifier(final String identifier) {
+        if (StringUtils.isNullOrEmpty(identifier)) {
+            return executor;
+        }
         if (threadPoolMap.containsKey(identifier)) {
             return threadPoolMap.get(identifier);
         }
