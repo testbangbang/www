@@ -57,6 +57,10 @@ public class RequestManager {
         getExecutor().removeRequest(request);
     }
 
+    public void removeRequest(final BaseRequest request, String identifier) {
+        getExecutorByIdentifier(identifier).removeRequest(request);
+    }
+
     public Handler getLooperHandler() {
         return handler;
     }

@@ -60,7 +60,7 @@ public class DataManager {
                 } finally {
                     request.afterExecute(DataManager.this);
                     requestManager.dumpWakelocks();
-                    requestManager.removeRequest(request);
+                    requestManager.removeRequest(request, getIdentifier(request));
                 }
             }
         };
