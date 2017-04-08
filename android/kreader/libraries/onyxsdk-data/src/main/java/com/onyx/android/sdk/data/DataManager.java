@@ -71,6 +71,10 @@ public class DataManager {
         requestManager.submitRequest(context, getIdentifier(request), request, generateRunnable(request), callback);
     }
 
+    public void submitToMulti(final Context context, final BaseDataRequest request, final BaseCallback callback) {
+        requestManager.submitRequestToMultiThreadPool(context, getIdentifier(request), request, generateRunnable(request), callback);
+    }
+
     private final String getIdentifier(final BaseDataRequest request) {
         return request.getIdentifier();
     }
