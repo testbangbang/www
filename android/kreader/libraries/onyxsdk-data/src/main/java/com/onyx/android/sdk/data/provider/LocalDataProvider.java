@@ -16,6 +16,7 @@ import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
+import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.io.File;
@@ -58,7 +59,8 @@ public class LocalDataProvider implements DataProviderBase {
 
     public List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs) {
         if (queryArgs.conditionGroup != null) {
-            Where<Metadata> where = new Select().from(Metadata.class).where(queryArgs.conditionGroup);
+            Where<Metadata> where = new Select(queryArgs.propertyList.toArray(new IProperty[0])).from(Metadata.class)
+                    .where(queryArgs.conditionGroup);
             for (OrderBy orderBy : queryArgs.orderByList) {
                 where.orderBy(orderBy);
             }
@@ -259,6 +261,12 @@ public class LocalDataProvider implements DataProviderBase {
             where.and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5));
         }
         where.execute();
+    }
+
+    @Override
+    public void deleteMetadataCollection(Context context, String libraryUniqueId) {
+        new Delete().from(MetadataCollection.class).where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId))
+                .execute();
     }
 
     @Override

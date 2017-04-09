@@ -56,6 +56,12 @@ public class ExecutorContext {
         }
     }
 
+    public boolean isRequestQueueEmpty() {
+        synchronized (requestList) {
+            return requestList.size() <= 0;
+        }
+    }
+
     public ExecutorService getSingleThreadPool()   {
         if (singleThreadPool == null) {
             singleThreadPool = Executors.newSingleThreadExecutor(new ThreadFactory() {

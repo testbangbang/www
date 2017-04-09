@@ -5,6 +5,7 @@ import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +15,12 @@ import java.util.List;
  */
 public class LibraryRequest extends BaseDBRequest {
 
+    private boolean loadMetadata = true;
+    private QueryArgs queryArgs;
+
     private List<Metadata> bookList = new ArrayList<>();
     private List<Library> libraryList = new ArrayList<>();
-    private QueryArgs queryArgs;
-    private boolean loadMetadata = true;
+    private long totalCount;
 
     public LibraryRequest(QueryArgs queryArgs) {
         this.queryArgs = queryArgs;
@@ -30,9 +33,13 @@ public class LibraryRequest extends BaseDBRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        DataManagerHelper.loadAllLibrary(libraryList, queryArgs.libraryUniqueId);
+        DataManagerHelper.loadLibraryList(dataManager, libraryList, queryArgs.libraryUniqueId);
         if (loadMetadata) {
-
+            totalCount = dataManager.countMetadataList(getContext(), queryArgs);
+            List<Metadata> metadataList = dataManager.getMetadataListWithLimit(getContext(), queryArgs);
+            if (!CollectionUtils.isNullOrEmpty(metadataList)) {
+                bookList.addAll(metadataList);
+            }
         }
     }
 
@@ -42,5 +49,9 @@ public class LibraryRequest extends BaseDBRequest {
 
     public List<Library> getLibraryList() {
         return libraryList;
+    }
+
+    public long getTotalCount() {
+        return totalCount;
     }
 }
