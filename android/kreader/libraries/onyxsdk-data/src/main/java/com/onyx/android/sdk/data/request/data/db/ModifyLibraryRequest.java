@@ -10,6 +10,10 @@ public class ModifyLibraryRequest extends BaseDBRequest {
     private Library library;
     private boolean modifyCriteria = false;
 
+    public ModifyLibraryRequest(Library library) {
+        this.library = library;
+    }
+
     public ModifyLibraryRequest(Library library, boolean modifyCriteria) {
         this.library = library;
         this.modifyCriteria = modifyCriteria;
@@ -17,6 +21,10 @@ public class ModifyLibraryRequest extends BaseDBRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
+        if (!modifyCriteria) {
+            library.save();
+            return;
+        }
 
     }
 }

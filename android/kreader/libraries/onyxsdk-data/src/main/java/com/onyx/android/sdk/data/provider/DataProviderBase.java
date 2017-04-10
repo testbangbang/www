@@ -89,6 +89,8 @@ public interface DataProviderBase {
 
     void deleteMetadataCollection(Context context, String libraryUniqueId, String metadataMD5);
 
+    void deleteMetadataCollection(Context context, String libraryUniqueId);
+
     void updateMetadataCollection(MetadataCollection collection);
 
     MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String metadataMD5);

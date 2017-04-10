@@ -1,17 +1,17 @@
 {
-  "epd_width" : 1600,
-  "epd_height" : 1200,
+  "epd_width" : 1872,
+  "epd_height" : 1404,
 
   "epd_post_orientation": 90,
-  "epd_post_tx": 1200,
+  "epd_post_tx": 1404,
   "epd_post_ty": 0,
 
   "view_post_orientation": 270,
   "view_post_tx": 0,
-  "view_post_ty": 1200,
+  "view_post_ty": 1404,
 
-  "touch_width" : 10206,
-  "touch_height": 7422,
+  "touch_width" : 20867,
+  "touch_height": 15625,
 
   "use_raw_input" : 1,
   "single_touch" : 1,

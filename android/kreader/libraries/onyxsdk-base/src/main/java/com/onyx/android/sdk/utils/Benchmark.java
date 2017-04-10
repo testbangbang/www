@@ -25,6 +25,10 @@ public class Benchmark {
         Debug.i(getClass(), msg + " ---> " + String.valueOf(duration()) + "ms");
     }
 
+    public void reportError(final String msg) {
+        Debug.e(getClass(), msg + " ---> " + String.valueOf(duration()) + "ms");
+    }
+
     public long duration() {
         benchmarkEnd = System.currentTimeMillis();
         return benchmarkEnd - benchmarkStart;
