@@ -368,4 +368,43 @@
     <string name="network_data">Network data</string>
     <string name="local_data">Local data</string>
     <string name="file_not_exists">File not exists!</string>
+
+    <string name="setting_keycode_page_down_key" translatable="false">KEYCODE_PAGE_DOWN</string>
+    <string name="setting_keycode_page_up_key" translatable="false">KEYCODE_PAGE_UP</string>
+    <string name="setting_keycode_volume_down_key" translatable="false">KEYCODE_VOLUME_DOWN</string>
+    <string name="setting_keycode_volume_up_key" translatable="false">KEYCODE_VOLUME_UP</string>
+    <string name="setting_keycode_dpad_left_key" translatable="false">KEYCODE_DPAD_LEFT</string>
+    <string name="setting_keycode_dpad_right_key" translatable="false">KEYCODE_DPAD_RIGHT</string>
+    <string name="setting_keycode_dpad_up_key" translatable="false">KEYCODE_DPAD_UP</string>
+    <string name="setting_keycode_dpad_down_key" translatable="false">KEYCODE_DPAD_DOWN</string>
+    <string name="setting_keycode_dpad_center_key" translatable="false">KEYCODE_DPAD_CENTER</string>
+    <string name="setting_keycode_clear_key" translatable="false">KEYCODE_CLEAR</string>
+    <string name="setting_keycode_alt_left_key" translatable="false">KEYCODE_ALT_LEFT</string>
+    <string name="setting_keycode_alt_right_key" translatable="false">KEYCODE_ALT_RIGHT</string>
+    <string name="setting_keycode_button_start_key" translatable="false">KEYCODE_BUTTON_START</string>
+    <string name="setting_keycode_eraser_key" translatable="false">KEYCODE_ERASER</string>
+    <string name="setting_keycode_scribbler_key" translatable="false">KEYCODE_SCRIBBLER</string>
+
+    <string name="setting_keycode_page_down_title" >Next Page Button</string>
+    <string name="setting_keycode_page_up_title" >Prev Page Button</string>
+    <string name="setting_keycode_volume_down_title" >Volume Button Add</string>
+    <string name="setting_keycode_volume_up_title" >Volume Button Reduce</string>
+    <string name="setting_keycode_dpad_left_title" >Left Dpad Button</string>
+    <string name="setting_keycode_dpad_right_title" >Right Dpad Button</string>
+    <string name="setting_keycode_dpad_up_title" >Up Dpad Button</string>
+    <string name="setting_keycode_dpad_down_title" >Down Dpad Button</string>
+    <string name="setting_keycode_dpad_center_title" >Center Dpad Button</string>
+    <string name="setting_keycode_clear_title" >Clear Button</string>
+    <string name="setting_keycode_alt_left_title" >Alt Left Button</string>
+    <string name="setting_keycode_alt_right_title" >Alt Right Button</string>
+    <string name="setting_keycode_button_start_title" >Start Button</string>
+    <string name="setting_keycode_eraser_title" >Eraser Button</string>
+    <string name="setting_keycode_scribbler_title" >Scribbler Button</string>
+
+    <string name="settings_key_binding_show_menu_tittle">Show Menu</string>
+    <string name="settings_key_binding_toggle_bookmark_tittle">Toggle Bookmark</string>
+    <string name="settings_key_binding_change_to_erase_mode_tittle">Change To Erase Mode</string>
+    <string name="settings_key_binding_change_to_scribble_mode_tittle">Change To Scribble Mode</string>
+    <string name="setting_custom_function_key">Set custom function key</string>
+    <string name="unable_to_enable_this_feature">Unable to enable this feature</string>
 </resources>

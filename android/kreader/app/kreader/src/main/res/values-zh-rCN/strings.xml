@@ -300,5 +300,11 @@
   <string name="auto_crop_for_each_block">以上手动设置后，自动裁剪可见范围内空白区域</string>
   <string name="network_data">联网数据</string>
   <string name="local_data">本地数据</string>
-    <string name="file_not_exists">文件不存在!</string>
+  <string name="file_not_exists">文件不存在!</string>
+
+  <string name="settings_key_binding_show_menu_tittle">显示菜单</string>
+  <string name="settings_key_binding_toggle_bookmark_tittle">切换书签</string>
+  <string name="settings_key_binding_change_to_erase_mode_tittle">进入擦除模式</string>
+  <string name="settings_key_binding_change_to_scribble_mode_tittle">进入手写模式</string>
+  <string name="setting_custom_function_key">设置按键自定义功能</string>
 </resources>

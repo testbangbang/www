@@ -145,6 +145,10 @@ public class ShowReaderMenuAction extends BaseAction {
         createReaderSideMenu(readerDataHolder);
     }
 
+    public static boolean containsDisableMenu(ReaderMenuAction action) {
+        return disableMenus.contains(action);
+    }
+
     public static void initDisableMenus(ReaderDataHolder readerDataHolder) {
         disableMenus.clear();
 
@@ -922,7 +926,7 @@ public class ShowReaderMenuAction extends BaseAction {
         clearPageAction.execute(readerDataHolder, null);
     }
 
-    private static void startErasing(final ReaderDataHolder readerDataHolder) {
+    public static void startErasing(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));

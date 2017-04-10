@@ -6,11 +6,14 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyAction;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.R;
 import com.onyx.kreader.ui.actions.DecreaseFontSizeAction;
 import com.onyx.kreader.ui.actions.IncreaseFontSizeAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
@@ -18,6 +21,7 @@ import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.kreader.ui.events.StartNoteDrawingEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -363,17 +367,35 @@ public class HandlerManager {
             increaseFontSize(readerDataHolder);
         } else if (action.equals(KeyAction.DECREASE_FONT_SIZE)) {
             decreaseFontSize(readerDataHolder);
-        } else if (action.equals(KeyAction.MOVE_DOWN)) {
         } else if (action.equals(KeyAction.TOGGLE_BOOKMARK)) {
             toggleBookmark(readerDataHolder);
         } else if (action.equals(KeyAction.SHOW_MENU)) {
-            new ShowReaderMenuAction().execute(readerDataHolder, null);
+            onShowMenu(readerDataHolder);
         } else if (action.equals(KeyAction.CHANGE_TO_ERASE_MODE)) {
+            changeToEraseMode(readerDataHolder);
         } else if (action.equals(KeyAction.CHANGE_TO_SCRIBBLE_MODE)) {
+            changeToScribbleMode(readerDataHolder);
         } else {
             return false;
         }
         return true;
+    }
+
+    private void changeToEraseMode(final ReaderDataHolder readerDataHolder) {
+        changeToScribbleMode(readerDataHolder);
+        ShowReaderMenuAction.startErasing(readerDataHolder);
+    }
+
+    private void changeToScribbleMode(final ReaderDataHolder readerDataHolder) {
+        if (ShowReaderMenuAction.containsDisableMenu(ReaderMenuAction.NOTE)) {
+            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.unable_to_enable_this_feature), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        readerDataHolder.getEventBus().post(new StartNoteDrawingEvent());
+    }
+
+    private void onShowMenu(final ReaderDataHolder readerDataHolder) {
+        new ShowReaderMenuAction().execute(readerDataHolder, null);
     }
 
     private void onMoveLeft(ReaderDataHolder readerDataHolder) {

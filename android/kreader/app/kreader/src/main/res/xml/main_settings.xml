@@ -16,11 +16,6 @@
         <!--android:layout="@layout/settings_custom_preference_item"-->
         <!--android:summary="@string/settings_config_summary"-->
         <!--android:title="@string/settings_config_tittle" />-->
-    <!--<Preference-->
-        <!--android:key="@string/settings_control_key"-->
-        <!--android:layout="@layout/settings_custom_preference_item"-->
-        <!--android:summary="@string/settings_control_summary"-->
-        <!--android:title="@string/settings_control_tittle" />-->
     <Preference
         android:key="@string/settings_status_bar_key"
         android:layout="@layout/settings_custom_preference_item"
@@ -31,6 +26,11 @@
         android:layout="@layout/settings_custom_preference_item"
         android:summary="@string/settings_scribble_bar_summary"
         android:title="@string/settings_scribble_bar_tittle" />
+    <Preference
+        android:key="@string/settings_control_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summary="@string/settings_control_summary"
+        android:title="@string/settings_control_tittle" />
     <Preference
             android:key="@string/settings_version_key"
             android:title="@string/settings_versionName"
