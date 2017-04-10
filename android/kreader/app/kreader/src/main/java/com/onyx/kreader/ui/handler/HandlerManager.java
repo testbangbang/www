@@ -382,16 +382,13 @@ public class HandlerManager {
     }
 
     private void changeToEraseMode(final ReaderDataHolder readerDataHolder) {
-        changeToScribbleMode(readerDataHolder);
-        ShowReaderMenuAction.startErasing(readerDataHolder);
+        if (readerDataHolder.startNoteDrawing()) {
+            ShowReaderMenuAction.startErasing(readerDataHolder);
+        }
     }
 
     private void changeToScribbleMode(final ReaderDataHolder readerDataHolder) {
-        if (ShowReaderMenuAction.containsDisableMenu(ReaderMenuAction.NOTE)) {
-            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.unable_to_enable_this_feature), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        readerDataHolder.getEventBus().post(new StartNoteDrawingEvent());
+        readerDataHolder.startNoteDrawing();
     }
 
     private void onShowMenu(final ReaderDataHolder readerDataHolder) {
