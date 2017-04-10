@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
@@ -96,6 +97,7 @@ public class ShowReaderMenuAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerActivity = (ReaderActivity)readerDataHolder.getContext();
+        EpdController.setForcePartialUpdate(readerActivity.getWindow().getDecorView(), true);
         showReaderMenu(readerDataHolder, DeviceUtils.isFullScreen(readerActivity));
         BaseCallback.invoke(callback, null, null);
     }

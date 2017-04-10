@@ -150,6 +150,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        EpdController.setForcePartialUpdate(this.getWindow().getDecorView(), false);
         afterResume();
     }
 
@@ -226,6 +227,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     public void onBackPressed() {
+        EpdController.setForcePartialUpdate(surfaceView, true);
         ReaderTabHostBroadcastReceiver.sendTabBackPressedIntent(this);
     }
 
@@ -370,6 +372,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
                 Debug.d(getClass(), "surfaceDestroyed");
+                EpdController.setForcePartialUpdate(surfaceView, false);
             }
         };
 
@@ -1052,6 +1055,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         ShowTextSelectionMenuAction.hideTextSelectionPopupMenu();
         getReaderDataHolder().closeActiveDialogs();
         getReaderDataHolder().closeNoteMenu();
+        EpdController.setForcePartialUpdate(surfaceView, false);
     }
 
     private boolean processKeyDown(int keyCode, KeyEvent event) {
