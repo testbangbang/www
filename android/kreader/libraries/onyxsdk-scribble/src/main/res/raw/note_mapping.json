@@ -153,7 +153,28 @@
       {"pressure": 814, "ratio": 0.83},
       {"pressure": 878, "ratio": 0.9},
       {"pressure": 942, "ratio": 0.95},
-      {"pressure": 1024, "ratio": 1}]
+      {"pressure": 1024, "ratio": 1},
+      {"pressure": 1152, "ratio": 1.05},
+      {"pressure": 1280, "ratio": 1.1},
+      {"pressure": 1480, "ratio": 1.15},
+      {"pressure": 1536, "ratio": 1.2},
+      {"pressure": 1664, "ratio": 1.25},
+      {"pressure": 1792, "ratio": 1.3},
+      {"pressure": 1920, "ratio": 1.35},
+      {"pressure": 2048, "ratio": 1.4},
+      {"pressure": 4096, "ratio": 1.4},
+      {"pressure": 1152, "ratio": 1.45},
+      {"pressure": 1280, "ratio": 1.5},
+      {"pressure": 1480, "ratio": 1.55},
+      {"pressure": 1536, "ratio": 1.6},
+      {"pressure": 1664, "ratio": 1.65},
+      {"pressure": 1792, "ratio": 1.7},
+      {"pressure": 1920, "ratio": 1.75},
+      {"pressure": 2048, "ratio": 1.8},
+      {"pressure": 4096, "ratio": 1.85},
+      {"pressure": 4096, "ratio": 1.9},
+      {"pressure": 4096, "ratio": 1.95}]
+
   },
 
 
