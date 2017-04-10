@@ -114,6 +114,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     @Override
     protected void onDestroy() {
+        saveReaderTabState();
         super.onDestroy();
         releaseStartupWakeLock();
     }
@@ -136,7 +137,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             }
         }
         moveReaderTabToBack(currentTab);
-        moveTaskToBack(true);
+        finish();
     }
 
     private void initComponents() {

@@ -47,7 +47,8 @@ public class ChineseTextSectionRecognizer {
     }
 
     public boolean matches() {
-        return succeed && state == SectionState.SECTION_TITLE;
+        return succeed && (state == SectionState.SECTION_TITLE |
+                state == SectionState.SECTION_END);
     }
 
     public String getSectionText() {

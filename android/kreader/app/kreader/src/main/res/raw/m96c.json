@@ -4,6 +4,7 @@
   "ttsEnabled" : true,
   "hasFrontLight" : false,
   "disableNoteFunc" : false,
+  "supportMultipleTabs": true,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
