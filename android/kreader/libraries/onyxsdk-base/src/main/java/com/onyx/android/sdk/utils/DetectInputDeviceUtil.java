@@ -15,22 +15,23 @@ public class DetectInputDeviceUtil {
     private static final String INPUT_DEVICES_INFO_FILE = "/proc/bus/input/devices";
     private static final String SPLIT_TAG_B = "B:";
     private static final String MATCH_TAG_HANDLERS = "Handlers";
-    private static final List<String> TP_NAME = new ArrayList<String>(Arrays.asList("hanvon_tp", "Wacom"));
+    private static final List<String> TP_LIST = new ArrayList<String>(Arrays.asList("hanvon_tp", "Wacom"));
 
     public static String detectInputDevicePath() {
         String result = null;
-        if (FileUtils.fileExist(INPUT_DEVICES_INFO_FILE)) {
-            String content = FileUtils.readContentOfFile(new File(INPUT_DEVICES_INFO_FILE));
-            if (StringUtils.isNotBlank(content)) {
-                String[] splitBstr = split(content, SPLIT_TAG_B);
-                String matchTpStr = matchTpStr(splitBstr);
-                if (StringUtils.isNotBlank(matchTpStr)) {
-                    String[] splitStr = split(matchTpStr, " ");
-                    if (null != splitStr) {
-                        String matchStr = match(splitStr, MATCH_TAG_HANDLERS);
-                        if (StringUtils.isNotBlank(matchStr)) {
-                            result = matchStr.substring(matchStr.length() -1);
-                        }
+        if (!FileUtils.fileExist(INPUT_DEVICES_INFO_FILE)) {
+            return result;
+        }
+        String content = FileUtils.readContentOfFile(new File(INPUT_DEVICES_INFO_FILE));
+        if (StringUtils.isNotBlank(content)) {
+            String[] splitBstr = split(content, SPLIT_TAG_B);
+            String matchTpStr = matchTpStr(TP_LIST, splitBstr);
+            if (StringUtils.isNotBlank(matchTpStr)) {
+                String[] splitStr = split(matchTpStr, " ");
+                if (null != splitStr) {
+                    String matchStr = match(splitStr, MATCH_TAG_HANDLERS);
+                    if (StringUtils.isNotBlank(matchStr)) {
+                        result = matchStr.substring(matchStr.length() -1);
                     }
                 }
             }
@@ -59,10 +60,10 @@ public class DetectInputDeviceUtil {
         return result;
     }
 
-    private static String matchTpStr(String[] content) {
+    private static String matchTpStr(List<String> tpList, String[] content) {
         String matchTpStr = null;
-        if (null != content) {
-            for (String tp : TP_NAME) {
+        if (null != tpList && null != content) {
+            for (String tp : tpList) {
                 matchTpStr = match(content, tp);
                 if (StringUtils.isNotBlank(matchTpStr)) {
                     break;
