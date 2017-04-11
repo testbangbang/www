@@ -107,7 +107,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         } else if (ret == NeoPdfJniWrapper.ERROR_UNKNOWN) {
             throw ReaderException.cannotOpen();
         }
-        return null;
+        throw ReaderException.cannotOpen();
     }
 
     public boolean supportDrm() {
