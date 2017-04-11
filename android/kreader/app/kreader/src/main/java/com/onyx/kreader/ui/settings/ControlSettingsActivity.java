@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.KeyAction;
+import com.onyx.android.sdk.data.KeyBinding;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
@@ -42,7 +43,7 @@ public class ControlSettingsActivity extends PreferenceActivity {
        new Pair(KeyAction.CHANGE_TO_ERASE_MODE, R.string.settings_key_binding_change_to_erase_mode_tittle),
        new Pair(KeyAction.CHANGE_TO_SCRIBBLE_MODE, R.string.settings_key_binding_change_to_scribble_mode_tittle),
     };
-    private Map<String, JSONObject> bindingMap;
+    private Map<String, CustomBindKeyBean> bindingMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +64,12 @@ public class ControlSettingsActivity extends PreferenceActivity {
     }
 
     private void initPreference() {
-        Map<String, Map<String, JSONObject>> keyBinding = DeviceConfig.sharedInstance(this).getKeyBinding();
+        KeyBinding keyBinding = DeviceConfig.sharedInstance(this).getKeyBinding();
         if (keyBinding == null) {
             return;
         }
-        bindingMap = keyBinding.get(HandlerManager.TAG);
-        for (Map.Entry<String, JSONObject> stringJSONObjectEntry : bindingMap.entrySet()) {
+        bindingMap = keyBinding.getHandlerManager();
+        for (Map.Entry<String, CustomBindKeyBean> stringJSONObjectEntry : bindingMap.entrySet()) {
             String keyCode = stringJSONObjectEntry.getKey();
             String keyBeanJsonString = SingletonSharedPreference.getStringValue(keyCode);
             String action = "";
@@ -76,9 +77,9 @@ public class ControlSettingsActivity extends PreferenceActivity {
                 CustomBindKeyBean bindKeyBean = JSONObject.parseObject(keyBeanJsonString, CustomBindKeyBean.class);
                 action = bindKeyBean.getAction();
             }else {
-                JSONObject object = stringJSONObjectEntry.getValue();
+                CustomBindKeyBean object = stringJSONObjectEntry.getValue();
                 if (object != null) {
-                    action = object.getString(KeyAction.KEY_ACTION_TAG);
+                    action = object.getAction();
                 }
             }
             Preference preference = findPreference(keyCode);
@@ -127,11 +128,11 @@ public class ControlSettingsActivity extends PreferenceActivity {
             return;
         }
         final String keyCode = preference.getKey();
-        final JSONObject object = bindingMap.get(keyCode);
+        final CustomBindKeyBean object = bindingMap.get(keyCode);
         if (object == null) {
             return;
         }
-        String action = object.getString(KeyAction.KEY_ACTION_TAG);
+        String action = object.getAction();
         final String[] items = new String[keyActions.length];
         int checkedItem = 0;
         for (int i = 0; i < keyActions.length; i++) {
@@ -146,7 +147,7 @@ public class ControlSettingsActivity extends PreferenceActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String selectedAction = keyActions[which].first;
-                        CustomBindKeyBean bean = new CustomBindKeyBean(object.getString(KeyAction.KEY_ARGS_TAG), selectedAction);
+                        CustomBindKeyBean bean = new CustomBindKeyBean(object.getArgs(), selectedAction);
                         SingletonSharedPreference.setStringValue(keyCode, JSON.toJSONString(bean));
                         SingletonSharedPreference.setIntValue(selectedAction, KeyEvent.keyCodeFromString(keyCode));
                         preference.setSummary(getActionTitle(selectedAction));

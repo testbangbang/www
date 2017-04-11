@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyAction;
+import com.onyx.android.sdk.data.KeyBinding;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
@@ -76,12 +77,12 @@ public class HandlerManager {
         return readerDataHolder;
     }
 
-    public Map<String, Map<String, JSONObject>> getKeyBinding() {
+    public KeyBinding getKeyBinding() {
         return deviceConfig.getKeyBinding();
     }
 
-    public JSONObject getKeyBinding(final String state, final String keycode) {
-        Map<String, JSONObject> map = getKeyBinding().get(state);
+    public CustomBindKeyBean getKeyBinding(final String state, final String keycode) {
+        Map<String, CustomBindKeyBean> map = getKeyBinding().getHandlerManager();
         if (map == null) {
             return null;
         }
@@ -103,9 +104,9 @@ public class HandlerManager {
             return bean.getAction();
         }
 
-        JSONObject object = getKeyBinding(state, keycode);
+        CustomBindKeyBean object = getKeyBinding(state, keycode);
         if (object != null) {
-            return object.getString(KeyAction.KEY_ACTION_TAG);
+            return object.getAction();
         }
         return null;
     }
@@ -116,9 +117,9 @@ public class HandlerManager {
             return bean.getArgs();
         }
 
-        JSONObject object = getKeyBinding(state, keycode);
+        CustomBindKeyBean object = getKeyBinding(state, keycode);
         if (object != null) {
-            return object.getString(KeyAction.KEY_ARGS_TAG);
+            return object.getArgs();
         }
         return null;
     }
