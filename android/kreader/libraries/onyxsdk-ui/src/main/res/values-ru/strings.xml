@@ -73,4 +73,10 @@
     <string name="collapse">Сужение</string>
     <string name="jump">Переход</string>
     <string name="manual_crop">Ручная\nобрезка</string>
+    <string name="natural_light_cold_light">холодный свет</string>
+    <string name="natural_light_warm_light">теплый свет</string>
+    <string name="natural_light_option1">Вариант 1</string>
+    <string name="natural_light_option2">Вариант 2</string>
+    <string name="natural_light_option3">Вариант 3</string>
+    <string name="save_success">спасти успеха</string>
 </resources>

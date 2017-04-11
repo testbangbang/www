@@ -10,18 +10,22 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.RatingBar.OnRatingBarChangeListener;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.FrontLightController;
+import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.utils.IntentFilterFactory;
+import com.onyx.android.sdk.utils.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DialogNaturalLightBrightness extends OnyxBaseDialog {
+public class DialogNaturalLightBrightness extends Dialog implements View.OnLongClickListener, View.OnClickListener {
 
     static final String TAG = DialogNaturalLightBrightness.class.getSimpleName();
 
@@ -36,6 +40,12 @@ public class DialogNaturalLightBrightness extends OnyxBaseDialog {
     private BroadcastReceiver mOpenAndCloseNaturalLightReceiver = null;
     private IntentFilter filter = null;
     private Context mContext = null;
+    private String  OPTION_1_WARM_LIGHT = "option_1_warm_light";
+    private String  OPTION_1_COLD_LIGHT = "option_1_cold_light";
+    private String  OPTION_2_WARM_LIGHT = "option_2_warm_light";
+    private String  OPTION_2_COLD_LIGHT = "option_2_cold_light";
+    private String  OPTION_3_WARM_LIGHT = "option_3_warm_light";
+    private String  OPTION_3_COLD_LIGHT = "option_3_cold_light";
 
     /**
      * Brightness value for fully off
@@ -65,14 +75,15 @@ public class DialogNaturalLightBrightness extends OnyxBaseDialog {
     }
 
     public DialogNaturalLightBrightness(Context context) {
-        super(context, com.onyx.android.sdk.ui.R.style.CustomDialog);
+        super(context,R.style.CustomDialog);
         mContext = context;
+        PreferenceManager.init(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         mLightSteps = FrontLightController.getNaturalLightValueList(getContext());
-        int targetLayoutID = com.onyx.android.sdk.ui.R.layout.dialog_natural_brightness_step;
+        int targetLayoutID = R.layout.dialog_natural_brightness_step;
         setContentView(targetLayoutID);
-        mRatingBarWarmLightSettings = (RatingBar) findViewById(com.onyx.android.sdk.ui.R.id.ratingbar_warm_light_settings);
-        mRatingBarColdLightSettings = (RatingBar) findViewById(com.onyx.android.sdk.ui.R.id.ratingbar_cold_light_settings);
+        mRatingBarWarmLightSettings = (RatingBar) findViewById(R.id.ratingbar_warm_light_settings);
+        mRatingBarColdLightSettings = (RatingBar) findViewById(R.id.ratingbar_cold_light_settings);
         mRatingBarWarmLightSettings.setFocusable(false);
         mRatingBarColdLightSettings.setFocusable(false);
 
@@ -128,7 +139,7 @@ public class DialogNaturalLightBrightness extends OnyxBaseDialog {
         setLightRatingBarDefaultProgress();
 
         // widgets for warm light
-        ImageButton mWarmLightDown = (ImageButton) findViewById(com.onyx.android.sdk.ui.R.id.imagebutton_warm_light_down);
+        ImageButton mWarmLightDown = (ImageButton) findViewById(R.id.imagebutton_warm_light_down);
         mWarmLightDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,7 +147,7 @@ public class DialogNaturalLightBrightness extends OnyxBaseDialog {
             }
         });
 
-        ImageButton mWarmLightAdd = (ImageButton) findViewById(com.onyx.android.sdk.ui.R.id.imagebutton_warm_light_add);
+        ImageButton mWarmLightAdd = (ImageButton) findViewById(R.id.imagebutton_warm_light_add);
         mWarmLightAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,7 +161,7 @@ public class DialogNaturalLightBrightness extends OnyxBaseDialog {
         });
 
         // widgets for cold light
-        ImageButton mColdLightDown = (ImageButton) findViewById(com.onyx.android.sdk.ui.R.id.imagebutton_cold_light_down);
+        ImageButton mColdLightDown = (ImageButton) findViewById(R.id.imagebutton_cold_light_down);
         mColdLightDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +169,7 @@ public class DialogNaturalLightBrightness extends OnyxBaseDialog {
             }
         });
 
-        ImageButton mColdLightAdd = (ImageButton) findViewById(com.onyx.android.sdk.ui.R.id.imagebutton_cold_light_add);
+        ImageButton mColdLightAdd = (ImageButton) findViewById(R.id.imagebutton_cold_light_add);
         mColdLightAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,6 +183,45 @@ public class DialogNaturalLightBrightness extends OnyxBaseDialog {
 
         this.setCanceledOnTouchOutside(true);
 
+        Button mOption1 = (Button) findViewById(R.id.button_option1);
+        mOption1.setOnLongClickListener(this);
+        mOption1.setOnClickListener(this);
+
+        Button mOption2 = (Button) findViewById(R.id.button_option2);
+        mOption2.setOnLongClickListener(this);
+        mOption2.setOnClickListener(this);
+
+        Button mOption3 = (Button) findViewById(R.id.button_option3);
+        mOption3.setOnLongClickListener(this);
+        mOption3.setOnClickListener(this);
+    }
+
+    private void saveNaturalLightProgress(Context context, String OptionWarm, String OptionCold) {
+        int OptionWarmLight = mRatingBarWarmLightSettings.getProgress();
+        int OptionColdLight = mRatingBarColdLightSettings.getProgress();
+        PreferenceManager.setIntValue(context, OptionWarm, OptionWarmLight);
+        PreferenceManager.setIntValue(context, OptionCold, OptionColdLight);
+        Toast.makeText(context, R.string.save_success, Toast.LENGTH_LONG).show();
+    }
+
+    private void changeNaturalLightProgress(Context context, String OptionWarm, String OptionCold) {
+        if (OPTION_1_WARM_LIGHT.equals(OptionWarm) && OPTION_1_COLD_LIGHT.equals(OptionCold)) {
+            setNaturalLightProgress(context, OptionWarm, OptionCold, 0, 0);
+        }
+        if (OPTION_2_WARM_LIGHT.equals(OptionWarm) && OPTION_2_COLD_LIGHT.equals(OptionCold)) {
+            setNaturalLightProgress(context, OptionWarm, OptionCold, mRatingBarWarmLightSettings.getMax()/2,
+                    mRatingBarColdLightSettings.getMax()/2);
+        }
+        if (OPTION_3_WARM_LIGHT.equals(OptionWarm) && OPTION_3_COLD_LIGHT.equals(OptionCold)) {
+            setNaturalLightProgress(context, OptionWarm, OptionCold, mRatingBarWarmLightSettings.getMax(),
+                    mRatingBarColdLightSettings.getMax());
+        }
+    }
+
+    private void setNaturalLightProgress(Context context, String OptionWarm, String OptionCold,
+                                         int WarmLightDefaultValue, int ColdLightDefaultValue) {
+        mRatingBarWarmLightSettings.setProgress(PreferenceManager.getIntValue(context, OptionWarm, WarmLightDefaultValue));
+        mRatingBarColdLightSettings.setProgress(PreferenceManager.getIntValue(context, OptionCold, ColdLightDefaultValue));
     }
 
     private void changeLightState() {
@@ -224,5 +274,29 @@ public class DialogNaturalLightBrightness extends OnyxBaseDialog {
         return index;
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        int id = v.getId();
+        if(id == R.id.button_option1){
+            saveNaturalLightProgress(mContext, OPTION_1_WARM_LIGHT, OPTION_1_COLD_LIGHT);
+        }else if(id == R.id.button_option2){
+            saveNaturalLightProgress(mContext, OPTION_2_WARM_LIGHT, OPTION_2_COLD_LIGHT);
+        }else if (id == R.id.button_option3){
+            saveNaturalLightProgress(mContext, OPTION_3_WARM_LIGHT, OPTION_3_COLD_LIGHT);
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if(id == R.id.button_option1){
+            changeNaturalLightProgress(mContext, OPTION_1_WARM_LIGHT, OPTION_1_COLD_LIGHT);
+        }else if(id == R.id.button_option2){
+            changeNaturalLightProgress(mContext, OPTION_2_WARM_LIGHT, OPTION_2_COLD_LIGHT);
+        }else if (id == R.id.button_option3){
+            changeNaturalLightProgress(mContext, OPTION_3_WARM_LIGHT, OPTION_3_COLD_LIGHT);
+        }
+    }
 }
 
