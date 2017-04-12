@@ -145,10 +145,6 @@ public class ShowReaderMenuAction extends BaseAction {
         createReaderSideMenu(readerDataHolder);
     }
 
-    public static boolean containsDisableMenu(ReaderMenuAction action) {
-        return disableMenus.contains(action);
-    }
-
     public static void initDisableMenus(ReaderDataHolder readerDataHolder) {
         disableMenus.clear();
 

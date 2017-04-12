@@ -30,6 +30,7 @@ import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
 import com.onyx.kreader.R;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.receiver.DeviceReceiver;
@@ -120,6 +121,10 @@ public class ReaderDataHolder {
 
     public boolean isFlowDocument() {
         return !isFixedPageDocument();
+    }
+
+    public boolean supportNoteFunc() {
+        return !DeviceConfig.sharedInstance(getContext()).isDisableNoteFunc() && isFixedPageDocument();
     }
 
     public boolean supportScalable() {
@@ -668,7 +673,7 @@ public class ReaderDataHolder {
     }
 
     public boolean startNoteDrawing() {
-        if (ShowReaderMenuAction.containsDisableMenu(ReaderMenuAction.NOTE)) {
+        if (!supportNoteFunc()) {
             Toast.makeText(getContext(), getContext().getString(R.string.unable_to_enable_this_feature), Toast.LENGTH_SHORT).show();
             return false;
         }
