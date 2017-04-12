@@ -237,10 +237,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
             @Override
             public void onEnterFullScreen() {
+                SingletonSharedPreference.setBooleanValue(getString(R.string.settings_enable_system_status_bar_key), false);
+                syncFullScreenState();
             }
 
             @Override
             public void onQuitFullScreen() {
+                SingletonSharedPreference.setBooleanValue(getString(R.string.settings_enable_system_status_bar_key), true);
+                syncFullScreenState();
             }
 
             @Override

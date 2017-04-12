@@ -15,7 +15,9 @@ import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.KeyBinding;
 import com.onyx.android.sdk.data.TouchAction;
 import com.onyx.android.sdk.data.TouchBinding;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.ui.ReaderTabHostBroadcastReceiver;
 import com.onyx.kreader.ui.actions.DecreaseFontSizeAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.IncreaseFontSizeAction;
@@ -435,7 +437,7 @@ public class HandlerManager {
         }else if (action.equals(TouchAction.DECREASE_BRIGHTNESS)) {
             decreaseBrightness(readerDataHolder);
         }else if (action.equals(TouchAction.TOGGLE_FULLSCREEN)) {
-
+            toggleFullscreen(readerDataHolder);
         }else if (action.equals(TouchAction.OPEN_TTS)) {
             ShowReaderMenuAction.showTtsDialog(readerDataHolder);
         }else if (action.equals(TouchAction.AUTO_PAGE)) {
@@ -448,6 +450,17 @@ public class HandlerManager {
             return false;
         }
         return true;
+    }
+
+    private void toggleFullscreen(final ReaderDataHolder readerDataHolder) {
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
+            return;
+        }
+        if (SingletonSharedPreference.isSystemStatusBarEnabled(readerDataHolder.getContext())) {
+            ReaderTabHostBroadcastReceiver.sendEnterFullScreenIntent(readerDataHolder.getContext());
+        }else {
+            ReaderTabHostBroadcastReceiver.sendQuitFullScreenIntent(readerDataHolder.getContext());
+        }
     }
 
     private void increaseBrightness(final ReaderDataHolder readerDataHolder) {
