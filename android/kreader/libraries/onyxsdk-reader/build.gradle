@@ -2,6 +2,9 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 apply plugin: 'com.android.library'
 
+def artifact = new Properties()
+artifact.load(new FileInputStream("$projectDir/deploy.settings"))
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -10,8 +13,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
-        multiDexEnabled true
+        versionName artifact.version
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -81,7 +83,6 @@ dependencies {
         exclude group: 'org.apache.lucene', module: 'lucene-core'
     }
 
-    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:multidex:$multidexVersion"
     compile "com.jakewharton:disklrucache:$rootProject.disklrucacheVersion"
     compile "net.lingala.zip4j:zip4j:$rootProject.zip4jVersion"
@@ -90,3 +91,4 @@ dependencies {
     androidTestCompile 'com.android.support.test:runner:0.5'
 }
 
+apply from: file(rootProject.projectDir.absolutePath + '/deploy.gradle')
