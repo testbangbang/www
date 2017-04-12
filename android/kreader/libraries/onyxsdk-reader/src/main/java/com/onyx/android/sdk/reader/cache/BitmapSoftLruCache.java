@@ -67,7 +67,7 @@ public class BitmapSoftLruCache {
                 String oldest = map.keySet().iterator().next();
                 BitmapSoftReference remove = map.get(oldest);
                 if (!isStaleReference(remove)) {
-                    remove.get().recycleBitmap();
+                    remove.get().close();
                 }
                 map.remove(oldest);
             }
@@ -82,7 +82,7 @@ public class BitmapSoftLruCache {
             BitmapSoftReference reference = map.remove(key);
             if (recycle) {
                 if (!isStaleReference(reference)) {
-                    reference.get().recycleBitmap();
+                    reference.get().close();
                 }
             }
         }

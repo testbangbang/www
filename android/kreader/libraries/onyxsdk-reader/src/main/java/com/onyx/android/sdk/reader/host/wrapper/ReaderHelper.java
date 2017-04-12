@@ -22,7 +22,7 @@ import com.onyx.android.sdk.reader.api.ReaderRendererFeatures;
 import com.onyx.android.sdk.reader.api.ReaderSearchManager;
 import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
-import com.onyx.android.sdk.reader.cache.BitmapSoftLruCache;
+import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
@@ -72,7 +72,7 @@ public class ReaderHelper {
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
     private ImageReflowManager imageReflowManager;
-    private BitmapSoftLruCache bitmapCache;
+    private BitmapReferenceLruCache bitmapCache;
 
     private boolean layoutChanged = false;
 
@@ -138,13 +138,16 @@ public class ReaderHelper {
         }
         DisplayMetrics display = new DisplayMetrics();
         window.getDefaultDisplay().getMetrics(display);
-        Bitmap bitmap = Bitmap.createBitmap(display.widthPixels, display.heightPixels,
+        ReaderBitmapImpl bitmap = ReaderBitmapImpl.create(display.widthPixels, display.heightPixels,
                 Bitmap.Config.ARGB_8888);
-        bitmap.eraseColor(Color.WHITE);
-        if (getDocument().readCover(bitmap)) {
-            LegacySdkDataUtils.saveThumbnail(context, path, bitmap);
+        try {
+            bitmap.eraseColor(Color.WHITE);
+            if (getDocument().readCover(bitmap.getBitmap())) {
+                LegacySdkDataUtils.saveThumbnail(context, path, bitmap.getBitmap());
+            }
+        } finally {
+            bitmap.close();
         }
-        bitmap.recycle();
     }
 
     public void onViewSizeChanged() throws ReaderException {
@@ -248,7 +251,7 @@ public class ReaderHelper {
         }
     }
 
-    public BitmapSoftLruCache getBitmapCache() {
+    public BitmapReferenceLruCache getBitmapCache() {
         return bitmapCache;
     }
 
@@ -299,14 +302,13 @@ public class ReaderHelper {
 
     private void initBitmapCache() {
         if (bitmapCache == null) {
-            bitmapCache = new BitmapSoftLruCache(5);
+            bitmapCache = new BitmapReferenceLruCache(5);
         }
     }
 
     private void clearBitmapCache() {
         if (bitmapCache != null) {
             bitmapCache.clear();
-            bitmapCache = null;
         }
     }
 

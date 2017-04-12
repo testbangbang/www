@@ -3,6 +3,8 @@ package com.onyx.android.sdk.reader.host.layout;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.RectF;
+
+import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.Debug;
@@ -137,12 +139,16 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         LayoutProviderUtils.updateReaderViewInfo(reader, readerViewInfo, getLayoutManager());
 
         String key = getCurrentSubPageKey();
-        Bitmap bmp = getCurrentSubPageBitmap();
+        CloseableReference<Bitmap> bmp = getCurrentSubPageBitmap();
         if (bmp == null) {
             Debug.e(getClass(), "drawVisiblePages: get bitmap failed!");
             return false;
         }
-        drawContext.renderingBitmap.attachWith(key, bmp);
+        try {
+            drawContext.renderingBitmap.attachWith(key, bmp);
+        } finally {
+            bmp.close();
+        }
         return true;
     }
 
@@ -286,7 +292,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return getImageReflowManager().getSubPageKey(getCurrentPagePosition(), getCurrentSubPageIndex());
     }
 
-    private Bitmap getCurrentSubPageBitmap() {
+    private CloseableReference<Bitmap> getCurrentSubPageBitmap() {
         return getImageReflowManager().getSubPageBitmap(getCurrentPagePosition(), getCurrentSubPageIndex());
     }
 

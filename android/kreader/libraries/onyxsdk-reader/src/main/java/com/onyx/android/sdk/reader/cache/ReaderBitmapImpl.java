@@ -2,17 +2,21 @@ package com.onyx.android.sdk.reader.cache;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+
+import com.facebook.common.references.CloseableReference;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.bitmaps.PlatformBitmapFactory;
 import com.onyx.android.sdk.api.ReaderBitmap;
-import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 
 /**
  * Created by joy on 8/9/16.
  */
 public class ReaderBitmapImpl implements ReaderBitmap {
+    private static PlatformBitmapFactory bitmapFactory = Fresco.getImagePipelineFactory().getPlatformBitmapFactory();
 
     private String key;
-    private Bitmap bitmap;
+    private CloseableReference<Bitmap> bitmap;
     private float gammaCorrection = BaseOptions.getLowerGammaLimit();
     private int emboldenLevel;
 
@@ -25,31 +29,45 @@ public class ReaderBitmapImpl implements ReaderBitmap {
         super();
     }
 
-    public ReaderBitmapImpl(final String key, final Bitmap bitmap) {
-        this.key = key;
-        this.bitmap = bitmap;
-    }
-
     public ReaderBitmapImpl(int width, int height, Bitmap.Config config) {
         super();
-        bitmap = Bitmap.createBitmap(width, height, config);
+        bitmap = bitmapFactory.createBitmap(width, height, config);
     }
 
     public boolean isValid() {
-        return BitmapUtils.isValid(bitmap);
+        return bitmap != null && bitmap.isValid();
     }
 
     public void clear() {
-        if (bitmap != null) {
-            bitmap.eraseColor(Color.WHITE);
-        }
+        bitmap.get().eraseColor(Color.WHITE);
     }
 
-    public void recycleBitmap() {
-        if (bitmap != null && !bitmap.isRecycled()) {
-            bitmap.recycle();
-        }
-        bitmap = null;
+    public void eraseColor(int white) {
+        bitmap.get().eraseColor(white);
+    }
+
+    public CloseableReference<Bitmap> getBitmapReference() {
+        return bitmap;
+    }
+
+    /**
+     * add reference of internal bitmap
+     * @return
+     */
+    public ReaderBitmapImpl clone() {
+        ReaderBitmapImpl copy = new ReaderBitmapImpl();
+        copy.key = key;
+        copy.bitmap = bitmap.clone();
+        copy.gammaCorrection = gammaCorrection;
+        copy.emboldenLevel = emboldenLevel;
+        return copy;
+    }
+
+    /**
+     * subtract reference of internal bitmap
+     */
+    public void close() {
+        bitmap.close();
     }
 
     public String getKey() {
@@ -57,7 +75,7 @@ public class ReaderBitmapImpl implements ReaderBitmap {
     }
 
     public Bitmap getBitmap() {
-        return bitmap;
+        return bitmap.get();
     }
 
     public void setGammaCorrection(float correction) {
@@ -84,9 +102,8 @@ public class ReaderBitmapImpl implements ReaderBitmap {
         this.emboldenLevel = emboldenLevel;
     }
 
-    public boolean attachWith(String key, final Bitmap src) {
+    public void attachWith(String key, final CloseableReference<Bitmap> src) {
         this.key = key;
-        bitmap = src;
-        return BitmapUtils.isValid(bitmap);
+        bitmap = src.clone();
     }
 }
