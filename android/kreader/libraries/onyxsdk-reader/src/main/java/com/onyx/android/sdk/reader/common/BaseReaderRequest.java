@@ -8,7 +8,7 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
-import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
@@ -23,7 +23,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private static final String TAG = BaseReaderRequest.class.getSimpleName();
     private volatile boolean saveOptions = false;
 
-    private ReaderBitmapImpl renderBitmap;
+    private ReaderBitmapReferenceImpl renderBitmap;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
     private volatile boolean transferBitmap = true;
@@ -52,7 +52,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         return saveOptions;
     }
 
-    public ReaderBitmapImpl getRenderBitmap() {
+    public ReaderBitmapReferenceImpl getRenderBitmap() {
         return renderBitmap;
     }
 

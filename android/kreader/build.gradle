@@ -49,6 +49,7 @@ ext {
     eventbusVersion = '3.0.0'
     fastjsonVersion = '1.1.34.android'
     filedownloaderVersion = '0.3.4'
+    frescoVersion = '1.2.0'
     junitVersion = '4.12'
     juniversalchardetVersion = '1.0.3'
     leakcanaryVersion = '1.4-beta2'

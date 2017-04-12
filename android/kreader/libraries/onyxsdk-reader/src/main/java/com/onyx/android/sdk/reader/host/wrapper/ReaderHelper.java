@@ -22,8 +22,8 @@ import com.onyx.android.sdk.reader.api.ReaderRendererFeatures;
 import com.onyx.android.sdk.reader.api.ReaderSearchManager;
 import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
-import com.onyx.android.sdk.reader.cache.BitmapSoftLruCache;
-import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
@@ -68,11 +68,11 @@ public class ReaderHelper {
     private ReaderTextStyleManager textStyleManager;
     private ReaderSearchManager searchManager;
     // to be used by UI thread
-    private ReaderBitmapImpl viewportBitmap;
+    private ReaderBitmapReferenceImpl viewportBitmap;
     private ReaderLayoutManager readerLayoutManager;
     private ReaderHitTestManager hitTestManager;
     private ImageReflowManager imageReflowManager;
-    private BitmapSoftLruCache bitmapCache;
+    private BitmapReferenceLruCache bitmapCache;
 
     private boolean layoutChanged = false;
 
@@ -138,13 +138,16 @@ public class ReaderHelper {
         }
         DisplayMetrics display = new DisplayMetrics();
         window.getDefaultDisplay().getMetrics(display);
-        Bitmap bitmap = Bitmap.createBitmap(display.widthPixels, display.heightPixels,
+        ReaderBitmapReferenceImpl bitmap = ReaderBitmapReferenceImpl.create(display.widthPixels, display.heightPixels,
                 Bitmap.Config.ARGB_8888);
-        bitmap.eraseColor(Color.WHITE);
-        if (getDocument().readCover(bitmap)) {
-            LegacySdkDataUtils.saveThumbnail(context, path, bitmap);
+        try {
+            bitmap.eraseColor(Color.WHITE);
+            if (getDocument().readCover(bitmap.getBitmap())) {
+                LegacySdkDataUtils.saveThumbnail(context, path, bitmap.getBitmap());
+            }
+        } finally {
+            bitmap.close();
         }
-        bitmap.recycle();
     }
 
     public void onViewSizeChanged() throws ReaderException {
@@ -189,13 +192,13 @@ public class ReaderHelper {
     public void onPositionChanged(final String oldPosition, final String newPosition) {
     }
 
-    public void beforeDraw(ReaderBitmapImpl bitmap) {
+    public void beforeDraw(ReaderBitmapReferenceImpl bitmap) {
     }
 
-    public void afterDraw(ReaderBitmapImpl bitmap) {
+    public void afterDraw(ReaderBitmapReferenceImpl bitmap) {
     }
 
-    public final ReaderBitmapImpl getViewportBitmap() {
+    public final ReaderBitmapReferenceImpl getViewportBitmap() {
         return viewportBitmap;
     }
 
@@ -235,20 +238,20 @@ public class ReaderHelper {
         return imageReflowManager;
     }
 
-    public void transferRenderBitmapToViewport(ReaderBitmapImpl renderBitmap) {
+    public void transferRenderBitmapToViewport(ReaderBitmapReferenceImpl renderBitmap) {
         if (viewportBitmap != null && viewportBitmap.isValid()) {
             returnBitmapToCache(viewportBitmap);
         }
         viewportBitmap = renderBitmap;
     }
 
-    public void returnBitmapToCache(ReaderBitmapImpl bitmap) {
+    public void returnBitmapToCache(ReaderBitmapReferenceImpl bitmap) {
         if (bitmapCache != null) {
             bitmapCache.put(bitmap.getKey(), bitmap);
         }
     }
 
-    public BitmapSoftLruCache getBitmapCache() {
+    public BitmapReferenceLruCache getBitmapCache() {
         return bitmapCache;
     }
 
@@ -299,14 +302,13 @@ public class ReaderHelper {
 
     private void initBitmapCache() {
         if (bitmapCache == null) {
-            bitmapCache = new BitmapSoftLruCache(5);
+            bitmapCache = new BitmapReferenceLruCache(5);
         }
     }
 
     private void clearBitmapCache() {
         if (bitmapCache != null) {
             bitmapCache.clear();
-            bitmapCache = null;
         }
     }
 
@@ -354,13 +356,13 @@ public class ReaderHelper {
         return searchManager;
     }
 
-    public void applyPostBitmapProcess(ReaderBitmapImpl bitmap) {
+    public void applyPostBitmapProcess(ReaderBitmapReferenceImpl bitmap) {
         applyGammaCorrection(bitmap);
         applyEmbolden(bitmap);
         applySaturation(bitmap);
     }
 
-    private void applyGammaCorrection(final ReaderBitmapImpl bitmap) {
+    private void applyGammaCorrection(final ReaderBitmapReferenceImpl bitmap) {
         if (getDocumentOptions().isGamaCorrectionEnabled() &&
                 Float.compare(bitmap.gammaCorrection(), getDocumentOptions().getGammaLevel()) != 0) {
             if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel())) {
@@ -369,7 +371,7 @@ public class ReaderHelper {
         }
     }
 
-    private void applyEmbolden(final ReaderBitmapImpl bitmap) {
+    private void applyEmbolden(final ReaderBitmapReferenceImpl bitmap) {
         if (getDocumentOptions().isEmboldenLevelEnabled() &&
                 bitmap.getEmboldenLevel() != getDocumentOptions().getEmboldenLevel()) {
             if (ImageUtils.applyBitmapEmbolden(bitmap.getBitmap(), getDocumentOptions().getEmboldenLevel())) {
@@ -378,7 +380,7 @@ public class ReaderHelper {
         }
     }
 
-    private void applySaturation(final ReaderBitmapImpl bitmap) {
+    private void applySaturation(final ReaderBitmapReferenceImpl bitmap) {
     }
 
     public final String getDocumentPath() {

@@ -1,6 +1,6 @@
 package com.onyx.android.sdk.reader.common;
 
-import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 
 /**
  * Created by zhuzeng on 5/17/16.
@@ -8,7 +8,7 @@ import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
 public class ReaderDrawContext {
 
     public boolean asyncDraw;
-    public ReaderBitmapImpl renderingBitmap;
+    public ReaderBitmapReferenceImpl renderingBitmap;
     public float targetGammaCorrection;
     public float targetEmboldenLevel;
 
