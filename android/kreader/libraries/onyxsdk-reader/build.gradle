@@ -77,8 +77,6 @@ dependencies {
     compile (project(':libraries:alreader-engine')) {
         exclude group: 'org.mozilla.juniversalchardet', module: 'juniversalchardet'
     }
-    compile project(':libraries:cropimage')
-
     compile (project(':libraries:chinese-analyzer')) {
         exclude group: 'org.apache.lucene', module: 'lucene-core'
     }

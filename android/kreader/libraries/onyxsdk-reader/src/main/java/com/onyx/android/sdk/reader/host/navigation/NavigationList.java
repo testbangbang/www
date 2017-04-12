@@ -2,7 +2,7 @@ package com.onyx.android.sdk.reader.host.navigation;
 
 import android.graphics.RectF;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.onyx.android.cropimage.data.PointMatrix;
+import com.onyx.android.sdk.data.PointMatrix;
 
 import java.util.ArrayList;
 import java.util.List;

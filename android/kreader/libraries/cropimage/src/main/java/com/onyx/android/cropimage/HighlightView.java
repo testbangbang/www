@@ -24,8 +24,8 @@ import android.os.Build;
 import android.util.TypedValue;
 import android.view.View;
 import com.onyx.android.cropimage.data.CropArgs;
-import com.onyx.android.cropimage.data.PointMatrix;
-import com.onyx.android.cropimage.data.RefValue;
+import com.onyx.android.sdk.data.PointMatrix;
+import com.onyx.android.sdk.data.RefValue;
 
 /*
  * Modified from version in AOSP.

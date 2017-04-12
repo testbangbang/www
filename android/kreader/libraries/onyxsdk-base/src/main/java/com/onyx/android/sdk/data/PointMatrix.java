@@ -1,4 +1,4 @@
-package com.onyx.android.cropimage.data;
+package com.onyx.android.sdk.data;
 
 import android.graphics.PointF;
 

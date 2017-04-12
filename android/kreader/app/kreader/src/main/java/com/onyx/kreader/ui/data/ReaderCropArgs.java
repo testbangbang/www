@@ -3,7 +3,7 @@ package com.onyx.kreader.ui.data;
 import android.graphics.RectF;
 
 import com.onyx.android.cropimage.data.CropArgs;
-import com.onyx.android.cropimage.data.PointMatrix;
+import com.onyx.android.sdk.data.PointMatrix;
 
 import java.util.ArrayList;
 import java.util.List;
