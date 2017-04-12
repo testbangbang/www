@@ -24,7 +24,7 @@ import android.os.Build;
 import android.util.TypedValue;
 import android.view.View;
 import com.onyx.android.cropimage.data.CropArgs;
-import com.onyx.android.sdk.data.PointMatrix;
+import com.onyx.android.sdk.data.ReaderPointMatrix;
 import com.onyx.android.sdk.data.RefValue;
 
 /*
@@ -76,7 +76,7 @@ class HighlightView {
     private boolean isCropPage;
     private boolean isSplitPage;
     private int rows, columns;
-    private PointMatrix pointMatrix = new PointMatrix(1, 1);
+    private ReaderPointMatrix pointMatrix = new ReaderPointMatrix(1, 1);
     private PointF currentSplitPoint = null;
     private int pointRow, pointColumn;
 
@@ -369,8 +369,8 @@ class HighlightView {
         return rows > 1;
     }
 
-    private PointMatrix initialSplitPoints(int rows, int columns) {
-        return new PointMatrix(rows, columns);
+    private ReaderPointMatrix initialSplitPoints(int rows, int columns) {
+        return new ReaderPointMatrix(rows, columns);
     }
 
     private PointF hitSplitPoints(float x, float y, float hysteresis) {
@@ -510,8 +510,8 @@ class HighlightView {
                 (int) (cropRect.right * scale), (int) (cropRect.bottom * scale));
     }
 
-    public PointMatrix getPointMatrix() {
-        PointMatrix matrix = initialSplitPoints(rows, columns);
+    public ReaderPointMatrix getPointMatrix() {
+        ReaderPointMatrix matrix = initialSplitPoints(rows, columns);
         for (int row = 0; row < pointMatrix.rows(); row++) {
             for (int col = 0; col < pointMatrix.cols(); col++) {
                 PointF p = pointMatrix.get(row, col);

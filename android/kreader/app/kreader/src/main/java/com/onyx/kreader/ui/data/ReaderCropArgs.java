@@ -3,7 +3,7 @@ package com.onyx.kreader.ui.data;
 import android.graphics.RectF;
 
 import com.onyx.android.cropimage.data.CropArgs;
-import com.onyx.android.sdk.data.PointMatrix;
+import com.onyx.android.sdk.data.ReaderPointMatrix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class ReaderCropArgs {
     private NavigationMode navigationMode;
     private CropPageMode cropPageMode; // crop mode, auto or manual
     private List<RectF> manualCropDocRegions = new ArrayList<>(); // in case odd/even page crop.
-    private List<PointMatrix> manualPointMatrixList = new ArrayList<>();
+    private List<ReaderPointMatrix> manualPointMatrixList = new ArrayList<>();
 
     public CropArgs getCropArgs() {
         return cropArgs;
@@ -77,7 +77,7 @@ public class ReaderCropArgs {
         return manualCropDocRegions;
     }
 
-    public List<PointMatrix> getManualPointMatrixList() {
+    public List<ReaderPointMatrix> getManualPointMatrixList() {
         return manualPointMatrixList;
     }
 }
