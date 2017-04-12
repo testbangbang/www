@@ -1,10 +1,10 @@
 siteUrl = https://github.com/onyx-intl/OnyxAndroidSample
 gitUrl = https://github.com/onyx-intl/OnyxAndroidSample.git
-repo = maven
-version = 1.0.1
+repo = partner
+version = 1.0.0
 groupId = com.onyx.android.sdk
 licenses = ['Apache-2.0']
 license = Apache-2.0
 licenseUrl = Unknown
-id = onyxsdk-data
-name = onyxsdk-data
+id = alreader-engine
+name = alreader-engine
