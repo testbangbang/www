@@ -5,8 +5,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.data.model.Annotation;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.android.sdk.reader.api.*;
 import com.onyx.android.sdk.data.PageInfo;
@@ -90,11 +88,6 @@ public class FakeReader implements ReaderDocument,
     }
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
-        return false;
-    }
-
-    @Override
-    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
         return false;
     }
 

@@ -6,10 +6,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -195,11 +193,6 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         return getPluginImpl().readTableOfContent(toc);
-    }
-
-    @Override
-    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
-        return false;
     }
 
     public ReaderView getView(final ReaderViewOptions viewOptions) {
