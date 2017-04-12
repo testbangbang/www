@@ -82,4 +82,10 @@
 
     <string name="chinese_font_face">中文字体</string>
     <string name="english_font_face">英文字体</string>
+    <string name="natural_light_cold_light">冷光</string>
+    <string name="natural_light_warm_light">暖光</string>
+    <string name="natural_light_option1">选项 1</string>
+    <string name="natural_light_option2">选项 2</string>
+    <string name="natural_light_option3">选项 3</string>
+    <string name="save_success">保存成功</string>
 </resources>
