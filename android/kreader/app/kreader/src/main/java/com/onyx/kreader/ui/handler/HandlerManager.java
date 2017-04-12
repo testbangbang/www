@@ -6,23 +6,24 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.api.device.FrontLightController;
+import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.KeyBinding;
-import com.onyx.android.sdk.data.ReaderMenuAction;
+import com.onyx.android.sdk.data.TouchAction;
+import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.R;
 import com.onyx.kreader.ui.actions.DecreaseFontSizeAction;
+import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.IncreaseFontSizeAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.device.DeviceConfig;
-import com.onyx.kreader.ui.events.StartNoteDrawingEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +45,9 @@ public class HandlerManager {
     public static final String ERASER_PROVIDER = "eraser";
     public static final String TTS_PROVIDER = "tts";
     public static final String SLIDESHOW_PROVIDER = "slideshow";
+
+    private static final int TOUCH_HORIZONTAL_PART = 3;
+    private static final int TOUCH_VERTICAL_PART = 2;
 
     private String activeProviderName;
     private Map<String, BaseHandler> providerMap = new HashMap<String, BaseHandler>();
@@ -77,47 +81,51 @@ public class HandlerManager {
         return readerDataHolder;
     }
 
-    public KeyBinding getKeyBinding() {
+    public KeyBinding getControlBinding() {
         return deviceConfig.getKeyBinding();
     }
 
-    public CustomBindKeyBean getKeyBinding(final String state, final String keycode) {
-        Map<String, CustomBindKeyBean> map = getKeyBinding().getHandlerManager();
+    public TouchBinding getControlTouchBinding() {
+        return deviceConfig.getTouchBinding();
+    }
+
+    public CustomBindKeyBean getControlBinding(final ControlType controlType, final String controlCode) {
+        Map<String, CustomBindKeyBean> map = controlType == ControlType.KEY ? getControlBinding().getHandlerManager() : getControlTouchBinding().getTouchBindingMap();
         if (map == null) {
             return null;
         }
-        return  map.get(keycode);
+        return  map.get(controlCode);
     }
 
-    private final CustomBindKeyBean getKeyBean(final String keycode) {
+    private final CustomBindKeyBean getControlBean(final String controlCode) {
         if (SingletonSharedPreference.getPrefs() != null) {
             CustomBindKeyBean bean = JSONObject.parseObject(SingletonSharedPreference.getPrefs().
-                    getString(keycode, null), CustomBindKeyBean.class);
+                    getString(controlCode, null), CustomBindKeyBean.class);
             return bean;
         }
         return null;
     }
 
-    public final String getKeyAction(final String state, final String keycode) {
-        final CustomBindKeyBean bean = getKeyBean(keycode);
+    public final String getControlAction(final ControlType controlType, final String controlCode) {
+        final CustomBindKeyBean bean = getControlBean(controlCode);
         if (bean != null) {
             return bean.getAction();
         }
 
-        CustomBindKeyBean object = getKeyBinding(state, keycode);
+        CustomBindKeyBean object = getControlBinding(controlType, controlCode);
         if (object != null) {
             return object.getAction();
         }
         return null;
     }
 
-    public final String getKeyArgs(final String state, final String keycode) {
-        final CustomBindKeyBean bean = getKeyBean(keycode);
+    public final String getControlArgs(final ControlType controlType, final String controlCode) {
+        final CustomBindKeyBean bean = getControlBean(controlCode);
         if (bean != null) {
             return bean.getArgs();
         }
 
-        CustomBindKeyBean object = getKeyBinding(state, keycode);
+        CustomBindKeyBean object = getControlBinding(controlType, controlCode);
         if (object != null) {
             return object.getArgs();
         }
@@ -241,7 +249,10 @@ public class HandlerManager {
         if (!isEnableTouch()) {
             return false;
         }
-        return getActiveProvider().onSingleTapUp(readerDataHolder, e);
+        if (getActiveProvider().onSingleTapUp(readerDataHolder, e)) {
+            return true;
+        }
+        return processSingleTapUpEvent(readerDataHolder, e);
     }
 
     public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
@@ -332,12 +343,41 @@ public class HandlerManager {
 
     public boolean processKeyDownEvent(final ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
         final String key = KeyEvent.keyCodeToString(keyCode);
-        final String action = getKeyAction(TAG, key);
-        final String args = getKeyArgs(TAG, key);
+        final String action = getControlAction(ControlType.KEY, key);
+        final String args = getControlArgs(ControlType.KEY, key);
         if (StringUtils.isNullOrEmpty(action)) {
             Log.w(TAG, "No action found for key: " + key);
         }
         return processKeyDown(readerDataHolder, action, args);
+    }
+
+    private boolean processSingleTapUpEvent(final ReaderDataHolder readerDataHolder, final MotionEvent motionEvent) {
+        final String touchArea = getTouchAreaCode(readerDataHolder, motionEvent);
+        String action;
+        String args;
+        action = getControlAction(ControlType.TOUCH, touchArea);
+        args = getControlArgs(ControlType.TOUCH, touchArea);
+        return processSingleTapUp(readerDataHolder, action, args);
+    }
+
+    private String getTouchAreaCode(final ReaderDataHolder readerDataHolder, final MotionEvent motionEvent) {
+        int displayWidth = readerDataHolder.getDisplayWidth();
+        int displayHeight = readerDataHolder.getDisplayHeight();
+        if (motionEvent.getX() > displayWidth * TOUCH_VERTICAL_PART / TOUCH_HORIZONTAL_PART &&
+                motionEvent.getY() > displayHeight / TOUCH_VERTICAL_PART) {
+            return TouchBinding.TOUCH_RIGHT_BOTTOM;
+        } else if (motionEvent.getX() < displayWidth / TOUCH_HORIZONTAL_PART &&
+                motionEvent.getY() > displayHeight / TOUCH_VERTICAL_PART) {
+            return TouchBinding.TOUCH_LEFT_BOTTOM;
+        }else if (motionEvent.getX() < displayWidth / TOUCH_HORIZONTAL_PART &&
+                motionEvent.getY() < displayHeight / TOUCH_VERTICAL_PART) {
+            return TouchBinding.TOUCH_LEFT_TOP;
+        }else if (motionEvent.getX() > displayWidth * TOUCH_VERTICAL_PART / TOUCH_HORIZONTAL_PART &&
+                motionEvent.getY() < displayHeight / TOUCH_VERTICAL_PART) {
+            return TouchBinding.TOUCH_RIGHT_TOP;
+        }else {
+            return TouchBinding.TOUCH_CENTER;
+        }
     }
 
     public boolean processKeyDown(ReaderDataHolder readerDataHolder, final String action, final String args) {
@@ -380,6 +420,60 @@ public class HandlerManager {
             return false;
         }
         return true;
+    }
+
+    private boolean processSingleTapUp(final ReaderDataHolder readerDataHolder, final String action, final String args) {
+        if (StringUtils.isNullOrEmpty(action)) {
+            return false;
+        }
+        if (action.equals(TouchAction.NEXT_PAGE)) {
+            nextScreen(readerDataHolder);
+        }else if (action.equals(TouchAction.PREV_PAGE)) {
+            prevScreen(readerDataHolder);
+        }else if (action.equals(TouchAction.SHOW_MENU)) {
+            onShowMenu(readerDataHolder);
+        }else if (action.equals(TouchAction.INCREASE_BRIGHTNESS)) {
+            increaseBrightness(readerDataHolder);
+        }else if (action.equals(TouchAction.DECREASE_BRIGHTNESS)) {
+            decreaseBrightness(readerDataHolder);
+        }else if (action.equals(TouchAction.TOGGLE_FULLSCREEN)) {
+
+        }else if (action.equals(TouchAction.OPEN_TTS)) {
+            ShowReaderMenuAction.showTtsDialog(readerDataHolder);
+        }else if (action.equals(TouchAction.AUTO_PAGE)) {
+            readerDataHolder.enterSlideshow();
+        }else if (action.equals(TouchAction.NEXT_TEN_PAGE)) {
+            nextTenPage(readerDataHolder);
+        }else if (action.equals(TouchAction.PREV_TEN_PAGE)) {
+            prevTenPage(readerDataHolder);
+        }else {
+            return false;
+        }
+        return true;
+    }
+
+    private void increaseBrightness(final ReaderDataHolder readerDataHolder) {
+        int value = FrontLightController.getBrightness(readerDataHolder.getContext());
+        int max = FrontLightController.getMaxFrontLightValue(readerDataHolder.getContext());
+        FrontLightController.setBrightness(readerDataHolder.getContext(), Math.min(value + 10, max));
+    }
+
+    private void decreaseBrightness(final ReaderDataHolder readerDataHolder) {
+        int value = FrontLightController.getBrightness(readerDataHolder.getContext());
+        int min = FrontLightController.getMinFrontLightValue(readerDataHolder.getContext());
+        FrontLightController.setBrightness(readerDataHolder.getContext(), Math.max(value - 10, min));
+    }
+
+    private void nextTenPage(final ReaderDataHolder readerDataHolder) {
+        int currentPage = readerDataHolder.getCurrentPage();
+        int gotoPage = Math.min(currentPage + 10, readerDataHolder.getPageCount() - 1);
+        new GotoPageAction(gotoPage).execute(readerDataHolder);
+    }
+
+    private void prevTenPage(final ReaderDataHolder readerDataHolder) {
+        int currentPage = readerDataHolder.getCurrentPage();
+        int gotoPage = Math.max(currentPage - 10, 0);
+        new GotoPageAction(gotoPage).execute(readerDataHolder);
     }
 
     private void changeToEraseMode(final ReaderDataHolder readerDataHolder) {

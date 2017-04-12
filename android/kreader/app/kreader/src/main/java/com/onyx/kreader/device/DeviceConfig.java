@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyBinding;
+import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.Debug;
@@ -31,6 +32,7 @@ public class DeviceConfig {
     private boolean regalEnable = false;
 
     private KeyBinding keyBinding = null;
+    private TouchBinding touchBinding = null;
 
     private boolean deleteAcsmAfterFulfillment = false;
     private boolean supportZipCompressedBooks = false;
@@ -213,6 +215,14 @@ public class DeviceConfig {
 
     public void setKeyBinding(KeyBinding keyBinding) {
         this.keyBinding = keyBinding;
+    }
+
+    public TouchBinding getTouchBinding() {
+        return touchBinding != null ? touchBinding : TouchBinding.defaultValue();
+    }
+
+    public void setTouchBinding(TouchBinding touchBinding) {
+        this.touchBinding = touchBinding;
     }
 
     public boolean isDeleteAcsmAfterFulfillment() {

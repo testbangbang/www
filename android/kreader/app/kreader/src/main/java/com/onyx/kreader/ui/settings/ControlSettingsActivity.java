@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.settings;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -14,46 +15,68 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.KeyBinding;
+import com.onyx.android.sdk.data.TouchAction;
+import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.ui.handler.HandlerManager;
 
 import java.util.Map;
 
 public class ControlSettingsActivity extends PreferenceActivity {
 
-    private Pair<String, Integer>[] keyActions = new Pair[] {
-       new Pair(KeyAction.NEXT_PAGE, R.string.settings_key_binding_next_page_tittle),
-       new Pair(KeyAction.PREV_PAGE, R.string.settings_key_binding_prev_page_tittle),
-       new Pair(KeyAction.NEXT_SCREEN, R.string.settings_key_binding_next_view_tittle),
-       new Pair(KeyAction.PREV_SCREEN, R.string.settings_key_binding_prev_view_tittle),
-       new Pair(KeyAction.MOVE_LEFT, R.string.settings_key_binding_move_left_tittle),
-       new Pair(KeyAction.MOVE_RIGHT, R.string.settings_key_binding_move_right_tittle),
-       new Pair(KeyAction.MOVE_UP, R.string.settings_key_binding_move_up_tittle),
-       new Pair(KeyAction.MOVE_DOWN, R.string.settings_key_binding_move_down_tittle),
-       new Pair(KeyAction.SHOW_MENU, R.string.settings_key_binding_show_menu_tittle),
-       new Pair(KeyAction.INCREASE_FONT_SIZE, R.string.settings_key_binding_increase_font_size_tittle),
-       new Pair(KeyAction.DECREASE_FONT_SIZE, R.string.settings_key_binding_decrease_font_size_tittle),
-       new Pair(KeyAction.TOGGLE_BOOKMARK, R.string.settings_key_binding_toggle_bookmark_tittle),
-       new Pair(KeyAction.CHANGE_TO_ERASE_MODE, R.string.settings_key_binding_change_to_erase_mode_tittle),
-       new Pair(KeyAction.CHANGE_TO_SCRIBBLE_MODE, R.string.settings_key_binding_change_to_scribble_mode_tittle),
+    public static final String CONTROL_TYPE = "control_type";
+    public static final String CONTROL_KEY = "control_key";
+    public static final String CONTROL_TOUCH = "control_touch";
+
+    private Pair<String, Integer>[] keyActions = new Pair[]{
+            new Pair(KeyAction.NEXT_PAGE, R.string.settings_key_binding_next_page_tittle),
+            new Pair(KeyAction.PREV_PAGE, R.string.settings_key_binding_prev_page_tittle),
+            new Pair(KeyAction.NEXT_SCREEN, R.string.settings_key_binding_next_view_tittle),
+            new Pair(KeyAction.PREV_SCREEN, R.string.settings_key_binding_prev_view_tittle),
+            new Pair(KeyAction.MOVE_LEFT, R.string.settings_key_binding_move_left_tittle),
+            new Pair(KeyAction.MOVE_RIGHT, R.string.settings_key_binding_move_right_tittle),
+            new Pair(KeyAction.MOVE_UP, R.string.settings_key_binding_move_up_tittle),
+            new Pair(KeyAction.MOVE_DOWN, R.string.settings_key_binding_move_down_tittle),
+            new Pair(KeyAction.SHOW_MENU, R.string.settings_key_binding_show_menu_tittle),
+            new Pair(KeyAction.INCREASE_FONT_SIZE, R.string.settings_key_binding_increase_font_size_tittle),
+            new Pair(KeyAction.DECREASE_FONT_SIZE, R.string.settings_key_binding_decrease_font_size_tittle),
+            new Pair(KeyAction.TOGGLE_BOOKMARK, R.string.settings_key_binding_toggle_bookmark_tittle),
+            new Pair(KeyAction.CHANGE_TO_ERASE_MODE, R.string.settings_key_binding_change_to_erase_mode_tittle),
+            new Pair(KeyAction.CHANGE_TO_SCRIBBLE_MODE, R.string.settings_key_binding_change_to_scribble_mode_tittle),
     };
+
+    private Pair<String, Integer>[] touchActions = new Pair[] {
+            new Pair(TouchAction.NEXT_PAGE, R.string.settings_key_binding_next_page_tittle),
+            new Pair(TouchAction.PREV_PAGE, R.string.settings_key_binding_prev_page_tittle),
+            new Pair(TouchAction.INCREASE_BRIGHTNESS, R.string.settings_touch_binding_increase_brightness_tittle),
+            new Pair(TouchAction.DECREASE_BRIGHTNESS, R.string.settings_touch_binding_decrease_brightness_tittle),
+            new Pair(TouchAction.TOGGLE_FULLSCREEN, R.string.settings_touch_binding_toggle_fullscreen_tittle),
+            new Pair(TouchAction.OPEN_TTS, R.string.settings_touch_binding_open_tts_tittle),
+            new Pair(TouchAction.AUTO_PAGE, R.string.settings_touch_binding_auto_page_tittle),
+            new Pair(TouchAction.NEXT_TEN_PAGE, R.string.settings_touch_binding_next_ten_page_tittle),
+            new Pair(TouchAction.PREV_TEN_PAGE, R.string.settings_touch_binding_prev_ten_page_tittle),
+    };
+
     private Map<String, CustomBindKeyBean> bindingMap;
+    private Pair<String, Integer>[] controlActions;
+    private ControlType controlType = ControlType.KEY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.key_settings);
+        initData();
+        addPreferencesFromResource(controlType == ControlType.KEY ? R.xml.key_settings : R.xml.touch_settings);
         setContentView(R.layout.setting_main);
         RelativeLayout mBackFunctionLayout = (RelativeLayout) findViewById(R.id.back_function_layout);
         TextView settingTittle = (TextView) findViewById(R.id.settingTittle);
-        settingTittle.setText(R.string.settings_control_tittle);
+        settingTittle.setText(controlType == ControlType.KEY ? R.string.settings_control_tittle : R.string.settings_touch_tittle);
         mBackFunctionLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,25 +86,32 @@ public class ControlSettingsActivity extends PreferenceActivity {
         initPreference();
     }
 
-    private void initPreference() {
-        KeyBinding keyBinding = DeviceConfig.sharedInstance(this).getKeyBinding();
-        if (keyBinding == null) {
-            return;
+    private void initData() {
+        Intent intent = getIntent();
+        controlType = intent.getStringExtra(CONTROL_TYPE).equals(CONTROL_TOUCH) ? ControlType.TOUCH : ControlType.KEY;
+        controlActions = controlType == ControlType.KEY ? keyActions : touchActions;
+    }
+
+    public Map<String, CustomBindKeyBean> getBindingMap() {
+        if (bindingMap == null) {
+            bindingMap = controlType == ControlType.KEY ? getDeviceConfig().getKeyBinding().getHandlerManager() :
+                    getDeviceConfig().getTouchBinding().getTouchBindingMap();
         }
-        bindingMap = keyBinding.getHandlerManager();
-        for (Map.Entry<String, CustomBindKeyBean> stringJSONObjectEntry : bindingMap.entrySet()) {
-            String keyCode = stringJSONObjectEntry.getKey();
-            String keyBeanJsonString = SingletonSharedPreference.getStringValue(keyCode);
-            String action = "";
-            if (!StringUtils.isNullOrEmpty(keyBeanJsonString)) {
-                CustomBindKeyBean bindKeyBean = JSONObject.parseObject(keyBeanJsonString, CustomBindKeyBean.class);
-                action = bindKeyBean.getAction();
-            }else {
-                CustomBindKeyBean object = stringJSONObjectEntry.getValue();
-                if (object != null) {
-                    action = object.getAction();
-                }
+        return bindingMap;
+    }
+
+    private DeviceConfig getDeviceConfig() {
+        return DeviceConfig.sharedInstance(this);
+    }
+
+    private void initPreference() {
+        for (Map.Entry<String, CustomBindKeyBean> entry : getBindingMap().entrySet()) {
+            String keyCode = entry.getKey();
+            CustomBindKeyBean bindKeyBean = getBindKeyBean(keyCode);
+            if (bindKeyBean == null) {
+                bindKeyBean = entry.getValue();
             }
+            String action = bindKeyBean.getAction();
             Preference preference = findPreference(keyCode);
             if (preference != null) {
                 preference.setSummary(getActionTitle(action));
@@ -89,9 +119,17 @@ public class ControlSettingsActivity extends PreferenceActivity {
         }
     }
 
+    private CustomBindKeyBean getBindKeyBean(final String code) {
+        String keyBeanJsonString = SingletonSharedPreference.getStringValue(code);
+        if (!StringUtils.isNullOrEmpty(keyBeanJsonString)) {
+            return JSONObject.parseObject(keyBeanJsonString, CustomBindKeyBean.class);
+        }
+        return null;
+    }
+
     private String getActionTitle(final String action) {
         String title = "";
-        for (Pair<String, Integer> keyAction : keyActions) {
+        for (Pair<String, Integer> keyAction : controlActions) {
             if (keyAction.first.equals(action)) {
                 title = getString(keyAction.second);
             }
@@ -124,20 +162,21 @@ public class ControlSettingsActivity extends PreferenceActivity {
     }
 
     private void chooseKeyFunction(final Preference preference) {
-        if (bindingMap == null) {
+        if (getBindingMap() == null) {
             return;
         }
         final String keyCode = preference.getKey();
-        final CustomBindKeyBean object = bindingMap.get(keyCode);
-        if (object == null) {
+        CustomBindKeyBean preferenceBindKeyBean = getBindKeyBean(keyCode);
+        final CustomBindKeyBean bindKeyBean = preferenceBindKeyBean == null ? getBindingMap().get(keyCode) : preferenceBindKeyBean;
+        if (bindKeyBean == null) {
             return;
         }
-        String action = object.getAction();
-        final String[] items = new String[keyActions.length];
+        String action = bindKeyBean.getAction();
+        final String[] items = new String[controlActions.length];
         int checkedItem = 0;
-        for (int i = 0; i < keyActions.length; i++) {
-            items[i] = getString(keyActions[i].second);
-            if (action.equals(keyActions[i].first)) {
+        for (int i = 0; i < controlActions.length; i++) {
+            items[i] = getString(controlActions[i].second);
+            if (action.equals(controlActions[i].first)) {
                 checkedItem = i;
             }
         }
@@ -146,8 +185,8 @@ public class ControlSettingsActivity extends PreferenceActivity {
                 .setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String selectedAction = keyActions[which].first;
-                        CustomBindKeyBean bean = new CustomBindKeyBean(object.getArgs(), selectedAction);
+                        String selectedAction = controlActions[which].first;
+                        CustomBindKeyBean bean = new CustomBindKeyBean(bindKeyBean.getArgs(), selectedAction);
                         SingletonSharedPreference.setStringValue(keyCode, JSON.toJSONString(bean));
                         SingletonSharedPreference.setIntValue(selectedAction, KeyEvent.keyCodeFromString(keyCode));
                         preference.setSummary(getActionTitle(selectedAction));

@@ -314,7 +314,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         showScreenRefreshDialog(readerDataHolder);
                         break;
                     case SLIDESHOW:
-                        enterSlideshow(readerDataHolder);
+                        enterSlideshow(readerDataHolder, readerActivity);
                         break;
                     case FRONT_LIGHT:
                         showBrightnessDialog(readerDataHolder);
@@ -535,7 +535,7 @@ public class ShowReaderMenuAction extends BaseAction {
         dlg.show(readerActivity.getFragmentManager());
     }
 
-    private void enterSlideshow(final ReaderDataHolder readerDataHolder) {
+    public static void enterSlideshow(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
         hideReaderMenu();
         new SlideshowAction(readerActivity.getMainView()).execute(readerDataHolder, null);
     }
@@ -684,7 +684,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     }
 
-    private void showTtsDialog(final ReaderDataHolder readerDataHolder){
+    public static void showTtsDialog(final ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         StartTtsAction action = new StartTtsAction(null);
         action.execute(readerDataHolder, null);

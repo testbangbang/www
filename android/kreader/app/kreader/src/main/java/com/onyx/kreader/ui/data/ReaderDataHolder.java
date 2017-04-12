@@ -675,5 +675,9 @@ public class ReaderDataHolder {
         getEventBus().post(new StartNoteDrawingEvent());
         return true;
     }
+
+    public void enterSlideshow() {
+        getEventBus().post(new SlideshowStartEvent());
+    }
 }
 
