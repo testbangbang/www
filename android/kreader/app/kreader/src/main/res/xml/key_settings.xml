@@ -66,16 +66,6 @@
         android:layout="@layout/settings_custom_preference_item"
         android:summary="@string/settings_config_key_function"
         android:title="@string/setting_keycode_button_start_title" />
-    <Preference
-        android:key="@string/setting_keycode_eraser_key"
-        android:layout="@layout/settings_custom_preference_item"
-        android:summary="@string/settings_config_key_function"
-        android:title="@string/setting_keycode_eraser_title" />
-    <Preference
-        android:key="@string/setting_keycode_scribbler_key"
-        android:layout="@layout/settings_custom_preference_item"
-        android:summary="@string/settings_config_key_function"
-        android:title="@string/setting_keycode_scribbler_title" />
 
     <Preference
         android:key="@string/settings_key_binding_reset_default_key"
