@@ -413,9 +413,7 @@ public class HandlerManager {
         } else if (action.equals(KeyAction.SHOW_MENU)) {
             onShowMenu(readerDataHolder);
         } else if (action.equals(KeyAction.CHANGE_TO_ERASE_MODE)) {
-            changeToEraseMode(readerDataHolder);
         } else if (action.equals(KeyAction.CHANGE_TO_SCRIBBLE_MODE)) {
-            changeToScribbleMode(readerDataHolder);
         } else {
             return false;
         }
@@ -474,16 +472,6 @@ public class HandlerManager {
         int currentPage = readerDataHolder.getCurrentPage();
         int gotoPage = Math.max(currentPage - 10, 0);
         new GotoPageAction(gotoPage).execute(readerDataHolder);
-    }
-
-    private void changeToEraseMode(final ReaderDataHolder readerDataHolder) {
-        if (readerDataHolder.startNoteDrawing()) {
-            ShowReaderMenuAction.startErasing(readerDataHolder);
-        }
-    }
-
-    private void changeToScribbleMode(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.startNoteDrawing();
     }
 
     private void onShowMenu(final ReaderDataHolder readerDataHolder) {

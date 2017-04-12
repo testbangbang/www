@@ -15,9 +15,6 @@ import java.util.Map;
 
 public class KeyBinding {
 
-    private static final String KEYCODE_ERASER = "KEYCODE_ERASER";
-    private static final String KEYCODE_SCRIBBLER = "KEYCODE_SCRIBBLER";
-
     private Pair<String, CustomBindKeyBean>[] keyBindings = new Pair[] {
             new Pair(KeyEvent.keyCodeToString(KeyEvent.KEYCODE_PAGE_DOWN), CustomBindKeyBean.createKeyBean("", KeyAction.NEXT_SCREEN)),
             new Pair(KeyEvent.keyCodeToString(KeyEvent.KEYCODE_PAGE_UP), CustomBindKeyBean.createKeyBean("", KeyAction.PREV_SCREEN)),
@@ -34,8 +31,6 @@ public class KeyBinding {
             new Pair(KeyEvent.keyCodeToString(KeyEvent.KEYCODE_ALT_RIGHT), CustomBindKeyBean.createKeyBean("", KeyAction.CHANGE_TO_SCRIBBLE_MODE)),
             new Pair(KeyEvent.keyCodeToString(KeyEvent.KEYCODE_BUTTON_START), CustomBindKeyBean.createKeyBean("", KeyAction.CHANGE_TO_SCRIBBLE_MODE)),
             new Pair(KeyEvent.keyCodeToString(KeyEvent.KEYCODE_BACK), CustomBindKeyBean.createKeyBean("", KeyAction.CLOSE)),
-            new Pair(KEYCODE_ERASER, CustomBindKeyBean.createKeyBean("", KeyAction.CHANGE_TO_ERASE_MODE)),
-            new Pair(KEYCODE_SCRIBBLER, CustomBindKeyBean.createKeyBean("", KeyAction.CHANGE_TO_SCRIBBLE_MODE)),
     };
 
     private Map<String, CustomBindKeyBean> HandlerManager = new HashMap<>();

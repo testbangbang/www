@@ -941,14 +941,6 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     @Subscribe
-    public void onStartNoteDrawing(final StartNoteDrawingEvent event) {
-        if (getReaderDataHolder().inNoteWritingProvider()) {
-            return;
-        }
-        ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this, true);
-    }
-
-    @Subscribe
     public void onEnterSlideShow(final SlideshowStartEvent event) {
         ShowReaderMenuAction.enterSlideshow(getReaderDataHolder(), ReaderActivity.this);
     }

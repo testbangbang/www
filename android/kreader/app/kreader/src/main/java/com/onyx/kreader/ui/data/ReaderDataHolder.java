@@ -672,15 +672,6 @@ public class ReaderDataHolder {
         getEventBus().post(event);
     }
 
-    public boolean startNoteDrawing() {
-        if (!supportNoteFunc()) {
-            Toast.makeText(getContext(), getContext().getString(R.string.unable_to_enable_this_feature), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        getEventBus().post(new StartNoteDrawingEvent());
-        return true;
-    }
-
     public void enterSlideshow() {
         getEventBus().post(new SlideshowStartEvent());
     }

@@ -47,8 +47,6 @@ public class ControlSettingsActivity extends PreferenceActivity {
             new Pair(KeyAction.INCREASE_FONT_SIZE, R.string.settings_key_binding_increase_font_size_tittle),
             new Pair(KeyAction.DECREASE_FONT_SIZE, R.string.settings_key_binding_decrease_font_size_tittle),
             new Pair(KeyAction.TOGGLE_BOOKMARK, R.string.settings_key_binding_toggle_bookmark_tittle),
-            new Pair(KeyAction.CHANGE_TO_ERASE_MODE, R.string.settings_key_binding_change_to_erase_mode_tittle),
-            new Pair(KeyAction.CHANGE_TO_SCRIBBLE_MODE, R.string.settings_key_binding_change_to_scribble_mode_tittle),
     };
 
     private Pair<String, Integer>[] touchActions = new Pair[] {
