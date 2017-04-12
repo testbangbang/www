@@ -23,9 +23,9 @@ install {
                 }
             }
             scm {
-                    connection artifact.gitUrl
-                    developerConnection artifact.gitUrl
-                    url artifact.siteUrl
+                connection artifact.gitUrl
+                developerConnection artifact.gitUrl
+                url artifact.siteUrl
             }
         }
     }
