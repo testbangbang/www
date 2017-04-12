@@ -3,7 +3,7 @@ package com.onyx.android.sdk.reader.reflow;
 import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
-import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.reader.utils.HashUtils;
@@ -246,7 +246,7 @@ public class ImageReflowManager {
         final int height = size[1];
         int top = PageUtils.getSubPageTopRegardingPageRepeat(subPageHeight(), pageRepeat, subPage);
         int bottom = Math.min(top + subPageHeight(), height);
-        ReaderBitmapImpl bitmap = ReaderBitmapImpl.create(subPageWidth(), subPageHeight(), Bitmap.Config.ARGB_8888);
+        ReaderBitmapReferenceImpl bitmap = ReaderBitmapReferenceImpl.create(subPageWidth(), subPageHeight(), Bitmap.Config.ARGB_8888);
         bitmap.clear();
         if (!ImageUtils.renderReflowedPage(pageName, 0, top, subPageWidth(), bottom, bitmap.getBitmap())) {
             bitmap.close();

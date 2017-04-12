@@ -12,7 +12,7 @@ import com.onyx.android.sdk.reader.host.options.BaseOptions;
 /**
  * Created by joy on 8/9/16.
  */
-public class ReaderBitmapImpl implements ReaderBitmap {
+public class ReaderBitmapReferenceImpl implements ReaderBitmap {
     private static PlatformBitmapFactory bitmapFactory = Fresco.getImagePipelineFactory().getPlatformBitmapFactory();
 
     private String key;
@@ -20,16 +20,16 @@ public class ReaderBitmapImpl implements ReaderBitmap {
     private float gammaCorrection = BaseOptions.getLowerGammaLimit();
     private int emboldenLevel;
 
-    public static ReaderBitmapImpl create(int width, int height, Bitmap.Config config) {
-        ReaderBitmapImpl readerBitmap = new ReaderBitmapImpl(width, height, config);
+    public static ReaderBitmapReferenceImpl create(int width, int height, Bitmap.Config config) {
+        ReaderBitmapReferenceImpl readerBitmap = new ReaderBitmapReferenceImpl(width, height, config);
         return readerBitmap;
     }
 
-    public ReaderBitmapImpl() {
+    public ReaderBitmapReferenceImpl() {
         super();
     }
 
-    public ReaderBitmapImpl(int width, int height, Bitmap.Config config) {
+    public ReaderBitmapReferenceImpl(int width, int height, Bitmap.Config config) {
         super();
         bitmap = bitmapFactory.createBitmap(width, height, config);
     }
@@ -54,8 +54,8 @@ public class ReaderBitmapImpl implements ReaderBitmap {
      * add reference of internal bitmap
      * @return
      */
-    public ReaderBitmapImpl clone() {
-        ReaderBitmapImpl copy = new ReaderBitmapImpl();
+    public ReaderBitmapReferenceImpl clone() {
+        ReaderBitmapReferenceImpl copy = new ReaderBitmapReferenceImpl();
         copy.key = key;
         copy.bitmap = bitmap.clone();
         copy.gammaCorrection = gammaCorrection;

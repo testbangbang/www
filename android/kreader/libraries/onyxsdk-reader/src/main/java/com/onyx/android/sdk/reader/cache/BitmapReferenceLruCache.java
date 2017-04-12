@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by Joy on 2016/5/5.
  */
-public class BitmapReferenceLruCache extends LruCache<String, ReaderBitmapImpl> {
+public class BitmapReferenceLruCache extends LruCache<String, ReaderBitmapReferenceImpl> {
 
     /**
      * @param maxSize for caches that do not override {@link #sizeOf}, this is
@@ -20,7 +20,7 @@ public class BitmapReferenceLruCache extends LruCache<String, ReaderBitmapImpl> 
     }
 
     @Override
-    protected void entryRemoved(boolean evicted, String key, ReaderBitmapImpl oldValue, ReaderBitmapImpl newValue) {
+    protected void entryRemoved(boolean evicted, String key, ReaderBitmapReferenceImpl oldValue, ReaderBitmapReferenceImpl newValue) {
         oldValue.close();
     }
 
@@ -28,10 +28,10 @@ public class BitmapReferenceLruCache extends LruCache<String, ReaderBitmapImpl> 
         evictAll();
     }
 
-    public ReaderBitmapImpl getFreeBitmap(int width, int height, Bitmap.Config config) {
+    public ReaderBitmapReferenceImpl getFreeBitmap(int width, int height, Bitmap.Config config) {
         if (size() >= maxSize()) {
             String freeKey = null;
-            for (Map.Entry<String, ReaderBitmapImpl> entry : snapshot().entrySet()) {
+            for (Map.Entry<String, ReaderBitmapReferenceImpl> entry : snapshot().entrySet()) {
                 if (entry.getValue().isValid() &&
                         entry.getValue().getBitmap().getWidth() == width &&
                         entry.getValue().getBitmap().getHeight() == height &&
@@ -41,12 +41,12 @@ public class BitmapReferenceLruCache extends LruCache<String, ReaderBitmapImpl> 
                 }
             }
             if (freeKey != null) {
-                ReaderBitmapImpl bitmap = get(freeKey).clone();
+                ReaderBitmapReferenceImpl bitmap = get(freeKey).clone();
                 remove(freeKey);
                 return bitmap;
             }
         }
 
-        return ReaderBitmapImpl.create(width, height, config);
+        return ReaderBitmapReferenceImpl.create(width, height, config);
     }
 }

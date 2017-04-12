@@ -13,14 +13,14 @@ import java.util.Map;
  * Created by joy on 8/15/16.
  */
 public class BitmapSoftLruCache {
-    private static class BitmapSoftReference extends SoftReference<ReaderBitmapImpl> {
+    private static class BitmapSoftReference extends SoftReference<ReaderBitmapReferenceImpl> {
 
-        public BitmapSoftReference(ReaderBitmapImpl bitmap, ReferenceQueue<ReaderBitmapImpl> queue) {
+        public BitmapSoftReference(ReaderBitmapReferenceImpl bitmap, ReferenceQueue<ReaderBitmapReferenceImpl> queue) {
             super(bitmap, queue);
         }
     }
 
-    ReferenceQueue<ReaderBitmapImpl> referenceQueue = new ReferenceQueue<>();
+    ReferenceQueue<ReaderBitmapReferenceImpl> referenceQueue = new ReferenceQueue<>();
     private LinkedHashMap<String, BitmapSoftReference> map = new LinkedHashMap<>();
     private int maxSize;
 
@@ -40,7 +40,7 @@ public class BitmapSoftLruCache {
         }
     }
 
-    public ReaderBitmapImpl get(String key) {
+    public ReaderBitmapReferenceImpl get(String key) {
         synchronized (map) {
             clearStaleEntries();
 
@@ -54,7 +54,7 @@ public class BitmapSoftLruCache {
         }
     }
 
-    public ReaderBitmapImpl put(String key, ReaderBitmapImpl bitmap) {
+    public ReaderBitmapReferenceImpl put(String key, ReaderBitmapReferenceImpl bitmap) {
         synchronized (map) {
             clearStaleEntries();
 
@@ -88,29 +88,29 @@ public class BitmapSoftLruCache {
         }
     }
 
-    public ReaderBitmapImpl getFreeBitmap(int width, int height, Bitmap.Config config) {
+    public ReaderBitmapReferenceImpl getFreeBitmap(int width, int height, Bitmap.Config config) {
         synchronized (map) {
             clearStaleEntries();
 
             if (map.size() < maxSize) {
-                return ReaderBitmapImpl.create(width, height, config);
+                return ReaderBitmapReferenceImpl.create(width, height, config);
             }
 
             Map.Entry<String, BitmapSoftReference> find = null;
             for (Map.Entry<String, BitmapSoftReference> entry : map.entrySet()) {
-                ReaderBitmapImpl bitmap = entry.getValue().get();
+                ReaderBitmapReferenceImpl bitmap = entry.getValue().get();
                 if (canReuse(bitmap, width, height, config)) {
                     find = entry;
                 }
             }
             if (find == null) {
-                return ReaderBitmapImpl.create(width, height, config);
+                return ReaderBitmapReferenceImpl.create(width, height, config);
             }
 
             map.remove(find.getKey());
-            ReaderBitmapImpl bitmap = find.getValue().get();
+            ReaderBitmapReferenceImpl bitmap = find.getValue().get();
             if (bitmap == null || !BitmapUtils.isValid(bitmap.getBitmap())) {
-                return ReaderBitmapImpl.create(width, height, config);
+                return ReaderBitmapReferenceImpl.create(width, height, config);
             }
 
             return bitmap;
@@ -136,7 +136,7 @@ public class BitmapSoftLruCache {
         return reference.get() == null || !BitmapUtils.isValid(reference.get().getBitmap());
     }
 
-    private boolean canReuse(ReaderBitmapImpl bitmap, int width, int height, Bitmap.Config config) {
+    private boolean canReuse(ReaderBitmapReferenceImpl bitmap, int width, int height, Bitmap.Config config) {
         if (bitmap == null || bitmap.getBitmap() == null || bitmap.getBitmap().isRecycled()) {
             return false;
         }

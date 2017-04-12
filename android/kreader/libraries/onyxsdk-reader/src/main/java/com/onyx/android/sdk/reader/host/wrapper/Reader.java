@@ -16,7 +16,7 @@ import com.onyx.android.sdk.reader.api.ReaderRendererFeatures;
 import com.onyx.android.sdk.reader.api.ReaderSearchManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
-import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
@@ -155,11 +155,11 @@ public class Reader {
         return getReaderHelper().getReaderLayoutManager();
     }
 
-    public void transferRenderBitmapToViewport(ReaderBitmapImpl renderBitmap) {
+    public void transferRenderBitmapToViewport(ReaderBitmapReferenceImpl renderBitmap) {
         getReaderHelper().transferRenderBitmapToViewport(renderBitmap);
     }
 
-    public void returnBitmapToCache(ReaderBitmapImpl bitmap) {
+    public void returnBitmapToCache(ReaderBitmapReferenceImpl bitmap) {
         getReaderHelper().returnBitmapToCache(bitmap);
     }
 

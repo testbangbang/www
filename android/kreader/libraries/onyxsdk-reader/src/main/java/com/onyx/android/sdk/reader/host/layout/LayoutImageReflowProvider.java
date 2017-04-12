@@ -14,7 +14,7 @@ import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderException;
-import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
@@ -112,7 +112,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo readerViewInfo) throws ReaderException {
-        drawContext.renderingBitmap = new ReaderBitmapImpl();
+        drawContext.renderingBitmap = new ReaderBitmapReferenceImpl();
 
         if (drawContext.asyncDraw) {
             if (reverseOrder) {
@@ -183,7 +183,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         if (gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()))) {
             if (!isCurrentSubPageReady()) {
                 ReaderDrawContext reflowContext = ReaderDrawContext.copy(drawContext);
-                reflowContext.renderingBitmap = new ReaderBitmapImpl();
+                reflowContext.renderingBitmap = new ReaderBitmapReferenceImpl();
                 reflowFirstVisiblePageAsync(reader, reflowContext, readerViewInfo, false);
             }
             gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));

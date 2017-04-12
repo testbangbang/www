@@ -9,7 +9,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderRenderer;
 import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
-import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
@@ -64,10 +64,10 @@ public class LayoutProviderUtils {
         }
         Debug.d(TAG, "hit cache: " + hitCache + ", " + key);
         if (!hitCache) {
-            ReaderBitmapImpl freeBitmap = cache.getFreeBitmap(reader.getViewOptions().getViewWidth(),
+            ReaderBitmapReferenceImpl freeBitmap = cache.getFreeBitmap(reader.getViewOptions().getViewWidth(),
                     reader.getViewOptions().getViewHeight(), Bitmap.Config.ARGB_8888);
             try {
-                drawContext.renderingBitmap = new ReaderBitmapImpl();
+                drawContext.renderingBitmap = new ReaderBitmapReferenceImpl();
                 drawContext.renderingBitmap.attachWith(key, freeBitmap.getBitmapReference());
                 drawContext.renderingBitmap.clear();
             } finally {
@@ -85,7 +85,7 @@ public class LayoutProviderUtils {
 
     static private void drawVisiblePagesImpl(final ReaderRenderer renderer,
                                              final ReaderLayoutManager layoutManager,
-                                             final ReaderBitmapImpl bitmap,
+                                             final ReaderBitmapReferenceImpl bitmap,
                                              final List<PageInfo> visiblePages,
                                              boolean hitCache) {
 
@@ -215,7 +215,7 @@ public class LayoutProviderUtils {
     }
 
     static public boolean checkCache(final BitmapReferenceLruCache cache, final String key, final ReaderDrawContext context) {
-        ReaderBitmapImpl result = cache.get(key);
+        ReaderBitmapReferenceImpl result = cache.get(key);
         if (result == null || !result.isGammaApplied(context.targetGammaCorrection) || !result.isEmboldenApplied(context.targetEmboldenLevel)) {
             return false;
         }
