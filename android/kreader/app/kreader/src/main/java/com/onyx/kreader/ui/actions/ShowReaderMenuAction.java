@@ -310,7 +310,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         showScreenRefreshDialog(readerDataHolder);
                         break;
                     case SLIDESHOW:
-                        enterSlideshow(readerDataHolder);
+                        enterSlideshow(readerDataHolder, readerActivity);
                         break;
                     case FRONT_LIGHT:
                         showBrightnessDialog(readerDataHolder);
@@ -531,7 +531,7 @@ public class ShowReaderMenuAction extends BaseAction {
         dlg.show(readerActivity.getFragmentManager());
     }
 
-    private void enterSlideshow(final ReaderDataHolder readerDataHolder) {
+    public static void enterSlideshow(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
         hideReaderMenu();
         new SlideshowAction(readerActivity.getMainView()).execute(readerDataHolder, null);
     }
@@ -680,7 +680,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     }
 
-    private void showTtsDialog(final ReaderDataHolder readerDataHolder){
+    public static void showTtsDialog(final ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         StartTtsAction action = new StartTtsAction(null);
         action.execute(readerDataHolder, null);
@@ -922,7 +922,7 @@ public class ShowReaderMenuAction extends BaseAction {
         clearPageAction.execute(readerDataHolder, null);
     }
 
-    private static void startErasing(final ReaderDataHolder readerDataHolder) {
+    public static void startErasing(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));

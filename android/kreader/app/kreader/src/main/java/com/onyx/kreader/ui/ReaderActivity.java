@@ -95,6 +95,8 @@ import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
+import com.onyx.kreader.ui.events.SlideshowStartEvent;
+import com.onyx.kreader.ui.events.StartNoteDrawingEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.events.UpdateTabWidgetVisibilityEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
@@ -936,6 +938,11 @@ public class ReaderActivity extends OnyxBaseActivity {
                 ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this, true);
             }
         });
+    }
+
+    @Subscribe
+    public void onEnterSlideShow(final SlideshowStartEvent event) {
+        ShowReaderMenuAction.enterSlideshow(getReaderDataHolder(), ReaderActivity.this);
     }
 
     public void backward() {

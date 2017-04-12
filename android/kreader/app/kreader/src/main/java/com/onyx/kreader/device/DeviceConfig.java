@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Build;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.data.CustomBindKeyBean;
+import com.onyx.android.sdk.data.KeyBinding;
+import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.Debug;
@@ -28,7 +31,8 @@ public class DeviceConfig {
     private boolean hasNaturalLight = false;
     private boolean regalEnable = false;
 
-    private Map<String, Map<String, JSONObject>> keyBinding = null;
+    private KeyBinding keyBinding = null;
+    private TouchBinding touchBinding = null;
 
     private boolean deleteAcsmAfterFulfillment = false;
     private boolean supportZipCompressedBooks = false;
@@ -205,12 +209,20 @@ public class DeviceConfig {
         this.regalEnable = regalEnable;
     }
 
-    public Map<String, Map<String, JSONObject>> getKeyBinding() {
-        return keyBinding;
+    public KeyBinding getKeyBinding() {
+        return keyBinding != null ? keyBinding : KeyBinding.defaultValue();
     }
 
-    public void setKeyBinding(Map<String, Map<String, JSONObject>> keyBinding) {
+    public void setKeyBinding(KeyBinding keyBinding) {
         this.keyBinding = keyBinding;
+    }
+
+    public TouchBinding getTouchBinding() {
+        return touchBinding != null ? touchBinding : TouchBinding.defaultValue();
+    }
+
+    public void setTouchBinding(TouchBinding touchBinding) {
+        this.touchBinding = touchBinding;
     }
 
     public boolean isDeleteAcsmAfterFulfillment() {
