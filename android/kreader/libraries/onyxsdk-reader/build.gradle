@@ -79,12 +79,6 @@ dependencies {
     }
     compile project(':libraries:cropimage')
 
-    compile (project(':libraries:onyxsdk-scribble')) {
-        ['com.github.Raizlabs.DBFlow', 'com.alibaba'].each {
-            exclude group: it
-        }
-    }
-
     compile (project(':libraries:chinese-analyzer')) {
         exclude group: 'org.apache.lucene', module: 'lucene-core'
     }
