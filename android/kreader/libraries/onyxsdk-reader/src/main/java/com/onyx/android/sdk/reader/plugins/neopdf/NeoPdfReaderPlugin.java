@@ -3,10 +3,8 @@ package com.onyx.android.sdk.reader.plugins.neopdf;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
@@ -168,11 +166,6 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         return getPluginImpl().getTableOfContent(toc.getRootEntry());
-    }
-
-    @Override
-    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
-        return false;
     }
 
     public ReaderView getView(final ReaderViewOptions viewOptions) {

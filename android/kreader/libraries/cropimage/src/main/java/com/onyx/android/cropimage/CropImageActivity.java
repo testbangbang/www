@@ -32,14 +32,12 @@ import android.view.View;
 import android.view.Window;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.cropimage.data.CropArgs;
-import com.onyx.android.cropimage.data.PointMatrix;
 import com.onyx.android.cropimage.util.Log;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 /*

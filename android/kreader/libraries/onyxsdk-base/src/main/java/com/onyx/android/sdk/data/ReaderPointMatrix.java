@@ -1,4 +1,4 @@
-package com.onyx.android.cropimage.data;
+package com.onyx.android.sdk.data;
 
 import android.graphics.PointF;
 
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by zhuzeng on 5/22/15.
  */
-public class PointMatrix {
+public class ReaderPointMatrix {
 
     private int originRows;
 
@@ -16,11 +16,11 @@ public class PointMatrix {
 
     private ArrayList<ArrayList<PointF>> data;
 
-    public PointMatrix() {
+    public ReaderPointMatrix() {
         resize(1, 1);
     }
 
-    public PointMatrix(int r, int c) {
+    public ReaderPointMatrix(int r, int c) {
         resize(r, c);
     }
 
