@@ -270,6 +270,12 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
+    public void deleteMetadataCollectionByDocId(Context context, String docId) {
+        new Delete().from(MetadataCollection.class).where(MetadataCollection_Table.documentUniqueId.eq(docId))
+                .execute();
+    }
+
+    @Override
     public void updateMetadataCollection(MetadataCollection collection) {
         collection.update();
     }

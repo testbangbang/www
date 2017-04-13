@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by zhuzeng on 6/2/16.
@@ -192,6 +193,10 @@ public class Metadata extends BaseData {
         this.lastAccess = lastAccess;
     }
 
+    public void updateLastAccess() {
+        setLastAccess(new Date());
+    }
+
     public Date getLastModified() {
         return lastModified;
     }
@@ -206,6 +211,10 @@ public class Metadata extends BaseData {
 
     public void setProgress(final String p) {
         progress = p;
+    }
+
+    public void setProgress(int currentPage, int totalPage) {
+        setProgress(String.format(Locale.getDefault(), "%d" + PROGRESS_DIVIDER + "%d", currentPage, totalPage));
     }
 
     public int getFavorite() {
@@ -321,11 +330,36 @@ public class Metadata extends BaseData {
 
     public static void getBasicMetadataFromFile(final Metadata data, File file) {
         data.setName(file.getName());
+        data.setIdString(file.getAbsolutePath());
         data.setLocation(file.getAbsolutePath());
         data.setNativeAbsolutePath(file.getAbsolutePath());
         data.setSize(file.length());
         data.setLastModified(new Date(FileUtils.getLastChangeTime(file)));
         data.setType(FileUtils.getFileExtension(file.getName()));
+    }
+
+    private int parseProgress(String progress) {
+        try {
+            return Integer.parseInt(progress);
+        } catch (Exception e) {
+        }
+        return 0;
+    }
+
+    public int getProgressPercent() {
+        if (StringUtils.isNullOrEmpty(progress)) {
+            return 0;
+        }
+        String[] progressSplit = progress.split(PROGRESS_DIVIDER);
+        if (progressSplit.length != 2) {
+            return 0;
+        }
+        int readingProgress = parseProgress(progressSplit[0]);
+        int totalProgress = parseProgress(progressSplit[1]);
+        if (totalProgress == 0) {
+            return 0;
+        }
+        return readingProgress * 100 / totalProgress;
     }
 
     public boolean internalProgressEqual(String progress) {

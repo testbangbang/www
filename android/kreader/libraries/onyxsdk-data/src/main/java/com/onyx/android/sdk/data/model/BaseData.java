@@ -76,7 +76,7 @@ public class BaseData extends BaseModel {
         updatedAt = d;
     }
 
-    private void beforeSave() {
+    public void beforeSave() {
         Date now = new Date();
         if (createdAt == null) {
             createdAt = now;
