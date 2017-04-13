@@ -1,4 +1,4 @@
-package com.onyx.kreader.activity;
+package com.onyx.kreader.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

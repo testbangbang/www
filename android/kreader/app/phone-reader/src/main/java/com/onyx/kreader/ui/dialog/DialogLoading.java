@@ -1,4 +1,4 @@
-package com.onyx.kreader.dialog;
+package com.onyx.kreader.ui.dialog;
 
 /**
  * Created by suicheng on 2017/2/16.

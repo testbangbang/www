@@ -1,4 +1,4 @@
-package com.onyx.kreader.dialog;
+package com.onyx.kreader.ui.dialog;
 
 import android.content.Context;
 

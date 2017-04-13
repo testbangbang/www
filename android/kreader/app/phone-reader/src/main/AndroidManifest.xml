@@ -28,7 +28,7 @@
             android:name="timestamp"
             android:value="${timestamp_value}" />
 
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -36,7 +36,7 @@
         </activity>
 
         <activity
-            android:name=".activity.ShareFileActivity"
+            android:name=".ui.activity.ShareFileActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

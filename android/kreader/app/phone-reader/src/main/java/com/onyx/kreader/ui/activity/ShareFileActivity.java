@@ -1,4 +1,4 @@
-package com.onyx.kreader.activity;
+package com.onyx.kreader.ui.activity;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -38,7 +38,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ReaderApplication;
-import com.onyx.kreader.dialog.DialogProgressHolder;
+import com.onyx.kreader.ui.dialog.DialogProgressHolder;
 import com.onyx.kreader.manager.PermissionManager;
 import com.onyx.kreader.utils.TextUtils;
 import com.onyx.kreader.utils.ToastUtils;
