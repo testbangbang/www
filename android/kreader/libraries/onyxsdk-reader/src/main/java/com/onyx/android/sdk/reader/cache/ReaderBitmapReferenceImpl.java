@@ -3,13 +3,20 @@ package com.onyx.android.sdk.reader.cache;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+import com.facebook.common.memory.PooledByteBuffer;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.bitmaps.PlatformBitmapFactory;
+import com.facebook.imagepipeline.image.EncodedImage;
+import com.facebook.imagepipeline.memory.PoolConfig;
+import com.facebook.imagepipeline.memory.PoolFactory;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
+import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by joy on 8/9/16.
@@ -27,6 +34,26 @@ public class ReaderBitmapReferenceImpl implements ReaderBitmap, Closeable {
     public static ReaderBitmapReferenceImpl create(int width, int height, Bitmap.Config config) {
         ReaderBitmapReferenceImpl readerBitmap = new ReaderBitmapReferenceImpl(width, height, config);
         return readerBitmap;
+    }
+
+    public static ReaderBitmapReferenceImpl decodeStream(InputStream inputStream) throws IOException {
+        PoolFactory poolFactory = new PoolFactory(PoolConfig.newBuilder().build());
+
+        PooledByteBuffer pooledByteBuffer = null;
+        EncodedImage image = null;
+        try {
+            pooledByteBuffer = poolFactory.getPooledByteBufferFactory().newByteBuffer(inputStream);
+            image = new EncodedImage(CloseableReference.of(pooledByteBuffer));
+            CloseableReference<Bitmap> bmp = Fresco.getImagePipelineFactory().getPlatformDecoder().decodeFromEncodedImage(image,
+                    Bitmap.Config.ARGB_8888);
+
+            ReaderBitmapReferenceImpl result = new ReaderBitmapReferenceImpl();
+            result.bitmap = bmp;
+            return result;
+        } finally {
+            FileUtils.closeQuietly(image);
+            FileUtils.closeQuietly(pooledByteBuffer);
+        }
     }
 
     public ReaderBitmapReferenceImpl() {
