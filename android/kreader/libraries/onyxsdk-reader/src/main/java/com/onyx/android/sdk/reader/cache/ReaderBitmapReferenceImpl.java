@@ -36,7 +36,7 @@ public class ReaderBitmapReferenceImpl implements ReaderBitmap, Closeable {
         return readerBitmap;
     }
 
-    public static ReaderBitmapReferenceImpl decodeStream(InputStream inputStream) throws IOException {
+    public static ReaderBitmapReferenceImpl decodeStream(InputStream inputStream, Bitmap.Config config) throws IOException {
         PoolFactory poolFactory = new PoolFactory(PoolConfig.newBuilder().build());
 
         PooledByteBuffer pooledByteBuffer = null;
@@ -45,7 +45,7 @@ public class ReaderBitmapReferenceImpl implements ReaderBitmap, Closeable {
             pooledByteBuffer = poolFactory.getPooledByteBufferFactory().newByteBuffer(inputStream);
             image = new EncodedImage(CloseableReference.of(pooledByteBuffer));
             CloseableReference<Bitmap> bmp = Fresco.getImagePipelineFactory().getPlatformDecoder().decodeFromEncodedImage(image,
-                    Bitmap.Config.ARGB_8888);
+                    config);
 
             ReaderBitmapReferenceImpl result = new ReaderBitmapReferenceImpl();
             result.bitmap = bmp;

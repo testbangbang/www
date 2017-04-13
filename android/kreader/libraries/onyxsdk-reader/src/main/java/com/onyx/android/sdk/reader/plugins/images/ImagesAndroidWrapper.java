@@ -27,7 +27,7 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
         ReaderBitmapReferenceImpl srcImage = null;
         ReaderBitmapReferenceImpl subImage = null;
         try {
-            srcImage = ReaderBitmapReferenceImpl.decodeStream(stream);
+            srcImage = ReaderBitmapReferenceImpl.decodeStream(stream, ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
 
             Rect bitmapRegion = new Rect((int) (visibleRect.left / scale), (int) (visibleRect.top / scale),
                     (int) (visibleRect.right / scale), (int) (visibleRect.bottom / scale));
