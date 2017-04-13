@@ -225,12 +225,6 @@ public class DialogQuickPreview extends OnyxBaseDialog {
 
         @Override
         public void onPageBindViewHolder(PreviewViewHolder holder, final int position) {
-            Map.Entry<PageInfo, Bitmap> entry = getPageInfoEntry(previewMap, position);
-            if (entry == null) {
-                return;
-            }
-
-            holder.bindPreview(entry.getValue(), entry.getKey().getPageNumber(), entry.getKey().getPosition());
             holder.getContainer().setActivated(readerDataHolder.getCurrentPage() == position);
             holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -242,6 +236,12 @@ public class DialogQuickPreview extends OnyxBaseDialog {
                     }
                 }
             });
+            Map.Entry<PageInfo, Bitmap> entry = getPageInfoEntry(previewMap, position);
+            if (entry == null) {
+                return;
+            }
+
+            holder.bindPreview(entry.getValue(), entry.getKey().getPageNumber(), entry.getKey().getPosition());
         }
 
         @Override
