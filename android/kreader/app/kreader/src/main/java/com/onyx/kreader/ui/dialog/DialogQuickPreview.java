@@ -353,8 +353,23 @@ public class DialogQuickPreview extends OnyxBaseDialog {
             }
         };
 
-        btnPrev.setOnTouchListener(onTouchListener);
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.image_view_next_page:
+                        nextPage();
+                        break;
+                    case R.id.image_view_prev_page:
+                        prevPage();
+                        break;
+                }
+            }
+        };
 
+        btnNext.setOnClickListener(onClickListener);
+        btnPrev.setOnClickListener(onClickListener);
+        btnPrev.setOnTouchListener(onTouchListener);
         btnNext.setOnTouchListener(onTouchListener);
 
         findViewById(R.id.image_view_close).setOnClickListener(new View.OnClickListener() {
