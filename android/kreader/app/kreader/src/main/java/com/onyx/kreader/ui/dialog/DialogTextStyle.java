@@ -630,7 +630,7 @@ public class DialogTextStyle extends DialogBase {
                                 decreaseIcon.requestFocus();
                             }
                             if (pageView.getPaginator().isInPrevPage(position)) {
-                                chineseFontFaceLayout.requestFocus();
+                                englishFaceLayout.requestFocus();
                             }
                         }
                     }
