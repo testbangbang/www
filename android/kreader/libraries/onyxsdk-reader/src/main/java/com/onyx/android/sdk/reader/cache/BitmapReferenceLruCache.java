@@ -32,10 +32,7 @@ public class BitmapReferenceLruCache extends LruCache<String, ReaderBitmapRefere
         if (size() >= maxSize()) {
             String freeKey = null;
             for (Map.Entry<String, ReaderBitmapReferenceImpl> entry : snapshot().entrySet()) {
-                if (entry.getValue().isValid() &&
-                        entry.getValue().getBitmap().getWidth() == width &&
-                        entry.getValue().getBitmap().getHeight() == height &&
-                        entry.getValue().getBitmap().getConfig() == config) {
+                if (entry.getValue().match(width, height, config)) {
                     freeKey = entry.getKey();
                     break;
                 }

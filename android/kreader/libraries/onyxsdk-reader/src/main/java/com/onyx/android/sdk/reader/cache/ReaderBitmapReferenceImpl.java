@@ -106,4 +106,11 @@ public class ReaderBitmapReferenceImpl implements ReaderBitmap {
         this.key = key;
         bitmap = src.clone();
     }
+
+    public boolean match(int width, int height, final Bitmap.Config config) {
+        return isValid() &&
+                getBitmap().getWidth() == width &&
+                getBitmap().getHeight() == height &&
+                getBitmap().getConfig() == config;
+    }
 }
