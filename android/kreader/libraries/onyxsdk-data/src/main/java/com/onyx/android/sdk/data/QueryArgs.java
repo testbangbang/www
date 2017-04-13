@@ -2,8 +2,8 @@ package com.onyx.android.sdk.data;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
@@ -174,4 +174,38 @@ public class QueryArgs {
         return true;
     }
 
+    public String getOrderByQuery() {
+        if(CollectionUtils.isNullOrEmpty(orderByList)){
+            return null;
+        }
+        String orderBy = "";
+        for (OrderBy by : orderByList) {
+            orderBy += by.getQuery();
+        }
+        return orderBy;
+    }
+
+    public String getLimitOffsetQuery() {
+        return " LIMIT " + limit + " OFFSET " + offset + " ";
+    }
+
+    public String getOrderByQueryWithLimitOffset() {
+        String orderByQuery = getOrderByQuery();
+        String limitOffsetQuery = getLimitOffsetQuery();
+        if(StringUtils.isNullOrEmpty(orderByQuery)) {
+            return null;
+        }
+        return orderByQuery + limitOffsetQuery;
+    }
+
+    public String[] getProjectionSet() {
+        if (CollectionUtils.isNullOrEmpty(propertyList)) {
+            return null;
+        }
+        String[] projection = new String[propertyList.size()];
+        for (int i = 0; i < propertyList.size(); i++) {
+            projection[i] = propertyList.get(i).getQuery();
+        }
+        return projection;
+    }
 }
