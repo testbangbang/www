@@ -24,6 +24,7 @@ import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.FontInfo;
+import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.ReaderTextStyle.PageMargin;
 import com.onyx.android.sdk.data.ReaderTextStyle.Percentage;
@@ -47,6 +48,7 @@ import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +64,8 @@ import static com.onyx.kreader.ui.dialog.DialogTextStyle.FontLevel.SMALL;
  */
 
 public class DialogTextStyle extends DialogBase {
+
+    private Map<Integer, String> keyBindingMap = new Hashtable();
 
     public enum FontLevel {
         SMALL, NORMAL, LARGE, INCREASE, DECREASE
@@ -267,6 +271,7 @@ public class DialogTextStyle extends DialogBase {
     private View initFontFaceView(final DeviceUtils.FontType fontType) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_text_style_sub_font_face_view, null, false);
         final PageRecyclerView pageView = (PageRecyclerView) view.findViewById(R.id.font_page_view);
+        pageView.setKeyBinding(getKeyBindingMap());
         final TextView pageSizeIndicator = (TextView) view.findViewById(R.id.page_size_indicator);
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
         ImageView nextIcon = (ImageView) view.findViewById(R.id.next_icon);
@@ -310,6 +315,16 @@ public class DialogTextStyle extends DialogBase {
 
         updateFontSizeView(view);
         return view;
+    }
+
+    private Map<Integer, String> getKeyBindingMap() {
+        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_DOWN, KeyAction.NEXT_PAGE);
+        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_DOWN, KeyAction.NEXT_PAGE);
+        keyBindingMap.put(KeyEvent.KEYCODE_DPAD_RIGHT, KeyAction.NEXT_PAGE);
+        keyBindingMap.put(KeyEvent.KEYCODE_PAGE_UP, KeyAction.PREV_PAGE);
+        keyBindingMap.put(KeyEvent.KEYCODE_VOLUME_UP, KeyAction.PREV_PAGE);
+        keyBindingMap.put(KeyEvent.KEYCODE_DPAD_LEFT, KeyAction.PREV_PAGE);
+        return keyBindingMap;
     }
 
     private List<Object> getDisableFonts() {
@@ -403,6 +418,7 @@ public class DialogTextStyle extends DialogBase {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_text_style_sub_code_page_view, null, false);
         final PageRecyclerView pageView = (PageRecyclerView) view.findViewById(R.id.code_page_view);
         final TextView pageSizeIndicator = (TextView) view.findViewById(R.id.page_size_indicator);
+        pageView.setKeyBinding(getKeyBindingMap());
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
         ImageView nextIcon = (ImageView) view.findViewById(R.id.next_icon);
 
@@ -614,7 +630,7 @@ public class DialogTextStyle extends DialogBase {
                                 decreaseIcon.requestFocus();
                             }
                             if (pageView.getPaginator().isInPrevPage(position)) {
-                                chineseFontFaceLayout.requestFocus();
+                                englishFaceLayout.requestFocus();
                             }
                         }
                     }
