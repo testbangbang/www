@@ -191,6 +191,7 @@ public class ShowReaderMenuAction extends BaseAction {
         if (!Device.detectDevice().isTouchable(readerDataHolder.getContext())){
             disableMenus.add(ReaderMenuAction.ZOOM_BY_RECT);
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
+            disableMenus.add(ReaderMenuAction.MANUAL_CROP);
         }
 
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
