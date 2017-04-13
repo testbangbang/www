@@ -9,10 +9,12 @@ import com.facebook.imagepipeline.bitmaps.PlatformBitmapFactory;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 
+import java.io.Closeable;
+
 /**
  * Created by joy on 8/9/16.
  */
-public class ReaderBitmapReferenceImpl implements ReaderBitmap {
+public class ReaderBitmapReferenceImpl implements ReaderBitmap, Closeable {
     private static PlatformBitmapFactory bitmapFactory = Fresco.getImagePipelineFactory().getPlatformBitmapFactory();
 
     public static Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.ARGB_8888;
