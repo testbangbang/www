@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data;
 
+import android.util.Log;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -17,6 +19,7 @@ import java.util.Set;
  * Created by suicheng on 2016/9/2.
  */
 public class QueryArgs {
+    private static final String TAG = QueryArgs.class.getSimpleName();
 
     public int offset = 0;
     public int limit = Integer.MAX_VALUE;
@@ -193,6 +196,7 @@ public class QueryArgs {
         String orderByQuery = getOrderByQuery();
         String limitOffsetQuery = getLimitOffsetQuery();
         if(StringUtils.isNullOrEmpty(orderByQuery)) {
+            Log.w(TAG, "orderByQuery must be not null, or the result may not be what you want");
             return null;
         }
         return orderByQuery + limitOffsetQuery;
