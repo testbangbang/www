@@ -152,17 +152,16 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return true;
     }
 
-    private Bitmap renderPageForReflow(final Reader reader,
-                                       final ReaderViewInfo readerViewInfo) throws ReaderException {
+    private ReaderBitmapReferenceImpl renderPageForReflow(final Reader reader) throws ReaderException {
         getPageManager().scaleToPage(getCurrentPagePosition());
         getPageManager().scaleWithDelta(getCurrentPagePosition(),
                 (float)(getImageReflowManager().getSettings().zoom * getImageReflowManager().getSettings().columns));
         PageInfo pageInfo = getPageManager().getPageInfo(getCurrentPagePosition());
-        Bitmap bitmap = reader.getBitmapCache().getFreeBitmap((int)pageInfo.getScaledWidth(),
-                (int)pageInfo.getScaledHeight(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG).getBitmap();
+        ReaderBitmapReferenceImpl bitmap = reader.getBitmapCache().getFreeBitmap((int)pageInfo.getScaledWidth(),
+                (int)pageInfo.getScaledHeight(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
         bitmap.eraseColor(Color.WHITE);
         reader.getRenderer().draw(getCurrentPagePosition(), pageInfo.getActualScale(),
-                pageInfo.getPageDisplayOrientation(), bitmap,
+                pageInfo.getPageDisplayOrientation(), bitmap.getBitmap(),
                 pageInfo.getPositionRect(), pageInfo.getPositionRect(),
                 pageInfo.getPositionRect());
         getPageManager().scaleToPage(getCurrentPagePosition());
@@ -173,7 +172,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
                                              final ReaderDrawContext drawContext,
                                              final ReaderViewInfo readerViewInfo,
                                              final boolean abortPendingTasks) throws ReaderException {
-        Bitmap bitmap = renderPageForReflow(reader, readerViewInfo);
+        ReaderBitmapReferenceImpl bitmap = renderPageForReflow(reader);
         getImageReflowManager().reflowBitmapAsync(bitmap, getCurrentPagePosition(), abortPendingTasks);
     }
 
