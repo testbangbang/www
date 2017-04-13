@@ -15,6 +15,8 @@ import com.onyx.android.sdk.reader.host.options.BaseOptions;
 public class ReaderBitmapReferenceImpl implements ReaderBitmap {
     private static PlatformBitmapFactory bitmapFactory = Fresco.getImagePipelineFactory().getPlatformBitmapFactory();
 
+    public static Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.ARGB_8888;
+
     private String key;
     private CloseableReference<Bitmap> bitmap;
     private float gammaCorrection = BaseOptions.getLowerGammaLimit();

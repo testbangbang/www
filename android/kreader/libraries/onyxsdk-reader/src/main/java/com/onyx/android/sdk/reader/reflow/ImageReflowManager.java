@@ -246,7 +246,7 @@ public class ImageReflowManager {
         final int height = size[1];
         int top = PageUtils.getSubPageTopRegardingPageRepeat(subPageHeight(), pageRepeat, subPage);
         int bottom = Math.min(top + subPageHeight(), height);
-        ReaderBitmapReferenceImpl bitmap = ReaderBitmapReferenceImpl.create(subPageWidth(), subPageHeight(), Bitmap.Config.ARGB_8888);
+        ReaderBitmapReferenceImpl bitmap = ReaderBitmapReferenceImpl.create(subPageWidth(), subPageHeight(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
         bitmap.clear();
         if (!ImageUtils.renderReflowedPage(pageName, 0, top, subPageWidth(), bottom, bitmap.getBitmap())) {
             bitmap.close();

@@ -159,7 +159,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
                 (float)(getImageReflowManager().getSettings().zoom * getImageReflowManager().getSettings().columns));
         PageInfo pageInfo = getPageManager().getPageInfo(getCurrentPagePosition());
         Bitmap bitmap = reader.getBitmapCache().getFreeBitmap((int)pageInfo.getScaledWidth(),
-                (int)pageInfo.getScaledHeight(), Bitmap.Config.ARGB_8888).getBitmap();
+                (int)pageInfo.getScaledHeight(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG).getBitmap();
         bitmap.eraseColor(Color.WHITE);
         reader.getRenderer().draw(getCurrentPagePosition(), pageInfo.getActualScale(),
                 pageInfo.getPageDisplayOrientation(), bitmap,

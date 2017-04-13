@@ -139,7 +139,7 @@ public class ReaderHelper {
         DisplayMetrics display = new DisplayMetrics();
         window.getDefaultDisplay().getMetrics(display);
         ReaderBitmapReferenceImpl bitmap = ReaderBitmapReferenceImpl.create(display.widthPixels, display.heightPixels,
-                Bitmap.Config.ARGB_8888);
+                ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
         try {
             bitmap.eraseColor(Color.WHITE);
             if (getDocument().readCover(bitmap.getBitmap())) {
