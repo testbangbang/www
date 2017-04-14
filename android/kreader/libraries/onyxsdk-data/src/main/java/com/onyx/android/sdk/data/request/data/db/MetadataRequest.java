@@ -21,8 +21,8 @@ public class MetadataRequest extends BaseDBRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        count = dataManager.getDataProviderBase().count(getContext(), queryArgs);
-        list.addAll(dataManager.getMetadataListWithLimit(getContext(), queryArgs));
+        count = dataManager.getRemoteContentProvider().count(getContext(), queryArgs);
+        list.addAll(dataManager.getRemoteContentProvider().findMetadataByQueryArgs(getContext(), queryArgs));
     }
 
     public final List<Metadata> getList() {

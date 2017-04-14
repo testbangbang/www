@@ -66,7 +66,7 @@ public class DataManagerHelper {
     }
 
     public static List<Library> loadLibraryList(DataManager dataManager, List<Library> list, String parentId) {
-        List<Library> tmpList = dataManager.getDataProviderBase().loadAllLibrary(parentId);
+        List<Library> tmpList = dataManager.getRemoteContentProvider().loadAllLibrary(parentId);
         if (tmpList.size() > 0) {
             list.addAll(tmpList);
         }
@@ -124,7 +124,7 @@ public class DataManagerHelper {
 
     public static void deleteAllLibrary(Context context, DataManager dataManager, String parentUniqueId,
                                         List<Library> libraryList) {
-        DataProviderBase providerBase = dataManager.getDataProviderBase();
+        DataProviderBase providerBase = dataManager.getRemoteContentProvider();
         boolean isDeleteMetaCollection = StringUtils.isNullOrEmpty(parentUniqueId);
         for (Library tmp : libraryList) {
             if (isDeleteMetaCollection) {
@@ -141,14 +141,14 @@ public class DataManagerHelper {
     }
 
     public static void deleteMetadataCollection(Context context, DataManager dataManager, String libraryIdString){
-        dataManager.getDataProviderBase().deleteMetadataCollection(context, libraryIdString);
+        dataManager.getRemoteContentProvider().deleteMetadataCollection(context, libraryIdString);
     }
 
     public static MetadataCollection loadMetadataCollection(Context context, DataManager dataManager, String libraryIdString, String metaIdString) {
-        return dataManager.getDataProviderBase().loadMetadataCollection(context, libraryIdString, metaIdString);
+        return dataManager.getRemoteContentProvider().loadMetadataCollection(context, libraryIdString, metaIdString);
     }
 
     public static List<MetadataCollection> loadMetadataCollection(Context context, DataManager dataManager, String libraryIdString) {
-        return dataManager.getDataProviderBase().loadMetadataCollection(context, libraryIdString);
+        return dataManager.getRemoteContentProvider().loadMetadataCollection(context, libraryIdString);
     }
 }

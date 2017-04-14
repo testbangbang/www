@@ -82,19 +82,11 @@ public class DataManager {
         return dataProviderManager;
     }
 
-    public DataProviderBase getDataProviderBase() {
+    public DataProviderBase getRemoteContentProvider() {
         return getDataProviderManager().getRemoteDataProvider();
     }
 
     public final FileSystemManager getFileSystemManager() {
         return fileSystemManager;
-    }
-
-    public List<Metadata> getMetadataListWithLimit(Context context, QueryArgs queryArgs) {
-        return getDataProviderBase().findMetadataByQueryArgs(context, queryArgs);
-    }
-
-    public long countMetadataList(Context context, QueryArgs queryArgs) {
-        return getDataProviderBase().count(context, queryArgs);
     }
 }

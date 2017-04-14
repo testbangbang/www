@@ -1,6 +1,7 @@
 package com.onyx.android.sdk;
 
 import android.app.Application;
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.Environment;
 import android.test.ApplicationTestCase;
@@ -13,6 +14,7 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.db.table.OnyxMetadataCollectionProvider;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Library_Table;
 import com.onyx.android.sdk.data.model.MetadataCollection;
@@ -23,6 +25,7 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.provider.LocalDataProvider;
 import com.onyx.android.sdk.data.model.ReadingProgress;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.provider.RemoteDataProvider;
 import com.onyx.android.sdk.data.request.data.db.BuildLibraryRequest;
 import com.onyx.android.sdk.data.request.data.db.ClearLibraryRequest;
 import com.onyx.android.sdk.data.request.data.db.DeleteLibraryRequest;
@@ -37,6 +40,8 @@ import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -891,7 +896,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
 
         //test path list query
-        final QueryArgs queryArgs = new QueryArgs();
+        final QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.Name, SortOrder.Desc);
         queryArgs.propertyList.add(Metadata_Table.nativeAbsolutePath);
         runTestMetadataQueryArgs("##OnlyPathListQuery", total, 100, queryArgs, new BaseCallback() {
             @Override
@@ -906,10 +911,19 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         Benchmark benchMark = new Benchmark();
         for (Library library : list) {
             Benchmark perMark = new Benchmark();
-            SQLite.update(MetadataCollection.class)
-                    .set(MetadataCollection_Table.libraryUniqueId.eq(topLibrary.getParentUniqueId()))
-                    .where(MetadataCollection_Table.libraryUniqueId.is(library.getIdString()))
-                    .execute();
+            if (providerBase instanceof RemoteDataProvider) {
+                ContentValues values = new ContentValues();
+                values.put(MetadataCollection_Table.libraryUniqueId.getNameAlias().name(), (String) null);
+                FlowManager.getContext().getContentResolver().update(OnyxMetadataCollectionProvider.CONTENT_URI,
+                        values,
+                        ConditionGroup.clause().and(MetadataCollection_Table.libraryUniqueId.is(library.getIdString())).getQuery(),
+                        null);
+            } else if (providerBase instanceof LocalDataProvider) {
+                SQLite.update(MetadataCollection.class)
+                        .set(MetadataCollection_Table.libraryUniqueId.eq(topLibrary.getParentUniqueId()))
+                        .where(MetadataCollection_Table.libraryUniqueId.is(library.getIdString()))
+                        .execute();
+            }
             perMark.report("####deletePerLibrary");
         }
         benchMark.report("####deleteTopLibrary,totalCount:" + total);
@@ -1202,7 +1216,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             awaitCountDownLatch(countDownLatch);
 
             //check metadata count after deleting
-            assertTrue(count == dataManager.countMetadataList(getContext(), QueryBuilder.libraryAllBookQuery(parentLibrary.getParentUniqueId(),
+            assertTrue(count == dataManager.getRemoteContentProvider().count(getContext(), QueryBuilder.libraryAllBookQuery(parentLibrary.getParentUniqueId(),
                     SortBy.CreationTime, SortOrder.Desc)));
             for (Library library : tmpList) {
                 for (Library tmp : libraryList) {
@@ -1395,7 +1409,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             topTotalCount += limit;
             QueryArgs args = QueryBuilder.libraryAllBookQuery(library.getIdString(), SortBy.CreationTime, SortOrder.Desc);
             args.limit = limit;
-            List<Metadata> list = dataManager.getMetadataListWithLimit(getContext(), args);
+            List<Metadata> list = dataManager.getRemoteContentProvider().findMetadataByQueryArgs(getContext(), args);
             final int index = i;
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             final Benchmark benchMark = new Benchmark();
@@ -1411,11 +1425,11 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             awaitCountDownLatch(countDownLatch);
 
             args.limit = Integer.MAX_VALUE;
-            assertTrue(dataManager.countMetadataList(getContext(), args) == libraryMetaCountMap.get(library.getIdString()) - limit);
+            assertTrue(dataManager.getRemoteContentProvider().count(getContext(), args) == libraryMetaCountMap.get(library.getIdString()) - limit);
 
             //test top library count
             args = QueryBuilder.libraryAllBookQuery(null, SortBy.CreationTime, SortOrder.Desc);
-            assertTrue(dataManager.countMetadataList(getContext(), args) == topTotalCount);
+            assertTrue(dataManager.getRemoteContentProvider().count(getContext(), args) == topTotalCount);
         }
     }
 

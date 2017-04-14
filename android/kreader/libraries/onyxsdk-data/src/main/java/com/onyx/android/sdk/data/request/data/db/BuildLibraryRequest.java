@@ -25,14 +25,15 @@ public class BuildLibraryRequest extends BaseDBRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        dataManager.getDataProviderBase().addLibrary(library);
+        dataManager.getRemoteContentProvider().addLibrary(library);
         if (criteria == null || (criteria.isAllSetContentEmpty())) {
             return;
         }
         criteria.libraryUniqueId = library.getParentUniqueId();
         QueryBuilder.generateCriteriaCondition(criteria);
         QueryBuilder.generateMetadataInQueryArgs(criteria);
-        bookList = dataManager.getMetadataListWithLimit(getContext(), criteria);
+
+        bookList = dataManager.getRemoteContentProvider().findMetadataByQueryArgs(getContext(), criteria);
         for (Metadata metadata : bookList) {
             MetadataCollection collection = DataManagerHelper.loadMetadataCollection(getContext(), dataManager,
                     library.getParentUniqueId(), metadata.getIdString());
@@ -41,9 +42,9 @@ public class BuildLibraryRequest extends BaseDBRequest {
             }
             collection.setLibraryUniqueId(library.getIdString());
             if (collection.hasValidId()) {
-                dataManager.getDataProviderBase().updateMetadataCollection(collection);
+                dataManager.getRemoteContentProvider().updateMetadataCollection(collection);
             } else {
-                dataManager.getDataProviderBase().addMetadataCollection(getContext(), collection);
+                dataManager.getRemoteContentProvider().addMetadataCollection(getContext(), collection);
             }
 
         }
