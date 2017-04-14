@@ -266,7 +266,7 @@ public class ReaderHelper {
     public void initData(Context context) {
         initImageReflowManager(context);
         initBitmapCache();
-        initWordAnalyzerInBackground();
+        initWordAnalyzerInBackground(context);
         if(AlReaderPlugin.isJEB(documentPath)){
             bookName = JEBFilesZIP.bookName;
         }
@@ -277,8 +277,8 @@ public class ReaderHelper {
         getReaderLayoutManager().init();
     }
 
-    private void initWordAnalyzerInBackground() {
-        AnalyzerAndroidWrapper.initialize(ReaderBaseApp.instance(), true);
+    private void initWordAnalyzerInBackground(final Context context) {
+        AnalyzerAndroidWrapper.initialize(context.getApplicationContext(), true);
     }
 
     private void initImageReflowManager(Context context) {
