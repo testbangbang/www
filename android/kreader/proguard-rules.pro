@@ -35,6 +35,7 @@
 -dontwarn com.squareup.**
 -dontwarn com.raizlabs.**
 -dontwarn com.facebook.**
+-dontwarn org.apache.**
 
 -dontwarn butterknife.internal.ButterKnifeProcessor
 
