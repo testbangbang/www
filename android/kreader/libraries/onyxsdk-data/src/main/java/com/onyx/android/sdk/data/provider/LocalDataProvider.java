@@ -41,11 +41,15 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     public Metadata findMetadataByHashTag(final Context context, final String path, String hashTag) {
+        Metadata metadata;
         try {
             if (StringUtils.isNullOrEmpty(hashTag)) {
                 hashTag = FileUtils.computeMD5(new File(path));
             }
-            return new Select().from(Metadata.class).where(Metadata_Table.hashTag.eq(hashTag)).querySingle();
+            metadata = new Select().from(Metadata.class).where(Metadata_Table.hashTag.eq(hashTag)).querySingle();
+            if (metadata != null) {
+                return metadata;
+            }
         } catch (Exception e) {
         }
         return new Metadata();

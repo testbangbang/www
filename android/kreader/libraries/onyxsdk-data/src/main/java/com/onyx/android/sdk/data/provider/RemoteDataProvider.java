@@ -91,7 +91,9 @@ public class RemoteDataProvider implements DataProviderBase {
             }
             metadata = ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
                     Metadata.class, ConditionGroup.clause().and(Metadata_Table.hashTag.eq(hashTag)), null);
-            return metadata;
+            if (metadata != null) {
+                return metadata;
+            }
         } catch (Exception e) {
         }
         return new Metadata();
