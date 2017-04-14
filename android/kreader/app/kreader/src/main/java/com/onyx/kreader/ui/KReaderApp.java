@@ -10,6 +10,8 @@ import com.onyx.android.sdk.utils.PackageUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ReaderNoteGeneratedDatabaseHolder;
 
 import java.util.ArrayList;
@@ -31,8 +33,9 @@ public class KReaderApp extends ReaderBaseApp {
     public void onCreate() {
         super.onCreate();
         DataManager.init(this, databaseHolderList());
+        initContentProvider(this);
+
         SingletonSharedPreference.init(this);
-//        LeakCanary.install(this);
         Debug.setDebug(BuildConfig.DEBUG || DeviceUtils.isEngVersion() || PackageUtils.getAppType(this).equals(PackageUtils.APP_TYPE_DEBUG));
         instance = this;
         Debug.d(getClass(), "onCreate: " + PackageUtils.getAppVersionName(this));
@@ -46,6 +49,17 @@ public class KReaderApp extends ReaderBaseApp {
         List<Class<? extends DatabaseHolder>> list = new ArrayList<>();
         list.add(ReaderNoteGeneratedDatabaseHolder.class);
         return list;
+    }
+
+    static public void initContentProvider(final Context context) {
+        try {
+            FlowConfig.Builder builder = new FlowConfig.Builder(context);
+            FlowManager.init(builder.build());
+        } catch (Exception e) {
+            if (com.onyx.android.sdk.dataprovider.BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
