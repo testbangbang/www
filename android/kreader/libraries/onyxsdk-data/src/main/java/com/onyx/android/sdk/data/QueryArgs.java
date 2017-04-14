@@ -196,7 +196,7 @@ public class QueryArgs {
         String orderByQuery = getOrderByQuery();
         String limitOffsetQuery = getLimitOffsetQuery();
         if(StringUtils.isNullOrEmpty(orderByQuery)) {
-            Log.w(TAG, "orderByQuery must be not null, or the result may not be what you want");
+            Log.w(TAG, "NULL orderBy detected, offset and limit does not work.");
             return null;
         }
         return orderByQuery + limitOffsetQuery;
