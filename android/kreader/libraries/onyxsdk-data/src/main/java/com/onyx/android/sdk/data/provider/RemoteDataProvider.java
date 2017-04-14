@@ -86,11 +86,6 @@ public class RemoteDataProvider implements DataProviderBase {
     public Metadata findMetadataByHashTag(Context context, String path, String hashTag) {
         Metadata metadata;
         try {
-            metadata = ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
-                    Metadata.class, ConditionGroup.clause().and(Metadata_Table.nativeAbsolutePath.eq(path)), null);
-            if (metadata != null) {
-                return metadata;
-            }
             if (StringUtils.isNullOrEmpty(hashTag)) {
                 hashTag = FileUtils.computeMD5(new File(path));
             }
