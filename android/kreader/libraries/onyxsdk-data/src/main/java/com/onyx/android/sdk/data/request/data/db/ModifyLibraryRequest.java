@@ -22,7 +22,7 @@ public class ModifyLibraryRequest extends BaseDBRequest {
     @Override
     public void execute(DataManager dataManager) throws Exception {
         if (!modifyCriteria) {
-            dataManager.getDataProviderBase().updateLibrary(library);
+            dataManager.getRemoteContentProvider().updateLibrary(library);
             return;
         }
 

@@ -36,7 +36,7 @@ public class MoveToLibraryRequest extends BaseDBRequest {
         }
 
         for (Metadata metadata : addList) {
-            MetadataCollection collection = dataManager.getDataProviderBase().loadMetadataCollection(getContext(),
+            MetadataCollection collection = dataManager.getRemoteContentProvider().loadMetadataCollection(getContext(),
                     fromIdString, metadata.getIdString());
             if (StringUtils.isNullOrEmpty(toIdString)) {
                 if (collection != null) {
