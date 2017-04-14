@@ -12,13 +12,13 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/8.
  */
-public class MoveToLibrary extends BaseDBRequest {
+public class MoveToLibraryRequest extends BaseDBRequest {
 
     private Library fromLibrary;
     private Library toLibrary;
     private List<Metadata> addList = new ArrayList<>();
 
-    public MoveToLibrary(Library fromLibrary, Library toLibrary, List<Metadata> addList) {
+    public MoveToLibraryRequest(Library fromLibrary, Library toLibrary, List<Metadata> addList) {
         this.fromLibrary = fromLibrary;
         this.toLibrary = toLibrary;
         this.addList.addAll(addList);

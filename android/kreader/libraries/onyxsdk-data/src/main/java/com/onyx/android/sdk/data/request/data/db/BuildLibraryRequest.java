@@ -25,7 +25,7 @@ public class BuildLibraryRequest extends BaseDBRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        library.save();
+        dataManager.getDataProviderBase().addLibrary(library);
         if (criteria == null || (criteria.isAllSetContentEmpty())) {
             return;
         }
@@ -40,7 +40,12 @@ public class BuildLibraryRequest extends BaseDBRequest {
                 collection = MetadataCollection.create(metadata.getIdString(), library.getIdString());
             }
             collection.setLibraryUniqueId(library.getIdString());
-            collection.save();
+            if (collection.hasValidId()) {
+                dataManager.getDataProviderBase().updateMetadataCollection(collection);
+            } else {
+                dataManager.getDataProviderBase().addMetadataCollection(getContext(), collection);
+            }
+
         }
     }
 

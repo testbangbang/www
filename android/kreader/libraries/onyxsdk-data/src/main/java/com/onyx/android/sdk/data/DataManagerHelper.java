@@ -124,18 +124,19 @@ public class DataManagerHelper {
 
     public static void deleteAllLibrary(Context context, DataManager dataManager, String parentUniqueId,
                                         List<Library> libraryList) {
+        DataProviderBase providerBase = dataManager.getDataProviderBase();
         boolean isDeleteMetaCollection = StringUtils.isNullOrEmpty(parentUniqueId);
         for (Library tmp : libraryList) {
             if (isDeleteMetaCollection) {
-                dataManager.getDataProviderBase().deleteMetadataCollection(context, tmp.getIdString());
+                providerBase.deleteMetadataCollection(context, tmp.getIdString());
             } else {
-                List<MetadataCollection> list = dataManager.getDataProviderBase().loadMetadataCollection(context, tmp.getIdString());
+                List<MetadataCollection> list = providerBase.loadMetadataCollection(context, tmp.getIdString());
                 for (MetadataCollection metadataCollection : list) {
                     metadataCollection.setLibraryUniqueId(parentUniqueId);
-                    metadataCollection.save();
+                    providerBase.updateMetadataCollection(metadataCollection);
                 }
             }
-            tmp.delete();
+            providerBase.deleteLibrary(tmp);
         }
     }
 
