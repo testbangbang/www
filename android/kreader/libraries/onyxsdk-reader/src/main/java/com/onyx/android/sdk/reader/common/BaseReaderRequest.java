@@ -160,13 +160,21 @@ public abstract class BaseReaderRequest extends BaseRequest {
     public void saveReaderOptions(final Reader reader) {
         if (reader.getDocument().saveOptions()) {
             reader.saveOptions();
-            saveToDocumentOptionsProvider(reader);
+            saveToDocumentOptionsToLocalProvider(reader);
+            saveToDocumentOptionsToRemoveProvider(reader);
         }
         saveToLegacyDataProvider(reader);
     }
 
-    private void saveToDocumentOptionsProvider(final Reader reader) {
+    private void saveToDocumentOptionsToLocalProvider(final Reader reader) {
         DataProviderManager.getLocalDataProvider().saveDocumentOptions(getContext(),
+                reader.getDocumentPath(),
+                reader.getDocumentMd5(),
+                reader.getDocumentOptions().toJSONString());
+    }
+
+    private void saveToDocumentOptionsToRemoveProvider(final Reader reader) {
+        DataProviderManager.getRemoteDataProvider().saveDocumentOptions(getContext(),
                 reader.getDocumentPath(),
                 reader.getDocumentMd5(),
                 reader.getDocumentOptions().toJSONString());
