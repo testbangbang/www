@@ -23,6 +23,7 @@ import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -50,16 +51,14 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     public Metadata findMetadataByPath(final Context context, final String path) {
-        Metadata metadata;
+        Metadata metadata = null;
         try {
             metadata = ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
                     Metadata.class, ConditionGroup.clause().and(Metadata_Table.nativeAbsolutePath.eq(path)), null);
-            if (metadata != null) {
-                return metadata;
-            }
         } catch (Exception e) {
+        } finally {
+            return MetadataUtils.ensureObject(metadata);
         }
-        return new Metadata();
     }
 
     @Override
@@ -84,19 +83,17 @@ public class RemoteDataProvider implements DataProviderBase {
 
     @Override
     public Metadata findMetadataByHashTag(Context context, String path, String hashTag) {
-        Metadata metadata;
+        Metadata metadata = null;
         try {
             if (StringUtils.isNullOrEmpty(hashTag)) {
                 hashTag = FileUtils.computeMD5(new File(path));
             }
             metadata = ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
                     Metadata.class, ConditionGroup.clause().and(Metadata_Table.hashTag.eq(hashTag)), null);
-            if (metadata != null) {
-                return metadata;
-            }
         } catch (Exception e) {
+        } finally {
+            return MetadataUtils.ensureObject(metadata);
         }
-        return new Metadata();
     }
 
     @Override
@@ -111,9 +108,7 @@ public class RemoteDataProvider implements DataProviderBase {
             }
             return cursor.getCount();
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
+            FileUtils.closeQuietly(cursor);
         }
     }
 

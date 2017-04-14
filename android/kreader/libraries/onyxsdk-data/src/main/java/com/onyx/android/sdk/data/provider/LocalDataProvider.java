@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.*;
+import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -33,26 +34,26 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     public Metadata findMetadataByPath(final Context context, final String path) {
+        Metadata metadata = null;
         try {
-            return new Select().from(Metadata.class).where(Metadata_Table.nativeAbsolutePath.eq(path)).querySingle();
+            metadata = new Select().from(Metadata.class).where(Metadata_Table.nativeAbsolutePath.eq(path)).querySingle();
         } catch (Exception e) {
+        } finally {
+            return MetadataUtils.ensureObject(metadata);
         }
-        return new Metadata();
     }
 
     public Metadata findMetadataByHashTag(final Context context, final String path, String hashTag) {
-        Metadata metadata;
+        Metadata metadata = null;
         try {
             if (StringUtils.isNullOrEmpty(hashTag)) {
                 hashTag = FileUtils.computeMD5(new File(path));
             }
             metadata = new Select().from(Metadata.class).where(Metadata_Table.hashTag.eq(hashTag)).querySingle();
-            if (metadata != null) {
-                return metadata;
-            }
         } catch (Exception e) {
+        } finally {
+            return MetadataUtils.ensureObject(metadata);
         }
-        return new Metadata();
     }
 
     public List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs) {

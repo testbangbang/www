@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * Created by suicheng on 2016/9/5.
  */
-public class MetaDataUtils {
+public class MetadataUtils {
 
     static public int compareStringAsc(final String a, final String b) {
         if (a == null && b == null) {
@@ -626,5 +626,9 @@ public class MetaDataUtils {
             }
         }
         return readList;
+    }
+
+    public static Metadata ensureObject(final Metadata metadata) {
+        return metadata != null ? metadata : new Metadata();
     }
 }
