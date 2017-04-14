@@ -149,7 +149,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
         dataProvider.removeMetadata(getContext(), origin);
         final Metadata anotherResult = dataProvider.findMetadataByHashTag(getContext(), origin.getNativeAbsolutePath(), origin.getHashTag());
-        assertNull(anotherResult);
+        assertFalse(anotherResult.hasValidId());
     }
 
     public void testMetadataSaveWithJson() {
@@ -359,7 +359,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         final int count = 12;//at least 4
         final int divider = 3; // to be smaller than count
-        final DataProviderBase providerBase = DataProviderManager.getDataProvider();
+        final DataProviderBase providerBase = DataProviderManager.getLocalDataProvider();
         final String indexTag = getRandomFormatTag();
         providerBase.clearMetadata();
         final Metadata[] testMetadata = getRandomMetadata(count);
@@ -406,7 +406,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         init();
 
         final int count = 4;//at least 2
-        final DataProviderBase providerBase = DataProviderManager.getDataProvider();
+        final DataProviderBase providerBase = DataProviderManager.getLocalDataProvider();
         providerBase.clearMetadata();
         final Metadata[] testMetadata = new Metadata[count];
         for (int i = 0; i < count; i++) {
@@ -950,12 +950,12 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
     public DataProviderBase getProviderBase() {
         init();
-        return DataProviderManager.getDataProvider();
+        return DataProviderManager.getLocalDataProvider();
     }
 
     public DataProviderBase getProviderBaseAndClearTable() {
         init();
-        DataProviderBase dataProviderBase = DataProviderManager.getDataProvider();
+        DataProviderBase dataProviderBase = DataProviderManager.getLocalDataProvider();
         dataProviderBase.clearMetadata();
         dataProviderBase.clearLibrary();
         dataProviderBase.clearMetadataCollection();

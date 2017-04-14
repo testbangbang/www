@@ -26,9 +26,9 @@ public interface DataProviderBase {
 
     List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs);
 
-    Metadata findMetadataByHashTag(final Context context, final String path, String hashTag);
+    Metadata findMetadataByPath(final Context context, final String path);
 
-    Metadata loadMetadataByHashTag(final Context context, final String path, String hashTag);
+    Metadata findMetadataByHashTag(final Context context, final String path, String hashTag);
 
     long count(final Context context, final QueryArgs queryArgs);
 

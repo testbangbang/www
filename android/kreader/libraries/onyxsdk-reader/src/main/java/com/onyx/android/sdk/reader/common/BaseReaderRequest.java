@@ -166,7 +166,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     private void saveToDocumentOptionsProvider(final Reader reader) {
-        DataProviderManager.getDataProvider().saveDocumentOptions(getContext(),
+        DataProviderManager.getLocalDataProvider().saveDocumentOptions(getContext(),
                 reader.getDocumentPath(),
                 reader.getDocumentMd5(),
                 reader.getDocumentOptions().toJSONString());

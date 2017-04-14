@@ -49,11 +49,24 @@ public class RemoteDataProvider implements DataProviderBase {
                 null, null);
     }
 
+    public Metadata findMetadataByPath(final Context context, final String path) {
+        Metadata metadata;
+        try {
+            metadata = ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
+                    Metadata.class, ConditionGroup.clause().and(Metadata_Table.nativeAbsolutePath.eq(path)), null);
+            if (metadata != null) {
+                return metadata;
+            }
+        } catch (Exception e) {
+        }
+        return new Metadata();
+    }
+
     @Override
     public void saveMetadata(Context context, Metadata metadata) {
         metadata.beforeSave();
         Metadata findMeta = findMetadataByHashTag(context, metadata.getNativeAbsolutePath(), metadata.getHashTag());
-        if (findMeta == null) {
+        if (!findMeta.hasValidId()) {
             ContentUtils.insert(OnyxMetadataProvider.CONTENT_URI, metadata);
         } else {
             ContentUtils.update(OnyxMetadataProvider.CONTENT_URI, metadata);
@@ -71,7 +84,7 @@ public class RemoteDataProvider implements DataProviderBase {
 
     @Override
     public Metadata findMetadataByHashTag(Context context, String path, String hashTag) {
-        Metadata metadata = null;
+        Metadata metadata;
         try {
             metadata = ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
                     Metadata.class, ConditionGroup.clause().and(Metadata_Table.nativeAbsolutePath.eq(path)), null);
@@ -86,16 +99,7 @@ public class RemoteDataProvider implements DataProviderBase {
             return metadata;
         } catch (Exception e) {
         }
-        return metadata;
-    }
-
-    @Override
-    public Metadata loadMetadataByHashTag(Context context, String path, String hashTag) {
-        Metadata metadata = findMetadataByHashTag(context, path, hashTag);
-        if (metadata == null) {
-            metadata = new Metadata();
-        }
-        return metadata;
+        return new Metadata();
     }
 
     @Override
@@ -124,17 +128,11 @@ public class RemoteDataProvider implements DataProviderBase {
     @Override
     public boolean saveDocumentOptions(Context context, String path, String md5, String json) {
         try {
-            Metadata document;
-            final Metadata options = findMetadataByHashTag(context, path, md5);
-            if (options == null) {
-                document = new Metadata();
-                document.setHashTag(md5);
-            } else {
-                document = options;
-            }
+            Metadata document = findMetadataByHashTag(context, path, md5);
             document.setExtraAttributes(json);
             document.beforeSave();
-            if (options == null) {
+            if (!document.hasValidId()) {
+                document.setHashTag(md5);
                 ContentUtils.insert(OnyxMetadataProvider.CONTENT_URI, document);
             } else {
                 ContentUtils.update(OnyxMetadataProvider.CONTENT_URI, document);

@@ -5,19 +5,14 @@ import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
-import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
-import com.onyx.android.sdk.data.utils.QueryBuilder;
-import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -88,7 +83,7 @@ public class DataManager {
     }
 
     public DataProviderBase getDataProviderBase() {
-        return getDataProviderManager().getDataProvider();
+        return getDataProviderManager().getLocalDataProvider();
     }
 
     public final FileSystemManager getFileSystemManager() {

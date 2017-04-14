@@ -32,29 +32,23 @@ public class LocalDataProvider implements DataProviderBase {
         Delete.table(Metadata.class);
     }
 
-    public Metadata findMetadataByHashTag(final Context context, final String path, String hashTag) {
-        Metadata metadata = null;
+    public Metadata findMetadataByPath(final Context context, final String path) {
         try {
-            metadata = new Select().from(Metadata.class).where(Metadata_Table.nativeAbsolutePath.eq(path)).querySingle();
-            if (metadata != null) {
-                return metadata;
-            }
+            return new Select().from(Metadata.class).where(Metadata_Table.nativeAbsolutePath.eq(path)).querySingle();
+        } catch (Exception e) {
+        }
+        return new Metadata();
+    }
+
+    public Metadata findMetadataByHashTag(final Context context, final String path, String hashTag) {
+        try {
             if (StringUtils.isNullOrEmpty(hashTag)) {
                 hashTag = FileUtils.computeMD5(new File(path));
             }
-            metadata = new Select().from(Metadata.class).where(Metadata_Table.hashTag.eq(hashTag)).querySingle();
-            return metadata;
+            return new Select().from(Metadata.class).where(Metadata_Table.hashTag.eq(hashTag)).querySingle();
         } catch (Exception e) {
         }
-        return metadata;
-    }
-
-    public Metadata loadMetadataByHashTag(final Context context, final String path, String md5) {
-        Metadata metadata = findMetadataByHashTag(context, path, md5);
-        if (metadata == null) {
-            metadata = new Metadata();
-        }
-        return metadata;
+        return new Metadata();
     }
 
     public List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs) {
@@ -83,16 +77,10 @@ public class LocalDataProvider implements DataProviderBase {
 
     public boolean saveDocumentOptions(final Context context, final String path, String md5, final String json) {
         try {
-            Metadata document;
-            final Metadata options = findMetadataByHashTag(context, path, md5);
-            if (options == null) {
-                document = new Metadata();
-                document.setHashTag(md5);
-            } else {
-                document = options;
-            }
+            final Metadata document = findMetadataByHashTag(context, path, md5);
             document.setExtraAttributes(json);
-            if (options == null) {
+            if (!document.hasValidId()) {
+                document.setHashTag(md5);
                 document.save();
             } else {
                 document.update();

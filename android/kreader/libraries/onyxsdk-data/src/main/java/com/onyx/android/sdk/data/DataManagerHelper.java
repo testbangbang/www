@@ -27,7 +27,7 @@ import java.util.List;
 public class DataManagerHelper {
 
     private static DataProviderBase getDataProviderBase() {
-        return DataProviderManager.getDataProvider();
+        return DataProviderManager.getLocalDataProvider();
     }
 
     public static void addCollections(Context context, Library library, List<Metadata> addList) {

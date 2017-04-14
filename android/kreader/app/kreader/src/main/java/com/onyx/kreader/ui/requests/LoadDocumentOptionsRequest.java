@@ -30,7 +30,7 @@ public class LoadDocumentOptionsRequest extends BaseDataRequest {
         if (StringUtils.isNullOrEmpty(md5)) {
             md5 = FileUtils.computeMD5(new File(documentPath));
         }
-        document = DataProviderManager.getDataProvider().loadMetadataByHashTag(getContext(), documentPath, md5);
+        document = DataProviderManager.getLocalDataProvider().findMetadataByHashTag(getContext(), documentPath, md5);
         document.setIdString(md5);
     }
 

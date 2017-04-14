@@ -11,7 +11,7 @@ public class DataProviderManager {
     private static DataProviderBase localDataProvider;
     private static DataProviderBase remoteDataProvider;
 
-    public static DataProviderBase getDataProvider() {
+    public static DataProviderBase getLocalDataProvider() {
         if (localDataProvider == null) {
             localDataProvider = new LocalDataProvider();
         }
