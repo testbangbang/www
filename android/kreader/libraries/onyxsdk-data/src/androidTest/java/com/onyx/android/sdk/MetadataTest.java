@@ -2,8 +2,6 @@ package com.onyx.android.sdk;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.os.Environment;
 import android.test.ApplicationTestCase;
 import android.util.Log;
@@ -15,24 +13,22 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Library_Table;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
-import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.provider.LocalDataProvider;
 import com.onyx.android.sdk.data.model.ReadingProgress;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.data.db.MoveToLibrary;
 import com.onyx.android.sdk.data.request.data.db.BuildLibraryRequest;
 import com.onyx.android.sdk.data.request.data.db.ClearLibraryRequest;
 import com.onyx.android.sdk.data.request.data.db.DeleteLibraryRequest;
 import com.onyx.android.sdk.data.request.data.db.LibraryRequest;
 import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
+import com.onyx.android.sdk.data.request.data.db.MoveToLibraryRequest;
 import com.onyx.android.sdk.data.request.data.db.RemoveFromLibraryRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.utils.Benchmark;
@@ -41,7 +37,6 @@ import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
-import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -135,8 +130,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
     public void testMetadataSave() {
         init();
-        LocalDataProvider dataProvider = new LocalDataProvider();
-        dataProvider.clearMetadata();
+        DataProviderBase dataProvider = getProviderBaseAndClearTable();
 
         List<String> authors = randomStringList();
         Metadata origin = randomMetadata(testFolder(), true);
@@ -154,8 +148,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
     public void testMetadataSaveWithJson() {
         init();
-        LocalDataProvider dataProvider = new LocalDataProvider();
-        dataProvider.clearMetadata();
+        DataProviderBase dataProvider = getProviderBaseAndClearTable();
 
         final String json = UUID.randomUUID().toString();
         Metadata origin = randomMetadata(testFolder(), true);
@@ -174,9 +167,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     public void testQueryCriteriaAuthor() {
         init();
 
-        LocalDataProvider dataProvider = new LocalDataProvider();
-        dataProvider.clearMetadata();
-        dataProvider.clearMetadataCollection();
+        DataProviderBase dataProvider = getProviderBaseAndClearTable();
 
         List<String> authors = randomStringList();
         Metadata origin = randomMetadata(testFolder(), true);
@@ -214,8 +205,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     public void testQueryCriteriaTitle() {
         init();
 
-        LocalDataProvider dataProvider = new LocalDataProvider();
-        dataProvider.clearMetadata();
+        DataProviderBase dataProvider = getProviderBaseAndClearTable();
 
         List<String> title = randomStringList();
         Metadata origin = randomMetadata(testFolder(), true);
@@ -248,8 +238,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     public void testQueryCriteriaSeries() {
         init();
 
-        LocalDataProvider dataProvider = new LocalDataProvider();
-        dataProvider.clearMetadata();
+        DataProviderBase dataProvider = getProviderBaseAndClearTable();
 
         List<String> series = randomStringList();
         Metadata origin = randomMetadata(testFolder(), true);
@@ -282,8 +271,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     public void testQueryCriteriaTags() {
         init();
 
-        LocalDataProvider dataProvider = new LocalDataProvider();
-        dataProvider.clearMetadata();
+        DataProviderBase dataProvider = getProviderBaseAndClearTable();
 
         List<String> tags = randomStringList();
         Metadata origin = randomMetadata(testFolder(), true);
@@ -359,7 +347,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         final int count = 12;//at least 4
         final int divider = 3; // to be smaller than count
-        final DataProviderBase providerBase = DataProviderManager.getLocalDataProvider();
+        final DataProviderBase providerBase = getProviderBaseAndClearTable();
         final String indexTag = getRandomFormatTag();
         providerBase.clearMetadata();
         final Metadata[] testMetadata = getRandomMetadata(count);
@@ -368,7 +356,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             if (i % divider == 0) {
                 testMetadata[i].setTags(indexTag);
             }
-            testMetadata[i].save();
+            providerBase.saveMetadata(getContext(), testMetadata[i]);
             assertRandomMetadata(getContext(), providerBase, testMetadata[i]);
         }
 
@@ -406,12 +394,11 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         init();
 
         final int count = 4;//at least 2
-        final DataProviderBase providerBase = DataProviderManager.getLocalDataProvider();
-        providerBase.clearMetadata();
+        final DataProviderBase providerBase = getProviderBaseAndClearTable();
         final Metadata[] testMetadata = new Metadata[count];
         for (int i = 0; i < count; i++) {
             testMetadata[i] = getRandomMetadata();
-            testMetadata[i].save();
+            providerBase.saveMetadata(getContext(), testMetadata[i]);
             assertRandomMetadata(getContext(), providerBase, testMetadata[i]);
         }
 
@@ -459,7 +446,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         final Benchmark benchMark = new Benchmark();
         DataManager dataManager = new DataManager();
         int block = 10;
-        final int limit = TestUtils.randInt(6, 20);
+        final int limit = TestUtils.randInt(20, 20);
         queryArgs.limit = limit;
         for (int i = 0; i < block; ++i) {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -675,15 +662,15 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         clearTestFolder();
         Debug.setDebug(true);
 
-        final DataProviderBase providerBase = getProviderBase();
+        final DataProviderBase providerBase = getProviderBaseAndClearTable();
         providerBase.clearMetadata();
 
         long total = 0;
         int totalReadingBookCount = 0;
         int totalFinishedBookCount = 0;
 
-        for (int r = 0; r < 10; ++r) {
-            final int limit = TestUtils.randInt(100, 150);
+        for (int r = 0; r < 35; ++r) {
+            final int limit = TestUtils.randInt(150, 155);
             for (int i = 0; i < limit; i++) {
                 Metadata meta = getRandomMetadata();
                 int side = TestUtils.randInt(100, 200);
@@ -698,7 +685,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
                     meta.setReadingStatus(Metadata.ReadingStatus.READING);
                     meta.setProgress("" + side + "/100");
                 }
-                meta.save();
+                providerBase.saveMetadata(getContext(), meta);
             }
             total += limit;
             final long value = total;
@@ -716,10 +703,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         clearTestFolder();
         Debug.setDebug(true);
 
-        final DataProviderBase providerBase = getProviderBase();
-        providerBase.clearMetadata();
-        providerBase.clearLibrary();
-        providerBase.clearMetadataCollection();
+        final DataProviderBase providerBase = getProviderBaseAndClearTable();
 
         // generate library
         int libraryCount = TestUtils.randInt(10, 20);
@@ -727,7 +711,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         final List<Library> libraryList = new ArrayList<>();
         for (int i = 0; i < libraryCount; ++i) {
             final Library library = getRandomLibrary();
-            library.save();
+            providerBase.addLibrary(library);
             libraryMap.put(library.getIdString(), library);
             libraryList.add(library);
         }
@@ -737,11 +721,10 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         int metadataCount = TestUtils.randInt(20, 40);
         for (int i = 0; i < metadataCount; ++i) {
             final Metadata metadata = getRandomMetadata();
-            metadata.save();
+            providerBase.saveMetadata(getContext(), metadata);
             int index = TestUtils.randInt(0, libraryCount - 1);
             final Library library = libraryList.get(index);
             final MetadataCollection metadataCollection = MetadataCollection.create(metadata.getIdString(), library.getIdString());
-            metadataCollection.save();
             providerBase.addMetadataCollection(getContext(), metadataCollection);
             HashSet<String> list = metaCollectionMap.get(library.getIdString());
             if (list == null) {
@@ -796,7 +779,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         Library[] libraries = getRandomLibrary(randomCount);
         for (Library library : libraries) {
             library.setParentUniqueId(parentIdString);
-            library.save();
+            getProviderBase().addLibrary(library);
             total += getNestedLibrary(library.getIdString(), currentFloor);
         }
         return total;
@@ -818,14 +801,11 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         clearTestFolder();
         Debug.setDebug(true);
 
-        final DataProviderBase providerBase = getProviderBase();
-        providerBase.clearMetadata();
-        providerBase.clearLibrary();
-        providerBase.clearMetadataCollection();
+        final DataProviderBase providerBase = getProviderBaseAndClearTable();
 
         //get nestedIn Library
         Library topLibrary = getRandomLibrary();
-        topLibrary.save();
+        providerBase.addLibrary(topLibrary);
         final int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
         Log.e("###totalLibraryCount", String.valueOf(libraryCount));
         List<Library> list = new ArrayList<>();
@@ -841,8 +821,8 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         }
 
         long total = 0;
-        for (int r = 0; r < 70; ++r) {
-            final int limit = TestUtils.randInt(100, 200);
+        for (int r = 0; r < 35; ++r) {
+            final int limit = TestUtils.randInt(150, 155);
             final int finishBookCount = 35;
             final int readingBookCount = 30;
             final int tagsBooKCount = 50;
@@ -881,13 +861,13 @@ public class MetadataTest extends ApplicationTestCase<Application> {
                     int endIndex = TestUtils.randInt(replaceIndex, title.length() - 1);
                     meta.setTitle(title.replaceAll(title.substring(replaceIndex, endIndex), search));
                 }
-                meta.save();
+                providerBase.saveMetadata(getContext(), meta);
 
                 if (i < addToLibraryCount) {
                     MetadataCollection metadataCollection = new MetadataCollection();
                     metadataCollection.setLibraryUniqueId(libraryIdString);
                     metadataCollection.setDocumentUniqueId(meta.getNativeAbsolutePath());
-                    metadataCollection.save();
+                    providerBase.addMetadataCollection(getContext(), metadataCollection);
                 }
             }
 
@@ -950,12 +930,12 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
     public DataProviderBase getProviderBase() {
         init();
-        return DataProviderManager.getLocalDataProvider();
+        return DataProviderManager.getRemoteDataProvider();
     }
 
     public DataProviderBase getProviderBaseAndClearTable() {
         init();
-        DataProviderBase dataProviderBase = DataProviderManager.getLocalDataProvider();
+        DataProviderBase dataProviderBase = getProviderBase();
         dataProviderBase.clearMetadata();
         dataProviderBase.clearLibrary();
         dataProviderBase.clearMetadataCollection();
@@ -1052,62 +1032,6 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         assertTrue(libraryList.size() == 1);
     }
 
-    public static Bitmap getSquareBitmap() {
-        Bitmap bitmap = Bitmap.createBitmap(707, 707, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(0xFFAA00AA);
-        return bitmap;
-    }
-
-    public List<Thumbnail> testSaveThumbnail() {
-        DataProviderBase providerBase = getProviderBase();
-        providerBase.clearThumbnail();
-
-        String md5 = generateRandomUUID().substring(0, 12);
-        providerBase.addThumbnail(getContext(), md5, getSquareBitmap());
-
-        List<Thumbnail> list = providerBase.loadThumbnail(getContext(), md5);
-        assertNotNull(list);
-        assertTrue(list.size() > 0);
-        assertTrue(list.get(0).getSourceMD5().equals(md5));
-        Bitmap tmp = getSquareBitmap();
-        for (Thumbnail thumbnail : list) {
-            Bitmap bitmap = providerBase.loadThumbnailBitmap(getContext(), thumbnail.getSourceMD5(), thumbnail.getThumbnailKind());
-            assertNotNull(bitmap);
-            assertTrue(tmp.getByteCount() >= bitmap.getByteCount());
-            tmp = bitmap;
-        }
-        return list;
-    }
-
-    public void testUpdateThumbnail() {
-        DataProviderBase providerBase = getProviderBase();
-        providerBase.clearThumbnail();
-
-        Thumbnail thumbnail = testSaveThumbnail().get(0);
-        thumbnail.setSourceMD5(getRandomFormatTag());
-        providerBase.updateThumbnail(thumbnail);
-        List<Thumbnail> list = providerBase.loadThumbnail(getContext(), thumbnail.getSourceMD5());
-        assertNotNull(list);
-        assertTrue(list.size() == 1);
-        assertTrue(list.get(0).getSourceMD5().equals(thumbnail.getSourceMD5()));
-    }
-
-    public void testDeleteThumbnail() {
-        DataProviderBase providerBase = getProviderBase();
-        providerBase.clearThumbnail();
-
-        List<Thumbnail> list = testSaveThumbnail();
-        providerBase.deleteThumbnail(list.get(0));
-        list = providerBase.loadThumbnail(getContext(), list.get(0).getSourceMD5());
-        assertNotNull(list);
-        assertTrue(list.size() == OnyxThumbnail.ThumbnailKind.values().length - 1);
-        providerBase.clearThumbnail();
-        list = providerBase.loadThumbnail(getContext(), list.get(0).getSourceMD5());
-        assertNotNull(list);
-        assertTrue(list.size() == 0);
-    }
-
     public static String[] getAscString(int count) {
         char init = 'A';
         String str[] = new String[count];
@@ -1119,10 +1043,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     public void testMetadataCollection() {
-        DataProviderBase providerBase = getProviderBase();
-        providerBase.clearMetadata();
-        providerBase.clearLibrary();
-        Delete.table(MetadataCollection.class);
+        DataProviderBase providerBase = getProviderBaseAndClearTable();
 
         int metadataCount = 5;//must be less than collectionCount
         int libraryCount = 5;//must be less than collectionCount
@@ -1170,10 +1091,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         Debug.setDebug(true);
         clearTestFolder();
 
-        DataProviderBase providerBase = getProviderBase();
-        providerBase.clearLibrary();
-        providerBase.clearMetadataCollection();
-        providerBase.clearMetadata();
+        DataProviderBase providerBase = getProviderBaseAndClearTable();
 
         DataManager dataManager = new DataManager();
 
@@ -1183,7 +1101,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         DataManagerHelper.loadLibraryRecursive(dataManager, list, topLibrary.getIdString());
         assertTrue(libraryCount == CollectionUtils.getSize(list));
 
-        topLibrary.save();
+        providerBase.addLibrary(topLibrary);
         list.add(0, topLibrary);
         libraryCount++;
 
@@ -1197,7 +1115,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
                 meta.setProgress("40/100");
                 meta.setReadingStatus(Metadata.ReadingStatus.READING);
             }
-            meta.save();
+            providerBase.saveMetadata(getContext(), meta);
             metaList.add(meta);
         }
         final Benchmark benchMark = new Benchmark();
@@ -1207,7 +1125,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             final int r = i;
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             benchMark.restart();
-            MoveToLibrary addToLibraryRequest = new MoveToLibrary(list.get(from), list.get(to), metaList);
+            MoveToLibraryRequest addToLibraryRequest = new MoveToLibraryRequest(list.get(from), list.get(to), metaList);
             dataManager.submit(getContext(), addToLibraryRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -1233,7 +1151,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         DataManager dataManager = new DataManager();
 
         Library topLibrary = getRandomLibrary();
-        topLibrary.save();
+        providerBase.addLibrary(topLibrary);
         int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
         List<Library> libraryList = new ArrayList<>();
         DataManagerHelper.loadLibraryRecursive(dataManager, libraryList, topLibrary.getIdString());
@@ -1247,9 +1165,9 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             total += metadataCount;
             for (int j = 0; j < metadataCount; j++) {
                 Metadata meta = getRandomMetadata();
-                meta.save();
+                providerBase.saveMetadata(getContext(), meta);
                 MetadataCollection collection = MetadataCollection.create(meta.getIdString(), library.getIdString());
-                collection.save();
+                providerBase.addMetadataCollection(getContext(), collection);
             }
         }
 
@@ -1313,7 +1231,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         DataManager dataManager = new DataManager();
 
         Library topLibrary = getRandomLibrary();
-        topLibrary.save();
+        providerBase.addLibrary(topLibrary);
         int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
         List<Library> libraryList = new ArrayList<>();
         DataManagerHelper.loadLibraryRecursive(dataManager, libraryList, topLibrary.getIdString());
@@ -1327,9 +1245,9 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             total += metadataCount;
             for (int j = 0; j < metadataCount; j++) {
                 Metadata meta = getRandomMetadata();
-                meta.save();
+                providerBase.saveMetadata(getContext(), meta);
                 MetadataCollection collection = MetadataCollection.create(meta.getIdString(), library.getIdString());
-                collection.save();
+                providerBase.addMetadataCollection(getContext(), collection);
             }
         }
 
@@ -1385,12 +1303,12 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         maxLevel = 2;
         Debug.setDebug(true);
         clearTestFolder();
-        getProviderBaseAndClearTable();
+        DataProviderBase providerBase = getProviderBaseAndClearTable();
 
         DataManager dataManager = new DataManager();
 
         Library topLibrary = getRandomLibrary();
-        topLibrary.save();
+        providerBase.addLibrary(topLibrary);
         int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
         List<Library> libraryList = new ArrayList<>();
         DataManagerHelper.loadLibraryRecursive(dataManager, libraryList, topLibrary.getIdString());
@@ -1404,9 +1322,9 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             libraryMetaCountMap.put(library.getIdString(), metadataCount);
             for (int j = 0; j < metadataCount; j++) {
                 Metadata meta = getRandomMetadata();
-                meta.save();
+                providerBase.saveMetadata(getContext(), meta);
                 MetadataCollection collection = MetadataCollection.create(meta.getIdString(), library.getIdString());
-                collection.save();
+                providerBase.addMetadataCollection(getContext(), collection);
             }
         }
 
@@ -1445,12 +1363,12 @@ public class MetadataTest extends ApplicationTestCase<Application> {
         maxLevel = 2;
         Debug.setDebug(true);
         clearTestFolder();
-        getProviderBaseAndClearTable();
+        DataProviderBase providerBase = getProviderBaseAndClearTable();
 
         DataManager dataManager = new DataManager();
 
         Library topLibrary = getRandomLibrary();
-        topLibrary.save();
+        providerBase.addLibrary(topLibrary);
         int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
         List<Library> libraryList = new ArrayList<>();
         DataManagerHelper.loadLibraryRecursive(dataManager, libraryList, topLibrary.getIdString());
@@ -1464,9 +1382,9 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             libraryMetaCountMap.put(library.getIdString(), metadataCount);
             for (int j = 0; j < metadataCount; j++) {
                 Metadata meta = getRandomMetadata();
-                meta.save();
+                providerBase.saveMetadata(getContext(), meta);
                 MetadataCollection collection = MetadataCollection.create(meta.getIdString(), library.getIdString());
-                collection.save();
+                providerBase.addMetadataCollection(getContext(), collection);
             }
         }
 
@@ -1552,7 +1470,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             if (i < authorCount) {
                 meta.setAuthors(getRandomString(authorSet));
             }
-            meta.save();
+            providerBase.saveMetadata(getContext(), meta);
         }
 
         //test fileType

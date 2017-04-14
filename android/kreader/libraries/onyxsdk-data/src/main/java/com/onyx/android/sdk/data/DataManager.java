@@ -83,7 +83,7 @@ public class DataManager {
     }
 
     public DataProviderBase getDataProviderBase() {
-        return getDataProviderManager().getLocalDataProvider();
+        return getDataProviderManager().getRemoteDataProvider();
     }
 
     public final FileSystemManager getFileSystemManager() {
