@@ -161,7 +161,6 @@ public abstract class BaseReaderRequest extends BaseRequest {
         if (reader.getDocument().saveOptions()) {
             reader.saveOptions();
             saveToDocumentOptionsToLocalProvider(reader);
-            saveToDocumentOptionsToRemoveProvider(reader);
         }
         saveToLegacyDataProvider(reader);
     }
@@ -172,14 +171,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
                 reader.getDocumentMd5(),
                 reader.getDocumentOptions().toJSONString());
     }
-
-    private void saveToDocumentOptionsToRemoveProvider(final Reader reader) {
-        DataProviderManager.getRemoteDataProvider().saveDocumentOptions(getContext(),
-                reader.getDocumentPath(),
-                reader.getDocumentMd5(),
-                reader.getDocumentOptions().toJSONString());
-    }
-
+    
     private void saveToLegacyDataProvider(final Reader reader) {
         try {
             if (reader.getNavigator() != null) {
