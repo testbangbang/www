@@ -12,11 +12,13 @@ import java.util.List;
 
 public class FileSystemScanRequest extends BaseFSRequest {
 
+    private String storageId;
     private List<String> root;
     private HashSet<String> result;
     private volatile boolean overwrite;
 
-    public FileSystemScanRequest(final List<String> r, boolean overwriteSnapshot) {
+    public FileSystemScanRequest(final String s, final List<String> r, boolean overwriteSnapshot) {
+        storageId = s;
         root = r;
         overwrite = overwriteSnapshot;
     }
@@ -27,8 +29,8 @@ public class FileSystemScanRequest extends BaseFSRequest {
             FileUtils.collectFiles(path, null, true, result);
         }
         if (isOverwrite()) {
-            dataManager.getFileSystemManager().clear();
-            dataManager.getFileSystemManager().addAll(result);
+            dataManager.getFileSystemManager().clear(storageId);
+            dataManager.getFileSystemManager().addAll(storageId, result);
         }
     }
 

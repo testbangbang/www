@@ -13,16 +13,18 @@ import java.util.List;
 
 public class FileSystemDiffRequest extends BaseFSRequest {
 
+    private String storageId;
     private HashSet<String> newSnapshot = new HashSet<>();
     private HashSet<String> added = new HashSet<>();
     private HashSet<String> removed = new HashSet<>();
 
-    public FileSystemDiffRequest(final HashSet<String> s) {
-        newSnapshot.addAll(s);
+    public FileSystemDiffRequest(final String s, final HashSet<String> files) {
+        storageId = s;
+        newSnapshot.addAll(files);
     }
 
     public void execute(final DataManager dataManager) throws Exception {
-        dataManager.getFileSystemManager().diff(newSnapshot, added, removed);
+        dataManager.getFileSystemManager().diff(storageId, newSnapshot, added, removed);
     }
 
     public HashSet<String> getAdded() {
