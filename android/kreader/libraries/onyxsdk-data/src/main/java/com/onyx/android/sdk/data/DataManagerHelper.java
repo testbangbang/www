@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.provider.MediaStore;
 
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Library;
@@ -88,11 +89,11 @@ public class DataManagerHelper {
                 e.printStackTrace();
             }
         }
-        return getDataProviderBase().loadThumbnail(context, md5, kind);
+        return getDataProviderBase().getThumbnail(context, md5, kind);
     }
 
     public static Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail) {
-        return getDataProviderBase().loadThumbnailBitmap(context, thumbnail);
+        return getDataProviderBase().getThumbnailBitmap(context, thumbnail.getSourceMD5(), OnyxThumbnail.ThumbnailKind.Original);
     }
 
     public static List<Bitmap> loadThumbnailBitmapList(Context context, final List<File> fileList, int limit, OnyxThumbnail.ThumbnailKind kind) {

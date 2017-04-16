@@ -192,46 +192,40 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Thumbnail> addThumbnail(Context context, String sourceMD5, Bitmap saveBitmap) {
-        List<Thumbnail> list = new ArrayList<>();
-        for (ThumbnailKind tk : ThumbnailKind.values()) {
-            Thumbnail thumbnail = new Thumbnail();
-            thumbnail.setSourceMD5(sourceMD5);
-            thumbnail.setThumbnailKind(tk);
-            ThumbnailUtils.saveThumbnailBitmap(context, thumbnail, saveBitmap);
-            list.add(thumbnail);
-        }
-        return list;
+    public boolean setThumbnail(Context context, String sourceMD5, final Bitmap saveBitmap, ThumbnailKind kind) {
+        return false;
     }
 
-    @Override
-    public void updateThumbnail(Thumbnail thumbnail) {
-        thumbnail.update();
+    public boolean removeThumbnail(Context context, String sourceMD5, ThumbnailKind kind) {
+        return false;
     }
 
-    @Override
+    public Thumbnail getThumbnail(Context context, String sourceMd5, final ThumbnailKind kind) {
+        return null;
+    }
+
+    public Bitmap getThumbnailBitmap(Context context, String sourceMd5, final ThumbnailKind kind) {
+        return null;
+    }
+
     public void deleteThumbnail(Thumbnail thumbnail) {
         thumbnail.delete();
     }
 
-    @Override
     public List<Thumbnail> loadThumbnail(Context context, String sourceMd5) {
         return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
                 .queryList();
     }
 
-    @Override
     public Thumbnail loadThumbnail(Context context, String sourceMd5, ThumbnailKind kind) {
         return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
                 .and(Thumbnail_Table.thumbnailKind.eq(kind)).querySingle();
     }
 
-    @Override
     public Bitmap loadThumbnailBitmap(Context context, String sourceMd5, ThumbnailKind kind) {
         return ThumbnailUtils.getThumbnailBitmap(context, sourceMd5, kind.toString());
     }
 
-    @Override
     public Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail) {
         return ThumbnailUtils.getThumbnailBitmap(context, thumbnail);
     }

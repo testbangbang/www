@@ -23,6 +23,7 @@ import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -30,6 +31,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
@@ -263,36 +265,29 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Thumbnail> addThumbnail(Context context, String sourceMD5, Bitmap saveBitmap) {
-        return new ArrayList<>();
+    public boolean setThumbnail(Context context, String sourceMD5, Bitmap saveBitmap, final OnyxThumbnail.ThumbnailKind kind) {
+        return false;
     }
 
-    @Override
-    public void updateThumbnail(Thumbnail thumbnail) {
+    public boolean removeThumbnail(Context context, String sourceMD5, OnyxThumbnail.ThumbnailKind kind) {
+        return false;
     }
 
-    @Override
+    public Thumbnail getThumbnail(Context context, String sourceMd5, final OnyxThumbnail.ThumbnailKind kind) {
+        return null;
+    }
+
+    public Bitmap getThumbnailBitmap(Context context, String sourceMd5, final OnyxThumbnail.ThumbnailKind kind) {
+        return null;
+    }
+
     public void deleteThumbnail(Thumbnail thumbnail) {
+        thumbnail.delete();
     }
 
-    @Override
     public List<Thumbnail> loadThumbnail(Context context, String sourceMd5) {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public Thumbnail loadThumbnail(Context context, String sourceMd5, OnyxThumbnail.ThumbnailKind kind) {
-        return null;
-    }
-
-    @Override
-    public Bitmap loadThumbnailBitmap(Context context, String sourceMd5, OnyxThumbnail.ThumbnailKind kind) {
-        return null;
-    }
-
-    @Override
-    public Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail) {
-        return null;
+        return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
+                .queryList();
     }
 
     @Override
