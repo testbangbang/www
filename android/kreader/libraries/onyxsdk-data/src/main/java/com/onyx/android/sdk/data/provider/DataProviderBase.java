@@ -69,13 +69,9 @@ public interface DataProviderBase {
 
     void clearThumbnail();
 
-    List<Thumbnail> addThumbnail(Context context, String sourceMD5, Bitmap saveBitmap);
+    List<Thumbnail> setThumbnail(Context context, String sourceMD5, Bitmap saveBitmap);
 
-    void updateThumbnail(Thumbnail thumbnail);
-
-    void deleteThumbnail(Thumbnail thumbnail);
-
-    List<Thumbnail> loadThumbnail(Context context, String sourceMd5);
+    List<Thumbnail> getThumbnail(Context context, String sourceMd5);
 
     Thumbnail loadThumbnail(Context context, String sourceMd5, ThumbnailKind kind);
 
