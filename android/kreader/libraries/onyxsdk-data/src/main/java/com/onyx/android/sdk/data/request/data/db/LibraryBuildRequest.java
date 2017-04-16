@@ -13,12 +13,12 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/7.
  */
-public class BuildLibraryRequest extends BaseDBRequest {
+public class LibraryBuildRequest extends BaseDBRequest {
     private Library library;
     private QueryArgs criteria;
     private List<Metadata> bookList;
 
-    public BuildLibraryRequest(Library library, QueryArgs queryCriteria) {
+    public LibraryBuildRequest(Library library, QueryArgs queryCriteria) {
         this.library = library;
         this.criteria = queryCriteria;
     }

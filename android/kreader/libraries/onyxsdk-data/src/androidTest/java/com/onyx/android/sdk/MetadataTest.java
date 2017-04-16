@@ -26,10 +26,10 @@ import com.onyx.android.sdk.data.provider.LocalDataProvider;
 import com.onyx.android.sdk.data.model.ReadingProgress;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.provider.RemoteDataProvider;
-import com.onyx.android.sdk.data.request.data.db.BuildLibraryRequest;
-import com.onyx.android.sdk.data.request.data.db.ClearLibraryRequest;
-import com.onyx.android.sdk.data.request.data.db.DeleteLibraryRequest;
-import com.onyx.android.sdk.data.request.data.db.LibraryRequest;
+import com.onyx.android.sdk.data.request.data.db.LibraryBuildRequest;
+import com.onyx.android.sdk.data.request.data.db.LibraryClearRequest;
+import com.onyx.android.sdk.data.request.data.db.LibraryDeleteRequest;
+import com.onyx.android.sdk.data.request.data.db.LibraryLoadRequest;
 import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
 import com.onyx.android.sdk.data.request.data.db.MoveToLibraryRequest;
 import com.onyx.android.sdk.data.request.data.db.RemoveFromLibraryRequest;
@@ -1204,7 +1204,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             final int calCount = count;
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             final Benchmark benchMark = new Benchmark();
-            DeleteLibraryRequest deleteRequest = new DeleteLibraryRequest(parentLibrary);
+            LibraryDeleteRequest deleteRequest = new LibraryDeleteRequest(parentLibrary);
             dataManager.submit(getContext(), deleteRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -1274,7 +1274,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
 
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             final Benchmark benchMark = new Benchmark();
-            ClearLibraryRequest clearRequest = new ClearLibraryRequest(parentLibrary);
+            LibraryClearRequest clearRequest = new LibraryClearRequest(parentLibrary);
             dataManager.submit(getContext(), clearRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -1348,21 +1348,21 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             final Benchmark benchMark = new Benchmark();
             final QueryArgs args = QueryBuilder.libraryAllBookQuery(library.getIdString(), SortBy.CreationTime, SortOrder.Desc);
-            final LibraryRequest libraryRequest = new LibraryRequest(args);
-            dataManager.submit(getContext(), libraryRequest, new BaseCallback() {
+            final LibraryLoadRequest libraryLoadRequest = new LibraryLoadRequest(args);
+            dataManager.submit(getContext(), libraryLoadRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     assertNull(e);
                     benchMark.reportError("##testLibraryRequest,index:" + index);
-                    List<Library> childLibraryList = libraryRequest.getLibraryList();
+                    List<Library> childLibraryList = libraryLoadRequest.getLibraryList();
                     if (!CollectionUtils.isNullOrEmpty(childLibraryList)) {
                         for (Library tmp : childLibraryList) {
                             assertEquals(tmp.getParentUniqueId(), library.getIdString());
                         }
                     }
-                    assertTrue(libraryRequest.getTotalCount() == libraryMetaCountMap.get(library.getIdString()));
-                    Metadata tmp = libraryRequest.getBookList().get(0);
-                    for (Metadata metadata : libraryRequest.getBookList()) {
+                    assertTrue(libraryLoadRequest.getTotalCount() == libraryMetaCountMap.get(library.getIdString()));
+                    Metadata tmp = libraryLoadRequest.getBookList().get(0);
+                    for (Metadata metadata : libraryLoadRequest.getBookList()) {
                         assertTrue(tmp.getCreatedAt().getTime() >= metadata.getCreatedAt().getTime());
                         tmp = metadata;
                     }
@@ -1552,7 +1552,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     private void runBuildLibraryAndCompare(final Library library, QueryArgs args, final int compareCount) {
         DataManager dataManager = new DataManager();
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final BuildLibraryRequest buildRequest = new BuildLibraryRequest(library, args);
+        final LibraryBuildRequest buildRequest = new LibraryBuildRequest(library, args);
         dataManager.submit(getContext(), buildRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

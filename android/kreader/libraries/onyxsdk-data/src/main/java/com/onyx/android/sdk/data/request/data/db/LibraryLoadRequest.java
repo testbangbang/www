@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/5.
  */
-public class LibraryRequest extends BaseDBRequest {
+public class LibraryLoadRequest extends BaseDBRequest {
 
     private boolean loadMetadata = true;
     private QueryArgs queryArgs;
@@ -22,11 +22,11 @@ public class LibraryRequest extends BaseDBRequest {
     private List<Library> libraryList = new ArrayList<>();
     private long totalCount;
 
-    public LibraryRequest(QueryArgs queryArgs) {
+    public LibraryLoadRequest(QueryArgs queryArgs) {
         this.queryArgs = queryArgs;
     }
 
-    public LibraryRequest(QueryArgs queryArgs, boolean loadMetadata) {
+    public LibraryLoadRequest(QueryArgs queryArgs, boolean loadMetadata) {
         this.queryArgs = queryArgs;
         this.loadMetadata = loadMetadata;
     }

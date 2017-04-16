@@ -10,11 +10,11 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/9.
  */
-public class DeleteLibraryRequest extends BaseDBRequest {
+public class LibraryDeleteRequest extends BaseDBRequest {
 
     private Library library;
 
-    public DeleteLibraryRequest(Library library) {
+    public LibraryDeleteRequest(Library library) {
         this.library = library;
     }
 

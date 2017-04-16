@@ -10,10 +10,10 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/10.
  */
-public class ClearLibraryRequest extends BaseDBRequest {
+public class LibraryClearRequest extends BaseDBRequest {
     private Library library;
 
-    public ClearLibraryRequest(Library library) {
+    public LibraryClearRequest(Library library) {
         this.library = library;
     }
 
