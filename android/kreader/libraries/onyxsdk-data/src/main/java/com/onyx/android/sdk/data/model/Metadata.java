@@ -93,6 +93,9 @@ public class Metadata extends BaseData {
     @Column
     String hashTag;
 
+    @Column
+    String storageId;
+
     public String getName() {
         return name;
     }
@@ -303,6 +306,14 @@ public class Metadata extends BaseData {
 
     public void setHashTag(String hashTag) {
         this.hashTag = hashTag;
+    }
+
+    public void setStorageId(String storageId) {
+        this.storageId = storageId;
+    }
+
+    public String getStorageId() {
+        return storageId;
     }
 
     public static Metadata createFromFile(String path) {
