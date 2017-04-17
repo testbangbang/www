@@ -93,6 +93,8 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
         return errorCode;
     }
 
+    onyx::DrmDecryptManager::singleton().setEncrypted(false);
+
     char buf[4096];
     unsigned long res = FPDF_GetMetaText(document, "book", buf, 4096);
     if (res > 2) { // empty metadata text is '\0' in unicode
