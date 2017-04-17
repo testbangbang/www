@@ -67,6 +67,9 @@ public class SettingConfig {
         static private final String USE_SYSTEM_STORAGE_PAGE_TAG = "use_system_storage_page";
 
         static private final String HIDE_DRM_SETTING = "hide_drm_setting";
+
+        static private final String CALIBRATION_PACKAGE_NAME_TAG = "calibration_package_name";
+        static private final String CALIBRATION_CLASS_NAME_TAG = "calibration_class_name";
     }
 
     static class Default {
@@ -77,6 +80,10 @@ public class SettingConfig {
         static private final String POWER_USAGE_SUMMARY_CLASS_NAME = "com.android.settings.fuelgauge.PowerUsageSummary";
         static private final String FACTORY_RESET_CLASS_NAME = "com.android.settings.MasterClear";
         static private final String DEVICE_INFO_CLASS_NAME = "com.android.settings.DeviceInfoSettings";
+        static private final String CALIBRATION_PACKAGE_NAME = "com.onyx.android.tscalibration";
+        static private final String CALIBRATION_CLASS_NAME = "com.onyx.android.tscalibration.MainActivity";
+
+
 
         static private final String TTS_ACTION = "com.android.settings.TTS_SETTINGS";
         static private final String MASTER_CLEAR_ACTION = "android.settings.MASTER_CLEAR";
@@ -324,7 +331,14 @@ public class SettingConfig {
     }
 
     public Intent getCalibrationIntent() {
-        return null;
+        Intent intent = new Intent();
+        String pkgName = Default.CALIBRATION_PACKAGE_NAME;
+        String className = Default.CALIBRATION_CLASS_NAME;
+        String customPkgName = getData(Custom.CALIBRATION_PACKAGE_NAME_TAG, String.class);
+        String customClassName = getData(Custom.CALIBRATION_CLASS_NAME_TAG, String.class);
+        intent.setClassName(TextUtils.isEmpty(customPkgName) ? pkgName : customPkgName,
+                TextUtils.isEmpty(customClassName) ? className : customClassName);
+        return intent;
     }
 
     public Intent getBluetoothSettingIntent() {
