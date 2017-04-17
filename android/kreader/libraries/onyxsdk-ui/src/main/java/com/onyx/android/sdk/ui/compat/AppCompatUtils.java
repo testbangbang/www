@@ -36,19 +36,7 @@ public class AppCompatUtils {
             if (imageView == null) {
                 continue;
             }
-            int[] locationOnScreen = new int[2];
-            imageView.getLocationOnScreen(locationOnScreen);
-            int top = imageView.getTop();
-            int left = imageView.getLeft();
-
-            if (locationOnScreen[0] % 2 != 0) {
-                left++;
-            }
-
-            if (locationOnScreen[1] % 2 != 0) {
-                top++;
-            }
-            imageView.layout(left, top, left + imageView.getWidth(), top + imageView.getHeight());
+            processViewLayoutEvenPosition(imageView);
         }
     }
 
@@ -61,5 +49,21 @@ public class AppCompatUtils {
             value++;
         }
         return value;
+    }
+
+    public static void processViewLayoutEvenPosition(View view) {
+        int[] locationOnScreen = new int[2];
+        view.getLocationOnScreen(locationOnScreen);
+        int top = view.getTop();
+        int left = view.getLeft();
+
+        if (locationOnScreen[0] % 2 != 0) {
+            left++;
+        }
+
+        if (locationOnScreen[1] % 2 != 0) {
+            top++;
+        }
+        view.layout(left, top, left + view.getWidth(), top + view.getHeight());
     }
 }
