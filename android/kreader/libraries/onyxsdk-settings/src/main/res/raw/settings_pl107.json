@@ -1,4 +1,5 @@
 {
   "has_front_light": false,
-  "hide_vpn_setting": true
+  "hide_vpn_setting": true,
+  "hide_drm_setting": true
 }

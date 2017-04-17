@@ -65,6 +65,8 @@ public class SettingConfig {
         static private final String HAS_NATURAL_LIGHT_TAG = "has_natural_light";
 
         static private final String USE_SYSTEM_STORAGE_PAGE_TAG = "use_system_storage_page";
+
+        static private final String HIDE_DRM_SETTING = "hide_drm_setting";
     }
 
     static class Default {
@@ -474,6 +476,14 @@ public class SettingConfig {
         Boolean result = getData(Custom.USE_SYSTEM_STORAGE_PAGE_TAG, Boolean.class);
         if (result == null) {
             return true;
+        }
+        return result;
+    }
+
+    public boolean hideDRMSettings(){
+        Boolean result = getData(Custom.HIDE_DRM_SETTING, Boolean.class);
+        if (result == null) {
+            return false;
         }
         return result;
     }

@@ -141,6 +141,9 @@ public class ApplicationSettingActivity extends OnyxAppCompatActivity {
                 }
             });
             initKeyBindSetting();
+            if (SettingConfig.sharedInstance(getContext()).hideDRMSettings()){
+                getPreferenceScreen().removePreference(drmSetting);
+            }
         }
 
         private void initKeyBindSetting() {
