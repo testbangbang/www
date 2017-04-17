@@ -1,18 +1,24 @@
 #include "com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper.h"
 
-#include <vector>
+#include <cstdlib>
 
-#include "onyx_context.h"
-#include "JNIUtils.h"
+#include <vector>
+#include <string>
+#include <locale>
+#include <memory>
+#include <fstream>
+#include <sstream>
 
 #include "fpdf_doc.h"
 #include "fpdf_formfill.h"
-
-#include "core/fpdfapi/fpdf_page/include/cpdf_pageobject.h"
 #include "fpdf_edit.h"
 
-#include <memory>
-#include <cstdlib>
+#include "core/fpdfapi/fpdf_page/include/cpdf_pageobject.h"
+#include "core/fpdfapi/onyx_drm_decrypt.h"
+
+#include "onyx_context.h"
+#include "JNIUtils.h"
+#include "jsonxx.h"
 
 static const char * selectionClassName = "com/onyx/android/sdk/reader/plugins/neopdf/NeoPdfSelection";
 static const char * splitterClassName = "com/onyx/android/sdk/reader/api/ReaderTextSplitter";
@@ -85,6 +91,43 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
         int errorCode = FPDF_GetLastError();
         LOGE("load document failed error code %d", errorCode);
         return errorCode;
+    }
+
+    char buf[4096];
+    unsigned long res = FPDF_GetMetaText(document, "book", buf, 4096);
+    if (res > 2) { // empty metadata text is '\0' in unicode
+        LOGI("document is DRM protected, try to decrypt the document");
+        std::string manifestString = StringUtils::utf16leto8(reinterpret_cast<const char16_t *>(buf));
+
+        std::ifstream file("/sdcard/private_key");
+        if (!file ) {
+            LOGE("open /sdcard/private_key failed!");
+            return -1;
+        }
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        file.close();
+
+        std::string key = buffer.str();
+        const unsigned char *rsaKeyData = reinterpret_cast<const unsigned char *>(key.c_str());
+
+        onyx::DrmDecrypt decrypt;
+        int resultLen = 0;
+        unsigned char *result = decrypt.rsaDecryptManifest(rsaKeyData, manifestString.c_str(), &resultLen);
+        if (resultLen == -1) {
+            LOGE("read metadata failed!");
+            return -1;
+        }
+
+        jsonxx::Object object;
+        if (!object.parse(reinterpret_cast<char *>(result))) {
+            LOGE("read metadata failed!");
+            return -1;
+        }
+        std::string aesKey = object.get<std::string>("aesKey");
+
+        onyx::DrmDecryptManager::singleton().setEncrypted(true);
+        onyx::DrmDecryptManager::singleton().setAESKey(aesKey.c_str());
     }
 
     FPDF_FORMFILLINFO formInfo;
