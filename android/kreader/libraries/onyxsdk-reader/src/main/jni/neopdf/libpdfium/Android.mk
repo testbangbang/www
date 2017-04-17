@@ -1,5 +1,8 @@
 LOCAL_PATH:= $(call my-dir)
 
+MY_LOCAL_PATH := $(LOCAL_PATH)
+OPENSSL_ROOT := $(MY_LOCAL_PATH)/../../prebuilt/openssl
+
 # fx_freetype
 include $(CLEAR_VARS)
 
@@ -224,7 +227,8 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE:= libpdfium-new
 
-LOCAL_STATIC_LIBRARIES += libfx_freetype libfx_agg libfx_lcms2 libfx_libopenjpeg libfx_jpeg libfx_zlib
+LOCAL_STATIC_LIBRARIES += libfx_freetype libfx_agg libfx_lcms2 libfx_libopenjpeg libfx_jpeg libfx_zlib \
+    libssl-prebuilt libcrypto-prebuilt
 
 LOCAL_CFLAGS += -O2
 
@@ -276,6 +280,7 @@ LOCAL_SRC_FILES:= \
     fpdfsdk/formfiller/cffl_radiobutton.cpp \
     fpdfsdk/formfiller/cffl_textfield.cpp \
     core/fpdfapi/cpdf_modulemgr.cpp \
+    core/fpdfapi/onyx_drm_decrypt.cpp \
     core/fpdfapi/cpdf_pagerendercontext.cpp \
     core/fpdfapi/fpdf_cmaps/CNS1/Adobe-CNS1-UCS2_5.cpp \
     core/fpdfapi/fpdf_cmaps/CNS1/B5pc-H_0.cpp \
@@ -569,6 +574,7 @@ LOCAL_SRC_FILES:= \
 
 LOCAL_C_INCLUDES += \
     $(LOCAL_PATH) \
-    $(LOCAL_PATH)/third_party/freetype/include
+    $(LOCAL_PATH)/third_party/freetype/include \
+    ${OPENSSL_ROOT}/include
 
 include $(BUILD_STATIC_LIBRARY)
