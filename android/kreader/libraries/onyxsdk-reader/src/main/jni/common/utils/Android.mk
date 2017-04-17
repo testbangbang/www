@@ -8,7 +8,8 @@ LOCAL_MODULE := libutils
 
 
 src_files := \
-	JNIUtils.cpp
+    JNIUtils.cpp \
+    jsonxx.cc
 
 
 LOCAL_CFLAGS += -O3 -DUSE_MMAP
