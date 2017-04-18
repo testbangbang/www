@@ -371,4 +371,8 @@ public class BaseDevice {
     public void enableRegal(boolean enable) {
     }
 
+    public boolean hasWifi(Context context) {
+        return true;
+    }
+
 }
