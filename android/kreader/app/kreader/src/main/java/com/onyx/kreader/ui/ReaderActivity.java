@@ -113,6 +113,7 @@ import java.util.List;
  */
 public class ReaderActivity extends OnyxBaseActivity {
     private static final String DOCUMENT_PATH_TAG = "document";
+    private static final String DOCUMENT_NAME_TAG = "bookName";
 
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
     private SurfaceView surfaceView;
@@ -741,8 +742,12 @@ public class ReaderActivity extends OnyxBaseActivity {
     private void openFileFromIntentImpl() {
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this,
                 getIntent().getData());
-
-        final OpenDocumentAction action = new OpenDocumentAction(this, path);
+        String bookName = "";
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            bookName = bundle.getString(DOCUMENT_NAME_TAG);
+        }
+        final OpenDocumentAction action = new OpenDocumentAction(this, path,bookName);
         action.execute(getReaderDataHolder(), null);
         releaseStartupWakeLock();
     }
@@ -999,7 +1004,8 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         final String path = "/mnt/sdcard/Books/a.pdf";
-        final OpenDocumentAction action = new OpenDocumentAction(this, path);
+        final String bookName = "a";
+        final OpenDocumentAction action = new OpenDocumentAction(this, path,bookName);
         action.execute(getReaderDataHolder(), null);
         releaseStartupWakeLock();
     }

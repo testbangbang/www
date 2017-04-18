@@ -264,9 +264,6 @@ public class ReaderHelper {
         initImageReflowManager(context);
         initBitmapCache();
         initWordAnalyzerInBackground();
-        if(AlReaderPlugin.isJEB(documentPath)){
-            bookName = JEBFilesZIP.bookName;
-        }
     }
 
     private void initLayoutManager() {
