@@ -33,6 +33,8 @@
 #include "core/fxge/include/cfx_fxgedevice.h"
 #include "core/fxge/include/cfx_renderdevice.h"
 
+#include "core/fpdfapi/onyx_drm_decrypt.h"
+
 namespace {
 
 const uint32_t kMaxNestedArrayLevel = 512;
@@ -660,6 +662,23 @@ void CPDF_ContentParser::Start(CPDF_Page* pPage) {
     m_nStreams = 0;
     m_pSingleStream.reset(new CPDF_StreamAcc);
     m_pSingleStream->LoadAllData(pStream, FALSE);
+
+    // added by joy@onyx for DRM decryption
+    int size = m_pSingleStream->GetSize();
+    fprintf(stdout, "m_pSingleStream data size: %d\n", size);
+    onyx::DrmDecryptManager &decrypt = onyx::DrmDecryptManager::singleton();
+    if (decrypt.isEncrypted()) {
+      const unsigned char *rawData = reinterpret_cast<const unsigned char *>(m_pSingleStream->GetData());
+      int rawSize = m_pSingleStream->GetSize();
+      int dataLen = 0;
+      unsigned char *data = decrypt.aesDecrypt(rawData,
+                                               rawSize,
+                                               &dataLen);
+      if (data) {
+        m_pSingleStream->SetData(data, dataLen);
+      }
+    }
+
   } else if (CPDF_Array* pArray = pContent->AsArray()) {
     m_nStreams = pArray->GetCount();
     if (m_nStreams)

@@ -223,6 +223,47 @@ public:
                 str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
     }
 
+    static std::string utf16leto8(const char16_t * utf16)
+    {
+        std::string utf8;
+        unsigned int codepoint = 0;
+        for (utf16;  *utf16 != 0;  ++utf16)
+        {
+            if (*utf16 >= 0xd800 && *utf16 <= 0xdbff)
+                codepoint = ((*utf16 - 0xd800) << 10) + 0x10000;
+            else
+            {
+                if (*utf16 >= 0xdc00 && *utf16 <= 0xdfff)
+                    codepoint |= *utf16 - 0xdc00;
+                else
+                    codepoint = *utf16;
+
+                if (codepoint <= 0x7f)
+                    utf8.append(1, static_cast<char>(codepoint));
+                else if (codepoint <= 0x7ff)
+                {
+                    utf8.append(1, static_cast<char>(0xc0 | ((codepoint >> 6) & 0x1f)));
+                    utf8.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
+                }
+                else if (codepoint <= 0xffff)
+                {
+                    utf8.append(1, static_cast<char>(0xe0 | ((codepoint >> 12) & 0x0f)));
+                    utf8.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
+                    utf8.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
+                }
+                else
+                {
+                    utf8.append(1, static_cast<char>(0xf0 | ((codepoint >> 18) & 0x07)));
+                    utf8.append(1, static_cast<char>(0x80 | ((codepoint >> 12) & 0x3f)));
+                    utf8.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
+                    utf8.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
+                }
+                codepoint = 0;
+            }
+        }
+        return utf8;
+    }
+
     static std::shared_ptr<_jstring> newLocalString(JNIEnv *env, const jchar *str, int len)
     {
         jstring text = env->NewString(str, len);
