@@ -72,7 +72,7 @@
     <dimen name="dialog_loading_height">@dimen/wrap_content</dimen>
     <dimen name="dialog_loading_msg_X_axis_padding">15dp</dimen>
     <dimen name="bold_checkbox_height">14dp</dimen>
-    <dimen name="bold_checkbox_width">66dp</dimen>
+    <dimen name="bold_checkbox_width">64dp</dimen>
     <dimen name="bold_checkbox_divider_width">2dp</dimen>
     <dimen name="dialog_contrast_margin">10dp</dimen>
     <dimen name="dialog_contrast_seek_bar_width">300dp</dimen>
