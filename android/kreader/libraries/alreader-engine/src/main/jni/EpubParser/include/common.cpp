@@ -8,7 +8,7 @@
 
 #include "common.h"
 
-void LOG(const char *fmt, ...)
+void LOG(char const* fmt, ...)
 {
     if(IS_DEBUG){
         va_list args;

@@ -35,7 +35,7 @@ using namespace std;
 
 #define MAX_BUFFER_SIZE                     8192
 
-void LOG(const char *fmt, ...);
+void LOG(char const* fmt, ...);
 
 #define BETOH16(x) (((x&0xff)<<8)|((x&0xff00)>>8))
 #define BETOH32(x) (((x&0xff)<<24)|((x&0xff00)<<8)|((x&0xff0000)>>8)|((x&0xff000000)>>24))

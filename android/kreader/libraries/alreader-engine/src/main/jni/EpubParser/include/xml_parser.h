@@ -13,6 +13,6 @@
 
 class XmlParser{
 public:
-    vector<<#class _Tp#>>
+
 };
 #endif /* xml_parser_h */
