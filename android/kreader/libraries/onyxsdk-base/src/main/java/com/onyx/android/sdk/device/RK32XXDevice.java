@@ -20,13 +20,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by Joy on 2016/5/10.
+ * Created by wangxu on 17-4-6.
  */
-public class IMX7Device extends BaseDevice {
 
-    private static final String TAG = IMX7Device.class.getSimpleName();
+public class RK32XXDevice extends BaseDevice {
+    private static final String TAG = RK32XXDevice.class.getSimpleName();
 
-    private static IMX7Device sInstance = null;
+    private static RK32XXDevice sInstance = null;
 
     private static int sPolicyAutomatic = 0;
     private static int sPolicyGUIntervally = 0;
@@ -165,7 +165,7 @@ public class IMX7Device extends BaseDevice {
     private static Method sMethodStartTpd;
     private static Method sMethodEnableTpd;
 
-    private IMX7Device() {
+    private RK32XXDevice() {
     }
 
     public int getWindowRotation() {
@@ -493,9 +493,9 @@ public class IMX7Device extends BaseDevice {
         ReflectUtil.invokeMethodSafely(sMethodWaitForUpdateFinished, null);
     }
 
-    public static IMX7Device createDevice() {
+    public static RK32XXDevice createDevice() {
         if (sInstance == null) {
-            sInstance = new IMX7Device();
+            sInstance = new RK32XXDevice();
 
             Class<View> cls = View.class;
 
@@ -544,10 +544,12 @@ public class IMX7Device extends BaseDevice {
             sMethodStopTpd = ReflectUtil.getMethodSafely(deviceControllerClass, "stopTpd");
             sMethodStartTpd = ReflectUtil.getMethodSafely(deviceControllerClass, "startTpd");
             sMethodGotoSleep = ReflectUtil.getMethodSafely(deviceControllerClass, "gotoSleep", Context.class, long.class);
+
+            sMethodEnableTpd = ReflectUtil.getMethodSafely(cls, "enableOnyxTpd", int.class);
+
             sMethodLed = ReflectUtil.getMethodSafely(deviceControllerClass, "led", boolean.class);
             sMethodSetLedColor = ReflectUtil.getMethodSafely(deviceControllerClass, "setLedColor", String.class, int.class);
 
-            sMethodEnableTpd = ReflectUtil.getMethodSafely(cls, "enableOnyxTpd", int.class);
             // signature of "public void setUpdatePolicy(int updatePolicy, int guInterval)"
             sMethodSetUpdatePolicy = ReflectUtil.getMethodSafely(cls, "setUpdatePolicy", int.class, int.class);
             // signature of "public void postInvalidate(int updateMode)"
@@ -556,6 +558,7 @@ public class IMX7Device extends BaseDevice {
             sMethodRefreshScreen = ReflectUtil.getMethodSafely(cls, "refreshScreen", int.class);
             sMethodRefreshScreenRegion = ReflectUtil.getMethodSafely(cls, "refreshScreen", int.class, int.class, int.class, int.class, int.class);
             sMethodScreenshot = ReflectUtil.getMethodSafely(cls, "screenshot", int.class, String.class);
+
             sMethodSetStrokeColor = ReflectUtil.getMethodSafely(cls, "setStrokeColor", int.class);
             sMethodSetStrokeStyle = ReflectUtil.getMethodSafely(cls, "setStrokeStyle", int.class);
             sMethodSetStrokeWidth = ReflectUtil.getMethodSafely(cls, "setStrokeWidth", float.class);
@@ -570,16 +573,23 @@ public class IMX7Device extends BaseDevice {
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
             sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", int.class, int.class, int.class, int.class);
             sMethodApplyGammaCorrection = ReflectUtil.getMethodSafely(cls, "applyGammaCorrection", boolean.class, int.class);
+
             sMethodStartStroke = ReflectUtil.getMethodSafely(cls, "startStroke", float.class, float.class, float.class, float.class, float.class, float.class);
             sMethodAddStrokePoint = ReflectUtil.getMethodSafely(cls, "addStrokePoint", float.class, float.class, float.class, float.class, float.class, float.class);
             sMethodFinishStroke = ReflectUtil.getMethodSafely(cls, "finishStroke", float.class, float.class, float.class, float.class, float.class, float.class);
+
             // signature of "public void invalidate(int updateMode)"
             sMethodInvalidate = ReflectUtil.getMethodSafely(cls, "invalidate", int.class);
             sMethodInvalidateRect = ReflectUtil.getMethodSafely(cls, "invalidate", int.class, int.class, int.class, int.class, int.class);
+            // signature of "public void invalidate(int updateMode)"
             sMethodSetViewDefaultUpdateMode = ReflectUtil.getMethodSafely(cls, "setDefaultUpdateMode", int.class);
+            // signature of "public void invalidate(int updateMode)"
             sMethodGetViewDefaultUpdateMode = ReflectUtil.getMethodSafely(cls, "getDefaultUpdateMode");
             sMethodResetViewUpdateMode = ReflectUtil.getMethodSafely(cls, "resetUpdateMode");
+
+            // signature of "public void invalidate(int updateMode)"
             sMethodGetSystemDefaultUpdateMode = ReflectUtil.getMethodSafely(cls, "getGlobalUpdateMode");
+            // signature of "public void invalidate(int updateMode)"
             sMethodSetSystemDefaultUpdateMode = ReflectUtil.getMethodSafely(cls, "setGlobalUpdateMode", int.class);
             // signature of "public void setFirstDrawUpdateMode(int updateMode)"
             sMethodSetFirstDrawUpdateMode = ReflectUtil.getMethodSafely(cls, "setFirstDrawUpdateMode", int.class);
