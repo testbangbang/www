@@ -33,12 +33,14 @@ public class FileSystemManager {
         wrapper.clear();
     }
 
-    public void addAll(final String storageId, final Collection<String> pathList) {
-        final FileSystemSnapshot wrapper = storageSnapshot.get(storageId);
+    public void addAll(final String storageId, final Collection<String> pathList, boolean createIfNotExist) {
+        FileSystemSnapshot wrapper = storageSnapshot.get(storageId);
         if (wrapper == null) {
-            return;
+            if (!createIfNotExist) {
+                return;
+            }
+            storageSnapshot.put(storageId, wrapper = new FileSystemSnapshot());
         }
         wrapper.addAll(pathList);
     }
-
 }

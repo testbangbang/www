@@ -93,4 +93,6 @@ public interface DataProviderBase {
     MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String metadataMD5);
 
     List<MetadataCollection> loadMetadataCollection(Context context, String libraryUniqueId);
+
+    MetadataCollection findMetadataCollection(Context context, String metadataMD5);
 }

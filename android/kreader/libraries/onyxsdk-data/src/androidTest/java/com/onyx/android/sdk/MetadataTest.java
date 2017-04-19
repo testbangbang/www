@@ -31,7 +31,7 @@ import com.onyx.android.sdk.data.request.data.db.LibraryClearRequest;
 import com.onyx.android.sdk.data.request.data.db.LibraryDeleteRequest;
 import com.onyx.android.sdk.data.request.data.db.LibraryLoadRequest;
 import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
-import com.onyx.android.sdk.data.request.data.db.MoveToLibraryRequest;
+import com.onyx.android.sdk.data.request.data.db.LibraryMoveToRequest;
 import com.onyx.android.sdk.data.request.data.db.RemoveFromLibraryRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.utils.Benchmark;
@@ -1139,7 +1139,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             final int r = i;
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             benchMark.restart();
-            MoveToLibraryRequest addToLibraryRequest = new MoveToLibraryRequest(list.get(from), list.get(to), metaList);
+            LibraryMoveToRequest addToLibraryRequest = new LibraryMoveToRequest(list.get(from), list.get(to), metaList);
             dataManager.submit(getContext(), addToLibraryRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {

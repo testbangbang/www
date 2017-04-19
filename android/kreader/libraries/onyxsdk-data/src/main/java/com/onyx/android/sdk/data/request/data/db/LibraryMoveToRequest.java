@@ -4,6 +4,7 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
+import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -12,13 +13,13 @@ import java.util.List;
 /**
  * Created by suicheng on 2016/9/8.
  */
-public class MoveToLibraryRequest extends BaseDBRequest {
+public class LibraryMoveToRequest extends BaseDBRequest {
 
     private Library fromLibrary;
     private Library toLibrary;
     private List<Metadata> addList = new ArrayList<>();
 
-    public MoveToLibraryRequest(Library fromLibrary, Library toLibrary, List<Metadata> addList) {
+    public LibraryMoveToRequest(Library fromLibrary, Library toLibrary, List<Metadata> addList) {
         this.fromLibrary = fromLibrary;
         this.toLibrary = toLibrary;
         this.addList.addAll(addList);
@@ -34,20 +35,24 @@ public class MoveToLibraryRequest extends BaseDBRequest {
         if (toLibrary != null) {
             toIdString = toLibrary.getIdString();
         }
-
+        DataProviderBase providerBase = dataManager.getRemoteContentProvider();
         for (Metadata metadata : addList) {
-            MetadataCollection collection = dataManager.getRemoteContentProvider().loadMetadataCollection(getContext(),
+            MetadataCollection collection = providerBase.loadMetadataCollection(getContext(),
                     fromIdString, metadata.getIdString());
             if (StringUtils.isNullOrEmpty(toIdString)) {
                 if (collection != null) {
-                    collection.delete();
+                    providerBase.deleteMetadataCollection(getContext(), fromIdString, metadata.getIdString());
                 }
             } else {
                 if (collection == null) {
                     collection = MetadataCollection.create(metadata.getIdString(), toIdString);
                 }
                 collection.setLibraryUniqueId(toIdString);
-                collection.save();
+                if (collection.hasValidId()) {
+                    providerBase.updateMetadataCollection(collection);
+                } else {
+                    providerBase.addMetadataCollection(getContext(), collection);
+                }
             }
         }
     }
