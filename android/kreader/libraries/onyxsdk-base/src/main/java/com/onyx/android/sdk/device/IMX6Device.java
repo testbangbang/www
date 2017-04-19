@@ -582,12 +582,12 @@ public class IMX6Device extends BaseDevice {
             sMethodUseBigPen = ReflectUtil.getMethodSafely(deviceControllerClass, "useBigPen", boolean.class);
             sMethodStopTpd = ReflectUtil.getMethodSafely(deviceControllerClass, "stopTpd");
             sMethodStartTpd = ReflectUtil.getMethodSafely(deviceControllerClass, "startTpd");
-            sMethodEnableTpd = ReflectUtil.getMethodSafely(cls, "enableOnyxTpd", int.class);
-            sMethodGotoSleep = ReflectUtil.getMethodSafely(cls, "gotoSleep", Context.class, long.class);
+            sMethodGotoSleep = ReflectUtil.getMethodSafely(deviceControllerClass, "gotoSleep", Context.class, long.class);
 
             sMethodLed = ReflectUtil.getMethodSafely(deviceControllerClass, "led", boolean.class);
             sMethodSetLedColor = ReflectUtil.getMethodSafely(deviceControllerClass, "setLedColor", String.class, int.class);
 
+            sMethodEnableTpd = ReflectUtil.getMethodSafely(cls, "enableOnyxTpd", int.class);
             // signature of "public void setUpdatePolicy(int updatePolicy, int guInterval)"
             sMethodSetUpdatePolicy = ReflectUtil.getMethodSafely(cls, "setUpdatePolicy", int.class, int.class);
             // signature of "public void postInvalidate(int updateMode)"
