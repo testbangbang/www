@@ -215,6 +215,7 @@ public class DialogTextStyle extends DialogBase {
         });
 
         viewPager.setPagingEnabled(false);
+        switchViewPage(0);
     }
 
     private void switchViewPage(final int index) {
@@ -250,6 +251,7 @@ public class DialogTextStyle extends DialogBase {
         if (originalChineseConvertType != readerDataHolder.getReaderUserDataInfo().getChineseConvertType()) {
             new ChangeChineseConvertTypeAction(originalChineseConvertType).execute(readerDataHolder, null);
         }
+        SingletonSharedPreference.setLastFontSize(originalStyle.getFontSize().getValue());
         updateReaderStyle(originalStyle, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
