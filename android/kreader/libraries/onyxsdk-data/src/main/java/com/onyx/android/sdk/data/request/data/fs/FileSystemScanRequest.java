@@ -5,6 +5,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by zhuzeng on 02/04/2017.
@@ -17,6 +18,8 @@ public class FileSystemScanRequest extends BaseFSRequest {
     private HashSet<String> result;
     private volatile boolean overwrite;
 
+    private Set<String> extensionFilterSet;
+
     public FileSystemScanRequest(final String s, final List<String> r, boolean overwriteSnapshot) {
         storageId = s;
         root = r;
@@ -26,11 +29,11 @@ public class FileSystemScanRequest extends BaseFSRequest {
     public void execute(final DataManager dataManager) throws Exception {
         result = new HashSet<>();
         for(String path : root) {
-            FileUtils.collectFiles(path, null, true, result);
+            FileUtils.collectFiles(path, extensionFilterSet, true, result);
         }
         if (isOverwrite()) {
             dataManager.getFileSystemManager().clear(storageId);
-            dataManager.getFileSystemManager().addAll(storageId, result);
+            dataManager.getFileSystemManager().addAll(storageId, result, isOverwrite());
         }
     }
 
@@ -40,5 +43,9 @@ public class FileSystemScanRequest extends BaseFSRequest {
 
     public boolean isOverwrite() {
         return overwrite;
+    }
+
+    public void setExtensionFilterSet(Set<String> set) {
+        this.extensionFilterSet = set;
     }
 }

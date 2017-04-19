@@ -280,4 +280,9 @@ public class LocalDataProvider implements DataProviderBase {
                 .where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId)).queryList();
     }
 
+    @Override
+    public MetadataCollection findMetadataCollection(Context context, String metadataMD5) {
+        return new Select().from(MetadataCollection.class)
+                .where(MetadataCollection_Table.documentUniqueId.eq(metadataMD5)).querySingle();
+    }
 }

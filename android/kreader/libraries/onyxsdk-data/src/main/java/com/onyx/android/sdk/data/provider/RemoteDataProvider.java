@@ -353,4 +353,14 @@ public class RemoteDataProvider implements DataProviderBase {
                 group,
                 null);
     }
+
+    @Override
+    public MetadataCollection findMetadataCollection(Context context, String metadataMD5) {
+        ConditionGroup group = ConditionGroup.clause()
+                .and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5));
+        return ContentUtils.querySingle(OnyxMetadataCollectionProvider.CONTENT_URI,
+                MetadataCollection.class,
+                group,
+                null);
+    }
 }
