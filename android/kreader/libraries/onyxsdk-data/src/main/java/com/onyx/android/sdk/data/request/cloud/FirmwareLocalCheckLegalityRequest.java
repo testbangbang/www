@@ -1,6 +1,8 @@
 package com.onyx.android.sdk.data.request.cloud;
 
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.utils.OTAUtil;
 
 import java.util.ArrayList;

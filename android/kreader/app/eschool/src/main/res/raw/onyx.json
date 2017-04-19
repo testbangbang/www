@@ -16,11 +16,21 @@
     "com.android.email",
     "com.android.calendar",
     "com.android.deskclock",
+    "com.android.quicksearchbox",
     "com.onyx.deskclock"
   ],
   "test_apps": [
     "com.onyx.test",
     "com.onyx.android.production.test",
     "com.onyx.android.screenmanager"
+  ],
+  "media_scan_support": true,
+  "music_dir": [
+    "Music",
+    "Movies"
+  ],
+  "gallery_dir": [
+    "Pictures",
+    "DCIM"
   ]
 }

@@ -559,7 +559,7 @@ public class ReaderTestActivity extends Activity {
                 break;
         }
         if (contrast > 0) {
-            ImageUtils.applyGammaCorrection(bitmap, contrast);
+            ImageUtils.applyGammaCorrection(bitmap, contrast, null);
         }
     }
 

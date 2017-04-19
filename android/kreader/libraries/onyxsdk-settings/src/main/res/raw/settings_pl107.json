@@ -1,5 +1,18 @@
 {
   "has_front_light": false,
   "hide_vpn_setting": true,
+<<<<<<< HEAD
   "hide_drm_setting": true
+=======
+  "setting_item_list": [
+    "setting_item_network",
+    "setting_item_power",
+    "setting_item_application",
+    "setting_item_lang_input",
+    "setting_item_date_time",
+    "setting_item_storage",
+    "setting_item_security",
+    "setting_item_error_report"
+  ]
+>>>>>>> edu
 }

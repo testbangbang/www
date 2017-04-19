@@ -230,9 +230,13 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     return true;
 }
 
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetTextGamma
+  (JNIEnv *env, jobject thiz, jint id, jfloat gamma) {
+    OnyxPdfiumManager::setTextGamma(env, id, gamma);
+}
+
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeRenderPage
   (JNIEnv * env, jobject thiz, jint id, jint pageIndex, jint x, jint y, jint width, jint height, jint rotation, jobject bitmap) {
-
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
     if (page == NULL) {
         LOGE("invalid page %d", pageIndex);
@@ -759,4 +763,51 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 
     return true;
 }
+
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageTextRegions
+ (JNIEnv *env, jobject, jint id, jint pageIndex, jobject objectList) {
+    FPDF_DOCUMENT doc = OnyxPdfiumManager::getDocument(env, id);
+    if (doc == NULL) {
+        return false;
+    }
+    FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
+    FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(env, id, pageIndex);
+    if (page == NULL || textPage == NULL) {
+        return false;
+    }
+
+    JNIUtils utils(env);
+    if (!utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;)V", true)) {
+        return false;
+    }
+
+    int count = FPDFText_CountChars(textPage);
+    int rectangleCount = FPDFText_CountRects(textPage, 0, count);
+
+    for(int i = 0; i < rectangleCount; ++i) {
+        double left, top, right, bottom;
+        FPDFText_GetRect(textPage, i, &left, &top, &right, &bottom);
+        double newLeft, newRight, newBottom, newTop;
+        double pageWidth = FPDF_GetPageWidth(page);
+        double pageHeight = FPDF_GetPageHeight(page);
+        int rotation = 0;
+        pageToDevice(page, pageWidth, pageHeight, rotation,
+                     left, top, right, bottom,
+                     &newLeft, &newTop, &newRight, &newBottom);
+        std::vector<float> list;
+        list.push_back(static_cast<float>(newLeft));
+        list.push_back(static_cast<float>(newTop));
+        list.push_back(static_cast<float>(newRight));
+        list.push_back(static_cast<float>(newBottom));
+
+        jfloatArray floatArray = env->NewFloatArray(list.size());
+        env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
+        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, floatArray, nullptr, -1, -1, nullptr, nullptr);
+    }
+
+    return true;
+}
+
+
 

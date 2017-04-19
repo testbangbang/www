@@ -2,24 +2,25 @@ package com.onyx.android.libsetting;
 
 import android.content.Context;
 
-import com.onyx.android.libsetting.request.BaseSettingRequest;
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
+import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
 /**
  * Created by solskjaer49 on 2017/2/11 18:44.
  */
 
 public class SettingManager {
-    public RequestManager getRequestManager() {
-        return requestManager;
-    }
 
-    private RequestManager requestManager;
+    private DataManager dataManager;
+    private CloudStore cloudStore;
     private static SettingManager instance;
 
     private SettingManager() {
-        requestManager = new RequestManager(Thread.NORM_PRIORITY);
+        dataManager = new DataManager();
+        cloudStore = new CloudStore();
     }
 
     static public SettingManager sharedInstance() {
@@ -29,26 +30,12 @@ public class SettingManager {
         return instance;
     }
 
-    private Runnable generateRunnable(final BaseSettingRequest request) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    request.beforeExecute(SettingManager.this);
-                    request.execute(SettingManager.this);
-                } catch (Throwable tr) {
-                    request.setException(tr);
-                } finally {
-                    request.afterExecute(SettingManager.this);
-                    requestManager.dumpWakelocks();
-                    requestManager.removeRequest(request);
-                }
-            }
-        };
-        return runnable;
+    public boolean submitCloudRequest(final Context context, final BaseCloudRequest request, final BaseCallback callback) {
+        return cloudStore.submitRequest(context, request, callback);
     }
 
-    public boolean submitRequest(final Context context, final BaseSettingRequest request, final BaseCallback callback) {
-        return requestManager.submitRequestToMultiThreadPool(context, request, generateRunnable(request), callback);
+    public boolean submitDataRequest(final Context context, final BaseDataRequest request, final BaseCallback callback) {
+        dataManager.submit(context, request, callback);
+        return true;
     }
 }

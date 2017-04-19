@@ -23,6 +23,7 @@ import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.dataprovider.BuildConfig;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,10 +33,8 @@ import java.util.UUID;
  * Created by wang.suicheng on 2017/1/21.
  */
 public class OssManager {
-
     private OSS ossClient;
     private OssConfig ossConfig;
-
     private Handler handler = new Handler(Looper.getMainLooper());
     private static Map<OssWrapRequest, BaseCallback.ProgressInfo> progressMap = new HashMap<>();
 
@@ -240,6 +239,13 @@ public class OssManager {
 
         public void setBucketName(String bucketName) {
             this.bucketName = bucketName;
+        }
+
+        public boolean isInvalid() {
+            return StringUtils.isNotBlank(bucketName) &&
+                    StringUtils.isNotBlank(endPoint) &&
+                    StringUtils.isNotBlank(keyId) &&
+                    StringUtils.isNotBlank(keySecret);
         }
     }
 }

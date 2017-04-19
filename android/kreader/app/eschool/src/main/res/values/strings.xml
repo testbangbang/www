@@ -100,6 +100,15 @@
     <string name="download_link_invalid">Download Link Invalid</string>
     <string name="category_below_content_empty_tip">No Content In This Category</string>
 
-    <string name="application_list">Application List</string>
-    <string name="menu_app_npi_clear">Clean up Test Application</string>
+    <string name="application_list">应用列表</string>
+    <string name="menu_app_npi_clear">清除测试应用</string>
+
+    <string name="desc_can_not_empty">描述不能为空</string>
+    <string name="feedback_submitting">正在提交反馈…</string>
+    <string name="feedback_success">反馈成功</string>
+    <string name="feedback_fail">反馈失败</string>
+    <string name="feedback_fail_and_network_check">反馈失败，请检查网络再重试</string>
+
+    <string name="wanna_give_up_edit">放弃这次编辑？</string>
+
 </resources>

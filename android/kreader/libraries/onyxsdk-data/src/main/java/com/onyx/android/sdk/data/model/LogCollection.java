@@ -1,7 +1,6 @@
 package com.onyx.android.sdk.data.model;
 
 import com.onyx.android.sdk.data.model.Firmware;
-
 import java.io.Serializable;
 
 /**

@@ -36,7 +36,9 @@
     <dimen name="home_normal_item_category_text_size">16sp</dimen>
     <dimen name="home_normal_item_category_margin">13dp</dimen>
     <dimen name="home_teaching_material_layout_margin_bottom">60dp</dimen>
-    <dimen name="home_teaching_material_layout_margin">@dimen/home_item_background_normal_stroke_width</dimen>
+    <dimen name="home_teaching_material_layout_margin">
+        @dimen/home_item_background_normal_stroke_width
+    </dimen>
     <dimen name="home_teaching_category_image_size">100dp</dimen>
     <dimen name="home_teaching_category_image_margin_top">8dp</dimen>
     <dimen name="home_teaching_decoration_image_size">72dp</dimen>
@@ -166,5 +168,12 @@
 
     <dimen name="application_item_image_size">108dp</dimen>
     <dimen name="application_item_text_size">24sp</dimen>
+
+    <dimen name="activity_log_collection_edit_text_size">27sp</dimen>
+    <dimen name="activity_log_collection_edit_min_height">330dp</dimen>
+    <dimen name="activity_log_collection_edit_padding">3dp</dimen>
+    <dimen name="activity_log_collection_edit_margin">15dp</dimen>
+    <dimen name="activity_log_collection_button_min_width">150dp</dimen>
+    <dimen name="activity_log_collection_button_text_size">25sp</dimen>
 
 </resources>

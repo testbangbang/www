@@ -21,6 +21,7 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 
 public class ApplicationSettingActivity extends OnyxAppCompatActivity {
     ActivityApplicationSettingBinding binding;
+    static final boolean DRM_ENABLE = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +141,9 @@ public class ApplicationSettingActivity extends OnyxAppCompatActivity {
                     return true;
                 }
             });
+            if (!DRM_ENABLE){
+                getPreferenceScreen().removePreference(drmSetting);
+            }
             initKeyBindSetting();
             if (SettingConfig.sharedInstance(getContext()).hideDRMSettings()){
                 getPreferenceScreen().removePreference(drmSetting);

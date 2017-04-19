@@ -244,8 +244,6 @@
         <activity android:name=".ui.settings.StatusBarSettingsActivity"/>
         <activity
             android:exported="true"
-            android:label="@string/statistics_shortcut_name"
-            android:icon="@drawable/statistics_icon"
             android:name=".ui.statistics.StatisticsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

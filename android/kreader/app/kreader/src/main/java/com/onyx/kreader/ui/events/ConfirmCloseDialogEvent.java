@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.events;
 
 /**
+<<<<<<< HEAD
  * Created by zhuzeng on 30/03/2017.
  */
 

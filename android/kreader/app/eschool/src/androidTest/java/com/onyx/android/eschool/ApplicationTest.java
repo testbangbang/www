@@ -1,4 +1,4 @@
-package com.onyx.android.esb;
+package com.onyx.android.eschool;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

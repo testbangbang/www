@@ -40,8 +40,6 @@ public class KReaderApp extends ReaderBaseApp {
 
         SingletonSharedPreference.init(this);
         Debug.setDebug(BuildConfig.DEBUG || DeviceUtils.isEngVersion() || PackageUtils.getAppType(this).equals(PackageUtils.APP_TYPE_DEBUG));
-
-//        LeakCanary.install(this);
         instance = this;
         Debug.d(getClass(), "onCreate: " + PackageUtils.getAppVersionName(this));
     }
@@ -71,4 +69,4 @@ public class KReaderApp extends ReaderBaseApp {
         AppCompatImageViewCollection.isPl107Device = AppCompatUtils.isPL107Device(this);
     }
 
- }
+}

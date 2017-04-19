@@ -47,7 +47,7 @@ public class ReaderPluginPdfiumTest extends ApplicationTestCase<Application> {
         assertNotNull(renderer);
         String initPosition = navigator.getInitPosition();
         assertNotNull(initPosition);
-        assertTrue(renderer.draw(initPosition, -1, 0, readerBitmap.getBitmap(), new RectF(0, 0, readerBitmap.getBitmap().getWidth(), readerBitmap.getBitmap().getHeight()), null, null));
+        assertTrue(renderer.draw(initPosition, -1, 0, new RectF(0, 0, readerBitmap.getBitmap().getWidth(), readerBitmap.getBitmap().getHeight()), null, null, readerBitmap.getBitmap()));
         document.close();
     }
 
@@ -79,7 +79,7 @@ public class ReaderPluginPdfiumTest extends ApplicationTestCase<Application> {
         pageManager.scaleToPage(pageInfo.getName());
         PageInfo result = pageManager.getFirstVisiblePage();
         RectF displayRect = result.getDisplayRect();
-        assertTrue(renderer.draw(initPosition, result.getActualScale(), result.getPageDisplayOrientation(), readerBitmap.getBitmap(), displayRect, null, null));
+        assertTrue(renderer.draw(initPosition, result.getActualScale(), result.getPageDisplayOrientation(), displayRect, null, null, readerBitmap.getBitmap()));
         BitmapUtils.saveBitmap(readerBitmap.getBitmap(), "/mnt/sdcard/1.png");
         document.close();
     }

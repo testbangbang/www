@@ -3,6 +3,8 @@ package com.onyx.android.sdk.reader.host.wrapper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
@@ -20,6 +22,7 @@ import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.api.ReaderRenderer;
 import com.onyx.android.sdk.reader.api.ReaderRendererFeatures;
 import com.onyx.android.sdk.reader.api.ReaderSearchManager;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
@@ -43,6 +46,8 @@ import com.onyx.android.sdk.utils.StringUtils;
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -356,6 +361,7 @@ public class ReaderHelper {
         return searchManager;
     }
 
+
     public void applyPostBitmapProcess(ReaderBitmapReferenceImpl bitmap) {
         applyGammaCorrection(bitmap);
         applyEmbolden(bitmap);
@@ -365,7 +371,7 @@ public class ReaderHelper {
     private void applyGammaCorrection(final ReaderBitmapReferenceImpl bitmap) {
         if (getDocumentOptions().isGamaCorrectionEnabled() &&
                 Float.compare(bitmap.gammaCorrection(), getDocumentOptions().getGammaLevel()) != 0) {
-            if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel())) {
+            if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel(), null)) {
                 bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
             }
         }

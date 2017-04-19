@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
+
 import com.onyx.android.sdk.data.request.cloud.FirmwareLocalCheckLegalityRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
 import com.onyx.android.sdk.utils.DeviceInfoUtil;
@@ -41,7 +42,6 @@ public class OTAManager {
      * Temp empty implement here.
     */
     private void preFirmwareUpdate() {
-
     }
 
     public void startFirmwareUpdate(Context context, String path) {

@@ -187,6 +187,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public void setTextGamma(float gamma) {
+        getPluginImpl().setTextGamma(gamma);
+    }
+
     public void close() {
         getPluginImpl().closeDocument();
     }
@@ -275,7 +280,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         benchmark.restart();
         boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(pagePosition),
                 (int)displayRect.left,
@@ -527,6 +532,14 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return selection;
     }
 
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
+        int page = PagePositionUtils.getPageNumber(pagePosition);
+        final List<ReaderSelection> list = new ArrayList<>();
+        getPluginImpl().getPageTextRegions(page, list);
+        return list;
+    }
+
     public boolean supportScale() {
         if (StringUtils.isNullOrEmpty(documentPath)) {
             return false;
@@ -536,6 +549,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     public boolean supportFontSizeAdjustment() {
         return false;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
+        return true;
     }
 
     public boolean supportTypefaceAdjustment() {

@@ -541,6 +541,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         if (event.isUseFullUpdate()) {
             ReaderDeviceManager.disableRegal();
+            ReaderDeviceManager.resetUpdateMode(getSurfaceView());
         }
     }
 

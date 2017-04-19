@@ -12,6 +12,7 @@ public class CloudFileDownloadRequest extends BaseCloudRequest {
     private String path;
     private Object tag;
     private int state;
+    private boolean md5Valid;
 
     public CloudFileDownloadRequest(final String url, final String path, final Object tag) {
         this.path = path;
@@ -57,6 +58,14 @@ public class CloudFileDownloadRequest extends BaseCloudRequest {
 
     public void setTaskId(int id) {
         taskId = id;
+    }
+
+    public boolean isMd5Valid() {
+        return md5Valid;
+    }
+
+    public void setMd5Valid(boolean md5Valid) {
+        this.md5Valid = md5Valid;
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.onyx.android.sdk.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.util.Log;
 
@@ -275,20 +274,7 @@ public class FileUtils {
         md.update(digest_buffer);
         byte[] out = md.digest();
 
-        final char hex_digits[] = {
-                '0', '1', '2', '3',
-                '4', '5', '6', '7',
-                '8', '9', 'a', 'b',
-                'c', 'd', 'e', 'f' };
-
-        char str[] = new char[out.length * 2];
-        for (int i = 0; i < out.length; i++) {
-            int j = i << 1;
-            str[j] = hex_digits[(out[i] >> 4) & 0x0F];
-            str[j + 1] = hex_digits[out[i] & 0x0F];
-        }
-
-        return String.valueOf(str);
+        return hexToString(out);
     }
 
     public static byte[] getDigestBuffer(File file) throws IOException {
@@ -324,26 +310,6 @@ public class FileUtils {
         return digestBuffer;
     }
 
-    public static String computeFullMD5Checksum(File file) throws IOException, NoSuchAlgorithmException {
-        InputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            byte[] buffer = new byte[64 * 1024];
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            int numRead;
-            do {
-                numRead = fis.read(buffer);
-                if (numRead > 0) {
-                    md.update(buffer, 0, numRead);
-                }
-            } while (numRead != -1);
-
-            return hexToString(md.digest());
-        } finally {
-            FileUtils.closeQuietly(fis);
-        }
-    }
-
     public static String hexToString(byte[] out) {
         final char hex_digits[] = {
                 '0', '1', '2', '3',
@@ -358,6 +324,29 @@ public class FileUtils {
             str[j + 1] = hex_digits[out[i] & 0x0F];
         }
         return String.valueOf(str);
+    }
+
+    public static String computeFullMD5Checksum(File file) {
+        InputStream fis = null;
+        String md5 = null;
+        try {
+            fis = new FileInputStream(file);
+            byte[] buffer = new byte[64 * 1024];
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            int numRead;
+            do {
+                numRead = fis.read(buffer);
+                if (numRead > 0) {
+                    md.update(buffer, 0, numRead);
+                }
+            } while (numRead != -1);
+            md5 = hexToString(md.digest());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            FileUtils.closeQuietly(fis);
+        }
+        return md5;
     }
 
     public static boolean deleteFile(final String path) {

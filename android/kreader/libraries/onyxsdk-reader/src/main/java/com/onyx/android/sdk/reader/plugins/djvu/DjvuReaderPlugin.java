@@ -191,6 +191,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
+        return null;
+    }
+
+    @Override
     public String getInitPosition() {
         return firstPage();
     }
@@ -352,7 +357,12 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean draw(String pagePosition, float scale, int rotation, Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public void setTextGamma(float gamma) {
+
+    }
+
+    @Override
+    public boolean draw(String pagePosition, float scale, int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, Bitmap bitmap) {
         benchmark.restart();
         try {
             final int pn = PagePositionUtils.getPageNumber(pagePosition);
@@ -371,6 +381,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
 
     @Override
     public boolean supportFontSizeAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
         return false;
     }
 

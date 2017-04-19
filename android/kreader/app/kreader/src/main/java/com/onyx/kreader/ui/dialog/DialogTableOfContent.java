@@ -139,7 +139,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                                 deleteAnnotation(readerDataHolder, position);
                             }
                         }
-                    }).show();
+                    }, null).show();
                 }
             });
 
@@ -184,7 +184,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                     deleteAnnotation(readerDataHolder, position);
                 }
             }
-        }).show();
+        }, null).show();
     }
 
     private void onItemClick(View v, final String pagePosition, final int position) {
@@ -705,16 +705,16 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                 final int page = scribblePreviewMap.keyAt(position);
                 Bitmap scribbleBitmap = scribblePreviewMap.get(page);
                 previewViewHolder.getCloseView().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        OnyxCustomDialog.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeScribble(page, position);
-                            }
-                        }).show();
-                    }
-                });
+                        @Override
+                        public void onClick(View v) {
+                            OnyxCustomDialog.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete),
+                                    new OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            removeScribble(page, position);
+                                        }
+                                    }, null).show();
+                }});
                 previewViewHolder.bindPreview(scribbleBitmap, page);
             }
 

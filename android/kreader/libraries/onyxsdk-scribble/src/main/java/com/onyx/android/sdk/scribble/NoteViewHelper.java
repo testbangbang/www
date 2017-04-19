@@ -104,7 +104,6 @@ public class NoteViewHelper {
     private boolean supportBigPen = false;
     private boolean isLineLayoutMode = false;
     private volatile boolean isDrawing = false;
-
     private Rect customLimitRect = null;
 
     public void reset(final View view) {
