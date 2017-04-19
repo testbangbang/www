@@ -107,7 +107,7 @@ public class StatisticsActivity extends ActionBarActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     DeviceUtils.changeWiFi(StatisticsActivity.this, true);
                 }
-            }).show();
+            }, null).show();
         }
     }
 

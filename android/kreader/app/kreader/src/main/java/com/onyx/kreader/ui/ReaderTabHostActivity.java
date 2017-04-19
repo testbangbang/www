@@ -205,7 +205,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         closeReaderTab(tab);
                     }
-                });
+                }, null);
         bringSelfToFront();
         dlg.show();
         return true;
