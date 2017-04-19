@@ -155,10 +155,11 @@ public class ReaderDataHolder {
         return reader;
     }
 
-    public void initReaderFromPath(final String path) {
+    public void initReaderFromPath(final String path,final String bookName) {
         documentOpenState = DocumentOpenState.OPENING;
         documentPath = path;
         reader = ReaderManager.getReader(documentPath);
+        reader.setBookName(bookName);
     }
 
     public boolean isDocumentOpening() {

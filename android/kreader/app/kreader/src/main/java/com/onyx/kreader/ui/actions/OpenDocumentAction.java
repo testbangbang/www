@@ -36,12 +36,14 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 public class OpenDocumentAction extends BaseAction {
     private Activity activity;
     private String documentPath;
+    private String bookName;
     private DataManager dataProvider;
     private boolean canceled = false;
 
-    public OpenDocumentAction(final Activity activity, final String path) {
+    public OpenDocumentAction(final Activity activity, final String path,final String bookName) {
         this.activity = activity;
         documentPath = path;
+        this.bookName = bookName;
         dataProvider = new DataManager();
     }
 
@@ -64,7 +66,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void openDocumentImpl(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        readerDataHolder.initReaderFromPath(documentPath);
+        readerDataHolder.initReaderFromPath(documentPath,bookName);
         readerDataHolder.getEventBus().post(new BeforeDocumentOpenEvent(documentPath));
 
         //LoadingDialog shows only after the decorview is drawn,preventing the dialog from swinging.

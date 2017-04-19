@@ -134,6 +134,11 @@ public class Reader {
         return getReaderHelper().getBookName();
     }
 
+    public boolean setBookName(final String bookName){
+        getReaderHelper().setBookName(bookName);
+        return true;
+    }
+
     public String getDocumentMd5() {
         return getReaderHelper().getDocumentMd5();
     }
