@@ -28,6 +28,8 @@
 #include "fpdf_text.h"
 #include "fpdf_formfill.h"
 
+#include "core/fxge/include/cfx_gemodule.h"
+
 class OnyxPdfiumPage {
 
 private:
@@ -73,10 +75,11 @@ private:
     FPDF_BITMAP bitmap;
     std::list<std::pair<int, OnyxPdfiumPage *>> pageQueue; // use std::queue to simulate FIFO queue
     std::unordered_map<void *, FPDF_BITMAP> bitmapMap;
+    float textGamma;
 
 public:
     OnyxPdfiumContext(FPDF_DOCUMENT doc, FPDF_FORMHANDLE formHandle)
-        : document(doc), formHandle(formHandle) {
+        : document(doc), formHandle(formHandle), textGamma(1.0f) {
     }
     ~OnyxPdfiumContext() {
         document = NULL;
@@ -140,6 +143,22 @@ public:
     FPDF_TEXTPAGE getTextPage(int pageIndex) {
         OnyxPdfiumPage * page = getPdfiumPage(pageIndex);
         return page->getTextPage();
+    }
+
+    float getTextGamma() const {
+        return textGamma;
+    }
+
+    void setTextGamma(float gamma) {
+        if (std::abs(gamma - textGamma) <= 0.001) {
+            return;
+        }
+
+        // gamma used in pdfium is reciprocal of the value being passed in
+        float realGamma = 2.2f / gamma;
+        CFX_GEModule::Get()->SetTextGamma(realGamma);
+        textGamma = gamma;
+        clearPages();
     }
 
 private:
@@ -209,6 +228,14 @@ public:
             return NULL;
         }
         return context->getTextPage(pageIndex);
+    }
+
+    static void setTextGamma(JNIEnv *env, jint id, float gamma) {
+        OnyxPdfiumContext * context = getContext(env, id);
+        if (context == NULL) {
+            return;
+        }
+        context->setTextGamma(gamma);
     }
 
 };

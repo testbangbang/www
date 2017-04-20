@@ -209,6 +209,11 @@ public class JEBReaderPlugin implements ReaderPlugin,
         getPluginImpl().setChineseConvertType(convertType);
     }
 
+    @Override
+    public void setTextGamma(float gamma) {
+
+    }
+
     public void close() {
         getPluginImpl().closeDocument();
     }
@@ -286,7 +291,7 @@ public class JEBReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         getPluginImpl().draw(bitmap, (int)displayRect.width(), (int)displayRect.height());
         return true;
     }
@@ -498,6 +503,11 @@ public class JEBReaderPlugin implements ReaderPlugin,
 
     public boolean supportFontSizeAdjustment() {
         return true;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
+        return false;
     }
 
     public boolean supportTypefaceAdjustment() {
