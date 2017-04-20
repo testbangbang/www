@@ -29,6 +29,11 @@
             android:value="${timestamp_value}" />
 
         <activity android:name=".ui.activity.MainActivity">
+
+        </activity>
+
+        <activity android:name=".ui.activity.StartActivity"
+                  android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
