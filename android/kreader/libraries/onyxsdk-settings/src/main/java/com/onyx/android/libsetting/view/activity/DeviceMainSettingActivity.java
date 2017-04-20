@@ -140,6 +140,8 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     // TODO: 2016/11/30 temp max 3 line layout
     private int calculateSpanSizeBySettingItemSize(int position, int settingItemSize) {
         switch (settingItemSize) {
+            case 2:
+                return 3;
             case 4:
             case 6:
                 return 3;

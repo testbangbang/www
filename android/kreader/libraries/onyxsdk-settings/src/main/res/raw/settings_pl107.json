@@ -1,5 +1,9 @@
 {
   "has_front_light": false,
   "hide_vpn_setting": true,
-  "hide_drm_setting": true
+  "hide_drm_setting": true,
+  "setting_item_list": [
+    "setting_item_network",
+    "setting_item_power"
+  ]
 }
