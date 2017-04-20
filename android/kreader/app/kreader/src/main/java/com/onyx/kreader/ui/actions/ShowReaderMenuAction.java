@@ -705,7 +705,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean showFullToolbar) {
         hideReaderMenu();
-        final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
+        final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getExtraView(),
                 getScribbleActionCallback(readerDataHolder),
                 disableMenus,
                 showFullToolbar);

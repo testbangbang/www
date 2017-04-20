@@ -96,7 +96,6 @@ import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.SlideshowStartEvent;
-import com.onyx.kreader.ui.events.StartNoteDrawingEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.events.UpdateTabWidgetVisibilityEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
@@ -121,6 +120,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
     private SurfaceView surfaceView;
     private RelativeLayout mainView;
+    private RelativeLayout extraView;
     private ImageView buttonShowTabWidget;
     private SurfaceHolder.Callback surfaceHolderCallback;
     private SurfaceHolder holder;
@@ -337,6 +337,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private void initSurfaceView() {
         mainView = (RelativeLayout) findViewById(R.id.main_view);
+        extraView = (RelativeLayout) findViewById(R.id.extra_view);
         surfaceView = (SurfaceView) this.findViewById(R.id.surfaceView);
         surfaceHolderCallback = new SurfaceHolder.Callback() {
             @Override
@@ -1111,5 +1112,9 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     public ReaderStatusBar getStatusBar() {
         return statusBar;
+    }
+
+    public RelativeLayout getExtraView() {
+        return extraView;
     }
 }
