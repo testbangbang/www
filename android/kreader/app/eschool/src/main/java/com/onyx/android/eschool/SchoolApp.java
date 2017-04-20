@@ -30,7 +30,6 @@ public class SchoolApp extends Application {
             sInstance = this;
             StudentPreferenceManager.init(this);
             initCloudStoreConfig();
-            initPl107DeviceConfig();
             initDeviceConfig();
             initSystemInBackground();
         } catch (Exception e) {
@@ -45,15 +44,12 @@ public class SchoolApp extends Application {
         initCloudFileDownloader();
     }
 
-    public void initPl107DeviceConfig() {
-        AppCompatImageViewCollection.isPl107Device = AppCompatUtils.isPL107Device(this);
-    }
-
     private void initSystemInBackground() {
         turnOffLed();
     }
 
     private void initDeviceConfig() {
+        AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
         DeviceConfig.sharedInstance(this);
     }
 

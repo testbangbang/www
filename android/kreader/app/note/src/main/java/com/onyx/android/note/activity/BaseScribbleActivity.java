@@ -559,7 +559,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
                     }
                 });
             }
-        });
+        }, null);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {

@@ -15,19 +15,16 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
-import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
 import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RestoreShapeAction;
 import com.onyx.kreader.note.request.PauseDrawingRequest;
-import com.onyx.kreader.note.request.StopNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
@@ -121,7 +118,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private OnyxToolbar createScribbleBottomToolbar(final ReaderDataHolder readerDataHolder) {
         OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Bottom, OnyxToolbar.FillStyle.WrapContent);
-        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isPL107Device(readerDataHolder.getContext()));
+        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         final ReaderMenuAction[] expandedActions = {ReaderMenuAction.SCRIBBLE_WIDTH, ReaderMenuAction.SCRIBBLE_SHAPE, ReaderMenuAction.SCRIBBLE_ERASER};
 
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_SHAPE);
@@ -241,7 +238,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private OnyxToolbar createWidthToolbar(ReaderDataHolder readerDataHolder) {
         final OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext());
-        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isPL107Device(readerDataHolder.getContext()));
+        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         toolbar.setClickedDismissToolbar(true);
         final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_WIDTH1, ReaderMenuAction.SCRIBBLE_WIDTH2, ReaderMenuAction.SCRIBBLE_WIDTH3, ReaderMenuAction.SCRIBBLE_WIDTH4, ReaderMenuAction.SCRIBBLE_WIDTH5, ReaderMenuAction.SCRIBBLE_CUSTOM_WIDTH};
 
@@ -268,7 +265,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private OnyxToolbar createShapeToolbar(ReaderDataHolder readerDataHolder) {
         final OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext());
-        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isPL107Device(readerDataHolder.getContext()));
+        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         toolbar.setClickedDismissToolbar(true);
         final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_PENCIL, ReaderMenuAction.SCRIBBLE_BRUSH, ReaderMenuAction.SCRIBBLE_LINE, ReaderMenuAction.SCRIBBLE_TRIANGLE, ReaderMenuAction.SCRIBBLE_CIRCLE, ReaderMenuAction.SCRIBBLE_SQUARE};
 
@@ -295,7 +292,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private OnyxToolbar createEraserToolbar(ReaderDataHolder readerDataHolder) {
         final OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext());
-        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isPL107Device(readerDataHolder.getContext()));
+        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         toolbar.setClickedDismissToolbar(true);
         final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_ERASER_PART, ReaderMenuAction.SCRIBBLE_ERASER_ALL};
 
@@ -318,7 +315,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private OnyxToolbar createColorToolbar(ReaderDataHolder readerDataHolder) {
         final OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext());
-        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isPL107Device(readerDataHolder.getContext()));
+        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         toolbar.setClickedDismissToolbar(true);
 
         final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_BLACK, ReaderMenuAction.SCRIBBLE_BLUE, ReaderMenuAction.SCRIBBLE_MAGENTA, ReaderMenuAction.SCRIBBLE_GREEN, ReaderMenuAction.SCRIBBLE_RED, ReaderMenuAction.SCRIBBLE_YELLOW};

@@ -10,7 +10,6 @@ import com.onyx.android.note.utils.NotePreference;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
-import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -69,6 +68,6 @@ public class NoteApplication extends Application {
     }
 
     private void initCompatColorImageConfig() {
-        AppCompatImageViewCollection.isPl107Device = AppCompatUtils.isPL107Device(this);
+        AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
     }
 }

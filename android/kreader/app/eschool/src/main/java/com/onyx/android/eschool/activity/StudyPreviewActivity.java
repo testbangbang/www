@@ -90,7 +90,7 @@ public class StudyPreviewActivity extends BaseActivity {
     }
 
     private int getPL107CategoryImageDrawableRes(int resId, int fallbackResId) {
-        return AppCompatUtils.isPL107Device(this) ? resId : fallbackResId;
+        return AppCompatUtils.isColorDevice(this) ? resId : fallbackResId;
     }
 
     private void initCategoryView(int layoutResId, int imageResId, int textResId) {
