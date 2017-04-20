@@ -695,7 +695,7 @@ public class ShowReaderMenuAction extends BaseAction {
         new ShowReaderSettingsAction().execute(readerDataHolder, null);
     }
 
-    private void showScribble(ReaderDataHolder readerDataHolder) {
+    private static void showScribble(ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         boolean isShowScribble = !SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
         SingletonSharedPreference.setIsShowNote(readerDataHolder.getContext(), isShowScribble);
@@ -708,6 +708,9 @@ public class ShowReaderMenuAction extends BaseAction {
 
     public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean showFullToolbar) {
         hideReaderMenu();
+        if (!SingletonSharedPreference.isShowNote(readerDataHolder.getContext())) {
+            showScribble(readerDataHolder);
+        }
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
                 getScribbleActionCallback(readerDataHolder),
                 disableMenus,
