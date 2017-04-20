@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.percent.PercentRelativeLayout;
+import android.support.percent.PercentLayoutHelper;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -37,6 +38,8 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     ModelInfo info;
     SettingFunctionAdapter adapter;
 
+    private static final float miniPercent = 0.20f;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,12 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         adapter.dataList.clear();
         adapter.dataList.addAll(config.getSettingItemList(this));
         adapter.notifyDataSetChanged();
+
+        View infoArea = binding.infoArea;
+        PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) infoArea.getLayoutParams();
+        PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
+        info.heightPercent = 1 - (miniPercent * adapter.getRowCount());
+        infoArea.requestLayout();
     }
 
     private void initView() {
@@ -141,7 +150,6 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     private int calculateSpanSizeBySettingItemSize(int position, int settingItemSize) {
         switch (settingItemSize) {
             case 2:
-                return 3;
             case 4:
             case 6:
                 return 3;
@@ -150,6 +158,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                 return position < 3 ? 2 : 3;
             case 8:
                 return position < 6 ? 2 : 3;
+            case 3:
             case 9:
                 return 2;
             default:
@@ -196,6 +205,11 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             DeviceMainSettingsItemBinding binding = DeviceMainSettingsItemBinding
                     .inflate(layoutInflater, viewGroup, false);
             parent = viewGroup;
+
+            PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) parent.getLayoutParams();
+            PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
+            info.heightPercent = miniPercent * getRowCount();
+            parent.requestLayout();
             return new MainSettingItemViewHolder(binding);
         }
 
@@ -220,7 +234,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                 }
             });
             if (getRowCount() > 0) {
-                parentHeight = parentHeight == -1 ? calculateParentHeight() : parentHeight;
+                parentHeight = parentHeight == -1 ? calculateParentHeight(getRowCount()) : parentHeight;
                 itemHeight = itemHeight == -1 ? (int) Math.floor((parentHeight) / getRowCount()) : itemHeight;
                 if (itemHeight > 0) {
                     RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) viewHolder.itemView.getLayoutParams();
@@ -231,13 +245,18 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             viewHolder.bindTo(dataList.get(position));
         }
 
-        private int calculateParentHeight() {
-            return (int) (CommonUtil.getWindowHeight(context) * ((PercentRelativeLayout.LayoutParams)
-                    parent.getLayoutParams()).getPercentLayoutInfo().heightPercent);
+        private int calculateParentHeight(int row) {
+            return (int) (CommonUtil.getWindowHeight(context) * miniPercent * row);
         }
 
         public int getRowCount() {
-            return dataList.size() < 6 ? 2 : 3;
+            if (dataList.size() >= 6) {
+                return 3;
+            } else if (dataList.size() > 3) {
+                return 2;
+            } else {
+                return 1;
+            }
         }
 
         class MainSettingItemViewHolder extends BindingViewHolder<DeviceMainSettingsItemBinding, SettingItem> {
