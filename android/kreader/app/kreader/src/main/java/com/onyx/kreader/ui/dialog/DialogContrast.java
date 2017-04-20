@@ -100,7 +100,7 @@ public class DialogContrast extends OnyxBaseDialog implements CompoundButton.OnC
 
     private void resetAndDismiss() {
         readerDataHolder.removeActiveDialog(this);
-        GammaCorrectionRequest request = new GammaCorrectionRequest(originalGamma, originalBoldSize);
+        GammaCorrectionRequest request = new GammaCorrectionRequest(originalGamma, originalGamma, originalGamma, originalBoldSize);
         readerDataHolder.submitRenderRequest(request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -123,7 +123,7 @@ public class DialogContrast extends OnyxBaseDialog implements CompoundButton.OnC
 
     private void submitGammaLevel() {
         Debug.d(TAG, "gamma %d emboldenLevel %d", gamma, boldSize);
-        GammaCorrectionRequest request = new GammaCorrectionRequest(gamma, boldSize);
+        GammaCorrectionRequest request = new GammaCorrectionRequest(gamma, gamma, gamma, boldSize);
         readerDataHolder.submitRenderRequest(request);
     }
 
