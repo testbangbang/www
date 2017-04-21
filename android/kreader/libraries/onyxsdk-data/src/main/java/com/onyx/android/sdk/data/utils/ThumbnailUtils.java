@@ -3,10 +3,12 @@ package com.onyx.android.sdk.data.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.BitmapUtils;
@@ -14,15 +16,21 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import static com.onyx.android.sdk.data.compatability.OnyxThumbnail.createLargeThumbnail;
 
 /**
  * Created by suicheng on 2016/9/5.
  */
 public class ThumbnailUtils {
     public static final String thumbnail_folder = ".thumbnails";
-    public static final String preferred_extension = ".png";
+    public static final String preferred_extension = ".jpg";
 
     static private Map<String, Integer> defaultThumbnailMap = new HashMap<>();
 
@@ -102,7 +110,7 @@ public class ThumbnailUtils {
     public static Bitmap getThumbnailBitmap(Context context, Thumbnail thumbnail) {
         Bitmap bitmap = getThumbnailBitmap(context, thumbnail.getSourceMD5(), thumbnail.getThumbnailKind().toString());
         if (bitmap == null) {
-            bitmap = ThumbnailUtils.loadDefaultThumbnailFromExtension(context, FileUtils.getFileExtension(thumbnail.getPath()));
+            bitmap = ThumbnailUtils.loadDefaultThumbnailFromExtension(context, FileUtils.getFileExtension(thumbnail.getOriginContentPath()));
         }
         return bitmap;
     }
@@ -114,7 +122,7 @@ public class ThumbnailUtils {
         }
         boolean save = BitmapUtils.saveBitmap(generateBitmap(saveBitmap, thumbnail.getThumbnailKind()), path);
         if (save) {
-            thumbnail.setPath(path);
+            thumbnail.setOriginContentPath(path);
             thumbnail.save();
         }
         return save;
@@ -135,7 +143,49 @@ public class ThumbnailUtils {
             case Small:
                 scaleBitmap = OnyxThumbnail.createSmallThumbnail(bitmap);
                 break;
+            default:
+                assert (false);
+                break;
         }
         return scaleBitmap;
+    }
+
+    public static boolean insertThumbnail(Context context, DataProviderBase dataProviderBase, String filePath,
+                                          String sourceMd5, Bitmap bitmap) {
+        for (ThumbnailKind kind : ThumbnailKind.values()) {
+            Thumbnail thumbnail = new Thumbnail();
+            thumbnail.setIdString(UUID.randomUUID().toString());
+            thumbnail.setThumbnailKind(kind);
+            thumbnail.setOriginContentPath(filePath);
+            thumbnail.setSourceMD5(sourceMd5);
+            thumbnail.setImageDataPath(ThumbnailUtils.getThumbnailFile(context, sourceMd5, kind.toString()));
+            dataProviderBase.saveThumbnail(context, thumbnail);
+            boolean success = insertThumbnailBitmap(thumbnail, bitmap);
+            if (kind.equals(ThumbnailKind.Original) && !success) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean insertThumbnailBitmap(Thumbnail thumbnail, Bitmap bmp) {
+        Bitmap transBitmap = null;
+        OutputStream os = null;
+        try {
+            transBitmap = generateBitmap(bmp, thumbnail.getThumbnailKind());
+            FileUtils.ensureFileExists(thumbnail.getImageDataPath());
+            File file = new File(thumbnail.getImageDataPath());
+            os = new FileOutputStream(file);
+            transBitmap.compress(Bitmap.CompressFormat.JPEG, 85, os);
+            return true;
+        } catch (FileNotFoundException e) {
+            Log.w("insertThumbnail", e);
+            return false;
+        } finally {
+            if (transBitmap != null && transBitmap != bmp) {
+                transBitmap.recycle();
+            }
+            FileUtils.closeQuietly(os);
+        }
     }
 }
