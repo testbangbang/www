@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.Metadata_Table;
+import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.raizlabs.android.dbflow.annotation.Database;
 import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.SQLiteType;
@@ -32,6 +34,7 @@ public class ContentDatabase {
             addColumn(SQLiteType.INTEGER, Metadata_Table.readingStatus.getNameAlias().name());
             addColumn(SQLiteType.TEXT, Metadata_Table.hashTag.getNameAlias().name());
             addColumn(SQLiteType.TEXT, Metadata_Table.storageId.getNameAlias().name());
+            addColumn(SQLiteType.TEXT, Thumbnail_Table._data.getNameAlias().name());
         }
     }
 

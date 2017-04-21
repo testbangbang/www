@@ -15,6 +15,9 @@ import com.raizlabs.android.dbflow.annotation.Table;
 @Table(database = ContentDatabase.class)
 public class Thumbnail extends BaseData {
 
+    @Column(name = "_data")
+    private String data;
+
     @Column
     private String path = null;
     @Column
@@ -74,5 +77,13 @@ public class Thumbnail extends BaseData {
 
     public void setThumbnailKind(ThumbnailKind tk) {
         this.thumbnailKind = tk;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 }

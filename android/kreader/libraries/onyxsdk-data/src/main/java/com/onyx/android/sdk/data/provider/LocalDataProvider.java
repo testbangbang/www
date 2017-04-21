@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
@@ -192,20 +193,38 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
+    public void saveThumbnail(Context context, Thumbnail thumbnail) {
+        thumbnail.save();
+    }
+
+    @Override
     public boolean setThumbnail(Context context, String sourceMD5, final Bitmap saveBitmap, ThumbnailKind kind) {
         return false;
     }
 
     public boolean removeThumbnail(Context context, String sourceMD5, ThumbnailKind kind) {
-        return false;
+        new Delete().from(Thumbnail.class)
+                .where()
+                .and(Thumbnail_Table.sourceMD5.eq(sourceMD5))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind))
+                .execute();
+        return true;
     }
 
     public Thumbnail getThumbnail(Context context, String sourceMd5, final ThumbnailKind kind) {
-        return null;
+        return new Select().from(Thumbnail.class)
+                .where()
+                .and(Thumbnail_Table.sourceMD5.eq(sourceMd5))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind))
+                .querySingle();
     }
 
     public Bitmap getThumbnailBitmap(Context context, String sourceMd5, final ThumbnailKind kind) {
-        return null;
+        Thumbnail thumbnail = getThumbnail(context, sourceMd5, kind);
+        if (thumbnail == null || StringUtils.isNullOrEmpty(thumbnail.getData())) {
+            return null;
+        }
+        return BitmapUtils.loadBitmapFromFile(thumbnail.getData());
     }
 
     public void deleteThumbnail(Thumbnail thumbnail) {
@@ -215,19 +234,6 @@ public class LocalDataProvider implements DataProviderBase {
     public List<Thumbnail> loadThumbnail(Context context, String sourceMd5) {
         return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
                 .queryList();
-    }
-
-    public Thumbnail loadThumbnail(Context context, String sourceMd5, ThumbnailKind kind) {
-        return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
-                .and(Thumbnail_Table.thumbnailKind.eq(kind)).querySingle();
-    }
-
-    public Bitmap loadThumbnailBitmap(Context context, String sourceMd5, ThumbnailKind kind) {
-        return ThumbnailUtils.getThumbnailBitmap(context, sourceMd5, kind.toString());
-    }
-
-    public Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail) {
-        return ThumbnailUtils.getThumbnailBitmap(context, thumbnail);
     }
 
     @Override
