@@ -11,6 +11,7 @@
     <string name="setting_application">应用管理</string>
     <string name="setting_bluetooth">蓝牙</string>
     <string name="setting_vpn">VPN</string>
+    <string name="setting_production_test">生产测试</string>
     <string name="touch_sound">触摸提示音</string>
     <string name="notification_sound">提示音</string>
 
@@ -136,5 +137,6 @@
     <string name="find_package_from_local">在本地存储中发现升级包，确定升级?</string>
     <string name="title_update">OTA 升级</string>
     <string name="no_update">没有升级包.</string>
+    <string name="clean_test_apps">清除测试应用</string>
 
 </resources>

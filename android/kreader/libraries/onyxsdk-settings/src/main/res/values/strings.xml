@@ -12,6 +12,7 @@
     <string name="setting_user_setting">User Setting</string>
     <string name="setting_bluetooth">Bluetooth</string>
     <string name="setting_vpn">VPN</string>
+    <string name="setting_production_test">Production Test</string>
     <string name="settings_sound_preferences_key" translatable="false">settings_sound_preferences_key</string>
     <string name="touch_sound_key" translatable="false">touch_sound_key</string>
     <string name="touch_sound">Touch Sound</string>
@@ -202,6 +203,7 @@
     <string name="find_package_from_local">New update package found, do you want to update?</string>
     <string name="title_update">OTA update</string>
     <string name="no_update">No update package available.</string>
+    <string name="clean_test_apps">Clear Test Apps</string>
 
 </resources>
 
