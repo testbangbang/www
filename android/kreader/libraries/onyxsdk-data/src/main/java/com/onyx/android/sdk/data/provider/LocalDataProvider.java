@@ -221,10 +221,10 @@ public class LocalDataProvider implements DataProviderBase {
 
     public Bitmap getThumbnailBitmap(Context context, String sourceMd5, final ThumbnailKind kind) {
         Thumbnail thumbnail = getThumbnail(context, sourceMd5, kind);
-        if (thumbnail == null || StringUtils.isNullOrEmpty(thumbnail.getData())) {
+        if (thumbnail == null || StringUtils.isNullOrEmpty(thumbnail.getImageDataPath())) {
             return null;
         }
-        return BitmapUtils.loadBitmapFromFile(thumbnail.getData());
+        return BitmapUtils.loadBitmapFromFile(thumbnail.getImageDataPath());
     }
 
     public void deleteThumbnail(Thumbnail thumbnail) {

@@ -33,6 +33,7 @@
 
 -keep class com.onyx.android.sdk.reader.ReaderBaseApp { public protected *; }
 -keep class com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils { public protected *; }
+-keep class com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils { public protected *; }
 -keep class com.onyx.android.sdk.reader.host.layout.ReaderLayoutManager { public protected *; }
 -keep class com.onyx.android.sdk.reader.host.navigation.NavigationArgs { public protected *; }
 
