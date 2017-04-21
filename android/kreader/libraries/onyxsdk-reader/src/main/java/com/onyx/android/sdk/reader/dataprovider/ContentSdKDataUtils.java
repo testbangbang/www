@@ -5,16 +5,15 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
-import com.onyx.android.sdk.data.db.table.OnyxMetadataProvider;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import java.io.File;
 import java.util.List;
@@ -44,11 +43,7 @@ public class ContentSdKDataUtils {
             }
         }
         updateDataWithDocMetadata(metadata, docMetadata);
-        if (!metadata.hasValidId()) {
-            ContentUtils.insert(context.getContentResolver(), OnyxMetadataProvider.CONTENT_URI, metadata);
-        } else {
-            ContentUtils.update(context.getContentResolver(), OnyxMetadataProvider.CONTENT_URI, metadata);
-        }
+        getDataProvider().saveMetadata(context, metadata);
         return true;
     }
 
@@ -56,7 +51,7 @@ public class ContentSdKDataUtils {
                                          final int currentPage, final int totalPage) {
         Metadata data = getMetadataByPath(context, documentPath);
         if (data == null) {
-            data = Metadata.createFromFile(new File(documentPath));
+            data = Metadata.createFromFile(new File(documentPath), true);
         }
         if (data == null) {
             Log.w(TAG, "updateProgress: create file metadata failed, " + documentPath);
@@ -66,8 +61,8 @@ public class ContentSdKDataUtils {
         boolean finished = (currentPage + 1 == totalPage);
         data.setReadingStatus(finished ? Metadata.ReadingStatus.FINISHED : Metadata.ReadingStatus.READING);
         data.updateLastAccess();
-        return ContentUtils.update(context.getContentResolver(), OnyxMetadataProvider.CONTENT_URI,
-                data) != 0;
+        getDataProvider().saveMetadata(context, data);
+        return true;
     }
 
     public static boolean saveThumbnail(final Context context, final String documentPath,
@@ -80,15 +75,15 @@ public class ContentSdKDataUtils {
         if (hasThumbnail(context, documentPath)) {
             return true;
         }
-        return ThumbnailUtils.insertThumbnail(context, DataProviderManager.getRemoteDataProvider(),
-                data.getNativeAbsolutePath(), data.getHashTag(), bitmap);
+        return ThumbnailUtils.insertThumbnail(context, getDataProvider(), data.getNativeAbsolutePath(),
+                data.getHashTag(), bitmap);
     }
 
     public static boolean hasThumbnail(final Context context, final String documentPath) {
         boolean hasBitmap = false;
         Metadata metadata = getMetadataByPath(context, documentPath);
         if (metadata != null && StringUtils.isNotBlank(metadata.getHashTag())) {
-            Thumbnail thumbnail = DataProviderManager.getRemoteDataProvider().getThumbnail(context,
+            Thumbnail thumbnail = getDataProvider().getThumbnail(context,
                     metadata.getHashTag(), OnyxThumbnail.ThumbnailKind.Original);
             hasBitmap = thumbnail != null;
         }
@@ -96,7 +91,7 @@ public class ContentSdKDataUtils {
     }
 
     private static Metadata getMetadataByPath(Context context, final String documentPath) {
-        return DataProviderManager.getRemoteDataProvider().findMetadataByPath(context, documentPath);
+        return getDataProvider().findMetadataByHashTag(context, documentPath, null);
     }
 
     private static void updateDataWithDocMetadata(final Metadata metadata, final ReaderDocumentMetadata docMetadata) {
@@ -107,5 +102,9 @@ public class ContentSdKDataUtils {
             metadata.setAuthors(StringUtils.join(authors, Metadata.DELIMITER));
         }
         metadata.setPublisher(docMetadata.getPublisher());
+    }
+
+    private static DataProviderBase getDataProvider() {
+        return DataProviderManager.getLocalDataProvider();
     }
 }
