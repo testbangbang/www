@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.db.table.OnyxBookmarkProvider;
 import com.onyx.android.sdk.data.db.table.OnyxLibraryProvider;
 import com.onyx.android.sdk.data.db.table.OnyxMetadataCollectionProvider;
 import com.onyx.android.sdk.data.db.table.OnyxMetadataProvider;
+import com.onyx.android.sdk.data.db.table.OnyxThumbnailProvider;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Annotation_Table;
 import com.onyx.android.sdk.data.model.Bookmark;
@@ -25,6 +26,8 @@ import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.data.utils.ThumbnailUtils;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -262,6 +265,19 @@ public class RemoteDataProvider implements DataProviderBase {
 
     @Override
     public void clearThumbnail() {
+        FlowManager.getContext().getContentResolver().delete(OnyxThumbnailProvider.CONTENT_URI,
+                null, null);
+    }
+
+    @Override
+    public void saveThumbnail(Context context, Thumbnail thumbnail) {
+        thumbnail.beforeSave();
+        Thumbnail findThumbnail = getThumbnail(context, thumbnail.getSourceMD5(), thumbnail.getThumbnailKind());
+        if (findThumbnail == null || !findThumbnail.hasValidId()) {
+            ContentUtils.insert(OnyxThumbnailProvider.CONTENT_URI, thumbnail);
+        } else {
+            ContentUtils.update(OnyxThumbnailProvider.CONTENT_URI, thumbnail);
+        }
     }
 
     @Override
@@ -270,24 +286,43 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     public boolean removeThumbnail(Context context, String sourceMD5, OnyxThumbnail.ThumbnailKind kind) {
-        return false;
+        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.sourceMD5.eq(sourceMD5))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind));
+        int row = FlowManager.getContext().getContentResolver().delete(OnyxThumbnailProvider.CONTENT_URI,
+                group.getQuery(),
+                null);
+        return row != 0;
     }
 
     public Thumbnail getThumbnail(Context context, String sourceMd5, final OnyxThumbnail.ThumbnailKind kind) {
-        return null;
+        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.sourceMD5.eq(sourceMd5))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind));
+        return ContentUtils.querySingle(context.getContentResolver(),
+                OnyxThumbnailProvider.CONTENT_URI,
+                Thumbnail.class,
+                group,
+                null);
     }
 
     public Bitmap getThumbnailBitmap(Context context, String sourceMd5, final OnyxThumbnail.ThumbnailKind kind) {
-        return null;
+        Thumbnail thumbnail = getThumbnail(context, sourceMd5, kind);
+        if (thumbnail == null || StringUtils.isNullOrEmpty(thumbnail.getImageDataPath())) {
+            return null;
+        }
+        return BitmapUtils.loadBitmapFromFile(thumbnail.getImageDataPath());
     }
 
     public void deleteThumbnail(Thumbnail thumbnail) {
-        thumbnail.delete();
+        ContentUtils.delete(OnyxThumbnailProvider.CONTENT_URI, thumbnail);
     }
 
     public List<Thumbnail> loadThumbnail(Context context, String sourceMd5) {
-        return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
-                .queryList();
+        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.sourceMD5.eq(sourceMd5));
+        return ContentUtils.queryList(context.getContentResolver(),
+                OnyxThumbnailProvider.CONTENT_URI,
+                Thumbnail.class,
+                group,
+                null);
     }
 
     @Override

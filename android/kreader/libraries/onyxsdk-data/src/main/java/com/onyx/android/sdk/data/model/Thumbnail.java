@@ -15,8 +15,11 @@ import com.raizlabs.android.dbflow.annotation.Table;
 @Table(database = ContentDatabase.class)
 public class Thumbnail extends BaseData {
 
+    @Column(name = "_data")
+    private String imageDataPath;
+
     @Column
-    private String path = null;
+    private String originContentPath = null;
     @Column
     private String sourceMD5 = null;
     @Column(typeConverter = ThumbKindConverter.class)
@@ -52,12 +55,12 @@ public class Thumbnail extends BaseData {
         return OnyxThumbnail.createSmallThumbnail(bmp);
     }
 
-    public String getPath() {
-        return path;
+    public String getOriginContentPath() {
+        return originContentPath;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setOriginContentPath(String path) {
+        this.originContentPath = path;
     }
 
     public String getSourceMD5() {
@@ -74,5 +77,13 @@ public class Thumbnail extends BaseData {
 
     public void setThumbnailKind(ThumbnailKind tk) {
         this.thumbnailKind = tk;
+    }
+
+    public String getImageDataPath() {
+        return imageDataPath;
+    }
+
+    public void setImageDataPath(String imagePath) {
+        this.imageDataPath = imagePath;
     }
 }
