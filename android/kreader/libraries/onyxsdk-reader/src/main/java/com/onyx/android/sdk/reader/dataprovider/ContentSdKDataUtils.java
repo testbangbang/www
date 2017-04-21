@@ -69,7 +69,7 @@ public class ContentSdKDataUtils {
                                         final Bitmap bitmap) {
         Metadata data = getMetadataByPath(context, documentPath);
         if (data == null) {
-            Log.w(TAG, "saveThumbnail: create file metadata failed, " + documentPath);
+            Log.w(TAG, "saveThumbnailEntry: create file metadata failed, " + documentPath);
             return false;
         }
         if (hasThumbnail(context, documentPath)) {
@@ -83,8 +83,8 @@ public class ContentSdKDataUtils {
         boolean hasBitmap = false;
         Metadata metadata = getMetadataByPath(context, documentPath);
         if (metadata != null && StringUtils.isNotBlank(metadata.getHashTag())) {
-            Thumbnail thumbnail = getDataProvider().getThumbnail(context,
-                    metadata.getHashTag(), OnyxThumbnail.ThumbnailKind.Original);
+            Thumbnail thumbnail = getDataProvider().getThumbnailEntry(context,
+                    metadata.getAssociationId(), OnyxThumbnail.ThumbnailKind.Original);
             hasBitmap = thumbnail != null;
         }
         return hasBitmap;

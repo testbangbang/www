@@ -2,7 +2,6 @@ package com.onyx.android.sdk.data;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.provider.MediaStore;
 
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Library;
@@ -81,15 +80,15 @@ public class DataManagerHelper {
         }
     }
 
-    public static Thumbnail loadThumbnail(Context context, String path, String md5, OnyxThumbnail.ThumbnailKind kind) {
-        if (StringUtils.isNullOrEmpty(md5)) {
+    public static Thumbnail loadThumbnail(Context context, String path, String associationId, OnyxThumbnail.ThumbnailKind kind) {
+        if (StringUtils.isNullOrEmpty(associationId)) {
             try {
-                md5 = FileUtils.computeMD5(new File(path));
+                associationId = FileUtils.computeMD5(new File(path));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return getDataProviderBase().getThumbnail(context, md5, kind);
+        return getDataProviderBase().getThumbnailEntry(context, associationId, kind);
     }
 
     public static Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail) {
@@ -119,8 +118,8 @@ public class DataManagerHelper {
         return new Select().from(Metadata.class).where(Metadata_Table.cloudId.eq(cloudReference)).querySingle();
     }
 
-    public static Metadata getMetadataByMD5(Context context, String md5) {
-        return new Select().from(Metadata.class).where(Metadata_Table.idString.eq(md5)).querySingle();
+    public static Metadata getMetadataByHashTag(Context context, String hashTag) {
+        return new Select().from(Metadata.class).where(Metadata_Table.hashTag.eq(hashTag)).querySingle();
     }
 
     public static void deleteAllLibrary(Context context, DataManager dataManager, String parentUniqueId,

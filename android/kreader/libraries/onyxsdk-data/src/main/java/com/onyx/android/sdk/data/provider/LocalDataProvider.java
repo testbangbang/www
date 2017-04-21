@@ -7,7 +7,6 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
-import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -189,21 +188,33 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public void clearAllThumbnails() {
+    public void clearThumbnails() {
         Delete.table(Thumbnail.class);
     }
 
     @Override
-    public void saveThumbnail(Context context, Thumbnail thumbnail) {
+    public void saveThumbnailEntry(Context context, Thumbnail thumbnail) {
         thumbnail.save();
     }
 
+    public Thumbnail getThumbnailEntry(Context context, String associationId, final ThumbnailKind kind) {
+        return new Select().from(Thumbnail.class)
+                .where()
+                .and(Thumbnail_Table.idString.eq(associationId))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind))
+                .querySingle();
+    }
+
+    public void deleteThumbnailEntry(Thumbnail thumbnail) {
+        thumbnail.delete();
+    }
+
     @Override
-    public boolean setThumbnail(Context context, String associationId, final Bitmap saveBitmap, ThumbnailKind kind) {
+    public boolean saveThumbnailBitmap(Context context, String associationId, ThumbnailKind kind, final Bitmap saveBitmap) {
         return false;
     }
 
-    public boolean removeThumbnail(Context context, String associationId, ThumbnailKind kind) {
+    public boolean removeThumbnailBitmap(Context context, String associationId, ThumbnailKind kind) {
         new Delete().from(Thumbnail.class)
                 .where()
                 .and(Thumbnail_Table.idString.eq(associationId))
@@ -212,24 +223,12 @@ public class LocalDataProvider implements DataProviderBase {
         return true;
     }
 
-    public Thumbnail getThumbnail(Context context, String associationId, final ThumbnailKind kind) {
-        return new Select().from(Thumbnail.class)
-                .where()
-                .and(Thumbnail_Table.idString.eq(associationId))
-                .and(Thumbnail_Table.thumbnailKind.eq(kind))
-                .querySingle();
-    }
-
     public Bitmap getThumbnailBitmap(Context context, String associationId, final ThumbnailKind kind) {
-        Thumbnail thumbnail = getThumbnail(context, associationId, kind);
+        Thumbnail thumbnail = getThumbnailEntry(context, associationId, kind);
         if (thumbnail == null || StringUtils.isNullOrEmpty(thumbnail.getImageDataPath())) {
             return null;
         }
         return BitmapUtils.loadBitmapFromFile(thumbnail.getImageDataPath());
-    }
-
-    public void deleteThumbnail(Thumbnail thumbnail) {
-        thumbnail.delete();
     }
 
     public List<Thumbnail> loadThumbnail(Context context, String associationId) {

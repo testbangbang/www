@@ -389,7 +389,7 @@ public class Metadata extends BaseData {
     }
 
     public String getAssociationId() {
-        return hashTag;
+        return getHashTag();
     }
 
     public boolean isFinished() {

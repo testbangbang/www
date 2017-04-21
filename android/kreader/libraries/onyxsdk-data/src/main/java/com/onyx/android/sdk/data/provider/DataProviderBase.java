@@ -68,17 +68,19 @@ public interface DataProviderBase {
 
     void clearLibrary();
 
-    void clearAllThumbnails();
+    void clearThumbnails();
 
-    void saveThumbnail(Context context, Thumbnail thumbnail);
+    void saveThumbnailEntry(Context context, Thumbnail thumbnail);
 
-    boolean setThumbnail(Context context, String associationId, final Bitmap saveBitmap, ThumbnailKind kind);
+    Thumbnail getThumbnailEntry(Context context, String associationId, final ThumbnailKind kind);
 
-    boolean removeThumbnail(Context context, String associationId, ThumbnailKind kind);
+    void deleteThumbnailEntry(Thumbnail thumbnail);
 
-    Thumbnail getThumbnail(Context context, String associationId, final ThumbnailKind kind);
+    boolean saveThumbnailBitmap(Context context, String associationId, ThumbnailKind kind, final Bitmap saveBitmap);
 
     Bitmap getThumbnailBitmap(Context context, String associationId, final ThumbnailKind kind);
+
+    boolean removeThumbnailBitmap(Context context, String associationId, ThumbnailKind kind);
 
     void clearMetadataCollection();
 

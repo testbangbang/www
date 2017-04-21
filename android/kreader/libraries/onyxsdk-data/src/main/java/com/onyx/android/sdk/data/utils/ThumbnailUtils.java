@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.onyx.android.sdk.data.compatability.OnyxThumbnail.createLargeThumbnail;
-
 /**
  * Created by suicheng on 2016/9/5.
  */
@@ -159,7 +157,7 @@ public class ThumbnailUtils {
             thumbnail.setOriginContentPath(filePath);
             thumbnail.setIdString(associationId);
             thumbnail.setImageDataPath(ThumbnailUtils.getThumbnailFile(context, associationId, kind.toString()));
-            dataProviderBase.saveThumbnail(context, thumbnail);
+            dataProviderBase.saveThumbnailEntry(context, thumbnail);
             boolean success = insertThumbnailBitmap(thumbnail, bitmap);
             if (kind.equals(ThumbnailKind.Original) && !success) {
                 return false;

@@ -33,10 +33,10 @@ public class ThumbnailStreamFetcher implements DataFetcher<InputStream> {
 
     @Override
     public InputStream loadData(Priority priority) throws Exception {
-        if (metadata == null || StringUtils.isNullOrEmpty(metadata.getHashTag())) {
+        if (metadata == null || StringUtils.isNullOrEmpty(metadata.getAssociationId())) {
             return null;
         }
-        Thumbnail thumbnail = dataProvider.getThumbnail(context, metadata.getHashTag(),
+        Thumbnail thumbnail = dataProvider.getThumbnailEntry(context, metadata.getAssociationId(),
                 OnyxThumbnail.ThumbnailKind.Original);
         if (thumbnail == null) {
             return null;

@@ -26,7 +26,6 @@ import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
-import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -34,12 +33,10 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -264,15 +261,15 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public void clearAllThumbnails() {
+    public void clearThumbnails() {
         FlowManager.getContext().getContentResolver().delete(OnyxThumbnailProvider.CONTENT_URI,
                 null, null);
     }
 
     @Override
-    public void saveThumbnail(Context context, Thumbnail thumbnail) {
+    public void saveThumbnailEntry(Context context, Thumbnail thumbnail) {
         thumbnail.beforeSave();
-        Thumbnail findThumbnail = getThumbnail(context, thumbnail.getIdString(), thumbnail.getThumbnailKind());
+        Thumbnail findThumbnail = getThumbnailEntry(context, thumbnail.getIdString(), thumbnail.getThumbnailKind());
         if (findThumbnail == null || !findThumbnail.hasValidId()) {
             ContentUtils.insert(OnyxThumbnailProvider.CONTENT_URI, thumbnail);
         } else {
@@ -280,21 +277,7 @@ public class RemoteDataProvider implements DataProviderBase {
         }
     }
 
-    @Override
-    public boolean setThumbnail(Context context, String associationId, Bitmap saveBitmap, final OnyxThumbnail.ThumbnailKind kind) {
-        return false;
-    }
-
-    public boolean removeThumbnail(Context context, String associationId, OnyxThumbnail.ThumbnailKind kind) {
-        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId))
-                .and(Thumbnail_Table.thumbnailKind.eq(kind));
-        int row = FlowManager.getContext().getContentResolver().delete(OnyxThumbnailProvider.CONTENT_URI,
-                group.getQuery(),
-                null);
-        return row != 0;
-    }
-
-    public Thumbnail getThumbnail(Context context, String associationId, final OnyxThumbnail.ThumbnailKind kind) {
+    public Thumbnail getThumbnailEntry(Context context, String associationId, final OnyxThumbnail.ThumbnailKind kind) {
         ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId))
                 .and(Thumbnail_Table.thumbnailKind.eq(kind));
         return ContentUtils.querySingle(context.getContentResolver(),
@@ -304,16 +287,30 @@ public class RemoteDataProvider implements DataProviderBase {
                 null);
     }
 
+    public void deleteThumbnailEntry(Thumbnail thumbnail) {
+        ContentUtils.delete(OnyxThumbnailProvider.CONTENT_URI, thumbnail);
+    }
+
+    @Override
+    public boolean saveThumbnailBitmap(Context context, String associationId, final OnyxThumbnail.ThumbnailKind kind, Bitmap saveBitmap) {
+        return false;
+    }
+
+    public boolean removeThumbnailBitmap(Context context, String associationId, OnyxThumbnail.ThumbnailKind kind) {
+        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind));
+        int row = FlowManager.getContext().getContentResolver().delete(OnyxThumbnailProvider.CONTENT_URI,
+                group.getQuery(),
+                null);
+        return row != 0;
+    }
+
     public Bitmap getThumbnailBitmap(Context context, String associationId, final OnyxThumbnail.ThumbnailKind kind) {
-        Thumbnail thumbnail = getThumbnail(context, associationId, kind);
+        Thumbnail thumbnail = getThumbnailEntry(context, associationId, kind);
         if (thumbnail == null || StringUtils.isNullOrEmpty(thumbnail.getImageDataPath())) {
             return null;
         }
         return BitmapUtils.loadBitmapFromFile(thumbnail.getImageDataPath());
-    }
-
-    public void deleteThumbnail(Thumbnail thumbnail) {
-        ContentUtils.delete(OnyxThumbnailProvider.CONTENT_URI, thumbnail);
     }
 
     public List<Thumbnail> loadThumbnail(Context context, String associationId) {
