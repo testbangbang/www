@@ -70,6 +70,8 @@ public interface DataProviderBase {
 
     void clearThumbnail();
 
+    void saveThumbnail(Context context, Thumbnail thumbnail);
+
     boolean setThumbnail(Context context, String sourceMD5, final Bitmap saveBitmap, ThumbnailKind kind);
 
     boolean removeThumbnail(Context context, String sourceMD5, ThumbnailKind kind);
