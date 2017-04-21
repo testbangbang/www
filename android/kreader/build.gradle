@@ -81,5 +81,6 @@ ext {
     phone_materialDialogsCommonVersion= '0.9.3.0'
 
     avoscloudVersion = 'v3.13.7'
+    glideVersion = '3.7.0'
 }
 

@@ -61,6 +61,16 @@
         <activity
             android:name=".activity.ApplicationsActivity" />
 
+        <activity
+            android:name=".activity.LibraryActivity"
+            android:windowSoftInputMode="adjustPan" />
+
+        <receiver android:name=".receiver.ContentBroadcastReceiver">
+            <intent-filter >
+                <action android:name="com.onyx.content.database.ACTION_BUILD_LIBRARY" />
+                <action android:name="com.onyx.content.database.ACTION_ADD_TO_LIBRARY" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
