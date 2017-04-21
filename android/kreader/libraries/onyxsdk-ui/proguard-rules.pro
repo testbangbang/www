@@ -16,19 +16,18 @@
 #   public *;
 #}
 
--keeppackagenames com.onyx.android.sdk.api.**
-#-keepnames com.onyx.android.sdk.api.**
+-dontshrink
 
--keepclasseswithmembernames public class com.onyx.android.sdk.api.** {
-    *;
+-keepparameternames
+
+-keepattributes Exceptions,InnerClasses
+
+-keep class com.onyx.android.sdk.api.** { *; }
+
+-keep public class * {
+      public protected *;
 }
 
-#-keepclasseswithmembernames public class com.onyx.android.sdk.api.device.epd.EpdController {
-#    public *;
-#}
-#
-#-keepclasseswithmembers public enum com.onyx.android.sdk.api.device.epd.** {
-#    *;
-#}
-
--dontshrink
+-keepclassmembers,allowoptimization enum * {
+    public static **[] values(); public static ** valueOf(java.lang.String);
+}
