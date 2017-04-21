@@ -102,4 +102,52 @@
 
     <string name="application_list">应用列表</string>
     <string name="menu_app_npi_clear">清除测试应用</string>
+
+    <string name="filter_all">全部</string>
+    <string name="filter_new_books">未读</string>
+    <string name="filter_read">已阅读完</string>
+    <string name="filter_reading">正在阅读</string>
+    <string name="filter_tag">标签</string>
+
+    <string name="by_name">按名称</string>
+    <string name="by_type">按类型</string>
+    <string name="by_size">按大小</string>
+    <string name="by_tittle">按标题</string>
+    <string name="by_author">按作者</string>
+    <string name="by_creation_time">按创建时间</string>
+
+    <string name="filter">筛选</string>
+    <string name="filter_fail">筛选失败</string>
+    <string name="sort">排序</string>
+    <string name="sort_fail">排序失败</string>
+    <string name="library">书库</string>
+    <string name="library_build">创建书库</string>
+    <string name="library_build_fail">创建书库失败</string>
+    <string name="library_name">书库名</string>
+    <string name="description">描述</string>
+
+    <string name="tip">提示</string>
+    <string name="library_delete_tip">删除书库不会删除掉实际的书本</string>
+    <string name="library_delete_fail">删除书库失败</string>
+
+    <string name="chose_one_book_at_least">请至少选择一本</string>
+    <string name="no_library_choice">当前没有书库</string>
+    <string name="library_choose">选择书库</string>
+    <string name="library_add_to_fail">加入书库失败</string>
+    <string name="adding">添加中...</string>
+    <string name="loading">加载中...</string>
+    <string name="library_remove_from_fail">从书库中移出书本失败</string>
+    <string name="file_path_null">文件路径为空</string>
+    <string name="file_not_exist">文件不存在</string>
+    <string name="total_format">总计：%d</string>
+
+    <string name="menu_property">属性</string>
+    <string name="menu_sort">排序</string>
+    <string name="menu_filter">过滤</string>
+    <string name="menu_multi_choice_mode">多选模式</string>
+    <string name="menu_library_build">创建书库</string>
+    <string name="menu_library_add">加入书库</string>
+    <string name="menu_library_remove">移除书库</string>
+    <string name="menu_library_delete">删除书库</string>
+
 </resources>

@@ -290,7 +290,7 @@ public class QueryBuilder {
 
     public static OrderBy generateOrderBy(SortBy sortBy, SortOrder order) {
         boolean asc = order == SortOrder.Asc;
-        OrderBy orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.name), true);
+        OrderBy orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.name), asc);
         switch (sortBy) {
             case None:
             case Name:

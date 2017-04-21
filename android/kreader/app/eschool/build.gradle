@@ -57,4 +57,9 @@ dependencies {
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
     testCompile "junit:junit:$rootProject.junitVersion"
     compile project(':libraries:libedu')
+
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
+
+    compile "com.github.bumptech.glide:glide:$rootProject.glideVersion"
+    compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
 }
