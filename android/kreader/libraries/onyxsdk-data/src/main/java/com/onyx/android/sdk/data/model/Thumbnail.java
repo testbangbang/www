@@ -6,6 +6,7 @@ import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.converter.ThumbKindConverter;
 import com.onyx.android.sdk.data.db.ContentDatabase;
+import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
@@ -20,8 +21,7 @@ public class Thumbnail extends BaseData {
 
     @Column
     private String originContentPath = null;
-    @Column
-    private String sourceMD5 = null;
+
     @Column(typeConverter = ThumbKindConverter.class)
     private ThumbnailKind thumbnailKind = ThumbnailKind.Original;
 
@@ -32,7 +32,7 @@ public class Thumbnail extends BaseData {
      * @return
      */
     public static Bitmap createLargeThumbnail(Bitmap bmp) {
-        return OnyxThumbnail.createLargeThumbnail(bmp);
+        return ThumbnailUtils.createLargeThumbnail(bmp);
     }
 
     /**
@@ -42,7 +42,7 @@ public class Thumbnail extends BaseData {
      * @return
      */
     public static Bitmap createMiddleThumbnail(Bitmap bmp) {
-        return OnyxThumbnail.createMiddleThumbnail(bmp);
+        return ThumbnailUtils.createMiddleThumbnail(bmp);
     }
 
     /**
@@ -52,7 +52,7 @@ public class Thumbnail extends BaseData {
      * @return
      */
     public static Bitmap createSmallThumbnail(Bitmap bmp) {
-        return OnyxThumbnail.createSmallThumbnail(bmp);
+        return ThumbnailUtils.createSmallThumbnail(bmp);
     }
 
     public String getOriginContentPath() {
@@ -61,14 +61,6 @@ public class Thumbnail extends BaseData {
 
     public void setOriginContentPath(String path) {
         this.originContentPath = path;
-    }
-
-    public String getSourceMD5() {
-        return sourceMD5;
-    }
-
-    public void setSourceMD5(String md5) {
-        this.sourceMD5 = md5;
     }
 
     public ThumbnailKind getThumbnailKind() {

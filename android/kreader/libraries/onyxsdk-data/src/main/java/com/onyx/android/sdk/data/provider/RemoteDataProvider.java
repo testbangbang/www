@@ -264,7 +264,7 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public void clearThumbnail() {
+    public void clearAllThumbnails() {
         FlowManager.getContext().getContentResolver().delete(OnyxThumbnailProvider.CONTENT_URI,
                 null, null);
     }
@@ -272,7 +272,7 @@ public class RemoteDataProvider implements DataProviderBase {
     @Override
     public void saveThumbnail(Context context, Thumbnail thumbnail) {
         thumbnail.beforeSave();
-        Thumbnail findThumbnail = getThumbnail(context, thumbnail.getSourceMD5(), thumbnail.getThumbnailKind());
+        Thumbnail findThumbnail = getThumbnail(context, thumbnail.getIdString(), thumbnail.getThumbnailKind());
         if (findThumbnail == null || !findThumbnail.hasValidId()) {
             ContentUtils.insert(OnyxThumbnailProvider.CONTENT_URI, thumbnail);
         } else {
@@ -281,12 +281,12 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public boolean setThumbnail(Context context, String sourceMD5, Bitmap saveBitmap, final OnyxThumbnail.ThumbnailKind kind) {
+    public boolean setThumbnail(Context context, String associationId, Bitmap saveBitmap, final OnyxThumbnail.ThumbnailKind kind) {
         return false;
     }
 
-    public boolean removeThumbnail(Context context, String sourceMD5, OnyxThumbnail.ThumbnailKind kind) {
-        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.sourceMD5.eq(sourceMD5))
+    public boolean removeThumbnail(Context context, String associationId, OnyxThumbnail.ThumbnailKind kind) {
+        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId))
                 .and(Thumbnail_Table.thumbnailKind.eq(kind));
         int row = FlowManager.getContext().getContentResolver().delete(OnyxThumbnailProvider.CONTENT_URI,
                 group.getQuery(),
@@ -294,8 +294,8 @@ public class RemoteDataProvider implements DataProviderBase {
         return row != 0;
     }
 
-    public Thumbnail getThumbnail(Context context, String sourceMd5, final OnyxThumbnail.ThumbnailKind kind) {
-        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.sourceMD5.eq(sourceMd5))
+    public Thumbnail getThumbnail(Context context, String associationId, final OnyxThumbnail.ThumbnailKind kind) {
+        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId))
                 .and(Thumbnail_Table.thumbnailKind.eq(kind));
         return ContentUtils.querySingle(context.getContentResolver(),
                 OnyxThumbnailProvider.CONTENT_URI,
@@ -304,8 +304,8 @@ public class RemoteDataProvider implements DataProviderBase {
                 null);
     }
 
-    public Bitmap getThumbnailBitmap(Context context, String sourceMd5, final OnyxThumbnail.ThumbnailKind kind) {
-        Thumbnail thumbnail = getThumbnail(context, sourceMd5, kind);
+    public Bitmap getThumbnailBitmap(Context context, String associationId, final OnyxThumbnail.ThumbnailKind kind) {
+        Thumbnail thumbnail = getThumbnail(context, associationId, kind);
         if (thumbnail == null || StringUtils.isNullOrEmpty(thumbnail.getImageDataPath())) {
             return null;
         }
@@ -316,8 +316,8 @@ public class RemoteDataProvider implements DataProviderBase {
         ContentUtils.delete(OnyxThumbnailProvider.CONTENT_URI, thumbnail);
     }
 
-    public List<Thumbnail> loadThumbnail(Context context, String sourceMd5) {
-        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.sourceMD5.eq(sourceMd5));
+    public List<Thumbnail> loadThumbnail(Context context, String associationId) {
+        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId));
         return ContentUtils.queryList(context.getContentResolver(),
                 OnyxThumbnailProvider.CONTENT_URI,
                 Thumbnail.class,
@@ -369,10 +369,10 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String metadataMD5) {
+    public MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String associationId) {
         ConditionGroup group = ConditionGroup.clause()
                 .and(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId))
-                .and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5));
+                .and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         return ContentUtils.querySingle(OnyxMetadataCollectionProvider.CONTENT_URI,
                 MetadataCollection.class,
                 group,
@@ -390,9 +390,9 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public MetadataCollection findMetadataCollection(Context context, String metadataMD5) {
+    public MetadataCollection findMetadataCollection(Context context, String associationId) {
         ConditionGroup group = ConditionGroup.clause()
-                .and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5));
+                .and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         return ContentUtils.querySingle(OnyxMetadataCollectionProvider.CONTENT_URI,
                 MetadataCollection.class,
                 group,

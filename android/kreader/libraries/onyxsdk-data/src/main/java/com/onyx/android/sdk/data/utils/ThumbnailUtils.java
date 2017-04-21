@@ -108,7 +108,7 @@ public class ThumbnailUtils {
     }
 
     public static Bitmap getThumbnailBitmap(Context context, Thumbnail thumbnail) {
-        Bitmap bitmap = getThumbnailBitmap(context, thumbnail.getSourceMD5(), thumbnail.getThumbnailKind().toString());
+        Bitmap bitmap = getThumbnailBitmap(context, thumbnail.getIdString(), thumbnail.getThumbnailKind().toString());
         if (bitmap == null) {
             bitmap = ThumbnailUtils.loadDefaultThumbnailFromExtension(context, FileUtils.getFileExtension(thumbnail.getOriginContentPath()));
         }
@@ -116,7 +116,7 @@ public class ThumbnailUtils {
     }
 
     public static boolean saveThumbnailBitmap(Context context, Thumbnail thumbnail, Bitmap saveBitmap) {
-        String path = getThumbnailFile(context, thumbnail.getSourceMD5(), thumbnail.getThumbnailKind().toString());
+        String path = getThumbnailFile(context, thumbnail.getIdString(), thumbnail.getThumbnailKind().toString());
         if (!FileUtils.ensureFileExists(path)) {
             return false;
         }
@@ -151,14 +151,14 @@ public class ThumbnailUtils {
     }
 
     public static boolean insertThumbnail(Context context, DataProviderBase dataProviderBase, String filePath,
-                                          String sourceMd5, Bitmap bitmap) {
+                                          String associationId, Bitmap bitmap) {
         for (ThumbnailKind kind : ThumbnailKind.values()) {
             Thumbnail thumbnail = new Thumbnail();
             thumbnail.setIdString(UUID.randomUUID().toString());
             thumbnail.setThumbnailKind(kind);
             thumbnail.setOriginContentPath(filePath);
-            thumbnail.setSourceMD5(sourceMd5);
-            thumbnail.setImageDataPath(ThumbnailUtils.getThumbnailFile(context, sourceMd5, kind.toString()));
+            thumbnail.setIdString(associationId);
+            thumbnail.setImageDataPath(ThumbnailUtils.getThumbnailFile(context, associationId, kind.toString()));
             dataProviderBase.saveThumbnail(context, thumbnail);
             boolean success = insertThumbnailBitmap(thumbnail, bitmap);
             if (kind.equals(ThumbnailKind.Original) && !success) {
@@ -187,5 +187,51 @@ public class ThumbnailUtils {
             }
             FileUtils.closeQuietly(os);
         }
+    }
+
+    public static Bitmap createLargeThumbnail(Bitmap bmp) {
+        return createThumbnail(bmp, 512);
+    }
+
+    /**
+     * 256x256 at most, or original bmp' size, if it's smaller than 256x256
+     *
+     * @param bmp
+     * @return
+     */
+    public static Bitmap createMiddleThumbnail(Bitmap bmp)
+    {
+        return createThumbnail(bmp, 256);
+    }
+
+    /**
+     * 128x128 at most, or original bmp' size, if it's smaller than 128x128
+     *
+     * @param bmp
+     * @return
+     */
+    public static Bitmap createSmallThumbnail(Bitmap bmp)
+    {
+        return createThumbnail(bmp, 128);
+    }
+
+    private static Bitmap createThumbnail(Bitmap bmp, int limit) {
+        if (bmp.getWidth() <= limit && bmp.getHeight() <= limit) {
+            return bmp;
+        }
+
+        int w = limit;
+        int h = limit;
+
+        if (bmp.getWidth() >= bmp.getHeight()) {
+            double z = (double)limit / bmp.getWidth();
+            h = (int)(z * bmp.getHeight());
+        }
+        else {
+            double z = (double)limit / bmp.getHeight();
+            w = (int)(z * bmp.getWidth());
+        }
+
+        return Bitmap.createScaledBitmap(bmp, w, h, true);
     }
 }

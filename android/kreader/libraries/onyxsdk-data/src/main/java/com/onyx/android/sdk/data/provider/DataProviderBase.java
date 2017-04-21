@@ -68,7 +68,7 @@ public interface DataProviderBase {
 
     void clearLibrary();
 
-    void clearThumbnail();
+    void clearAllThumbnails();
 
     void saveThumbnail(Context context, Thumbnail thumbnail);
 

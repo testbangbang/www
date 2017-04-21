@@ -93,7 +93,7 @@ public class DataManagerHelper {
     }
 
     public static Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail) {
-        return getDataProviderBase().getThumbnailBitmap(context, thumbnail.getSourceMD5(), OnyxThumbnail.ThumbnailKind.Original);
+        return getDataProviderBase().getThumbnailBitmap(context, thumbnail.getIdString(), OnyxThumbnail.ThumbnailKind.Original);
     }
 
     public static List<Bitmap> loadThumbnailBitmapList(Context context, final List<File> fileList, int limit, OnyxThumbnail.ThumbnailKind kind) {

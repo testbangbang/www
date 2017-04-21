@@ -188,7 +188,7 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public void clearThumbnail() {
+    public void clearAllThumbnails() {
         Delete.table(Thumbnail.class);
     }
 
@@ -198,29 +198,29 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public boolean setThumbnail(Context context, String sourceMD5, final Bitmap saveBitmap, ThumbnailKind kind) {
+    public boolean setThumbnail(Context context, String associationId, final Bitmap saveBitmap, ThumbnailKind kind) {
         return false;
     }
 
-    public boolean removeThumbnail(Context context, String sourceMD5, ThumbnailKind kind) {
+    public boolean removeThumbnail(Context context, String associationId, ThumbnailKind kind) {
         new Delete().from(Thumbnail.class)
                 .where()
-                .and(Thumbnail_Table.sourceMD5.eq(sourceMD5))
+                .and(Thumbnail_Table.idString.eq(associationId))
                 .and(Thumbnail_Table.thumbnailKind.eq(kind))
                 .execute();
         return true;
     }
 
-    public Thumbnail getThumbnail(Context context, String sourceMd5, final ThumbnailKind kind) {
+    public Thumbnail getThumbnail(Context context, String associationId, final ThumbnailKind kind) {
         return new Select().from(Thumbnail.class)
                 .where()
-                .and(Thumbnail_Table.sourceMD5.eq(sourceMd5))
+                .and(Thumbnail_Table.idString.eq(associationId))
                 .and(Thumbnail_Table.thumbnailKind.eq(kind))
                 .querySingle();
     }
 
-    public Bitmap getThumbnailBitmap(Context context, String sourceMd5, final ThumbnailKind kind) {
-        Thumbnail thumbnail = getThumbnail(context, sourceMd5, kind);
+    public Bitmap getThumbnailBitmap(Context context, String associationId, final ThumbnailKind kind) {
+        Thumbnail thumbnail = getThumbnail(context, associationId, kind);
         if (thumbnail == null || StringUtils.isNullOrEmpty(thumbnail.getImageDataPath())) {
             return null;
         }
@@ -231,8 +231,8 @@ public class LocalDataProvider implements DataProviderBase {
         thumbnail.delete();
     }
 
-    public List<Thumbnail> loadThumbnail(Context context, String sourceMd5) {
-        return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
+    public List<Thumbnail> loadThumbnail(Context context, String associationId) {
+        return new Select().from(Thumbnail.class).where(Thumbnail_Table.idString.eq(associationId))
                 .queryList();
     }
 
