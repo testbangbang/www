@@ -38,6 +38,7 @@ public class OpenDocumentAction extends BaseAction {
     private String documentPath;
     private DataManager dataProvider;
     private boolean canceled = false;
+    private boolean processOrientation = false;
 
     public OpenDocumentAction(final Activity activity, final String path) {
         this.activity = activity;
@@ -89,10 +90,11 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup(readerDataHolder);
                     return;
                 }
-                // ignore document's orientation temporary for multi-document
-//                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
-//                    return;
-//                }
+                if (processOrientation) {
+                    if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
+                        return;
+                    }
+                }
                 openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
             }
         });
