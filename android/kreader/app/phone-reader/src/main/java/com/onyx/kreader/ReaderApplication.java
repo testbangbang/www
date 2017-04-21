@@ -6,12 +6,13 @@ import android.content.Context;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.manager.OssManager;
 import com.onyx.android.sdk.data.manager.WeChatManager;
+import com.onyx.android.sdk.reader.ReaderBaseApp;
 
 /**
  * Created by suicheng on 2017/2/13.
  */
 
-public class ReaderApplication extends Application {
+public class ReaderApplication extends ReaderBaseApp {
 
     static public final String OSS_PUSH_KEY_ID = "LTAIn6vAi9dxw9IS";
     static public final String OSS_PUSH_KEY_SECRET = "zagMGgELcUpWwaxXkQPoUNcJBwBYRT";
