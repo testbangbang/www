@@ -33,6 +33,7 @@ import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_POWE
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_SECURITY_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_STORAGE_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_USER_SETTING_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_PRODUCTION_TEST_TAG;
 
 /**
  * Created by solskjaer49 on 2016/12/6 12:09.
@@ -70,6 +71,8 @@ public class SettingConfig {
 
         static private final String CALIBRATION_PACKAGE_NAME_TAG = "calibration_package_name";
         static private final String CALIBRATION_CLASS_NAME_TAG = "calibration_class_name";
+
+        static  private  final String TEST_APPS_TAG = "test_apps";
     }
 
     static class Default {
@@ -414,6 +417,7 @@ public class SettingConfig {
         settingItemTAGList.add(SETTING_ITEM_STORAGE_TAG);
         settingItemTAGList.add(SETTING_ITEM_SECURITY_TAG);
         settingItemTAGList.add(SETTING_ITEM_ERROR_REPORT_TAG);
+        settingItemTAGList.add(SETTING_ITEM_PRODUCTION_TEST_TAG);
     }
 
     private void buildDefaultSettingsIconsMap() {
@@ -427,6 +431,7 @@ public class SettingConfig {
         settingIconsMap.put(SETTING_ITEM_STORAGE_TAG, "ic_setting_storage");
         settingIconsMap.put(SETTING_ITEM_SECURITY_TAG, "ic_security");
         settingIconsMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "ic_error_report");
+        settingIconsMap.put(SETTING_ITEM_PRODUCTION_TEST_TAG, "ic_production_test");
     }
 
     private void buildDefaultSettingsTittleMap() {
@@ -440,6 +445,7 @@ public class SettingConfig {
         settingTittleMap.put(SETTING_ITEM_STORAGE_TAG, "setting_storage");
         settingTittleMap.put(SETTING_ITEM_SECURITY_TAG, "setting_security");
         settingTittleMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "setting_error_report");
+        settingTittleMap.put(SETTING_ITEM_PRODUCTION_TEST_TAG, "setting_production_test");
     }
 
     public List<SettingItem> getSettingItemList(Context context) {
@@ -498,6 +504,14 @@ public class SettingConfig {
         Boolean result = getData(Custom.HIDE_DRM_SETTING, Boolean.class);
         if (result == null) {
             return false;
+        }
+        return result;
+    }
+
+    public List<String> getTestApps() {
+        List<String> result = getData(Custom.TEST_APPS_TAG, List.class);
+        if (result == null) {
+            return null;
         }
         return result;
     }

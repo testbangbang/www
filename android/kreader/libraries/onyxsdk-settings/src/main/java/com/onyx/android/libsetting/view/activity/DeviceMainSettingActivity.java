@@ -28,8 +28,10 @@ import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.DeviceMainSettingItemDecoration;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.ApplicationUtil;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
@@ -66,6 +68,8 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
         info.heightPercent = 1 - (miniPercent * adapter.getRowCount());
         infoArea.requestLayout();
+
+        updateView();
     }
 
     private void initView() {
@@ -116,6 +120,11 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                             intent = new Intent(config.getErrorReportAction());
                         }
                         break;
+                    case SettingCategory.PRODUCTION_TEST:
+                        intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.setClassName("com.onyx.android.production.test", "com.onyx.android.productiontest.activity.ProductionTestMainActivity");
+                        break;
                     default:
                         Toast.makeText(DeviceMainSettingActivity.this, "Under Construction", Toast.LENGTH_SHORT).show();
                         return;
@@ -144,6 +153,27 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                         new Intent(DeviceMainSettingActivity.this, FirmwareOTAActivity.class));
             }
         });
+
+        binding.buttonCleanTestApps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearAllTestApps();
+                updateView();
+            }
+        });
+    }
+
+    private void updateView() {
+        if (!verifyTestAppsRecord()) {
+            binding.buttonCleanTestApps.setVisibility(View.VISIBLE);
+        } else {
+            binding.buttonCleanTestApps.setVisibility(View.GONE);
+            for(Iterator<SettingItem> iterator = adapter.dataList.iterator(); iterator.hasNext(); ) {
+                if(SettingCategory.PRODUCTION_TEST == iterator.next().getItemCategory())
+                    iterator.remove();
+            }
+            adapter.notifyDataSetChanged();
+        }
     }
 
     // TODO: 2016/11/30 temp max 3 line layout
@@ -164,6 +194,20 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             default:
                 return 1;
         }
+    }
+
+    private boolean clearAllTestApps() {
+        return ApplicationUtil.clearAllTestApps(this, config.getTestApps());
+    }
+
+    private boolean verifyTestAppsRecord() {
+        List<String> testApps = config.getTestApps();
+        for (String testApp : testApps) {
+            if (!ApplicationUtil.testAppRecordExist(this, testApp)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     static class SettingFunctionAdapter extends RecyclerView.Adapter<SettingFunctionAdapter.MainSettingItemViewHolder> {

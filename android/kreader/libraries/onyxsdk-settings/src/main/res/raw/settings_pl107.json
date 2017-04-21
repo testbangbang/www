@@ -4,6 +4,12 @@
   "hide_drm_setting": true,
   "setting_item_list": [
     "setting_item_network",
-    "setting_item_power"
+    "setting_item_power",
+    "setting_item_production_test"
+  ],
+  "test_apps": [
+    "com.onyx.test",
+    "com.onyx.android.production.test",
+    "com.onyx.android.screenmanager"
   ]
 }
