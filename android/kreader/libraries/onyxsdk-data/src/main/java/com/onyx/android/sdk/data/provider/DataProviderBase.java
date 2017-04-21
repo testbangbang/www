@@ -35,11 +35,11 @@ public interface DataProviderBase {
 
     void removeMetadata(final Context context, final Metadata metadata);
 
-    boolean saveDocumentOptions(final Context context, final String path, String md5, final String json);
+    boolean saveDocumentOptions(final Context context, final String path, String associationId, final String json);
 
-    List<Annotation> loadAnnotations(final String application, final String md5, final int pageNumber, final OrderBy orderBy);
+    List<Annotation> loadAnnotations(final String application, final String associationId, final int pageNumber, final OrderBy orderBy);
 
-    List<Annotation> loadAnnotations(final String application, final String md5, final OrderBy orderBy);
+    List<Annotation> loadAnnotations(final String application, final String associationId, final OrderBy orderBy);
 
     void addAnnotation(final Annotation annotation);
 
@@ -48,9 +48,9 @@ public interface DataProviderBase {
     void deleteAnnotation(final Annotation annotation);
 
 
-    Bookmark loadBookmark(final String application, final String md5, final int pageNumber);
+    Bookmark loadBookmark(final String application, final String associationId, final int pageNumber);
 
-    List<Bookmark> loadBookmarks(final String application, final String md5, final OrderBy orderBy);
+    List<Bookmark> loadBookmarks(final String application, final String associationId, final OrderBy orderBy);
 
     void addBookmark(final Bookmark bookmark);
 
@@ -72,19 +72,19 @@ public interface DataProviderBase {
 
     void saveThumbnail(Context context, Thumbnail thumbnail);
 
-    boolean setThumbnail(Context context, String sourceMD5, final Bitmap saveBitmap, ThumbnailKind kind);
+    boolean setThumbnail(Context context, String associationId, final Bitmap saveBitmap, ThumbnailKind kind);
 
-    boolean removeThumbnail(Context context, String sourceMD5, ThumbnailKind kind);
+    boolean removeThumbnail(Context context, String associationId, ThumbnailKind kind);
 
-    Thumbnail getThumbnail(Context context, String sourceMd5, final ThumbnailKind kind);
+    Thumbnail getThumbnail(Context context, String associationId, final ThumbnailKind kind);
 
-    Bitmap getThumbnailBitmap(Context context, String sourceMd5, final ThumbnailKind kind);
+    Bitmap getThumbnailBitmap(Context context, String associationId, final ThumbnailKind kind);
 
     void clearMetadataCollection();
 
     void addMetadataCollection(Context context, MetadataCollection collection);
 
-    void deleteMetadataCollection(Context context, String libraryUniqueId, String metadataMD5);
+    void deleteMetadataCollection(Context context, String libraryUniqueId, String associationId);
 
     void deleteMetadataCollection(Context context, String libraryUniqueId);
 
@@ -92,9 +92,9 @@ public interface DataProviderBase {
 
     void updateMetadataCollection(MetadataCollection collection);
 
-    MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String metadataMD5);
+    MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String associationId);
 
     List<MetadataCollection> loadMetadataCollection(Context context, String libraryUniqueId);
 
-    MetadataCollection findMetadataCollection(Context context, String metadataMD5);
+    MetadataCollection findMetadataCollection(Context context, String associationId);
 }

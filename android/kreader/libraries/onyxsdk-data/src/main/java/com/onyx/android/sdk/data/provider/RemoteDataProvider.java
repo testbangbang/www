@@ -123,13 +123,13 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public boolean saveDocumentOptions(Context context, String path, String md5, String json) {
+    public boolean saveDocumentOptions(Context context, String path, String associationId, String json) {
         try {
-            Metadata document = findMetadataByHashTag(context, path, md5);
+            Metadata document = findMetadataByHashTag(context, path, associationId);
             document.setExtraAttributes(json);
             document.beforeSave();
             if (!document.hasValidId()) {
-                document.setHashTag(md5);
+                document.setHashTag(associationId);
                 ContentUtils.insert(OnyxMetadataProvider.CONTENT_URI, document);
             } else {
                 ContentUtils.update(OnyxMetadataProvider.CONTENT_URI, document);
@@ -142,9 +142,9 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Annotation> loadAnnotations(String application, String md5, int pageNumber, OrderBy orderBy) {
+    public List<Annotation> loadAnnotations(String application, String associationId, int pageNumber, OrderBy orderBy) {
         ConditionGroup conditionGroup = ConditionGroup.clause()
-                .and(Annotation_Table.idString.eq(md5))
+                .and(Annotation_Table.idString.eq(associationId))
                 .and(Annotation_Table.application.eq(application))
                 .and(Annotation_Table.pageNumber.eq(pageNumber));
         return ContentUtils.queryList(OnyxAnnotationProvider.CONTENT_URI,
@@ -154,9 +154,9 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Annotation> loadAnnotations(String application, String md5, OrderBy orderBy) {
+    public List<Annotation> loadAnnotations(String application, String associationId, OrderBy orderBy) {
         ConditionGroup conditionGroup = ConditionGroup.clause()
-                .and(Annotation_Table.idString.eq(md5))
+                .and(Annotation_Table.idString.eq(associationId))
                 .and(Annotation_Table.application.eq(application));
         return ContentUtils.queryList(OnyxAnnotationProvider.CONTENT_URI,
                 Annotation.class,
@@ -182,9 +182,9 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public Bookmark loadBookmark(String application, String md5, int pageNumber) {
+    public Bookmark loadBookmark(String application, String associationId, int pageNumber) {
         ConditionGroup conditionGroup = ConditionGroup.clause()
-                .and(Bookmark_Table.idString.eq(md5))
+                .and(Bookmark_Table.idString.eq(associationId))
                 .and(Bookmark_Table.application.eq(application))
                 .and(Bookmark_Table.pageNumber.eq(pageNumber));
         return ContentUtils.querySingle(OnyxBookmarkProvider.CONTENT_URI,
@@ -194,9 +194,9 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Bookmark> loadBookmarks(String application, String md5, OrderBy orderBy) {
+    public List<Bookmark> loadBookmarks(String application, String associationId, OrderBy orderBy) {
         ConditionGroup conditionGroup = ConditionGroup.clause()
-                .and(Bookmark_Table.idString.eq(md5))
+                .and(Bookmark_Table.idString.eq(associationId))
                 .and(Bookmark_Table.application.eq(application));
         return ContentUtils.queryList(OnyxBookmarkProvider.CONTENT_URI,
                 Bookmark.class,
@@ -338,10 +338,10 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public void deleteMetadataCollection(Context context, String libraryUniqueId, String metadataMD5) {
+    public void deleteMetadataCollection(Context context, String libraryUniqueId, String associationId) {
         ConditionGroup group = ConditionGroup.clause().and(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId));
-        if (StringUtils.isNotBlank(metadataMD5)) {
-            group.and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5));
+        if (StringUtils.isNotBlank(associationId)) {
+            group.and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         }
         FlowManager.getContext().getContentResolver().delete(OnyxMetadataCollectionProvider.CONTENT_URI,
                 group.getQuery(),
