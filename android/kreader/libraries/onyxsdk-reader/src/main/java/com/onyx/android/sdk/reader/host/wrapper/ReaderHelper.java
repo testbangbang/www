@@ -357,7 +357,12 @@ public class ReaderHelper {
     }
 
     public void applyPostBitmapProcess(ReaderBitmapReferenceImpl bitmap) {
-        applyGammaCorrection(bitmap);
+        if (getDocumentOptions().isTextGamaCorrectionEnabled() &&
+                getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
+            bitmap.setTextGammaCorrection(getDocumentOptions().getTextGammaLevel());
+        } else if (getDocumentOptions().isGamaCorrectionEnabled()) {
+            applyGammaCorrection(bitmap);
+        }
         applyEmbolden(bitmap);
         applySaturation(bitmap);
     }

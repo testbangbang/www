@@ -230,9 +230,13 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     return true;
 }
 
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetTextGamma
+  (JNIEnv *env, jobject thiz, jint id, jfloat gamma) {
+    OnyxPdfiumManager::setTextGamma(env, id, gamma);
+}
+
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeRenderPage
   (JNIEnv * env, jobject thiz, jint id, jint pageIndex, jint x, jint y, jint width, jint height, jint rotation, jobject bitmap) {
-
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
     if (page == NULL) {
         LOGE("invalid page %d", pageIndex);

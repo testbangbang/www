@@ -34,14 +34,13 @@ public class KReaderApp extends ReaderBaseApp {
     @Override
     public void onCreate() {
         super.onCreate();
-        initPl107DeviceConfig();
+        checkDeviceConfig();
         DataManager.init(this, databaseHolderList());
         initContentProvider(this);
 
         SingletonSharedPreference.init(this);
         Debug.setDebug(BuildConfig.DEBUG || DeviceUtils.isEngVersion() || PackageUtils.getAppType(this).equals(PackageUtils.APP_TYPE_DEBUG));
 
-//        LeakCanary.install(this);
         instance = this;
         Debug.d(getClass(), "onCreate: " + PackageUtils.getAppVersionName(this));
     }
@@ -67,8 +66,8 @@ public class KReaderApp extends ReaderBaseApp {
         }
     }
 
-    public void initPl107DeviceConfig() {
-        AppCompatImageViewCollection.isPl107Device = AppCompatUtils.isPL107Device(this);
+    public void checkDeviceConfig() {
+        AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
     }
 
  }

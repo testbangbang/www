@@ -40,7 +40,7 @@ public class AppCompatUtils {
         }
     }
 
-    public static boolean isPL107Device(Context context) {
+    public static boolean isColorDevice(Context context) {
         return "pl107".equalsIgnoreCase(Build.MODEL) && context.getResources().getConfiguration().smallestScreenWidthDp == 960;
     }
 

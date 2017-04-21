@@ -15,13 +15,17 @@ import java.util.List;
  * Created by suicheng on 2016/12/20.
  */
 public class AppCompatImageViewCollection {
-    public static boolean isPl107Device = false;
+    private static boolean alignView = false;
 
     private List<ImageView> imageViewList = new ArrayList<>();
     private boolean alwaysLayoutImageView = false;
 
-    private boolean isPL107Device() {
-        return isPl107Device;
+    public static boolean isAlignView() {
+        return alignView;
+    }
+
+    public static void setAlignView(boolean align) {
+        alignView = align;
     }
 
     public AppCompatImageViewCollection(Context context, AttributeSet parentAttrs) {
@@ -35,7 +39,7 @@ public class AppCompatImageViewCollection {
     }
 
     public void collect(Context context, ViewGroup viewGroup) {
-        if (!isPL107Device()) {
+        if (!isAlignView()) {
             return;
         }
         if (imageViewList.isEmpty()) {
@@ -44,7 +48,7 @@ public class AppCompatImageViewCollection {
     }
 
     public void adjustAllImageView(boolean layoutChanged) {
-        if (!isPL107Device()) {
+        if (!isAlignView()) {
             return;
         }
         if (alwaysLayoutImageView || !layoutChanged) {
