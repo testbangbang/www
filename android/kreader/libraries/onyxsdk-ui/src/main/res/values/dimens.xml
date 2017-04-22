@@ -85,8 +85,8 @@
     <dimen name="dialog_border_width">2dp</dimen>
     <dimen name="seebar_thumb_height">30dp</dimen>
     <dimen name="menu_seek_bar_height">25dp</dimen>
-    <dimen name="alert_dialog_layout_width">550px</dimen>
-    <dimen name="alert_dialog_layout_height">150px</dimen>
+    <dimen name="alert_dialog_layout_width">420dp</dimen>
+    <dimen name="alert_dialog_layout_height">100dp</dimen>
     <dimen name="tree_item_text_size">20sp</dimen>
     <dimen name="main_menu_page_progress_margin">5dp</dimen>
 
