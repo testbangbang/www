@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.utils;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -295,6 +296,17 @@ public class DeviceUtils {
     }
 
     static void adjustFullScreenStatusForAPIAbove19(final Activity activity, boolean fullScreen) {
+        adjustFullScreenStatus(activity.getWindow(), fullScreen);
+    }
+
+    public static void adjustDialogFullScreenStatusForAPIAbove19(Dialog dialog, boolean fullScreen) {
+        if (Build.VERSION.SDK_INT <= 19) {
+            return;
+        }
+        adjustFullScreenStatus(dialog.getWindow(), fullScreen);
+    }
+
+    public static void adjustFullScreenStatus(Window window, boolean fullScreen) {
         int clearFlag, targetFlag, uiOption;
         if (fullScreen) {
             clearFlag = WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
@@ -305,9 +317,9 @@ public class DeviceUtils {
             targetFlag = WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
             uiOption = View.SYSTEM_UI_FLAG_VISIBLE;
         }
-        activity.getWindow().clearFlags(clearFlag);
-        activity.getWindow().setFlags(targetFlag, targetFlag);
-        View decorView = activity.getWindow().getDecorView();
+        window.clearFlags(clearFlag);
+        window.setFlags(targetFlag, targetFlag);
+        View decorView = window.getDecorView();
         decorView.setSystemUiVisibility(uiOption);
     }
 
