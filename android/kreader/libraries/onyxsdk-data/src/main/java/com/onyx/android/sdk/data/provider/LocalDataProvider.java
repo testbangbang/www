@@ -33,6 +33,16 @@ public class LocalDataProvider implements DataProviderBase {
         Delete.table(Metadata.class);
     }
 
+    public Metadata findMetadataByIdString(final Context context, final String idString) {
+        Metadata metadata = null;
+        try {
+            metadata = new Select().from(Metadata.class).where(Metadata_Table.idString.eq(idString)).querySingle();
+        } catch (Exception e) {
+        } finally {
+            return MetadataUtils.ensureObject(metadata);
+        }
+    }
+
     public Metadata findMetadataByPath(final Context context, final String path) {
         Metadata metadata = null;
         try {

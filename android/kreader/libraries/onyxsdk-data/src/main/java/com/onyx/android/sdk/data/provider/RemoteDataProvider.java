@@ -33,6 +33,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
@@ -50,6 +51,17 @@ public class RemoteDataProvider implements DataProviderBase {
     public void clearMetadata() {
         FlowManager.getContext().getContentResolver().delete(OnyxMetadataProvider.CONTENT_URI,
                 null, null);
+    }
+
+    public Metadata findMetadataByIdString(final Context context, final String idString) {
+        Metadata metadata = null;
+        try {
+            metadata = ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
+                    Metadata.class, ConditionGroup.clause().and(Metadata_Table.idString.eq(idString)), null);
+        } catch (Exception e) {
+        } finally {
+            return MetadataUtils.ensureObject(metadata);
+        }
     }
 
     public Metadata findMetadataByPath(final Context context, final String path) {
