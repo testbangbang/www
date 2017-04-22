@@ -3,6 +3,7 @@ package com.onyx.android.sdk.ui.data;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +28,11 @@ import java.util.List;
 public class ReaderLayerMenuViewFactory {
 
     public static int mainMenuContainerViewHeight = 0;
+    private static ReaderMenuAction  selectedAction = null;
 
     private static class MainMenuItemViewHolder extends RecyclerView.ViewHolder {
         private View view;
+        private ReaderLayerMenuItem selectedItem;
 
         public MainMenuItemViewHolder(View itemView, final ReaderMenu.ReaderMenuCallback callback) {
             super(itemView);
@@ -37,12 +40,23 @@ public class ReaderLayerMenuViewFactory {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    callback.onMenuItemClicked((ReaderLayerMenuItem) v.getTag());
+                    selectedItem = (ReaderLayerMenuItem) v.getTag();
+                    if(selectedItem != null && selectedItem.getItemType().equals(ReaderMenuItem.ItemType.Group)){
+                        selectedAction =selectedItem.getAction();
+                    }
+                    callback.onMenuItemClicked(selectedItem);
                 }
             });
         }
 
         public void setMenuItem(ReaderLayerMenuItem item) {
+            ImageView indicator = ((ImageView) view.findViewById(R.id.imageview_indicator));
+            if(item !=null && item.getAction().equals(selectedAction)){
+                indicator.setVisibility(View.VISIBLE);
+            } else {
+                indicator.setVisibility(View.INVISIBLE);
+            }
+
             ((ImageView) view.findViewById(R.id.imageview_icon)).setImageResource(item.getDrawableResourceId());
             int titleResId = item.getTitleResourceId();
             TextView titleView = ((TextView) view.findViewById(R.id.textview_title));
@@ -51,7 +65,6 @@ public class ReaderLayerMenuViewFactory {
             } else {
                 titleView.setVisibility(View.GONE);
             }
-
             view.setTag(item);
         }
     }
@@ -59,6 +72,9 @@ public class ReaderLayerMenuViewFactory {
     public static View createMainMenuContainerView(final Context context, final List<ReaderLayerMenuItem> items, ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback, final boolean ignoreEmptyChildMenu) {
         List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items, ignoreEmptyChildMenu);
         final View view = createSimpleButtonContainerView(context, visibleItems, state, callback);
+        if(selectedAction == null){
+            selectedAction = visibleItems.get(0).getAction();
+        }
         view.post(new Runnable() {
             @Override
             public void run() {
