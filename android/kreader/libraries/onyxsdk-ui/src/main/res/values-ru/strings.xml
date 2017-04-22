@@ -17,10 +17,10 @@
     <string name="reader_layer_menu_zoom_by_crop_page">Обрезать\nпо странице</string>
     <string name="reader_layer_menu_zoom_by_crop_width">Обрезать\nпо ширине</string>
     <string name="reader_layer_menu_zoom_by_rect">По двум\nточкам</string>
-    <string name="reader_layer_menu_navigation_comic_mode">Режим комиксов</string>
-    <string name="reader_layer_menu_navigation_article_mode">Режим статьи</string>
+    <string name="reader_layer_menu_navigation_comic_mode">Режим\nкомиксов</string>
+    <string name="reader_layer_menu_navigation_article_mode">Режим\nстатьи</string>
     <string name="reader_layer_menu_navigation_reset">Сбросить\n</string>
-    <string name="reader_layer_menu_navigation_more_settings">Тонкие настройки</string>
+    <string name="reader_layer_menu_navigation_more_settings">Тонкие\nнастройки</string>
     <string name="reader_layer_menu_notes">Заметки</string>
     <string name="reader_layer_menu_directory_toc">Содержание</string>
     <string name="reader_layer_menu_directory_bookmark">Закладки</string>

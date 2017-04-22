@@ -8,7 +8,7 @@
     <dimen name="onyx_alert_dialog_width_margin">45dp</dimen>
     <dimen name="global_activities_back_function_layout_padding">7dp</dimen>
     <dimen name="settings_title_text_size">25sp</dimen>
-    <dimen name="reader_layer_menu_button_item_text_size">16sp</dimen>
+    <dimen name="reader_layer_menu_button_item_text_size">13sp</dimen>
     <dimen name="dialog_reader_menu_top_bar_function_icon_padding">10dp</dimen>
     <dimen name="dialog_reader_menu_top_divider_height">2dp</dimen>
     <dimen name="dialog_reader_menu_layer_divider_height">2dp</dimen>
