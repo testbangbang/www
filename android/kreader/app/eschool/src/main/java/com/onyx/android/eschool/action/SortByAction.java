@@ -1,7 +1,8 @@
 package com.onyx.android.eschool.action;
 
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
-import android.widget.Toast;
 
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.R;
@@ -10,21 +11,27 @@ import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.ui.dialog.DialogSortBy;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by suicheng on 2017/4/15.
  */
 
 public class SortByAction extends BaseAction<LibraryDataHolder> {
+    Map<String, SortBy> sortByMap = new LinkedHashMap();
+    private FragmentManager fragmentManager;
 
-    public SortByAction() {
+    public SortByAction(Activity activity) {
+        this.fragmentManager = activity.getFragmentManager();
     }
 
     @Override
@@ -34,13 +41,13 @@ public class SortByAction extends BaseAction<LibraryDataHolder> {
                 new DialogSortBy.OnSortByListener() {
                     @Override
                     public void onSortBy(int position, String sortBy, SortOrder sortOrder) {
-                        saveSortByQueryArgs(dataHolder, position, sortOrder);
+                        saveSortByQueryArgs(dataHolder, sortBy, sortOrder);
                         processSortBy(dataHolder, sortBy, sortOrder);
                     }
                 });
-        dialog.setCurrentSortBySelectedIndex(dataHolder.getCurrentSortByIndex());
+        dialog.setCurrentSortBySelectedIndex(getCurrentSortByIndex(dataHolder.getContext(), dataHolder.getCurrentQueryArgs()));
         dialog.setCurrentSortOrderSelected(dataHolder.getCurrentSortOrder());
-        dialog.show(dataHolder.getFragmentManager());
+        dialog.show(fragmentManager);
     }
 
     private DialogSortBy getOrderDialog(Context context, String title, List<String> contentList,
@@ -57,19 +64,18 @@ public class SortByAction extends BaseAction<LibraryDataHolder> {
     }
 
     private List<String> getSortByList(LibraryDataHolder dataHolder) {
-        return Arrays.asList(dataHolder.getSortByMap().keySet().toArray(new String[0]));
+        return Arrays.asList(getSortByMap(dataHolder.getContext()).keySet().toArray(new String[0]));
     }
 
-    private void saveSortByQueryArgs(LibraryDataHolder dataHolder, int index, SortOrder sortOrder) {
-        dataHolder.setCurrentSortByIndex(index);
-        StudentPreferenceManager.setIntValue(dataHolder.getContext(),
-                R.string.library_activity_sort_by_key, index);
+    private void saveSortByQueryArgs(LibraryDataHolder dataHolder, String sortBy, SortOrder sortOrder) {
+        StudentPreferenceManager.setStringValue(dataHolder.getContext(),
+                R.string.library_activity_sort_by_key, getSortByMap(dataHolder.getContext()).get(sortBy).toString());
         StudentPreferenceManager.setIntValue(dataHolder.getContext(),
                 R.string.library_activity_asc_order_key, sortOrder.ordinal());
     }
 
     private void processSortBy(final LibraryDataHolder dataHolder, String sortBy, SortOrder sortOrder) {
-        dataHolder.updateSortBy(dataHolder.getSortByMap().get(sortBy), sortOrder);
+        dataHolder.updateSortBy(getSortByMap(dataHolder.getContext()).get(sortBy), sortOrder);
         QueryArgs args = dataHolder.getQueryArgs(CollectionUtils.getSize(dataHolder.getBookList()), 0);
         new MetadataLoadAction(args).execute(dataHolder, new BaseCallback() {
             @Override
@@ -85,5 +91,29 @@ public class SortByAction extends BaseAction<LibraryDataHolder> {
 
     private void postLoadFinishEvent(LibraryDataHolder dataHolder) {
         dataHolder.getEventBus().post(new LoadFinishEvent());
+    }
+
+    public int getCurrentSortByIndex(Context context, QueryArgs queryArgs) {
+        SortBy sortBy = queryArgs.sortBy;
+        if (sortBy == null) {
+            return 0;
+        }
+        int index = Arrays.asList(getSortByMap(context).values().toArray(new SortBy[0])).indexOf(sortBy);
+        if (index < 0) {
+            return 0;
+        }
+        return index;
+    }
+
+    private Map<String, SortBy> getSortByMap(Context context) {
+        if (CollectionUtils.isNullOrEmpty(sortByMap)) {
+            sortByMap.put(context.getString(R.string.by_name), SortBy.Name);
+            sortByMap.put(context.getString(R.string.by_tittle), SortBy.BookTitle);
+            sortByMap.put(context.getString(R.string.by_type), SortBy.FileType);
+            sortByMap.put(context.getString(R.string.by_size), SortBy.Size);
+            sortByMap.put(context.getString(R.string.by_creation_time), SortBy.CreationTime);
+            sortByMap.put(context.getString(R.string.by_author), SortBy.Author);
+        }
+        return sortByMap;
     }
 }

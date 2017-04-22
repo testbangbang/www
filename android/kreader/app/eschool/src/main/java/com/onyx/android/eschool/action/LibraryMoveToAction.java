@@ -1,5 +1,7 @@
 package com.onyx.android.eschool.action;
 
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.widget.Toast;
 
 import com.onyx.android.eschool.R;
@@ -24,12 +26,14 @@ import java.util.List;
 
 public class LibraryMoveToAction extends BaseAction<LibraryDataHolder> {
 
+    private FragmentManager fragmentManager;
     private List<Library> libraryList;
     private List<Metadata> chosenItemsList;
 
     private BaseCallback baseCallback;
 
-    public LibraryMoveToAction(List<Library> libraryList, List<Metadata> list) {
+    public LibraryMoveToAction(Activity activity, List<Library> libraryList, List<Metadata> list) {
+        this.fragmentManager = activity.getFragmentManager();
         this.libraryList = libraryList;
         this.chosenItemsList = list;
     }
@@ -61,14 +65,14 @@ public class LibraryMoveToAction extends BaseAction<LibraryDataHolder> {
                 addChosenBooksToLibrary(dataHolder, libraryList.get(index));
             }
         });
-        dialog.show(dataHolder.getFragmentManager());
+        dialog.show(fragmentManager);
     }
 
     private void addChosenBooksToLibrary(final LibraryDataHolder dataHolder, Library toLibrary) {
         Library fromLibrary = new Library();
         fromLibrary.setIdString(dataHolder.getLibraryIdString());
         LibraryMoveToRequest moveRequest = new LibraryMoveToRequest(fromLibrary, toLibrary, chosenItemsList);
-        SchoolApp.getDataManager().submit(dataHolder.getContext(), moveRequest, new BaseCallback() {
+        dataHolder.getDataManager().submit(dataHolder.getContext(), moveRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 hideLoadingDialog();

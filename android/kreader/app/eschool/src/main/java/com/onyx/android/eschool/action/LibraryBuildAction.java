@@ -1,5 +1,7 @@
 package com.onyx.android.eschool.action;
 
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -23,9 +25,11 @@ import java.util.UUID;
 
 public class LibraryBuildAction extends BaseAction<LibraryDataHolder> {
 
+    private FragmentManager fragmentManager;
     private String parentLibraryIdString;
 
-    public LibraryBuildAction(String parentId) {
+    public LibraryBuildAction(Activity activity,  String parentId) {
+        this.fragmentManager = activity.getFragmentManager();
         this.parentLibraryIdString = parentId;
     }
 
@@ -46,7 +50,7 @@ public class LibraryBuildAction extends BaseAction<LibraryDataHolder> {
                 buildLibrary(dataHolder, contentList);
             }
         });
-        dialog.show(dataHolder.getFragmentManager());
+        dialog.show(fragmentManager);
     }
 
     private void buildLibrary(final LibraryDataHolder dataHolder, String[] contentList) {
@@ -56,7 +60,7 @@ public class LibraryBuildAction extends BaseAction<LibraryDataHolder> {
         library.setName(contentList[0]);
         library.setDescription(contentList[1]);
         LibraryBuildRequest buildLibraryRequest = new LibraryBuildRequest(library, null);
-        SchoolApp.getDataManager().submit(dataHolder.getContext(), buildLibraryRequest, new BaseCallback() {
+        dataHolder.getDataManager().submit(dataHolder.getContext(), buildLibraryRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
