@@ -1,5 +1,7 @@
 package com.onyx.android.eschool.action;
 
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 
 import com.onyx.android.eschool.holder.LibraryDataHolder;
@@ -8,12 +10,16 @@ import com.onyx.android.eschool.events.LoadFinishEvent;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.BookFilter;
+import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.ui.dialog.DialogSortBy;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by suicheng on 2017/4/15.
@@ -21,7 +27,11 @@ import java.util.List;
 
 public class FilterByAction extends BaseAction<LibraryDataHolder> {
 
-    public FilterByAction() {
+    private Map<String, BookFilter> filterMap = new LinkedHashMap<>();
+    private FragmentManager fragmentManager;
+
+    public FilterByAction(Activity activity) {
+        this.fragmentManager = activity.getFragmentManager();
     }
 
     @Override
@@ -31,13 +41,13 @@ public class FilterByAction extends BaseAction<LibraryDataHolder> {
                 new DialogSortBy.OnSortByListener() {
                     @Override
                     public void onSortBy(int position, String sortBy, SortOrder sortOrder) {
-                        saveFilterByQueryArgs(dataHolder, position, sortOrder);
+                        saveFilterByQueryArgs(dataHolder, sortBy, sortOrder);
                         processFilterBy(dataHolder, sortBy, sortOrder);
                     }
                 });
-        dialog.setCurrentSortBySelectedIndex(dataHolder.getCurrentFilterByIndex());
+        dialog.setCurrentSortBySelectedIndex(getCurrentFilterByIndex(dataHolder.getContext(), dataHolder.getCurrentQueryArgs()));
         dialog.setCurrentSortOrderSelected(dataHolder.getCurrentSortOrder());
-        dialog.show(dataHolder.getFragmentManager());
+        dialog.show(fragmentManager);
     }
 
     private DialogSortBy getOrderDialog(Context context, String title, List<String> contentList,
@@ -54,19 +64,18 @@ public class FilterByAction extends BaseAction<LibraryDataHolder> {
     }
 
     private List<String> getFilterByList(LibraryDataHolder dataHolder) {
-        return Arrays.asList(dataHolder.getFilterMap().keySet().toArray(new String[0]));
+        return Arrays.asList(getFilterMap(dataHolder.getContext()).keySet().toArray(new String[0]));
     }
 
-    private void saveFilterByQueryArgs(LibraryDataHolder dataHolder, int index, SortOrder sortOrder) {
-        dataHolder.setCurrentFilterByIndex(index);
-        StudentPreferenceManager.setIntValue(dataHolder.getContext(),
-                R.string.library_activity_book_filter_key, index);
+    private void saveFilterByQueryArgs(LibraryDataHolder dataHolder, String filterBy, SortOrder sortOrder) {
+        StudentPreferenceManager.setStringValue(dataHolder.getContext(),
+                R.string.library_activity_book_filter_key, getFilterMap(dataHolder.getContext()).get(filterBy).toString());
         StudentPreferenceManager.setIntValue(dataHolder.getContext(),
                 R.string.library_activity_asc_order_key, sortOrder.ordinal());
     }
 
     private void processFilterBy(final LibraryDataHolder dataHolder, String filterBy, SortOrder sortOrder) {
-        dataHolder.updateFilterByBy(dataHolder.getFilterMap().get(filterBy), sortOrder);
+        dataHolder.updateFilterBy(getFilterMap(dataHolder.getContext()).get(filterBy), sortOrder);
         new MetadataLoadAction(dataHolder.getQueryArgs()).execute(dataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -81,5 +90,28 @@ public class FilterByAction extends BaseAction<LibraryDataHolder> {
 
     private void postLoadFinishEvent(LibraryDataHolder dataHolder) {
         dataHolder.getEventBus().post(new LoadFinishEvent());
+    }
+
+    public Map<String, BookFilter> getFilterMap(Context context) {
+        if (filterMap.isEmpty()) {
+            filterMap.put(context.getString(R.string.filter_all), BookFilter.ALL);
+            filterMap.put(context.getString(R.string.filter_new_books), BookFilter.NEW);
+            filterMap.put(context.getString(R.string.filter_reading), BookFilter.READING);
+            filterMap.put(context.getString(R.string.filter_read), BookFilter.FINISHED);
+            filterMap.put(context.getString(R.string.filter_tag), BookFilter.TAG);
+        }
+        return filterMap;
+    }
+
+    public int getCurrentFilterByIndex(Context context, QueryArgs queryArgs) {
+        BookFilter filter = queryArgs.filter;
+        if (filter == null) {
+            return 0;
+        }
+        int index = Arrays.asList(getFilterMap(context).values().toArray(new BookFilter[0])).indexOf(filter);
+        if (index < 0) {
+            return 0;
+        }
+        return index;
     }
 }

@@ -35,6 +35,8 @@ import com.onyx.android.eschool.glide.ThumbnailLoader;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.BookFilter;
+import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -51,7 +53,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -317,34 +318,23 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private void loadQueryArgsConf() {
-        int sortByIndex = StudentPreferenceManager.getIntValue(LibraryActivity.this,
-                R.string.library_activity_sort_by_key, 0);
-        int filterByIndex = StudentPreferenceManager.getIntValue(LibraryActivity.this,
-                R.string.library_activity_book_filter_key, 0);
+        String sortBy = StudentPreferenceManager.getStringValue(LibraryActivity.this,
+                R.string.library_activity_sort_by_key, SortBy.Name.toString());
+        String filterBy = StudentPreferenceManager.getStringValue(LibraryActivity.this,
+                R.string.library_activity_book_filter_key, BookFilter.ALL.toString());
         SortOrder sortOrder = SortOrder.values()[StudentPreferenceManager.getIntValue(LibraryActivity.this,
                 R.string.library_activity_asc_order_key, 0)];
-        List<String> list = Arrays.asList(dataHolder.getSortByMap().keySet().toArray(new String[0]));
-        if (sortByIndex >= list.size()) {
-            sortByIndex = 0;
-        }
-        dataHolder.setCurrentSortByIndex(sortByIndex);
-        dataHolder.updateSortBy(dataHolder.getSortByMap().get(list.get(sortByIndex)), sortOrder);
-
-        list = Arrays.asList(dataHolder.getFilterMap().keySet().toArray(new String[0]));
-        if (filterByIndex >= list.size()) {
-            filterByIndex = 0;
-        }
-        dataHolder.setCurrentFilterByIndex(filterByIndex);
-        dataHolder.updateFilterByBy(dataHolder.getFilterMap().get(list.get(filterByIndex)), sortOrder);
+        dataHolder.updateSortBy(SortBy.valueOf(sortBy), sortOrder);
+        dataHolder.updateFilterBy(BookFilter.valueOf(filterBy), sortOrder);
     }
 
     private void processSortBy() {
-        SortByAction sortByAction = new SortByAction();
+        SortByAction sortByAction = new SortByAction(this);
         sortByAction.execute(dataHolder, null);
     }
 
     private void processFilterByBy() {
-        FilterByAction filterByAction = new FilterByAction();
+        FilterByAction filterByAction = new FilterByAction(this);
         filterByAction.execute(dataHolder, null);
     }
 
@@ -454,13 +444,13 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private void processBuildLibrary() {
-        new LibraryBuildAction(dataHolder.getLibraryIdString()).execute(dataHolder, null);
+        new LibraryBuildAction(this, dataHolder.getLibraryIdString()).execute(dataHolder, null);
     }
 
     private void processAddToLibrary() {
         Library currentLibrary = new Library();
         currentLibrary.setIdString(dataHolder.getLibraryIdString());
-        LibraryMoveToAction moveToLibraryAction = new LibraryMoveToAction(getLibraryList(), chosenItemsList);
+        LibraryMoveToAction moveToLibraryAction = new LibraryMoveToAction(this, getLibraryList(), chosenItemsList);
         moveToLibraryAction.execute(dataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -481,7 +471,7 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private void processDeleteLibrary() {
-        new LibraryDeleteAction(dataHolder.getLibraryList().get(currentChosenItemIndex))
+        new LibraryDeleteAction(this, dataHolder.getLibraryList().get(currentChosenItemIndex))
                 .execute(dataHolder, null);
     }
 

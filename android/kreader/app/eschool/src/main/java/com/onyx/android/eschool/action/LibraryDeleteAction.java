@@ -1,5 +1,7 @@
 package com.onyx.android.eschool.action;
 
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,9 +22,11 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 
 public class LibraryDeleteAction extends BaseAction<LibraryDataHolder> {
 
+    private FragmentManager fragmentManager;
     private Library deleteLibrary;
 
-    public LibraryDeleteAction(Library deleteLibrary) {
+    public LibraryDeleteAction(Activity activity, Library deleteLibrary) {
+        this.fragmentManager = activity.getFragmentManager();
         this.deleteLibrary = deleteLibrary;
     }
 
@@ -39,7 +43,7 @@ public class LibraryDeleteAction extends BaseAction<LibraryDataHolder> {
                         confirmDelete(dataHolder);
                     }
                 }));
-        alertDialog.show(dataHolder.getFragmentManager(), this.getClass().getSimpleName());
+        alertDialog.show(fragmentManager, this.getClass().getSimpleName());
     }
 
     private void confirmDelete(final LibraryDataHolder dataHolder) {
