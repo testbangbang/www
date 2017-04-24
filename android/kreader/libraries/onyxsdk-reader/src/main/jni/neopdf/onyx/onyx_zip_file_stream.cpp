@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <vector>
-#include <istream>
 
 #include "onyx_zip_file_stream.h"
 #include "ZipArchive.h"
@@ -16,11 +15,11 @@ int zipFileGetBlock(void* param,
     return fileStream->requestBytes((size_t)position, pBuf, (size_t)size);
 }
 
-OnyxZipFileStream::OnyxZipFileStream(const std::string &url, const std::string &zip_password)
-    : m_zip_password(zip_password)
+OnyxZipFileStream::OnyxZipFileStream(const std::string &path, const std::string &zip_password)
+    : zipPassword(zip_password)
+    , decompressionContent(NULL)
 {
-    LOGI("constructor of OnyxZipFileStream, url: %s", url.data());
-    m_url = url;
+    filePath = url;
 }
 
 OnyxZipFileStream::~OnyxZipFileStream()
@@ -29,27 +28,32 @@ OnyxZipFileStream::~OnyxZipFileStream()
 
 bool OnyxZipFileStream::open()
 {
-    FILE* fp = fopen(m_url.data(), "rb");
+    FILE* fp = fopen(filePath.data(), "rb");
     if (fp == NULL)
     {
-        LOGE("could not open file %s", m_url.data());
+        LOGE("could not open file %s", filePath.data());
         return false;
     }
     fclose(fp);
 
-    static ZipArchive::Ptr archive = ZipFile::Open(m_url);
+    static ZipArchive::Ptr archive = ZipFile::Open(filePath);
     pArchiveEntry = archive->GetEntry(0);
     if (pArchiveEntry == NULL) {
-        LOGE("could not get the entry of zip file %s", m_url.data());
+        LOGE("could not get the entry of zip file %s", filePath.data());
         return false;
     }
 
     if (pArchiveEntry->IsPasswordProtected())
     {
-        pArchiveEntry->SetPassword(m_zip_password);
+        pArchiveEntry->SetPassword(zipPassword);
     }
 
     totalSize = pArchiveEntry->GetSize();
+
+    contentStream = pArchiveEntry->GetDecompressionStream();
+    decompressionContent = new char[totalSize];
+    contentStream->read(whole, totalSize);
+
     return true;
 }
 
@@ -62,17 +66,16 @@ int OnyxZipFileStream::requestBytes(size_t offset, unsigned char * pBuffer, size
 {
     size_t remained = totalSize - offset;
     int actualSize = (size <= remained) ? size : remained;
-    int readSize = offset + actualSize;
-    char * readBuffer = new char[readSize];
-
-    std::istream *contentStream = pArchiveEntry->GetDecompressionStream();
-    contentStream->read(readBuffer, readSize);
-    pBuffer = (unsigned char *)readBuffer + offset;
+    unsigned char * src = (unsigned char *)decompressionContent + offset;
+    memcpy(pBuffer, src, actualSize);
     return actualSize;
 }
 
 void OnyxZipFileStream::close()
 {
+    if (decompressionContent != NULL) {
+        free(decompressionContent);
+    }
     if (pArchiveEntry != NULL) {
         pArchiveEntry->CloseDecompressionStream();
     }

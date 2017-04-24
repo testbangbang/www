@@ -86,11 +86,13 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
 
     FPDF_DOCUMENT document = NULL;
     if (zipPassword != NULL && zipPassword[0] != '\0') {
-        LOGI("zip password is not null");
-        FPDF_FILEACCESS fileAccess = OnyxPdfiumManager::getPDFFileAccess(filename, zipPassword);
-        document = FPDF_LoadCustomDocument(&fileAccess, NULL);
-    } else {
-        LOGI("zip password is null");
+        FPDF_FILEACCESS fileAccess;
+        if (OnyxPdfiumManager::getPDFFileAccess(filename, zipPassword, &fileAccess)) {
+            document = FPDF_LoadCustomDocument(&fileAccess, NULL);
+        }
+    }
+
+    if (document == NULL) {
         document = FPDF_LoadDocument(filename, password);
     }
 

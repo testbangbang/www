@@ -2,6 +2,7 @@
 #define ONYX_ZIP_FILE_STREAM_H
 
 #include <string>
+#include <istream>
 #include "ZipFile.h"
 
 
@@ -14,7 +15,7 @@ extern int zipFileGetBlock(void* param,
 class OnyxZipFileStream
 {
 public:
-    OnyxZipFileStream(const std::string &url, const std::string &zip_password);
+    OnyxZipFileStream(const std::string &path, const std::string &zip_password);
     ~OnyxZipFileStream();
 
     bool open();
@@ -25,11 +26,14 @@ public:
 private:
 
 private:
-    std::string m_url;
-    std::string m_zip_password;
+    std::string filePath;
+    std::string zipPassword;
     size_t      totalSize;
 
     ZipArchiveEntry::Ptr pArchiveEntry;
+    std::istream*  contentStream;
+    char * decompressionContent;
+
 };
 
 #endif // ONYX_ZIP_FILE_STREAM_H

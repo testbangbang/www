@@ -212,14 +212,15 @@ public:
         return context->getTextPage(pageIndex);
     }
 
-    static FPDF_FILEACCESS getPDFFileAccess(const char * filename, const char *zipPassword) {
+    static bool getPDFFileAccess(const char * filename, const char *zipPassword, FPDF_FILEACCESS *pdfFileAccess) {
         OnyxZipFileStream *zipFileStream = new OnyxZipFileStream(filename, zipPassword);
-        zipFileStream->open();
-        FPDF_FILEACCESS pdfFileAccess;
-        pdfFileAccess.m_FileLen = zipFileStream->getSize();
-        pdfFileAccess.m_GetBlock = *zipFileGetBlock;
-        pdfFileAccess.m_Param = zipFileStream;
-        return pdfFileAccess;
+        if (!zipFileStream->open()) {
+            return false;
+        }
+        pdfFileAccess->m_FileLen = zipFileStream->getSize();
+        pdfFileAccess->m_GetBlock = *zipFileGetBlock;
+        pdfFileAccess->m_Param = zipFileStream;
+        return true;
     }
 
 };
