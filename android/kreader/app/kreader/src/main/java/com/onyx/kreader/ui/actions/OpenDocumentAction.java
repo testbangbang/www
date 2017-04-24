@@ -3,7 +3,6 @@ package com.onyx.kreader.ui.actions;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
-import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -37,7 +36,6 @@ import com.onyx.android.sdk.utils.DeviceUtils;
  * 4. restoreWithOptions.
  */
 public class OpenDocumentAction extends BaseAction {
-    private static final String TAG = "OpenDocumentAction";
     private Activity activity;
     private String documentPath;
     private DataManager dataProvider;
@@ -123,7 +121,6 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void openWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
-        Log.d(TAG, "openWithOptions, get here");
         final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, true);
         readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override
@@ -211,7 +208,6 @@ public class OpenDocumentAction extends BaseAction {
     private void handleZipEncryptedDocuments(final ReaderDataHolder holder, final BaseOptions options) {
         boolean getZipPassword = TagusCryptoHelper.handleZipCompressedBooks(holder.getContext(), holder.getDocumentPath(), options);
         if (getZipPassword) {
-            Log.d(TAG, "get zip password");
             openWithOptions(holder, options);
         }
     }

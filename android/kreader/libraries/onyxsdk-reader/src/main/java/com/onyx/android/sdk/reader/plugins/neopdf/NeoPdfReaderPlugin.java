@@ -3,7 +3,6 @@ package com.onyx.android.sdk.reader.plugins.neopdf;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
@@ -93,14 +92,12 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
 
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
-        Log.d(TAG.getSimpleName(), "#### in NeoPdfReaderPlugin open");
         String docPassword = "";
         String archivePassword = "";
         documentPath = path;
         if (documentOptions != null) {
             docPassword = documentOptions.getDocumentPassword();
             archivePassword = documentOptions.getCompressedPassword();
-            Log.d(TAG.getSimpleName(), "#### compress password is: " + archivePassword);
         }
         long ret = getPluginImpl().openDocument(path, docPassword, archivePassword);
         if (ret  == NeoPdfJniWrapper.NO_ERROR) {
