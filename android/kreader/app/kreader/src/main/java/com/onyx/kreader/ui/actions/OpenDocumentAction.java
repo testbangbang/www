@@ -3,7 +3,6 @@ package com.onyx.kreader.ui.actions;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
-
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
