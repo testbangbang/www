@@ -15,8 +15,6 @@ import com.onyx.android.sdk.data.utils.HexStringUtil;
  */
 public class TagusZipPasswordUtil {
 
-    private static final String TAG = "TagusZipPasswordUtil";
-
     private final static String KEY_ZIP_PREFIX = "2g_LO7x.5v";
     private final static String KEY_ZIP_SUFFIX = "6ksN;i-4*e";
     private final static String ALGORITHM = "MD5";

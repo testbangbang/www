@@ -226,7 +226,6 @@ public class OpenDocumentAction extends BaseAction {
             showPasswordDialog(holder, options);
             return;
         } else if (readerException.getCode() == ReaderException.COULD_NOT_OPEN) {
-            Log.d(TAG, "#### can not open");
             handleZipEncryptedDocuments(holder, options);
             return;
         }

@@ -23,10 +23,9 @@ public class TagusCryptoHelper {
                     TagusDocumentCrypto.Columns.MD5 + "='" + md5 + "'",
                     null, null);
             if (cursor == null || !cursor.moveToFirst()) {
-                Log.w(TAG, "query DocumentCrypto failed");
+                Log.w(TAG, "query TagusDocumentCrypto failed");
                 return null;
             }
-            Log.i(TAG,"get Tagus DocumentCrypto from bookstore database");
             return TagusDocumentCrypto.Columns.readColumnData(cursor);
         } finally {
             if (cursor != null) {
@@ -43,19 +42,14 @@ public class TagusCryptoHelper {
             return false;
         }
 
-        Log.i(TAG, "isbn: " + metadata.getISBN());
         if (metadata.getISBN() == null || metadata.getISBN().isEmpty()) {
             return false;
         }
-
-//        PdfModel.singleton().setISBN(metadata.getISBN());
 
         TagusDocumentCrypto crypto = getDocumentCrypto(context, metadata.getMD5());
         if (crypto != null) {
             if (crypto.getEncType().equals(TagusEncryptionType.ZIP_COMPRESSED.toString())) {
                 String password = TagusZipPasswordUtil.getZipFilePassword(crypto, metadata.getISBN());
-//                ZipFilePassword.getInstance().setPassword(password);
-                Log.d(TAG, "#### password is: " + password);
                 if (StringUtils.isNotBlank(password)) {
                     options.setZipPassword(password);
                     return true;
