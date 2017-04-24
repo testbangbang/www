@@ -27,6 +27,7 @@
 #include "fpdfview.h"
 #include "fpdf_text.h"
 #include "fpdf_formfill.h"
+#include "onyx_zip_file_stream.h"
 
 class OnyxPdfiumPage {
 
@@ -209,6 +210,16 @@ public:
             return NULL;
         }
         return context->getTextPage(pageIndex);
+    }
+
+    static FPDF_FILEACCESS getPDFFileAccess(const char * filename, const char *zipPassword) {
+        OnyxZipFileStream *zipFileStream = new OnyxZipFileStream(filename, zipPassword);
+        zipFileStream->open();
+        FPDF_FILEACCESS pdfFileAccess;
+        pdfFileAccess.m_FileLen = zipFileStream->getSize();
+        pdfFileAccess.m_GetBlock = *zipFileGetBlock;
+        pdfFileAccess.m_Param = zipFileStream;
+        return pdfFileAccess;
     }
 
 };

@@ -3,6 +3,8 @@ package com.onyx.kreader.ui.actions;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.util.Log;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
@@ -12,6 +14,7 @@ import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
+import com.onyx.kreader.tagus.TagusCryptoHelper;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.request.OpenRequest;
@@ -34,6 +37,7 @@ import com.onyx.android.sdk.utils.DeviceUtils;
  * 4. restoreWithOptions.
  */
 public class OpenDocumentAction extends BaseAction {
+    private static final String TAG = "OpenDocumentAction";
     private Activity activity;
     private String documentPath;
     private DataManager dataProvider;
@@ -119,6 +123,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void openWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
+        Log.d(TAG, "openWithOptions, get here");
         final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, true);
         readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override
@@ -203,6 +208,14 @@ public class OpenDocumentAction extends BaseAction {
         });
     }
 
+    private void handleZipEncryptedDocuments(final ReaderDataHolder holder, final BaseOptions options) {
+        boolean getZipPassword = TagusCryptoHelper.handleZipCompressedBooks(holder.getContext(), holder.getDocumentPath(), options);
+        if (getZipPassword) {
+            Log.d(TAG, "get zip password");
+            openWithOptions(holder, options);
+        }
+    }
+
     private void processOpenException(final ReaderDataHolder holder, final BaseOptions options, final Throwable e) {
         if (!(e instanceof ReaderException)) {
             cleanup(holder);
@@ -211,6 +224,10 @@ public class OpenDocumentAction extends BaseAction {
         final ReaderException readerException = (ReaderException)e;
         if (readerException.getCode() == ReaderException.PASSWORD_REQUIRED) {
             showPasswordDialog(holder, options);
+            return;
+        } else if (readerException.getCode() == ReaderException.COULD_NOT_OPEN) {
+            Log.d(TAG, "#### can not open");
+            handleZipEncryptedDocuments(holder, options);
             return;
         }
         showErrorDialog(holder);

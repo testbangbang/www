@@ -44,7 +44,7 @@ public class NeoPdfJniWrapper {
     public native boolean nativeInitLibrary();
     public native boolean nativeDestroyLibrary();
 
-    private native long nativeOpenDocument(int id, final String path, final String password);
+    private native long nativeOpenDocument(int id, final String path, final String password, final String zipPassword);
     private native boolean nativeCloseDocument(int id);
 
     private native int nativeMetadata(int id, final String tag, byte [] data);
@@ -83,7 +83,12 @@ public class NeoPdfJniWrapper {
 
     public long openDocument(final String path, final String password) {
         filePath = path;
-        return nativeOpenDocument(id, path, password);
+        return nativeOpenDocument(id, path, password, null);
+    }
+
+    public long openDocument(final String path, final String password, final String zipPassword) {
+        filePath = path;
+        return nativeOpenDocument(id, path, password, zipPassword);
     }
 
     public boolean closeDocument() {

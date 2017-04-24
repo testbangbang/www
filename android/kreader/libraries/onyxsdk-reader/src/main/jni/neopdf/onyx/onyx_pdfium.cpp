@@ -68,9 +68,10 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
  * Signature: (Ljava/lang/String;Ljava/lang/String;)J
  */
 JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeOpenDocument
-  (JNIEnv *env, jobject thiz, jint id, jstring jfilename, jstring jpassword) {
+  (JNIEnv *env, jobject thiz, jint id, jstring jfilename, jstring jpassword, jstring jzipPassword) {
     const char *filename = NULL;
   	const char *password = NULL;
+  	const char *zipPassword = NULL;
   	JNIString fileString(env, jfilename);
   	filename = fileString.getLocalString();
   	if (filename == NULL) {
@@ -79,8 +80,20 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
   	}
 
   	JNIString passwordString(env, jpassword);
-  	password = passwordString.getLocalString();
-    FPDF_DOCUMENT document =  FPDF_LoadDocument(filename, password);
+    password = passwordString.getLocalString();
+    JNIString zipPasswordString(env, jzipPassword);
+    zipPassword = zipPasswordString.getLocalString();
+
+    FPDF_DOCUMENT document = NULL;
+    if (zipPassword != NULL && zipPassword[0] != '\0') {
+        LOGI("zip password is not null");
+        FPDF_FILEACCESS fileAccess = OnyxPdfiumManager::getPDFFileAccess(filename, zipPassword);
+        document = FPDF_LoadCustomDocument(&fileAccess, NULL);
+    } else {
+        LOGI("zip password is null");
+        document = FPDF_LoadDocument(filename, password);
+    }
+
     if (document == NULL) {
         int errorCode = FPDF_GetLastError();
         LOGE("load document failed error code %d", errorCode);

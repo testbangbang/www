@@ -26,10 +26,10 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 /*
  * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
  * Method:    nativeOpenDocument
- * Signature: (ILjava/lang/String;Ljava/lang/String;)J
+ * Signature: (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)J
  */
 JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeOpenDocument
-  (JNIEnv *, jobject, jint, jstring, jstring);
+  (JNIEnv *, jobject, jint, jstring, jstring, jstring);
 
 /*
  * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper

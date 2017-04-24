@@ -12,7 +12,7 @@ LOCAL_CXXFLAGS += -Wno-non-virtual-dtor -Wall
 
 
 # LOCAL_STATIC_LIBRARIES := libpdfium libpdfiumcore libutils
-LOCAL_STATIC_LIBRARIES := libutils libpdfium-new
+LOCAL_STATIC_LIBRARIES := libutils libpdfium-new bzip2 lzma zlib ZipLib
 
 # TODO: figure out why turning on exceptions requires manually linking libdl
 LOCAL_SHARED_LIBRARIES := libdl
@@ -20,10 +20,12 @@ LOCAL_SHARED_LIBRARIES := libdl
 LOCAL_LDLIBS := -llog -lz -ljnigraphics
 
 LOCAL_SRC_FILES := \
+    onyx_zip_file_stream.cpp \
     onyx_pdfium.cpp
 
 MY_SRC_ROOT := $(LOCAL_PATH)/..
 LOCAL_C_INCLUDES := \
+    $(MY_SRC_ROOT)/../ZipLib \
     $(MY_SRC_ROOT) \
     $(MY_SRC_ROOT)/libpdfium \
     $(MY_SRC_ROOT)/libpdfium/public \

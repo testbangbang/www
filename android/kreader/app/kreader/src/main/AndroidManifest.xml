@@ -18,6 +18,7 @@
 
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <uses-permission android:name="com.onyx.android.bookstore.READ_DATABASE"/>
 
     <application
         android:icon="@drawable/icon"
