@@ -41,9 +41,6 @@ public class ReaderLayerMenuViewFactory {
                 @Override
                 public void onClick(View v) {
                     selectedItem = (ReaderLayerMenuItem) v.getTag();
-                    if(selectedItem != null && selectedItem.getItemType().equals(ReaderMenuItem.ItemType.Group)){
-                        selectedAction =selectedItem.getAction();
-                    }
                     callback.onMenuItemClicked(selectedItem);
                 }
             });
@@ -72,9 +69,6 @@ public class ReaderLayerMenuViewFactory {
     public static View createMainMenuContainerView(final Context context, final List<ReaderLayerMenuItem> items, ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback, final boolean ignoreEmptyChildMenu) {
         List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items, ignoreEmptyChildMenu);
         final View view = createSimpleButtonContainerView(context, visibleItems, state, callback);
-        if(selectedAction == null){
-            selectedAction = visibleItems.get(0).getAction();
-        }
         view.post(new Runnable() {
             @Override
             public void run() {
@@ -88,7 +82,7 @@ public class ReaderLayerMenuViewFactory {
         if (parent.getChildren().size() == 0) {
             return null;
         }
-
+        selectedAction = parent.getAction();
         List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items, ignoreEmptyChildMenu);
         View subView = createSimpleButtonContainerView(context, visibleItems, state, callback);
         if (mainMenuContainerViewHeight > 0) {
