@@ -17,7 +17,6 @@ int zipFileGetBlock(void* param,
 
 OnyxZipFileStream::OnyxZipFileStream(const std::string &path, const std::string &password)
     : zipPassword(password)
-    , decompressionContent(NULL)
 {
     filePath = path;
 }
@@ -49,10 +48,6 @@ bool OnyxZipFileStream::open()
     }
 
     totalSize = pArchiveEntry->GetSize();
-
-    contentStream = pArchiveEntry->GetDecompressionStream();
-    decompressionContent = new char[totalSize];
-    contentStream->read(decompressionContent, totalSize);
     return true;
 }
 
@@ -65,17 +60,20 @@ int OnyxZipFileStream::requestBytes(size_t offset, unsigned char * pBuffer, size
 {
     size_t remained = totalSize - offset;
     int actualSize = (size <= remained) ? size : remained;
-    unsigned char * src = (unsigned char *)decompressionContent + offset;
+
+    int readSize = offset + actualSize;
+    char * readBuffer = new char[readSize];
+
+    std::istream *contentStream = pArchiveEntry->GetDecompressionStream();
+    contentStream->read(readBuffer, readSize);
+    unsigned char * src = (unsigned char *)readBuffer + offset;
     memcpy(pBuffer, src, actualSize);
+    free(readBuffer);
+    pArchiveEntry->CloseDecompressionStream();
     return actualSize;
 }
 
 void OnyxZipFileStream::close()
 {
-    if (decompressionContent != NULL) {
-        free(decompressionContent);
-    }
-    if (pArchiveEntry != NULL) {
-        pArchiveEntry->CloseDecompressionStream();
-    }
+
 }

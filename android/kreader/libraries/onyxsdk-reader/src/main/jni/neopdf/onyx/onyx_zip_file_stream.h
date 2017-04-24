@@ -31,8 +31,6 @@ private:
     size_t      totalSize;
 
     ZipArchiveEntry::Ptr pArchiveEntry;
-    std::istream*  contentStream;
-    char * decompressionContent;
 
 };
 
