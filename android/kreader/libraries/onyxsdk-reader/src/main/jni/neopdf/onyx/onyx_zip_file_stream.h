@@ -15,7 +15,7 @@ extern int zipFileGetBlock(void* param,
 class OnyxZipFileStream
 {
 public:
-    OnyxZipFileStream(const std::string &path, const std::string &zip_password);
+    OnyxZipFileStream(const std::string &path, const std::string &password);
     ~OnyxZipFileStream();
 
     bool open();
