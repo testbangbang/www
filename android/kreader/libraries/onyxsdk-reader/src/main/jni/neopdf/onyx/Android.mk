@@ -12,7 +12,7 @@ LOCAL_CXXFLAGS += -Wno-non-virtual-dtor -Wall
 
 
 # LOCAL_STATIC_LIBRARIES := libpdfium libpdfiumcore libutils
-LOCAL_STATIC_LIBRARIES := libutils libpdfium-new bzip2 lzma zlib ZipLib
+LOCAL_STATIC_LIBRARIES := libutils libpdfium-new ZipLib bzip2 lzma zlib
 
 # TODO: figure out why turning on exceptions requires manually linking libdl
 LOCAL_SHARED_LIBRARIES := libdl
