@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel_Table;
 import com.onyx.android.sdk.utils.MapUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
@@ -70,6 +71,18 @@ public class StatisticsUtils {
         database.endTransaction();
     }
 
+    public static void deleteStatisticsListByNote(final Context context,
+                                                    final String note) {
+        List<OnyxStatisticsModel> list = (List<OnyxStatisticsModel>) loadStatisticsListByNote(context, note);
+        final DatabaseWrapper database = FlowManager.getDatabase(OnyxStatisticsDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for(OnyxStatisticsModel statisticsData : list) {
+            statisticsData.delete();
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
     public static Collection<OnyxStatisticsModel> loadStatisticsListByStatus(final Context context,
                                                                              final int count,
                                                                              final int status) {
@@ -83,6 +96,14 @@ public class StatisticsUtils {
                                                                              final int status) {
         Select select = new Select();
         Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.status.eq(status));
+        List<OnyxStatisticsModel> list = where.queryList();
+        return list;
+    }
+
+    public static Collection<OnyxStatisticsModel> loadStatisticsListByNote(final Context context,
+                                                                             final String note) {
+        Select select = new Select();
+        Where where = select.from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.note.eq(note));
         List<OnyxStatisticsModel> list = where.queryList();
         return list;
     }

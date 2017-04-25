@@ -61,7 +61,7 @@
     <dimen name="dialog_table_of_content_radio_button_padding">7dp</dimen>
     <dimen name="dialog_scribble_full_screen_toolbar_padding">5dp</dimen>
     <dimen name="dialog_navigation_setting_item_text_size">16sp</dimen>
-    <dimen name="dict_name_text_view_layout_width">200dp</dimen>
+    <dimen name="dict_name_text_view_layout_width">140dp</dimen>
     <dimen name="scribble_bottom_menu_margin">8dp</dimen>
     <dimen name="scribble_bottom_expand_menu_padding_left_right">10dp</dimen>
     <dimen name="scribble_bottom_expand_menu_padding_top_bottom">4dp</dimen>
