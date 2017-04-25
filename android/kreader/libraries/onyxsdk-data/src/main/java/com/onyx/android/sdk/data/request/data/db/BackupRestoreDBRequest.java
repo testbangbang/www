@@ -34,18 +34,18 @@ public class BackupRestoreDBRequest extends BaseDataRequest {
         for (Map.Entry<DatabaseInfo, DatabaseInfo> entry : backupRestoreDBMap.entrySet()) {
             DatabaseInfo originDB = entry.getKey();
             DatabaseInfo backupDB = entry.getValue();
-            if (!backup && !checkBackupDBVersion(backupDB.getDbPath(), originDB.getVersion())) {
+            if (!backup && !canRestoreDB(backupDB.getDbPath(), originDB.getVersion())) {
                 continue;
             }
             transferDB(originDB.getDbPath(), backupDB.getDbPath(), backup);
         }
     }
 
-    private boolean checkBackupDBVersion(final String backupDBPath, final int originDBVersion) {
+    private boolean canRestoreDB(final String backupDBPath, final int originDBVersion) {
         SQLiteDatabase database = SQLiteDatabase.openDatabase(backupDBPath, null,SQLiteDatabase.OPEN_READWRITE);
-        int version = database.getVersion();
+        int backupDBVersion = database.getVersion();
         database.close();
-        return originDBVersion == version;
+        return originDBVersion >= backupDBVersion;
     }
 
     private void transferDB(final String originDBPath, final String backupDBPath, final boolean backup) throws Exception {
