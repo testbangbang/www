@@ -1,7 +1,10 @@
 package com.onyx.kreader.ui.actions;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.DatabaseInfo;
 import com.onyx.android.sdk.data.request.data.db.BackupRestoreDBRequest;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -15,10 +18,10 @@ import java.util.Map;
 
 public class BackupRestoreDBAction extends BaseAction {
 
-    private Map<String, String> backupRestoreDBMap;
+    private Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap;
     private boolean backup = false;
 
-    public BackupRestoreDBAction(Map<String, String> backupRestoreDBMap, boolean backup) {
+    public BackupRestoreDBAction(Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap, boolean backup) {
         this.backupRestoreDBMap = backupRestoreDBMap;
         this.backup = backup;
     }

@@ -1,6 +1,9 @@
 package com.onyx.android.sdk.data.request.data.db;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.DatabaseInfo;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
 import java.io.File;
@@ -15,10 +18,10 @@ import java.util.Map;
 
 public class BackupRestoreDBRequest extends BaseDataRequest {
 
-    private Map<String, String> backupRestoreDBMap;
+    private Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap;
     private boolean backup = false;
 
-    public BackupRestoreDBRequest(Map<String, String> backupRestoreDBMap, boolean backup) {
+    public BackupRestoreDBRequest(Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap, boolean backup) {
         this.backupRestoreDBMap = backupRestoreDBMap;
         this.backup = backup;
     }
@@ -28,11 +31,21 @@ public class BackupRestoreDBRequest extends BaseDataRequest {
         if (backupRestoreDBMap == null || backupRestoreDBMap.size() == 0) {
             return;
         }
-        for (Map.Entry<String, String> entry : backupRestoreDBMap.entrySet()) {
-            String originDBPath = entry.getKey();
-            String backupDBPath = entry.getValue();
-            transferDB(originDBPath, backupDBPath, backup);
+        for (Map.Entry<DatabaseInfo, DatabaseInfo> entry : backupRestoreDBMap.entrySet()) {
+            DatabaseInfo originDB = entry.getKey();
+            DatabaseInfo backupDB = entry.getValue();
+            if (!backup && !checkBackupDBVersion(backupDB.getDbPath(), originDB.getVersion())) {
+                continue;
+            }
+            transferDB(originDB.getDbPath(), backupDB.getDbPath(), backup);
         }
+    }
+
+    private boolean checkBackupDBVersion(final String backupDBPath, final int originDBVersion) {
+        SQLiteDatabase database = SQLiteDatabase.openDatabase(backupDBPath, null,SQLiteDatabase.OPEN_READWRITE);
+        int version = database.getVersion();
+        database.close();
+        return originDBVersion == version;
     }
 
     private void transferDB(final String originDBPath, final String backupDBPath, final boolean backup) throws Exception {
