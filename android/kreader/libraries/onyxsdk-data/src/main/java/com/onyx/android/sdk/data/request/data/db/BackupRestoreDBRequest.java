@@ -32,35 +32,35 @@ public class BackupRestoreDBRequest extends BaseDataRequest {
             return;
         }
         for (Map.Entry<DatabaseInfo, DatabaseInfo> entry : backupRestoreDBMap.entrySet()) {
-            DatabaseInfo originDB = entry.getKey();
-            DatabaseInfo backupDB = entry.getValue();
-            if (!backup && !canRestoreDB(backupDB.getDbPath(), originDB.getVersion())) {
+            DatabaseInfo currentDB = entry.getKey();
+            DatabaseInfo newDB = entry.getValue();
+            if (!backup && !canRestoreDB(newDB.getDbPath(), currentDB.getVersion())) {
                 continue;
             }
-            transferDB(originDB.getDbPath(), backupDB.getDbPath(), backup);
+            transferDB(currentDB.getDbPath(), newDB.getDbPath(), backup);
         }
     }
 
-    private boolean canRestoreDB(final String backupDBPath, final int originDBVersion) {
-        SQLiteDatabase database = SQLiteDatabase.openDatabase(backupDBPath, null,SQLiteDatabase.OPEN_READWRITE);
-        int backupDBVersion = database.getVersion();
+    private boolean canRestoreDB(final String newDBPath, final int currentDBVersion) {
+        SQLiteDatabase database = SQLiteDatabase.openDatabase(newDBPath, null,SQLiteDatabase.OPEN_READWRITE);
+        int newDBVersion = database.getVersion();
         database.close();
-        return originDBVersion >= backupDBVersion;
+        return currentDBVersion >= newDBVersion;
     }
 
-    private void transferDB(final String originDBPath, final String backupDBPath, final boolean backup) throws Exception {
-        File originDB = new File(originDBPath);
-        File backupDB = new File(backupDBPath);
+    private void transferDB(final String currentDBPath, final String newDBPath, final boolean backup) throws Exception {
+        File currentDB = new File(currentDBPath);
+        File newDB = new File(newDBPath);
 
         FileChannel src;
         FileChannel dst;
         if (backup) {
-            src = new FileInputStream(originDB).getChannel();
-            dst = new FileOutputStream(backupDB).getChannel();
+            src = new FileInputStream(currentDB).getChannel();
+            dst = new FileOutputStream(newDB).getChannel();
             dst.transferFrom(src, 0, src.size());
         }else {
-            src = new FileOutputStream(originDB).getChannel();
-            dst = new FileInputStream(backupDB).getChannel();
+            src = new FileOutputStream(currentDB).getChannel();
+            dst = new FileInputStream(newDB).getChannel();
             dst.transferTo(0, dst.size(), src);
         }
 
