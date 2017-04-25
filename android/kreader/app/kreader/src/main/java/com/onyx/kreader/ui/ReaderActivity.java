@@ -782,6 +782,22 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         updateNoteHostView();
+
+        if (getReaderDataHolder().inNoteWritingProvider()) {
+            final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
+            FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, true, false);
+            flushNoteAction.execute(getReaderDataHolder(), new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    changeViewConfig();
+                }
+            });
+        }else {
+            changeViewConfig();
+        }
+    }
+
+    private void changeViewConfig() {
         new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
     }
 
