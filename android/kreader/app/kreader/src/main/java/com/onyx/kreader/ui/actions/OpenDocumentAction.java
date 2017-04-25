@@ -120,6 +120,10 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void openWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
+        if (options.isZipEncrypted()) {
+            handleZipEncryptedDocuments(readerDataHolder, options);
+        }
+
         final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, true);
         readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override
@@ -205,10 +209,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void handleZipEncryptedDocuments(final ReaderDataHolder holder, final BaseOptions options) {
-        boolean getZipPassword = TagusCryptoHelper.handleZipCompressedBooks(holder.getContext(), holder.getDocumentPath(), options);
-        if (getZipPassword) {
-            openWithOptions(holder, options);
-        }
+        TagusCryptoHelper.handleZipCompressedBooks(holder.getContext(), holder.getDocumentPath(), options);
     }
 
     private void processOpenException(final ReaderDataHolder holder, final BaseOptions options, final Throwable e) {
@@ -219,9 +220,6 @@ public class OpenDocumentAction extends BaseAction {
         final ReaderException readerException = (ReaderException)e;
         if (readerException.getCode() == ReaderException.PASSWORD_REQUIRED) {
             showPasswordDialog(holder, options);
-            return;
-        } else if (readerException.getCode() == ReaderException.COULD_NOT_OPEN) {
-            handleZipEncryptedDocuments(holder, options);
             return;
         }
         showErrorDialog(holder);

@@ -40,6 +40,7 @@ public class BaseOptions {
     transient static public final String LOCATION_TAG = "location";
     transient static public final String PASSWORD_TAG = "ps";
     transient static public final String ZIP_PASSWORD_TAG = "zip_pass";
+    transient static public final String IS_ZIP_ENCRYPTED = "is_zip_encrypted";
     transient static public final String PAGE_NUMBER_TAG = "pn";
     transient static public final String READER_MATRIX_TAG = "rm";
     transient static public final String READER_NAVIGATION_MATRIX_TAG = "nav_mode";
@@ -594,4 +595,16 @@ public class BaseOptions {
     public void setMd5(final String value) {
         backend.putString(MD5, value);
     }
+
+    public boolean isZipEncrypted() {
+        if (backend.hasKey(IS_ZIP_ENCRYPTED)) {
+            return backend.getBoolean(IS_ZIP_ENCRYPTED);
+        }
+        return false;
+    }
+
+    public void setIsZipEncrypted(boolean isZipEncrypted) {
+        backend.putBoolean(IS_ZIP_ENCRYPTED, isZipEncrypted);
+    }
+
 }
