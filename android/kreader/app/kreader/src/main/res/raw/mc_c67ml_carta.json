@@ -2,6 +2,8 @@
     "ttsEnabled" : false,
     "hasFrontLight" : true,
     "disableNoteFunc" : true,
+    "pronounceEnable" :false,
+    "regalEnable" : false,
     "keyBinding": {
         "HandlerManager": {
             "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
