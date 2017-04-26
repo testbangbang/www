@@ -130,8 +130,8 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void openWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
-        String drmCertificate = DrmCertificateFactory.getDrmCertificate();
-        final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, drmCertificate, true);
+        final DrmCertificateFactory factory = new DrmCertificateFactory();
+        final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, factory, true);
         readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

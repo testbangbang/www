@@ -278,8 +278,8 @@ public class ReaderTestActivity extends Activity {
 
     public void testReaderOpen() {
         reader = ReaderManager.getReader(path);
-        String drmCertificate = DrmCertificateFactory.getDrmCertificate();
-        BaseReaderRequest open = new OpenRequest(path, getDocumentOptions(), drmCertificate, false);
+        final DrmCertificateFactory factory = new DrmCertificateFactory();
+        BaseReaderRequest open = new OpenRequest(path, getDocumentOptions(), factory, false);
         reader.submitRequest(this, open, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

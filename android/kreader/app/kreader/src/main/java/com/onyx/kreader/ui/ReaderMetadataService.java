@@ -105,8 +105,8 @@ public class ReaderMetadataService extends Service {
     }
 
     private void extractMetadataAndThumbnail(final ReaderMetadataService service, final String documentPath, final RefValue<Boolean> result) {
-        String drmCertificate = DrmCertificateFactory.getDrmCertificate();
-        OpenRequest openRequest = new OpenRequest(documentPath, new BaseOptions(), drmCertificate, false);
+        final DrmCertificateFactory factory = new DrmCertificateFactory();
+        OpenRequest openRequest = new OpenRequest(documentPath, new BaseOptions(), factory, false);
         openRequest.setRunInBackground(false);
         reader.submitRequest(service, openRequest, new BaseCallback() {
             @Override
