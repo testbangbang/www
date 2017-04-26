@@ -44,7 +44,7 @@
         android:layout_marginTop="8dp"
         android:orientation="horizontal" />
 
-    <com.onyx.android.sdk.ui.view.PageRecyclerView
+    <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
         android:id="@+id/content_pageView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -6,7 +6,8 @@ import android.content.pm.ActivityInfo;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
+import com.onyx.android.sdk.reader.host.request.RestoreRequest;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
@@ -14,11 +15,9 @@ import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
 import com.onyx.kreader.ui.data.DrmCertificateFactory;
-import com.onyx.kreader.ui.events.ForceCloseEvent;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
-import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.request.OpenRequest;
-import com.onyx.kreader.ui.requests.RestoreRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
@@ -27,8 +26,6 @@ import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.android.sdk.utils.DeviceUtils;
-
-import java.io.File;
 
 /**
  * Created by zhuzeng on 5/17/16.
@@ -95,12 +92,19 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup(readerDataHolder);
                     return;
                 }
+                // ignore document's orientation temporary for multi-document
+//                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
+//                    return;
+//                }
+
                 if (processOrientation) {
                     if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
                         return;
                     }
                 }
-                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
+                BaseOptions baseOptions = loadDocumentOptionsRequest.getDocumentOptions();
+                DeviceConfig.adjustOptionsWithDeviceConfig(baseOptions, readerDataHolder.getContext());
+                openWithOptions(readerDataHolder, baseOptions);
             }
         });
     }

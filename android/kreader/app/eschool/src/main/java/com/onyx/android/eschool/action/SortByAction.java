@@ -6,7 +6,8 @@ import android.content.Context;
 
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.R;
-import com.onyx.android.eschool.events.LoadFinishEvent;
+import com.onyx.android.eschool.model.LibraryDataModel;
+import com.onyx.android.eschool.model.LibraryViewInfo;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -14,7 +15,6 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.ui.dialog.DialogSortBy;
-import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.util.Arrays;
@@ -27,8 +27,11 @@ import java.util.Map;
  */
 
 public class SortByAction extends BaseAction<LibraryDataHolder> {
-    Map<String, SortBy> sortByMap = new LinkedHashMap();
+    private Map<String, SortBy> sortByMap = new LinkedHashMap();
     private FragmentManager fragmentManager;
+
+    private LibraryDataModel libraryDataModel;
+    private BaseCallback baseCallback;
 
     public SortByAction(Activity activity) {
         this.fragmentManager = activity.getFragmentManager();
@@ -36,7 +39,8 @@ public class SortByAction extends BaseAction<LibraryDataHolder> {
 
     @Override
     public void execute(final LibraryDataHolder dataHolder, BaseCallback baseCallback) {
-        DialogSortBy dialog = getOrderDialog(dataHolder.getContext(), dataHolder.getContext().getString(R.string.sort_fail),
+        this.baseCallback = baseCallback;
+        DialogSortBy dialog = getOrderDialog(dataHolder.getContext(), dataHolder.getContext().getString(R.string.sort),
                 getSortByList(dataHolder),
                 new DialogSortBy.OnSortByListener() {
                     @Override
@@ -45,8 +49,9 @@ public class SortByAction extends BaseAction<LibraryDataHolder> {
                         processSortBy(dataHolder, sortBy, sortOrder);
                     }
                 });
-        dialog.setCurrentSortBySelectedIndex(getCurrentSortByIndex(dataHolder.getContext(), dataHolder.getCurrentQueryArgs()));
-        dialog.setCurrentSortOrderSelected(dataHolder.getCurrentSortOrder());
+        dialog.setCurrentSortBySelectedIndex(getCurrentSortByIndex(dataHolder.getContext(),
+                dataHolder.getLibraryViewInfo().getCurrentQueryArgs()));
+        dialog.setCurrentSortOrderSelected(dataHolder.getLibraryViewInfo().getCurrentSortOrder());
         dialog.show(fragmentManager);
     }
 
@@ -75,22 +80,18 @@ public class SortByAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void processSortBy(final LibraryDataHolder dataHolder, String sortBy, SortOrder sortOrder) {
-        dataHolder.updateSortBy(getSortByMap(dataHolder.getContext()).get(sortBy), sortOrder);
-        QueryArgs args = dataHolder.getQueryArgs(CollectionUtils.getSize(dataHolder.getBookList()), 0);
-        new MetadataLoadAction(args).execute(dataHolder, new BaseCallback() {
+        LibraryViewInfo libraryViewInfo = dataHolder.getLibraryViewInfo();
+        libraryViewInfo.updateSortBy(getSortByMap(dataHolder.getContext()).get(sortBy), sortOrder);
+        final MetadataLoadAction loadAction = new MetadataLoadAction(libraryViewInfo.libraryQuery());
+        loadAction.execute(dataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    ToastUtils.showToast(dataHolder.getContext(), R.string.sort_fail);
-                    return;
+                if (e == null) {
+                    libraryDataModel = loadAction.getLibraryDataModel();
                 }
-                postLoadFinishEvent(dataHolder);
+                BaseCallback.invoke(baseCallback, request, e);
             }
         });
-    }
-
-    private void postLoadFinishEvent(LibraryDataHolder dataHolder) {
-        dataHolder.getEventBus().post(new LoadFinishEvent());
     }
 
     public int getCurrentSortByIndex(Context context, QueryArgs queryArgs) {
@@ -115,5 +116,9 @@ public class SortByAction extends BaseAction<LibraryDataHolder> {
             sortByMap.put(context.getString(R.string.by_author), SortBy.Author);
         }
         return sortByMap;
+    }
+
+    public LibraryDataModel getLibraryDataModel() {
+        return libraryDataModel;
     }
 }

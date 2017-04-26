@@ -29,6 +29,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.device.EnvironmentUtil;
+import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
@@ -40,7 +41,6 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -576,7 +576,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 if (e != null) {
                     return;
                 }
-                if (waitScreenOrientationChanging(loadDocumentOptionsRequest.getDocumentOptions())) {
+                BaseOptions baseOptions = loadDocumentOptionsRequest.getDocumentOptions();
+                DeviceConfig.adjustOptionsWithDeviceConfig(baseOptions, ReaderTabHostActivity.this);
+                if (waitScreenOrientationChanging(baseOptions)) {
                     pathToContinueOpenAfterRotation = path;
                     return;
                 }

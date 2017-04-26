@@ -1,6 +1,8 @@
 package com.onyx.kreader.ui.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -13,6 +15,8 @@ import com.onyx.kreader.utils.DoubleClickExitHelper;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity {
     private static final String REABBLE_URL = "http://reabble.com/";
@@ -22,12 +26,18 @@ public class MainActivity extends AppCompatActivity {
 
     private DoubleClickExitHelper doubleClickExitHelper;
 
+    private static final int STORAGE_PHONE_PERMS_REQUEST_CODE = 1;
+    private static final String[] STORAGE_PHONE_PERMS = new String[]{
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_PHONE_STATE};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         ButterKnife.bind(this);
 
+        requestPermission();
         initConfig();
         initView();
         initData();
@@ -83,6 +93,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    @AfterPermissionGranted(STORAGE_PHONE_PERMS_REQUEST_CODE)
+    private void requestPermission() {
+        String[] perms = STORAGE_PHONE_PERMS;
+        if (EasyPermissions.hasPermissions(this, perms)) {
+
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.request_permission_rationale),
+                    STORAGE_PHONE_PERMS_REQUEST_CODE, perms);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == STORAGE_PHONE_PERMS_REQUEST_CODE) {
+
+        }
     }
 }
 

@@ -1,27 +1,20 @@
 package com.onyx.android.eschool.activity;
 
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.LibraryDeleteAction;
+import com.onyx.android.eschool.action.LibraryGotoPageAction;
 import com.onyx.android.eschool.action.LibraryRemoveFromAction;
+import com.onyx.android.eschool.adapter.LibraryAdapter;
 import com.onyx.android.eschool.custom.PageIndicator;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.R;
@@ -32,17 +25,20 @@ import com.onyx.android.eschool.action.LibraryMoveToAction;
 import com.onyx.android.eschool.action.SortByAction;
 import com.onyx.android.eschool.events.LoadFinishEvent;
 import com.onyx.android.eschool.glide.ThumbnailLoader;
+import com.onyx.android.eschool.model.LibraryDataModel;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.BookFilter;
+import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -56,7 +52,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by suicheng on 2017/4/10.
@@ -65,21 +60,26 @@ import butterknife.ButterKnife;
 public class LibraryActivity extends BaseActivity {
 
     @Bind(R.id.content_pageView)
-    PageRecyclerView contentPageView;
+    SinglePageRecyclerView contentPageView;
     PageIndicator pageIndicator;
 
     @Bind(R.id.parent_library_ref)
     LinearLayout parentLibraryRefLayout;
 
-    private LibraryDataHolder dataHolder = new LibraryDataHolder(LibraryActivity.this);
-
-    private List<Metadata> chosenItemsList = new ArrayList<>();
-    private int selectionMode = SelectionMode.NORMAL_MODE;
+    private LibraryDataHolder dataHolder;
+    private LibraryAdapter libraryAdapter;
 
     private boolean longClickMode = false;
     private int currentChosenItemIndex = 0;
 
     private ThumbnailLoader thumbnailLoader;
+    private QueryPagination pagination;
+
+    private LibraryDataModel preDataModel;
+    private LibraryDataModel nextDataModel;
+
+    private int row = 3;
+    private int col = 3;
 
     @Override
     protected Integer getLayoutId() {
@@ -88,7 +88,17 @@ public class LibraryActivity extends BaseActivity {
 
     @Override
     protected void initConfig() {
+        initDataHolder();
+        initThumbnailLoader();
         loadQueryArgsConf();
+    }
+
+    private void initDataHolder() {
+        dataHolder = SchoolApp.getLibraryDataHolder();
+        dataHolder.setContext(this);
+    }
+
+    private void initThumbnailLoader() {
         thumbnailLoader = new ThumbnailLoader(LibraryActivity.this, SchoolApp.getDataManager()
                 .getRemoteContentProvider());
     }
@@ -133,122 +143,80 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private void initPageIndicator() {
-        pageIndicator = new PageIndicator(findViewById(R.id.page_indicator_layout), contentPageView.getPaginator());
+        pagination = dataHolder.getLibraryViewInfo().getQueryPagination();
+        pagination.setCurrentPage(0);
+        pageIndicator = new PageIndicator(findViewById(R.id.page_indicator_layout), pagination);
         pageIndicator.setTotalFormat(getString(R.string.total_format));
         pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
             @Override
             public void prev() {
-                contentPageView.prevPage();
+                prevPage();
             }
 
             @Override
             public void next() {
-                contentPageView.nextPage();
+                nextPage();
+            }
+
+            @Override
+            public void gotoPage(int page) {
+                showGotoPageAction(page);
             }
         });
     }
 
     private void initContentPageView() {
         contentPageView.setLayoutManager(new DisableScrollGridManager(this));
-        contentPageView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+        contentPageView.setOnChangePageListener(new SinglePageRecyclerView.OnChangePageListener() {
             @Override
-            public void onPageChange(int position, int itemCount, int pageSize) {
-                updatePageIndicator();
-                if (!contentPageView.getPaginator().hasNextPage()) {
-                    loadMoreData();
-                }
+            public void prev() {
+                prevPage();
+            }
+
+            @Override
+            public void next() {
+                nextPage();
             }
         });
-        contentPageView.setAdapter(new PageRecyclerView.PageAdapter<LibraryItemViewHolder>() {
-
+        libraryAdapter = new LibraryAdapter(this, thumbnailLoader);
+        libraryAdapter.setRowCol(row, col);
+        libraryAdapter.setItemClickListener(new LibraryAdapter.ItemClickListener() {
             @Override
-            public int getItemViewType(int position) {
-                return super.getItemViewType(position);
+            public void onClick(int position, View view) {
+                processItemClick(position);
             }
 
             @Override
-            public int getRowCount() {
-                return 3;
-            }
-
-            @Override
-            public int getColumnCount() {
-                return 3;
-            }
-
-            @Override
-            public int getDataCount() {
-                return getLibraryListSize() + getBookListSize();
-            }
-
-            @Override
-            public LibraryItemViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-                return new LibraryItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.library_item, parent, false));
-            }
-
-            @Override
-            public void onPageBindViewHolder(LibraryItemViewHolder holder, int position) {
-                holder.itemView.setTag(position);
-                holder.checkBox.setVisibility(View.GONE);
-                holder.titleView.setVisibility(View.VISIBLE);
-                String title;
-                if (position < getLibraryListSize()) {
-                    Library library = getLibraryList().get(position);
-                    title = library.getName();
-                    holder.imageCover.setImageResource(R.drawable.library_sub_cover);
-                    holder.progressBar.setVisibility(View.INVISIBLE);
-                } else {
-                    Metadata metadata = getBookList().get(getBookItemPosition(position));
-                    title = metadata.getTitle();
-                    if (StringUtils.isNullOrEmpty(title)) {
-                        title = metadata.getName();
-                    }
-                    holder.progressBar.setVisibility(View.VISIBLE);
-                    renderBookCoverImage(holder, metadata);
-                    renderBookProgress(holder, metadata);
-                    renderMultiCheckBox(holder, metadata);
-                }
-                holder.titleView.setText(title);
+            public void onLongClick(int position, View view) {
+                processItemLongClick(position);
             }
         });
+        contentPageView.setAdapter(libraryAdapter);
     }
 
-    private void renderBookProgress(LibraryItemViewHolder holder, Metadata metadata) {
-        holder.progressBar.setVisibility(metadata == null ? View.INVISIBLE : View.VISIBLE);
-        if (metadata != null) {
-            holder.progressBar.setProgress(metadata.getProgressPercent());
+    private void updateContentView(LibraryDataModel libraryDataModel) {
+        LibraryDataModel newDataModel = new LibraryDataModel();
+        int currentPage = pagination.getCurrentPage();
+        int itemsPerPage = pagination.itemsPerPage();
+        if (currentPage > libraryDataModel.libraryCount / itemsPerPage) {
+            newDataModel.visibleLibraryList = new ArrayList<>();
+            newDataModel.visibleBookList = libraryDataModel.visibleBookList;
+        } else {
+            int position = currentPage * itemsPerPage;
+            for (int i = position;
+                 (i < libraryDataModel.libraryCount && i < (currentPage + 1) * itemsPerPage);
+                 i++) {
+                newDataModel.visibleLibraryList.add(libraryDataModel.visibleLibraryList.get(i));
+            }
+            int size = itemsPerPage - CollectionUtils.getSize(newDataModel.visibleLibraryList);
+            for (int i = 0; (i < size && i < CollectionUtils.getSize(libraryDataModel.visibleBookList)); i++) {
+                newDataModel.visibleBookList.add(libraryDataModel.visibleBookList.get(i));
+            }
         }
-    }
-
-    private void renderMultiCheckBox(LibraryItemViewHolder holder, Metadata metadata) {
-        if (isMultiSelectionMode()) {
-            holder.checkBox.setVisibility(View.VISIBLE);
-            holder.checkBox.setChecked(chosenItemsList.contains(metadata));
-        }
-    }
-
-    private void renderBookCoverImage(final LibraryItemViewHolder holder, final Metadata metadata) {
-        if (StringUtils.isNullOrEmpty(metadata.getHashTag())) {
-            holder.imageCover.setImageResource(R.drawable.library_book_cover);
-            return;
-        }
-        Glide.with(this).using(thumbnailLoader).load(metadata).dontAnimate()
-                .placeholder(R.drawable.library_book_cover)
-                .error(R.drawable.library_book_cover)
-                .listener(new RequestListener<Metadata, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, Metadata meta, Target<GlideDrawable> target, boolean isFirstResource) {
-                        holder.titleView.setVisibility(View.VISIBLE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, Metadata meta, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        holder.titleView.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .into(holder.imageCover);
+        newDataModel.bookCount = libraryDataModel.bookCount;
+        newDataModel.libraryCount = libraryDataModel.libraryCount;
+        libraryAdapter.updateLibraryDataModel(newDataModel);
+        updateContentView();
     }
 
     private void updateContentView() {
@@ -258,12 +226,14 @@ public class LibraryActivity extends BaseActivity {
 
     private void updatePageIndicator() {
         int totalCount = getTotalCount();
+        pagination.resize(row, col, totalCount);
         pageIndicator.updateTotal(totalCount);
         pageIndicator.updateCurrentPage(totalCount);
     }
 
     @Override
     protected void initData() {
+        loadData(dataHolder.getLibraryViewInfo().libraryQuery());
     }
 
     @Override
@@ -279,40 +249,131 @@ public class LibraryActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dataHolder.setContext(SchoolApp.singleton().getApplicationContext());
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        int limit = getBookListSize() > dataHolder.getQueryLimit() ? getBookListSize() : dataHolder.getQueryLimit();
-        loadData(limit, 0);
+        if (dataHolder.getLibraryViewInfo().getLibraryDataModel() != null) {
+            loadData(dataHolder.getLibraryViewInfo().getCurrentQueryArgs());
+        }
     }
 
-    private void loadData() {
-        loadData(dataHolder.getQueryLimit(), 0);
+    private void prevPage() {
+        if (preDataModel == null) {
+            return;
+        }
+        if (!pagination.prevPage()) {
+            return;
+        }
+        dataHolder.getLibraryViewInfo().prevPage();
+        final LibraryDataModel showDataModel = preDataModel;
+        nextDataModel = dataHolder.getLibraryViewInfo().getLibraryDataModel();
+        dataHolder.getLibraryViewInfo().setLibraryDataModel(showDataModel);
+        prevLoad();
+        preDataModel = null;
+        updateContentView(showDataModel);
     }
 
-    private void loadData(int limit, int offset) {
-        MetadataLoadAction loadAction = new MetadataLoadAction(
-                dataHolder.getQueryArgs(limit, offset));
+    private void prevLoad() {
+        int preLoadPage = pagination.getCurrentPage() - 1;
+        if (preLoadPage < 0) {
+            return;
+        }
+        final MetadataLoadAction loadAction = new MetadataLoadAction(
+                dataHolder.getLibraryViewInfo().preLoadingPage(preLoadPage), false);
         loadAction.execute(dataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
+                if (e == null) {
+                    preDataModel = loadAction.getLibraryDataModel();
                 }
-                updateContentView();
             }
         });
     }
 
-    private void loadMoreData() {
-        MetadataLoadAction loadAction = new MetadataLoadAction(
-                dataHolder.getQueryArgs(dataHolder.getQueryLimit(), getBookListSize()), true);
+    private void nextPage() {
+        if (nextDataModel == null) {
+            return;
+        }
+        if (!pagination.nextPage()) {
+            return;
+        }
+        dataHolder.getLibraryViewInfo().nextPage();
+        final LibraryDataModel showDataModel = nextDataModel;
+        preDataModel = dataHolder.getLibraryViewInfo().getLibraryDataModel();
+        dataHolder.getLibraryViewInfo().setLibraryDataModel(showDataModel);
+        nextLoad();
+        nextDataModel = null;
+        updateContentView(showDataModel);
+    }
+
+    private void nextLoad() {
+        int preLoadPage = pagination.getCurrentPage() + 1;
+        if (preLoadPage >= pagination.pages()) {
+            return;
+        }
+        final MetadataLoadAction loadAction = new MetadataLoadAction(
+                dataHolder.getLibraryViewInfo().preLoadingPage(preLoadPage), false);
+        loadAction.execute(dataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e == null) {
+                    nextDataModel = loadAction.getLibraryDataModel();
+                }
+            }
+        });
+    }
+
+    private void showGotoPageAction(int currentPage) {
+        final LibraryGotoPageAction gotoPageAction = new LibraryGotoPageAction(this, currentPage, pagination.pages());
+        gotoPageAction.execute(dataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                int newPage = gotoPageAction.getSelectPage();
+                gotoPageImpl(newPage);
+            }
+        });
+    }
+
+    private void gotoPageImpl(int page) {
+        final int originPage = pagination.getCurrentPage();
+        final MetadataLoadAction loadAction = new MetadataLoadAction(dataHolder.getLibraryViewInfo().gotoPage(page));
+        loadAction.execute(dataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    pagination.setCurrentPage(originPage);
+                    return;
+                }
+                prevLoad();
+                nextLoad();
+                dataHolder.getLibraryViewInfo().setLibraryDataModel(loadAction.getLibraryDataModel());
+                updateContentView(loadAction.getLibraryDataModel());
+            }
+        });
+    }
+
+    private void loadData() {
+        pagination.setCurrentPage(0);
+        loadData(dataHolder.getLibraryViewInfo().libraryQuery());
+    }
+
+    private void loadData(QueryArgs queryArgs) {
+        final MetadataLoadAction loadAction = new MetadataLoadAction(queryArgs);
         loadAction.execute(dataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     return;
                 }
-                updateContentView();
+                dataHolder.getLibraryViewInfo().setLibraryDataModel(loadAction.getLibraryDataModel());
+                pagination.resize(row, col, getTotalCount());
+                nextLoad();
+                updateContentView(loadAction.getLibraryDataModel());
             }
         });
     }
@@ -324,23 +385,39 @@ public class LibraryActivity extends BaseActivity {
                 R.string.library_activity_book_filter_key, BookFilter.ALL.toString());
         SortOrder sortOrder = SortOrder.values()[StudentPreferenceManager.getIntValue(LibraryActivity.this,
                 R.string.library_activity_asc_order_key, 0)];
-        dataHolder.updateSortBy(SortBy.valueOf(sortBy), sortOrder);
-        dataHolder.updateFilterBy(BookFilter.valueOf(filterBy), sortOrder);
+        dataHolder.getLibraryViewInfo().updateSortBy(SortBy.valueOf(sortBy), sortOrder);
+        dataHolder.getLibraryViewInfo().updateFilterBy(BookFilter.valueOf(filterBy), sortOrder);
     }
 
     private void processSortBy() {
-        SortByAction sortByAction = new SortByAction(this);
-        sortByAction.execute(dataHolder, null);
+        final SortByAction sortByAction = new SortByAction(this);
+        sortByAction.execute(dataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                loadData();
+            }
+        });
     }
 
     private void processFilterByBy() {
-        FilterByAction filterByAction = new FilterByAction(this);
-        filterByAction.execute(dataHolder, null);
+        final FilterByAction filterByAction = new FilterByAction(this);
+        filterByAction.execute(dataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                loadData();
+            }
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadFinishEvent(LoadFinishEvent event) {
-        updateContentView();
+        updateContentView(dataHolder.getLibraryViewInfo().getLibraryDataModel());
     }
 
     @Override
@@ -354,7 +431,7 @@ public class LibraryActivity extends BaseActivity {
         for (int i = 0; i < menu.size(); i++) {
             switch (menu.getItem(i).getItemId()) {
                 case R.id.menu_remove_from_library:
-                    if (CollectionUtils.isNullOrEmpty(dataHolder.getParentLibraryList())) {
+                    if (CollectionUtils.isNullOrEmpty(dataHolder.getLibraryViewInfo().getLibraryPathList())) {
                         menu.getItem(i).setVisible(false);
                     } else {
                         menu.getItem(i).setVisible(isMultiSelectionMode());
@@ -383,7 +460,10 @@ public class LibraryActivity extends BaseActivity {
                     break;
                 case R.id.menu_remove_from_library:
                     if (isLibraryItem) {
-                        menu.getItem(i).setVisible(!CollectionUtils.isNullOrEmpty(dataHolder.getParentLibraryList()));
+                        menu.getItem(i).setVisible(false);
+                    } else {
+                        menu.getItem(i).setVisible(!CollectionUtils.isNullOrEmpty(
+                                dataHolder.getLibraryViewInfo().getLibraryPathList()));
                     }
                     break;
                 case R.id.menu_delete_library:
@@ -423,17 +503,18 @@ public class LibraryActivity extends BaseActivity {
                 return true;
             case R.id.menu_add_to_library:
                 if (isLongClickMode() && !isMultiSelectionMode()) {
-                    chosenItemsList.clear();
-                    chosenItemsList.add(getBookList().get(getBookItemPosition(currentChosenItemIndex)));
+                    libraryAdapter.clearChosenItemsList();
+                    libraryAdapter.getChosenItemsList().add(getBookList().get(getBookItemPosition(currentChosenItemIndex)));
                 }
                 processAddToLibrary();
                 return true;
             case R.id.menu_remove_from_library:
                 if (isLongClickMode() && !isMultiSelectionMode()) {
-                    chosenItemsList.clear();
-                    chosenItemsList.add(getBookList().get(getBookItemPosition(currentChosenItemIndex)));
+                    libraryAdapter.clearChosenItemsList();
+                    libraryAdapter.getChosenItemsList().add(getBookList().get(getBookItemPosition(currentChosenItemIndex)));
                 }
                 processRemoveFromLibrary();
+                break;
             case R.id.menu_delete_library:
                 processDeleteLibrary();
                 break;
@@ -444,13 +525,24 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private void processBuildLibrary() {
-        new LibraryBuildAction(this, dataHolder.getLibraryIdString()).execute(dataHolder, null);
+        new LibraryBuildAction(this, dataHolder.getLibraryViewInfo().getLibraryIdString())
+                .execute(dataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (e != null) {
+                            return;
+                        }
+                        loadData();
+                    }
+                });
     }
 
     private void processAddToLibrary() {
         Library currentLibrary = new Library();
-        currentLibrary.setIdString(dataHolder.getLibraryIdString());
-        LibraryMoveToAction moveToLibraryAction = new LibraryMoveToAction(this, getLibraryList(), chosenItemsList);
+        currentLibrary.setIdString(dataHolder.getLibraryViewInfo().getLibraryIdString());
+        LibraryMoveToAction moveToLibraryAction = new LibraryMoveToAction(this,
+                dataHolder.getLibraryViewInfo().getLibraryDataModel().visibleLibraryList,
+                libraryAdapter.getChosenItemsList());
         moveToLibraryAction.execute(dataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -458,26 +550,42 @@ public class LibraryActivity extends BaseActivity {
                     return;
                 }
                 quitMultiSelectionMode();
-                loadData(CollectionUtils.getSize(getBookList()), 0);
+                loadData();
             }
         });
     }
 
     private void processRemoveFromLibrary() {
-        Library fromLibrary = dataHolder.getParentLibraryList().get(CollectionUtils.getSize(
-                dataHolder.getParentLibraryList()) - 1);
-        LibraryRemoveFromAction removeFromAction = new LibraryRemoveFromAction(fromLibrary, chosenItemsList);
-        removeFromAction.execute(dataHolder, null);
+        Library fromLibrary = dataHolder.getLibraryViewInfo().getLibraryPathList().get(CollectionUtils.getSize(
+                dataHolder.getLibraryViewInfo().getLibraryPathList()) - 1);
+        LibraryRemoveFromAction removeFromAction = new LibraryRemoveFromAction(fromLibrary, libraryAdapter.getChosenItemsList());
+        removeFromAction.execute(dataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                loadData();
+            }
+        });
     }
 
     private void processDeleteLibrary() {
-        new LibraryDeleteAction(this, dataHolder.getLibraryList().get(currentChosenItemIndex))
-                .execute(dataHolder, null);
+        new LibraryDeleteAction(this, libraryAdapter.getLibraryList().get(currentChosenItemIndex))
+                .execute(dataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (e != null) {
+                            return;
+                        }
+                        loadData();
+                    }
+                });
     }
 
     private void getIntoMultiSelectMode() {
-        selectionMode = SelectionMode.MULTISELECT_MODE;
-        chosenItemsList.clear();
+        libraryAdapter.setMultiSelectionMode(SelectionMode.MULTISELECT_MODE);
+        libraryAdapter.clearChosenItemsList();
         updateContentView();
     }
 
@@ -492,7 +600,7 @@ public class LibraryActivity extends BaseActivity {
             updateContentView();
             return;
         }
-        if (CollectionUtils.isNullOrEmpty(dataHolder.getParentLibraryList())) {
+        if (CollectionUtils.isNullOrEmpty(dataHolder.getLibraryViewInfo().getLibraryPathList())) {
             super.onBackPressed();
             return;
         }
@@ -502,7 +610,8 @@ public class LibraryActivity extends BaseActivity {
 
     private void removeLastParentLibrary() {
         parentLibraryRefLayout.removeViewAt(parentLibraryRefLayout.getChildCount() - 1);
-        dataHolder.getParentLibraryList().remove(dataHolder.getParentLibraryList().size() - 1);
+        dataHolder.getLibraryViewInfo().getLibraryPathList().remove(
+                dataHolder.getLibraryViewInfo().getLibraryPathList().size() - 1);
     }
 
     private int getBookItemPosition(int originPosition) {
@@ -510,23 +619,24 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private int getTotalCount() {
-        return (int) (getLibraryListSize() + dataHolder.getBookCount());
+        LibraryDataModel dataModel = dataHolder.getLibraryViewInfo().getLibraryDataModel();
+        return dataModel.bookCount + dataModel.libraryCount;
     }
 
     private int getBookListSize() {
-        return CollectionUtils.getSize(getBookList());
+        return libraryAdapter.getBookListSize();
     }
 
     private int getLibraryListSize() {
-        return CollectionUtils.getSize(getLibraryList());
+        return libraryAdapter.getLibraryListSize();
     }
 
     private List<Metadata> getBookList() {
-        return dataHolder.getBookList();
+        return libraryAdapter.getMetadataList();
     }
 
     private List<Library> getLibraryList() {
-        return dataHolder.getLibraryList();
+        return libraryAdapter.getLibraryList();
     }
 
     private void processBookItemOpen(int position) {
@@ -548,9 +658,8 @@ public class LibraryActivity extends BaseActivity {
                 ViewDocumentUtils.getReaderComponentName(this));
     }
 
-
     private void addLibraryToParentRefList(Library library) {
-        dataHolder.getParentLibraryList().add(library);
+        dataHolder.getLibraryViewInfo().getLibraryPathList().add(library);
         parentLibraryRefLayout.addView(getLibraryTextView(library));
     }
 
@@ -573,10 +682,10 @@ public class LibraryActivity extends BaseActivity {
             return;
         }
         Metadata metadata = getBookList().get(getBookItemPosition(position));
-        if (chosenItemsList.contains(metadata)) {
-            chosenItemsList.remove(metadata);
+        if (libraryAdapter.getChosenItemsList().contains(metadata)) {
+            libraryAdapter.getChosenItemsList().remove(metadata);
         } else {
-            chosenItemsList.add(metadata);
+            libraryAdapter.getChosenItemsList().add(metadata);
         }
         updateContentView();
     }
@@ -614,42 +723,12 @@ public class LibraryActivity extends BaseActivity {
         longClickMode = false;
     }
 
-    private boolean isMultiSelectionMode() {
-        return selectionMode == SelectionMode.MULTISELECT_MODE;
+    public boolean isMultiSelectionMode() {
+        return libraryAdapter.isMultiSelectionMode();
     }
 
     private void quitMultiSelectionMode() {
-        selectionMode = SelectionMode.NORMAL_MODE;
-        chosenItemsList.clear();
-    }
-
-    class LibraryItemViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.image_cover)
-        ImageView imageCover;
-        @Bind(R.id.textView_title)
-        TextView titleView;
-        @Bind(R.id.progress_line)
-        ProgressBar progressBar;
-        @Bind(R.id.multi_select_check_box)
-        CheckBox checkBox;
-
-
-        public LibraryItemViewHolder(final View itemView) {
-            super(itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    processItemClick((Integer) itemView.getTag());
-                }
-            });
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    processItemLongClick((Integer) v.getTag());
-                    return true;
-                }
-            });
-            ButterKnife.bind(this, itemView);
-        }
+        libraryAdapter.setMultiSelectionMode(SelectionMode.NORMAL_MODE);
+        libraryAdapter.clearChosenItemsList();
     }
 }
