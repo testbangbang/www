@@ -46,14 +46,14 @@ void OnyxPdfiumManager::releaseContext(JNIEnv *env, jint id) {
 }
 
 static bool readDrmManifest(FPDF_DOCUMENT document, char *buf, int length) {
-    unsigned long res = FPDF_GetMetaText(document, "book", buf, length);
+    unsigned long res = FPDF_GetMetaText(document, "boox", buf, length);
     return res > 2; // empty metadata text is '\0' in unicode
 }
 
 static bool setupDrmManager(const std::string &drmManifest) {
-    std::ifstream file("/sdcard/private_key");
+    std::ifstream file("/sdcard/public_key");
     if (!file ) {
-        LOGE("open /sdcard/private_key failed!");
+        LOGE("read /sdcard/public_key failed!");
         return false;
     }
     std::stringstream buffer;
@@ -67,19 +67,28 @@ static bool setupDrmManager(const std::string &drmManifest) {
     int resultLen = 0;
     unsigned char *result = decrypt.rsaDecryptManifest(rsaKeyData, drmManifest.c_str(), &resultLen);
     if (resultLen == -1) {
-        LOGE("read metadata failed!");
+        LOGE("invalid metadata!");
         return false;
     }
 
     jsonxx::Object object;
     if (!object.parse(reinterpret_cast<char *>(result))) {
-        LOGE("read metadata failed!");
-        return -1;
+        LOGE("invalid metadata!");
+        return false;
     }
-    std::string aesKey = object.get<std::string>("aesKey");
+
+    if (!object.has<std::string>("publish") || !object.has<std::string>("stamp")) {
+        LOGE("invalid metadata!");
+        return false;
+    }
+    std::string aesKey = object.get<std::string>("publish");
+    std::string aesGuard = object.get<std::string>("stamp");
+    if (!onyx::DrmDecryptManager::singleton().setAESKey(aesKey.c_str(), aesGuard.c_str())) {
+        LOGE("invalid metadata!");
+        return false;
+    }
 
     onyx::DrmDecryptManager::singleton().setEncrypted(true);
-    onyx::DrmDecryptManager::singleton().setAESKey(aesKey.c_str());
     return true;
 }
 
