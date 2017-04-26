@@ -1,21 +1,27 @@
 package com.onyx.kreader.ui.actions;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
+import com.onyx.android.sdk.reader.host.request.RestoreRequest;
+import com.onyx.android.sdk.utils.LocaleUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
+import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
-import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.request.OpenRequest;
-import com.onyx.kreader.ui.requests.RestoreRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
@@ -93,9 +99,97 @@ public class OpenDocumentAction extends BaseAction {
 //                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
 //                    return;
 //                }
-                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
+                BaseOptions baseOptions = loadDocumentOptionsRequest.getDocumentOptions();
+                adjustOptionsWithDeviceConfig(baseOptions, readerDataHolder);
+                openWithOptions(readerDataHolder, baseOptions);
             }
         });
+    }
+
+    private void adjustOptionsWithDeviceConfig(final BaseOptions baseOptions, final ReaderDataHolder readerDataHolder) {
+        BaseOptions.setGlobalDefaultGamma(DeviceConfig.sharedInstance(readerDataHolder.getContext()).getDefaultGamma());
+        BaseOptions.setGlobalDefaultTextGamma(DeviceConfig.sharedInstance(readerDataHolder.getContext()).getDefaultTextGamma());
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).getFixedGamma() > 0) {
+            baseOptions.setGamma(DeviceConfig.sharedInstance(readerDataHolder.getContext()).getFixedGamma());
+        }
+        ReaderTextStyle.setDefaultFontSizes(DeviceConfig.sharedInstance(readerDataHolder.getContext()).getDefaultFontSizes());
+
+        adjustFontFace(readerDataHolder, baseOptions);
+        adjustFontSize(readerDataHolder, baseOptions);
+        adjustLineSpacing(readerDataHolder, baseOptions);
+        adjustLeftMargin(readerDataHolder, baseOptions);
+        adjustTopMargin(readerDataHolder, baseOptions);
+        adjustRightMargin(readerDataHolder, baseOptions);
+        adjustBottomMargin(readerDataHolder, baseOptions);
+    }
+
+    private void adjustFontFace(final ReaderDataHolder readerDataHolder, final BaseOptions baseOptions) {
+        String fontFace = baseOptions.getFontFace();
+        if (StringUtils.isNullOrEmpty(fontFace) && LocaleUtils.isChinese()) {
+            fontFace = DeviceConfig.sharedInstance(readerDataHolder.getContext()).getDefaultFontFileForChinese();
+        }
+        baseOptions.setFontFace(fontFace);
+    }
+
+    private void adjustFontSize(final ReaderDataHolder readerDataHolder, final BaseOptions baseOptions) {
+        float fontSize = baseOptions.getFontSize();
+        if (fontSize == BaseOptions.INVALID_FLOAT_VALUE) {
+            int index = DeviceConfig.sharedInstance(readerDataHolder.getContext()).getDefaultFontSizeIndex();
+            fontSize = ReaderTextStyle.getFontSizeByIndex(index).getValue();
+            fontSize = SingletonSharedPreference.getLastFontSize(fontSize);
+        }
+        baseOptions.setFontSize(fontSize);
+    }
+
+    private void adjustLineSpacing(final ReaderDataHolder readerDataHolder, final BaseOptions baseOptions) {
+        int lineSpacing = baseOptions.getLineSpacing();
+        if (lineSpacing == BaseOptions.INVALID_INT_VALUE) {
+            int index = DeviceConfig.sharedInstance(readerDataHolder.getContext()).getDefaultLineSpacingIndex();
+            lineSpacing = ReaderTextStyle.getLineSpacingByIndex(index).getPercent();
+            lineSpacing = SingletonSharedPreference.getLastLineSpacing(lineSpacing);
+        }
+        baseOptions.setLineSpacing(lineSpacing);
+    }
+
+    private void adjustLeftMargin(final ReaderDataHolder readerDataHolder, final BaseOptions baseOptions) {
+        int leftMargin = baseOptions.getLeftMargin();
+        if (leftMargin == BaseOptions.INVALID_INT_VALUE) {
+            leftMargin = getDefaultPageMargin(readerDataHolder.getContext()).getLeftMargin().getPercent();
+            leftMargin = SingletonSharedPreference.getLastLeftMargin(leftMargin);
+        }
+        baseOptions.setLeftMargin(leftMargin);
+    }
+
+    private void adjustTopMargin(final ReaderDataHolder readerDataHolder, final BaseOptions baseOptions) {
+        int topMargin = baseOptions.getTopMargin();
+        if (topMargin == BaseOptions.INVALID_INT_VALUE) {
+            topMargin = getDefaultPageMargin(readerDataHolder.getContext()).getTopMargin().getPercent();
+            topMargin = SingletonSharedPreference.getLastTopMargin(topMargin);
+        }
+        baseOptions.setTopMargin(topMargin);
+    }
+
+    private void adjustRightMargin(final ReaderDataHolder readerDataHolder, final BaseOptions baseOptions) {
+        int rightMargin = baseOptions.getRightMargin();
+        if (rightMargin == BaseOptions.INVALID_INT_VALUE) {
+            rightMargin = getDefaultPageMargin(readerDataHolder.getContext()).getRightMargin().getPercent();
+            rightMargin = SingletonSharedPreference.getLastRightMargin(rightMargin);
+        }
+        baseOptions.setRightMargin(rightMargin);
+    }
+
+    private void adjustBottomMargin(final ReaderDataHolder readerDataHolder, final BaseOptions baseOptions) {
+        int bottomMargin = baseOptions.getBottomMargin();
+        if (bottomMargin == BaseOptions.INVALID_INT_VALUE) {
+            bottomMargin = getDefaultPageMargin(readerDataHolder.getContext()).getBottomMargin().getPercent();
+            bottomMargin = SingletonSharedPreference.getLastBottomMargin(bottomMargin);
+        }
+        baseOptions.setBottomMargin(bottomMargin);
+    }
+
+    private ReaderTextStyle.PageMargin getDefaultPageMargin(Context context) {
+        int index = DeviceConfig.sharedInstance(context).getDefaultPageMarginIndex();
+        return ReaderTextStyle.getPageMarginByIndex(index);
     }
 
     private boolean processOrientation(final ReaderDataHolder readerDataHolder, final BaseOptions options) {

@@ -61,11 +61,6 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class ShareFileActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private static final String PUSH_TYPE = "digital_content";
 
-    private static final int STORAGE_PHONE_PERMS_REQUEST_CODE = 1;
-    private static final String[] STORAGE_PHONE_PERMS = new String[]{
-            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_PHONE_STATE};
-
     @Bind(R.id.message_textView)
     TextView messageTextView;
 
@@ -88,7 +83,7 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
 
     private void initData() {
         if (NetworkUtils.isWifiConnected(this)) {
-            requestPermission();
+
         } else {
             showWifiDisconnectedDialog();
         }
@@ -102,7 +97,7 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        requestPermission();
+
                     }
                 })
                 .show();
@@ -312,17 +307,6 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
         progressDialogHolder.dismissProgressDialog(weChatOauthObject);
     }
 
-    @AfterPermissionGranted(STORAGE_PHONE_PERMS_REQUEST_CODE)
-    private void requestPermission() {
-        String[] perms = STORAGE_PHONE_PERMS;
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            afterPermissionGranted();
-        } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.request_permission_rationale),
-                    STORAGE_PHONE_PERMS_REQUEST_CODE, perms);
-        }
-    }
-
     private void afterPermissionGranted() {
         if (loadOnyxAccount()) {
             processSendActionIntent();
@@ -422,13 +406,6 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
         try {
             unregisterReceiver(authReceiver);
         } catch (Exception e) {
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == STORAGE_PHONE_PERMS_REQUEST_CODE) {
         }
     }
 

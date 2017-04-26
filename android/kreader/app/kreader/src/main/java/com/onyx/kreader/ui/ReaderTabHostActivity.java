@@ -38,7 +38,6 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
 
 import java.io.File;
 import java.util.ArrayList;
