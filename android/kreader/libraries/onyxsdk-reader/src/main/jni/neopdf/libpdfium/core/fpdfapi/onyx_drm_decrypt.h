@@ -12,8 +12,9 @@ public:
     virtual ~DrmDecrypt();
 
     unsigned char *rsaDecryptManifest(const unsigned char *key,
-                                      const char *manifestBase64String,
-                                      int *resultLen);
+                                      const char *manifestBase64Cipher,
+                                      int *resultLen,
+                                      int *manifestVersion);
 
     unsigned char *aesDecrypt(const char *keyBase64String,
                               const unsigned char *data,
@@ -31,7 +32,11 @@ public:
     bool isEncrypted();
     void setEncrypted(bool encrypted);
 
-    void setAESKey(const std::string &aesKeyBase64String);
+    int getDrmVersion();
+    int setDrmVersion(int version);
+
+    bool setAESKey(const std::string &aesKeyCipherBase64String,
+                   const std::string &aesKeyGuardBase64String);
 
     unsigned char *aesDecrypt(const unsigned char *data,
                               const int dataLen,
@@ -39,6 +44,7 @@ public:
 
 private:
     bool encrypted;
+    int drmVersion;
     DrmDecrypt drmDecrypt;
     std::string aesKeyBase64String;
 };
