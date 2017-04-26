@@ -6,12 +6,14 @@ import android.content.pm.ActivityInfo;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
+import com.onyx.kreader.ui.data.DrmCertificateFactory;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
 import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
@@ -25,6 +27,8 @@ import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.android.sdk.utils.DeviceUtils;
+
+import java.io.File;
 
 /**
  * Created by zhuzeng on 5/17/16.
@@ -122,7 +126,8 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void openWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
-        final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, true);
+        String drmCertificate = DrmCertificateFactory.getDrmCertificate();
+        final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, drmCertificate, true);
         readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
