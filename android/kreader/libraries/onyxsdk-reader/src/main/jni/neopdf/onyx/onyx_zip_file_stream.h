@@ -3,6 +3,7 @@
 
 #include <string>
 #include <istream>
+#include "ZipArchive.h"
 #include "ZipFile.h"
 
 
@@ -30,6 +31,7 @@ private:
     std::string zipPassword;
     size_t      totalSize;
 
+    ZipArchive::Ptr pArchive;
     ZipArchiveEntry::Ptr pArchiveEntry;
 
 };
