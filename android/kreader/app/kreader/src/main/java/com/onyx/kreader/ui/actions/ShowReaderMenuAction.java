@@ -95,7 +95,7 @@ public class ShowReaderMenuAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerActivity = (ReaderActivity)readerDataHolder.getContext();
-        showReaderMenu(readerDataHolder, DeviceUtils.isFullScreen(readerActivity));
+        showReaderMenu(readerDataHolder, !SingletonSharedPreference.isSystemStatusBarEnabled(readerActivity));
         BaseCallback.invoke(callback, null, null);
     }
 

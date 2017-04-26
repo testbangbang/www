@@ -1,7 +1,7 @@
 siteUrl = https://github.com/onyx-intl/OnyxAndroidSample
 gitUrl = https://github.com/onyx-intl/OnyxAndroidSample.git
 repo = partner
-version = 1.0.0
+version = 1.0.2
 groupId = com.onyx.android.sdk
 licenses = ['Apache-2.0']
 license = Apache-2.0

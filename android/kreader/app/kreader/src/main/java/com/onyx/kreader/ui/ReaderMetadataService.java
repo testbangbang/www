@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.RefValue;
 import com.onyx.android.sdk.reader.IMetadataService;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
@@ -151,8 +152,11 @@ public class ReaderMetadataService extends Service {
                     Log.w(TAG, "read document metadata failed: " + documentPath);
                     return;
                 }
-                result.setValue(LegacySdkDataUtils.saveMetadata(service, documentPath,
-                        metadataRequest.getMetadata()));
+                boolean saveSuccess = LegacySdkDataUtils.saveMetadata(service, documentPath,
+                        metadataRequest.getMetadata());
+                saveSuccess &= ContentSdKDataUtils.saveMetadata(service, documentPath,
+                        metadataRequest.getMetadata());
+                result.setValue(saveSuccess);
             }
         });
         return result.getValue();
@@ -171,8 +175,11 @@ public class ReaderMetadataService extends Service {
                     Log.w(TAG, "read document cover failed: " + documentPath);
                     return;
                 }
-                result.setValue(LegacySdkDataUtils.saveThumbnail(service, documentPath,
-                        bitmap.getBitmap()));
+                boolean saveSuccess = LegacySdkDataUtils.saveThumbnail(service, documentPath,
+                        bitmap.getBitmap());
+                saveSuccess &= ContentSdKDataUtils.saveThumbnail(service, documentPath,
+                        bitmap.getBitmap());
+                result.setValue(saveSuccess);
                 bitmap.recycleBitmap();
             }
         });

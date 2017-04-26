@@ -20,7 +20,7 @@ import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.ui.events.ForceCloseEvent;
+import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
 import com.onyx.android.sdk.reader.host.request.OpenRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -44,6 +44,7 @@ public class OpenDocumentAction extends BaseAction {
     private String documentPath;
     private DataManager dataProvider;
     private boolean canceled = false;
+    private boolean processOrientation = false;
 
     public OpenDocumentAction(final Activity activity, final String path) {
         this.activity = activity;
@@ -99,9 +100,15 @@ public class OpenDocumentAction extends BaseAction {
 //                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
 //                    return;
 //                }
+
+                if (processOrientation) {
+                    if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
+                        return;
+                    }
+                }
                 BaseOptions baseOptions = loadDocumentOptionsRequest.getDocumentOptions();
                 adjustOptionsWithDeviceConfig(baseOptions, readerDataHolder);
-                openWithOptions(readerDataHolder, baseOptions);
+                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
             }
         });
     }
@@ -278,7 +285,7 @@ public class OpenDocumentAction extends BaseAction {
 
     private void cleanup(final ReaderDataHolder holder) {
         hideLoadingDialog();
-        holder.getEventBus().post(new ForceCloseEvent(true));
+        holder.getEventBus().post(new OpenDocumentFailedEvent());
     }
 
     private void restoreWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {

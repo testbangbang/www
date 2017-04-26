@@ -7,7 +7,7 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
-import com.onyx.android.sdk.data.utils.ThumbnailUtils;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
@@ -31,6 +31,16 @@ public class LocalDataProvider implements DataProviderBase {
 
     public void clearMetadata() {
         Delete.table(Metadata.class);
+    }
+
+    public Metadata findMetadataByIdString(final Context context, final String idString) {
+        Metadata metadata = null;
+        try {
+            metadata = new Select().from(Metadata.class).where(Metadata_Table.idString.eq(idString)).querySingle();
+        } catch (Exception e) {
+        } finally {
+            return MetadataUtils.ensureObject(metadata);
+        }
     }
 
     public Metadata findMetadataByPath(final Context context, final String path) {
@@ -85,6 +95,7 @@ public class LocalDataProvider implements DataProviderBase {
             final Metadata document = findMetadataByHashTag(context, path, md5);
             document.setExtraAttributes(json);
             if (!document.hasValidId()) {
+                document.setNativeAbsolutePath(path);
                 document.setHashTag(md5);
                 document.save();
             } else {
@@ -98,16 +109,16 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
 
-    public final List<Annotation> loadAnnotations(final String application, final String md5, final int pageNumber, final OrderBy orderBy) {
-        return new Select().from(Annotation.class).where(Annotation_Table.idString.eq(md5))
+    public final List<Annotation> loadAnnotations(final String application, final String associationId, final int pageNumber, final OrderBy orderBy) {
+        return new Select().from(Annotation.class).where(Annotation_Table.idString.eq(associationId))
                 .and(Annotation_Table.application.eq(application))
                 .and(Annotation_Table.pageNumber.eq(pageNumber))
                 .orderBy(orderBy)
                 .queryList();
     }
 
-    public final List<Annotation> loadAnnotations(final String application, final String md5, final OrderBy orderBy) {
-        return new Select().from(Annotation.class).where(Annotation_Table.idString.eq(md5))
+    public final List<Annotation> loadAnnotations(final String application, final String associationId, final OrderBy orderBy) {
+        return new Select().from(Annotation.class).where(Annotation_Table.idString.eq(associationId))
                 .and(Annotation_Table.application.eq(application))
                 .orderBy(orderBy)
                 .queryList();
@@ -125,15 +136,15 @@ public class LocalDataProvider implements DataProviderBase {
         annotation.delete();
     }
 
-    public final Bookmark loadBookmark(final String application, final String md5, final int pageNumber) {
-        return new Select().from(Bookmark.class).where(Bookmark_Table.idString.eq(md5))
+    public final Bookmark loadBookmark(final String application, final String associationId, final int pageNumber) {
+        return new Select().from(Bookmark.class).where(Bookmark_Table.idString.eq(associationId))
                 .and(Bookmark_Table.application.eq(application))
                 .and(Bookmark_Table.pageNumber.eq(pageNumber))
                 .querySingle();
     }
 
-    public final List<Bookmark> loadBookmarks(final String application, final String md5, final OrderBy orderBy) {
-        return new Select().from(Bookmark.class).where(Bookmark_Table.idString.eq(md5))
+    public final List<Bookmark> loadBookmarks(final String application, final String associationId, final OrderBy orderBy) {
+        return new Select().from(Bookmark.class).where(Bookmark_Table.idString.eq(associationId))
                 .and(Bookmark_Table.application.eq(application))
                 .orderBy(orderBy)
                 .queryList();
@@ -187,47 +198,52 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public void clearThumbnail() {
+    public void clearThumbnails() {
         Delete.table(Thumbnail.class);
     }
 
     @Override
-    public boolean setThumbnail(Context context, String sourceMD5, final Bitmap saveBitmap, ThumbnailKind kind) {
-        return false;
+    public void saveThumbnailEntry(Context context, Thumbnail thumbnail) {
+        thumbnail.save();
     }
 
-    public boolean removeThumbnail(Context context, String sourceMD5, ThumbnailKind kind) {
-        return false;
+    public Thumbnail getThumbnailEntry(Context context, String associationId, final ThumbnailKind kind) {
+        return new Select().from(Thumbnail.class)
+                .where()
+                .and(Thumbnail_Table.idString.eq(associationId))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind))
+                .querySingle();
     }
 
-    public Thumbnail getThumbnail(Context context, String sourceMd5, final ThumbnailKind kind) {
-        return null;
-    }
-
-    public Bitmap getThumbnailBitmap(Context context, String sourceMd5, final ThumbnailKind kind) {
-        return null;
-    }
-
-    public void deleteThumbnail(Thumbnail thumbnail) {
+    public void deleteThumbnailEntry(Thumbnail thumbnail) {
         thumbnail.delete();
     }
 
-    public List<Thumbnail> loadThumbnail(Context context, String sourceMd5) {
-        return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
+    @Override
+    public boolean saveThumbnailBitmap(Context context, String associationId, ThumbnailKind kind, final Bitmap saveBitmap) {
+        return false;
+    }
+
+    public boolean removeThumbnailBitmap(Context context, String associationId, ThumbnailKind kind) {
+        new Delete().from(Thumbnail.class)
+                .where()
+                .and(Thumbnail_Table.idString.eq(associationId))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind))
+                .execute();
+        return true;
+    }
+
+    public Bitmap getThumbnailBitmap(Context context, String associationId, final ThumbnailKind kind) {
+        Thumbnail thumbnail = getThumbnailEntry(context, associationId, kind);
+        if (thumbnail == null || StringUtils.isNullOrEmpty(thumbnail.getImageDataPath())) {
+            return null;
+        }
+        return BitmapUtils.loadBitmapFromFile(thumbnail.getImageDataPath());
+    }
+
+    public List<Thumbnail> loadThumbnail(Context context, String associationId) {
+        return new Select().from(Thumbnail.class).where(Thumbnail_Table.idString.eq(associationId))
                 .queryList();
-    }
-
-    public Thumbnail loadThumbnail(Context context, String sourceMd5, ThumbnailKind kind) {
-        return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
-                .and(Thumbnail_Table.thumbnailKind.eq(kind)).querySingle();
-    }
-
-    public Bitmap loadThumbnailBitmap(Context context, String sourceMd5, ThumbnailKind kind) {
-        return ThumbnailUtils.getThumbnailBitmap(context, sourceMd5, kind.toString());
-    }
-
-    public Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail) {
-        return ThumbnailUtils.getThumbnailBitmap(context, thumbnail);
     }
 
     @Override
@@ -241,11 +257,11 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public void deleteMetadataCollection(Context context, String libraryUniqueId, String metadataMD5) {
+    public void deleteMetadataCollection(Context context, String libraryUniqueId, String associationId) {
         Where<MetadataCollection> where = SQLite.delete(MetadataCollection.class)
                 .where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId));
-        if (StringUtils.isNotBlank(metadataMD5)) {
-            where.and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5));
+        if (StringUtils.isNotBlank(associationId)) {
+            where.and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         }
         where.execute();
     }
@@ -268,10 +284,10 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String metadataMD5) {
+    public MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String associationId) {
         return new Select().from(MetadataCollection.class)
                 .where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId))
-                .and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5)).querySingle();
+                .and(MetadataCollection_Table.documentUniqueId.eq(associationId)).querySingle();
     }
 
     @Override
@@ -281,8 +297,8 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public MetadataCollection findMetadataCollection(Context context, String metadataMD5) {
+    public MetadataCollection findMetadataCollection(Context context, String associationId) {
         return new Select().from(MetadataCollection.class)
-                .where(MetadataCollection_Table.documentUniqueId.eq(metadataMD5)).querySingle();
+                .where(MetadataCollection_Table.documentUniqueId.eq(associationId)).querySingle();
     }
 }

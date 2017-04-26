@@ -1,7 +1,6 @@
 package com.onyx.android.sdk.reader.host.wrapper;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -9,7 +8,6 @@ import android.view.WindowManager;
 
 import com.neverland.engbook.level1.JEBFilesZIP;
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.ReaderBaseApp;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderException;
@@ -24,6 +22,7 @@ import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
+import com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
@@ -124,11 +123,12 @@ public class ReaderHelper {
         if (getDocument().readMetadata(metadata)) {
             documentMetadata = metadata;
             LegacySdkDataUtils.saveMetadata(context, path, metadata);
+            ContentSdKDataUtils.saveMetadata(context, path, metadata);
         }
     }
 
     private void saveThumbnail(final Context context, final String path) {
-        if (LegacySdkDataUtils.hasThumbnail(context, path)) {
+        if (LegacySdkDataUtils.hasThumbnail(context, path) && ContentSdKDataUtils.hasThumbnail(context, path)) {
             return;
         }
         WindowManager window = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
@@ -144,6 +144,7 @@ public class ReaderHelper {
             bitmap.eraseColor(Color.WHITE);
             if (getDocument().readCover(bitmap.getBitmap())) {
                 LegacySdkDataUtils.saveThumbnail(context, path, bitmap.getBitmap());
+                ContentSdKDataUtils.saveThumbnail(context, path, bitmap.getBitmap());
             }
         } finally {
             bitmap.close();

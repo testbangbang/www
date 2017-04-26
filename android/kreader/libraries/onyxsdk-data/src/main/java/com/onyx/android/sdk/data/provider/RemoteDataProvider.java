@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.db.table.OnyxBookmarkProvider;
 import com.onyx.android.sdk.data.db.table.OnyxLibraryProvider;
 import com.onyx.android.sdk.data.db.table.OnyxMetadataCollectionProvider;
 import com.onyx.android.sdk.data.db.table.OnyxMetadataProvider;
+import com.onyx.android.sdk.data.db.table.OnyxThumbnailProvider;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Annotation_Table;
 import com.onyx.android.sdk.data.model.Bookmark;
@@ -25,6 +26,7 @@ import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -36,7 +38,6 @@ import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,6 +51,17 @@ public class RemoteDataProvider implements DataProviderBase {
     public void clearMetadata() {
         FlowManager.getContext().getContentResolver().delete(OnyxMetadataProvider.CONTENT_URI,
                 null, null);
+    }
+
+    public Metadata findMetadataByIdString(final Context context, final String idString) {
+        Metadata metadata = null;
+        try {
+            metadata = ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
+                    Metadata.class, ConditionGroup.clause().and(Metadata_Table.idString.eq(idString)), null);
+        } catch (Exception e) {
+        } finally {
+            return MetadataUtils.ensureObject(metadata);
+        }
     }
 
     public Metadata findMetadataByPath(final Context context, final String path) {
@@ -120,13 +132,13 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public boolean saveDocumentOptions(Context context, String path, String md5, String json) {
+    public boolean saveDocumentOptions(Context context, String path, String associationId, String json) {
         try {
-            Metadata document = findMetadataByHashTag(context, path, md5);
+            Metadata document = findMetadataByHashTag(context, path, associationId);
             document.setExtraAttributes(json);
             document.beforeSave();
             if (!document.hasValidId()) {
-                document.setHashTag(md5);
+                document.setHashTag(associationId);
                 ContentUtils.insert(OnyxMetadataProvider.CONTENT_URI, document);
             } else {
                 ContentUtils.update(OnyxMetadataProvider.CONTENT_URI, document);
@@ -139,9 +151,9 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Annotation> loadAnnotations(String application, String md5, int pageNumber, OrderBy orderBy) {
+    public List<Annotation> loadAnnotations(String application, String associationId, int pageNumber, OrderBy orderBy) {
         ConditionGroup conditionGroup = ConditionGroup.clause()
-                .and(Annotation_Table.idString.eq(md5))
+                .and(Annotation_Table.idString.eq(associationId))
                 .and(Annotation_Table.application.eq(application))
                 .and(Annotation_Table.pageNumber.eq(pageNumber));
         return ContentUtils.queryList(OnyxAnnotationProvider.CONTENT_URI,
@@ -151,9 +163,9 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Annotation> loadAnnotations(String application, String md5, OrderBy orderBy) {
+    public List<Annotation> loadAnnotations(String application, String associationId, OrderBy orderBy) {
         ConditionGroup conditionGroup = ConditionGroup.clause()
-                .and(Annotation_Table.idString.eq(md5))
+                .and(Annotation_Table.idString.eq(associationId))
                 .and(Annotation_Table.application.eq(application));
         return ContentUtils.queryList(OnyxAnnotationProvider.CONTENT_URI,
                 Annotation.class,
@@ -179,9 +191,9 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public Bookmark loadBookmark(String application, String md5, int pageNumber) {
+    public Bookmark loadBookmark(String application, String associationId, int pageNumber) {
         ConditionGroup conditionGroup = ConditionGroup.clause()
-                .and(Bookmark_Table.idString.eq(md5))
+                .and(Bookmark_Table.idString.eq(associationId))
                 .and(Bookmark_Table.application.eq(application))
                 .and(Bookmark_Table.pageNumber.eq(pageNumber));
         return ContentUtils.querySingle(OnyxBookmarkProvider.CONTENT_URI,
@@ -191,9 +203,9 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Bookmark> loadBookmarks(String application, String md5, OrderBy orderBy) {
+    public List<Bookmark> loadBookmarks(String application, String associationId, OrderBy orderBy) {
         ConditionGroup conditionGroup = ConditionGroup.clause()
-                .and(Bookmark_Table.idString.eq(md5))
+                .and(Bookmark_Table.idString.eq(associationId))
                 .and(Bookmark_Table.application.eq(application));
         return ContentUtils.queryList(OnyxBookmarkProvider.CONTENT_URI,
                 Bookmark.class,
@@ -261,33 +273,65 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public void clearThumbnail() {
+    public void clearThumbnails() {
+        FlowManager.getContext().getContentResolver().delete(OnyxThumbnailProvider.CONTENT_URI,
+                null, null);
     }
 
     @Override
-    public boolean setThumbnail(Context context, String sourceMD5, Bitmap saveBitmap, final OnyxThumbnail.ThumbnailKind kind) {
+    public void saveThumbnailEntry(Context context, Thumbnail thumbnail) {
+        thumbnail.beforeSave();
+        Thumbnail findThumbnail = getThumbnailEntry(context, thumbnail.getIdString(), thumbnail.getThumbnailKind());
+        if (findThumbnail == null || !findThumbnail.hasValidId()) {
+            ContentUtils.insert(OnyxThumbnailProvider.CONTENT_URI, thumbnail);
+        } else {
+            ContentUtils.update(OnyxThumbnailProvider.CONTENT_URI, thumbnail);
+        }
+    }
+
+    public Thumbnail getThumbnailEntry(Context context, String associationId, final OnyxThumbnail.ThumbnailKind kind) {
+        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind));
+        return ContentUtils.querySingle(context.getContentResolver(),
+                OnyxThumbnailProvider.CONTENT_URI,
+                Thumbnail.class,
+                group,
+                null);
+    }
+
+    public void deleteThumbnailEntry(Thumbnail thumbnail) {
+        ContentUtils.delete(OnyxThumbnailProvider.CONTENT_URI, thumbnail);
+    }
+
+    @Override
+    public boolean saveThumbnailBitmap(Context context, String associationId, final OnyxThumbnail.ThumbnailKind kind, Bitmap saveBitmap) {
         return false;
     }
 
-    public boolean removeThumbnail(Context context, String sourceMD5, OnyxThumbnail.ThumbnailKind kind) {
-        return false;
+    public boolean removeThumbnailBitmap(Context context, String associationId, OnyxThumbnail.ThumbnailKind kind) {
+        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind));
+        int row = FlowManager.getContext().getContentResolver().delete(OnyxThumbnailProvider.CONTENT_URI,
+                group.getQuery(),
+                null);
+        return row != 0;
     }
 
-    public Thumbnail getThumbnail(Context context, String sourceMd5, final OnyxThumbnail.ThumbnailKind kind) {
-        return null;
+    public Bitmap getThumbnailBitmap(Context context, String associationId, final OnyxThumbnail.ThumbnailKind kind) {
+        Thumbnail thumbnail = getThumbnailEntry(context, associationId, kind);
+        if (thumbnail == null || StringUtils.isNullOrEmpty(thumbnail.getImageDataPath())) {
+            return null;
+        }
+        return BitmapUtils.loadBitmapFromFile(thumbnail.getImageDataPath());
     }
 
-    public Bitmap getThumbnailBitmap(Context context, String sourceMd5, final OnyxThumbnail.ThumbnailKind kind) {
-        return null;
-    }
-
-    public void deleteThumbnail(Thumbnail thumbnail) {
-        thumbnail.delete();
-    }
-
-    public List<Thumbnail> loadThumbnail(Context context, String sourceMd5) {
-        return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
-                .queryList();
+    public List<Thumbnail> loadThumbnail(Context context, String associationId) {
+        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId));
+        return ContentUtils.queryList(context.getContentResolver(),
+                OnyxThumbnailProvider.CONTENT_URI,
+                Thumbnail.class,
+                group,
+                null);
     }
 
     @Override
@@ -303,10 +347,10 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public void deleteMetadataCollection(Context context, String libraryUniqueId, String metadataMD5) {
+    public void deleteMetadataCollection(Context context, String libraryUniqueId, String associationId) {
         ConditionGroup group = ConditionGroup.clause().and(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId));
-        if (StringUtils.isNotBlank(metadataMD5)) {
-            group.and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5));
+        if (StringUtils.isNotBlank(associationId)) {
+            group.and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         }
         FlowManager.getContext().getContentResolver().delete(OnyxMetadataCollectionProvider.CONTENT_URI,
                 group.getQuery(),
@@ -334,10 +378,10 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String metadataMD5) {
+    public MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String associationId) {
         ConditionGroup group = ConditionGroup.clause()
                 .and(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId))
-                .and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5));
+                .and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         return ContentUtils.querySingle(OnyxMetadataCollectionProvider.CONTENT_URI,
                 MetadataCollection.class,
                 group,
@@ -355,9 +399,9 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public MetadataCollection findMetadataCollection(Context context, String metadataMD5) {
+    public MetadataCollection findMetadataCollection(Context context, String associationId) {
         ConditionGroup group = ConditionGroup.clause()
-                .and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5));
+                .and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         return ContentUtils.querySingle(OnyxMetadataCollectionProvider.CONTENT_URI,
                 MetadataCollection.class,
                 group,

@@ -102,4 +102,56 @@
 
     <string name="application_list">Application List</string>
     <string name="menu_app_npi_clear">Clean up Test Application</string>
+
+    <string name="library_activity_asc_order_key" translatable="false">library_activity_asc_order</string>
+    <string name="library_activity_sort_by_key" translatable="false">library_activity_sort_by</string>
+    <string name="library_activity_book_filter_key" translatable="false">library_activity_book_filter</string>
+
+    <string name="filter_all">All</string>
+    <string name="filter_new_books">New Books</string>
+    <string name="filter_read">Finish Read</string>
+    <string name="filter_reading">Now Reading</string>
+    <string name="filter_tag">Tag</string>
+
+    <string name="by_name">By name</string>
+    <string name="by_type">By type</string>
+    <string name="by_size">By Size</string>
+    <string name="by_tittle">By title</string>
+    <string name="by_author">By author</string>
+    <string name="by_creation_time">By creation time</string>
+
+    <string name="filter">Filter</string>
+    <string name="filter_fail">Filter fail</string>
+    <string name="sort">Sort</string>
+    <string name="sort_fail">Sort fail</string>
+    <string name="library">Library</string>
+    <string name="library_build">Build Library</string>
+    <string name="library_build_fail">Build library fail</string>
+    <string name="library_name">Library name</string>
+    <string name="description">Description</string>
+
+    <string name="tip">Tip</string>
+    <string name="library_delete_tip">Deleting a library does not remove the actual book</string>
+    <string name="library_delete_fail">Library delete fail</string>
+
+    <string name="chose_one_book_at_least">Please choose at least one</string>
+    <string name="no_library_choice">There is no library currently</string>
+    <string name="library_choose">Select the library</string>
+    <string name="library_add_to_fail">Add to the library failed</string>
+    <string name="adding">Adding...</string>
+    <string name="loading">Loading...</string>
+    <string name="library_remove_from_fail">Remove the book from the library failed</string>
+    <string name="file_path_null">The file path is empty</string>
+    <string name="file_not_exist">The file does\'t exist</string>
+    <string name="total_format">Total：%d</string>
+
+    <string name="menu_property">property</string>
+    <string name="menu_sort">Sort</string>
+    <string name="menu_filter">Filter</string>
+    <string name="menu_multi_choice_mode">Multi-Choice mode</string>
+    <string name="menu_library_build">Build a library</string>
+    <string name="menu_library_add">Add to the library</string>
+    <string name="menu_library_remove">Remove the library</string>
+    <string name="menu_library_delete">Delete the library</string>
+
 </resources>

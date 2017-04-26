@@ -78,6 +78,7 @@ import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
 import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
+import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
 import com.onyx.kreader.ui.events.PinchZoomEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
@@ -1019,6 +1020,18 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onConfirmCloseDialogEvent(final ConfirmCloseDialogEvent event) {
         enableShortcut(!event.isOpen());
+    }
+
+    @Subscribe
+    public void onOpenDocumentFailed(final OpenDocumentFailedEvent event) {
+        enablePost(true);
+        ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
+        getReaderDataHolder().getEventBus().unregister(this);
+        releaseStartupWakeLock();
+        ReaderTabHostBroadcastReceiver.sendOpenDocumentFailedEvent(this, getReaderDataHolder().getDocumentPath());
+
+        finish();
+        postFinish();
     }
 
     @Subscribe

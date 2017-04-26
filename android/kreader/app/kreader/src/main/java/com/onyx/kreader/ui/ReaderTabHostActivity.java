@@ -28,10 +28,12 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
+import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -62,6 +64,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private boolean insideTabChanging = false;
     private boolean isManualShowTab = true;
+
+    private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
     public static void setTabWidgetVisible(boolean visible) {
         ReaderTabHostActivity.tabWidgetVisible.set(visible);
@@ -118,6 +122,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     @Override
     protected void onDestroy() {
+        deviceReceiver.enable(this, false);
         saveReaderTabState();
         super.onDestroy();
         releaseStartupWakeLock();
@@ -196,6 +201,21 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
     }
 
+    private boolean closeReaderIfFileNotExists() {
+        final OnyxCustomDialog dlg = OnyxCustomDialog.getConfirmDialog(ReaderTabHostActivity.this,
+                getResources().getString(R.string.file_not_exists),
+                false,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onBackPressed();
+                    }
+                }, null);
+        bringSelfToFront();
+        dlg.show();
+        return true;
+    }
+
     private boolean closeTabIfFileNotExists(final ReaderTabManager.ReaderTab tab) {
         File file = new File(tabManager.getOpenedTabs().get(tab));
         if (file.exists()) {
@@ -212,6 +232,26 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 }, null);
         bringSelfToFront();
         dlg.show();
+        return true;
+    }
+
+    private ReaderTabManager.ReaderTab findOpenedTabByPath(final String path) {
+        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
+            if (entry.getValue().compareTo(path) == 0) {
+                return entry.getKey();
+
+            }
+        }
+        return null;
+    }
+
+    private boolean closeTabIfOpenFileFailed(final String path) {
+        final ReaderTabManager.ReaderTab tab = findOpenedTabByPath(path);
+        if (tab == null) {
+            return false;
+        }
+        // no need to close reader activity again, as it's already closed
+        closeReaderTab(tab, false);
         return true;
     }
 
@@ -257,6 +297,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             }
 
             @Override
+            public void onOpenDocumentFailed(String path) {
+                closeTabIfOpenFileFailed(path);
+            }
+
+            @Override
             public void onEnableDebugLog() {
                 enableDebugLog(true);
             }
@@ -266,6 +311,41 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 enableDebugLog(false);
             }
         });
+
+        deviceReceiver.initReceiver(this);
+        deviceReceiver.setMediaStateListener(new DeviceReceiver.MediaStateListener() {
+
+            @Override
+            public void onMediaUnmounted(Intent intent) {
+                Debug.d(TAG, "onMediaUnmounted: " + intent);
+                if (EnvironmentUtil.isExternalStorageDirectory(ReaderTabHostActivity.this, intent)) {
+                    // when device is connected to PC as UMS, close reader for safe
+                    deviceReceiver.enable(ReaderTabHostActivity.this, false);
+                    onBackPressed();
+                } else {
+                    ReaderTabHostActivity.this.onMediaUnmounted(intent);
+                }
+            }
+
+            @Override
+            public void onMediaBadRemoval(Intent intent) {
+                Debug.d(TAG, "onMediaBadRemoval: " + intent);
+                ReaderTabHostActivity.this.onMediaUnmounted(intent);
+            }
+        });
+    }
+
+    private void onMediaUnmounted(Intent intent) {
+        final String media = FileUtils.getRealFilePathFromUri(this, intent.getData());
+        ReaderTabManager.ReaderTab tab = getCurrentTabInHost();
+        if (!tabManager.isTabOpened(tab)) {
+            return;
+        }
+        String path = tabManager.getOpenedTabs().get(tab);
+        if (!path.startsWith(media)) {
+            return;
+        }
+        closeReaderIfFileNotExists();
     }
 
     private boolean isReverseOrientation(int current, int target) {
@@ -579,7 +659,13 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void closeReaderTab(ReaderTabManager.ReaderTab tab) {
-        closeTabActivity(tab);
+        closeReaderTab(tab, true);
+    }
+
+    private void closeReaderTab(ReaderTabManager.ReaderTab tab, boolean closeTabActivity) {
+        if (closeTabActivity) {
+            closeTabActivity(tab);
+        }
         tabManager.removeOpenedTab(tab);
 
         showTabWidgetOnCondition();
@@ -767,5 +853,4 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             }
         }
     }
-
 }

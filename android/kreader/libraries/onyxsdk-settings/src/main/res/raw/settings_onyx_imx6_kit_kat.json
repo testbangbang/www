@@ -14,5 +14,10 @@
     43200000,
     86400000,
     -1
+  ],
+  "test_apps": [
+    "com.onyx.test",
+    "com.onyx.android.production.test",
+    "com.onyx.android.screenmanager"
   ]
 }

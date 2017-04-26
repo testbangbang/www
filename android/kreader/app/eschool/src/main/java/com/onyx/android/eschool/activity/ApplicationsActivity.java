@@ -117,10 +117,25 @@ public class ApplicationsActivity extends BaseActivity {
                 }
                 showCleanTestAppMenu = listRequest.isTestAppExist();
                 appDataInfoList = listRequest.getAppInfoList();
+                appDataInfoList.addAll(getExtraItemInfo());
                 notifyDataChanged();
             }
         });
         showProgressDialog(listRequest, null);
+    }
+
+    private List<AppDataInfo> getExtraItemInfo() {
+        List<AppDataInfo> list = new ArrayList<>();
+        list.add(getLibraryItemInfo());
+        return list;
+    }
+
+    private AppDataInfo getLibraryItemInfo() {
+        AppDataInfo appDataInfo = new AppDataInfo();
+        appDataInfo.intent = new Intent(this, LibraryActivity.class);
+        appDataInfo.labelName = getString(R.string.library);
+        appDataInfo.iconDrawable = getResources().getDrawable(R.drawable.app_library);
+        return appDataInfo;
     }
 
     private void notifyDataChanged() {

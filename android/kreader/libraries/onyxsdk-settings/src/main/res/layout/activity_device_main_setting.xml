@@ -57,18 +57,37 @@
                     android:text="@{info.deviceVersion}" />
             </LinearLayout>
 
-
-            <Button
-                android:id="@+id/button_ota"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:minHeight="@dimen/btn_minHeight"
-                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
-                android:text="@string/setting_ota"
                 app:layout_marginBottomPercent="1%"
-                app:layout_marginRightPercent="1%" />
+                app:layout_marginRightPercent="1%"
+                >
+
+                <Button
+                    android:id="@+id/button_clean_test_apps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/btn_minHeight"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+                    android:text="@string/clean_test_apps"
+                    android:visibility="gone"
+                    />
+
+                <Button
+                    android:id="@+id/button_ota"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/btn_minHeight"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+                    android:text="@string/setting_ota"
+                    />
+
+            </LinearLayout>
         </android.support.percent.PercentRelativeLayout>
 
 

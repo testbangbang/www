@@ -9,6 +9,7 @@ import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
+import com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
@@ -180,6 +181,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
                         reader.getNavigator().getInitPosition());
                 int totalPage = reader.getNavigator().getTotalPage();
                 LegacySdkDataUtils.updateProgress(getContext(), reader.getDocumentPath(),
+                        currentPage, totalPage);
+                ContentSdKDataUtils.updateProgress(getContext(), reader.getDocumentPath(),
                         currentPage, totalPage);
             }
         } catch (Throwable tr) {

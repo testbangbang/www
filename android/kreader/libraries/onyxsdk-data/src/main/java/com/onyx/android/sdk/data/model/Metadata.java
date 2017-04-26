@@ -19,6 +19,13 @@ import java.util.Locale;
  */
 @Table(database = ContentDatabase.class)
 public class Metadata extends BaseData {
+
+    public static class ReadingStatus {
+        public static int NEW = 0;
+        public static int READING = 1;
+        public static int FINISHED = 2;
+    }
+
     public static final String PROGRESS_DIVIDER = "/";
 
     @Column
@@ -381,6 +388,10 @@ public class Metadata extends BaseData {
         return progressSplit[0].equals(progressSplit[1]);
     }
 
+    public String getAssociationId() {
+        return getHashTag();
+    }
+
     public boolean isFinished() {
         return readingStatus == ReadingStatus.FINISHED;
     }
@@ -393,9 +404,4 @@ public class Metadata extends BaseData {
         return readingStatus == ReadingStatus.NEW;
     }
 
-    public static class ReadingStatus {
-        public static int NEW = 0;
-        public static int READING = 1;
-        public static int FINISHED = 2;
-    }
 }
