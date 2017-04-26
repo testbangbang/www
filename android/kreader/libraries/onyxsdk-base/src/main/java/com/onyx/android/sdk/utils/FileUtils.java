@@ -169,9 +169,17 @@ public class FileUtils {
             reader = new InputStreamReader(in, "utf-8");
             breader = new BufferedReader(reader);
 
+            String ls = System.getProperty("line.separator");
+
             StringBuilder sb = new StringBuilder();
-            String line = null;
+            boolean firstLine = true;
+            String line;
             while ((line = breader.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                } else {
+                    sb.append(ls);
+                }
                 sb.append(line);
             }
             return sb.toString();
