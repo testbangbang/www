@@ -30,6 +30,8 @@ public class PageIndicator {
         void prev();
 
         void next();
+
+        void gotoPage(int currentPage);
     }
 
     public PageIndicator(View indicatorView, GPaginator gPaginator) {
@@ -91,6 +93,13 @@ public class PageIndicator {
     void onNextClick() {
         if (pageChangedListener != null) {
             pageChangedListener.next();
+        }
+    }
+
+    @OnClick(R.id.page_indicator)
+    void onGotoPageClick() {
+        if (pageChangedListener != null) {
+            pageChangedListener.gotoPage(gPaginator.getCurrentPage());
         }
     }
 }

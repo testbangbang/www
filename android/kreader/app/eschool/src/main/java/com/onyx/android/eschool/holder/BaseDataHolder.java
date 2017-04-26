@@ -21,6 +21,10 @@ public class BaseDataHolder {
         return context;
     }
 
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
     public EventBus getEventBus() {
         return eventBus;
     }
