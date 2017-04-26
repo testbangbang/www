@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <arpa/inet.h>
+
 #include <openssl/rsa.h>
 #include <openssl/engine.h>
 #include <openssl/pem.h>
@@ -162,25 +164,24 @@ unsigned char* unbase64( const char* ascii, int len, int *flen )
   return bin ;
 }
 
-RSA* loadPRIVATEKeyFromString(const unsigned char* privateKeyStr)
+RSA* loadPublicKeyFromString(const unsigned char* publicKeyStr)
 {
-    BIO *bio = BIO_new_mem_buf(static_cast<const void *>(privateKeyStr), -1);
-    RSA* rsaPrivKey = PEM_read_bio_RSAPrivateKey(bio, NULL, NULL, NULL) ;
-    if (!rsaPrivKey) {
-        LOGW << "ERROR: Could not load PRIVATE KEY! PEM_read_bio_RSAPrivateKey FAILED: " <<
-                ERR_error_string(ERR_get_error(), NULL);
+    BIO *bio = BIO_new_mem_buf(static_cast<const void *>(publicKeyStr), -1);
+    RSA* rsaPublicKey = PEM_read_bio_RSA_PUBKEY(bio, NULL, NULL, NULL) ;
+    if (!rsaPublicKey) {
+        LOGW << "ERROR: Could not load public KEY! PEM_read_bio_RSAPublicKey FAILED: " <<
+                ERR_error_string(ERR_get_error(), NULL) << std::endl;
     }
 
     BIO_free(bio) ;
-    return rsaPrivKey ;
+    return rsaPublicKey ;
 }
 
-unsigned char* rsaDecrypt(RSA *privKey, const unsigned char* encryptedData, int dataLen, int *outLen)
+unsigned char* rsaDecrypt(RSA *publicKey, const unsigned char* encryptedData, int dataLen, int *outLen)
 {
     const int PADDING = RSA_PKCS1_PADDING;
 
-    int rsaLen = RSA_size(privKey) ; // That's how many bytes the decrypted data would be
-    LOGD << "rsa length: " << rsaLen;
+    int rsaLen = RSA_size(publicKey) ; // That's how many bytes the decrypted data would be
 
     unsigned char *decryptedBin = (unsigned char*)malloc(dataLen);
     int encOffset = 0;
@@ -188,11 +189,12 @@ unsigned char* rsaDecrypt(RSA *privKey, const unsigned char* encryptedData, int 
         if (encOffset >= dataLen) {
             break;
         }
-        int result = RSA_private_decrypt(rsaLen, encryptedData + encOffset,
-                                         decryptedBin + *outLen, privKey, PADDING);
+        int result = RSA_public_decrypt(rsaLen, encryptedData + encOffset,
+                                         decryptedBin + *outLen, publicKey, PADDING);
         if(result == -1) {
-            LOGW << "ERROR: RSA_private_decrypt: " << ERR_error_string(ERR_get_error(), NULL);
+            LOGW << "ERROR: RSA_public_decrypt: " << ERR_error_string(ERR_get_error(), NULL) << std::endl;
             free(decryptedBin);
+            *outLen = -1;
             return NULL;
         }
         *outLen += result;
@@ -202,17 +204,16 @@ unsigned char* rsaDecrypt(RSA *privKey, const unsigned char* encryptedData, int 
     return decryptedBin;
 }
 
-unsigned char* rsaDecryptThisBase64(RSA *privKey, const char* base64String, int *outLen)
+unsigned char* rsaDecryptThisBase64(RSA *privKey, const char* base64String, int inLen, int *outLen)
 {
   int encBinLen;
-  unsigned char* encBin = unbase64(base64String, static_cast<int>(strlen(base64String)), &encBinLen);
-  LOGD << "enc bin length: " << encBinLen;
+  unsigned char* encBin = unbase64(base64String, inLen, &encBinLen);
 
   // rsaDecrypt assumes length of encBin based on privKey
   unsigned char *decryptedBin = rsaDecrypt(privKey, encBin, encBinLen, outLen) ;
   free(encBin) ;
 
-  return decryptedBin ;
+  return decryptedBin;
 }
 
 unsigned char *aesDecrypt(const unsigned char *key, const unsigned char *data, int dataLen, int *outLen)
@@ -222,7 +223,7 @@ unsigned char *aesDecrypt(const unsigned char *key, const unsigned char *data, i
 
     int ret = EVP_DecryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, key, NULL);
     if (ret != 1) {
-        LOGW << "EVP_DecryptUpdate failed!";
+        LOGW << "EVP_DecryptUpdate failed!" << std::endl;
         EVP_CIPHER_CTX_free(ctx);
         return NULL;
     }
@@ -232,7 +233,7 @@ unsigned char *aesDecrypt(const unsigned char *key, const unsigned char *data, i
     int len1 = 0;
     ret = EVP_DecryptUpdate(ctx, result, &len1, data, dataLen);
     if (ret != 1) {
-        LOGW << "EVP_DecryptUpdate failed!";
+        LOGW << "EVP_DecryptUpdate failed!" << std::endl;
         EVP_CIPHER_CTX_free(ctx);
         delete result;
         return NULL;
@@ -241,7 +242,7 @@ unsigned char *aesDecrypt(const unsigned char *key, const unsigned char *data, i
     int len2 = 0;
     ret = EVP_DecryptFinal_ex(ctx, result+len1, &len2);
     if (ret != 1) {
-        LOGW << "EVP_DecryptFinal_ex failed!";
+        LOGW << "EVP_DecryptFinal_ex failed!" << std::endl;
         EVP_CIPHER_CTX_free(ctx);
         delete result;
         return NULL;
@@ -261,6 +262,35 @@ unsigned char *aesDecrypt(const unsigned char *key, const unsigned char *data, i
     return result;
 }
 
+unsigned char *computeKeyFromGuardV1(const std::string &cipherBase64String,
+                                      const std::string &guardBase64String,
+                                      int *resultLen) {
+    int keyLen;
+    unsigned char* cipher = unbase64(cipherBase64String.c_str(), static_cast<int>(strlen(cipherBase64String.c_str())), &keyLen);
+
+    int guardLen;
+    unsigned char* guard = unbase64(guardBase64String.c_str(), static_cast<int>(strlen(guardBase64String.c_str())), &guardLen);
+
+    unsigned char digest[SHA512_DIGEST_LENGTH];
+
+    SHA512_CTX ctx;
+    SHA512_Init(&ctx);
+    SHA512_Update(&ctx, guard, guardLen);
+    SHA512_Final(digest, &ctx);
+
+    unsigned char guardKey[16];
+    memcpy(guardKey, &digest[9], 4);
+    memcpy(&guardKey[4], &digest[18], 4);
+    memcpy(&guardKey[8], &digest[24], 4);
+    memcpy(&guardKey[12], &digest[35], 4);
+
+    unsigned char *decrypted = ::aesDecrypt(guardKey, cipher, keyLen, resultLen);
+    free(cipher);
+    free(guard);
+
+    return decrypted;
+}
+
 DrmDecrypt instance;
 
 }
@@ -276,15 +306,29 @@ DrmDecrypt::~DrmDecrypt()
 }
 
 unsigned char *DrmDecrypt::rsaDecryptManifest(const unsigned char *key,
-                                              const char *manifestBase64String,
-                                              int *resultLen)
+                                              const char *manifestBase64Cipher,
+                                              int *resultLen,
+                                              int *manifestVersion)
 {
-    RSA* privKey = loadPRIVATEKeyFromString(key);
-    if (!privKey) {
+    RSA* publicKey = loadPublicKeyFromString(key);
+    if (!publicKey) {
         return nullptr;
     }
-    unsigned char *result = rsaDecryptThisBase64(privKey, manifestBase64String, resultLen);
-    RSA_free(privKey);
+
+    int len = 0;
+    unsigned char *data = unbase64(manifestBase64Cipher, static_cast<int>(strlen(manifestBase64Cipher)), &len);
+
+    uint32_t version = 0;
+    memcpy(&version, &data[508], 4);
+    *manifestVersion = ntohl(version);
+
+    const int HEADER_LENGTH = 512;
+    int manifestLen = len - HEADER_LENGTH;
+    char *manifestCipher = reinterpret_cast<char *>(data + HEADER_LENGTH);
+    unsigned char *result = rsaDecryptThisBase64(publicKey, manifestCipher, manifestLen, resultLen);
+
+    free(data);
+    RSA_free(publicKey);
     return result;
 }
 
@@ -295,7 +339,6 @@ unsigned char *DrmDecrypt::aesDecrypt(const char *keyBase64String,
 {
     int keyLen = 0;
     unsigned char* key = unbase64(keyBase64String, static_cast<int>(strlen(keyBase64String)), &keyLen);
-    LOGD << "aes key bin length: " << keyLen;
 
     unsigned char *decrypted = ::aesDecrypt(key, data, dataLen, resultLen);
     free(key);
@@ -315,7 +358,7 @@ unsigned char *DrmDecrypt::aesDecrypt(const char *keyBase64String,
 }
 
 DrmDecryptManager::DrmDecryptManager()
-    : encrypted(false)
+    : encrypted(false), drmVersion(0)
 {
 
 }
@@ -341,9 +384,31 @@ void DrmDecryptManager::setEncrypted(bool encrypted)
     this->encrypted = encrypted;
 }
 
-void DrmDecryptManager::setAESKey(const std::string &aesKeyBase64String)
+int DrmDecryptManager::getDrmVersion()
 {
-    this->aesKeyBase64String = aesKeyBase64String;
+    return drmVersion;
+}
+
+int DrmDecryptManager::setDrmVersion(int version)
+{
+    drmVersion = version;
+}
+
+bool DrmDecryptManager::setAESKey(const std::string &aesKeyCipherBase64String, const std::string &aesKeyGuardBase64String)
+{
+    int keyLen;
+    unsigned char *key = nullptr;
+    if (drmVersion == 1) {
+        key = computeKeyFromGuardV1(aesKeyCipherBase64String, aesKeyGuardBase64String, &keyLen);
+    }
+    if (!key) {
+        return false;
+    }
+
+    int strLen;
+    this->aesKeyBase64String = base64(key, keyLen, &strLen);
+    free(key);
+    return true;
 }
 
 unsigned char *DrmDecryptManager::aesDecrypt(const unsigned char *data, const int dataLen, int *resultLen)

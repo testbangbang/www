@@ -1,25 +1,21 @@
 package com.onyx.kreader.ui.actions;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.request.RestoreRequest;
-import com.onyx.android.sdk.utils.LocaleUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
+import com.onyx.kreader.ui.data.DrmCertificateFactory;
 import com.onyx.kreader.device.DeviceConfig;
-import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
 import com.onyx.android.sdk.reader.host.request.OpenRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
@@ -113,8 +109,6 @@ public class OpenDocumentAction extends BaseAction {
         });
     }
 
-
-
     private boolean processOrientation(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
         int target = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         if (options != null && options.getOrientation() >= 0) {
@@ -136,7 +130,8 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void openWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
-        final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, true);
+        String drmCertificate = DrmCertificateFactory.getDrmCertificate();
+        final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, drmCertificate, true);
         readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

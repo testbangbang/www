@@ -24,6 +24,7 @@ import com.onyx.android.sdk.reader.host.request.ReadDocumentMetadataRequest;
 import com.onyx.android.sdk.reader.host.request.ReaderDocumentCoverRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
+import com.onyx.kreader.ui.data.DrmCertificateFactory;
 
 import java.util.List;
 
@@ -104,7 +105,8 @@ public class ReaderMetadataService extends Service {
     }
 
     private void extractMetadataAndThumbnail(final ReaderMetadataService service, final String documentPath, final RefValue<Boolean> result) {
-        OpenRequest openRequest = new OpenRequest(documentPath, new BaseOptions(), false);
+        String drmCertificate = DrmCertificateFactory.getDrmCertificate();
+        OpenRequest openRequest = new OpenRequest(documentPath, new BaseOptions(), drmCertificate, false);
         openRequest.setRunInBackground(false);
         reader.submitRequest(service, openRequest, new BaseCallback() {
             @Override

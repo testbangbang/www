@@ -151,39 +151,8 @@ public class ComicReaderPlugin implements ReaderPlugin,
         
     }
 
-    /**
-     * Check if drm manager accept the file or not.
-     *
-     * @param path
-     * @return
-     */
     @Override
-    public boolean acceptDRMFile(String path) {
-        return false;
-    }
-
-    @Override
-    public boolean registerDRMCallback(ReaderDRMCallback callback) {
-        return false;
-    }
-
-    @Override
-    public boolean activateDeviceDRM(String user, String password) {
-        return false;
-    }
-
-    @Override
-    public boolean deactivateDeviceDRM() {
-        return false;
-    }
-
-    @Override
-    public String getDeviceDRMAccount() {
-        return null;
-    }
-
-    @Override
-    public boolean fulfillDRMFile(String path) {
+    public boolean activateDeviceDRM(String certificate) {
         return false;
     }
 
