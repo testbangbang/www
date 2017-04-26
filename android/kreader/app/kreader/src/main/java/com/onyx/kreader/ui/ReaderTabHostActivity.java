@@ -231,6 +231,26 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return true;
     }
 
+    private ReaderTabManager.ReaderTab findOpenedTabByPath(final String path) {
+        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
+            if (entry.getValue().compareTo(path) == 0) {
+                return entry.getKey();
+
+            }
+        }
+        return null;
+    }
+
+    private boolean closeTabIfOpenFileFailed(final String path) {
+        final ReaderTabManager.ReaderTab tab = findOpenedTabByPath(path);
+        if (tab == null) {
+            return false;
+        }
+        // no need to close reader activity again, as it's already closed
+        closeReaderTab(tab, false);
+        return true;
+    }
+
     private void updateTabLayoutState(boolean show) {
         isManualShowTab = show;
         tabWidget.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
@@ -266,6 +286,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             @Override
             public void onUpdateTabWidgetVisibility(boolean visible) {
                 updateTabWidgetVisibility(visible);
+            }
+
+            @Override
+            public void onOpenDocumentFailed(String path) {
+                closeTabIfOpenFileFailed(path);
             }
 
             @Override
@@ -608,7 +633,13 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void closeReaderTab(ReaderTabManager.ReaderTab tab) {
-        closeTabActivity(tab);
+        closeReaderTab(tab, true);
+    }
+
+    private void closeReaderTab(ReaderTabManager.ReaderTab tab, boolean closeTabActivity) {
+        if (closeTabActivity) {
+            closeTabActivity(tab);
+        }
         tabManager.removeOpenedTab(tab);
 
         showTabWidgetOnCondition();
