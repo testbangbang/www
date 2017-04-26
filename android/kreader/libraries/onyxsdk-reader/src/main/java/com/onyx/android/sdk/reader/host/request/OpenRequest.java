@@ -3,6 +3,7 @@ package com.onyx.android.sdk.reader.host.request;
 import android.os.Build;
 
 import com.onyx.android.sdk.reader.api.ReaderDocument;
+import com.onyx.android.sdk.reader.api.ReaderDrmCertificateFactory;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
@@ -20,15 +21,17 @@ public class OpenRequest extends BaseReaderRequest {
 
     private String documentPath;
     private BaseOptions srcOptions;
-    private String drmCertificate;
+    private ReaderDrmCertificateFactory factory;
     private volatile boolean verifyDevice;
 
-    public OpenRequest(final String path, final BaseOptions documentOptions,
-                       final String drmCertificate, boolean verify) {
+    public OpenRequest(final String path,
+                       final BaseOptions documentOptions,
+                       final ReaderDrmCertificateFactory f,
+                       boolean verify) {
         super();
         documentPath = path;
         srcOptions = documentOptions;
-        this.drmCertificate = drmCertificate;
+        factory = f;
         verifyDevice = verify;
     }
 
@@ -47,8 +50,11 @@ public class OpenRequest extends BaseReaderRequest {
             return;
         }
 
-        if (drmCertificate != null) {
-            reader.getPlugin().createDrmManager().activateDeviceDRM(drmCertificate);
+        if (factory != null) {
+            final String certificate = factory.getDrmCertificate();
+            if (StringUtils.isNotBlank(certificate)) {
+                reader.getPlugin().createDrmManager().activateDeviceDRM(certificate);
+            }
         }
 
         try {
