@@ -1,21 +1,18 @@
-package com.onyx.kreader.ui.requests;
+package com.onyx.android.sdk.reader.host.request;
 
 import android.content.Context;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.utils.LocaleUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
-import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 2/15/16.
@@ -112,88 +109,14 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     private void restoreReaderTextStyle(final Reader reader) throws ReaderException {
-        ReaderTextStyle.setDefaultFontSizes(DeviceConfig.sharedInstance(getContext()).getDefaultFontSizes());
-        String fontface = baseOptions.getFontFace();
-        if (StringUtils.isNullOrEmpty(fontface) && LocaleUtils.isChinese()) {
-            fontface = DeviceConfig.sharedInstance(getContext()).getDefaultFontFileForChinese();
-        }
-
-        float fontSize = getFontSize();
-        int lineSpacing = getLineSpacing();
-        int leftMargin = getLeftMargin();
-        int topMargin = getTopMargin();
-        int rightMargin = getRightMargin();
-        int bottomMargin = getBottomMargin();
-
-        ReaderTextStyle style = ReaderTextStyle.create(fontface,
-                ReaderTextStyle.SPUnit.create(fontSize),
-                ReaderTextStyle.Percentage.create(lineSpacing),
-                ReaderTextStyle.Percentage.create(leftMargin),
-                ReaderTextStyle.Percentage.create(topMargin),
-                ReaderTextStyle.Percentage.create(rightMargin),
-                ReaderTextStyle.Percentage.create(bottomMargin));
+        ReaderTextStyle style = ReaderTextStyle.create(baseOptions.getFontFace(),
+                ReaderTextStyle.SPUnit.create(baseOptions.getFontSize()),
+                ReaderTextStyle.Percentage.create(baseOptions.getLineSpacing()),
+                ReaderTextStyle.Percentage.create(baseOptions.getLeftMargin()),
+                ReaderTextStyle.Percentage.create(baseOptions.getTopMargin()),
+                ReaderTextStyle.Percentage.create(baseOptions.getRightMargin()),
+                ReaderTextStyle.Percentage.create(baseOptions.getBottomMargin()));
         reader.getReaderLayoutManager().setStyle(style);
-    }
-
-    private float getFontSize() {
-        float fontSize = baseOptions.getFontSize();
-        if (fontSize == BaseOptions.INVALID_FLOAT_VALUE) {
-            int index = DeviceConfig.sharedInstance(getContext()).getDefaultFontSizeIndex();
-            fontSize = ReaderTextStyle.getFontSizeByIndex(index).getValue();
-            fontSize = SingletonSharedPreference.getLastFontSize(fontSize);
-        }
-        return fontSize;
-    }
-
-    private int getLineSpacing() {
-        int lineSpacing = baseOptions.getLineSpacing();
-        if (lineSpacing == BaseOptions.INVALID_INT_VALUE) {
-            int index = DeviceConfig.sharedInstance(getContext()).getDefaultLineSpacingIndex();
-            lineSpacing = ReaderTextStyle.getLineSpacingByIndex(index).getPercent();
-            lineSpacing = SingletonSharedPreference.getLastLineSpacing(lineSpacing);
-        }
-        return lineSpacing;
-    }
-
-    private int getLeftMargin() {
-        int leftMargin = baseOptions.getLeftMargin();
-        if (leftMargin == BaseOptions.INVALID_INT_VALUE) {
-            leftMargin = getDefaultPageMargin(getContext()).getLeftMargin().getPercent();
-            leftMargin = SingletonSharedPreference.getLastLeftMargin(leftMargin);
-        }
-        return leftMargin;
-    }
-
-    private int getTopMargin() {
-        int topMargin = baseOptions.getTopMargin();
-        if (topMargin == BaseOptions.INVALID_INT_VALUE) {
-            topMargin = getDefaultPageMargin(getContext()).getTopMargin().getPercent();
-            topMargin = SingletonSharedPreference.getLastTopMargin(topMargin);
-        }
-        return topMargin;
-    }
-
-    private int getRightMargin() {
-        int rightMargin = baseOptions.getRightMargin();
-        if (rightMargin == BaseOptions.INVALID_INT_VALUE) {
-            rightMargin = getDefaultPageMargin(getContext()).getRightMargin().getPercent();
-            rightMargin = SingletonSharedPreference.getLastRightMargin(rightMargin);
-        }
-        return rightMargin;
-    }
-
-    private int getBottomMargin() {
-        int bottomMargin = baseOptions.getBottomMargin();
-        if (bottomMargin == BaseOptions.INVALID_INT_VALUE) {
-            bottomMargin = getDefaultPageMargin(getContext()).getBottomMargin().getPercent();
-            bottomMargin = SingletonSharedPreference.getLastBottomMargin(bottomMargin);
-        }
-        return bottomMargin;
-    }
-
-    private ReaderTextStyle.PageMargin getDefaultPageMargin(Context context) {
-        int index = DeviceConfig.sharedInstance(context).getDefaultPageMarginIndex();
-        return ReaderTextStyle.getPageMarginByIndex(index);
     }
 
     private void setSpecialScale(final Reader reader, final BaseOptions baseOptions, final String position) throws Exception {
