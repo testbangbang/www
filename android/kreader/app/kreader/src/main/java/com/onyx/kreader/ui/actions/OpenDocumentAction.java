@@ -13,6 +13,7 @@ import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
+import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
 import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.request.OpenRequest;
 import com.onyx.kreader.ui.requests.RestoreRequest;
@@ -186,7 +187,7 @@ public class OpenDocumentAction extends BaseAction {
 
     private void cleanup(final ReaderDataHolder holder) {
         hideLoadingDialog();
-        holder.getEventBus().post(new ForceCloseEvent(true));
+        holder.getEventBus().post(new OpenDocumentFailedEvent());
     }
 
     private void restoreWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {

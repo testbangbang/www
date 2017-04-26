@@ -357,8 +357,14 @@ public class DeviceUtils {
     }
 
     public static boolean isFullScreen(Activity activity) {
-        int flag = activity.getWindow().getAttributes().flags;
-        return (flag & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        if (Build.VERSION.SDK_INT >= 19) {
+            int flag = activity.getWindow().getAttributes().flags;
+            return (flag & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        }
+
+        int[] location = new int[2];
+        activity.getWindow().getDecorView().getLocationOnScreen(location);
+        return location[1] <= 0;
     }
 
     /**
