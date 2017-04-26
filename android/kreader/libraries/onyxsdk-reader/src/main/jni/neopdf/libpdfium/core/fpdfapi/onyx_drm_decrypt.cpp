@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <arpa/inet.h>
+
 #include <openssl/rsa.h>
 #include <openssl/engine.h>
 #include <openssl/pem.h>
@@ -260,7 +262,7 @@ unsigned char *aesDecrypt(const unsigned char *key, const unsigned char *data, i
     return result;
 }
 
-unsigned char *computeKeyFromGuard(const std::string &cipherBase64String,
+unsigned char *computeKeyFromGuardV1(const std::string &cipherBase64String,
                                       const std::string &guardBase64String,
                                       int *resultLen) {
     int keyLen;
@@ -305,7 +307,8 @@ DrmDecrypt::~DrmDecrypt()
 
 unsigned char *DrmDecrypt::rsaDecryptManifest(const unsigned char *key,
                                               const char *manifestBase64Cipher,
-                                              int *resultLen)
+                                              int *resultLen,
+                                              int *manifestVersion)
 {
     RSA* publicKey = loadPublicKeyFromString(key);
     if (!publicKey) {
@@ -314,6 +317,10 @@ unsigned char *DrmDecrypt::rsaDecryptManifest(const unsigned char *key,
 
     int len = 0;
     unsigned char *data = unbase64(manifestBase64Cipher, static_cast<int>(strlen(manifestBase64Cipher)), &len);
+
+    uint32_t version = 0;
+    memcpy(&version, &data[508], 4);
+    *manifestVersion = ntohl(version);
 
     const int HEADER_LENGTH = 512;
     int manifestLen = len - HEADER_LENGTH;
@@ -351,7 +358,7 @@ unsigned char *DrmDecrypt::aesDecrypt(const char *keyBase64String,
 }
 
 DrmDecryptManager::DrmDecryptManager()
-    : encrypted(false)
+    : encrypted(false), drmVersion(0)
 {
 
 }
@@ -377,10 +384,23 @@ void DrmDecryptManager::setEncrypted(bool encrypted)
     this->encrypted = encrypted;
 }
 
+int DrmDecryptManager::getDrmVersion()
+{
+    return drmVersion;
+}
+
+int DrmDecryptManager::setDrmVersion(int version)
+{
+    drmVersion = version;
+}
+
 bool DrmDecryptManager::setAESKey(const std::string &aesKeyCipherBase64String, const std::string &aesKeyGuardBase64String)
 {
     int keyLen;
-    unsigned char *key = computeKeyFromGuard(aesKeyCipherBase64String, aesKeyGuardBase64String, &keyLen);
+    unsigned char *key = nullptr;
+    if (drmVersion == 1) {
+        key = computeKeyFromGuardV1(aesKeyCipherBase64String, aesKeyGuardBase64String, &keyLen);
+    }
     if (!key) {
         return false;
     }
