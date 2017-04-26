@@ -6,7 +6,8 @@ import android.content.Context;
 
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.R;
-import com.onyx.android.eschool.events.LoadFinishEvent;
+import com.onyx.android.eschool.model.LibraryDataModel;
+import com.onyx.android.eschool.model.LibraryViewInfo;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -14,7 +15,6 @@ import com.onyx.android.sdk.data.BookFilter;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.ui.dialog.DialogSortBy;
-import com.onyx.android.sdk.ui.utils.ToastUtils;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -26,9 +26,11 @@ import java.util.Map;
  */
 
 public class FilterByAction extends BaseAction<LibraryDataHolder> {
-
     private Map<String, BookFilter> filterMap = new LinkedHashMap<>();
     private FragmentManager fragmentManager;
+
+    private LibraryDataModel libraryDataModel;
+    private BaseCallback baseCallback;
 
     public FilterByAction(Activity activity) {
         this.fragmentManager = activity.getFragmentManager();
@@ -36,6 +38,7 @@ public class FilterByAction extends BaseAction<LibraryDataHolder> {
 
     @Override
     public void execute(final LibraryDataHolder dataHolder, BaseCallback baseCallback) {
+        this.baseCallback = baseCallback;
         DialogSortBy dialog = getOrderDialog(dataHolder.getContext(), dataHolder.getContext().getString(R.string.filter),
                 getFilterByList(dataHolder),
                 new DialogSortBy.OnSortByListener() {
@@ -45,8 +48,10 @@ public class FilterByAction extends BaseAction<LibraryDataHolder> {
                         processFilterBy(dataHolder, sortBy, sortOrder);
                     }
                 });
-        dialog.setCurrentSortBySelectedIndex(getCurrentFilterByIndex(dataHolder.getContext(), dataHolder.getCurrentQueryArgs()));
-        dialog.setCurrentSortOrderSelected(dataHolder.getCurrentSortOrder());
+        LibraryViewInfo libraryViewInfo = dataHolder.getLibraryViewInfo();
+        dialog.setCurrentSortBySelectedIndex(getCurrentFilterByIndex(dataHolder.getContext(),
+                libraryViewInfo.getCurrentQueryArgs()));
+        dialog.setCurrentSortOrderSelected(libraryViewInfo.getCurrentSortOrder());
         dialog.show(fragmentManager);
     }
 
@@ -75,21 +80,18 @@ public class FilterByAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void processFilterBy(final LibraryDataHolder dataHolder, String filterBy, SortOrder sortOrder) {
-        dataHolder.updateFilterBy(getFilterMap(dataHolder.getContext()).get(filterBy), sortOrder);
-        new MetadataLoadAction(dataHolder.getQueryArgs()).execute(dataHolder, new BaseCallback() {
+        LibraryViewInfo libraryViewInfo = dataHolder.getLibraryViewInfo();
+        libraryViewInfo.updateFilterBy(getFilterMap(dataHolder.getContext()).get(filterBy), sortOrder);
+        final MetadataLoadAction loadAction = new MetadataLoadAction(libraryViewInfo.libraryQuery());
+        loadAction.execute(dataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    ToastUtils.showToast(dataHolder.getContext(), R.string.filter_fail);
-                    return;
+                if (e == null) {
+                    libraryDataModel = loadAction.getLibraryDataModel();
                 }
-                postLoadFinishEvent(dataHolder);
+                BaseCallback.invoke(baseCallback, request, e);
             }
         });
-    }
-
-    private void postLoadFinishEvent(LibraryDataHolder dataHolder) {
-        dataHolder.getEventBus().post(new LoadFinishEvent());
     }
 
     public Map<String, BookFilter> getFilterMap(Context context) {
@@ -113,5 +115,9 @@ public class FilterByAction extends BaseAction<LibraryDataHolder> {
             return 0;
         }
         return index;
+    }
+
+    public LibraryDataModel getLibraryDataModel() {
+        return libraryDataModel;
     }
 }

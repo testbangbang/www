@@ -151,7 +151,9 @@
     <string name="menu_multi_choice_mode">Multi-Choice mode</string>
     <string name="menu_library_build">Build a library</string>
     <string name="menu_library_add">Add to the library</string>
-    <string name="menu_library_remove">Remove the library</string>
+    <string name="menu_library_remove">Remove from the library</string>
     <string name="menu_library_delete">Delete the library</string>
 
+    <string name="go_to_page">Go To Page</string>
+    <string name="current_page">Current Page</string>
 </resources>

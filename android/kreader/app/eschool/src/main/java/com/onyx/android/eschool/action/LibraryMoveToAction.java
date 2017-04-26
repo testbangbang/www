@@ -2,11 +2,9 @@ package com.onyx.android.eschool.action;
 
 import android.app.Activity;
 import android.app.FragmentManager;
-import android.widget.Toast;
 
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
-import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.dialog.DialogMultiTextSingleChoice;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -70,7 +68,7 @@ public class LibraryMoveToAction extends BaseAction<LibraryDataHolder> {
 
     private void addChosenBooksToLibrary(final LibraryDataHolder dataHolder, Library toLibrary) {
         Library fromLibrary = new Library();
-        fromLibrary.setIdString(dataHolder.getLibraryIdString());
+        fromLibrary.setIdString(dataHolder.getLibraryViewInfo().getLibraryIdString());
         LibraryMoveToRequest moveRequest = new LibraryMoveToRequest(fromLibrary, toLibrary, chosenItemsList);
         dataHolder.getDataManager().submit(dataHolder.getContext(), moveRequest, new BaseCallback() {
             @Override

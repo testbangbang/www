@@ -1,11 +1,13 @@
 package com.onyx.android.eschool;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.eschool.device.DeviceConfig;
+import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -45,7 +47,7 @@ public class SchoolApp extends Application {
 
     static private SchoolApp sInstance = null;
     static private CloudStore cloudStore = new CloudStore();
-    static private DataManager dataManager;
+    static private LibraryDataHolder libraryDataHolder;
 
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
@@ -177,7 +179,7 @@ public class SchoolApp extends Application {
 
     private void removeFilesFromMetadata(Set<String> removedSet) {
         FilesRemoveFromMetadataRequest removeRequest = new FilesRemoveFromMetadataRequest(removedSet);
-        dataManager.submitToMulti(getApplicationContext(), removeRequest, new BaseCallback() {
+        getDataManager().submitToMulti(getApplicationContext(), removeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
@@ -263,10 +265,14 @@ public class SchoolApp extends Application {
     }
 
     static public DataManager getDataManager() {
-        if (dataManager == null) {
-            dataManager = new DataManager();
+        return getLibraryDataHolder().getDataManager();
+    }
+
+    public static LibraryDataHolder getLibraryDataHolder() {
+        if (libraryDataHolder == null) {
+            libraryDataHolder = new LibraryDataHolder(sInstance);
         }
-        return dataManager;
+        return libraryDataHolder;
     }
 
     public String getSdcardCid() {
