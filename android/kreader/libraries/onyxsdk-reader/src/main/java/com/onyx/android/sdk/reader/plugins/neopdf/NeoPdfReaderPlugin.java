@@ -469,7 +469,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
 
     public boolean activateDeviceDRM(String certificate) {
-        return false;
+        return getPluginImpl().activateDeviceDRM(certificate);
     }
 
     public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {

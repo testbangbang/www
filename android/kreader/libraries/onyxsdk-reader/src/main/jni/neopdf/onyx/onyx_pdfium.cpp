@@ -27,52 +27,34 @@ static const char * annotationClassName = "com/onyx/android/sdk/data/model/Annot
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
 
-PluginContextHolder<OnyxPdfiumContext> OnyxPdfiumManager::contextHolder;
+namespace {
 
-OnyxPdfiumContext * OnyxPdfiumManager::getContext(JNIEnv *env, jint id) {
-    return contextHolder.findContext(env, id);
-}
+int libraryReference = 0;
+std::string drmCertificate;
 
-OnyxPdfiumContext * OnyxPdfiumManager::createContext(JNIEnv *env, jint id,
-                                                     FPDF_DOCUMENT document,
-                                                     FPDF_FORMHANDLE formHandle) {
-    OnyxPdfiumContext *context = new OnyxPdfiumContext(document, formHandle);
-    contextHolder.insertContext(env, id, std::unique_ptr<OnyxPdfiumContext>(context));
-    return context;
-}
-
-void OnyxPdfiumManager::releaseContext(JNIEnv *env, jint id) {
-    contextHolder.eraseContext(env, id);
-}
-
-static bool readDrmManifest(FPDF_DOCUMENT document, char *buf, int length) {
+bool readDrmManifest(FPDF_DOCUMENT document, char *buf, int length) {
     unsigned long res = FPDF_GetMetaText(document, "boox", buf, length);
     return res > 2; // empty metadata text is '\0' in unicode
 }
 
-static bool setupDrmManager(const std::string &drmManifest) {
-    std::ifstream file("/sdcard/public_key");
-    if (!file ) {
-        LOGE("read /sdcard/public_key failed!");
-        return false;
-    }
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    file.close();
-
-    std::string key = buffer.str();
-    const unsigned char *rsaKeyData = reinterpret_cast<const unsigned char *>(key.c_str());
+bool setupDrmManager(const std::string &drmManifest) {
+    const unsigned char *rsaKeyData = reinterpret_cast<const unsigned char *>(drmCertificate.c_str());
 
     onyx::DrmDecrypt decrypt;
     int resultLen = 0;
-    unsigned char *result = decrypt.rsaDecryptManifest(rsaKeyData, drmManifest.c_str(), &resultLen);
-    if (resultLen == -1) {
+    int manifestVersion = 0;
+    unsigned char *result = decrypt.rsaDecryptManifest(rsaKeyData, drmManifest.c_str(),
+                                                       &resultLen, &manifestVersion);
+    if (!result) {
         LOGE("invalid metadata!");
         return false;
     }
+    onyx::DrmDecryptManager::singleton().setDrmVersion(manifestVersion);
 
     jsonxx::Object object;
-    if (!object.parse(reinterpret_cast<char *>(result))) {
+    bool succ = object.parse(reinterpret_cast<char *>(result));
+    free(result);
+    if (!succ) {
         LOGE("invalid metadata!");
         return false;
     }
@@ -92,7 +74,26 @@ static bool setupDrmManager(const std::string &drmManifest) {
     return true;
 }
 
-static int libraryReference = 0;
+}
+
+PluginContextHolder<OnyxPdfiumContext> OnyxPdfiumManager::contextHolder;
+
+OnyxPdfiumContext * OnyxPdfiumManager::getContext(JNIEnv *env, jint id) {
+    return contextHolder.findContext(env, id);
+}
+
+OnyxPdfiumContext * OnyxPdfiumManager::createContext(JNIEnv *env, jint id,
+                                                     FPDF_DOCUMENT document,
+                                                     FPDF_FORMHANDLE formHandle) {
+    OnyxPdfiumContext *context = new OnyxPdfiumContext(document, formHandle);
+    contextHolder.insertContext(env, id, std::unique_ptr<OnyxPdfiumContext>(context));
+    return context;
+}
+
+void OnyxPdfiumManager::releaseContext(JNIEnv *env, jint id) {
+    contextHolder.eraseContext(env, id);
+}
+
 /*
  * Class:     com_onyx_reader_plugins_neopdf_NeoPdfJniWrapper
  * Method:    nativeInitLibrary
@@ -770,6 +771,13 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
         env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, destPage, floatArray, nullptr, -1, -1, nullptr, nullptr);
     }
 
+    return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeActivateDeviceDRM
+  (JNIEnv *env, jobject thiz, jstring certificate) {
+    JNIString str(env, certificate);
+    drmCertificate = str.getLocalString();
     return true;
 }
 

@@ -72,6 +72,8 @@ public class NeoPdfJniWrapper {
 
     private native boolean nativeGetPageLinks(int id, int page, final List<ReaderSelection> list);
 
+    private native boolean nativeActivateDeviceDRM(String certificate);
+
     private int id;
     private String filePath = null;
 
@@ -163,6 +165,10 @@ public class NeoPdfJniWrapper {
 
     public boolean getPageLinks(int page, final List<ReaderSelection> list) {
         return nativeGetPageLinks(id, page, list);
+    }
+
+    public boolean activateDeviceDRM(String certificate) {
+        return nativeActivateDeviceDRM(certificate);
     }
 
 }
