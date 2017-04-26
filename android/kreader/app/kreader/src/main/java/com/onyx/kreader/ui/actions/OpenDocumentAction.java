@@ -108,7 +108,7 @@ public class OpenDocumentAction extends BaseAction {
                 }
                 BaseOptions baseOptions = loadDocumentOptionsRequest.getDocumentOptions();
                 adjustOptionsWithDeviceConfig(baseOptions, readerDataHolder);
-                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
+                openWithOptions(readerDataHolder, baseOptions);
             }
         });
     }
