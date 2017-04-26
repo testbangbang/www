@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenuAction;
@@ -67,6 +68,7 @@ public class ReaderDataHolder {
     private ReaderSelectionManager selectionManager;
     private ReaderTtsManager ttsManager;
     private NoteManager noteManager;
+    private DataManager dataManager;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private EventBus eventBus = new EventBus();
     private EventReceiver eventReceiver;
@@ -301,6 +303,13 @@ public class ReaderDataHolder {
             noteManager = new NoteManager(this);
         }
         return noteManager;
+    }
+
+    public DataManager getDataManager() {
+        if (dataManager == null) {
+            dataManager = new DataManager();
+        }
+        return dataManager;
     }
 
     public void updateRawEventProcessor() {

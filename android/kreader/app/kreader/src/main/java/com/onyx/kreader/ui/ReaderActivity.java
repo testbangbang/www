@@ -78,6 +78,7 @@ import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
 import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
+import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
 import com.onyx.kreader.ui.events.PinchZoomEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
@@ -665,16 +666,12 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onDFBShapeFinished(final ShapeAddedEvent event) {
-        final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
-        FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, false, false, false);
-        flushNoteAction.execute(getReaderDataHolder(), null);
+        flushReaderNote(true, false, false, false, null);
     }
 
     private void prepareForErasing() {
         if (getReaderDataHolder().getNoteManager().hasShapeStash()) {
-            final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
-            final FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, false, false);
-            flushNoteAction.execute(getReaderDataHolder(), null);
+            flushReaderNote(true, true, false, false, null);
             return;
         }
         boolean drawDuringErasing = false;
@@ -782,6 +779,31 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         updateNoteHostView();
+
+        if (getReaderDataHolder().inNoteWritingProvider()) {
+            flushReaderNote(true, true, true, false, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    changeViewConfig();
+                }
+            });
+        }else {
+            changeViewConfig();
+        }
+    }
+
+    private void flushReaderNote(boolean renderShapes, boolean transferBitmap, boolean saveToDatabase, boolean show, final BaseCallback callback) {
+        final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
+        FlushNoteAction flushNoteAction = new FlushNoteAction(list, renderShapes, transferBitmap, saveToDatabase, show);
+        flushNoteAction.execute(getReaderDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                BaseCallback.invoke(callback, request, e);
+            }
+        });
+    }
+
+    private void changeViewConfig() {
         new ChangeViewConfigAction().execute(getReaderDataHolder(), null);
     }
 
@@ -924,9 +946,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             getHandlerManager().setEnableTouch(true);
             return;
         }
-        final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
-        FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, false, false);
-        flushNoteAction.execute(getReaderDataHolder(), new BaseCallback() {
+        flushReaderNote(true, true, false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 getHandlerManager().setEnableTouch(true);
@@ -1003,6 +1023,18 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onConfirmCloseDialogEvent(final ConfirmCloseDialogEvent event) {
         enableShortcut(!event.isOpen());
+    }
+
+    @Subscribe
+    public void onOpenDocumentFailed(final OpenDocumentFailedEvent event) {
+        enablePost(true);
+        ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
+        getReaderDataHolder().getEventBus().unregister(this);
+        releaseStartupWakeLock();
+        ReaderTabHostBroadcastReceiver.sendOpenDocumentFailedEvent(this, getReaderDataHolder().getDocumentPath());
+
+        finish();
+        postFinish();
     }
 
     @Subscribe

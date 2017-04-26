@@ -43,13 +43,13 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static void sendCloseReaderIntent(Context context, Class clazz) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_CLOSE_READER);
-        context.sendBroadcast(intent);
+        sendBroadcast(context, intent);
     }
 
     public static void sendMoveTaskToBackIntent(Context context, Class clazz) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_MOVE_TASK_TO_BACK);
-        context.sendBroadcast(intent);
+        sendBroadcast(context, intent);
     }
 
     public static void sendResizeReaderWindowIntent(Context context, Class clazz, int width, int height) {
@@ -57,38 +57,43 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         intent.setAction(ACTION_RESIZE_WINDOW);
         intent.putExtra(TAG_WINDOW_WIDTH, width);
         intent.putExtra(TAG_WINDOW_HEIGHT, height);
-        context.sendBroadcast(intent);
+        sendBroadcast(context, intent);
     }
 
     public static void sendDocumentActivatedIntent(Context context, Class clazz, String path) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_DOCUMENT_ACTIVATED);
         intent.putExtra(TAG_DOCUMENT_PATH, path);
-        context.sendBroadcast(intent);
+        sendBroadcast(context, intent);
     }
 
     public static void sendUpdateTabWidgetVisibilityIntent(Context context, Class clazz, boolean visible) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_UPDATE_TAB_WIDGET_VISIBILITY);
         intent.putExtra(TAG_TAB_WIDGET_VISIBLE, visible);
-        context.sendBroadcast(intent);
+        sendBroadcast(context, intent);
     }
 
     public static void sendEnableDebugLogIntent(Context context, Class clazz) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_ENABLE_DEBUG_LOG);
-        context.sendBroadcast(intent);
+        sendBroadcast(context, intent);
     }
 
     public static void sendDisableDebugLogIntent(Context context, Class clazz) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_DISABLE_DEBUG_LOG);
+        sendBroadcast(context, intent);
+    }
+
+    private static void sendBroadcast(Context context, Intent intent) {
+        Debug.d(ReaderBroadcastReceiver.class, "sendBroadcast: " + intent);
         context.sendBroadcast(intent);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(getClass().getSimpleName(), "onReceive: " + intent);
+        Debug.d(getClass(), "onReceive: " + intent);
         if (eventBus == null) {
             Log.e(getClass().getSimpleName(), "null bus");
             return;

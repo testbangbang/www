@@ -147,7 +147,10 @@
     <string name="menu_multi_choice_mode">多选模式</string>
     <string name="menu_library_build">创建书库</string>
     <string name="menu_library_add">加入书库</string>
-    <string name="menu_library_remove">移除书库</string>
+    <string name="menu_library_remove">移出书库</string>
     <string name="menu_library_delete">删除书库</string>
+
+    <string name="go_to_page">页面跳转</string>
+    <string name="current_page">当前页面</string>
 
 </resources>
