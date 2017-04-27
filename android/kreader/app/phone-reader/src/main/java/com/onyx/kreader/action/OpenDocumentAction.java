@@ -39,7 +39,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void openDocumentWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions baseOptions) {
-        OpenRequest openRequest = new OpenRequest(documentPath, baseOptions, false);
+        OpenRequest openRequest = new OpenRequest(documentPath, baseOptions, null, false);
         readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest baseRequest, Throwable throwable) {
