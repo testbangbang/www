@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.onyx.kreader.note.request.PauseDrawingRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
+import com.onyx.kreader.ui.events.UpdateScribbleMenuEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -503,6 +505,11 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         parent.removeView(fullToolbar);
     }
 
+    @Subscribe
+    public void updateScribbleMenu(UpdateScribbleMenuEvent event) {
+        postMenuChangedEvent(readerDataHolder);
+    }
+
     private void changeToolBarVisibility(boolean packUp) {
         topToolbar.setVisibility(packUp ? View.GONE : View.VISIBLE);
         bottomToolbar.setVisibility(packUp ? View.GONE : View.VISIBLE);
@@ -517,7 +524,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private void postMenuChangedEvent(final ReaderDataHolder readerDataHolder) {
         int bottomOfTopToolBar = 0;
         int topOfBottomToolBar = 0;
-        Rect excludeRect = new Rect();
+        RectF excludeRect = new RectF();
         if (bottomToolbar.getVisibility() == View.VISIBLE) {
             bottomOfTopToolBar = topToolbar.getBottom();
         }
@@ -526,7 +533,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         }
 
         if (fullToolbar.getVisibility() == View.VISIBLE) {
-            excludeRect = new Rect(fullToolbar.getLeft(), fullToolbar.getTop(), fullToolbar.getRight(), fullToolbar.getBottom());
+            excludeRect = new RectF(fullToolbar.getLeft(), fullToolbar.getTop(), fullToolbar.getRight(), fullToolbar.getBottom());
         }
         readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(bottomOfTopToolBar, topOfBottomToolBar, excludeRect));
     }
