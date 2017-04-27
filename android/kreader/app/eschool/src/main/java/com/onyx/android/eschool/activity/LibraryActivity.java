@@ -19,10 +19,10 @@ import com.onyx.android.eschool.custom.PageIndicator;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.action.LibraryBuildAction;
-import com.onyx.android.eschool.action.FilterByAction;
+import com.onyx.android.eschool.action.ConfigFilterAction;
 import com.onyx.android.eschool.action.MetadataLoadAction;
 import com.onyx.android.eschool.action.LibraryMoveToAction;
-import com.onyx.android.eschool.action.SortByAction;
+import com.onyx.android.eschool.action.ConfigSortAction;
 import com.onyx.android.eschool.events.LoadFinishEvent;
 import com.onyx.android.eschool.glide.ThumbnailLoader;
 import com.onyx.android.eschool.model.LibraryDataModel;
@@ -36,6 +36,7 @@ import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.request.data.db.LibraryDataCacheClearRequest;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
@@ -74,9 +75,6 @@ public class LibraryActivity extends BaseActivity {
 
     private ThumbnailLoader thumbnailLoader;
     private QueryPagination pagination;
-
-    private LibraryDataModel preDataModel;
-    private LibraryDataModel nextDataModel;
 
     private int row = 3;
     private int col = 3;
@@ -195,6 +193,7 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private void updateContentView(LibraryDataModel libraryDataModel) {
+        dataHolder.getLibraryViewInfo().setLibraryDataModel(libraryDataModel);
         LibraryDataModel newDataModel = new LibraryDataModel();
         int currentPage = pagination.getCurrentPage();
         int itemsPerPage = pagination.itemsPerPage();
@@ -263,19 +262,19 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private void prevPage() {
-        if (preDataModel == null) {
-            return;
-        }
         if (!pagination.prevPage()) {
             return;
         }
-        dataHolder.getLibraryViewInfo().prevPage();
-        final LibraryDataModel showDataModel = preDataModel;
-        nextDataModel = dataHolder.getLibraryViewInfo().getLibraryDataModel();
-        dataHolder.getLibraryViewInfo().setLibraryDataModel(showDataModel);
+        final MetadataLoadAction loadAction = new MetadataLoadAction(dataHolder.getLibraryViewInfo().prevPage());
+        loadAction.execute(dataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e == null) {
+                    updateContentView(loadAction.getLibraryDataModel());
+                }
+            }
+        });
         prevLoad();
-        preDataModel = null;
-        updateContentView(showDataModel);
     }
 
     private void prevLoad() {
@@ -285,30 +284,23 @@ public class LibraryActivity extends BaseActivity {
         }
         final MetadataLoadAction loadAction = new MetadataLoadAction(
                 dataHolder.getLibraryViewInfo().preLoadingPage(preLoadPage), false);
+        loadAction.execute(dataHolder, null);
+    }
+
+    private void nextPage() {
+        if (!pagination.nextPage()) {
+            return;
+        }
+        final MetadataLoadAction loadAction = new MetadataLoadAction(dataHolder.getLibraryViewInfo().nextPage());
         loadAction.execute(dataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
-                    preDataModel = loadAction.getLibraryDataModel();
+                    updateContentView(loadAction.getLibraryDataModel());
                 }
             }
         });
-    }
-
-    private void nextPage() {
-        if (nextDataModel == null) {
-            return;
-        }
-        if (!pagination.nextPage()) {
-            return;
-        }
-        dataHolder.getLibraryViewInfo().nextPage();
-        final LibraryDataModel showDataModel = nextDataModel;
-        preDataModel = dataHolder.getLibraryViewInfo().getLibraryDataModel();
-        dataHolder.getLibraryViewInfo().setLibraryDataModel(showDataModel);
         nextLoad();
-        nextDataModel = null;
-        updateContentView(showDataModel);
     }
 
     private void nextLoad() {
@@ -318,14 +310,7 @@ public class LibraryActivity extends BaseActivity {
         }
         final MetadataLoadAction loadAction = new MetadataLoadAction(
                 dataHolder.getLibraryViewInfo().preLoadingPage(preLoadPage), false);
-        loadAction.execute(dataHolder, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e == null) {
-                    nextDataModel = loadAction.getLibraryDataModel();
-                }
-            }
-        });
+        loadAction.execute(dataHolder, null);
     }
 
     private void showGotoPageAction(int currentPage) {
@@ -351,7 +336,6 @@ public class LibraryActivity extends BaseActivity {
                 }
                 prevLoad();
                 nextLoad();
-                dataHolder.getLibraryViewInfo().setLibraryDataModel(loadAction.getLibraryDataModel());
                 updateContentView(loadAction.getLibraryDataModel());
             }
         });
@@ -370,12 +354,12 @@ public class LibraryActivity extends BaseActivity {
                 if (e != null) {
                     return;
                 }
-                dataHolder.getLibraryViewInfo().setLibraryDataModel(loadAction.getLibraryDataModel());
-                pagination.resize(row, col, getTotalCount());
-                nextLoad();
-                updateContentView(loadAction.getLibraryDataModel());
+                LibraryDataModel dataModel = loadAction.getLibraryDataModel();
+                pagination.resize(row, col, dataModel.bookCount + dataModel.libraryCount);
+                updateContentView(dataModel);
             }
         });
+        nextLoad();
     }
 
     private void loadQueryArgsConf() {
@@ -390,7 +374,7 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private void processSortBy() {
-        final SortByAction sortByAction = new SortByAction(this);
+        final ConfigSortAction sortByAction = new ConfigSortAction(this);
         sortByAction.execute(dataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -403,7 +387,7 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private void processFilterByBy() {
-        final FilterByAction filterByAction = new FilterByAction(this);
+        final ConfigFilterAction filterByAction = new ConfigFilterAction(this);
         filterByAction.execute(dataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -524,6 +508,19 @@ public class LibraryActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void cleanAllCache() {
+        clearDataCache(true, true);
+    }
+
+    private void cleanMetadataCache() {
+        clearDataCache(false, true);
+    }
+
+    private void clearDataCache(boolean clearLibrary, boolean clearMetadata) {
+        LibraryDataCacheClearRequest clearRequest = new LibraryDataCacheClearRequest(clearLibrary, clearMetadata);
+        dataHolder.getDataManager().submit(this, clearRequest, null);
+    }
+
     private void processBuildLibrary() {
         new LibraryBuildAction(this, dataHolder.getLibraryViewInfo().getLibraryIdString())
                 .execute(dataHolder, new BaseCallback() {
@@ -532,6 +529,7 @@ public class LibraryActivity extends BaseActivity {
                         if (e != null) {
                             return;
                         }
+                        cleanAllCache();
                         loadData();
                     }
                 });
@@ -550,6 +548,7 @@ public class LibraryActivity extends BaseActivity {
                     return;
                 }
                 quitMultiSelectionMode();
+                cleanMetadataCache();
                 loadData();
             }
         });
@@ -565,6 +564,7 @@ public class LibraryActivity extends BaseActivity {
                 if (e != null) {
                     return;
                 }
+                cleanMetadataCache();
                 loadData();
             }
         });
@@ -578,6 +578,7 @@ public class LibraryActivity extends BaseActivity {
                         if (e != null) {
                             return;
                         }
+                        cleanAllCache();
                         loadData();
                     }
                 });

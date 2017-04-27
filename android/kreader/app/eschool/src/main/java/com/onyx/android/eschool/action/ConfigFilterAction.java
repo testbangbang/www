@@ -25,14 +25,14 @@ import java.util.Map;
  * Created by suicheng on 2017/4/15.
  */
 
-public class FilterByAction extends BaseAction<LibraryDataHolder> {
+public class ConfigFilterAction extends BaseAction<LibraryDataHolder> {
     private Map<String, BookFilter> filterMap = new LinkedHashMap<>();
     private FragmentManager fragmentManager;
 
     private LibraryDataModel libraryDataModel;
     private BaseCallback baseCallback;
 
-    public FilterByAction(Activity activity) {
+    public ConfigFilterAction(Activity activity) {
         this.fragmentManager = activity.getFragmentManager();
     }
 

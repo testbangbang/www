@@ -33,10 +33,13 @@ public class LibraryLoadRequest extends BaseDBRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        DataManagerHelper.loadLibraryList(dataManager, libraryList, queryArgs.libraryUniqueId);
+        List<Library> tmpList = DataManagerHelper.loadLibraryListWithCache(getContext(), dataManager, queryArgs.libraryUniqueId);
+        if (!CollectionUtils.isNullOrEmpty(tmpList)) {
+            libraryList.addAll(tmpList);
+        }
         if (loadMetadata) {
             totalCount = dataManager.getRemoteContentProvider().count(getContext(), queryArgs);
-            List<Metadata> metadataList = dataManager.getRemoteContentProvider().findMetadataByQueryArgs(getContext(), queryArgs);
+            List<Metadata> metadataList = DataManagerHelper.loadMetadataListWithCache(getContext(), dataManager, queryArgs);
             if (!CollectionUtils.isNullOrEmpty(metadataList)) {
                 bookList.addAll(metadataList);
             }

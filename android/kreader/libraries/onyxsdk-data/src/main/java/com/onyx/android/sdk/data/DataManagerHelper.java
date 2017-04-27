@@ -151,4 +151,25 @@ public class DataManagerHelper {
     public static List<MetadataCollection> loadMetadataCollection(Context context, DataManager dataManager, String libraryIdString) {
         return dataManager.getRemoteContentProvider().loadMetadataCollection(context, libraryIdString);
     }
+
+    public static List<Metadata> loadMetadataListWithCache(Context context, DataManager dataManager, QueryArgs queryArgs) {
+        String queryKey = queryArgs.conditionGroup.getQuery() + queryArgs.libraryUniqueId +
+                queryArgs.getOrderByQueryWithLimitOffset();
+        List<Metadata> list = dataManager.getCacheManager().getMetadataCache(queryKey);
+        if (list == null) {
+            list = dataManager.getRemoteContentProvider().findMetadataByQueryArgs(context, queryArgs);
+            dataManager.getCacheManager().addToMetadataCache(queryKey, list);
+        }
+        return list;
+    }
+
+    public static List<Library> loadLibraryListWithCache(Context context, DataManager dataManager, String libraryUniqueId) {
+        String queryKey = String.valueOf(libraryUniqueId);
+        List<Library> list = dataManager.getCacheManager().getLibraryCache(queryKey);
+        if (list == null) {
+            list = dataManager.getRemoteContentProvider().loadAllLibrary(libraryUniqueId);
+            dataManager.getCacheManager().addToLibraryCache(queryKey, list);
+        }
+        return list;
+    }
 }
