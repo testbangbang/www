@@ -26,14 +26,14 @@ import java.util.Map;
  * Created by suicheng on 2017/4/15.
  */
 
-public class SortByAction extends BaseAction<LibraryDataHolder> {
+public class ConfigSortAction extends BaseAction<LibraryDataHolder> {
     private Map<String, SortBy> sortByMap = new LinkedHashMap();
     private FragmentManager fragmentManager;
 
     private LibraryDataModel libraryDataModel;
     private BaseCallback baseCallback;
 
-    public SortByAction(Activity activity) {
+    public ConfigSortAction(Activity activity) {
         this.fragmentManager = activity.getFragmentManager();
     }
 

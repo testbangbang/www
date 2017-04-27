@@ -1,7 +1,6 @@
 package com.onyx.android.eschool;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -170,9 +169,7 @@ public class SchoolApp extends Application {
         getDataManager().submitToMulti(getApplicationContext(), addRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    e.printStackTrace();
-                }
+                getDataManager().getCacheManager().clearMetadataCache();
             }
         });
     }
@@ -182,9 +179,7 @@ public class SchoolApp extends Application {
         getDataManager().submitToMulti(getApplicationContext(), removeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    e.printStackTrace();
-                }
+                getDataManager().getCacheManager().clearMetadataCache();
             }
         });
     }
