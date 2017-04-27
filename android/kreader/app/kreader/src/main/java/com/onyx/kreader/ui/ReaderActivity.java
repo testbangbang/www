@@ -1127,6 +1127,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     public void setFullScreen(boolean fullScreen) {
+        DeviceUtils.setFullScreenOnResume(this, fullScreen);
         if (fullScreen) {
             ReaderTabHostBroadcastReceiver.sendEnterFullScreenIntent(this);
         } else {
