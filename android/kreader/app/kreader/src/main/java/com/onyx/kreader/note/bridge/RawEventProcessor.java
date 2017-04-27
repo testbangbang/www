@@ -68,7 +68,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         super(p);
     }
 
-    public void update(final Matrix screenMatrix, final Matrix viewMatrix, final Rect rect, final List<Rect> excludeRect) {
+    public void update(final Matrix screenMatrix, final Matrix viewMatrix, final Rect rect, final List<RectF> excludeRect) {
         this.inputToScreenMatrix = screenMatrix;
         this.screenToViewMatrix = viewMatrix;
         setLimitRect(rect);

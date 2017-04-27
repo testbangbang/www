@@ -69,7 +69,7 @@ public class NoteEventProcessorManager {
                        final DeviceConfig noteConfig,
                        final MappingConfig mappingConfig,
                        final Rect visibleDrawRect,
-                       final List<Rect> excludeRect,
+                       final List<RectF> excludeRect,
                        int orientation) {
         detectTouchType();
         view = targetView;

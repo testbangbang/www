@@ -815,7 +815,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, new ArrayList<Rect>(), rotation);
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, new ArrayList<RectF>(), rotation);
     }
 
     @Subscribe
@@ -863,11 +863,11 @@ public class ReaderActivity extends OnyxBaseActivity {
         getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, getExcludeRect(event.getExcludeRect()), rotation);
     }
 
-    private List<Rect> getExcludeRect(final Rect scribbleMenuExcludeRect) {
-        List<Rect> excludeRect = new ArrayList<>();
+    private List<RectF> getExcludeRect(final RectF scribbleMenuExcludeRect) {
+        List<RectF> excludeRect = new ArrayList<>();
         excludeRect.add(scribbleMenuExcludeRect);
         if (buttonShowTabWidget.isShown()) {
-            Rect r = new Rect(buttonShowTabWidget.getLeft(), buttonShowTabWidget.getTop(), buttonShowTabWidget.getRight(), buttonShowTabWidget.getBottom());
+            RectF r = new RectF(buttonShowTabWidget.getLeft(), buttonShowTabWidget.getTop(), buttonShowTabWidget.getRight(), buttonShowTabWidget.getBottom());
             excludeRect.add(r);
         }
         return excludeRect;

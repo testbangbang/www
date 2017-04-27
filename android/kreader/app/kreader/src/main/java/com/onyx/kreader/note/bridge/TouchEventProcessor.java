@@ -28,7 +28,7 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
         super(p);
     }
 
-    public void update(final View view, final OnyxMatrix matrix, final Rect rect, final List<Rect> excludeRect) {
+    public void update(final View view, final OnyxMatrix matrix, final Rect rect, final List<RectF> excludeRect) {
         view.getLocationOnScreen(viewPosition);
         viewToEpdMatrix = matrix;
         setLimitRect(rect);

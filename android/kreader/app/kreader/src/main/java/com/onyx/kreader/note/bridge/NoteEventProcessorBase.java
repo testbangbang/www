@@ -88,16 +88,9 @@ public class NoteEventProcessorBase {
         limitRect.set(rect);
     }
 
-    public void addExcludeRect(List<Rect> exclude) {
+    public void addExcludeRect(List<RectF> exclude) {
         clearExcludeRect();
-        for (Rect rect : exclude) {
-            if (rect == null) {
-                continue;
-            }
-            RectF r = new RectF();
-            r.set(rect);
-            this.excludeRect.add(r);
-        }
+        excludeRect.addAll(exclude);
     }
 
     public boolean inLimitRect(final float x, final float y) {
