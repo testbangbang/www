@@ -134,7 +134,7 @@ public class NoteManager {
         InkUtils.setPressureEntries(mappingConfig.getPressureList());
     }
 
-    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final Rect excludeRect, int orientation) {
+    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final List<Rect> excludeRect, int orientation) {
         if (noteConfig == null || mappingConfig == null) {
             initNoteArgs(context);
         }

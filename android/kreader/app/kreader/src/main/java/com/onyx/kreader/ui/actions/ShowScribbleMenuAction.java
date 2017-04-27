@@ -28,6 +28,7 @@ import com.onyx.kreader.note.request.PauseDrawingRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
+import com.onyx.kreader.ui.events.UpdateScribbleMenuEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -501,6 +502,11 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         parent.removeView(topToolbar);
         parent.removeView(bottomToolbar);
         parent.removeView(fullToolbar);
+    }
+
+    @Subscribe
+    public void updateScribbleMenu(UpdateScribbleMenuEvent event) {
+        postMenuChangedEvent(readerDataHolder);
     }
 
     private void changeToolBarVisibility(boolean packUp) {

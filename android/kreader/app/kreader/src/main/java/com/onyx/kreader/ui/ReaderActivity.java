@@ -98,6 +98,7 @@ import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.SlideshowStartEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
+import com.onyx.kreader.ui.events.UpdateScribbleMenuEvent;
 import com.onyx.kreader.ui.events.UpdateTabWidgetVisibilityEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
@@ -110,6 +111,7 @@ import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -607,6 +609,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         } else {
             buttonShowTabWidget.setVisibility(View.GONE);
         }
+        getReaderDataHolder().getEventBus().post(new UpdateScribbleMenuEvent());
     }
 
     private PinchZoomingPopupMenu getPinchZoomPopupMenu() {
@@ -812,7 +815,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, new Rect(), rotation);
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, new ArrayList<Rect>(), rotation);
     }
 
     @Subscribe
@@ -857,7 +860,17 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, event.getExcludeRect(), rotation);
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, getExcludeRect(event.getExcludeRect()), rotation);
+    }
+
+    private List<Rect> getExcludeRect(final Rect scribbleMenuExcludeRect) {
+        List<Rect> excludeRect = new ArrayList<>();
+        excludeRect.add(scribbleMenuExcludeRect);
+        if (buttonShowTabWidget.isShown()) {
+            Rect r = new Rect(buttonShowTabWidget.getLeft(), buttonShowTabWidget.getTop(), buttonShowTabWidget.getRight(), buttonShowTabWidget.getBottom());
+            excludeRect.add(r);
+        }
+        return excludeRect;
     }
 
     @Subscribe

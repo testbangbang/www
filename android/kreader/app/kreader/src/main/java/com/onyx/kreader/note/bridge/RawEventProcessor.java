@@ -2,6 +2,7 @@ package com.onyx.kreader.note.bridge;
 
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -19,6 +20,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -66,11 +68,11 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         super(p);
     }
 
-    public void update(final Matrix screenMatrix, final Matrix viewMatrix, final Rect rect, final Rect excludeRect) {
+    public void update(final Matrix screenMatrix, final Matrix viewMatrix, final Rect rect, final List<Rect> excludeRect) {
         this.inputToScreenMatrix = screenMatrix;
         this.screenToViewMatrix = viewMatrix;
         setLimitRect(rect);
-        setExcludeRect(excludeRect);
+        addExcludeRect(excludeRect);
     }
 
     public void start() {
