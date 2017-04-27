@@ -36,6 +36,7 @@ import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.request.data.db.LibraryDataCacheClearRequest;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
@@ -508,11 +509,16 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private void cleanAllCache() {
-        dataHolder.getDataManager().getCacheManager().clearAll();
+        clearDataCache(true, true);
     }
 
     private void cleanMetadataCache() {
-        dataHolder.getDataManager().getCacheManager().clearMetadataCache();
+        clearDataCache(false, true);
+    }
+
+    private void clearDataCache(boolean clearLibrary, boolean clearMetadata) {
+        LibraryDataCacheClearRequest clearRequest = new LibraryDataCacheClearRequest(clearLibrary, clearMetadata);
+        dataHolder.getDataManager().submit(this, clearRequest, null);
     }
 
     private void processBuildLibrary() {
