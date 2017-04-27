@@ -22,7 +22,8 @@
         android:supportsRtl="true">
         <activity
             android:name=".view.activity.DeviceMainSettingActivity"
-            android:theme="@style/OnyxAppCompat" />
+            android:theme="@style/OnyxAppCompat"
+            android:exported="true" />
         <activity
             android:name=".view.activity.WifiSettingActivity"
             android:theme="@style/OnyxAppCompat"
