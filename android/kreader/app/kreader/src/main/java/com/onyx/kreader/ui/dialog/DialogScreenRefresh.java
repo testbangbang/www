@@ -13,6 +13,7 @@ import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.kreader.device.ReaderDeviceManager;
 
 import java.util.HashMap;
 
@@ -25,7 +26,7 @@ public class DialogScreenRefresh extends OnyxAlertDialog {
         void onRefreshIntervalChanged(int oldValue, int newValue);
     }
 
-    public static final int DEFAULT_INTERVAL_COUNT = Integer.MAX_VALUE;
+    public static final int DEFAULT_INTERVAL_COUNT = 5;
 
     private GAdapter mAdapter = null;
     int interval = DEFAULT_INTERVAL_COUNT;
@@ -39,7 +40,7 @@ public class DialogScreenRefresh extends OnyxAlertDialog {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // TODO not sure how to use OnyxSysCenter
-        int defaultIntervalCount = DeviceConfig.sharedInstance(getActivity()).isRegalEnable() ? Integer.MAX_VALUE : 5;
+        int defaultIntervalCount = ReaderDeviceManager.isUsingRegal(getActivity()) ? Integer.MAX_VALUE : DEFAULT_INTERVAL_COUNT;
         interval = LegacySdkDataUtils.getScreenUpdateGCInterval(getActivity(), defaultIntervalCount);
         buildScreenRefreshAdapter();
         setParams(new Params().setTittleString(getString(R.string.screen_refresh))
