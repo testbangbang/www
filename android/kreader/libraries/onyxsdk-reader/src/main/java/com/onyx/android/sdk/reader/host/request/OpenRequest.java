@@ -4,6 +4,7 @@ import android.os.Build;
 
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDrmCertificateFactory;
+import com.onyx.android.sdk.reader.api.ReaderDrmManager;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
@@ -53,7 +54,10 @@ public class OpenRequest extends BaseReaderRequest {
         if (factory != null) {
             final String certificate = factory.getDrmCertificate();
             if (StringUtils.isNotBlank(certificate)) {
-                reader.getPlugin().createDrmManager().activateDeviceDRM(certificate);
+                ReaderDrmManager manager = reader.getPlugin().createDrmManager();
+                if (manager != null) {
+                    manager.activateDeviceDRM(certificate);
+                }
             }
         }
 
