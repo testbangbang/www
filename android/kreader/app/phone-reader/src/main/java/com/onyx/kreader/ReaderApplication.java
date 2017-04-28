@@ -4,9 +4,16 @@ import android.app.Application;
 import android.content.Context;
 
 import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.manager.OssManager;
 import com.onyx.android.sdk.data.manager.WeChatManager;
 import com.onyx.android.sdk.reader.ReaderBaseApp;
+import com.raizlabs.android.dbflow.config.DatabaseHolder;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by suicheng on 2017/2/13.
@@ -29,6 +36,7 @@ public class ReaderApplication extends ReaderBaseApp {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
+        initContentProvider(this);
         initConfig();
     }
 
@@ -66,5 +74,16 @@ public class ReaderApplication extends ReaderBaseApp {
         ossConfig.setKeyId(OSS_PUSH_KEY_ID);
         ossConfig.setKeySecret(OSS_PUSH_KEY_SECRET);
         return new OssManager(context.getApplicationContext(), ossConfig);
+    }
+
+    static public void initContentProvider(final Context context) {
+        try {
+            FlowConfig.Builder builder = new FlowConfig.Builder(context);
+            FlowManager.init(builder.build());
+        } catch (Exception e) {
+            if (com.onyx.android.sdk.dataprovider.BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
     }
 }
