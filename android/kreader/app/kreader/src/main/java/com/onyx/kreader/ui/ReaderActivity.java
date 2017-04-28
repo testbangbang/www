@@ -873,7 +873,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     private void prepareGCUpdateInterval() {
         int value = DeviceConfig.sharedInstance(this).getGcInterval();
         if (value <= 0) {
-            value = DialogScreenRefresh.DEFAULT_INTERVAL_COUNT;
+            value = ReaderDeviceManager.isUsingRegal(this) ? Integer.MAX_VALUE : DialogScreenRefresh.DEFAULT_INTERVAL_COUNT;
         }
         ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this, value));
     }
