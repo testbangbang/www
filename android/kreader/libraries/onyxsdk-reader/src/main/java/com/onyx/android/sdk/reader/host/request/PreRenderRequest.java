@@ -13,6 +13,8 @@ import com.onyx.android.sdk.reader.utils.ImageUtils;
 public class PreRenderRequest extends BaseReaderRequest {
 
     private boolean forward;
+    private boolean transferBitmap = false;
+    private boolean checkIsValidPage = true;
 
     public PreRenderRequest(boolean next) {
         super();
@@ -20,8 +22,16 @@ public class PreRenderRequest extends BaseReaderRequest {
         setSaveOptions(false);
     }
 
+    public PreRenderRequest(boolean forward, boolean transferBitmap, boolean checkIsValidPage) {
+        this(forward);
+        this.transferBitmap = transferBitmap;
+        this.checkIsValidPage = checkIsValidPage;
+    }
+
     public void execute(final Reader reader) throws Exception {
-        ImageUtils.isValidPage();
+        if (checkIsValidPage) {
+            ImageUtils.isValidPage();
+        }
 
         if (!reader.getReaderLayoutManager().getCurrentLayoutProvider().supportPreRender()) {
             return;
@@ -38,6 +48,6 @@ public class PreRenderRequest extends BaseReaderRequest {
             drawVisiblePages(reader, drawContext);
             reader.getReaderLayoutManager().getCurrentLayoutProvider().restoreBySnapshot(snapshot);
         }
-        setTransferBitmap(false);
+        setTransferBitmap(transferBitmap);
     }
 }

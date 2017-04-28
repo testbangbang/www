@@ -21,6 +21,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -32,6 +33,8 @@ import android.view.View;
 public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		CurlRenderer.Observer {
 
+	private static final String TAG = "CurlView";
+	
 	// Curl state. We are flipping none, left or right page.
 	private static final int CURL_LEFT = 1;
 	private static final int CURL_NONE = 0;
@@ -83,6 +86,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 	private CurlRenderer mRenderer;
 	private boolean mRenderLeftPage = true;
 	private SizeChangedObserver mSizeChangedObserver;
+    private ViewChangedObserver viewChangedObserver;
 
 	// One page is the default.
 	private int mViewMode = SHOW_ONE_PAGE;
@@ -161,7 +165,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 				if (mCurlState == CURL_LEFT) {
 					--mCurrentIndex;
 				}
-			} else if (mAnimationTargetEvent == SET_CURL_TO_LEFT) {
+            } else if (mAnimationTargetEvent == SET_CURL_TO_LEFT) {
 				// Switch curled page to left.
 				CurlMesh left = mPageCurl;
 				CurlMesh curl = mPageLeft;
@@ -179,6 +183,9 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 					++mCurrentIndex;
 				}
 			}
+			if (viewChangedObserver != null) {
+                viewChangedObserver.onViewChanged(mCurrentIndex, mAnimationTargetEvent == SET_CURL_TO_LEFT);
+            }
 			mCurlState = CURL_NONE;
 			mAnimate = false;
 			requestRender();
@@ -190,6 +197,12 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 			mPointerPos.mPos.y += (mAnimationTarget.y - mAnimationSource.y) * t;
 			updateCurlPos(mPointerPos);
 		}
+	}
+
+	@Override
+	public void requestRender() {
+		super.requestRender();
+		Log.d(TAG, "requestRender: ");
 	}
 
 	@Override
@@ -499,7 +512,11 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		mSizeChangedObserver = observer;
 	}
 
-	/**
+    public void setViewChangedObserver(ViewChangedObserver viewChangedObserver) {
+        this.viewChangedObserver = viewChangedObserver;
+    }
+
+    /**
 	 * Sets view mode. Value can be either SHOW_ONE_PAGE or SHOW_TWO_PAGES. In
 	 * former case right page is made size of display, and in latter case two
 	 * pages are laid on visible area.
@@ -809,5 +826,10 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		 */
 		public void onSizeChanged(int width, int height);
 	}
+
+	public interface ViewChangedObserver {
+
+        void onViewChanged(int position, boolean next);
+    }
 
 }

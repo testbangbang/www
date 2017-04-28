@@ -38,6 +38,7 @@ public class CurlPage {
 	private Bitmap mTextureBack;
 	private Bitmap mTextureFront;
 	private boolean mTexturesChanged;
+    private boolean recycleBitmap = false;
 
 	/**
 	 * Default constructor.
@@ -135,12 +136,12 @@ public class CurlPage {
 	 * Recycles and frees underlying Bitmaps.
 	 */
 	public void recycle() {
-		if (mTextureFront != null) {
+		if (mTextureFront != null && recycleBitmap) {
 			mTextureFront.recycle();
 		}
 		mTextureFront = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565);
 		mTextureFront.eraseColor(mColorFront);
-		if (mTextureBack != null) {
+		if (mTextureBack != null && recycleBitmap) {
 			mTextureBack.recycle();
 		}
 		mTextureBack = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565);
@@ -188,8 +189,9 @@ public class CurlPage {
 		}
 		switch (side) {
 		case SIDE_FRONT:
-			if (mTextureFront != null)
+			if (mTextureFront != null && recycleBitmap) {
 				mTextureFront.recycle();
+			}
 			mTextureFront = texture;
 			break;
 		case SIDE_BACK:
@@ -198,9 +200,9 @@ public class CurlPage {
 			mTextureBack = texture;
 			break;
 		case SIDE_BOTH:
-			if (mTextureFront != null)
+			if (mTextureFront != null && recycleBitmap)
 				mTextureFront.recycle();
-			if (mTextureBack != null)
+			if (mTextureBack != null && recycleBitmap)
 				mTextureBack.recycle();
 			mTextureFront = mTextureBack = texture;
 			break;

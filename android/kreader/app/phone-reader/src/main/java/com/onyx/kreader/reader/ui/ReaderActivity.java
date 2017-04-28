@@ -6,10 +6,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.action.NextScreenAction;
 import com.onyx.kreader.action.OpenDocumentAction;
+import com.onyx.kreader.action.PrevScreenAction;
 import com.onyx.kreader.event.DocumentInitRenderedEvent;
 import com.onyx.kreader.event.RenderRequestFinishedEvent;
 import com.onyx.kreader.reader.data.ReaderDataHolder;
@@ -26,6 +29,8 @@ import butterknife.ButterKnife;
  */
 
 public class ReaderActivity extends AppCompatActivity {
+
+    private static final String TAG = "ReaderActivity";
 
     @Bind(R.id.curl_view)
     CurlView curlView;
@@ -44,10 +49,25 @@ public class ReaderActivity extends AppCompatActivity {
     }
 
     private void initCurlView() {
+        curlView.setViewMode(CurlView.SHOW_ONE_PAGE);
         curlView.setSizeChangedObserver(new CurlView.SizeChangedObserver() {
             @Override
             public void onSizeChanged(int width, int height) {
                 getReaderDataHolder().setDisplaySize(width, height);
+            }
+        });
+        curlView.setViewChangedObserver(new CurlView.ViewChangedObserver() {
+            @Override
+            public void onViewChanged(int position, boolean next) {
+                if (position == getReaderDataHolder().getCurrentPage()) {
+                    return;
+                }
+                Log.d(TAG, "onViewChanged: " + position + "next:" + next);
+                if (next) {
+                    new NextScreenAction().execute(getReaderDataHolder(), null);
+                }else {
+                    new PrevScreenAction().execute(getReaderDataHolder(), null);
+                }
             }
         });
     }
@@ -83,11 +103,13 @@ public class ReaderActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        curlView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        curlView.onPause();
     }
 
     @Override

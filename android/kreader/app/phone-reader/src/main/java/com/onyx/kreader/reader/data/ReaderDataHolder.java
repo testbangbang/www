@@ -10,6 +10,8 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.common.ReaderUserDataInfo;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.host.request.PreRenderRequest;
+import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.kreader.event.DocumentInitRenderedEvent;
@@ -102,6 +104,7 @@ public class ReaderDataHolder {
             public void done(BaseRequest request, Throwable e) {
                 onRenderRequestFinished(renderRequest, e);
                 BaseCallback.invoke(callback, request, e);
+                onPageDrawFinished(renderRequest, e);
             }
         });
     }
@@ -114,6 +117,28 @@ public class ReaderDataHolder {
         saveReaderUserDataInfo(request);
         bufferRenderPage(getCurrentPage(), getReader().getViewportBitmap().getBitmap());
         getEventBus().post(new RenderRequestFinishedEvent());
+    }
+
+    private void onPageDrawFinished(BaseReaderRequest request, Throwable e) {
+        if (e != null || request.isAbort()) {
+            return;
+        }
+        preRenderNext();
+    }
+
+    public void preRenderNext() {
+        final PreRenderRequest preRenderRequest = new PreRenderRequest(true, true, false);
+        getReader().submitRequest(context, preRenderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                String pageName = preRenderRequest.getReaderViewInfo().getFirstVisiblePage().getName();
+                int pagePosition = PagePositionUtils.getPageNumber(pageName);
+                bufferRenderPage(pagePosition, getReader().getViewportBitmap().getBitmap());
+            }
+        });
     }
 
     public void onDocumentInitRendered() {
