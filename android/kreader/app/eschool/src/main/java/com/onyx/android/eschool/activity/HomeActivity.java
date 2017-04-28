@@ -14,7 +14,6 @@ import com.onyx.android.eschool.model.AppConfig;
 import com.onyx.android.eschool.model.StudentAccount;
 import com.onyx.android.eschool.utils.AvatarUtils;
 import com.onyx.android.eschool.utils.ResourceUtils;
-import com.onyx.android.libsetting.view.activity.DeviceMainSettingActivity;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -232,6 +231,9 @@ public class HomeActivity extends BaseActivity {
     }
 
     private Intent getSettingIntent() {
-        return new Intent(this, DeviceMainSettingActivity.class);
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName("com.onyx.android.settings",
+                "com.onyx.android.libsetting.view.activity.DeviceMainSettingActivity"));
+        return intent;
     }
 }
