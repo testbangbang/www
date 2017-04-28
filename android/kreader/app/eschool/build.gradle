@@ -46,7 +46,6 @@ android {
 dependencies {
     compile project(':libraries:onyxsdk-ui')
     compile project(':libraries:onyxsdk-data')
-    compile project(':libraries:onyxsdk-settings')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
