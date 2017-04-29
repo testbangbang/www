@@ -142,7 +142,9 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         binding.infoArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(config.getDeviceInfoIntent());
+                if (config.isEnableSystemSettings()) {
+                    startActivity(config.getDeviceInfoIntent());
+                }
             }
         });
 
