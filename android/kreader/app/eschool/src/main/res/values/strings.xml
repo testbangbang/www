@@ -67,7 +67,7 @@
     <string name="home_item_practice_text">Practice</string>
     <string name="home_item_exam_text">Exam</string>
     <string name="home_item_setting_text">Settings</string>
-    <string name="home_item_pic_display_text">Picture</string>
+    <string name="home_item_pic_display_text">Class Presence</string>
     <string name="home_item_video_display_text">Video</string>
     <string name="home_item_application_text">Application</string>
     <string name="study_preview_person">Student\nPreview</string>
