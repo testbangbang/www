@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class LibraryViewInfo {
     private int queryLimit = 9;
-    private QueryArgs queryArgs;;
+    private QueryArgs queryArgs;
     private QueryPagination queryPagination = QueryPagination.create(3, 3);
     private LibraryDataModel libraryDataModel;
     private List<Library> libraryPath = new ArrayList<>();
