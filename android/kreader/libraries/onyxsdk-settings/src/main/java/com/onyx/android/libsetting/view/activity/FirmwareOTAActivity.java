@@ -203,7 +203,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
 
             @Override
             public void start(BaseRequest request) {
-                showProgressDialog(request, null);
+                showProgressDialog(request, R.string.downloading, null);
             }
 
             @Override

@@ -209,6 +209,7 @@
     <string name="opening_wifi">Opening wifi for you, please wait connection</string>
     <string name="download_interrupted">Download interrupted</string>
     <string name="md5_verify_fail">MD5 verification failed, please download again</string>
+    <string name="downloading">Downloading update package...</string>
 
 </resources>
 

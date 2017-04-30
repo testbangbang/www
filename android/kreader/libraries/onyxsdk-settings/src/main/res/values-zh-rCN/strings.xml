@@ -145,5 +145,6 @@
     <string name="opening_wifi">正在替您打开wifi，请稍等wifi连接</string>
     <string name="download_interrupted">下载中断了</string>
     <string name="md5_verify_fail">MD5值校验失败，请重新下载</string>
+    <string name="downloading">正在下载更新包...</string>
 
 </resources>
