@@ -138,6 +138,8 @@
     <string name="title_update">OTA 升级</string>
     <string name="no_update">没有升级包.</string>
     <string name="clean_test_apps">清除测试应用</string>
+    <string name="checking_update">正在检查更新包</string>
+    <string name="checking_local_update">正在检查本地更新包</string>
     <string name="wait_for_checking_update">正在检查网络更新&#8230;</string>
     <string name="wifi_is_not_connected">WI-FI当前无连接</string>
     <string name="opening_wifi">正在替您打开wifi，请稍等wifi连接</string>

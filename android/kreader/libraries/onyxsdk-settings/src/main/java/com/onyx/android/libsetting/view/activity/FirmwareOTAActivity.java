@@ -43,7 +43,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        processIntent();
+        checkAllUpdate();
         registerDeviceReceiver();
     }
 
@@ -55,7 +55,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
 
             @Override
             public void onWifiConnected(Intent intent) {
-                checkUpdateFromCloud();
+                checkAllUpdate();
             }
         });
         receiver.enable(this, true);
@@ -67,18 +67,13 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         binding.buttonCloudOta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!NetworkHelper.isWifiConnected(FirmwareOTAActivity.this)) {
-                    NetworkHelper.enableWifi(FirmwareOTAActivity.this, true);
-                    showToast(R.string.opening_wifi, Toast.LENGTH_LONG);
-                    return;
-                }
-                checkUpdateFromCloud();
+                checkNetworkForCloudUpdate();
             }
         });
         binding.buttonLocalOta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkUpdateFromLocalStorage();
+                checkUpdateFromLocalStorage(null);
             }
         });
         getSupportFragmentManager().beginTransaction().replace(R.id.ota_info_preference,
@@ -91,6 +86,25 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         if (ACTION_OTA_DOWNLOAD.equals(action)) {
             checkUpdateFromCloud();
         }
+    }
+
+    private void checkNetworkForCloudUpdate() {
+        if (!NetworkHelper.isWifiConnected(FirmwareOTAActivity.this)) {
+            NetworkHelper.enableWifi(FirmwareOTAActivity.this, true);
+            showToast(R.string.opening_wifi, Toast.LENGTH_LONG);
+            return;
+        }
+        checkUpdateFromCloud();
+    }
+
+    private void checkAllUpdate() {
+        showToast(R.string.checking_update, Toast.LENGTH_SHORT);
+        checkUpdateFromLocalStorage(new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                checkNetworkForCloudUpdate();
+            }
+        });
     }
 
     private void checkUpdateFromCloud() {
@@ -123,7 +137,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         this.otaGuard = otaGuard;
     }
 
-    private void checkUpdateFromLocalStorage() {
+    private void checkUpdateFromLocalStorage(final BaseCallback callback) {
         final FirmwareLocalCheckLegalityRequest localRequest = OTAManager.localFirmwareCheckRequest(this);
         OTAManager.sharedInstance().submitRequest(this, localRequest, new BaseCallback() {
             @Override
@@ -132,7 +146,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                 if (StringUtils.isNotBlank(targetPath)) {
                     showLocalUpdateDialog(targetPath);
                 } else {
-                    showToast(R.string.no_update, Toast.LENGTH_SHORT);
+                    BaseCallback.invoke(callback, request, e);
                 }
             }
         });
@@ -172,7 +186,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     private void startOTAFirmwareDownload(final Firmware otaFirmware) {
-        final String filePath = OTAManager.LOCAL_PATH_SDCARD;
+        final String filePath = OTAManager.CLOUD_PATH_SDCARD;
         final CloudFileDownloadRequest downloadRequest = new CloudFileDownloadRequest(otaFirmware.getUrl(), filePath, filePath) {
             @Override
             public void execute(CloudManager parent) throws Exception {
@@ -209,7 +223,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                     showToast(R.string.md5_verify_fail, Toast.LENGTH_SHORT);
                     return;
                 }
-                checkUpdateFromLocalStorage();
+                OTAManager.sharedInstance().startFirmwareUpdate(FirmwareOTAActivity.this, filePath);
             }
         });
         task.setForceReDownload(true);
