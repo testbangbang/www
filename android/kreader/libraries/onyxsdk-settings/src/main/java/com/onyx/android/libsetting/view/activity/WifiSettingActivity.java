@@ -94,10 +94,10 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
                 binding.wifiScanResultRecyclerView.notifyDataSetChanged();
             }
         });
-        enableWifi();
+        processAction();
     }
 
-    private void enableWifi() {
+    private void processAction() {
         if (ACTION_WIFI_ENABLE.equals(getIntent().getAction())) {
             if (wifiAdmin != null) {
                 wifiAdmin.setWifiEnabled(true);
