@@ -87,7 +87,7 @@ public class CurlView extends GLSurfaceView implements CurlRenderer.Observer {
 	private CurlRenderer mRenderer;
 	private boolean mRenderLeftPage = true;
 	private SizeChangedObserver mSizeChangedObserver;
-    private ViewChangedObserver viewChangedObserver;
+	private ViewChangedObserver viewChangedObserver;
 
 	// One page is the default.
 	private int mViewMode = SHOW_ONE_PAGE;
