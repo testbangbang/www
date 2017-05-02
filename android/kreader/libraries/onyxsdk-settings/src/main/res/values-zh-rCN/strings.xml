@@ -128,12 +128,14 @@
 
     <!--OTA Setting-->
     <string name="setting_ota">固件更新</string>
+    <string name="ota_check_update">检查更新</string>
     <string name="ota_from_cloud">从网络检查升级包</string>
     <string name="ota_from_local">从本地检查升级包</string>
     <string name="ota_auto_update">自动升级</string>
     <string name="ota_auto_summary">自动检查升级</string>
     <string name="model_number_title">设备型号 : </string>
-    <string name="firmware_number_title">版本号 : </string>
+    <string name="firmware_number_title">软件版本 : </string>
+    <string name="android_version_number_title">安卓版本 : </string>
     <string name="find_package_from_local">在本地存储中发现升级包，确定升级?</string>
     <string name="title_update">OTA 升级</string>
     <string name="no_update">没有升级包.</string>

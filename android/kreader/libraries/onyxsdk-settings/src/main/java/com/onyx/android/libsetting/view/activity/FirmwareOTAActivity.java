@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.Toast;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.databinding.ActivityFirmwareOtaBinding;
-import com.onyx.android.libsetting.manager.SettingsPreferenceManager;
 import com.onyx.android.libsetting.util.DeviceFeatureUtil;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -64,21 +62,14 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     private void initView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_firmware_ota);
         initSupportActionBarWithCustomBackFunction();
-        binding.buttonCloudOta.setOnClickListener(new View.OnClickListener() {
+        binding.buttonCheckOta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkNetworkForCloudUpdate();
-            }
-        });
-        binding.buttonLocalOta.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkUpdateFromLocalStorage(null);
+                checkAllUpdate();
             }
         });
         getSupportFragmentManager().beginTransaction().replace(R.id.ota_info_preference,
                 new OTASettingPreferenceFragment()).commit();
-        binding.buttonCloudOta.setVisibility(DeviceFeatureUtil.hasWifi(this) ? View.VISIBLE : View.GONE);
     }
 
     private void processIntent() {
@@ -89,6 +80,9 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     private void checkNetworkForCloudUpdate() {
+        if (!DeviceFeatureUtil.hasWifi(this)) {
+            return;
+        }
         if (!NetworkHelper.isWifiConnected(FirmwareOTAActivity.this)) {
             NetworkHelper.enableWifi(FirmwareOTAActivity.this, true);
             showToast(R.string.opening_wifi, Toast.LENGTH_LONG);
@@ -243,8 +237,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     public static class OTASettingPreferenceFragment extends PreferenceFragmentCompat {
-        CheckBoxPreference otaAutoCheckPreference;
-        Preference modelSpecPreference, firmwareSpecPreference;
+        Preference modelSpecPreference, firmwareSpecPreference, androidVersionSpecPreference;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -253,16 +246,9 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         }
 
         private void initView() {
-            otaAutoCheckPreference = (CheckBoxPreference) findPreference(getString(R.string.ota_auto_check_key));
             modelSpecPreference = findPreference(getString(R.string.model_spec_key));
             firmwareSpecPreference = findPreference(getString(R.string.firmware_spec_key));
-            otaAutoCheckPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    saveAutoFirmwareCheck((Boolean) newValue);
-                    return true;
-                }
-            });
+            androidVersionSpecPreference = findPreference(getString(R.string.android_version_spec_key));
         }
 
         @Override
@@ -272,15 +258,9 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         }
 
         private void updateData() {
-            if (!DeviceFeatureUtil.hasWifi(getContext())) {
-                otaAutoCheckPreference.setVisible(false);
-            }
             modelSpecPreference.setSummary(Build.DEVICE);
-            firmwareSpecPreference.setSummary(Build.DISPLAY);
-        }
-
-        private void saveAutoFirmwareCheck(boolean newValue){
-            SettingsPreferenceManager.setFirmwareCheckWhenWifiConnected(getActivity(), newValue);
+            firmwareSpecPreference.setSummary(Build.ID);
+            androidVersionSpecPreference.setSummary(Build.VERSION.RELEASE);
         }
     }
 }
