@@ -58,24 +58,15 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/button_cloud_ota"
+                android:id="@+id/button_check_ota"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/setting_ota_button_X_axis_margin"
                 android:layout_marginRight="@dimen/setting_ota_button_X_axis_margin"
                 android:layout_marginTop="@dimen/setting_ota_button_Y_axis_margin"
                 android:minHeight="@dimen/button_minHeight"
-                android:text="@string/ota_from_cloud" />
+                android:text="@string/ota_check_update" />
 
-            <Button
-                android:id="@+id/button_local_ota"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/setting_ota_button_X_axis_margin"
-                android:layout_marginRight="@dimen/setting_ota_button_X_axis_margin"
-                android:layout_marginTop="@dimen/setting_ota_button_Y_axis_margin"
-                android:minHeight="@dimen/button_minHeight"
-                android:text="@string/ota_from_local" />
         </LinearLayout>
     </LinearLayout>
 </layout>
