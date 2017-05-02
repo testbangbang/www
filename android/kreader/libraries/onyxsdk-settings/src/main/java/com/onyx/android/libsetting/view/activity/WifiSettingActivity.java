@@ -45,6 +45,7 @@ import static com.onyx.android.libsetting.util.Constant.ARGS_SSID;
 
 public class WifiSettingActivity extends OnyxAppCompatActivity {
     static final String TAG = WifiSettingActivity.class.getSimpleName();
+    static final String ACTION_WIFI_ENABLE = "android.intent.action.WIFI_ENABLE";
     ActivityWifiSettingBinding binding;
     @Nullable
     WifiAdmin wifiAdmin = null;
@@ -93,6 +94,15 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
                 binding.wifiScanResultRecyclerView.notifyDataSetChanged();
             }
         });
+        processAction();
+    }
+
+    private void processAction() {
+        if (ACTION_WIFI_ENABLE.equals(getIntent().getAction())) {
+            if (wifiAdmin != null) {
+                wifiAdmin.setWifiEnabled(true);
+            }
+        }
     }
 
     private void updateAccessPointDetailedState(NetworkInfo.DetailedState state) {
