@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
@@ -16,6 +19,7 @@ import com.onyx.kreader.action.PrevScreenAction;
 import com.onyx.kreader.event.DocumentInitRenderedEvent;
 import com.onyx.kreader.event.RenderRequestFinishedEvent;
 import com.onyx.kreader.reader.data.ReaderDataHolder;
+import com.onyx.kreader.reader.gesture.ReaderGestureListener;
 import com.onyx.kreader.reader.opengl.CurlPage;
 import com.onyx.kreader.reader.opengl.CurlView;
 
@@ -37,6 +41,7 @@ public class ReaderActivity extends AppCompatActivity {
 
     private ReaderDataHolder readerDataHolder;
     private PageProvider pageProvider;
+    private GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +73,16 @@ public class ReaderActivity extends AppCompatActivity {
                 }else {
                     new PrevScreenAction().execute(getReaderDataHolder(), null);
                 }
+            }
+        });
+        gestureDetector = new GestureDetector(this, new ReaderGestureListener(getReaderDataHolder()));
+        curlView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                getReaderDataHolder().getHandlerManager().setTouchStartEvent(event);
+                gestureDetector.onTouchEvent(event);
+                curlView.onTouchEvent(v, event);
+                return true;
             }
         });
     }

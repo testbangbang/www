@@ -17,6 +17,7 @@
 package com.onyx.kreader.reader.opengl;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.opengl.GLSurfaceView;
@@ -25,13 +26,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+
 /**
  * OpenGL ES View.
  * 
  * @author harism
  */
-public class CurlView extends GLSurfaceView implements View.OnTouchListener,
-		CurlRenderer.Observer {
+public class CurlView extends GLSurfaceView implements CurlRenderer.Observer {
 
 	private static final String TAG = "CurlView";
 	
@@ -129,7 +130,12 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		mRenderer = new CurlRenderer(this);
 		setRenderer(mRenderer);
 		setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-		setOnTouchListener(this);
+		setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return onTouchEvent(v, event);
+            }
+        });
 
 		// Even though left and right pages are static we have to allocate room
 		// for curl on them too as we are switching meshes. Another way would be
@@ -202,7 +208,6 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 	@Override
 	public void requestRender() {
 		super.requestRender();
-		Log.d(TAG, "requestRender: ");
 	}
 
 	@Override
@@ -232,8 +237,7 @@ public class CurlView extends GLSurfaceView implements View.OnTouchListener,
 		mPageCurl.resetTexture();
 	}
 
-	@Override
-	public boolean onTouch(View view, MotionEvent me) {
+	public boolean onTouchEvent(View view, MotionEvent me) {
 		// No dragging during animation at the moment.
 		// TODO: Stop animation on touch event and return to drag mode.
 		if (mAnimate || mPageProvider == null) {
