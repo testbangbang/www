@@ -190,6 +190,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (getReaderDataHolder().isDocumentOpened()) {
             forceCloseApplication(null);
         }
+        releaseStartupWakeLock();
     }
 
     @Override
@@ -767,7 +768,6 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
         action.execute(getReaderDataHolder(), null);
-        releaseStartupWakeLock();
     }
 
     private boolean isDocumentOpening() {
@@ -822,6 +822,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!tabWidgetVisible) {
             buttonShowTabWidget.setVisibility(View.VISIBLE);
         }
+        releaseStartupWakeLock();
     }
 
     @Subscribe
