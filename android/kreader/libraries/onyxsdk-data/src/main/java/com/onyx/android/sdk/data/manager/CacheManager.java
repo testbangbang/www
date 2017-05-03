@@ -1,7 +1,10 @@
 package com.onyx.android.sdk.data.manager;
 
+import android.graphics.Bitmap;
 import android.util.LruCache;
 
+import com.facebook.common.references.CloseableReference;
+import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 
@@ -14,24 +17,34 @@ import java.util.List;
 public class CacheManager {
     private static final int DEFAULT_METADATA_CACHE_SIZE = 2 * 1024 * 1024;
     private static final int DEFAULT_LIBRARY_CACHE_SIZE = 256 * 1024;
+    private static final int DEFAULT_BITMAP_CACHE_SIZE = 2 * 1024 * 1024;
+
     private LruCache<String, List<Metadata>> metadataLruCache;
     private LruCache<String, List<Library>> libraryLruCache;
+    private BitmapReferenceLruCache bitmapLruCache;
 
     public CacheManager() {
     }
 
-    public LruCache<String, List<Metadata>> getMetadataCache() {
+    public LruCache<String, List<Metadata>> getMetadataLruCache() {
         if (metadataLruCache == null) {
             metadataLruCache = new LruCache<>(DEFAULT_METADATA_CACHE_SIZE);
         }
         return metadataLruCache;
     }
 
-    public LruCache<String, List<Library>> getLibraryCache() {
+    public LruCache<String, List<Library>> getLibraryLruCache() {
         if (libraryLruCache == null) {
             libraryLruCache = new LruCache<>(DEFAULT_LIBRARY_CACHE_SIZE);
         }
         return libraryLruCache;
+    }
+
+    public BitmapReferenceLruCache getBitmapLruCache() {
+        if (bitmapLruCache == null) {
+            bitmapLruCache = new BitmapReferenceLruCache(DEFAULT_BITMAP_CACHE_SIZE);
+        }
+        return bitmapLruCache;
     }
 
     public void setMetadataLruCache(LruCache<String, List<Metadata>> lruCache) {
@@ -42,28 +55,40 @@ public class CacheManager {
         this.libraryLruCache = lruCache;
     }
 
-    public void addToMetadataCache(String key, List<Metadata> metadataList) {
-        getMetadataCache().put(key, metadataList);
+    public void setBitmapLruCache(BitmapReferenceLruCache bitmapLruCache) {
+        this.bitmapLruCache = bitmapLruCache;
     }
 
-    public List<Metadata> getMetadataCache(String key) {
-        return getMetadataCache().get(key);
+    public void addToMetadataCache(String key, List<Metadata> metadataList) {
+        getMetadataLruCache().put(key, metadataList);
+    }
+
+    public List<Metadata> getMetadataLruCache(String key) {
+        return getMetadataLruCache().get(key);
     }
 
     public void addToLibraryCache(String key, List<Library> libraryList) {
-        getLibraryCache().put(key, libraryList);
+        getLibraryLruCache().put(key, libraryList);
     }
 
-    public List<Library> getLibraryCache(String key){
-        return getLibraryCache().get(key);
+    public List<Library> getLibraryLruCache(String key){
+        return getLibraryLruCache().get(key);
+    }
+
+    public void addToBitmapRefCache(String key, CloseableReference<Bitmap> bitmap) {
+        getBitmapLruCache().put(key, bitmap);
+    }
+
+    public CloseableReference<Bitmap> getBitmapRefCache(String key) {
+        return getBitmapLruCache().get(key);
     }
 
     public void clearMetadataCache() {
-        getMetadataCache().evictAll();
+        getMetadataLruCache().evictAll();
     }
 
     public void clearLibraryCache() {
-        getLibraryCache().evictAll();
+        getLibraryLruCache().evictAll();
     }
 
     public void clearAll() {
