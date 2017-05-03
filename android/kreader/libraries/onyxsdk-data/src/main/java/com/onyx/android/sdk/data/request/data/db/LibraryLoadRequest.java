@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class LibraryLoadRequest extends BaseDBRequest {
 
-    private boolean reCache = false;
+    private boolean loadFromCache = true;
     private boolean loadMetadata = true;
     private QueryArgs queryArgs;
 
@@ -39,21 +39,21 @@ public class LibraryLoadRequest extends BaseDBRequest {
         this.loadMetadata = loadMetadata;
     }
 
-    public void setReCache(boolean reCache) {
-        this.reCache = reCache;
+    public void setLoadFromCache(boolean loadFromCache) {
+        this.loadFromCache = loadFromCache;
     }
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
         List<Library> tmpList = DataManagerHelper.loadLibraryListWithCache(getContext(), dataManager,
-                queryArgs.libraryUniqueId, reCache);
+                queryArgs.libraryUniqueId, loadFromCache);
         if (!CollectionUtils.isNullOrEmpty(tmpList)) {
             libraryList.addAll(tmpList);
         }
         if (loadMetadata) {
             totalCount = dataManager.getRemoteContentProvider().count(getContext(), queryArgs);
             List<Metadata> metadataList = DataManagerHelper.loadMetadataListWithCache(getContext(), dataManager,
-                    queryArgs, reCache);
+                    queryArgs, loadFromCache);
             if (!CollectionUtils.isNullOrEmpty(metadataList)) {
                 bookList.addAll(metadataList);
                 loadBitmaps(getContext(), dataManager);

@@ -158,11 +158,11 @@ public class DataManagerHelper {
     }
 
     public static List<Metadata> loadMetadataListWithCache(Context context, DataManager dataManager,
-                                                           QueryArgs queryArgs, boolean reCache) {
+                                                           QueryArgs queryArgs, boolean loadFromCache) {
         String queryKey = queryArgs.conditionGroup.getQuery() + queryArgs.libraryUniqueId +
                 queryArgs.getOrderByQueryWithLimitOffset();
         List<Metadata> list = null;
-        if (!reCache) {
+        if (loadFromCache) {
             list = dataManager.getCacheManager().getMetadataLruCache(queryKey);
         }
         if (list == null) {
@@ -173,10 +173,10 @@ public class DataManagerHelper {
     }
 
     public static List<Library> loadLibraryListWithCache(Context context, DataManager dataManager,
-                                                         String libraryUniqueId, boolean reCache) {
+                                                         String libraryUniqueId, boolean loadFromCache) {
         String queryKey = String.valueOf(libraryUniqueId);
         List<Library> list = null;
-        if (!reCache) {
+        if (loadFromCache) {
             list = dataManager.getCacheManager().getLibraryLruCache(queryKey);
         }
         if (list == null) {
