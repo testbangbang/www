@@ -3,6 +3,8 @@ package com.onyx.android.sdk.data;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.facebook.common.references.CloseableReference;
+import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -18,7 +20,10 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by suicheng on 2016/11/16.
@@ -152,10 +157,14 @@ public class DataManagerHelper {
         return dataManager.getRemoteContentProvider().loadMetadataCollection(context, libraryIdString);
     }
 
-    public static List<Metadata> loadMetadataListWithCache(Context context, DataManager dataManager, QueryArgs queryArgs) {
+    public static List<Metadata> loadMetadataListWithCache(Context context, DataManager dataManager,
+                                                           QueryArgs queryArgs, boolean reCache) {
         String queryKey = queryArgs.conditionGroup.getQuery() + queryArgs.libraryUniqueId +
                 queryArgs.getOrderByQueryWithLimitOffset();
-        List<Metadata> list = dataManager.getCacheManager().getMetadataCache(queryKey);
+        List<Metadata> list = null;
+        if (!reCache) {
+            list = dataManager.getCacheManager().getMetadataLruCache(queryKey);
+        }
         if (list == null) {
             list = dataManager.getRemoteContentProvider().findMetadataByQueryArgs(context, queryArgs);
             dataManager.getCacheManager().addToMetadataCache(queryKey, list);
@@ -163,13 +172,91 @@ public class DataManagerHelper {
         return list;
     }
 
-    public static List<Library> loadLibraryListWithCache(Context context, DataManager dataManager, String libraryUniqueId) {
+    public static List<Library> loadLibraryListWithCache(Context context, DataManager dataManager,
+                                                         String libraryUniqueId, boolean reCache) {
         String queryKey = String.valueOf(libraryUniqueId);
-        List<Library> list = dataManager.getCacheManager().getLibraryCache(queryKey);
+        List<Library> list = null;
+        if (!reCache) {
+            list = dataManager.getCacheManager().getLibraryLruCache(queryKey);
+        }
         if (list == null) {
             list = dataManager.getRemoteContentProvider().loadAllLibrary(libraryUniqueId);
             dataManager.getCacheManager().addToLibraryCache(queryKey, list);
         }
         return list;
+    }
+
+    public static Thumbnail getThumbnailEntry(Context context, DataManager dataManager, String associationId) {
+        return dataManager.getRemoteContentProvider().getThumbnailEntry(context, associationId,
+                OnyxThumbnail.ThumbnailKind.Large);
+    }
+
+    public static String getThumbnailPath(Context context, DataManager dataManager, String associationId) {
+        Thumbnail thumbnail = getThumbnailEntry(context, dataManager, associationId);
+        if (thumbnail == null) {
+            return null;
+        }
+        if (!FileUtils.fileExist(thumbnail.getImageDataPath())) {
+            return null;
+        }
+        return thumbnail.getImageDataPath();
+    }
+
+    public static Map<String, CloseableReference<Bitmap>> loadThumbnailBitmapsWithCache(Context context, DataManager dataManager,
+                                                                                        List<Metadata> metadataList) {
+        Map<String, CloseableReference<Bitmap>> map = new HashMap<>();
+        for (Metadata metadata : metadataList) {
+            CloseableReference<Bitmap> refBitmap = loadThumbnailBitmapWithCache(context, dataManager, metadata);
+            if (refBitmap == null) {
+                continue;
+            }
+            map.put(metadata.getAssociationId(), refBitmap);
+        }
+        return map;
+    }
+
+    public static CloseableReference<Bitmap> loadThumbnailBitmapWithCache(Context context, DataManager dataManager,
+                                                                 Metadata metadata) {
+        BitmapReferenceLruCache bitmapLruCache = dataManager.getCacheManager().getBitmapLruCache();
+        String associationId = metadata.getAssociationId();
+        if (StringUtils.isNullOrEmpty(associationId)) {
+            return null;
+        }
+        CloseableReference<Bitmap> refBitmap = bitmapLruCache.get(associationId);
+        if (refBitmap != null) {
+            return refBitmap.clone();
+        }
+        String path = getThumbnailPath(context, dataManager, associationId);
+        if (StringUtils.isNullOrEmpty(path)) {
+            return null;
+        }
+        try {
+            refBitmap = ThumbnailUtils.decodeFile(new File(path));
+            if (refBitmap != null && refBitmap.isValid()) {
+                bitmapLruCache.put(associationId, refBitmap);
+                return refBitmap.clone();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return refBitmap;
+    }
+
+    public static List<Library> loadParentLibraryList(Context context, DataManager dataManager, Library library) {
+        List<Library> parentLibraryList = new ArrayList<>();
+        if (library == null || StringUtils.isNullOrEmpty(library.getParentUniqueId())) {
+            return parentLibraryList;
+        }
+        String parentId = library.getParentUniqueId();
+        while (StringUtils.isNotBlank(parentId)) {
+            Library parentLibrary = dataManager.getRemoteContentProvider().loadLibrary(parentId);
+            if (parentLibrary == null) {
+                break;
+            }
+            parentLibraryList.add(parentLibrary);
+            parentId = parentLibrary.getParentUniqueId();
+        }
+        Collections.reverse(parentLibraryList);
+        return parentLibraryList;
     }
 }

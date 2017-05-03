@@ -5,6 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
+import com.facebook.common.memory.PooledByteBuffer;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.image.EncodedImage;
+import com.facebook.imagepipeline.memory.PoolConfig;
+import com.facebook.imagepipeline.memory.PoolFactory;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Thumbnail;
@@ -15,9 +21,13 @@ import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -231,5 +241,28 @@ public class ThumbnailUtils {
         }
 
         return Bitmap.createScaledBitmap(bmp, w, h, true);
+    }
+
+    public static CloseableReference<Bitmap> decodeFile(File file) throws IOException {
+        return decodeStream(new FileInputStream(file), Bitmap.Config.ARGB_8888);
+    }
+
+    public static CloseableReference<Bitmap> decodeFile(File file, Bitmap.Config config) throws IOException {
+        return decodeStream(new FileInputStream(file), config);
+    }
+
+    public static CloseableReference<Bitmap> decodeStream(InputStream inputStream, Bitmap.Config config) throws IOException {
+        PoolFactory poolFactory = new PoolFactory(PoolConfig.newBuilder().build());
+        PooledByteBuffer pooledByteBuffer = null;
+        EncodedImage image = null;
+        try {
+            pooledByteBuffer = poolFactory.getPooledByteBufferFactory().newByteBuffer(inputStream);
+            image = new EncodedImage(CloseableReference.of(pooledByteBuffer));
+            return Fresco.getImagePipelineFactory().getPlatformDecoder().decodeFromEncodedImage(image,
+                    config);
+        } finally {
+            FileUtils.closeQuietly(image);
+            FileUtils.closeQuietly(pooledByteBuffer);
+        }
     }
 }
