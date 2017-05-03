@@ -428,4 +428,5 @@
     <string name="settings_touch_binding_auto_page_tittle">Auto Page</string>
     <string name="settings_touch_binding_next_ten_page_tittle">Up ten pages</string>
     <string name="settings_touch_binding_prev_ten_page_tittle">Down ten pages</string>
+    <string name="settings_touch_binding_toggle_a2_tittle">Toggle A2</string>
 </resources>

@@ -59,6 +59,7 @@ public class ControlSettingsActivity extends PreferenceActivity {
             new Pair(TouchAction.AUTO_PAGE, R.string.settings_touch_binding_auto_page_tittle),
             new Pair(TouchAction.NEXT_TEN_PAGE, R.string.settings_touch_binding_next_ten_page_tittle),
             new Pair(TouchAction.PREV_TEN_PAGE, R.string.settings_touch_binding_prev_ten_page_tittle),
+            new Pair(TouchAction.TOGGLE_A2, R.string.settings_touch_binding_toggle_a2_tittle),
     };
 
     private Map<String, CustomBindKeyBean> bindingMap;
