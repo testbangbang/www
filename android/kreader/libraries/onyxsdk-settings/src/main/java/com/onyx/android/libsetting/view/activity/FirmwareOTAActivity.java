@@ -1,6 +1,5 @@
 package com.onyx.android.libsetting.view.activity;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -25,7 +24,7 @@ import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareLocalCheckLegalityRequest;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
-import com.onyx.android.sdk.ui.dialog.DialogLoading;
+import com.onyx.android.sdk.ui.dialog.DialogInformation;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
@@ -43,7 +42,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     private DeviceReceiver receiver = new DeviceReceiver();
     private boolean otaCheckingGuard = false;
 
-    private DialogLoading informationDialog;
+    private DialogInformation informationDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,17 +130,17 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     private void checkUpdateFromCloud() {
-        showMessage(getString(R.string.ota_check_update));
+        showMessage(getString(R.string.checking_update));
         final FirmwareUpdateRequest updateRequest = OTAManager.cloudFirmwareCheckRequest(this);
         OTAManager.sharedInstance().submitRequest(this, updateRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                cleanup();
                 if (e != null || !updateRequest.isResultFirmwareValid()) {
                     printStackTrace(e);
                     showNoUpdateDialog();
                     return;
                 }
+                cleanup();
                 Firmware otaFirmware = updateRequest.getResultFirmware();
                 showCloudUpdateDialog(otaFirmware);
             }
@@ -176,29 +175,36 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         if (informationDialog != null) {
             return;
         }
-        informationDialog = new DialogLoading(this, NEW_LINE + message + NEW_LINE, true);
+        informationDialog = new DialogInformation(this);
+        informationDialog.setParams(new DialogInformation.Params()
+                .setEnableTittle(false)
+                .setAlertMsgString(NEW_LINE + message + NEW_LINE)
+                .setEnablePositiveButton(false)
+                .setNegativeAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        cleanup();
+                    }
+                }));
+        informationDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                cleanup();
+            }
+        });
         informationDialog.show();
     }
 
     private void showMessage(final String message) {
         if (informationDialog == null) {
+            showInformationDialog(message);
             return;
         }
-        informationDialog.setToastMessage(message);
-        informationDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                onInformationDialogCancelled();
-            }
-        });
-    }
-
-    private void onInformationDialogCancelled() {
-
+        informationDialog.setAlertMsg(message);
     }
 
     private void showNoUpdateDialog() {
-        showMessage(getString(R.string.no_update));
+        showMessage(getString(R.string.firmware_is_latest));
     }
 
     private void dismissInformationDialog() {
@@ -232,8 +238,8 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     private void showUpdateDialog(String title, String msg, final View.OnClickListener clickListener) {
-        final OnyxAlertDialog dlgOta = new OnyxAlertDialog();
-        dlgOta.setParams(new OnyxAlertDialog.Params()
+        final DialogInformation dlgOta = new DialogInformation(this);
+        dlgOta.setParams(new DialogInformation.Params()
                 .setTittleString(title)
                 .setAlertMsgString(msg)
                 .setPositiveAction(new View.OnClickListener() {
@@ -245,7 +251,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                         }
                     }
                 }));
-        dlgOta.show(getFragmentManager(), "OTADialog");
+        dlgOta.show();
     }
 
     private void startOTAFirmwareDownload(final Firmware otaFirmware) {
