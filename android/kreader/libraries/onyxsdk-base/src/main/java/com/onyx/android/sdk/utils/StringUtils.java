@@ -2,6 +2,7 @@ package com.onyx.android.sdk.utils;
 
 
 import android.util.Log;
+import android.util.Patterns;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -177,6 +178,10 @@ public class StringUtils {
                 (0x0500 <= codepoint && codepoint <= 0x052F) ||
                 (0x1E00 <= codepoint && codepoint <= 0x1EFF);
 
+    }
+
+    public static boolean isUrl(String url) {
+        return !isNullOrEmpty(url) && Patterns.WEB_URL.matcher(url).matches();
     }
 
 }

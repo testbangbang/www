@@ -148,4 +148,5 @@
     <string name="downloading">正在下载更新包&#8230;</string>
     <string name="firmware_is_latest">当前已是最新版本</string>
     <string name="firmware_update_detected">检测到新版本</string>
+    <string name="url_error">下载链接有误</string>
 </resources>
