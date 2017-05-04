@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.reader.host.layout;
 
-import android.graphics.Bitmap;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.api.ReaderBitmap;
@@ -215,7 +214,8 @@ public class LayoutProviderUtils {
 
     static public boolean checkCache(final BitmapReferenceLruCache cache, final String key, final ReaderDrawContext context) {
         ReaderBitmapReferenceImpl result = cache.get(key);
-        if (result == null || !result.isGammaApplied(context.targetGammaCorrection) ||
+        if (result == null ||
+                (!result.isGammaIgnored() && !result.isGammaApplied(context.targetGammaCorrection)) ||
                 !result.isTextGammaApplied(context.targetTextGammaCorrection) ||
                 !result.isEmboldenApplied(context.targetEmboldenLevel)) {
             return false;
