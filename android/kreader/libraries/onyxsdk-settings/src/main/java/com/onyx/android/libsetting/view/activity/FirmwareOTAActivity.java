@@ -50,8 +50,8 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
+    protected void onStart() {
+        super.onStart();
         if (!NetworkHelper.isWifiEnable(this)) {
             receiver.enable(this, true);
         }
