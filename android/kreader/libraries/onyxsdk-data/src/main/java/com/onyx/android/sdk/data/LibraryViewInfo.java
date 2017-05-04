@@ -10,6 +10,7 @@ import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class LibraryViewInfo {
     private int queryLimit = 9;
-    private QueryArgs queryArgs;;
+    private QueryArgs queryArgs;
     private QueryPagination queryPagination = QueryPagination.create(3, 3);
     private LibraryDataModel libraryDataModel;
     private List<Library> libraryPath = new ArrayList<>();
@@ -28,6 +29,10 @@ public class LibraryViewInfo {
         queryArgs = new QueryArgs();
         queryArgs.limit = queryLimit;
         queryPagination.setCurrentPage(0);
+    }
+
+    public static LibraryViewInfo create(int rows, int cols) {
+        return new LibraryViewInfo(rows, cols, SortBy.Name, SortOrder.Asc);
     }
 
     public LibraryViewInfo(int row, int col, SortBy sortBy, SortOrder sortOrder) {
