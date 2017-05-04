@@ -361,7 +361,8 @@ public class ReaderHelper {
         if (getDocumentOptions().isTextGamaCorrectionEnabled() &&
                 getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
             bitmap.setTextGammaCorrection(getDocumentOptions().getTextGammaLevel());
-        } else if (getDocumentOptions().isGamaCorrectionEnabled()) {
+        } else if (getDocumentOptions().isGamaCorrectionEnabled() &&
+                !bitmap.isGammaIgnored()) {
             applyGammaCorrection(bitmap);
         }
         applyEmbolden(bitmap);

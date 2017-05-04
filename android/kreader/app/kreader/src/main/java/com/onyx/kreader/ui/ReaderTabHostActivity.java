@@ -561,6 +561,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void handleViewActionIntent() {
+        acquireStartupWakeLock();
+
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
@@ -573,16 +575,20 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         dataProvider.submit(this, loadDocumentOptionsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
+                try {
+                    if (e != null) {
+                        return;
+                    }
+                    BaseOptions baseOptions = loadDocumentOptionsRequest.getDocumentOptions();
+                    DeviceConfig.adjustOptionsWithDeviceConfig(baseOptions, ReaderTabHostActivity.this);
+                    if (waitScreenOrientationChanging(baseOptions)) {
+                        pathToContinueOpenAfterRotation = path;
+                        return;
+                    }
+                    openDocWithTab(path);
+                } finally {
+                    releaseStartupWakeLock();
                 }
-                BaseOptions baseOptions = loadDocumentOptionsRequest.getDocumentOptions();
-                DeviceConfig.adjustOptionsWithDeviceConfig(baseOptions, ReaderTabHostActivity.this);
-                if (waitScreenOrientationChanging(baseOptions)) {
-                    pathToContinueOpenAfterRotation = path;
-                    return;
-                }
-                openDocWithTab(path);
             }
         });
 
