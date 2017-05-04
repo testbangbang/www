@@ -98,6 +98,7 @@
   <string name="settings_Library_option">Настройки библиотеки</string>
   <string name="show_tittle_instead_of_book_name_option">Показывать названия книг вместо имён файлов</string>
   <string name="setting_ota">Обновления системы</string>
+  <string name="ota_check_update">Проверить обновления</string>
   <string name="ota_from_cloud">Проверить обновления на сервере</string>
   <string name="ota_from_local">Проверить обновления в памяти</string>
   <string name="ota_auto_update">Автообновление</string>

@@ -94,7 +94,8 @@ public class SettingConfig {
         static private final String PRE_N_VPN_SETTING_ACTION = "android.net.vpn.SETTINGS";
     }
 
-
+    private boolean enableNetworkLatencyConfig = false;
+    private boolean enableSystemSettings = false;
     private static SettingConfig globalInstance;
     static private final boolean useDebugConfig = false;
     private ArrayList<GObject> backendList = new ArrayList<>();
@@ -514,5 +515,13 @@ public class SettingConfig {
             return null;
         }
         return result;
+    }
+
+    public boolean isEnableSystemSettings() {
+        return enableSystemSettings;
+    }
+
+    public boolean isEnableNetworkLatencyConfig() {
+        return enableNetworkLatencyConfig;
     }
 }

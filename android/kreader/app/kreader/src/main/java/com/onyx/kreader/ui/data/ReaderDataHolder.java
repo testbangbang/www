@@ -406,11 +406,6 @@ public class ReaderDataHolder {
                 onRenderRequestFinished(renderRequest, e);
                 callback.invoke(callback, request, e);
                 onPageDrawFinished(renderRequest, e);
-
-                if (!renderRequest.isAbort()) {
-                    updateReaderMenuState();
-                }
-
             }
         });
     }
@@ -423,6 +418,7 @@ public class ReaderDataHolder {
         if (e != null || request.isAbort()) {
             return;
         }
+        updateReaderMenuState();
         saveDocumentOptions(request);
         preRenderNext();
     }

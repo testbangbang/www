@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.v7.preference.CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/ota_auto_check_key"
-        android:summary="@string/ota_auto_summary"
-        android:title="@string/ota_auto_update" />
-
     <android.support.v7.preference.Preference
         android:key="@string/model_spec_key"
         android:title="@string/model_number_title" />
+
+    <android.support.v7.preference.Preference
+        android:key="@string/android_version_spec_key"
+        android:title="@string/android_version_number_title" />
 
     <android.support.v7.preference.Preference
         android:key="@string/firmware_spec_key"

@@ -57,6 +57,7 @@
     <dimen name="home_teaching_auxiliary_title_margin_right">8dp</dimen>
     <dimen name="home_item_background_normal_stroke_width">2dp</dimen>
     <dimen name="home_item_background_select_stroke_width">3dp</dimen>
+    <dimen name="home_main_item_category_title_text_size">37sp</dimen>
 
     <dimen name="teaching_material_showcase_layout_min_height">240dp</dimen>
     <dimen name="teaching_material_showcase_layout_padding">20dp</dimen>

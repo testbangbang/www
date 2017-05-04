@@ -1,10 +1,11 @@
 package com.onyx.android.libsetting.view.activity;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.widget.Toast;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.databinding.ActivityFirmwareOtaBinding;
-import com.onyx.android.libsetting.manager.SettingsPreferenceManager;
 import com.onyx.android.libsetting.util.DeviceFeatureUtil;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -25,7 +25,10 @@ import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareLocalCheckLegalityRequest;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.dialog.DialogLoading;
+import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -35,19 +38,33 @@ import java.io.File;
 
 public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     public static final String ACTION_OTA_DOWNLOAD = "com.action.ota.download";
+    private static final String NEW_LINE = "\n";
     private ActivityFirmwareOtaBinding binding;
     private DeviceReceiver receiver = new DeviceReceiver();
-    private boolean otaGuard = false;
+    private boolean otaCheckingGuard = false;
+
+    private DialogLoading informationDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        processIntent();
-        registerDeviceReceiver();
+        initDeviceReceiver();
     }
 
-    private void registerDeviceReceiver() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkAllUpdate();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        receiver.enable(this, false);
+    }
+
+    private void initDeviceReceiver() {
         receiver.setWifiStateListener(new DeviceReceiver.WifiStateListener() {
             @Override
             public void onWifiStateChanged(Intent intent) {
@@ -55,35 +72,22 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
 
             @Override
             public void onWifiConnected(Intent intent) {
-                checkUpdateFromCloud();
+                checkNetworkForCloudUpdate();
             }
         });
-        receiver.enable(this, true);
     }
 
     private void initView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_firmware_ota);
         initSupportActionBarWithCustomBackFunction();
-        binding.buttonCloudOta.setOnClickListener(new View.OnClickListener() {
+        binding.buttonCheckOta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!NetworkHelper.isWifiConnected(FirmwareOTAActivity.this)) {
-                    NetworkHelper.enableWifi(FirmwareOTAActivity.this, true);
-                    showToast(R.string.opening_wifi, Toast.LENGTH_LONG);
-                    return;
-                }
-                checkUpdateFromCloud();
-            }
-        });
-        binding.buttonLocalOta.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkUpdateFromLocalStorage();
+                checkAllUpdate();
             }
         });
         getSupportFragmentManager().beginTransaction().replace(R.id.ota_info_preference,
                 new OTASettingPreferenceFragment()).commit();
-        binding.buttonCloudOta.setVisibility(DeviceFeatureUtil.hasWifi(this) ? View.VISIBLE : View.GONE);
     }
 
     private void processIntent() {
@@ -93,63 +97,125 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         }
     }
 
-    private void checkUpdateFromCloud() {
-        if (isOtaGuard()) {
+    private void cleanup() {
+        dismissInformationDialog();
+        setOtaCheckingGuard(false);
+    }
+
+    private void checkNetworkForCloudUpdate() {
+        if (!DeviceFeatureUtil.hasWifi(this)) {
+            cleanup();
             return;
         }
-        setOtaGuard(true);
+        if (!NetworkHelper.isWifiConnected(FirmwareOTAActivity.this)) {
+            receiver.enable(this, true);
+            NetworkHelper.enableWifi(FirmwareOTAActivity.this, true);
+            showMessage(getString(R.string.opening_wifi));
+            return;
+        }
+        checkUpdateFromCloud();
+    }
+
+    private void checkAllUpdate() {
+        if (isOtaCheckingGuard()) {
+            return;
+        }
+        setOtaCheckingGuard(true);
+        showInformationDialog(getString(R.string.checking_update));
+        checkUpdateFromLocalStorage(new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                checkNetworkForCloudUpdate();
+            }
+        });
+    }
+
+    private void checkUpdateFromCloud() {
+        showMessage(getString(R.string.ota_check_update));
         final FirmwareUpdateRequest updateRequest = OTAManager.cloudFirmwareCheckRequest(this);
         OTAManager.sharedInstance().submitRequest(this, updateRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                setOtaGuard(false);
-                Firmware otaFirmware = updateRequest.getResultFirmware();
-                if (e != null || otaFirmware == null || !updateRequest.isResultFirmwareValid()) {
+                cleanup();
+                if (e != null || !updateRequest.isResultFirmwareValid()) {
                     printStackTrace(e);
-                    showToast(R.string.no_update, Toast.LENGTH_SHORT);
+                    showNoUpdateDialog();
                     return;
                 }
+                Firmware otaFirmware = updateRequest.getResultFirmware();
                 showCloudUpdateDialog(otaFirmware);
             }
         });
-        showToast(R.string.wait_for_checking_update, Toast.LENGTH_SHORT);
     }
 
-    public boolean isOtaGuard() {
-        return otaGuard;
+    public boolean isOtaCheckingGuard() {
+        return otaCheckingGuard;
     }
 
-    public void setOtaGuard(boolean otaGuard) {
-        this.otaGuard = otaGuard;
+    public void setOtaCheckingGuard(boolean otaCheckingGuard) {
+        this.otaCheckingGuard = otaCheckingGuard;
     }
 
-    private void checkUpdateFromLocalStorage() {
+    private void checkUpdateFromLocalStorage(final BaseCallback callback) {
         final FirmwareLocalCheckLegalityRequest localRequest = OTAManager.localFirmwareCheckRequest(this);
         OTAManager.sharedInstance().submitRequest(this, localRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 String targetPath = localRequest.getLegalityTargetPath();
                 if (StringUtils.isNotBlank(targetPath)) {
+                    cleanup();
                     showLocalUpdateDialog(targetPath);
                 } else {
-                    showToast(R.string.no_update, Toast.LENGTH_SHORT);
+                    BaseCallback.invoke(callback, request, e);
                 }
             }
         });
     }
 
+    private void showInformationDialog(final String message) {
+        if (informationDialog != null) {
+            return;
+        }
+        informationDialog = new DialogLoading(this, NEW_LINE + message + NEW_LINE, true);
+        informationDialog.show();
+    }
+
+    private void showMessage(final String message) {
+        if (informationDialog == null) {
+            return;
+        }
+        informationDialog.setToastMessage(message);
+        informationDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                onInformationDialogCancelled();
+            }
+        });
+    }
+
+    private void onInformationDialogCancelled() {
+
+    }
+
+    private void showNoUpdateDialog() {
+        showMessage(getString(R.string.no_update));
+    }
+
+    private void dismissInformationDialog() {
+        if (informationDialog != null) {
+            informationDialog.dismiss();
+            informationDialog = null;
+        }
+    }
+
     private void showLocalUpdateDialog(final String path) {
-        final OnyxAlertDialog dlgOtaLocal = new OnyxAlertDialog();
-        dlgOtaLocal.setParams(new OnyxAlertDialog.Params().setAlertMsgString(getString(R.string.find_package_from_local))
-                .setTittleString(getString(R.string.title_update))
-                .setPositiveAction(new View.OnClickListener() {
+        showUpdateDialog(getString(R.string.firmware_update_detected), getString(R.string.find_package_from_local),
+                new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         OTAManager.sharedInstance().startFirmwareUpdate(FirmwareOTAActivity.this, path);
-                        dlgOtaLocal.dismiss();
                     }
-                }));
-        dlgOtaLocal.show(getFragmentManager(), "OTADialog");
+                });
     }
 
     private void showCloudUpdateDialog(final Firmware otaFirmware) {
@@ -157,22 +223,37 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         if (StringUtils.isNullOrEmpty(messageString)) {
             messageString = otaFirmware.getFingerprint();
         }
-        final OnyxAlertDialog dlgOtaCloud = new OnyxAlertDialog();
-        dlgOtaCloud.setParams(new OnyxAlertDialog.Params()
-                .setTittleString(getString(R.string.title_update))
-                .setAlertMsgString(messageString)
+        showUpdateDialog(getString(R.string.firmware_update_detected), messageString, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startOTAFirmwareDownload(otaFirmware);
+            }
+        });
+    }
+
+    private void showUpdateDialog(String title, String msg, final View.OnClickListener clickListener) {
+        final OnyxAlertDialog dlgOta = new OnyxAlertDialog();
+        dlgOta.setParams(new OnyxAlertDialog.Params()
+                .setTittleString(title)
+                .setAlertMsgString(msg)
                 .setPositiveAction(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dlgOtaCloud.dismiss();
-                        startOTAFirmwareDownload(otaFirmware);
+                        dlgOta.dismiss();
+                        if (clickListener != null) {
+                            clickListener.onClick(v);
+                        }
                     }
                 }));
-        dlgOtaCloud.show(getFragmentManager(), "OTADialog");
+        dlgOta.show(getFragmentManager(), "OTADialog");
     }
 
     private void startOTAFirmwareDownload(final Firmware otaFirmware) {
-        final String filePath = OTAManager.LOCAL_PATH_SDCARD;
+        if (!StringUtils.isUrl(otaFirmware.getUrl())) {
+            ToastUtils.showToast(this, R.string.url_error);
+            return;
+        }
+        final String filePath = OTAManager.CLOUD_PATH_SDCARD;
         final CloudFileDownloadRequest downloadRequest = new CloudFileDownloadRequest(otaFirmware.getUrl(), filePath, filePath) {
             @Override
             public void execute(CloudManager parent) throws Exception {
@@ -185,12 +266,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                 }
             }
         };
-        BaseDownloadTask task = OnyxDownloadManager.getInstance().download(downloadRequest, new BaseCallback() {
-
-            @Override
-            public void start(BaseRequest request) {
-                showProgressDialog(request, null);
-            }
+        final BaseDownloadTask task = OnyxDownloadManager.getInstance().download(downloadRequest, new BaseCallback() {
 
             @Override
             public void progress(BaseRequest request, ProgressInfo info) {
@@ -209,7 +285,13 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                     showToast(R.string.md5_verify_fail, Toast.LENGTH_SHORT);
                     return;
                 }
-                checkUpdateFromLocalStorage();
+                OTAManager.sharedInstance().startFirmwareUpdate(FirmwareOTAActivity.this, filePath);
+            }
+        });
+        showProgressDialog(downloadRequest, R.string.downloading, new DialogProgressHolder.DialogCancelListener() {
+            @Override
+            public void onCancel() {
+                task.pause();
             }
         });
         task.setForceReDownload(true);
@@ -222,15 +304,8 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        receiver.enable(this, false);
-    }
-
     public static class OTASettingPreferenceFragment extends PreferenceFragmentCompat {
-        CheckBoxPreference otaAutoCheckPreference;
-        Preference modelSpecPreference, firmwareSpecPreference;
+        Preference modelSpecPreference, firmwareSpecPreference, androidVersionSpecPreference;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -239,16 +314,9 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         }
 
         private void initView() {
-            otaAutoCheckPreference = (CheckBoxPreference) findPreference(getString(R.string.ota_auto_check_key));
             modelSpecPreference = findPreference(getString(R.string.model_spec_key));
             firmwareSpecPreference = findPreference(getString(R.string.firmware_spec_key));
-            otaAutoCheckPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    saveAutoFirmwareCheck((Boolean) newValue);
-                    return true;
-                }
-            });
+            androidVersionSpecPreference = findPreference(getString(R.string.android_version_spec_key));
         }
 
         @Override
@@ -258,15 +326,9 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         }
 
         private void updateData() {
-            if (!DeviceFeatureUtil.hasWifi(getContext())) {
-                otaAutoCheckPreference.setVisible(false);
-            }
             modelSpecPreference.setSummary(Build.DEVICE);
-            firmwareSpecPreference.setSummary(Build.DISPLAY);
-        }
-
-        private void saveAutoFirmwareCheck(boolean newValue){
-            SettingsPreferenceManager.setFirmwareCheckWhenWifiConnected(getActivity(), newValue);
+            firmwareSpecPreference.setSummary(Build.ID);
+            androidVersionSpecPreference.setSummary(Build.VERSION.RELEASE);
         }
     }
 }

@@ -59,4 +59,9 @@ public class NetworkHelper {
         WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         wm.setWifiEnabled(enabled);
     }
+
+    public static boolean isWifiEnable(Context context) {
+        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        return wm.isWifiEnabled();
+    }
 }

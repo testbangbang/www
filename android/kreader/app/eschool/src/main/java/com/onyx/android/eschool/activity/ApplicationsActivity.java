@@ -117,7 +117,6 @@ public class ApplicationsActivity extends BaseActivity {
                 }
                 showCleanTestAppMenu = listRequest.isTestAppExist();
                 appDataInfoList = listRequest.getAppInfoList();
-                appDataInfoList.addAll(getExtraItemInfo());
                 notifyDataChanged();
             }
         });
