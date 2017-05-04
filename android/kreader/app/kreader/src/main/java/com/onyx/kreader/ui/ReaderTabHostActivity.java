@@ -458,6 +458,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void handleViewActionIntent() {
+        acquireStartupWakeLock();
+
         final String path = FileUtils.getRealFilePathFromUri(this, getIntent().getData());
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(path,
                 null);
@@ -465,14 +467,18 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         dataProvider.submit(this, loadDocumentOptionsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
+                try {
+                    if (e != null) {
+                        return;
+                    }
+                    if (waitScreenOrientationChanging(loadDocumentOptionsRequest.getDocumentOptions())) {
+                        pathToContinueOpenAfterRotation = path;
+                        return;
+                    }
+                    openDocWithTab(path);
+                } finally {
+                    releaseStartupWakeLock();
                 }
-                if (waitScreenOrientationChanging(loadDocumentOptionsRequest.getDocumentOptions())) {
-                    pathToContinueOpenAfterRotation = path;
-                    return;
-                }
-                openDocWithTab(path);
             }
         });
 
