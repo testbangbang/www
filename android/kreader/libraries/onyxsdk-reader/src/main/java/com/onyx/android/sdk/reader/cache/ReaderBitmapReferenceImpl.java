@@ -123,6 +123,14 @@ public class ReaderBitmapReferenceImpl implements ReaderBitmap, Closeable {
         return (Float.compare(gammaCorrection, targetGammaCorrection) == 0);
     }
 
+    /**
+     * when text gamma is used, we will ignore bitmap gamma correction
+     * @return
+     */
+    public boolean isGammaIgnored() {
+        return Float.compare(textGammaCorrection, BaseOptions.getLowerGammaLimit()) != 0;
+    }
+
     public boolean isEmboldenApplied(final float targetEmboldenLevel) {
         return emboldenLevel == targetEmboldenLevel;
     }
