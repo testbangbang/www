@@ -64,4 +64,10 @@ public class NetworkHelper {
         WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         return wm.isWifiEnabled();
     }
+
+    public static boolean isConnectingOrConnected(final Context context) {
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
 }
