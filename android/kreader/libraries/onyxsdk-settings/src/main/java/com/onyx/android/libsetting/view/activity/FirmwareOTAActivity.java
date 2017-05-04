@@ -25,6 +25,7 @@ import com.onyx.android.sdk.data.request.cloud.FirmwareLocalCheckLegalityRequest
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -45,11 +46,30 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        checkAllUpdate();
-        registerDeviceReceiver();
+        initDeviceReceiver();
     }
 
-    private void registerDeviceReceiver() {
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (!NetworkHelper.isWifiEnable(this)) {
+            receiver.enable(this, true);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        receiver.enable(this, false);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkAllUpdate();
+    }
+
+    private void initDeviceReceiver() {
         receiver.setWifiStateListener(new DeviceReceiver.WifiStateListener() {
             @Override
             public void onWifiStateChanged(Intent intent) {
@@ -57,10 +77,9 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
 
             @Override
             public void onWifiConnected(Intent intent) {
-                checkNetworkForCloudUpdate();
+                checkAllUpdate();
             }
         });
-        receiver.enable(this, true);
     }
 
     private void initView() {
@@ -96,7 +115,6 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     private void checkAllUpdate() {
-        showCheckingDialog();
         checkUpdateFromLocalStorage(new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -110,6 +128,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
             return;
         }
         setOtaGuard(true);
+        showCheckingDialog();
         final FirmwareUpdateRequest updateRequest = OTAManager.cloudFirmwareCheckRequest(this);
         OTAManager.sharedInstance().submitRequest(this, updateRequest, new BaseCallback() {
             @Override
@@ -228,6 +247,10 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
     }
 
     private void startOTAFirmwareDownload(final Firmware otaFirmware) {
+        if (!StringUtils.isUrl(otaFirmware.getUrl())) {
+            ToastUtils.showToast(this, R.string.url_error);
+            return;
+        }
         final String filePath = OTAManager.CLOUD_PATH_SDCARD;
         final CloudFileDownloadRequest downloadRequest = new CloudFileDownloadRequest(otaFirmware.getUrl(), filePath, filePath) {
             @Override
@@ -277,12 +300,6 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         if (e != null) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        receiver.enable(this, false);
     }
 
     public static class OTASettingPreferenceFragment extends PreferenceFragmentCompat {

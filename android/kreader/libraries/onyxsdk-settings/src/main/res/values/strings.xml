@@ -215,5 +215,6 @@
     <string name="downloading">Downloading update package&#8230;</string>
     <string name="firmware_is_latest">The installed firmware is latest</string>
     <string name="firmware_update_detected">New firmware detected</string>
+    <string name="url_error">The url link is incorrect</string>
 </resources>
 
