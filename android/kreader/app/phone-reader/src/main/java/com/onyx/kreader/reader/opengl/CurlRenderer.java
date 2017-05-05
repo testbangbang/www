@@ -16,6 +16,7 @@
 
 package com.onyx.kreader.reader.opengl;
 
+import java.util.List;
 import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -26,6 +27,8 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
+
+import static javax.microedition.khronos.opengles.GL10.GL_STENCIL_TEST;
 
 /**
  * Actual renderer class.
@@ -47,6 +50,7 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 	private int mBackgroundColor;
 	// Curl meshes used for static and dynamic rendering.
 	private Vector<CurlMesh> mCurlMeshes;
+    private List<IOpenGLObject> iOpenGLObjects;
 	private RectF mMargins = new RectF();
 	private Observer mObserver;
 	// Page rectangles.
@@ -65,6 +69,7 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 	public CurlRenderer(Observer observer) {
 		mObserver = observer;
 		mCurlMeshes = new Vector<CurlMesh>();
+        iOpenGLObjects = new Vector<>();
 		mPageRectLeft = new RectF();
 		mPageRectRight = new RectF();
 	}
@@ -77,7 +82,15 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 		mCurlMeshes.add(mesh);
 	}
 
-	/**
+    public void setIOpenGLObjects(List<IOpenGLObject> iOpenGLObjects) {
+        this.iOpenGLObjects = iOpenGLObjects;
+    }
+
+    public void addIOpenGLObject(IOpenGLObject IOpenGLObject) {
+        iOpenGLObjects.add(IOpenGLObject);
+    }
+
+    /**
 	 * Returns rect reserved for left or right page. Value page should be
 	 * PAGE_LEFT or PAGE_RIGHT.
 	 */
@@ -109,6 +122,9 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 		for (int i = 0; i < mCurlMeshes.size(); ++i) {
 			mCurlMeshes.get(i).onDrawFrame(gl);
 		}
+        for (int i = 0; i < iOpenGLObjects.size(); ++i) {
+            iOpenGLObjects.get(i).onDrawFrame(gl);
+        }
 	}
 
 	@Override
