@@ -1,6 +1,7 @@
 package com.onyx.android.eschool.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +11,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.facebook.common.references.CloseableReference;
 import com.onyx.android.eschool.R;
-import com.onyx.android.eschool.glide.ThumbnailLoader;
-import com.onyx.android.eschool.model.LibraryDataModel;
+import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
@@ -43,7 +40,6 @@ public class LibraryAdapter extends PageRecyclerView.PageAdapter<LibraryAdapter.
     }
 
     private Context context;
-    private ThumbnailLoader thumbnailLoader;
 
     private LibraryDataModel libraryDataModel = new LibraryDataModel();
 
@@ -54,9 +50,8 @@ public class LibraryAdapter extends PageRecyclerView.PageAdapter<LibraryAdapter.
     private int rowCount = 3;
     private int colCount = 3;
 
-    public LibraryAdapter(Context context, ThumbnailLoader thumbnailLoader) {
+    public LibraryAdapter(Context context) {
         this.context = context;
-        this.thumbnailLoader = thumbnailLoader;
     }
 
     public void setRowCol(int row, int col) {
@@ -150,27 +145,16 @@ public class LibraryAdapter extends PageRecyclerView.PageAdapter<LibraryAdapter.
     }
 
     private void renderBookCoverImage(final LibraryItemViewHolder holder, final Metadata metadata) {
-        if (StringUtils.isNullOrEmpty(metadata.getHashTag())) {
+        String associationId = metadata.getAssociationId();
+        if (StringUtils.isNullOrEmpty(associationId) || !getLibraryDataModel().thumbnailMaps.containsKey(associationId)) {
             holder.imageCover.setImageResource(R.drawable.library_book_cover);
             return;
         }
-        Glide.with(context).using(thumbnailLoader).load(metadata).dontAnimate()
-                .placeholder(R.drawable.library_book_cover)
-                .error(R.drawable.library_book_cover)
-                .listener(new RequestListener<Metadata, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, Metadata meta, Target<GlideDrawable> target, boolean isFirstResource) {
-                        holder.titleView.setVisibility(View.VISIBLE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, Metadata meta, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        holder.titleView.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .into(holder.imageCover);
+        CloseableReference<Bitmap> refBitmap = getLibraryDataModel().thumbnailMaps.get(associationId);
+        if (refBitmap.isValid()) {
+            holder.titleView.setVisibility(View.GONE);
+            holder.imageCover.setImageBitmap(refBitmap.get());
+        }
     }
 
     private void renderBookProgress(LibraryItemViewHolder holder, Metadata metadata) {

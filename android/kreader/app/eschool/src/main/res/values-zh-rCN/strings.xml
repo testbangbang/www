@@ -145,6 +145,7 @@
     <string name="menu_sort">排序</string>
     <string name="menu_filter">过滤</string>
     <string name="menu_multi_choice_mode">多选模式</string>
+    <string name="menu_library_toc_index">书库目录索引</string>
     <string name="menu_library_build">创建书库</string>
     <string name="menu_library_add">加入书库</string>
     <string name="menu_library_remove">移出书库</string>
@@ -152,5 +153,7 @@
 
     <string name="go_to_page">页面跳转</string>
     <string name="current_page">当前页面</string>
+    <string name="library_toc_loading">书库目录加载中...</string>
+    <string name="library_toc_load_fail">书库目录加载异常</string>
 
 </resources>
