@@ -63,6 +63,10 @@ public class OpenDocumentAction extends BaseAction {
         readerDataHolder.submitRenderRequest(restoreRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                readerDataHolder.getHandlerManager().setEnable(true);
                 readerDataHolder.submitNonRenderRequest(new SaveDocumentOptionsRequest());
                 readerDataHolder.onDocumentInitRendered();
             }

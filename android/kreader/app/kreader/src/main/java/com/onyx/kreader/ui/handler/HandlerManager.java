@@ -15,13 +15,17 @@ import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.KeyBinding;
 import com.onyx.android.sdk.data.TouchAction;
 import com.onyx.android.sdk.data.TouchBinding;
+import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.ReaderTabHostBroadcastReceiver;
 import com.onyx.kreader.ui.actions.DecreaseFontSizeAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.IncreaseFontSizeAction;
+import com.onyx.kreader.ui.actions.RefreshCurrentPageAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
+import com.onyx.kreader.ui.actions.ToggleAnimationUpdateAction;
 import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -446,10 +450,16 @@ public class HandlerManager {
             nextTenPage(readerDataHolder);
         }else if (action.equals(TouchAction.PREV_TEN_PAGE)) {
             prevTenPage(readerDataHolder);
+        }else if (action.equals(TouchAction.TOGGLE_A2)) {
+            toggleAnimationUpdate(readerDataHolder);
         }else {
             return false;
         }
         return true;
+    }
+
+    private void toggleAnimationUpdate(final ReaderDataHolder readerDataHolder) {
+        new ToggleAnimationUpdateAction(true).execute(readerDataHolder, null);
     }
 
     private void toggleFullscreen(final ReaderDataHolder readerDataHolder) {

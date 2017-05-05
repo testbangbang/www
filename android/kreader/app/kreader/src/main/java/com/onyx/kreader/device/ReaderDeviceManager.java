@@ -44,6 +44,11 @@ public class ReaderDeviceManager {
         }
     }
 
+    public static void toggleAnimationUpdate(boolean clear) {
+        EpdController.applyApplicationFastMode(APP, !inFastUpdateMode, clear);
+        inFastUpdateMode = !inFastUpdateMode;
+    }
+
     public static void startScreenHandWriting(final View view) {
         EpdController.setScreenHandWritingPenState(view, 1);
     }

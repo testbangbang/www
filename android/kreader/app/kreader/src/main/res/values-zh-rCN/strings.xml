@@ -320,6 +320,7 @@
   <string name="settings_touch_binding_auto_page_tittle">自动翻页</string>
   <string name="settings_touch_binding_next_ten_page_tittle">向下10页</string>
   <string name="settings_touch_binding_prev_ten_page_tittle">向上10页</string>
+  <string name="settings_touch_binding_toggle_a2_tittle">切换 A2</string>
 
   <string name="settings_touch_tittle">触控区域设置</string>
   <string name="settings_touch_summary">触控映射</string>
