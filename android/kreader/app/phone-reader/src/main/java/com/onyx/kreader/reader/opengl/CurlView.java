@@ -17,14 +17,14 @@
 package com.onyx.kreader.reader.opengl;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.List;
 
 
 /**
@@ -146,6 +146,8 @@ public class CurlView extends GLSurfaceView implements CurlRenderer.Observer {
 		mPageLeft.setFlipTexture(true);
 		mPageRight.setFlipTexture(false);
 	}
+
+
 
 	@Override
 	public void onDrawFrame() {
@@ -729,6 +731,11 @@ public class CurlView extends GLSurfaceView implements CurlRenderer.Observer {
 		mPageProvider.updatePage(page, mPageBitmapWidth, mPageBitmapHeight,
 				index);
 	}
+
+	public void updateIOpenGLObjects(List<IOpenGLObject> IOpenGLObjects) {
+        mRenderer.setIOpenGLObjects(IOpenGLObjects);
+        requestRender();
+    }
 
 	/**
 	 * Updates bitmaps for page meshes.

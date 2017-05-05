@@ -18,6 +18,7 @@ import com.onyx.kreader.action.OpenDocumentAction;
 import com.onyx.kreader.action.PrevScreenAction;
 import com.onyx.kreader.event.DocumentInitRenderedEvent;
 import com.onyx.kreader.event.RenderRequestFinishedEvent;
+import com.onyx.kreader.reader.ReaderRender;
 import com.onyx.kreader.reader.data.ReaderDataHolder;
 import com.onyx.kreader.reader.gesture.ReaderGestureListener;
 import com.onyx.kreader.reader.opengl.CurlPage;
@@ -80,8 +81,11 @@ public class ReaderActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 getReaderDataHolder().getHandlerManager().setTouchStartEvent(event);
+                if (getReaderDataHolder().inReadingProvider()) {
+                    curlView.onTouchEvent(v, event);
+                }
                 gestureDetector.onTouchEvent(event);
-                curlView.onTouchEvent(v, event);
+                getReaderDataHolder().getHandlerManager().onTouchEvent(getReaderDataHolder(), event);
                 return true;
             }
         });
@@ -142,6 +146,7 @@ public class ReaderActivity extends AppCompatActivity {
     @Subscribe
     public void onRenderRequestFinished(final RenderRequestFinishedEvent event) {
         curlView.setCurrentIndex(getReaderDataHolder().getCurrentPage());
+        ReaderRender.renderPage(this, getReaderDataHolder(), curlView);
     }
 
     private void openFileFromIntent() {

@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.reader.host.request;
 
+import android.graphics.Bitmap;
+
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
@@ -13,8 +15,8 @@ import com.onyx.android.sdk.reader.utils.ImageUtils;
 public class PreRenderRequest extends BaseReaderRequest {
 
     private boolean forward;
-    private boolean transferBitmap = false;
     private boolean checkIsValidPage = true;
+    private Bitmap preRenderBitmap;
 
     public PreRenderRequest(boolean next) {
         super();
@@ -22,9 +24,8 @@ public class PreRenderRequest extends BaseReaderRequest {
         setSaveOptions(false);
     }
 
-    public PreRenderRequest(boolean forward, boolean transferBitmap, boolean checkIsValidPage) {
+    public PreRenderRequest(boolean forward, boolean checkIsValidPage) {
         this(forward);
-        this.transferBitmap = transferBitmap;
         this.checkIsValidPage = checkIsValidPage;
     }
 
@@ -48,6 +49,11 @@ public class PreRenderRequest extends BaseReaderRequest {
             drawVisiblePages(reader, drawContext);
             reader.getReaderLayoutManager().getCurrentLayoutProvider().restoreBySnapshot(snapshot);
         }
-        setTransferBitmap(transferBitmap);
+        preRenderBitmap = getRenderBitmap().getBitmap();
+        setTransferBitmap(false);
+    }
+
+    public Bitmap getPreRenderBitmap() {
+        return preRenderBitmap;
     }
 }

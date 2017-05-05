@@ -18,6 +18,10 @@ public abstract class BaseHandler {
         this.handlerManager = handlerManager;
     }
 
+    public HandlerManager getHandlerManager() {
+        return handlerManager;
+    }
+
     public void onActivate(final ReaderDataHolder readerDataHolder) {}
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {}
@@ -56,5 +60,9 @@ public abstract class BaseHandler {
 
     private void prevScreen(final ReaderDataHolder readerDataHolder) {
         new PrevScreenAction().execute(readerDataHolder, null);
+    }
+
+    public boolean onTouchEvent(ReaderDataHolder readerDataHolder,MotionEvent e) {
+        return true;
     }
 }

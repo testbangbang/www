@@ -65,6 +65,10 @@ public class HandlerManager {
         }
     }
 
+    public void resetToDefaultProvider() {
+        setActiveProvider(READING_PROVIDER);
+    }
+
     public PointF getTouchStartPosition() {
         return touchStartPosition;
     }
@@ -88,6 +92,13 @@ public class HandlerManager {
             setActiveProvider(HandlerManager.WORD_SELECTION_PROVIDER);
         }
         getActiveProvider().onLongPress(readerDataHolder, getTouchStartPosition().x, getTouchStartPosition().y, e.getX(), e.getY());
+    }
+
+    public void onTouchEvent(final ReaderDataHolder readerDataHolder, final MotionEvent e) {
+        if (!isEnable()) {
+            return;
+        }
+        getActiveProvider().onTouchEvent(readerDataHolder, e);
     }
 
     public boolean onFling(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {

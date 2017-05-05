@@ -17,6 +17,7 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.kreader.event.DocumentInitRenderedEvent;
 import com.onyx.kreader.event.RenderRequestFinishedEvent;
 import com.onyx.kreader.reader.handler.HandlerManager;
+import com.onyx.kreader.reader.highlight.SelectionManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -33,6 +34,7 @@ public class ReaderDataHolder {
     private ReaderUserDataInfo readerUserDataInfo;
 
     private HandlerManager handlerManager;
+    private SelectionManager selectionManager;
     private DataManager dataManager;
     private Reader reader;
     private LruCache<Integer, Bitmap> readerPageCache = new LruCache<>(5);
@@ -65,6 +67,13 @@ public class ReaderDataHolder {
             handlerManager = new HandlerManager(this);
         }
         return handlerManager;
+    }
+
+    public final SelectionManager getSelectionManager() {
+        if (selectionManager == null) {
+            selectionManager = new SelectionManager(this);
+        }
+        return selectionManager;
     }
 
     public Reader getReader() {
@@ -109,7 +118,7 @@ public class ReaderDataHolder {
         });
     }
 
-    private void onRenderRequestFinished(final BaseReaderRequest request, Throwable e) {
+    public void onRenderRequestFinished(final BaseReaderRequest request, Throwable e) {
         if (e != null || request.isAbort()) {
             return;
         }
@@ -117,6 +126,12 @@ public class ReaderDataHolder {
         saveReaderUserDataInfo(request);
         bufferRenderPage(getCurrentPage(), getReader().getViewportBitmap().getBitmap());
         getEventBus().post(new RenderRequestFinishedEvent());
+    }
+
+    public void redrawPage() {
+        if (getReader() != null) {
+            submitRenderRequest(new RenderRequest());
+        }
     }
 
     private void onPageDrawFinished(BaseReaderRequest request, Throwable e) {
@@ -127,7 +142,7 @@ public class ReaderDataHolder {
     }
 
     public void preRenderNext() {
-        final PreRenderRequest preRenderRequest = new PreRenderRequest(true, true, false);
+        final PreRenderRequest preRenderRequest = new PreRenderRequest(true, false);
         getReader().submitRequest(context, preRenderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -136,7 +151,7 @@ public class ReaderDataHolder {
                 }
                 String pageName = preRenderRequest.getReaderViewInfo().getFirstVisiblePage().getName();
                 int pagePosition = PagePositionUtils.getPageNumber(pageName);
-                bufferRenderPage(pagePosition, getReader().getViewportBitmap().getBitmap());
+                bufferRenderPage(pagePosition, preRenderRequest.getPreRenderBitmap());
             }
         });
     }
@@ -144,6 +159,10 @@ public class ReaderDataHolder {
     public void onDocumentInitRendered() {
         documentInitRendered = true;
         getEventBus().post(new DocumentInitRenderedEvent());
+    }
+
+    public boolean inReadingProvider() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.READING_PROVIDER);
     }
 
     public Bitmap getReaderPageCache(final int position) {
