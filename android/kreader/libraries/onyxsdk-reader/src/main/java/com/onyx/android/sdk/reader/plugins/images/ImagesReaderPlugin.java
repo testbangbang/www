@@ -6,9 +6,7 @@ import android.graphics.RectF;
 import android.util.Log;
 
 import com.onyx.android.sdk.data.SortOrder;
-import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
-import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
@@ -33,7 +31,6 @@ import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.api.ReaderViewOptions;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.ComparatorUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -165,11 +162,6 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    @Override
-    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
-        return false;
-    }
-
     public ReaderView getView(final ReaderViewOptions viewOptions) {
         return this;
     }
@@ -185,6 +177,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     @Override
     public void setChineseConvertType(ReaderChineseConvertType convertType) {
+
+    }
+
+    @Override
+    public void setTextGamma(float gamma) {
 
     }
 
@@ -253,7 +250,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         final String path = getImagePath(pagePosition);
         if (StringUtils.isNullOrEmpty(path)) {
             return false;
@@ -429,26 +426,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
 
-    public boolean acceptDRMFile(final String path) {
-        return false;
-    }
-
-    public boolean registerDRMCallback(final ReaderDRMCallback callback) {
-        return false;
-    }
-
-    public boolean activateDeviceDRM(String user, String password) {
-        return false;
-    }
-
-    public boolean deactivateDeviceDRM() {
-        return false;
-    }
-
-    public String getDeviceDRMAccount() {
-        return "";
-    }
-    public boolean fulfillDRMFile(String path) {
+    public boolean activateDeviceDRM(String certificate) {
         return false;
     }
 
@@ -475,6 +453,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     public boolean supportFontSizeAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
         return false;
     }
 

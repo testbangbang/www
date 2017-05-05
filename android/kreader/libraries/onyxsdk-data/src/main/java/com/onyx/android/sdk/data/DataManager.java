@@ -5,19 +5,14 @@ import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
-import com.onyx.android.sdk.data.model.Library;
-import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
-import com.onyx.android.sdk.data.utils.QueryBuilder;
-import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +24,7 @@ public class DataManager {
     private RequestManager requestManager;
     private DataProviderManager dataProviderManager = new DataProviderManager();
     private FileSystemManager fileSystemManager;
+    private CacheManager cacheManager;
 
     public DataManager() {
         requestManager = new RequestManager();
@@ -60,7 +56,7 @@ public class DataManager {
                 } finally {
                     request.afterExecute(DataManager.this);
                     requestManager.dumpWakelocks();
-                    requestManager.removeRequest(request);
+                    requestManager.removeRequest(request, getIdentifier(request));
                 }
             }
         };
@@ -68,12 +64,11 @@ public class DataManager {
     }
 
     public void submit(final Context context, final BaseDataRequest request, final BaseCallback callback) {
-        final String identifier = getIdentifier(request);
-        if (StringUtils.isNullOrEmpty(identifier)) {
-            requestManager.submitRequest(context, request, generateRunnable(request), callback);
-        } else {
-            requestManager.submitRequest(context, identifier, request, generateRunnable(request), callback);
-        }
+        requestManager.submitRequest(context, getIdentifier(request), request, generateRunnable(request), callback);
+    }
+
+    public void submitToMulti(final Context context, final BaseDataRequest request, final BaseCallback callback) {
+        requestManager.submitRequestToMultiThreadPool(context, getIdentifier(request), request, generateRunnable(request), callback);
     }
 
     private final String getIdentifier(final BaseDataRequest request) {
@@ -88,23 +83,18 @@ public class DataManager {
         return dataProviderManager;
     }
 
-    public DataProviderBase getDataProviderBase() {
-        return getDataProviderManager().getDataProvider();
+    public DataProviderBase getRemoteContentProvider() {
+        return getDataProviderManager().getRemoteDataProvider();
     }
 
     public final FileSystemManager getFileSystemManager() {
         return fileSystemManager;
     }
 
-    public List<Metadata> getMetadataListWithLimit(Context context, QueryArgs queryArgs) {
-        return getDataProviderManager().getDataProvider().findMetadataByQueryArgs(context, queryArgs);
-    }
-
-    public long countMetadataList(Context context, QueryArgs queryArgs) {
-        return getDataProviderManager().getDataProvider().count(context, queryArgs);
-    }
-
-    public void saveLibrary(Library library) {
-        getDataProviderBase().addLibrary(library);
+    public CacheManager getCacheManager() {
+        if (cacheManager == null) {
+            cacheManager = new CacheManager();
+        }
+        return cacheManager;
     }
 }

@@ -8,15 +8,20 @@ package com.onyx.android.sdk.data.provider;
 public class DataProviderManager {
 
     public static final String TAG = DataProviderManager.class.getSimpleName();
-    private static DataProviderBase instance;
+    private static DataProviderBase localDataProvider;
+    private static DataProviderBase remoteDataProvider;
 
-    public static DataProviderBase getDataProvider() {
-        if (instance == null) {
-            instance = new LocalDataProvider();
+    public static DataProviderBase getLocalDataProvider() {
+        if (localDataProvider == null) {
+            localDataProvider = new LocalDataProvider();
         }
-        return instance;
+        return localDataProvider;
     }
 
-
-
+    public static DataProviderBase getRemoteDataProvider() {
+        if (remoteDataProvider == null) {
+            remoteDataProvider = new RemoteDataProvider();
+        }
+        return remoteDataProvider;
+    }
 }

@@ -6,7 +6,7 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.host.layout.LayoutProviderUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
@@ -65,7 +65,7 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
         if (reader.getRendererFeatures().supportScale()) {
             this.pageInfo = LayoutProviderUtils.drawPageWithScaleToPage(pageInfo, bitmap, reader.getRenderer());
         } else {
-            ReaderBitmap originalPage = ReaderBitmapImpl.create((int)origin.width(), (int)origin.height(), Bitmap.Config.ARGB_8888);
+            ReaderBitmap originalPage = ReaderBitmapReferenceImpl.create((int)origin.width(), (int)origin.height(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
             this.pageInfo = LayoutProviderUtils.drawReflowablePage(pageInfo, originalPage, reader.getRenderer());
             if (this.pageInfo != null) {
                 BitmapUtils.scaleBitmap(originalPage.getBitmap(),

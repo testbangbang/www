@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.RefValue;
 import com.onyx.android.sdk.reader.IMetadataService;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
@@ -23,6 +24,7 @@ import com.onyx.android.sdk.reader.host.request.ReadDocumentMetadataRequest;
 import com.onyx.android.sdk.reader.host.request.ReaderDocumentCoverRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
+import com.onyx.kreader.ui.data.DrmCertificateFactory;
 
 import java.util.List;
 
@@ -103,7 +105,8 @@ public class ReaderMetadataService extends Service {
     }
 
     private void extractMetadataAndThumbnail(final ReaderMetadataService service, final String documentPath, final RefValue<Boolean> result) {
-        OpenRequest openRequest = new OpenRequest(documentPath, new BaseOptions(), false);
+        final DrmCertificateFactory factory = new DrmCertificateFactory();
+        OpenRequest openRequest = new OpenRequest(documentPath, new BaseOptions(), factory, false);
         openRequest.setRunInBackground(false);
         reader.submitRequest(service, openRequest, new BaseCallback() {
             @Override
@@ -151,8 +154,11 @@ public class ReaderMetadataService extends Service {
                     Log.w(TAG, "read document metadata failed: " + documentPath);
                     return;
                 }
-                result.setValue(LegacySdkDataUtils.saveMetadata(service, documentPath,
-                        metadataRequest.getMetadata()));
+                boolean saveSuccess = LegacySdkDataUtils.saveMetadata(service, documentPath,
+                        metadataRequest.getMetadata());
+                saveSuccess &= ContentSdKDataUtils.saveMetadata(service, documentPath,
+                        metadataRequest.getMetadata());
+                result.setValue(saveSuccess);
             }
         });
         return result.getValue();
@@ -171,8 +177,11 @@ public class ReaderMetadataService extends Service {
                     Log.w(TAG, "read document cover failed: " + documentPath);
                     return;
                 }
-                result.setValue(LegacySdkDataUtils.saveThumbnail(service, documentPath,
-                        bitmap.getBitmap()));
+                boolean saveSuccess = LegacySdkDataUtils.saveThumbnail(service, documentPath,
+                        bitmap.getBitmap());
+                saveSuccess &= ContentSdKDataUtils.saveThumbnail(service, documentPath,
+                        bitmap.getBitmap());
+                result.setValue(saveSuccess);
                 bitmap.recycleBitmap();
             }
         });

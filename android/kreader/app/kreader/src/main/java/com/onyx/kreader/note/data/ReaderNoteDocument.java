@@ -304,11 +304,18 @@ public class ReaderNoteDocument {
         return pageIndex.nameList();
     }
 
-    public final List<String> getNoEmptyPageList() {
+    public final List<String> getNoEmptyPageList(final Context context) {
         List<String> pageList = new ArrayList<>();
         for (String pageName : getPageList()) {
             String pageUniqueId = getPageUniqueId(pageName, 0);
-            List<Shape> shapeList = pageMap.get(pageUniqueId).getShapeList();
+            ReaderNotePage notePage = pageMap.get(pageUniqueId);
+            if (notePage == null) {
+                notePage = loadPage(context, pageName, 0);
+            }
+            if (notePage == null) {
+                continue;
+            }
+            List<Shape> shapeList = notePage.getShapeList();
             if (shapeList != null && shapeList.size() > 0) {
                 pageList.add(pageName);
             }

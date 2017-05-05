@@ -129,7 +129,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadDocumentAnnotations(final Context context, final Reader reader) {
-        final List<Annotation> annotations = DataProviderManager.getDataProvider().loadAnnotations(
+        final List<Annotation> annotations = DataProviderManager.getLocalDataProvider().loadAnnotations(
                 reader.getPlugin().displayName(),
                 reader.getDocumentMd5(),
                 OrderBy.fromProperty(Annotation_Table.pageNumber).ascending());
@@ -163,7 +163,7 @@ public class ReaderUserDataInfo {
 
     public boolean loadPageAnnotationsForFixedDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for (PageInfo pageInfo : visiblePages) {
-            final List<Annotation> annotations = DataProviderManager.getDataProvider().loadAnnotations(
+            final List<Annotation> annotations = DataProviderManager.getLocalDataProvider().loadAnnotations(
                     reader.getPlugin().displayName(),
                     reader.getDocumentMd5(),
                     PagePositionUtils.getPageNumber(pageInfo.getName()),
@@ -180,7 +180,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadPageAnnotationsForFlowDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
-        final List<Annotation> annotations = DataProviderManager.getDataProvider().loadAnnotations(
+        final List<Annotation> annotations = DataProviderManager.getLocalDataProvider().loadAnnotations(
                 reader.getPlugin().displayName(),
                 reader.getDocumentMd5(),
                 OrderBy.fromProperty(Annotation_Table.pageNumber).ascending());
@@ -245,7 +245,7 @@ public class ReaderUserDataInfo {
 
     private boolean loadBookmarksForFixedDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for (PageInfo pageInfo : visiblePages) {
-            final Bookmark bookmark = DataProviderManager.getDataProvider().loadBookmark(reader.getPlugin().displayName(),
+            final Bookmark bookmark = DataProviderManager.getLocalDataProvider().loadBookmark(reader.getPlugin().displayName(),
                     reader.getDocumentMd5(), PagePositionUtils.getPageNumber(pageInfo.getName()));
             if (bookmark != null) {
                 bookmarkMap.put(pageInfo.getName(), bookmark);
@@ -255,7 +255,7 @@ public class ReaderUserDataInfo {
     }
 
     private boolean loadBookmarksForFlowDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
-        List<Bookmark> bookmarks = DataProviderManager.getDataProvider().loadBookmarks(
+        List<Bookmark> bookmarks = DataProviderManager.getLocalDataProvider().loadBookmarks(
                 reader.getPlugin().displayName(),
                 reader.getDocumentMd5(),
                 OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());
@@ -275,7 +275,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadDocumentBookmarks(final Context context, final Reader reader) {
-        List<Bookmark> bookmarks = DataProviderManager.getDataProvider().loadBookmarks(
+        List<Bookmark> bookmarks = DataProviderManager.getLocalDataProvider().loadBookmarks(
                 reader.getPlugin().displayName(),
                 reader.getDocumentMd5(),
                 OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());

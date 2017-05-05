@@ -55,6 +55,26 @@ public class BitmapUtils {
         canvas.drawBitmap(src, srcRegion, dstRegion, paint);
     }
 
+    static public void scaleToFitCenter(final Bitmap src, final Bitmap dst) {
+        Rect srcBitmapRegion = new Rect(0, 0, src.getWidth(), src.getHeight());
+        Rect dstScaleRegion = null;
+        int offsetValue = 0;
+        int scalerResult = 0;
+        float ratioSrc = src.getWidth()/(float)src.getHeight();
+        float ratioDest = dst.getWidth()/(float)dst.getHeight();
+
+        if(ratioSrc >= ratioDest) {
+            scalerResult = Math.round(dst.getWidth()/ratioSrc);
+            offsetValue = Math.abs((dst.getHeight()-scalerResult)/2);
+            dstScaleRegion = new Rect(0, offsetValue, dst.getWidth(), scalerResult + offsetValue);
+        } else {
+            scalerResult = Math.round(dst.getHeight() * ratioSrc);
+            offsetValue = Math.abs((dst.getWidth() - scalerResult) / 2);
+            dstScaleRegion = new Rect(offsetValue, 0, scalerResult + offsetValue, dst.getHeight());
+        }
+        BitmapUtils.scaleBitmap(src,srcBitmapRegion ,dst, dstScaleRegion);
+    }
+
     public static Bitmap createScaledBitmap(final Bitmap origin, int newWidth, int newHeight) {
         Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
 

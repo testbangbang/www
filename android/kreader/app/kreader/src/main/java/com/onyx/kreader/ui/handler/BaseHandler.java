@@ -196,16 +196,7 @@ public abstract class BaseHandler {
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (tryHitTest(readerDataHolder,e.getX(), e.getY())) {
-            // ignored
-        } else if (e.getX() > readerDataHolder.getDisplayWidth() * 2 / 3) {
-            nextScreen(readerDataHolder);
-        } else if (e.getX() < readerDataHolder.getDisplayWidth() / 3) {
-            prevScreen(readerDataHolder);
-        } else {
-            showReaderMenu(readerDataHolder);
-        }
-        return true;
+        return tryHitTest(readerDataHolder,e.getX(), e.getY());
     }
 
     public boolean onScaleEnd(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {

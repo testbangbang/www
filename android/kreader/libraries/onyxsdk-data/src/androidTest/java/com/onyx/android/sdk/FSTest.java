@@ -49,6 +49,7 @@ public class FSTest extends ApplicationTestCase<Application> {
     }
 
     public void testFSScanRequest() {
+        final String sid = "tf";
         DataManager dataManager = new DataManager();
         final HashSet<String> snapshot = new HashSet<>();
         final List<String> origin = new ArrayList<>();
@@ -65,7 +66,7 @@ public class FSTest extends ApplicationTestCase<Application> {
             final List<String> list = new ArrayList<>();
             list.add(docFolder());
 
-            final FileSystemScanRequest scanRequest = new FileSystemScanRequest(list, true);
+            final FileSystemScanRequest scanRequest = new FileSystemScanRequest(sid, list, true);
             dataManager.submit(getContext(), scanRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -103,7 +104,8 @@ public class FSTest extends ApplicationTestCase<Application> {
             final List<String> list = new ArrayList<>();
             list.add(docFolder());
 
-            final FileSystemScanRequest scanRequest = new FileSystemScanRequest(list, false);
+
+            final FileSystemScanRequest scanRequest = new FileSystemScanRequest(sid, list, false);
             dataManager.submit(getContext(), scanRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -119,7 +121,7 @@ public class FSTest extends ApplicationTestCase<Application> {
         {
             // calculate diff.
             final CountDownLatch countDownLatch = new CountDownLatch(1);
-            final FileSystemDiffRequest diffRequest = new FileSystemDiffRequest(snapshot);
+            final FileSystemDiffRequest diffRequest = new FileSystemDiffRequest(sid, snapshot);
             dataManager.submit(getContext(), diffRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {

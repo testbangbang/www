@@ -21,6 +21,7 @@ public class SettingCategory {
     public static final int POWER = 7;
     public static final int SECURITY = 8;
     public static final int ERROR_REPORT = 9;
+    public static final int PRODUCTION_TEST = 10;
 
     static public final String SETTING_ITEM_NETWORK_TAG = "setting_item_network";
     static public final String SETTING_ITEM_USER_SETTING_TAG = "setting_item_user_setting";
@@ -31,6 +32,7 @@ public class SettingCategory {
     static public final String SETTING_ITEM_STORAGE_TAG = "setting_item_storage";
     static public final String SETTING_ITEM_SECURITY_TAG = "setting_item_security";
     static public final String SETTING_ITEM_ERROR_REPORT_TAG = "setting_item_error_report";
+    static public final String SETTING_ITEM_PRODUCTION_TEST_TAG = "setting_item_production_test";
 
     // ... type definitions
     // Describes when the annotation will be discarded
@@ -70,6 +72,8 @@ public class SettingCategory {
                 return SECURITY;
             case SETTING_ITEM_ERROR_REPORT_TAG:
                 return ERROR_REPORT;
+            case SETTING_ITEM_PRODUCTION_TEST_TAG:
+                return PRODUCTION_TEST;
         }
         return UNKNOWN;
     }

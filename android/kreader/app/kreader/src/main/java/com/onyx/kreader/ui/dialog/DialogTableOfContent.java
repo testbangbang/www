@@ -139,7 +139,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                                 deleteAnnotation(readerDataHolder, position);
                             }
                         }
-                    }).show();
+                    }, null).show();
                 }
             });
 
@@ -184,7 +184,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                     deleteAnnotation(readerDataHolder, position);
                 }
             }
-        }).show();
+        }, null).show();
     }
 
     private void onItemClick(View v, final String pagePosition, final int position) {
@@ -712,7 +712,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                             public void onClick(DialogInterface dialog, int which) {
                                 removeScribble(page, position);
                             }
-                        }).show();
+                        }, null).show();
                     }
                 });
                 previewViewHolder.bindPreview(scribbleBitmap, page);

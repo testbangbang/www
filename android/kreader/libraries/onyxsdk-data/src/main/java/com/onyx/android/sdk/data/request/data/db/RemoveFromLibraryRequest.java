@@ -21,6 +21,9 @@ public class RemoveFromLibraryRequest extends BaseDBRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-
+        for (Metadata metadata : removeList) {
+            dataManager.getRemoteContentProvider().deleteMetadataCollection(getContext(),
+                    library.getIdString(), metadata.getIdString());
+        }
     }
 }

@@ -28,6 +28,8 @@ class CPDF_StreamAcc {
   }
 
   const uint8_t* GetData() const;
+  void SetData(uint8_t *pData, uint32_t size);
+
   uint32_t GetSize() const;
   const CFX_ByteString& GetImageDecoder() const { return m_ImageDecoder; }
   const CPDF_Dictionary* GetImageParam() const { return m_pImageParam; }

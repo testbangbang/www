@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -65,7 +64,7 @@ public class ChooseExerciseActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        if (!AppCompatImageViewCollection.isPl107Device) {
+        if (!AppCompatImageViewCollection.isAlignView()) {
             chooseExerciseFragment = (ChooseExerciseFragment) getFragmentManager()
                     .findFragmentById(R.id.contentFrame);
             if (chooseExerciseFragment == null) {

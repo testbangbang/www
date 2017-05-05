@@ -16,7 +16,7 @@ public class EduApp extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        initPl107DeviceConfig();
+        checkDeviceConfig();
         instance = this;
     }
 
@@ -24,8 +24,8 @@ public class EduApp extends Application{
         return instance;
     }
 
-    public void initPl107DeviceConfig() {
-        AppCompatImageViewCollection.isPl107Device = AppCompatUtils.isPL107Device(this);
+    public void checkDeviceConfig() {
+        AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
     }
 
 }

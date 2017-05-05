@@ -14,7 +14,6 @@ import com.onyx.android.eschool.model.AppConfig;
 import com.onyx.android.eschool.model.StudentAccount;
 import com.onyx.android.eschool.utils.AvatarUtils;
 import com.onyx.android.eschool.utils.ResourceUtils;
-import com.onyx.android.libsetting.view.activity.DeviceMainSettingActivity;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -36,26 +35,12 @@ public class HomeActivity extends BaseActivity {
 
     private SimpleDateFormat dateFormat;
 
-    // about userInfo
-    @Bind(R.id.textView_user_name)
-    TextView userName;
-    @Bind(R.id.textView_user_class)
-    TextView userClass;
-    @Bind(R.id.imageView_user_image)
-    ImageView userImage;
-
     // about notify panel
     TextView date;
     TextView location;
     TextView weatherText;
     TextView notifyText;
     ImageView weatherImage;
-
-    // about teaching
-    @Bind(R.id.textView_material_title)
-    TextView teachingMaterialText;
-    @Bind(R.id.textView_auxiliary_title)
-    TextView teachingAuxiliaryText;
 
     private String picDisplayPath = "/mnt/sdcard/slide/sample-cfa_01.png";
     private String videoDisplayPath = "/mnt/sdcard/slide/video_display.flv";
@@ -68,7 +53,6 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        updateProfileInfo();
         updateNotifyPanel();
         loadTeachingData();
     }
@@ -130,13 +114,6 @@ public class HomeActivity extends BaseActivity {
         loadNotifyMessage();
     }
 
-    private void updateProfileInfo() {
-        AvatarUtils.loadAvatar(this, userImage, StudentAccount.loadAvatarPath(this));
-        StudentAccount account = StudentAccount.loadAccount(this);
-        userName.setText(account.name);
-        userClass.setText(account.gradeClass);
-    }
-
     private void initWeatherNotifyPanel() {
         ViewGroup viewGroup = (ViewGroup) findViewById(R.id.home_weather_notify);
         weatherImage = (ImageView) viewGroup.findViewById(R.id.imageView_weather_image);
@@ -147,9 +124,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void initNormalItem() {
-        initNormalView(R.id.home_note_item, R.string.home_item_note_text, R.drawable.home_note, getNoteIntent());
         initNormalView(R.id.home_dictionary_item, R.string.home_item_application_text, R.drawable.home_application, getApplicationListIntent());
-        initNormalView(R.id.home_practice_item, R.string.home_item_practice_text, R.drawable.home_practice, getEduIntent());
         initNormalView(R.id.home_setting_item, R.string.home_item_setting_text, R.drawable.home_setting, getSettingIntent());
     }
 
@@ -185,19 +160,10 @@ public class HomeActivity extends BaseActivity {
     private void loadTeachingData() {
     }
 
-    @OnClick(R.id.home_account_info)
-    void onStudyScheduleClick() {
-        ActivityUtil.startActivitySafely(this, new Intent(this, StudyPreviewActivity.class));
-    }
 
-    @OnClick(R.id.home_teaching_material_item)
+    @OnClick(R.id.home_main_item)
     void onTeachingMaterialClick() {
-        ActivityUtil.startActivitySafely(this, new Intent(this, TeachingMaterialActivity.class));
-    }
-
-    @OnClick(R.id.home_teaching_auxiliary_item)
-    void onTeachingAuxiliaryClick() {
-        ActivityUtil.startActivitySafely(this, new Intent(this, TeachingAuxiliaryActivity.class));
+        ActivityUtil.startActivitySafely(this, getPackageManager().getLaunchIntentForPackage("com.youngy.ui"));
     }
 
     private Intent getPicDisplayIntent() {
@@ -232,6 +198,9 @@ public class HomeActivity extends BaseActivity {
     }
 
     private Intent getSettingIntent() {
-        return new Intent(this, DeviceMainSettingActivity.class);
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName("com.onyx.android.settings",
+                "com.onyx.android.libsetting.view.activity.DeviceMainSettingActivity"));
+        return intent;
     }
 }

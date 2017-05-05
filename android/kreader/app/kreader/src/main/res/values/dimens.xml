@@ -61,7 +61,7 @@
     <dimen name="dialog_table_of_content_radio_button_padding">7dp</dimen>
     <dimen name="dialog_scribble_full_screen_toolbar_padding">5dp</dimen>
     <dimen name="dialog_navigation_setting_item_text_size">16sp</dimen>
-    <dimen name="dict_name_text_view_layout_width">200dp</dimen>
+    <dimen name="dict_name_text_view_layout_width">140dp</dimen>
     <dimen name="dialog_text_style_view_page_width">460dp</dimen>
     <dimen name="dialog_text_style_view_page_height">360dp</dimen>
     <dimen name="scribble_bottom_menu_margin">20dp</dimen>
@@ -72,7 +72,7 @@
     <dimen name="dialog_loading_height">@dimen/wrap_content</dimen>
     <dimen name="dialog_loading_msg_X_axis_padding">15dp</dimen>
     <dimen name="bold_checkbox_height">14dp</dimen>
-    <dimen name="bold_checkbox_width">66dp</dimen>
+    <dimen name="bold_checkbox_width">64dp</dimen>
     <dimen name="bold_checkbox_divider_width">2dp</dimen>
     <dimen name="dialog_contrast_margin">10dp</dimen>
     <dimen name="dialog_contrast_seek_bar_width">300dp</dimen>
@@ -100,4 +100,5 @@
     <dimen name="dialog_text_style_title_view_width">90dp</dimen>
     <dimen name="dialog_reflow_setting_margin">10dp</dimen>
     <dimen name="dialog_text_style_title_text_size">18sp</dimen>
+    <dimen name="dialog_dict_top_layout_margin">10dp</dimen>
 </resources>

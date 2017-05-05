@@ -49,6 +49,12 @@ public abstract class ReaderMenu {
     }
 
     public void setFullScreen(boolean fullscreen) {
+        if (this.fullscreen != fullscreen) {
+            fullScreenStateChange(fullscreen);
+        }
         this.fullscreen = fullscreen;
+    }
+
+    public void fullScreenStateChange(boolean fullscreen) {
     }
 }

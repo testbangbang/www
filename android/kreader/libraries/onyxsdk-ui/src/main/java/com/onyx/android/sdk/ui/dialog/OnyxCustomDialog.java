@@ -21,16 +21,20 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
     private Button btnOk;
     private EditText inputEditText;
 
-    public static OnyxCustomDialog getConfirmDialog(Context context, String message, DialogInterface.OnClickListener onClickListener) {
-        return getConfirmDialog(context, message, true, onClickListener);
+    public static OnyxCustomDialog getConfirmDialog(Context context, String message,
+                                                    DialogInterface.OnClickListener onClickListener,
+                                                    DialogInterface.OnClickListener onCancelListener) {
+        return getConfirmDialog(context, message, true, onClickListener, onCancelListener);
     }
 
-    public static OnyxCustomDialog getConfirmDialog(Context context, String message, boolean showNegativeButton, DialogInterface.OnClickListener onClickListener) {
+    public static OnyxCustomDialog getConfirmDialog(Context context, String message, boolean showNegativeButton,
+                                                    DialogInterface.OnClickListener onClickListener,
+                                                    DialogInterface.OnClickListener onCancelListener) {
         OnyxCustomDialog dialog = new OnyxCustomDialog(context);
 
         dialog.setTitle(message);
         dialog.setPositiveButton(context.getString(R.string.ok), onClickListener);
-        dialog.setNegativeButton(context.getString(R.string.cancel), null);
+        dialog.setNegativeButton(context.getString(R.string.cancel), onCancelListener);
         if (!showNegativeButton) {
             dialog.btnCancel.setVisibility(View.GONE);
         }

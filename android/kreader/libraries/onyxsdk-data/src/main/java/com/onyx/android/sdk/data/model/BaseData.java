@@ -44,6 +44,10 @@ public class BaseData extends BaseModel {
         id = value;
     }
 
+    public boolean hasValidId() {
+        return id > INVALID_ID;
+    }
+
     public final String getIdString() {
         return idString;
     }
@@ -76,7 +80,7 @@ public class BaseData extends BaseModel {
         updatedAt = d;
     }
 
-    private void beforeSave() {
+    public void beforeSave() {
         Date now = new Date();
         if (createdAt == null) {
             createdAt = now;

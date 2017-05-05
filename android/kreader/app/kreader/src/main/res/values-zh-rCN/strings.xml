@@ -103,7 +103,7 @@
   <string name="settings_status_bar_summary">配置状态栏项目</string>
   <string name="settings_status_bar_tittle">状态栏</string>
   <string name="settings_control_summary">按键映射</string>
-  <string name="settings_control_tittle">控制</string>
+  <string name="settings_control_tittle">按键设置</string>
   <string name="settings_scribble_bar_summary">配置手写显示项目</string>
   <string name="settings_scribble_bar_tittle">手写工具栏</string>
   <string name="settings_close_dialog_tittle">退出时显示关闭提示</string>
@@ -300,5 +300,27 @@
   <string name="auto_crop_for_each_block">以上手动设置后，自动裁剪可见范围内空白区域</string>
   <string name="network_data">联网数据</string>
   <string name="local_data">本地数据</string>
-    <string name="file_not_exists">文件不存在!</string>
+  <string name="file_not_exists">文件不存在!</string>
+
+  <string name="settings_key_binding_show_menu_tittle">显示菜单</string>
+  <string name="settings_key_binding_toggle_bookmark_tittle">切换书签</string>
+  <string name="settings_key_binding_change_to_erase_mode_tittle">进入擦除模式</string>
+  <string name="settings_key_binding_change_to_scribble_mode_tittle">进入手写模式</string>
+  <string name="setting_custom_function_key">设置按键自定义功能</string>
+
+  <string name="setting_touch_left_top_tittle">左上</string>
+  <string name="setting_touch_left_bottom_tittle">左下</string>
+  <string name="setting_touch_right_top_tittle">右上</string>
+  <string name="setting_touch_right_bottom_tittle">右下</string>
+
+  <string name="settings_touch_binding_increase_brightness_tittle">增加亮度</string>
+  <string name="settings_touch_binding_decrease_brightness_tittle">降低亮度</string>
+  <string name="settings_touch_binding_toggle_fullscreen_tittle">切换全屏</string>
+  <string name="settings_touch_binding_open_tts_tittle">TTS功能</string>
+  <string name="settings_touch_binding_auto_page_tittle">自动翻页</string>
+  <string name="settings_touch_binding_next_ten_page_tittle">向下10页</string>
+  <string name="settings_touch_binding_prev_ten_page_tittle">向上10页</string>
+
+  <string name="settings_touch_tittle">触控区域设置</string>
+  <string name="settings_touch_summary">触控映射</string>
 </resources>

@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.List;
@@ -26,19 +27,21 @@ public interface DataProviderBase {
 
     List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs);
 
-    Metadata findMetadataByHashTag(final Context context, final String path, String hashTag);
+    Metadata findMetadataByIdString(final Context context, final String idString);
 
-    Metadata loadMetadataByHashTag(final Context context, final String path, String hashTag);
+    Metadata findMetadataByPath(final Context context, final String path);
+
+    Metadata findMetadataByHashTag(final Context context, final String path, String hashTag);
 
     long count(final Context context, final QueryArgs queryArgs);
 
     void removeMetadata(final Context context, final Metadata metadata);
 
-    boolean saveDocumentOptions(final Context context, final String path, String md5, final String json);
+    boolean saveDocumentOptions(final Context context, final String path, String associationId, final String json);
 
-    List<Annotation> loadAnnotations(final String application, final String md5, final int pageNumber, final OrderBy orderBy);
+    List<Annotation> loadAnnotations(final String application, final String associationId, final int pageNumber, final OrderBy orderBy);
 
-    List<Annotation> loadAnnotations(final String application, final String md5, final OrderBy orderBy);
+    List<Annotation> loadAnnotations(final String application, final String associationId, final OrderBy orderBy);
 
     void addAnnotation(final Annotation annotation);
 
@@ -47,9 +50,9 @@ public interface DataProviderBase {
     void deleteAnnotation(final Annotation annotation);
 
 
-    Bookmark loadBookmark(final String application, final String md5, final int pageNumber);
+    Bookmark loadBookmark(final String application, final String associationId, final int pageNumber);
 
-    List<Bookmark> loadBookmarks(final String application, final String md5, final OrderBy orderBy);
+    List<Bookmark> loadBookmarks(final String application, final String associationId, final OrderBy orderBy);
 
     void addBookmark(final Bookmark bookmark);
 
@@ -67,31 +70,35 @@ public interface DataProviderBase {
 
     void clearLibrary();
 
-    void clearThumbnail();
+    void clearThumbnails();
 
-    List<Thumbnail> addThumbnail(Context context, String sourceMD5, Bitmap saveBitmap);
+    void saveThumbnailEntry(Context context, Thumbnail thumbnail);
 
-    void updateThumbnail(Thumbnail thumbnail);
+    Thumbnail getThumbnailEntry(Context context, String associationId, final ThumbnailKind kind);
 
-    void deleteThumbnail(Thumbnail thumbnail);
+    void deleteThumbnailEntry(Thumbnail thumbnail);
 
-    List<Thumbnail> loadThumbnail(Context context, String sourceMd5);
+    boolean saveThumbnailBitmap(Context context, String associationId, ThumbnailKind kind, final Bitmap saveBitmap);
 
-    Thumbnail loadThumbnail(Context context, String sourceMd5, ThumbnailKind kind);
+    Bitmap getThumbnailBitmap(Context context, String associationId, final ThumbnailKind kind);
 
-    Bitmap loadThumbnailBitmap(Context context, String sourceMd5, ThumbnailKind kind);
-
-    Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail);
+    boolean removeThumbnailBitmap(Context context, String associationId, ThumbnailKind kind);
 
     void clearMetadataCollection();
 
     void addMetadataCollection(Context context, MetadataCollection collection);
 
-    void deleteMetadataCollection(Context context, String libraryUniqueId, String metadataMD5);
+    void deleteMetadataCollection(Context context, String libraryUniqueId, String associationId);
+
+    void deleteMetadataCollection(Context context, String libraryUniqueId);
+
+    void deleteMetadataCollectionByDocId(Context context, String docId);
 
     void updateMetadataCollection(MetadataCollection collection);
 
-    MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String metadataMD5);
+    MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String associationId);
 
     List<MetadataCollection> loadMetadataCollection(Context context, String libraryUniqueId);
+
+    MetadataCollection findMetadataCollection(Context context, String associationId);
 }

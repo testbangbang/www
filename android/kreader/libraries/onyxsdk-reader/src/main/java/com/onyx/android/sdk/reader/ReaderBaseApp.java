@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+
 /**
  * Created by Joy on 2016/4/15.
  */
@@ -20,6 +22,7 @@ public class ReaderBaseApp extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        Fresco.initialize(this);
     }
 
     public static ReaderBaseApp instance() {

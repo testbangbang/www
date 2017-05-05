@@ -33,6 +33,7 @@ import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_POWE
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_SECURITY_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_STORAGE_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_USER_SETTING_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_PRODUCTION_TEST_TAG;
 
 /**
  * Created by solskjaer49 on 2016/12/6 12:09.
@@ -65,6 +66,13 @@ public class SettingConfig {
         static private final String HAS_NATURAL_LIGHT_TAG = "has_natural_light";
 
         static private final String USE_SYSTEM_STORAGE_PAGE_TAG = "use_system_storage_page";
+
+        static private final String HIDE_DRM_SETTING = "hide_drm_setting";
+
+        static private final String CALIBRATION_PACKAGE_NAME_TAG = "calibration_package_name";
+        static private final String CALIBRATION_CLASS_NAME_TAG = "calibration_class_name";
+
+        static  private  final String TEST_APPS_TAG = "test_apps";
     }
 
     static class Default {
@@ -75,6 +83,10 @@ public class SettingConfig {
         static private final String POWER_USAGE_SUMMARY_CLASS_NAME = "com.android.settings.fuelgauge.PowerUsageSummary";
         static private final String FACTORY_RESET_CLASS_NAME = "com.android.settings.MasterClear";
         static private final String DEVICE_INFO_CLASS_NAME = "com.android.settings.DeviceInfoSettings";
+        static private final String CALIBRATION_PACKAGE_NAME = "com.onyx.android.tscalibration";
+        static private final String CALIBRATION_CLASS_NAME = "com.onyx.android.tscalibration.MainActivity";
+
+
 
         static private final String TTS_ACTION = "com.android.settings.TTS_SETTINGS";
         static private final String MASTER_CLEAR_ACTION = "android.settings.MASTER_CLEAR";
@@ -82,7 +94,8 @@ public class SettingConfig {
         static private final String PRE_N_VPN_SETTING_ACTION = "android.net.vpn.SETTINGS";
     }
 
-
+    private boolean enableNetworkLatencyConfig = false;
+    private boolean enableSystemSettings = false;
     private static SettingConfig globalInstance;
     static private final boolean useDebugConfig = false;
     private ArrayList<GObject> backendList = new ArrayList<>();
@@ -322,7 +335,14 @@ public class SettingConfig {
     }
 
     public Intent getCalibrationIntent() {
-        return null;
+        Intent intent = new Intent();
+        String pkgName = Default.CALIBRATION_PACKAGE_NAME;
+        String className = Default.CALIBRATION_CLASS_NAME;
+        String customPkgName = getData(Custom.CALIBRATION_PACKAGE_NAME_TAG, String.class);
+        String customClassName = getData(Custom.CALIBRATION_CLASS_NAME_TAG, String.class);
+        intent.setClassName(TextUtils.isEmpty(customPkgName) ? pkgName : customPkgName,
+                TextUtils.isEmpty(customClassName) ? className : customClassName);
+        return intent;
     }
 
     public Intent getBluetoothSettingIntent() {
@@ -398,6 +418,7 @@ public class SettingConfig {
         settingItemTAGList.add(SETTING_ITEM_STORAGE_TAG);
         settingItemTAGList.add(SETTING_ITEM_SECURITY_TAG);
         settingItemTAGList.add(SETTING_ITEM_ERROR_REPORT_TAG);
+        settingItemTAGList.add(SETTING_ITEM_PRODUCTION_TEST_TAG);
     }
 
     private void buildDefaultSettingsIconsMap() {
@@ -411,6 +432,7 @@ public class SettingConfig {
         settingIconsMap.put(SETTING_ITEM_STORAGE_TAG, "ic_setting_storage");
         settingIconsMap.put(SETTING_ITEM_SECURITY_TAG, "ic_security");
         settingIconsMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "ic_error_report");
+        settingIconsMap.put(SETTING_ITEM_PRODUCTION_TEST_TAG, "ic_production_test");
     }
 
     private void buildDefaultSettingsTittleMap() {
@@ -424,6 +446,7 @@ public class SettingConfig {
         settingTittleMap.put(SETTING_ITEM_STORAGE_TAG, "setting_storage");
         settingTittleMap.put(SETTING_ITEM_SECURITY_TAG, "setting_security");
         settingTittleMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "setting_error_report");
+        settingTittleMap.put(SETTING_ITEM_PRODUCTION_TEST_TAG, "setting_production_test");
     }
 
     public List<SettingItem> getSettingItemList(Context context) {
@@ -476,5 +499,29 @@ public class SettingConfig {
             return true;
         }
         return result;
+    }
+
+    public boolean hideDRMSettings(){
+        Boolean result = getData(Custom.HIDE_DRM_SETTING, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
+    }
+
+    public List<String> getTestApps() {
+        List<String> result = getData(Custom.TEST_APPS_TAG, List.class);
+        if (result == null) {
+            return null;
+        }
+        return result;
+    }
+
+    public boolean isEnableSystemSettings() {
+        return enableSystemSettings;
+    }
+
+    public boolean isEnableNetworkLatencyConfig() {
+        return enableNetworkLatencyConfig;
     }
 }

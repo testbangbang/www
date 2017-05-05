@@ -8,7 +8,8 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
-import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
+import com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
@@ -23,7 +24,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private static final String TAG = BaseReaderRequest.class.getSimpleName();
     private volatile boolean saveOptions = false;
 
-    private ReaderBitmapImpl renderBitmap;
+    private ReaderBitmapReferenceImpl renderBitmap;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
     private volatile boolean transferBitmap = true;
@@ -52,7 +53,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         return saveOptions;
     }
 
-    public ReaderBitmapImpl getRenderBitmap() {
+    public ReaderBitmapReferenceImpl getRenderBitmap() {
         return renderBitmap;
     }
 
@@ -160,18 +161,18 @@ public abstract class BaseReaderRequest extends BaseRequest {
     public void saveReaderOptions(final Reader reader) {
         if (reader.getDocument().saveOptions()) {
             reader.saveOptions();
-            saveToDocumentOptionsProvider(reader);
+            saveToDocumentOptionsToLocalProvider(reader);
         }
         saveToLegacyDataProvider(reader);
     }
 
-    private void saveToDocumentOptionsProvider(final Reader reader) {
-        DataProviderManager.getDataProvider().saveDocumentOptions(getContext(),
+    private void saveToDocumentOptionsToLocalProvider(final Reader reader) {
+        DataProviderManager.getLocalDataProvider().saveDocumentOptions(getContext(),
                 reader.getDocumentPath(),
                 reader.getDocumentMd5(),
                 reader.getDocumentOptions().toJSONString());
     }
-
+    
     private void saveToLegacyDataProvider(final Reader reader) {
         try {
             if (reader.getNavigator() != null) {
@@ -180,6 +181,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
                         reader.getNavigator().getInitPosition());
                 int totalPage = reader.getNavigator().getTotalPage();
                 LegacySdkDataUtils.updateProgress(getContext(), reader.getDocumentPath(),
+                        currentPage, totalPage);
+                ContentSdKDataUtils.updateProgress(getContext(), reader.getDocumentPath(),
                         currentPage, totalPage);
             }
         } catch (Throwable tr) {

@@ -104,6 +104,7 @@
     <string name="settings_config_key" translatable="false">setting_config</string>
     <string name="settings_status_bar_key" translatable="false">setting_status_bar</string>
     <string name="settings_control_key" translatable="false">setting_control</string>
+    <string name="settings_touch_key" translatable="false">setting_touch</string>
     <string name="settings_scribble_bar_key" translatable="false">setting_scribble_bar</string>
     <string name="settings_close_dialog_key" translatable="false">setting_close_dialog</string>
     <string name="settings_animation_key">setting_animation</string>
@@ -117,7 +118,9 @@
     <string name="settings_status_bar_summary">Config StatusBar Display Items</string>
     <string name="settings_status_bar_tittle">StatusBar</string>
     <string name="settings_control_summary">Key Binding Setting</string>
-    <string name="settings_control_tittle">Control</string>
+    <string name="settings_touch_summary">Touch Binding Setting</string>
+    <string name="settings_control_tittle">Key Setting</string>
+    <string name="settings_touch_tittle">Touch</string>
     <string name="settings_scribble_bar_summary">Config Scribble Display Items</string>
     <string name="settings_scribble_bar_tittle">ScribbleBar</string>
     <string name="settings_close_dialog_tittle">Show Close Dialog When Quit</string>
@@ -368,4 +371,61 @@
     <string name="network_data">Network data</string>
     <string name="local_data">Local data</string>
     <string name="file_not_exists">File not exists!</string>
+
+    <string name="setting_keycode_page_down_key" translatable="false">KEYCODE_PAGE_DOWN</string>
+    <string name="setting_keycode_page_up_key" translatable="false">KEYCODE_PAGE_UP</string>
+    <string name="setting_keycode_volume_down_key" translatable="false">KEYCODE_VOLUME_DOWN</string>
+    <string name="setting_keycode_volume_up_key" translatable="false">KEYCODE_VOLUME_UP</string>
+    <string name="setting_keycode_dpad_left_key" translatable="false">KEYCODE_DPAD_LEFT</string>
+    <string name="setting_keycode_dpad_right_key" translatable="false">KEYCODE_DPAD_RIGHT</string>
+    <string name="setting_keycode_dpad_up_key" translatable="false">KEYCODE_DPAD_UP</string>
+    <string name="setting_keycode_dpad_down_key" translatable="false">KEYCODE_DPAD_DOWN</string>
+    <string name="setting_keycode_dpad_center_key" translatable="false">KEYCODE_DPAD_CENTER</string>
+    <string name="setting_keycode_clear_key" translatable="false">KEYCODE_CLEAR</string>
+    <string name="setting_keycode_alt_left_key" translatable="false">KEYCODE_ALT_LEFT</string>
+    <string name="setting_keycode_alt_right_key" translatable="false">KEYCODE_ALT_RIGHT</string>
+    <string name="setting_keycode_button_start_key" translatable="false">KEYCODE_BUTTON_START</string>
+    <string name="setting_keycode_eraser_key" translatable="false">KEYCODE_ERASER</string>
+    <string name="setting_keycode_scribbler_key" translatable="false">KEYCODE_SCRIBBLER</string>
+
+    <string name="setting_keycode_page_down_title" >Next Page Button</string>
+    <string name="setting_keycode_page_up_title" >Prev Page Button</string>
+    <string name="setting_keycode_volume_down_title" >Volume Button Add</string>
+    <string name="setting_keycode_volume_up_title" >Volume Button Reduce</string>
+    <string name="setting_keycode_dpad_left_title" >Left Dpad Button</string>
+    <string name="setting_keycode_dpad_right_title" >Right Dpad Button</string>
+    <string name="setting_keycode_dpad_up_title" >Up Dpad Button</string>
+    <string name="setting_keycode_dpad_down_title" >Down Dpad Button</string>
+    <string name="setting_keycode_dpad_center_title" >Center Dpad Button</string>
+    <string name="setting_keycode_clear_title" >Clear Button</string>
+    <string name="setting_keycode_alt_left_title" >Alt Left Button</string>
+    <string name="setting_keycode_alt_right_title" >Alt Right Button</string>
+    <string name="setting_keycode_button_start_title" >Start Button</string>
+    <string name="setting_keycode_eraser_title" >Eraser Button</string>
+    <string name="setting_keycode_scribbler_title" >Scribbler Button</string>
+
+    <string name="settings_key_binding_show_menu_tittle">Show Menu</string>
+    <string name="settings_key_binding_toggle_bookmark_tittle">Toggle Bookmark</string>
+    <string name="settings_key_binding_change_to_erase_mode_tittle">Change To Erase Mode</string>
+    <string name="settings_key_binding_change_to_scribble_mode_tittle">Change To Scribble Mode</string>
+    <string name="setting_custom_function_key">Set custom function key</string>
+    <string name="unable_to_enable_this_feature">Unable to enable this feature</string>
+
+    <string name="setting_touch_left_top_key" translatable="false">TOUCH_LEFT_TOP</string>
+    <string name="setting_touch_left_bottom_key" translatable="false">TOUCH_LEFT_BOTTOM</string>
+    <string name="setting_touch_right_top_key" translatable="false">TOUCH_RIGHT_TOP</string>
+    <string name="setting_touch_right_bottom_key" translatable="false">TOUCH_RIGHT_BOTTOM</string>
+
+    <string name="setting_touch_left_top_tittle">Left Top</string>
+    <string name="setting_touch_left_bottom_tittle">Left Bottom</string>
+    <string name="setting_touch_right_top_tittle">Right Top</string>
+    <string name="setting_touch_right_bottom_tittle">Right Bottom</string>
+
+    <string name="settings_touch_binding_increase_brightness_tittle">Increase Brightness</string>
+    <string name="settings_touch_binding_decrease_brightness_tittle">Decrease Brightness</string>
+    <string name="settings_touch_binding_toggle_fullscreen_tittle">Toggle Fullscreen</string>
+    <string name="settings_touch_binding_open_tts_tittle">Open TTS</string>
+    <string name="settings_touch_binding_auto_page_tittle">Auto Page</string>
+    <string name="settings_touch_binding_next_ten_page_tittle">Up ten pages</string>
+    <string name="settings_touch_binding_prev_ten_page_tittle">Down ten pages</string>
 </resources>

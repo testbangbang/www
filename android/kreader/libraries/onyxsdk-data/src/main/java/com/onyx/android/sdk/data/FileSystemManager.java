@@ -3,8 +3,8 @@ package com.onyx.android.sdk.data;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * Created by zhuzeng on 02/04/2017.
@@ -12,22 +12,35 @@ import java.util.List;
 
 public class FileSystemManager {
 
-    private HashSet<String> snapshot = new HashSet<>();
+    private HashMap<String, FileSystemSnapshot> storageSnapshot = new HashMap<>();
 
     public FileSystemManager() {
     }
 
-    public void diff(final HashSet<String> newSet, final HashSet<String> added, final HashSet<String> removed) {
-        CollectionUtils.diff(snapshot, newSet, added);
-        CollectionUtils.diff(newSet, snapshot, removed);
+    public void diff(final String storageId, final HashSet<String> newSet, final HashSet<String> added, final HashSet<String> removed) {
+        final FileSystemSnapshot wrapper = storageSnapshot.get(storageId);
+        if (wrapper == null) {
+            return;
+        }
+        wrapper.diff(newSet, added, removed);
     }
 
-    public void clear() {
-        snapshot.clear();
+    public void clear(final String storageId) {
+        final FileSystemSnapshot wrapper = storageSnapshot.get(storageId);
+        if (wrapper == null) {
+            return;
+        }
+        wrapper.clear();
     }
 
-    public void addAll(final Collection<String> pathList) {
-        snapshot.addAll(pathList);
+    public void addAll(final String storageId, final Collection<String> pathList, boolean createIfNotExist) {
+        FileSystemSnapshot wrapper = storageSnapshot.get(storageId);
+        if (wrapper == null) {
+            if (!createIfNotExist) {
+                return;
+            }
+            storageSnapshot.put(storageId, wrapper = new FileSystemSnapshot());
+        }
+        wrapper.addAll(pathList);
     }
-
 }

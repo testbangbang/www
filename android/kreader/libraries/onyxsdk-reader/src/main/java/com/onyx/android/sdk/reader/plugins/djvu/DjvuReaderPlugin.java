@@ -3,12 +3,9 @@ package com.onyx.android.sdk.reader.plugins.djvu;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
-import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
@@ -123,11 +120,6 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
-        return false;
-    }
-
-    @Override
     public ReaderView getView(ReaderViewOptions viewOptions) {
         return this;
     }
@@ -148,32 +140,7 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean acceptDRMFile(String path) {
-        return false;
-    }
-
-    @Override
-    public boolean registerDRMCallback(ReaderDRMCallback callback) {
-        return false;
-    }
-
-    @Override
-    public boolean activateDeviceDRM(String user, String password) {
-        return false;
-    }
-
-    @Override
-    public boolean deactivateDeviceDRM() {
-        return false;
-    }
-
-    @Override
-    public String getDeviceDRMAccount() {
-        return null;
-    }
-
-    @Override
-    public boolean fulfillDRMFile(String path) {
+    public boolean activateDeviceDRM(String certificate) {
         return false;
     }
 
@@ -359,7 +326,12 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean draw(String pagePosition, float scale, int rotation, Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public void setTextGamma(float gamma) {
+
+    }
+
+    @Override
+    public boolean draw(String pagePosition, float scale, int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, Bitmap bitmap) {
         benchmark.restart();
         try {
             final int pn = PagePositionUtils.getPageNumber(pagePosition);
@@ -378,6 +350,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
 
     @Override
     public boolean supportFontSizeAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
         return false;
     }
 

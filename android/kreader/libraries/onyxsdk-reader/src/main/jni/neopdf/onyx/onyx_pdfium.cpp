@@ -1,18 +1,24 @@
 #include "com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper.h"
 
-#include <vector>
+#include <cstdlib>
 
-#include "onyx_context.h"
-#include "JNIUtils.h"
+#include <vector>
+#include <string>
+#include <locale>
+#include <memory>
+#include <fstream>
+#include <sstream>
 
 #include "fpdf_doc.h"
 #include "fpdf_formfill.h"
-
-#include "core/fpdfapi/fpdf_page/include/cpdf_pageobject.h"
 #include "fpdf_edit.h"
 
-#include <memory>
-#include <cstdlib>
+#include "core/fpdfapi/fpdf_page/include/cpdf_pageobject.h"
+#include "core/fpdfapi/onyx_drm_decrypt.h"
+
+#include "onyx_context.h"
+#include "JNIUtils.h"
+#include "jsonxx.h"
 
 static const char * selectionClassName = "com/onyx/android/sdk/reader/plugins/neopdf/NeoPdfSelection";
 static const char * splitterClassName = "com/onyx/android/sdk/reader/api/ReaderTextSplitter";
@@ -20,6 +26,55 @@ static const char * sentenceClassName = "com/onyx/android/sdk/reader/api/ReaderS
 static const char * annotationClassName = "com/onyx/android/sdk/data/model/Annotation";
 
 // http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
+
+namespace {
+
+int libraryReference = 0;
+std::string drmCertificate;
+
+bool readDrmManifest(FPDF_DOCUMENT document, char *buf, int length) {
+    unsigned long res = FPDF_GetMetaText(document, "boox", buf, length);
+    return res > 2; // empty metadata text is '\0' in unicode
+}
+
+bool setupDrmManager(const std::string &drmManifest) {
+    const unsigned char *rsaKeyData = reinterpret_cast<const unsigned char *>(drmCertificate.c_str());
+
+    onyx::DrmDecrypt decrypt;
+    int resultLen = 0;
+    int manifestVersion = 0;
+    unsigned char *result = decrypt.rsaDecryptManifest(rsaKeyData, drmManifest.c_str(),
+                                                       &resultLen, &manifestVersion);
+    if (!result) {
+        LOGE("invalid metadata!");
+        return false;
+    }
+    onyx::DrmDecryptManager::singleton().setDrmVersion(manifestVersion);
+
+    jsonxx::Object object;
+    bool succ = object.parse(reinterpret_cast<char *>(result));
+    free(result);
+    if (!succ) {
+        LOGE("invalid metadata!");
+        return false;
+    }
+
+    if (!object.has<std::string>("publish") || !object.has<std::string>("stamp")) {
+        LOGE("invalid metadata!");
+        return false;
+    }
+    std::string aesKey = object.get<std::string>("publish");
+    std::string aesGuard = object.get<std::string>("stamp");
+    if (!onyx::DrmDecryptManager::singleton().setAESKey(aesKey.c_str(), aesGuard.c_str())) {
+        LOGE("invalid metadata!");
+        return false;
+    }
+
+    onyx::DrmDecryptManager::singleton().setEncrypted(true);
+    return true;
+}
+
+}
 
 PluginContextHolder<OnyxPdfiumContext> OnyxPdfiumManager::contextHolder;
 
@@ -39,7 +94,6 @@ void OnyxPdfiumManager::releaseContext(JNIEnv *env, jint id) {
     contextHolder.eraseContext(env, id);
 }
 
-static int libraryReference = 0;
 /*
  * Class:     com_onyx_reader_plugins_neopdf_NeoPdfJniWrapper
  * Method:    nativeInitLibrary
@@ -85,6 +139,17 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
         int errorCode = FPDF_GetLastError();
         LOGE("load document failed error code %d", errorCode);
         return errorCode;
+    }
+
+    onyx::DrmDecryptManager::singleton().setEncrypted(false);
+
+    char buf[4096] = { 0 };
+    if (readDrmManifest(document, buf, 4096)) {
+        LOGI("document is DRM protected, try to decrypt the document");
+        std::string drmManifest = StringUtils::utf16leto8(reinterpret_cast<const char16_t *>(buf));
+        if (!setupDrmManager(drmManifest)) {
+            return -1;
+        }
     }
 
     FPDF_FORMFILLINFO formInfo;
@@ -175,9 +240,13 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     return true;
 }
 
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetTextGamma
+  (JNIEnv *env, jobject thiz, jint id, jfloat gamma) {
+    OnyxPdfiumManager::setTextGamma(env, id, gamma);
+}
+
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeRenderPage
   (JNIEnv * env, jobject thiz, jint id, jint pageIndex, jint x, jint y, jint width, jint height, jint rotation, jobject bitmap) {
-
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
     if (page == NULL) {
         LOGE("invalid page %d", pageIndex);
@@ -702,6 +771,13 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
         env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, destPage, floatArray, nullptr, -1, -1, nullptr, nullptr);
     }
 
+    return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeActivateDeviceDRM
+  (JNIEnv *env, jobject thiz, jstring certificate) {
+    JNIString str(env, certificate);
+    drmCertificate = str.getLocalString();
     return true;
 }
 

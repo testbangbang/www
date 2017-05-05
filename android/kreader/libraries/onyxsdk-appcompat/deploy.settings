@@ -1,5 +1,6 @@
 siteUrl = https://github.com/onyx-intl/public-wiki
 gitUrl = https://github.com/onyx-intl/public-wiki.git
+repo = maven
 version = 1.0.4
 groupId = com.onyx.android.sdk
 licenses = ['Apache-2.0']

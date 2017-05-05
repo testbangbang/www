@@ -15,16 +15,18 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
 -dontwarn com.github.junrar.**
--keep class com.neverland.engbook.forpublic.** { *; }
--keep class org.mozilla.universalchardet.** { *; }
 
--keep class com.neverland.engbook.bookobj.AlBookEng { *; }
--keep class com.neverland.engbook.util.AlStyles { *; }
--keep class com.neverland.engbook.util.EngBitmap { *; }
+-keep class com.neverland.engbook.forpublic.** { public protected *; }
+-keep class org.mozilla.universalchardet.** { public protected *; }
 
--keepnames enum com.neverland.engbook.bookobj.AlBookEng$** { *; }
--keepnames class com.neverland.engbook.level1.JEBFilesZIP { *; }
--keepnames class com.neverland.engbook.unicode.AlUnicode { *; }
--keepnames class com.neverland.engbook.util.TTFInfo { *; }
--keepnames class com.neverland.engbook.util.TTFScan { *; }
+-keep class com.neverland.engbook.bookobj.AlBookEng { public protected *; }
+-keep class com.neverland.engbook.util.AlStyles { public protected *; }
+-keep class com.neverland.engbook.util.EngBitmap { public protected *; }
+
+-keep enum com.neverland.engbook.bookobj.AlBookEng$** { public protected *; }
+-keep class com.neverland.engbook.level1.JEBFilesZIP { public protected *; }
+-keep class com.neverland.engbook.unicode.AlUnicode { public protected *; }
+-keep class com.neverland.engbook.util.TTFInfo { public protected *; }
+-keep class com.neverland.engbook.util.TTFScan { public protected *; }

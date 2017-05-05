@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:background="@drawable/imagebtn_bg"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="@dimen/dialog_table_of_content_list_item_padding_top"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+<com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                        android:background="@drawable/imagebtn_bg"
+                                                        android:paddingLeft="20dp"
+                                                        android:paddingRight="20dp"
+                                                        android:paddingTop="@dimen/dialog_table_of_content_list_item_padding_top"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/image_view_bookmark"
@@ -61,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <LinearLayout
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
             android:id="@+id/edit_layout"
             android:padding="5dp"
             android:gravity="center"
@@ -83,9 +83,9 @@
                 android:text="@string/edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
-        <LinearLayout
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
             android:padding="5dp"
             android:gravity="center"
             android:id="@+id/delete_layout"
@@ -106,7 +106,7 @@
                 android:text="@string/delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        </LinearLayout>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
 
     </RelativeLayout>
@@ -119,4 +119,4 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"/>
 
-</RelativeLayout>
+</com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>

@@ -125,7 +125,8 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
         }
 
         private void hidePreferenceByDeviceFeature() {
-            if (!DeviceFeatureUtil.hasWifi(getContext())) {
+            if (!DeviceFeatureUtil.hasWifi(getContext()) ||
+                    !SettingConfig.sharedInstance(getContext()).isEnableNetworkLatencyConfig()) {
                 networkLatencyListPreference.setVisible(false);
             }
             if (!DeviceFeatureUtil.hasFrontLight(getContext())) {

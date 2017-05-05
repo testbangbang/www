@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.dialog.DialogReaderMenu;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.RunnableWithArgument;
 
 import java.util.List;
@@ -60,6 +61,11 @@ public class ReaderLayerMenu extends ReaderMenu {
         updateMenuItemsWithState(state);
         updateMenuContent();
         getDialog().show(state);
+    }
+
+    @Override
+    public void fullScreenStateChange(boolean fullscreen) {
+        DeviceUtils.adjustDialogFullScreenStatusForAPIAbove19(getDialog(), fullscreen);
     }
 
     @Override

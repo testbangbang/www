@@ -23,6 +23,9 @@ android {
             manifestPlaceholders = [channel_value: releaseChannel(),
                                     type_value: releaseType(),
                                     timestamp_value: System.currentTimeMillis() + "L"]
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
         }
         debug {
             debuggable true
@@ -30,6 +33,9 @@ android {
             manifestPlaceholders = [channel_value: releaseChannel(),
                                     type_value: releaseType(),
                                     timestamp_value: System.currentTimeMillis() + "L"]
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
         }
     }
 
@@ -42,11 +48,13 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile "junit:junit:$rootProject.junitVersion"
-    compile project(':libraries:onyxsdk-data')
+    compile project(':libraries:onyxsdk-reader')
     compile project(':libraries:onyxsdk-ebookservice')
 
     compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
     compile "com.android.support:appcompat-v7:$rootProject.phone_supportLibraryVersion"
     compile "com.android.support:design:$rootProject.phone_supportLibraryVersion"
     compile "com.afollestad.material-dialogs:commons:$rootProject.phone_materialDialogsCommonVersion"
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
+    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
 }

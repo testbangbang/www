@@ -18,6 +18,12 @@ public interface ReaderRendererFeatures {
     public boolean supportFontSizeAdjustment();
 
     /**
+     * support font gamma adjustment
+     * @return
+     */
+    public boolean supportFontGammaAdjustment();
+
+    /**
      * support type face adjustment.
      * @return
      */

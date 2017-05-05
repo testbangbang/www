@@ -34,6 +34,8 @@
 -dontwarn com.github.junrar.**
 -dontwarn com.squareup.**
 -dontwarn com.raizlabs.**
+-dontwarn com.facebook.**
+-dontwarn org.apache.**
 
 -dontwarn butterknife.internal.ButterKnifeProcessor
 
@@ -89,3 +91,10 @@
 # for leanCloud
 -keep class com.avos.** { *; }
 -dontwarn com.avos.**
+
+# for glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+    -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+      **[] $VALUES;
+      public *;
+    }

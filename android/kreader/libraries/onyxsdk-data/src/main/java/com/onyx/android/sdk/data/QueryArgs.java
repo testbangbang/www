@@ -1,9 +1,11 @@
 package com.onyx.android.sdk.data;
 
+import android.util.Log;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
@@ -17,6 +19,7 @@ import java.util.Set;
  * Created by suicheng on 2016/9/2.
  */
 public class QueryArgs {
+    private static final String TAG = QueryArgs.class.getSimpleName();
 
     public int offset = 0;
     public int limit = Integer.MAX_VALUE;
@@ -174,4 +177,39 @@ public class QueryArgs {
         return true;
     }
 
+    public String getOrderByQuery() {
+        if(CollectionUtils.isNullOrEmpty(orderByList)){
+            return null;
+        }
+        String orderBy = "";
+        for (OrderBy by : orderByList) {
+            orderBy += by.getQuery();
+        }
+        return orderBy;
+    }
+
+    public String getLimitOffsetQuery() {
+        return " LIMIT " + limit + " OFFSET " + offset + " ";
+    }
+
+    public String getOrderByQueryWithLimitOffset() {
+        String orderByQuery = getOrderByQuery();
+        String limitOffsetQuery = getLimitOffsetQuery();
+        if(StringUtils.isNullOrEmpty(orderByQuery)) {
+            Log.w(TAG, "NULL orderBy detected, offset and limit does not work.");
+            return null;
+        }
+        return orderByQuery + limitOffsetQuery;
+    }
+
+    public String[] getProjectionSet() {
+        if (CollectionUtils.isNullOrEmpty(propertyList)) {
+            return null;
+        }
+        String[] projection = new String[propertyList.size()];
+        for (int i = 0; i < propertyList.size(); i++) {
+            projection[i] = propertyList.get(i).getQuery();
+        }
+        return projection;
+    }
 }

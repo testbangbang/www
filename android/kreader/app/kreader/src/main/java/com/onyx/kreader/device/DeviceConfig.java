@@ -4,11 +4,18 @@ import android.content.Context;
 import android.os.Build;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.data.CustomBindKeyBean;
+import com.onyx.android.sdk.data.KeyBinding;
+import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.data.TouchBinding;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
+import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 import java.lang.reflect.Field;
@@ -28,7 +35,8 @@ public class DeviceConfig {
     private boolean hasNaturalLight = false;
     private boolean regalEnable = false;
 
-    private Map<String, Map<String, JSONObject>> keyBinding = null;
+    private KeyBinding keyBinding = null;
+    private TouchBinding touchBinding = null;
 
     private boolean deleteAcsmAfterFulfillment = false;
     private boolean supportZipCompressedBooks = false;
@@ -45,7 +53,8 @@ public class DeviceConfig {
     private boolean hideControlSettings = false;
     private boolean askForClose = false;
     private boolean supportColor = false;
-    private int defaultGamma = 150;
+    private int defaultGamma = 100;
+    private int defaultTextGamma = 150;
     private int fixedGamma = 0;
     private boolean supportBrushPen = false;
     private boolean supportMultipleTabs = false;
@@ -205,12 +214,20 @@ public class DeviceConfig {
         this.regalEnable = regalEnable;
     }
 
-    public Map<String, Map<String, JSONObject>> getKeyBinding() {
-        return keyBinding;
+    public KeyBinding getKeyBinding() {
+        return keyBinding != null ? keyBinding : KeyBinding.defaultValue();
     }
 
-    public void setKeyBinding(Map<String, Map<String, JSONObject>> keyBinding) {
+    public void setKeyBinding(KeyBinding keyBinding) {
         this.keyBinding = keyBinding;
+    }
+
+    public TouchBinding getTouchBinding() {
+        return touchBinding != null ? touchBinding : TouchBinding.defaultValue();
+    }
+
+    public void setTouchBinding(TouchBinding touchBinding) {
+        this.touchBinding = touchBinding;
     }
 
     public boolean isDeleteAcsmAfterFulfillment() {
@@ -421,6 +438,14 @@ public class DeviceConfig {
         this.defaultGamma = defaultGamma;
     }
 
+    public int getDefaultTextGamma() {
+        return defaultTextGamma;
+    }
+
+    public void setDefaultTextGamma(int defaultGamma) {
+        this.defaultTextGamma = defaultGamma;
+    }
+
     public int getFixedGamma() {
         return fixedGamma;
     }
@@ -565,6 +590,92 @@ public class DeviceConfig {
 
     public void setStatisticsUrl(String statisticsUrl) {
         this.statisticsUrl = statisticsUrl;
+    }
+
+    public static void adjustOptionsWithDeviceConfig(final BaseOptions baseOptions, final Context context) {
+        BaseOptions.setGlobalDefaultGamma(DeviceConfig.sharedInstance(context).getDefaultGamma());
+        BaseOptions.setGlobalDefaultTextGamma(DeviceConfig.sharedInstance(context).getDefaultTextGamma());
+        if (DeviceConfig.sharedInstance(context).getFixedGamma() > 0) {
+            baseOptions.setGamma(DeviceConfig.sharedInstance(context).getFixedGamma());
+        }
+        ReaderTextStyle.setDefaultFontSizes(DeviceConfig.sharedInstance(context).getDefaultFontSizes());
+
+        adjustFontFace(context, baseOptions);
+        adjustFontSize(context, baseOptions);
+        adjustLineSpacing(context, baseOptions);
+        adjustLeftMargin(context, baseOptions);
+        adjustTopMargin(context, baseOptions);
+        adjustRightMargin(context, baseOptions);
+        adjustBottomMargin(context, baseOptions);
+    }
+
+    private static void adjustFontFace(final Context context, final BaseOptions baseOptions) {
+        String fontFace = baseOptions.getFontFace();
+        if (StringUtils.isNullOrEmpty(fontFace) && LocaleUtils.isChinese()) {
+            fontFace = DeviceConfig.sharedInstance(context).getDefaultFontFileForChinese();
+        }
+        baseOptions.setFontFace(fontFace);
+    }
+
+    private static void adjustFontSize(final Context context, final BaseOptions baseOptions) {
+        float fontSize = baseOptions.getFontSize();
+        if (fontSize == BaseOptions.INVALID_FLOAT_VALUE) {
+            int index = DeviceConfig.sharedInstance(context).getDefaultFontSizeIndex();
+            fontSize = ReaderTextStyle.getFontSizeByIndex(index).getValue();
+            fontSize = SingletonSharedPreference.getLastFontSize(fontSize);
+        }
+        baseOptions.setFontSize(fontSize);
+    }
+
+    private static void adjustLineSpacing(final Context context, final BaseOptions baseOptions) {
+        int lineSpacing = baseOptions.getLineSpacing();
+        if (lineSpacing == BaseOptions.INVALID_INT_VALUE) {
+            int index = DeviceConfig.sharedInstance(context).getDefaultLineSpacingIndex();
+            lineSpacing = ReaderTextStyle.getLineSpacingByIndex(index).getPercent();
+            lineSpacing = SingletonSharedPreference.getLastLineSpacing(lineSpacing);
+        }
+        baseOptions.setLineSpacing(lineSpacing);
+    }
+
+    private static void adjustLeftMargin(final Context context, final BaseOptions baseOptions) {
+        int leftMargin = baseOptions.getLeftMargin();
+        if (leftMargin == BaseOptions.INVALID_INT_VALUE) {
+            leftMargin = getDefaultPageMargin(context).getLeftMargin().getPercent();
+            leftMargin = SingletonSharedPreference.getLastLeftMargin(leftMargin);
+        }
+        baseOptions.setLeftMargin(leftMargin);
+    }
+
+    private static void adjustTopMargin(final Context context, final BaseOptions baseOptions) {
+        int topMargin = baseOptions.getTopMargin();
+        if (topMargin == BaseOptions.INVALID_INT_VALUE) {
+            topMargin = getDefaultPageMargin(context).getTopMargin().getPercent();
+            topMargin = SingletonSharedPreference.getLastTopMargin(topMargin);
+        }
+        baseOptions.setTopMargin(topMargin);
+    }
+
+    private static void adjustRightMargin(final Context context, final BaseOptions baseOptions) {
+        int rightMargin = baseOptions.getRightMargin();
+        if (rightMargin == BaseOptions.INVALID_INT_VALUE) {
+            rightMargin = getDefaultPageMargin(context).getRightMargin().getPercent();
+            rightMargin = SingletonSharedPreference.getLastRightMargin(rightMargin);
+        }
+        baseOptions.setRightMargin(rightMargin);
+    }
+
+    private static void adjustBottomMargin(final Context context, final BaseOptions baseOptions) {
+        int bottomMargin = baseOptions.getBottomMargin();
+        if (bottomMargin == BaseOptions.INVALID_INT_VALUE) {
+            bottomMargin = getDefaultPageMargin(context).getBottomMargin().getPercent();
+            bottomMargin = SingletonSharedPreference.getLastBottomMargin(bottomMargin);
+        }
+        baseOptions.setBottomMargin(bottomMargin);
+    }
+
+    private static ReaderTextStyle.PageMargin getDefaultPageMargin(Context context) {
+        int index = DeviceConfig.sharedInstance(context).getDefaultPageMarginIndex();
+        return ReaderTextStyle.getPageMarginByIndex(index);
     }
 }
 

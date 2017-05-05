@@ -79,7 +79,7 @@ public class LegacySdkDataUtils {
         try {
             OnyxMetadata data = getMetadataByPath(documentPath);
             if (data == null) {
-                Log.w(TAG, "saveThumbnail: create file metadata failed, " + documentPath);
+                Log.w(TAG, "saveThumbnailEntry: create file metadata failed, " + documentPath);
                 return false;
             }
             // insert thumbnail is heavy, so we check it first

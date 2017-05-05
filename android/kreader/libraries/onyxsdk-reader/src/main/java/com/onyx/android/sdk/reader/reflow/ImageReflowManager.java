@@ -2,8 +2,8 @@ package com.onyx.android.sdk.reader.reflow;
 
 import android.graphics.Bitmap;
 
-import android.graphics.Color;
-
+import com.facebook.common.references.CloseableReference;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.reader.utils.HashUtils;
@@ -96,7 +96,7 @@ public class ImageReflowManager {
         ImageUtils.releaseReflowedPages();
     }
 
-    public void reflowBitmapAsync(final Bitmap bitmap, final String pageName, final boolean abortPendingTasks) {
+    public void reflowBitmapAsync(final ReaderBitmapReferenceImpl bitmap, final String pageName, final boolean abortPendingTasks) {
         ReflowTask task = new ReflowTask(this, pageName, bitmap);
         task.setAbortPendingTasks(abortPendingTasks);
         reflowExecutor.submitTask(task);
@@ -212,10 +212,7 @@ public class ImageReflowManager {
         subPageIndex.moveToSubPage(pageName, index);
     }
 
-    public Bitmap getSubPageBitmap(final String pageName, final int subPage) {
-        if (isSubPageBitmapInCache(pageName, subPage)) {
-            return getSubPageBitmapFromCache(pageName, subPage);
-        }
+    public CloseableReference<Bitmap> getSubPageBitmap(final String pageName, final int subPage) {
         waitUntilSubPagesReady(pageName);
         return getReflowedSubPage(pageName, subPage);
     }
@@ -241,7 +238,7 @@ public class ImageReflowManager {
         return HashUtils.md5(documentMd5 + "-" + settings.md5());
     }
 
-    private Bitmap getReflowedSubPage(final String pageName, final int subPage) {
+    private CloseableReference<Bitmap> getReflowedSubPage(final String pageName, final int subPage) {
         int[] size = new int[2];
         if (!ImageUtils.getReflowedPageSize(pageName, size)) {
             return null;
@@ -249,14 +246,14 @@ public class ImageReflowManager {
         final int height = size[1];
         int top = PageUtils.getSubPageTopRegardingPageRepeat(subPageHeight(), pageRepeat, subPage);
         int bottom = Math.min(top + subPageHeight(), height);
-        Bitmap bitmap = Bitmap.createBitmap(subPageWidth(), subPageHeight(), Bitmap.Config.ARGB_8888);
-        bitmap.eraseColor(Color.WHITE);
-        if (!ImageUtils.renderReflowedPage(pageName, 0, top, subPageWidth(), bottom, bitmap)) {
-            bitmap.recycle();
+        ReaderBitmapReferenceImpl bitmap = ReaderBitmapReferenceImpl.create(subPageWidth(), subPageHeight(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
+        bitmap.clear();
+        if (!ImageUtils.renderReflowedPage(pageName, 0, top, subPageWidth(), bottom, bitmap.getBitmap())) {
+            bitmap.close();
             return null;
         }
 
-        return bitmap;
+        return bitmap.getBitmapReference();
     }
 
     private boolean isSubPageBitmapInCache(final String pageName, final int subPage) {
@@ -266,9 +263,13 @@ public class ImageReflowManager {
     private void saveSubPagesToCache(final String pageName) {
         int pageCount = subPageIndex.getSubPageCount(pageName);
         for (int i = 0; i < pageCount; i++) {
-            Bitmap bitmap = getSubPageBitmap(pageName, i);
+            CloseableReference<Bitmap> bitmap = getSubPageBitmap(pageName, i);
             if (bitmap != null) {
-                saveSubPageBitmapToCache(pageName, i, bitmap);
+                try {
+                    saveSubPageBitmapToCache(pageName, i, bitmap.get());
+                } finally {
+                    bitmap.close();
+                }
             }
         }
     }

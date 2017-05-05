@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
 
+def artifact = new Properties()
+artifact.load(new FileInputStream("$projectDir/deploy.settings"))
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -8,12 +11,16 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName artifact.version
     }
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../proguard-rules.pro', 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            minifyEnabled false
         }
     }
 
@@ -30,3 +37,6 @@ dependencies {
     compile files('libs/svg-android-1.1.jar')
     compile files('libs/junrar-0.7.jar')
 }
+
+apply from: file(rootProject.projectDir.absolutePath + '/deploy.gradle')
+

@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.utils;
 
 import android.os.Build;
+import android.support.compat.BuildConfig;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,7 +38,9 @@ public class OTAUtil {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
         } finally {
             FileUtils.closeQuietly(baos);
             FileUtils.closeQuietly(fis);

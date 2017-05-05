@@ -6,9 +6,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
-import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
@@ -34,7 +32,6 @@ import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.api.ReaderViewOptions;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -191,11 +188,6 @@ public class JEBReaderPlugin implements ReaderPlugin,
         return getPluginImpl().readTableOfContent(toc);
     }
 
-    @Override
-    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
-        return false;
-    }
-
     public ReaderView getView(final ReaderViewOptions viewOptions) {
         readerViewOptions = viewOptions;
         getPluginImpl().setViewSize(readerViewOptions.getViewWidth(), readerViewOptions.getViewHeight());
@@ -214,6 +206,11 @@ public class JEBReaderPlugin implements ReaderPlugin,
     @Override
     public void setChineseConvertType(ReaderChineseConvertType convertType) {
         getPluginImpl().setChineseConvertType(convertType);
+    }
+
+    @Override
+    public void setTextGamma(float gamma) {
+
     }
 
     public void close() {
@@ -293,7 +290,7 @@ public class JEBReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         getPluginImpl().draw(bitmap, (int)displayRect.width(), (int)displayRect.height());
         return true;
     }
@@ -452,27 +449,7 @@ public class JEBReaderPlugin implements ReaderPlugin,
         return searchResults;
     }
 
-    public boolean acceptDRMFile(final String path) {
-        return false;
-    }
-
-    public boolean registerDRMCallback(final ReaderDRMCallback callback) {
-        return false;
-    }
-
-    public boolean activateDeviceDRM(String user, String password) {
-        return false;
-    }
-
-    public boolean deactivateDeviceDRM() {
-        return false;
-    }
-
-    public String getDeviceDRMAccount() {
-        return "";
-    }
-
-    public boolean fulfillDRMFile(String path) {
+    public boolean activateDeviceDRM(String certificate) {
         return false;
     }
 
@@ -505,6 +482,11 @@ public class JEBReaderPlugin implements ReaderPlugin,
 
     public boolean supportFontSizeAdjustment() {
         return true;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
+        return false;
     }
 
     public boolean supportTypefaceAdjustment() {

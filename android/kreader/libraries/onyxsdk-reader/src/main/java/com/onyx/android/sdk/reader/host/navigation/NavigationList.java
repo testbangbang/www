@@ -2,7 +2,7 @@ package com.onyx.android.sdk.reader.host.navigation;
 
 import android.graphics.RectF;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.onyx.android.cropimage.data.PointMatrix;
+import com.onyx.android.sdk.data.ReaderPointMatrix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class NavigationList {
     public int currentIndex = -1;
     public RectF limitedRect;
 
-    static public NavigationList rowsLeftToRight(final PointMatrix pointMatrix, final RectF limited) {
+    static public NavigationList rowsLeftToRight(final ReaderPointMatrix pointMatrix, final RectF limited) {
         final int rows = pointMatrix.getOriginRows();
         final int cols = pointMatrix.getOriginCols();
         RectF child = new RectF(0, 0, 1, 1);
@@ -49,7 +49,7 @@ public class NavigationList {
         return navigationList;
     }
 
-    static public NavigationList rowsRightToLeft(final PointMatrix pointMatrix, final RectF limited) {
+    static public NavigationList rowsRightToLeft(final ReaderPointMatrix pointMatrix, final RectF limited) {
         final int rows = pointMatrix.getOriginRows();
         final int cols = pointMatrix.getOriginCols();
         RectF child = new RectF(0, 0, 1, 1);
@@ -81,7 +81,7 @@ public class NavigationList {
         return navigationList;
     }
 
-    static public NavigationList columnsLeftToRight(final PointMatrix pointMatrix, final RectF limited) {
+    static public NavigationList columnsLeftToRight(final ReaderPointMatrix pointMatrix, final RectF limited) {
         final int rows = pointMatrix.getOriginRows();
         final int cols = pointMatrix.getOriginCols();
         RectF child = new RectF(0, 0, 1, 1);
@@ -113,7 +113,7 @@ public class NavigationList {
         return navigationList;
     }
 
-    static public NavigationList columnsRightToLeft(final PointMatrix pointMatrix, final RectF limited) {
+    static public NavigationList columnsRightToLeft(final ReaderPointMatrix pointMatrix, final RectF limited) {
         final int rows = pointMatrix.getOriginRows();
         final int cols = pointMatrix.getOriginCols();
         RectF child = new RectF(0, 0, 1, 1);
@@ -145,7 +145,7 @@ public class NavigationList {
         return navigationList;
     }
 
-    private static RectF getSubScreenRect(RectF parent, PointMatrix pointMatrix, int rows, int cols, int row, int col) {
+    private static RectF getSubScreenRect(RectF parent, ReaderPointMatrix pointMatrix, int rows, int cols, int row, int col) {
         boolean useLeftEdge = cols == 1 || col <= 0;
         boolean useTopEdge = rows == 1 || row <= 0;
         boolean useRightEdge = cols == 1 || col >= pointMatrix.cols();// screensSplitPoints[0].length;

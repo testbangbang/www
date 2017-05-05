@@ -49,6 +49,7 @@ ext {
     eventbusVersion = '3.0.0'
     fastjsonVersion = '1.1.34.android'
     filedownloaderVersion = '0.3.4'
+    frescoVersion = '1.2.0'
     junitVersion = '4.12'
     juniversalchardetVersion = '1.0.3'
     leakcanaryVersion = '1.4-beta2'
@@ -80,5 +81,6 @@ ext {
     phone_materialDialogsCommonVersion= '0.9.3.0'
 
     avoscloudVersion = 'v3.13.7'
+    glideVersion = '3.7.0'
 }
 

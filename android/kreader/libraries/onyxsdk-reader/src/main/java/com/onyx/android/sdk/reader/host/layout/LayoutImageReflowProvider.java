@@ -3,6 +3,8 @@ package com.onyx.android.sdk.reader.host.layout;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.RectF;
+
+import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.Debug;
@@ -12,7 +14,7 @@ import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderException;
-import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
@@ -110,7 +112,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo readerViewInfo) throws ReaderException {
-        drawContext.renderingBitmap = new ReaderBitmapImpl();
+        drawContext.renderingBitmap = new ReaderBitmapReferenceImpl();
 
         if (drawContext.asyncDraw) {
             if (reverseOrder) {
@@ -137,28 +139,31 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         LayoutProviderUtils.updateReaderViewInfo(reader, readerViewInfo, getLayoutManager());
 
         String key = getCurrentSubPageKey();
-        Bitmap bmp = getCurrentSubPageBitmap();
+        CloseableReference<Bitmap> bmp = getCurrentSubPageBitmap();
         if (bmp == null) {
             Debug.e(getClass(), "drawVisiblePages: get bitmap failed!");
             return false;
         }
-        drawContext.renderingBitmap.attachWith(key, bmp);
+        try {
+            drawContext.renderingBitmap.attachWith(key, bmp);
+        } finally {
+            bmp.close();
+        }
         return true;
     }
 
-    private Bitmap renderPageForReflow(final Reader reader,
-                                       final ReaderViewInfo readerViewInfo) throws ReaderException {
+    private ReaderBitmapReferenceImpl renderPageForReflow(final Reader reader) throws ReaderException {
         getPageManager().scaleToPage(getCurrentPagePosition());
         getPageManager().scaleWithDelta(getCurrentPagePosition(),
                 (float)(getImageReflowManager().getSettings().zoom * getImageReflowManager().getSettings().columns));
         PageInfo pageInfo = getPageManager().getPageInfo(getCurrentPagePosition());
-        Bitmap bitmap = reader.getBitmapCache().getFreeBitmap((int)pageInfo.getScaledWidth(),
-                (int)pageInfo.getScaledHeight(), Bitmap.Config.ARGB_8888).getBitmap();
+        ReaderBitmapReferenceImpl bitmap = reader.getBitmapCache().getFreeBitmap((int)pageInfo.getScaledWidth(),
+                (int)pageInfo.getScaledHeight(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
         bitmap.eraseColor(Color.WHITE);
         reader.getRenderer().draw(getCurrentPagePosition(), pageInfo.getActualScale(),
-                pageInfo.getPageDisplayOrientation(), bitmap,
+                pageInfo.getPageDisplayOrientation(),
                 pageInfo.getPositionRect(), pageInfo.getPositionRect(),
-                pageInfo.getPositionRect());
+                pageInfo.getPositionRect(), bitmap.getBitmap());
         getPageManager().scaleToPage(getCurrentPagePosition());
         return bitmap;
     }
@@ -167,7 +172,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
                                              final ReaderDrawContext drawContext,
                                              final ReaderViewInfo readerViewInfo,
                                              final boolean abortPendingTasks) throws ReaderException {
-        Bitmap bitmap = renderPageForReflow(reader, readerViewInfo);
+        ReaderBitmapReferenceImpl bitmap = renderPageForReflow(reader);
         getImageReflowManager().reflowBitmapAsync(bitmap, getCurrentPagePosition(), abortPendingTasks);
     }
 
@@ -177,7 +182,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         if (gotoPosition(LayoutProviderUtils.nextPage(getLayoutManager()))) {
             if (!isCurrentSubPageReady()) {
                 ReaderDrawContext reflowContext = ReaderDrawContext.copy(drawContext);
-                reflowContext.renderingBitmap = new ReaderBitmapImpl();
+                reflowContext.renderingBitmap = new ReaderBitmapReferenceImpl();
                 reflowFirstVisiblePageAsync(reader, reflowContext, readerViewInfo, false);
             }
             gotoPosition(LayoutProviderUtils.prevPage(getLayoutManager()));
@@ -286,7 +291,7 @@ public class LayoutImageReflowProvider extends LayoutProvider {
         return getImageReflowManager().getSubPageKey(getCurrentPagePosition(), getCurrentSubPageIndex());
     }
 
-    private Bitmap getCurrentSubPageBitmap() {
+    private CloseableReference<Bitmap> getCurrentSubPageBitmap() {
         return getImageReflowManager().getSubPageBitmap(getCurrentPagePosition(), getCurrentSubPageIndex());
     }
 

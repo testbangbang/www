@@ -6,15 +6,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
@@ -159,22 +156,8 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (cover == null) {
             return false;
         }
-        //Create a rectangular area that scales proportionally on the original cover.
-        Rect rect = null;
-        float ratioSrc = cover.getWidth()/(float)cover.getHeight();
-        float ratioDest = bitmap.getWidth()/(float)bitmap.getHeight();
-        if(ratioSrc > (ratioDest + 0.05)) {
-            int hh = (int) Math.round(bitmap.getWidth()/ratioSrc);
-            rect = new Rect(0, Math.abs((bitmap.getHeight()-hh)/2), bitmap.getWidth(), hh);
-        } else if(ratioSrc < (ratioDest - 0.05)) {
-            int ww = (int) Math.round(bitmap.getHeight()*ratioSrc);
-            rect = new Rect(Math.abs((bitmap.getWidth()-ww)/2), 0, ww, bitmap.getHeight());
-        } else {
-            //In order to the cover display beautifully, we allow the cover to have a small zoom deviation.
-            rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        }
-        BitmapUtils.scaleBitmap(cover, new Rect(0, 0, cover.getWidth(), cover.getHeight()),
-                bitmap, rect);
+        BitmapUtils.scaleBitmap(cover, new Rect(0, 0, cover.getWidth(), cover.getHeight()),bitmap,
+                new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()));
         cover.recycle();
         return true;
     }
@@ -211,11 +194,6 @@ public class AlReaderPlugin implements ReaderPlugin,
         return getPluginImpl().readTableOfContent(toc);
     }
 
-    @Override
-    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
-        return false;
-    }
-
     public ReaderView getView(final ReaderViewOptions viewOptions) {
         readerViewOptions = viewOptions;
         getPluginImpl().setViewSize(readerViewOptions.getViewWidth(), readerViewOptions.getViewHeight());
@@ -234,6 +212,11 @@ public class AlReaderPlugin implements ReaderPlugin,
     @Override
     public void setChineseConvertType(ReaderChineseConvertType convertType) {
         getPluginImpl().setChineseConvertType(convertType);
+    }
+
+    @Override
+    public void setTextGamma(float gamma) {
+
     }
 
     public void close() {
@@ -313,7 +296,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         getPluginImpl().draw(bitmap, (int)displayRect.width(), (int)displayRect.height());
         return true;
     }
@@ -472,27 +455,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         return searchResults;
     }
 
-    public boolean acceptDRMFile(final String path) {
-        return false;
-    }
-
-    public boolean registerDRMCallback(final ReaderDRMCallback callback) {
-        return false;
-    }
-
-    public boolean activateDeviceDRM(String user, String password) {
-        return false;
-    }
-
-    public boolean deactivateDeviceDRM() {
-        return false;
-    }
-
-    public String getDeviceDRMAccount() {
-        return "";
-    }
-
-    public boolean fulfillDRMFile(String path) {
+    public boolean activateDeviceDRM(String certificate) {
         return false;
     }
 
@@ -525,6 +488,11 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     public boolean supportFontSizeAdjustment() {
         return true;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
+        return false;
     }
 
     public boolean supportTypefaceAdjustment() {
