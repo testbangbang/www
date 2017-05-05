@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
@@ -70,6 +71,7 @@ public class SchoolApp extends Application {
             initCloudStoreConfig();
             initDeviceConfig();
             initEventListener();
+            initFrescoLoader();
             initSystemInBackground();
             startFileSystemScan();
         } catch (Exception e) {
@@ -245,6 +247,10 @@ public class SchoolApp extends Application {
 
     public void initCloudFileDownloader() {
         CloudStore.initFileDownloader(this);
+    }
+
+    private void initFrescoLoader() {
+        Fresco.initialize(singleton().getApplicationContext());
     }
 
     public void terminateCloudDatabase() {

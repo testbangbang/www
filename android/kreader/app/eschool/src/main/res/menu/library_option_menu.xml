@@ -12,6 +12,11 @@
     <item
         android:id="@+id/menu_multi_select"
         android:title="@string/menu_multi_choice_mode" />
+
+    <item
+        android:id="@+id/menu_library_toc_index"
+        android:title="@string/menu_library_toc_index" />
+
     <item
         android:id="@+id/menu_build_library"
         android:title="@string/menu_library_build" />
@@ -24,4 +29,5 @@
     <item
         android:id="@+id/menu_delete_library"
         android:title="@string/menu_library_delete" />
+
 </menu>

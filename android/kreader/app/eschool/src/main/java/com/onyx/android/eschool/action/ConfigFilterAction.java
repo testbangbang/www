@@ -6,12 +6,12 @@ import android.content.Context;
 
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.R;
-import com.onyx.android.eschool.model.LibraryDataModel;
-import com.onyx.android.eschool.model.LibraryViewInfo;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.BookFilter;
+import com.onyx.android.sdk.data.LibraryDataModel;
+import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.ui.dialog.DialogSortBy;

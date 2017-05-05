@@ -149,6 +149,7 @@
     <string name="menu_sort">Sort</string>
     <string name="menu_filter">Filter</string>
     <string name="menu_multi_choice_mode">Multi-Choice mode</string>
+    <string name="menu_library_toc_index">Library toc index</string>
     <string name="menu_library_build">Build a library</string>
     <string name="menu_library_add">Add to the library</string>
     <string name="menu_library_remove">Remove from the library</string>
@@ -156,4 +157,7 @@
 
     <string name="go_to_page">Go To Page</string>
     <string name="current_page">Current Page</string>
+    <string name="library_toc_loading">Library toc loading...</string>
+    <string name="library_toc_load_fail">Library toc loading failed</string>
+
 </resources>
