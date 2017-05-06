@@ -6,6 +6,8 @@ import android.support.multidex.MultiDexApplication;
 
 import com.onyx.android.libsetting.manager.SettingsPreferenceManager;
 import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 
 /**
  * Created by suicheng on 2017/4/28.
@@ -27,13 +29,19 @@ public class SettingsApplication extends MultiDexApplication {
     private void initConfig() {
         try {
             SettingsPreferenceManager.init(this);
+            initDeviceConfig();
             initCloudFileDownloader();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private void initDeviceConfig() {
+        AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
+    }
+
     public void initCloudFileDownloader() {
         CloudStore.initFileDownloader(this);
     }
+
 }
