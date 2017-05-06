@@ -41,6 +41,14 @@ public class CloudManager {
         return cloudConf;
     }
 
+    public void setChinaCloudConf(CloudConf cloudConf) {
+        chinaCloudConf = cloudConf;
+    }
+
+    public void setGlobalCloudConf(CloudConf cloudConf) {
+        globalCloudConf = cloudConf;
+    }
+
     public void acquireWakeLock(final Context context, final String tag) {
         requestManager.acquireWakeLock(context, tag);
     }

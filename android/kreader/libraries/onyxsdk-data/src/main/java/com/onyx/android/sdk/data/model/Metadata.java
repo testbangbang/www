@@ -26,6 +26,11 @@ public class Metadata extends BaseData {
         public static int FINISHED = 2;
     }
 
+    public static class FetchSource {
+        public static int LOCAL;
+        public static int CLOUD;
+    }
+
     public static final String PROGRESS_DIVIDER = "/";
 
     @Column
@@ -102,6 +107,28 @@ public class Metadata extends BaseData {
 
     @Column
     String storageId;
+
+    @Column
+    int fetchSource;
+
+    @Column
+    String coverUrl;
+
+    public void setFetchSource(int fetchSource) {
+        this.fetchSource = fetchSource;
+    }
+
+    public int getFetchSource() {
+        return fetchSource;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
 
     public String getName() {
         return name;
