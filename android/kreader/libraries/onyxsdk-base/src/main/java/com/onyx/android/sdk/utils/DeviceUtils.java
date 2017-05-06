@@ -372,4 +372,10 @@ public class DeviceUtils {
                 .getSystemService(Context.WIFI_SERVICE);
         wm.setWifiEnabled(enabled);
     }
+
+    public static boolean isChinese(final Context context) {
+        Locale locale = context.getResources().getConfiguration().locale;
+        String language = locale.getLanguage();
+        return language.endsWith("zh");
+    }
 }

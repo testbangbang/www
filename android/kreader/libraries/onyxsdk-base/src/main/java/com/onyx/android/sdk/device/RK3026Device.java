@@ -555,6 +555,27 @@ public class RK3026Device extends BaseDevice {
     }
 
     @Override
+    public boolean hasWifi(Context context) {
+        try {
+            Object instance = sDeviceControllerConstructor.newInstance(context);
+            Boolean succ = (Boolean) sMethodHasWifi.invoke(instance);
+            if (succ != null) {
+                return succ.booleanValue();
+            }
+        }
+        catch (IllegalArgumentException e) {
+        }
+        catch (InstantiationException e) {
+        }
+        catch (IllegalAccessException e) {
+        }
+        catch (InvocationTargetException e) {
+        }
+
+        return false;
+    }
+
+    @Override
     public void enableRegal(boolean enable) {
         ReflectUtil.invokeMethodSafely(sMethodEnableRegal, null, enable);
     }
