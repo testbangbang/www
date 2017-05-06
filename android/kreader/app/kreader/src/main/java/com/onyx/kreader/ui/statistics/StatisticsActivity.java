@@ -21,6 +21,7 @@ import com.onyx.android.sdk.data.StatisticsCloudManager;
 import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.data.request.cloud.GetStatisticsRequest;
 import com.onyx.android.sdk.data.request.cloud.PushStatisticsRequest;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -101,7 +102,7 @@ public class StatisticsActivity extends ActionBarActivity {
     }
 
     private void checkWifi() {
-        if (!DeviceUtils.isWifiConnected(this)) {
+        if (Device.currentDevice().hasWifi(this) && !DeviceUtils.isWifiConnected(this)) {
             OnyxCustomDialog.getConfirmDialog(this, getString(R.string.wifi_dialog_content), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

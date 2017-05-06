@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -262,7 +261,7 @@ public class PopupSelectionMenu extends LinearLayout {
         webSearch.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                openBaiduBaike();
+                webSearchWord();
             }
         });
 
@@ -302,7 +301,7 @@ public class PopupSelectionMenu extends LinearLayout {
         }
     }
 
-    private void openBaiduBaike(){
+    private void webSearchWord(){
         if (!NetworkHelper.requestWifi(getActivity())) {
             return;
         }
