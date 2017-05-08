@@ -8,7 +8,6 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.converter.QueryArgsFilter;
-import com.onyx.android.sdk.data.db.table.OnyxMetadataProvider;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.data.model.CloudMetadata;
@@ -20,7 +19,7 @@ import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
-import com.onyx.android.sdk.data.v1.EBookStoreService;
+import com.onyx.android.sdk.data.v1.ContentService;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.raizlabs.android.dbflow.sql.language.Delete;
@@ -28,8 +27,7 @@ import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
-import com.raizlabs.android.dbflow.sql.language.property.IProperty;
-import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
+import com.raizlabs.android.dbflow.sql.language.property.IProperty;;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,9 +57,9 @@ public class CloudDataProvider implements DataProviderBase {
         metadata.beforeSave();
         Metadata findMeta = findMetadataByCloudId(metadata.getCloudId());
         if (!findMeta.hasValidId()) {
-            ContentUtils.insert(OnyxMetadataProvider.CONTENT_URI, metadata);
+            metadata.save();
         } else {
-            ContentUtils.update(OnyxMetadataProvider.CONTENT_URI, metadata);
+            metadata.update();
         }
     }
 
@@ -328,7 +326,7 @@ public class CloudDataProvider implements DataProviderBase {
         return response;
     }
 
-    private EBookStoreService getEBookService() {
-        return ServiceFactory.getEBookStoreService(conf.getApiBase());
+    private ContentService getEBookService() {
+        return ServiceFactory.getContentService(conf.getApiBase());
     }
 }

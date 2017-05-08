@@ -13,18 +13,14 @@ import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.model.OnyxAccount;
-import com.onyx.android.sdk.data.model.Product;
-import com.onyx.android.sdk.data.request.cloud.EBookListRequest;
+import com.onyx.android.sdk.data.request.cloud.CloudContentListRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
-import com.onyx.android.sdk.data.v1.EBookStoreService;
-import com.onyx.android.sdk.data.v1.OnyxBookStoreService;
+import com.onyx.android.sdk.data.v1.ContentService;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -37,7 +33,7 @@ public class EReadingTest extends ApplicationTestCase<Application> {
 
     private static boolean dbInit = false;
 
-    static EBookStoreService eBookService;
+    static ContentService contentService;
     static CloudManager cloudManager;
 
     public EReadingTest() {
@@ -58,11 +54,11 @@ public class EReadingTest extends ApplicationTestCase<Application> {
         DataManager.init(getContext(), null);
     }
 
-    private final EBookStoreService getEBookService() {
-        if (eBookService == null) {
-            eBookService = ServiceFactory.getEBookStoreService(getCloudManager().getCloudConf().getApiBase());
+    private final ContentService getContentService() {
+        if (contentService == null) {
+            contentService = ServiceFactory.getContentService(getCloudManager().getCloudConf().getApiBase());
         }
-        return eBookService;
+        return contentService;
     }
 
     private final CloudManager getCloudManager() {
@@ -95,7 +91,7 @@ public class EReadingTest extends ApplicationTestCase<Application> {
         runQueryArgsRequest(args, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                EBookListRequest listRequest = (EBookListRequest) request;
+                CloudContentListRequest listRequest = (CloudContentListRequest) request;
                 QueryResult<Metadata> result = listRequest.getProductResult();
                 assertTrue(result.count >= CollectionUtils.getSize(result.list));
                 Metadata tmp = result.list.get(0);
@@ -113,7 +109,7 @@ public class EReadingTest extends ApplicationTestCase<Application> {
         runQueryArgsRequest(args, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                EBookListRequest listRequest = (EBookListRequest) request;
+                CloudContentListRequest listRequest = (CloudContentListRequest) request;
                 QueryResult<Metadata> result = listRequest.getProductResult();
                 Metadata tmp = result.list.get(0);
                 for (Metadata metadata : result.list) {
@@ -126,7 +122,7 @@ public class EReadingTest extends ApplicationTestCase<Application> {
 
     private void runQueryArgsRequest(final QueryArgs queryArgs, final BaseCallback baseCallback) {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final EBookListRequest listRequest = new EBookListRequest(queryArgs);
+        final CloudContentListRequest listRequest = new CloudContentListRequest(queryArgs);
         getCloudManager().submitRequest(getContext(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

@@ -13,7 +13,7 @@ import retrofit2.http.Query;
  * Created by suicheng on 2017/4/26.
  */
 
-public interface EBookStoreService {
+public interface ContentService {
 
     @GET("books")
     Call<ProductResult<CloudMetadata>> loadBookList(@Query(Constant.WHERE_TAG) final String param);

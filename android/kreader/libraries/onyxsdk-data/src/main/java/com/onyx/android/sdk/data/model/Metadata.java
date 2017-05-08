@@ -1,7 +1,5 @@
 package com.onyx.android.sdk.data.model;
 
-import android.support.annotation.ColorInt;
-
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -9,7 +7,6 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -27,8 +24,8 @@ public class Metadata extends BaseData {
     }
 
     public static class FetchSource {
-        public static int LOCAL;
-        public static int CLOUD;
+        public static int LOCAL = 0;
+        public static int CLOUD = 1;
     }
 
     public static final String PROGRESS_DIVIDER = "/";

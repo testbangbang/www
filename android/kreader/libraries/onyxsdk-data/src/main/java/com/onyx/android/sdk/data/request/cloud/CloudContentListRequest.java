@@ -11,17 +11,17 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 /**
  * Created by suicheng on 2017/4/30.
  */
-public class EBookListRequest extends BaseCloudRequest {
+public class CloudContentListRequest extends BaseCloudRequest {
 
     private boolean saveToLocal = true;
     private QueryResult<Metadata> queryResult;
     private QueryArgs queryArgs;
 
-    public EBookListRequest(QueryArgs queryArgs) {
+    public CloudContentListRequest(QueryArgs queryArgs) {
         this.queryArgs = queryArgs;
     }
 
-    public EBookListRequest(QueryArgs queryArgs, boolean saveToLocal) {
+    public CloudContentListRequest(QueryArgs queryArgs, boolean saveToLocal) {
         this(queryArgs);
         this.saveToLocal = saveToLocal;
     }
@@ -36,7 +36,7 @@ public class EBookListRequest extends BaseCloudRequest {
         queryResult = dataProvider.findMetadataResultByQueryArgs(getContext(), queryArgs);
         if (saveToLocal) {
             for (Metadata metadata : queryResult.list) {
-                metadata.save();
+                dataProvider.saveMetadata(getContext(), metadata);
             }
         }
     }
