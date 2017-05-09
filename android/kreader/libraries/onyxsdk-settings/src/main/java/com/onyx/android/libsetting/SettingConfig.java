@@ -530,7 +530,7 @@ public class SettingConfig {
     public boolean isEnableAutoWifiReScan(){
         Boolean result = getData(Custom.ENABLE_AUTO_WIFI_RESCAN_TAG, Boolean.class);
         if (result == null) {
-            return false;
+            return true;
         }
         return result;
     }
