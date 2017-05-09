@@ -30,10 +30,10 @@ import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_ERRO
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_LANG_INPUT_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_NETWORK_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_POWER_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_PRODUCTION_TEST_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_SECURITY_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_STORAGE_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_USER_SETTING_TAG;
-import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_PRODUCTION_TEST_TAG;
 
 /**
  * Created by solskjaer49 on 2016/12/6 12:09.
@@ -73,6 +73,8 @@ public class SettingConfig {
         static private final String CALIBRATION_CLASS_NAME_TAG = "calibration_class_name";
 
         static  private  final String TEST_APPS_TAG = "test_apps";
+
+        static private final String ENABLE_AUTO_WIFI_RESCAN_TAG = "enable_auto_wifi_scan";
     }
 
     static class Default {
@@ -523,5 +525,13 @@ public class SettingConfig {
 
     public boolean isEnableNetworkLatencyConfig() {
         return enableNetworkLatencyConfig;
+    }
+
+    public boolean isEnableAutoWifiReScan(){
+        Boolean result = getData(Custom.ENABLE_AUTO_WIFI_RESCAN_TAG, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
     }
 }

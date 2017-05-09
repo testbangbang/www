@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.onyx.android.libsetting.R;
+import com.onyx.android.libsetting.SettingConfig;
 import com.onyx.android.libsetting.data.wifi.AccessPoint;
 import com.onyx.android.libsetting.databinding.ActivityWifiSettingBinding;
 import com.onyx.android.libsetting.databinding.WifiInfoItemBinding;
@@ -32,6 +33,8 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.net.SocketException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -55,6 +58,18 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
     final static String[] WIFI_PERMS = {Manifest.permission.ACCESS_COARSE_LOCATION};
     final static int WIFI_PERMS_REQUEST_CODE = 1;
 
+    // Combo scans can take 5-6s to complete - set to 10s.
+    private static final int WIFI_RESCAN_INTERVAL_MS = 10 * 1000;
+
+    private Timer scanTimer = new Timer();
+    private TimerTask wifiScanTimerTask = new TimerTask() {
+        @Override
+        public void run() {
+            if (wifiAdmin != null) {
+                wifiAdmin.triggerWifiScan();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +146,9 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         if (wifiAdmin != null) {
             wifiAdmin.registerReceiver();
         }
+        if (SettingConfig.sharedInstance(this).isEnableAutoWifiReScan()) {
+            scanTimer.schedule(wifiScanTimerTask, WIFI_RESCAN_INTERVAL_MS, WIFI_RESCAN_INTERVAL_MS);
+        }
     }
 
     @Override
@@ -138,6 +156,9 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         super.onPause();
         if (wifiAdmin != null) {
             wifiAdmin.unregisterReceiver();
+        }
+        if (SettingConfig.sharedInstance(this).isEnableAutoWifiReScan() && scanTimer != null) {
+            scanTimer.cancel();
         }
     }
 
