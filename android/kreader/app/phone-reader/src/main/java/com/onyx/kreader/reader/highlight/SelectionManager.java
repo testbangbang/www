@@ -1,12 +1,13 @@
 package com.onyx.kreader.reader.highlight;
 
+import android.graphics.Color;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.utils.RectUtils;
 import com.onyx.kreader.reader.data.ReaderDataHolder;
+import com.onyx.kreader.reader.opengl.Highlight;
 import com.onyx.kreader.reader.opengl.IOpenGLObject;
-import com.onyx.kreader.reader.opengl.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,7 @@ public class SelectionManager {
             vertexArray[10] = translateY(rectangle.bottom);
             vertexArray[11] = 0f;
 
-            Rectangle square = Rectangle.create(vertexArray);
+            Highlight square = Highlight.create(vertexArray, Color.GREEN, 0.5f);
             selectionRectangles.add(square);
         }
     }
