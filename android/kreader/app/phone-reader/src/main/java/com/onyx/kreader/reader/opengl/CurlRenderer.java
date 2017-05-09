@@ -133,11 +133,10 @@ public class CurlRenderer implements GLSurfaceView.Renderer {
 		mViewportWidth = width;
 		mViewportHeight = height;
 
-		float ratio = (float) width / height;
 		mViewRect.top = 1.0f;
 		mViewRect.bottom = -1.0f;
-		mViewRect.left = -ratio;
-		mViewRect.right = ratio;
+		mViewRect.left = -1.0f;
+		mViewRect.right = 1.0f;
 		updatePageRects();
 
 		gl.glMatrixMode(GL10.GL_PROJECTION);
