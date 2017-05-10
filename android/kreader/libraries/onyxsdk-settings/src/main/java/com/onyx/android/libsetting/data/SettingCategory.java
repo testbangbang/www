@@ -39,7 +39,7 @@ public class SettingCategory {
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
     @IntDef({UNKNOWN, NETWORK, USER_SETTING, SOUND, STORAGE,
-            LANGUAGE_AND_INPUT, DATE_TIME_SETTING, APPLICATION_MANAGEMENT, POWER, SECURITY, ERROR_REPORT})
+            LANGUAGE_AND_INPUT, DATE_TIME_SETTING, APPLICATION_MANAGEMENT, POWER, SECURITY, ERROR_REPORT,PRODUCTION_TEST})
     // Create an interface for validating int types
     public @interface SettingCategoryDef {
     }

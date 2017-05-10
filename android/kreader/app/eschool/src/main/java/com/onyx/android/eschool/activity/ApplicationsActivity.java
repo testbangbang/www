@@ -30,6 +30,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -106,7 +107,7 @@ public class ApplicationsActivity extends BaseActivity {
     private void loadData() {
         final ApplicationListLoadRequest listRequest = new ApplicationListLoadRequest(DeviceConfig.sharedInstance(this).getAppFilters(),
                 DeviceConfig.sharedInstance(this).getTestApps(),
-                DeviceConfig.sharedInstance(this).getCustomizedIconApps());
+                getCustomizedIconApps());
         SchoolApp.getDataManager().submit(this, listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -121,6 +122,12 @@ public class ApplicationsActivity extends BaseActivity {
             }
         });
         showProgressDialog(listRequest, null);
+    }
+
+    private Map<String, String> getCustomizedIconApps() {
+        Map<String, String> iconMaps = DeviceConfig.sharedInstance(this).getCustomizedIconApps();
+        iconMaps.put("com.youngy.ui", "app_youngy");
+        return iconMaps;
     }
 
     private List<AppDataInfo> getExtraItemInfo() {
