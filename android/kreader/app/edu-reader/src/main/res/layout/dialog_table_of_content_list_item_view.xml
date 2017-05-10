@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                        android:background="@drawable/imagebtn_bg"
+                                                        android:paddingLeft="20dp"
+                                                        android:paddingRight="20dp"
+                                                        android:paddingTop="@dimen/dialog_table_of_content_list_item_padding_top"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/image_view_bookmark"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/text_view_page"
+        android:src="@drawable/ic_dialog_reader_bookmark_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+            android:textSize="@dimen/dialog_table_of_content_list_item_text_size"
+            android:text=""
+            android:id="@+id/text_view_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"/>
+
+    <TextView
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/image_view_bookmark"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textSize="@dimen/dialog_table_of_content_item_text_title_size"
+            android:id="@+id/text_view_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+        android:maxLines="3"
+        android:gravity="left|center"
+        android:ellipsize="end"
+        android:textSize="@dimen/dialog_table_of_content_item_text_size"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/text_view_page"
+        android:layout_above="@+id/layout_bottom"
+        android:id="@+id/text_view_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@+id/layout_bottom"
+        android:layout_above="@+id/split_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textSize="@dimen/dialog_table_of_content_list_item_text_size"
+            android:layout_centerVertical="true"
+            android:text="2016-07-07 13:42"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/text_view_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            android:id="@+id/edit_layout"
+            android:padding="5dp"
+            android:gravity="center"
+            android:layout_marginRight="30dp"
+            android:layout_toLeftOf="@+id/delete_layout"
+            android:background="@drawable/imagebtn_bg"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_dialog_reader_edit_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:textSize="@dimen/dialog_table_of_content_list_item_text_size"
+                android:text="@string/edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            android:padding="5dp"
+            android:gravity="center"
+            android:id="@+id/delete_layout"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/imagebtn_bg"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_dialog_reader_delet_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:textSize="@dimen/dialog_table_of_content_list_item_text_size"
+                android:text="@string/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+
+    </RelativeLayout>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:id="@+id/split_line"
+        android:layerType="software"
+        android:background="@drawable/dash_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+
+</com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>

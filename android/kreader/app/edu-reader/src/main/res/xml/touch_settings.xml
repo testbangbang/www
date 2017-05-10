@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="reader_setting">
+    <Preference
+        android:key="@string/setting_touch_left_top_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:title="@string/setting_touch_left_top_tittle" />
+    <Preference
+        android:key="@string/setting_touch_left_bottom_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:title="@string/setting_touch_left_bottom_tittle" />
+    <Preference
+        android:key="@string/setting_touch_right_top_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:title="@string/setting_touch_right_top_tittle" />
+    <Preference
+        android:key="@string/setting_touch_right_bottom_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:title="@string/setting_touch_right_bottom_tittle" />
+</PreferenceScreen>

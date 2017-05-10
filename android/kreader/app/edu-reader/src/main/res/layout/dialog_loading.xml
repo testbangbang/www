@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/dialog_loading_height"
+    android:gravity="center"
+    android:background="@drawable/dialog_border">
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleInverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:id="@+id/progressBar" />
+
+    <TextView
+        android:id="@+id/textview_message"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:paddingLeft="@dimen/dialog_loading_msg_X_axis_padding"
+        android:paddingRight="@dimen/dialog_loading_msg_X_axis_padding"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:textSize="@dimen/dialog_loading_text_size" />
+    <View
+        android:id="@+id/divider_line"
+        style="@style/single_line_Y_axis_View"
+        android:layout_width="1dp"/>
+
+    <ImageView
+        android:layout_margin="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_dialog_loading_close"
+        android:background="@drawable/image_button_bg"
+        android:id="@+id/button_cancel" />
+</LinearLayout>

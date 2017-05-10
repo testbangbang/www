@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="table_of_content_row">12</integer>
+    <integer name="bookmark_row">5</integer>
+    <integer name="annotation_row">5</integer>
+    <integer name="search_row">20</integer>
+    <integer name="quick_view_default_grid_type">4</integer>
+    <integer name="search_chinese_content_length">100</integer>
+    <integer name="search_alpha_content_length">150</integer>
+</resources>

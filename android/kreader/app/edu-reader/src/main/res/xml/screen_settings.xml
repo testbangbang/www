@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="reader_setting" >
+    <CheckBoxPreference
+            android:key="@string/settings_animation_key"
+            android:layout="@layout/settings_custom_preference_item"
+            android:summaryOn="@string/settings_enable"
+            android:summaryOff="@string/settings_disable"
+            android:defaultValue="true"
+            android:title="@string/settings_animation_tittle"/>
+    <CheckBoxPreference
+            android:key="@string/settings_bookmark_key"
+            android:layout="@layout/settings_custom_preference_item"
+            android:summaryOn="@string/settings_enable"
+            android:summaryOff="@string/settings_disable"
+            android:defaultValue="true"
+            android:title="@string/settings_bookmark_tittle"/>
+    <CheckBoxPreference
+            android:key="@string/settings_hyperlink_key"
+            android:layout="@layout/settings_custom_preference_item"
+            android:summaryOn="@string/settings_enable"
+            android:summaryOff="@string/settings_disable"
+            android:defaultValue="true"
+            android:title="@string/settings_hyperlink_tittle"/>
+    <CheckBoxPreference
+            android:key="@string/settings_show_annotation_key"
+            android:layout="@layout/settings_custom_preference_item"
+            android:summaryOn="@string/settings_enable"
+            android:summaryOff="@string/settings_disable"
+            android:defaultValue="true"
+            android:title="@string/settings_show_annotation_title"/>
+    <ListPreference
+        android:key="@string/settings_annotation_highlight_style_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:title="@string/settings_annotation_highlight_style_title"/>
+    <CheckBoxPreference
+            android:key="@string/settings_dithering_key"
+            android:layout="@layout/settings_custom_preference_item"
+            android:summaryOn="@string/settings_enable"
+            android:summaryOff="@string/settings_disable"
+            android:defaultValue="false"
+            android:title="@string/settings_dithering_tittle"/>
+    <CheckBoxPreference
+        android:key="@string/settings_regal_mode_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summaryOn="@string/settings_enable"
+        android:summaryOff="@string/settings_disable"
+        android:defaultValue="true"
+        android:title="@string/settings_regal_mode_tittle"/>
+
+</PreferenceScreen>
