@@ -174,7 +174,7 @@ public class BaseOptions {
         BaseOptions.globalDefaultGamma = globalDefaultGamma;
     }
 
-    public boolean isGamaCorrectionEnabled() {
+    public boolean isGammaCorrectionEnabled() {
         return getGammaLevel() > lowerGammaLimit;
     }
 
