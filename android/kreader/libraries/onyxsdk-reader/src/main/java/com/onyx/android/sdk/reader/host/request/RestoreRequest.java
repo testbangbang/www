@@ -27,6 +27,9 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        // overrides with doc built-in options
+        reader.getDocument().readBuiltinOptions(baseOptions);
+
         restoreLayoutType(reader);
         restorePagePosition(reader);
         restoreScale(reader);
@@ -99,6 +102,7 @@ public class RestoreRequest extends BaseReaderRequest {
         }
         if (reader.getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
             value = baseOptions.getTextGammaLevel();
+            reader.getDocumentOptions().setTextGamma(value);
             if (value > ImageUtils.NO_GAMMA && value <= ImageUtils.MAX_GAMMA) {
                 float textGamma = ImageUtils.getGammaCorrectionBySelection(value);
                 reader.getRenderer().setTextGamma(textGamma);

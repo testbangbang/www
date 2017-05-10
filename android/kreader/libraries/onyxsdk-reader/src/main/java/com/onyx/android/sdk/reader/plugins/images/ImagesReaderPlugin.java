@@ -30,6 +30,7 @@ import com.onyx.android.sdk.reader.api.ReaderTextSplitter;
 import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.api.ReaderViewOptions;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.ComparatorUtils;
@@ -164,6 +165,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     public ReaderView getView(final ReaderViewOptions viewOptions) {
         return this;
+    }
+
+    @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
     }
 
     @Override
