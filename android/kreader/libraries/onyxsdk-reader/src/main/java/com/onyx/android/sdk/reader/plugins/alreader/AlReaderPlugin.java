@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -198,6 +199,11 @@ public class AlReaderPlugin implements ReaderPlugin,
         readerViewOptions = viewOptions;
         getPluginImpl().setViewSize(readerViewOptions.getViewWidth(), readerViewOptions.getViewHeight());
         return this;
+    }
+
+    @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
     }
 
     @Override

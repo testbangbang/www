@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -122,6 +123,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     @Override
     public ReaderView getView(ReaderViewOptions viewOptions) {
         return this;
+    }
+
+    @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
     }
 
     @Override

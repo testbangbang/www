@@ -15,6 +15,7 @@ public class ReaderDocumentMetadataImpl implements ReaderDocumentMetadata {
     private String description;
     private ArrayList<String> authors = new ArrayList<>();
     private String publisher;
+    private String options;
 
     @Override
     public String getTitle() {
@@ -50,5 +51,15 @@ public class ReaderDocumentMetadataImpl implements ReaderDocumentMetadata {
     @Override
     public void setPublisher(String publisher) {
         this.publisher = publisher;
+    }
+
+    @Override
+    public String getOptions() {
+        return options;
+    }
+
+    @Override
+    public void setOptions(String options) {
+        this.options = options;
     }
 }
