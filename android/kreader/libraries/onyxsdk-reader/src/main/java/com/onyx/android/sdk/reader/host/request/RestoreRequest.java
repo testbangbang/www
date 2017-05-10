@@ -27,6 +27,9 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
+        // overrides with doc built-in options
+        reader.getDocument().readBuiltinOptions(baseOptions);
+
         restoreLayoutType(reader);
         restorePagePosition(reader);
         restoreScale(reader);
