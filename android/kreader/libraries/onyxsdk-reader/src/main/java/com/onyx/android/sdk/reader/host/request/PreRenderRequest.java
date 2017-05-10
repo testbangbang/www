@@ -49,7 +49,9 @@ public class PreRenderRequest extends BaseReaderRequest {
             drawVisiblePages(reader, drawContext);
             reader.getReaderLayoutManager().getCurrentLayoutProvider().restoreBySnapshot(snapshot);
         }
-        preRenderBitmap = getRenderBitmap().getBitmap();
+        if (getRenderBitmap() != null) {
+            preRenderBitmap = getRenderBitmap().getBitmap();
+        }
         setTransferBitmap(false);
     }
 
