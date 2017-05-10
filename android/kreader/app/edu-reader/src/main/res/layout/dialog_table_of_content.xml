@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.onyx.android.sdk.ui.view.OnyxCustomViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.onyx.android.sdk.ui.view.OnyxCustomViewPager>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            android:visibility="gone"
+            android:id="@+id/empty_layout"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:src="@drawable/ic_dialog_empty_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+    </FrameLayout>
+
+
+    <RelativeLayout
+        android:focusable="false"
+        android:id="@+id/layout_turn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/directory_page_indicator_height">
+
+        <TextView
+            android:focusable="false"
+            android:visibility="gone"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/total"
+            android:text="@string/total_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:focusable="false"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/page_indicator_layout"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:focusable="false"
+                android:background="@drawable/imagebtn_bg"
+                android:id="@+id/pre_icon"
+                android:scaleType="fitXY"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/ic_dialog_reader_arrow_left_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:focusable="false"
+                android:id="@+id/page_size_indicator"
+                android:text="1/7"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:focusable="false"
+                android:background="@drawable/imagebtn_bg"
+                android:id="@+id/next_icon"
+                android:scaleType="fitXY"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_dialog_reader_arrow_right_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            android:focusable="false"
+            android:layout_toLeftOf="@+id/back_layout"
+            android:id="@+id/export_layout"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:gravity="center"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/imagebtn_bg"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:focusable="false"
+                android:scaleType="fitXY"
+                android:layout_marginRight="2dp"
+                android:src="@drawable/ic_dialog_reader_export"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:focusable="false"
+                android:visibility="gone"
+                android:text="@string/export"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            android:focusable="false"
+            android:id="@+id/back_layout"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:gravity="center"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/imagebtn_bg"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:focusable="false"
+                android:id="@+id/back_icon"
+                android:scaleType="fitXY"
+                android:layout_marginRight="2dp"
+                android:src="@drawable/ic_dialog_reader_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:focusable="false"
+                android:visibility="gone"
+                android:id="@+id/back_text"
+                android:text="@string/action_return"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+
+    </RelativeLayout>
+
+    <RadioGroup
+        android:focusable="false"
+        android:id="@+id/layout_menu"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.onyx.android.sdk.ui.view.RadioButtonCenter
+            style="@style/dialog_table_of_content_radio_button"
+            android:button="@drawable/toc_radio_button_drawable"
+            android:id="@+id/btn_directory"
+            android:background="@drawable/all_line_check_bg"/>
+
+        <com.onyx.android.sdk.ui.view.RadioButtonCenter
+            style="@style/dialog_table_of_content_radio_button"
+            android:id="@+id/btn_bookmark"
+            android:background="@drawable/no_left_line_check_bg"
+            android:button="@drawable/bookmark_radio_button_drawable"/>
+
+        <com.onyx.android.sdk.ui.view.RadioButtonCenter
+            style="@style/dialog_table_of_content_radio_button"
+            android:id="@+id/btn_annotation"
+            android:background="@drawable/no_left_line_check_bg"
+            android:button="@drawable/annotation_radio_button_drawable"/>
+
+        <com.onyx.android.sdk.ui.view.RadioButtonCenter
+            style="@style/dialog_table_of_content_radio_button"
+            android:id="@+id/btn_scribble"
+            android:background="@drawable/no_left_line_check_bg"
+            android:button="@drawable/scribble_radio_button_drawable"/>
+    </RadioGroup>
+
+</LinearLayout>

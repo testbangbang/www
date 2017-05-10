@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    android:paddingTop="@dimen/scribble_bottom_expand_menu_padding_top_bottom"
+    android:paddingBottom="@dimen/scribble_bottom_expand_menu_padding_top_bottom"
+    android:paddingLeft="@dimen/scribble_bottom_expand_menu_padding_left_right"
+    android:paddingRight="@dimen/scribble_bottom_expand_menu_padding_left_right"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/imagebtn_bg"
+    android:orientation="vertical">
+
+    <ImageView
+            android:src="@drawable/ic_width_1"
+            android:id="@+id/content_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <ImageView
+            android:visibility="invisible"
+            android:src="@drawable/ic_dot"
+            android:id="@+id/marker_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+</com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>

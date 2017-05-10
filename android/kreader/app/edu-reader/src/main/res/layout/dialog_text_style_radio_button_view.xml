@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:background="@drawable/imagebtn_bg"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <com.onyx.android.sdk.ui.view.OnyxRadioButton
+        android:layout_gravity="center_vertical"
+        android:textSize="@dimen/dialog_common_text_size"
+        android:textColor="@android:color/black"
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <View
+        android:background="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+</LinearLayout>

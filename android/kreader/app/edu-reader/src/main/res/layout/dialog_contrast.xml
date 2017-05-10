@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:paddingBottom="1dp"
+              android:gravity="center_horizontal"
+              android:layout_width="@dimen/common_dialog_width"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        android:text="@string/dialog_reflow_settings_contrast"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/dialog_title_text_size"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/dialog_contrast_margin"
+        android:layout_marginRight="@dimen/dialog_contrast_margin"
+        android:background="@android:color/black"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dialog_main_view_padding"
+        android:paddingRight="@dimen/dialog_main_view_padding">
+
+        <com.onyx.android.sdk.ui.view.SeekBarWithEditTextView
+            android:id="@+id/seekbar_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/dialog_contrast_margin"
+            android:layout_marginRight="@dimen/dialog_contrast_margin"
+            android:background="@android:color/black"/>
+
+        <TextView
+            android:textSize="20sp"
+            android:layout_margin="@dimen/dialog_contrast_margin"
+            android:text="@string/make_text_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RadioGroup
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/dialog_contrast_margin"
+            android:id="@+id/text_bold_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:text="0"
+                android:id="@+id/btn_zero"
+                style="@style/dialog_contrast_checkbox"/>
+            <CheckBox
+                android:text="1"
+                android:id="@+id/btn_one"
+                style="@style/dialog_contrast_checkbox"/>
+            <CheckBox
+                android:text="2"
+                android:id="@+id/btn_two"
+                style="@style/dialog_contrast_checkbox"/>
+            <CheckBox
+                android:text="3"
+                android:id="@+id/btn_three"
+                style="@style/dialog_contrast_checkbox"/>
+            <CheckBox
+                android:text="4"
+                android:id="@+id/btn_four"
+                style="@style/dialog_contrast_checkbox"/>
+            <CheckBox
+                android:text="5"
+                android:id="@+id/btn_five"
+                style="@style/dialog_contrast_checkbox"/>
+
+        </RadioGroup>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/black"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.onyx.android.sdk.ui.view.OnyxButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/no_line_press_bg"
+                android:text="@string/cancel"
+                android:textSize="20sp"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/black"/>
+
+            <com.onyx.android.sdk.ui.view.OnyxButton
+                android:id="@+id/btn_ok"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/no_line_press_bg"
+                android:text="@string/ok"
+                android:textSize="20sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
