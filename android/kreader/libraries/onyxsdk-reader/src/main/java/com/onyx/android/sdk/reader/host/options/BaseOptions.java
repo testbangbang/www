@@ -174,7 +174,7 @@ public class BaseOptions {
         BaseOptions.globalDefaultGamma = globalDefaultGamma;
     }
 
-    public boolean isGamaCorrectionEnabled() {
+    public boolean isGammaCorrectionEnabled() {
         return getGammaLevel() > lowerGammaLimit;
     }
 
@@ -205,7 +205,7 @@ public class BaseOptions {
         if (!backend.hasKey(TEXT_GAMMA_LEVEL)) {
             return getGlobalDefaultTextGamma();
         }
-        return backend.getFloat(GAMMA_LEVEL);
+        return backend.getFloat(TEXT_GAMMA_LEVEL);
     }
 
     public void setTextGamma(float gamma) {

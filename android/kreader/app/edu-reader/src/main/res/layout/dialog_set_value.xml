@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/common_dialog_width"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/dialog_tittleArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageView_Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/title"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_menu_more" />
+
+        <TextView
+            android:textSize="@dimen/dialog_common_text_size"
+            android:id="@+id/textView_dialog_Tittle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/imageView_Icon"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/black" />
+    </RelativeLayout>
+
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_height="2dp" />
+
+    <com.onyx.android.sdk.ui.view.SeekBarWithEditTextView android:id="@+id/seekbar_view"
+                                                          android:layout_width="match_parent"
+                                                          android:layout_height="wrap_content" />
+
+    <!--Use LinearLayout here just for better space consuming.If there will
+    be more complicated situation,use RelativeLayout-->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp"
+        android:id="@+id/customize_Area"
+        android:visibility="gone">
+
+        <!--<CheckedTextView-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+
+            <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+            <!--android:textColor="@android:color/black"-->
+            <!--android:checkMark="?android:attr/listChoiceIndicatorSingle"-->
+            <!--android:background="@drawable/image_button_bg"-->
+            <!--android:gravity="left|center"-->
+            <!--android:text="New CheckBox"-->
+            <!--android:id="@+id/checkedTextView" />-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:textSize="@dimen/dialog_common_text_size"
+            android:background="@drawable/all_line_press_bg"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="@string/cancel"
+            android:layout_weight="1"
+            android:id="@+id/button_Cancel" />
+
+        <Button
+            android:textSize="@dimen/dialog_common_text_size"
+            android:background="@drawable/no_left_line_press_bg"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="@string/ok"
+            android:id="@+id/button_Confirm" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.plugins.images.ImagesWrapper;
 import com.onyx.android.sdk.reader.api.*;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
@@ -131,6 +132,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
     @Override
     public ReaderView getView(ReaderViewOptions viewOptions) {
         return this;
+    }
+
+    @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
     }
 
     @Override

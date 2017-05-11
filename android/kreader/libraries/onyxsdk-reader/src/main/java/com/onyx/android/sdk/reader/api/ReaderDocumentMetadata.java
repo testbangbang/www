@@ -23,4 +23,8 @@ public interface ReaderDocumentMetadata {
 
     void setPublisher(final String publisher);
 
+    String getOptions();
+
+    void setOptions(final String options);
+
 }
