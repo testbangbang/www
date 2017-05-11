@@ -13,7 +13,7 @@ public class DataProviderManager {
     public static final String TAG = DataProviderManager.class.getSimpleName();
     private static DataProviderBase localDataProvider;
     private static DataProviderBase remoteDataProvider;
-    private static CloudDataProvider cloudDataProvider;
+    private static DataProviderBase cloudDataProvider;
 
     public static DataProviderBase getLocalDataProvider() {
         if (localDataProvider == null) {
@@ -30,9 +30,9 @@ public class DataProviderManager {
     }
 
     public static DataProviderBase getCloudDataProvider(CloudConf cloudConf) {
-        if (remoteDataProvider == null) {
-            remoteDataProvider = new CloudDataProvider(cloudConf);
+        if (cloudDataProvider == null) {
+            cloudDataProvider = new CloudDataProvider(cloudConf);
         }
-        return remoteDataProvider;
+        return cloudDataProvider;
     }
 }

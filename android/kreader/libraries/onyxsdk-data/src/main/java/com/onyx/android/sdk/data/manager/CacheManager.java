@@ -5,6 +5,8 @@ import android.util.LruCache;
 
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
+import com.onyx.android.sdk.data.cache.LibraryListLruCache;
+import com.onyx.android.sdk.data.cache.MetadataListLruCache;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 
@@ -15,9 +17,9 @@ import java.util.List;
  */
 
 public class CacheManager {
-    private static final int DEFAULT_METADATA_CACHE_SIZE = 2 * 1024 * 1024;
+    private static final int DEFAULT_METADATA_CACHE_SIZE = 512 * 1024;
     private static final int DEFAULT_LIBRARY_CACHE_SIZE = 256 * 1024;
-    private static final int DEFAULT_BITMAP_CACHE_SIZE = 2 * 1024 * 1024;
+    private static final int DEFAULT_BITMAP_CACHE_SIZE = 27 * 1024 * 1024;
 
     private LruCache<String, List<Metadata>> metadataLruCache;
     private LruCache<String, List<Library>> libraryLruCache;
@@ -28,14 +30,14 @@ public class CacheManager {
 
     public LruCache<String, List<Metadata>> getMetadataLruCache() {
         if (metadataLruCache == null) {
-            metadataLruCache = new LruCache<>(DEFAULT_METADATA_CACHE_SIZE);
+            metadataLruCache = new MetadataListLruCache(DEFAULT_METADATA_CACHE_SIZE);
         }
         return metadataLruCache;
     }
 
     public LruCache<String, List<Library>> getLibraryLruCache() {
         if (libraryLruCache == null) {
-            libraryLruCache = new LruCache<>(DEFAULT_LIBRARY_CACHE_SIZE);
+            libraryLruCache = new LibraryListLruCache(DEFAULT_LIBRARY_CACHE_SIZE);
         }
         return libraryLruCache;
     }

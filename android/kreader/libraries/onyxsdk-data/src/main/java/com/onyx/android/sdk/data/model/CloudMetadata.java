@@ -10,6 +10,11 @@ import com.raizlabs.android.dbflow.annotation.Table;
 public class CloudMetadata extends Metadata {
 
     @Override
+    public String getAssociationId() {
+        return cloudId;
+    }
+
+    @Override
     public void beforeSave() {
         super.beforeSave();
         setFetchSource(FetchSource.CLOUD);

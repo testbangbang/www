@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.onyx.kreader.reader.opengl.PageRenderView
+    <com.onyx.phone.reader.reader.opengl.PageRenderView
         android:id="@+id/page_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

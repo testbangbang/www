@@ -25,6 +25,10 @@ public class CloudStore {
         return requestManager.submitRequest(context, request, callback);
     }
 
+    public boolean submitRequestToSingle(final Context context, final BaseCloudRequest request, final BaseCallback callback) {
+        return requestManager.submitRequestToSingle(context, request, callback);
+    }
+
     public final CloudConf getCloudConf() {
         return requestManager.getCloudConf();
     }
@@ -46,5 +50,9 @@ public class CloudStore {
 
     static public void terminateCloudDatabase() {
         FlowManager.destroy();
+    }
+
+    public CloudManager getCloudManager() {
+        return this.requestManager;
     }
 }

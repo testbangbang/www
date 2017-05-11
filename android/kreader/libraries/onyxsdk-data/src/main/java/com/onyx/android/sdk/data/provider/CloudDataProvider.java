@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.data.v1.ContentService;
@@ -27,7 +28,7 @@ import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
-import com.raizlabs.android.dbflow.sql.language.property.IProperty;;
+import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,11 +57,8 @@ public class CloudDataProvider implements DataProviderBase {
     public void saveMetadata(Context context, Metadata metadata) {
         metadata.beforeSave();
         Metadata findMeta = findMetadataByCloudId(metadata.getCloudId());
-        if (!findMeta.hasValidId()) {
-            metadata.save();
-        } else {
-            metadata.update();
-        }
+        metadata.setId(findMeta.getId());
+        metadata.save();
     }
 
     private Metadata findMetadataByCloudId(String cloudId) {
@@ -148,8 +146,13 @@ public class CloudDataProvider implements DataProviderBase {
 
     @Override
     public long count(Context context, QueryArgs queryArgs) {
-        QueryResult<Metadata> result = findMetadataResultByQueryArgs(context, queryArgs);
-        return result.count;
+        long count;
+        if (NetworkUtil.isWifiConnected(context)) {
+            count = findMetadataResultByQueryArgs(context, queryArgs).count;
+        } else {
+            count = countMetadataFromLocal(context, queryArgs);
+        }
+        return count;
     }
 
     @Override
@@ -244,12 +247,16 @@ public class CloudDataProvider implements DataProviderBase {
 
     @Override
     public void saveThumbnailEntry(Context context, Thumbnail thumbnail) {
-
+        thumbnail.save();
     }
 
     @Override
     public Thumbnail getThumbnailEntry(Context context, String associationId, OnyxThumbnail.ThumbnailKind kind) {
-        return null;
+        return new Select().from(Thumbnail.class)
+                .where()
+                .and(Thumbnail_Table.idString.eq(associationId))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind))
+                .querySingle();
     }
 
     @Override
