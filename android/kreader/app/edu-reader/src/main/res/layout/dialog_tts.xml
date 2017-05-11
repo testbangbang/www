@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/content_view"
+                android:layout_marginBottom="10dp"
+                android:background="@android:color/transparent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="@dimen/ellipse_view_padding"
+        android:paddingRight="@dimen/ellipse_view_padding"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/tts_button_layout"
+        android:background="@drawable/tts_layout_bg"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/tts_play"
+            style="@style/tts_button"
+            android:src="@drawable/ic_dialog_tts_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/tts_stop"
+            style="@style/tts_button"
+            android:src="@drawable/ic_dialog_tts_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/tts_voice"
+            style="@style/tts_button"
+            android:src="@drawable/ic_dialog_tts_voice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/tts_speed"
+            style="@style/tts_button"
+            android:src="@drawable/ic_dialog_tts_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/tts_close"
+            style="@style/tts_button"
+            android:src="@drawable/ic_dialog_tts_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:rotation="-90"
+        android:padding="10dp"
+        android:background="@drawable/radio_button_bg_off"
+        android:id="@+id/voice_size_layout"
+        android:layout_marginBottom="-5dp"
+        android:gravity="center_vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/tts_button_layout"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            style="@style/tts_button"
+            android:rotation="90"
+            android:id="@+id/minus_voice"
+            android:src="@drawable/ic_dialog_reader_menu_font_small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <SeekBar
+            android:thumb="@drawable/tts_voice_seekbar_thumb"
+            android:id="@+id/seek_bar_tts"
+            android:layout_width="@dimen/dialog_tts_voice_height"
+            android:layout_height="wrap_content"
+            android:minHeight="6dp"
+            android:maxHeight="6dp"
+            android:progressDrawable="@drawable/tts_seekbar_progress"
+            android:max="100"/>
+
+        <ImageButton
+            style="@style/tts_button"
+            android:id="@+id/plus_voice"
+            android:src="@drawable/ic_dialog_reader_menu_font_big"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <RadioGroup
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:layout_marginBottom="-5dp"
+        android:padding="10dp"
+        android:background="@drawable/radio_button_bg_off"
+        android:layout_above="@+id/tts_button_layout"
+        android:id="@+id/voice_speed_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/fastest_speed"
+            style="@style/tts_speed_checkbox"
+            android:text="@string/fast"/>
+        <CheckBox
+            android:id="@+id/faster_speed"
+            style="@style/tts_speed_checkbox"
+            android:text="@string/faster"/>
+        <CheckBox
+            android:id="@+id/normal_speed"
+            style="@style/tts_speed_checkbox"
+            android:text="@string/normal"/>
+        <CheckBox
+            android:id="@+id/slower_speed"
+            style="@style/tts_speed_checkbox"
+            android:text="@string/slower"/>
+        <CheckBox
+            android:id="@+id/slowest_speed"
+            style="@style/tts_speed_checkbox"
+            android:text="@string/slow"/>
+    </RadioGroup>
+
+</RelativeLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout style="@style/settings_activity_titleBar">
+
+        <RelativeLayout
+            android:id="@+id/back_function_layout"
+            style="@style/global_activities_back_function_layout">
+
+            <ImageView
+                android:id="@+id/back_icon"
+                style="@style/global_activities_back_btn_image"
+                android:contentDescription="" />
+
+            <ImageView
+                android:id="@+id/back_category_image"
+                style="@style/global_activities_back_btn_category_image"
+                android:layout_toRightOf="@id/back_icon"
+                android:src="@drawable/ic_settings"
+                android:contentDescription="" />
+
+            <TextView
+                android:id="@+id/settingTittle"
+                android:layout_toRightOf="@id/back_category_image"
+                style="@style/global_activities_back_btn_category_tittle"
+                android:singleLine="true"
+                android:text="@string/title_activity_settings" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/settings_button_divider_default"
+        android:dividerHeight="11dp"
+        android:listSelector="@drawable/settings_button_status_background"/>
+
+</LinearLayout>

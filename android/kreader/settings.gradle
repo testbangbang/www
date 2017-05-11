@@ -17,4 +17,5 @@ include ':libraries:cropimage', ':libraries:onyxsdk-appcompat',
         ':app:phone-reader',
         ':app:app-market',
         ':app:demo-push',
-        ':app:onyx-settings'
+        ':app:onyx-settings',
+        ':app:edu-reader'

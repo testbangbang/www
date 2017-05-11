@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="reader_setting">
+    <CheckBoxPreference
+            android:key="@string/settings_show_doc_title_key"
+            android:layout="@layout/settings_custom_preference_item"
+            android:summaryOn="@string/settings_enable"
+            android:summaryOff="@string/settings_disable"
+            android:defaultValue="false"
+            android:title="@string/settings_show_doc_title"/>
+    <CheckBoxPreference
+        android:key="@string/settings_battery_percentage_show_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summaryOn="@string/settings_show"
+        android:summaryOff="@string/settings_hide"
+        android:defaultValue="false"
+        android:title="@string/settings_battery_percentage_show_tittle" />
+    <CheckBoxPreference
+        android:key="@string/settings_time_show_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summaryOn="@string/settings_show"
+        android:summaryOff="@string/settings_hide"
+        android:defaultValue="false"
+        android:title="@string/settings_time_show_tittle" />
+    <CheckBoxPreference
+        android:key="@string/settings_time_show_format_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summaryOn="@string/settings_time_show_format_24hours"
+        android:summaryOff="@string/settings_time_show_format_12hours"
+        android:dependency="@string/settings_time_show_key"
+        android:defaultValue="false"
+        android:title="@string/settings_time_show_format_tittle" />
+</PreferenceScreen>

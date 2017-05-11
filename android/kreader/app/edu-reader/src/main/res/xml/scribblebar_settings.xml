@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="reader_setting" >
+    <CheckBoxPreference
+        android:key="@string/settings_scribble_bar_show_reader_status_bar_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summaryOn="@string/settings_show"
+        android:summaryOff="@string/settings_hide"
+        android:defaultValue="false"
+        android:title="@string/settings_scribble_bar_show_reader_status_bar_tittle"/>
+    <CheckBoxPreference
+            android:key="@string/settings_scribble_smooth_key"
+            android:layout="@layout/settings_custom_preference_item"
+            android:summaryOn="@string/settings_enable"
+            android:summaryOff="@string/settings_disable"
+            android:defaultValue="true"
+            android:title="@string/settings_scribble_smooth_title"/>
+
+    <!--<CheckBoxPreference-->
+            <!--android:key="@string/settings_acquire_scribble_lock_key"-->
+            <!--android:layout="@layout/settings_custom_preference_item"-->
+            <!--android:summaryOn="@string/settings_enable"-->
+            <!--android:summaryOff="@string/settings_disable"-->
+            <!--android:defaultValue="true"-->
+            <!--android:title="@string/settings_acquire_scribble_lock_title"/>-->
+    <ListPreference
+            android:key="@string/settings_scribble_base_width_key"
+            android:layout="@layout/settings_custom_preference_item"
+            android:summary="@string/settings_scribble_base_width_summary"
+            android:title="@string/settings_scribble_base_width_tittle"/>
+
+
+</PreferenceScreen>

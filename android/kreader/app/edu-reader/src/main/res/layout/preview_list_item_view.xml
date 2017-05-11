@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="@drawable/imagebtn_bg"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/item_container"
+        android:layout_toLeftOf="@+id/right_shadow"
+        android:layout_above="@+id/bottom_shadow"
+        android:padding="3dp"
+        android:background="@drawable/preview_item_view_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
+            android:id="@+id/image_view"
+            android:layout_above="@+id/text_view_page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:padding="5dp"
+            android:id="@+id/text_view_page"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:text=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:id="@+id/btn_page"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:textSize="@dimen/preview_item_page_text_size"
+            android:textColor="@android:color/white"
+            android:text="1"
+            android:gravity="center"
+            android:background="@android:color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:scaleType="fitXY"
+        android:id="@+id/right_shadow"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/library_book_cover_shadow"
+        android:layout_width="@dimen/dialog_quick_preview_list_item_shadow_height"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:scaleType="fitXY"
+        android:id="@+id/bottom_shadow"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/library_book_cover_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_quick_preview_list_item_shadow_height"/>
+
+    <ImageView
+        android:background="@drawable/imagebtn_bg"
+        android:id="@+id/close_view"
+        android:visibility="gone"
+        android:src="@drawable/ic_dialog_close"
+        android:layout_margin="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

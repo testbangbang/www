@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
+    <style name="Theme.AppCompat.Transparent.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+    </style>
+    <style name="dialog_no_title" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/square_bg</item>
+        <item name="colorAccent">@android:color/background_dark</item>
+        <item name="colorPrimaryDark">@color/background_device_default_dark</item>
+        <item name="android:textColor">@color/background_device_default_dark</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:windowElevation" tools:targetApi="M">0dp</item>
+    </style>
+    <style name="single_line_X_axis_View">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@android:color/black</item>
+    </style>
+    <style name="dialog_progress" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+    <style name="single_line_Y_axis_View">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@android:color/black</item>
+    </style>
+    <style name="dialog_transparent_no_title" parent="dialog_no_title">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="android_dialog_no_title" parent="android:Theme.NoTitleBar">
+        <item name="android:windowBackground">@drawable/square_bg</item>
+        <item name="android:textColor">@color/background_device_default_dark</item>
+    </style>
+    <style name="popup_selection_menu_text_view">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textSize">@dimen/popup_selection_menu_button_text_size</item>
+        <item name="android:layout_marginBottom">@dimen/popup_selection_menu_action_margin_top_bottom</item>
+    </style>
+    <style name="popup_selection_menu_image_view">
+        <item name="android:layout_marginTop">@dimen/popup_selection_menu_action_margin_top_bottom</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="tts_button">
+        <item name="android:padding">5dp</item>
+        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:layout_margin">@dimen/tts_button_margin</item>
+    </style>
+    <style name="search_button">
+        <item name="android:padding">5dp</item>
+        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:layout_margin">@dimen/search_button_margin</item>
+    </style>
+    <style name="tts_speed_checkbox">
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:button">@drawable/tts_speed_select</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="settings_activity_titleBar">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">@dimen/tittle_bar_height</item>
+        <item name="android:background">@color/title_background</item>
+    </style>
+    <style name="dialog_table_of_content_radio_button">
+        <item name="android:focusable">false</item>
+        <item name="android:paddingTop">@dimen/dialog_table_of_content_radio_button_padding</item>
+        <item name="android:paddingBottom">@dimen/dialog_table_of_content_radio_button_padding</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="dialog_contrast_checkbox">
+        <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/focused_bg</item>
+        <item name="android:gravity">center</item>
+        <item name="android:button">@null</item>
+        <item name="android:drawableTop">@drawable/bold_size_select</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="statistics_text_view">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:layout_marginTop">@dimen/activity_statistics_spacing</item>
+        <item name="android:layout_marginBottom">@dimen/activity_statistics_spacing</item>
+        <item name="android:textSize">@dimen/activity_statistics_small_text_size</item>
+    </style>
+    <style name="dialog_text_style_title_text_view">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textSize">@dimen/dialog_text_style_title_text_size</item>
+    </style>
+</resources>
