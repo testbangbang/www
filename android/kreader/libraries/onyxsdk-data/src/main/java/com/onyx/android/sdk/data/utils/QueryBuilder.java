@@ -16,10 +16,14 @@ import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLCondition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
+import com.raizlabs.android.dbflow.sql.language.property.BaseProperty;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
+import com.raizlabs.android.dbflow.sql.language.property.IntProperty;
+import com.raizlabs.android.dbflow.sql.language.property.LongProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -130,20 +134,76 @@ public class QueryBuilder {
         return args;
     }
 
+    public static IntProperty getMetadataReadingStatusProperty() {
+        return Metadata_Table.readingStatus;
+    }
+
+    public static Property<String> getMetadataTypeProperty() {
+        return Metadata_Table.type;
+    }
+
+    public static Property<String> getMetadataTitleProperty() {
+        return Metadata_Table.title;
+    }
+
+    public static Property<String> getMetadataNameProperty() {
+        return Metadata_Table.name;
+    }
+
+    public static Property<String> getMetadataAuthorsProperty() {
+        return Metadata_Table.authors;
+    }
+
+    public static Property<String> getMetadataPublisherProperty() {
+        return Metadata_Table.publisher;
+    }
+
+    public static Property<String> getMetadataTagsProperty() {
+        return Metadata_Table.tags;
+    }
+
+    public static Property<String> getMetadataSeriesProperty() {
+        return Metadata_Table.series;
+    }
+
+    public static Property<String> getMetadataIdStringProperty() {
+        return Metadata_Table.idString;
+    }
+
+    public static LongProperty getMetadataSizeProperty() {
+        return Metadata_Table.size;
+    }
+
+    public static Property<Date> getMetadataCreatedAtProperty() {
+        return Metadata_Table.createdAt;
+    }
+
+    public static Property<Date> getMetadataLastAccessProperty() {
+        return Metadata_Table.lastAccess;
+    }
+
+    public static Property<String> getMetadataCollectionDocIdProperty() {
+        return MetadataCollection_Table.documentUniqueId;
+    }
+
+    public static Property<String> getMetadataCollectionLibraryIdProperty() {
+        return MetadataCollection_Table.libraryUniqueId;
+    }
+
     public static ConditionGroup newBookListCondition() {
-        return ConditionGroup.clause().and(Metadata_Table.readingStatus.eq(Metadata.ReadingStatus.NEW));
+        return ConditionGroup.clause().and(getMetadataReadingStatusProperty().eq(Metadata.ReadingStatus.NEW));
     }
 
     public static ConditionGroup finishReadCondition() {
-        return ConditionGroup.clause().and(Metadata_Table.readingStatus.eq(Metadata.ReadingStatus.FINISHED));
+        return ConditionGroup.clause().and(getMetadataReadingStatusProperty().eq(Metadata.ReadingStatus.FINISHED));
     }
 
     public static ConditionGroup recentReadingCondition() {
-        return ConditionGroup.clause().and(Metadata_Table.readingStatus.eq(Metadata.ReadingStatus.READING));
+        return ConditionGroup.clause().and(getMetadataReadingStatusProperty().eq(Metadata.ReadingStatus.READING));
     }
 
     public static ConditionGroup recentAddCondition() {
-        return ConditionGroup.clause().and(Metadata_Table.readingStatus.eq(Metadata.ReadingStatus.NEW));
+        return ConditionGroup.clause().and(getMetadataReadingStatusProperty().eq(Metadata.ReadingStatus.NEW));
     }
 
     public static ConditionGroup orTypeCondition(Set<String> fileTypes) {
@@ -153,7 +213,7 @@ public class QueryBuilder {
         ConditionGroup group = ConditionGroup.clause();
         List<SQLCondition> sqlConditions = new ArrayList<>();
         for (String type : fileTypes) {
-            sqlConditions.add(Metadata_Table.type.eq(type));
+            sqlConditions.add(getMetadataTypeProperty().eq(type));
         }
         return group.orAll(sqlConditions);
     }
@@ -164,7 +224,7 @@ public class QueryBuilder {
         }
         List<SQLCondition> sqlConditions = new ArrayList<>();
         for (String tag : tags) {
-            sqlConditions.add(matchLike(Metadata_Table.tags, tag));
+            sqlConditions.add(matchLike(getMetadataTagsProperty(), tag));
         }
         return ConditionGroup.clause().orAll(sqlConditions);
     }
@@ -173,8 +233,8 @@ public class QueryBuilder {
         if (StringUtils.isNullOrEmpty(search)) {
             return ConditionGroup.clause();
         }
-        return ConditionGroup.clause().or(matchLike(Metadata_Table.title, search))
-                .or(matchLike(Metadata_Table.name, search)).or(matchLike(Metadata_Table.authors, search));
+        return ConditionGroup.clause().or(matchLike(getMetadataTitleProperty(), search))
+                .or(matchLike(getMetadataNameProperty(), search)).or(matchLike(getMetadataAuthorsProperty(), search));
     }
 
     /**
@@ -182,20 +242,20 @@ public class QueryBuilder {
      */
     public static List<OrderBy> getOrderByList() {
         List<OrderBy> orderByList = new ArrayList<>();
-        orderByList.add(OrderBy.fromProperty(Metadata_Table.name).ascending());
+        orderByList.add(OrderBy.fromProperty(getMetadataNameProperty()).ascending());
         return orderByList;
     }
 
     public static OrderBy getOrderByUpdateAt() {
-        return getOrderBy(Metadata_Table.updatedAt);
+        return getOrderBy(getMetadataCreatedAtProperty());
     }
 
     public static OrderBy getOrderByCreateAt() {
-        return getOrderBy(Metadata_Table.createdAt);
+        return getOrderBy(getMetadataCreatedAtProperty());
     }
 
     public static OrderBy getOrderByName() {
-        return getOrderBy(Metadata_Table.name).ascending();
+        return getOrderBy(getMetadataNameProperty()).ascending();
     }
 
     public static OrderBy getOrderBy(IProperty property) {
@@ -288,48 +348,52 @@ public class QueryBuilder {
         return orderBy;
     }
 
-    public static OrderBy generateOrderBy(SortBy sortBy, SortOrder order) {
-        boolean asc = order == SortOrder.Asc;
-        OrderBy orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.name), asc);
+    public static BaseProperty getPropertyFromSortBy(SortBy sortBy) {
+        BaseProperty property = getMetadataNameProperty();
         switch (sortBy) {
             case None:
             case Name:
                 break;
             case FileType:
-                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.type), asc);
+                property = getMetadataTypeProperty();
                 break;
             case Size:
-                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.size), asc);
+                property = getMetadataSizeProperty();
                 break;
             case CreationTime:
-                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.createdAt), asc);
+                property = getMetadataCreatedAtProperty();
                 break;
             case BookTitle:
-                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.title), asc);
+                property = getMetadataTitleProperty();
                 break;
             case Author:
-                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.authors), asc);
+                property = getMetadataAuthorsProperty();
                 break;
             case Publisher:
-                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.publisher), asc);
+                property = getMetadataPublisherProperty();
                 break;
             case LastOpenTime:
-                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.lastAccess), asc);
+                property = getMetadataLastAccessProperty();
                 break;
             case RecentlyRead:
-                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.lastAccess), asc);
+                property = getMetadataLastAccessProperty();
                 break;
             case Total:
-                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.lastAccess), asc);
+                property = getMetadataLastAccessProperty();
                 break;
             case StartTime:
-                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.lastAccess), asc);
+                property = getMetadataLastAccessProperty();
                 break;
             case InstallTime:
-                orderBy = ascDescOrder(OrderBy.fromProperty(Metadata_Table.lastAccess), asc);
+                property = getMetadataLastAccessProperty();
                 break;
         }
-        return orderBy;
+        return property;
+    }
+
+    public static OrderBy generateOrderBy(SortBy sortBy, SortOrder order) {
+        boolean asc = order == SortOrder.Asc;
+        return ascDescOrder(OrderBy.fromProperty(getPropertyFromSortBy(sortBy)), asc);
     }
 
     public static void generateQueryArgsSortBy(QueryArgs args) {
@@ -338,18 +402,18 @@ public class QueryBuilder {
     }
 
     public static void generateCriteriaCondition(final QueryArgs args) {
-        andWith(args.conditionGroup, matchLikeSet(Metadata_Table.authors, args.author));
-        andWith(args.conditionGroup, matchLikeSet(Metadata_Table.tags, args.tags));
-        andWith(args.conditionGroup, matchLikeSet(Metadata_Table.series, args.series));
-        andWith(args.conditionGroup, matchLikeSet(Metadata_Table.title, args.title));
-        andWith(args.conditionGroup, matchLikeSet(Metadata_Table.type, args.fileType));
+        andWith(args.conditionGroup, matchLikeSet(getMetadataAuthorsProperty(), args.author));
+        andWith(args.conditionGroup, matchLikeSet(getMetadataTagsProperty(), args.tags));
+        andWith(args.conditionGroup, matchLikeSet(getMetadataSeriesProperty(), args.series));
+        andWith(args.conditionGroup, matchLikeSet(getMetadataTitleProperty(), args.title));
+        andWith(args.conditionGroup, matchLikeSet(getMetadataTypeProperty(), args.fileType));
     }
 
     public static QueryArgs generateMetadataInQueryArgs(final QueryArgs queryArgs) {
-        Where<MetadataCollection> whereCollection = new Select(MetadataCollection_Table.documentUniqueId.withTable())
+        Where<MetadataCollection> whereCollection = new Select(getMetadataCollectionDocIdProperty().withTable())
                 .from(MetadataCollection.class)
-                .where(getNotNullOrEqualCondition(MetadataCollection_Table.libraryUniqueId.withTable(), queryArgs.libraryUniqueId));
-        Condition.In inCondition = inCondition(Metadata_Table.idString.withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.libraryUniqueId));
+                .where(getNotNullOrEqualCondition(getMetadataCollectionLibraryIdProperty().withTable(), queryArgs.libraryUniqueId));
+        Condition.In inCondition = inCondition(getMetadataIdStringProperty().withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.libraryUniqueId));
         ConditionGroup group = ConditionGroup.clause().and(inCondition);
         if (queryArgs.conditionGroup.size() > 0) {
             queryArgs.conditionGroup = group.and(queryArgs.conditionGroup);

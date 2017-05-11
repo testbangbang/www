@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- package name must be unique so suffix with "tests" so package loader doesn't ignore us -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.onyx.kreader.tests"
+          package="com.onyx.edu.reader.tests"
           android:versionCode="1"
           android:versionName="1.0">
     <!-- We add an application tag here just so that we can indicate that
@@ -19,6 +19,6 @@
     "adb shell am instrument -w com.onyx.reader.tests/android.test.InstrumentationTestRunner"
     -->
     <instrumentation android:name="android.test.InstrumentationTestRunner"
-                     android:targetPackage="com.onyx.kreader"
-                     android:label="Tests for com.onyx.kreader"/>
+                     android:targetPackage="com.onyx.edu.reader"
+                     android:label="Tests for com.onyx.edu.reader"/>
 </manifest>
