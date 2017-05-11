@@ -120,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.onyx.kreader.ui.view.HTMLReaderWebView
+            <com.onyx.edu.reader.ui.view.HTMLReaderWebView
                 android:id="@+id/explain"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
