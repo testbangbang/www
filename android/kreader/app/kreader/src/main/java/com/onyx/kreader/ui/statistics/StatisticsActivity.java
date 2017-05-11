@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.statistics;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +20,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.StatisticsCloudManager;
 import com.onyx.android.sdk.data.model.StatisticsResult;
+import com.onyx.android.sdk.data.request.cloud.SyncOreaderDataRequest;
 import com.onyx.android.sdk.data.request.cloud.GetStatisticsRequest;
 import com.onyx.android.sdk.data.request.cloud.PushStatisticsRequest;
 import com.onyx.android.sdk.device.Device;
@@ -67,7 +69,7 @@ public class StatisticsActivity extends ActionBarActivity {
         initData();
         //remove all data about internet
         //registerReceiver();
-        getStatistics();
+        getAllStatistics();
         //checkWifi();
     }
 
@@ -154,9 +156,18 @@ public class StatisticsActivity extends ActionBarActivity {
         });
     }
 
-    private void getStatistics() {
+    private void getAllStatistics() {
         dialogLoading = getDialogLoading();
         dialogLoading.show();
+        SyncOreaderDataRequest syncOreaderDataRequest = new SyncOreaderDataRequest(this);
+        getCloudStore().submitRequest(this, syncOreaderDataRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                getStatistics();
+            }
+        });
+    }
+    private void getStatistics() {
         final GetStatisticsRequest statisticsRequest = new GetStatisticsRequest(this, DeviceConfig.sharedInstance(this).getStatisticsUrl());
         getCloudStore().submitRequest(this, statisticsRequest, new BaseCallback() {
             @Override
