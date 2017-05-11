@@ -46,7 +46,7 @@ public class MetadataLoadAction extends BaseAction<LibraryDataHolder> {
                     libraryDataModel.visibleLibraryList = libraryRequest.getLibraryList();
                     libraryDataModel.visibleBookList = libraryRequest.getBookList();
                     libraryDataModel.bookCount = (int) libraryRequest.getTotalCount();
-                    libraryDataModel.thumbnailMaps = libraryRequest.getThumbnailMap();
+                    libraryDataModel.thumbnailMap = libraryRequest.getThumbnailMap();
                     libraryDataModel.libraryCount = CollectionUtils.getSize(libraryRequest.getLibraryList());
                 }
                 BaseCallback.invoke(baseCallback, request, e);

@@ -29,7 +29,7 @@ import java.util.Set;
  * Created by suicheng on 2017/5/10.
  */
 
-public class CloudQueryBuild extends QueryBuilder {
+public class CloudQueryBuilder {
 
     public static QueryArgs libraryAllBookQuery(String libraryUniqueId, SortBy sortBy, SortOrder sortOrder) {
         QueryArgs args = allBooksQuery(sortBy, sortOrder);
