@@ -6,6 +6,9 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.data.manager.CacheManager;
+import com.onyx.android.sdk.data.provider.DataProviderBase;
+import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.dataprovider.BuildConfig;
 import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
@@ -21,6 +24,7 @@ public class CloudManager {
     private RequestManager requestManager;
     private CloudConf chinaCloudConf;
     private CloudConf globalCloudConf;
+    private CacheManager cacheManager;
 
     public CloudManager() {
         requestManager = new RequestManager(Thread.NORM_PRIORITY);
@@ -81,6 +85,11 @@ public class CloudManager {
         return requestManager.submitRequestToMultiThreadPool(context, request, runnable, callback);
     }
 
+    public boolean submitRequestToSingle(final Context context, final BaseCloudRequest request, final BaseCallback callback) {
+        final Runnable runnable = generateRunnable(request);
+        return requestManager.submitRequest(context, request, runnable, callback);
+    }
+
     public Handler getLooperHandler() {
         return requestManager.getLooperHandler();
     }
@@ -114,5 +123,16 @@ public class CloudManager {
 
     static public void terminateCloudDatabase() {
         FlowManager.destroy();
+    }
+
+    public CacheManager getCacheManager() {
+        if (cacheManager == null) {
+            cacheManager = new CacheManager();
+        }
+        return cacheManager;
+    }
+
+    public DataProviderBase getCloudDataProvider() {
+        return DataProviderManager.getCloudDataProvider(getCloudConf());
     }
 }

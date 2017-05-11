@@ -1,13 +1,11 @@
-package com.onyx.android.sdk.data.utils;
+package com.onyx.android.sdk.data;
 
-import com.onyx.android.sdk.data.BookFilter;
-import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.SortBy;
-import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.data.model.CloudMetadata_Table;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
-import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.MetadataCollection_Table;
+import com.onyx.android.sdk.data.model.Metadata_Table;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
@@ -28,9 +26,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by suicheng on 2016/9/2.
+ * Created by suicheng on 2017/5/10.
  */
-public class QueryBuilder {
+
+public class CloudQueryBuild extends QueryBuilder {
 
     public static QueryArgs libraryAllBookQuery(String libraryUniqueId, SortBy sortBy, SortOrder sortOrder) {
         QueryArgs args = allBooksQuery(sortBy, sortOrder);
@@ -135,51 +134,51 @@ public class QueryBuilder {
     }
 
     public static IntProperty getMetadataReadingStatusProperty() {
-        return Metadata_Table.readingStatus;
+        return CloudMetadata_Table.readingStatus;
     }
 
     public static Property<String> getMetadataTypeProperty() {
-        return Metadata_Table.type;
+        return CloudMetadata_Table.type;
     }
 
     public static Property<String> getMetadataTitleProperty() {
-        return Metadata_Table.title;
+        return CloudMetadata_Table.title;
     }
 
     public static Property<String> getMetadataNameProperty() {
-        return Metadata_Table.name;
+        return CloudMetadata_Table.name;
     }
 
     public static Property<String> getMetadataAuthorsProperty() {
-        return Metadata_Table.authors;
+        return CloudMetadata_Table.authors;
     }
 
     public static Property<String> getMetadataPublisherProperty() {
-        return Metadata_Table.publisher;
+        return CloudMetadata_Table.publisher;
     }
 
     public static Property<String> getMetadataTagsProperty() {
-        return Metadata_Table.tags;
+        return CloudMetadata_Table.tags;
     }
 
     public static Property<String> getMetadataSeriesProperty() {
-        return Metadata_Table.series;
+        return CloudMetadata_Table.series;
     }
 
     public static Property<String> getMetadataIdStringProperty() {
-        return Metadata_Table.idString;
+        return CloudMetadata_Table.idString;
     }
 
     public static LongProperty getMetadataSizeProperty() {
-        return Metadata_Table.size;
+        return CloudMetadata_Table.size;
     }
 
     public static Property<Date> getMetadataCreatedAtProperty() {
-        return Metadata_Table.createdAt;
+        return CloudMetadata_Table.createdAt;
     }
 
     public static Property<Date> getMetadataLastAccessProperty() {
-        return Metadata_Table.lastAccess;
+        return CloudMetadata_Table.lastAccess;
     }
 
     public static Property<String> getMetadataCollectionDocIdProperty() {
@@ -410,16 +409,6 @@ public class QueryBuilder {
     }
 
     public static QueryArgs generateMetadataInQueryArgs(final QueryArgs queryArgs) {
-        Where<MetadataCollection> whereCollection = new Select(getMetadataCollectionDocIdProperty().withTable())
-                .from(MetadataCollection.class)
-                .where(getNotNullOrEqualCondition(getMetadataCollectionLibraryIdProperty().withTable(), queryArgs.libraryUniqueId));
-        Condition.In inCondition = inCondition(getMetadataIdStringProperty().withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.libraryUniqueId));
-        ConditionGroup group = ConditionGroup.clause().and(inCondition);
-        if (queryArgs.conditionGroup.size() > 0) {
-            queryArgs.conditionGroup = group.and(queryArgs.conditionGroup);
-        } else {
-            queryArgs.conditionGroup = group;
-        }
         return queryArgs;
     }
 }
