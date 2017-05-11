@@ -1,7 +1,6 @@
 package com.onyx.kreader.reader.ui;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,8 +20,7 @@ import com.onyx.kreader.event.RenderRequestFinishedEvent;
 import com.onyx.kreader.reader.ReaderRender;
 import com.onyx.kreader.reader.data.ReaderDataHolder;
 import com.onyx.kreader.reader.gesture.ReaderGestureListener;
-import com.onyx.kreader.reader.opengl.CurlPage;
-import com.onyx.kreader.reader.opengl.CurlView;
+import com.onyx.kreader.reader.opengl.PageRenderView;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -37,8 +35,8 @@ public class ReaderActivity extends AppCompatActivity {
 
     private static final String TAG = "ReaderActivity";
 
-    @Bind(R.id.curl_view)
-    CurlView curlView;
+    @Bind(R.id.page_view)
+    PageRenderView pageRenderView;
 
     private ReaderDataHolder readerDataHolder;
     private PageProvider pageProvider;
@@ -55,20 +53,23 @@ public class ReaderActivity extends AppCompatActivity {
     }
 
     private void initCurlView() {
-        curlView.setViewMode(CurlView.SHOW_ONE_PAGE);
-        curlView.setSizeChangedObserver(new CurlView.SizeChangedObserver() {
+        pageProvider = new PageProvider();
+        pageRenderView.setPageProvider(pageProvider);
+        pageRenderView.setSizeChangedListener(new PageRenderView.SizeChangedListener() {
             @Override
             public void onSizeChanged(int width, int height) {
                 getReaderDataHolder().setDisplaySize(width, height);
             }
         });
-        curlView.setViewChangedObserver(new CurlView.ViewChangedObserver() {
+        pageRenderView.setViewChangedOListener(new PageRenderView.ViewChangedOListener() {
             @Override
             public void onViewChanged(int position, boolean next) {
+                if (getReaderDataHolder().getReaderViewInfo() == null) {
+                    return;
+                }
                 if (position == getReaderDataHolder().getCurrentPage()) {
                     return;
                 }
-                Log.d(TAG, "onViewChanged: " + position + "next:" + next);
                 if (next) {
                     new NextScreenAction().execute(getReaderDataHolder(), null);
                 }else {
@@ -77,12 +78,12 @@ public class ReaderActivity extends AppCompatActivity {
             }
         });
         gestureDetector = new GestureDetector(this, new ReaderGestureListener(getReaderDataHolder()));
-        curlView.setOnTouchListener(new View.OnTouchListener() {
+        pageRenderView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 getReaderDataHolder().getHandlerManager().setTouchStartEvent(event);
                 if (getReaderDataHolder().inReadingProvider()) {
-                    curlView.onTouchEvent(v, event);
+                    pageRenderView.onTouchEvent(v, event);
                 }
                 gestureDetector.onTouchEvent(event);
                 getReaderDataHolder().getHandlerManager().onTouchEvent(getReaderDataHolder(), event);
@@ -91,7 +92,7 @@ public class ReaderActivity extends AppCompatActivity {
         });
     }
 
-    private class PageProvider implements CurlView.PageProvider {
+    private class PageProvider implements PageRenderView.PageProvider {
 
         @Override
         public int getPageCount() {
@@ -99,10 +100,8 @@ public class ReaderActivity extends AppCompatActivity {
         }
 
         @Override
-        public void updatePage(CurlPage page, int width, int height, int index) {
-            Bitmap front = getReaderDataHolder().getReaderPageCache(index);
-            page.setTexture(front, CurlPage.SIDE_BOTH);
-            page.setColor(Color.WHITE, CurlPage.SIDE_BACK);
+        public Bitmap getPageView(int position) {
+            return getReaderDataHolder().getReaderPageCache(position);
         }
     }
 
@@ -122,13 +121,13 @@ public class ReaderActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        curlView.onResume();
+        pageRenderView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        curlView.onPause();
+        pageRenderView.onPause();
     }
 
     @Override
@@ -139,14 +138,13 @@ public class ReaderActivity extends AppCompatActivity {
 
     @Subscribe
     public void onDocumentInitRendered(final DocumentInitRenderedEvent event) {
-        pageProvider = new PageProvider();
-        curlView.setPageProvider(pageProvider);
+
     }
 
     @Subscribe
     public void onRenderRequestFinished(final RenderRequestFinishedEvent event) {
-        curlView.setCurrentIndex(getReaderDataHolder().getCurrentPage());
-        ReaderRender.renderPage(this, getReaderDataHolder(), curlView);
+        pageRenderView.setCurrentIndex(getReaderDataHolder().getCurrentPage());
+        ReaderRender.renderPage(this, getReaderDataHolder(), pageRenderView);
     }
 
     private void openFileFromIntent() {

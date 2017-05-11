@@ -38,11 +38,6 @@ public abstract class BaseHandler {
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (e.getX() > readerDataHolder.getDisplayWidth() * 2 / 3) {
-            nextScreen(readerDataHolder);
-        }else if (e.getX() < readerDataHolder.getDisplayWidth() / 3) {
-            prevScreen(readerDataHolder);
-        }
         return true;
     }
 

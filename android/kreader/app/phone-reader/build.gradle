@@ -57,4 +57,5 @@ dependencies {
     compile "com.afollestad.material-dialogs:commons:$rootProject.phone_materialDialogsCommonVersion"
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
     compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    compile "com.github.eschao:android-PageFlip:$rootProject.pageflip"
 }

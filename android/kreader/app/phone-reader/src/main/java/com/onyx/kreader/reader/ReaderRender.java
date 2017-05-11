@@ -1,10 +1,9 @@
 package com.onyx.kreader.reader;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 
 import com.onyx.kreader.reader.data.ReaderDataHolder;
-import com.onyx.kreader.reader.opengl.CurlView;
+import com.onyx.kreader.reader.opengl.PageRenderView;
 
 /**
  * Created by ming on 2017/5/5.
@@ -12,13 +11,13 @@ import com.onyx.kreader.reader.opengl.CurlView;
 
 public class ReaderRender {
 
-    public static void renderPage(final Context context, final ReaderDataHolder readerDataHolder, final CurlView curlView) {
-        drawHighLight(readerDataHolder, curlView);
+    public static void renderPage(final Context context, final ReaderDataHolder readerDataHolder, final PageRenderView renderView) {
+        drawHighLight(readerDataHolder, renderView);
     }
 
-    private static void drawHighLight(final ReaderDataHolder readerDataHolder, final CurlView curlView) {
+    private static void drawHighLight(final ReaderDataHolder readerDataHolder, final PageRenderView renderView) {
         if (readerDataHolder.getSelectionManager().hasSelection()) {
-            curlView.updateIOpenGLObjects(readerDataHolder.getSelectionManager().getSelectionRectangles());
+            renderView.updateIOpenGLObjects(readerDataHolder.getSelectionManager().getSelectionRectangles());
         }
     }
 }
