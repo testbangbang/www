@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-  <string name="app_name">	Neo Reader v2.0
-</string>
+  <string name="app_name">Reader</string>
   <string name="title">标题</string>
   <string name="cancel">取消</string>
   <string name="confirm">确认</string>

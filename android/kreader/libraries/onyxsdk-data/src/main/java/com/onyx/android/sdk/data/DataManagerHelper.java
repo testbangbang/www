@@ -13,17 +13,29 @@ import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
+import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
+import com.onyx.android.sdk.data.v1.OnyxFileDownloadService;
+import com.onyx.android.sdk.data.v1.ServiceFactory;
+import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 /**
  * Created by suicheng on 2016/11/16.
@@ -167,7 +179,9 @@ public class DataManagerHelper {
         }
         if (list == null) {
             list = dataManager.getRemoteContentProvider().findMetadataByQueryArgs(context, queryArgs);
-            dataManager.getCacheManager().addToMetadataCache(queryKey, list);
+            if (!CollectionUtils.isNullOrEmpty(list)) {
+                dataManager.getCacheManager().addToMetadataCache(queryKey, list);
+            }
         }
         return list;
     }
@@ -181,18 +195,23 @@ public class DataManagerHelper {
         }
         if (list == null) {
             list = dataManager.getRemoteContentProvider().loadAllLibrary(libraryUniqueId);
-            dataManager.getCacheManager().addToLibraryCache(queryKey, list);
+            if (!CollectionUtils.isNullOrEmpty(list)) {
+                dataManager.getCacheManager().addToLibraryCache(queryKey, list);
+            }
         }
         return list;
     }
 
-    public static Thumbnail getThumbnailEntry(Context context, DataManager dataManager, String associationId) {
-        return dataManager.getRemoteContentProvider().getThumbnailEntry(context, associationId,
-                OnyxThumbnail.ThumbnailKind.Large);
+    public static OnyxThumbnail.ThumbnailKind getDefaultThumbnailKind() {
+        return OnyxThumbnail.ThumbnailKind.Large;
     }
 
-    public static String getThumbnailPath(Context context, DataManager dataManager, String associationId) {
-        Thumbnail thumbnail = getThumbnailEntry(context, dataManager, associationId);
+    public static Thumbnail getThumbnailEntry(Context context, DataProviderBase dataProvider, String associationId) {
+        return dataProvider.getThumbnailEntry(context, associationId, getDefaultThumbnailKind());
+    }
+
+    public static String getThumbnailPath(Context context, DataProviderBase dataProvider, String associationId) {
+        Thumbnail thumbnail = getThumbnailEntry(context, dataProvider, associationId);
         if (thumbnail == null) {
             return null;
         }
@@ -216,7 +235,7 @@ public class DataManagerHelper {
     }
 
     public static CloseableReference<Bitmap> loadThumbnailBitmapWithCache(Context context, DataManager dataManager,
-                                                                 Metadata metadata) {
+                                                                          Metadata metadata) {
         BitmapReferenceLruCache bitmapLruCache = dataManager.getCacheManager().getBitmapLruCache();
         String associationId = metadata.getAssociationId();
         if (StringUtils.isNullOrEmpty(associationId)) {
@@ -226,18 +245,30 @@ public class DataManagerHelper {
         if (refBitmap != null) {
             return refBitmap.clone();
         }
-        String path = getThumbnailPath(context, dataManager, associationId);
-        if (StringUtils.isNullOrEmpty(path)) {
-            return null;
-        }
+        return decodeFileAndCache(context, dataManager.getRemoteContentProvider(), bitmapLruCache, associationId);
+    }
+
+    private static CloseableReference<Bitmap> decodeFileAndCache(File file, BitmapReferenceLruCache bitmapLruCache, String associationId) {
+        CloseableReference<Bitmap> refBitmap = null;
         try {
-            refBitmap = ThumbnailUtils.decodeFile(new File(path));
+            refBitmap = ThumbnailUtils.decodeFile(file);
             if (refBitmap != null && refBitmap.isValid()) {
                 bitmapLruCache.put(associationId, refBitmap);
                 return refBitmap.clone();
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return refBitmap;
+    }
+
+    private static CloseableReference<Bitmap> decodeFileAndCache(Context context, DataProviderBase dataProvider,
+                                                    BitmapReferenceLruCache bitmapLruCache,
+                                                    String associationId) {
+        CloseableReference<Bitmap> refBitmap = null;
+        String path = getThumbnailPath(context, dataProvider, associationId);
+        if (StringUtils.isNotBlank(path)) {
+            refBitmap = decodeFileAndCache(new File(path), bitmapLruCache, associationId);
         }
         return refBitmap;
     }
@@ -258,5 +289,114 @@ public class DataManagerHelper {
         }
         Collections.reverse(parentLibraryList);
         return parentLibraryList;
+    }
+
+    public static QueryResult<Metadata> loadCloudMetadataListWithCache(Context context, CloudManager cloudManager,
+                                                                QueryArgs queryArgs, boolean loadFromCache) {
+        String queryKey = null;
+        if (!CollectionUtils.isNullOrEmpty(queryArgs.category)) {
+            queryKey = StringUtils.join(queryArgs.category, Metadata.DELIMITER);
+        }
+        queryKey += queryArgs.limit + queryArgs.offset;
+        DataProviderBase dataProvider = cloudManager.getCloudDataProvider();
+        QueryResult<Metadata> result = null;
+        if (loadFromCache) {
+            List<Metadata> list = cloudManager.getCacheManager().getMetadataLruCache(queryKey);
+            if (list != null) {
+                result = new QueryResult<>();
+                result.list = list;
+                result.count = dataProvider.count(context, queryArgs);
+            }
+        }
+        if (result == null) {
+            result = dataProvider.findMetadataResultByQueryArgs(context, queryArgs);
+            if (result != null && !CollectionUtils.isNullOrEmpty(result.list)) {
+                cloudManager.getCacheManager().addToMetadataCache(queryKey, result.list);
+            }
+        }
+        return result;
+    }
+
+    public static Map<String, CloseableReference<Bitmap>> loadCloudThumbnailBitmapsWithCache(Context context, CloudManager cloudManager,
+                                                                                        List<Metadata> metadataList) {
+        Map<String, CloseableReference<Bitmap>> map = new HashMap<>();
+        for (Metadata metadata : metadataList) {
+            CloseableReference<Bitmap> refBitmap = loadCloudThumbnailBitmapWithCache(context, cloudManager, metadata);
+            if (refBitmap == null) {
+                continue;
+            }
+            map.put(metadata.getAssociationId(), refBitmap);
+        }
+        return map;
+    }
+
+    public static CloseableReference<Bitmap> loadCloudThumbnailBitmapWithCache(Context context, CloudManager cloudManager,
+                                                                               Metadata metadata) {
+        BitmapReferenceLruCache bitmapLruCache = cloudManager.getCacheManager().getBitmapLruCache();
+        String associationId = metadata.getAssociationId();
+        if (StringUtils.isNullOrEmpty(associationId)) {
+            return null;
+        }
+        CloseableReference<Bitmap> refBitmap = bitmapLruCache.get(associationId);
+        if (refBitmap != null) {
+            return refBitmap.clone();
+        }
+        refBitmap = decodeFileAndCache(context, cloudManager.getCloudDataProvider(), bitmapLruCache, associationId);
+        if (refBitmap != null) {
+            return refBitmap;
+        }
+        String coverUrl = metadata.getCoverUrl();
+        if (!NetworkUtil.isWifiConnected(context) || StringUtils.isNullOrEmpty(coverUrl)) {
+            return null;
+        }
+        File file = CloudUtils.imageCachePath(context, associationId);
+        boolean success = startDownloadFile(cloudManager, coverUrl, file.getAbsolutePath());
+        if (success) {
+            Bitmap bitmap = BitmapUtils.loadBitmapFromFile(file.getAbsolutePath());
+            if (bitmap == null) {
+                return null;
+            }
+            boolean hasThumbnail = ThumbnailUtils.hasThumbnail(context, cloudManager.getCloudDataProvider(), associationId);
+            if (!hasThumbnail) {
+                ThumbnailUtils.insertThumbnail(context, cloudManager.getCloudDataProvider(),
+                        file.getAbsolutePath(), associationId, getDefaultThumbnailKind(), bitmap);
+            } else {
+                ThumbnailUtils.updateThumbnailEntry(context, cloudManager.getCloudDataProvider(), associationId,
+                        getDefaultThumbnailKind(), bitmap);
+            }
+            refBitmap = decodeFileAndCache(context, cloudManager.getCloudDataProvider(), bitmapLruCache, associationId);
+        }
+        return refBitmap;
+    }
+
+    public static boolean startDownloadFile(CloudManager cloudManager, String url, String path) {
+        OnyxFileDownloadService service = ServiceFactory.getFileDownloadService(cloudManager.getCloudConf().getApiBase());
+        Response<ResponseBody> resp;
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        try {
+            FileUtils.ensureFileExists(path);
+            File file = new File(path);
+            resp = service.fileDownload(url).execute();
+            inputStream = resp.body().byteStream();
+            outputStream = new FileOutputStream(file);
+
+            byte[] fileReader = new byte[3072];
+            while (true) {
+                int read = inputStream.read(fileReader);
+                if (read == -1) {
+                    break;
+                }
+                outputStream.write(fileReader, 0, read);
+            }
+            outputStream.flush();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            FileUtils.closeQuietly(inputStream);
+            FileUtils.closeQuietly(outputStream);
+        }
+        return false;
     }
 }

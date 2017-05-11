@@ -5,7 +5,7 @@
     android:background="@android:color/white"
     android:gravity="center">
 
-    <com.onyx.kreader.ui.view.ZoomImageView
+    <com.onyx.edu.reader.ui.view.ZoomImageView
         android:id="@+id/image_view"
         android:layout_margin="5dp"
         android:layout_width="match_parent"
