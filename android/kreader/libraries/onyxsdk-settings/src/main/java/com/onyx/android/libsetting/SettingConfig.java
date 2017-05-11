@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_APPLICATION_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_BLUETOOTH_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_DATE_TIME_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_ERROR_REPORT_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_LANG_INPUT_TAG;
@@ -34,6 +35,7 @@ import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_PROD
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_SECURITY_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_STORAGE_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_USER_SETTING_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_WIFI_TAG;
 
 /**
  * Created by solskjaer49 on 2016/12/6 12:09.
@@ -435,6 +437,8 @@ public class SettingConfig {
         settingIconsMap.put(SETTING_ITEM_SECURITY_TAG, "ic_security");
         settingIconsMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "ic_error_report");
         settingIconsMap.put(SETTING_ITEM_PRODUCTION_TEST_TAG, "ic_production_test");
+        settingIconsMap.put(SETTING_ITEM_WIFI_TAG, "ic_setting_network");
+        settingIconsMap.put(SETTING_ITEM_BLUETOOTH_TAG, "ic_setting_bluetooth");
     }
 
     private void buildDefaultSettingsTittleMap() {
@@ -449,6 +453,8 @@ public class SettingConfig {
         settingTittleMap.put(SETTING_ITEM_SECURITY_TAG, "setting_security");
         settingTittleMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "setting_error_report");
         settingTittleMap.put(SETTING_ITEM_PRODUCTION_TEST_TAG, "setting_production_test");
+        settingTittleMap.put(SETTING_ITEM_WIFI_TAG, "setting_wifi");
+        settingTittleMap.put(SETTING_ITEM_BLUETOOTH_TAG, "setting_bluetooth");
     }
 
     public List<SettingItem> getSettingItemList(Context context) {
