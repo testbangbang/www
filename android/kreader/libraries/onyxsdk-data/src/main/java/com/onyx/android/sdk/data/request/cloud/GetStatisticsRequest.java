@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
 import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -139,11 +140,11 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -1);
         Date date = calendar.getTime();
-        Set<Integer> days = new HashSet<>();
+        Set<String> days = new HashSet<>();
         long readTimes = 0;
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, date, BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE);
         for (OnyxStatisticsModel statisticsModel : statisticsModels) {
-            days.add(statisticsModel.getEventTime().getDay());
+            days.add(DateTimeUtil.formatDate(statisticsModel.getEventTime(), DateTimeUtil.DATE_FORMAT_YYYYMMDD));
             readTimes += statisticsModel.getDurationTime();
         }
         if (days.size() == 0) {
