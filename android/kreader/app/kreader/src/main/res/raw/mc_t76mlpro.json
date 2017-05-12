@@ -7,6 +7,7 @@
     "disableNoteFunc" : false,
     "regalEnable" : true,
     "supportMultipleTabs": true,
+    "pronounceEnable" :false,
     "keyBinding": {
         "HandlerManager": {
             "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
