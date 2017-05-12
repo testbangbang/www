@@ -1,7 +1,9 @@
 package com.onyx.android.sdk.data.request.cloud;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.Book;
@@ -28,6 +30,7 @@ import retrofit2.Response;
 
 public class GetStatisticsRequest extends BaseCloudRequest {
 
+    private static final String TAG = "GetStatisticsRequest";
     public final static int RECENT_BOOK_MAX_COUNT = 5;
 
     private Context context;
@@ -150,7 +153,12 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         if (days.size() == 0) {
             return 0;
         }
-        return readTimes / days.size();
+        long readTimeEveryDay = readTimes / days.size();
+        if (readTimeEveryDay > 10 * 60 * 60 * 1000) {
+            Log.d(TAG, "statisticsModels:" + JSON.toJSONString(statisticsModels));
+            Log.d(TAG, "days: " + JSON.toJSONString(days) + "-------readTimes: " + readTimes + "------date: " + date);
+        }
+        return readTimeEveryDay;
     }
 
     private Book getLongestBook() {
