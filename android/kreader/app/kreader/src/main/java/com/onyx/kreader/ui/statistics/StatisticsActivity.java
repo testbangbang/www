@@ -52,6 +52,7 @@ public class StatisticsActivity extends ActionBarActivity {
     @Bind(R.id.page)
     TextView page;
 
+    private boolean connectToServer = false;
     private CloudStore cloudStore;
     private StatisticsCloudManager cloudManager;
     private DataStatisticsFragment dataStatisticsFragment;
@@ -67,10 +68,11 @@ public class StatisticsActivity extends ActionBarActivity {
         ButterKnife.bind(this);
         initView();
         initData();
-        //remove all data about internet
-        //registerReceiver();
+        if (connectToServer) {
+            registerReceiver();
+            checkWifi();
+        }
         getAllStatistics();
-        //checkWifi();
     }
 
     private void initView() {
@@ -132,13 +134,13 @@ public class StatisticsActivity extends ActionBarActivity {
                 updatePageTitle();
                 if (connected) {
                     pushStatistics();
-                    getStatistics();
+                    getAllStatistics();
                 }
             }
 
             @Override
             public void onNoNetwork() {
-                getStatistics();
+                getAllStatistics();
             }
         });
         IntentFilter filter = new IntentFilter();
