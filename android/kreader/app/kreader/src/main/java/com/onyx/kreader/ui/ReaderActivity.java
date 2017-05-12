@@ -78,6 +78,7 @@ import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
 import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
+import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
 import com.onyx.kreader.ui.events.PinchZoomEvent;
 import com.onyx.kreader.ui.events.QuitEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
@@ -189,6 +190,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (getReaderDataHolder().isDocumentOpened()) {
             forceCloseApplication(null);
         }
+        releaseStartupWakeLock();
     }
 
     @Override
@@ -766,7 +768,6 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         final OpenDocumentAction action = new OpenDocumentAction(this, path);
         action.execute(getReaderDataHolder(), null);
-        releaseStartupWakeLock();
     }
 
     private boolean isDocumentOpening() {
@@ -821,6 +822,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!tabWidgetVisible) {
             buttonShowTabWidget.setVisibility(View.VISIBLE);
         }
+        releaseStartupWakeLock();
     }
 
     @Subscribe
@@ -1001,6 +1003,18 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onConfirmCloseDialogEvent(final ConfirmCloseDialogEvent event) {
         enableShortcut(!event.isOpen());
+    }
+
+    @Subscribe
+    public void onOpenDocumentFailed(final OpenDocumentFailedEvent event) {
+        enablePost(true);
+        ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
+        getReaderDataHolder().getEventBus().unregister(this);
+        releaseStartupWakeLock();
+        ReaderTabHostBroadcastReceiver.sendOpenDocumentFailedEvent(this, getReaderDataHolder().getDocumentPath());
+
+        finish();
+        postFinish();
     }
 
     @Subscribe
