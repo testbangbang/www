@@ -41,6 +41,23 @@ const uint32_t kMaxNestedArrayLevel = 512;
 const uint32_t kMaxWordBuffer = 256;
 const FX_STRSIZE kMaxStringLength = 32767;
 
+// added by joy@onyx for DRM decryption
+void drmDecrypt(CPDF_StreamAcc *stream) {
+  int size = stream->GetSize();
+  onyx::DrmDecryptManager &decrypt = onyx::DrmDecryptManager::singleton();
+  if (decrypt.isEncrypted()) {
+    const unsigned char *rawData = reinterpret_cast<const unsigned char *>(stream->GetData());
+    int rawSize = stream->GetSize();
+    int dataLen = 0;
+    unsigned char *data = decrypt.aesDecrypt(rawData,
+                                             rawSize,
+                                             &dataLen);
+    if (data) {
+      stream->SetData(data, dataLen);
+    }
+  }
+}
+
 }  // namespace
 
 CPDF_StreamParser::CPDF_StreamParser(const uint8_t* pData, uint32_t dwSize) {
@@ -663,22 +680,7 @@ void CPDF_ContentParser::Start(CPDF_Page* pPage) {
     m_pSingleStream.reset(new CPDF_StreamAcc);
     m_pSingleStream->LoadAllData(pStream, FALSE);
 
-    // added by joy@onyx for DRM decryption
-    int size = m_pSingleStream->GetSize();
-    fprintf(stdout, "m_pSingleStream data size: %d\n", size);
-    onyx::DrmDecryptManager &decrypt = onyx::DrmDecryptManager::singleton();
-    if (decrypt.isEncrypted()) {
-      const unsigned char *rawData = reinterpret_cast<const unsigned char *>(m_pSingleStream->GetData());
-      int rawSize = m_pSingleStream->GetSize();
-      int dataLen = 0;
-      unsigned char *data = decrypt.aesDecrypt(rawData,
-                                               rawSize,
-                                               &dataLen);
-      if (data) {
-        m_pSingleStream->SetData(data, dataLen);
-      }
-    }
-
+    drmDecrypt(m_pSingleStream.get());
   } else if (CPDF_Array* pArray = pContent->AsArray()) {
     m_nStreams = pArray->GetCount();
     if (m_nStreams)
@@ -783,6 +785,7 @@ void CPDF_ContentParser::Continue(IFX_Pause* pPause) {
         CPDF_Stream* pStreamObj = ToStream(
             pContent ? pContent->GetDirectObjectAt(m_CurrentOffset) : nullptr);
         m_StreamArray[m_CurrentOffset]->LoadAllData(pStreamObj, FALSE);
+        drmDecrypt(m_StreamArray[m_CurrentOffset].get());
         m_CurrentOffset++;
       }
     }
