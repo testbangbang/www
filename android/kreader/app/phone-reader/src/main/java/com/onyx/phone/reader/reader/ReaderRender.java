@@ -3,7 +3,7 @@ package com.onyx.phone.reader.reader;
 import android.content.Context;
 
 import com.onyx.phone.reader.reader.data.ReaderDataHolder;
-import com.onyx.phone.reader.reader.opengl.CurlView;
+import com.onyx.phone.reader.reader.opengl.PageRenderView;
 
 /**
  * Created by ming on 2017/5/5.
@@ -11,13 +11,13 @@ import com.onyx.phone.reader.reader.opengl.CurlView;
 
 public class ReaderRender {
 
-    public static void renderPage(final Context context, final ReaderDataHolder readerDataHolder, final CurlView curlView) {
-        drawHighLight(readerDataHolder, curlView);
+    public static void renderPage(final Context context, final ReaderDataHolder readerDataHolder, final PageRenderView renderView) {
+        drawHighLight(readerDataHolder, renderView);
     }
 
-    private static void drawHighLight(final ReaderDataHolder readerDataHolder, final CurlView curlView) {
+    private static void drawHighLight(final ReaderDataHolder readerDataHolder, final PageRenderView renderView) {
         if (readerDataHolder.getSelectionManager().hasSelection()) {
-            curlView.updateIOpenGLObjects(readerDataHolder.getSelectionManager().getSelectionRectangles());
+            renderView.updateIOpenGLObjects(readerDataHolder.getSelectionManager().getSelectionRectangles());
         }
     }
 }

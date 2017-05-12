@@ -138,11 +138,11 @@ public class ReaderDataHolder {
         if (e != null || request.isAbort()) {
             return;
         }
-        preRenderNext();
+        preRenderPage(true);
     }
 
-    public void preRenderNext() {
-        final PreRenderRequest preRenderRequest = new PreRenderRequest(true, false);
+    public void preRenderPage(final boolean forward) {
+        final PreRenderRequest preRenderRequest = new PreRenderRequest(forward, false);
         getReader().submitRequest(context, preRenderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

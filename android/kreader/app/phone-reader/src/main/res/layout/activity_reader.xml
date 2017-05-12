@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.onyx.phone.reader.reader.opengl.CurlView
-        android:id="@+id/curl_view"
+    <com.onyx.phone.reader.reader.opengl.PageRenderView
+        android:id="@+id/page_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </RelativeLayout>
