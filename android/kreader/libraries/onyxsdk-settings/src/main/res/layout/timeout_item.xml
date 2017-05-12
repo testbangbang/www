@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="timeoutItem"
+            type="com.onyx.android.libsetting.data.TimeoutItem" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:minHeight="@dimen/btn_minHeight"
+        android:background="@drawable/image_button_bg"
+        android:focusable="true">
+
+        <RadioButton
+            android:id="@+id/time_out_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:focusable="false"
+            android:clickable="false"
+            android:background="@null"
+            android:checked="@{timeoutItem.checked}"
+            android:text="@{timeoutItem.timeoutEntry}" />
+
+    </RelativeLayout>
+</layout>
