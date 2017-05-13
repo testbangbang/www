@@ -49,7 +49,6 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile boolean erasing = false;
     private volatile boolean shortcutDrawing = false;
     private volatile boolean shortcutErasing = false;
-    private volatile boolean enableShortcut = false;
     private volatile boolean pressed = false;
     private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
@@ -195,12 +194,12 @@ public class RawEventProcessor extends NoteEventProcessorBase {
                 pressed = value > 0;
             } else if (code == BTN_TOOL_PENCIL || code == BTN_TOOL_PEN) {
                 erasing = false;
-                shortcutDrawing = enableShortcut;
+                shortcutDrawing = true;
                 shortcutErasing = false;
             } else if (code == BTN_TOOL_RUBBER) {
                 erasing = true;
                 shortcutDrawing = false;
-                shortcutErasing = enableShortcut;
+                shortcutErasing = true;
             }
         }
     }
