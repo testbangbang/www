@@ -422,8 +422,15 @@ public class HandlerManager {
         return true;
     }
 
+    private boolean isEnableProcessSingleTapUp(final ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.inNoteWritingProvider()) {
+            return false;
+        }
+        return true;
+    }
+
     private boolean processSingleTapUp(final ReaderDataHolder readerDataHolder, final String action, final String args) {
-        if (!readerDataHolder.inReadingProvider()) {
+        if (!isEnableProcessSingleTapUp(readerDataHolder)) {
             return false;
         }
         if (StringUtils.isNullOrEmpty(action)) {
