@@ -8,7 +8,7 @@ import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuViewFactory;
-import com.onyx.edu.reader.ui.dialog.DialogReaderColorMenu;
+import com.onyx.edu.reader.ui.dialog.DialogReaderEduMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +17,10 @@ import java.util.List;
  * Created by ming on 2016/11/21.
  */
 
-public class ReaderLayerColorMenu extends ReaderMenu {
+public class EduMenu extends ReaderMenu {
 
     private Context context;
-    private DialogReaderColorMenu dialog;
+    private DialogReaderEduMenu dialog;
     private ReaderMenuState state;
     private List<ReaderLayerMenuItem> menuItems = new ArrayList<>();
     private View mainMenuContainerView;
@@ -42,7 +42,7 @@ public class ReaderLayerColorMenu extends ReaderMenu {
         }
     };
 
-    public ReaderLayerColorMenu(Context context) {
+    public EduMenu(Context context) {
         this.context = context;
     }
 
@@ -81,9 +81,9 @@ public class ReaderLayerColorMenu extends ReaderMenu {
         return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback, true);
     }
 
-    private DialogReaderColorMenu getDialog() {
+    private DialogReaderEduMenu getDialog() {
         if (dialog == null) {
-            dialog = new DialogReaderColorMenu(context, readerMenuCallback);
+            dialog = new DialogReaderEduMenu(context, readerMenuCallback);
         }
         return dialog;
     }

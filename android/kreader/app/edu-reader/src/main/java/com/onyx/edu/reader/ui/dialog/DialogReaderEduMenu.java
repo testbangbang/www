@@ -22,7 +22,7 @@ import com.onyx.edu.reader.R;
  * Created by ming on 2016/11/21.
  */
 
-public class DialogReaderColorMenu extends OnyxBaseDialog {
+public class DialogReaderEduMenu extends OnyxBaseDialog {
 
     private Context context;
     private ReaderMenu.ReaderMenuCallback readerMenuCallback;
@@ -33,7 +33,7 @@ public class DialogReaderColorMenu extends OnyxBaseDialog {
 
     private ReaderMenuState readerMenuState;
 
-    public DialogReaderColorMenu(Context context, ReaderMenu.ReaderMenuCallback menuCallback) {
+    public DialogReaderEduMenu(Context context, ReaderMenu.ReaderMenuCallback menuCallback) {
         super(context, R.style.CustomDialog);
         this.context = context;
         readerMenuCallback = menuCallback;
