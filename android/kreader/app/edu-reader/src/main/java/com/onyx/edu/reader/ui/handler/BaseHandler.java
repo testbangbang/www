@@ -55,6 +55,7 @@ public abstract class BaseHandler {
     private boolean actionUp = false;
     private boolean pinchZooming = false;
     private boolean scrolling = false;
+    private boolean disablePinchZoom = true;
 
 
     public boolean isSingleTapUp() {
@@ -210,11 +211,11 @@ public abstract class BaseHandler {
     }
 
     public boolean onScaleBegin(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
-        setPinchZooming(true);
         if (isSkipPinchZooming(readerDataHolder)) {
             Toast.makeText(readerDataHolder.getContext(), R.string.pinch_zooming_can_not_be_used, Toast.LENGTH_SHORT).show();
             return true;
         }
+        setPinchZooming(true);
         PinchZoomAction.scaleBegin(readerDataHolder, detector);
         return true;
     }
@@ -380,6 +381,9 @@ public abstract class BaseHandler {
     }
 
     public boolean isSkipPinchZooming(final ReaderDataHolder readerDataHolder) {
+        if (disablePinchZoom) {
+            return true;
+        }
         return (readerDataHolder.isFixedPageDocument() && !readerDataHolder.supportScalable()) ||
                 (readerDataHolder.isFlowDocument() && !readerDataHolder.supportFontSizeAdjustment());
     }
