@@ -112,7 +112,7 @@ public class RestoreRequest extends BaseReaderRequest {
         }
         if (reader.getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
             value = baseOptions.getTextGammaLevel();
-            if (value > ImageUtils.NO_GAMMA && value <= ImageUtils.MAX_GAMMA) {
+            if (value > BaseOptions.getLowerGammaLimit() && value <= ImageUtils.MAX_GAMMA) {
                 reader.getRenderer().setTextGamma(value);
             }
         }
