@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/tools"
+    appCompat:alwaysLayoutImageView="true"
     android:paddingLeft="@dimen/dialog_scribble_full_screen_toolbar_padding"
     android:paddingRight="@dimen/dialog_scribble_full_screen_toolbar_padding"
     android:orientation="horizontal"
@@ -9,9 +11,9 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:padding="5dp"
+        android:padding="@dimen/scribble_full_toolbar_padding"
         android:id="@+id/restore"
-        android:layout_margin="5dp"
+        android:layout_margin="@dimen/scribble_full_toolbar_padding"
         android:background="@drawable/imagebtn_bg"
         android:src="@drawable/ic_pack_up"
         android:layout_width="wrap_content"
@@ -19,8 +21,8 @@
 
     <ImageView
         android:id="@+id/left_page"
-        android:layout_margin="5dp"
-        android:padding="5dp"
+        android:layout_margin="@dimen/scribble_full_toolbar_padding"
+        android:padding="@dimen/scribble_full_toolbar_padding"
         android:background="@drawable/imagebtn_bg"
         android:src="@drawable/ic_page_arrow_left"
         android:layout_width="wrap_content"
@@ -28,8 +30,8 @@
 
     <ImageView
         android:id="@+id/right_page"
-        android:layout_margin="5dp"
-        android:padding="5dp"
+        android:layout_margin="@dimen/scribble_full_toolbar_padding"
+        android:padding="@dimen/scribble_full_toolbar_padding"
         android:background="@drawable/imagebtn_bg"
         android:src="@drawable/ic_page_arrow_right"
         android:layout_width="wrap_content"
