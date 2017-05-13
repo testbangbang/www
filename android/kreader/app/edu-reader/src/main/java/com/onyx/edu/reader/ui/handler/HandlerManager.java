@@ -423,6 +423,9 @@ public class HandlerManager {
     }
 
     private boolean processSingleTapUp(final ReaderDataHolder readerDataHolder, final String action, final String args) {
+        if (!readerDataHolder.inReadingProvider()) {
+            return false;
+        }
         if (StringUtils.isNullOrEmpty(action)) {
             return false;
         }

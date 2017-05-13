@@ -181,6 +181,10 @@ public class ReaderDataHolder {
         return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
     }
 
+    public boolean inReadingProvider() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.READING_PROVIDER);
+    }
+
     public boolean isNoteDirty() {
         return noteManager != null && getNoteManager().isNoteDirty();
     }
