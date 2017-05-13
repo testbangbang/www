@@ -24,7 +24,6 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
@@ -67,7 +66,7 @@ import com.onyx.edu.reader.ui.dialog.DialogTableOfContent;
 import com.onyx.edu.reader.ui.dialog.DialogTextStyle;
 import com.onyx.edu.reader.ui.events.QuitEvent;
 import com.onyx.edu.reader.device.DeviceConfig;
-import com.onyx.edu.reader.ui.view.ReaderLayerColorMenu;
+import com.onyx.edu.reader.ui.view.EduMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -204,7 +203,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC, R.drawable.ic_topic),
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.EXIT, R.drawable.ic_menu_close)
         };
-        readerMenu = new ReaderLayerColorMenu(readerDataHolder.getContext());
+        readerMenu = new EduMenu(readerDataHolder.getContext());
         updateReaderMenuCallback(readerMenu, readerDataHolder);
         List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder, menuItems);
         readerMenu.fillItems(items);
