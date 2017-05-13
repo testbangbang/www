@@ -74,7 +74,10 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
     }
 
     public Long getDurationTime() {
-        return durationTime > MAX_PAGE_DURATION_TIME ? MAX_PAGE_DURATION_TIME : durationTime;
+        if (durationTime != null) {
+            return durationTime > MAX_PAGE_DURATION_TIME ? MAX_PAGE_DURATION_TIME : durationTime;
+        }
+        return null;
     }
 
     public void setDurationTime(Long durationTime) {
