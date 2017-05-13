@@ -19,8 +19,8 @@ public class ScribbleMenuChangedEvent {
         this.excludeRect = excludeRect;
     }
 
-    public static ScribbleMenuChangedEvent create(int bottomToolBarTop, int topToolBarBottom, RectF excludeRect) {
-        return new ScribbleMenuChangedEvent(bottomToolBarTop, topToolBarBottom, excludeRect);
+    public static ScribbleMenuChangedEvent create(int bottomOfTopToolBar, int topOfBottomToolBar, RectF excludeRect) {
+        return new ScribbleMenuChangedEvent(bottomOfTopToolBar, topOfBottomToolBar, excludeRect);
     }
 
     public int getBottomOfTopToolBar() {

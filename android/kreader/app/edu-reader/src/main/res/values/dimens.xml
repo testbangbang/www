@@ -101,4 +101,5 @@
     <dimen name="dialog_reflow_setting_margin">10dp</dimen>
     <dimen name="dialog_text_style_title_text_size">18sp</dimen>
     <dimen name="dialog_dict_top_layout_margin">10dp</dimen>
+    <dimen name="scribble_full_toolbar_padding">4dp</dimen>
 </resources>

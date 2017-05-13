@@ -24,8 +24,6 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
-import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
@@ -68,6 +66,7 @@ import com.onyx.edu.reader.ui.dialog.DialogTableOfContent;
 import com.onyx.edu.reader.ui.dialog.DialogTextStyle;
 import com.onyx.edu.reader.ui.events.QuitEvent;
 import com.onyx.edu.reader.device.DeviceConfig;
+import com.onyx.edu.reader.ui.view.EduMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -199,14 +198,12 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
-        ReaderLayerMenuItem[] menuItems;
-        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
-            menuItems = ReaderLayerMenuRepository.colorMenuItems;
-            readerMenu = new ReaderLayerColorMenu(readerDataHolder.getContext());
-        }else {
-            menuItems = ReaderLayerMenuRepository.fixedPageMenuItems;
-            readerMenu = new ReaderLayerMenu(readerDataHolder.getContext());
-        }
+        ReaderLayerMenuItem[] menuItems = new ReaderLayerMenuItem[]{
+                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_SCRIBBLE, R.drawable.ic_write),
+                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC, R.drawable.ic_topic),
+                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.EXIT, R.drawable.ic_menu_close)
+        };
+        readerMenu = new EduMenu(readerDataHolder.getContext());
         updateReaderMenuCallback(readerMenu, readerDataHolder);
         List<ReaderLayerMenuItem> items = createReaderSideMenuItems(readerDataHolder, menuItems);
         readerMenu.fillItems(items);
@@ -349,6 +346,12 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case NEXT_CHAPTER:
                         prepareGotoChapter(readerDataHolder, false);
+                        break;
+                    case NEXT_PAGE:
+                        nextScreen(readerDataHolder);
+                        break;
+                    case PREV_PAGE:
+                        prevScreen(readerDataHolder);
                         break;
                 }
             }

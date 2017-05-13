@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:appCompat="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_height="1dp"/>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+        android:padding="2dp"
+        android:background="@android:color/white"
+        appCompat:alwaysLayoutImageView="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:id="@+id/menu_view"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="wrap_content">
+        </LinearLayout>
+
+        <ImageView
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/imagebtn_bg"
+            android:id="@+id/prev"
+            android:src="@drawable/ic_menu_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:textSize="25sp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@android:color/black"
+            android:id="@+id/position_text"
+            android:text="1791"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/imagebtn_bg"
+            android:id="@+id/next"
+            android:src="@drawable/ic_menu_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+
+</LinearLayout>
