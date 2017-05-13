@@ -39,6 +39,7 @@ public class RestoreRequest extends BaseReaderRequest {
         restoreReflowSettings(reader);
         restoreContrast(reader);
         restoreReaderTextStyle(reader);
+        restoreEduOptions(reader);
         drawVisiblePages(reader);
     }
 
@@ -62,6 +63,14 @@ public class RestoreRequest extends BaseReaderRequest {
         } else {
             setActualScale(reader, baseOptions, position);
         }
+    }
+
+    private void restoreEduOptions(final Reader reader) throws Exception {
+        position = baseOptions.getCurrentPage();
+        if (StringUtils.isNullOrEmpty(position)) {
+            position = reader.getNavigator().getInitPosition();
+        }
+        reader.getReaderLayoutManager().scaleToPage(position);
     }
 
     private void restoreOrientation(final Reader reader) {
