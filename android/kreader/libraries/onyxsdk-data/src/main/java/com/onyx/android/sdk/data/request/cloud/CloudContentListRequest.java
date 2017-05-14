@@ -17,7 +17,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -48,18 +47,21 @@ public class CloudContentListRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         DataProviderBase dataProvider = DataProviderManager.getCloudDataProvider(parent.getCloudConf());
-        queryResult = DataManagerHelper.loadCloudMetadataListWithCache(getContext(), parent, queryArgs, true);
-        saveToLocal(dataProvider, queryResult.list);
+        queryResult = DataManagerHelper.loadCloudMetadataListWithCache(getContext(), parent, queryArgs);
+        saveToLocal(dataProvider, queryResult);
         if (loadThumbnail && !CollectionUtils.isNullOrEmpty(queryResult.list)) {
             thumbnailBitmap = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(getContext(), parent, queryResult.list);
         }
     }
 
-    private void saveToLocal(final DataProviderBase dataProvider, final List<Metadata> list) {
+    private void saveToLocal(final DataProviderBase dataProvider, QueryResult<Metadata> queryResult) {
+        if (queryResult == null || CollectionUtils.isNullOrEmpty(queryResult.list)) {
+            return;
+        }
         if (NetworkUtil.isWifiConnected(getContext()) && saveToLocal) {
             final DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
             database.beginTransaction();
-            for (Metadata metadata : list) {
+            for (Metadata metadata : queryResult.list) {
                 dataProvider.saveMetadata(getContext(), metadata);
             }
             database.setTransactionSuccessful();
