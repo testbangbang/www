@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.data.request.cloud;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
@@ -8,15 +9,16 @@ import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.db.ContentDatabase;
+import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
-import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.NetworkUtil;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -46,19 +48,75 @@ public class CloudContentListRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        DataProviderBase dataProvider = DataProviderManager.getCloudDataProvider(parent.getCloudConf());
-        queryResult = DataManagerHelper.loadCloudMetadataListWithCache(getContext(), parent, queryArgs);
-        saveToLocal(dataProvider, queryResult);
-        if (loadThumbnail && !CollectionUtils.isNullOrEmpty(queryResult.list)) {
+        queryResult = loadQueryResult(getContext(), parent , queryArgs);
+        if (loadThumbnail && isValidQueryResult(queryResult)) {
             thumbnailBitmap = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(getContext(), parent, queryResult.list);
         }
     }
 
+    private QueryResult<Metadata> loadQueryResult(Context context, CloudManager cloudManager, QueryArgs queryArgs) {
+        QueryResult<Metadata> queryResult = new QueryResult<>();
+        if (checkMemoryCache(cloudManager.getCacheManager(), queryArgs, queryResult)) {
+            return queryResult;
+        }
+        queryResult = loadFromDataProvider(context, cloudManager, queryArgs);
+        updateMetadataCache(cloudManager.getCacheManager(), queryArgs, queryResult);
+        saveToLocal(cloudManager.getCloudDataProvider(), queryResult);
+        return buildRequireResult(queryResult, queryArgs);
+    }
+
+    private QueryResult<Metadata> buildRequireResult(QueryResult<Metadata> originResult, QueryArgs args) {
+        QueryResult<Metadata> result = new QueryResult<>();
+        if (!isValidQueryResult(originResult)) {
+            return result;
+        }
+        result = originResult.copy(queryArgs.limit);
+        return result;
+    }
+
+    private boolean checkMemoryCache(CacheManager cacheManager, QueryArgs queryArgs, QueryResult<Metadata> result) {
+        List<Metadata> cacheList = cacheManager.getMetadataLruCache(getQueryKey(queryArgs));
+        if (cacheList == null) {
+            return false;
+        }
+        return DataManagerHelper.cloudMetadataFromCache(result, queryArgs, cacheList);
+    }
+
+    private QueryResult<Metadata> loadFromDataProvider(Context context, CloudManager cloudManager, QueryArgs queryArgs) {
+        return DataManagerHelper.cloudMetadataFromDataProvider(context, cloudManager.getCloudDataProvider(), queryArgs);
+    }
+
+    private boolean isValidQueryResult(QueryResult result) {
+        if (result == null || result.count <= 0 || CollectionUtils.isNullOrEmpty(result.list)) {
+            return false;
+        }
+        return true;
+    }
+
+    private void updateMetadataCache(CacheManager cacheManager, QueryArgs queryArgs, QueryResult<Metadata> result) {
+        List<Metadata> cacheList = getMetadataCache(cacheManager, getQueryKey(queryArgs), (int) result.count);
+        DataManagerHelper.updateCloudCacheList(cacheList, result, queryArgs);
+    }
+
+    private List<Metadata> getMetadataCache(CacheManager cacheManager, String queryKey, int contentCount) {
+        List<Metadata> cacheList = cacheManager.getMetadataLruCache(queryKey);
+        if (contentCount > CollectionUtils.getSize(cacheList)) {
+            Metadata[] array = new Metadata[contentCount];
+            cacheList = Arrays.asList(array);
+            cacheManager.addToMetadataCache(queryKey, cacheList);
+        }
+        return cacheList;
+    }
+
+    private String getQueryKey(QueryArgs args) {
+        return CacheManager.generateCloudKey(args);
+    }
+
     private void saveToLocal(final DataProviderBase dataProvider, QueryResult<Metadata> queryResult) {
-        if (queryResult == null || CollectionUtils.isNullOrEmpty(queryResult.list)) {
+        if (!isValidQueryResult(queryResult)) {
             return;
         }
-        if (NetworkUtil.isWifiConnected(getContext()) && saveToLocal) {
+        if (queryResult.isFetchFromCloud() && saveToLocal) {
             final DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
             database.beginTransaction();
             for (Metadata metadata : queryResult.list) {
