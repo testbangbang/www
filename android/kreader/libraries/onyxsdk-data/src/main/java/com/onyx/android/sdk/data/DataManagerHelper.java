@@ -248,7 +248,7 @@ public class DataManagerHelper {
     public static QueryResult<Metadata> cloudMetadataFromDataProvider(Context context, DataProviderBase dataProvider,
                                                                       QueryArgs queryArgs) {
         int limit = queryArgs.limit;
-        queryArgs.limit = limit > 50 ? limit : 50;
+        queryArgs.limit = queryArgs.getCloudFetchLimit();
         QueryResult<Metadata> result = dataProvider.findMetadataResultByQueryArgs(context, queryArgs);
         queryArgs.limit = limit;
         return result;
