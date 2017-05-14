@@ -87,7 +87,7 @@ public class CloudContentListRequest extends BaseCloudRequest {
     }
 
     private boolean isValidQueryResult(QueryResult result) {
-        if (result == null || result.count <= 0 || CollectionUtils.isNullOrEmpty(result.list)) {
+        if (result == null || result.isContentEmpty()) {
             return false;
         }
         return true;
@@ -113,18 +113,16 @@ public class CloudContentListRequest extends BaseCloudRequest {
     }
 
     private void saveToLocal(final DataProviderBase dataProvider, QueryResult<Metadata> queryResult) {
-        if (!isValidQueryResult(queryResult)) {
+        if (!saveToLocal || !isValidQueryResult(queryResult) || !queryResult.isFetchFromCloud()) {
             return;
         }
-        if (queryResult.isFetchFromCloud() && saveToLocal) {
-            final DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
-            database.beginTransaction();
-            for (Metadata metadata : queryResult.list) {
-                dataProvider.saveMetadata(getContext(), metadata);
-            }
-            database.setTransactionSuccessful();
-            database.endTransaction();
+        final DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for (Metadata metadata : queryResult.list) {
+            dataProvider.saveMetadata(getContext(), metadata);
         }
+        database.setTransactionSuccessful();
+        database.endTransaction();
     }
 
     public Map<String, CloseableReference<Bitmap>> getThumbnailMap() {

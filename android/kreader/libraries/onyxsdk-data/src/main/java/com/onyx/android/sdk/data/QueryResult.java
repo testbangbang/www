@@ -30,4 +30,8 @@ public class QueryResult<T> {
     public boolean isFetchFromCloud() {
         return fetchSource == Metadata.FetchSource.CLOUD;
     }
+
+    public boolean isContentEmpty() {
+        return count <= 0 || CollectionUtils.isNullOrEmpty(list);
+    }
 }
