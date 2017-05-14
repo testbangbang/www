@@ -91,6 +91,7 @@ public class CloudDataProvider implements DataProviderBase {
         QueryResult<Metadata> result = new QueryResult<>();
         result.list = findMetadataFromLocalByQueryArgs(context, queryArgs);
         result.count = countMetadataFromLocal(context, queryArgs);
+        result.fetchSource = Metadata.FetchSource.LOCAL;
         return result;
     }
 
@@ -105,9 +106,10 @@ public class CloudDataProvider implements DataProviderBase {
                     result.list.add(metadata);
                 }
                 result.count = response.body().count;
+                result.fetchSource = Metadata.FetchSource.CLOUD;
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            result = fetchFromLocal(context, queryArgs);
         }
         return result;
     }

@@ -7,6 +7,8 @@ import java.util.List;
  */
 
 public class QueryResult<T> {
+
     public List<T> list;
     public long count;
+    public int fetchSource;
 }
