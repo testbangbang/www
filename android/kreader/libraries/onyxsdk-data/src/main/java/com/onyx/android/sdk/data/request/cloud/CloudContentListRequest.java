@@ -16,7 +16,6 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -71,11 +70,7 @@ public class CloudContentListRequest extends BaseCloudRequest {
         if (!isValidQueryResult(originResult)) {
             return result;
         }
-        result = originResult.copy();
-        result.list = new ArrayList<>();
-        for (int i = 0; i < CollectionUtils.getSize(originResult.list) && i < args.limit; i++) {
-            result.list.add(originResult.list.get(i));
-        }
+        result = originResult.copy(queryArgs.limit);
         return result;
     }
 
@@ -121,7 +116,7 @@ public class CloudContentListRequest extends BaseCloudRequest {
         if (!isValidQueryResult(queryResult)) {
             return;
         }
-        if (queryResult.fetchSource == Metadata.FetchSource.CLOUD && saveToLocal) {
+        if (queryResult.isFetchFromCloud() && saveToLocal) {
             final DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
             database.beginTransaction();
             for (Metadata metadata : queryResult.list) {
