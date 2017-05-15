@@ -81,6 +81,8 @@ LOCAL_MODULE:= libfx_zlib
 
 LOCAL_CFLAGS += -O2
 
+LOCAL_CFLAGS += "-DGUNZIP"
+
 LOCAL_SRC_FILES:= \
     third_party/zlib_v128/adler32.c \
     third_party/zlib_v128/compress.c \
