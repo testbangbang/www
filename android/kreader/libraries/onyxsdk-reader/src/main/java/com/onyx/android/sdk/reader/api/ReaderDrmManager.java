@@ -5,6 +5,6 @@ package com.onyx.android.sdk.reader.api;
  */
 public interface ReaderDrmManager {
     
-    public boolean activateDeviceDRM(String certificate);
+    public boolean activateDeviceDRM(String deviceId, String certificate);
 
 }

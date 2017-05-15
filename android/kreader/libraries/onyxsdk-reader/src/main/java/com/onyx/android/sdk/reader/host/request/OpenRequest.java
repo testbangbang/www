@@ -1,5 +1,8 @@
 package com.onyx.android.sdk.reader.host.request;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 
 import com.onyx.android.sdk.reader.api.ReaderDocument;
@@ -12,7 +15,6 @@ import com.onyx.android.sdk.reader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 
 /**
@@ -56,7 +58,10 @@ public class OpenRequest extends BaseReaderRequest {
             if (StringUtils.isNotBlank(certificate)) {
                 ReaderDrmManager manager = reader.getPlugin().createDrmManager();
                 if (manager != null) {
-                    manager.activateDeviceDRM(certificate);
+                    WifiManager wifiManager = (WifiManager)getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    WifiInfo info = wifiManager.getConnectionInfo();
+                    String address = info.getMacAddress();
+                    manager.activateDeviceDRM(address.toLowerCase(), certificate);
                 }
             }
         }

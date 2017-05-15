@@ -496,8 +496,8 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     }
 
 
-    public boolean activateDeviceDRM(String certificate) {
-        return getPluginImpl().activateDeviceDRM(certificate);
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
+        return getPluginImpl().activateDeviceDRM(deviceId, certificate);
     }
 
     public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
