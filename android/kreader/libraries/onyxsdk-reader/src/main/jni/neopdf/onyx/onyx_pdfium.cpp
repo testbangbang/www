@@ -30,48 +30,13 @@ static const char * annotationClassName = "com/onyx/android/sdk/data/model/Annot
 namespace {
 
 int libraryReference = 0;
+
+std::string deviceId;
 std::string drmCertificate;
 
 bool readDrmManifest(FPDF_DOCUMENT document, char *buf, int length) {
     unsigned long res = FPDF_GetMetaText(document, "boox", buf, length);
     return res > 2; // empty metadata text is '\0' in unicode
-}
-
-bool setupDrmManager(const std::string &drmManifest) {
-    const unsigned char *rsaKeyData = reinterpret_cast<const unsigned char *>(drmCertificate.c_str());
-
-    onyx::DrmDecrypt decrypt;
-    int resultLen = 0;
-    int manifestVersion = 0;
-    unsigned char *result = decrypt.rsaDecryptManifest(rsaKeyData, drmManifest.c_str(),
-                                                       &resultLen, &manifestVersion);
-    if (!result) {
-        LOGE("invalid metadata!");
-        return false;
-    }
-    onyx::DrmDecryptManager::singleton().setDrmVersion(manifestVersion);
-
-    jsonxx::Object object;
-    bool succ = object.parse(reinterpret_cast<char *>(result));
-    free(result);
-    if (!succ) {
-        LOGE("invalid metadata!");
-        return false;
-    }
-
-    if (!object.has<std::string>("publish") || !object.has<std::string>("stamp")) {
-        LOGE("invalid metadata!");
-        return false;
-    }
-    std::string aesKey = object.get<std::string>("publish");
-    std::string aesGuard = object.get<std::string>("stamp");
-    if (!onyx::DrmDecryptManager::singleton().setAESKey(aesKey.c_str(), aesGuard.c_str())) {
-        LOGE("invalid metadata!");
-        return false;
-    }
-
-    onyx::DrmDecryptManager::singleton().setEncrypted(true);
-    return true;
 }
 
 }
@@ -141,13 +106,13 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
         return errorCode;
     }
 
-    onyx::DrmDecryptManager::singleton().setEncrypted(false);
+    onyx::DrmDecryptManager &drmManager = onyx::DrmDecryptManager::singleton();
+    drmManager.reset();
 
     char buf[4096] = { 0 };
     if (readDrmManifest(document, buf, 4096)) {
-        LOGI("document is DRM protected, try to decrypt the document");
         std::string drmManifest = StringUtils::utf16leto8(reinterpret_cast<const char16_t *>(buf));
-        if (!setupDrmManager(drmManifest)) {
+        if (!drmManager.setupWithManifest(deviceId, drmCertificate, drmManifest)) {
             return -1;
         }
     }

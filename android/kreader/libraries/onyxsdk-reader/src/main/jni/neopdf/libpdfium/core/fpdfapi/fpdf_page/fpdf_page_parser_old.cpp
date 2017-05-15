@@ -48,7 +48,7 @@ void drmDecrypt(CPDF_StreamAcc *stream) {
   if (decrypt.isEncrypted()) {
     const unsigned char *rawData = reinterpret_cast<const unsigned char *>(stream->GetData());
     int rawSize = stream->GetSize();
-    int dataLen = 0;
+    size_t dataLen = 0;
     unsigned char *data = decrypt.aesDecrypt(rawData,
                                              rawSize,
                                              &dataLen);
