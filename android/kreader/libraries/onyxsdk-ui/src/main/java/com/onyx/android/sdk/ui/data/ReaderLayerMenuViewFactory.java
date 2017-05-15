@@ -28,7 +28,6 @@ import java.util.List;
 public class ReaderLayerMenuViewFactory {
 
     public static int mainMenuContainerViewHeight = 0;
-    private static ReaderMenuAction  selectedAction = null;
 
     private static class MainMenuItemViewHolder extends RecyclerView.ViewHolder {
         private View view;
@@ -47,13 +46,6 @@ public class ReaderLayerMenuViewFactory {
         }
 
         public void setMenuItem(ReaderLayerMenuItem item) {
-            ImageView indicator = ((ImageView) view.findViewById(R.id.imageview_indicator));
-            if(item !=null && item.getAction().equals(selectedAction)){
-                indicator.setVisibility(View.VISIBLE);
-            } else {
-                indicator.setVisibility(View.INVISIBLE);
-            }
-
             ((ImageView) view.findViewById(R.id.imageview_icon)).setImageResource(item.getDrawableResourceId());
             int titleResId = item.getTitleResourceId();
             TextView titleView = ((TextView) view.findViewById(R.id.textview_title));
@@ -82,7 +74,6 @@ public class ReaderLayerMenuViewFactory {
         if (parent.getChildren().size() == 0) {
             return null;
         }
-        selectedAction = parent.getAction();
         List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items, ignoreEmptyChildMenu);
         View subView = createSimpleButtonContainerView(context, visibleItems, state, callback);
         if (mainMenuContainerViewHeight > 0) {
@@ -137,6 +128,7 @@ public class ReaderLayerMenuViewFactory {
             @Override
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
                 MainMenuItemViewHolder viewHolder = ((MainMenuItemViewHolder) holder);
+                items.get(position).setPosition(position);
                 viewHolder.setMenuItem(items.get(position));
             }
         });
