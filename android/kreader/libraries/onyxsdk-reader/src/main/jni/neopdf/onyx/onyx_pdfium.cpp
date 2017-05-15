@@ -34,9 +34,15 @@ int libraryReference = 0;
 std::string deviceId;
 std::string drmCertificate;
 
-bool readDrmManifest(FPDF_DOCUMENT document, char *buf, int length) {
-    unsigned long res = FPDF_GetMetaText(document, "boox", buf, length);
-    return res > 2; // empty metadata text is '\0' in unicode
+bool readDrmManifest(FPDF_DOCUMENT document, std::vector<char16_t> *buf) {
+    unsigned long res = FPDF_GetMetaText(document, "boox", nullptr, 0);
+    if (res <= 2) { // empty metadata text is '\0' in unicode
+        return false;
+    }
+    buf->resize(res / 2);
+    FPDF_GetMetaText(document, "boox", buf->data(), res);
+    buf->resize(buf->size() - 1); // remove trailing '\0'
+    return true;
 }
 
 }
@@ -109,10 +115,11 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
     onyx::DrmDecryptManager &drmManager = onyx::DrmDecryptManager::singleton();
     drmManager.reset();
 
-    char buf[4096] = { 0 };
-    if (readDrmManifest(document, buf, 4096)) {
-        std::string drmManifest = StringUtils::utf16leto8(reinterpret_cast<const char16_t *>(buf));
+    std::vector<char16_t> buf;
+    if (readDrmManifest(document, &buf)) {
+        std::string drmManifest = StringUtils::utf16leto8(buf.data());
         if (!drmManager.setupWithManifest(deviceId, drmCertificate, drmManifest)) {
+            LOGE("parse document DRM failed!");
             return -1;
         }
     }
