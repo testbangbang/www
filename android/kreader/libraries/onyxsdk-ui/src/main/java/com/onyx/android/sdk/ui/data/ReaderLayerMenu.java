@@ -115,9 +115,10 @@ public class ReaderLayerMenu extends ReaderMenu {
     }
 
     private void updateMenuContent() {
+        int mainMenuPosition = currentParentMenuItem.getPosition();
         mainMenuContainerView = createMainMenuContainerView(menuItems, state);
         subMenuContainerView = createSubMenuContainerView(currentParentMenuItem, currentParentMenuItem.getChildren(), state);
-        getDialog().getReaderMenuLayout().updateMenuContent(mainMenuContainerView, subMenuContainerView);
+        getDialog().getReaderMenuLayout().updateMenuContent(mainMenuContainerView, subMenuContainerView, mainMenuPosition);
     }
 
     private void updateMenuItemsWithState(final ReaderMenuState state) {
