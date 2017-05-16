@@ -16,8 +16,6 @@ public class ReaderRender {
     }
 
     private static void drawHighLight(final ReaderDataHolder readerDataHolder, final PageRenderView renderView) {
-        if (readerDataHolder.getSelectionManager().hasSelection()) {
-            renderView.updateIOpenGLObjects(readerDataHolder.getSelectionManager().getSelectionRectangles());
-        }
+        renderView.updateShapeObjects(readerDataHolder.getSelectionManager().getSelectionRectangles());
     }
 }
