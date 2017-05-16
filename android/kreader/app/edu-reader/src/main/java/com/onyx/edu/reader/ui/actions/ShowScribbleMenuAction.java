@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -24,10 +25,12 @@ import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
+import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.note.request.PauseDrawingRequest;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.edu.reader.ui.events.ScribbleMenuChangedEvent;
+import com.onyx.edu.reader.ui.events.UpdatePagePositionEvent;
 import com.onyx.edu.reader.ui.events.UpdateScribbleMenuEvent;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 
@@ -62,6 +65,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private boolean isDrag = false;
     private Set<ReaderMenuAction> disableMenuActions;
     private boolean showFullToolbar = false;
+    private CommonViewHolder pagePositionHolder;
 
     public ShowScribbleMenuAction(ViewGroup parent,
                                   final ActionCallback actionCallback,
@@ -122,23 +126,27 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         final ReaderMenuAction[] expandedActions = {ReaderMenuAction.SCRIBBLE_WIDTH, ReaderMenuAction.SCRIBBLE_SHAPE, ReaderMenuAction.SCRIBBLE_ERASER};
 
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_SHAPE);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_eraser, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_ERASER);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_width, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_color, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_COLOR);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_drag_forbid, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_DRAG);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_unfold, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_MINIMIZE);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width, ReaderMenuAction.SCRIBBLE_WIDTH);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape, ReaderMenuAction.SCRIBBLE_SHAPE);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_eraser_part, ReaderMenuAction.SCRIBBLE_ERASER);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_black, ReaderMenuAction.SCRIBBLE_COLOR);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_close, ReaderMenuAction.SCRIBBLE_CLOSE);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_pack_up, ReaderMenuAction.SCRIBBLE_MINIMIZE);
 
         toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
 
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_left, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_PREV_PAGE);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_right, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_NEXT_PAGE);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_back, ReaderMenuAction.SCRIBBLE_PREV_PAGE);
+
+        String positionText = (readerDataHolder.getCurrentPage() + 1) + "/" + readerDataHolder.getPageCount();
+        addTextViewHolder(toolbar, readerDataHolder.getContext(), readerDataHolder.getContext().getResources().getDimension(R.dimen.scribble_page_position_size), positionText, ReaderMenuAction.SCRIBBLE_PAGE_POSITION);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_next, ReaderMenuAction.SCRIBBLE_NEXT_PAGE);
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        int margin = DimenUtils.dip2px(readerDataHolder.getContext(), 10);
+        int margin = DimenUtils.dip2px(readerDataHolder.getContext(), 5);
         toolbar.setMenuViewMargin(margin, 0, margin, 0);
         toolbar.setLayoutParams(lp);
+        updateStrokeColor();
 
         toolbar.setOnMenuClickListener(new OnyxToolbar.OnMenuClickListener() {
             @Override
@@ -161,17 +169,15 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private OnyxToolbar createScribbleTopToolbar(ReaderDataHolder readerDataHolder) {
         OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Top, OnyxToolbar.FillStyle.WrapContent);
 
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_undo, ReaderMenuAction.SCRIBBLE_UNDO);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_save, ReaderMenuAction.SCRIBBLE_SAVE);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_redo, ReaderMenuAction.SCRIBBLE_REDO);
-
         toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
 
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_dialog_reader_page_closed, ReaderMenuAction.SCRIBBLE_CLOSE);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_undo, ReaderMenuAction.SCRIBBLE_UNDO);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_save, ReaderMenuAction.SCRIBBLE_SAVE);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_redo, ReaderMenuAction.SCRIBBLE_REDO);
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        int margin = DimenUtils.dip2px(readerDataHolder.getContext(), 10);
+        int margin = DimenUtils.dip2px(readerDataHolder.getContext(), 5);
         toolbar.setMenuViewMargin(margin, 0, margin, 0);
         toolbar.setLayoutParams(lp);
 
@@ -187,8 +193,6 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     }
 
     private OnyxToolbar handleBottomMenuView(ReaderDataHolder readerDataHolder, final ReaderMenuAction clickedAction, ReaderMenuAction[] expandedActions) {
-        updateMarkerView(clickedAction, expandedActions);
-
         switch (clickedAction) {
             case SCRIBBLE_WIDTH:
                 return createWidthToolbar(readerDataHolder);
@@ -196,8 +200,6 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                 return createShapeToolbar(readerDataHolder);
             case SCRIBBLE_ERASER:
                 return createEraserToolbar(readerDataHolder);
-            case SCRIBBLE_COLOR:
-                return createColorToolbar(readerDataHolder);
         }
 
         return null;
@@ -237,18 +239,31 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         scribbleViewHolderMap.put(action, viewHolder);
     }
 
+    private void addTextViewHolder(OnyxToolbar toolbar, Context context, float textSize, String text, final ReaderMenuAction action) {
+        if (disableMenuActions.contains(action)) {
+            return;
+        }
+        TextView textView = new TextView(context);
+        textView.setText(text);
+        textView.setTextSize(textSize);
+        OnyxToolbar.Builder.setLayoutParams(context, textView, 0, 0);
+        CommonViewHolder viewHolder = new CommonViewHolder(textView);
+        textView.setTag(action);
+        toolbar.addViewHolder(viewHolder);
+        scribbleViewHolderMap.put(action, viewHolder);
+    }
+
     private OnyxToolbar createWidthToolbar(ReaderDataHolder readerDataHolder) {
         final OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext());
         toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         toolbar.setClickedDismissToolbar(true);
         final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_WIDTH1, ReaderMenuAction.SCRIBBLE_WIDTH2, ReaderMenuAction.SCRIBBLE_WIDTH3, ReaderMenuAction.SCRIBBLE_WIDTH4, ReaderMenuAction.SCRIBBLE_WIDTH5, ReaderMenuAction.SCRIBBLE_CUSTOM_WIDTH};
 
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_width_1, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH1);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_width_2, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH2);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_width_3, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH3);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_width_4, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH4);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_width_5, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH5);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_width_6, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_CUSTOM_WIDTH);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width_1, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH1);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width_2, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH2);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width_3, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH3);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width_4, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH4);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width_5, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH5);
         updateMarkerView(selectWidthAction, selectActions);
 
         toolbar.setOnMenuClickListener(new OnyxToolbar.OnMenuClickListener() {
@@ -268,14 +283,21 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         final OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext());
         toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         toolbar.setClickedDismissToolbar(true);
-        final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_PENCIL, ReaderMenuAction.SCRIBBLE_BRUSH, ReaderMenuAction.SCRIBBLE_LINE, ReaderMenuAction.SCRIBBLE_TRIANGLE, ReaderMenuAction.SCRIBBLE_CIRCLE, ReaderMenuAction.SCRIBBLE_SQUARE};
+        final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_PENCIL,
+                ReaderMenuAction.SCRIBBLE_BRUSH, ReaderMenuAction.SCRIBBLE_LINE,
+                ReaderMenuAction.SCRIBBLE_TRIANGLE_45,
+                ReaderMenuAction.SCRIBBLE_TRIANGLE_60,
+                ReaderMenuAction.SCRIBBLE_TRIANGLE_90,
+                ReaderMenuAction.SCRIBBLE_CIRCLE,
+                ReaderMenuAction.SCRIBBLE_SQUARE};
 
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_pencil, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_PENCIL);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_brush, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_BRUSH);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_line, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_LINE);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_trigon, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_TRIANGLE);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_circle, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_CIRCLE);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_square, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_SQUARE);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape_pencil, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_PENCIL);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape_line, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_LINE);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape_trigon_45, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_TRIANGLE_45);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape_trigon_60, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_TRIANGLE_60);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape_trigon_90, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_TRIANGLE_90);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape_circle, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_CIRCLE);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape_square, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_SQUARE);
         updateMarkerView(selectShapeAction, selectActions);
 
         toolbar.setOnMenuClickListener(new OnyxToolbar.OnMenuClickListener() {
@@ -297,8 +319,8 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         toolbar.setClickedDismissToolbar(true);
         final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_ERASER_PART, ReaderMenuAction.SCRIBBLE_ERASER_ALL};
 
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_eraser_part, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_ERASER_PART);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_eraser_all, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_ERASER_ALL);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_eraser_part, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_ERASER_PART);
+        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_eraser_all, R.drawable.ic_scribble_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_ERASER_ALL);
         updateMarkerView(selectEraserAction, selectActions);
 
         toolbar.setOnMenuClickListener(new OnyxToolbar.OnMenuClickListener() {
@@ -306,34 +328,6 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             public OnyxToolbar OnClickListener(View view) {
                 ReaderMenuAction action = (ReaderMenuAction) view.getTag();
                 selectEraserAction = action;
-                handleClickListener(action);
-                updateMarkerView(action, selectActions);
-                return null;
-            }
-        });
-        return toolbar;
-    }
-
-    private OnyxToolbar createColorToolbar(ReaderDataHolder readerDataHolder) {
-        final OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext());
-        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
-        toolbar.setClickedDismissToolbar(true);
-
-        final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_BLACK, ReaderMenuAction.SCRIBBLE_BLUE, ReaderMenuAction.SCRIBBLE_MAGENTA, ReaderMenuAction.SCRIBBLE_GREEN, ReaderMenuAction.SCRIBBLE_RED, ReaderMenuAction.SCRIBBLE_YELLOW};
-
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_color_black, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_BLACK);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_color_blue, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_BLUE);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_color_green, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_GREEN);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_color_magenta, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_MAGENTA);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_color_red, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_RED);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_color_yellow, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_YELLOW);
-        updateMarkerView(selectColorAction, selectActions);
-
-        toolbar.setOnMenuClickListener(new OnyxToolbar.OnMenuClickListener() {
-            @Override
-            public OnyxToolbar OnClickListener(View view) {
-                ReaderMenuAction action = (ReaderMenuAction) view.getTag();
-                selectColorAction = action;
                 handleClickListener(action);
                 updateMarkerView(action, selectActions);
                 return null;
@@ -379,6 +373,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         switch (action) {
             case SCRIBBLE_DRAG:
                 switchDragFunc(false);
+                break;
+            case SCRIBBLE_COLOR:
+                switchStrokeColor();
                 break;
             case SCRIBBLE_WIDTH:
                 break;
@@ -497,6 +494,28 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
                 isDrag ? R.drawable.ic_drag : R.drawable.ic_drag_forbid);
     }
 
+    private void switchStrokeColor(){
+        ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
+        boolean isBlack = noteDataInfo.getStrokeColor() == Color.BLACK;
+        ShowReaderMenuAction.useColor(readerDataHolder, isBlack ? Color.WHITE : Color.BLACK, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                updateStrokeColor();
+            }
+        });
+    }
+
+    private void updateStrokeColor() {
+        final CommonViewHolder viewHolder = scribbleViewHolderMap.get(ReaderMenuAction.SCRIBBLE_COLOR);
+        if (viewHolder == null) {
+            return;
+        }
+        ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
+        boolean isBlack = noteDataInfo.getStrokeColor() == Color.BLACK;
+        ImageView view = (ImageView) viewHolder.itemView;
+        view.setImageResource(isBlack ? R.drawable.ic_scribble_black : R.drawable.ic_scribble_white);
+    }
+
     @Subscribe
     public void removeToolbar(CloseScribbleMenuEvent event) {
         parent.removeView(topToolbar);
@@ -507,6 +526,19 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     @Subscribe
     public void updateScribbleMenu(UpdateScribbleMenuEvent event) {
         postMenuChangedEvent(readerDataHolder);
+    }
+
+    @Subscribe
+    public void updatePagePosition(UpdatePagePositionEvent event) {
+        CommonViewHolder viewHolder = scribbleViewHolderMap.get(ReaderMenuAction.SCRIBBLE_PAGE_POSITION);
+        if (viewHolder == null) {
+            return;
+        }
+        TextView textView = (TextView) viewHolder.itemView.findViewWithTag(ReaderMenuAction.SCRIBBLE_PAGE_POSITION);
+        if (textView == null) {
+            return;
+        }
+        textView.setText((event.getPosition() + 1) + "/" + String.valueOf(event.getTotal()));
     }
 
     private void changeToolBarVisibility(boolean packUp) {

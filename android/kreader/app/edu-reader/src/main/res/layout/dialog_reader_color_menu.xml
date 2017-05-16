@@ -31,7 +31,7 @@
             android:layout_gravity="center_vertical"
             android:background="@drawable/imagebtn_bg"
             android:id="@+id/prev"
-            android:src="@drawable/ic_menu_back"
+            android:src="@drawable/ic_scribble_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -50,7 +50,7 @@
             android:layout_gravity="center_vertical"
             android:background="@drawable/imagebtn_bg"
             android:id="@+id/next"
-            android:src="@drawable/ic_menu_next"
+            android:src="@drawable/ic_scribble_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

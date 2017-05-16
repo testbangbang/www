@@ -16,7 +16,10 @@
             android:layout_height="wrap_content"/>
 
     <ImageView
-            android:layout_margin="@dimen/scribble_bottom_menu_margin"
+            android:layout_marginLeft="@dimen/scribble_bottom_menu_margin"
+            android:layout_marginRight="@dimen/scribble_bottom_menu_margin"
+            android:layout_marginTop="@dimen/scribble_bottom_menu_margin_top"
+            android:layout_marginBottom="@dimen/scribble_bottom_menu_margin_top"
             android:layout_centerInParent="true"
             android:id="@+id/content_view"
             android:layout_width="wrap_content"

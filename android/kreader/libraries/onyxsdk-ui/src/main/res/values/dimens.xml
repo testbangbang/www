@@ -94,4 +94,7 @@
     <dimen name="dialog_sort_by_width">260dp</dimen>
     <dimen name="dialog_sort_by_height">290dp</dimen>
     <dimen name="dialog_sort_by_order_radio_button_text_size">22sp</dimen>
+
+    <dimen name="onyx_toolbar_item_default_padding">10dp</dimen>
+    <dimen name="onyx_toolbar_item_default_margin">5dp</dimen>
 </resources>
