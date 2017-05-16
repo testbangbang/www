@@ -3,10 +3,12 @@ package com.onyx.android.sdk.ui.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
@@ -300,7 +302,6 @@ public class OnyxToolbar extends ViewGroup {
         LayoutParams lp = (LayoutParams) childView.getLayoutParams();
 
         if (childView == currentExpandedToolbar) {
-
             childView.layout(lp.leftMargin
                     , lp.topMargin
                     , getMeasuredWidth() - lp.rightMargin
@@ -314,7 +315,7 @@ public class OnyxToolbar extends ViewGroup {
         } else {
             int height = getHeightWidthMargin(currentExpandedToolbar) + getHeightWidthMargin(dividerView);
             int startLeft = totalWidth + lp.leftMargin + menuViewMarginLeft;
-            int startTop = lp.topMargin + height + paddingTop + menuViewMarginTop;
+            int startTop = getChildrenTop(getMeasuredHeight() - height, measureHeight, lp.topMargin + paddingTop + menuViewMarginTop) + height;
 
             if (!isSpaceView(childView) && fillStyle == FillStyle.Average) {
                 startLeft = getChildStartWhenAverage(menuViewIndex, childView);
@@ -331,6 +332,11 @@ public class OnyxToolbar extends ViewGroup {
             totalWidth += measuredWidth + lp.leftMargin + lp.rightMargin;
         }
         return totalWidth;
+    }
+
+    private int getChildrenTop(int parentHeight, int measureHeight, int topMargin) {
+        int spaceHalf =  (parentHeight - measureHeight)/2;
+        return topMargin > spaceHalf ? topMargin : spaceHalf;
     }
 
     /**
@@ -360,8 +366,9 @@ public class OnyxToolbar extends ViewGroup {
                     , getMeasuredWidth() - paddingRight - lp.rightMargin
                     , getMeasuredHeight() - paddingBottom - lp.bottomMargin - expandedToolbarHeight);
         } else {
+            int height = getHeightWidthMargin(currentExpandedToolbar) + getHeightWidthMargin(dividerView);
             int startLeft = totalWidth + lp.leftMargin + menuViewMarginLeft;
-            int startTop = lp.topMargin + paddingTop + menuViewMarginTop;
+            int startTop = getChildrenTop(getMeasuredHeight() - height, measureHeight, lp.topMargin + paddingTop + menuViewMarginTop);
 
             if (!isSpaceView(childView) && fillStyle == FillStyle.Average) {
                 startLeft = getChildStartWhenAverage(menuViewIndex, childView);
@@ -496,9 +503,14 @@ public class OnyxToolbar extends ViewGroup {
             return viewHolder;
         }
 
-        private static void setDefaultLayoutParams(Context content, View view) {
-            int padding = DimenUtils.dip2px(content, 10);
-            int margin = DimenUtils.dip2px(content, 5);
+        public static void setDefaultLayoutParams(Context content, View view) {
+            setLayoutParams(content,
+                    view,
+                    (int) content.getResources().getDimension(R.dimen.onyx_toolbar_item_default_padding),
+                    (int) content.getResources().getDimension(R.dimen.onyx_toolbar_item_default_margin));
+        }
+
+        public static void setLayoutParams(Context content, View view, int padding, int margin) {
             view.setBackgroundResource(R.drawable.imagebtn_bg);
             OnyxToolbar.LayoutParams lp = new OnyxToolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             view.setPadding(padding, padding, padding, padding);
