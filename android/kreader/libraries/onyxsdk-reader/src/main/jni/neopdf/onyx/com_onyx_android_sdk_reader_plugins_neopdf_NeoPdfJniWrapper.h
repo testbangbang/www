@@ -146,10 +146,10 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 /*
  * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
  * Method:    nativeActivateDeviceDRM
- * Signature: (Ljava/lang/String;)Z
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeActivateDeviceDRM
-  (JNIEnv *, jobject, jstring);
+  (JNIEnv *, jobject, jstring, jstring);
 
 #ifdef __cplusplus
 }

@@ -2,24 +2,23 @@
 #define DRM_DECRYPT_H
 
 #include <string>
+#include <memory>
+#include <vector>
 
 namespace onyx {
 
 class DrmDecrypt
 {
 public:
-    DrmDecrypt();
-    virtual ~DrmDecrypt();
+    virtual ~DrmDecrypt() {}
 
-    unsigned char *rsaDecryptManifest(const unsigned char *key,
-                                      const char *manifestBase64Cipher,
-                                      int *resultLen,
-                                      int *manifestVersion);
+    virtual bool setupWithManifest(const std::string &deviceId,
+                                   const std::string &drmCertificate,
+                                   const std::vector<unsigned char> &manifest) = 0;
 
-    unsigned char *aesDecrypt(const char *keyBase64String,
-                              const unsigned char *data,
-                              const int dataLen,
-                              int *resultLen);
+    virtual unsigned char *decryptData(const unsigned char *data,
+                                       const int dataLen,
+                                       size_t *resultLen) = 0;
 };
 
 class DrmDecryptManager {
@@ -29,24 +28,22 @@ public:
 
     static DrmDecryptManager &singleton();
 
+    void reset();
+
+    bool setupWithManifest(const std::string &deviceId,
+                           const std::string &drmCertificate,
+                           const std::string &manifestBase64);
+
     bool isEncrypted();
-    void setEncrypted(bool encrypted);
-
-    int getDrmVersion();
-    int setDrmVersion(int version);
-
-    bool setAESKey(const std::string &aesKeyCipherBase64String,
-                   const std::string &aesKeyGuardBase64String);
 
     unsigned char *aesDecrypt(const unsigned char *data,
-                              const int dataLen,
-                              int *resultLen);
+                              const size_t dataLen,
+                              size_t *resultLen);
 
 private:
     bool encrypted;
-    int drmVersion;
-    DrmDecrypt drmDecrypt;
-    std::string aesKeyBase64String;
+    size_t drmVersion;
+    std::unique_ptr<DrmDecrypt> drmDecrypt;
 };
 
 }
