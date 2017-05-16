@@ -153,7 +153,14 @@ public class HandlerManager {
     }
 
     public boolean isEnableTouch() {
+        if (!hasReaderViewInfo()) {
+            return false;
+        }
         return enableTouch.get();
+    }
+
+    private boolean hasReaderViewInfo() {
+        return readerDataHolder.getReaderViewInfo() != null;
     }
 
     public PointF getTouchStartPosition() {

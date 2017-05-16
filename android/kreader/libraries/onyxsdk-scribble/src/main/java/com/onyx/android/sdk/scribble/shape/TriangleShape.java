@@ -14,7 +14,7 @@ import com.onyx.android.sdk.scribble.utils.ShapeUtils;
  */
 public class TriangleShape extends BaseShape {
 
-    private float points[] = new float[6];
+    protected float points[] = new float[6];
 
     public int getType() {
         return ShapeFactory.SHAPE_TRIANGLE;
@@ -39,12 +39,7 @@ public class TriangleShape extends BaseShape {
     }
 
     private float[] updatePoints(final RenderContext renderContext) {
-        points[0] = getDownPoint().getX();
-        points[1] = getDownPoint().getY();
-        points[2] = getCurrentPoint().getX();
-        points[3] = getCurrentPoint().getY();
-        points[4] = Math.abs(2 * points[0] - points[2]);
-        points[5] = points[3];
+        calculatePoint();
         RectF boundingRect = getBoundingRect();
         if (boundingRect == null) {
             boundingRect = new RectF();
@@ -57,4 +52,14 @@ public class TriangleShape extends BaseShape {
         }
         return points;
     }
+
+    protected void calculatePoint() {
+        points[0] = getDownPoint().getX();
+        points[1] = getDownPoint().getY();
+        points[2] = getCurrentPoint().getX();
+        points[3] = getCurrentPoint().getY();
+        points[4] = Math.abs(2 * points[0] - points[2]);
+        points[5] = points[3];
+    }
+
 }

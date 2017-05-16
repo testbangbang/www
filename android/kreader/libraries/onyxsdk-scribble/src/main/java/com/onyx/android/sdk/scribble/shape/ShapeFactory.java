@@ -27,6 +27,9 @@ public class ShapeFactory {
     static public final int SHAPE_LINE = 7;
     static public final int SHAPE_TRIANGLE = 8;
     static public final int SHAPE_ANNOTATION = 9;
+    static public final int SHAPE_TRIANGLE_45 = 10;
+    static public final int SHAPE_TRIANGLE_60 = 11;
+    static public final int SHAPE_TRIANGLE_90 = 12;
 
     static public final int POSITION_FREE = 0;
     static public final int POSITION_LINE_LAYOUT = 1;
@@ -60,6 +63,15 @@ public class ShapeFactory {
                 break;
             case ShapeFactory.SHAPE_TRIANGLE:
                 shape = new TriangleShape();
+                break;
+            case ShapeFactory.SHAPE_TRIANGLE_45:
+                shape = new Triangle45Shape();
+                break;
+            case ShapeFactory.SHAPE_TRIANGLE_60:
+                shape = new Triangle60Shape();
+                break;
+            case ShapeFactory.SHAPE_TRIANGLE_90:
+                shape = new Triangle90Shape();
                 break;
             case ShapeFactory.SHAPE_ANNOTATION:
                 shape = new AnnotationShape();
