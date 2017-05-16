@@ -31,6 +31,7 @@
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.WIFI_ENABLE" />
+                <action android:name="com.android.systemui.CONFIGURE_NEW_WIFI_ACTION" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
