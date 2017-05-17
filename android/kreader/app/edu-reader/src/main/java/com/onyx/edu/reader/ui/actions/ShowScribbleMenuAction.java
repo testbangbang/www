@@ -130,16 +130,15 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape, ReaderMenuAction.SCRIBBLE_SHAPE);
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_eraser_part, ReaderMenuAction.SCRIBBLE_ERASER);
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_black, ReaderMenuAction.SCRIBBLE_COLOR);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_close, ReaderMenuAction.SCRIBBLE_CLOSE);
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_pack_up, ReaderMenuAction.SCRIBBLE_MINIMIZE);
 
         toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
 
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_back, ReaderMenuAction.SCRIBBLE_PREV_PAGE);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.prevbtn_bg, ReaderMenuAction.SCRIBBLE_PREV_PAGE);
 
         String positionText = (readerDataHolder.getCurrentPage() + 1) + "/" + readerDataHolder.getPageCount();
         addTextViewHolder(toolbar, readerDataHolder.getContext(), readerDataHolder.getContext().getResources().getDimension(R.dimen.scribble_page_position_size), positionText, ReaderMenuAction.SCRIBBLE_PAGE_POSITION);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_next, ReaderMenuAction.SCRIBBLE_NEXT_PAGE);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.nextbtn_bg, ReaderMenuAction.SCRIBBLE_NEXT_PAGE);
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -168,6 +167,8 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private OnyxToolbar createScribbleTopToolbar(ReaderDataHolder readerDataHolder) {
         OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Top, OnyxToolbar.FillStyle.WrapContent);
+
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_top_back, ReaderMenuAction.SCRIBBLE_CLOSE);
 
         toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
 

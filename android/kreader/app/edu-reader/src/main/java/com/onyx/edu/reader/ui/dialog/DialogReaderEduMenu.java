@@ -34,7 +34,7 @@ public class DialogReaderEduMenu extends OnyxBaseDialog {
     private ReaderMenuState readerMenuState;
 
     public DialogReaderEduMenu(Context context, ReaderMenu.ReaderMenuCallback menuCallback) {
-        super(context, R.style.CustomDialog);
+        super(context, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
         this.context = context;
         readerMenuCallback = menuCallback;
 
@@ -60,6 +60,18 @@ public class DialogReaderEduMenu extends OnyxBaseDialog {
             @Override
             public void onClick(View v) {
                 readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.NEXT_PAGE));
+            }
+        });
+        findViewById(R.id.dismiss_zone).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerMenuCallback.onHideMenu();
+            }
+        });
+        findViewById(R.id.imageView_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.EXIT));
             }
         });
 
