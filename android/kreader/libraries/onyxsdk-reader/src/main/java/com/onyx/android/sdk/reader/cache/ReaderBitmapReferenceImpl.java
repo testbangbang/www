@@ -28,8 +28,8 @@ public class ReaderBitmapReferenceImpl implements ReaderBitmap, Closeable {
 
     private String key;
     private CloseableReference<Bitmap> bitmap;
-    private float gammaCorrection = BaseOptions.getLowerGammaLimit();
-    private float textGammaCorrection = BaseOptions.getLowerGammaLimit();
+    private float gammaCorrection = BaseOptions.getNoGamma();
+    private float textGammaCorrection = BaseOptions.getNoGamma();
     private int emboldenLevel;
 
     public static ReaderBitmapReferenceImpl create(int width, int height, Bitmap.Config config) {
@@ -128,7 +128,7 @@ public class ReaderBitmapReferenceImpl implements ReaderBitmap, Closeable {
      * @return
      */
     public boolean isGammaIgnored() {
-        return Float.compare(textGammaCorrection, BaseOptions.getLowerGammaLimit()) != 0;
+        return Float.compare(textGammaCorrection, BaseOptions.getNoGamma()) != 0;
     }
 
     public boolean isEmboldenApplied(final float targetEmboldenLevel) {

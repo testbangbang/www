@@ -3,8 +3,6 @@ package com.onyx.kreader.device;
 import android.content.Context;
 import android.os.Build;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyBinding;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.TouchBinding;
@@ -15,11 +13,9 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
-import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 import java.lang.reflect.Field;
-import java.util.Map;
 
 /**
  * Created by ming on 16/10/18.
@@ -596,6 +592,7 @@ public class DeviceConfig {
         BaseOptions.setGlobalDefaultGamma(DeviceConfig.sharedInstance(context).getDefaultGamma());
         BaseOptions.setGlobalDefaultTextGamma(DeviceConfig.sharedInstance(context).getDefaultTextGamma());
         if (DeviceConfig.sharedInstance(context).getFixedGamma() > 0) {
+            baseOptions.setTextGamma(BaseOptions.getNoGamma());
             baseOptions.setGamma(DeviceConfig.sharedInstance(context).getFixedGamma());
         }
         ReaderTextStyle.setDefaultFontSizes(DeviceConfig.sharedInstance(context).getDefaultFontSizes());

@@ -71,7 +71,7 @@ public class BaseOptions {
     private static final float fallbackFontSize = 36.0f;
     public static float defaultFontSize = fallbackFontSize;
 
-    transient private static int lowerGammaLimit = 100;
+    transient private static int noGamma = 100;
     transient private static int globalDefaultGamma = 100;
     transient private static int globalDefaultTextGamma = 150;
     public static final float INVALID_FLOAT_VALUE = - 1;
@@ -162,8 +162,8 @@ public class BaseOptions {
         return 0.01;
     }
 
-    public static int getLowerGammaLimit() {
-        return lowerGammaLimit;
+    public static int getNoGamma() {
+        return noGamma;
     }
 
     public static int getGlobalDefaultGamma() {
@@ -175,7 +175,7 @@ public class BaseOptions {
     }
 
     public boolean isGammaCorrectionEnabled() {
-        return getGammaLevel() > lowerGammaLimit;
+        return getGammaLevel() > noGamma;
     }
 
     public float getGammaLevel() {
@@ -198,7 +198,7 @@ public class BaseOptions {
     }
 
     public boolean isTextGamaCorrectionEnabled() {
-        return getTextGammaLevel() > lowerGammaLimit;
+        return getTextGammaLevel() > noGamma;
     }
 
     public float getTextGammaLevel() {
