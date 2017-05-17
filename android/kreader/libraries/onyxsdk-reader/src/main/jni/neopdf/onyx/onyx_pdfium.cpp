@@ -748,10 +748,14 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeActivateDeviceDRM
   (JNIEnv *env, jobject thiz, jstring deviceIdJString, jstring certificateJString) {
-    JNIString strDeviceId(env, deviceIdJString);
-    deviceId = strDeviceId.getLocalString();
-    JNIString strCertificate(env, certificateJString);
-    drmCertificate = strCertificate.getLocalString();
+    if (deviceIdJString) {
+        JNIString strDeviceId(env, deviceIdJString);
+        deviceId = strDeviceId.getLocalString();
+    }
+    if (certificateJString) {
+        JNIString strCertificate(env, certificateJString);
+        drmCertificate = strCertificate.getLocalString();
+    }
     return true;
 }
 
