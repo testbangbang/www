@@ -4,11 +4,14 @@ import android.graphics.Bitmap;
 import android.util.LruCache;
 
 import com.facebook.common.references.CloseableReference;
+import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.cache.LibraryListLruCache;
 import com.onyx.android.sdk.data.cache.MetadataListLruCache;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
 
@@ -96,5 +99,18 @@ public class CacheManager {
     public void clearAll() {
         clearMetadataCache();
         clearLibraryCache();
+    }
+
+    public boolean hasMetadataCache(String key) {
+        return getMetadataLruCache(key) != null;
+    }
+
+    public static String generateCloudKey(QueryArgs args) {
+        String queryKey = null;
+        if (!CollectionUtils.isNullOrEmpty(args.category)) {
+            queryKey = StringUtils.join(args.category, Metadata.DELIMITER);
+        }
+        queryKey += args.getOrderByQuery();
+        return queryKey;
     }
 }

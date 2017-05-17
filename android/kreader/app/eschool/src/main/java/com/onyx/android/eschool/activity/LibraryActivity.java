@@ -255,7 +255,7 @@ public class LibraryActivity extends BaseActivity {
             return;
         }
         final MetadataLoadAction loadAction = new MetadataLoadAction(
-                dataHolder.getLibraryViewInfo().preLoadingPage(preLoadPage), false);
+                dataHolder.getLibraryViewInfo().pageQueryArgs(preLoadPage), false);
         loadAction.execute(dataHolder, null);
     }
 
@@ -281,7 +281,7 @@ public class LibraryActivity extends BaseActivity {
             return;
         }
         final MetadataLoadAction loadAction = new MetadataLoadAction(
-                dataHolder.getLibraryViewInfo().preLoadingPage(preLoadPage), false);
+                dataHolder.getLibraryViewInfo().pageQueryArgs(preLoadPage), false);
         loadAction.execute(dataHolder, null);
     }
 

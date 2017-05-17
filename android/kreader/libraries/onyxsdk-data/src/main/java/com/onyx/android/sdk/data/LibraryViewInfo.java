@@ -10,7 +10,6 @@ import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
-import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,7 @@ public class LibraryViewInfo {
 
     public LibraryViewInfo(int row, int col, SortBy sortBy, SortOrder sortOrder) {
         queryArgs = new QueryArgs();
-        queryArgs.limit = row * col;
+        queryArgs.limit = queryLimit = row * col;
         queryPagination.resize(row, col, 0);
         queryPagination.setCurrentPage(0);
         updateSortBy(sortBy, sortOrder);
@@ -71,12 +70,13 @@ public class LibraryViewInfo {
         return queryArgs;
     }
 
-    public QueryArgs preLoadingPage(int page) {
+    public QueryArgs pageQueryArgs(int page) {
         QueryArgs args = new QueryArgs(queryArgs.sortBy, queryArgs.order);
-        args.limit = queryLimit;
+        args.limit = queryArgs.limit;
         args.offset = getOffset(page);
         args.orderByList.addAll(queryArgs.orderByList);
         args.conditionGroup = queryArgs.conditionGroup;
+        args.category = queryArgs.category;
         return args;
     }
 
@@ -108,6 +108,14 @@ public class LibraryViewInfo {
         return conditionGroup;
     }
 
+    public QueryArgs generateMetadataInQueryArgs(QueryArgs queryArgs) {
+        return QueryBuilder.generateMetadataInQueryArgs(queryArgs);
+    }
+
+    public QueryArgs generateQueryArgs(QueryArgs queryArgs) {
+        return QueryBuilder.generateQueryArgs(queryArgs);
+    }
+
     public QueryArgs libraryQuery(int limit, int offset) {
         QueryArgs args = libraryQuery(getLibraryIdString());
         args.limit = limit;
@@ -120,14 +128,14 @@ public class LibraryViewInfo {
         args.limit = queryLimit;
         args.offset = 0;
         args.libraryUniqueId = libraryId;
-        QueryBuilder.generateQueryArgs(args);
+        generateQueryArgs(args);
         QueryBuilder.andWith(args.conditionGroup, storageIdCondition());
         updateQueryArgs(args);
-        return QueryBuilder.generateMetadataInQueryArgs(args);
+        return generateMetadataInQueryArgs(args);
     }
 
     public QueryArgs libraryQuery() {
-        return libraryQuery(queryLimit, 0);
+        return libraryQuery(queryArgs.limit, 0);
     }
 
     public QueryArgs getCurrentQueryArgs() {
@@ -143,7 +151,7 @@ public class LibraryViewInfo {
     }
 
     public void setLibraryDataModel(LibraryDataModel libraryDataModel) {
-        releaseDataModelThumbnail(getLibraryDataModel());
+        clearThumbnailMap(getLibraryDataModel());
         this.libraryDataModel = libraryDataModel;
     }
 
@@ -169,7 +177,7 @@ public class LibraryViewInfo {
         }
         pageDataModel.bookCount = libraryDataModel.bookCount;
         pageDataModel.libraryCount = libraryDataModel.libraryCount;
-        pageDataModel.thumbnailMaps = libraryDataModel.thumbnailMaps;
+        pageDataModel.thumbnailMap = libraryDataModel.thumbnailMap;
         return pageDataModel;
     }
 
@@ -215,18 +223,18 @@ public class LibraryViewInfo {
     }
 
     public void setQueryLimit(int limit) {
-        this.queryLimit = limit;
+        this.queryArgs.limit = queryLimit = limit;
     }
 
     public int getQueryLimit() {
         return queryLimit;
     }
 
-    public void releaseDataModelThumbnail(LibraryDataModel dataModel) {
-        if (dataModel == null || CollectionUtils.isNullOrEmpty(dataModel.thumbnailMaps)) {
+    public void clearThumbnailMap(LibraryDataModel dataModel) {
+        if (dataModel == null || CollectionUtils.isNullOrEmpty(dataModel.thumbnailMap)) {
             return;
         }
-        for (CloseableReference<Bitmap> refBitmap : dataModel.thumbnailMaps.values()) {
+        for (CloseableReference<Bitmap> refBitmap : dataModel.thumbnailMap.values()) {
             refBitmap.close();
         }
     }

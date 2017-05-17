@@ -455,7 +455,7 @@ public class JEBReaderPlugin implements ReaderPlugin,
         return searchResults;
     }
 
-    public boolean activateDeviceDRM(String certificate) {
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
         return false;
     }
 

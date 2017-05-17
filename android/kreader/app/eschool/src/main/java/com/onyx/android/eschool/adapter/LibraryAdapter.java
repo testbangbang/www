@@ -146,11 +146,11 @@ public class LibraryAdapter extends PageRecyclerView.PageAdapter<LibraryAdapter.
 
     private void renderBookCoverImage(final LibraryItemViewHolder holder, final Metadata metadata) {
         String associationId = metadata.getAssociationId();
-        if (StringUtils.isNullOrEmpty(associationId) || !getLibraryDataModel().thumbnailMaps.containsKey(associationId)) {
+        if (StringUtils.isNullOrEmpty(associationId) || !getLibraryDataModel().thumbnailMap.containsKey(associationId)) {
             holder.imageCover.setImageResource(R.drawable.library_book_cover);
             return;
         }
-        CloseableReference<Bitmap> refBitmap = getLibraryDataModel().thumbnailMaps.get(associationId);
+        CloseableReference<Bitmap> refBitmap = getLibraryDataModel().thumbnailMap.get(associationId);
         if (refBitmap.isValid()) {
             holder.titleView.setVisibility(View.GONE);
             holder.imageCover.setImageBitmap(refBitmap.get());

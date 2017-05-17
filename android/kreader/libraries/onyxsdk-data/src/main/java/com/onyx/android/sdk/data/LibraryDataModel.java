@@ -17,7 +17,7 @@ import java.util.Map;
 public class LibraryDataModel {
     public List<Metadata> visibleBookList = new ArrayList<>();
     public List<Library> visibleLibraryList = new ArrayList<>();
-    public Map<String, CloseableReference<Bitmap>> thumbnailMaps = new HashMap<>();
+    public Map<String, CloseableReference<Bitmap>> thumbnailMap = new HashMap<>();
     public int bookCount;
     public int libraryCount;
 }

@@ -157,6 +157,9 @@ public class HandlerManager {
     }
 
     public boolean isEnableTouch() {
+        if (!hasReaderViewInfo()) {
+            return false;
+        }
         return enableTouch.get();
     }
 
@@ -244,7 +247,6 @@ public class HandlerManager {
         if (!isEnableTouch()) {
             return false;
         }
-
         return getActiveProvider().onDown(readerDataHolder, e);
     }
 
@@ -345,6 +347,10 @@ public class HandlerManager {
             return false;
         }
         return getActiveProvider().onScale(readerDataHolder, detector);
+    }
+
+    private boolean hasReaderViewInfo() {
+        return readerDataHolder.getReaderViewInfo() != null;
     }
 
     public boolean processKeyDownEvent(final ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {

@@ -60,4 +60,16 @@
         <item name="android:textSize">@dimen/activity_user_setting_func_grade_panel_item_check_text_size</item>
     </style>
 
+    <style name="tabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textSize">25sp</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="tabLayoutStyle" parent="Base.Widget.Design.TabLayout">
+        <item name="tabBackground">@android:color/transparent</item>
+        <item name="tabIndicatorHeight">0dp</item>
+        <item name="tabSelectedTextColor">@android:color/black</item>
+    </style>
+
+
 </resources>

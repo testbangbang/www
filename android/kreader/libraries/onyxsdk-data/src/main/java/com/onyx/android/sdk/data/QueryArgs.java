@@ -21,6 +21,7 @@ import java.util.Set;
  */
 public class QueryArgs {
     private static final String TAG = QueryArgs.class.getSimpleName();
+    public static int CLOUD_FETCH_LIMIT = 50;
 
     public int offset = 0;
     public int limit = Integer.MAX_VALUE;
@@ -219,5 +220,10 @@ public class QueryArgs {
             projection[i] = propertyList.get(i).getQuery();
         }
         return projection;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public int getCloudFetchLimit() {
+        return limit > QueryArgs.CLOUD_FETCH_LIMIT ? limit : QueryArgs.CLOUD_FETCH_LIMIT;
     }
 }

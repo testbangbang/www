@@ -66,6 +66,7 @@ dependencies {
     compile "com.aliyun.dpa:oss-android-sdk:$rootProject.aliyunOssSdkVersion"
     compile "com.tencent.mm.opensdk:wechat-sdk-android-with-mta:$rootProject.wechatSdkWithMtaVersion"
     compile "com.facebook.fresco:fresco:$rootProject.frescoVersion"
+    compile "com.github.bumptech.glide:glide:$rootProject.glideVersion"
 }
 
 apply from: file(rootProject.projectDir.absolutePath + '/deploy.gradle')

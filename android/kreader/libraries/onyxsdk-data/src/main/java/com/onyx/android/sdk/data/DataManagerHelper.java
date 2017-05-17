@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
+import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
@@ -13,14 +14,11 @@ import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
-import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.data.v1.OnyxFileDownloadService;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
-import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
@@ -45,41 +43,6 @@ public class DataManagerHelper {
 
     private static DataProviderBase getDataProviderBase() {
         return DataProviderManager.getLocalDataProvider();
-    }
-
-    public static void addCollections(Context context, Library library, List<Metadata> addList) {
-        DataProviderBase providerBase = getDataProviderBase();
-        for (Metadata metadata : addList) {
-            providerBase.deleteMetadataCollection(context, library.getParentUniqueId(), metadata.getIdString());
-            MetadataCollection collection = new MetadataCollection();
-            collection.setLibraryUniqueId(library.getIdString());
-            collection.setDocumentUniqueId(metadata.getIdString());
-            providerBase.addMetadataCollection(context, collection);
-        }
-    }
-
-    public static void updateCollections(Context context, String newLibraryUniqueId, String oldLibraryUniqueId) {
-        if (newLibraryUniqueId == null) {
-            getDataProviderBase().deleteMetadataCollection(context, oldLibraryUniqueId, null);
-        } else {
-            List<MetadataCollection> collections = getDataProviderBase().loadMetadataCollection(context, oldLibraryUniqueId);
-            for (MetadataCollection collection : collections) {
-                collection.setLibraryUniqueId(newLibraryUniqueId);
-                getDataProviderBase().updateMetadataCollection(collection);
-            }
-        }
-    }
-
-    public static void removeCollections(Context context, Library library, List<Metadata> removeList) {
-        for (Metadata metadata : removeList) {
-            getDataProviderBase().deleteMetadataCollection(context, library.getIdString(), metadata.getIdString());
-            if (library.getParentUniqueId() != null) {
-                MetadataCollection collection = new MetadataCollection();
-                collection.setLibraryUniqueId(library.getParentUniqueId());
-                collection.setDocumentUniqueId(metadata.getIdString());
-                getDataProviderBase().addMetadataCollection(context, collection);
-            }
-        }
     }
 
     public static List<Library> loadLibraryList(DataManager dataManager, List<Library> list, String parentId) {
@@ -110,25 +73,6 @@ public class DataManagerHelper {
 
     public static Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail) {
         return getDataProviderBase().getThumbnailBitmap(context, thumbnail.getIdString(), OnyxThumbnail.ThumbnailKind.Original);
-    }
-
-    public static List<Bitmap> loadThumbnailBitmapList(Context context, final List<File> fileList, int limit, OnyxThumbnail.ThumbnailKind kind) {
-        List<Bitmap> thumbnailList = new ArrayList<>();
-        Bitmap bitmap = null;
-        int thumbCount = 0;
-        for (File file : fileList) {
-            if (file.isDirectory()) {
-                continue;
-            }
-            Thumbnail thumbnail = loadThumbnail(context, file.getAbsolutePath(), null, kind);
-            if (thumbCount++ < Math.min(limit, fileList.size())) {
-                bitmap = loadThumbnailBitmap(context, thumbnail);
-            }
-            thumbnailList.add(bitmap == null ?
-                    ThumbnailUtils.loadDefaultThumbnailFromExtension(context, FileUtils.getFileExtension(file)) :
-                    bitmap);
-        }
-        return thumbnailList;
     }
 
     public static Metadata getMetadataByCloudReference(Context context, final String cloudReference) {
@@ -263,8 +207,8 @@ public class DataManagerHelper {
     }
 
     private static CloseableReference<Bitmap> decodeFileAndCache(Context context, DataProviderBase dataProvider,
-                                                    BitmapReferenceLruCache bitmapLruCache,
-                                                    String associationId) {
+                                                                BitmapReferenceLruCache bitmapLruCache,
+                                                                String associationId) {
         CloseableReference<Bitmap> refBitmap = null;
         String path = getThumbnailPath(context, dataProvider, associationId);
         if (StringUtils.isNotBlank(path)) {
@@ -291,34 +235,43 @@ public class DataManagerHelper {
         return parentLibraryList;
     }
 
-    public static QueryResult<Metadata> loadCloudMetadataListWithCache(Context context, CloudManager cloudManager,
-                                                                QueryArgs queryArgs, boolean loadFromCache) {
-        String queryKey = null;
-        if (!CollectionUtils.isNullOrEmpty(queryArgs.category)) {
-            queryKey = StringUtils.join(queryArgs.category, Metadata.DELIMITER);
+    public static void updateCloudCacheList(List<Metadata> cacheList, QueryResult<Metadata> result, QueryArgs queryArgs) {
+        if (result == null || CollectionUtils.isNullOrEmpty(result.list)) {
+            return;
         }
-        queryKey += queryArgs.limit + queryArgs.offset;
-        DataProviderBase dataProvider = cloudManager.getCloudDataProvider();
-        QueryResult<Metadata> result = null;
-        if (loadFromCache) {
-            List<Metadata> list = cloudManager.getCacheManager().getMetadataLruCache(queryKey);
-            if (list != null) {
-                result = new QueryResult<>();
-                result.list = list;
-                result.count = dataProvider.count(context, queryArgs);
-            }
+        int contentSize = queryArgs.offset + CollectionUtils.getSize(result.list);
+        for (int i = queryArgs.offset; i < contentSize && i < CollectionUtils.getSize(cacheList); i++) {
+            cacheList.set(i, result.list.get(i - queryArgs.offset));
         }
-        if (result == null) {
-            result = dataProvider.findMetadataResultByQueryArgs(context, queryArgs);
-            if (result != null && !CollectionUtils.isNullOrEmpty(result.list)) {
-                cloudManager.getCacheManager().addToMetadataCache(queryKey, result.list);
-            }
-        }
+    }
+
+    public static QueryResult<Metadata> cloudMetadataFromDataProvider(Context context, DataProviderBase dataProvider,
+                                                                      QueryArgs queryArgs) {
+        int limit = queryArgs.limit;
+        queryArgs.limit = queryArgs.getCloudFetchLimit();
+        QueryResult<Metadata> result = dataProvider.findMetadataResultByQueryArgs(context, queryArgs);
+        queryArgs.limit = limit;
         return result;
     }
 
+    public static boolean cloudMetadataFromCache(QueryResult<Metadata> result, QueryArgs queryArgs, List<Metadata> cacheList) {
+        result.count = CollectionUtils.getSize(cacheList);
+        result.list = new ArrayList<>();
+        boolean success = true;
+        for (int i = queryArgs.offset; i < (queryArgs.limit + queryArgs.offset)
+                && i < (CollectionUtils.getSize(cacheList)); i++) {
+            Metadata metadata = cacheList.get(i);
+            if (metadata == null) {
+                success = false;
+                break;
+            }
+            result.list.add(metadata);
+        }
+        return success;
+    }
+
     public static Map<String, CloseableReference<Bitmap>> loadCloudThumbnailBitmapsWithCache(Context context, CloudManager cloudManager,
-                                                                                        List<Metadata> metadataList) {
+                                                                                             List<Metadata> metadataList) {
         Map<String, CloseableReference<Bitmap>> map = new HashMap<>();
         for (Metadata metadata : metadataList) {
             CloseableReference<Bitmap> refBitmap = loadCloudThumbnailBitmapWithCache(context, cloudManager, metadata);
@@ -341,62 +294,6 @@ public class DataManagerHelper {
         if (refBitmap != null) {
             return refBitmap.clone();
         }
-        refBitmap = decodeFileAndCache(context, cloudManager.getCloudDataProvider(), bitmapLruCache, associationId);
-        if (refBitmap != null) {
-            return refBitmap;
-        }
-        String coverUrl = metadata.getCoverUrl();
-        if (!NetworkUtil.isWifiConnected(context) || StringUtils.isNullOrEmpty(coverUrl)) {
-            return null;
-        }
-        File file = CloudUtils.imageCachePath(context, associationId);
-        boolean success = startDownloadFile(cloudManager, coverUrl, file.getAbsolutePath());
-        if (success) {
-            Bitmap bitmap = BitmapUtils.loadBitmapFromFile(file.getAbsolutePath());
-            if (bitmap == null) {
-                return null;
-            }
-            boolean hasThumbnail = ThumbnailUtils.hasThumbnail(context, cloudManager.getCloudDataProvider(), associationId);
-            if (!hasThumbnail) {
-                ThumbnailUtils.insertThumbnail(context, cloudManager.getCloudDataProvider(),
-                        file.getAbsolutePath(), associationId, getDefaultThumbnailKind(), bitmap);
-            } else {
-                ThumbnailUtils.updateThumbnailEntry(context, cloudManager.getCloudDataProvider(), associationId,
-                        getDefaultThumbnailKind(), bitmap);
-            }
-            refBitmap = decodeFileAndCache(context, cloudManager.getCloudDataProvider(), bitmapLruCache, associationId);
-        }
-        return refBitmap;
-    }
-
-    public static boolean startDownloadFile(CloudManager cloudManager, String url, String path) {
-        OnyxFileDownloadService service = ServiceFactory.getFileDownloadService(cloudManager.getCloudConf().getApiBase());
-        Response<ResponseBody> resp;
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
-        try {
-            FileUtils.ensureFileExists(path);
-            File file = new File(path);
-            resp = service.fileDownload(url).execute();
-            inputStream = resp.body().byteStream();
-            outputStream = new FileOutputStream(file);
-
-            byte[] fileReader = new byte[3072];
-            while (true) {
-                int read = inputStream.read(fileReader);
-                if (read == -1) {
-                    break;
-                }
-                outputStream.write(fileReader, 0, read);
-            }
-            outputStream.flush();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            FileUtils.closeQuietly(inputStream);
-            FileUtils.closeQuietly(outputStream);
-        }
-        return false;
+        return null;
     }
 }

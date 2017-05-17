@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/contentTab"
+        style="@style/tabLayoutStyle"
+        android:layout_width="match_parent"
+        android:layout_height="104dp"
+        app:tabIndicatorColor="@android:color/black"
+        app:tabSelectedTextColor="@android:color/black"
+        app:tabTextAppearance="@style/tabLayoutTextAppearance"
+        app:tabTextColor="@android:color/darker_gray" />
+
+    <com.onyx.android.eschool.custom.NoSwipePager
+        android:id="@+id/contentViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

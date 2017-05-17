@@ -30,47 +30,18 @@ static const char * annotationClassName = "com/onyx/android/sdk/data/model/Annot
 namespace {
 
 int libraryReference = 0;
+
+std::string deviceId;
 std::string drmCertificate;
 
-bool readDrmManifest(FPDF_DOCUMENT document, char *buf, int length) {
-    unsigned long res = FPDF_GetMetaText(document, "boox", buf, length);
-    return res > 2; // empty metadata text is '\0' in unicode
-}
-
-bool setupDrmManager(const std::string &drmManifest) {
-    const unsigned char *rsaKeyData = reinterpret_cast<const unsigned char *>(drmCertificate.c_str());
-
-    onyx::DrmDecrypt decrypt;
-    int resultLen = 0;
-    int manifestVersion = 0;
-    unsigned char *result = decrypt.rsaDecryptManifest(rsaKeyData, drmManifest.c_str(),
-                                                       &resultLen, &manifestVersion);
-    if (!result) {
-        LOGE("invalid metadata!");
+bool readDrmManifest(FPDF_DOCUMENT document, std::vector<char16_t> *buf) {
+    unsigned long res = FPDF_GetMetaText(document, "boox", nullptr, 0);
+    if (res <= 2) { // empty metadata text is '\0' in unicode
         return false;
     }
-    onyx::DrmDecryptManager::singleton().setDrmVersion(manifestVersion);
-
-    jsonxx::Object object;
-    bool succ = object.parse(reinterpret_cast<char *>(result));
-    free(result);
-    if (!succ) {
-        LOGE("invalid metadata!");
-        return false;
-    }
-
-    if (!object.has<std::string>("publish") || !object.has<std::string>("stamp")) {
-        LOGE("invalid metadata!");
-        return false;
-    }
-    std::string aesKey = object.get<std::string>("publish");
-    std::string aesGuard = object.get<std::string>("stamp");
-    if (!onyx::DrmDecryptManager::singleton().setAESKey(aesKey.c_str(), aesGuard.c_str())) {
-        LOGE("invalid metadata!");
-        return false;
-    }
-
-    onyx::DrmDecryptManager::singleton().setEncrypted(true);
+    buf->resize(res / 2);
+    FPDF_GetMetaText(document, "boox", buf->data(), res);
+    buf->resize(buf->size() - 1); // remove trailing '\0'
     return true;
 }
 
@@ -141,13 +112,14 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
         return errorCode;
     }
 
-    onyx::DrmDecryptManager::singleton().setEncrypted(false);
+    onyx::DrmDecryptManager &drmManager = onyx::DrmDecryptManager::singleton();
+    drmManager.reset();
 
-    char buf[4096] = { 0 };
-    if (readDrmManifest(document, buf, 4096)) {
-        LOGI("document is DRM protected, try to decrypt the document");
-        std::string drmManifest = StringUtils::utf16leto8(reinterpret_cast<const char16_t *>(buf));
-        if (!setupDrmManager(drmManifest)) {
+    std::vector<char16_t> buf;
+    if (readDrmManifest(document, &buf)) {
+        std::string drmManifest = StringUtils::utf16leto8(buf.data());
+        if (!drmManager.setupWithManifest(deviceId, drmCertificate, drmManifest)) {
+            LOGE("parse document DRM failed!");
             return -1;
         }
     }
@@ -775,9 +747,17 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeActivateDeviceDRM
-  (JNIEnv *env, jobject thiz, jstring certificate) {
-    JNIString str(env, certificate);
-    drmCertificate = str.getLocalString();
+  (JNIEnv *env, jobject thiz, jstring deviceIdJString, jstring certificateJString) {
+    deviceId = "";
+    drmCertificate = "";
+    if (deviceIdJString) {
+        JNIString strDeviceId(env, deviceIdJString);
+        deviceId = strDeviceId.getLocalString();
+    }
+    if (certificateJString) {
+        JNIString strCertificate(env, certificateJString);
+        drmCertificate = strCertificate.getLocalString();
+    }
     return true;
 }
 

@@ -163,7 +163,8 @@ public class HomeActivity extends BaseActivity {
 
     @OnClick(R.id.home_main_item)
     void onTeachingMaterialClick() {
-        ActivityUtil.startActivitySafely(this, getPackageManager().getLaunchIntentForPackage("com.youngy.ui"));
+        //ActivityUtil.startActivitySafely(this, getPackageManager().getLaunchIntentForPackage("com.youngy.ui"));
+        ActivityUtil.startActivitySafely(this, new Intent(this, MainActivity.class));
     }
 
     private Intent getPicDisplayIntent() {

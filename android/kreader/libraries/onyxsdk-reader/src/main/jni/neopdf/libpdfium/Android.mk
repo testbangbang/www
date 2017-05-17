@@ -1,6 +1,8 @@
 LOCAL_PATH:= $(call my-dir)
 
 MY_LOCAL_PATH := $(LOCAL_PATH)
+
+JSONXX_ROOT := $(MY_LOCAL_PATH)/../../common/jsonxx
 OPENSSL_ROOT := $(MY_LOCAL_PATH)/../../prebuilt/openssl
 
 # fx_freetype
@@ -78,6 +80,8 @@ include $(CLEAR_VARS)
 LOCAL_MODULE:= libfx_zlib
 
 LOCAL_CFLAGS += -O2
+
+LOCAL_CFLAGS += "-DGUNZIP"
 
 LOCAL_SRC_FILES:= \
     third_party/zlib_v128/adler32.c \
@@ -228,7 +232,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE:= libpdfium-new
 
 LOCAL_STATIC_LIBRARIES += libfx_freetype libfx_agg libfx_lcms2 libfx_libopenjpeg libfx_jpeg libfx_zlib \
-    libssl-prebuilt libcrypto-prebuilt
+    libjsonxx libssl-prebuilt libcrypto-prebuilt
 
 LOCAL_CFLAGS += -O2
 
@@ -575,6 +579,7 @@ LOCAL_SRC_FILES:= \
 LOCAL_C_INCLUDES += \
     $(LOCAL_PATH) \
     $(LOCAL_PATH)/third_party/freetype/include \
+    $(JSONXX_ROOT) \
     ${OPENSSL_ROOT}/include
 
 include $(BUILD_STATIC_LIBRARY)

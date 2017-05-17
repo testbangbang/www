@@ -180,25 +180,27 @@ public class ThumbnailUtils {
         return true;
     }
 
-    public static boolean insertThumbnailBitmap(Thumbnail thumbnail, Bitmap bmp) {
-        Bitmap transBitmap = null;
+    public static boolean writeBitmapToThumbnailFile(File file, Bitmap transBitmap) {
         OutputStream os = null;
         try {
-            transBitmap = generateBitmap(bmp, thumbnail.getThumbnailKind());
-            FileUtils.ensureFileExists(thumbnail.getImageDataPath());
-            File file = new File(thumbnail.getImageDataPath());
             os = new FileOutputStream(file);
-            transBitmap.compress(Bitmap.CompressFormat.JPEG, 85, os);
-            return true;
-        } catch (FileNotFoundException e) {
-            Log.w("insertThumbnail", e);
-            return false;
-        } finally {
-            if (transBitmap != null && transBitmap != bmp) {
-                transBitmap.recycle();
+            if (transBitmap == null || transBitmap.isRecycled()) {
+                return false;
             }
+            return transBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+        } catch (FileNotFoundException e) {
+            Log.w("writeBitmapToThumbnail", e);
+        } finally {
             FileUtils.closeQuietly(os);
         }
+        return false;
+    }
+
+    public static boolean insertThumbnailBitmap(Thumbnail thumbnail, Bitmap bmp) {
+        Bitmap transBitmap = generateBitmap(bmp, thumbnail.getThumbnailKind());
+        FileUtils.ensureFileExists(thumbnail.getImageDataPath());
+        File file = new File(thumbnail.getImageDataPath());
+        return writeBitmapToThumbnailFile(file, transBitmap);
     }
 
     public static Bitmap createLargeThumbnail(Bitmap bmp) {
