@@ -2,7 +2,9 @@
     "defaultFontSizeIndex" : 6,
     "defaultLineSpacingIndex" : 1,
     "ttsEnabled" : true,
-    "hasFrontLight" : true,
+    "regalEnable" : true,
+    "hasNaturalLight" : true,
+    "hasFrontLight" : false,
     "disableNoteFunc" : false,
     "keyBinding": {
         "HandlerManager": {

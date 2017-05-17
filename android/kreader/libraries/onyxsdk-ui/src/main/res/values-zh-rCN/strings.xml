@@ -82,4 +82,7 @@
 
     <string name="chinese_font_face">中文字体</string>
     <string name="english_font_face">英文字体</string>
+
+    <string name="cold_light">冷光</string>
+    <string name="warm_light">暖光</string>
 </resources>
