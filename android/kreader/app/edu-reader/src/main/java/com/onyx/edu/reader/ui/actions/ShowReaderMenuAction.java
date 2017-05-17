@@ -199,8 +199,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
         ReaderLayerMenuItem[] menuItems = new ReaderLayerMenuItem[]{
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_SCRIBBLE, R.drawable.ic_write),
-                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC, R.drawable.ic_topic),
-                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.EXIT, R.drawable.ic_menu_close)
+                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC, R.drawable.ic_topic)
         };
         readerMenu = new EduMenu(readerDataHolder.getContext());
         updateReaderMenuCallback(readerMenu, readerDataHolder);
