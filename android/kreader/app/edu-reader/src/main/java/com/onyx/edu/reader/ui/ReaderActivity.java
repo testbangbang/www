@@ -495,7 +495,6 @@ public class ReaderActivity extends OnyxBaseActivity {
     private void prepareUpdateMode(final RequestFinishEvent event) {
         if (isAnyPopup()) {
             ReaderDeviceManager.disableRegal();
-            return;
         }
 
         boolean update = (event != null && event.isApplyGCIntervalUpdate());
