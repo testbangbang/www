@@ -58,8 +58,13 @@ public class ReaderLayerMenu extends ReaderMenu {
     public void show(ReaderMenuState state) {
         this.state = state;
         updateMenuItemsWithState(state);
-        updateMenuContent();
-        getDialog().show(state);
+        if (!isShown()) {
+            updateMenuContent();
+            getDialog().show(state);
+        } else {
+            getDialog().updateReaderState(state);
+        }
+
     }
 
     @Override
