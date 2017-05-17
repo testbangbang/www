@@ -592,6 +592,7 @@ public class DeviceConfig {
         BaseOptions.setGlobalDefaultGamma(DeviceConfig.sharedInstance(context).getDefaultGamma());
         BaseOptions.setGlobalDefaultTextGamma(DeviceConfig.sharedInstance(context).getDefaultTextGamma());
         if (DeviceConfig.sharedInstance(context).getFixedGamma() > 0) {
+            baseOptions.setTextGamma(BaseOptions.getNoGamma());
             baseOptions.setGamma(DeviceConfig.sharedInstance(context).getFixedGamma());
         }
         ReaderTextStyle.setDefaultFontSizes(DeviceConfig.sharedInstance(context).getDefaultFontSizes());
