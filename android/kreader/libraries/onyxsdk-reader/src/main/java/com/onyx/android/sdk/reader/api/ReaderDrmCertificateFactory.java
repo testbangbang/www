@@ -6,6 +6,7 @@ package com.onyx.android.sdk.reader.api;
 
 public interface ReaderDrmCertificateFactory {
 
+    String getDeviceId();
     String getDrmCertificate();
 
 }
