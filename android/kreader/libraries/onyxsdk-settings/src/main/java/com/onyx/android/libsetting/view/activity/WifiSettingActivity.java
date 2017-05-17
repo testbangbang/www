@@ -61,15 +61,20 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
     // Combo scans can take 5-6s to complete - set to 10s.
     private static final int WIFI_RESCAN_INTERVAL_MS = 10 * 1000;
 
-    private Timer scanTimer = new Timer();
-    private TimerTask wifiScanTimerTask = new TimerTask() {
-        @Override
-        public void run() {
-            if (wifiAdmin != null) {
-                wifiAdmin.triggerWifiScan();
+    private Timer scanTimer;
+    private TimerTask wifiScanTimerTask;
+
+    private void buildWifiScanTimerTask() {
+        scanTimer = new Timer();
+        wifiScanTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (wifiAdmin != null) {
+                    wifiAdmin.triggerWifiScan();
+                }
             }
-        }
-    };
+        };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +152,7 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
             wifiAdmin.registerReceiver();
         }
         if (SettingConfig.sharedInstance(this).isEnableAutoWifiReScan()) {
+            buildWifiScanTimerTask();
             scanTimer.schedule(wifiScanTimerTask, WIFI_RESCAN_INTERVAL_MS, WIFI_RESCAN_INTERVAL_MS);
         }
     }
@@ -159,6 +165,7 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         }
         if (SettingConfig.sharedInstance(this).isEnableAutoWifiReScan() && scanTimer != null) {
             scanTimer.cancel();
+            wifiScanTimerTask.cancel();
         }
     }
 
