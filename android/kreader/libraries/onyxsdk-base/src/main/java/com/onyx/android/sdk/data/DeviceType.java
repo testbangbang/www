@@ -1,4 +1,4 @@
-package com.onyx.android.libsetting.data;
+package com.onyx.android.sdk.data;
 
 import android.support.annotation.IntDef;
 
