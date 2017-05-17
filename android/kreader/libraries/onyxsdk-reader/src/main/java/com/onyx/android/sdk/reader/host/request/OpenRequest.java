@@ -53,18 +53,7 @@ public class OpenRequest extends BaseReaderRequest {
             return;
         }
 
-        if (factory != null) {
-            final String certificate = factory.getDrmCertificate();
-            if (StringUtils.isNotBlank(certificate)) {
-                ReaderDrmManager manager = reader.getPlugin().createDrmManager();
-                if (manager != null) {
-                    WifiManager wifiManager = (WifiManager)getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                    WifiInfo info = wifiManager.getConnectionInfo();
-                    String address = info.getMacAddress();
-                    manager.activateDeviceDRM(address.toLowerCase(), certificate);
-                }
-            }
-        }
+       prepareDrmManager(reader);
 
         try {
             ReaderDocument document = reader.getPlugin().open(documentPath, documentOptions, pluginOptions);
@@ -91,6 +80,23 @@ public class OpenRequest extends BaseReaderRequest {
             return true;
         }
         return false;
+    }
+
+    private boolean prepareDrmManager(final Reader reader) {
+        if (factory == null) {
+            return false;
+        }
+        final String certificate = factory.getDrmCertificate();
+        if (StringUtils.isNotBlank(certificate)) {
+            ReaderDrmManager manager = reader.getPlugin().createDrmManager();
+            if (manager != null) {
+                WifiManager wifiManager = (WifiManager)getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                WifiInfo info = wifiManager.getConnectionInfo();
+                String address = info.getMacAddress();
+                manager.activateDeviceDRM(address.toLowerCase(), certificate);
+            }
+        }
+        return true;
     }
 
 }
