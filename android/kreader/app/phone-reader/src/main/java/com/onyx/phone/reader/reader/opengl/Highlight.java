@@ -1,6 +1,7 @@
 package com.onyx.phone.reader.reader.opengl;
 
 import android.graphics.Color;
+import android.opengl.GLES20;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -15,47 +16,64 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class Highlight implements IOpenGLObject {
 
-    private FloatBuffer vertex;
+    private final int COORDS_PER_VERTEX = 3;
+    private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
+
+    private FloatBuffer vertexBuffer;
     private int color = Color.BLACK;
     private float alpha = 0.5f;
+    private float colorArray[] = { 0f, 0f, 0f, 0f };
 
     public Highlight(float[] vertexArray) {
-
-        ByteBuffer vbb
-                = ByteBuffer.allocateDirect(vertexArray.length*4);
-        vbb.order(ByteOrder.nativeOrder());
-        vertex = vbb.asFloatBuffer();
-        vertex.put(vertexArray);
-        vertex.position(0);
+        ByteBuffer bb = ByteBuffer.allocateDirect(
+                vertexArray.length * 4);
+        bb.order(ByteOrder.nativeOrder());
+        vertexBuffer = bb.asFloatBuffer();
+        vertexBuffer.put(vertexArray);
+        vertexBuffer.position(0);
     }
 
     public Highlight(float[] vertexArray, int color, float alpha) {
         this(vertexArray);
-        this.color = color;
-        this.alpha = alpha;
+        setColor(color);
+        setAlpha(alpha);
     }
 
     @Override
-    public void onDrawFrame(GL10 gl) {
-        gl.glLoadIdentity();
-        gl.glEnable(GL10.GL_BLEND);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertex);
-        gl.glColor4f(Color.red(color) / 255f,
-                Color.green(color) / 255f,
-                Color.blue(color) / 255f,
-                alpha);
-        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glDisable(GL10.GL_BLEND);
+    public void draw(GL10 gl, float[] mvpMatrix, int program) {
+        GLES20.glUseProgram(program);
+        int positionHandle = GLES20.glGetAttribLocation(program, Constants.V_POSITION);
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glEnableVertexAttribArray(positionHandle);
+        GLES20.glVertexAttribPointer(
+                positionHandle, COORDS_PER_VERTEX,
+                GLES20.GL_FLOAT, false,
+                vertexStride, vertexBuffer);
+
+        int colorHandle = GLES20.glGetUniformLocation(program, Constants.V_COLOR);
+        GLES20.glUniform4fv(colorHandle, 1, colorArray, 0);
+        int mvpMatrixHandle = GLES20.glGetUniformLocation(program, Constants.U_MVP_MATRIX);
+        GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        GLES20.glDisableVertexAttribArray(positionHandle);
+        GLES20.glDisable(GLES20.GL_BLEND);
     }
 
     public void setColor(int color) {
         this.color = color;
+        updateColorArray();
     }
 
     public void setAlpha(float alpha) {
         this.alpha = alpha;
+        updateColorArray();
+    }
+
+    private void updateColorArray() {
+        colorArray[0] = Color.red(color) / 255f;
+        colorArray[1] = Color.green(color) / 255f;
+        colorArray[2] = Color.blue(color) / 255f;
+        colorArray[3] = alpha;
     }
 
     public static Highlight create(float[] vertexArray) {

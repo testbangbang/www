@@ -20,6 +20,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
+import android.opengl.Matrix;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -27,8 +28,10 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.eschao.android.widget.pageflip.GLProgram;
 import com.eschao.android.widget.pageflip.PageFlip;
 import com.eschao.android.widget.pageflip.PageFlipException;
+import com.onyx.phone.reader.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +62,12 @@ public class PageRenderView extends GLSurfaceView implements Renderer, GestureDe
     private SizeChangedListener sizeChangedListener;
     private ViewChangedOListener viewChangedOListener;
     private boolean enableGesture = true;
-    private List<IOpenGLObject> openGLObjects = new ArrayList<>();
+    private List<IOpenGLObject> shapeObjects = new ArrayList<>();
+
+    private final float[] mvpMatrix = new float[16];
+    private final float[] projectionMatrix = new float[16];
+    private final float[] viewMatrix = new float[16];
+    private GLProgram vertexProgram = new GLProgram();
 
     public PageRenderView(Context context) {
         super(context);
@@ -99,8 +107,8 @@ public class PageRenderView extends GLSurfaceView implements Renderer, GestureDe
         gestureDetector = new GestureDetector(context, this);
     }
 
-    public void updateIOpenGLObjects(List<IOpenGLObject> openGLObjects) {
-        this.openGLObjects = openGLObjects;
+    public void updateShapeObjects(List<IOpenGLObject> openGLObjects) {
+        this.shapeObjects = openGLObjects;
         requestRender();
     }
 
@@ -257,8 +265,8 @@ public class PageRenderView extends GLSurfaceView implements Renderer, GestureDe
             drawLock.lock();
             if (pageRender != null) {
                 pageRender.onDrawFrame();
-                for (IOpenGLObject openGLObject : openGLObjects) {
-                    openGLObject.onDrawFrame(gl);
+                for (IOpenGLObject openGLObject : shapeObjects) {
+                    openGLObject.draw(gl, mvpMatrix, vertexProgram.getProgramRef());
                 }
                 if (pageRender.onEndedDrawing(pageRender.drawCommand)) {
                     if (viewChangedOListener != null && pageRender.drawCommand == DRAW_FULL_PAGE) {
@@ -299,10 +307,17 @@ public class PageRenderView extends GLSurfaceView implements Renderer, GestureDe
             if (sizeChangedListener != null) {
                 sizeChangedListener.onSizeChanged(width, height);
             }
+            updateMatrix();
         }
         catch (PageFlipException e) {
             Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceChanged");
         }
+    }
+
+    private void updateMatrix() {
+        Matrix.frustumM(projectionMatrix, 0, 1, -1, -1, 1, 3, 7);
+        Matrix.setLookAtM(viewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
     }
 
     /**
@@ -315,12 +330,12 @@ public class PageRenderView extends GLSurfaceView implements Renderer, GestureDe
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         try {
             pageFlip.onSurfaceCreated();
+            vertexProgram.init(getContext(), R.raw.shape_vertex_shader, R.raw.shape_fragment_shader);
         }
         catch (PageFlipException e) {
             Log.e(TAG, "Failed to run PageFlipFlipRender:onSurfaceCreated");
         }
     }
-
 
     @Override
     public boolean onDown(MotionEvent e) {

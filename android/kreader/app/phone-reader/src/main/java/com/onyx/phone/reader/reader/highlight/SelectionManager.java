@@ -20,7 +20,7 @@ public class SelectionManager {
 
     private ReaderDataHolder readerDataHolder;
     private ReaderSelection currentSelection;
-    private List<IOpenGLObject> selectionRectangles = new ArrayList<>();
+    private List<RectF> selectionRectangles = new ArrayList<>();
 
     public SelectionManager(ReaderDataHolder readerDataHolder) {
         this.readerDataHolder = readerDataHolder;
@@ -41,10 +41,24 @@ public class SelectionManager {
         if (rectangles == null) {
             return;
         }
-        rectangles = RectUtils.mergeRectanglesByBaseLine(rectangles);
+        selectionRectangles = RectUtils.mergeRectanglesByBaseLine(rectangles);
+    }
+
+    private float translateX(final float x) {
+        int halfWidth = readerDataHolder.getDisplayWidth() /2;
+        return (x - halfWidth) / halfWidth  ;
+    }
+
+    private float translateY(final float y) {
+        int halfHeight = readerDataHolder.getDisplayHeight() / 2;
+        return (halfHeight - y ) / halfHeight;
+    }
+
+    public List<IOpenGLObject> getSelectionRectangles() {
+        List<IOpenGLObject> selections = new ArrayList<>();
         int arrayCount = 12;
-        for (int i = 0; i < rectangles.size(); i++) {
-            RectF rectangle = rectangles.get(i);
+        for (int i = 0; i < selectionRectangles.size(); i++) {
+            RectF rectangle = selectionRectangles.get(i);
             float[] vertexArray = new float[arrayCount];
 
             vertexArray[0] = translateX(rectangle.left);
@@ -63,23 +77,10 @@ public class SelectionManager {
             vertexArray[10] = translateY(rectangle.bottom);
             vertexArray[11] = 0f;
 
-            Highlight square = Highlight.create(vertexArray, Color.GREEN, 0.5f);
-            selectionRectangles.add(square);
+            Highlight highlight = Highlight.create(vertexArray, Color.GREEN, 0.5f);
+            selections.add(highlight);
         }
-    }
-
-    private float translateX(final float x) {
-        int halfWidth = readerDataHolder.getDisplayWidth() /2;
-        return (x - halfWidth) / halfWidth  ;
-    }
-
-    private float translateY(final float y) {
-        int halfHeight = readerDataHolder.getDisplayHeight() / 2;
-        return (halfHeight - y ) / halfHeight;
-    }
-
-    public List<IOpenGLObject> getSelectionRectangles() {
-        return selectionRectangles;
+        return selections;
     }
 
     public boolean hasSelection() {
