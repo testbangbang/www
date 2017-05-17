@@ -7,5 +7,5 @@ import javax.microedition.khronos.opengles.GL10;
  */
 
 public interface IOpenGLObject {
-    void onDrawFrame(GL10 gl);
+    void draw(GL10 gl, float[] mvpMatrix, int program);
 }

@@ -201,6 +201,7 @@ public class OpenDocumentAction extends BaseAction {
 
     private void restoreWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
         final RestoreRequest restoreRequest = new RestoreRequest(options);
+        restoreRequest.setAlwaysScaleToPage(true);
         readerDataHolder.submitRenderRequest(restoreRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

@@ -470,6 +470,7 @@ public class ReaderDataHolder {
         saveReaderUserDataInfo(request);
         setLastRequestSequence(request.getRequestSequence());
         getEventBus().post(RequestFinishEvent.createEvent(request.getRequestSequence(), applyGCIntervalUpdate, renderShapeData, false));
+        getEventBus().post(new UpdatePagePositionEvent(getCurrentPage(), getPageCount()));
         if (getReaderViewInfo() != null && getReaderViewInfo().layoutChanged) {
             getEventBus().post(new LayoutChangeEvent());
         }

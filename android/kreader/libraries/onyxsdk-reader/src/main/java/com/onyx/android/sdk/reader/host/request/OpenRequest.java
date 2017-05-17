@@ -53,12 +53,7 @@ public class OpenRequest extends BaseReaderRequest {
             return;
         }
 
-        if (factory != null) {
-            ReaderDrmManager manager = reader.getPlugin().createDrmManager();
-            if (manager != null) {
-                manager.activateDeviceDRM(factory.getDeviceId(), factory.getDrmCertificate());
-            }
-        }
+        prepareDrmManager(reader);
 
         try {
             ReaderDocument document = reader.getPlugin().open(documentPath, documentOptions, pluginOptions);
@@ -85,6 +80,18 @@ public class OpenRequest extends BaseReaderRequest {
             return true;
         }
         return false;
+    }
+
+    private boolean prepareDrmManager(final Reader reader) {
+        if (factory == null) {
+            return false;
+        }
+
+        ReaderDrmManager manager = reader.getPlugin().createDrmManager();
+        if (manager != null) {
+            manager.activateDeviceDRM(factory.getDeviceId(), factory.getDrmCertificate());
+        }
+        return true;
     }
 
 }

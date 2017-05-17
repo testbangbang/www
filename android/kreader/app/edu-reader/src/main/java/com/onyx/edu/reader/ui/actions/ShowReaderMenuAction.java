@@ -23,6 +23,7 @@ import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
@@ -193,8 +194,6 @@ public class ShowReaderMenuAction extends BaseAction {
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_DRAG);
         }
-
-        disableMenus.add(ReaderMenuAction.SCRIBBLE_COLOR);
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
@@ -780,6 +779,15 @@ public class ShowReaderMenuAction extends BaseAction {
             case SCRIBBLE_TRIANGLE:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_TRIANGLE);
                 break;
+            case SCRIBBLE_TRIANGLE_45:
+                useShape(readerDataHolder, ShapeFactory.SHAPE_TRIANGLE_45);
+                break;
+            case SCRIBBLE_TRIANGLE_60:
+                useShape(readerDataHolder, ShapeFactory.SHAPE_TRIANGLE_60);
+                break;
+            case SCRIBBLE_TRIANGLE_90:
+                useShape(readerDataHolder, ShapeFactory.SHAPE_TRIANGLE_90);
+                break;
             case SCRIBBLE_CIRCLE:
                 useShape(readerDataHolder, ShapeFactory.SHAPE_CIRCLE);
                 break;
@@ -790,22 +798,22 @@ public class ShowReaderMenuAction extends BaseAction {
                 useShape(readerDataHolder, ShapeFactory.SHAPE_ANNOTATION);
                 break;
             case SCRIBBLE_BLACK:
-                useColor(readerDataHolder, Color.BLACK);
+                useColor(readerDataHolder, Color.BLACK, null);
                 break;
             case SCRIBBLE_BLUE:
-                useColor(readerDataHolder, Color.BLUE);
+                useColor(readerDataHolder, Color.BLUE, null);
                 break;
             case SCRIBBLE_GREEN:
-                useColor(readerDataHolder, Color.GREEN);
+                useColor(readerDataHolder, Color.GREEN, null);
                 break;
             case SCRIBBLE_MAGENTA:
-                useColor(readerDataHolder, Color.MAGENTA);
+                useColor(readerDataHolder, Color.MAGENTA, null);
                 break;
             case SCRIBBLE_RED:
-                useColor(readerDataHolder, Color.RED);
+                useColor(readerDataHolder, Color.RED, null);
                 break;
             case SCRIBBLE_YELLOW:
-                useColor(readerDataHolder, Color.YELLOW);
+                useColor(readerDataHolder, Color.YELLOW, null);
                 break;
             case SCRIBBLE_ERASER_PART:
                 startErasing(readerDataHolder);
@@ -856,12 +864,12 @@ public class ShowReaderMenuAction extends BaseAction {
         actionChain.execute(readerDataHolder, null);
     }
 
-    private static void useColor(final ReaderDataHolder readerDataHolder, int color) {
+    public static void useColor(final ReaderDataHolder readerDataHolder, int color, final BaseCallback callback) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new ChangeNoteColorAction(color));
-        actionChain.execute(readerDataHolder, null);
+        actionChain.execute(readerDataHolder, callback);
     }
 
     private static void undo(final ReaderDataHolder readerDataHolder) {
@@ -1056,6 +1064,15 @@ public class ShowReaderMenuAction extends BaseAction {
                 break;
             case ShapeFactory.SHAPE_TRIANGLE:
                 action = ReaderMenuAction.SCRIBBLE_TRIANGLE;
+                break;
+            case ShapeFactory.SHAPE_TRIANGLE_45:
+                action = ReaderMenuAction.SCRIBBLE_TRIANGLE_45;
+                break;
+            case ShapeFactory.SHAPE_TRIANGLE_60:
+                action = ReaderMenuAction.SCRIBBLE_TRIANGLE_60;
+                break;
+            case ShapeFactory.SHAPE_TRIANGLE_90:
+                action = ReaderMenuAction.SCRIBBLE_TRIANGLE_90;
                 break;
             case ShapeFactory.SHAPE_CIRCLE:
                 action = ReaderMenuAction.SCRIBBLE_CIRCLE;

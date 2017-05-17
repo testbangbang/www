@@ -21,9 +21,14 @@ public class RestoreRequest extends BaseReaderRequest {
 
     private BaseOptions baseOptions;
     private String position;
+    private boolean alwaysScaleToPage = false;
 
     public RestoreRequest(final BaseOptions options) {
         baseOptions = options;
+    }
+
+    public void setAlwaysScaleToPage(boolean alwaysScaleToPage) {
+        this.alwaysScaleToPage = alwaysScaleToPage;
     }
 
     public void execute(final Reader reader) throws Exception {
@@ -38,7 +43,18 @@ public class RestoreRequest extends BaseReaderRequest {
         restoreReflowSettings(reader);
         restoreContrast(reader);
         restoreReaderTextStyle(reader);
+        if (alwaysScaleToPage) {
+            scaleToPage(reader);
+        }
         drawVisiblePages(reader);
+    }
+
+    private void scaleToPage(final Reader reader) throws Exception {
+        position = baseOptions.getCurrentPage();
+        if (StringUtils.isNullOrEmpty(position)) {
+            position = reader.getNavigator().getInitPosition();
+        }
+        reader.getReaderLayoutManager().scaleToPage(position);
     }
 
     private void restoreLayoutType(final Reader reader) throws Exception {

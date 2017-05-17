@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/tools"
+    appCompat:alwaysLayoutImageView="true"
     android:gravity="center"
     android:paddingTop="@dimen/scribble_bottom_expand_menu_padding_top_bottom"
     android:paddingBottom="@dimen/scribble_bottom_expand_menu_padding_top_bottom"

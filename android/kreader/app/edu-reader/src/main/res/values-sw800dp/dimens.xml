@@ -50,7 +50,8 @@
     <dimen name="bold_checkbox_width">80dp</dimen>
     <dimen name="bold_checkbox_divider_width">2dp</dimen>
     <dimen name="dialog_contrast_seek_bar_width">300dp</dimen>
-    <dimen name="scribble_bottom_menu_margin">20dp</dimen>
+    <dimen name="scribble_bottom_menu_margin">16dp</dimen>
+    <dimen name="scribble_bottom_menu_margin_top">4dp</dimen>
     <dimen name="view_pinch_zooming_message_font_size">25sp</dimen>
     <dimen name="view_pinch_zooming_message_scale_size">48sp</dimen>
 
