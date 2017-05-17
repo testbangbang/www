@@ -3,7 +3,8 @@
     "defaultLineSpacingIndex" : 1,
     "ttsEnabled" : true,
     "regalEnable" : true,
-    "hasFrontLight" : true,
+    "hasNaturalLight" : true,
+    "hasFrontLight" : false,
     "disableNoteFunc" : false,
     "keyBinding": {
         "HandlerManager": {
