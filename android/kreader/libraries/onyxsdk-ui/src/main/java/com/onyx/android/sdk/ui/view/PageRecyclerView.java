@@ -38,6 +38,7 @@ public class PageRecyclerView extends RecyclerView {
     private int originPaddingBottom;
     private int itemDecorationHeight = 0;
     private boolean pageTurningCycled = false;
+    private boolean requestFocusOfFirstItem = true;
 
     public interface OnPagingListener {
         void onPageChange(int position,int itemCount,int pageSize);
@@ -78,6 +79,14 @@ public class PageRecyclerView extends RecyclerView {
 
     public void setItemDecorationHeight(int itemDecorationHeight) {
         this.itemDecorationHeight = itemDecorationHeight;
+    }
+
+    public boolean isRequestFocusOfFirstItem() {
+        return requestFocusOfFirstItem;
+    }
+
+    public void setRequestFocusOfFirstItem(boolean requestFocusOfFirstItem) {
+        this.requestFocusOfFirstItem = requestFocusOfFirstItem;
     }
 
     public int getCurrentFocusedPosition() {
@@ -413,7 +422,7 @@ public class PageRecyclerView extends RecyclerView {
                     view.setFocusable(true);
                     setupListener(view,adapterPosition);
                     updateFocusView(view,adapterPosition);
-                    if (getPagePaginator().offsetInCurrentPage(position) == 0) {
+                    if (pageRecyclerView.isRequestFocusOfFirstItem() && getPagePaginator().offsetInCurrentPage(position) == 0) {
                         view.requestFocus();
                     }
                     onPageBindViewHolder(holder,adapterPosition);

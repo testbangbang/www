@@ -102,6 +102,7 @@ public class ReaderLayerMenuViewFactory {
         final PageRecyclerView view = (PageRecyclerView) LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
         GridLayoutManager gridLayoutManager = new DisableScrollGridManager(context, 1);
         view.setDefaultMoveKeyBinding();
+        view.setRequestFocusOfFirstItem(true);
         view.setLayoutManager(gridLayoutManager);
         final LayoutInflater inflater = LayoutInflater.from(context);
         view.setAdapter(new PageRecyclerView.PageAdapter() {

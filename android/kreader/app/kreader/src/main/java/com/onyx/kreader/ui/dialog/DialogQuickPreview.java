@@ -322,6 +322,7 @@ public class DialogQuickPreview extends OnyxBaseDialog {
         adapter.setGridType(grid);
         gridRecyclerView.setAdapter(adapter);
         gridRecyclerView.setDefaultPageKeyBinding();
+        gridRecyclerView.setRequestFocusOfFirstItem(false);
 
         textViewProgress = (TextView) findViewById(R.id.text_view_progress);
         seekBarProgress = (SeekBar) findViewById(R.id.seek_bar_page);
