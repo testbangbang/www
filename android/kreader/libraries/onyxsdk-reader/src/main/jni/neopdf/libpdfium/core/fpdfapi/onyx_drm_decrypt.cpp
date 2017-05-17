@@ -663,7 +663,7 @@ private:
                     break;
                 }
             }
-            if (!found) {
+            if (!found && macs.size() > 0) {
                 return false;
             }
         }
