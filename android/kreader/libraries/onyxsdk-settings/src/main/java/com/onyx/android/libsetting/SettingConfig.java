@@ -8,14 +8,14 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.onyx.android.libsetting.data.DeviceType;
 import com.onyx.android.libsetting.data.PowerSettingTimeoutCategory;
 import com.onyx.android.libsetting.data.SettingCategory;
 import com.onyx.android.libsetting.model.SettingItem;
-import com.onyx.android.libsetting.util.CommonUtil;
 import com.onyx.android.libsetting.util.Constant;
 import com.onyx.android.libsetting.view.activity.StorageSettingActivity;
+import com.onyx.android.sdk.data.DeviceType;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.utils.CompatibilityUtil;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 
 import java.util.ArrayList;
@@ -160,7 +160,7 @@ public class SettingConfig {
             currentDeviceType = DeviceType.RK;
             return;
         }
-        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.M)) {
+        if (CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.M)) {
             currentDeviceType = DeviceType.IMX7;
         } else {
             currentDeviceType = DeviceType.IMX6;
@@ -183,7 +183,7 @@ public class SettingConfig {
         String name = "";
         switch (currentDeviceType) {
             case DeviceType.IMX6:
-                name = CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ? Constant.IMX6_KIT_KAT_BASED_CONFIG_NAME :
+                name = CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ? Constant.IMX6_KIT_KAT_BASED_CONFIG_NAME :
                         Constant.IMX6_ICS_BASED_CONFIG_NAME;
                 break;
             case DeviceType.RK:
@@ -304,7 +304,7 @@ public class SettingConfig {
     public Intent getTimeZoneSettingIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.ZONE_PICKER_CLASS_NAME);
-        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
+        return CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
                 new Intent(Default.TIME_ZONE_PICKER_ACTION) : intent;
     }
 
@@ -321,7 +321,7 @@ public class SettingConfig {
     public Intent getFactoryResetIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.FACTORY_RESET_CLASS_NAME);
-        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
+        return CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
                 new Intent(Default.MASTER_CLEAR_ACTION) : intent;
     }
 
@@ -354,7 +354,7 @@ public class SettingConfig {
     }
 
     public Intent getVPNSettingIntent() {
-        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.N) ?
+        return CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.N) ?
                 new Intent(Settings.ACTION_VPN_SETTINGS) :
                 new Intent(Default.PRE_N_VPN_SETTING_ACTION).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
@@ -362,7 +362,7 @@ public class SettingConfig {
     public Intent getDeviceInfoIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.DEVICE_INFO_CLASS_NAME);
-        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.M) ?
+        return CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.M) ?
                 new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS) : intent;
     }
 

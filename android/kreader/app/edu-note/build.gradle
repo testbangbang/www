@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+
+apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
+apply from: file(rootProject.projectDir.absolutePath + '/versioning.gradle')
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.onyx.edu.note"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode gitVersionCode(projectDir)
+        versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../proguard-rules.pro', 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [channel_value: releaseChannel(),
+                                    type_value: releaseType(),
+                                    platform_value: releasePlatform()]
+        }
+        debug {
+            debuggable true
+            jniDebuggable true
+            manifestPlaceholders = [channel_value: releaseChannel(),
+                                    type_value: releaseType(),
+                                    platform_value: releasePlatform()]
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    dexOptions {
+        preDexLibraries = false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile project(':libraries:onyxsdk-base')
+    compile project(':libraries:onyxsdk-scribble')
+    compile project(':libraries:onyxsdk-ui')
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile "junit:junit:$rootProject.junitVersion"
+}

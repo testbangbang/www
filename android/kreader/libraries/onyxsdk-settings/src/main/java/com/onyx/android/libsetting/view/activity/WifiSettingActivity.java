@@ -17,7 +17,6 @@ import com.onyx.android.libsetting.data.wifi.AccessPoint;
 import com.onyx.android.libsetting.databinding.ActivityWifiSettingBinding;
 import com.onyx.android.libsetting.databinding.WifiInfoItemBinding;
 import com.onyx.android.libsetting.manager.WifiAdmin;
-import com.onyx.android.libsetting.util.CommonUtil;
 import com.onyx.android.libsetting.util.SettingRecyclerViewUtil;
 import com.onyx.android.libsetting.util.WifiUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
@@ -30,6 +29,7 @@ import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CompatibilityUtil;
 
 import java.net.SocketException;
 import java.util.List;
@@ -274,7 +274,7 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         args.putString(ARGS_SECURITY_MODE, accessPoint.getSecurityMode());
         args.putString(ARGS_SIGNAL_LEVEL,
                 wifiAdmin.getSignalString(accessPoint.getSignalLevel()));
-        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.LOLLIPOP)) {
+        if (CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.LOLLIPOP)) {
             args.putString(ARGS_BAND, WifiUtil.getBandString(WifiSettingActivity.this,
                     accessPoint.getWifiInfo().getFrequency()));
         }
