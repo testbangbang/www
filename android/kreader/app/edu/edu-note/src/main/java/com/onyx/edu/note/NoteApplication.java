@@ -12,6 +12,7 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.edu.note.util.NotePreference;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 
 /**
  * Created by solskjaer49 on 2017/5/17 17:06.
@@ -29,7 +30,8 @@ public class NoteApplication extends Application {
     }
 
     public static void initWithAppConfig(final Activity activity) {
-        DeviceUtils.setFullScreenOnCreate(activity, NoteAppConfig.sharedInstance(activity).useFullScreen());
+        //DeviceUtils.setFullScreenOnCreate(activity, NoteAppConfig.sharedInstance(activity).useFullScreen());
+        DeviceUtils.setFullScreenOnCreate(activity, true);
     }
 
     @Override
