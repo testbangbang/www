@@ -5,6 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
+import com.facebook.common.memory.PooledByteBuffer;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.image.EncodedImage;
+import com.facebook.imagepipeline.memory.PoolConfig;
+import com.facebook.imagepipeline.memory.PoolFactory;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Thumbnail;
@@ -15,9 +21,13 @@ import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -149,42 +159,48 @@ public class ThumbnailUtils {
     }
 
     public static boolean insertThumbnail(Context context, DataProviderBase dataProviderBase, String filePath,
+                                          String associationId, ThumbnailKind kind, Bitmap bitmap) {
+        Thumbnail thumbnail = new Thumbnail();
+        thumbnail.setThumbnailKind(kind);
+        thumbnail.setOriginContentPath(filePath);
+        thumbnail.setIdString(associationId);
+        thumbnail.setImageDataPath(ThumbnailUtils.getThumbnailFile(context, associationId, kind.toString()));
+        dataProviderBase.saveThumbnailEntry(context, thumbnail);
+        return insertThumbnailBitmap(thumbnail, bitmap);
+    }
+
+    public static boolean insertThumbnail(Context context, DataProviderBase dataProviderBase, String filePath,
                                           String associationId, Bitmap bitmap) {
         for (ThumbnailKind kind : ThumbnailKind.values()) {
-            Thumbnail thumbnail = new Thumbnail();
-            thumbnail.setIdString(UUID.randomUUID().toString());
-            thumbnail.setThumbnailKind(kind);
-            thumbnail.setOriginContentPath(filePath);
-            thumbnail.setIdString(associationId);
-            thumbnail.setImageDataPath(ThumbnailUtils.getThumbnailFile(context, associationId, kind.toString()));
-            dataProviderBase.saveThumbnailEntry(context, thumbnail);
-            boolean success = insertThumbnailBitmap(thumbnail, bitmap);
-            if (kind.equals(ThumbnailKind.Original) && !success) {
+            boolean success = insertThumbnail(context, dataProviderBase, filePath, associationId, kind, bitmap);
+            if (kind.equals(ThumbnailKind.Large) && !success) {
                 return false;
             }
         }
         return true;
     }
 
-    private static boolean insertThumbnailBitmap(Thumbnail thumbnail, Bitmap bmp) {
-        Bitmap transBitmap = null;
+    public static boolean writeBitmapToThumbnailFile(File file, Bitmap transBitmap) {
         OutputStream os = null;
         try {
-            transBitmap = generateBitmap(bmp, thumbnail.getThumbnailKind());
-            FileUtils.ensureFileExists(thumbnail.getImageDataPath());
-            File file = new File(thumbnail.getImageDataPath());
             os = new FileOutputStream(file);
-            transBitmap.compress(Bitmap.CompressFormat.JPEG, 85, os);
-            return true;
-        } catch (FileNotFoundException e) {
-            Log.w("insertThumbnail", e);
-            return false;
-        } finally {
-            if (transBitmap != null && transBitmap != bmp) {
-                transBitmap.recycle();
+            if (transBitmap == null || transBitmap.isRecycled()) {
+                return false;
             }
+            return transBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+        } catch (FileNotFoundException e) {
+            Log.w("writeBitmapToThumbnail", e);
+        } finally {
             FileUtils.closeQuietly(os);
         }
+        return false;
+    }
+
+    public static boolean insertThumbnailBitmap(Thumbnail thumbnail, Bitmap bmp) {
+        Bitmap transBitmap = generateBitmap(bmp, thumbnail.getThumbnailKind());
+        FileUtils.ensureFileExists(thumbnail.getImageDataPath());
+        File file = new File(thumbnail.getImageDataPath());
+        return writeBitmapToThumbnailFile(file, transBitmap);
     }
 
     public static Bitmap createLargeThumbnail(Bitmap bmp) {
@@ -231,5 +247,56 @@ public class ThumbnailUtils {
         }
 
         return Bitmap.createScaledBitmap(bmp, w, h, true);
+    }
+
+    public static CloseableReference<Bitmap> decodeFile(File file) throws IOException {
+        return decodeStream(new FileInputStream(file), Bitmap.Config.ARGB_8888);
+    }
+
+    public static CloseableReference<Bitmap> decodeFile(File file, Bitmap.Config config) throws IOException {
+        return decodeStream(new FileInputStream(file), config);
+    }
+
+    public static CloseableReference<Bitmap> decodeStream(InputStream inputStream, Bitmap.Config config) throws IOException {
+        PoolFactory poolFactory = new PoolFactory(PoolConfig.newBuilder().build());
+        PooledByteBuffer pooledByteBuffer = null;
+        EncodedImage image = null;
+        try {
+            pooledByteBuffer = poolFactory.getPooledByteBufferFactory().newByteBuffer(inputStream);
+            image = new EncodedImage(CloseableReference.of(pooledByteBuffer));
+            return Fresco.getImagePipelineFactory().getPlatformDecoder().decodeFromEncodedImage(image,
+                    config);
+        } finally {
+            FileUtils.closeQuietly(image);
+            FileUtils.closeQuietly(pooledByteBuffer);
+        }
+    }
+
+    public static boolean hasThumbnail(Context context, DataProviderBase dataProvider, String associationId) {
+        Thumbnail thumbnail = getThumbnailEntry(context, dataProvider, associationId, ThumbnailKind.Large);
+        return thumbnail != null && thumbnail.hasValidId();
+    }
+
+    public static Thumbnail getThumbnailEntry(Context context, DataProviderBase dataProvider, String associationId, ThumbnailKind kind) {
+        return dataProvider.getThumbnailEntry(context, associationId, kind);
+    }
+
+    public static boolean updateThumbnailEntrySet(Context context, DataProviderBase dataProvider, String associationId, Bitmap originBitmap) {
+        boolean success = true;
+        for (ThumbnailKind thumbnailKind : ThumbnailKind.values()) {
+            success &= updateThumbnailEntry(context, dataProvider, associationId, thumbnailKind, originBitmap);
+        }
+        return success;
+    }
+
+    public static boolean updateThumbnailEntry(Context context, DataProviderBase dataProvider, String associationId, ThumbnailKind kind, Bitmap originBitmap) {
+        Thumbnail thumbnail = getThumbnailEntry(context, dataProvider, associationId, kind);
+        if (thumbnail == null) {
+            Log.w("update thumbnail", "detect null");
+            return false;
+        }
+        thumbnail.setImageDataPath(ThumbnailUtils.getThumbnailFile(context, thumbnail.getIdString(), thumbnail.getThumbnailKind().toString()));
+        dataProvider.saveThumbnailEntry(context, thumbnail);
+        return insertThumbnailBitmap(thumbnail, originBitmap);
     }
 }

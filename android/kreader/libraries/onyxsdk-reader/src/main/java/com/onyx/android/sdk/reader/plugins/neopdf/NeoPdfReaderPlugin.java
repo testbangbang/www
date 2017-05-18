@@ -3,11 +3,15 @@ package com.onyx.android.sdk.reader.plugins.neopdf;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
+import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
@@ -119,6 +123,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     public boolean readMetadata(final ReaderDocumentMetadata metadata) {
         metadata.setTitle(getPluginImpl().metadataString("Title"));
         metadata.getAuthors().add(getPluginImpl().metadataString("Author"));
+        metadata.setOptions(getPluginImpl().metadataString("OnyxOptions"));
         return true;
     }
 
@@ -171,6 +176,28 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     public ReaderView getView(final ReaderViewOptions viewOptions) {
         readerViewOptions = viewOptions;
         return this;
+    }
+
+    @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        ReaderDocumentMetadata metadata = new ReaderDocumentMetadataImpl();
+        if (!readMetadata(metadata)) {
+            return false;
+        }
+        String optionsJson = metadata.getOptions();
+        if (StringUtils.isBlank(optionsJson)) {
+            return false;
+        }
+        try {
+            JSONObject object = JSON.parseObject(optionsJson);
+            if (!object.containsKey("gamma")) {
+                return false;
+            }
+            options.setTextGamma(object.getIntValue("gamma"));
+            return true;
+        } catch (Throwable tr) {
+            return false;
+        }
     }
 
     @Override
@@ -469,27 +496,8 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     }
 
 
-    public boolean acceptDRMFile(final String path) {
-        return false;
-    }
-
-    public boolean registerDRMCallback(final ReaderDRMCallback callback) {
-        return false;
-    }
-
-    public boolean activateDeviceDRM(String user, String password) {
-        return false;
-    }
-
-    public boolean deactivateDeviceDRM() {
-        return false;
-    }
-
-    public String getDeviceDRMAccount() {
-        return "";
-    }
-    public boolean fulfillDRMFile(String path) {
-        return false;
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
+        return getPluginImpl().activateDeviceDRM(deviceId, certificate);
     }
 
     public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {

@@ -190,20 +190,31 @@
 
     <!--OTA Setting-->
     <string name="ota_auto_check_key" translatable="false">ota_auto_check_key</string>
+    <string name="android_version_spec_key" translatable="false">android_version_spec_key</string>
     <string name="model_spec_key" translatable="false">model_spec_key</string>
     <string name="firmware_spec_key" translatable="false">firmware_spec_key</string>
 
     <string name="setting_ota">Firmware Update</string>
+    <string name="ota_check_update">Check update</string>
     <string name="ota_from_cloud">Check update from cloud</string>
     <string name="ota_from_local">Check update from local storage</string>
     <string name="ota_auto_update">Auto update</string>
     <string name="ota_auto_summary">Check for updates automatically</string>
     <string name="model_number_title">Model number : </string>
     <string name="firmware_number_title">Build number : </string>
+    <string name="android_version_number_title">Android version number : </string>
     <string name="find_package_from_local">New update package found, do you want to update?</string>
     <string name="title_update">OTA update</string>
     <string name="no_update">No update package available.</string>
     <string name="clean_test_apps">Clear Test Apps</string>
-
+    <string name="checking_update">Waiting for checking update</string>
+    <string name="wifi_is_not_connected">WI-FI is currently no connection</string>
+    <string name="opening_wifi">Opening wifi for you, please wait connection</string>
+    <string name="download_interrupted">Download interrupted</string>
+    <string name="md5_verify_fail">MD5 verification failed, please download again</string>
+    <string name="downloading">Downloading update package&#8230;</string>
+    <string name="firmware_is_latest">The installed firmware is latest</string>
+    <string name="firmware_update_detected">New firmware detected</string>
+    <string name="url_error">The url link is incorrect</string>
 </resources>
 

@@ -3,11 +3,11 @@ package com.onyx.android.libsetting.util;
 import android.content.Context;
 import android.provider.Settings;
 
-import java.util.List;
-
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.SettingConfig;
 import com.onyx.android.libsetting.data.PowerSettingTimeoutCategory;
+
+import java.util.List;
 
 /**
  * Created by solskjaer49 on 2016/12/9 17:26.
@@ -59,6 +59,12 @@ public class PowerUtil {
                                                 @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int timeoutCategory) {
         return Integer.toString(Settings.System.getInt(
                 context.getContentResolver(), getTimeoutDataKeyByCategory(context, timeoutCategory), -1));
+    }
+
+    public static int getCurrentTimeoutIntValue(Context context,
+                                                @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int timeoutCategory) {
+        return Settings.System.getInt(
+                context.getContentResolver(), getTimeoutDataKeyByCategory(context, timeoutCategory), -1);
     }
 
     private static String getTimeoutDataKeyByCategory(Context context,

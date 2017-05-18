@@ -32,8 +32,11 @@ public class OTAManager {
     private static final String OTA_SERVICE_PACKAGE_PATH_KEY = "updatePath";
 
     private static final String UPDATE_FILE_NAME = "update.zip";
+    private static final String CLOUD_FILE_NAME = "cloud.update.zip";
     public static final String LOCAL_PATH_SDCARD = DeviceInfoUtil.getExternalStorageDirectory()
             .getAbsolutePath() + File.separator + UPDATE_FILE_NAME;
+    public static final String CLOUD_PATH_SDCARD = DeviceInfoUtil.getExternalStorageDirectory()
+            .getAbsolutePath() + File.separator + CLOUD_FILE_NAME;
     public static final String LOCAL_PATH_EXTSD = DeviceInfoUtil.getRemovableSDCardDirectory()
             .getAbsolutePath() + File.separator + UPDATE_FILE_NAME;
 

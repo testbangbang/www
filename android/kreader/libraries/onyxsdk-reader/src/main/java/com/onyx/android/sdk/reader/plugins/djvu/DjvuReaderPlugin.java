@@ -5,8 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.Benchmark;
-import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
@@ -126,6 +126,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
+    }
+
+    @Override
     public boolean saveOptions() {
         return true;
     }
@@ -141,32 +146,7 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean acceptDRMFile(String path) {
-        return false;
-    }
-
-    @Override
-    public boolean registerDRMCallback(ReaderDRMCallback callback) {
-        return false;
-    }
-
-    @Override
-    public boolean activateDeviceDRM(String user, String password) {
-        return false;
-    }
-
-    @Override
-    public boolean deactivateDeviceDRM() {
-        return false;
-    }
-
-    @Override
-    public String getDeviceDRMAccount() {
-        return null;
-    }
-
-    @Override
-    public boolean fulfillDRMFile(String path) {
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
         return false;
     }
 

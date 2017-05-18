@@ -20,6 +20,8 @@ import android.os.Build;
 import android.os.StatFs;
 import android.util.Log;
 
+import com.onyx.android.sdk.utils.CompatibilityUtil;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ public class StorageSizeUtil {
             Log.i(TAG, "path," + i + ": " + pathList.get(i));
             StatFs stat = new StatFs(pathList.get(i));
             long bytesAvailable;
-            if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR2)) {
+            if (CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR2)) {
                 bytesAvailable = stat.getBlockSizeLong() * stat.getBlockCountLong();
             } else {
                 bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
@@ -60,7 +62,7 @@ public class StorageSizeUtil {
         for (int i = 0; i < len; i++) {
             StatFs stat = new StatFs(pathList.get(i));
             long bytesAvailable;
-            if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR2)) {
+            if (CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR2)) {
                 bytesAvailable = stat.getBlockSizeLong() * stat.getBlockCountLong();
             } else {
                 bytesAvailable = (long) stat.getBlockSize() * (long) stat.getBlockCount();
@@ -116,7 +118,7 @@ public class StorageSizeUtil {
         int size = paths.length;
         for (String p : paths) {
             StatFs path = new StatFs(p);
-            if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR2)) {
+            if (CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR2)) {
                 availableAmount += path.getFreeBlocksLong() * path.getBlockSizeLong();
             } else {
                 availableAmount += (long) path.getFreeBlocks() * (long) path.getBlockSize();
@@ -138,7 +140,7 @@ public class StorageSizeUtil {
 
         Log.i(TAG, "blocks: " + sdPath.getFreeBlocks());
         Log.i(TAG, "block size: " + sdPath.getBlockSize());
-        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR2)){
+        if (CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR2)){
             amount =  sdPath.getFreeBlocksLong() *  sdPath.getBlockSizeLong();
         }else {
             amount = (long) sdPath.getFreeBlocks() * (long) sdPath.getBlockSize();

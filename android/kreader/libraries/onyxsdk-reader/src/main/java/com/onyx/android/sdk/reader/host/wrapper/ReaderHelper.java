@@ -358,18 +358,25 @@ public class ReaderHelper {
     }
 
     public void applyPostBitmapProcess(ReaderBitmapReferenceImpl bitmap) {
-        if (getDocumentOptions().isTextGamaCorrectionEnabled() &&
-                getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
-            bitmap.setTextGammaCorrection(getDocumentOptions().getTextGammaLevel());
-        } else if (getDocumentOptions().isGamaCorrectionEnabled()) {
-            applyGammaCorrection(bitmap);
-        }
+        applyGamma(bitmap);
         applyEmbolden(bitmap);
         applySaturation(bitmap);
     }
 
-    private void applyGammaCorrection(final ReaderBitmapReferenceImpl bitmap) {
-        if (getDocumentOptions().isGamaCorrectionEnabled() &&
+    private void applyGamma(final ReaderBitmapReferenceImpl bitmap) {
+        applyTextGamma(bitmap);
+        applyImageGamma(bitmap);
+    }
+
+    private void applyTextGamma(final ReaderBitmapReferenceImpl bitmap) {
+        if (getDocumentOptions().isTextGamaCorrectionEnabled() &&
+                getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
+            bitmap.setTextGammaCorrection(getDocumentOptions().getTextGammaLevel());
+        }
+    }
+
+    private void applyImageGamma(final ReaderBitmapReferenceImpl bitmap) {
+        if (getDocumentOptions().isGammaCorrectionEnabled() &&
                 Float.compare(bitmap.gammaCorrection(), getDocumentOptions().getGammaLevel()) != 0) {
             if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel())) {
                 bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());

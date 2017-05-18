@@ -1,0 +1,75 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="SpeakingEnterButton">
+        <item name="android:layout_margin">20dp</item>
+        <item name="android:background">@drawable/button_bg</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="choose_type_title">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:gravity">left|top</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="rect_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/background_normal_black_rect_transparent_solid</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+    </style>
+
+    <style name="user_info_edit">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minWidth">@dimen/activity_user_setting_edit_min_width</item>
+        <item name="android:paddingBottom">@dimen/activity_user_setting_edit_padding_bottom</item>
+        <item name="android:paddingLeft">@dimen/activity_user_setting_edit_padding_left</item>
+        <item name="android:paddingRight">@dimen/activity_user_setting_edit_padding_right</item>
+        <item name="android:paddingTop">@dimen/activity_user_setting_edit_padding_top</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:background">@drawable/background_black_circle_white_solid</item>
+    </style>
+
+    <style name="check_text_style">
+        <item name="android:paddingBottom">@dimen/activity_user_setting_func_grade_panel_item_check_text_padding_bottom</item>
+        <item name="android:paddingLeft">@dimen/activity_user_setting_func_grade_panel_item_check_text_padding_left</item>
+        <item name="android:paddingRight">@dimen/activity_user_setting_func_grade_panel_item_check_text_padding_right</item>
+        <item name="android:paddingTop">@dimen/activity_user_setting_func_grade_panel_item_check_text_padding_top</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/check_text_background</item>
+        <item name="android:textColor">@drawable/check_text_color</item>
+        <item name="android:textSize">@dimen/activity_user_setting_func_grade_panel_item_check_text_size</item>
+    </style>
+
+    <style name="tabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textSize">25sp</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="tabLayoutStyle" parent="Base.Widget.Design.TabLayout">
+        <item name="tabBackground">@android:color/transparent</item>
+        <item name="tabIndicatorHeight">0dp</item>
+        <item name="tabSelectedTextColor">@android:color/black</item>
+    </style>
+
+
+</resources>

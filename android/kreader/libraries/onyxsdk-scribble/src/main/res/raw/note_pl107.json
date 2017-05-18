@@ -15,7 +15,7 @@
 
   "use_raw_input" : 1,
   "single_touch" : 1,
-  "shortcut_drawing": 1,
+  "shortcut_drawing": 0,
   "shortcut_erasing": 1
 
 }

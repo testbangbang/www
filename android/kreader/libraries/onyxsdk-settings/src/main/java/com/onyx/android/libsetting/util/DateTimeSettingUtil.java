@@ -7,6 +7,8 @@ import android.os.Build;
 import android.provider.Settings;
 import android.text.format.DateFormat;
 
+import com.onyx.android.sdk.utils.CompatibilityUtil;
+
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -15,13 +17,13 @@ import java.util.TimeZone;
  */
 
 public class DateTimeSettingUtil {
-    private final static String AUTO_TIME_KEY = CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1) ?
+    private final static String AUTO_TIME_KEY = CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1) ?
             Settings.Global.AUTO_TIME : Settings.System.AUTO_TIME;
     private static final String HOURS_12 = "12";
     private static final String HOURS_24 = "24";
 
     public static void setAutoTimeEnabled(Context context, boolean enable) {
-        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
+        if (CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
             Settings.Global.putInt(context.getContentResolver(), AUTO_TIME_KEY,
                     enable ? 1 : 0);
         } else {
@@ -32,7 +34,7 @@ public class DateTimeSettingUtil {
 
     public static boolean isAutoTimeEnabled(Context context) {
         try {
-            return CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1) ?
+            return CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1) ?
                     Settings.Global.getInt(context.getContentResolver(), AUTO_TIME_KEY) > 0
                     : Settings.System.getInt(context.getContentResolver(), AUTO_TIME_KEY) > 0;
         } catch (Settings.SettingNotFoundException snfe) {

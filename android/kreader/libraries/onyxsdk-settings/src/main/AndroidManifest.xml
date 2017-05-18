@@ -22,11 +22,20 @@
         android:supportsRtl="true">
         <activity
             android:name=".view.activity.DeviceMainSettingActivity"
-            android:theme="@style/OnyxAppCompat" />
+            android:theme="@style/OnyxAppCompat"
+            android:exported="true" />
         <activity
             android:name=".view.activity.WifiSettingActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
             android:theme="@style/OnyxAppCompat"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustNothing">
+            <intent-filter>
+                <action android:name="android.intent.action.WIFI_ENABLE" />
+                <action android:name="com.android.systemui.CONFIGURE_NEW_WIFI_ACTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".view.activity.SoundSettingActivity"
             android:theme="@style/OnyxAppCompat" />

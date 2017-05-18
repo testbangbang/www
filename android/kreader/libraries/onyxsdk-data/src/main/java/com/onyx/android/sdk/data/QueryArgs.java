@@ -15,11 +15,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 /**
  * Created by suicheng on 2016/9/2.
  */
 public class QueryArgs {
     private static final String TAG = QueryArgs.class.getSimpleName();
+    public static int CLOUD_FETCH_LIMIT = 50;
 
     public int offset = 0;
     public int limit = Integer.MAX_VALUE;
@@ -32,6 +34,7 @@ public class QueryArgs {
     public List<OrderBy> orderByList = new ArrayList<>();
     public String libraryUniqueId = null;
     public BookFilter filter = BookFilter.ALL;
+
     public SortBy sortBy = SortBy.Name;
     public SortOrder order = SortOrder.Desc;
     public Set<String> fileType = new HashSet<>();
@@ -39,6 +42,7 @@ public class QueryArgs {
     public Set<String> title = new HashSet<>();
     public Set<String> tags = new HashSet<>();
     public Set<String> series = new HashSet<>();
+    public Set<String> category = new HashSet<>();
     public String query;
 
     public static final String DEVICE_LIBRARY = "deviceLibrary";
@@ -158,6 +162,7 @@ public class QueryArgs {
         return true;
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public boolean isAllSetContentEmpty() {
         if (!CollectionUtils.isNullOrEmpty(fileType)) {
             return false;
@@ -177,6 +182,7 @@ public class QueryArgs {
         return true;
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public String getOrderByQuery() {
         if(CollectionUtils.isNullOrEmpty(orderByList)){
             return null;
@@ -188,10 +194,12 @@ public class QueryArgs {
         return orderBy;
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public String getLimitOffsetQuery() {
         return " LIMIT " + limit + " OFFSET " + offset + " ";
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public String getOrderByQueryWithLimitOffset() {
         String orderByQuery = getOrderByQuery();
         String limitOffsetQuery = getLimitOffsetQuery();
@@ -202,6 +210,7 @@ public class QueryArgs {
         return orderByQuery + limitOffsetQuery;
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public String[] getProjectionSet() {
         if (CollectionUtils.isNullOrEmpty(propertyList)) {
             return null;
@@ -211,5 +220,10 @@ public class QueryArgs {
             projection[i] = propertyList.get(i).getQuery();
         }
         return projection;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public int getCloudFetchLimit() {
+        return limit > QueryArgs.CLOUD_FETCH_LIMIT ? limit : QueryArgs.CLOUD_FETCH_LIMIT;
     }
 }

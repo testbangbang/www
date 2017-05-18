@@ -10,6 +10,8 @@ android {
         versionCode 1
         versionName "1.0"
 
+        multiDexEnabled true
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -40,6 +42,8 @@ dependencies {
     compile "com.android.support:preference-v14:$rootProject.supportLibraryVersion"
 
     compile project(':libraries:onyxsdk-ui')
+    compile project(':libraries:onyxsdk-data')
     testCompile "junit:junit:$rootProject.junitVersion"
+    compile "com.android.support:multidex:$multidexVersion"
     compile "com.android.support.constraint:constraint-layout:$rootProject.constraintlayoutVersion"
 }

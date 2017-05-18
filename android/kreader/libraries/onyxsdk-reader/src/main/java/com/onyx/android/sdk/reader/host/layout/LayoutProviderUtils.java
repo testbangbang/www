@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.reader.host.layout;
 
-import android.graphics.Bitmap;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.api.ReaderBitmap;
@@ -213,11 +212,15 @@ public class LayoutProviderUtils {
         return null;
     }
 
+    static private boolean canReuse(ReaderBitmapReferenceImpl cache, ReaderDrawContext context) {
+        return (cache.isGammaIgnored() || cache.isGammaApplied(context.targetGammaCorrection)) &&
+                cache.isTextGammaApplied(context.targetTextGammaCorrection) &&
+                cache.isEmboldenApplied(context.targetEmboldenLevel);
+    }
+
     static public boolean checkCache(final BitmapReferenceLruCache cache, final String key, final ReaderDrawContext context) {
         ReaderBitmapReferenceImpl result = cache.get(key);
-        if (result == null || !result.isGammaApplied(context.targetGammaCorrection) ||
-                !result.isTextGammaApplied(context.targetTextGammaCorrection) ||
-                !result.isEmboldenApplied(context.targetEmboldenLevel)) {
+        if (result == null || !canReuse(result, context)) {
             return false;
         }
 

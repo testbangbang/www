@@ -35,6 +35,19 @@ public class ContentDatabase {
         }
     }
 
+    @Migration(version = 3, database = ContentDatabase.class)
+    public static class Version3Migration extends AlterTableMigration<Metadata> {
+        public Version3Migration(Class<Metadata> table) {
+            super(table);
+        }
+
+        @Override
+        public void onPreMigrate() {
+            addColumn(SQLiteType.INTEGER, Metadata_Table.fetchSource.getNameAlias().name());
+            addColumn(SQLiteType.TEXT, Metadata_Table.coverUrl.getNameAlias().name());
+        }
+    }
+
     @Migration(version = 2, priority = 0, database = ContentDatabase.class)
     public static class IndexMigration2 extends IndexMigration<Metadata> {
 
@@ -48,6 +61,4 @@ public class ContentDatabase {
             return Metadata_Table.nativeAbsolutePath.getNameAlias().name();
         }
     }
-
-
 }

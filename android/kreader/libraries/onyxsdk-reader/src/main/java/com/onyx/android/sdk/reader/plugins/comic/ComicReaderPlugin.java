@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.plugins.images.ImagesWrapper;
 import com.onyx.android.sdk.reader.api.*;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
@@ -134,6 +135,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
+    }
+
+    @Override
     public boolean saveOptions() {
         return true;
     }
@@ -151,39 +157,8 @@ public class ComicReaderPlugin implements ReaderPlugin,
         
     }
 
-    /**
-     * Check if drm manager accept the file or not.
-     *
-     * @param path
-     * @return
-     */
     @Override
-    public boolean acceptDRMFile(String path) {
-        return false;
-    }
-
-    @Override
-    public boolean registerDRMCallback(ReaderDRMCallback callback) {
-        return false;
-    }
-
-    @Override
-    public boolean activateDeviceDRM(String user, String password) {
-        return false;
-    }
-
-    @Override
-    public boolean deactivateDeviceDRM() {
-        return false;
-    }
-
-    @Override
-    public String getDeviceDRMAccount() {
-        return null;
-    }
-
-    @Override
-    public boolean fulfillDRMFile(String path) {
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
         return false;
     }
 

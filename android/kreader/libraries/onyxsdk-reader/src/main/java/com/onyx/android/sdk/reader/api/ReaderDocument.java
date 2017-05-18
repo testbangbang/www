@@ -3,6 +3,8 @@ package com.onyx.android.sdk.reader.api;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
+
 /**
  * Created by zhuzeng on 10/2/15.
  */
@@ -54,6 +56,13 @@ public interface ReaderDocument {
      * @return The created view. null if failed.
      */
     public ReaderView getView(final ReaderViewOptions viewOptions);
+
+    /**
+     * read built-in options from document
+     * @return false if not exists
+     * @param options
+     */
+    public boolean readBuiltinOptions(BaseOptions options);
 
     public boolean saveOptions();
 

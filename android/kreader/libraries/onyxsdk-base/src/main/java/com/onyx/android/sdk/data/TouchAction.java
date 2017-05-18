@@ -16,4 +16,5 @@ public class TouchAction {
     public static final String NEXT_TEN_PAGE = "nextTenPage";
     public static final String PREV_TEN_PAGE = "prevTenPage";
     public static final String SHOW_MENU = "showMenu";
+    public static final String TOGGLE_A2 = "toggle_a2";
 }

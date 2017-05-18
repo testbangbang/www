@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
-import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
@@ -24,6 +24,7 @@ public class DataManager {
     private RequestManager requestManager;
     private DataProviderManager dataProviderManager = new DataProviderManager();
     private FileSystemManager fileSystemManager;
+    private CacheManager cacheManager;
 
     public DataManager() {
         requestManager = new RequestManager();
@@ -88,5 +89,12 @@ public class DataManager {
 
     public final FileSystemManager getFileSystemManager() {
         return fileSystemManager;
+    }
+
+    public CacheManager getCacheManager() {
+        if (cacheManager == null) {
+            cacheManager = new CacheManager();
+        }
+        return cacheManager;
     }
 }

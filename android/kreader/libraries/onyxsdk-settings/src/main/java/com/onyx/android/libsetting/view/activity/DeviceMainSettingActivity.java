@@ -5,16 +5,13 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.percent.PercentRelativeLayout;
 import android.support.percent.PercentLayoutHelper;
+import android.support.percent.PercentRelativeLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.SettingConfig;
@@ -89,46 +86,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         adapter.setItemClickListener(new SettingFunctionAdapter.ItemClickListener() {
             @Override
             public void itemClick(@SettingCategory.SettingCategoryDef int itemCategory) {
-                Intent intent = null;
-                switch (itemCategory) {
-                    case SettingCategory.NETWORK:
-                        intent = new Intent(DeviceMainSettingActivity.this, NetworkSettingActivity.class);
-                        break;
-                    case SettingCategory.SECURITY:
-                        intent = new Intent(DeviceMainSettingActivity.this, SecuritySettingActivity.class);
-                        break;
-                    case SettingCategory.STORAGE:
-                        intent = config.getStorageSettingIntent(DeviceMainSettingActivity.this);
-                        break;
-                    case SettingCategory.LANGUAGE_AND_INPUT:
-                        intent = new Intent(DeviceMainSettingActivity.this, LanguageInputSettingActivity.class);
-                        break;
-                    case SettingCategory.DATE_TIME_SETTING:
-                        intent = new Intent(DeviceMainSettingActivity.this, DateTimeSettingActivity.class);
-                        break;
-                    case SettingCategory.POWER:
-                        intent = new Intent(DeviceMainSettingActivity.this, PowerSettingActivity.class);
-                        break;
-                    case SettingCategory.APPLICATION_MANAGEMENT:
-                        intent = new Intent(DeviceMainSettingActivity.this, ApplicationSettingActivity.class);
-                        break;
-                    case SettingCategory.USER_SETTING:
-                        intent = new Intent(DeviceMainSettingActivity.this, UserSettingActivity.class);
-                        break;
-                    case SettingCategory.ERROR_REPORT:
-                        if (!TextUtils.isEmpty(config.getErrorReportAction())) {
-                            intent = new Intent(config.getErrorReportAction());
-                        }
-                        break;
-                    case SettingCategory.PRODUCTION_TEST:
-                        intent = new Intent();
-                        intent.setAction(Intent.ACTION_VIEW);
-                        intent.setClassName("com.onyx.android.production.test", "com.onyx.android.productiontest.activity.ProductionTestMainActivity");
-                        break;
-                    default:
-                        Toast.makeText(DeviceMainSettingActivity.this, "Under Construction", Toast.LENGTH_SHORT).show();
-                        return;
-                }
+                Intent intent = SettingCategory.getConfigIntentByCategory(DeviceMainSettingActivity.this, itemCategory);
                 if (intent != null) {
                     startActivity(intent);
                 }
@@ -142,7 +100,9 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         binding.infoArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(config.getDeviceInfoIntent());
+                if (config.isEnableSystemSettings()) {
+                    startActivity(config.getDeviceInfoIntent());
+                }
             }
         });
 

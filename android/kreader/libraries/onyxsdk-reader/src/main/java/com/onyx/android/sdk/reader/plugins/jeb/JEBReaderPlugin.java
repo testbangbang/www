@@ -7,7 +7,6 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
-import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
@@ -32,6 +31,7 @@ import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.api.ReaderViewOptions;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.BitmapUtils;
@@ -193,6 +193,11 @@ public class JEBReaderPlugin implements ReaderPlugin,
         readerViewOptions = viewOptions;
         getPluginImpl().setViewSize(readerViewOptions.getViewWidth(), readerViewOptions.getViewHeight());
         return this;
+    }
+
+    @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
     }
 
     @Override
@@ -450,27 +455,7 @@ public class JEBReaderPlugin implements ReaderPlugin,
         return searchResults;
     }
 
-    public boolean acceptDRMFile(final String path) {
-        return false;
-    }
-
-    public boolean registerDRMCallback(final ReaderDRMCallback callback) {
-        return false;
-    }
-
-    public boolean activateDeviceDRM(String user, String password) {
-        return false;
-    }
-
-    public boolean deactivateDeviceDRM() {
-        return false;
-    }
-
-    public String getDeviceDRMAccount() {
-        return "";
-    }
-
-    public boolean fulfillDRMFile(String path) {
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
         return false;
     }
 

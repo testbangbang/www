@@ -1,6 +1,20 @@
 package com.onyx.android.libsetting.data;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.IntDef;
+import android.text.TextUtils;
+import android.widget.Toast;
+
+import com.onyx.android.libsetting.SettingConfig;
+import com.onyx.android.libsetting.view.activity.ApplicationSettingActivity;
+import com.onyx.android.libsetting.view.activity.DateTimeSettingActivity;
+import com.onyx.android.libsetting.view.activity.LanguageInputSettingActivity;
+import com.onyx.android.libsetting.view.activity.NetworkSettingActivity;
+import com.onyx.android.libsetting.view.activity.PowerSettingActivity;
+import com.onyx.android.libsetting.view.activity.SecuritySettingActivity;
+import com.onyx.android.libsetting.view.activity.UserSettingActivity;
+import com.onyx.android.libsetting.view.activity.WifiSettingActivity;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -22,6 +36,8 @@ public class SettingCategory {
     public static final int SECURITY = 8;
     public static final int ERROR_REPORT = 9;
     public static final int PRODUCTION_TEST = 10;
+    public static final int WIFI = 11;
+    public static final int BLUETOOTH = 12;
 
     static public final String SETTING_ITEM_NETWORK_TAG = "setting_item_network";
     static public final String SETTING_ITEM_USER_SETTING_TAG = "setting_item_user_setting";
@@ -33,13 +49,17 @@ public class SettingCategory {
     static public final String SETTING_ITEM_SECURITY_TAG = "setting_item_security";
     static public final String SETTING_ITEM_ERROR_REPORT_TAG = "setting_item_error_report";
     static public final String SETTING_ITEM_PRODUCTION_TEST_TAG = "setting_item_production_test";
+    static public final String SETTING_ITEM_WIFI_TAG = "setting_item_wifi";
+    static public final String SETTING_ITEM_BLUETOOTH_TAG = "setting_item_bluetooth";
+
 
     // ... type definitions
     // Describes when the annotation will be discarded
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
     @IntDef({UNKNOWN, NETWORK, USER_SETTING, SOUND, STORAGE,
-            LANGUAGE_AND_INPUT, DATE_TIME_SETTING, APPLICATION_MANAGEMENT, POWER, SECURITY, ERROR_REPORT})
+            LANGUAGE_AND_INPUT, DATE_TIME_SETTING, APPLICATION_MANAGEMENT, POWER,
+            SECURITY, ERROR_REPORT, PRODUCTION_TEST, WIFI, BLUETOOTH})
     // Create an interface for validating int types
     public @interface SettingCategoryDef {
     }
@@ -74,7 +94,62 @@ public class SettingCategory {
                 return ERROR_REPORT;
             case SETTING_ITEM_PRODUCTION_TEST_TAG:
                 return PRODUCTION_TEST;
+            case SETTING_ITEM_WIFI_TAG:
+                return WIFI;
+            case SETTING_ITEM_BLUETOOTH_TAG:
+                return BLUETOOTH;
         }
         return UNKNOWN;
+    }
+
+    public static Intent getConfigIntentByCategory(Context context, @SettingCategoryDef int itemCategory) {
+        Intent intent = null;
+        SettingConfig config = SettingConfig.sharedInstance(context);
+        switch (itemCategory) {
+            case SettingCategory.NETWORK:
+                intent = new Intent(context, NetworkSettingActivity.class);
+                break;
+            case SettingCategory.SECURITY:
+                intent = new Intent(context, SecuritySettingActivity.class);
+                break;
+            case SettingCategory.STORAGE:
+                intent = config.getStorageSettingIntent(context);
+                break;
+            case SettingCategory.LANGUAGE_AND_INPUT:
+                intent = new Intent(context, LanguageInputSettingActivity.class);
+                break;
+            case SettingCategory.DATE_TIME_SETTING:
+                intent = new Intent(context, DateTimeSettingActivity.class);
+                break;
+            case SettingCategory.POWER:
+                intent = new Intent(context, PowerSettingActivity.class);
+                break;
+            case SettingCategory.APPLICATION_MANAGEMENT:
+                intent = new Intent(context, ApplicationSettingActivity.class);
+                break;
+            case SettingCategory.USER_SETTING:
+                intent = new Intent(context, UserSettingActivity.class);
+                break;
+            case SettingCategory.ERROR_REPORT:
+                if (!TextUtils.isEmpty(config.getErrorReportAction())) {
+                    intent = new Intent(config.getErrorReportAction());
+                }
+                break;
+            case SettingCategory.PRODUCTION_TEST:
+                intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setClassName("com.onyx.android.production.test", "com.onyx.android.productiontest.activity.ProductionTestMainActivity");
+                break;
+            case SettingCategory.WIFI:
+                intent = new Intent(context, WifiSettingActivity.class);
+                break;
+            case SettingCategory.BLUETOOTH:
+                intent = config.getBluetoothSettingIntent();
+                break;
+            default:
+                Toast.makeText(context, "Under Construction", Toast.LENGTH_SHORT).show();
+                return null;
+        }
+        return intent;
     }
 }
