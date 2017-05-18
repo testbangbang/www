@@ -1,13 +1,8 @@
 {
-    "defaultFontSizeIndex" : 6,
-    "defaultLineSpacingIndex" : 1,
-    "ttsEnabled" : false,
-    "hasNaturalLight" : true,
+    "ttsEnabled" : true,
     "hasFrontLight" : false,
-    "disableNoteFunc" : false,
-    "regalEnable" : true,
-    "supportMultipleTabs": true,
-    "pronounceEnable" :false,
+    "disableNoteFunc" : true,
+    "regalEnable" : false,
     "keyBinding": {
         "HandlerManager": {
             "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},

@@ -67,10 +67,12 @@ bool initAnnotationAndPainter(PoDoFo::PdfDocument *document,
         return false;
     }
 
-    *annotRect = PdfRect(static_cast<int>(bounds.left - strokeThickness),
-                    static_cast<int>(bounds.bottom - strokeThickness),
-                    static_cast<int>(bounds.width() + strokeThickness * 2),
-                    static_cast<int>(bounds.height()) + strokeThickness * 2);
+    // use larger thickness to compute annotation bounds
+    float largerThickness = strokeThickness * 2;
+    *annotRect = PdfRect(static_cast<int>(bounds.left - largerThickness),
+                    static_cast<int>(bounds.bottom - largerThickness),
+                    static_cast<int>(bounds.width() + largerThickness * 2),
+                    static_cast<int>(bounds.height()) + largerThickness * 2);
 
     *annotation = pdfPage->CreateAnnotation(annotationType, *annotRect);
     const PdfColor pdfColor(colorFromRgb(color));

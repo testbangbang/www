@@ -13,6 +13,7 @@ import com.onyx.android.sdk.reader.utils.ImageUtils;
 public class PreRenderRequest extends BaseReaderRequest {
 
     private boolean forward;
+    private boolean checkSystemIntegrity = false;
 
     public PreRenderRequest(boolean next) {
         super();
@@ -21,7 +22,9 @@ public class PreRenderRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        ImageUtils.isValidPage();
+        if (checkSystemIntegrity) {
+            ImageUtils.isValidPage();
+        }
 
         if (!reader.getReaderLayoutManager().getCurrentLayoutProvider().supportPreRender()) {
             return;

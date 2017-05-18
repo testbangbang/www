@@ -47,4 +47,9 @@
             <enum name="vertical" value="1"/>
         </attr>
     </declare-styleable>
+    <declare-styleable name="IndicatorDividerView">
+        <attr name="lineWidth" format="dimension|reference|float"/>
+        <attr name="indicatorPosition" format="integer"/>
+        <attr name="itemCount" format="integer"/>
+    </declare-styleable>
 </resources>

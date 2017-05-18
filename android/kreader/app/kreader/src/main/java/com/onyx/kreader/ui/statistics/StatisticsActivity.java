@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.statistics;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,8 +20,10 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.StatisticsCloudManager;
 import com.onyx.android.sdk.data.model.StatisticsResult;
+import com.onyx.android.sdk.data.request.cloud.SyncOreaderDataRequest;
 import com.onyx.android.sdk.data.request.cloud.GetStatisticsRequest;
 import com.onyx.android.sdk.data.request.cloud.PushStatisticsRequest;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -49,6 +52,7 @@ public class StatisticsActivity extends ActionBarActivity {
     @Bind(R.id.page)
     TextView page;
 
+    private boolean connectToServer = false;
     private CloudStore cloudStore;
     private StatisticsCloudManager cloudManager;
     private DataStatisticsFragment dataStatisticsFragment;
@@ -64,10 +68,11 @@ public class StatisticsActivity extends ActionBarActivity {
         ButterKnife.bind(this);
         initView();
         initData();
-        //remove all data about internet
-        //registerReceiver();
-        getStatistics();
-        //checkWifi();
+        if (connectToServer) {
+            registerReceiver();
+            checkWifi();
+        }
+        getAllStatistics();
     }
 
     private void initView() {
@@ -101,7 +106,7 @@ public class StatisticsActivity extends ActionBarActivity {
     }
 
     private void checkWifi() {
-        if (!DeviceUtils.isWifiConnected(this)) {
+        if (Device.currentDevice().hasWifi(this) && !DeviceUtils.isWifiConnected(this)) {
             OnyxCustomDialog.getConfirmDialog(this, getString(R.string.wifi_dialog_content), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -129,13 +134,13 @@ public class StatisticsActivity extends ActionBarActivity {
                 updatePageTitle();
                 if (connected) {
                     pushStatistics();
-                    getStatistics();
+                    getAllStatistics();
                 }
             }
 
             @Override
             public void onNoNetwork() {
-                getStatistics();
+                getAllStatistics();
             }
         });
         IntentFilter filter = new IntentFilter();
@@ -153,9 +158,18 @@ public class StatisticsActivity extends ActionBarActivity {
         });
     }
 
-    private void getStatistics() {
+    private void getAllStatistics() {
         dialogLoading = getDialogLoading();
         dialogLoading.show();
+        SyncOreaderDataRequest syncOreaderDataRequest = new SyncOreaderDataRequest(this);
+        getCloudStore().submitRequest(this, syncOreaderDataRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                getStatistics();
+            }
+        });
+    }
+    private void getStatistics() {
         final GetStatisticsRequest statisticsRequest = new GetStatisticsRequest(this, DeviceConfig.sharedInstance(this).getStatisticsUrl());
         getCloudStore().submitRequest(this, statisticsRequest, new BaseCallback() {
             @Override

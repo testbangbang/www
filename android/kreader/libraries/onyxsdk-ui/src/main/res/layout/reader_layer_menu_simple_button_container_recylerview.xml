@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.onyx.android.sdk.ui.view.PageRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-                                                  android:layout_width="match_parent"
-                                                  android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/dialog_reader_menu_recycler_view_padding"
+    android:paddingTop="@dimen/dialog_reader_menu_recycler_view_padding">
 
 
 </com.onyx.android.sdk.ui.view.PageRecyclerView>

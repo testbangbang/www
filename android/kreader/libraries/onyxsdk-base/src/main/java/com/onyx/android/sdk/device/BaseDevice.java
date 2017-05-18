@@ -374,5 +374,8 @@ public class BaseDevice {
 
     public void setForcePartialUpdate(View view, boolean enabled) {
     }
+    public boolean hasWifi(Context context) {
+        return true;
+    }
 
 }
