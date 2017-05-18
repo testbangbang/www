@@ -377,6 +377,7 @@ public class ReaderHelper {
 
     private void applyImageGamma(final ReaderBitmapReferenceImpl bitmap) {
         if (getDocumentOptions().isGammaCorrectionEnabled() &&
+                !bitmap.isGammaIgnored() &&
                 Float.compare(bitmap.gammaCorrection(), getDocumentOptions().getGammaLevel()) != 0) {
             if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel())) {
                 bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
