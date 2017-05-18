@@ -49,7 +49,6 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     protected void onResume() {
         super.onResume();
         updateData();
-
     }
 
     private void updateData() {
@@ -59,12 +58,6 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         adapter.dataList.clear();
         adapter.dataList.addAll(config.getSettingItemList(this));
         adapter.notifyDataSetChanged();
-
-        View infoArea = binding.infoArea;
-        PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) infoArea.getLayoutParams();
-        PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
-        info.heightPercent = 1 - (miniPercent * adapter.getRowCount());
-        infoArea.requestLayout();
 
         updateView();
     }
@@ -134,6 +127,10 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             }
             adapter.notifyDataSetChanged();
         }
+        PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) binding.infoArea.getLayoutParams();
+        PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
+        info.heightPercent = 1 - (miniPercent * adapter.getRowCount());
+        binding.infoArea.requestLayout();
     }
 
     // TODO: 2016/11/30 temp max 3 line layout
