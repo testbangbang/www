@@ -49,7 +49,6 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     protected void onResume() {
         super.onResume();
         updateData();
-
     }
 
     private void updateData() {

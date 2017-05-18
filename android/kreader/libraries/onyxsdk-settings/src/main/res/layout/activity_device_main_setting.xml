@@ -44,16 +44,19 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
                     android:text="@{info.deviceName}" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
                     android:text="@{info.deviceSerial}" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
                     android:text="@{info.deviceVersion}" />
             </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
