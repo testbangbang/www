@@ -21,6 +21,8 @@ import java.util.Set;
 @Table(database = OnyxStatisticsDatabase.class)
 public class OnyxStatisticsModel extends BaseStatisticsModel {
 
+    private static final long MAX_PAGE_DURATION_TIME = 10 * 60 * 1000;
+
     @Column
     private String orgText;
     @Column
@@ -72,7 +74,10 @@ public class OnyxStatisticsModel extends BaseStatisticsModel {
     }
 
     public Long getDurationTime() {
-        return durationTime;
+        if (durationTime != null) {
+            return durationTime > MAX_PAGE_DURATION_TIME ? MAX_PAGE_DURATION_TIME : durationTime;
+        }
+        return null;
     }
 
     public void setDurationTime(Long durationTime) {
