@@ -1,6 +1,8 @@
 package com.onyx.edu.reader.ui;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -11,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -134,6 +137,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     private ScaleGestureDetector scaleDetector;
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
     private final ReaderPainter readerPainter = new ReaderPainter();
+    private BroadcastReceiver powerReceiver;
 
     private PinchZoomingPopupMenu pinchZoomingPopupMenu;
 
@@ -284,6 +288,20 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void initReceiver() {
+        powerReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN);
+                int level = DeviceUtils.getBatteryPecentLevel(ReaderActivity.this);
+                getReaderDataHolder().onBatteryStatusChange(status, level);
+            }
+        };
+        IntentFilter powerFilter = new IntentFilter();
+        powerFilter.addAction(Intent.ACTION_POWER_CONNECTED);
+        powerFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        powerFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        registerReceiver(powerReceiver, powerFilter);
+
         networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
             @Override
             public void onNetworkChanged(boolean connected, int networkType) {
@@ -304,6 +322,9 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (networkConnectChangedReceiver != null) {
             unregisterReceiver(networkConnectChangedReceiver);
             networkConnectChangedReceiver = null;
+        }
+        if (powerReceiver != null) {
+            unregisterReceiver(powerReceiver);
         }
     }
 

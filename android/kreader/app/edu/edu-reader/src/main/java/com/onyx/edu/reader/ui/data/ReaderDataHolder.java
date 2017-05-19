@@ -680,6 +680,11 @@ public class ReaderDataHolder {
         getEventBus().post(event);
     }
 
+    public void onBatteryStatusChange(int status, int level) {
+        final BatteryStatusChangeEvent event = new BatteryStatusChangeEvent(getContext(), status, level);
+        getEventBus().post(event);
+    }
+
     public void enterSlideshow() {
         getEventBus().post(new SlideshowStartEvent());
     }

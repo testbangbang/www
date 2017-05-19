@@ -2,6 +2,7 @@ package com.onyx.android.sdk.statistics;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -154,6 +155,14 @@ public class OnyxStatistics implements StatisticsBase {
         OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_FINISH);
         statisticsData.setComment(comment);
         statisticsData.setScore(score);
+        saveToCloud(context, statisticsData);
+    }
+
+    @Override
+    public void onBatteryStatusChange(final Context context, final String status, final int level) {
+        OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_BATTERY);
+        statisticsData.setName(status);
+        statisticsData.setScore(level);
         saveToCloud(context, statisticsData);
     }
 }

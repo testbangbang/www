@@ -117,4 +117,8 @@ public class UMeng implements StatisticsBase {
         MobclickAgent.onEvent(context, "dictLookup", map);
     }
 
+    @Override
+    public void onBatteryStatusChange(Context context, String status, int level) {
+
+    }
 }
