@@ -18,6 +18,7 @@ import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.LibraryGotoPageAction;
 import com.onyx.android.eschool.custom.PageIndicator;
+import com.onyx.android.eschool.events.BookLibraryEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -44,6 +45,10 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,12 +62,14 @@ import butterknife.ButterKnife;
  */
 public class BookTextFragment extends Fragment {
     public static final String LIBRARY_ID_ARGS = "libraryIdArgs";
+    public static final String FRAGMENT_NAME = "fragmentName";
 
     @Bind(R.id.content_pageView)
     SinglePageRecyclerView contentPageView;
 
     PageIndicator pageIndicator;
 
+    LibraryDataHolder dataHolder;
     QueryPagination pagination;
     private LibraryDataModel pageDataModel = new LibraryDataModel();
 
@@ -72,13 +79,18 @@ public class BookTextFragment extends Fragment {
     private int row = 2;
     private int col = 3;
 
-    public static BookTextFragment newInstance(String libraryId) {
+    private String fragmentName;
+
+    public static BookTextFragment newInstance(String fragmentName, String libraryId) {
         BookTextFragment fragment = new BookTextFragment();
+        Bundle bundle = new Bundle();
         if (StringUtils.isNotBlank(libraryId)) {
-            Bundle bundle = new Bundle();
             bundle.putString(LIBRARY_ID_ARGS, libraryId);
-            fragment.setArguments(bundle);
         }
+        if (StringUtils.isNotBlank(fragmentName)) {
+            bundle.putString(FRAGMENT_NAME, fragmentName);
+        }
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -102,11 +114,19 @@ public class BookTextFragment extends Fragment {
     }
 
     private void loadData() {
-        QueryArgs args = getDataHolder().getCloudViewInfo().libraryQuery(null);
-        String libraryId;
-        if (getArguments() != null && StringUtils.isNotBlank(libraryId = getArguments().getString(LIBRARY_ID_ARGS))) {
-            args.category.add(libraryId);
+        String uniqueId = null;
+        if (getArguments() != null) {
+            uniqueId = getArguments().getString(LIBRARY_ID_ARGS);
+            fragmentName = getArguments().getString(FRAGMENT_NAME);
         }
+        if (StringUtils.isNullOrEmpty(uniqueId)) {
+            return;
+        }
+        loadData(uniqueId);
+    }
+
+    private void loadData(String libraryId) {
+        QueryArgs args = getDataHolder().getCloudViewInfo().libraryQuery(libraryId);
         final CloudContentListRequest listRequest = new CloudContentListRequest(args);
         getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
             @Override
@@ -148,9 +168,21 @@ public class BookTextFragment extends Fragment {
         return libraryDataModel;
     }
 
+    private QueryPagination getPagination() {
+        if (pagination == null) {
+            initPagination();
+        }
+        return pagination;
+    }
+
+    private void initPagination() {
+        pagination = getDataHolder().getCloudViewInfo().getQueryPagination();
+        pagination.resize(row, col, 0);
+    }
+
     private void nextLoad() {
-        int preLoadPage = pagination.getCurrentPage() + 1;
-        if (preLoadPage >= pagination.pages()) {
+        int preLoadPage = getPagination().getCurrentPage() + 1;
+        if (preLoadPage >= getPagination().pages()) {
             return;
         }
         QueryArgs queryArgs = getDataHolder().getCloudViewInfo().pageQueryArgs(preLoadPage);
@@ -247,7 +279,7 @@ public class BookTextFragment extends Fragment {
 
     private void loadThumbnailRequest(final int position, final Metadata metadata) {
         final CloudThumbnailLoadRequest loadRequest = new CloudThumbnailLoadRequest(
-                getRealUrl(metadata.getCoverUrl()).replaceAll("undefined", ""),
+                metadata.getCoverUrl(),
                 metadata.getAssociationId(), OnyxThumbnail.ThumbnailKind.Original);
         if (hasNoThumbnail == position) {
             loadRequest.setAbortPendingTasks(true);
@@ -269,7 +301,7 @@ public class BookTextFragment extends Fragment {
 
     private String getRealUrl(String url) {
         if (!url.startsWith(Constant.HTTP_TAG)) {
-            url = SchoolApp.E_BOOK_HOST + url;
+            url = SchoolApp.CLOUD_CONTENT_DEFAULT_HOST + url;
         }
         return url;
     }
@@ -296,8 +328,7 @@ public class BookTextFragment extends Fragment {
     }
 
     private void initPageIndicator(ViewGroup parentView) {
-        pagination = getDataHolder().getCloudViewInfo().getQueryPagination();
-        pagination.resize(row, col, 0);
+        initPagination();
         pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), pagination);
         pageIndicator.setTotalFormat(getString(R.string.total_format));
         pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
@@ -319,7 +350,7 @@ public class BookTextFragment extends Fragment {
     }
 
     private void prevPage() {
-        if (!pagination.prevPage()) {
+        if (!getPagination().prevPage()) {
             return;
         }
 
@@ -337,7 +368,7 @@ public class BookTextFragment extends Fragment {
     }
 
     private void prevLoad() {
-        int preLoadPage = pagination.getCurrentPage() - 1;
+        int preLoadPage = getPagination().getCurrentPage() - 1;
         if (preLoadPage < 0) {
             return;
         }
@@ -424,6 +455,9 @@ public class BookTextFragment extends Fragment {
     }
 
     private String getDataSaveFilePath(Metadata book) {
+        if (checkBookMetadataPathValid(book)) {
+            return book.getNativeAbsolutePath();
+        }
         String fileName = FileUtils.fixNotAllowFileName(book.getName() + "." + book.getType());
         if (StringUtils.isBlank(fileName)) {
             return null;
@@ -446,7 +480,20 @@ public class BookTextFragment extends Fragment {
                 ViewDocumentUtils.getReaderComponentName(getContext()));
     }
 
+    private boolean checkBookMetadataPathValid(Metadata book) {
+        if (StringUtils.isNotBlank(book.getNativeAbsolutePath()) && new File(book.getNativeAbsolutePath()).exists()) {
+            return true;
+        }
+        return false;
+    }
+
     private boolean isFileExists(Metadata book) {
+        if (checkBookMetadataPathValid(book)) {
+            return true;
+        }
+        if (StringUtils.isNullOrEmpty(book.getGuid())) {
+            return false;
+        }
         File dir = CloudUtils.dataCacheDirectory(getContext(), book.getGuid());
         if (dir.list() == null || dir.list().length <= 0) {
             return false;
@@ -530,6 +577,36 @@ public class BookTextFragment extends Fragment {
     }
 
     private LibraryDataHolder getDataHolder() {
-        return SchoolApp.getLibraryDataHolder();
+        if (dataHolder == null) {
+            dataHolder = new LibraryDataHolder(getContext());
+        }
+        return dataHolder;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onLibraryEvent(BookLibraryEvent event) {
+        if (event.library != null) {
+            if (event.library.getName().equals(fragmentName)) {
+                loadData(event.library.getIdString());
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 }

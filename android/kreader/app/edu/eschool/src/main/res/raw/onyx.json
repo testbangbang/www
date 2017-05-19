@@ -29,5 +29,7 @@
     "com.onyx.test",
     "com.onyx.android.production.test",
     "com.onyx.android.screenmanager"
-  ]
+  ],
+  "cloud_content_host" : "http://192.168.11.104:8082/",
+  "cloud_content_api" : "http://192.168.11.104:8082/api/"
 }

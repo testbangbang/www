@@ -5,6 +5,7 @@ import android.content.Context;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.eschool.utils.Constant;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
+import com.onyx.android.sdk.data.model.ContentAccount;
 import com.onyx.android.sdk.data.model.SecurePreferences;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -19,6 +20,11 @@ public class StudentAccount {
     public String gradeClass;
     public String grade;
     public String studentId;
+
+    public String groups;
+    public String phone;
+    public String token;
+    public ContentAccount accountInfo;
 
     public void saveAccount(Context context) {
         SecurePreferences preferences = new SecurePreferences(context, Constant.ACCOUNT_TYPE_STUDENT, Constant.ACCOUNT_INFO_TAG, true);
