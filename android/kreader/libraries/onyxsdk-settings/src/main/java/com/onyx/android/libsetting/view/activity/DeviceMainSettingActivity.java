@@ -66,7 +66,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_device_main_setting);
         RecyclerView recyclerView = binding.functionRecyclerView;
         recyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 6);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 12);
         adapter = new SettingFunctionAdapter(this, new ArrayList<SettingItem>());
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -122,8 +122,16 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         } else {
             binding.buttonCleanTestApps.setVisibility(View.GONE);
             for(Iterator<SettingItem> iterator = adapter.dataList.iterator(); iterator.hasNext(); ) {
-                if(SettingCategory.PRODUCTION_TEST == iterator.next().getItemCategory())
-                    iterator.remove();
+                switch (iterator.next().getItemCategory()) {
+                    case SettingCategory.PRODUCTION_TEST:
+                        iterator.remove();
+                        break;
+                    case SettingCategory.FIRMWARE_UPDATE:
+                        binding.buttonOta.setVisibility(View.GONE);
+                        break;
+                    default:
+                        break;
+                }
             }
             adapter.notifyDataSetChanged();
         }
@@ -137,19 +145,20 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     private int calculateSpanSizeBySettingItemSize(int position, int settingItemSize) {
         switch (settingItemSize) {
             case 2:
-            case 4:
             case 6:
+                return 6;
+            case 4:
                 return 3;
             case 5:
             case 7:
-                return position < 3 ? 2 : 3;
+                return position < 3 ? 4 : 6;
             case 8:
-                return position < 6 ? 2 : 3;
+                return position < 6 ? 4 : 6;
             case 3:
             case 9:
-                return 2;
+                return 4;
             default:
-                return 1;
+                return 2;
         }
     }
 
@@ -253,7 +262,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         public int getRowCount() {
             if (dataList.size() >= 6) {
                 return 3;
-            } else if (dataList.size() > 3) {
+            } else if (dataList.size() > 4) {
                 return 2;
             } else {
                 return 1;

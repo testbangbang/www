@@ -6,6 +6,7 @@
     "setting_item_wifi",
     "setting_item_bluetooth",
     "setting_item_power",
+    "setting_item_firmware_update",
     "setting_item_production_test"
   ],
   "test_apps": [
