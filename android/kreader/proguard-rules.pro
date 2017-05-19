@@ -52,6 +52,25 @@
 -keep class * implements java.io.Serializable { *; }
 
 -keepnames class org.greenrobot.eventbus.** { *; }
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
+
+# Fresco
+-keep class com.facebook.fresco.** {*;}
+-keep interface com.facebook.fresco.** {*;}
+-keep enum com.facebook.fresco.** {*;}
+
+# Facebook
+-keep class com.facebook.** {*;}
+-keep interface com.facebook.** {*;}
+-keep enum com.facebook.** {*;}
 
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -keep class * extends com.raizlabs.android.dbflow.converter.TypeConverter { *; }
@@ -98,3 +117,6 @@
       **[] $VALUES;
       public *;
     }
+
+
+
