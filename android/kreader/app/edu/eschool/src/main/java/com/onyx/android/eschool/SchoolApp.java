@@ -36,7 +36,6 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -48,8 +47,8 @@ import java.util.Set;
  */
 public class SchoolApp extends Application {
     static private final String MMC_STORAGE_ID = "flash";
-    static public final String E_BOOK_HOST = "http://192.168.11.104:8082/";
-    static public final String E_BOOK_API = "http://192.168.11.104:8082/api/";
+    static public final String CLOUD_CONTENT_DEFAULT_HOST = "http://192.168.11.104:8082/";
+    static public final String CLOUD_CONTENT_DEFAULT_API = "http://192.168.11.104:8082/api/";
 
     static private SchoolApp sInstance = null;
     static private CloudStore cloudStore = new CloudStore();
@@ -276,12 +275,10 @@ public class SchoolApp extends Application {
         if (schoolCloudStore == null) {
             schoolCloudStore = new CloudStore();
             CloudManager cloudManager = schoolCloudStore.getCloudManager();
-            CloudConf cloudConf = new CloudConf(
-                    E_BOOK_HOST,
-                    E_BOOK_API,
-                    Constant.DEFAULT_CLOUD_STORAGE);
-            cloudManager.setChinaCloudConf(cloudConf);
-            cloudManager.setGlobalCloudConf(cloudConf);
+            String host = DeviceConfig.sharedInstance(sInstance).getCloudContentHost(CLOUD_CONTENT_DEFAULT_HOST);
+            String api = DeviceConfig.sharedInstance(sInstance).getCloudContentApi(CLOUD_CONTENT_DEFAULT_API);
+            CloudConf cloudConf = new CloudConf(host, api, Constant.DEFAULT_CLOUD_STORAGE);
+            cloudManager.setAllCloudConf(cloudConf);
         }
         return schoolCloudStore;
     }
@@ -293,6 +290,7 @@ public class SchoolApp extends Application {
     public static LibraryDataHolder getLibraryDataHolder() {
         if (libraryDataHolder == null) {
             libraryDataHolder = new LibraryDataHolder(sInstance);
+            libraryDataHolder.setCloudManager(getSchoolCloudStore().getCloudManager());
         }
         return libraryDataHolder;
     }

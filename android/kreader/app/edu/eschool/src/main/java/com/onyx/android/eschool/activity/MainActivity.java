@@ -7,17 +7,34 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.eschool.R;
+import com.onyx.android.eschool.SchoolApp;
+import com.onyx.android.eschool.action.ActionChain;
+import com.onyx.android.eschool.action.AuthTokenAction;
+import com.onyx.android.eschool.action.CloudLibraryListLoadAction;
 import com.onyx.android.eschool.custom.NoSwipePager;
+import com.onyx.android.eschool.events.BookLibraryEvent;
+import com.onyx.android.eschool.fragment.AccountFragment;
 import com.onyx.android.eschool.fragment.BookTextFragment;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.CloudLibrary;
+import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,6 +56,9 @@ public class MainActivity extends BaseActivity {
     private BookTextFragment teachingAuxiliaryFragment;
     private BookTextFragment bookReadingFragment;
     private BookTextFragment homeworkFragment;
+    private AccountFragment studentInfoFragment;
+
+    private Map<String, Library> libraryMap = new HashMap<>();
 
     @Override
     protected Integer getLayoutId() {
@@ -47,7 +67,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initConfig() {
-
     }
 
     @Override
@@ -58,10 +77,32 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        bookTextFragment = BookTextFragment.newInstance("5916a8a1fcb81900011feb03");
-        teachingAuxiliaryFragment = BookTextFragment.newInstance(null);
-        bookReadingFragment = BookTextFragment.newInstance(null);
-        homeworkFragment = BookTextFragment.newInstance(null);
+        final AuthTokenAction authTokenAction = new AuthTokenAction();
+        final CloudLibraryListLoadAction loadAction = new CloudLibraryListLoadAction();
+        ActionChain actionChain = new ActionChain();
+        actionChain.addAction(authTokenAction);
+        actionChain.addAction(loadAction);
+        actionChain.execute(SchoolApp.getLibraryDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                final List<CloudLibrary> list = loadAction.getLibraryList();
+                notifyDataChanged(list);
+            }
+        });
+    }
+
+    private void notifyDataChanged(List<CloudLibrary> list) {
+        for (Library library : list) {
+            addToLibraryMap(library);
+            EventBus.getDefault().postSticky(new BookLibraryEvent(library));
+        }
+    }
+
+    private void addToLibraryMap(Library library) {
+        libraryMap.put(library.getName(), library);
     }
 
     private void initViewPager() {
@@ -83,7 +124,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void selectTabFromPosition(TabLayout tabLayout, int position) {
+    private void selectTab(TabLayout tabLayout, int position) {
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             View itemView = tabLayout.getTabAt(i).getCustomView();
             TextView textView = (TextView) itemView.findViewById(R.id.title_text);
@@ -98,24 +139,30 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private void addTabList(TabLayout tabLayout, List<String> tabTitleList) {
+        for (String title : tabTitleList) {
+            TabLayout.Tab tab = tabLayout.newTab().setCustomView(R.layout.tab_item_layout);
+            TextView textView = (TextView) tab.getCustomView().findViewById(R.id.title_text);
+            textView.setText(title);
+            tabLayout.addTab(tab);
+        }
+    }
+
     private void initTableView() {
         titleList.add("课本");
         titleList.add("辅导");
         titleList.add("阅读");
         titleList.add("作业");
+        titleList.add("个人信息");
         contentTabLayout.setTabMode(TabLayout.MODE_FIXED);
         contentTabLayout.setSelectedTabIndicatorHeight(0);
-        for (String title : titleList) {
-            TabLayout.Tab tab = contentTabLayout.newTab().setCustomView(R.layout.tab_item_layout);
-            TextView textView = (TextView) tab.getCustomView().findViewById(R.id.title_text);
-            textView.setText(title);
-            contentTabLayout.addTab(tab);
-        }
-        selectTabFromPosition(contentTabLayout, 0);
+        disableA2ForSpecificView(contentTabLayout);
+        addTabList(contentTabLayout, titleList);
+        selectTab(contentTabLayout, 0);
         contentTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                selectTabFromPosition(contentTabLayout, tab.getPosition());
+                selectTab(contentTabLayout, tab.getPosition());
                 pagerView.setCurrentItem(tab.getPosition(), false);
             }
 
@@ -129,10 +176,57 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    private void disableA2ForSpecificView(View view) {
+        Device.currentDevice().disableA2ForSpecificView(view);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    private BookTextFragment getCommonBookFragment(String fragmentName, Library library) {
+        String libraryId = null;
+        if (library != null) {
+            libraryId = library.getIdString();
+        }
+        return BookTextFragment.newInstance(fragmentName, libraryId);
+    }
+
+    private Fragment getBookTextFragment(String libraryName, Library library) {
+        if (bookTextFragment == null) {
+            bookTextFragment = getCommonBookFragment(libraryName, library);
+        }
+        return bookTextFragment;
+    }
+
+    public BookTextFragment getTeachingAuxiliaryFragment(String libraryName, Library library) {
+        if (teachingAuxiliaryFragment == null) {
+            teachingAuxiliaryFragment = getCommonBookFragment(libraryName, library);
+        }
+        return teachingAuxiliaryFragment;
+    }
+
+    public BookTextFragment getBookReadingFragment(String libraryName, Library library) {
+        if (bookReadingFragment == null) {
+            bookReadingFragment = getCommonBookFragment(libraryName, library);
+        }
+        return bookReadingFragment;
+    }
+
+    public BookTextFragment getHomeworkFragment(String libraryName, Library library) {
+        if (homeworkFragment == null) {
+            homeworkFragment = getCommonBookFragment(libraryName, library);
+        }
+        return homeworkFragment;
+    }
+
+    private Fragment getStudentFragment() {
+        if (studentInfoFragment == null) {
+            studentInfoFragment = AccountFragment.newInstance();
+        }
+        return studentInfoFragment;
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -143,19 +237,24 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public Fragment getItem(int position) {
-            Fragment f = bookTextFragment;
+            String title = getPageTitle(position).toString();
+            Library library = libraryMap.get(title);
+            Fragment f = getBookTextFragment(title, library);
             switch (position) {
                 case 0:
-                    f = bookTextFragment;
+                    f = getBookTextFragment(title, library);
                     break;
                 case 1:
-                    f = teachingAuxiliaryFragment;
+                    f = getTeachingAuxiliaryFragment(title, library);
                     break;
                 case 2:
-                    f = bookReadingFragment;
+                    f = getBookReadingFragment(title, library);
                     break;
                 case 3:
-                    f = homeworkFragment;
+                    f = getHomeworkFragment(title, library);
+                    break;
+                case 4:
+                    f = getStudentFragment();
                     break;
             }
             return f;
@@ -163,7 +262,7 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return 1;
+            return CollectionUtils.getSize(titleList);
         }
 
         @Override
