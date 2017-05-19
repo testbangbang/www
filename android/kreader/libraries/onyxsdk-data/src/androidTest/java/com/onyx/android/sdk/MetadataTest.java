@@ -791,7 +791,7 @@ public class MetadataTest extends ApplicationTestCase<Application> {
     }
 
     private void loadRecursiveLibraryList(DataProviderBase providerBase, List<Library> resultList, String parentIdString) {
-        List<Library> libraryList = providerBase.loadAllLibrary(parentIdString);
+        List<Library> libraryList = providerBase.loadAllLibrary(parentIdString, null);
         if (CollectionUtils.isNullOrEmpty(libraryList)) {
             return;
         }
@@ -1035,13 +1035,13 @@ public class MetadataTest extends ApplicationTestCase<Application> {
             librarySet[i] = getRandomLibrary();
             providerBase.addLibrary(librarySet[i]);
         }
-        libraryList = providerBase.loadAllLibrary(null);
+        libraryList = providerBase.loadAllLibrary(null, null);
         assertNotNull(libraryList);
         assertTrue(libraryList.size() >= count);
 
         librarySet[0].setParentUniqueId(generateRandomUUID());
         providerBase.updateLibrary(librarySet[0]);
-        libraryList = providerBase.loadAllLibrary(librarySet[0].getParentUniqueId());
+        libraryList = providerBase.loadAllLibrary(librarySet[0].getParentUniqueId(), null);
         assertNotNull(libraryList);
         assertTrue(libraryList.size() == 1);
     }

@@ -171,6 +171,10 @@ public class CloudQueryBuilder {
         return CloudMetadata_Table.idString;
     }
 
+    public static Property<String> getMetadataCloudIdProperty() {
+        return CloudMetadata_Table.cloudId;
+    }
+
     public static LongProperty getMetadataSizeProperty() {
         return CloudMetadata_Table.size;
     }
@@ -415,7 +419,7 @@ public class CloudQueryBuilder {
                 .from(CloudMetadataCollection.class)
                 .where(getNotNullOrEqualCondition(getMetadataCollectionLibraryIdProperty().withTable(),
                         queryArgs.libraryUniqueId));
-        Condition.In inCondition = inCondition(getMetadataIdStringProperty().withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.libraryUniqueId));
+        Condition.In inCondition = inCondition(getMetadataCloudIdProperty().withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.libraryUniqueId));
         ConditionGroup group = ConditionGroup.clause().and(inCondition);
         if (queryArgs.conditionGroup.size() > 0) {
             queryArgs.conditionGroup = group.and(queryArgs.conditionGroup);

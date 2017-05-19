@@ -23,6 +23,7 @@ import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.data.v1.ContentService;
@@ -227,8 +228,51 @@ public class CloudDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Library> loadAllLibrary(String parentId) {
-        return null;
+    public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
+        List<CloudLibrary> cloudLibraryList;
+        if (queryArgs.fetchPolicy == FetchPolicy.CLOUD_ONLY || queryArgs.fetchPolicy == FetchPolicy.CLOUD_LOCAL) {
+            cloudLibraryList = fetchLibraryListFromCloud(parentId, queryArgs);
+        } else {
+            cloudLibraryList = fetchLibraryListFromLocal(parentId);
+            if (queryArgs.fetchPolicy == FetchPolicy.LOCAL_CLOUD && CollectionUtils.isNullOrEmpty(cloudLibraryList)) {
+                cloudLibraryList = fetchLibraryListFromCloud(parentId, queryArgs);
+            }
+        }
+        return getLibraryListFromCloud(cloudLibraryList);
+    }
+
+    private List<Library> getLibraryListFromCloud(List<CloudLibrary> cloudLibraryList) {
+        if (CollectionUtils.isNullOrEmpty(cloudLibraryList)) {
+            return new ArrayList<>();
+        }
+        List<Library> libraryList = new ArrayList<>();
+        for (CloudLibrary cloudLibrary : cloudLibraryList) {
+            libraryList.add(cloudLibrary);
+        }
+        return libraryList;
+    }
+
+    public List<CloudLibrary> fetchLibraryListFromCloud(String parentId, QueryArgs queryArgs) {
+        List<CloudLibrary> libraryList = new ArrayList<>();
+        try {
+            Response<List<CloudLibrary>> response = executeCall(getContentService().loadLibraryList(
+                    ContentService.CONTENT_AUTH_PREFIX + queryArgs.cloudToken));
+            if (response.isSuccessful()) {
+                libraryList = response.body();
+            }
+        } catch (Exception e) {
+            if (queryArgs.fetchPolicy == FetchPolicy.CLOUD_LOCAL) {
+                libraryList = fetchLibraryListFromLocal(parentId);
+            }
+        }
+        return libraryList;
+    }
+
+    public List<CloudLibrary> fetchLibraryListFromLocal(String parentId) {
+        return new Select().from(CloudLibrary.class)
+                .where()
+                .and(CloudLibrary_Table.parentUniqueId.eq(parentId))
+                .queryList();
     }
 
     @Override

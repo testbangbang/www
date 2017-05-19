@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.onyx.android.sdk.data.model.common.FetchPolicy.CLOUD_LOCAL;
 
 
 /**
@@ -44,6 +47,12 @@ public class QueryArgs {
     public Set<String> series = new HashSet<>();
     public Set<String> category = new HashSet<>();
     public String query;
+
+    public
+    @FetchPolicy.Type
+    int fetchPolicy = CLOUD_LOCAL;
+
+    public String cloudToken;
 
     public static final String DEVICE_LIBRARY = "deviceLibrary";
     public static final String RECENT_READ = "recentRead";
