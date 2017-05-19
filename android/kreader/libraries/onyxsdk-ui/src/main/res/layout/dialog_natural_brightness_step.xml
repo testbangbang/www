@@ -19,7 +19,7 @@
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:singleLine="true"
-            android:text="@string/brightness" />
+            android:text="@string/cold_light" />
 
         <ImageButton
             android:id="@+id/imagebutton_cold_light_down"
@@ -71,7 +71,7 @@
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:singleLine="true"
-            android:text="@string/natural_light" />
+            android:text="@string/warm_light" />
 
         <ImageButton
             android:id="@+id/imagebutton_warm_light_down"

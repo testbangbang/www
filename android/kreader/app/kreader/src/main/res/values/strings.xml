@@ -326,11 +326,11 @@
     <string name="view_slideshow_status_bar_battery" formatted="false">Battery: %d/%d (%%)</string>
     <string name="slideshow_quit_warning">Press back to quit slideshow mode!</string>
     <string name="code_page">Setting Code page...</string>
-    <string name="read_count">Reading book count</string>
-    <string name="finish_count">Finished book count</string>
+    <string name="read_count">Reading book</string>
+    <string name="finish_count">Finished book</string>
     <string name="read_time">Read time</string>
-    <string name="look_up_dictionary_count">Look up dictionary count</string>
-    <string name="statistics_annotation_count">Annotation Count</string>
+    <string name="look_up_dictionary_count">Look up dictionary</string>
+    <string name="statistics_annotation_count">Annotation</string>
     <string name="data_analysis">Data analysis</string>
     <string name="reading_record">Reading record</string>
     <string name="reading_level" formatted="false">You read no more than %.2f%%of the people</string>
