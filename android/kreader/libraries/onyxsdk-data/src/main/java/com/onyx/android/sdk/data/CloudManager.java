@@ -26,6 +26,8 @@ public class CloudManager {
     private CloudConf globalCloudConf;
     private CacheManager cacheManager;
 
+    private String token;
+
     public CloudManager() {
         requestManager = new RequestManager(Thread.NORM_PRIORITY);
         initCloudConf();
@@ -43,6 +45,11 @@ public class CloudManager {
             cloudConf = globalCloudConf;
         }
         return cloudConf;
+    }
+
+    public void setAllCloudConf(CloudConf cloudConf) {
+        setChinaCloudConf(cloudConf);
+        setGlobalCloudConf(cloudConf);
     }
 
     public void setChinaCloudConf(CloudConf cloudConf) {
@@ -134,5 +141,13 @@ public class CloudManager {
 
     public DataProviderBase getCloudDataProvider() {
         return DataProviderManager.getCloudDataProvider(getCloudConf());
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

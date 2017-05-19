@@ -355,19 +355,25 @@ public class Metadata extends BaseData {
         return createFromFile(file, true);
     }
 
-    public static Metadata createFromFile(File file, boolean computeMd5) {
+    public static Metadata createFromMetadataPath(Metadata metadata, boolean computeMd5) {
+        File file = new File(metadata.getNativeAbsolutePath());
         try {
-            final Metadata data = new Metadata();
             if (computeMd5) {
                 String md5 = FileUtils.computeMD5(file);
-                data.setHashTag(md5);
+                metadata.setHashTag(md5);
             }
-            getBasicMetadataFromFile(data, file);
-            return data;
+            getBasicMetadataFromFile(metadata, file);
+            return metadata;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static Metadata createFromFile(File file, boolean computeMd5) {
+        final Metadata data = new Metadata();
+        data.setNativeAbsolutePath(file.getAbsolutePath());
+        return createFromMetadataPath(data, computeMd5);
     }
 
     public static void getBasicMetadataFromFile(final Metadata data, File file) {

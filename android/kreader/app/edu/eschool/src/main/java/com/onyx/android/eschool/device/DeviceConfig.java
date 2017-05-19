@@ -7,6 +7,7 @@ import android.util.Log;
 import com.onyx.android.eschool.BuildConfig;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.utils.RawResourceUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,8 @@ public class DeviceConfig {
     static public final String VERIFY_DICTIONARY_TAG = "verify_dictionary";
     static public final String VERIFY_BOOKS_TAG = "verify_books";
     static public final String VERIFY_TTS_TAG = "verify_tts";
+    static public final String CLOUD_CONTENT_HOST = "cloud_content_host";
+    static public final String CLOUD_CONTENT_API = "cloud_content_api";
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -160,5 +163,13 @@ public class DeviceConfig {
             defaultCustomizedIconAppsMap.putAll((Map<String, String>) (backend.getObject(CUSTOMIZED_ICON_APPS_MAPS)));
         }
         return defaultCustomizedIconAppsMap;
+    }
+
+    public String getCloudContentHost(String defaultValue) {
+        return backend.getString(CLOUD_CONTENT_HOST, defaultValue);
+    }
+
+    public String getCloudContentApi(String defaultValue) {
+        return backend.getString(CLOUD_CONTENT_API, defaultValue);
     }
 }
