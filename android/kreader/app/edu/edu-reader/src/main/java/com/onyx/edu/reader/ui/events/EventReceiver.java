@@ -141,4 +141,12 @@ public class EventReceiver {
         }
         statisticsManager.onDocumentFinished(event.getContext(), event.getComment(), event.getScore());
     }
+
+    @Subscribe
+    public void onBatteryStatusChange(final BatteryStatusChangeEvent event) {
+        if (!isEnable()) {
+            return;
+        }
+        statisticsManager.onBatteryStatusChange(event.getContext(), event.getStatus(), event.getLevel());
+    }
 }
