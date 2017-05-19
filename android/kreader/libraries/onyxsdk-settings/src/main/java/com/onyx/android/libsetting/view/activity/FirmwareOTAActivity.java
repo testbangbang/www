@@ -23,6 +23,7 @@ import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareLocalCheckLegalityRequest;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogInformation;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
@@ -108,6 +109,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         }
         if (!NetworkHelper.isWifiConnected(FirmwareOTAActivity.this)) {
             receiver.enable(this, true);
+            Device.currentDevice().enableWifiDetect(FirmwareOTAActivity.this);
             NetworkHelper.enableWifi(FirmwareOTAActivity.this, true);
             showMessage(getString(R.string.opening_wifi));
             return;
