@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -16,6 +16,7 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -386,8 +387,7 @@ public class DeviceUtils {
     }
 
     public static void changeWiFi(Context context, boolean enabled) {
-        WifiManager wm = (WifiManager) context
-                .getSystemService(Context.WIFI_SERVICE);
+        WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         wm.setWifiEnabled(enabled);
     }
 
@@ -395,5 +395,23 @@ public class DeviceUtils {
         Locale locale = context.getResources().getConfiguration().locale;
         String language = locale.getLanguage();
         return language.endsWith("zh");
+    }
+
+    @Nullable
+    public static String getDeviceMacAddress(Context context){
+        boolean restoreWifiStatus = false;
+        if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI)) {
+            return null;
+        }
+        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(true);
+            restoreWifiStatus = true;
+        }
+        String macAddress = wifiManager.getConnectionInfo().getMacAddress();
+        if (restoreWifiStatus) {
+            wifiManager.setWifiEnabled(false);
+        }
+        return macAddress;
     }
 }

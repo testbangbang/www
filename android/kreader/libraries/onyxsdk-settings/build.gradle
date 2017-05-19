@@ -46,4 +46,6 @@ dependencies {
     testCompile "junit:junit:$rootProject.junitVersion"
     compile "com.android.support:multidex:$multidexVersion"
     compile "com.android.support.constraint:constraint-layout:$rootProject.constraintlayoutVersion"
+    compile "com.google.zxing:core:$rootProject.zxingVersion"
+
 }
