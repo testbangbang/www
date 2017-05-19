@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data;
 
+import com.onyx.android.sdk.data.model.CloudMetadataCollection;
+import com.onyx.android.sdk.data.model.CloudMetadataCollection_Table;
 import com.onyx.android.sdk.data.model.CloudMetadata_Table;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
@@ -182,11 +184,11 @@ public class CloudQueryBuilder {
     }
 
     public static Property<String> getMetadataCollectionDocIdProperty() {
-        return MetadataCollection_Table.documentUniqueId;
+        return CloudMetadataCollection_Table.documentUniqueId;
     }
 
     public static Property<String> getMetadataCollectionLibraryIdProperty() {
-        return MetadataCollection_Table.libraryUniqueId;
+        return CloudMetadataCollection_Table.libraryUniqueId;
     }
 
     public static ConditionGroup newBookListCondition() {
@@ -409,6 +411,17 @@ public class CloudQueryBuilder {
     }
 
     public static QueryArgs generateMetadataInQueryArgs(final QueryArgs queryArgs) {
+        Where<CloudMetadataCollection> whereCollection = new Select(getMetadataCollectionDocIdProperty().withTable())
+                .from(CloudMetadataCollection.class)
+                .where(getNotNullOrEqualCondition(getMetadataCollectionLibraryIdProperty().withTable(),
+                        queryArgs.libraryUniqueId));
+        Condition.In inCondition = inCondition(getMetadataIdStringProperty().withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.libraryUniqueId));
+        ConditionGroup group = ConditionGroup.clause().and(inCondition);
+        if (queryArgs.conditionGroup.size() > 0) {
+            queryArgs.conditionGroup = group.and(queryArgs.conditionGroup);
+        } else {
+            queryArgs.conditionGroup = group;
+        }
         return queryArgs;
     }
 }
