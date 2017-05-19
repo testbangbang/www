@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.statistics;
 
 import android.content.Context;
+import android.os.BatteryManager;
 
 import com.onyx.android.sdk.data.model.DocumentInfo;
 
@@ -73,6 +74,28 @@ public class StatisticsManager {
 
     public void onNetworkChangedEvent(final Context context, boolean connected, int networkType) {
         getImpl().onNetworkChanged(context, connected, networkType);
+    }
+
+    public void onBatteryStatusChange(final Context context, final int status, final int level) {
+        String statusStr = "unknown";
+        switch (status) {
+            case BatteryManager.BATTERY_STATUS_UNKNOWN:
+                statusStr = "unknown";
+                break;
+            case BatteryManager.BATTERY_STATUS_CHARGING:
+                statusStr = "charging";
+                break;
+            case BatteryManager.BATTERY_STATUS_DISCHARGING:
+                statusStr = "discharging";
+                break;
+            case BatteryManager.BATTERY_STATUS_NOT_CHARGING:
+                statusStr = "not charging";
+                break;
+            case BatteryManager.BATTERY_STATUS_FULL:
+                statusStr = "full";
+                break;
+        }
+        getImpl().onBatteryStatusChange(context, statusStr, level);
     }
 
     private StatisticsBase getImpl() {
