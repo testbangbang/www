@@ -1,42 +1,55 @@
 package com.onyx.android.sdk.data.request.cloud;
 
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.db.ContentDatabase;
-import com.onyx.android.sdk.data.model.CloudLibrary;
 import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
-import com.onyx.android.sdk.data.v1.ContentService;
-import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.util.List;
 
-import retrofit2.Response;
 
 /**
  * Created by suicheng on 2017/5/18.
  */
 public class CloudLibraryListLoadRequest extends BaseCloudRequest {
 
-    private List<CloudLibrary> libraryList;
+    private String parentId;
+    private QueryArgs queryArgs = new QueryArgs();
 
-    public List<CloudLibrary> getLibraryList() {
+    private List<Library> libraryList;
+
+    public CloudLibraryListLoadRequest() {
+    }
+
+    public CloudLibraryListLoadRequest(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public List<Library> getLibraryList() {
         return libraryList;
     }
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        Response<List<CloudLibrary>> response = executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
-                .loadLibraryList(ContentService.CONTENT_AUTH_PREFIX + parent.getToken()));
-        if (response.isSuccessful()) {
-            libraryList = response.body();
-            saveLibraryListToLocal(parent.getCloudDataProvider(), libraryList);
-        }
+        queryArgs.cloudToken = parent.getToken();
+        libraryList = parent.getCloudDataProvider().loadAllLibrary(parentId, queryArgs);
+        saveLibraryListToLocal(parent.getCloudDataProvider(), queryArgs.fetchPolicy);
     }
 
-    private void saveLibraryListToLocal(DataProviderBase dataProvider, List<CloudLibrary> libraryList) {
+    private void saveLibraryListToLocal(DataProviderBase dataProvider, @FetchPolicy.Type int policy) {
+        if (FetchPolicy.isDataFromLocal(policy, NetworkUtil.isWifiConnected(getContext()))) {
+            return;
+        }
+        saveLibraryListToLocal(dataProvider, libraryList);
+    }
+
+    private void saveLibraryListToLocal(DataProviderBase dataProvider, List<Library> libraryList) {
         if (CollectionUtils.isNullOrEmpty(libraryList)) {
             return;
         }
@@ -47,5 +60,9 @@ public class CloudLibraryListLoadRequest extends BaseCloudRequest {
         }
         database.setTransactionSuccessful();
         database.endTransaction();
+    }
+
+    public QueryArgs getQueryArgs() {
+        return queryArgs;
     }
 }

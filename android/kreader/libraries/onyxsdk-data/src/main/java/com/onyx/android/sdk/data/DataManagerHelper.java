@@ -47,7 +47,7 @@ public class DataManagerHelper {
     }
 
     public static List<Library> loadLibraryList(DataManager dataManager, List<Library> list, String parentId) {
-        List<Library> tmpList = dataManager.getRemoteContentProvider().loadAllLibrary(parentId);
+        List<Library> tmpList = dataManager.getRemoteContentProvider().loadAllLibrary(parentId, null);
         if (tmpList.size() > 0) {
             list.addAll(tmpList);
         }
@@ -139,7 +139,7 @@ public class DataManagerHelper {
             list = dataManager.getCacheManager().getLibraryLruCache(queryKey);
         }
         if (list == null) {
-            list = dataManager.getRemoteContentProvider().loadAllLibrary(libraryUniqueId);
+            list = dataManager.getRemoteContentProvider().loadAllLibrary(libraryUniqueId, null);
             if (!CollectionUtils.isNullOrEmpty(list)) {
                 dataManager.getCacheManager().addToLibraryCache(queryKey, list);
             }
