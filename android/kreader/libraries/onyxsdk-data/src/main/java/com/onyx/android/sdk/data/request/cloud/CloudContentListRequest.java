@@ -10,9 +10,13 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.manager.CacheManager;
+import com.onyx.android.sdk.data.model.CloudMetadataCollection;
+import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
@@ -48,7 +52,7 @@ public class CloudContentListRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        queryResult = loadQueryResult(getContext(), parent , queryArgs);
+        queryResult = loadQueryResult(getContext(), parent, queryArgs);
         if (loadThumbnail && isValidQueryResult(queryResult)) {
             thumbnailBitmap = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(getContext(), parent, queryResult.list);
         }
@@ -61,7 +65,7 @@ public class CloudContentListRequest extends BaseCloudRequest {
         }
         queryResult = loadFromDataProvider(context, cloudManager, queryArgs);
         updateMetadataCache(cloudManager.getCacheManager(), queryArgs, queryResult);
-        saveToLocal(cloudManager.getCloudDataProvider(), queryResult);
+        saveToLocal(cloudManager.getCloudDataProvider(), queryArgs, queryResult);
         return buildRequireResult(queryResult, queryArgs);
     }
 
@@ -112,7 +116,7 @@ public class CloudContentListRequest extends BaseCloudRequest {
         return CacheManager.generateCloudKey(args);
     }
 
-    private void saveToLocal(final DataProviderBase dataProvider, QueryResult<Metadata> queryResult) {
+    private void saveToLocal(final DataProviderBase dataProvider, QueryArgs queryArgs, QueryResult<Metadata> queryResult) {
         if (!saveToLocal || !isValidQueryResult(queryResult) || !queryResult.isFetchFromCloud()) {
             return;
         }
@@ -120,6 +124,7 @@ public class CloudContentListRequest extends BaseCloudRequest {
         database.beginTransaction();
         for (Metadata metadata : queryResult.list) {
             dataProvider.saveMetadata(getContext(), metadata);
+            saveCollection(getContext(), dataProvider, queryArgs.libraryUniqueId, metadata.getAssociationId());
         }
         database.setTransactionSuccessful();
         database.endTransaction();
@@ -131,5 +136,9 @@ public class CloudContentListRequest extends BaseCloudRequest {
 
     public void setLoadThumbnail(boolean loadThumbnail) {
         this.loadThumbnail = loadThumbnail;
+    }
+
+    private void saveCollection(Context context, DataProviderBase dataProvider, String libraryId, String associationId) {
+        DataManagerHelper.saveCloudCollection(context, dataProvider, libraryId, associationId);
     }
 }

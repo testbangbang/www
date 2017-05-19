@@ -46,4 +46,6 @@ public class Constant {
     public static final String APP_ID = "50ed40debbdc4bb1bfdddcd4791d862c";
 
     public static final String PLATFORM_WECHAT = "wechat";
+
+    public static final String HEADER_AUTHORIZATION = "authorization";
 }

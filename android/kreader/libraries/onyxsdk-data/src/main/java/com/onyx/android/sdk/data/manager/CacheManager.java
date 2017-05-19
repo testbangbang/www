@@ -106,10 +106,7 @@ public class CacheManager {
     }
 
     public static String generateCloudKey(QueryArgs args) {
-        String queryKey = null;
-        if (!CollectionUtils.isNullOrEmpty(args.category)) {
-            queryKey = StringUtils.join(args.category, Metadata.DELIMITER);
-        }
+        String queryKey = args.libraryUniqueId;
         queryKey += args.getOrderByQuery();
         return queryKey;
     }

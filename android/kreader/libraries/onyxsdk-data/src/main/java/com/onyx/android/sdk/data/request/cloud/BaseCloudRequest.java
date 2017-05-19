@@ -177,10 +177,18 @@ public abstract class BaseCloudRequest extends BaseRequest {
         Response<T> response = call.execute();
         if (!response.isSuccessful()) {
             String errorBody = response.errorBody().string();
-            resultCode = JSON.parseObject(errorBody, ResultCode.class);
+            parseResultCode(errorBody);
             throw new Exception(errorBody);
         }
         return response;
+    }
+
+    private void parseResultCode(String errorBody) {
+        try {
+            resultCode = JSON.parseObject(errorBody, ResultCode.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public ResultCode getResultCode() {

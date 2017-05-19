@@ -7,6 +7,7 @@ import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.manager.CacheManager;
+import com.onyx.android.sdk.data.model.CloudMetadataCollection;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
@@ -295,5 +296,29 @@ public class DataManagerHelper {
             return refBitmap.clone();
         }
         return null;
+    }
+
+    public static void saveCloudCollection(Context context, DataProviderBase dataProvider, String libraryId, String associationId) {
+        CloudMetadataCollection collection = new CloudMetadataCollection();
+        collection.setDocumentUniqueId(associationId);
+        collection.setLibraryUniqueId(libraryId);
+        saveCollection(context, dataProvider, collection);
+    }
+
+    public static void saveCollection(Context context, DataProviderBase dataProvider, MetadataCollection collection) {
+        MetadataCollection findCollection = dataProvider.findMetadataCollection(context, collection.getDocumentUniqueId());
+        if (findCollection == null) {
+            if (StringUtils.isNullOrEmpty(collection.getLibraryUniqueId())) {
+                return;
+            }
+            dataProvider.addMetadataCollection(context, collection);
+        } else {
+            if (StringUtils.isNullOrEmpty(collection.getLibraryUniqueId())) {
+                dataProvider.deleteMetadataCollection(context, collection.getLibraryUniqueId(), collection.getDocumentUniqueId());
+            } else {
+                collection.setLibraryUniqueId(collection.getLibraryUniqueId());
+                dataProvider.updateMetadataCollection(collection);
+            }
+        }
     }
 }

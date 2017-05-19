@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.data.request.cloud;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -10,8 +11,11 @@ import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.db.ContentDatabase;
+import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
@@ -83,6 +87,13 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
         if (file.exists() && file.length() > 0) {
             loadRefBitmap(lruCache, file);
             return;
+        }
+        if (!StringUtils.isUrl(coverUrl)) {
+            String path = loadThumbnailFilePath(getContext(), cloudManager.getCloudDataProvider(), associationId, thumbnailKind);
+            if (FileUtils.fileExist(path)) {
+                loadRefBitmap(lruCache, new File(path));
+                return;
+            }
         }
         if (!StringUtils.isUrl(coverUrl) || isAbort()) {
             return;
@@ -162,5 +173,13 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
 
     public String getIdentifier() {
         return "cloudThumbnail";
+    }
+
+    private String loadThumbnailFilePath(Context context, DataProviderBase dataProvider, String associationId, OnyxThumbnail.ThumbnailKind thumbnailKind) {
+        Thumbnail thumbnail = dataProvider.getThumbnailEntry(context, associationId, thumbnailKind);
+        if (thumbnail == null) {
+            return null;
+        }
+        return thumbnail.getImageDataPath();
     }
 }
