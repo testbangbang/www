@@ -14,4 +14,6 @@ public class Constant {
     public static final String CONFIG_STUDENT_GRADE = "config_student_grade";
     public static final String CONFIG_MATERIAL_PUBLISHER = "config_material_publisher";
     public static final String CONFIG_SCHOOL_LEVEL = "config_school_level";
+
+    public static final String LIBRARY_PARENT_ID = "library_parent_Id";
 }
