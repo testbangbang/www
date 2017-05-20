@@ -47,4 +47,9 @@ public class StudentAccount {
     public static void saveAvatarPath(Context context, String path) {
         StudentPreferenceManager.setStringValue(context, Constant.ACCOUNT_AVATAR, path);
     }
+
+    public static boolean isAccountValid(Context context) {
+        StudentAccount account = StudentAccount.loadAccount(context);
+        return account != null && StringUtils.isNotBlank(account.token) && account.accountInfo != null;
+    }
 }
