@@ -84,14 +84,21 @@ public class BookTextFragment extends Fragment {
     public static BookTextFragment newInstance(String fragmentName, String libraryId) {
         BookTextFragment fragment = new BookTextFragment();
         Bundle bundle = new Bundle();
+        resetArgumentsBundle(bundle, fragmentName, libraryId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    private static void resetArgumentsBundle(Bundle bundle, String fragmentName, String libraryId) {
+        if (bundle == null) {
+            return;
+        }
         if (StringUtils.isNotBlank(libraryId)) {
             bundle.putString(LIBRARY_ID_ARGS, libraryId);
         }
         if (StringUtils.isNotBlank(fragmentName)) {
             bundle.putString(FRAGMENT_NAME, fragmentName);
         }
-        fragment.setArguments(bundle);
-        return fragment;
     }
 
     @Override
@@ -110,6 +117,11 @@ public class BookTextFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         loadData();
     }
 
@@ -141,7 +153,7 @@ public class BookTextFragment extends Fragment {
     }
 
     private void nextPage() {
-        if (!pagination.nextPage()) {
+        if (!getPagination().nextPage()) {
             return;
         }
         QueryArgs queryArgs = getDataHolder().getCloudViewInfo().nextPage();
@@ -378,7 +390,7 @@ public class BookTextFragment extends Fragment {
 
     private void showGotoPageAction(int currentPage) {
         final LibraryGotoPageAction gotoPageAction = new LibraryGotoPageAction(getActivity(), currentPage,
-                pagination.pages());
+                getPagination().pages());
         gotoPageAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -389,12 +401,12 @@ public class BookTextFragment extends Fragment {
     }
 
     private void gotoPageImpl(int page) {
-        final int originPage = pagination.getCurrentPage();
+        final int originPage = getPagination().getCurrentPage();
         loadData(getDataHolder().getCloudViewInfo().gotoPage(page), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
-                    pagination.setCurrentPage(originPage);
+                    getPagination().setCurrentPage(originPage);
                     return;
                 }
                 prevLoad();
@@ -428,7 +440,8 @@ public class BookTextFragment extends Fragment {
 
     private void updatePageIndicator() {
         int totalCount = getTotalCount();
-        pagination.resize(row, col, totalCount);
+        getPagination().resize(row, col, totalCount);
+        pageIndicator.resetGPaginator(getPagination());
         pageIndicator.updateTotal(totalCount);
         pageIndicator.updateCurrentPage(totalCount);
     }
@@ -593,7 +606,8 @@ public class BookTextFragment extends Fragment {
     public void onLibraryEvent(BookLibraryEvent event) {
         if (event.library != null) {
             if (event.library.getName().equals(fragmentName)) {
-                loadData(event.library.getIdString());
+                resetArgumentsBundle(getArguments(), fragmentName, event.library.getIdString());
+                loadData();
             }
         }
     }
@@ -608,5 +622,15 @@ public class BookTextFragment extends Fragment {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (contentPageView != null) {
+                updateContentView();
+            }
+        }
     }
 }
