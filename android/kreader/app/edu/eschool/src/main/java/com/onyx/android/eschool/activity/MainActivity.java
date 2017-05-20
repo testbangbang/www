@@ -22,6 +22,7 @@ import com.onyx.android.eschool.custom.NoSwipePager;
 import com.onyx.android.eschool.events.BookLibraryEvent;
 import com.onyx.android.eschool.fragment.AccountFragment;
 import com.onyx.android.eschool.fragment.BookTextFragment;
+import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.CloudLibrary;
@@ -75,10 +76,14 @@ public class MainActivity extends BaseActivity {
         initViewPager();
     }
 
+    private String getLibraryParentId() {
+        return StudentPreferenceManager.loadLibraryParentId(this, null);
+    }
+
     @Override
     protected void initData() {
         final AuthTokenAction authTokenAction = new AuthTokenAction();
-        final CloudLibraryListLoadAction loadAction = new CloudLibraryListLoadAction();
+        final CloudLibraryListLoadAction loadAction = new CloudLibraryListLoadAction(getLibraryParentId());
         ActionChain actionChain = new ActionChain();
         actionChain.addAction(authTokenAction);
         actionChain.addAction(loadAction);
@@ -88,13 +93,13 @@ public class MainActivity extends BaseActivity {
                 if (e != null) {
                     return;
                 }
-                final List<CloudLibrary> list = loadAction.getLibraryList();
+                final List<Library> list = loadAction.getLibraryList();
                 notifyDataChanged(list);
             }
         });
     }
 
-    private void notifyDataChanged(List<CloudLibrary> list) {
+    private void notifyDataChanged(List<Library> list) {
         for (Library library : list) {
             addToLibraryMap(library);
             EventBus.getDefault().postSticky(new BookLibraryEvent(library));
