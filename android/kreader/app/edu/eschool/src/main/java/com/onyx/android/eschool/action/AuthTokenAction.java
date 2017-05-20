@@ -10,11 +10,11 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.ContentAccount;
 import com.onyx.android.sdk.data.model.ContentAuthAccount;
-import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.request.cloud.ContentAccountGetRequest;
 import com.onyx.android.sdk.data.request.cloud.ContentAccountTokenRequest;
 import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -27,12 +27,17 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
 
     @Override
     public void execute(LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
+        final CloudManager cloudManager = dataHolder.getCloudManager();
+        if (StudentAccount.isAccountValid(dataHolder.getContext())) {
+            cloudManager.setToken(StudentAccount.loadAccount(dataHolder.getContext()).token);
+            BaseCallback.invoke(baseCallback, null, null);
+            return;
+        }
         final ContentAuthAccount account = createContentAccount(dataHolder.getContext());
         if (account == null) {
             ToastUtils.showToast(dataHolder.getContext(), "当前wifi可能没有连接，获取不了mac地址");
             return;
         }
-        final CloudManager cloudManager = dataHolder.getCloudManager();
         CloudRequestChain requestChain = new CloudRequestChain();
         final ContentAccountTokenRequest tokenRequest = new ContentAccountTokenRequest(account);
         final ContentAccountGetRequest applyRequest = new ContentAccountGetRequest();
@@ -72,11 +77,11 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     }
 
     public static ContentAuthAccount createContentAccount(Context context) {
-        Device device = Device.updateCurrentDeviceInfo(context);
-        if (device == null || StringUtils.isNullOrEmpty(device.macAddress)) {
+        String macAddress = DeviceUtils.getDeviceMacAddress(context);
+        if (StringUtils.isNullOrEmpty(macAddress)) {
             return null;
         }
-        return ContentAuthAccount.create(FileUtils.computeMD5(device.macAddress + NAME_SECRET),
-                FileUtils.computeMD5(device.macAddress + PASSWORD_SECRET));
+        return ContentAuthAccount.create(FileUtils.computeMD5(macAddress + NAME_SECRET),
+                FileUtils.computeMD5(macAddress + PASSWORD_SECRET));
     }
 }
