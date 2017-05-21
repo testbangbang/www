@@ -7,6 +7,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.eschool.device.DeviceConfig;
+import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -35,6 +36,8 @@ import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -236,6 +239,12 @@ public class SchoolApp extends Application {
             public void onMediaRemoved(Intent intent) {
                 Log.e("##onMediaRemoved", intent.getData().toString());
 
+            }
+        });
+        deviceReceiver.setWifiStateListener(new DeviceReceiver.WifiStateListener() {
+            @Override
+            public void onWifiConnected(Intent intent) {
+                EventBus.getDefault().postSticky(new DataRefreshEvent());
             }
         });
         deviceReceiver.enable(getApplicationContext(), true);
