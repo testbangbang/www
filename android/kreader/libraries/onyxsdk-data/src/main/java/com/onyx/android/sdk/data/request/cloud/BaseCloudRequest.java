@@ -194,4 +194,8 @@ public abstract class BaseCloudRequest extends BaseRequest {
     public ResultCode getResultCode() {
         return resultCode;
     }
+
+    public String getIdentifier() {
+        return "cloudContent";
+    }
 }

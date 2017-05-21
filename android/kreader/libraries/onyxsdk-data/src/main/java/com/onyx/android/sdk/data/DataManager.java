@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
@@ -71,7 +72,7 @@ public class DataManager {
         requestManager.submitRequestToMultiThreadPool(context, getIdentifier(request), request, generateRunnable(request), callback);
     }
 
-    private final String getIdentifier(final BaseDataRequest request) {
+    private final String getIdentifier(final BaseRequest request) {
         return request.getIdentifier();
     }
 
