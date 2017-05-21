@@ -3,6 +3,7 @@ package com.onyx.android.eschool.model;
 import android.content.Context;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.eschool.utils.Constant;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.data.model.ContentAccount;
@@ -28,6 +29,7 @@ public class StudentAccount {
     public String token;
     public ContentAccount accountInfo;
 
+    @JSONField(deserialize=false)
     public String getFirstGroup() {
         if (groups == null || groups.length <= 0) {
             return "";
@@ -49,12 +51,17 @@ public class StudentAccount {
     }
 
     public static StudentAccount loadAccount(Context context) {
-        SecurePreferences preferences = new SecurePreferences(context, Constant.ACCOUNT_TYPE_STUDENT, Constant.ACCOUNT_INFO_TAG, true);
-        final String string = preferences.getString(Constant.JSON_TAG);
-        if (StringUtils.isNullOrEmpty(string)) {
+        try {
+            SecurePreferences preferences = new SecurePreferences(context, Constant.ACCOUNT_TYPE_STUDENT, Constant.ACCOUNT_INFO_TAG, true);
+            final String string = preferences.getString(Constant.JSON_TAG);
+            if (StringUtils.isNullOrEmpty(string)) {
+                return new StudentAccount();
+            }
+            return JSON.parseObject(string, StudentAccount.class);
+        } catch (Exception e) {
+        } finally {
             return new StudentAccount();
         }
-        return JSON.parseObject(string, StudentAccount.class);
     }
 
     public static String loadAvatarPath(Context context) {
