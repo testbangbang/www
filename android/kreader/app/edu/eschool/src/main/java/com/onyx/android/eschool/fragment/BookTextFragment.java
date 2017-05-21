@@ -150,7 +150,7 @@ public class BookTextFragment extends Fragment {
                 }
             }
         });
-        nextLoad();
+        preloadNext();
     }
 
     private void nextPage() {
@@ -162,13 +162,14 @@ public class BookTextFragment extends Fragment {
         getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e == null) {
-                    QueryResult<Metadata> result = listRequest.getProductResult();
-                    updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                if (e != null) {
+                    return;
                 }
+                QueryResult<Metadata> result = listRequest.getProductResult();
+                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                preloadNext();
             }
         });
-        nextLoad();
     }
 
     private LibraryDataModel getLibraryDataModel(QueryResult<Metadata> result, Map<String, CloseableReference<Bitmap>> map) {
@@ -193,7 +194,7 @@ public class BookTextFragment extends Fragment {
         pagination.resize(row, col, 0);
     }
 
-    private void nextLoad() {
+    private void preloadNext() {
         int preLoadPage = getPagination().getCurrentPage() + 1;
         if (preLoadPage >= getPagination().pages()) {
             return;
@@ -371,16 +372,17 @@ public class BookTextFragment extends Fragment {
         getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e == null) {
-                    QueryResult<Metadata> result = listRequest.getProductResult();
-                    updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                if (e != null) {
+                    return;
                 }
+                QueryResult<Metadata> result = listRequest.getProductResult();
+                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                preLoadPrev();
             }
         });
-        prevLoad();
     }
 
-    private void prevLoad() {
+    private void preLoadPrev() {
         int preLoadPage = getPagination().getCurrentPage() - 1;
         if (preLoadPage < 0) {
             return;
@@ -410,11 +412,11 @@ public class BookTextFragment extends Fragment {
                     getPagination().setCurrentPage(originPage);
                     return;
                 }
-                prevLoad();
-                nextLoad();
                 CloudContentListRequest listRequest = (CloudContentListRequest) request;
                 QueryResult<Metadata> result = listRequest.getProductResult();
                 updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                preLoadPrev();
+                preloadNext();
             }
         });
     }
