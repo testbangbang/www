@@ -15,7 +15,6 @@ import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
@@ -71,44 +70,79 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
         if (StringUtils.isNullOrEmpty(associationId)) {
             return;
         }
+        if (loadFromMemoryCache(cloudManager) || isAbort()) {
+            return;
+        }
+        if (loadFromFileSystemCache(cloudManager) || isAbort()) {
+            return;
+        }
+        if (loadFromDatabase(cloudManager) || isAbort()) {
+            return;
+        }
+        loadFromCloud(cloudManager);
+    }
+
+    private void saveToMemoryCache(final CloudManager cloudManager) {
+        cloudManager.getCacheManager().getBitmapLruCache().put(associationId, refBitmap);
+    }
+
+    private File thumbnailFileSystemCachePathWidthId() {
+        return CloudUtils.imageCachePath(getContext(), associationId);
+    }
+
+    private boolean loadFromMemoryCache(final CloudManager cloudManager) {
         BitmapReferenceLruCache lruCache = cloudManager.getCacheManager().getBitmapLruCache();
         refBitmap = lruCache.get(associationId);
         if (isValid(refBitmap)) {
-            return;
+            return true;
         }
-        if (isAbort()) {
-            return;
-        }
-        final File file = CloudUtils.imageCachePath(getContext(), associationId);
-        if (file == null) {
-            Log.w(TAG, "detect associationId is null");
-            return;
-        }
-        if (file.exists() && file.length() > 0) {
-            loadRefBitmap(lruCache, file);
-            return;
-        }
-        if (!StringUtils.isUrl(coverUrl)) {
-            String path = loadThumbnailFilePath(getContext(), cloudManager.getCloudDataProvider(), associationId, thumbnailKind);
-            if (FileUtils.fileExist(path)) {
-                loadRefBitmap(lruCache, new File(path));
-                return;
-            }
-        }
-        if (!StringUtils.isUrl(coverUrl) || isAbort()) {
-            return;
-        }
-        Bitmap myBitmap = loadBitmap(coverUrl);
-        if (!isValid(myBitmap) || isAbort()) {
-            return;
-        }
-        if (!writeBitmapToFile(file, myBitmap) || isAbort()) {
-            return;
-        }
-        loadRefBitmap(lruCache, file);
+        return false;
     }
 
-    private boolean writeBitmapToFile(File file, Bitmap originBitmap) throws Exception {
+    private boolean loadFromFileSystemCache(final CloudManager cloudManager) {
+        final File file = thumbnailFileSystemCachePathWidthId();
+        if (file == null) {
+            Log.w(TAG, "detect associationId is null");
+            return false;
+        }
+        if (file.exists() && file.length() > 0 && loadRefBitmap(file)) {
+            saveToMemoryCache(cloudManager);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean loadFromDatabase(final CloudManager cloudManager) {
+        if (!StringUtils.isUrl(coverUrl)) {
+            String path = loadThumbnailFilePathFromDatabase(getContext(), cloudManager.getCloudDataProvider(), associationId, thumbnailKind);
+            File file = new File(path);
+            if (file.exists() && loadRefBitmap(file)) {
+                saveToMemoryCache(cloudManager);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean loadFromCloud(final CloudManager cloudManager) {
+        if (!StringUtils.isUrl(coverUrl) || isAbort()) {
+            return false;
+        }
+        Bitmap myBitmap = loadBitmapFromCloudImpl(coverUrl);
+        if (!isValid(myBitmap) || isAbort()) {
+            return false;
+        }
+        final File file = thumbnailFileSystemCachePathWidthId();
+        if (!writeBitmapToFile(file, myBitmap) || isAbort()) {
+            return false;
+        }
+        if (loadRefBitmap(file)) {
+            saveToMemoryCache(cloudManager);
+        }
+        return true;
+    }
+
+    private boolean writeBitmapToFile(File file, Bitmap originBitmap)  {
         Bitmap newBitmap = originBitmap;
         if (thumbnailKind != OnyxThumbnail.ThumbnailKind.Original) {
             newBitmap = ThumbnailUtils.createLargeThumbnail(originBitmap);
@@ -116,12 +150,11 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
         return ThumbnailUtils.writeBitmapToThumbnailFile(file, newBitmap);
     }
 
-    private boolean loadRefBitmap(BitmapReferenceLruCache lruCache, File file) {
+    private boolean loadRefBitmap(File file) {
         boolean success = true;
         try {
             CloseableReference<Bitmap> bitmap = ThumbnailUtils.decodeFile(file);
             if (isValid(bitmap)) {
-                lruCache.put(associationId, bitmap);
                 refBitmap = bitmap.clone();
             }
         } catch (IOException e) {
@@ -131,29 +164,37 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
         return success;
     }
 
-    private Bitmap loadBitmap(String url) throws Exception {
+    private Bitmap loadBitmapFromCloudImpl(String url) {
         if (thumbnailKind == OnyxThumbnail.ThumbnailKind.Original) {
-            return loadOriginBitmap(url);
+            return loadOriginBitmapFromCloudImpl(url);
         } else {
-            return loadLargeBitmap(url);
+            return loadLargeBitmapFromCloudImpl(url);
         }
     }
 
-    private Bitmap loadLargeBitmap(String url) throws Exception {
-        return Glide.with(getContext())
-                .load(url)
-                .asBitmap()
-                .fitCenter()
-                .into(512, 512)
-                .get();
+    private Bitmap loadLargeBitmapFromCloudImpl(String url)  {
+        try {
+            return Glide.with(getContext())
+                    .load(url)
+                    .asBitmap()
+                    .fitCenter()
+                    .into(512, 512)
+                    .get();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    private Bitmap loadOriginBitmap(String url) throws Exception {
-        return Glide.with(getContext())
-                .load(url)
-                .asBitmap()
-                .into(ViewTarget.SIZE_ORIGINAL, ViewTarget.SIZE_ORIGINAL)
-                .get();
+    private Bitmap loadOriginBitmapFromCloudImpl(String url)  {
+        try {
+            return Glide.with(getContext())
+                    .load(url)
+                    .asBitmap()
+                    .into(ViewTarget.SIZE_ORIGINAL, ViewTarget.SIZE_ORIGINAL)
+                    .get();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private void saveToThumbnail(CloudManager cloudManager, File file, Bitmap bitmap) {
@@ -175,7 +216,10 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
         return "cloudThumbnail";
     }
 
-    private String loadThumbnailFilePath(Context context, DataProviderBase dataProvider, String associationId, OnyxThumbnail.ThumbnailKind thumbnailKind) {
+    private String loadThumbnailFilePathFromDatabase(Context context,
+                                                     DataProviderBase dataProvider,
+                                                     String associationId,
+                                                     OnyxThumbnail.ThumbnailKind thumbnailKind) {
         Thumbnail thumbnail = dataProvider.getThumbnailEntry(context, associationId, thumbnailKind);
         if (thumbnail == null) {
             return null;
