@@ -242,7 +242,7 @@ public class SchoolApp extends Application {
         deviceReceiver.setWifiStateListener(new DeviceReceiver.WifiStateListener() {
             @Override
             public void onWifiConnected(Intent intent) {
-                EventBus.getDefault().postSticky(new DataRefreshEvent());
+                EventBus.getDefault().post(new DataRefreshEvent());
             }
         });
         deviceReceiver.enable(getApplicationContext(), true);
