@@ -15,16 +15,33 @@ import com.onyx.android.sdk.utils.StringUtils;
 
 public class StudentAccount {
 
+    public static final String DELIMITER = ",";
+
     public String name;
     public String school;
     public String gradeClass;
     public String grade;
     public String studentId;
 
-    public String groups;
+    public String[] groups;
     public String phone;
     public String token;
     public ContentAccount accountInfo;
+
+    public String getFirstGroup() {
+        if (groups == null || groups.length <= 0) {
+            return "";
+        }
+        return groups[0].replaceAll(StudentAccount.DELIMITER, "");
+    }
+
+    public String getPhone() {
+        return StringUtils.getBlankStr(phone);
+    }
+
+    public String getName() {
+        return StringUtils.getBlankStr(name);
+    }
 
     public void saveAccount(Context context) {
         SecurePreferences preferences = new SecurePreferences(context, Constant.ACCOUNT_TYPE_STUDENT, Constant.ACCOUNT_INFO_TAG, true);
