@@ -47,8 +47,8 @@ import java.util.Set;
  */
 public class SchoolApp extends Application {
     static private final String MMC_STORAGE_ID = "flash";
-    static public final String CLOUD_CONTENT_DEFAULT_HOST = "http://192.168.11.104:8082/";
-    static public final String CLOUD_CONTENT_DEFAULT_API = "http://192.168.11.104:8082/api/";
+    static public final String CLOUD_CONTENT_DEFAULT_HOST = "http://oa.o-in.me:9058/";
+    static public final String CLOUD_CONTENT_DEFAULT_API = "http://oa.o-in.me:9058/api/";
 
     static private SchoolApp sInstance = null;
     static private CloudStore cloudStore = new CloudStore();
@@ -79,7 +79,6 @@ public class SchoolApp extends Application {
             initEventListener();
             initFrescoLoader();
             initSystemInBackground();
-            startFileSystemScan();
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace();
@@ -240,6 +239,13 @@ public class SchoolApp extends Application {
 
             }
         });
+        deviceReceiver.setWifiStateListener(new DeviceReceiver.WifiStateListener() {
+            public void onWifiStateChanged(Intent intent) {
+            }
+
+            public void onWifiConnected(Intent intent) {
+            }
+        });
         deviceReceiver.enable(getApplicationContext(), true);
     }
 
@@ -265,10 +271,6 @@ public class SchoolApp extends Application {
 
     public static SchoolApp singleton() {
         return sInstance;
-    }
-
-    static public CloudStore getCloudStore() {
-        return cloudStore;
     }
 
     static public CloudStore getSchoolCloudStore() {

@@ -46,9 +46,6 @@
             android:name=".activity.TeachingMaterialActivity" />
 
         <activity
-            android:name=".activity.TeachingAuxiliaryActivity" />
-
-        <activity
             android:name=".activity.StudyPreviewActivity" />
 
         <activity
