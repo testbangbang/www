@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -609,6 +610,13 @@ public class BookTextFragment extends Fragment {
                 resetArgumentsBundle(getArguments(), fragmentName, event.library.getIdString());
                 loadData();
             }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onKeyEvent(KeyEvent keyEvent) {
+        if (contentPageView != null) {
+            contentPageView.dispatchKeyEvent(keyEvent);
         }
     }
 

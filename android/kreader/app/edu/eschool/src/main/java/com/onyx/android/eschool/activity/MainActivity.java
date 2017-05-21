@@ -8,11 +8,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.ActionChain;
@@ -25,7 +25,6 @@ import com.onyx.android.eschool.fragment.BookTextFragment;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.CloudLibrary;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -127,6 +126,22 @@ public class MainActivity extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (filterKeyEvent(event)) {
+            return super.dispatchKeyEvent(event);
+        }
+        EventBus.getDefault().post(event);
+        return true;
+    }
+
+    private boolean filterKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
+            return true;
+        }
+        return false;
     }
 
     private void selectTab(TabLayout tabLayout, int position) {
