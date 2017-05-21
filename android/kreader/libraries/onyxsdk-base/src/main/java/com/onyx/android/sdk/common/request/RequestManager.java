@@ -69,7 +69,7 @@ public class RequestManager {
     }
 
     public boolean submitRequest(final Context context, final BaseRequest request, final Runnable runnable, final BaseCallback callback) {
-        return submitRequest(context, null, request, runnable, callback);
+        return submitRequest(context, request.getIdentifier(), request, runnable, callback);
     }
 
     private boolean beforeSubmitRequest(final Context context, final ExecutorContext executorContext, final BaseRequest request, final BaseCallback callback) {

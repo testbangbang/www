@@ -113,5 +113,8 @@ public class BaseRequest {
         return (exception != null);
     }
 
+    public String getIdentifier() {
+        return null;
+    }
 
 }
