@@ -184,4 +184,10 @@ public class StringUtils {
         return !isNullOrEmpty(url) && Patterns.WEB_URL.matcher(url).matches();
     }
 
+    public static String getBlankStr(String origin) {
+        if (StringUtils.isNullOrEmpty(origin)) {
+            return "";
+        }
+        return origin;
+    }
 }

@@ -64,8 +64,8 @@ public class AccountFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     public void updateView(Context context) {
         StudentAccount studentAccount = StudentAccount.loadAccount(context);
-        studentName.setText(String.valueOf(studentAccount.name));
-        studentGrade.setText("年级：" + String.valueOf(studentAccount.groups));
-        studentPhone.setText("电话：" + String.valueOf(studentAccount.phone));
+        studentName.setText(studentAccount.getName());
+        studentGrade.setText("年级：" + studentAccount.getFirstGroup());
+        studentPhone.setText("电话：" + studentAccount.getPhone());
     }
 }
