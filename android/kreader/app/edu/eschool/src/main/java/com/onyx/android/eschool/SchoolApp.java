@@ -51,7 +51,6 @@ public class SchoolApp extends Application {
     static public final String CLOUD_CONTENT_DEFAULT_API = "http://oa.o-in.me:9058/api/";
 
     static private SchoolApp sInstance = null;
-    static private CloudStore cloudStore = new CloudStore();
     static private CloudStore schoolCloudStore;
     static private LibraryDataHolder libraryDataHolder;
 
