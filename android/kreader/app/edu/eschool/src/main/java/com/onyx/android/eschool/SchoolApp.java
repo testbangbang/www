@@ -47,8 +47,6 @@ import java.util.Set;
  */
 public class SchoolApp extends Application {
     static private final String MMC_STORAGE_ID = "flash";
-    static public final String CLOUD_CONTENT_DEFAULT_HOST = "http://192.168.11.104:8082/";
-    static public final String CLOUD_CONTENT_DEFAULT_API = "http://192.168.11.104:8082/api/";
 
     static private SchoolApp sInstance = null;
     static private CloudStore cloudStore = new CloudStore();
@@ -275,8 +273,8 @@ public class SchoolApp extends Application {
         if (schoolCloudStore == null) {
             schoolCloudStore = new CloudStore();
             CloudManager cloudManager = schoolCloudStore.getCloudManager();
-            String host = DeviceConfig.sharedInstance(sInstance).getCloudContentHost(CLOUD_CONTENT_DEFAULT_HOST);
-            String api = DeviceConfig.sharedInstance(sInstance).getCloudContentApi(CLOUD_CONTENT_DEFAULT_API);
+            String host = DeviceConfig.sharedInstance(sInstance).getCloudContentHost();
+            String api = DeviceConfig.sharedInstance(sInstance).getCloudContentApi();
             CloudConf cloudConf = new CloudConf(host, api, Constant.DEFAULT_CLOUD_STORAGE);
             cloudManager.setAllCloudConf(cloudConf);
         }
