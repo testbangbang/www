@@ -21,6 +21,9 @@ public class DeviceConfig {
     static private String TAG = DeviceConfig.class.getSimpleName();
     static public final boolean useDebugConfig = false;
 
+    static public final String CLOUD_CONTENT_DEFAULT_HOST = "http://oa.o-in.me:9058/";
+    static public final String CLOUD_CONTENT_DEFAULT_API = "http://oa.o-in.me:9058/api/";
+
     static private DeviceConfig globalInstance;
     static private Locale currentLocale = null;
 
@@ -165,11 +168,11 @@ public class DeviceConfig {
         return defaultCustomizedIconAppsMap;
     }
 
-    public String getCloudContentHost(String defaultValue) {
-        return backend.getString(CLOUD_CONTENT_HOST, defaultValue);
+    public String getCloudContentHost() {
+        return backend.getString(CLOUD_CONTENT_HOST, CLOUD_CONTENT_DEFAULT_HOST);
     }
 
-    public String getCloudContentApi(String defaultValue) {
-        return backend.getString(CLOUD_CONTENT_API, defaultValue);
+    public String getCloudContentApi() {
+        return backend.getString(CLOUD_CONTENT_API, CLOUD_CONTENT_DEFAULT_API);
     }
 }

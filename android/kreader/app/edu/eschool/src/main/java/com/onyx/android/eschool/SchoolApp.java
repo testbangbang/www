@@ -7,6 +7,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.eschool.device.DeviceConfig;
+import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -36,6 +37,8 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,8 +50,6 @@ import java.util.Set;
  */
 public class SchoolApp extends Application {
     static private final String MMC_STORAGE_ID = "flash";
-    static public final String CLOUD_CONTENT_DEFAULT_HOST = "http://oa.o-in.me:9058/";
-    static public final String CLOUD_CONTENT_DEFAULT_API = "http://oa.o-in.me:9058/api/";
 
     static private SchoolApp sInstance = null;
     static private CloudStore schoolCloudStore;
@@ -239,10 +240,9 @@ public class SchoolApp extends Application {
             }
         });
         deviceReceiver.setWifiStateListener(new DeviceReceiver.WifiStateListener() {
-            public void onWifiStateChanged(Intent intent) {
-            }
-
+            @Override
             public void onWifiConnected(Intent intent) {
+                EventBus.getDefault().postSticky(new DataRefreshEvent());
             }
         });
         deviceReceiver.enable(getApplicationContext(), true);
@@ -276,8 +276,8 @@ public class SchoolApp extends Application {
         if (schoolCloudStore == null) {
             schoolCloudStore = new CloudStore();
             CloudManager cloudManager = schoolCloudStore.getCloudManager();
-            String host = DeviceConfig.sharedInstance(sInstance).getCloudContentHost(CLOUD_CONTENT_DEFAULT_HOST);
-            String api = DeviceConfig.sharedInstance(sInstance).getCloudContentApi(CLOUD_CONTENT_DEFAULT_API);
+            String host = DeviceConfig.sharedInstance(sInstance).getCloudContentHost();
+            String api = DeviceConfig.sharedInstance(sInstance).getCloudContentApi();
             CloudConf cloudConf = new CloudConf(host, api, Constant.DEFAULT_CLOUD_STORAGE);
             cloudManager.setAllCloudConf(cloudConf);
         }
