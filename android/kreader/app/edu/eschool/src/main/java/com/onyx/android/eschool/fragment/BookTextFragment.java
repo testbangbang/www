@@ -39,10 +39,10 @@ import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
-import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 
@@ -556,7 +556,8 @@ public class BookTextFragment extends Fragment {
             openCloudFile(book);
             return;
         }
-        if (!NetworkHelper.requestWifi(getContext())) {
+        if (!NetworkUtil.isWifiConnected(getContext())) {
+            NetworkUtil.enableWifi(getContext(), true);
             return;
         }
         startDownload(book);
