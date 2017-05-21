@@ -255,7 +255,7 @@ public class BookTextFragment extends Fragment {
 
                 Bitmap bitmap = getBitmap(eBook.getAssociationId());
                 if (bitmap == null) {
-                    viewHolder.coverImage.setImageResource(R.drawable.cloud_cover);
+                    viewHolder.coverImage.setImageResource(R.drawable.cloud_default_cover);
                     if (newPage) {
                         newPage = false;
                         hasNoThumbnail = position;
