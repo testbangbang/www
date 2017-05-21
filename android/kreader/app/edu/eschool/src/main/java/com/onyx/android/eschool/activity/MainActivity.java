@@ -20,6 +20,7 @@ import com.onyx.android.eschool.action.AuthTokenAction;
 import com.onyx.android.eschool.action.CloudLibraryListLoadAction;
 import com.onyx.android.eschool.custom.NoSwipePager;
 import com.onyx.android.eschool.events.BookLibraryEvent;
+import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.fragment.AccountFragment;
 import com.onyx.android.eschool.fragment.BookTextFragment;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
@@ -30,6 +31,8 @@ import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,6 +84,10 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        loadData();
+    }
+
+    private void loadData() {
         final AuthTokenAction authTokenAction = new AuthTokenAction();
         final CloudLibraryListLoadAction loadAction = new CloudLibraryListLoadAction(getLibraryParentId());
         ActionChain actionChain = new ActionChain();
@@ -204,6 +211,23 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onDataRefreshEvent(DataRefreshEvent event) {
+        loadData();
     }
 
     private BookTextFragment getCommonBookFragment(String fragmentName, Library library) {
