@@ -1,5 +1,6 @@
 package com.onyx.kreader.note;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Matrix;
 import android.test.ActivityInstrumentationTestCase2;
 
@@ -250,21 +251,47 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
         src.open(getActivity(), docId, null);
 
         Benchmark benchmark = new Benchmark();
-        int pages = TestUtils.randInt(1000, 2000);
+        int pages = TestUtils.randInt(10, 20);
         for(int i = 0; i < pages; ++i) {
             String pageName = String.valueOf(i);
             final ReaderNotePage page = src.createPage(pageName, 0);
             assertTrue(page.getShapeList().size() == 0);
-            int shapes = TestUtils.randInt(1000, 2000);
+            int shapes = TestUtils.randInt(100, 200);
             for(int s = 0; s < shapes; ++s) {
                 final Shape shape = randomShape(docId, page.getPageUniqueId(), 10, 100);
                 page.addShape(shape, false);
             }
             benchmark.restart();
-            JSON.toJSON(page);
-            src.save(getActivity(), "test");
             benchmark.report("save: " + page.getShapeList().size() + " takes: ");
         }
+        src.save(getActivity(), "test");
+        src.close(getActivity());
+    }
+
+    public void test1PerformanceDump() {
+        ReaderNoteDataProvider.clear(getActivity());
+
+        final String docId = ShapeUtils.generateUniqueId();
+        final ReaderNoteDocument src = new ReaderNoteDocument();
+        src.open(getActivity(), docId, null);
+
+        Benchmark benchmark = new Benchmark();
+        int pages = TestUtils.randInt(10, 20);
+        for(int i = 0; i < pages; ++i) {
+            String pageName = String.valueOf(i);
+            final ReaderNotePage page = src.createPage(pageName, 0);
+            assertTrue(page.getShapeList().size() == 0);
+            int shapes = TestUtils.randInt(100, 200);
+            for(int s = 0; s < shapes; ++s) {
+                final Shape shape = randomShape(docId, page.getPageUniqueId(), 10, 100);
+                page.addShape(shape, false);
+
+            }
+
+            benchmark.restart();
+            benchmark.report("save: " + page.getShapeList().size() + " takes: ");
+        }
+        src.save(getActivity(), "test");
         src.close(getActivity());
     }
 }
