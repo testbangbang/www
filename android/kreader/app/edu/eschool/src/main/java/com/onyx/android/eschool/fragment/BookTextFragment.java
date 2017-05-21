@@ -297,7 +297,7 @@ public class BookTextFragment extends Fragment {
         if (hasNoThumbnail == position) {
             loadRequest.setAbortPendingTasks(true);
         }
-        getCloudStore().submitRequest(getContext().getApplicationContext(), loadRequest, new BaseCallback() {
+        getCloudStore().submitRequestToSingle(getContext().getApplicationContext(), loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
