@@ -80,7 +80,6 @@ public class SchoolApp extends Application {
             initEventListener();
             initFrescoLoader();
             initSystemInBackground();
-            startFileSystemScan();
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace();
@@ -272,10 +271,6 @@ public class SchoolApp extends Application {
 
     public static SchoolApp singleton() {
         return sInstance;
-    }
-
-    static public CloudStore getCloudStore() {
-        return cloudStore;
     }
 
     static public CloudStore getSchoolCloudStore() {
