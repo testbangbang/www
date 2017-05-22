@@ -43,6 +43,7 @@ public class ReaderUserDataInfo {
 
     private ReaderDocumentTableOfContent toc;
     private Map<String, Bookmark> bookmarkMap = new LinkedHashMap<>();
+    private Map<String, Bookmark> pageBookmarkMap = new LinkedHashMap<>();
     private Map<String, List<Annotation>> annotationMap = new LinkedHashMap<>();
     private Map<String, List<PageAnnotation>> pageAnnotationMap = new HashMap<>();
     private List<SearchHistory> searchHistoryList = new ArrayList<>();
@@ -222,11 +223,11 @@ public class ReaderUserDataInfo {
     }
 
     public boolean hasBookmark(final PageInfo pageInfo) {
-        return bookmarkMap.containsKey(pageInfo.getName());
+        return pageBookmarkMap.containsKey(pageInfo.getName());
     }
 
     public Bookmark getBookmark(final PageInfo pageInfo) {
-        return bookmarkMap.get(pageInfo.getName());
+        return pageBookmarkMap.get(pageInfo.getName());
     }
 
     public List<Bookmark> getBookmarks() {
@@ -235,7 +236,7 @@ public class ReaderUserDataInfo {
         return list;
     }
 
-    public boolean loadBookmarks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+    public boolean loadPageBookmarks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         if (reader.getRendererFeatures().supportScale()) {
             return loadBookmarksForFixedDocument(context, reader, visiblePages);
         } else {
@@ -248,7 +249,7 @@ public class ReaderUserDataInfo {
             final Bookmark bookmark = DataProviderManager.getLocalDataProvider().loadBookmark(reader.getPlugin().displayName(),
                     reader.getDocumentMd5(), PagePositionUtils.getPageNumber(pageInfo.getName()));
             if (bookmark != null) {
-                bookmarkMap.put(pageInfo.getName(), bookmark);
+                pageBookmarkMap.put(pageInfo.getName(), bookmark);
             }
         }
         return true;
@@ -267,7 +268,7 @@ public class ReaderUserDataInfo {
                         reader.getNavigator().comparePosition(bookmark.getPosition(), endPos) <=0) {
                     int page = reader.getNavigator().getPageNumberByPosition(bookmark.getPosition());
                     bookmark.setPageNumber(page);
-                    bookmarkMap.put(PagePositionUtils.fromPageNumber(page), bookmark);
+                    pageBookmarkMap.put(PagePositionUtils.fromPageNumber(page), bookmark);
                 }
             }
         }

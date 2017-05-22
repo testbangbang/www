@@ -891,7 +891,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
     }
 
     private TreeRecyclerView.TreeNode buildTreeNode(TreeRecyclerView.TreeNode parent, ReaderDocumentTableOfContentEntry entry) {
-        String pageName = PagePositionUtils.getPageNumberForDisplay(entry.getPageName());
+        String pageName = readerDataHolder.isFlowDocument() ? entry.getPageName() : PagePositionUtils.getPageNumberForDisplay(entry.getPageName());
         TreeRecyclerView.TreeNode node = new TreeRecyclerView.TreeNode(parent, entry.getTitle(), pageName, entry);
         if (entry.getChildren() != null) {
             for (ReaderDocumentTableOfContentEntry child : entry.getChildren()) {
