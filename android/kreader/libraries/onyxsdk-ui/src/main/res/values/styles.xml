@@ -43,6 +43,7 @@
         <item name="android:overScrollMode">never</item>
         <item name="android:listDivider">@android:color/black</item>
         <item name="preferenceFragmentCompatStyle">@style/OnyxAppCompat.PreferenceFragment.Material</item>
+        <item name="android:textColorSecondary">@color/primary_text_device_default_light</item>
     </style>
 
     <style name="OnyxAppCompat.AlertDialog" parent="Theme.AppCompat.Light.Dialog">
@@ -75,6 +76,7 @@
 
     <style name="OnyxAppCompat.TextAppearance.Light.Small" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@color/primary_text_device_default_light</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="OnyxAppCompat.TextAppearance.Light.Button" parent="TextAppearance.AppCompat.Widget.Button">
@@ -301,7 +303,7 @@
         <item name="android:textSize">@dimen/preference_title_text_size</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Preference_TextAppearanceMaterialBody2" tools:override="true">
