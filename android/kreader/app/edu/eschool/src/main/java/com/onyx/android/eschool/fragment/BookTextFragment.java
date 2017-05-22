@@ -36,6 +36,7 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.cloud.CloudContentListRequest;
 import com.onyx.android.sdk.data.request.cloud.CloudThumbnailLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -570,6 +571,7 @@ public class BookTextFragment extends Fragment {
             return;
         }
         if (!NetworkUtil.isWifiConnected(getContext())) {
+            Device.currentDevice().enableWifiDetect(getContext());
             NetworkUtil.enableWifi(getContext(), true);
             return;
         }
