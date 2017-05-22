@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
@@ -560,6 +561,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         if (event.isUseFullUpdate()) {
             ReaderDeviceManager.disableRegal();
+            EpdController.resetUpdateMode(getSurfaceView());
         }
     }
 
