@@ -24,6 +24,7 @@ import com.onyx.android.libsetting.util.CommonUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.DeviceMainSettingItemDecoration;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.ApplicationUtil;
 
@@ -85,7 +86,9 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                 }
             }
         });
-        recyclerView.addItemDecoration(new DeviceMainSettingItemDecoration());
+        recyclerView.addItemDecoration(AppCompatUtils.isColorDevice(this) ?
+                new DeviceMainSettingItemDecoration(this.getResources().getColor(android.R.color.black), 3) :
+                new DeviceMainSettingItemDecoration());
         recyclerView.setAdapter(adapter);
 
         binding.icon.setClickable(false);
