@@ -3,6 +3,7 @@ package com.onyx.android.eschool.action;
 import android.content.Context;
 
 import com.alibaba.fastjson.JSON;
+import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.model.StudentAccount;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -18,6 +19,8 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by suicheng on 2017/5/18.
  */
@@ -30,6 +33,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         final CloudManager cloudManager = dataHolder.getCloudManager();
         if (StudentAccount.isAccountValid(dataHolder.getContext())) {
             cloudManager.setToken(StudentAccount.loadAccount(dataHolder.getContext()).token);
+            sendAccountAvailableEvent();
             BaseCallback.invoke(baseCallback, null, null);
             return;
         }
@@ -58,6 +62,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                 }
                 ContentAccount accountInfo = applyRequest.getAccount();
                 saveStudentAccount(request.getContext(), accountInfo, cloudManager.getToken());
+                sendAccountAvailableEvent();
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
@@ -74,6 +79,10 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
             parseAccount.accountInfo = contentAccount;
             parseAccount.saveAccount(context);
         }
+    }
+
+    private void sendAccountAvailableEvent() {
+        EventBus.getDefault().post(new AccountAvailableEvent());
     }
 
     public static ContentAuthAccount createContentAccount(Context context) {
