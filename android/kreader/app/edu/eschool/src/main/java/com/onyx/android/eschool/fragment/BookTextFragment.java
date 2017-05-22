@@ -526,15 +526,15 @@ public class BookTextFragment extends Fragment {
         if (dir.list() == null || dir.list().length <= 0) {
             return false;
         }
-        boolean exist = false;
-        File[] files = dir.listFiles();
-        for (File file : files) {
-            if (file.getAbsolutePath().contains(book.getName())) {
-                exist = !"temp".equalsIgnoreCase(FileUtils.getFileExtension(file));
-                break;
-            }
+        String path = getDataSaveFilePath(book);
+        if (StringUtils.isNullOrEmpty(path)) {
+            return false;
         }
-        return exist;
+        File file = new File(path);
+        if (!file.exists() && file.length() <= 0) {
+            return false;
+        }
+        return true;
     }
 
     private BaseCallback baseCallback = new BaseCallback() {
