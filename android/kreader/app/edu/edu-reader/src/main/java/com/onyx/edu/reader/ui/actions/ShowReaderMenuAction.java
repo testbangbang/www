@@ -3,9 +3,11 @@ package com.onyx.edu.reader.ui.actions;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.text.InputType;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -61,6 +64,7 @@ import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.edu.reader.ui.dialog.DialogContrast;
 import com.onyx.edu.reader.ui.dialog.DialogExport;
 import com.onyx.edu.reader.ui.dialog.DialogNavigationSettings;
+import com.onyx.edu.reader.ui.dialog.DialogQuickPreview;
 import com.onyx.edu.reader.ui.dialog.DialogScreenRefresh;
 import com.onyx.edu.reader.ui.dialog.DialogSearch;
 import com.onyx.edu.reader.ui.dialog.DialogTableOfContent;
@@ -494,7 +498,33 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        new ShowQuickPreviewAction(readerDataHolder).execute(readerDataHolder, null);
+        final OnyxCustomDialog dlg = OnyxCustomDialog.getInputDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialog, int which) {
+                OnyxCustomDialog onyxCustomDialog = (OnyxCustomDialog) dialog;
+                String page = onyxCustomDialog.getInputValue().toString();
+                if (!StringUtils.isNullOrEmpty(page)) {
+                    int pageNumber = PagePositionUtils.getPageNumber(page);
+                    pageNumber--;
+                    if (pageNumber >= 0 && pageNumber < readerDataHolder.getPageCount()) {
+                        new GotoPageAction(pageNumber, true).execute(readerDataHolder, new BaseCallback() {
+                            @Override
+                            public void done(BaseRequest request, Throwable e) {
+                                dialog.dismiss();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number_out_of_range_error), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number_empty_error), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        dlg.getInputEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+        dlg.getInputEditText().setHint("1-" + readerDataHolder.getPageCount());
+        readerDataHolder.trackDialog(dlg);
+        dlg.show();
     }
 
     private void backward(final ReaderDataHolder readerDataHolder) {
