@@ -505,7 +505,7 @@ public class BookTextFragment extends Fragment {
         }
         ActivityUtil.startActivitySafely(getContext(),
                 ViewDocumentUtils.viewActionIntentWithMimeType(file),
-                ViewDocumentUtils.getReaderComponentName(getContext()));
+                ViewDocumentUtils.getEduReaderComponentName(getContext()));
     }
 
     private boolean checkBookMetadataPathValid(Metadata book) {
