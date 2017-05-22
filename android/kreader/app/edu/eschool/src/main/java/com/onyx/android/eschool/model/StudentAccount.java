@@ -59,7 +59,6 @@ public class StudentAccount {
             }
             return JSON.parseObject(string, StudentAccount.class);
         } catch (Exception e) {
-        } finally {
             return new StudentAccount();
         }
     }
