@@ -498,6 +498,10 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
+        showGotoPageDialog(readerDataHolder, null);
+    }
+
+    public static void showGotoPageDialog(final ReaderDataHolder readerDataHolder, final BaseCallback gotoPageCallback) {
         final OnyxCustomDialog dlg = OnyxCustomDialog.getInputDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog, int which) {
@@ -511,6 +515,9 @@ public class ShowReaderMenuAction extends BaseAction {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
                                 dialog.dismiss();
+                                if (gotoPageCallback != null) {
+                                    gotoPageCallback.done(request, e);
+                                }
                             }
                         });
                     } else {
