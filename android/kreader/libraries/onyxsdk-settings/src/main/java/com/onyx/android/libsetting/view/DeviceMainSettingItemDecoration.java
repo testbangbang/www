@@ -5,6 +5,8 @@ import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
+
 /**
  * Created by solskjaer49 on 2016/11/29 18:25.
  */
@@ -14,6 +16,11 @@ public class DeviceMainSettingItemDecoration extends RecyclerView.ItemDecoration
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         Paint paint = new Paint();
         paint.setColor(parent.getContext().getResources().getColor(android.R.color.black));
+
+        //only adjust width for color devices.
+        if (AppCompatUtils.isColorDevice(parent.getContext())) {
+            paint.setStrokeWidth(3);
+        }
 
         int childCount = parent.getChildCount();
 
