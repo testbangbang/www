@@ -1,6 +1,7 @@
 package com.onyx.android.eschool.model;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
@@ -15,6 +16,9 @@ import com.onyx.android.sdk.utils.StringUtils;
  */
 
 public class StudentAccount {
+    private final static String UPDATE_STATUS_BAR_INFO_ACTION = "update_status_bar_info";
+    private final static String ARGS_STUDENT_NAME = "args_student_name";
+    private final static String ARGS_STUDENT_CLASS_INFO = "args_student_class_info";
 
     public static final String DELIMITER = ",";
 
@@ -73,6 +77,20 @@ public class StudentAccount {
 
     public static boolean isAccountValid(Context context) {
         StudentAccount account = StudentAccount.loadAccount(context);
+        return isAccountValid(context, account);
+    }
+
+    public static boolean isAccountValid(Context context, StudentAccount account) {
         return account != null && StringUtils.isNotBlank(account.token) && account.accountInfo != null;
+    }
+
+    public static void sendUserInfoSettingIntent(Context context, StudentAccount account) {
+        if (!isAccountValid(context, account)) {
+            return;
+        }
+        Intent intent = new Intent(UPDATE_STATUS_BAR_INFO_ACTION);
+        intent.putExtra(ARGS_STUDENT_NAME, account.getName());
+        intent.putExtra(ARGS_STUDENT_CLASS_INFO, account.getFirstGroup());
+        context.sendBroadcast(intent);
     }
 }

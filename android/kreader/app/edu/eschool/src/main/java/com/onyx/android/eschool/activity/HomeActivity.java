@@ -10,13 +10,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.eschool.R;
+import com.onyx.android.eschool.SchoolApp;
+import com.onyx.android.eschool.action.AuthTokenAction;
+import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.model.AppConfig;
 import com.onyx.android.eschool.model.StudentAccount;
 import com.onyx.android.eschool.utils.AvatarUtils;
 import com.onyx.android.eschool.utils.ResourceUtils;
+import com.onyx.android.sdk.data.model.AuthToken;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -47,6 +55,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
         super.onCreate(savedInstanceState);
     }
 
@@ -84,7 +93,12 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        loadAuthToken();
+    }
 
+    private void loadAuthToken() {
+        AuthTokenAction authTokenAction = new AuthTokenAction();
+        authTokenAction.execute(SchoolApp.getLibraryDataHolder(), null);
     }
 
     protected void initConfig() {
@@ -203,5 +217,16 @@ public class HomeActivity extends BaseActivity {
         intent.setComponent(new ComponentName("com.onyx.android.settings",
                 "com.onyx.android.libsetting.view.activity.DeviceMainSettingActivity"));
         return intent;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAccountAvailableEvent(AccountAvailableEvent event) {
+        StudentAccount.sendUserInfoSettingIntent(this, StudentAccount.loadAccount(this));
     }
 }

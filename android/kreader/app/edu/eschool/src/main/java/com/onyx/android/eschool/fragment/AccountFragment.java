@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.onyx.android.eschool.R;
+import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.model.StudentAccount;
 import com.onyx.android.sdk.ui.utils.PageTurningDetector;
@@ -132,5 +133,10 @@ public class AccountFragment extends Fragment {
 
     private int detectDirection(MotionEvent currentEvent) {
         return PageTurningDetector.detectBothAxisTuring(getContext(), (int) (currentEvent.getX() - lastX), (int) (currentEvent.getY() - lastY));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAccountAvailableEvent(AccountAvailableEvent event) {
+        updateView(getContext());
     }
 }
