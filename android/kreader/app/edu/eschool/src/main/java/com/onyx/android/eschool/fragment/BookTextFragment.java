@@ -83,6 +83,7 @@ public class BookTextFragment extends Fragment {
     private int col = 3;
 
     private String fragmentName;
+    private boolean isVisibleToUser = false;
 
     public static BookTextFragment newInstance(String fragmentName, String libraryId) {
         BookTextFragment fragment = new BookTextFragment();
@@ -631,7 +632,7 @@ public class BookTextFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onKeyEvent(KeyEvent keyEvent) {
-        if (contentPageView != null) {
+        if (contentPageView != null && isVisibleToUser) {
             contentPageView.dispatchKeyEvent(keyEvent);
         }
     }
@@ -651,6 +652,7 @@ public class BookTextFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        this.isVisibleToUser = isVisibleToUser;
         if (isVisibleToUser) {
             if (contentPageView != null) {
                 updateContentView();
