@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.onyx.android.eschool.action.CloudLibraryListLoadAction;
 import com.onyx.android.eschool.custom.NoSwipePager;
 import com.onyx.android.eschool.events.BookLibraryEvent;
 import com.onyx.android.eschool.events.DataRefreshEvent;
+import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.fragment.AccountFragment;
 import com.onyx.android.eschool.fragment.BookTextFragment;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
@@ -136,6 +138,14 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (contentTabLayout.getSelectedTabPosition() == CollectionUtils.getSize(titleList) - 1) {
+            EventBus.getDefault().post(ev);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (filterKeyEvent(event)) {
             return super.dispatchKeyEvent(event);
@@ -228,6 +238,28 @@ public class MainActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDataRefreshEvent(DataRefreshEvent event) {
         loadData();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTabSwitchEvent(TabSwitchEvent switchEvent) {
+        processTabSwitchEvent(switchEvent);
+    }
+
+    private void processTabSwitchEvent(TabSwitchEvent switchEvent) {
+        int position = contentTabLayout.getSelectedTabPosition();
+        if (switchEvent.isNextTabSwitch()) {
+            position++;
+        } else {
+            position--;
+        }
+        switchToNewTab(position);
+    }
+
+    private void switchToNewTab(int position) {
+        TabLayout.Tab tab = contentTabLayout.getTabAt(position);
+        if (tab != null) {
+            tab.select();
+        }
     }
 
     private BookTextFragment getCommonBookFragment(String fragmentName, Library library) {

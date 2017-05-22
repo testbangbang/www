@@ -20,6 +20,7 @@ import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.LibraryGotoPageAction;
 import com.onyx.android.eschool.custom.PageIndicator;
 import com.onyx.android.eschool.events.BookLibraryEvent;
+import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -155,6 +156,7 @@ public class BookTextFragment extends Fragment {
 
     private void nextPage() {
         if (!getPagination().nextPage()) {
+            postNextTab();
             return;
         }
         QueryArgs queryArgs = getDataHolder().getCloudViewInfo().nextPage();
@@ -363,8 +365,17 @@ public class BookTextFragment extends Fragment {
         });
     }
 
+    private void postNextTab() {
+        EventBus.getDefault().post(TabSwitchEvent.createNextTabSwitch());
+    }
+
+    private void postPrevTab() {
+        EventBus.getDefault().post(TabSwitchEvent.createPrevTabSwitch());
+    }
+
     private void prevPage() {
         if (!getPagination().prevPage()) {
+            postPrevTab();
             return;
         }
 
