@@ -121,6 +121,7 @@ public class MainActivity extends BaseActivity {
     private void initViewPager() {
         pageAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         pagerView.addFilterScrollableViewClass(RecyclerView.class);
+        pagerView.addFilterScrollableViewClass(ViewPager.class);
         pagerView.setAdapter(pageAdapter);
         pagerView.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
