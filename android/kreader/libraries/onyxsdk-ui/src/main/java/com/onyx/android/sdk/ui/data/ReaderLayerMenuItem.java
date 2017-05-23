@@ -13,6 +13,7 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
     private String title;
     private int drawableResourceId;
     private boolean visible = true;
+    private int position;
 
     public ReaderLayerMenuItem(ItemType itemType, ReaderMenuAction action, ReaderLayerMenuItem parent, int titleResourceId, String title, int drawableResourceId) {
         super(itemType, action, parent);
@@ -87,4 +88,11 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
         this.visible = visible;
     }
 
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
 }

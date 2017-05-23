@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
-    <View
-            style="@style/single_line_X_axis_View"
-            android:layout_height="@dimen/dialog_reader_menu_layer_divider_height" />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.onyx.android.sdk.ui.view.IndicatorDividerView
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:lineWidth="@dimen/dialog_reader_menu_layer_divider_height" />
 
 </LinearLayout>

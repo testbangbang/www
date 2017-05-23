@@ -48,7 +48,7 @@ public class PopupSelectionMenu extends LinearLayout {
     private static final int MAX_DICTIONARY_LOAD_COUNT = 6;
     private static final int DELAY_DICTIONARY_LOAD_TIME = 2000;
     public static final String BAIDU_BAIKE = "https://wapbaike.baidu.com/item/";
-    public static final String YANDEX = "https://ya.ru/";
+    public static final String GOOGLE_RU = "https://www.google.ru/#newwindow=1&q=";
 
 
     public enum SelectionType {
@@ -309,7 +309,7 @@ public class PopupSelectionMenu extends LinearLayout {
         String headWord = mDictTitle.getText().toString();
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
-        Uri content_url = Uri.parse(YANDEX);
+        Uri content_url = Uri.parse(GOOGLE_RU + headWord);
         intent.setData(content_url);
         getActivity().startActivity(intent);
     }
