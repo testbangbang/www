@@ -631,7 +631,7 @@ public class HandlerManager {
         new ToggleBookmarkAction(readerDataHolder.getFirstPageInfo(), ToggleBookmarkAction.ToggleSwitch.On).execute(readerDataHolder, null);
     }
 
-    private void close(final ReaderDataHolder readerDataHolder) {
+    public void close(final ReaderDataHolder readerDataHolder) {
         getActiveProvider().close(readerDataHolder);
     }
 }
