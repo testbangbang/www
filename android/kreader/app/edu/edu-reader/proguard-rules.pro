@@ -18,8 +18,8 @@
 
 -dontshrink
 
--keepnames class com.onyx.kreader.device.DeviceConfig { *; }
--keep class com.onyx.kreader.ui.handler.HandlerManager
+-keepnames class com.onyx.edu.reader.device.DeviceConfig { *; }
+-keep class com.onyx.edu.reader.ui.handler.HandlerManager
 
 -keepnames class org.apache.lucene.analysis.** { *; }
 
@@ -46,7 +46,7 @@
 -keepnames class com.onyx.android.sdk.scribble.utils.** { *; }
 
 # keep classes used by TypeConverter of dbflow
--keep class com.onyx.kreader.note.data.ReaderNotePageNameMap { *; }
+-keep class com.onyx.edu.reader.note.data.ReaderNotePageNameMap { *; }
 -keep class com.onyx.android.sdk.scribble.data.PageNameList { *; }
 -keep class com.onyx.android.sdk.scribble.data.TouchPointList { *; }
 
