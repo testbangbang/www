@@ -342,7 +342,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case EXIT:
                         hideReaderMenu();
-                        readerDataHolder.getEventBus().post(new QuitEvent());
+                        readerDataHolder.getHandlerManager().close(readerDataHolder);
                         break;
                     case PREV_CHAPTER:
                         prepareGotoChapter(readerDataHolder, true);

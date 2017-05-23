@@ -33,7 +33,7 @@ public class ReadingHandler extends BaseHandler {
     @Override
     public void close(final ReaderDataHolder readerDataHolder) {
         final DeviceConfig deviceConfig = DeviceConfig.sharedInstance(readerDataHolder.getContext());
-        if (SingletonSharedPreference.isShowQuitDialog(readerDataHolder.getContext()) || deviceConfig.isAskForClose()) {
+        if (deviceConfig.isAskForClose()) {
             readerDataHolder.getEventBus().post(new ConfirmCloseDialogEvent(true));
             OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.sure_exit),
                     new DialogInterface.OnClickListener() {
