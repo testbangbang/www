@@ -156,4 +156,8 @@
     <string name="library_toc_loading">书库目录加载中...</string>
     <string name="library_toc_load_fail">书库目录加载异常</string>
 
+    <string name="downloading">下载中&#8230;</string>
+    <string name="download_fail">下载失败</string>
+    <string name="file_path_invalid">文件路径无效</string>
+
 </resources>
