@@ -806,7 +806,8 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
 
     private void showExportLayout(DirectoryTab tab) {
         boolean showExport = tab == DirectoryTab.Scribble || tab == DirectoryTab.Annotation;
-        exportLayout.setVisibility(showExport ? View.VISIBLE : View.GONE);
+        //always hide export for edu reader
+        exportLayout.setVisibility(View.GONE);
     }
 
     private void updateTotalText(DirectoryTab tab) {
