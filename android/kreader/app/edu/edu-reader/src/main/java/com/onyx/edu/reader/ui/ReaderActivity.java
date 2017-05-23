@@ -520,7 +520,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         boolean update = (event != null && event.isApplyGCIntervalUpdate());
         if (update) {
-            ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
+            ReaderDeviceManager.applyWithGcUpdate(surfaceView);
         } else {
             ReaderDeviceManager.disableRegal();
         }

@@ -17,6 +17,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
+import com.onyx.android.eschool.action.DownloadAction;
 import com.onyx.android.eschool.action.LibraryGotoPageAction;
 import com.onyx.android.eschool.custom.PageIndicator;
 import com.onyx.android.eschool.events.BookLibraryEvent;
@@ -37,7 +38,6 @@ import com.onyx.android.sdk.data.request.cloud.CloudContentListRequest;
 import com.onyx.android.sdk.data.request.cloud.CloudThumbnailLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
@@ -550,19 +550,19 @@ public class BookTextFragment extends Fragment {
         }
     };
 
-    private void startDownload(Metadata eBook) {
-        if (StringUtils.isNullOrEmpty(eBook.getLocation())) {
-            ToastUtils.showToast(getContext(), R.string.download_link_invalid);
-            return;
-        }
+    private void startDownload(final Metadata eBook) {
         String filePath = getDataSaveFilePath(eBook);
-        if (StringUtils.isBlank(filePath)) {
-            return;
-        }
-        BaseDownloadTask task = getDownLoaderManager().download(getRealUrl(eBook.getLocation()),
-                filePath, eBook.getGuid(), baseCallback);
-        getDownLoaderManager().addTask(eBook.getGuid(), task);
-        getDownLoaderManager().startDownload(task);
+        DownloadAction downloadAction = new DownloadAction(getRealUrl(eBook.getLocation()), filePath, eBook.getGuid());
+        downloadAction.execute(getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                updateContentView();
+                openCloudFile(eBook);
+            }
+        });
     }
 
     private void processProductItemClick(final int position) {

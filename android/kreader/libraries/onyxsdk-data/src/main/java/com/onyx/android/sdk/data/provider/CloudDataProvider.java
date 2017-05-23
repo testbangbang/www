@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.QueryArgs;
@@ -48,6 +49,7 @@ import retrofit2.Response;
  */
 
 public class CloudDataProvider implements DataProviderBase {
+    private static final String TAG = CloudDataProvider.class.getSimpleName();
 
     private CloudConf conf;
 
@@ -115,10 +117,18 @@ public class CloudDataProvider implements DataProviderBase {
                 result.count = response.body().count;
                 result.fetchSource = Metadata.FetchSource.CLOUD;
             }
+            checkCloudMetadataResult(result);
         } catch (Exception e) {
+            e.printStackTrace();
             result = fetchFromLocal(context, queryArgs);
         }
         return result;
+    }
+
+    private void checkCloudMetadataResult(QueryResult<Metadata> result) {
+        if (result == null || result.count <= 0 || CollectionUtils.isNullOrEmpty(result.list)) {
+            Log.w(TAG, "detect cloud metadata is empty");
+        }
     }
 
     @Override
