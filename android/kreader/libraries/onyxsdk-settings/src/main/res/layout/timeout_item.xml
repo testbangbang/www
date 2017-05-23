@@ -24,6 +24,7 @@
             android:layout_centerVertical="true"
             android:focusable="false"
             android:clickable="false"
+            android:textStyle="bold"
             android:background="@null"
             android:checked="@{timeoutItem.checked}"
             android:text="@{timeoutItem.timeoutEntry}" />

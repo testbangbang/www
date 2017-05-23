@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.zxing.WriterException;
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.SettingConfig;
 import com.onyx.android.libsetting.data.SettingCategory;
@@ -21,12 +22,14 @@ import com.onyx.android.libsetting.databinding.DeviceMainSettingsItemBinding;
 import com.onyx.android.libsetting.model.ModelInfo;
 import com.onyx.android.libsetting.model.SettingItem;
 import com.onyx.android.libsetting.util.CommonUtil;
+import com.onyx.android.libsetting.util.QRCodeUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.DeviceMainSettingItemDecoration;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.ApplicationUtil;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -117,27 +120,32 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                 updateView();
             }
         });
+        try {
+            binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.stringToImageEncode(this, DeviceUtils.getDeviceMacAddress(this),200));
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateView() {
-        if (!verifyTestAppsRecord()) {
-            binding.buttonCleanTestApps.setVisibility(View.VISIBLE);
-        } else {
-            binding.buttonCleanTestApps.setVisibility(View.GONE);
-            for(Iterator<SettingItem> iterator = adapter.dataList.iterator(); iterator.hasNext(); ) {
-                switch (iterator.next().getItemCategory()) {
-                    case SettingCategory.PRODUCTION_TEST:
+        for (Iterator<SettingItem> iterator = adapter.dataList.iterator(); iterator.hasNext(); ) {
+            switch (iterator.next().getItemCategory()) {
+                case SettingCategory.PRODUCTION_TEST:
+                    if (!verifyTestAppsRecord()) {
+                        binding.buttonCleanTestApps.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.buttonCleanTestApps.setVisibility(View.GONE);
                         iterator.remove();
-                        break;
-                    case SettingCategory.FIRMWARE_UPDATE:
-                        binding.buttonOta.setVisibility(View.GONE);
-                        break;
-                    default:
-                        break;
-                }
+                    }
+                    break;
+                case SettingCategory.FIRMWARE_UPDATE:
+                    binding.buttonOta.setVisibility(View.GONE);
+                    break;
+                default:
+                    break;
             }
-            adapter.notifyDataSetChanged();
         }
+        adapter.notifyDataSetChanged();
         PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) binding.infoArea.getLayoutParams();
         PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
         info.heightPercent = 1 - (miniPercent * adapter.getRowCount());

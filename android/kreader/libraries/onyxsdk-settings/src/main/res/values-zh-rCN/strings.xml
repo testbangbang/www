@@ -149,4 +149,24 @@
     <string name="firmware_is_latest">当前已是最新版本</string>
     <string name="firmware_update_detected">检测到新版本</string>
     <string name="url_error">下载链接有误</string>
+
+    <string name="battery_info_status_unknown">"未知"</string>
+    <string name="battery_info_status_charging">"正在充电"</string>
+    <string name="battery_info_status_charging_ac">"（交流电）"</string>
+    <string name="battery_info_status_charging_usb">"(USB)"</string>
+    <string name="battery_info_status_charging_wireless">"（无线）"</string>
+    <string name="battery_info_status_discharging">"未在充电"</string>
+    <string name="battery_info_status_not_charging">"未在充电"</string>
+    <string name="battery_info_status_full">"电量充足"</string>
+    <string name="battery_percentage">当前电量: %1$d %%</string>
+    <string name="battery_status">当前电池状态: %1$s</string>
+    <string name="battery_stats_on_battery">"电池已用时间：<xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="battery_info">电池状态</string>
+    <string name="battery_history_days">"<xliff:g id="DAYS">%1$d</xliff:g> 天 <xliff:g id="HOURS">%2$d</xliff:g> 小时 <xliff:g id="MINUTES">%3$d</xliff:g> 分 <xliff:g id="SECONDS">%4$d</xliff:g> 秒"</string>
+    <string name="battery_history_hours">"<xliff:g id="HOURS">%1$d</xliff:g> 小时 <xliff:g id="MINUTES">%2$d</xliff:g> 分 <xliff:g id="SECONDS">%3$d</xliff:g> 秒"</string>
+    <string name="battery_history_minutes">"<xliff:g id="MINUTES">%1$d</xliff:g> 分 <xliff:g id="SECONDS">%2$d</xliff:g> 秒"</string>
+    <string name="battery_history_seconds">"<xliff:g id="SECONDS">%1$d</xliff:g> 秒"</string>
+    <string name="battery_history_days_no_seconds">"<xliff:g id="DAYS">%1$d</xliff:g>天<xliff:g id="HOURS">%2$d</xliff:g>小时<xliff:g id="MINUTES">%3$d</xliff:g>分钟"</string>
+    <string name="battery_history_hours_no_seconds">"<xliff:g id="HOURS">%1$d</xliff:g>小时<xliff:g id="MINUTES">%2$d</xliff:g>分钟"</string>
+    <string name="battery_history_minutes_no_seconds">"<xliff:g id="MINUTES">%1$d</xliff:g>分钟"</string>
 </resources>

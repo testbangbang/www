@@ -1,6 +1,11 @@
 package com.onyx.android.libsetting.view.fragment.edu;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,11 +17,13 @@ import com.onyx.android.libsetting.data.PowerSettingTimeoutCategory;
 import com.onyx.android.libsetting.data.TimeoutItem;
 import com.onyx.android.libsetting.databinding.FragmentPowerManagerBinding;
 import com.onyx.android.libsetting.databinding.TimeoutItemBinding;
+import com.onyx.android.libsetting.util.BatteryUtil;
 import com.onyx.android.libsetting.util.PowerUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.PageRecyclerViewItemClickListener;
 import com.onyx.android.libsetting.view.SettingPageAdapter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +31,44 @@ import java.util.List;
 public class PowerManagerFragment extends Fragment {
     private FragmentPowerManagerBinding binding;
     private SettingPageAdapter<TimeoutItemViewHolder, TimeoutItem> autoSleepAdapter, autoPowerOffAdapter;
+    private BroadcastReceiver powerReceiver;
+    private IntentFilter powerFilter;
+    private int status, level;
+    private long batteryUsageTime;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        buildReceiverAndFilter();
+        getActivity().registerReceiver(powerReceiver, powerFilter);
+    }
+
+    private void buildReceiverAndFilter() {
+        if (powerFilter == null || powerReceiver == null) {
+            powerReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_NOT_CHARGING);
+                    level = DeviceUtils.getBatteryPercentLevel(getContext());
+                    batteryUsageTime = intent.getLongExtra(BatteryUtil.EXTRA_USAGE_TIME,0);
+                    updateBatteryStatus();
+                }
+            };
+            powerFilter = new IntentFilter();
+            powerFilter.addAction(Intent.ACTION_POWER_CONNECTED);
+            powerFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+            powerFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        }
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (powerReceiver != null) {
+            getActivity().unregisterReceiver(powerReceiver);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,6 +90,12 @@ public class PowerManagerFragment extends Fragment {
         buildDataList(autoPowerOffAdapter, PowerSettingTimeoutCategory.POWER_OFF_TIMEOUT);
         binding.autoSleepRecyclerView.setAdapter(autoSleepAdapter);
         binding.autoPowerOffRecyclerView.setAdapter(autoPowerOffAdapter);
+    }
+
+    private void updateBatteryStatus(){
+        binding.batteryLevel.setText(BatteryUtil.getVisualBatteryLevel(getActivity(), level));
+        binding.batteryStatus.setText(BatteryUtil.getBatteryStatusByStatusCode(getActivity(),status));
+        binding.batteryUsageTime.setText(BatteryUtil.getVisualBatteryUsageTime(getActivity(),batteryUsageTime));
     }
 
     private void buildDataList(SettingPageAdapter<TimeoutItemViewHolder, TimeoutItem> adapter, @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int category) {
