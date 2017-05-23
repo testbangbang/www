@@ -35,7 +35,6 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
@@ -293,7 +292,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN);
-                int level = DeviceUtils.getBatteryPecentLevel(ReaderActivity.this);
+                int level = DeviceUtils.getBatteryPercentLevel(ReaderActivity.this);
                 getReaderDataHolder().onBatteryStatusChange(status, level);
             }
         };
@@ -1146,7 +1145,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                 title = getReaderDataHolder().getBookTitle();
             }
         }
-        int endBatteryPercent = DeviceUtils.getBatteryPecentLevel(getReaderDataHolder().getContext());
+        int endBatteryPercent = DeviceUtils.getBatteryPercentLevel(getReaderDataHolder().getContext());
         statusBar.updateStatusBar(new ReaderStatusInfo(pageRect, displayRect,
                 current, total, endBatteryPercent, title));
     }

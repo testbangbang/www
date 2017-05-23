@@ -2,6 +2,7 @@ package com.onyx.android.sdk.utils;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -255,7 +256,7 @@ public class DeviceUtils {
         }
     }
 
-    public static int getBatteryPecentLevel(final Context context) {
+    public static int getBatteryPercentLevel(final Context context) {
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(null, ifilter);
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
@@ -406,6 +407,12 @@ public class DeviceUtils {
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(true);
+            //TODO:Add Delay For Some Device which could not start wifi instantly.
+            try {
+                Thread.sleep(600);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             restoreWifiStatus = true;
         }
         String macAddress = wifiManager.getConnectionInfo().getMacAddress();

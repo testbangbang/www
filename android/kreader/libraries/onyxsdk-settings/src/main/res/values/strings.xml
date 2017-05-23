@@ -216,5 +216,50 @@
     <string name="firmware_is_latest">The installed firmware is latest</string>
     <string name="firmware_update_detected">New firmware detected</string>
     <string name="url_error">The url link is incorrect</string>
+
+    <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_unknown">Unknown</string>
+    <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_charging">Charging</string>
+    <!-- Battery Info screen. Units shown after a value.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_charging_ac">(AC)</string>
+    <!-- Battery Info screen. Units shown after a value.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_charging_usb">(USB)</string>
+    <!-- Battery Info screen. Units shown after a value.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_charging_wireless">(wireless)</string>
+    <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_discharging">Not charging</string>
+    <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_not_charging">Not charging</string>
+    <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_full">Full</string>
+
+    <string name="battery_percentage">Current Battery Level: %1$d %%</string>
+    <string name="battery_status">Current Battery Status: %1$s</string>
+    <!-- Battery usage on battery duration -->
+    <string name="battery_stats_on_battery"><xliff:g id="time">%1$s</xliff:g> on battery</string>
+    <string name="battery_info">Battery Info</string>
+
+    <!-- Used to show an amount of time in the form "d days, h hours, m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_days"><xliff:g id="days">%1$d</xliff:g>d <xliff:g id="hours">%2$d</xliff:g>h <xliff:g id="minutes">%3$d</xliff:g>m <xliff:g id="seconds">%4$d</xliff:g>s</string>
+
+    <!-- Used to show an amount of time in the form "h hours, m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_hours"><xliff:g id="hours">%1$d</xliff:g>h <xliff:g id="minutes">%2$d</xliff:g>m <xliff:g id="seconds">%3$d</xliff:g>s</string>
+
+    <!-- Used to show an amount of time in the form "m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_minutes"><xliff:g id="minutes">%1$d</xliff:g>m <xliff:g id="seconds">%2$d</xliff:g>s</string>
+
+    <!-- Used to show an amount of time in the form "s seconds" in BatteryHistory -->
+    <string name="battery_history_seconds"><xliff:g id="seconds">%1$d</xliff:g>s</string>
+
+    <!-- Used to show an amount of time in the form "d days, h hours, m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_days_no_seconds"><xliff:g id="days">%1$d</xliff:g>d <xliff:g id="hours">%2$d</xliff:g>h <xliff:g id="minutes">%3$d</xliff:g>m</string>
+
+    <!-- Used to show an amount of time in the form "h hours, m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_hours_no_seconds"><xliff:g id="hours">%1$d</xliff:g>h <xliff:g id="minutes">%2$d</xliff:g>m</string>
+
+    <!-- Used to show an amount of time in the form "m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_minutes_no_seconds"><xliff:g id="minutes">%1$d</xliff:g>m</string>
+
 </resources>
 
