@@ -34,7 +34,7 @@ public:
     bool setupWithManifest(const std::string &deviceId,
                            const std::string &drmCertificate,
                            const std::string &manifestBase64,
-                           const std::string &additionalData);
+                           const std::string &additionalDataBase64);
 
     bool isEncrypted();
 

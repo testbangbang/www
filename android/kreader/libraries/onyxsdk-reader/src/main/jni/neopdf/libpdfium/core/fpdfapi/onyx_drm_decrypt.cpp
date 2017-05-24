@@ -768,11 +768,16 @@ void DrmDecryptManager::reset()
 bool DrmDecryptManager::setupWithManifest(const std::string &deviceId,
                                           const std::string &drmCertificate,
                                           const std::string &manifestBase64,
-                                          const std::string &additionalData)
+                                          const std::string &additionalDataBase64)
 {
     int len = 0;
     unsigned char *data = unbase64(manifestBase64.c_str(), manifestBase64.length(), &len);
     std::vector<unsigned char> manifest(data, data + len);
+    free(data);
+
+    len = 0;
+    data = unbase64(additionalDataBase64.c_str(), additionalDataBase64.length(), &len);
+    std::string additionalData(reinterpret_cast<char *>(data));
     free(data);
 
     uint32_t version = 0;
