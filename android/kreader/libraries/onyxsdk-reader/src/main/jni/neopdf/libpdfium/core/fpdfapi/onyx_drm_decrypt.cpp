@@ -406,7 +406,8 @@ class DrmDecryptV1 : public DrmDecrypt {
 
     bool setupWithManifest(const std::string &deviceId,
                            const std::string &drmCertificate,
-                           const std::vector<unsigned char> &manifest)
+                           const std::vector<unsigned char> &manifest,
+                           const std::string &additionalData)
     {
         const char *manifestBody = reinterpret_cast<const char *>(manifest.data() + MANIFEST_HEADER_LENGTH);
         size_t dataLen = manifest.size() - MANIFEST_HEADER_LENGTH;
@@ -511,7 +512,8 @@ class DrmDecryptV2 : public DrmDecrypt {
 
     bool setupWithManifest(const std::string &deviceId,
                            const std::string &drmCertificate,
-                           const std::vector<unsigned char> &manifest)
+                           const std::vector<unsigned char> &manifest,
+                           const std::string &additionalData)
     {
         size_t bodyLen = 0;
         if (!checkManifest(manifest, &bodyLen)) {
@@ -519,7 +521,7 @@ class DrmDecryptV2 : public DrmDecrypt {
         }
 
         std::vector<unsigned char> inflated;
-        if (!decryptManifestBody(drmCertificate, manifest, bodyLen, &inflated)) {
+        if (!decryptManifestBody(drmCertificate, additionalData, manifest, bodyLen, &inflated)) {
             LOGW << "invalid metadata!" << std::endl;
             return false;
         }
@@ -596,13 +598,19 @@ private:
     }
 
     bool decryptManifestBody(const std::string &drmCertificate,
+                             const std::string &additionalData,
                              const std::vector<unsigned char> &manifest,
                              const size_t bodyLength,
                              std::vector<unsigned char> *body) {
+        std::string key;
+        if (!getKeyFromCertificate(drmCertificate, additionalData, &key)) {
+            return false;
+        }
+
         const unsigned char *manifestBody = manifest.data() + MANIFEST_HEADER_LENGTH;
 
         size_t resultLen = 0;
-        unsigned char *result = rsaDecryptWithPublicKey(drmCertificate.c_str(), manifestBody, bodyLength, &resultLen);
+        unsigned char *result = rsaDecryptWithPublicKey(key.c_str(), manifestBody, bodyLength, &resultLen);
         if (!result) {
             return false;
         }
@@ -613,6 +621,47 @@ private:
         free(result);
 
         return true;
+    }
+
+    bool getKeyFromCertificate(const std::string &drmCertificate,
+                               const std::string &additionalData,
+                               std::string *key) {
+        jsonxx::Object additionObj;
+        if (additionalData.length() <= 0 || !additionObj.parse(additionalData) || !additionObj.has<std::string>("group")) {
+            // to be compatible with DRM without group limitation
+            jsonxx::Object certObj;
+            if (!certObj.parse(drmCertificate)) {
+                *key = drmCertificate;
+                return true;
+            }
+
+            if (certObj.kv_map().size() <= 0) {
+                return false;
+            }
+
+            auto find = certObj.kv_map().find("default");
+            if (find != certObj.kv_map().end()) {
+                *key = find->second->get<std::string>();
+            } else {
+                *key = certObj.kv_map().begin()->second->get<std::string>();
+            }
+            return true;
+        }
+
+        std::string group = additionObj.get<std::string>("group");
+
+        jsonxx::Object certObj;
+        if (!certObj.parse(drmCertificate)) {
+            return false;
+        }
+
+        for (auto pair : certObj.kv_map()) {
+            if (group.compare(pair.first) == 0) {
+                *key = pair.second->get<std::string>();
+                return true;
+            }
+        }
+        return false;
     }
 
     unsigned char *computeKeyFromGuard(const std::string &cipherBase64,
@@ -718,11 +767,17 @@ void DrmDecryptManager::reset()
 
 bool DrmDecryptManager::setupWithManifest(const std::string &deviceId,
                                           const std::string &drmCertificate,
-                                          const std::string &manifestBase64)
+                                          const std::string &manifestBase64,
+                                          const std::string &additionalDataBase64)
 {
     int len = 0;
     unsigned char *data = unbase64(manifestBase64.c_str(), manifestBase64.length(), &len);
     std::vector<unsigned char> manifest(data, data + len);
+    free(data);
+
+    len = 0;
+    data = unbase64(additionalDataBase64.c_str(), additionalDataBase64.length(), &len);
+    std::string additionalData(reinterpret_cast<char *>(data));
     free(data);
 
     uint32_t version = 0;
@@ -738,7 +793,7 @@ bool DrmDecryptManager::setupWithManifest(const std::string &deviceId,
         return false;
     }
 
-    if (!drmDecrypt->setupWithManifest(deviceId, drmCertificate, manifest)) {
+    if (!drmDecrypt->setupWithManifest(deviceId, drmCertificate, manifest, additionalData)) {
         drmDecrypt.reset(nullptr);
         return false;
     }
