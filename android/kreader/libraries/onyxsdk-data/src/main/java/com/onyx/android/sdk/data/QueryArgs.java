@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.onyx.android.sdk.data.model.common.FetchPolicy.CLOUD_LOCAL;
+import static com.onyx.android.sdk.data.model.common.FetchPolicy.CLOUD_MEM_DB;
 
 
 /**
@@ -50,7 +50,7 @@ public class QueryArgs {
 
     public
     @FetchPolicy.Type
-    int fetchPolicy = CLOUD_LOCAL;
+    int fetchPolicy = FetchPolicy.MEM_CLOUD_DB;
 
     public String cloudToken;
 
@@ -234,5 +234,13 @@ public class QueryArgs {
     @JSONField(serialize = false, deserialize = false)
     public int getCloudFetchLimit() {
         return limit > QueryArgs.CLOUD_FETCH_LIMIT ? limit : QueryArgs.CLOUD_FETCH_LIMIT;
+    }
+
+    public void useMemCloudDbPolicy() {
+        fetchPolicy = FetchPolicy.MEM_CLOUD_DB;
+    }
+
+    public void useCloudMemDbPolicy() {
+        fetchPolicy = FetchPolicy.CLOUD_MEM_DB;
     }
 }
