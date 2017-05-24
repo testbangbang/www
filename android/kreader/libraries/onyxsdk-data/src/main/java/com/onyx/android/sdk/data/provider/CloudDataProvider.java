@@ -120,7 +120,9 @@ public class CloudDataProvider implements DataProviderBase {
             checkCloudMetadataResult(result);
         } catch (Exception e) {
             e.printStackTrace();
-            result = fetchFromLocal(context, queryArgs);
+            if (!FetchPolicy.isCloudOnlyPolicy(queryArgs.fetchPolicy) && !FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy)) {
+                result = fetchFromLocal(context, queryArgs);
+            }
         }
         return result;
     }
@@ -134,10 +136,13 @@ public class CloudDataProvider implements DataProviderBase {
     @Override
     public QueryResult<Metadata> findMetadataResultByQueryArgs(Context context, QueryArgs queryArgs) {
         QueryResult<Metadata> result;
-        if (NetworkUtil.isWifiConnected(context)) {
+        if (FetchPolicy.isCloudPartPolicy(queryArgs.fetchPolicy)) {
             result = fetchFromCloud(context, queryArgs);
         } else {
             result = fetchFromLocal(context, queryArgs);
+            if (FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy) && result.isContentEmpty()) {
+                result = fetchFromCloud(context, queryArgs);
+            }
         }
         return result;
     }
@@ -240,11 +245,11 @@ public class CloudDataProvider implements DataProviderBase {
     @Override
     public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
         List<CloudLibrary> cloudLibraryList;
-        if (queryArgs.fetchPolicy == FetchPolicy.CLOUD_ONLY || queryArgs.fetchPolicy == FetchPolicy.CLOUD_LOCAL) {
+        if (FetchPolicy.isCloudPartPolicy(queryArgs.fetchPolicy)) {
             cloudLibraryList = fetchLibraryListFromCloud(parentId, queryArgs);
         } else {
             cloudLibraryList = fetchLibraryListFromLocal(parentId);
-            if (queryArgs.fetchPolicy == FetchPolicy.LOCAL_CLOUD && CollectionUtils.isNullOrEmpty(cloudLibraryList)) {
+            if (FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy) && CollectionUtils.isNullOrEmpty(cloudLibraryList)) {
                 cloudLibraryList = fetchLibraryListFromCloud(parentId, queryArgs);
             }
         }
@@ -271,7 +276,7 @@ public class CloudDataProvider implements DataProviderBase {
                 libraryList = response.body();
             }
         } catch (Exception e) {
-            if (queryArgs.fetchPolicy == FetchPolicy.CLOUD_LOCAL) {
+            if (!FetchPolicy.isCloudOnlyPolicy(queryArgs.fetchPolicy) && !FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy)) {
                 libraryList = fetchLibraryListFromLocal(parentId);
             }
         }

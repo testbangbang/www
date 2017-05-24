@@ -2,8 +2,6 @@ package com.onyx.android.sdk.data.model.common;
 
 import android.support.annotation.IntDef;
 
-import com.onyx.android.sdk.utils.NetworkUtil;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -14,14 +12,15 @@ import java.lang.annotation.RetentionPolicy;
 public class FetchPolicy {
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({CLOUD_ONLY, LOCAL_ONLY, CLOUD_LOCAL, LOCAL_CLOUD})
+    @IntDef({CLOUD_ONLY, MEM_DB_ONLY, CLOUD_MEM_DB, MEM_DB_CLOUD, MEM_CLOUD_DB})
     public @interface Type {
     }
 
     public static final int CLOUD_ONLY = 0;
-    public static final int LOCAL_ONLY = 1;
-    public static final int CLOUD_LOCAL = 2;
-    public static final int LOCAL_CLOUD = 3;
+    public static final int MEM_DB_ONLY = 1;
+    public static final int CLOUD_MEM_DB = 2;
+    public static final int MEM_DB_CLOUD = 3;
+    public static final int MEM_CLOUD_DB = 4;
 
     public
     @Type
@@ -29,16 +28,39 @@ public class FetchPolicy {
         return val;
     }
 
-    public static boolean isDataFromLocal(@FetchPolicy.Type int policy, boolean wifiConnected) {
-        if (policy == FetchPolicy.LOCAL_ONLY) {
+    public static boolean isDataFromMemDb(@FetchPolicy.Type int policy, boolean wifiConnected) {
+        if (policy == FetchPolicy.MEM_DB_ONLY) {
             return true;
         }
-        if (policy == FetchPolicy.CLOUD_LOCAL && !wifiConnected) {
-            return true;
-        }
-        if (policy == FetchPolicy.LOCAL_CLOUD && !wifiConnected) {
+        if ((policy == FetchPolicy.CLOUD_MEM_DB ||
+                policy == FetchPolicy.MEM_DB_CLOUD ||
+                policy == FetchPolicy.MEM_CLOUD_DB) && !wifiConnected) {
             return true;
         }
         return false;
+    }
+
+    public static boolean isMemPartPolicy(@FetchPolicy.Type int fetchPolicy) {
+        if (fetchPolicy == FetchPolicy.MEM_CLOUD_DB || fetchPolicy == FetchPolicy.MEM_DB_CLOUD ||
+                fetchPolicy == FetchPolicy.MEM_DB_ONLY) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isCloudPartPolicy(@FetchPolicy.Type int fetchPolicy) {
+        if (fetchPolicy == FetchPolicy.CLOUD_ONLY || fetchPolicy == FetchPolicy.CLOUD_MEM_DB ||
+                fetchPolicy == FetchPolicy.MEM_CLOUD_DB) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isCloudOnlyPolicy(@FetchPolicy.Type int fetchPolicy) {
+        return FetchPolicy.CLOUD_ONLY == fetchPolicy;
+    }
+
+    public static boolean isMemDbCloudPolicy(@FetchPolicy.Type int fetchPolicy) {
+        return FetchPolicy.MEM_DB_CLOUD == fetchPolicy;
     }
 }
