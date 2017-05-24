@@ -367,12 +367,11 @@ public class WordSelectionHandler extends BaseHandler{
     public void quitWordSelection(ReaderDataHolder readerDataHolder) {
         ReaderDeviceManager.enableRegal();
         getParent().resetToDefaultProvider();
-        clearWordSelection(readerDataHolder);
     }
 
     private void clearWordSelection(ReaderDataHolder readerDataHolder) {
         readerDataHolder.resetEpdUpdateMode();
-        ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(readerDataHolder,true);
+        ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(readerDataHolder,false);
         readerDataHolder.redrawPage();
         readerDataHolder.getSelectionManager().clear();
     }

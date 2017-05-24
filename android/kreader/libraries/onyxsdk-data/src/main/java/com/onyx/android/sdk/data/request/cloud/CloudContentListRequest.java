@@ -14,9 +14,9 @@ import com.onyx.android.sdk.data.model.CloudMetadataCollection;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
@@ -60,8 +60,10 @@ public class CloudContentListRequest extends BaseCloudRequest {
 
     private QueryResult<Metadata> loadQueryResult(Context context, CloudManager cloudManager, QueryArgs queryArgs) {
         QueryResult<Metadata> queryResult = new QueryResult<>();
-        if (checkMemoryCache(cloudManager.getCacheManager(), queryArgs, queryResult)) {
-            return queryResult;
+        if (FetchPolicy.isMemPartPolicy(queryArgs.fetchPolicy)) {
+            if (checkMemoryCache(cloudManager.getCacheManager(), queryArgs, queryResult)) {
+                return queryResult;
+            }
         }
         queryResult = loadFromDataProvider(context, cloudManager, queryArgs);
         updateMetadataCache(cloudManager.getCacheManager(), queryArgs, queryResult);
