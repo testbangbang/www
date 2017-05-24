@@ -14,7 +14,8 @@ public:
 
     virtual bool setupWithManifest(const std::string &deviceId,
                                    const std::string &drmCertificate,
-                                   const std::vector<unsigned char> &manifest) = 0;
+                                   const std::vector<unsigned char> &manifest,
+                                   const std::string &additionalData) = 0;
 
     virtual unsigned char *decryptData(const unsigned char *data,
                                        const int dataLen,
@@ -32,7 +33,8 @@ public:
 
     bool setupWithManifest(const std::string &deviceId,
                            const std::string &drmCertificate,
-                           const std::string &manifestBase64);
+                           const std::string &manifestBase64,
+                           const std::string &additionalData);
 
     bool isEncrypted();
 
