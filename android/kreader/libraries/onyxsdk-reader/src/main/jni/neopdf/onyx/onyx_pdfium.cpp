@@ -41,7 +41,6 @@ bool readDrmManifest(FPDF_DOCUMENT document, std::vector<char16_t> *buf) {
     }
     buf->resize(res / 2);
     FPDF_GetMetaText(document, "boox", buf->data(), res);
-    buf->resize(buf->size() - 1); // remove trailing '\0'
     return true;
 }
 
