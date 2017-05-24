@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.R;
@@ -20,6 +21,7 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
     private Button btnCancel;
     private Button btnOk;
     private EditText inputEditText;
+    private SeekBar progressBar;
 
     public static OnyxCustomDialog getConfirmDialog(Context context, String message,
                                                     DialogInterface.OnClickListener onClickListener,
@@ -63,6 +65,7 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
         btnCancel = (Button) findViewById(R.id.btn_cancel);
         btnOk = (Button) findViewById(R.id.btn_ok);
         inputEditText = (EditText) findViewById(R.id.input);
+        progressBar = (SeekBar) findViewById(R.id.seek_bar_view);
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,5 +130,12 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
 
     public void enableInputEditText() {
         inputEditText.setVisibility(View.VISIBLE);
+    }
+
+    public void enableProgress(final int max, final int progress, final SeekBar.OnSeekBarChangeListener seekBarChangeListener) {
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setMax(max);
+        progressBar.setProgress(progress);
+        progressBar.setOnSeekBarChangeListener(seekBarChangeListener);
     }
 }
