@@ -80,7 +80,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="66px"
-                    android:background="@drawable/ic_light_bar_big_step_on" />
+                    android:background="@drawable/ic_light_bar_normal_step_on" />
 
                 <RatingBar
                     android:id="@+id/ratingbar_mixing_light_settings"
