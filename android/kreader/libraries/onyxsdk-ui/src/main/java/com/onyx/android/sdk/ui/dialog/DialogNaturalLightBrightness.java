@@ -1,60 +1,95 @@
 package com.onyx.android.sdk.ui.dialog;
 
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
-import android.widget.RatingBar.OnRatingBarChangeListener;
 
 import com.onyx.android.sdk.api.device.FrontLightController;
+import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.utils.IntentFilterFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DialogNaturalLightBrightness extends OnyxBaseDialog {
+public class DialogNaturalLightBrightness extends OnyxBaseDialog implements View.OnClickListener, RatingBar.OnRatingBarChangeListener, View.OnTouchListener {
 
     static final String TAG = DialogNaturalLightBrightness.class.getSimpleName();
 
-    private RatingBar mRatingBarWarmLightSettings = null;
-    private RatingBar mRatingBarColdLightSettings = null;
     private String COLD_LIGHT_VALUE = "cold_light_value";
     private String WARM_LIGHT_VALUE = "warm_light_value";
     private String NATURAL_LIGHT = "natural_light";
     private String WARM_LIGHT = "warm_light";
     private String COLD_LIGHT = "cold_light";
+    public static int BRIGHTNESS_ON = 31;
+    private boolean isLongClickOpenAndCloseLight = false;
+    private boolean isMixingOpen = false;
+    private int mTotalProgress = 0;
 
     private BroadcastReceiver mOpenAndCloseNaturalLightReceiver = null;
     private IntentFilter filter = null;
     private Context mContext = null;
 
-    /**
-     * Brightness value for fully off
-     */
-    public static final int BRIGHTNESS_OFF = 0;
-
-
-    /**
-     * Brightness value for fully on
-     */
-    public static int BRIGHTNESS_ON = 31;
-
-    final static int BIG_STEP_LIMIT = 31;
-
-    private boolean isLongClickOpenAndCloseWarmLight = false;
-    private boolean isLongClickOpenAndCloseColdLight = false;
-    private boolean isWarmLightChange = false;
-
     private List<Integer> mLightSteps = new ArrayList<Integer>();
+    private RatingBar mRatingBarMixingLight = null;
+    private RatingBar mRatingBarColdLight = null;
+    private ImageButton mBtnLightSwitch;
+    private Button mBtnWarmLight;
+    private Button mBtnColdLight;
+    private ImageButton mMixingLightDown;
+    private ImageButton mMixingLightAdd;
+
+    public DialogNaturalLightBrightness(Context context) {
+        super(context, com.onyx.android.sdk.ui.R.style.CustomDialog);
+        mContext = context;
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        int targetLayoutID = com.onyx.android.sdk.ui.R.layout.dialog_natural_brightness_step;
+        setContentView(targetLayoutID);
+
+        initView();
+        initData();
+        initEvent();
+        initBroadcast();
+        setRatingBarDefaultProgress();
+        this.setCanceledOnTouchOutside(true);
+    }
+
+    private void initView() {
+        mBtnColdLight = (Button) findViewById(R.id.btn_cold_light);
+        mBtnWarmLight = (Button) findViewById(R.id.btn_warm_light);
+        mBtnLightSwitch = (ImageButton) findViewById(R.id.imagebutton_light_switch);
+        mRatingBarMixingLight = (RatingBar) findViewById(R.id.ratingbar_mixing_light_settings);
+        mRatingBarColdLight = (RatingBar) findViewById(R.id.ratingbar_cold_light_settings);
+        mMixingLightDown = (ImageButton) findViewById(R.id.imagebutton_mixing_light_down);
+        mMixingLightAdd = (ImageButton) findViewById(R.id.imagebutton_mixing_light_add);
+        mRatingBarMixingLight.setFocusable(false);
+        mRatingBarColdLight.setFocusable(false);
+        mRatingBarMixingLight.setFocusable(false);
+    }
+
+    private void initData() {
+        mLightSteps = FrontLightController.getNaturalLightValueList(getContext());
+        if (mLightSteps != null) {
+            mRatingBarMixingLight.setNumStars(mLightSteps.size() - 1);
+            mRatingBarColdLight.setNumStars(mLightSteps.size() - 1);
+            mRatingBarMixingLight.setMax(mLightSteps.size() - 1);
+            mRatingBarColdLight.setMax(mLightSteps.size() - 1);
+        } else {
+            int numStarts = mRatingBarMixingLight.getNumStars();
+            mLightSteps = initRangeArray(numStarts);
+        }
+        Collections.sort(mLightSteps);
+    }
 
     private List<Integer> initRangeArray(int numStarts) {
         List<Integer> brightnessList = new ArrayList<Integer>(numStarts);
@@ -64,149 +99,179 @@ public class DialogNaturalLightBrightness extends OnyxBaseDialog {
         return brightnessList;
     }
 
-    public DialogNaturalLightBrightness(Context context) {
-        super(context, com.onyx.android.sdk.ui.R.style.CustomDialog);
-        mContext = context;
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mLightSteps = FrontLightController.getNaturalLightValueList(getContext());
-        int targetLayoutID = com.onyx.android.sdk.ui.R.layout.dialog_natural_brightness_step;
-        setContentView(targetLayoutID);
-        mRatingBarWarmLightSettings = (RatingBar) findViewById(com.onyx.android.sdk.ui.R.id.ratingbar_warm_light_settings);
-        mRatingBarColdLightSettings = (RatingBar) findViewById(com.onyx.android.sdk.ui.R.id.ratingbar_cold_light_settings);
-        mRatingBarWarmLightSettings.setFocusable(false);
-        mRatingBarColdLightSettings.setFocusable(false);
+    private void initEvent() {
+        mBtnLightSwitch.setOnClickListener(this);
+        mBtnColdLight.setOnClickListener(this);
+        mBtnWarmLight.setOnClickListener(this);
+        mMixingLightDown.setOnClickListener(this);
+        mMixingLightAdd.setOnClickListener(this);
+        mRatingBarColdLight.setOnRatingBarChangeListener(this);
+        mRatingBarMixingLight.setOnRatingBarChangeListener(this);
+        mRatingBarColdLight.setOnTouchListener(this);
+        mRatingBarMixingLight.setOnTouchListener(this);
+    }
 
+    private void setLightValue(int step, int lightType) {
+        if (isLongClickOpenAndCloseLight) {
+            return;
+        }
+        if (mLightSteps.size() > 0) {
+            int lightValue = mLightSteps.get(step);
+            Settings.System.putInt(getContext().getContentResolver(), NATURAL_LIGHT, lightType);
+            String lightTag = lightType == 0 ? WARM_LIGHT_VALUE : COLD_LIGHT_VALUE;
+            Settings.System.putInt(this.getContext().getContentResolver(), lightTag, lightValue);
+            FrontLightController.setNaturalBrightness(this.getContext(), lightValue);
+        }
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.btn_cold_light) {
+            mTotalProgress = 6;
+
+        } else if (i == R.id.btn_warm_light) {
+            mTotalProgress = 22;
+
+        } else if (i == R.id.imagebutton_light_switch) {
+            if (mTotalProgress > 0) {
+                saveLightValueConfig();
+                mTotalProgress = 0;
+            } else {
+                getLightValueConfig();
+                if(mTotalProgress == 0){
+                    mTotalProgress = 22;
+                }
+            }
+
+        } else if (i == R.id.imagebutton_mixing_light_down) {
+            mTotalProgress--;
+
+        } else if (i == R.id.imagebutton_mixing_light_add) {
+            mTotalProgress++;
+
+        }
+        updateProgress();
+    }
+
+    private void getLightValueConfig() {
+        int coldValue = getIndex(Settings.System.getInt(getContext().getContentResolver(), COLD_LIGHT_VALUE, 0));
+        int warmValue = getIndex(Settings.System.getInt(getContext().getContentResolver(), WARM_LIGHT_VALUE, 0));
+        getTotalProgress(coldValue, warmValue);
+    }
+
+    private void saveLightValueConfig() {
+        if (mTotalProgress > 16) {
+            Settings.System.putInt(getContext().getContentResolver(), WARM_LIGHT_VALUE, mLightSteps.get(mTotalProgress - 16));
+            Settings.System.putInt(getContext().getContentResolver(), COLD_LIGHT_VALUE, mLightSteps.get(mTotalProgress - 16));
+        } else {
+            Settings.System.putInt(getContext().getContentResolver(), WARM_LIGHT_VALUE, 0);
+            Settings.System.putInt(getContext().getContentResolver(), COLD_LIGHT_VALUE, mLightSteps.get(mTotalProgress));
+        }
+    }
+
+    @Override
+    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+        int i = ratingBar.getId();
+        if (i == R.id.ratingbar_cold_light_settings) {
+            updateSwitchButtonStatus(rating);
+            if (!isMixingOpen) {
+                mTotalProgress = (int) rating;
+                setLightValue(0, 0);
+                setLightValue(mRatingBarColdLight.getProgress(), 1);
+            }
+
+        } else if (i == R.id.ratingbar_mixing_light_settings) {
+            if (rating > 0) {
+                isMixingOpen = true;
+            } else {
+                isMixingOpen = false;
+            }
+            if (isMixingOpen) {
+                mTotalProgress = (int) rating + mRatingBarColdLight.getMax();
+                setLightValue(mRatingBarMixingLight.getProgress(), 1);
+                setLightValue((int) (mRatingBarMixingLight.getProgress() * 0.7), 0);
+            }
+
+        }
+        isLongClickOpenAndCloseLight = false;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int i = v.getId();
+        if (i == R.id.ratingbar_cold_light_settings) {
+            isMixingOpen = false;
+            mRatingBarMixingLight.setProgress(0);
+
+        } else if (i == R.id.ratingbar_mixing_light_settings) {
+            isMixingOpen = true;
+            mRatingBarColdLight.setProgress(mRatingBarColdLight.getMax());
+
+        }
+        return false;
+    }
+
+    private void updateSwitchButtonStatus(float rating) {
+        if (rating > 0) {
+            mBtnLightSwitch.setImageResource(com.onyx.android.sdk.ui.R.drawable.ic_light);
+        } else {
+            mBtnLightSwitch.setImageResource(com.onyx.android.sdk.ui.R.drawable.ic_light_off);
+        }
+    }
+
+    private void setRatingBarDefaultProgress() {
+        getLightValueConfig();
+        updateProgress();
+    }
+
+    @Override
+    public void cancel() {
+        super.cancel();
+        saveLightValueConfig();
+        if (mOpenAndCloseNaturalLightReceiver != null) {
+            mContext.unregisterReceiver(mOpenAndCloseNaturalLightReceiver);
+        }
+    }
+
+    private void updateProgress() {
+        if (mTotalProgress < mRatingBarColdLight.getMax() + 1) {
+            isMixingOpen = false;
+            mRatingBarMixingLight.setProgress(0);
+            mRatingBarColdLight.setProgress(mTotalProgress);
+        } else {
+            isMixingOpen = true;
+            mRatingBarColdLight.setProgress(mRatingBarColdLight.getMax());
+            mRatingBarMixingLight.setProgress(mTotalProgress - mRatingBarColdLight.getMax());
+        }
+    }
+
+    private void initBroadcast() {
         mOpenAndCloseNaturalLightReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent != null && intent.getAction() != null
                         && (IntentFilterFactory.ACTION_OPEN_FRONT_LIGHT.equals(intent.getAction())
                         || IntentFilterFactory.ACTION_CLOSE_FRONT_LIGHT.equals(intent.getAction()))) {
-                    isLongClickOpenAndCloseWarmLight = true;
-                    isLongClickOpenAndCloseColdLight = true;
+                    isLongClickOpenAndCloseLight = true;
                     Bundle bundle = intent.getBundleExtra(IntentFilterFactory.INTENT_FRONT_LIGHT_VALUE);
                     int warm_light = bundle.getInt(WARM_LIGHT, 0);
                     int cold_light = bundle.getInt(COLD_LIGHT, 0);
-                    mRatingBarWarmLightSettings.setProgress(getIndex(warm_light));
-                    mRatingBarColdLightSettings.setProgress(getIndex(cold_light));
+                    getTotalProgress(getIndex(cold_light), getIndex(warm_light));
+                    updateProgress();
                 }
             }
         };
         filter = IntentFilterFactory.getOpenAndCloseFrontLightFilter();
         mContext.registerReceiver(mOpenAndCloseNaturalLightReceiver, filter);
+    }
 
-        if (mLightSteps != null) {
-            mRatingBarWarmLightSettings.setNumStars(mLightSteps.size() - 1);
-            mRatingBarWarmLightSettings.setMax(mLightSteps.size() - 1);
-            mRatingBarColdLightSettings.setNumStars(mLightSteps.size() - 1);
-            mRatingBarColdLightSettings.setMax(mLightSteps.size() - 1);
+    private void getTotalProgress(int coldStep, int warmStep) {
+        if (warmStep > 0) {
+            mTotalProgress = warmStep + 16;
         } else {
-            int numStarts = mRatingBarWarmLightSettings.getNumStars();
-            mLightSteps = initRangeArray(numStarts);
-        }
-        Collections.sort(mLightSteps);
-
-        mRatingBarWarmLightSettings.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                isWarmLightChange = true;
-                Settings.System.putInt(getContext().getContentResolver(),NATURAL_LIGHT,0);
-                changeLightState();
-                isLongClickOpenAndCloseWarmLight = false;
-            }
-        });
-        mRatingBarColdLightSettings.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                isWarmLightChange = false;
-                Settings.System.putInt(getContext().getContentResolver(),NATURAL_LIGHT,1);
-                changeLightState();
-                isLongClickOpenAndCloseColdLight = false;
-            }
-        });
-
-        setLightRatingBarDefaultProgress();
-
-        // widgets for warm light
-        ImageButton mWarmLightDown = (ImageButton) findViewById(com.onyx.android.sdk.ui.R.id.imagebutton_warm_light_down);
-        mWarmLightDown.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mRatingBarWarmLightSettings.setProgress(mRatingBarWarmLightSettings.getProgress() - 1);
-            }
-        });
-
-        ImageButton mWarmLightAdd = (ImageButton) findViewById(com.onyx.android.sdk.ui.R.id.imagebutton_warm_light_add);
-        mWarmLightAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (mRatingBarWarmLightSettings.getProgress() == mRatingBarWarmLightSettings.getMax()) {
-                    setFrontLightValue();
-                } else {
-                    mRatingBarWarmLightSettings.setProgress(mRatingBarWarmLightSettings.getProgress() + 1);
-                }
-            }
-        });
-
-        // widgets for cold light
-        ImageButton mColdLightDown = (ImageButton) findViewById(com.onyx.android.sdk.ui.R.id.imagebutton_cold_light_down);
-        mColdLightDown.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mRatingBarColdLightSettings.setProgress(mRatingBarColdLightSettings.getProgress() - 1);
-            }
-        });
-
-        ImageButton mColdLightAdd = (ImageButton) findViewById(com.onyx.android.sdk.ui.R.id.imagebutton_cold_light_add);
-        mColdLightAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mRatingBarColdLightSettings.getProgress() == mRatingBarColdLightSettings.getMax()) {
-                    setFrontLightValue();
-                } else {
-                    mRatingBarColdLightSettings.setProgress(mRatingBarColdLightSettings.getProgress() + 1);
-                }
-            }
-        });
-
-        this.setCanceledOnTouchOutside(true);
-
-    }
-
-    private void changeLightState() {
-        if (!isLongClickOpenAndCloseWarmLight && !isLongClickOpenAndCloseColdLight) {
-            setFrontLightValue();
-        }
-    }
-
-    private void setLightRatingBarDefaultProgress() {
-        int coldValue = Settings.System.getInt(getContext().getContentResolver(), COLD_LIGHT_VALUE,0);
-        mRatingBarColdLightSettings.setProgress(getIndex(coldValue));
-        int warmValue = Settings.System.getInt(getContext().getContentResolver(),WARM_LIGHT_VALUE,0);
-        mRatingBarWarmLightSettings.setProgress(getIndex(warmValue));
-    }
-
-    private void setFrontLightValue() {
-        if (!(mLightSteps.size() > 0)) {
-            return;
-        }
-        int value = 0;
-        if (isWarmLightChange) {
-            value = mLightSteps.get(mRatingBarWarmLightSettings.getProgress());
-            Settings.System.putInt(this.getContext().getContentResolver(),WARM_LIGHT_VALUE,value);
-        } else {
-            value = mLightSteps.get(mRatingBarColdLightSettings.getProgress());
-            Settings.System.putInt(this.getContext().getContentResolver(), COLD_LIGHT_VALUE,value);
-        }
-        FrontLightController.setNaturalBrightness(this.getContext(), value);
-    }
-
-    @Override
-    public void cancel() {
-        super.cancel();
-        if (mOpenAndCloseNaturalLightReceiver != null) {
-            mContext.unregisterReceiver(mOpenAndCloseNaturalLightReceiver);
+            mTotalProgress = coldStep;
         }
     }
 
