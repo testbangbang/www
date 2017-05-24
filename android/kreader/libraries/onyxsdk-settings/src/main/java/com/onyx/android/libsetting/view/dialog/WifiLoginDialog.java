@@ -79,7 +79,7 @@ public class WifiLoginDialog extends OnyxAlertDialog {
 
                             @Override
                             public void afterTextChanged(Editable s) {
-                                if (editTextPassword.getText().length() >= 6) {
+                                if (editTextPassword.getText().length() >= 5) {
                                     getPositiveButton().setEnabled(true);
                                 } else {
                                     getPositiveButton().setEnabled(false);
