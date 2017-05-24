@@ -120,10 +120,20 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                 updateView();
             }
         });
-        try {
-            binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.stringToImageEncode(this, DeviceUtils.getDeviceMacAddress(this),200));
-        } catch (WriterException e) {
-            e.printStackTrace();
+
+        //TODO:custom view for normal/colorDevice;
+        if (AppCompatUtils.isColorDevice(this)) {
+            binding.infoArea.setBackground(getResources().getDrawable(R.drawable.main_setting_bg));
+            try {
+                binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.stringToImageEncode(this, DeviceUtils.getDeviceMacAddress(this), 120,
+                        getResources().getColor(android.R.color.holo_blue_dark)));
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+            binding.deviceDetailArea.setVisibility(View.GONE);
+        } else {
+            binding.infoArea.setBackground(getResources().getDrawable(R.drawable.image_button_bg));
+            binding.macQrCodeLayout.setVisibility(View.GONE);
         }
     }
 

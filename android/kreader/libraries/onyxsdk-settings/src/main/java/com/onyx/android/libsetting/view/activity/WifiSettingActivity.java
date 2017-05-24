@@ -7,6 +7,7 @@ import android.net.wifi.WifiConfiguration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -290,6 +291,10 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
     }
 
     private void showLoginDialog(final AccessPoint accessPoint) {
+        if (wifiAdmin.getSecurity(accessPoint.getScanResult()) == WifiAdmin.SECURITY_NONE) {
+            wifiAdmin.connectWifi(accessPoint);
+            return;
+        }
         WifiLoginDialog wifiLoginDialog = new WifiLoginDialog();
         Bundle args = new Bundle();
         args.putString(ARGS_SECURITY_MODE, accessPoint.getSecurityMode());

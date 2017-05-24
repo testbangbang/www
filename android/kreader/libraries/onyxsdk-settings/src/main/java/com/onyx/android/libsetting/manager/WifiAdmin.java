@@ -16,6 +16,7 @@ import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.data.wifi.AccessPoint;
 import com.onyx.android.libsetting.data.wifi.PskType;
 import com.onyx.android.libsetting.util.WifiUtil;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.lang.reflect.Field;
@@ -51,10 +52,10 @@ public class WifiAdmin {
     /**
      * These values are matched in string arrays -- changes must be kept in sync
      */
-    static final int SECURITY_NONE = 0;
-    static final int SECURITY_WEP = 1;
-    static final int SECURITY_PSK = 2;
-    static final int SECURITY_EAP = 3;
+    public static final int SECURITY_NONE = 0;
+    public static final int SECURITY_WEP = 1;
+    public static final int SECURITY_PSK = 2;
+    public static final int SECURITY_EAP = 3;
 
     public static final int DISABLED_UNKNOWN_REASON = 0;
     public static final int DISABLED_DNS_FAILURE = 1;
@@ -132,7 +133,9 @@ public class WifiAdmin {
         for (ScanResult item : scanResults) {
             AccessPoint point = new AccessPoint(item, this);
             if (point != null && point.getWifiConfiguration() != null) {
-                Log.e(TAG, point.getWifiConfiguration().SSID + "(networkID):" + point.getWifiConfiguration().networkId);
+                if (Debug.getDebug()) {
+                    Log.e(TAG, point.getWifiConfiguration().SSID + "(networkID):" + point.getWifiConfiguration().networkId);
+                }
             }
             if (getCurrentConnectionInfo() != null && point.getWifiConfiguration() != null) {
                 if (point.getWifiConfiguration().networkId == getCurrentConnectionInfo().getNetworkId()) {
