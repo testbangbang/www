@@ -117,7 +117,6 @@ public class ShowTextSelectionMenuAction{
                 @Override
                 public void closeMenu() {
                     hideTextSelectionPopupWindow(readerDataHolder, true);
-                    readerDataHolder.redrawPage();
                 }
             });
         }

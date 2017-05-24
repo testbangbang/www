@@ -457,7 +457,7 @@ public class DialogQuickPreview extends OnyxBaseDialog {
         textViewProgress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShowReaderMenuAction.showGotoPageDialog(readerDataHolder, new BaseCallback() {
+                ShowReaderMenuAction.showGotoPageDialog(readerDataHolder, false, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         DialogQuickPreview.this.dismiss();
