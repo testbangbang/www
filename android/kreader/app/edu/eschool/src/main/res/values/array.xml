@@ -10,31 +10,4 @@
         <item>@drawable/avatar_add</item>
     </string-array>
 
-    <string-array name="study_preview_user_avatar_array">
-        <item>@drawable/user_boy_study_preview</item>
-        <item>@drawable/user_boy_glass_study_preview</item>
-        <item>@drawable/user_boy_hat_study_preview</item>
-        <item>@drawable/user_girl_study_preview</item>
-        <item>@drawable/user_girl_glass_study_preview</item>
-        <item>@drawable/user_girl_short_hair_study_preview</item>
-    </string-array>
-
-    <string-array name="teaching_auxiliary_set">
-        <item>全部</item>
-        <item>文学</item>
-        <item>外语</item>
-        <item>教育</item>
-        <item>自然科学</item>
-        <item>计算机</item>
-        <item>艺术</item>
-        <item>历史</item>
-        <item>政治军事</item>
-        <item>法律</item>
-        <item>杂志</item>
-        <item>少儿</item>
-        <item>海外经典</item>
-        <item>经管</item>
-        <item>人物传记</item>
-    </string-array>
-
 </resources>
