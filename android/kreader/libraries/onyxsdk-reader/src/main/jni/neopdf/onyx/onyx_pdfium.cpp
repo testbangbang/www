@@ -230,7 +230,7 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJni
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeRenderPage
-  (JNIEnv * env, jobject thiz, jint id, jint pageIndex, jint x, jint y, jint width, jint height, jint rotation, jboolean renderFormFields, jobject bitmap) {
+  (JNIEnv * env, jobject thiz, jint id, jint pageIndex, jint x, jint y, jint width, jint height, jint rotation, jobject bitmap) {
     FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
     if (page == NULL) {
         LOGE("invalid page %d", pageIndex);
@@ -262,7 +262,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     }
     FPDF_RenderPageBitmap(pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
     FPDF_FORMHANDLE formHandle = OnyxPdfiumManager::getFormHandle(env, id);
-    if (renderFormFields) {
+    if (OnyxPdfiumManager::isRenderFormFields(env, id)) {
         FPDF_FFLDraw(formHandle, pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
     }
     AndroidBitmap_unlockPixels(env, bitmap);
@@ -773,6 +773,11 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
         drmCertificate = strCertificate.getLocalString();
     }
     return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetRenderFormFields
+  (JNIEnv *env, jobject thiz, jint id, jboolean render) {
+    OnyxPdfiumManager::setRenderFormFields(env, id, render);
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeLoadFormFields

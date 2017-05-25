@@ -74,10 +74,10 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJni
 /*
  * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
  * Method:    nativeRenderPage
- * Signature: (IIIIIIIZLandroid/graphics/Bitmap;)Z
+ * Signature: (IIIIIIILandroid/graphics/Bitmap;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeRenderPage
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jboolean, jobject);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jobject);
 
 /*
  * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
@@ -150,6 +150,14 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeActivateDeviceDRM
   (JNIEnv *, jobject, jstring, jstring);
+
+/*
+ * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
+ * Method:    nativeSetRenderFormFields
+ * Signature: (IZ)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetRenderFormFields
+  (JNIEnv *, jobject, jint, jboolean);
 
 /*
  * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
