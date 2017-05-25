@@ -507,8 +507,8 @@ public class ShowReaderMenuAction extends BaseAction {
                 String page = onyxCustomDialog.getInputValue().toString();
                 if (!StringUtils.isNullOrEmpty(page)) {
                     int pageNumber = PagePositionUtils.getPageNumber(page);
-                    pageNumber--;
-                    if (pageNumber >= 0 && pageNumber < readerDataHolder.getPageCount()) {
+                    if (pageNumber >= 0 && pageNumber <= readerDataHolder.getPageCount()) {
+                        pageNumber = readerDataHolder.isFlowDocument() ? pageNumber : pageNumber - 1;
                         new GotoPageAction(pageNumber, true).execute(readerDataHolder, new BaseCallback() {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
@@ -532,9 +532,11 @@ public class ShowReaderMenuAction extends BaseAction {
             dlg.enableProgress(readerDataHolder.getPageCount(), readerDataHolder.getCurrentPage(), new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    int page = Math.max(progress - 1, 0);
-                    gotoPage(readerDataHolder, page, true);
-                    dlg.getInputEditText().setText(String.valueOf(page + 1));
+                    int pageNumber = readerDataHolder.isFlowDocument() ? progress : progress - 1;
+                    pageNumber = Math.max(pageNumber, 0);
+                    pageNumber = Math.min(pageNumber, readerDataHolder.getPageCount() - 1);
+                    gotoPage(readerDataHolder, pageNumber, true);
+                    dlg.getInputEditText().setText(String.valueOf(Math.max(progress, 1)));
                 }
 
                 @Override
