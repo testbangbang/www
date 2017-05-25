@@ -68,6 +68,10 @@ public class CacheManager {
         getMetadataLruCache().put(key, metadataList);
     }
 
+    public void clearMetadataCache(String key) {
+        getMetadataLruCache().remove(key);
+    }
+
     public List<Metadata> getMetadataLruCache(String key) {
         return getMetadataLruCache().get(key);
     }

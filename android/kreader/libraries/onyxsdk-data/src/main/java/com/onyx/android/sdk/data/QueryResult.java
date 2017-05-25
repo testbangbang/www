@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.data;
 
+import com.onyx.android.sdk.data.common.ContentException;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
@@ -15,6 +16,8 @@ public class QueryResult<T> {
     public List<T> list;
     public long count;
     public int fetchSource;
+
+    public ContentException exception;
 
     public QueryResult<T> copy(int limit) {
         QueryResult<T> result = new QueryResult<>();
@@ -33,5 +36,13 @@ public class QueryResult<T> {
 
     public boolean isContentEmpty() {
         return count <= 0 || CollectionUtils.isNullOrEmpty(list);
+    }
+
+    public boolean hasException() {
+        return exception != null;
+    }
+
+    public void setException(ContentException e) {
+        this.exception = e;
     }
 }
