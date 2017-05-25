@@ -39,6 +39,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
@@ -67,6 +68,7 @@ import com.onyx.edu.reader.ui.actions.SaveDocumentOptionsAction;
 import com.onyx.edu.reader.ui.actions.ShowQuickPreviewAction;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.actions.ShowTextSelectionMenuAction;
+import com.onyx.edu.reader.ui.data.FormFieldControlFactory;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.edu.reader.ui.dialog.DialogScreenRefresh;
@@ -140,6 +142,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     private BroadcastReceiver powerReceiver;
 
     private PinchZoomingPopupMenu pinchZoomingPopupMenu;
+    private List<View> formFieldControls = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -1012,6 +1015,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         try {
+            clearFormFieldControls();
             readerPainter.drawPage(this,
                     canvas,
                     pageBitmap,
@@ -1019,8 +1023,31 @@ public class ReaderActivity extends OnyxBaseActivity {
                     getReaderDataHolder().getReaderViewInfo(),
                     getReaderDataHolder().getSelectionManager(),
                     getReaderDataHolder().getNoteManager());
+            addFormFieldControls();
         } finally {
             holder.unlockCanvasAndPost(canvas);
+        }
+    }
+
+    private void clearFormFieldControls() {
+        for (View view : formFieldControls) {
+            mainView.removeView(view);
+        }
+        formFieldControls.clear();
+    }
+
+    private void addFormFieldControls() {
+        for (PageInfo pageInfo : getReaderDataHolder().getVisiblePages()) {
+            if (getReaderDataHolder().getReaderUserDataInfo().hasFormFields(pageInfo)) {
+                List<ReaderFormField> fields = getReaderDataHolder().getReaderUserDataInfo().getFormFields(pageInfo);
+                for (ReaderFormField field : fields) {
+                    View control = FormFieldControlFactory.createFormControl(mainView, field);
+                    if (control != null) {
+                        mainView.addView(control);
+                        formFieldControls.add(control);
+                    }
+                }
+            }
         }
     }
 
