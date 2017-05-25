@@ -271,6 +271,8 @@
     <style name="LightSettingsRatingBarStyle">
         <item name="android:indeterminateOnly">false</item>
         <item name="android:thumb">@null</item>
+        <item name="android:minHeight">@dimen/light_settings_rating_bar_minHeight</item>
+        <item name="android:maxHeight">@dimen/light_settings_rating_bar_maxHeight</item>
     </style>
 
     <style name="seek_bar_tts" parent="@android:style/Widget.SeekBar">
