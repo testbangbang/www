@@ -43,19 +43,6 @@
         </activity>
 
         <activity
-            android:name=".activity.TeachingMaterialActivity" />
-
-        <activity
-            android:name=".activity.StudyPreviewActivity" />
-
-        <activity
-            android:name=".activity.AvatarSelectActivity" />
-
-        <activity
-            android:name=".activity.StudentInfoSettingActivity"
-            android:windowSoftInputMode="adjustPan"/>
-
-        <activity
             android:name=".activity.ApplicationsActivity" />
 
         <activity
