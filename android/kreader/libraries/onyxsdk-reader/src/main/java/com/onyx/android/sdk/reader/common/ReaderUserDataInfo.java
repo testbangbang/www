@@ -9,6 +9,9 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.provider.SearchHistoryProvider;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormRadioButton;
+import com.onyx.android.sdk.reader.api.ReaderFormRadioGroup;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -18,6 +21,7 @@ import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.ArrayList;
@@ -49,6 +53,7 @@ public class ReaderUserDataInfo {
     private List<SearchHistory> searchHistoryList = new ArrayList<>();
     private Map<String, List<ReaderSelection>> pageLinkMap = new HashMap<>();
     private Map<String, List<ReaderImage>> pageImageMap = new HashMap<>();
+    private Map<String, List<ReaderFormField>> formFieldMap = new HashMap<>();
 
     public void setDocumentPath(final String path) {
         documentPath = path;
@@ -334,6 +339,36 @@ public class ReaderUserDataInfo {
                     translateToScreen(pageInfo, image.getRectangle());
                 }
                 pageImageMap.put(pageInfo.getName(), list);
+            }
+        }
+        return true;
+    }
+
+    public boolean hasFormFields(final PageInfo pageInfo) {
+        return formFieldMap.containsKey(pageInfo.getName());
+    }
+
+    public List<ReaderFormField> getFormFields(final PageInfo pageInfo) {
+        return formFieldMap.get(pageInfo.getName());
+    }
+
+    public boolean loadFormFields(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+        for (PageInfo pageInfo : visiblePages) {
+            List<ReaderFormField> fields = new ArrayList<>();
+            if (reader.getReaderHelper().getFormManager().loadFormFields(pageInfo.getPageNumber(), fields)) {
+                for (ReaderFormField field : fields) {
+                    Debug.e("loadFormFields: " + pageInfo.getName() + ", " + field);
+                    if (!(field instanceof ReaderFormRadioGroup)) {
+                        translateToScreen(pageInfo, field.getRect());
+                        continue;
+                    }
+
+                    ReaderFormRadioGroup group = (ReaderFormRadioGroup)field;
+                    for (ReaderFormRadioButton button : group.getButtons()) {
+                        translateToScreen(pageInfo, button.getRect());
+                    }
+                }
+                formFieldMap.put(pageInfo.getName(), fields);
             }
         }
         return true;

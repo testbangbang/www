@@ -46,4 +46,6 @@ public interface ReaderView {
      */
     public ReaderSearchManager getSearchManager();
 
+    public ReaderFormManager getFormManager();
+
 }

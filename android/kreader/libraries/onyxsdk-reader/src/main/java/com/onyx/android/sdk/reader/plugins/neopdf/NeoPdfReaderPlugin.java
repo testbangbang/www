@@ -7,6 +7,8 @@ import android.graphics.RectF;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
@@ -54,6 +56,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         ReaderSearchManager,
         ReaderTextStyleManager,
         ReaderDrmManager,
+        ReaderFormManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
@@ -304,6 +307,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
      * @return
      */
     public ReaderSearchManager getSearchManager() {
+        return this;
+    }
+
+    @Override
+    public ReaderFormManager getFormManager() {
         return this;
     }
 
@@ -566,4 +574,8 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     }
 
 
+    @Override
+    public boolean loadFormFields(int page, List<ReaderFormField> fields) {
+        return getPluginImpl().loadFormFields(page, fields);
+    }
 }

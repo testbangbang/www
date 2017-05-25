@@ -7,6 +7,8 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.Benchmark;
@@ -55,6 +57,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         ReaderSearchManager,
         ReaderTextStyleManager,
         ReaderDrmManager,
+        ReaderFormManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
@@ -302,6 +305,11 @@ public class AlReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public ReaderFormManager getFormManager() {
+        return this;
+    }
+
     public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         getPluginImpl().draw(bitmap, (int)displayRect.width(), (int)displayRect.height());
         return true;
@@ -513,5 +521,10 @@ public class AlReaderPlugin implements ReaderPlugin,
     @Override
     public boolean supportTextPage() {
         return true;
+    }
+
+    @Override
+    public boolean loadFormFields(int page, List<ReaderFormField> fields) {
+        return false;
     }
 }

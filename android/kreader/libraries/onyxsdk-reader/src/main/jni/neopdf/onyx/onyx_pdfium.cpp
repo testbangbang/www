@@ -19,6 +19,7 @@
 #include "onyx_context.h"
 #include "JNIUtils.h"
 #include "jsonxx.h"
+#include "form_helper.h"
 
 static const char * selectionClassName = "com/onyx/android/sdk/reader/plugins/neopdf/NeoPdfSelection";
 static const char * splitterClassName = "com/onyx/android/sdk/reader/api/ReaderTextSplitter";
@@ -261,7 +262,8 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     }
     FPDF_RenderPageBitmap(pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
     FPDF_FORMHANDLE formHandle = OnyxPdfiumManager::getFormHandle(env, id);
-    FPDF_FFLDraw(formHandle, pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
+    // we'll draw form fields ourselves
+//    FPDF_FFLDraw(formHandle, pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
     AndroidBitmap_unlockPixels(env, bitmap);
     return true;
 }
@@ -772,3 +774,17 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     return true;
 }
 
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeLoadFormFields
+  (JNIEnv *env, jobject thiz, jint id, jint pageIndex, jobject fieldList) {
+    FPDF_DOCUMENT doc = OnyxPdfiumManager::getDocument(env, id);
+    if (doc == NULL) {
+        return false;
+    }
+    FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
+    if (page == NULL) {
+        return false;
+    }
+
+    FormHelper helper;
+    return helper.loadFormFields(env, page, fieldList);
+}

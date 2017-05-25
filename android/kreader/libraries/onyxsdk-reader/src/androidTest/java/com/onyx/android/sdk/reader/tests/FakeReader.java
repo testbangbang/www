@@ -130,6 +130,11 @@ public class FakeReader implements ReaderDocument,
         return null;
     }
 
+    @Override
+    public ReaderFormManager getFormManager() {
+        return null;
+    }
+
     public void close() {}
 
     @Override

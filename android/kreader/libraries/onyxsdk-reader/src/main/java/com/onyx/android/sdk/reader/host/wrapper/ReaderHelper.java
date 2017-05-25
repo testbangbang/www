@@ -11,6 +11,8 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderException;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.api.ReaderPlugin;
@@ -66,6 +68,7 @@ public class ReaderHelper {
     private ReaderRendererFeatures rendererFeatures;
     private ReaderTextStyleManager textStyleManager;
     private ReaderSearchManager searchManager;
+    private ReaderFormManager formManager;
     // to be used by UI thread
     private ReaderBitmapReferenceImpl viewportBitmap;
     private ReaderLayoutManager readerLayoutManager;
@@ -165,6 +168,7 @@ public class ReaderHelper {
         textStyleManager = view.getTextStyleManager();
         hitTestManager = view.getReaderHitTestManager();
         searchManager = view.getSearchManager();
+        formManager = view.getFormManager();
     }
 
     public void onDocumentClosed() {
@@ -174,6 +178,7 @@ public class ReaderHelper {
         renderer = null;
         navigator = null;
         searchManager = null;
+        formManager = null;
         hitTestManager = null;
 
         clearBitmapCache();
@@ -355,6 +360,10 @@ public class ReaderHelper {
 
     public ReaderSearchManager getSearchManager() {
         return searchManager;
+    }
+
+    public ReaderFormManager getFormManager() {
+        return formManager;
     }
 
     public void applyPostBitmapProcess(ReaderBitmapReferenceImpl bitmap) {

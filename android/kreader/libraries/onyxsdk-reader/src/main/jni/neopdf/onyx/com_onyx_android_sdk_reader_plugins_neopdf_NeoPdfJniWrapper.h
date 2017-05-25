@@ -151,6 +151,14 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeActivateDeviceDRM
   (JNIEnv *, jobject, jstring, jstring);
 
+/*
+ * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
+ * Method:    nativeLoadFormFields
+ * Signature: (IILjava/util/List;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeLoadFormFields
+  (JNIEnv *, jobject, jint, jint, jobject);
+
 #ifdef __cplusplus
 }
 #endif
