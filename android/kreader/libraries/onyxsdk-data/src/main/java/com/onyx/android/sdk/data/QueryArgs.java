@@ -236,11 +236,19 @@ public class QueryArgs {
         return limit > QueryArgs.CLOUD_FETCH_LIMIT ? limit : QueryArgs.CLOUD_FETCH_LIMIT;
     }
 
+    public void resetOffset() {
+        this.offset = 0;
+    }
+
     public void useMemCloudDbPolicy() {
         fetchPolicy = FetchPolicy.MEM_CLOUD_DB;
     }
 
     public void useCloudMemDbPolicy() {
         fetchPolicy = FetchPolicy.CLOUD_MEM_DB;
+    }
+
+    public void useCloudOnlyPolicy() {
+        fetchPolicy = FetchPolicy.CLOUD_ONLY;
     }
 }

@@ -164,4 +164,9 @@
     <string name="download_fail">Download fail</string>
     <string name="file_path_invalid">File path invalid</string>
 
+    <string name="open_wifi">Wifi is not connected, is opening wifi&#8230;</string>
+    <string name="refreshing">Refreshing&#8230;</string>
+    <string name="refresh_fail">The refresh failed</string>
+    <string name="refresh_content_empty">The contents of the refresh are empty</string>
+
 </resources>

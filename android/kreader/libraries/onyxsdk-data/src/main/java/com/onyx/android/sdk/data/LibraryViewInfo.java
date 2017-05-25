@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
@@ -13,6 +14,7 @@ import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by suicheng on 2017/4/23.
@@ -237,5 +239,18 @@ public class LibraryViewInfo {
         for (CloseableReference<Bitmap> refBitmap : dataModel.thumbnailMap.values()) {
             refBitmap.close();
         }
+    }
+
+    public static LibraryDataModel buildLibraryDataModel(QueryResult<Metadata> result, Map<String, CloseableReference<Bitmap>> map) {
+        LibraryDataModel libraryDataModel = new LibraryDataModel();
+        if (result == null) {
+            return libraryDataModel;
+        }
+        libraryDataModel.visibleLibraryList = new ArrayList<>();
+        libraryDataModel.visibleBookList = result.list;
+        libraryDataModel.bookCount = (int) result.count;
+        libraryDataModel.thumbnailMap = map;
+        libraryDataModel.libraryCount = 0;
+        return libraryDataModel;
     }
 }
