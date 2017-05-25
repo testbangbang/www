@@ -99,4 +99,7 @@
     <dimen name="onyx_toolbar_item_default_margin">5dp</dimen>
     <dimen name="dialog_custom_seek_bar_height">2dp</dimen>
     <dimen name="dialog_custom_thumb_height">20dp</dimen>
+    
+    <dimen name="light_settings_rating_bar_minHeight">64px</dimen>
+    <dimen name="light_settings_rating_bar_maxHeight">64px</dimen>
 </resources>
