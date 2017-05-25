@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.data.request.cloud;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
@@ -10,6 +11,7 @@ import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
+import com.onyx.android.sdk.data.provider.DataProviderBase;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,7 +40,12 @@ public class CloudContentRefreshRequest extends BaseCloudRequest {
         checkQueryCloudPolicy(queryArgs);
         queryResult = DataManagerHelper.cloudMetadataFromDataProvider(getContext(),
                 cloudManager.getCloudDataProvider(), queryArgs);
-        if (queryResult == null || queryResult.isContentEmpty()) {
+        if (queryResult == null || queryResult.hasException()) {
+            return;
+        }
+        deleteCollectionSetByLibraryId(getContext(), cloudManager.getCloudDataProvider(), queryArgs.libraryUniqueId);
+        if (queryResult.isContentEmpty()) {
+            clearMetadataCache(cloudManager.getCacheManager(), queryArgs);
             return;
         }
         updateMetadataCache(cloudManager.getCacheManager(), queryArgs, queryResult);
@@ -54,10 +61,18 @@ public class CloudContentRefreshRequest extends BaseCloudRequest {
         }
     }
 
+    private void deleteCollectionSetByLibraryId(Context context, DataProviderBase dataProvider, String libraryId) {
+        dataProvider.deleteMetadataCollection(context, libraryId);
+    }
+
     private void updateMetadataCache(CacheManager cacheManager, QueryArgs queryArgs, QueryResult<Metadata> result) {
         List<Metadata> cacheList = Arrays.asList(new Metadata[(int) result.count]);
         cacheManager.addToMetadataCache(CacheManager.generateCloudKey(queryArgs), cacheList);
         DataManagerHelper.updateCloudCacheList(cacheList, result, queryArgs);
+    }
+
+    private void clearMetadataCache(CacheManager cacheManager, QueryArgs queryArgs) {
+        cacheManager.addToMetadataCache(CacheManager.generateCloudKey(queryArgs), null);
     }
 
     public Map<String, CloseableReference<Bitmap>> getThumbnailMap() {

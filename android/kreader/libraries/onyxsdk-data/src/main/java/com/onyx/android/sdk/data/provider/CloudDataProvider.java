@@ -7,6 +7,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
+import com.onyx.android.sdk.data.common.ContentException;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.converter.QueryArgsFilter;
 import com.onyx.android.sdk.data.model.Annotation;
@@ -120,6 +121,7 @@ public class CloudDataProvider implements DataProviderBase {
             checkCloudMetadataResult(result);
         } catch (Exception e) {
             e.printStackTrace();
+            result.setException(ContentException.createException(e));
             if (!FetchPolicy.isCloudOnlyPolicy(queryArgs.fetchPolicy) && !FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy)) {
                 result = fetchFromLocal(context, queryArgs);
             }
