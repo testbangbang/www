@@ -29,7 +29,6 @@ import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.ApplicationUtil;
-import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -125,8 +124,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         if (AppCompatUtils.isColorDevice(this)) {
             binding.infoArea.setBackground(getResources().getDrawable(R.drawable.main_setting_bg));
             try {
-                binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.stringToImageEncode(this, DeviceUtils.getDeviceMacAddress(this), 120,
-                        getResources().getColor(android.R.color.holo_blue_dark)));
+                binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.getQRCodeCFABitmap(this));
             } catch (WriterException e) {
                 e.printStackTrace();
             }
