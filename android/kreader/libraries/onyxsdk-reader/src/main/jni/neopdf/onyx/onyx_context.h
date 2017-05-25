@@ -76,10 +76,11 @@ private:
     std::list<std::pair<int, OnyxPdfiumPage *>> pageQueue; // use std::queue to simulate FIFO queue
     std::unordered_map<void *, FPDF_BITMAP> bitmapMap;
     float textGamma;
+    bool renderFormFields;
 
 public:
     OnyxPdfiumContext(FPDF_DOCUMENT doc, FPDF_FORMHANDLE formHandle)
-        : document(doc), formHandle(formHandle), textGamma(1.0f) {
+        : document(doc), formHandle(formHandle), textGamma(1.0f), renderFormFields(true) {
     }
     ~OnyxPdfiumContext() {
         document = NULL;
@@ -161,6 +162,14 @@ public:
         clearPages();
     }
 
+    bool isRenderFormFields() const {
+        return renderFormFields;
+    }
+
+    void setRenderFormFields(bool render) {
+        renderFormFields = render;
+    }
+
 private:
     void clearPages() {
         for(auto iterator = pageQueue.begin(); iterator != pageQueue.end(); ++iterator) {
@@ -236,6 +245,22 @@ public:
             return;
         }
         context->setTextGamma(gamma);
+    }
+
+    static bool isRenderFormFields(JNIEnv *env, jint id) {
+        OnyxPdfiumContext * context = getContext(env, id);
+        if (context == NULL) {
+            return true;
+        }
+        return context->isRenderFormFields();
+    }
+
+    static void setRenderFormFields(JNIEnv *env, jint id, bool render) {
+        OnyxPdfiumContext * context = getContext(env, id);
+        if (context == NULL) {
+            return;
+        }
+        context->setRenderFormFields(render);
     }
 
 };

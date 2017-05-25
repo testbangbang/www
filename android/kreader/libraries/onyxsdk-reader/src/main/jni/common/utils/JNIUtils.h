@@ -39,6 +39,8 @@ public:
     }
     
     void invokeStaticMethod(JNIEnv *env, ...);
+
+    jobject invokeStaticObjectMethod(JNIEnv *env, ...);
     
 };
 

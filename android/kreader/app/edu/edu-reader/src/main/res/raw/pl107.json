@@ -11,6 +11,7 @@
   "defaultUseSystemStatusBar" : false,
   "supportBrushPen": true,
   "gcInterval" : 1,
+  "customFormEnabled" : true,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},

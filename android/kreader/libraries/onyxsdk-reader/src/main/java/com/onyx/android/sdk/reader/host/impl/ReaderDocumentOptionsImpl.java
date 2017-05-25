@@ -15,6 +15,7 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
     private int codePageFallback;
     private String language;
     private ReaderChineseConvertType chineseConvertType = ReaderChineseConvertType.NONE;
+    private boolean customFormEnabled;
 
     public ReaderDocumentOptionsImpl(final String dp, final String ap) {
         documentPassword = dp;
@@ -24,12 +25,14 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
 
     public ReaderDocumentOptionsImpl(final String dp, final String ap,
                                      final int codePage, final int codePageFallback,
-                                     final ReaderChineseConvertType chineseConvertType) {
+                                     final ReaderChineseConvertType chineseConvertType,
+                                     final boolean customFormEnabled) {
         documentPassword = dp;
         archivePassword = ap;
         this.codePage = codePage;
         this.codePageFallback = codePageFallback;
         this.chineseConvertType = chineseConvertType;
+        this.customFormEnabled = customFormEnabled;
     }
 
     public void setDocumentPath(final String path) {
@@ -90,5 +93,14 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
 
     public void setChineseConvertType(ReaderChineseConvertType chineseConvertType) {
         this.chineseConvertType = chineseConvertType;
+    }
+
+    @Override
+    public boolean isCustomFormEnabled() {
+        return customFormEnabled;
+    }
+
+    public void setCustomFormEnabled(boolean customFormEnabled) {
+        this.customFormEnabled = customFormEnabled;
     }
 }
