@@ -94,4 +94,7 @@
     <dimen name="dialog_sort_by_width">260dp</dimen>
     <dimen name="dialog_sort_by_height">290dp</dimen>
     <dimen name="dialog_sort_by_order_radio_button_text_size">22sp</dimen>
+
+    <dimen name="light_settings_rating_bar_minHeight">64px</dimen>
+    <dimen name="light_settings_rating_bar_maxHeight">64px</dimen>
 </resources>
