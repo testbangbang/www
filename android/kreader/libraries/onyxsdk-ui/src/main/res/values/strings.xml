@@ -88,4 +88,6 @@
 
     <string name="chinese_font_face">Chinese Font face</string>
     <string name="english_font_face">English Font face</string>
+    <string name="cold_light">Cold light</string>
+    <string name="warm_light">Warm light</string>
 </resources>

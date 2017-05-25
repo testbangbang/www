@@ -4,11 +4,18 @@
 package com.onyx.android.sdk.device;
 
 import android.content.Context;
+import android.content.Intent;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
@@ -114,5 +121,64 @@ public class EnvironmentUtil
         }
         
         return uuid.toString();
+    }
+
+    public static String getRemovableSDCardCid() {
+        Reader reader = null;
+        String devicePath = null;
+        String path = "/sys/block/mmcblk0/device/type";
+        String[] mmcSeries = new String[]{"mmcblk0", "mmcblk1", "mmcblk2"};
+        for (String mmc : mmcSeries) {
+            devicePath = getStorageDevice(path.replaceFirst(mmcSeries[0], mmc), "sd");
+            if (StringUtils.isNotBlank(devicePath)) {
+                break;
+            }
+        }
+        if (StringUtils.isNullOrEmpty(devicePath)) {
+            Log.w(TAG, "sdCard devicePath is null");
+            return null;
+        }
+        String cid = null;
+        try {
+            reader = new FileReader(devicePath + "cid");
+            cid = new BufferedReader(reader).readLine();
+            Log.i(TAG, "SDCard cid:" + cid);
+        } catch (Exception e) {
+        } finally {
+            FileUtils.closeQuietly(reader);
+        }
+        return cid;
+    }
+
+    public static String getStorageDevice(String devicePath, String deviceType) {
+        Reader reader = null;
+        try {
+            reader = new FileReader(devicePath);
+            if (new BufferedReader(reader).readLine().toLowerCase().contentEquals(deviceType)) {
+                return devicePath.replaceAll("type", "");
+            }
+        } catch (Exception e) {
+        } finally {
+            FileUtils.closeQuietly(reader);
+        }
+        return null;
+    }
+
+    public static boolean isExternalStorageDirectory(final String path) {
+        return path.equals(EnvironmentUtil.getExternalStorageDirectory().getAbsolutePath());
+    }
+
+    public static boolean isExternalStorageDirectory(Context context, final Intent intent) {
+        String mountPath = FileUtils.getRealFilePathFromUri(context, intent.getData());
+        return isExternalStorageDirectory(mountPath);
+    }
+
+    public static boolean isRemovableSDDirectory(final String path) {
+        return path.equals(EnvironmentUtil.getRemovableSDCardDirectory().getAbsolutePath());
+    }
+
+    public static boolean isRemovableSDDirectory(Context context, final Intent intent) {
+        String mountPath = FileUtils.getRealFilePathFromUri(context, intent.getData());
+        return isRemovableSDDirectory(mountPath);
     }
 }
