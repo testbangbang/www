@@ -143,17 +143,24 @@ public class BookTextFragment extends Fragment {
 
     private void loadData(String libraryId) {
         QueryArgs args = getDataHolder().getCloudViewInfo().libraryQuery(libraryId);
+        args.useCloudMemDbPolicy();
+        loadData(args);
+    }
+
+    private void loadData(final QueryArgs args) {
         final CloudContentListRequest listRequest = new CloudContentListRequest(args);
         getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e == null) {
-                    QueryResult<Metadata> result = listRequest.getProductResult();
-                    updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                if (e != null) {
+                    return;
                 }
+                QueryResult<Metadata> result = listRequest.getProductResult();
+                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                getDataHolder().getCloudViewInfo().getCurrentQueryArgs().useMemCloudDbPolicy();
+                preloadNext();
             }
         });
-        preloadNext();
     }
 
     private void nextPage() {

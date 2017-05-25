@@ -43,7 +43,7 @@ public class CloudLibraryListLoadRequest extends BaseCloudRequest {
     }
 
     private void saveLibraryListToLocal(DataProviderBase dataProvider, @FetchPolicy.Type int policy) {
-        if (FetchPolicy.isDataFromLocal(policy, NetworkUtil.isWifiConnected(getContext()))) {
+        if (FetchPolicy.isDataFromMemDb(policy, NetworkUtil.isWifiConnected(getContext()))) {
             return;
         }
         saveLibraryListToLocal(dataProvider, libraryList);

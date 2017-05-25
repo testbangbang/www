@@ -6,8 +6,8 @@
 
     <LinearLayout
         android:layout_margin="10dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:orientation="vertical"
         android:id="@+id/input_layout"
         android:layout_width="match_parent"
@@ -29,6 +29,21 @@
             android:textColor="@android:color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <SeekBar
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:minHeight="@dimen/dialog_custom_seek_bar_height"
+            android:maxHeight="@dimen/dialog_custom_seek_bar_height"
+            android:background="@drawable/focused_bg"
+            android:thumb="@drawable/dialog_custom_seekbar_thumb"
+            android:id="@+id/seek_bar_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:progressDrawable="@drawable/seekbar_progress"
+            android:max="20"/>
     </LinearLayout>
 
     <View

@@ -27,8 +27,8 @@ public class ReaderNoteDataProvider {
     }
 
     public static void clear(final Context context) {
-        new Delete().from(ReaderNoteDocumentModel.class);
-        new Delete().from(ReaderNoteShapeModel.class);
+        new Delete().from(ReaderNoteDocumentModel.class).execute();
+        new Delete().from(ReaderNoteShapeModel.class).execute();
     }
 
     public static ReaderNoteDocumentModel loadDocument(final Context context, final String uniqueId) {
@@ -54,6 +54,14 @@ public class ReaderNoteDataProvider {
             where = where.and(ReaderNoteShapeModel_Table.subPageUniqueId.eq(subPageUniqueId));
         }
 
+        List<ReaderNoteShapeModel> list = where.queryList();
+        return list;
+    }
+
+    public static List<ReaderNoteShapeModel> loadShapeList(final Context context,
+                                                           final String documentUniqueId) {
+        Select select = new Select();
+        Where where = select.from(ReaderNoteShapeModel.class).where(ReaderNoteShapeModel_Table.documentUniqueId.eq(documentUniqueId));
         List<ReaderNoteShapeModel> list = where.queryList();
         return list;
     }

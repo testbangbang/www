@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.RectF;
 import android.text.InputType;
 import android.util.Log;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -25,7 +26,6 @@ import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
@@ -64,12 +64,10 @@ import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.edu.reader.ui.dialog.DialogContrast;
 import com.onyx.edu.reader.ui.dialog.DialogExport;
 import com.onyx.edu.reader.ui.dialog.DialogNavigationSettings;
-import com.onyx.edu.reader.ui.dialog.DialogQuickPreview;
 import com.onyx.edu.reader.ui.dialog.DialogScreenRefresh;
 import com.onyx.edu.reader.ui.dialog.DialogSearch;
 import com.onyx.edu.reader.ui.dialog.DialogTableOfContent;
 import com.onyx.edu.reader.ui.dialog.DialogTextStyle;
-import com.onyx.edu.reader.ui.events.QuitEvent;
 import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.ui.view.EduMenu;
 
@@ -498,10 +496,10 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        showGotoPageDialog(readerDataHolder, null);
+        showGotoPageDialog(readerDataHolder, true, null);
     }
 
-    public static void showGotoPageDialog(final ReaderDataHolder readerDataHolder, final BaseCallback gotoPageCallback) {
+    public static void showGotoPageDialog(final ReaderDataHolder readerDataHolder, boolean showProgress, final BaseCallback gotoPageCallback) {
         final OnyxCustomDialog dlg = OnyxCustomDialog.getInputDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog, int which) {
@@ -530,6 +528,26 @@ public class ShowReaderMenuAction extends BaseAction {
         });
         dlg.getInputEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
         dlg.getInputEditText().setHint("1-" + readerDataHolder.getPageCount());
+        if (showProgress) {
+            dlg.enableProgress(readerDataHolder.getPageCount(), readerDataHolder.getCurrentPage(), new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    int page = Math.max(progress - 1, 0);
+                    gotoPage(readerDataHolder, page, true);
+                    dlg.getInputEditText().setText(String.valueOf(page + 1));
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
+        }
         readerDataHolder.trackDialog(dlg);
         dlg.show();
     }
@@ -550,7 +568,7 @@ public class ShowReaderMenuAction extends BaseAction {
         new GotoPositionAction(page, abortPendingTasks).execute(readerDataHolder, null);
     }
 
-    private void gotoPage(final ReaderDataHolder readerDataHolder, Object o, final boolean abortPendingTasks) {
+    private static void gotoPage(final ReaderDataHolder readerDataHolder, Object o, final boolean abortPendingTasks) {
         if (o == null) {
             return;
         }
