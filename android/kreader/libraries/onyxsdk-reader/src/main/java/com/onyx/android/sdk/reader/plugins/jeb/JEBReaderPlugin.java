@@ -517,6 +517,10 @@ public class JEBReaderPlugin implements ReaderPlugin,
         return true;
     }
 
+    public boolean isCustomFormEnabled() {
+        return false;
+    }
+
     @Override
     public boolean loadFormFields(int page, List<ReaderFormField> fields) {
         return false;

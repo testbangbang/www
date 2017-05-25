@@ -70,6 +70,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     Map<String, List<ReaderSelection>> pageLinks = new HashMap<>();
 
     private ReaderViewOptions readerViewOptions;
+    private boolean customFormEnabled;
 
     public NeoPdfReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
     }
@@ -104,7 +105,8 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
             archivePassword = documentOptions.getDocumentPassword();
         }
         long ret = getPluginImpl().openDocument(path, docPassword);
-        if (ret  == NeoPdfJniWrapper.NO_ERROR) {
+        if (ret == NeoPdfJniWrapper.NO_ERROR) {
+            customFormEnabled = documentOptions.isCustomFormEnabled();
             return this;
         }
         if (ret == NeoPdfJniWrapper.ERROR_PASSWORD_INVALID) {
@@ -132,7 +134,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     public boolean readCover(final Bitmap bitmap) {
         return getPluginImpl().drawPage(0, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
-                0, bitmap);
+                0, true, bitmap);
     }
 
     public RectF getPageOriginSize(final String position) {
@@ -322,7 +324,9 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
                 (int)displayRect.top,
                 (int)displayRect.width(),
                 (int)displayRect.height(),
-                rotation, bitmap);
+                rotation,
+                !customFormEnabled,
+                bitmap);
         Debug.d(TAG, "rendering takes: " + benchmark.duration());
         return ret;
     }
@@ -573,6 +577,9 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return false;
     }
 
+    public boolean isCustomFormEnabled() {
+        return customFormEnabled;
+    }
 
     @Override
     public boolean loadFormFields(int page, List<ReaderFormField> fields) {

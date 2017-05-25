@@ -484,6 +484,9 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return false;
     }
 
+    public boolean isCustomFormEnabled() {
+        return false;
+    }
 
     @Override
     public boolean loadFormFields(int page, List<ReaderFormField> fields) {

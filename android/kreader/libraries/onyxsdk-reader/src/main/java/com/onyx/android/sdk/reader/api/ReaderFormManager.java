@@ -7,5 +7,8 @@ import java.util.List;
  */
 
 public interface ReaderFormManager {
+
+    boolean isCustomFormEnabled();
+
     boolean loadFormFields(int page, List<ReaderFormField> fields);
 }

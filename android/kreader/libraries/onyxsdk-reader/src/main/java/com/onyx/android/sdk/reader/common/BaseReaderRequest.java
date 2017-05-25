@@ -214,7 +214,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         if (readerViewInfo != null && loadPageImages) {
             getReaderUserDataInfo().loadPageImages(getContext(), reader, readerViewInfo.getVisiblePages());
         }
-        if (readerViewInfo != null && loadFormFields) {
+        if (readerViewInfo != null && loadFormFields && reader.getReaderHelper().getFormManager().isCustomFormEnabled()) {
             getReaderUserDataInfo().loadFormFields(getContext(), reader, readerViewInfo.getVisiblePages());
         }
     }

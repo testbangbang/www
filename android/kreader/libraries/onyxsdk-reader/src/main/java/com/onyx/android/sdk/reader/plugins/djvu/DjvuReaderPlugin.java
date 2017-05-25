@@ -442,6 +442,10 @@ public class DjvuReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    public boolean isCustomFormEnabled() {
+        return false;
+    }
+
     @Override
     public boolean loadFormFields(int page, List<ReaderFormField> fields) {
         return false;
