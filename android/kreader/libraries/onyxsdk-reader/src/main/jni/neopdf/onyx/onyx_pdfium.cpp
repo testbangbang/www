@@ -785,6 +785,5 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
         return false;
     }
 
-    FormHelper helper;
-    return helper.loadFormFields(env, page, fieldList);
+    return FormHelper::loadFormFields(env, page, fieldList);
 }

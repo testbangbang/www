@@ -10,7 +10,7 @@ class FormHelper
 public:
     FormHelper();
 
-    bool loadFormFields(JNIEnv *env, FPDF_PAGE page, jobject fieldList);
+    static bool loadFormFields(JNIEnv *env, FPDF_PAGE page, jobject fieldList);
 };
 
 #endif // FORM_HELPER_H
