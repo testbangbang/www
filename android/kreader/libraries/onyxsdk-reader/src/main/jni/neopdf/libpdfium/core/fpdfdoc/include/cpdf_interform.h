@@ -10,6 +10,7 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <set>
 
 #include "core/fpdfapi/fpdf_parser/include/fpdf_parser_decode.h"
 #include "core/fpdfdoc/include/cpdf_defaultappearance.h"
@@ -61,6 +62,8 @@ class CPDF_InterForm {
   CPDF_FormField* GetField(uint32_t index,
                            const CFX_WideString& csFieldName = L"");
   CPDF_FormField* GetFieldByDict(CPDF_Dictionary* pFieldDict) const;
+
+  std::set<CPDF_FormField *> GetFieldsByPage(CPDF_Page *pPage) const;
 
   CPDF_FormControl* GetControlAtPoint(CPDF_Page* pPage,
                                       FX_FLOAT pdf_x,
