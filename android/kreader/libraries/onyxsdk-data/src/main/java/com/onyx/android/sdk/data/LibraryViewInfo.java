@@ -126,13 +126,18 @@ public class LibraryViewInfo {
     }
 
     public QueryArgs libraryQuery(String libraryId) {
+        QueryArgs args = buildLibraryQuery(libraryId);
+        updateQueryArgs(args);
+        return args;
+    }
+
+    public QueryArgs buildLibraryQuery(String libraryId) {
         QueryArgs args = new QueryArgs(queryArgs.sortBy, queryArgs.order).appendFilter(queryArgs.filter);
         args.limit = queryLimit;
         args.offset = 0;
         args.libraryUniqueId = libraryId;
         generateQueryArgs(args);
         QueryBuilder.andWith(args.conditionGroup, storageIdCondition());
-        updateQueryArgs(args);
         return generateMetadataInQueryArgs(args);
     }
 

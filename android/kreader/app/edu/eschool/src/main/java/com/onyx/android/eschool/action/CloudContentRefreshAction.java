@@ -21,7 +21,8 @@ public class CloudContentRefreshAction extends BaseAction<LibraryDataHolder> {
 
     @Override
     public void execute(final LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
-        final QueryArgs queryArgs = dataHolder.getCloudViewInfo().getCurrentQueryArgs();
+        LibraryViewInfo libraryViewInfo = dataHolder.getCloudViewInfo();
+        final QueryArgs queryArgs = libraryViewInfo.buildLibraryQuery(libraryViewInfo.getCurrentQueryArgs().libraryUniqueId);
         queryArgs.resetOffset();
         queryArgs.useCloudOnlyPolicy();
         final CloudContentRefreshRequest refreshRequest = new CloudContentRefreshRequest(queryArgs);
@@ -29,7 +30,6 @@ public class CloudContentRefreshAction extends BaseAction<LibraryDataHolder> {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 hideLoadingDialog();
-                queryArgs.useMemCloudDbPolicy();
                 QueryResult<Metadata> result = refreshRequest.getProductResult();
                 if (e != null || result == null || result.hasException()) {
                     ToastUtils.showToast(request.getContext(), R.string.refresh_fail);
