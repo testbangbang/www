@@ -160,4 +160,9 @@
     <string name="download_fail">下载失败</string>
     <string name="file_path_invalid">文件路径无效</string>
 
+    <string name="open_wifi">wifi没有连接，正在打开wifi&#8230;</string>
+    <string name="refreshing">正在刷新中&#8230;</string>
+    <string name="refresh_fail">刷新失败了</string>
+    <string name="refresh_content_empty">刷新获取的内容为空</string>
+
 </resources>

@@ -17,6 +17,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
+import com.onyx.android.eschool.action.CloudContentRefreshAction;
 import com.onyx.android.eschool.action.DownloadAction;
 import com.onyx.android.eschool.action.LibraryGotoPageAction;
 import com.onyx.android.eschool.custom.PageIndicator;
@@ -28,6 +29,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.LibraryDataModel;
+import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
@@ -38,6 +40,7 @@ import com.onyx.android.sdk.data.request.cloud.CloudContentListRequest;
 import com.onyx.android.sdk.data.request.cloud.CloudThumbnailLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
@@ -184,13 +187,7 @@ public class BookTextFragment extends Fragment {
     }
 
     private LibraryDataModel getLibraryDataModel(QueryResult<Metadata> result, Map<String, CloseableReference<Bitmap>> map) {
-        LibraryDataModel libraryDataModel = new LibraryDataModel();
-        libraryDataModel.visibleLibraryList = new ArrayList<>();
-        libraryDataModel.visibleBookList = result.list;
-        libraryDataModel.bookCount = (int) result.count;
-        libraryDataModel.thumbnailMap = map;
-        libraryDataModel.libraryCount = 0;
-        return libraryDataModel;
+        return LibraryViewInfo.buildLibraryDataModel(result, map);
     }
 
     private QueryPagination getPagination() {
@@ -370,6 +367,12 @@ public class BookTextFragment extends Fragment {
             @Override
             public void gotoPage(int page) {
                 showGotoPageAction(page);
+            }
+        });
+        pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshDataFormCloud();
             }
         });
     }
@@ -578,12 +581,19 @@ public class BookTextFragment extends Fragment {
             openCloudFile(book);
             return;
         }
-        if (!NetworkUtil.isWifiConnected(getContext())) {
-            Device.currentDevice().enableWifiDetect(getContext());
-            NetworkUtil.enableWifi(getContext(), true);
+        if(enableWifiOpenAndDetect()) {
             return;
         }
         startDownload(book);
+    }
+
+    private boolean enableWifiOpenAndDetect() {
+        if (!NetworkUtil.isWifiConnected(getContext())) {
+            Device.currentDevice().enableWifiDetect(getContext());
+            NetworkUtil.enableWifi(getContext(), true);
+            return true;
+        }
+        return false;
     }
 
     class BookItemHolder extends RecyclerView.ViewHolder {
@@ -617,6 +627,7 @@ public class BookTextFragment extends Fragment {
     private LibraryDataHolder getDataHolder() {
         if (dataHolder == null) {
             dataHolder = new LibraryDataHolder(getContext());
+            dataHolder.setCloudManager(getCloudStore().getCloudManager());
         }
         return dataHolder;
     }
@@ -665,5 +676,24 @@ public class BookTextFragment extends Fragment {
                 updateContentView();
             }
         }
+    }
+
+    private void refreshDataFormCloud() {
+        if (enableWifiOpenAndDetect()) {
+            ToastUtils.showToast(getContext(), R.string.open_wifi);
+            return;
+        }
+        final CloudContentRefreshAction refreshAction = new CloudContentRefreshAction();
+        refreshAction.execute(getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                getPagination().setCurrentPage(0);
+                updateContentView(refreshAction.getLibraryDataModel());
+                preloadNext();
+            }
+        });
     }
 }

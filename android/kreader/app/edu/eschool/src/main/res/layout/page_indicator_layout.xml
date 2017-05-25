@@ -16,6 +16,7 @@
         android:textSize="26sp" />
 
     <LinearLayout
+        android:id="@+id/page_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -46,5 +47,14 @@
             android:src="@drawable/page_arrow_right_background" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="25dp"
+        android:layout_toLeftOf="@+id/page_panel"
+        android:src="@drawable/ic_refresh" />
 
 </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
