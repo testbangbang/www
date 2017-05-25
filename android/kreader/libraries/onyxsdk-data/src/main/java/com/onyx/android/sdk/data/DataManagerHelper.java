@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
+import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.model.CloudMetadataCollection;
 import com.onyx.android.sdk.data.model.Library;
@@ -21,7 +22,9 @@ import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -320,5 +323,17 @@ public class DataManagerHelper {
                 dataProvider.updateMetadataCollection(collection);
             }
         }
+    }
+
+    public static void saveCloudMetadataAndCollection(Context context, DataProviderBase dataProvider,
+                                                      QueryArgs queryArgs, QueryResult<Metadata> queryResult) {
+        final DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for (Metadata metadata : queryResult.list) {
+            dataProvider.saveMetadata(context, metadata);
+            saveCloudCollection(context, dataProvider, queryArgs.libraryUniqueId, metadata.getAssociationId());
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
     }
 }
