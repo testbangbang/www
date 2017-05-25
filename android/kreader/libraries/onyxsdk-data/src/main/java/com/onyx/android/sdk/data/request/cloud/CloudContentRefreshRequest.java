@@ -72,7 +72,7 @@ public class CloudContentRefreshRequest extends BaseCloudRequest {
     }
 
     private void clearMetadataCache(CacheManager cacheManager, QueryArgs queryArgs) {
-        cacheManager.addToMetadataCache(CacheManager.generateCloudKey(queryArgs), null);
+        cacheManager.clearMetadataCache(CacheManager.generateCloudKey(queryArgs));
     }
 
     public Map<String, CloseableReference<Bitmap>> getThumbnailMap() {
