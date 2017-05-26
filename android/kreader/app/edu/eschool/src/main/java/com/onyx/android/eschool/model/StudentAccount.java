@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.eschool.utils.Constant;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
-import com.onyx.android.sdk.data.model.ContentAccount;
+import com.onyx.android.sdk.data.model.v2.ContentAccount;
 import com.onyx.android.sdk.data.model.SecurePreferences;
 import com.onyx.android.sdk.utils.StringUtils;
 

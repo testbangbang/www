@@ -1,6 +1,7 @@
-package com.onyx.android.sdk.data.model;
+package com.onyx.android.sdk.data.model.v2;
 
 import com.onyx.android.sdk.data.db.ContentDatabase;
+import com.onyx.android.sdk.data.model.Metadata;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 /**
@@ -11,7 +12,7 @@ public class CloudMetadata extends Metadata {
 
     @Override
     public String getAssociationId() {
-        return cloudId;
+        return getCloudId();
     }
 
     @Override

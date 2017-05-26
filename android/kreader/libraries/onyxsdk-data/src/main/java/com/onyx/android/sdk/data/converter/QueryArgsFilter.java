@@ -2,7 +2,7 @@ package com.onyx.android.sdk.data.converter;
 
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.onyx.android.sdk.data.SortBy;
-import com.onyx.android.sdk.data.model.CloudMetadata_Table;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.raizlabs.android.dbflow.sql.language.property.LongProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 

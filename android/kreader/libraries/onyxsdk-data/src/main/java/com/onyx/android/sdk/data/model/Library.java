@@ -12,20 +12,20 @@ import com.raizlabs.android.dbflow.annotation.Table;
 public class Library extends BaseData {
 
     @Column
-    String name = null;
+    private String name = null;
 
     @Column
-    String description = null;
+    private String description = null;
 
     @Column
-    String queryString = null;
+    private String queryString = null;
 
     @Column
-    String extraAttributes = null;
+    private String extraAttributes = null;
 
     @Column
     @Index
-    String parentUniqueId = null;
+    private String parentUniqueId = null;
 
     public String getParentUniqueId() {
         return parentUniqueId;
