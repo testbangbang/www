@@ -23,8 +23,10 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
         codePage = -1;
     }
 
-    public ReaderDocumentOptionsImpl(final String dp, final String ap,
-                                     final int codePage, final int codePageFallback,
+    public ReaderDocumentOptionsImpl(final String dp,
+                                     final String ap,
+                                     final int codePage,
+                                     final int codePageFallback,
                                      final ReaderChineseConvertType chineseConvertType,
                                      final boolean customFormEnabled) {
         documentPassword = dp;
