@@ -18,11 +18,13 @@ public class LoadDocumentOptionsRequest extends BaseDataRequest {
 
     private String documentPath;
     private volatile String md5;
+    private String password;
     private Metadata document;
 
-    public LoadDocumentOptionsRequest(final String path, final String md5Value) {
+    public LoadDocumentOptionsRequest(final String path, final String md5Value,final String password) {
         documentPath = path;
         md5 = md5Value;
+        this.password = password;
     }
 
     public void execute(final DataManager dataManager) throws Exception {
@@ -41,6 +43,7 @@ public class LoadDocumentOptionsRequest extends BaseDataRequest {
     public final BaseOptions getDocumentOptions() {
         final BaseOptions baseOptions = BaseOptions.optionsFromJSONString(document.getExtraAttributes());
         baseOptions.setMd5(md5);
+        baseOptions.setPassword(password);
         if (DeviceConfig.sharedInstance(getContext()).getFixedGamma() > 0) {
             baseOptions.setGamma(DeviceConfig.sharedInstance(getContext()).getFixedGamma());
         }

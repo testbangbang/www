@@ -37,13 +37,15 @@ public class OpenDocumentAction extends BaseAction {
     private Activity activity;
     private String documentPath;
     private String bookName;
+    private String password;
     private DataManager dataProvider;
     private boolean canceled = false;
 
-    public OpenDocumentAction(final Activity activity, final String path,final String bookName) {
+    public OpenDocumentAction(final Activity activity, final String path,final String bookName,final String password) {
         this.activity = activity;
         documentPath = path;
         this.bookName = bookName;
+        this.password = password;
         dataProvider = new DataManager();
     }
 
@@ -66,7 +68,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void openDocumentImpl(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        readerDataHolder.initReaderFromPath(documentPath,bookName);
+        readerDataHolder.initReaderFromPath(documentPath,bookName,password);
         readerDataHolder.getEventBus().post(new BeforeDocumentOpenEvent(documentPath));
 
         //LoadingDialog shows only after the decorview is drawn,preventing the dialog from swinging.
@@ -83,7 +85,8 @@ public class OpenDocumentAction extends BaseAction {
             }
         });
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
-                readerDataHolder.getReader().getDocumentMd5());
+                readerDataHolder.getReader().getDocumentMd5(),
+                readerDataHolder.getReader().getDocumentPassword());
         dataProvider.submit(readerDataHolder.getContext(), loadDocumentOptionsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

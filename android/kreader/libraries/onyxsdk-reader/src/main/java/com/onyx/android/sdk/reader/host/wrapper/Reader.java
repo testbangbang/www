@@ -139,6 +139,14 @@ public class Reader {
         return true;
     }
 
+    public String getDocumentPassword(){
+        return getReaderHelper().getPassword();
+    }
+
+    public void setDocumentPassword(String password){
+        getReaderHelper().setPassword(password);
+    }
+
     public String getDocumentMd5() {
         return getReaderHelper().getDocumentMd5();
     }
