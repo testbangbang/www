@@ -2,7 +2,6 @@ package com.onyx.android.sdk.utils;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -28,6 +27,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.onyx.android.sdk.data.FontInfo;
+import com.onyx.android.sdk.device.Device;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -51,7 +51,7 @@ public class DeviceUtils {
     private final static String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
 
     private final static String DEFAULT_TOUCH_DEVICE_PATH = "/dev/input/event1";
-    private static final String MAC_ADDRESS_CACHE_PATH = "/data/local/assets/mac_address.conf";
+    private static final String MAC_ADDRESS_KEY = "mac_address";
 
 
     public static boolean isRkDevice() {
@@ -405,15 +405,15 @@ public class DeviceUtils {
         if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI)) {
             return null;
         }
-        String result = getMacAddressFromCacheFile();
+        String result = getMacAddressFromCacheFile(context);
         if (TextUtils.isEmpty(result)) {
             result = getMacAddressFromWifiManager(context);
         }
         return result;
     }
 
-    private static String getMacAddressFromCacheFile(){
-        return FileUtils.readContentOfFile(new File(MAC_ADDRESS_CACHE_PATH));
+    private static String getMacAddressFromCacheFile(Context context){
+        return Device.currentDevice().readSystemConfig(context, MAC_ADDRESS_KEY);
     }
 
     private static String getMacAddressFromWifiManager(Context context){
@@ -431,7 +431,7 @@ public class DeviceUtils {
         }
         String macAddress = wifiManager.getConnectionInfo().getMacAddress();
         if (!TextUtils.isEmpty(macAddress)){
-            saveMacAddressToVendor(macAddress);
+            saveMacAddressToVendor(context,macAddress);
         }
         if (restoreWifiStatus) {
             wifiManager.setWifiEnabled(false);
@@ -439,13 +439,7 @@ public class DeviceUtils {
         return macAddress;
     }
 
-    private static void saveMacAddressToVendor(String macAddress) {
-        File macAddressCacheFile = new File(MAC_ADDRESS_CACHE_PATH);
-        try {
-            macAddressCacheFile.createNewFile();
-            FileUtils.saveContentToFile(macAddress, macAddressCacheFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private static void saveMacAddressToVendor(Context context,String macAddress) {
+        Device.currentDevice().saveSystemConfig(context, MAC_ADDRESS_KEY, macAddress);
     }
 }
