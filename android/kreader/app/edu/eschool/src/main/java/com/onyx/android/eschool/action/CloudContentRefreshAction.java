@@ -9,7 +9,7 @@ import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.cloud.CloudContentRefreshRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudContentRefreshRequest;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 
 /**

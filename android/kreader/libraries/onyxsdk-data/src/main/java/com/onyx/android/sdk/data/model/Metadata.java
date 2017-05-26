@@ -31,85 +31,85 @@ public class Metadata extends BaseData {
     public static final String PROGRESS_DIVIDER = "/";
 
     @Column
-    String name = null;
+    private String name = null;
 
     @Column
-    String title = null;
+    private String title = null;
 
     @Column
-    String authors = null;
+    private String authors = null;
 
     @Column
-    String publisher = null;
+    private String publisher = null;
 
     @Column
-    String language = null;
+    private String language = null;
 
     @Column
-    String ISBN = null;
+    private String ISBN = null;
 
     @Column
-    String description = null;
+    private String description = null;
 
     @Column
-    String location = null;
+    private String location = null;
 
     @Column
-    String nativeAbsolutePath = null;
+    private String nativeAbsolutePath = null;
 
     @Column
-    long size = 0;
+    private long size = 0;
 
     @Column
-    String encoding = null;
+    private String encoding = null;
 
     @Column
-    Date lastAccess = null;
+    private Date lastAccess = null;
 
     @Column
-    Date lastModified = null;
+    private Date lastModified = null;
 
     @Column
-    String progress = null;
+    private String progress = null;
 
     @Column
-    int favorite = 0;
+    private int favorite = 0;
 
     @Column
-    int rating = 0;
+    private int rating = 0;
 
     @Column
-    String tags = null;
+    private String tags = null;
 
     @Column
-    String series = null;
+    private String series = null;
 
     @Column
-    String extraAttributes = null;
+    private String extraAttributes = null;
 
     @Column
-    String type = null;
+    private String type = null;
 
     @Column
-    String cloudId;
+    private String cloudId;
 
     @Column
-    String parentId;
+    private String parentId;
 
     @Column
-    int readingStatus = 0;
+    private int readingStatus = 0;
 
     @Column
-    String hashTag;
+    private String hashTag;
 
     @Column
-    String storageId;
+    private String storageId;
 
     @Column
-    int fetchSource;
+    private int fetchSource;
 
     @Column
-    String coverUrl;
+    private String coverUrl;
 
     public void setFetchSource(int fetchSource) {
         this.fetchSource = fetchSource;

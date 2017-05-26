@@ -29,9 +29,6 @@ public class ContainerRequest extends BaseCloudRequest {
         if (StringUtils.isNullOrEmpty(id)) {
             throw new Exception("categoryId is blank");
         }
-        if (!CloudManager.isWifiConnected(getContext())) {
-            return;
-        }
         fetchFromCloud(parent);
     }
 

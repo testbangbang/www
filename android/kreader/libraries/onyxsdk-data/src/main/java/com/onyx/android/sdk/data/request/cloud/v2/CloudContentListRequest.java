@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.data.request.cloud;
+package com.onyx.android.sdk.data.request.cloud.v2;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,12 +10,10 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.manager.CacheManager;
-import com.onyx.android.sdk.data.model.CloudMetadataCollection;
-import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
+import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;

@@ -1,8 +1,9 @@
-package com.onyx.android.sdk.data.request.cloud;
+package com.onyx.android.sdk.data.request.cloud.v2;
 
 import com.onyx.android.sdk.data.CloudManager;
-import com.onyx.android.sdk.data.model.AuthToken;
-import com.onyx.android.sdk.data.model.ContentAuthAccount;
+import com.onyx.android.sdk.data.model.v2.AuthToken;
+import com.onyx.android.sdk.data.model.v2.ContentAuthAccount;
+import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 
 import retrofit2.Response;

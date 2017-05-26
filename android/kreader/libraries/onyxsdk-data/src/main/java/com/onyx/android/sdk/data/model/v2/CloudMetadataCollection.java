@@ -1,6 +1,7 @@
-package com.onyx.android.sdk.data.model;
+package com.onyx.android.sdk.data.model.v2;
 
 import com.onyx.android.sdk.data.db.ContentDatabase;
+import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 /**

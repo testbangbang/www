@@ -20,15 +20,15 @@ public class BaseData extends BaseModel {
     @Column
     @PrimaryKey(autoincrement = true)
     @Index
-    long id = INVALID_ID;
+    private long id = INVALID_ID;
 
     @Column
     @Index
-    String guid = null;
+    private String guid = null;
 
     @Column
     @Index
-    String idString = null;
+    private String idString = null;
 
     @Column
     private Date createdAt = null;

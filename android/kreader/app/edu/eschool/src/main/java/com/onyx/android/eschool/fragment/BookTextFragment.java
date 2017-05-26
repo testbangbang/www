@@ -36,8 +36,8 @@ import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.cloud.CloudContentListRequest;
-import com.onyx.android.sdk.data.request.cloud.CloudThumbnailLoadRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
@@ -309,8 +309,8 @@ public class BookTextFragment extends Fragment {
         getCloudStore().submitRequestToSingle(getContext().getApplicationContext(), loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    e.printStackTrace();
+                if(!isContentValid(request, e)) {
+                    return;
                 }
                 CloseableReference<Bitmap> closeableRef = loadRequest.getRefBitmap();
                 if (closeableRef != null && closeableRef.isValid()) {
@@ -319,6 +319,17 @@ public class BookTextFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private boolean isContentValid(BaseRequest request, Throwable e) {
+        if (e != null || request.isAbort() || isContentViewInvalid()) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isContentViewInvalid() {
+        return contentPageView == null || pageIndicator == null;
     }
 
     private String getRealUrl(String url) {
@@ -459,6 +470,9 @@ public class BookTextFragment extends Fragment {
     }
 
     private void updateContentView() {
+        if(isContentViewInvalid()) {
+            return;
+        }
         newPage = true;
         contentPageView.getAdapter().notifyDataSetChanged();
         updatePageIndicator();
