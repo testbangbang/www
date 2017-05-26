@@ -53,7 +53,6 @@ public class ReaderHelper {
 
     private String documentPath;
     private String bookName;
-    private String password;
     private String documentMd5;
     private ReaderDocumentMetadata documentMetadata;
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
@@ -389,14 +388,6 @@ public class ReaderHelper {
 
     public void setBookName(String bookName){
         this.bookName = bookName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public final String getDocumentMd5() {

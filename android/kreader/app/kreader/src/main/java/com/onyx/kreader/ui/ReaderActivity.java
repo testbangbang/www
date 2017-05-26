@@ -117,7 +117,6 @@ public class ReaderActivity extends OnyxBaseActivity {
     private static final String DOCUMENT_NAME_TAG = "bookName";
     private static final String DOCUMENT_PASSWORD = "Password";
 
-
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
     private SurfaceView surfaceView;
     private RelativeLayout mainView;
