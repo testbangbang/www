@@ -290,7 +290,7 @@
     <string name="children_book">Детская литература</string>
     <string name="finance_and_economics">Экономика и финансы</string>
     <string name="magazine">Журналы</string>
-    <string name="fiction">Художественная литература</string>
+    <string name="fiction">Художественная\nлитература</string>
     <string name="other">Прочее</string>
     <string name="load_statistical_data_failed">Загрузить статистические данные не удалось</string>
     <string name="no_more_search_results">Больше ничего не найдено</string>
