@@ -1009,8 +1009,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
         final String path = "/mnt/sdcard/Books/a.pdf";
         final String bookName = "a";
-        final String password = "";
-        final OpenDocumentAction action = new OpenDocumentAction(this, path,bookName,password);
+        final OpenDocumentAction action = new OpenDocumentAction(this, path,bookName);
         action.execute(getReaderDataHolder(), null);
         releaseStartupWakeLock();
     }

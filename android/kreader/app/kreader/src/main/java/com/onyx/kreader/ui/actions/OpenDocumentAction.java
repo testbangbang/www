@@ -41,6 +41,13 @@ public class OpenDocumentAction extends BaseAction {
     private DataManager dataProvider;
     private boolean canceled = false;
 
+    public OpenDocumentAction(final Activity activity, final String path,final String bookName) {
+        this.activity = activity;
+        documentPath = path;
+        this.bookName = bookName;
+        dataProvider = new DataManager();
+    }
+
     public OpenDocumentAction(final Activity activity, final String path,final String bookName,final String password) {
         this.activity = activity;
         documentPath = path;

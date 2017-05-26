@@ -394,7 +394,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void handleViewActionIntent() {
         final String path = FileUtils.getRealFilePathFromUri(this, getIntent().getData());
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(path,
-                null,null);
+                null);
         DataManager dataProvider = new DataManager();
         dataProvider.submit(this, loadDocumentOptionsRequest, new BaseCallback() {
             @Override
