@@ -37,4 +37,6 @@ public class AlBookOptions {
 	 * вывод обложки на первой странице книги - отключен
 	 */
 	public boolean				noUseCover = false;
+
+	public String 				password;
 }

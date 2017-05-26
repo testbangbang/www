@@ -2608,9 +2608,7 @@ public class AlBookEng{
 				continue;
 			}
 			if ((prevExt != null && prevExt.equalsIgnoreCase(JEBFilesZIP.JEB_TAG))) {
-				if(!JEBFilesZIP.queryJEBDecrypt(engOptions.appInstance,activeFile.fileName)){
-					return TAL_NOTIFY_RESULT.ERROR;
-				}
+				JEBFilesZIP.setPassword(bookOptions.password);
 			}
 			ft = AlFilesZIP.isZIPFile(currName, a, fList, prevExt);
 			if (ft == TAL_FILE_TYPE.ZIP) {
