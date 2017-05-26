@@ -22,7 +22,6 @@
     "com.onyx.android.edu",
     "com.android.music",
     "com.android.providers.downloads.ui",
-    "com.onyx.dict",
     "com.onyx.kreader"
   ],
   "test_apps": [
