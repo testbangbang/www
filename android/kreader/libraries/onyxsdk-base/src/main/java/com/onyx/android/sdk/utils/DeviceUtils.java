@@ -2,7 +2,6 @@ package com.onyx.android.sdk.utils;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -19,6 +18,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
@@ -27,6 +27,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.onyx.android.sdk.data.FontInfo;
+import com.onyx.android.sdk.device.Device;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -44,13 +45,14 @@ import static android.content.Context.POWER_SERVICE;
  */
 
 public class DeviceUtils {
-
     public static final String TAG = DeviceUtils.class.getSimpleName();
 
     private final static String SHOW_STATUS_BAR_ACTION = "show_status_bar";
     private final static String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
 
     private final static String DEFAULT_TOUCH_DEVICE_PATH = "/dev/input/event1";
+    private static final String MAC_ADDRESS_KEY = "mac_address";
+
 
     public static boolean isRkDevice() {
         return Build.HARDWARE.startsWith("rk");
@@ -399,26 +401,45 @@ public class DeviceUtils {
     }
 
     @Nullable
-    public static String getDeviceMacAddress(Context context){
-        boolean restoreWifiStatus = false;
+    public static String getDeviceMacAddress(Context context) {
         if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI)) {
             return null;
         }
+        String result = getMacAddressFromCacheFile(context);
+        if (TextUtils.isEmpty(result)) {
+            result = getMacAddressFromWifiManager(context);
+        }
+        return result;
+    }
+
+    private static String getMacAddressFromCacheFile(Context context){
+        return Device.currentDevice().readSystemConfig(context, MAC_ADDRESS_KEY);
+    }
+
+    private static String getMacAddressFromWifiManager(Context context){
+        boolean restoreWifiStatus = false;
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(true);
             //TODO:Add Delay For Some Device which could not start wifi instantly.
             try {
                 Thread.sleep(600);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             restoreWifiStatus = true;
         }
         String macAddress = wifiManager.getConnectionInfo().getMacAddress();
+        if (!TextUtils.isEmpty(macAddress)){
+            saveMacAddressToVendor(context,macAddress);
+        }
         if (restoreWifiStatus) {
             wifiManager.setWifiEnabled(false);
         }
         return macAddress;
+    }
+
+    private static void saveMacAddressToVendor(Context context,String macAddress) {
+        Device.currentDevice().saveSystemConfig(context, MAC_ADDRESS_KEY, macAddress);
     }
 }
