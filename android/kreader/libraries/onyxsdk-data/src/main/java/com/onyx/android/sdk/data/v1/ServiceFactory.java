@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data.v1;
 
+import com.onyx.android.sdk.data.v2.ContentService;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 import retrofit2.Retrofit;

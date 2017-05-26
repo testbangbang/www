@@ -7,8 +7,7 @@ import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.db.ContentDatabase;
-import com.onyx.android.sdk.data.manager.CacheManager;
-import com.onyx.android.sdk.data.model.CloudMetadataCollection;
+import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
@@ -17,8 +16,6 @@ import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
-import com.onyx.android.sdk.data.v1.OnyxFileDownloadService;
-import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -27,17 +24,11 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import okhttp3.ResponseBody;
-import retrofit2.Response;
 
 /**
  * Created by suicheng on 2016/11/16.

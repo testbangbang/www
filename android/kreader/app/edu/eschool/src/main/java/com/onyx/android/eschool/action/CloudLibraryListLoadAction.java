@@ -7,9 +7,8 @@ import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
-import com.onyx.android.sdk.data.model.CloudLibrary;
 import com.onyx.android.sdk.data.model.Library;
-import com.onyx.android.sdk.data.request.cloud.CloudLibraryListLoadRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudLibraryListLoadRequest;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 

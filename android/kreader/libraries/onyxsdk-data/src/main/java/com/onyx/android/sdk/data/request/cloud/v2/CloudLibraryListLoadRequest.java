@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.data.request.cloud;
+package com.onyx.android.sdk.data.request.cloud.v2;
 
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.QueryArgs;
@@ -6,6 +6,7 @@ import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
+import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.raizlabs.android.dbflow.config.FlowManager;

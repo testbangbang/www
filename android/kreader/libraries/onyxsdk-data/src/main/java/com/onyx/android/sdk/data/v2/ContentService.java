@@ -1,11 +1,11 @@
-package com.onyx.android.sdk.data.v1;
+package com.onyx.android.sdk.data.v2;
 
 import com.onyx.android.sdk.data.Constant;
-import com.onyx.android.sdk.data.model.AuthToken;
-import com.onyx.android.sdk.data.model.CloudLibrary;
-import com.onyx.android.sdk.data.model.CloudMetadata;
-import com.onyx.android.sdk.data.model.ContentAccount;
-import com.onyx.android.sdk.data.model.ContentAuthAccount;
+import com.onyx.android.sdk.data.model.v2.AuthToken;
+import com.onyx.android.sdk.data.model.v2.CloudLibrary;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata;
+import com.onyx.android.sdk.data.model.v2.ContentAccount;
+import com.onyx.android.sdk.data.model.v2.ContentAuthAccount;
 import com.onyx.android.sdk.data.model.ProductResult;
 
 import java.util.List;

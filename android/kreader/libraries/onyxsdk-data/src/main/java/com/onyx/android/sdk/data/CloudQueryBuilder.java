@@ -1,13 +1,11 @@
 package com.onyx.android.sdk.data;
 
-import com.onyx.android.sdk.data.model.CloudMetadataCollection;
-import com.onyx.android.sdk.data.model.CloudMetadataCollection_Table;
-import com.onyx.android.sdk.data.model.CloudMetadata_Table;
+import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection;
+import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection_Table;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
-import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;

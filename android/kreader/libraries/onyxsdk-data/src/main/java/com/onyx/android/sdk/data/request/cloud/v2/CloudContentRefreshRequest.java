@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.data.request.cloud;
+package com.onyx.android.sdk.data.request.cloud.v2;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
+import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 
 import java.util.Arrays;
 import java.util.HashMap;
