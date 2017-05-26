@@ -98,6 +98,7 @@ public class JEBReaderWrapper {
         bookOpt.codePageDefault = documentOptions.getCodePageFallback();
         bookOpt.formatOptions = 0;
         bookOpt.readPosition = 0;
+        bookOpt.password = documentOptions.getDocumentPassword();
         if (bookEng.openBook(path, bookOpt) != TAL_RESULT.OK) {
             return ERROR_FILE_INVALID;
         }
