@@ -15,8 +15,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:paddingBottom="@dimen/tab_item_text_padding_bottom"
+        android:paddingRight="@dimen/tab_item_text_padding_right"
         android:text="hello"
-        android:textSize="32sp" />
+        android:textSize="@dimen/tab_item_text_size" />
 
 
 </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>

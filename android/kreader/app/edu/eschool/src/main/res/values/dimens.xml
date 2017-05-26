@@ -19,12 +19,14 @@
     <dimen name="library_item_progress_margin_top">3dp</dimen>
     <dimen name="library_item_progress_padding_left_right">3dp</dimen>
 
-    <!--teaching_auxiliary_product_cover_panel_get_widget_margin_top-->
-    <!--<dimen name="teaching_auxiliary_product_cover_panel_get_widget_width">26dp</dimen>
-    <dimen name="teaching_auxiliary_product_cover_panel_get_widget_height">20dp</dimen>-->
-
-    <!--<dimen name="teaching_auxiliary_product_progress_height">7dp</dimen>
-    <dimen name="teaching_auxiliary_product_progress_margin_top">3dp</dimen>
-    <dimen name="teaching_auxiliary_product_progress_padding_left_right">3dp</dimen>-->
+    <dimen name="tab_item_text_size">32sp</dimen>
+    <dimen name="tab_item_text_padding_right">8dp</dimen>
+    <dimen name="tab_item_text_padding_bottom">8dp</dimen>
+    <dimen name="book_item_text_size">26sp</dimen>
+    <dimen name="book_item_text_margin_right">19dp</dimen>
+    <dimen name="book_item_cover_image_width">232dp</dimen>
+    <dimen name="book_item_cover_image_height">320dp</dimen>
+    <dimen name="book_item_get_image_width">55dp</dimen>
+    <dimen name="book_item_get_image_height">32dp</dimen>
 
 </resources>
