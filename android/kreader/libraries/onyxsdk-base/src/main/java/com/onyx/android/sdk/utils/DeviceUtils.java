@@ -19,6 +19,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
@@ -44,13 +45,14 @@ import static android.content.Context.POWER_SERVICE;
  */
 
 public class DeviceUtils {
-
     public static final String TAG = DeviceUtils.class.getSimpleName();
 
     private final static String SHOW_STATUS_BAR_ACTION = "show_status_bar";
     private final static String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
 
     private final static String DEFAULT_TOUCH_DEVICE_PATH = "/dev/input/event1";
+    private static final String MAC_ADDRESS_CACHE_PATH = "/data/local/assets/mac_address.conf";
+
 
     public static boolean isRkDevice() {
         return Build.HARDWARE.startsWith("rk");
@@ -399,26 +401,51 @@ public class DeviceUtils {
     }
 
     @Nullable
-    public static String getDeviceMacAddress(Context context){
-        boolean restoreWifiStatus = false;
+    public static String getDeviceMacAddress(Context context) {
         if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI)) {
             return null;
         }
+        String result = getMacAddressFromCacheFile();
+        if (TextUtils.isEmpty(result)) {
+            result = getMacAddressFromWifiManager(context);
+        }
+        return result;
+    }
+
+    private static String getMacAddressFromCacheFile(){
+        return FileUtils.readContentOfFile(new File(MAC_ADDRESS_CACHE_PATH));
+    }
+
+    private static String getMacAddressFromWifiManager(Context context){
+        boolean restoreWifiStatus = false;
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(true);
             //TODO:Add Delay For Some Device which could not start wifi instantly.
             try {
                 Thread.sleep(600);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             restoreWifiStatus = true;
         }
         String macAddress = wifiManager.getConnectionInfo().getMacAddress();
+        if (!TextUtils.isEmpty(macAddress)){
+            saveMacAddressToVendor(macAddress);
+        }
         if (restoreWifiStatus) {
             wifiManager.setWifiEnabled(false);
         }
         return macAddress;
+    }
+
+    private static void saveMacAddressToVendor(String macAddress) {
+        File macAddressCacheFile = new File(MAC_ADDRESS_CACHE_PATH);
+        try {
+            macAddressCacheFile.createNewFile();
+            FileUtils.saveContentToFile(macAddress, macAddressCacheFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
