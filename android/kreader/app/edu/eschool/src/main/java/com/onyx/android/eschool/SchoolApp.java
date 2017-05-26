@@ -197,6 +197,7 @@ public class SchoolApp extends Application {
     }
 
     private void initSystemInBackground() {
+        enableWifiDetect();
         turnOffLed();
     }
 
@@ -262,6 +263,10 @@ public class SchoolApp extends Application {
 
     private void initFrescoLoader() {
         Fresco.initialize(singleton().getApplicationContext());
+    }
+
+    private void enableWifiDetect() {
+        Device.currentDevice().enableWifiDetect(this, true);
     }
 
     public void terminateCloudDatabase() {
