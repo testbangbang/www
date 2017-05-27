@@ -7,6 +7,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PixelXorXfermode;
 import android.graphics.RectF;
+import android.util.Log;
+
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -123,10 +126,12 @@ public class HighlightCursor {
             return;
         }
         if (!displayRect.isEmpty()) {
+            float left = AppCompatUtils.calculateEvenDigital(displayRect.left);
+            float top = AppCompatUtils.calculateEvenDigital(displayRect.top);
             if (cursorType == Type.BEGIN_CURSOR) {
-                canvas.drawBitmap(startCursorBitmap, displayRect.left, displayRect.top, null);
+                canvas.drawBitmap(startCursorBitmap, left, top, null);
             } else {
-                canvas.drawBitmap(endCursorBitmap, displayRect.left, displayRect.top, null);
+                canvas.drawBitmap(endCursorBitmap, left, top, null);
             }
         }
         if (debugHitTest && !hitTestRect.isEmpty())  {

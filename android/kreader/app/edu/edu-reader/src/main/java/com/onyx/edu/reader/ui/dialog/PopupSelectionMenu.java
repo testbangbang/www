@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,6 +26,8 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.ui.compat.AppCompatLinearLayout;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -43,7 +46,7 @@ import java.util.List;
 
 import static com.onyx.edu.reader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle.Highlight;
 
-public class PopupSelectionMenu extends LinearLayout {
+public class PopupSelectionMenu extends AppCompatLinearLayout {
     private static final String TAG = PopupSelectionMenu.class.getSimpleName();
     private static final int MAX_DICTIONARY_LOAD_COUNT = 6;
     private static final int DELAY_DICTIONARY_LOAD_TIME = 2000;
@@ -431,13 +434,13 @@ public class PopupSelectionMenu extends LinearLayout {
         if (diffTop > diffBottom){
             float y = start.top - dividerHeight - measuredHeight;
             y = isShowTranslation() ? 0 : Math.max(y,0);
-            setY(y);
+            setY(AppCompatUtils.calculateEvenDigital(y));
             topDividerLine.setVisibility(isShowTranslation() ? GONE : VISIBLE);
             bottomDividerLine.setVisibility(isShowTranslation() ? VISIBLE : VISIBLE);
         }else {
             float y = end.bottom + dividerHeight;
             y = isShowTranslation() ? screenHeight - dictViewHeight : Math.min(y,screenHeight - measuredHeight);
-            setY(y);
+            setY(AppCompatUtils.calculateEvenDigital(y));
             topDividerLine.setVisibility(isShowTranslation() ? VISIBLE : VISIBLE);
             bottomDividerLine.setVisibility(isShowTranslation() ? GONE : VISIBLE);
         }
