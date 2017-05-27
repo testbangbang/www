@@ -406,7 +406,7 @@ public class DeviceUtils {
             return null;
         }
         String result = getMacAddressFromCacheFile(context);
-        if (TextUtils.isEmpty(result)) {
+        if (TextUtils.isEmpty(result) || !(isStringValidMacAddress(result))) {
             result = getMacAddressFromWifiManager(context);
         }
         return result;
@@ -414,6 +414,11 @@ public class DeviceUtils {
 
     private static String getMacAddressFromCacheFile(Context context){
         return Device.currentDevice().readSystemConfig(context, MAC_ADDRESS_KEY);
+    }
+
+    private static boolean isStringValidMacAddress(String val){
+        String macAddressRegex = "([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}";
+        return val.matches(macAddressRegex);
     }
 
     private static String getMacAddressFromWifiManager(Context context){
