@@ -96,4 +96,7 @@
     <string name="refresh_fail">刷新失败了</string>
     <string name="refresh_content_empty">刷新获取的内容为空</string>
 
+    <string name="token_exception_contact_admin">Token异常，请联系管理员</string>
+
+
 </resources>
