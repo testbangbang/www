@@ -9,6 +9,7 @@ import com.onyx.android.eschool.utils.Constant;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.data.model.v2.ContentAccount;
 import com.onyx.android.sdk.data.model.SecurePreferences;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 /**
@@ -33,6 +34,8 @@ public class StudentAccount {
     public String token;
     public ContentAccount accountInfo;
 
+    private static StudentAccount currentAccount;
+
     @JSONField(deserialize=false)
     public String getFirstGroup() {
         if (groups == null || groups.length <= 0) {
@@ -49,22 +52,37 @@ public class StudentAccount {
         return StringUtils.getBlankStr(name);
     }
 
+    public static StudentAccount currentAccount(Context context) {
+        if (currentAccount == null) {
+            currentAccount = loadAccount(context);
+        }
+        return currentAccount;
+    }
+
     public void saveAccount(Context context) {
         SecurePreferences preferences = new SecurePreferences(context, Constant.ACCOUNT_TYPE_STUDENT, Constant.ACCOUNT_INFO_TAG, true);
         preferences.put(Constant.JSON_TAG, JSON.toJSONString(this));
     }
 
-    public static StudentAccount loadAccount(Context context) {
-        try {
-            SecurePreferences preferences = new SecurePreferences(context, Constant.ACCOUNT_TYPE_STUDENT, Constant.ACCOUNT_INFO_TAG, true);
-            final String string = preferences.getString(Constant.JSON_TAG);
-            if (StringUtils.isNullOrEmpty(string)) {
-                return new StudentAccount();
-            }
-            return JSON.parseObject(string, StudentAccount.class);
-        } catch (Exception e) {
-            return new StudentAccount();
+    public static void saveAccount(Context context, StudentAccount account) {
+        if (account == null) {
+            return;
         }
+        currentAccount = account;
+        account.saveAccount(context);
+    }
+
+    public static StudentAccount loadAccount(Context context) {
+        SecurePreferences preferences = new SecurePreferences(context, Constant.ACCOUNT_TYPE_STUDENT, Constant.ACCOUNT_INFO_TAG, true);
+        final String string = preferences.getString(Constant.JSON_TAG);
+        if (StringUtils.isNullOrEmpty(string)) {
+            return  currentAccount = new StudentAccount();
+        }
+        currentAccount = JSONObjectParseUtils.parseObject(string, StudentAccount.class);
+        if (currentAccount == null) {
+            currentAccount = new StudentAccount();
+        }
+        return currentAccount;
     }
 
     public static String loadAvatarPath(Context context) {
