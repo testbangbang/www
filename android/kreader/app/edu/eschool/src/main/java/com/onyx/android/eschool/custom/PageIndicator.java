@@ -65,6 +65,10 @@ public class PageIndicator {
         currentPageView.setText(currentPage + "/" + totalPage);
     }
 
+    public void setTotalText(String content) {
+        totalText.setText(content);
+    }
+
     public void updateTotal(int totalCount) {
         String total;
         if (StringUtils.isNotBlank(totalFormat)) {

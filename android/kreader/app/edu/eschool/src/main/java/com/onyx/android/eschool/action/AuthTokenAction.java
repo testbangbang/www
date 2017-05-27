@@ -59,10 +59,10 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                     if (ContentException.isNetworkException(e)) {
                         if (StudentAccount.isAccountValid(request.getContext(), localAccountRequest.getStudentAccount())) {
                             BaseCallback.invoke(baseCallback, request, null);
+                            return;
                         }
-                    } else {
-                        sendAccountTokenErrorEvent();
                     }
+                    sendAccountTokenErrorEvent();
                     return;
                 }
                 saveAccountRequest.setContentAccount(accountGetRequest.getContentAccount());
