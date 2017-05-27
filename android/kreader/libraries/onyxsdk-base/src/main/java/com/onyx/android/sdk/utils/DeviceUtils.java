@@ -421,12 +421,7 @@ public class DeviceUtils {
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(true);
-            //TODO:Add Delay For Some Device which could not start wifi instantly.
-            try {
-                Thread.sleep(600);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            TestUtils.sleep(600);
             restoreWifiStatus = true;
         }
         String macAddress = wifiManager.getConnectionInfo().getMacAddress();
