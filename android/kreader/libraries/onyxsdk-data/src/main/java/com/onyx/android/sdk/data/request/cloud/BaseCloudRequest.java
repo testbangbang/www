@@ -5,7 +5,9 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.common.ContentException;
 import com.onyx.android.sdk.data.model.OnyxAccount;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.ResultCode;
 import com.onyx.android.sdk.dataprovider.BuildConfig;
 
@@ -174,21 +176,21 @@ public abstract class BaseCloudRequest extends BaseRequest {
     }
 
     protected <T> Response<T> executeCall(Call<T> call) throws Exception {
-        Response<T> response = call.execute();
+        Response<T> response;
+        try {
+            response = call.execute();
+        } catch (Exception e) {
+            throw new ContentException.NetworkException(e);
+        }
         if (!response.isSuccessful()) {
             String errorBody = response.errorBody().string();
-            parseResultCode(errorBody);
-            throw new Exception(errorBody);
+            throw new ContentException.CloudException(parseResultCode(errorBody));
         }
         return response;
     }
 
-    private void parseResultCode(String errorBody) {
-        try {
-            resultCode = JSON.parseObject(errorBody, ResultCode.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private ResultCode parseResultCode(String errorBody) {
+        return resultCode = JSONObjectParseUtils.parseObject(errorBody, ResultCode.class);
     }
 
     public ResultCode getResultCode() {

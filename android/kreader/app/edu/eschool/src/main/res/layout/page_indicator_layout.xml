@@ -55,6 +55,6 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="25dp"
         android:layout_toLeftOf="@+id/page_panel"
-        android:src="@drawable/ic_refresh" />
+        android:src="@drawable/refresh_background" />
 
 </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
