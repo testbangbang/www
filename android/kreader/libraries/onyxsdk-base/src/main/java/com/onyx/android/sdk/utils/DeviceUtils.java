@@ -33,7 +33,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -339,17 +341,6 @@ public class DeviceUtils {
         System.exit(1);
     }
 
-    public static String getMacAddress(Context mContext) {
-        String macStr = "";
-        WifiManager wifiManager = (WifiManager) mContext
-                .getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        if (wifiInfo != null) {
-            macStr = wifiInfo.getMacAddress();
-        }
-        return macStr;
-    }
-
     public static boolean isWifiConnected(Context context) {
         if (context != null) {
             ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -429,14 +420,46 @@ public class DeviceUtils {
             TestUtils.sleep(600);
             restoreWifiStatus = true;
         }
-        String macAddress = wifiManager.getConnectionInfo().getMacAddress();
-        if (!TextUtils.isEmpty(macAddress)){
-            saveMacAddressToVendor(context,macAddress);
+        String macAddress;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            macAddress = getMacAddressFromNetworkInterface();
+        } else {
+            macAddress = wifiManager.getConnectionInfo().getMacAddress();
+        }
+        if (!TextUtils.isEmpty(macAddress)) {
+            macAddress = macAddress.toLowerCase();
+            saveMacAddressToVendor(context, macAddress);
         }
         if (restoreWifiStatus) {
             wifiManager.setWifiEnabled(false);
         }
         return macAddress;
+    }
+
+    public static String getMacAddressFromNetworkInterface() {
+        try {
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("wlan0")) {
+                    continue;
+                }
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                    return "";
+                }
+                StringBuilder sb = new StringBuilder();
+                for (byte b : macBytes) {
+                    sb.append(String.format("%02X:", b & 0xFF));
+                }
+                if (sb.length() > 0) {
+                    sb.deleteCharAt(sb.length() - 1);
+                }
+                return sb.toString().toLowerCase();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     private static void saveMacAddressToVendor(Context context,String macAddress) {

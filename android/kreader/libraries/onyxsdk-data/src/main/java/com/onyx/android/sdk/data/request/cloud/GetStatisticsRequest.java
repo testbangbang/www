@@ -56,7 +56,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         if (StringUtils.isNullOrEmpty(url)) {
             return;
         }
-        String mac = DeviceUtils.getMacAddress(context);
+        String mac = DeviceUtils.getDeviceMacAddress(context);
         if (StringUtils.isNullOrEmpty(mac)) {
             return;
         }
