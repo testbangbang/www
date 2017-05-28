@@ -45,7 +45,7 @@ public class PushStatisticsRequest extends BaseStatisticsRequest {
         if (!DeviceUtils.isWifiConnected(context)) {
             return;
         }
-        String mac = DeviceUtils.getMacAddress(context);
+        String mac = DeviceUtils.getDeviceMacAddress(context);
         if (StringUtils.isNullOrEmpty(mac)) {
             return;
         }

@@ -68,6 +68,6 @@ public class Device extends BaseData {
             return;
         }
 
-        device.deviceUniqueId = device.macAddress = DeviceUtils.getMacAddress(context);
+        device.deviceUniqueId = device.macAddress = DeviceUtils.getDeviceMacAddress(context);
     }
 }
