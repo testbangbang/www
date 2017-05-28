@@ -300,7 +300,8 @@ public class DataManagerHelper {
     }
 
     public static void saveCollection(Context context, DataProviderBase dataProvider, MetadataCollection collection) {
-        MetadataCollection findCollection = dataProvider.findMetadataCollection(context, collection.getDocumentUniqueId());
+        MetadataCollection findCollection = dataProvider.loadMetadataCollection(context, collection.getLibraryUniqueId(),
+                collection.getDocumentUniqueId());
         if (findCollection == null) {
             if (StringUtils.isNullOrEmpty(collection.getLibraryUniqueId())) {
                 return;
