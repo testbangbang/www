@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.eschool.utils.Constant;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
-import com.onyx.android.sdk.data.model.v2.ContentAccount;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.model.SecurePreferences;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -16,7 +16,7 @@ import com.onyx.android.sdk.utils.StringUtils;
  * Created by suicheng on 2016/11/26.
  */
 
-public class StudentAccount {
+public class StudentAccount extends NeoAccountBase {
     private final static String UPDATE_STATUS_BAR_INFO_ACTION = "update_status_bar_info";
     private final static String ARGS_STUDENT_NAME = "args_student_name";
     private final static String ARGS_STUDENT_CLASS_INFO = "args_student_class_info";
@@ -31,8 +31,6 @@ public class StudentAccount {
 
     public String[] groups;
     public String phone;
-    public String token;
-    public ContentAccount accountInfo;
 
     private static StudentAccount currentAccount;
 

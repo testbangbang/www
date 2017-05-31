@@ -3,7 +3,7 @@ package com.onyx.android.eschool.request;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.eschool.model.StudentAccount;
 import com.onyx.android.sdk.data.CloudManager;
-import com.onyx.android.sdk.data.model.v2.ContentAccount;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -13,25 +13,25 @@ import com.onyx.android.sdk.utils.StringUtils;
 
 public class SaveAccountToLocalRequest extends BaseCloudRequest {
 
-    private ContentAccount contentAccount;
+    private NeoAccountBase neoAccountBase;
 
-    public SaveAccountToLocalRequest(ContentAccount contentAccount) {
-        this.contentAccount = contentAccount;
+    public SaveAccountToLocalRequest(NeoAccountBase neoAccountBase) {
+        this.neoAccountBase = neoAccountBase;
     }
 
-    public void setContentAccount(ContentAccount contentAccount) {
-        this.contentAccount = contentAccount;
+    public void setNeoAccountBase(NeoAccountBase neoAccountBase) {
+        this.neoAccountBase = neoAccountBase;
     }
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        if (contentAccount == null || StringUtils.isNullOrEmpty(contentAccount.info)) {
+        if (neoAccountBase == null || StringUtils.isNullOrEmpty(neoAccountBase.info)) {
             return;
         }
-        StudentAccount parseAccount = JSON.parseObject(contentAccount.info, StudentAccount.class);
+        StudentAccount parseAccount = JSON.parseObject(neoAccountBase.info, StudentAccount.class);
         if (parseAccount != null) {
             parseAccount.token = parent.getToken();
-            parseAccount.accountInfo = contentAccount;
+            parseAccount.accountInfo = neoAccountBase;
             StudentAccount.saveAccount(getContext(), parseAccount);
         }
     }
