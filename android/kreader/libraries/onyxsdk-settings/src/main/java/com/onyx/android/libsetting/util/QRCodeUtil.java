@@ -5,14 +5,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.onyx.android.sdk.device.Device;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.io.File;
+import java.util.Hashtable;
 
 /**
  * Created by solskjaer49 on 2017/5/19 17:01.
@@ -41,25 +43,31 @@ public class QRCodeUtil {
         if (cacheFile.exists() && cacheFile.canRead()) {
             return BitmapFactory.decodeFile(cacheFile.getPath());
         } else {
-            return stringToImageEncode(context, DeviceUtils.getDeviceMacAddress(context), 120,
+            return stringToImageEncode(context, DeviceUtils.getDeviceMacAddress(context), 120, true,
                     context.getResources().getColor(android.R.color.holo_blue_dark));
         }
     }
 
     public static Bitmap stringToImageEncode(Context context, String value, int targetSize) throws WriterException {
-        return stringToImageEncode(context, value, targetSize, context.getResources().getColor(android.R.color.black));
+        return stringToImageEncode(context, value, targetSize, false, context.getResources().getColor(android.R.color.black));
     }
 
-    public static Bitmap stringToImageEncode(Context context, String value, int targetSize, int qrCodeColor) throws WriterException {
+    public static Bitmap stringToImageEncode(Context context, String value, int targetSize, boolean cleanWhiteMargin, int qrCodeColor) throws WriterException {
+        Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+        hints.put(EncodeHintType.MARGIN, 1);
         BitMatrix bitMatrix;
         try {
             bitMatrix = new MultiFormatWriter().encode(
                     value,
                     BarcodeFormat.QR_CODE,
-                    targetSize, targetSize, null
+                    targetSize, targetSize, hints
             );
         } catch (IllegalArgumentException Illegalargumentexception) {
             return null;
+        }
+        if (cleanWhiteMargin) {
+            bitMatrix = cleanWhiteMargin(bitMatrix);
         }
         int bitMatrixWidth = bitMatrix.getWidth();
         int bitMatrixHeight = bitMatrix.getHeight();
@@ -78,5 +86,22 @@ public class QRCodeUtil {
         } else {
             return bitmap;
         }
+    }
+
+
+    private static BitMatrix cleanWhiteMargin(BitMatrix matrix) {
+        int[] rec = matrix.getEnclosingRectangle();
+        int resWidth = rec[2] + 1;
+        int resHeight = rec[3] + 1;
+
+        BitMatrix resMatrix = new BitMatrix(resWidth, resHeight);
+        resMatrix.clear();
+        for (int i = 0; i < resWidth; i++) {
+            for (int j = 0; j < resHeight; j++) {
+                if (matrix.get(i + rec[0], j + rec[1]))
+                    resMatrix.set(i, j);
+            }
+        }
+        return resMatrix;
     }
 }
