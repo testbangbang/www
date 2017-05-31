@@ -19,8 +19,7 @@ import java.io.File;
  */
 
 public class QRCodeUtil {
-    public static final String CFA_QR_CODE_FILE_PATH = Device.currentDevice().getExternalStorageDirectory().getPath()
-            + File.separator + ".cfa" + File.separator + "device_qr_code.png";
+    public static final String CFA_QR_CODE_FILE_PATH = "data/local/assets/device_qr_code.png";
     private static final String TAG = QRCodeUtil.class.getSimpleName();
     private static final boolean DEBUG = false;
 
