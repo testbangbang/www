@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.request.cloud.v2.LoadAccountFromCloudRequest;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -90,7 +91,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     }
 
     public static BaseAuthAccount createContentAccount(Context context) {
-        String macAddress = DeviceUtils.getDeviceMacAddress(context);
+        String macAddress = NetworkUtil.getMacAddress(context);
         if (StringUtils.isNullOrEmpty(macAddress)) {
             return null;
         }

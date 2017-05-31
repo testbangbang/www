@@ -31,7 +31,6 @@ public class SaveAccountToLocalRequest extends BaseCloudRequest {
         StudentAccount parseAccount = JSON.parseObject(neoAccountBase.info, StudentAccount.class);
         if (parseAccount != null) {
             parseAccount.token = parent.getToken();
-            parseAccount.accountInfo = neoAccountBase;
             StudentAccount.saveAccount(getContext(), parseAccount);
         }
     }
