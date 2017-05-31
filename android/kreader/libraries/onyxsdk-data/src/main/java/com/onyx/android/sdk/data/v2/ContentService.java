@@ -4,12 +4,12 @@ import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
-import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.ProductResult;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -29,7 +29,7 @@ public interface ContentService {
     Call<AuthToken> getAccountToken(@Body final BaseAuthAccount account);
 
     @GET("users/me")
-    Call<NeoAccountBase> getAccount(@Header(Constant.HEADER_AUTHORIZATION) final String auth);
+    Call<ResponseBody> getAccount(@Header(Constant.HEADER_AUTHORIZATION) final String auth);
 
     @GET("librarys/my")
     Call<List<CloudLibrary>> loadLibraryList(@Header(Constant.HEADER_AUTHORIZATION) final String token);
