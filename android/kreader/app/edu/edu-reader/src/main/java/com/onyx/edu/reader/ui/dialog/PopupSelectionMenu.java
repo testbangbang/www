@@ -444,6 +444,13 @@ public class PopupSelectionMenu extends AppCompatLinearLayout {
             topDividerLine.setVisibility(isShowTranslation() ? VISIBLE : VISIBLE);
             bottomDividerLine.setVisibility(isShowTranslation() ? GONE : VISIBLE);
         }
+
+        post(new Runnable() {
+            @Override
+            public void run() {
+                requestLayout();
+            }
+        });
     }
 
     public boolean isShowTranslation(){
