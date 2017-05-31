@@ -4,8 +4,8 @@ import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
-import com.onyx.android.sdk.data.model.v2.ContentAccount;
-import com.onyx.android.sdk.data.model.v2.ContentAuthAccount;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.ProductResult;
 
 import java.util.List;
@@ -26,10 +26,10 @@ public interface ContentService {
     String CONTENT_AUTH_PREFIX = "Bearer ";
 
     @POST("auth/local")
-    Call<AuthToken> getAccountToken(@Body final ContentAuthAccount account);
+    Call<AuthToken> getAccountToken(@Body final BaseAuthAccount account);
 
     @GET("users/me")
-    Call<ContentAccount> getAccount(@Header(Constant.HEADER_AUTHORIZATION) final String auth);
+    Call<NeoAccountBase> getAccount(@Header(Constant.HEADER_AUTHORIZATION) final String auth);
 
     @GET("librarys/my")
     Call<List<CloudLibrary>> loadLibraryList(@Header(Constant.HEADER_AUTHORIZATION) final String token);

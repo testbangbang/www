@@ -104,4 +104,5 @@
     <dimen name="dialog_dict_top_layout_margin">10dp</dimen>
     <dimen name="scribble_full_toolbar_padding">4dp</dimen>
     <dimen name="scribble_page_position_size">25sp</dimen>
+    <dimen name="dialog_table_of_content_list_item_padding">4dp</dimen>
 </resources>

@@ -2,8 +2,8 @@ package com.onyx.android.sdk.data.request.cloud.v2;
 
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
-import com.onyx.android.sdk.data.model.v2.ContentAccount;
-import com.onyx.android.sdk.data.model.v2.ContentAuthAccount;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.data.v2.ContentService;
@@ -16,16 +16,16 @@ import retrofit2.Response;
 
 public class LoadAccountFromCloudRequest extends BaseCloudRequest {
 
-    private ContentAuthAccount authAccount;
-    private ContentAccount contentAccount;
+    private BaseAuthAccount authAccount;
+    private NeoAccountBase neoAccountBase;
     private String token;
 
-    public LoadAccountFromCloudRequest(ContentAuthAccount authAccount) {
+    public LoadAccountFromCloudRequest(BaseAuthAccount authAccount) {
         this.authAccount = authAccount;
     }
 
-    public ContentAccount getContentAccount() {
-        return contentAccount;
+    public NeoAccountBase getNeoAccountBase() {
+        return neoAccountBase;
     }
 
     public String getToken() {
@@ -35,7 +35,7 @@ public class LoadAccountFromCloudRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         token = getAuthToken(parent);
-        contentAccount = getContentAccount(parent);
+        neoAccountBase = getContentAccount(parent);
     }
 
     private String getAuthToken(CloudManager parent) throws Exception {
@@ -49,9 +49,9 @@ public class LoadAccountFromCloudRequest extends BaseCloudRequest {
         return token;
     }
 
-    private ContentAccount getContentAccount(CloudManager parent) throws Exception {
-        ContentAccount account = null;
-        Response<ContentAccount> response = executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
+    private NeoAccountBase getContentAccount(CloudManager parent) throws Exception {
+        NeoAccountBase account = null;
+        Response<NeoAccountBase> response = executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
                 .getAccount(ContentService.CONTENT_AUTH_PREFIX + parent.getToken()));
         if (response.isSuccessful()) {
             account = response.body();
@@ -59,7 +59,7 @@ public class LoadAccountFromCloudRequest extends BaseCloudRequest {
         return account;
     }
 
-    public void setAuthAccount(ContentAuthAccount authAccount) {
+    public void setAuthAccount(BaseAuthAccount authAccount) {
         this.authAccount = authAccount;
     }
 }
