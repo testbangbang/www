@@ -79,7 +79,7 @@ public class EReadingTest extends ApplicationTestCase<Application> {
         runNameAscQueryArgsRequest();
 
         // test local cache
-        NetworkUtil.enableWifi(getContext(), false);
+        NetworkUtil.enableWiFi(getContext(), false);
         Thread.sleep(1800);
         runCreatedAtDescQueryArgsRequest();
         runNameAscQueryArgsRequest();

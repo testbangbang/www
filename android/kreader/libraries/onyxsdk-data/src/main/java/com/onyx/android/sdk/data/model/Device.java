@@ -8,6 +8,7 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.HashMap;
@@ -68,6 +69,6 @@ public class Device extends BaseData {
             return;
         }
 
-        device.deviceUniqueId = device.macAddress = DeviceUtils.getDeviceMacAddress(context);
+        device.deviceUniqueId = device.macAddress = NetworkUtil.getMacAddress(context);
     }
 }

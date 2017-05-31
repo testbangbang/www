@@ -11,6 +11,7 @@ import com.google.zxing.common.BitMatrix;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 
 import java.io.File;
 
@@ -41,7 +42,7 @@ public class QRCodeUtil {
         if (cacheFile.exists() && cacheFile.canRead()) {
             return BitmapFactory.decodeFile(cacheFile.getPath());
         } else {
-            return stringToImageEncode(context, DeviceUtils.getDeviceMacAddress(context), 120,
+            return stringToImageEncode(context, NetworkUtil.getMacAddress(context), 120,
                     context.getResources().getColor(android.R.color.holo_blue_dark));
         }
     }

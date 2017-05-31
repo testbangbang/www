@@ -172,7 +172,7 @@ public class CloudDataProvider implements DataProviderBase {
     @Override
     public long count(Context context, QueryArgs queryArgs) {
         long count;
-        if (NetworkUtil.isWifiConnected(context)) {
+        if (NetworkUtil.isWiFiConnected(context)) {
             count = findMetadataResultByQueryArgs(context, queryArgs).count;
         } else {
             count = countMetadataFromLocal(context, queryArgs);
