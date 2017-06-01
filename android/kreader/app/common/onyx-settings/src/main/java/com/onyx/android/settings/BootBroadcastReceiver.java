@@ -13,6 +13,7 @@ import com.google.zxing.WriterException;
 import com.onyx.android.libsetting.util.QRCodeUtil;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.ShellUtils;
 
 import java.io.File;
@@ -69,7 +70,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 preEnableWifi(context);
                 cacheFile.getParentFile().mkdirs();
                 cacheFile.createNewFile();
-                macAddress = DeviceUtils.getDeviceMacAddress(context);
+                macAddress = NetworkUtil.getMacAddress(context);
                 BitmapUtils.saveBitmap(QRCodeUtil.stringToImageEncode(context, macAddress,
                         120, context.getResources().getColor(android.R.color.holo_blue_dark))
                         , cacheFile.getPath());

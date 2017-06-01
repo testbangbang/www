@@ -11,10 +11,12 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
-import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 
 import java.io.File;
 import java.util.Hashtable;
+
+import retrofit2.http.HEAD;
 
 /**
  * Created by solskjaer49 on 2017/5/19 17:01.
@@ -43,7 +45,7 @@ public class QRCodeUtil {
         if (cacheFile.exists() && cacheFile.canRead()) {
             return BitmapFactory.decodeFile(cacheFile.getPath());
         } else {
-            return stringToImageEncode(context, DeviceUtils.getDeviceMacAddress(context), 120, true,
+            return stringToImageEncode(context, NetworkUtil.getMacAddress(context), 120, true,
                     context.getResources().getColor(android.R.color.holo_blue_dark));
         }
     }

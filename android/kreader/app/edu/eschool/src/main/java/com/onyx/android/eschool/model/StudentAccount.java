@@ -97,7 +97,7 @@ public class StudentAccount extends NeoAccountBase {
     }
 
     public static boolean isAccountValid(Context context, StudentAccount account) {
-        return account != null && StringUtils.isNotBlank(account.token) && account.accountInfo != null;
+        return account != null && StringUtils.isNotBlank(account.token);
     }
 
     public static void sendUserInfoSettingIntent(Context context, StudentAccount account) {

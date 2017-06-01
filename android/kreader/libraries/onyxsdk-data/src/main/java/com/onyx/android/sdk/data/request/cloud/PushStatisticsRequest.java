@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -42,10 +43,10 @@ public class PushStatisticsRequest extends BaseStatisticsRequest {
         if (StringUtils.isNullOrEmpty(url)) {
             return;
         }
-        if (!DeviceUtils.isWifiConnected(context)) {
+        if (!NetworkUtil.isWiFiConnected(context)) {
             return;
         }
-        String mac = DeviceUtils.getDeviceMacAddress(context);
+        String mac = NetworkUtil.getMacAddress(context);
         if (StringUtils.isNullOrEmpty(mac)) {
             return;
         }
