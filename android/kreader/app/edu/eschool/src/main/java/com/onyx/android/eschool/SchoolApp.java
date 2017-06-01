@@ -1,7 +1,10 @@
 package com.onyx.android.eschool;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
@@ -48,7 +51,7 @@ import java.util.Set;
 /**
  * Created by zhuzeng on 14/11/2016.
  */
-public class SchoolApp extends Application {
+public class SchoolApp extends MultiDexApplication {
     static private final String MMC_STORAGE_ID = "flash";
 
     static private SchoolApp sInstance = null;
@@ -61,6 +64,12 @@ public class SchoolApp extends Application {
     public void onCreate() {
         super.onCreate();
         initConfig();
+    }
+
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(context);
+        MultiDex.install(SchoolApp.this);
     }
 
     @Override

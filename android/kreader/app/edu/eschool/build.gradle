@@ -13,6 +13,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode gitVersionCode(projectDir)
         versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
+        multiDexEnabled true
     }
 
     dataBinding {
@@ -46,6 +47,7 @@ android {
 dependencies {
     compile project(':libraries:onyxsdk-ui')
     compile project(':libraries:onyxsdk-data')
+    compile project(':libraries:onyxsdk-settings')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
@@ -63,4 +65,6 @@ dependencies {
     compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
     compile "com.android.support:design:$rootProject.supportLibraryVersion"
     compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'de.halfbit:tinymachine:1.1.+'
+    compile "com.android.support:multidex:$multidexVersion"
 }
