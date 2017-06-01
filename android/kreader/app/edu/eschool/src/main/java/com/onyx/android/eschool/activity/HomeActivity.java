@@ -21,19 +21,16 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromLocalRequest;
-import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.ViewDocumentUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import butterknife.Bind;
 import butterknife.OnClick;
 
 /**
@@ -135,7 +132,7 @@ public class HomeActivity extends BaseActivity {
 
     private Intent getPicDisplayIntent() {
         Intent intent = ViewDocumentUtils.viewActionIntentWithMimeType(new File(picDisplayPath));
-        ComponentName component = ViewDocumentUtils.getReaderComponentName(this);
+        ComponentName component = ViewDocumentUtils.getEduReaderComponentName(this);
         if (component != null) {
             intent.setComponent(component);
         }

@@ -122,7 +122,6 @@ public class CloudDataProvider implements DataProviderBase {
             }
             checkCloudMetadataResult(result);
         } catch (Exception e) {
-            e.printStackTrace();
             result.setException(ContentException.createException(e));
             if (!FetchPolicy.isCloudOnlyPolicy(queryArgs.fetchPolicy) && !FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy)) {
                 result = fetchFromLocal(context, queryArgs);
