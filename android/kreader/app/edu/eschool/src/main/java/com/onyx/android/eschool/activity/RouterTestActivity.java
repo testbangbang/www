@@ -46,9 +46,9 @@ public class RouterTestActivity extends Activity {
     private static final int STATE_WIFI_ENABLED_AFTER_ALARM     = 10;
     private static final int STATE_WAIT_FOR_CONNECTED_AFTER_ALARM = 11;
     private static final int STATE_CONNECTED_AFTER_ALARM        = 12;
-    private static final int STATE_START_TESTING                = 8;
-    private static final int STATE_CLOUD_AUTH                   = 9;
-    private static final int STATE_CLOUD_DOWNLOAD               = 10;
+    private static final int STATE_START_TESTING                = 13;
+    private static final int STATE_CLOUD_AUTH                   = 14;
+    private static final int STATE_CLOUD_DOWNLOAD               = 15;
 
     private static final String TAG = RouterTestActivity.class.getSimpleName();
     private TinyMachine tinyMachine = new TinyMachine(new RouterStateHandler(), STATE_INIT);
@@ -88,7 +88,14 @@ public class RouterTestActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        cleanup();
+    }
+
+    private void cleanup() {
         getWifiAdmin().unregisterReceiver();
+        if (alarmReceiver != null) {
+            unregisterReceiver(alarmReceiver);
+        }
     }
 
     private void initUMeng() {
@@ -217,75 +224,90 @@ public class RouterTestActivity extends Activity {
     }
 
     public void actionOnConnectedAfterAlarm() {
+        tinyMachine.transitionTo(STATE_START_TESTING);
         final AuthTokenAction authTokenAction = new AuthTokenAction();
         authTokenAction.execute(SchoolApp.getLibraryDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-
+                tinyMachine.transitionTo(STATE_CLOUD_DOWNLOAD);
             }
         });
+    }
+
+    public void actionOnCloudDownload() {
+
     }
 
     // Define state handler class with handler methods
     public class RouterStateHandler {
         @StateHandler(state = STATE_INIT)
         public void onEventStateInit(String event, TinyMachine tm) {
-            Log.e(TAG, "state changed to STATE_INIT");
+            Log.e(TAG, "state changed to STATE_INIT: " + STATE_INIT);
             actionOnInitState();
         }
 
         @StateHandler(state = STATE_WIFI_INIT_ENABLED, type = Type.OnEntry)
         public void onEntryStateWifiInitEnabled() {
-            Log.e(TAG, "state changed to STATE_WIFI_INIT_ENABLED");
+            Log.e(TAG, "state changed to STATE_WIFI_INIT_ENABLED: " + STATE_WIFI_INIT_ENABLED);
             actionOnWifiInitEnabled();
         }
 
         @StateHandler(state = STATE_WIFI_SCAN_RESULT_READY, type = Type.OnEntry)
         public void onEntryStateScanResultReady() {
-            Log.e(TAG, "state changed to STATE_WIFI_SCAN_RESULT_READY");
+            Log.e(TAG, "state changed to STATE_WIFI_SCAN_RESULT_READY: " + STATE_WIFI_SCAN_RESULT_READY);
         }
 
         @StateHandler(state = STATE_WIFI_CONNECTED, type = Type.OnEntry)
         public void onEntryStateWifiConnected() {
-            Log.e(TAG, "state changed to STATE_WIFI_CONNECTED");
+            Log.e(TAG, "state changed to STATE_WIFI_CONNECTED: " + STATE_WIFI_CONNECTED);
             actionOnWifiConnected();
         }
 
         @StateHandler(state = STATE_NTP_SYNC, type = Type.OnEntry)
         public void onEntryStateSntpSync() {
-            Log.e(TAG, "state changed to STATE_NTP_SYNC");
+            Log.e(TAG, "state changed to STATE_NTP_SYNC: " + STATE_NTP_SYNC);
             actionOnSntpSync();
         }
 
         @StateHandler(state = STATE_ALARM_SET, type = Type.OnEntry)
         public void onEntryStateAlarmSet() {
-            Log.e(TAG, "state changed to STATE_ALARM_SET");
+            Log.e(TAG, "state changed to STATE_ALARM_SET: " + STATE_ALARM_SET);
             actionOnSntpSync();
         }
 
         @StateHandler(state = STATE_ALARM_TRIGGERED, type = Type.OnEntry)
         public void onEntryStateAlarmTriggered() {
-            Log.e(TAG, "state changed to STATE_ALARM_TRIGGERED");
+            Log.e(TAG, "state changed to STATE_ALARM_TRIGGERED: " + STATE_ALARM_TRIGGERED);
             actionOnAlarmTriggered();
         }
 
         @StateHandler(state = STATE_WIFI_ENABLED_AFTER_ALARM, type = Type.OnEntry)
         public void onEntryStateWiFiEnabledAfterAlarm() {
-            Log.e(TAG, "state changed to STATE_WIFI_ENABLED_AFTER_ALARM");
+            Log.e(TAG, "state changed to STATE_WIFI_ENABLED_AFTER_ALARM: " + STATE_WIFI_ENABLED_AFTER_ALARM);
             actionOnWiFiEnabledAfterAlarm();
         }
 
         @StateHandler(state = STATE_CONNECTED_AFTER_ALARM, type = Type.OnEntry)
         public void onEntryStateConnectedAfterAlarm() {
-            Log.e(TAG, "state changed to STATE_CONNECTED_AFTER_ALARM");
+            Log.e(TAG, "state changed to STATE_CONNECTED_AFTER_ALARM: " + STATE_CONNECTED_AFTER_ALARM);
             actionOnConnectedAfterAlarm();
         }
 
         @StateHandler(state = STATE_WAIT_FOR_ENABLE_AFTER_ALARM, type = Type.OnEntry)
         public void onEntryStateWaitForEnableAfterAlarm() {
-            Log.e(TAG, "state changed to STATE_WAIT_FOR_ENABLE_AFTER_ALARM");
+            Log.e(TAG, "state changed to STATE_WAIT_FOR_ENABLE_AFTER_ALARM: " + STATE_WAIT_FOR_ENABLE_AFTER_ALARM);
         }
 
+        @StateHandler(state = STATE_CLOUD_AUTH, type = Type.OnEntry)
+        public void onEntryStateAuthAfterAlarm() {
+            Log.e(TAG, "state changed to STATE_CLOUD_AUTH: " + STATE_CLOUD_AUTH);
+        }
+
+        @StateHandler(state = STATE_CLOUD_DOWNLOAD, type = Type.OnEntry)
+        public void onEntryStateCloudDownload() {
+            Log.e(TAG, "state changed to STATE_CLOUD_DOWNLOAD: " + STATE_CLOUD_DOWNLOAD);
+            actionOnCloudDownload();
+        }
 
     }
 
