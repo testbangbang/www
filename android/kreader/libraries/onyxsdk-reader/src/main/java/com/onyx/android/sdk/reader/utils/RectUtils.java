@@ -102,6 +102,11 @@ public class RectUtils {
     static public List<RectF> cutRectByExcludingRegions(RectF source, final List<RectF> excluding) {
         List<RectF> result = new ArrayList<>();
 
+        if (excluding.size() <= 0) {
+            result.add(source);
+            return result;
+        }
+
         List<RectF> excludeByLeft = new ArrayList<>(excluding);
         Collections.sort(excludeByLeft, new Comparator<RectF>() {
             @Override
