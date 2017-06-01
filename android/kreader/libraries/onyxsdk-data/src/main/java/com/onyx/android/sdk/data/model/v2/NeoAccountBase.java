@@ -3,6 +3,7 @@ package com.onyx.android.sdk.data.model.v2;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.data.converter.ListStringConverter;
 import com.onyx.android.sdk.data.model.BaseData;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -40,5 +41,18 @@ public class NeoAccountBase extends BaseData {
 
     public String getName() {
         return StringUtils.getBlankStr(name);
+    }
+
+    public static boolean isValid(NeoAccountBase account) {
+        return account != null && StringUtils.isNotBlank(account.token);
+    }
+
+    public static void parseName(NeoAccountBase account) {
+        if (NeoAccountBase.isValid(account)) {
+            AccountCommon common = JSONObjectParseUtils.parseObject(account.info, AccountCommon.class);
+            if (common != null) {
+                account.name = common.name;
+            }
+        }
     }
 }
