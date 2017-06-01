@@ -26,7 +26,10 @@ import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.utils.CloudConf;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.data.utils.ResultCode;
+import com.onyx.android.sdk.data.utils.RetrofitUtils;
 import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -107,7 +110,7 @@ public class CloudDataProvider implements DataProviderBase {
     private QueryResult<Metadata> fetchFromCloud(Context context, QueryArgs queryArgs) {
         QueryResult<Metadata> result = new QueryResult<>();
         try {
-            Response<ProductResult<CloudMetadata>> response = executeCall(getContentService().loadBookList(
+            Response<ProductResult<CloudMetadata>> response = RetrofitUtils.executeCall(getContentService().loadBookList(
                     queryArgs.libraryUniqueId, JSON.toJSONString(queryArgs, new QueryArgsFilter())));
             if (response.isSuccessful()) {
                 result.list = new ArrayList<>();
@@ -271,7 +274,7 @@ public class CloudDataProvider implements DataProviderBase {
     public List<CloudLibrary> fetchLibraryListFromCloud(String parentId, QueryArgs queryArgs) {
         List<CloudLibrary> libraryList = new ArrayList<>();
         try {
-            Response<List<CloudLibrary>> response = executeCall(getContentService().loadLibraryList(
+            Response<List<CloudLibrary>> response = RetrofitUtils.executeCall(getContentService().loadLibraryList(
                     ContentService.CONTENT_AUTH_PREFIX + queryArgs.cloudToken));
             if (response.isSuccessful()) {
                 libraryList = response.body();
@@ -427,15 +430,6 @@ public class CloudDataProvider implements DataProviderBase {
         return new Select().from(CloudMetadataCollection.class)
                 .where(CloudMetadataCollection_Table.documentUniqueId.eq(associationId))
                 .querySingle();
-    }
-
-    private <T> Response<T> executeCall(Call<T> call) throws Exception {
-        Response<T> response = call.execute();
-        if (!response.isSuccessful()) {
-            String errorBody = response.errorBody().string();
-            throw new Exception(errorBody);
-        }
-        return response;
     }
 
     private ContentService getContentService() {
