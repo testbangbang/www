@@ -72,7 +72,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 cacheFile.createNewFile();
                 macAddress = NetworkUtil.getMacAddress(context);
                 BitmapUtils.saveBitmap(QRCodeUtil.stringToImageEncode(context, macAddress,
-                        120, context.getResources().getColor(android.R.color.holo_blue_dark))
+                        120, true, context.getResources().getColor(android.R.color.holo_blue_dark))
                         , cacheFile.getPath());
                 ShellUtils.execCommand("busybox cadbhmod 644 " + cacheFile.getPath(), false);
                 closeWifiIfNeeded();
