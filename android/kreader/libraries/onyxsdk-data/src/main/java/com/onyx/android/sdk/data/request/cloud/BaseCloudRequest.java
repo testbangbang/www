@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.common.ContentException;
 import com.onyx.android.sdk.data.model.OnyxAccount;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.ResultCode;
+import com.onyx.android.sdk.data.utils.RetrofitUtils;
 import com.onyx.android.sdk.dataprovider.BuildConfig;
 
 import org.json.JSONObject;
@@ -31,9 +32,7 @@ import retrofit2.Response;
 public abstract class BaseCloudRequest extends BaseRequest {
 
     private static final String TAG = BaseCloudRequest.class.getSimpleName();
-    public static final String RESPONSE_KEY_ERROR = "error";
     private volatile boolean saveToLocal = true;
-    protected ResultCode resultCode;
 
     public BaseCloudRequest() {
         super();
@@ -176,25 +175,7 @@ public abstract class BaseCloudRequest extends BaseRequest {
     }
 
     protected <T> Response<T> executeCall(Call<T> call) throws Exception {
-        Response<T> response;
-        try {
-            response = call.execute();
-        } catch (Exception e) {
-            throw new ContentException.NetworkException(e);
-        }
-        if (!response.isSuccessful()) {
-            String errorBody = response.errorBody().string();
-            throw new ContentException.CloudException(parseResultCode(errorBody));
-        }
-        return response;
-    }
-
-    private ResultCode parseResultCode(String errorBody) {
-        return resultCode = JSONObjectParseUtils.parseObject(errorBody, ResultCode.class);
-    }
-
-    public ResultCode getResultCode() {
-        return resultCode;
+        return RetrofitUtils.executeCall(call);
     }
 
     public String getIdentifier() {
