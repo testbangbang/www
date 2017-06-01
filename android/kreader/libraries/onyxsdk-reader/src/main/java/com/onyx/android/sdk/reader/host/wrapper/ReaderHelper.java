@@ -40,6 +40,7 @@ import com.onyx.android.sdk.reader.plugins.jeb.JEBReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
 import com.onyx.android.sdk.reader.reflow.ImageReflowManager;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
+import com.onyx.android.sdk.reader.utils.RectUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -384,7 +385,9 @@ public class ReaderHelper {
 
     public void applyPostBitmapProcess(final ReaderViewInfo viewInfo, ReaderBitmapReferenceImpl bitmap) {
         final List<RectF> regions = collectTextRectangleList(viewInfo);
-        applyGamma(bitmap, null);
+        final List<RectF> imageRegions = RectUtils.cutRectByExcludingRegions(new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight()),
+                regions);
+        applyGamma(bitmap, imageRegions);
         applyEmbolden(bitmap);
         applySaturation(bitmap);
     }
