@@ -5,6 +5,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -95,6 +97,111 @@ public class RectUtils {
             }
         }
         return baseList;
+    }
+
+    static public List<RectF> cutRectByExcludingRegions(RectF source, final List<RectF> excluding) {
+        List<RectF> result = new ArrayList<>();
+
+        List<RectF> excludeByLeft = new ArrayList<>(excluding);
+        Collections.sort(excludeByLeft, new Comparator<RectF>() {
+            @Override
+            public int compare(RectF o1, RectF o2) {
+                return (int)(o1.left - o2.left);
+            }
+        });
+        RectF leftMost = excludeByLeft.get(0);
+
+        RectF bound = new RectF(excluding.get(0));
+        for (RectF r : excluding) {
+            bound.union(r);
+        }
+
+        // out bounding rectangles of regions to exclude
+        if (bound.left > source.left) {
+            result.add(new RectF(source.left, source.top, bound.left, source.bottom));
+        }
+        if (bound.right < source.right) {
+            result.add(new RectF(bound.right, source.top, source.right, source.bottom));
+        }
+        if (bound.top > source.top) {
+            result.add(new RectF(bound.left, source.top, bound.right, bound.top));
+        }
+        if (bound.bottom < source.bottom) {
+            result.add(new RectF(bound.left, bound.bottom, bound.right, source.bottom));
+        }
+
+        if (excluding.size() <= 1) {
+            return result;
+        }
+
+        RectF nextLeft = null;
+        List<RectF> leftList = new ArrayList<>();
+        for (RectF rect : excludeByLeft) {
+            if (rect.left == leftMost.left) {
+                leftList.add(rect);
+            } else {
+                // nextLeft can be null, in this case,
+                // we think all excluding rectangles align on the left
+                nextLeft = rect;
+                break;
+            }
+        }
+
+        Collections.sort(leftList, new Comparator<RectF>() {
+            @Override
+            public int compare(RectF o1, RectF o2) {
+                return (int)(o1.right - o2.right);
+            }
+        });
+
+        float right = leftList.get(0).right;
+        if (nextLeft != null) {
+            right = Math.min(right, nextLeft.left);
+        }
+
+        List<RectF> topList = new ArrayList<>(leftList);
+        Collections.sort(topList, new Comparator<RectF>() {
+            @Override
+            public int compare(RectF o1, RectF o2) {
+                return (int)(o1.top - o2.top);
+            }
+        });
+
+        RectF top = topList.get(0);
+        if (top.top > bound.top) {
+            result.add(new RectF(bound.left, bound.top, right, top.top));
+        }
+
+        RectF bottom = topList.get(topList.size() - 1);
+        if (bottom.bottom < bound.bottom) {
+            result.add(new RectF(bound.left, bottom.bottom, right, bound.bottom));
+        }
+
+        for (int j = 1; j < topList.size(); j++) {
+            RectF above = topList.get(j - 1);
+            RectF below = topList.get(j);
+            if (below.top > above.bottom) {
+                result.add(new RectF(bound.left, above.bottom, right, below.top));
+            }
+        }
+
+        List<RectF> removeList = new ArrayList<>();
+        for (RectF rect : leftList) {
+            if (Float.compare(rect.right, right) <= 0) {
+                removeList.add(rect);
+            } else {
+                rect.left = right;
+            }
+        }
+
+        for (RectF rect : removeList) {
+            excludeByLeft.remove(rect);
+        }
+
+        bound.left = right;
+        result.addAll(cutRectByExcludingRegions(bound, excludeByLeft));
+
+        return result;
     }
 
 }
