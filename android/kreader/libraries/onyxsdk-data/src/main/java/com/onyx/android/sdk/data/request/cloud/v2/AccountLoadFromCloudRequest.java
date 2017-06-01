@@ -59,6 +59,7 @@ public class AccountLoadFromCloudRequest<T extends NeoAccountBase> extends BaseC
         if (response.isSuccessful()) {
             account = JSON.parseObject(response.body().string(), clazzType);
             account.token = parent.getToken();
+            NeoAccountBase.parseName(account);
         }
         return account;
     }

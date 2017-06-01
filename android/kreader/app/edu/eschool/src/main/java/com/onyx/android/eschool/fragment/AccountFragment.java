@@ -12,9 +12,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.onyx.android.eschool.R;
+import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.model.StudentAccount;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.db.table.EduAccountProvider;
+import com.onyx.android.sdk.data.model.v2.EduAccount;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromLocalRequest;
 import com.onyx.android.sdk.ui.utils.PageTurningDetector;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
 
@@ -87,10 +94,22 @@ public class AccountFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     public void updateView(Context context) {
-        StudentAccount studentAccount = StudentAccount.loadAccount(context);
-        studentName.setText(studentAccount.getName());
-        studentGrade.setText("年级：" + studentAccount.getFirstGroup());
-        studentPhone.setText("电话：" + studentAccount.getPhone());
+        final AccountLoadFromLocalRequest localRequest = new AccountLoadFromLocalRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
+        SchoolApp.getSchoolCloudStore().submitRequest(context, localRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                updateView(localRequest.getAccount());
+            }
+        });
+    }
+
+    private void updateView(NeoAccountBase account) {
+        studentName.setText(account.getName());
+        studentGrade.setText("年级：" + account.getFirstGroup());
+        studentPhone.setText("电话：" + account.getPhone());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

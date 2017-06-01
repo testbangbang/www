@@ -100,8 +100,8 @@ public class StudentAccount extends NeoAccountBase {
         return account != null && StringUtils.isNotBlank(account.token);
     }
 
-    public static void sendUserInfoSettingIntent(Context context, StudentAccount account) {
-        if (!isAccountValid(context, account)) {
+    public static void sendUserInfoSettingIntent(Context context, NeoAccountBase account) {
+        if (!NeoAccountBase.isValid(account)) {
             return;
         }
         Intent intent = new Intent(UPDATE_STATUS_BAR_INFO_ACTION);
