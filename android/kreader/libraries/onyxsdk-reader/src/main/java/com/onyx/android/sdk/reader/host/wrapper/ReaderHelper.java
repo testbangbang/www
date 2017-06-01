@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.neverland.engbook.level1.JEBFilesZIP;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -31,6 +32,7 @@ import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.android.sdk.reader.host.layout.ReaderLayoutManager;
+import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.plugins.alreader.AlReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.comic.ComicReaderPlugin;
@@ -371,6 +373,15 @@ public class ReaderHelper {
         return formManager;
     }
 
+    private void translateToScreen(PageInfo pageInfo, List<RectF> list) {
+        for (RectF rect : list) {
+            PageUtils.translate(pageInfo.getDisplayRect().left,
+                    pageInfo.getDisplayRect().top,
+                    pageInfo.getActualScale(),
+                    rect);
+        }
+    }
+
     public List<RectF> collectTextRectangleList(final ReaderViewInfo viewInfo) {
         final List<ReaderSelection> selectionList = getHitTestManager().allText(viewInfo.getFirstVisiblePageName());
         if (selectionList == null) {
@@ -380,6 +391,7 @@ public class ReaderHelper {
         for(ReaderSelection selection : selectionList) {
             list.addAll(selection.getRectangles());
         }
+        translateToScreen(viewInfo.getFirstVisiblePage(), list);
         return list;
     }
 
