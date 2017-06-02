@@ -98,7 +98,7 @@ public class AccountFragment extends Fragment {
         SchoolApp.getSchoolCloudStore().submitRequest(context, localRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
+                if (e != null || localRequest.getAccount() == null) {
                     return;
                 }
                 updateView(localRequest.getAccount());
@@ -107,9 +107,16 @@ public class AccountFragment extends Fragment {
     }
 
     private void updateView(NeoAccountBase account) {
+        if (account == null || isViewInValid()) {
+            return;
+        }
         studentName.setText(account.getName());
         studentGrade.setText("年级：" + account.getFirstGroup());
         studentPhone.setText("电话：" + account.getPhone());
+    }
+
+    private boolean isViewInValid() {
+        return studentName == null;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

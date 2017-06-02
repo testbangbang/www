@@ -67,8 +67,8 @@
                 android:layout_above="@+id/button_area"
                 android:layout_alignParentRight="true"
                 android:layout_alignWithParentIfMissing="true"
-                app:layout_marginBottomPercent="42%"
-                app:layout_marginRightPercent="19%">
+                app:layout_marginBottomPercent="45%"
+                app:layout_marginRightPercent="23%">
 
                 <ImageView
                     android:id="@+id/mac_qr_code_image_view"
