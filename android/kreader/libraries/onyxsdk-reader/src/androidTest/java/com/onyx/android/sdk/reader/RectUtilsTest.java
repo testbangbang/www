@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.test.ApplicationTestCase;
 
@@ -27,25 +28,49 @@ public class RectUtilsTest extends ApplicationTestCase<Application> {
         super(Application.class);
     }
 
-    private float calculateSquare(List<RectF> list) {
-        // TODO square result not always right, need improve
-        float square = 0;
+    private boolean contains(final List<RectF> list, float x, float y) {
         for (RectF r : list) {
-            float s = r.width() * r.height();
-            square += s;
-        }
-
-        for (int i = 0; i < list.size(); i++) {
-            for (int j = i + 1; j < list.size(); j++) {
-                RectF r1 = new RectF(list.get(i));
-                RectF r2 = new RectF(list.get(j));
-                if (r1.intersect(r2)) {
-                    square -= r1.width() * r1.height();
-                }
+            if (r.contains(x, y)) {
+                return true;
             }
         }
+        return false;
+    }
 
-        return square;
+    private void saveBitmap(final RectF rect, final List<RectF> list, final List<RectF> result) {
+        Bitmap bmp = Bitmap.createBitmap((int)rect.width(), (int)rect.height(), Bitmap.Config.ARGB_8888);
+        bmp.eraseColor(Color.WHITE);
+
+        Random rand = new Random(System.currentTimeMillis());
+
+        Canvas canvas = new Canvas(bmp);
+        Paint paint = new Paint();
+        for (int j = 0; j < list.size(); j++) {
+            RectF r = list.get(j);
+            int red = rand.nextInt(255);
+            int green = rand.nextInt(255);
+            int blue = rand.nextInt(255);
+            paint.setARGB(128, red, green, blue);
+            canvas.drawRect(r, paint);
+            paint.setAlpha(255);
+            paint.setColor(Color.BLACK);
+            canvas.drawText("X" + j, r.left + 10, r.top + 10, paint);
+        }
+
+        for (int j = 0; j < result.size(); j++) {
+            RectF r = result.get(j);
+            int red = rand.nextInt(255);
+            int green = rand.nextInt(255);
+            int blue = rand.nextInt(255);
+            paint.setStrokeWidth(2);
+            paint.setARGB(64, red, green, blue);
+            canvas.drawRect(r, paint);
+            paint.setAlpha(255);
+            paint.setColor(Color.BLACK);
+            canvas.drawText("Z" + j, r.left + 10, r.top + 10, paint);
+        }
+
+        BitmapUtils.saveBitmap(bmp, new File(getContext().getFilesDir(), "rect.png").getAbsolutePath());
     }
 
     public void testCutRectByExcludingRegions() {
@@ -64,6 +89,10 @@ public class RectUtilsTest extends ApplicationTestCase<Application> {
                 list.add(new RectF(x, y, x + width, y + height));
             }
 
+//            list.add(new RectF(450, 10, 900, 870));
+//            list.add(new RectF(600, 560, 770, 980));
+//            list.add(new RectF(370, 460, 690, 900));
+
             List<RectF> copy = new ArrayList<>();
             for (RectF r : list) {
                 Debug.e(getClass(), "excluding: " + r);
@@ -75,50 +104,13 @@ public class RectUtilsTest extends ApplicationTestCase<Application> {
             for (RectF r : result) {
                 Debug.e(getClass(), "result: " + r.toString());
             }
-            float excludingSquare = calculateSquare(list);
-            Debug.e(getClass(), "excluding square: " + excludingSquare);
-            float resultSquare = calculateSquare(result);
-            Debug.e(getClass(), "result square: " + resultSquare);
 
-            float square = excludingSquare + resultSquare;
-            if (Float.compare(rect.width() * rect.height(), square) == 0) {
-                Debug.e(getClass(), "success!");
-                return;
+            for (int j = 0; j < (int)rect.width(); j++) {
+                for (int k = 0; k < (int)rect.height(); k++) {
+                    assertTrue(contains(list, i, j) || contains(result, i, j));
+                    assertFalse(contains(list, i, j) && contains(result, i, j));
+                }
             }
-
-            Bitmap bmp = Bitmap.createBitmap((int)rect.width(), (int)rect.height(), Bitmap.Config.ARGB_8888);
-            bmp.eraseColor(Color.WHITE);
-
-            Canvas canvas = new Canvas(bmp);
-            Paint paint = new Paint();
-            for (int j = 0; j < list.size(); j++) {
-                RectF r = list.get(j);
-                int red = rand.nextInt(255);
-                int green = rand.nextInt(255);
-                int blue = rand.nextInt(255);
-                paint.setARGB(128, red, green, blue);
-                canvas.drawRect(r, paint);
-                paint.setAlpha(255);
-                paint.setColor(Color.BLACK);
-                canvas.drawText("X" + j, r.left + 10, r.top + 10, paint);
-            }
-
-            for (int j = 0; j < result.size(); j++) {
-                RectF r = result.get(j);
-                int red = rand.nextInt(255);
-                int green = rand.nextInt(255);
-                int blue = rand.nextInt(255);
-                paint.setStrokeWidth(2);
-                paint.setARGB(64, red, green, blue);
-                canvas.drawRect(r, paint);
-                paint.setAlpha(255);
-                paint.setColor(Color.BLACK);
-                canvas.drawText("Z" + j, r.left + 10, r.top + 10, paint);
-            }
-
-            BitmapUtils.saveBitmap(bmp, new File(getContext().getFilesDir(), "rect.png").getAbsolutePath());
-            Debug.e(getClass(), "failed!");
-            assertEquals(rect.width() * rect.height(), square);
         }
     }
 
