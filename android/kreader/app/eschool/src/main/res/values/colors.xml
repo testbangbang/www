@@ -15,7 +15,8 @@
     <color name="wrong_color">#B3B3B3</color>
     <color name="progress_color">#4D4D4D</color>
     <color name="home_item_view_background">#E8E2D1</color>
-    <color name="home_item_view_action_normal_stoke_color">#919191</color>
-    <color name="home_item_view_action_select_stoke_color">@android:color/black</color>
+    <!--<color name="home_item_view_action_normal_stoke_color">#919191</color>-->
+    <color name="home_item_view_action_normal_stoke_color">@android:color/black</color>
+    <color name="home_item_view_action_select_stoke_color">#919191</color>
     <color name="home_item_inner_divider_background">#82817d</color>
 </resources>

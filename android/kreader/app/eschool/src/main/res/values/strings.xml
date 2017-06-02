@@ -67,9 +67,10 @@
     <string name="home_item_practice_text">练习</string>
     <string name="home_item_exam_text">考试</string>
     <string name="home_item_setting_text">设置</string>
+    <string name="home_item_study_progress">进度</string>
     <string name="home_item_pic_display_text">图片展示</string>
     <string name="home_item_video_display_text">视频展示</string>
-    <string name="home_item_application_text">应用</string>
+    <string name="home_item_application_text">工具</string>
     <string name="study_preview_person">个人\n材料</string>
     <string name="current_reading_location">阅读位置</string>
     <string name="home_time_date_format">yyyy年MM月dd日</string>

@@ -348,7 +348,8 @@ public class ChooseExerciseColorFragment extends BaseFragment implements ChooseE
 
             @Override
             public int getDataCount() {
-                return 17;
+                //return 17;
+                return 1;
             }
 
             @Override

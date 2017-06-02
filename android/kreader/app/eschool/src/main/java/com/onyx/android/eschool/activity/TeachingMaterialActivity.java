@@ -60,7 +60,7 @@ public class TeachingMaterialActivity extends BaseActivity {
 
     private List<Metadata> metadataList = new ArrayList<>();
 
-    private String documentDisplayPath = "/mnt/sdcard/slide/sample-cfa-png.pdf";
+    private String documentDisplayPath = "/mnt/sdcard/slide/reading.pdf";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,7 +120,7 @@ public class TeachingMaterialActivity extends BaseActivity {
 
             @Override
             public int getDataCount() {
-                return getDataSize(syllabusList, -1);
+                return getDataSize(syllabusList, 1);
             }
 
             @Override
@@ -154,7 +154,7 @@ public class TeachingMaterialActivity extends BaseActivity {
 
             @Override
             public int getDataCount() {
-                return getDataSize(metadataList, -1);
+                return getDataSize(metadataList, 1);
             }
 
             @Override

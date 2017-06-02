@@ -3,6 +3,7 @@ package com.onyx.android.eschool.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,13 +37,13 @@ public class HomeActivity extends BaseActivity {
 
     private SimpleDateFormat dateFormat;
 
-    // about userInfo
+    /*// about userInfo
     @Bind(R.id.textView_user_name)
     TextView userName;
     @Bind(R.id.textView_user_class)
     TextView userClass;
     @Bind(R.id.imageView_user_image)
-    ImageView userImage;
+    ImageView userImage;*/
 
     // about notify panel
     TextView date;
@@ -52,10 +53,10 @@ public class HomeActivity extends BaseActivity {
     ImageView weatherImage;
 
     // about teaching
-    @Bind(R.id.textView_material_title)
-    TextView teachingMaterialText;
-    @Bind(R.id.textView_auxiliary_title)
-    TextView teachingAuxiliaryText;
+    /*@Bind(R.id.textView_material_title)
+    TextView teachingMaterialText;*/
+    /*@Bind(R.id.textView_auxiliary_title)
+    TextView teachingAuxiliaryText;*/
 
     private String picDisplayPath = "/mnt/sdcard/slide/sample-cfa_01.png";
     private String videoDisplayPath = "/mnt/sdcard/slide/video_display.flv";
@@ -131,10 +132,10 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void updateProfileInfo() {
-        AvatarUtils.loadAvatar(this, userImage, StudentAccount.loadAvatarPath(this));
+        /*AvatarUtils.loadAvatar(this, userImage, StudentAccount.loadAvatarPath(this));
         StudentAccount account = StudentAccount.loadAccount(this);
         userName.setText(account.name);
-        userClass.setText(account.gradeClass);
+        userClass.setText(account.gradeClass);*/
     }
 
     private void initWeatherNotifyPanel() {
@@ -147,10 +148,12 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void initNormalItem() {
-        initNormalView(R.id.home_note_item, R.string.home_item_note_text, R.drawable.home_note, getNoteIntent());
+        //initNormalView(R.id.home_note_item, R.string.home_item_note_text, R.drawable.home_note, getNoteIntent());
         initNormalView(R.id.home_dictionary_item, R.string.home_item_application_text, R.drawable.home_application, getApplicationListIntent());
         initNormalView(R.id.home_practice_item, R.string.home_item_practice_text, R.drawable.home_practice, getEduIntent());
         initNormalView(R.id.home_setting_item, R.string.home_item_setting_text, R.drawable.home_setting, getSettingIntent());
+        initNormalView(R.id.home_account_info, R.string.home_item_study_progress, R.drawable.home_study_progress, new Intent(this, StudyPreviewActivity.class));
+        initNormalView(R.id.home_teaching_material_item, R.string.home_item_teaching_materials_text, R.drawable.home_teaching_material, new Intent(this, TeachingMaterialActivity.class));
     }
 
     private void initDisplayItemView() {
@@ -185,20 +188,15 @@ public class HomeActivity extends BaseActivity {
     private void loadTeachingData() {
     }
 
-    @OnClick(R.id.home_account_info)
-    void onStudyScheduleClick() {
-        ActivityUtil.startActivitySafely(this, new Intent(this, StudyPreviewActivity.class));
-    }
-
-    @OnClick(R.id.home_teaching_material_item)
+    /*@OnClick(R.id.home_teaching_material_item)
     void onTeachingMaterialClick() {
         ActivityUtil.startActivitySafely(this, new Intent(this, TeachingMaterialActivity.class));
-    }
+    }*/
 
-    @OnClick(R.id.home_teaching_auxiliary_item)
+    /*@OnClick(R.id.home_teaching_auxiliary_item)
     void onTeachingAuxiliaryClick() {
         ActivityUtil.startActivitySafely(this, new Intent(this, TeachingAuxiliaryActivity.class));
-    }
+    }*/
 
     private Intent getPicDisplayIntent() {
         Intent intent = ViewDocumentUtils.viewActionIntentWithMimeType(new File(picDisplayPath));
@@ -232,6 +230,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private Intent getSettingIntent() {
-        return new Intent(this, DeviceMainSettingActivity.class);
+        //return new Intent(this, DeviceMainSettingActivity.class);
+        return new Intent(Settings.ACTION_SETTINGS);
     }
 }
