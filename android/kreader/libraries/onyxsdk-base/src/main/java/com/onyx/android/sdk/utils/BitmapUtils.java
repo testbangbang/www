@@ -263,12 +263,15 @@ public class BitmapUtils {
     }
 
     public static Bitmap buildBitmapFromText(String targetString, int height, int textSize,
-                                             boolean saveToDisk, boolean overrideFilePermission,
+                                             boolean boldText, boolean saveToDisk,
+                                             boolean overrideFilePermission,
+                                             boolean needRotation, int rotationAngle,
                                              @Nullable String path) {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStrokeWidth(3);
         paint.setTextSize(textSize);
         paint.setColor(Color.BLACK);
+        paint.setFakeBoldText(boldText);
         int width = StringUtils.getTextWidth(paint, targetString);
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Rect targetRect = new Rect(0, 0, width, height);
@@ -277,6 +280,9 @@ public class BitmapUtils {
         int baseline = (height - fontMetrics.bottom - fontMetrics.top) / 2;
         paint.setTextAlign(Paint.Align.CENTER);
         canvas.drawText(targetString, targetRect.centerX(), baseline, paint);
+        if (needRotation){
+            bitmap = rotateBmp(bitmap, rotationAngle);
+        }
         if (saveToDisk) {
             saveBitmap(bitmap, path);
             if (overrideFilePermission) {
