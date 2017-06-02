@@ -22,7 +22,7 @@ import retrofit2.Response;
  * Created by ming on 2017/5/31.
  */
 
-public class PushReaderDataRequest extends BaseCloudRequest {
+public class PushDocumentDataRequest extends BaseCloudRequest {
 
     private String uploadDBPath;
     private Context context;
@@ -30,7 +30,7 @@ public class PushReaderDataRequest extends BaseCloudRequest {
     private String fileFullMd5;
     private String fileId;
 
-    public PushReaderDataRequest(String uploadDBPath, Context context, String url, String fileFullMd5, String fileId) {
+    public PushDocumentDataRequest(String uploadDBPath, Context context, String url, String fileFullMd5, String fileId) {
         this.uploadDBPath = uploadDBPath;
         this.context = context;
         this.url = url;

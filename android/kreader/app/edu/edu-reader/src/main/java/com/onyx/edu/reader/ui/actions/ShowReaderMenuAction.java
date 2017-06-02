@@ -399,7 +399,7 @@ public class ShowReaderMenuAction extends BaseAction {
         readerDataHolder.submitRenderRequest(request);
     }
 
-    private static void pushReaderData(ReaderDataHolder readerDataHolder) {
+    private static void pushDocumentData(ReaderDataHolder readerDataHolder) {
         ExportDocumentDataAction exportDocumentDataAction = new ExportDocumentDataAction();
         exportDocumentDataAction.execute(readerDataHolder, null);
     }
