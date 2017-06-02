@@ -260,6 +260,8 @@
 
     <!-- Used to show an amount of time in the form "m minutes, s seconds" in BatteryHistory -->
     <string name="battery_history_minutes_no_seconds"><xliff:g id="minutes">%1$d</xliff:g>m</string>
+    <string name="open_manual">Check User Manual.</string>
+    <string name="setting_product_detail">Product Detail</string>
 
 </resources>
 

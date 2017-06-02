@@ -1,0 +1,63 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/activity_security_setting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.onyx.android.libsetting.view.activity.ProductDetailSettingActivity">
+
+        <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true">
+
+                <RelativeLayout
+                    android:id="@id/back_function_layout"
+                    style="@style/global_activities_back_function_layout">
+
+                    <ImageView
+                        android:id="@+id/back_icon"
+                        style="@style/global_activities_back_btn_image"
+                        android:contentDescription="" />
+
+                    <ImageView
+                        android:id="@+id/imageView_main_title"
+                        style="@style/global_activities_back_btn_category_image"
+                        android:layout_toRightOf="@+id/back_icon"
+                        android:src="@drawable/ic_settings" />
+
+                    <TextView
+                        android:id="@+id/textView_main_title"
+                        style="@style/global_activities_back_btn_category_tittle"
+                        android:layout_toRightOf="@+id/imageView_main_title"
+                        android:ellipsize="middle"
+                        android:gravity="left|center_vertical"
+                        android:maxEms="10"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@string/setting_product_detail" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+        <ImageView
+            android:id="@+id/detail_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/product_detail"/>
+
+        <Button
+            android:id="@+id/button_open_manual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/open_manual"/>
+    </LinearLayout>
+</layout>
