@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.reader.utils;
+package com.onyx.android.sdk.utils;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -7,7 +7,9 @@ import android.graphics.RectF;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhuzeng on 2/11/16.

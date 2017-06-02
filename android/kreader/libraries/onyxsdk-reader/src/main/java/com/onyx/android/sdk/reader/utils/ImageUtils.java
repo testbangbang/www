@@ -3,6 +3,7 @@ package com.onyx.android.sdk.reader.utils;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
+import com.onyx.android.sdk.utils.RectUtils;
 
 import java.util.List;
 

@@ -42,7 +42,7 @@ import com.onyx.android.sdk.reader.plugins.jeb.JEBReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
 import com.onyx.android.sdk.reader.reflow.ImageReflowManager;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
-import com.onyx.android.sdk.reader.utils.RectUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 

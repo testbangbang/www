@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.reader.utils;
+package com.onyx.android.sdk.utils;
 
 import android.annotation.TargetApi;
 import android.os.Build;
