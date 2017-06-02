@@ -14,6 +14,7 @@ import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.Calendar;
@@ -45,7 +46,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         statisticsResult = new StatisticsResult();
-        if (DeviceUtils.isWifiConnected(context)) {
+        if (NetworkUtil.isWiFiConnected(context)) {
             readCloudData(parent);
         }else {
             readLocalData();
@@ -56,7 +57,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         if (StringUtils.isNullOrEmpty(url)) {
             return;
         }
-        String mac = DeviceUtils.getDeviceMacAddress(context);
+        String mac = NetworkUtil.getMacAddress(context);
         if (StringUtils.isNullOrEmpty(mac)) {
             return;
         }

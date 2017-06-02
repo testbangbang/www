@@ -3,6 +3,7 @@ package com.onyx.edu.reader.ui.actions;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 
 /**
@@ -15,7 +16,7 @@ public class GetExperienceDataAction extends BaseAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
-        if (!DeviceUtils.isWifiConnected(readerDataHolder.getContext())) {
+        if (!NetworkUtil.isWiFiConnected(readerDataHolder.getContext())) {
 
         }
     }

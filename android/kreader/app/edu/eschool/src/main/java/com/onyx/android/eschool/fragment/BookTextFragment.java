@@ -603,9 +603,9 @@ public class BookTextFragment extends Fragment {
     }
 
     private boolean enableWifiOpenAndDetect() {
-        if (!NetworkUtil.isWifiConnected(getContext())) {
+        if (!NetworkUtil.isWiFiConnected(getContext())) {
             Device.currentDevice().enableWifiDetect(getContext());
-            NetworkUtil.enableWifi(getContext(), true);
+            NetworkUtil.enableWiFi(getContext(), true);
             return true;
         }
         return false;

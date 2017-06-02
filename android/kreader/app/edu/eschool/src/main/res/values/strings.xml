@@ -102,5 +102,6 @@
     <string name="refresh_content_empty">The contents of the refresh are empty</string>
 
     <string name="token_exception_contact_admin">Login error, please check the network to retry or contact the administrator</string>
+    <string name="title_activity_router_test">RouterTestActivity</string>
 
 </resources>

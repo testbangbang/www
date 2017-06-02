@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -53,8 +52,7 @@ public class DeviceUtils {
     private final static String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
 
     private final static String DEFAULT_TOUCH_DEVICE_PATH = "/dev/input/event1";
-    private static final String MAC_ADDRESS_KEY = "mac_address";
-
+    public static final int NEVER_SLEEP = Integer.MAX_VALUE;
 
     public static boolean isRkDevice() {
         return Build.HARDWARE.startsWith("rk");
@@ -341,16 +339,6 @@ public class DeviceUtils {
         System.exit(1);
     }
 
-    public static boolean isWifiConnected(Context context) {
-        if (context != null) {
-            ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-            if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI)
-                return networkInfo.isAvailable();
-        }
-        return false;
-    }
-
     public static boolean isFullScreen(Activity activity) {
         if (Build.VERSION.SDK_INT >= 19) {
             int flag = activity.getWindow().getAttributes().flags;
@@ -380,89 +368,14 @@ public class DeviceUtils {
                 : powerManager.isScreenOn();
     }
 
-    public static void changeWiFi(Context context, boolean enabled) {
-        WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        wm.setWifiEnabled(enabled);
-    }
-
     public static boolean isChinese(final Context context) {
         Locale locale = context.getResources().getConfiguration().locale;
         String language = locale.getLanguage();
         return language.endsWith("zh");
     }
 
-    @Nullable
-    public static String getDeviceMacAddress(Context context) {
-        if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI)) {
-            return null;
-        }
-        String result = getMacAddressFromCacheFile(context);
-        if (TextUtils.isEmpty(result) || !(isStringValidMacAddress(result))) {
-            result = getMacAddressFromWifiManager(context);
-        }
-        return result;
-    }
-
-    private static String getMacAddressFromCacheFile(Context context){
-        return Device.currentDevice().readSystemConfig(context, MAC_ADDRESS_KEY);
-    }
-
-    private static boolean isStringValidMacAddress(String val){
-        String macAddressRegex = "([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}";
-        return val.matches(macAddressRegex);
-    }
-
-    private static String getMacAddressFromWifiManager(Context context){
-        boolean restoreWifiStatus = false;
-        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (!wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(true);
-            TestUtils.sleep(600);
-            restoreWifiStatus = true;
-        }
-        String macAddress;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            macAddress = getMacAddressFromNetworkInterface();
-        } else {
-            macAddress = wifiManager.getConnectionInfo().getMacAddress();
-        }
-        if (!TextUtils.isEmpty(macAddress)) {
-            macAddress = macAddress.toLowerCase();
-            saveMacAddressToVendor(context, macAddress);
-        }
-        if (restoreWifiStatus) {
-            wifiManager.setWifiEnabled(false);
-        }
-        return macAddress;
-    }
-
-    public static String getMacAddressFromNetworkInterface() {
-        try {
-            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface nif : all) {
-                if (!nif.getName().equalsIgnoreCase("wlan0")) {
-                    continue;
-                }
-                byte[] macBytes = nif.getHardwareAddress();
-                if (macBytes == null) {
-                    return "";
-                }
-                StringBuilder sb = new StringBuilder();
-                for (byte b : macBytes) {
-                    sb.append(String.format("%02X:", b & 0xFF));
-                }
-                if (sb.length() > 0) {
-                    sb.deleteCharAt(sb.length() - 1);
-                }
-                return sb.toString().toLowerCase();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    private static void saveMacAddressToVendor(Context context,String macAddress) {
-        Device.currentDevice().saveSystemConfig(context, MAC_ADDRESS_KEY, macAddress);
+    static public void turnOffSystemPMSettings(Context context) {
+        android.provider.Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, NEVER_SLEEP);
+        android.provider.Settings.System.putInt(context.getContentResolver(), "auto_poweroff_timeout", NEVER_SLEEP);
     }
 }
