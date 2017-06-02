@@ -16,6 +16,7 @@ public class Constant {
     public static final String CN_API_BASE = "http://dev.onyx-international.cn/api/1/";
 
     public static final String STATISTICS_API_BASE = "http://192.168.11.111/api/1/";
+    public static final String SYNC_API_BASE = "http://192.168.11.104:8082/";
 
     public static final String EDU_API_BASE = "http://dev.zxxk.com/api/";
     public static final String ACCESS_KEY = "2016103189639748";
@@ -33,6 +34,9 @@ public class Constant {
     static public final String ID_TAG = "id";
     static public final String URL_TAG = "url";
     static public final String HTTP_TAG = "http";
+    static public final String FILE_TAG = "file";
+    static public final String MD5_TAG = "md5";
+    static public final String READER_DATA_FOLDER = "OnyxReader";
 
     public static final String COVER_TYPE_SMALL = "small";
     public static final String COVER_TYPE_NORMAL = "normal";
@@ -48,4 +52,5 @@ public class Constant {
     public static final String PLATFORM_WECHAT = "wechat";
 
     public static final String HEADER_AUTHORIZATION = "authorization";
+
 }

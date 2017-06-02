@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
@@ -67,6 +68,7 @@ public class ReaderDataHolder {
     private ReaderTtsManager ttsManager;
     private NoteManager noteManager;
     private DataManager dataManager;
+    private CloudManager cloudManager;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private EventBus eventBus = new EventBus();
     private EventReceiver eventReceiver;
@@ -312,6 +314,13 @@ public class ReaderDataHolder {
             dataManager = new DataManager();
         }
         return dataManager;
+    }
+
+    public CloudManager getCloudManager() {
+        if (cloudManager == null) {
+            cloudManager = new CloudManager();
+        }
+        return cloudManager;
     }
 
     public void updateRawEventProcessor() {

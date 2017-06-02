@@ -5,11 +5,14 @@ import android.graphics.RectF;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
+import com.onyx.android.sdk.data.request.data.db.CreateDBRequest;
 import com.onyx.android.sdk.data.request.data.db.ExportDBRequest;
+import com.onyx.android.sdk.data.request.data.db.ExportDataToDBRequest;
 import com.onyx.android.sdk.data.request.data.db.ImportDBRequest;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.edu.reader.note.model.ReaderNoteDataProvider;
 import com.onyx.edu.reader.note.model.ReaderNoteDatabase;
@@ -64,13 +67,61 @@ public class ImportExportDBTest extends ActivityInstrumentationTestCase2<ReaderT
 
     public void testNormalExportImportDb() {
         String documentUniqueId = ShapeUtils.generateUniqueId();
-        int count = 2000;
+        int count = 10000;
         removeAllShapeOfDocument(documentUniqueId);
         addShapesToDatabase(count, documentUniqueId);
         exportDB(count, documentUniqueId);
         removeAllShapeOfDocument(documentUniqueId);
         importDB(count, documentUniqueId);
         ReaderNoteDataProvider.clear(getActivity());
+    }
+
+    public void testExportDataToDb() {
+        String documentUniqueId = ShapeUtils.generateUniqueId();
+        int count = 10000;
+        ReaderNoteDataProvider.clear(getActivity());
+        addShapesToDatabase(count, documentUniqueId);
+        exportDataToDB(count, documentUniqueId);
+        ReaderNoteDataProvider.clear(getActivity());
+    }
+
+    private String createExportDB() {
+        String exportDBPath = "mnt/sdcard/test.db";
+        FileUtils.deleteFile(exportDBPath);
+        String currentDbPath = getActivity().getDatabasePath(ReaderNoteDatabase.NAME).getPath() + ".db";
+        CreateDBRequest createDBRequest = new CreateDBRequest(currentDbPath, exportDBPath);
+        ReaderDataHolder readerDataHolder = new ReaderDataHolder(getActivity());
+        try {
+            long startTime = System.currentTimeMillis();
+            createDBRequest.execute(readerDataHolder.getDataManager());
+            Log.d(TAG, "create export db use " + (System.currentTimeMillis() - startTime) + "毫秒");
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        return exportDBPath;
+    }
+
+    private void exportDataToDB(int count, String documentUniqueId) {
+        String currentDbPath = getActivity().getDatabasePath(ReaderNoteDatabase.NAME).getPath() + ".db";
+        String condition = "documentUniqueId='"+documentUniqueId+"' ";
+        String table = "ReaderNoteShapeModel";
+        String exportDBPath = createExportDB();
+        ExportDataToDBRequest exportDataToDBRequest =  new ExportDataToDBRequest(currentDbPath, exportDBPath, condition, table);
+        ReaderDataHolder readerDataHolder = new ReaderDataHolder(getActivity());
+        try {
+            long startTime = System.currentTimeMillis();
+            exportDataToDBRequest.execute(readerDataHolder.getDataManager());
+            Log.d(TAG, "export shape data to new db: data count: "+ count+ " \r\nuse " + (System.currentTimeMillis() - startTime) + "毫秒");
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        long loadStartTime = System.currentTimeMillis();
+        List<ReaderNoteShapeModel> shapeModels = ReaderNoteDataProvider.loadShapeList(getActivity(), documentUniqueId);
+        Log.d(TAG, "load db from database: data count: "+ count+ " \r\nuse " + (System.currentTimeMillis() - loadStartTime) + "毫秒");
+        assertTrue(count == shapeModels.size());
     }
 
     private void exportDB(int count, String documentUniqueId) {

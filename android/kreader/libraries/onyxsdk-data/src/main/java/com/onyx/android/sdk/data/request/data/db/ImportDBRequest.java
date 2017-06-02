@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data.request.data.db;
 
+import android.util.Log;
+
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
