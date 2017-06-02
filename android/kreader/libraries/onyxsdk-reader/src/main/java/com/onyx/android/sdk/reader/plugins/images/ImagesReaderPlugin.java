@@ -462,6 +462,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return null;
     }
 
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
+        return null;
+    }
+
     public boolean supportScale() {
         return true;
     }

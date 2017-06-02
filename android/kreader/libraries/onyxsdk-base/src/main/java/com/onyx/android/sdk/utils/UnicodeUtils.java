@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.reader.utils;
+package com.onyx.android.sdk.utils;
 
 /**
  * Created by zengzhu on 3/4/16.

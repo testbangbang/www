@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.reader.utils;
+package com.onyx.android.sdk.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

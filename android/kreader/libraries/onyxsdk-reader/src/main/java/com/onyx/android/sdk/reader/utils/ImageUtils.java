@@ -3,11 +3,13 @@ package com.onyx.android.sdk.reader.utils;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
+import com.onyx.android.sdk.utils.RectUtils;
+
+import java.util.List;
 
 /**
  * Created by joy on 3/22/16.
- * kreader zhuzeng$ javah -classpath ./build/intermediates/classes/debug/:/opt/adt-bundle-linux/sdk/platforms/android-14/android.jar:./com/onyx/kreader/utils
- * -jni ImageUtils
+ * kreader zhuzeng$ javah -classpath ./build/intermediates/classes/debug/:/opt/adt-bundle-linux/sdk/platforms/android-14/android.jar: -jni com.onyx.android.sdk.reader.utils.ImageUtils
  */
 public class ImageUtils {
     public static final float NO_GAMMA = -1;
@@ -19,7 +21,7 @@ public class ImageUtils {
 
     static private native double [] crop(Bitmap bitmap, int left, int top, int right, int bottom, double threshold);
     static private native boolean emboldenInPlace(Bitmap bitmap, int level);
-    static private native boolean gammaCorrection(Bitmap bitmap, float gamma);
+    static private native boolean gammaCorrection(Bitmap bitmap, float gamma, float [] regions);
 
     static public native boolean reflowPage(String pageName, Bitmap input, ImageReflowSettings settings);
     static public native boolean isPageReflowed(String pageName);
@@ -76,8 +78,18 @@ public class ImageUtils {
      * @param selection
      * @return
      */
-    public static boolean applyGammaCorrection(Bitmap bmp, float selection) {
+    public static boolean applyGammaCorrection(Bitmap bmp, float selection, final List<RectF> regions) {
         float gamma = getGammaCorrectionBySelection(selection);
-        return gammaCorrection(bmp, gamma);
+        float [] array = null;
+        if (regions != null) {
+            array = new float[regions.size() * 4];
+            for (int i = 0; i < regions.size(); ++i) {
+                array[i * 4] = regions.get(i).left;
+                array[i * 4 + 1] = regions.get(i).top;
+                array[i * 4 + 2] = regions.get(i).right;
+                array[i * 4 + 3] = regions.get(i).bottom;
+            }
+        }
+        return gammaCorrection(bmp, gamma, array);
     }
 }
