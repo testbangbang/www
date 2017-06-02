@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.*;
 import com.onyx.edu.reader.R;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
-import com.onyx.android.sdk.reader.utils.RectUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 
 import java.util.ArrayList;
 import java.util.List;

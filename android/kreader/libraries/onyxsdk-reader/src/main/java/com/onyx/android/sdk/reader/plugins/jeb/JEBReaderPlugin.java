@@ -490,6 +490,11 @@ public class JEBReaderPlugin implements ReaderPlugin,
         return getPluginImpl().selectTextOnScreen(start, end);
     }
 
+    @Override
+    public List<ReaderSelection> allText(String pagePosition) {
+        return null;
+    }
+
     public boolean supportScale() {
         return false;
     }

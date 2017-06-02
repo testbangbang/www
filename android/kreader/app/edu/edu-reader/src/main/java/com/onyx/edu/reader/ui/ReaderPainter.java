@@ -33,7 +33,7 @@ import com.onyx.edu.reader.ui.data.BookmarkIconFactory;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle;
 import com.onyx.edu.reader.ui.highlight.ReaderSelectionManager;
-import com.onyx.android.sdk.reader.utils.RectUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 
 import java.util.List;
 

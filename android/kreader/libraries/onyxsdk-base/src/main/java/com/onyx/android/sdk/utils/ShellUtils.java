@@ -56,6 +56,10 @@ public class ShellUtils {
             return execCommand(new String[] {command}, isRoot, true, true);
         }
 
+        public static CommandResult execCommand(boolean isRoot, String... commands) {
+            return execCommand(commands, isRoot, true, true);
+        }
+
         /**
          * execute shell commands, default return result msg
          *

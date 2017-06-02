@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * Created by zengzhu on 2/3/16.
- * javah -classpath ./bin/classes:/opt/adt-bundle-linux/sdk/platforms/android-8/android.jar:./com/onyx/kreader/plugins/pdfium/ -jni com.onyx.kreader.plugins.pdfium.NeoPdfJniWrapper
+ * javah -classpath  ./build/intermediates/classes/debug/:./bin/classes:/opt/adt-bundle-linux/sdk/platforms/android-8/android.jar:./com/onyx/kreader/plugins/pdfium/ -jni com.onyx.kreader.plugins.pdfium.NeoPdfJniWrapper
  * http://cdn01.foxitsoftware.com/pub/foxit/manual/enu/FoxitPDF_SDK20_Guide.pdf
  * https://src.chromium.org/svn/trunk/src/pdf/pdfium/
  */
@@ -78,6 +78,8 @@ public class NeoPdfJniWrapper {
     private native boolean nativeSetRenderFormFields(int id, boolean render);
 
     private native boolean nativeLoadFormFields(int id, int page, List<ReaderFormField> fields);
+
+    private native boolean nativeGetPageTextRegions(int id, int page, final List<ReaderSelection> list);
 
     private int id;
     private String filePath = null;
@@ -182,5 +184,9 @@ public class NeoPdfJniWrapper {
 
     public boolean loadFormFields(int page, List<ReaderFormField> fields) {
         return nativeLoadFormFields(id, page, fields);
+    }
+
+    public boolean getPageTextRegions(int page, final List<ReaderSelection> list) {
+        return nativeGetPageTextRegions(id, page, list);
     }
 }

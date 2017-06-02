@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.reader.reflow;
 
 import com.alibaba.fastjson.JSON;
-import com.onyx.android.sdk.reader.utils.HashUtils;
+import com.onyx.android.sdk.utils.HashUtils;
 
 /**
  * @author joy

@@ -496,6 +496,11 @@ public class AlReaderPlugin implements ReaderPlugin,
         return getPluginImpl().selectTextOnScreen(start, end);
     }
 
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
+        return null;
+    }
+
     public boolean supportScale() {
         return false;
     }

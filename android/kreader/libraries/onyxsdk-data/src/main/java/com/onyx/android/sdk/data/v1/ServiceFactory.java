@@ -76,6 +76,10 @@ public class ServiceFactory {
         return getSpecifyService(ContentService.class, baseUrl);
     }
 
+    public static final OnyxSyncService getSyncService(final String baseUrl) {
+        return getSpecifyService(OnyxSyncService.class, baseUrl);
+    }
+
     public static final <T> T getSpecifyService(final Class<T> service, final String baseUrl) {
         return getRetrofit(baseUrl).create(service);
     }

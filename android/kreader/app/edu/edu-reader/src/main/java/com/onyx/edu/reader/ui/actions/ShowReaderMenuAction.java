@@ -399,6 +399,11 @@ public class ShowReaderMenuAction extends BaseAction {
         readerDataHolder.submitRenderRequest(request);
     }
 
+    private static void pushDocumentData(ReaderDataHolder readerDataHolder) {
+        ExportDocumentDataAction exportDocumentDataAction = new ExportDocumentDataAction();
+        exportDocumentDataAction.execute(readerDataHolder, null);
+    }
+
     private void scaleToWidth(final ReaderDataHolder readerDataHolder) {
         final ScaleToWidthRequest request = new ScaleToWidthRequest(readerDataHolder.getCurrentPageName());
         readerDataHolder.submitRenderRequest(request);
