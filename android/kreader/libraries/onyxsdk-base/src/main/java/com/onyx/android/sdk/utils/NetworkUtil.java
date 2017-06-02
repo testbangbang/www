@@ -60,6 +60,17 @@ public class NetworkUtil {
     }
 
     public static String getMacAddressFromSystem(Context context) {
+        String macAddress = null;
+        for(int i = 0; i < 3; ++i) {
+            macAddress = getMacAddressFromSystemImpl(context);
+            if (StringUtils.isNotBlank(macAddress)) {
+                return macAddress.toLowerCase();
+            }
+        }
+        return macAddress;
+    }
+
+    private static String getMacAddressFromSystemImpl(Context context) {
         boolean restoreWifiStatus = false;
         if (!isWifiEnabled(context)) {
             enableWiFi(context, true);
@@ -75,7 +86,7 @@ public class NetworkUtil {
         if (restoreWifiStatus) {
             enableWiFi(context, false);
         }
-        return macAddress.toLowerCase();
+        return macAddress;
     }
 
     private static String getMacAddressFromNetworkInterface() {
