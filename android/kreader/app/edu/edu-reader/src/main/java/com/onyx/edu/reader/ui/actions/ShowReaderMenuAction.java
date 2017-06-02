@@ -400,8 +400,8 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private static void pushReaderData(ReaderDataHolder readerDataHolder) {
-        PushReaderDataAction pushReaderDataAction = new PushReaderDataAction();
-        pushReaderDataAction.execute(readerDataHolder, null);
+        ExportDocumentDataAction exportDocumentDataAction = new ExportDocumentDataAction();
+        exportDocumentDataAction.execute(readerDataHolder, null);
     }
 
     private void scaleToWidth(final ReaderDataHolder readerDataHolder) {

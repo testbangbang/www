@@ -16,7 +16,7 @@ import static com.onyx.android.sdk.data.Constant.READER_DATA_FOLDER;
  * Created by ming on 2017/5/31.
  */
 
-public class PushReaderDataAction extends BaseAction {
+public class ExportDocumentDataAction extends BaseAction {
 
     private String exportDBFilePath;
 
