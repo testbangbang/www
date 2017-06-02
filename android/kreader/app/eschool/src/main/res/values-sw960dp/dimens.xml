@@ -29,8 +29,8 @@
     <dimen name="home_weather_notify_text_margin_top">25dp</dimen>
     <dimen name="home_weather_notify_text_padding">9dp</dimen>
     <dimen name="home_weather_notify_text_size">20sp</dimen>
-    <dimen name="home_normal_item_category_image_size">108dp</dimen>
-    <dimen name="home_normal_item_category_text_size">29sp</dimen>
+    <dimen name="home_normal_item_category_image_size">166dp</dimen>
+    <dimen name="home_normal_item_category_text_size">37sp</dimen>
     <dimen name="home_normal_item_category_margin">18dp</dimen>
     <dimen name="home_teaching_material_layout_margin_bottom">95dp</dimen>
     <dimen name="home_teaching_material_layout_margin">@dimen/home_item_background_normal_stroke_width</dimen>

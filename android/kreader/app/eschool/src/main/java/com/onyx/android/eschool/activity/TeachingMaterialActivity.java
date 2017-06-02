@@ -60,7 +60,7 @@ public class TeachingMaterialActivity extends BaseActivity {
 
     private List<Metadata> metadataList = new ArrayList<>();
 
-    private String documentDisplayPath = "/mnt/sdcard/slide/sample-cfa-png.pdf";
+    private String documentDisplayPath = "/mnt/sdcard/slide/reading.pdf";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,7 +120,7 @@ public class TeachingMaterialActivity extends BaseActivity {
 
             @Override
             public int getDataCount() {
-                return getDataSize(syllabusList, -1);
+                return getDataSize(syllabusList, 1);
             }
 
             @Override
@@ -154,7 +154,7 @@ public class TeachingMaterialActivity extends BaseActivity {
 
             @Override
             public int getDataCount() {
-                return getDataSize(metadataList, -1);
+                return getDataSize(metadataList, 1);
             }
 
             @Override
@@ -166,7 +166,7 @@ public class TeachingMaterialActivity extends BaseActivity {
             public void onPageBindViewHolder(ContentViewHolder viewHolder, int position) {
                 viewHolder.itemView.setTag(position);
 
-                loadImage(viewHolder.bookCover, getBookCover(position));
+                loadImage(viewHolder.bookCover, getRandomBookCover());
             }
         });
     }
@@ -212,7 +212,7 @@ public class TeachingMaterialActivity extends BaseActivity {
 
     private int getRandomBookCover() {
         int[] covers = getBookCovers();
-        return covers[TestUtils.randInt(0, covers.length - 1)];
+        return covers[TestUtils.randInt(1, covers.length - 1)];
     }
 
     private int[] getBookCovers() {
@@ -243,7 +243,7 @@ public class TeachingMaterialActivity extends BaseActivity {
     private void loadSyllabusData() {
         String gradeSelected = StudentPreferenceManager.loadGradeSelected(this, "小学一年级");
         String schoolSelected = StudentPreferenceManager.loadSchoolSelected(this, "小学");
-        gradeLabelTextView.setText(gradeSelected);
+        //gradeLabelTextView.setText(gradeSelected);
         List<String> syllabusConfigList = loadRowSyllabusConfig(schoolSelected, gradeSelected.replace("上", "").replace("下", ""));
         if (syllabusConfigList != null) {
             syllabusList.addAll(syllabusConfigList);

@@ -23,6 +23,7 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.libedu.model.BookNode;
 import com.onyx.libedu.model.Document;
@@ -348,7 +349,8 @@ public class ChooseExerciseColorFragment extends BaseFragment implements ChooseE
 
             @Override
             public int getDataCount() {
-                return 17;
+                //return 17;
+                return 1;
             }
 
             @Override
@@ -360,7 +362,7 @@ public class ChooseExerciseColorFragment extends BaseFragment implements ChooseE
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
                 CommonViewHolder viewHolder = (CommonViewHolder)holder;
                 ImageView imageView = viewHolder.getView(R.id.practice_image);
-                String imageName = String.format("practice_bg%d", position + 1);
+                String imageName = String.format("practice_bg%d", TestUtils.randInt(position + 2, 16));
                 imageView.setImageResource(getImageResourceId(imageName));
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

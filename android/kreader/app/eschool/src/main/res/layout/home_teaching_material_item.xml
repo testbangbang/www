@@ -52,6 +52,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/home_teaching_record_image_margin_bottom"
+            android:visibility="invisible"
             android:gravity="center">
 
             <ImageView
