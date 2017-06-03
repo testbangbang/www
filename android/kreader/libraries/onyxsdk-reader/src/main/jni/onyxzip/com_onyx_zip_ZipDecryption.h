@@ -34,10 +34,10 @@ JNIEXPORT jint JNICALL Java_com_onyx_zip_ZipDecryption_size
 /*
  * Class:     com_onyx_zip_ZipDecryption
  * Method:    seek
- * Signature: (J)I
+ * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_com_onyx_zip_ZipDecryption_seek
-  (JNIEnv *, jobject, jlong);
+JNIEXPORT jint JNICALL Java_com_onyx_zip_ZipDecryption_seekPos
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     com_onyx_zip_ZipDecryption

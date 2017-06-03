@@ -18,6 +18,7 @@ OnyxZipFileStream::OnyxZipFileStream(const std::string &path, const std::string 
     : filePath(path)
     , zipPassword(password)
     , totalSize(0)
+    , seekPos(0)
     , pArchive(NULL)
     , pArchiveEntry(NULL)
 {
@@ -79,4 +80,14 @@ int OnyxZipFileStream::requestBytes(size_t offset, unsigned char * pBuffer, size
 void OnyxZipFileStream::close()
 {
 
+}
+
+void OnyxZipFileStream::setSeekPos(size_t pos)
+{
+    seekPos = pos;
+}
+
+int OnyxZipFileStream::getSeekPos()
+{
+    return seekPos;
 }

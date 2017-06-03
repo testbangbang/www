@@ -23,6 +23,8 @@ public:
     int requestBytes(size_t offset, unsigned char * pBuffer, size_t size);
     int getSize();
     void close();
+    void setSeekPos(size_t pos);
+    int getSeekPos();
 
 private:
 
@@ -30,6 +32,7 @@ private:
     std::string filePath;
     std::string zipPassword;
     size_t      totalSize;
+    size_t      seekPos;
 
     ZipArchive::Ptr pArchive;
     ZipArchiveEntry::Ptr pArchiveEntry;

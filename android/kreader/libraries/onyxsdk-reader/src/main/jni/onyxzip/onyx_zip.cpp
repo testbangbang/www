@@ -8,7 +8,6 @@
 static const char * zipDecryptionClassName = "com/onyx/zip/ZipDecryption";
 
 static std::map<int, OnyxZipFileStream *> zipFileStreamMap;
-static std::map<int, jlong> seekOffsetMap;
 
 static int getHashCode(JNIEnv *env, jobject obj) {
     JNIUtils utils(env);
@@ -66,12 +65,12 @@ JNIEXPORT jint JNICALL Java_com_onyx_zip_ZipDecryption_size
     return -1;
 }
 
-JNIEXPORT jint JNICALL Java_com_onyx_zip_ZipDecryption_seek
-  (JNIEnv *env, jobject thiz, jlong joffset) {
+JNIEXPORT jint JNICALL Java_com_onyx_zip_ZipDecryption_seekPos
+  (JNIEnv *env, jobject thiz, jint joffset) {
     OnyxZipFileStream *stream = findZipFileStream(env, thiz);
     if (stream != NULL) {
         if (joffset < stream->getSize()) {
-            seekOffsetMap.insert(std::pair<int, jlong>(getHashCode(env, thiz), joffset));
+            stream->setSeekPos(joffset);
             return joffset;
         }
     }
@@ -80,17 +79,13 @@ JNIEXPORT jint JNICALL Java_com_onyx_zip_ZipDecryption_seek
 
 JNIEXPORT jint JNICALL Java_com_onyx_zip_ZipDecryption_readContent
   (JNIEnv *env, jobject thiz, jbyteArray jbuffer, jint jbufOffset, jint jlength) {
-    std::map<int, jlong>::iterator iter = seekOffsetMap.find(getHashCode(env, thiz));
-    int offset = -1;
-    if (iter != seekOffsetMap.end()) {
-        offset = iter->second;
-    }
-    if (offset < 0) {
-        return -1;
-    }
-
     OnyxZipFileStream *stream = findZipFileStream(env, thiz);
     if (stream != NULL) {
+        int offset = stream->getSeekPos();
+        if (offset < 0) {
+            return -1;
+        }
+
         JByteArray buffer(jlength);
         stream->requestBytes(offset, (unsigned char *)buffer.getRawBuffer(), jlength);
         env->SetByteArrayRegion(jbuffer, 0, jlength, buffer.getRawBuffer());
