@@ -169,18 +169,21 @@
         <com.onyx.android.sdk.ui.view.RadioButtonCenter
             style="@style/dialog_table_of_content_radio_button"
             android:id="@+id/btn_bookmark"
+            android:visibility="gone"
             android:background="@drawable/no_left_line_check_bg"
             android:button="@drawable/bookmark_radio_button_drawable"/>
 
         <com.onyx.android.sdk.ui.view.RadioButtonCenter
             style="@style/dialog_table_of_content_radio_button"
             android:id="@+id/btn_annotation"
+            android:visibility="gone"
             android:background="@drawable/no_left_line_check_bg"
             android:button="@drawable/annotation_radio_button_drawable"/>
 
         <com.onyx.android.sdk.ui.view.RadioButtonCenter
             style="@style/dialog_table_of_content_radio_button"
             android:id="@+id/btn_scribble"
+            android:visibility="gone"
             android:background="@drawable/no_left_line_check_bg"
             android:button="@drawable/scribble_radio_button_drawable"/>
     </RadioGroup>
