@@ -1,13 +1,13 @@
 package com.onyx.android.sdk.utils;
 
 
+import android.graphics.Paint;
 import android.util.Log;
 import android.util.Patterns;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created by zhuzeng on 10/16/15.
@@ -189,5 +189,18 @@ public class StringUtils {
             return "";
         }
         return origin;
+    }
+
+    public static int getTextWidth(Paint paint, String str) {
+        int resultWidth = 0;
+        if (str != null && str.length() > 0) {
+            int len = str.length();
+            float[] widths = new float[len];
+            paint.getTextWidths(str, widths);
+            for (int j = 0; j < len; j++) {
+                resultWidth += (int) Math.ceil(widths[j]);
+            }
+        }
+        return resultWidth;
     }
 }

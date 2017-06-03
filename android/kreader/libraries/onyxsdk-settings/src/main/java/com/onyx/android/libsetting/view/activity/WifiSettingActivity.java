@@ -48,6 +48,8 @@ import static com.onyx.android.libsetting.util.Constant.ARGS_SIGNAL_LEVEL;
 import static com.onyx.android.libsetting.util.Constant.ARGS_SSID;
 
 public class WifiSettingActivity extends OnyxAppCompatActivity {
+    static final boolean DEBUG = true;
+
     static final String TAG = WifiSettingActivity.class.getSimpleName();
     static final String ACTION_WIFI_ENABLE = "android.intent.action.WIFI_ENABLE";
     ActivityWifiSettingBinding binding;
@@ -89,6 +91,14 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         }
     }
 
+    private void logScanResult(List<AccessPoint> scanResult){
+        for (AccessPoint point:scanResult){
+            Log.e(TAG, "AccessPoint SSID:" + point.getWifiInfo().getSSID());
+            Log.e(TAG, "AccessPoint BSSID:" + point.getWifiInfo().getBSSID());
+        }
+        Log.e(TAG, "Result Size:" + scanResult.size());
+    }
+
     private void initWifiAdmin() {
         wifiAdmin = new WifiAdmin(this, new WifiAdmin.Callback() {
             @Override
@@ -99,6 +109,9 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
             @Override
             public void onScanResultReady(List<AccessPoint> scanResult) {
                 adapter.setDataList(scanResult);
+                if (DEBUG){
+                    logScanResult(scanResult);
+                }
                 updateSummary(true);
                 binding.wifiScanResultRecyclerView.notifyDataSetChanged();
             }
