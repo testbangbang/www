@@ -396,17 +396,17 @@ public class ReaderHelper {
     }
 
     public void applyPostBitmapProcess(final ReaderViewInfo viewInfo, ReaderBitmapReferenceImpl bitmap) {
-        final List<RectF> regions = collectTextRectangleList(viewInfo);
-        final List<RectF> imageRegions = RectUtils.cutRectByExcludingRegions(new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight()),
-                regions);
-        applyGamma(bitmap, imageRegions);
+        applyGamma(viewInfo, bitmap);
         applyEmbolden(bitmap);
         applySaturation(bitmap);
     }
 
-    private void applyGamma(final ReaderBitmapReferenceImpl bitmap, final List<RectF> regions) {
+    private void applyGamma(final ReaderViewInfo viewInfo, final ReaderBitmapReferenceImpl bitmap) {
+        final List<RectF> regions = collectTextRectangleList(viewInfo);
+        final RectF parent = new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight());
+        final List<RectF> imageRegions = RectUtils.cutRectByExcludingRegions(parent, regions);
         applyTextGamma(bitmap);
-        applyImageGamma(bitmap, regions);
+        applyImageGamma(bitmap, imageRegions);
     }
 
     private void applyTextGamma(final ReaderBitmapReferenceImpl bitmap) {
