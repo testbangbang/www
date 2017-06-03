@@ -21,6 +21,8 @@ public class NeoAccountBase extends BaseData {
     public String orgName;
     @Column(typeConverter = ListStringConverter.class)
     public List<String> groups;
+
+    @Column
     public String token;
     public String phone;
 

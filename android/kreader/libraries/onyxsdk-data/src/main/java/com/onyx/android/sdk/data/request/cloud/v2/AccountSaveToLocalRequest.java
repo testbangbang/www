@@ -30,4 +30,8 @@ public class AccountSaveToLocalRequest extends BaseCloudRequest {
         FlowManager.getContext().getContentResolver().delete(providerUri, null, null);
         ContentUtils.insert(providerUri, neoAccountBase);
     }
+
+    public NeoAccountBase getNeoAccountBase() {
+        return neoAccountBase;
+    }
 }

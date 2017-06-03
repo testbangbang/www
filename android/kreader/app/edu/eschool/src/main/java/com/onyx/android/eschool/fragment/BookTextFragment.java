@@ -23,6 +23,7 @@ import com.onyx.android.eschool.action.LibraryGotoPageAction;
 import com.onyx.android.eschool.custom.PageIndicator;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
 import com.onyx.android.eschool.events.BookLibraryEvent;
+import com.onyx.android.eschool.events.HardwareErrorEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -674,6 +675,13 @@ public class BookTextFragment extends Fragment {
     public void onAccountTokenErrorEvent(AccountTokenErrorEvent event) {
         if (pageIndicator != null) {
             pageIndicator.setTotalText(getString(R.string.token_exception_contact_admin));
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHardwareErrorEvent(HardwareErrorEvent event) {
+        if (pageIndicator != null) {
+            pageIndicator.setTotalText(getString(R.string.hardware_error));
         }
     }
 

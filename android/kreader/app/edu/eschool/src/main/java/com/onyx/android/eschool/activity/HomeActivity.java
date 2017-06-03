@@ -2,6 +2,7 @@ package com.onyx.android.eschool.activity;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Region;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -158,15 +159,6 @@ public class HomeActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountAvailableEvent(AccountAvailableEvent event) {
-        final AccountLoadFromLocalRequest localRequest = new AccountLoadFromLocalRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
-        SchoolApp.getSchoolCloudStore().submitRequest(this, localRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-                StudentAccount.sendUserInfoSettingIntent(HomeActivity.this, localRequest.getAccount());
-            }
-        });
+        StudentAccount.sendUserInfoSettingIntent(HomeActivity.this, event.getAccount());
     }
 }

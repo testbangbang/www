@@ -2,8 +2,10 @@ package com.onyx.android.eschool.action;
 
 import android.content.Context;
 
+import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
+import com.onyx.android.eschool.events.HardwareErrorEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -17,6 +19,7 @@ import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromCloudRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromLocalRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountSaveToLocalRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
@@ -40,9 +43,9 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void requestAuthAccount(final LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
-        final BaseAuthAccount account = createContentAccount(dataHolder.getContext());
+        final BaseAuthAccount account = createAuthAccountFromHardware(dataHolder.getContext());
         if (account == null) {
-            ToastUtils.showToast(dataHolder.getContext(), "当前wifi可能没有连接，获取不了mac地址");
+            sendHardwareErrorEvent();
             return;
         }
         CloudRequestChain requestChain = new CloudRequestChain();
@@ -53,7 +56,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (NeoAccountBase.isValid(localAccountRequest.getAccount())) {
-                    sendAccountAvailableEvent();
+                    sendAccountAvailableEvent(localAccountRequest.getAccount());
                 }
             }
         });
@@ -81,22 +84,32 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                     return;
                 }
                 updateRetrofit(dataHolder);
-                sendAccountAvailableEvent();
+                sendAccountAvailableEvent(saveAccountRequest.getNeoAccountBase());
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
         requestChain.execute(dataHolder.getContext(), dataHolder.getCloudManager());
     }
 
-    private void sendAccountAvailableEvent() {
-        EventBus.getDefault().post(new AccountAvailableEvent());
+    private void sendAccountAvailableEvent(final NeoAccountBase account) {
+        final GenerateAccountInfoRequest generateAccountInfoRequest = new GenerateAccountInfoRequest(account);
+        SchoolApp.getSchoolCloudStore().submitRequest(SchoolApp.singleton(), generateAccountInfoRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                EventBus.getDefault().post(new AccountAvailableEvent(account));
+            }
+        });
     }
 
     private void sendAccountTokenErrorEvent() {
         EventBus.getDefault().post(new AccountTokenErrorEvent());
     }
 
-    public static BaseAuthAccount createContentAccount(Context context) {
+    private void sendHardwareErrorEvent() {
+        EventBus.getDefault().post(new HardwareErrorEvent());
+    }
+
+    public static BaseAuthAccount createAuthAccountFromHardware(Context context) {
         String macAddress = NetworkUtil.getMacAddress(context);
         if (StringUtils.isNullOrEmpty(macAddress)) {
             return null;

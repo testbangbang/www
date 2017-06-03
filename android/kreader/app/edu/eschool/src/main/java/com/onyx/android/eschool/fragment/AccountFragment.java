@@ -71,7 +71,16 @@ public class AccountFragment extends Fragment {
     }
 
     private void initView(ViewGroup viewGroup) {
-        updateView(getActivity());
+        final AccountLoadFromLocalRequest localRequest = new AccountLoadFromLocalRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
+        SchoolApp.getSchoolCloudStore().submitRequest(getContext(), localRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null || localRequest.getAccount() == null) {
+                    return;
+                }
+                updateView(localRequest.getAccount());
+            }
+        });
     }
 
     @Override
@@ -90,20 +99,6 @@ public class AccountFragment extends Fragment {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-    }
-
-    @SuppressLint("SetTextI18n")
-    public void updateView(Context context) {
-        final AccountLoadFromLocalRequest localRequest = new AccountLoadFromLocalRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
-        SchoolApp.getSchoolCloudStore().submitRequest(context, localRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null || localRequest.getAccount() == null) {
-                    return;
-                }
-                updateView(localRequest.getAccount());
-            }
-        });
     }
 
     private void updateView(NeoAccountBase account) {
@@ -163,6 +158,6 @@ public class AccountFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountAvailableEvent(AccountAvailableEvent event) {
-        updateView(getContext());
+        updateView(event.getAccount());
     }
 }

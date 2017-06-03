@@ -97,6 +97,6 @@
     <string name="refresh_content_empty">刷新获取的内容为空</string>
 
     <string name="token_exception_contact_admin">登录异常，请检查网络重试或者联系管理员</string>
-
+    <string name="hardware_error">硬件错误, 请检查网络重试或者联系管理员</string>
 
 </resources>
