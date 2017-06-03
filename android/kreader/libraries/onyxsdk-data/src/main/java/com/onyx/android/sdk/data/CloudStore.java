@@ -54,7 +54,8 @@ public class CloudStore {
     }
 
     private static OnyxDownloadManager initFileDownloader(final Context context) {
-        return OnyxDownloadManager.getInstance(context);
+        OnyxDownloadManager.init(context);
+        return OnyxDownloadManager.getInstance();
     }
 
     private static void terminateCloudDatabase() {

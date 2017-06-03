@@ -38,7 +38,8 @@ public class MarketApplication extends MultiDexApplication {
     }
 
     private void initDownloadManager() {
-        OnyxDownloadManager.getInstance(sInstance.getApplicationContext());
+        OnyxDownloadManager.init(sInstance.getApplicationContext());
+        OnyxDownloadManager.getInstance();
     }
 
     private void initCloudStore() {

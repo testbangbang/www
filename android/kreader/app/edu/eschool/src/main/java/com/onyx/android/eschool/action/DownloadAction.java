@@ -40,19 +40,19 @@ public class DownloadAction extends BaseAction<LibraryDataHolder> {
             ToastUtils.showToast(dataHolder.getContext(), R.string.file_path_invalid);
             return;
         }
-        if (isTaskDownloading(dataHolder.getContext(), tag)) {
+        if (isTaskDownloading(tag)) {
             return;
         }
         startDownload(dataHolder.getContext(), baseCallback);
     }
 
-    private boolean isTaskDownloading(Context context, Object tag) {
-        return getDownLoaderManager(context).getTask(tag) != null;
+    private boolean isTaskDownloading(Object tag) {
+        return getDownLoaderManager().getTask(tag) != null;
     }
 
     private void startDownload(final Context context, final BaseCallback baseCallback) {
         final DialogLoading loadingDialog = showDownloadingDialog(context, FileUtils.getBaseName(filePath), tag);
-        BaseDownloadTask task = getDownLoaderManager(context).download(context, url, filePath,
+        BaseDownloadTask task = getDownLoaderManager().download(context, url, filePath,
                 tag, new BaseCallback() {
                     @Override
                     public void progress(BaseRequest request, ProgressInfo info) {
@@ -62,15 +62,15 @@ public class DownloadAction extends BaseAction<LibraryDataHolder> {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         loadingDialog.dismiss();
-                        removeDownloadingTask(request.getContext(), tag);
+                        removeDownloadingTask(tag);
                         if (e != null) {
                             ToastUtils.showToast(request.getContext(), R.string.download_fail);
                         }
                         BaseCallback.invoke(baseCallback, request, e);
                     }
                 });
-        getDownLoaderManager(context).addTask(tag, task);
-        getDownLoaderManager(context).startDownload(task);
+        getDownLoaderManager().addTask(tag, task);
+        getDownLoaderManager().startDownload(task);
     }
 
     public DialogLoading showDownloadingDialog(final Context context, final String name, final Object tag) {
@@ -88,18 +88,18 @@ public class DownloadAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void stopDownloadingTask(Context context, Object tag) {
-        BaseDownloadTask task = getDownLoaderManager(context).getTask(tag);
-        removeDownloadingTask(context, tag);
+        BaseDownloadTask task = getDownLoaderManager().getTask(tag);
+        removeDownloadingTask(tag);
         if (task != null) {
             task.pause();
         }
     }
 
-    private void removeDownloadingTask(Context context, Object tag) {
-        getDownLoaderManager(context).removeTask(tag);
+    private void removeDownloadingTask(Object tag) {
+        getDownLoaderManager().removeTask(tag);
     }
 
-    private OnyxDownloadManager getDownLoaderManager(Context context) {
-        return OnyxDownloadManager.getInstance(context);
+    private OnyxDownloadManager getDownLoaderManager() {
+        return OnyxDownloadManager.getInstance();
     }
 }

@@ -23,27 +23,28 @@ public class OnyxDownloadManager {
 
     private static int DEFAULT_PROGRESS_MIN_INTERVAL = 1200;
     private static OnyxDownloadManager instance;
+    private static Context appContext;
     private FileDownloadNotificationHelper<NotificationItem> helper = new FileDownloadNotificationHelper<>();
 
     private LinkedHashMap<Object, BaseDownloadTask> taskMap = new LinkedHashMap<>();
 
-    private OnyxDownloadManager(Context context) {
-        FileDownloader.init(context);
+    private OnyxDownloadManager() {
+    }
+
+    public static void init(final Context context) {
+        appContext = context;
+        FileDownloader.init(appContext);
         FileDownloader.getImpl().setMaxNetworkThreadCount(5);
     }
 
     /**
      * must init in Application
      */
-    public static synchronized OnyxDownloadManager getInstance(Context context) {
+    public static synchronized OnyxDownloadManager getInstance() {
         if (instance == null) {
-            instance = new OnyxDownloadManager(context);
+            instance = new OnyxDownloadManager();
         }
         return instance;
-    }
-
-    public static synchronized OnyxDownloadManager getInstance() {
-        return getInstance(getContext());
     }
 
     public static synchronized Context getContext() {

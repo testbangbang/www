@@ -85,7 +85,8 @@ public class DownloadTest extends ApplicationTestCase<Application> {
         assertNotNull(context);
         final CountDownLatch latch = new CountDownLatch(1);
         final String tag = UUID.randomUUID().toString();
-        final OnyxDownloadManager fileDownloadManager = OnyxDownloadManager.getInstance(context);
+        OnyxDownloadManager.init(context);
+        final OnyxDownloadManager fileDownloadManager = OnyxDownloadManager.getInstance();
         final CloudFileDownloadRequest fileDownloadRequest = new CloudFileDownloadRequest(TEST_URL, getTestFilePath(), tag);
         fileDownloadManager.download(fileDownloadRequest, new BaseCallback() {
             @Override
@@ -121,7 +122,8 @@ public class DownloadTest extends ApplicationTestCase<Application> {
         assertNotNull(context);
         final CountDownLatch latch = new CountDownLatch(1);
         final String tag = UUID.randomUUID().toString();
-        final OnyxDownloadManager fileDownloadManager = OnyxDownloadManager.getInstance(context);
+        OnyxDownloadManager.init(context);
+        final OnyxDownloadManager fileDownloadManager = OnyxDownloadManager.getInstance();
         final CloudFileDownloadRequest fileDownloadRequest = new CloudFileDownloadRequest(ROM_URL, getTestFilePath(), tag);
         fileDownloadManager.download(fileDownloadRequest, new BaseCallback() {
             @Override

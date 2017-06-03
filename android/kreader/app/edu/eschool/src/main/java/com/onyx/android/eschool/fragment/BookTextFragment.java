@@ -637,7 +637,7 @@ public class BookTextFragment extends Fragment {
     }
 
     private OnyxDownloadManager getDownLoaderManager() {
-        return OnyxDownloadManager.getInstance(getActivity());
+        return OnyxDownloadManager.getInstance();
     }
 
     private LibraryDataHolder getDataHolder() {
