@@ -9,23 +9,29 @@ import android.content.IntentFilter;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.FloatProperty;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.AuthTokenAction;
 import com.onyx.android.eschool.action.DownloadAction;
+import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.libsetting.data.wifi.AccessPoint;
 import com.onyx.android.libsetting.manager.WifiAdmin;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.request.cloud.SyncTimeBySntpRequest;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import de.halfbit.tinymachine.StateHandler;
@@ -63,15 +69,33 @@ public class RouterTestActivity extends Activity {
     private static String ALARM_INTENT_ACTION = "com.action.router.AlarmManager";
     private BroadcastReceiver alarmReceiver;
 
+    private LibraryDataHolder libraryDataHolder;
+
     private AccessPoint lastAccessPoint;
     private static final String URL =
             "http://oa.o-in.me:9002/repo/3ec511d5-5fdd-49ab-bd9b-32d2e09ff12a/efe936ce98141a82a8b214ef6690fe34560aa3f6/?file_name=%E7%A2%A7%E5%B2%A9%E5%BD%95.pdf&op=download&t=24eae196b9&p=/%E6%B5%8B%E8%AF%95%E6%96%87%E6%A1%A3/PDF%E6%B5%8B%E8%AF%95%E6%96%87%E6%A1%A3/%E7%A2%A7%E5%B2%A9%E5%BD%95.pdf";
 
+    private long testingCount = 0;
+    private long wifiConnectedDuration = 0;
+    private float averageWifiConnectedDuration = 0;
+    private long authDuration = 0;
+    private long downloadDuration = 0;
+    private float averageDownloadDuration = 0;
+    private long downloadSucceedCount = 0;
+    private long downloadFailedCount = 0;
+    private long apFailedCount = 0;
+
+    private TextView stateView;
+    private TextView connectDurationView;
+    private TextView downloadDurationView;
+    private TextView downloadFailedView;
+    private TextView apFailedView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_router_test);
+        initView();
         initUMeng();
         DeviceUtils.turnOffSystemPMSettings(this);
         initReceiver(this);
@@ -96,6 +120,14 @@ public class RouterTestActivity extends Activity {
         cleanup();
     }
 
+    private void initView() {
+        stateView = (TextView)findViewById(R.id.textView_state);
+        connectDurationView = (TextView)findViewById(R.id.textView_connect_duration);
+        downloadDurationView = (TextView)findViewById(R.id.textView_download_duration);
+        downloadFailedView = (TextView)findViewById(R.id.textView_download_failed_count);
+        apFailedView = (TextView)findViewById(R.id.textView_ap_failed_count);
+    }
+
     private void cleanup() {
         getWifiAdmin().unregisterReceiver();
         if (alarmReceiver != null) {
@@ -107,6 +139,17 @@ public class RouterTestActivity extends Activity {
         MobclickAgent.setDebugMode(true);
         MobclickAgent.setCheckDevice(true);
         MobclickAgent.setLatencyWindow(0);
+    }
+
+    private LibraryDataHolder getLibraryDataHolder() {
+        if (libraryDataHolder == null) {
+            libraryDataHolder = new LibraryDataHolder(this);
+        }
+        return libraryDataHolder;
+    }
+
+    private long reportCurrentTimeStamp() {
+        return System.currentTimeMillis();
     }
 
     private WifiAdmin getWifiAdmin() {
@@ -142,7 +185,9 @@ public class RouterTestActivity extends Activity {
 
             @Override
             public void onSupplicantStateChanged(NetworkInfo.DetailedState state) {
-
+                if (state == NetworkInfo.DetailedState.FAILED) {
+                    reportWifiFailed();
+                }
             }
 
             @Override
@@ -217,6 +262,7 @@ public class RouterTestActivity extends Activity {
     public void actionOnAlarmTriggered() {
         tinyMachine.transitionTo(STATE_WAIT_FOR_ENABLE_AFTER_ALARM);
         NetworkUtil.enableWiFi(this, true);
+        wifiConnectedDuration = reportCurrentTimeStamp();
     }
 
     public void actionOnWiFiEnabledAfterAlarm() {
@@ -225,27 +271,29 @@ public class RouterTestActivity extends Activity {
     }
 
     public void actionOnConnectedAfterAlarm() {
+        wifiConnectedDuration = reportCurrentTimeStamp() - wifiConnectedDuration;
         tinyMachine.transitionTo(STATE_START_TESTING);
+        authDuration = reportCurrentTimeStamp();
         final AuthTokenAction authTokenAction = new AuthTokenAction();
         authTokenAction.execute(SchoolApp.getLibraryDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                authDuration = reportCurrentTimeStamp() - authDuration;
                 tinyMachine.transitionTo(STATE_CLOUD_DOWNLOAD);
             }
         });
     }
 
     public void actionOnCloudDownload() {
+        downloadDuration = reportCurrentTimeStamp();
         final String id = UUID.randomUUID().toString();
         String filePath = "/mnt/sdcard/Download" + id;
-        DownloadAction downloadAction = new DownloadAction(URL, filePath, id);
-        downloadAction.execute(SchoolApp.getLibraryDataHolder(), new BaseCallback() {
+        final DownloadAction downloadAction = new DownloadAction(URL, filePath, id);
+        downloadAction.execute(getLibraryDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-
+                downloadDuration = reportCurrentTimeStamp() - downloadDuration;
+                flushToCloud(e == null);
             }
         });
 
@@ -255,70 +303,70 @@ public class RouterTestActivity extends Activity {
     public class RouterStateHandler {
         @StateHandler(state = STATE_INIT)
         public void onEventStateInit(String event, TinyMachine tm) {
-            Log.e(TAG, "state changed to STATE_INIT: " + STATE_INIT);
+            reportState("state changed to STATE_INIT: " + STATE_INIT);
             actionOnInitState();
         }
 
         @StateHandler(state = STATE_WIFI_INIT_ENABLED, type = Type.OnEntry)
         public void onEntryStateWifiInitEnabled() {
-            Log.e(TAG, "state changed to STATE_WIFI_INIT_ENABLED: " + STATE_WIFI_INIT_ENABLED);
+            reportState("state changed to STATE_WIFI_INIT_ENABLED: " + STATE_WIFI_INIT_ENABLED);
             actionOnWifiInitEnabled();
         }
 
         @StateHandler(state = STATE_WIFI_SCAN_RESULT_READY, type = Type.OnEntry)
         public void onEntryStateScanResultReady() {
-            Log.e(TAG, "state changed to STATE_WIFI_SCAN_RESULT_READY: " + STATE_WIFI_SCAN_RESULT_READY);
+            reportState("state changed to STATE_WIFI_SCAN_RESULT_READY: " + STATE_WIFI_SCAN_RESULT_READY);
         }
 
         @StateHandler(state = STATE_WIFI_CONNECTED, type = Type.OnEntry)
         public void onEntryStateWifiConnected() {
-            Log.e(TAG, "state changed to STATE_WIFI_CONNECTED: " + STATE_WIFI_CONNECTED);
+            reportState("state changed to STATE_WIFI_CONNECTED: " + STATE_WIFI_CONNECTED);
             actionOnWifiConnected();
         }
 
         @StateHandler(state = STATE_NTP_SYNC, type = Type.OnEntry)
         public void onEntryStateSntpSync() {
-            Log.e(TAG, "state changed to STATE_NTP_SYNC: " + STATE_NTP_SYNC);
+            reportState("state changed to STATE_NTP_SYNC: " + STATE_NTP_SYNC);
             actionOnSntpSync();
         }
 
         @StateHandler(state = STATE_ALARM_SET, type = Type.OnEntry)
         public void onEntryStateAlarmSet() {
-            Log.e(TAG, "state changed to STATE_ALARM_SET: " + STATE_ALARM_SET);
+            reportState("state changed to STATE_ALARM_SET: " + STATE_ALARM_SET);
             actionOnSntpSync();
         }
 
         @StateHandler(state = STATE_ALARM_TRIGGERED, type = Type.OnEntry)
         public void onEntryStateAlarmTriggered() {
-            Log.e(TAG, "state changed to STATE_ALARM_TRIGGERED: " + STATE_ALARM_TRIGGERED);
+            reportState("state changed to STATE_ALARM_TRIGGERED: " + STATE_ALARM_TRIGGERED);
             actionOnAlarmTriggered();
         }
 
         @StateHandler(state = STATE_WIFI_ENABLED_AFTER_ALARM, type = Type.OnEntry)
         public void onEntryStateWiFiEnabledAfterAlarm() {
-            Log.e(TAG, "state changed to STATE_WIFI_ENABLED_AFTER_ALARM: " + STATE_WIFI_ENABLED_AFTER_ALARM);
+            reportState("state changed to STATE_WIFI_ENABLED_AFTER_ALARM: " + STATE_WIFI_ENABLED_AFTER_ALARM);
             actionOnWiFiEnabledAfterAlarm();
         }
 
         @StateHandler(state = STATE_CONNECTED_AFTER_ALARM, type = Type.OnEntry)
         public void onEntryStateConnectedAfterAlarm() {
-            Log.e(TAG, "state changed to STATE_CONNECTED_AFTER_ALARM: " + STATE_CONNECTED_AFTER_ALARM);
+            reportState("state changed to STATE_CONNECTED_AFTER_ALARM: " + STATE_CONNECTED_AFTER_ALARM);
             actionOnConnectedAfterAlarm();
         }
 
         @StateHandler(state = STATE_WAIT_FOR_ENABLE_AFTER_ALARM, type = Type.OnEntry)
         public void onEntryStateWaitForEnableAfterAlarm() {
-            Log.e(TAG, "state changed to STATE_WAIT_FOR_ENABLE_AFTER_ALARM: " + STATE_WAIT_FOR_ENABLE_AFTER_ALARM);
+            reportState("state changed to STATE_WAIT_FOR_ENABLE_AFTER_ALARM: " + STATE_WAIT_FOR_ENABLE_AFTER_ALARM);
         }
 
         @StateHandler(state = STATE_CLOUD_AUTH, type = Type.OnEntry)
         public void onEntryStateAuthAfterAlarm() {
-            Log.e(TAG, "state changed to STATE_CLOUD_AUTH: " + STATE_CLOUD_AUTH);
+            reportState("state changed to STATE_CLOUD_AUTH: " + STATE_CLOUD_AUTH);
         }
 
         @StateHandler(state = STATE_CLOUD_DOWNLOAD, type = Type.OnEntry)
         public void onEntryStateCloudDownload() {
-            Log.e(TAG, "state changed to STATE_CLOUD_DOWNLOAD: " + STATE_CLOUD_DOWNLOAD);
+            reportState("state changed to STATE_CLOUD_DOWNLOAD: " + STATE_CLOUD_DOWNLOAD);
             actionOnCloudDownload();
         }
 
@@ -349,7 +397,65 @@ public class RouterTestActivity extends Activity {
     }
 
     private void onReceivedAlarm() {
+        ++testingCount;
+        NetworkUtil.enableWiFi(this, false);
         tinyMachine.transitionTo(STATE_ALARM_TRIGGERED);
     }
 
+    private void flushToCloud(boolean downloadSucceed) {
+        reportAverageConnectTimeToCloud();
+        reportDownloadToCloud(downloadSucceed);
+    }
+
+    private void reportAverageConnectTimeToCloud() {
+        Map<String, String> map = new HashMap<>();
+        String address = NetworkUtil.getMacAddress(this);
+        map.put("mac", address);
+        MobclickAgent.onEvent(this, "apSucceed", map);
+
+        map.clear();
+        map.put("time", String.valueOf(wifiConnectedDuration));
+        MobclickAgent.onEvent(this, "wifiConnected", map);
+        Log.e(TAG, "reportAverageConnectTimeToCloud");
+        if (Float.compare(averageWifiConnectedDuration, 0) == 0) {
+            averageWifiConnectedDuration = wifiConnectedDuration;
+        } else {
+            averageWifiConnectedDuration = (averageWifiConnectedDuration + wifiConnectedDuration) / 2;
+        }
+        connectDurationView.setText("平均连接时间: " + averageWifiConnectedDuration / 1000.0f + " 秒");
+    }
+
+    private void reportDownloadToCloud(boolean succeed)  {
+        Map<String, String> map = new HashMap<>();
+        map.put("url", FileUtils.computeMD5(URL));
+
+        if (succeed) {
+            Log.e(TAG, "reportDownloadToCloud");
+            MobclickAgent.onEvent(this, "downloadOK", map);
+            downloadSucceedCount ++;
+            if (Float.compare(averageDownloadDuration, 0) == 0) {
+                averageDownloadDuration = downloadDuration;
+            } else {
+                averageDownloadDuration = (averageDownloadDuration + downloadDuration) / 2;
+            }
+            downloadDurationView.setText("下载成功次数: " + downloadSucceedCount + " 下载时间: " + averageDownloadDuration / 1000.f +  " 秒");
+        } else {
+            MobclickAgent.onEvent(this, "downloadFail", map);
+            ++downloadFailedCount;
+            downloadFailedView.setText("下载失败次数: " + downloadFailedCount);
+        }
+    }
+
+    private void reportWifiFailed() {
+        ++apFailedCount;
+        Map<String, String> map = new HashMap<>();
+        map.put("failed", String.valueOf(apFailedCount));
+        MobclickAgent.onEvent(this, "apFail", map);
+        apFailedView.setText("连接失败次数: " + apFailedCount);
+    }
+
+    private void reportState(final String text) {
+        stateView.setText("测试总次数: " + testingCount + " " + text);
+        Log.e(TAG, text);
+    }
 }
