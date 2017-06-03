@@ -127,11 +127,11 @@ public class BaseOptions {
         if (backend.hasKey(ZIP_PASSWORD_TAG)) {
             String zipPassword = backend.getString(ZIP_PASSWORD_TAG);
             if (zipPassword == null) {
-                return "";
+                return null;
             }
             return zipPassword;
         }
-        return "";
+        return null;
     }
 
     public void setZipPassword(final String zipPassword) {

@@ -99,6 +99,7 @@ public class AlReaderWrapper {
         bookOpt.codePageDefault = documentOptions.getCodePageFallback();
         bookOpt.formatOptions = 0;
         bookOpt.readPosition = 0;
+        bookOpt.compressedPassword = documentOptions.getCompressedPassword();
         if (bookEng.openBook(path, bookOpt) != TAL_RESULT.OK) {
             return ERROR_FILE_INVALID;
         }

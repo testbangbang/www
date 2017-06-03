@@ -36,7 +36,6 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_zip_ZipDecryption_init
     }
     JNIString passwordString(env, jpassword);
     password = passwordString.getLocalString();
-    LOGI("at ZipDecryption init, path: %s, password: %s", path, password);
 
     int hashCode = getHashCode(env, thiz);
     OnyxZipFileStream *stream = new OnyxZipFileStream(path, password);
@@ -58,7 +57,6 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_zip_ZipDecryption_open
 JNIEXPORT jint JNICALL Java_com_onyx_zip_ZipDecryption_size
   (JNIEnv *env, jobject thiz) {
     OnyxZipFileStream *stream = findZipFileStream(env, thiz);
-    LOGI("at ZipDecryption size, stream is null? %d", (stream == NULL));
     if (stream != NULL) {
         return stream->getSize();
     }
@@ -89,6 +87,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_zip_ZipDecryption_readContent
         JByteArray buffer(jlength);
         stream->requestBytes(offset, (unsigned char *)buffer.getRawBuffer(), jlength);
         env->SetByteArrayRegion(jbuffer, 0, jlength, buffer.getRawBuffer());
+        return jlength;
     }
     return -1;
 }
