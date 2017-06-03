@@ -44,7 +44,7 @@ public class ReaderApplication extends ReaderBaseApp {
     }
 
     private void initDownloadManager() {
-        CloudStore.initFileDownloader(sInstance);
+        CloudStore.init(sInstance);
     }
 
     private void initWeChatManager() {

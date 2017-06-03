@@ -1,6 +1,5 @@
 package com.onyx.android.eschool;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.support.multidex.MultiDex;
@@ -74,7 +73,7 @@ public class SchoolApp extends MultiDexApplication {
 
     @Override
     public void onTerminate() {
-        terminateCloudDatabase();
+        terminateCloudStore();
         deviceReceiver.enable(this, false);
         super.onTerminate();
     }
@@ -83,7 +82,7 @@ public class SchoolApp extends MultiDexApplication {
         try {
             sInstance = this;
             StudentPreferenceManager.init(this);
-            initCloudStoreConfig();
+            initCloudStore();
             initDeviceConfig();
             initEventListener();
             initFrescoLoader();
@@ -200,11 +199,6 @@ public class SchoolApp extends MultiDexApplication {
         });
     }
 
-    public void initCloudStoreConfig() {
-        initCloudDatabase();
-        initCloudFileDownloader();
-    }
-
     private void initSystemInBackground() {
         enableWifiDetect();
         turnOffLed();
@@ -262,12 +256,8 @@ public class SchoolApp extends MultiDexApplication {
         Device.currentDevice().led(this, false);
     }
 
-    public void initCloudDatabase() {
-        CloudStore.initDatabase(this);
-    }
-
-    public void initCloudFileDownloader() {
-        CloudStore.initFileDownloader(this);
+    public void initCloudStore() {
+        CloudStore.init(this);
     }
 
     private void initFrescoLoader() {
@@ -278,8 +268,8 @@ public class SchoolApp extends MultiDexApplication {
         Device.currentDevice().enableWifiDetect(this, true);
     }
 
-    public void terminateCloudDatabase() {
-        CloudStore.terminateCloudDatabase();
+    public void terminateCloudStore() {
+        CloudStore.terminate();
     }
 
     public static SchoolApp singleton() {
@@ -289,14 +279,18 @@ public class SchoolApp extends MultiDexApplication {
     static public CloudStore getSchoolCloudStore() {
         if (schoolCloudStore == null) {
             schoolCloudStore = new CloudStore();
-            CloudManager cloudManager = schoolCloudStore.getCloudManager();
-            String host = DeviceConfig.sharedInstance(sInstance).getCloudContentHost();
-            String api = DeviceConfig.sharedInstance(sInstance).getCloudContentApi();
-            CloudConf cloudConf = new CloudConf(host, api, Constant.DEFAULT_CLOUD_STORAGE);
-            cloudManager.setAllCloudConf(cloudConf);
+            schoolCloudStore.setCloudConf(getCloudConf());
         }
         return schoolCloudStore;
     }
+
+    private static CloudConf getCloudConf() {
+        String host = DeviceConfig.sharedInstance(singleton()).getCloudContentHost();
+        String api = DeviceConfig.sharedInstance(singleton()).getCloudContentApi();
+        CloudConf cloudConf = new CloudConf(host, api, Constant.DEFAULT_CLOUD_STORAGE);
+        return cloudConf;
+    }
+
 
     static public DataManager getDataManager() {
         return getLibraryDataHolder().getDataManager();

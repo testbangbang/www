@@ -21,6 +21,15 @@ public class CloudStore {
     public CloudStore() {
     }
 
+    public static void init(final Context appContext) {
+        initDatabase(appContext);
+        initFileDownloader(appContext);
+    }
+
+    public static void terminate() {
+        terminateCloudDatabase();
+    }
+
     public boolean submitRequest(final Context context, final BaseCloudRequest request, final BaseCallback callback) {
         return requestManager.submitRequest(context, request, callback);
     }
@@ -33,7 +42,7 @@ public class CloudStore {
         return requestManager.getCloudConf();
     }
 
-    static public void initDatabase(final Context context) {
+    private static void initDatabase(final Context context) {
         try {
             FlowConfig.Builder builder = new FlowConfig.Builder(context);
             FlowManager.init(builder.build());
@@ -44,15 +53,19 @@ public class CloudStore {
         }
     }
 
-    static public OnyxDownloadManager initFileDownloader(final Context context) {
+    private static OnyxDownloadManager initFileDownloader(final Context context) {
         return OnyxDownloadManager.getInstance(context);
     }
 
-    static public void terminateCloudDatabase() {
+    private static void terminateCloudDatabase() {
         FlowManager.destroy();
     }
 
     public CloudManager getCloudManager() {
         return this.requestManager;
+    }
+
+    public void setCloudConf(final CloudConf cloudConf) {
+        getCloudManager().setAllCloudConf(cloudConf);
     }
 }

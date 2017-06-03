@@ -33,9 +33,6 @@ import org.greenrobot.eventbus.EventBus;
  * Created by suicheng on 2017/5/18.
  */
 public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
-    public static final String NAME_SECRET = "eefbb54a-ffd1-4e86-9513-f83e15b807c9";
-    public static final String PASSWORD_SECRET = "807bb28a-623e-408c-97c5-61177091737b";
-
 
     @Override
     public void execute(LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
@@ -43,7 +40,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void requestAuthAccount(final LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
-        final BaseAuthAccount account = createAuthAccountFromHardware(dataHolder.getContext());
+        final BaseAuthAccount account = AccountLoadFromCloudRequest.createAuthAccountFromHardware(dataHolder.getContext());
         if (account == null) {
             sendHardwareErrorEvent();
             return;
@@ -107,15 +104,6 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
 
     private void sendHardwareErrorEvent() {
         EventBus.getDefault().post(new HardwareErrorEvent());
-    }
-
-    public static BaseAuthAccount createAuthAccountFromHardware(Context context) {
-        String macAddress = NetworkUtil.getMacAddress(context);
-        if (StringUtils.isNullOrEmpty(macAddress)) {
-            return null;
-        }
-        return BaseAuthAccount.create(FileUtils.computeMD5(macAddress + NAME_SECRET),
-                FileUtils.computeMD5(macAddress + PASSWORD_SECRET));
     }
 
     public static void updateRetrofit(LibraryDataHolder dataHolder) {
