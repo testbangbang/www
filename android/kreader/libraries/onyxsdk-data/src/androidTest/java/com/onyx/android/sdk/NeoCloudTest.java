@@ -42,13 +42,12 @@ public class NeoCloudTest extends ApplicationTestCase<Application> {
     }
 
     // authentication with hardware info.
-    public void testAuth() throws Exception {
+    public void testAuth1() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         final BaseAuthAccount account = AccountLoadFromCloudRequest.createAuthAccountFromHardware(getContext());
         assertNotNull(account);
         final AccountLoadFromCloudRequest accountGetRequest = new AccountLoadFromCloudRequest<>(account, EduAccount.class);
         getSchoolCloudStore().submitRequest(getContext(), accountGetRequest, new BaseCallback() {
-            @OverrideMarketApplication.java
             public void done(BaseRequest request, Throwable e) {
                 assertNull(e);
                 assertNotNull(accountGetRequest.getToken());
@@ -59,6 +58,21 @@ public class NeoCloudTest extends ApplicationTestCase<Application> {
         awaitCountDownLatch(countDownLatch);
     }
 
+    public void testAuth2() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final BaseAuthAccount account = AccountLoadFromCloudRequest.createAuthAccountFromHardware(getContext());
+        assertNotNull(account);
+        final AccountLoadFromCloudRequest accountGetRequest = new AccountLoadFromCloudRequest<>(account, EduAccount.class);
+        getSchoolCloudStore().submitRequest(getContext(), accountGetRequest, new BaseCallback() {
+            public void done(BaseRequest request, Throwable e) {
+                assertNull(e);
+                assertNotNull(accountGetRequest.getToken());
+                assertNotNull(accountGetRequest.getNeoAccount().getName());
+                countDownLatch.countDown();
+            }
+        });
+        awaitCountDownLatch(countDownLatch);
+    }
 
 
     public CloudStore getSchoolCloudStore() {

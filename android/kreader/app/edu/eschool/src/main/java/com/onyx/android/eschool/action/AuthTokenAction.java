@@ -63,7 +63,6 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                 if (e != null) {
                     if (ContentException.isNetworkException(e)) {
                         if (NeoAccountBase.isValid(localAccountRequest.getAccount())) {
-                            updateRetrofit(dataHolder);
                             BaseCallback.invoke(baseCallback, request, null);
                             return;
                         }
@@ -80,7 +79,6 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                 if (e != null) {
                     return;
                 }
-                updateRetrofit(dataHolder);
                 sendAccountAvailableEvent(saveAccountRequest.getNeoAccountBase());
                 BaseCallback.invoke(baseCallback, request, e);
             }
@@ -106,9 +104,4 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         EventBus.getDefault().post(new HardwareErrorEvent());
     }
 
-    public static void updateRetrofit(LibraryDataHolder dataHolder) {
-        ServiceFactory.addRetrofitTokenHeader(dataHolder.getCloudManager().getCloudConf().getApiBase(),
-                Constant.HEADER_AUTHORIZATION,
-                ContentService.CONTENT_AUTH_PREFIX + dataHolder.getCloudManager().getToken());
-    }
 }

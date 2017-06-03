@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
@@ -49,6 +50,7 @@ public class AccountLoadFromCloudRequest<T extends NeoAccountBase> extends BaseC
     public void execute(CloudManager parent) throws Exception {
         token = getAuthToken(parent);
         neoAccount = getContentAccount(parent);
+        updateTokenHeader(parent);
     }
 
     private String getAuthToken(CloudManager parent) throws Exception {
@@ -87,5 +89,12 @@ public class AccountLoadFromCloudRequest<T extends NeoAccountBase> extends BaseC
                 FileUtils.computeMD5(macAddress + PASSWORD_SECRET));
     }
 
+    private void updateTokenHeader(final CloudManager cloudManager) {
+        if (StringUtils.isNotBlank(token)) {
+            ServiceFactory.addRetrofitTokenHeader(cloudManager.getCloudConf().getApiBase(),
+                    Constant.HEADER_AUTHORIZATION,
+                    ContentService.CONTENT_AUTH_PREFIX + token);
+        }
+    }
 
 }
