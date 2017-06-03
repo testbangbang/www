@@ -149,7 +149,7 @@ public class HomeActivity extends BaseActivity {
 
     private void initNormalItem() {
         //initNormalView(R.id.home_note_item, R.string.home_item_note_text, R.drawable.home_note, getNoteIntent());
-        initNormalView(R.id.home_dictionary_item, R.string.home_item_application_text, R.drawable.home_application, getApplicationListIntent());
+        initNormalView(R.id.home_dictionary_item, R.string.home_item_device_params_text, R.drawable.home_application, getDeviceParamsIntent());
         initNormalView(R.id.home_practice_item, R.string.home_item_practice_text, R.drawable.home_practice, getEduIntent());
         initNormalView(R.id.home_setting_item, R.string.home_item_setting_text, R.drawable.home_setting, getSettingIntent());
         initNormalView(R.id.home_account_info, R.string.home_item_study_progress, R.drawable.home_study_progress, new Intent(this, StudyPreviewActivity.class));
@@ -221,6 +221,10 @@ public class HomeActivity extends BaseActivity {
 
     private Intent getApplicationListIntent() {
         return new Intent(this, ApplicationsActivity.class);
+    }
+
+    private Intent getDeviceParamsIntent() {
+        return new Intent(this, DeviceParamsActivity.class);
     }
 
     private Intent getEduIntent() {
