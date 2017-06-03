@@ -121,12 +121,12 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
-        String docPassword = "";
-        String archivePassword = "";
+        String docPassword = null;
+        String archivePassword = null;
         documentPath = path;
         if (documentOptions != null) {
             docPassword = documentOptions.getDocumentPassword();
-            archivePassword = documentOptions.getDocumentPassword();
+            archivePassword = documentOptions.getCompressedPassword();
         }
         long ret = getPluginImpl().openDocument(path, documentOptions);
         if (ret  == AlReaderWrapper.NO_ERROR) {

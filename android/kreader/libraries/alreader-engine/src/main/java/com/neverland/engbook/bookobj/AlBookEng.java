@@ -46,6 +46,7 @@ import com.neverland.engbook.level1.AlFilesPDB;
 import com.neverland.engbook.level1.AlFilesPDBUnk;
 import com.neverland.engbook.level1.AlFilesRAR;
 import com.neverland.engbook.level1.AlFilesZIP;
+import com.neverland.engbook.level1.AlTagusFilesBypassNative;
 import com.neverland.engbook.level1.JEBFilesEPUB;
 import com.neverland.engbook.level1.JEBFilesZIP;
 import com.neverland.engbook.level2.AlFormat;
@@ -2356,7 +2357,8 @@ public class AlBookEng{
 		} else
 		if (ft == TAL_FILE_TYPE.TXT) {
 			activeFile = bookOptions.decryptObj == null ?
-					new AlFilesBypassNative() : new AlFilesBypassDecrypt(bookOptions.decryptObj);
+					bookOptions.compressedPassword == null ? new AlFilesBypassNative() : new AlTagusFilesBypassNative(bookOptions.compressedPassword)
+					: new AlFilesBypassDecrypt(bookOptions.decryptObj);
 			activeFile.setLoadTime1(true);
 
 			lastInitState = activeFile.initState(currName, null, null);
@@ -2550,7 +2552,8 @@ public class AlBookEng{
 		} else
 		if (ft == TAL_FILE_TYPE.TXT) {
 			activeFile = bookOptions.decryptObj == null ?
-					new AlFilesBypassNative() : new AlFilesBypassDecrypt(bookOptions.decryptObj);
+					bookOptions.compressedPassword == null ? new AlFilesBypassNative() : new AlTagusFilesBypassNative(bookOptions.compressedPassword)
+							: new AlFilesBypassDecrypt(bookOptions.decryptObj);
 			activeFile.setLoadTime1(true);
 
 			lastInitState = activeFile.initState(currName, null, null);
