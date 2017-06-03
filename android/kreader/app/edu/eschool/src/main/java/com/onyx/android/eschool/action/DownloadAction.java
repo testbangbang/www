@@ -52,7 +52,7 @@ public class DownloadAction extends BaseAction<LibraryDataHolder> {
 
     private void startDownload(final Context context, final BaseCallback baseCallback) {
         final DialogLoading loadingDialog = showDownloadingDialog(context, FileUtils.getBaseName(filePath), tag);
-        BaseDownloadTask task = getDownLoaderManager(context).download(url, filePath,
+        BaseDownloadTask task = getDownLoaderManager(context).download(context, url, filePath,
                 tag, new BaseCallback() {
                     @Override
                     public void progress(BaseRequest request, ProgressInfo info) {

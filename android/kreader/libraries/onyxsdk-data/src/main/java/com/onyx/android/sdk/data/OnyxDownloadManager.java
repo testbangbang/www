@@ -24,7 +24,6 @@ public class OnyxDownloadManager {
     private static int DEFAULT_PROGRESS_MIN_INTERVAL = 1200;
     private static OnyxDownloadManager instance;
     private FileDownloadNotificationHelper<NotificationItem> helper = new FileDownloadNotificationHelper<>();
-    private Handler handler = new Handler(Looper.getMainLooper());
 
     private LinkedHashMap<Object, BaseDownloadTask> taskMap = new LinkedHashMap<>();
 
@@ -68,8 +67,9 @@ public class OnyxDownloadManager {
         return listener;
     }
 
-    public BaseDownloadTask download(final String url, final String path, final Object tag, final BaseCallback baseCallback) {
+    public BaseDownloadTask download(final Context context, final String url, final String path, final Object tag, final BaseCallback baseCallback) {
         CloudFileDownloadRequest request = createDownloadRequest(url, path, tag);
+        request.setContext(context);
         return download(request, baseCallback);
     }
 
@@ -98,8 +98,8 @@ public class OnyxDownloadManager {
         return task;
     }
 
-    public int downloadDirectly(final String url, final String path, final Object tag, final BaseCallback baseCallback) {
-        return startDownload(download(url, path, tag, baseCallback));
+    public int downloadDirectly(final Context context, final String url, final String path, final Object tag, final BaseCallback baseCallback) {
+        return startDownload(download(context, url, path, tag, baseCallback));
     }
 
     public int downloadDirectly(final CloudFileDownloadRequest request, final BaseCallback baseCallback) {
