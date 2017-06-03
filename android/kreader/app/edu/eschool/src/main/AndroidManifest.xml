@@ -58,6 +58,10 @@
             android:label="@string/title_activity_router_test"
             android:exported="true">
         </activity>
+
+        <meta-data android:value="5871bb2907fe65168c000f07" android:name="UMENG_APPKEY"/>
+        <meta-data android:value="inHouse" android:name="UMENG_CHANNEL"/>
+
     </application>
 
 </manifest>

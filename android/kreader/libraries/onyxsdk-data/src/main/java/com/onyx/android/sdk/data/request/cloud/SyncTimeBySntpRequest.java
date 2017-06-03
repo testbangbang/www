@@ -31,7 +31,7 @@ public class SyncTimeBySntpRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         final SntpClient client = new SntpClient();
         for (int i = 0; i < count; ++i) {
-            isSyncTime = client.requestTime("1.cn.pool.ntp.org", 60 * 1000);
+            isSyncTime = client.requestTime("1.cn.pool.ntp.org", 10 * 1000);
             if (isSyncTime) {
                 break;
             }

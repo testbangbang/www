@@ -14,6 +14,7 @@ import android.util.Log;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.AuthTokenAction;
+import com.onyx.android.eschool.action.DownloadAction;
 import com.onyx.android.libsetting.data.wifi.AccessPoint;
 import com.onyx.android.libsetting.manager.WifiAdmin;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -25,6 +26,7 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 import de.halfbit.tinymachine.StateHandler;
 import de.halfbit.tinymachine.TinyMachine;
@@ -62,6 +64,9 @@ public class RouterTestActivity extends Activity {
     private BroadcastReceiver alarmReceiver;
 
     private AccessPoint lastAccessPoint;
+    private static final String URL =
+            "http://oa.o-in.me:9002/repo/3ec511d5-5fdd-49ab-bd9b-32d2e09ff12a/efe936ce98141a82a8b214ef6690fe34560aa3f6/?file_name=%E7%A2%A7%E5%B2%A9%E5%BD%95.pdf&op=download&t=24eae196b9&p=/%E6%B5%8B%E8%AF%95%E6%96%87%E6%A1%A3/PDF%E6%B5%8B%E8%AF%95%E6%96%87%E6%A1%A3/%E7%A2%A7%E5%B2%A9%E5%BD%95.pdf";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,10 +219,6 @@ public class RouterTestActivity extends Activity {
         NetworkUtil.enableWiFi(this, true);
     }
 
-    public void actionOnWaitForWiFiEnableAfterAlarm() {
-
-    }
-
     public void actionOnWiFiEnabledAfterAlarm() {
         getWifiAdmin().connectWifi(lastAccessPoint);
         tinyMachine.transitionTo(STATE_WAIT_FOR_CONNECTED_AFTER_ALARM);
@@ -235,6 +236,18 @@ public class RouterTestActivity extends Activity {
     }
 
     public void actionOnCloudDownload() {
+        final String id = UUID.randomUUID().toString();
+        String filePath = "/mnt/sdcard/Download" + id;
+        DownloadAction downloadAction = new DownloadAction(URL, filePath, id);
+        downloadAction.execute(SchoolApp.getLibraryDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+
+            }
+        });
 
     }
 
