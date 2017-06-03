@@ -31,3 +31,7 @@
 
 # for event
 -keepclasseswithmembernames public class com.onyx.android.eschool.events.** { *;}
+
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}

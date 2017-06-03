@@ -5,7 +5,7 @@ import android.os.Environment;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.Constant;
-import com.onyx.android.sdk.data.request.cloud.PushDocumentDataRequest;
+import com.onyx.android.sdk.data.request.cloud.SaveDocumentDataToCloudRequest;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 
@@ -48,8 +48,8 @@ public class ExportDocumentDataAction extends BaseAction {
     private void pushDocumentData(ReaderDataHolder readerDataHolder, BaseCallback baseCallback, String fileFullMd5) {
         // TODO: 2017/6/1 for test
         String fileID = "592e8bde6ecae4b9299b4cd4";
-        PushDocumentDataRequest pushDocumentDataRequest = new PushDocumentDataRequest(exportDBFilePath, readerDataHolder.getContext(), Constant.SYNC_API_BASE, fileFullMd5, fileID);
-        readerDataHolder.getCloudManager().submitRequest(readerDataHolder.getContext(), pushDocumentDataRequest, baseCallback);
+        SaveDocumentDataToCloudRequest saveDocumentDataToCloudRequest = new SaveDocumentDataToCloudRequest(exportDBFilePath, readerDataHolder.getContext(), Constant.SYNC_API_BASE, fileFullMd5, fileID);
+        readerDataHolder.getCloudManager().submitRequest(readerDataHolder.getContext(), saveDocumentDataToCloudRequest, baseCallback);
     }
 
     private GetFileFullMd5Action getFileFullMd5(ReaderDataHolder readerDataHolder) {
