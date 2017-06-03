@@ -264,7 +264,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     public class ViewPagerAdapter extends PagerAdapter {
         @Override
         public int getCount() {
-            return 4;
+            return 1;
         }
 
         @Override
@@ -294,7 +294,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         } else {
             currentTab = DirectoryTab.TOC;
         }
-
+        currentTab = DirectoryTab.TOC;
         setContentView(R.layout.dialog_table_of_content);
         fitDialogToWindow();
         preIcon = (ImageView) findViewById(R.id.pre_icon);
@@ -376,9 +376,9 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                                final List<Annotation> annotations,
                                final List<String> scribblePages) {
         viewList.add(initTocView(readerDataHolder, tableOfContent));
-        viewList.add(initBookmarkView(readerDataHolder, bookmarks));
-        viewList.add(initAnnotationsView(readerDataHolder, annotations));
-        viewList.add(initScribbleView(readerDataHolder, scribblePages));
+        //viewList.add(initBookmarkView(readerDataHolder, bookmarks));
+        //viewList.add(initAnnotationsView(readerDataHolder, annotations));
+        //viewList.add(initScribbleView(readerDataHolder, scribblePages));
         viewPager.setAdapter(new ViewPagerAdapter());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
