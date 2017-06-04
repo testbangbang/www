@@ -104,7 +104,7 @@ public class RectUtils {
     static public List<RectF> cutRectByExcludingRegions(RectF source, final List<RectF> excluding) {
         List<RectF> result = new ArrayList<>();
 
-        if (excluding.size() <= 0) {
+        if (excluding == null || excluding.size() <= 0) {
             result.add(source);
             return result;
         }
