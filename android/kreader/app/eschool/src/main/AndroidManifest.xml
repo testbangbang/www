@@ -69,6 +69,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.DeviceParamsActivity" />
+
     </application>
 
 </manifest>
