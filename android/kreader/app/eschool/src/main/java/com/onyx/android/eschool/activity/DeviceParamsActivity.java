@@ -17,7 +17,7 @@ import butterknife.OnClick;
  */
 public class DeviceParamsActivity extends BaseActivity {
 
-    private String userManualFilePath = "/mnt/sdcard/slide/user_manual.pdf";
+    private String userManualFilePath = "/mnt/sdcard/user_manual.pdf";
 
     @Override
     protected Integer getLayoutId() {
