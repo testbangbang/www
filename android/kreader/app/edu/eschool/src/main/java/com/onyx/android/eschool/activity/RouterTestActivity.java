@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.FloatProperty;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -271,7 +270,9 @@ public class RouterTestActivity extends Activity {
     }
 
     public void actionOnConnectedAfterAlarm() {
+        reportApSucceed();
         wifiConnectedDuration = reportCurrentTimeStamp() - wifiConnectedDuration;
+        reportAverageConnectTimeToCloud();
         tinyMachine.transitionTo(STATE_START_TESTING);
         authDuration = reportCurrentTimeStamp();
         final AuthTokenAction authTokenAction = new AuthTokenAction();
@@ -280,6 +281,7 @@ public class RouterTestActivity extends Activity {
             public void done(BaseRequest request, Throwable e) {
                 authDuration = reportCurrentTimeStamp() - authDuration;
                 tinyMachine.transitionTo(STATE_CLOUD_DOWNLOAD);
+                reportAuthSucceed();
             }
         });
     }
@@ -293,10 +295,9 @@ public class RouterTestActivity extends Activity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 downloadDuration = reportCurrentTimeStamp() - downloadDuration;
-                flushToCloud(e == null);
+                reportDownloadResult(e == null);
             }
         });
-
     }
 
     // Define state handler class with handler methods
@@ -402,46 +403,55 @@ public class RouterTestActivity extends Activity {
         tinyMachine.transitionTo(STATE_ALARM_TRIGGERED);
     }
 
-    private void flushToCloud(boolean downloadSucceed) {
-        reportAverageConnectTimeToCloud();
-        reportDownloadToCloud(downloadSucceed);
-    }
-
     private void reportAverageConnectTimeToCloud() {
-        Map<String, String> map = new HashMap<>();
-        String address = NetworkUtil.getMacAddress(this);
-        map.put("mac", address);
-        MobclickAgent.onEvent(this, "apSucceed", map);
-
-        map.clear();
-        map.put("time", String.valueOf(wifiConnectedDuration));
-        MobclickAgent.onEvent(this, "wifiConnected", map);
-        Log.e(TAG, "reportAverageConnectTimeToCloud");
         if (Float.compare(averageWifiConnectedDuration, 0) == 0) {
             averageWifiConnectedDuration = wifiConnectedDuration;
         } else {
             averageWifiConnectedDuration = (averageWifiConnectedDuration + wifiConnectedDuration) / 2;
         }
+        reportApConnectDuration();
         connectDurationView.setText("平均连接时间: " + averageWifiConnectedDuration / 1000.0f + " 秒");
     }
 
-    private void reportDownloadToCloud(boolean succeed)  {
+    private void reportApSucceed() {
+        Map<String, String> map = new HashMap<>();
+        String address = NetworkUtil.getMacAddress(this);
+        map.put("mac", address);
+        MobclickAgent.onEvent(this, "apSucceed", map);
+    }
+
+    private void reportAuthSucceed() {
+        Map<String, String> map = new HashMap<>();
+        String address = NetworkUtil.getMacAddress(this);
+        map.put("mac", address);
+        MobclickAgent.onEvent(this, "authSucceed", map);
+    }
+
+    private void reportApConnectDuration() {
+        Map<String, String> map = new HashMap<>();
+        map.put("du", String.valueOf(averageWifiConnectedDuration));
+        MobclickAgent.onEvent(this, "act", map);
+    }
+
+    private void reportDownloadResult(boolean succeed)  {
         Map<String, String> map = new HashMap<>();
         map.put("url", FileUtils.computeMD5(URL));
 
         if (succeed) {
-            Log.e(TAG, "reportDownloadToCloud");
-            MobclickAgent.onEvent(this, "downloadOK", map);
             downloadSucceedCount ++;
             if (Float.compare(averageDownloadDuration, 0) == 0) {
                 averageDownloadDuration = downloadDuration;
             } else {
                 averageDownloadDuration = (averageDownloadDuration + downloadDuration) / 2;
             }
+            map.put("okCount", String.valueOf(downloadSucceedCount));
+            map.put("ts", String.valueOf(averageDownloadDuration));
+            MobclickAgent.onEvent(this, "dok", map);
             downloadDurationView.setText("下载成功次数: " + downloadSucceedCount + " 下载时间: " + averageDownloadDuration / 1000.f +  " 秒");
         } else {
-            MobclickAgent.onEvent(this, "downloadFail", map);
             ++downloadFailedCount;
+            map.put("failCount", String.valueOf(downloadFailedCount));
+            MobclickAgent.onEvent(this, "derr", map);
             downloadFailedView.setText("下载失败次数: " + downloadFailedCount);
         }
     }
