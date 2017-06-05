@@ -5,18 +5,19 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.databinding.ActivityProductDetailSettingBinding;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.ActivityUtil;
 
 import java.io.File;
 
 public class ProductDetailSettingActivity extends Activity {
-    static public final String DEFAULT_USER_RESOURCES_CONFIG_PATH = "/system/user-res";
-    static public final String DEFAULT_USER_MANUAL_NAME = "user-manual.pdf";
+    static public final String DEFAULT_USER_RESOURCES_CONFIG_PATH = Device.currentDevice.getExternalStorageDirectory().getPath();
+    //TODO:avoid hard code here?
+    static public final String DEFAULT_USER_MANUAL_NAME = "YOUNGY BOOX用户手册.pdf";
     ActivityProductDetailSettingBinding binding;
 
     @Override

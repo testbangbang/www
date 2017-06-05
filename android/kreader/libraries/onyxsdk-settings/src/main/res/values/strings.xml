@@ -238,6 +238,9 @@
     <string name="battery_status">Current Battery Status: %1$s</string>
     <!-- Battery usage on battery duration -->
     <string name="battery_stats_on_battery"><xliff:g id="time">%1$s</xliff:g> on battery</string>
+    <string name="battery_total_on_battery">Total Standby:<xliff:g id="time">%1$s</xliff:g></string>
+    <string name="battery_remain_on_battery">Remain:<xliff:g id="time">%1$s</xliff:g></string>
+
     <string name="battery_info">Battery Info</string>
 
     <!-- Used to show an amount of time in the form "d days, h hours, m minutes, s seconds" in BatteryHistory -->
