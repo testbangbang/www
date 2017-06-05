@@ -263,6 +263,13 @@
 
     <!-- Used to show an amount of time in the form "m minutes, s seconds" in BatteryHistory -->
     <string name="battery_history_minutes_no_seconds"><xliff:g id="minutes">%1$d</xliff:g>m</string>
+
+    <!-- Used to show an amount of time in the form "d days, h hours, m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_days_no_minute"><xliff:g id="days">%1$d</xliff:g>d <xliff:g id="hours">%2$d</xliff:g>h</string>
+
+    <!-- Used to show an amount of time in the form "h hours, m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_hours_no_minute"><xliff:g id="hours">%1$d</xliff:g>h</string>
+
     <string name="open_manual">Check User Manual.</string>
     <string name="setting_product_detail">Product Detail</string>
 
