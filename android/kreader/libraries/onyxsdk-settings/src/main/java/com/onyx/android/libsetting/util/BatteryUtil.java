@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.BatteryManager;
 
 import com.onyx.android.libsetting.R;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 /**
  * Created by solskjaer49 on 2017/5/23 15:08.
@@ -14,6 +15,7 @@ public class BatteryUtil {
     private static final int SECONDS_PER_MINUTE = 60;
     private static final int SECONDS_PER_HOUR = 60 * 60;
     private static final int SECONDS_PER_DAY = 24 * 60 * 60;
+    private static final long SECONDS_PER_MONTH = 30 * 24 * 60 * 60;
 
     public static String getBatteryStatusByStatusCode(final Context context, final int status) {
         String statusStr = null;
@@ -98,6 +100,15 @@ public class BatteryUtil {
 
     public static String getVisualBatteryUsageTime(final Context context, final long usageTime) {
         return context.getString(R.string.battery_stats_on_battery, formatElapsedTime(context, usageTime / 1000, true));
+    }
+
+    public static String getVisualBatteryTotalTime(final Context context){
+        return context.getString(R.string.battery_total_on_battery, formatElapsedTime(context, SECONDS_PER_MONTH* 1000, true));
+    }
+
+    public static String getVisualBatteryRemainTime(final Context context){
+        return context.getString(R.string.battery_remain_on_battery, formatElapsedTime(context,
+                SECONDS_PER_MONTH * 1000 * (DeviceUtils.getBatteryPercentLevel(context) / 100), true));
     }
 
 }
