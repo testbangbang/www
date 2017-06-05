@@ -99,7 +99,7 @@ public class BatteryUtil {
     }
 
     public static String getVisualBatteryUsageTime(final Context context, final long usageTime) {
-        return context.getString(R.string.battery_stats_on_battery, formatElapsedTime(context, usageTime / 1000, true));
+        return context.getString(R.string.battery_stats_on_battery, formatElapsedTime(context, usageTime / 1000, false));
     }
 
     public static String getVisualBatteryTotalTime(final Context context){
