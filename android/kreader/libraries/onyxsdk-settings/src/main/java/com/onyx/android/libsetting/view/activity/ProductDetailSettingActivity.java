@@ -9,13 +9,14 @@ import android.view.View;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.databinding.ActivityProductDetailSettingBinding;
+import com.onyx.android.libsetting.util.BatteryUtil;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.ActivityUtil;
 
 import java.io.File;
 
 public class ProductDetailSettingActivity extends Activity {
-    static public final String DEFAULT_USER_RESOURCES_CONFIG_PATH = Device.currentDevice.getExternalStorageDirectory().getPath();
+    static public final String DEFAULT_USER_RESOURCES_CONFIG_PATH = Device.currentDevice.getExternalStorageDirectory().getPath() + File.separator + "PL107_user_manual";
     //TODO:avoid hard code here?
     static public final String DEFAULT_USER_MANUAL_NAME = "YOUNGY BOOX用户手册.pdf";
     ActivityProductDetailSettingBinding binding;
@@ -31,7 +32,8 @@ public class ProductDetailSettingActivity extends Activity {
         binding.buttonOpenManual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File file = new File(DEFAULT_USER_RESOURCES_CONFIG_PATH + File.separator + DEFAULT_USER_MANUAL_NAME);
+                File file = new File(DEFAULT_USER_RESOURCES_CONFIG_PATH +
+                        File.separator + DEFAULT_USER_MANUAL_NAME);
                 if (file.exists() && file.canRead()) {
                     Intent intent = new Intent();
                     intent.setData(Uri.fromFile(file));
@@ -40,6 +42,7 @@ public class ProductDetailSettingActivity extends Activity {
                 }
             }
         });
+        binding.batteryRemainTime.setText(BatteryUtil.getVisualBatteryRemainTime(this));
     }
 
 }
