@@ -63,8 +63,8 @@ public class RouterTestActivity extends Activity {
     private static final String ONYX_WIFI_TEST_ROUTER_SSID = "onyx-zeng";
     private static final String ONYX_WIFI_TEST_ROUTER_PW = "OnyxWpa2009";
 
-    private static int ALARM_START_INTERVAL_TIME = 1;
-    private static long ALARM_REPEAT_INTERVAL_TIME = 60 * 1000;
+    private static int ALARM_START_INTERVAL_TIME = 2;
+    private static long ALARM_REPEAT_INTERVAL_TIME = 90 * 1000;
     private static String ALARM_INTENT_ACTION = "com.action.router.AlarmManager";
     private BroadcastReceiver alarmReceiver;
 
