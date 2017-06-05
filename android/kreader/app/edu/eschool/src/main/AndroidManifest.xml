@@ -60,6 +60,8 @@
             android:exported="true">
         </activity>
 
+        <activity android:name=".activity.SyllabusActivity" />
+
         <meta-data android:value="593269d34544cb0be6000eab" android:name="UMENG_APPKEY"/>
         <meta-data android:value="inHouse" android:name="UMENG_CHANNEL"/>
 

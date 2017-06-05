@@ -7,6 +7,7 @@
     <string name="home_item_setting_text">Settings</string>
     <string name="home_item_pic_display_text">Class Presence</string>
     <string name="home_item_application_text">Application</string>
+    <string name="home_item_syllabus">Syllabus</string>
 
     <string name="page">Page：</string>
     <string name="no_more_items">No more content</string>
