@@ -4,6 +4,7 @@ import android.Manifest;
 import android.databinding.DataBindingUtil;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,7 +34,9 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.CompatibilityUtil;
 
 import java.net.SocketException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -91,10 +94,18 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         }
     }
 
-    private void logScanResult(List<AccessPoint> scanResult){
-        for (AccessPoint point:scanResult){
-            Log.e(TAG, "AccessPoint SSID:" + point.getWifiInfo().getSSID());
-            Log.e(TAG, "AccessPoint BSSID:" + point.getWifiInfo().getBSSID());
+    private void logScanResult(List<AccessPoint> scanResult) {
+        Set<String> set = new HashSet<>();
+        for (AccessPoint ap:scanResult){
+            if (ap != null && ap.getWifiInfo() != null) {
+                final WifiInfo wifiInfo = ap.getWifiInfo();
+                Log.e(TAG, "AccessPoint SSID:" + wifiInfo.getSSID());
+                Log.e(TAG, "AccessPoint BSSID:" + wifiInfo.getBSSID());
+                if (set.contains(wifiInfo.getSSID())) {
+                    Log.e(TAG, "Duplicated id found:" + wifiInfo.getSSID() + " bssid: " + wifiInfo.getBSSID());
+                }
+                set.add(wifiInfo.getSSID());
+            }
         }
         Log.e(TAG, "Result Size:" + scanResult.size());
     }
