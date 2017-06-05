@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.media.ThumbnailUtils;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -16,8 +17,11 @@ import android.util.Log;
 import com.onyx.android.sdk.data.Size;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -292,4 +296,166 @@ public class BitmapUtils {
         return bitmap;
     }
 
+    public static Bitmap convertToBlackWhite(Bitmap bmp) {
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+        int[] pixels = new int[width * height];
+        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
+        int alpha = 0xFF << 24;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                int grey = pixels[width * i + j];
+                int red = ((grey & 0x00FF0000) >> 16);
+                int green = ((grey & 0x0000FF00) >> 8);
+                int blue = (grey & 0x000000FF);
+                grey = (int) (red * 0.3 + green * 0.59 + blue * 0.11);
+                grey = alpha | (grey << 16) | (grey << 8) | grey;
+                pixels[width * i + j] = grey;
+            }
+        }
+        Bitmap newBmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        newBmp.setPixels(pixels, 0, width, 0, 0, width, height);
+        return ThumbnailUtils.extractThumbnail(newBmp, width, height);
+    }
+
+    public static boolean savePngToFile(Bitmap bitmap, String dirName, String pngFileName, boolean isNeedOverrideDirPermission) {
+        if (bitmap == null)
+            return false;
+        try {
+            File dir = new File(dirName);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File file = new File(pngFileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            if (isNeedOverrideDirPermission) {
+                String folderCommand = "chmod 777 " + dir.getAbsolutePath();
+                String fileCommand = "chmod 777 " + file.getAbsolutePath();
+                Runtime runtime = Runtime.getRuntime();
+                runtime.exec(folderCommand);
+                runtime.exec(fileCommand);
+            }
+            FileOutputStream fileos = new FileOutputStream(pngFileName);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileos);
+            fileos.flush();
+            fileos.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            bitmap.recycle();
+        }
+    }
+
+    public static boolean saveBitmapToFile(Bitmap bitmap, String dirName, String bmpFileName, boolean isNeedOverrideDirPermission) {
+        if (bitmap == null) {
+            return false;
+        }
+        // bmp size
+        int nBmpWidth = bitmap.getWidth();
+        int nBmpHeight = bitmap.getHeight();
+        int bufferSize = nBmpHeight * (nBmpWidth * 3 + nBmpWidth % 4);
+        try {
+            File dir = new File(dirName);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File file = new File(bmpFileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            if (isNeedOverrideDirPermission) {
+                String folderCommand = "chmod 777 " + dir.getAbsolutePath();
+                String fileCommand = "chmod 777 " + file.getAbsolutePath();
+                Runtime runtime = Runtime.getRuntime();
+                runtime.exec(folderCommand);
+                runtime.exec(fileCommand);
+            }
+            FileOutputStream fileos = new FileOutputStream(bmpFileName);
+            // bmp file head
+            int bfType = 0x4d42;
+            long bfSize = 14 + 40 + bufferSize;
+            int bfReserved1 = 0;
+            int bfReserved2 = 0;
+            long bfOffBits = 14 + 40;
+            // save head
+            writeWord(fileos, bfType);
+            writeDword(fileos, bfSize);
+            writeWord(fileos, bfReserved1);
+            writeWord(fileos, bfReserved2);
+            writeDword(fileos, bfOffBits);
+            // bmp message head
+            long biSize = 40L;
+            int biPlanes = 1;
+            int biBitCount = 24;
+            long biCompression = 0L;
+            long biSizeImage = 0L;
+            long biXpelsPerMeter = 0L;
+            long biYPelsPerMeter = 0L;
+            long biClrUsed = 0L;
+            long biClrImportant = 0L;
+            // save message head
+            writeDword(fileos, biSize);
+            writeLong(fileos, (long) nBmpWidth);
+            writeLong(fileos, (long) nBmpHeight);
+            writeWord(fileos, biPlanes);
+            writeWord(fileos, biBitCount);
+            writeDword(fileos, biCompression);
+            writeDword(fileos, biSizeImage);
+            writeLong(fileos, biXpelsPerMeter);
+            writeLong(fileos, biYPelsPerMeter);
+            writeDword(fileos, biClrUsed);
+            writeDword(fileos, biClrImportant);
+            // scan pixels
+            byte bmpData[] = new byte[bufferSize];
+            int wWidth = (nBmpWidth * 3 + nBmpWidth % 4);
+            for (int nCol = 0, nRealCol = nBmpHeight - 1; nCol < nBmpHeight; ++nCol, --nRealCol)
+                for (int wRow = 0, wByteIdex = 0; wRow < nBmpWidth; wRow++, wByteIdex += 3) {
+                    int clr = bitmap.getPixel(wRow, nCol);
+                    bmpData[nRealCol * wWidth + wByteIdex] = (byte) Color.blue(clr);
+                    bmpData[nRealCol * wWidth + wByteIdex + 1] = (byte) Color.green(clr);
+                    bmpData[nRealCol * wWidth + wByteIdex + 2] = (byte) Color.red(clr);
+                }
+            fileos.write(bmpData);
+            fileos.flush();
+            fileos.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            bitmap.recycle();
+        }
+    }
+
+    public static void writeWord(FileOutputStream stream, int value) throws IOException {
+        byte[] b = new byte[2];
+        b[0] = (byte) (value & 0xff);
+        b[1] = (byte) (value >> 8 & 0xff);
+        stream.write(b);
+    }
+
+    public static void writeDword(FileOutputStream stream, long value) throws IOException {
+        byte[] b = new byte[4];
+        b[0] = (byte) (value & 0xff);
+        b[1] = (byte) (value >> 8 & 0xff);
+        b[2] = (byte) (value >> 16 & 0xff);
+        b[3] = (byte) (value >> 24 & 0xff);
+        stream.write(b);
+    }
+
+    public static void writeLong(FileOutputStream stream, long value) throws IOException {
+        byte[] b = new byte[4];
+        b[0] = (byte) (value & 0xff);
+        b[1] = (byte) (value >> 8 & 0xff);
+        b[2] = (byte) (value >> 16 & 0xff);
+        b[3] = (byte) (value >> 24 & 0xff);
+        stream.write(b);
+    }
 }
