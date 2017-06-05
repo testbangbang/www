@@ -3,6 +3,8 @@ package com.onyx.android.sdk.utils;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.MutableFloat;
+import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +12,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by zhuzeng on 2/11/16.
@@ -113,102 +116,210 @@ public class RectUtils {
         Collections.sort(excludeByLeft, new Comparator<RectF>() {
             @Override
             public int compare(RectF o1, RectF o2) {
-                return (int)(o1.left - o2.left);
+                return Float.compare(o1.left, o2.left);
             }
         });
-        RectF leftMost = excludeByLeft.get(0);
 
-        RectF bound = new RectF(excluding.get(0));
-        for (RectF r : excluding) {
-            bound.union(r);
-        }
+        RectF outBound = new RectF(source);
 
-        // out bounding rectangles of regions to exclude
-        if (bound.left > source.left) {
-            result.add(new RectF(source.left, source.top, bound.left, source.bottom));
-        }
-        if (bound.right < source.right) {
-            result.add(new RectF(bound.right, source.top, source.right, source.bottom));
-        }
-        if (bound.top > source.top) {
-            result.add(new RectF(bound.left, source.top, bound.right, bound.top));
-        }
-        if (bound.bottom < source.bottom) {
-            result.add(new RectF(bound.left, bound.bottom, bound.right, source.bottom));
-        }
+        do {
+            RectF leftMost = excludeByLeft.get(0);
 
-        if (excluding.size() <= 1) {
-            return result;
-        }
+            RectF innerBound = new RectF(excludeByLeft.get(0));
+            for (RectF r : excludeByLeft) {
+                innerBound.union(r);
+            }
 
-        RectF nextLeft = null;
-        List<RectF> leftList = new ArrayList<>();
-        for (RectF rect : excludeByLeft) {
-            if (rect.left == leftMost.left) {
-                leftList.add(rect);
-            } else {
-                // nextLeft can be null, in this case,
-                // we think all excluding rectangles align on the left
-                nextLeft = rect;
+            // out bounding rectangles of regions to exclude
+            if (innerBound.left > outBound.left) {
+                result.add(new RectF(outBound.left, outBound.top, innerBound.left, outBound.bottom));
+            }
+            if (innerBound.right < outBound.right) {
+                result.add(new RectF(innerBound.right, outBound.top, outBound.right, outBound.bottom));
+            }
+            if (innerBound.top > outBound.top) {
+                result.add(new RectF(innerBound.left, outBound.top, innerBound.right, innerBound.top));
+            }
+            if (innerBound.bottom < outBound.bottom) {
+                result.add(new RectF(innerBound.left, innerBound.bottom, innerBound.right, outBound.bottom));
+            }
+
+            RectF nextLeft = null;
+            List<RectF> leftList = new ArrayList<>();
+            for (RectF rect : excludeByLeft) {
+                if (rect.left == leftMost.left) {
+                    leftList.add(rect);
+                } else {
+                    // nextLeft can be null, in this case,
+                    // we think all excluding rectangles align on the left
+                    nextLeft = rect;
+                    break;
+                }
+            }
+
+            Collections.sort(leftList, new Comparator<RectF>() {
+                @Override
+                public int compare(RectF o1, RectF o2) {
+                    return Float.compare(o1.right, o2.right);
+                }
+            });
+
+            float right = leftList.get(0).right;
+            if (nextLeft != null) {
+                right = Math.min(right, nextLeft.left);
+            }
+
+            List<RectF> topList = new ArrayList<>(leftList);
+            Collections.sort(topList, new Comparator<RectF>() {
+                @Override
+                public int compare(RectF o1, RectF o2) {
+                    return Float.compare(o1.top, o2.top);
+                }
+            });
+
+            List<Pair<AtomicReference<Float>, AtomicReference<Float>>> segmentsByY = new ArrayList<>();
+            for (RectF r : topList) {
+                if (segmentsByY.isEmpty()) {
+                    segmentsByY.add(new Pair<>(new AtomicReference<>(r.top), new AtomicReference<>(r.bottom)));
+                    continue;
+                }
+                boolean combined = false;
+                for (Pair<AtomicReference<Float>, AtomicReference<Float>> segment : segmentsByY) {
+                    if (r.bottom < segment.first.get() || r.top > segment.second.get()) {
+                        continue;
+                    }
+
+                    if (r.top < segment.first.get()) {
+                        segment.first.set(r.top);
+                    }
+                    if (r.bottom > segment.second.get()) {
+                        segment.second.set(r.bottom);
+                    }
+                    combined = true;
+                    break;
+                }
+                if (!combined) {
+                    segmentsByY.add(new Pair<>(new AtomicReference<>(r.top), new AtomicReference<>(r.bottom)));
+                }
+            }
+
+            Collections.sort(segmentsByY, new Comparator<Pair<AtomicReference<Float>, AtomicReference<Float>>>() {
+                @Override
+                public int compare(Pair<AtomicReference<Float>, AtomicReference<Float>> o1, Pair<AtomicReference<Float>, AtomicReference<Float>> o2) {
+                    return Float.compare(o1.first.get(), o2.first.get());
+                }
+            });
+
+            Pair<AtomicReference<Float>, AtomicReference<Float>> top = segmentsByY.get(0);
+            if (top.first.get() > innerBound.top) {
+                result.add(new RectF(innerBound.left, innerBound.top, right, top.first.get()));
+            }
+
+            for (int j = 1; j < segmentsByY.size(); j++) {
+                Pair<AtomicReference<Float>, AtomicReference<Float>> above = segmentsByY.get(j - 1);
+                Pair<AtomicReference<Float>, AtomicReference<Float>> below = segmentsByY.get(j);
+                if (below.first.get() > above.second.get()) {
+                    result.add(new RectF(innerBound.left, above.second.get(), right, below.first.get()));
+                }
+            }
+
+            Collections.sort(segmentsByY, new Comparator<Pair<AtomicReference<Float>, AtomicReference<Float>>>() {
+                @Override
+                public int compare(Pair<AtomicReference<Float>, AtomicReference<Float>> o1, Pair<AtomicReference<Float>, AtomicReference<Float>> o2) {
+                    return Float.compare(o1.second.get(), o2.second.get());
+                }
+            });
+
+            Pair<AtomicReference<Float>, AtomicReference<Float>> bottom = segmentsByY.get(segmentsByY.size() - 1);
+            if (bottom.second.get() < innerBound.bottom) {
+                result.add(new RectF(innerBound.left, bottom.second.get(), right, innerBound.bottom));
+            }
+
+            List<RectF> removeList = new ArrayList<>();
+            for (RectF rect : leftList) {
+                if (Float.compare(rect.right, right) <= 0) {
+                    removeList.add(rect);
+                } else {
+                    rect.left = right;
+                }
+            }
+
+            for (RectF rect : removeList) {
+                excludeByLeft.remove(rect);
+            }
+
+            outBound = new RectF(innerBound);
+            outBound.left = right;
+        } while (excludeByLeft.size() > 0);
+
+        return result;
+    }
+
+    static private void addToUniqueList(final List<RectF> list, RectF rect) {
+        boolean find = false;
+        for (RectF r : list) {
+            if (r.left == rect.left && r.top == rect.top &&
+                    r.right == rect.right && r.bottom == rect.bottom) {
+                find = true;
                 break;
             }
         }
+        if (!find) {
+            list.add(rect);
+        }
+    }
 
-        Collections.sort(leftList, new Comparator<RectF>() {
-            @Override
-            public int compare(RectF o1, RectF o2) {
-                return (int)(o1.right - o2.right);
+    static public float square(final List<RectF> list) {
+        float square = 0;
+        if (list == null || list.size() <= 0) {
+            return 0;
+        }
+
+        for (RectF r : list) {
+            Debug.e(RectUtils.class, "square rect -> " + r.toString());
+        }
+
+        if (list.size() == 1) {
+            square = list.get(0).width() * list.get(0).height();
+            Debug.e(RectUtils.class, "square result -> " + square);
+            return square;
+        }
+
+        Map<Integer, List<RectF>> intersectionMap = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = i + 1; j < list.size(); j++) {
+                RectF r1 = new RectF(list.get(i));
+                RectF r2 = new RectF(list.get(j));
+                if (r1.intersect(r2)) {
+                    Debug.e(RectUtils.class, "intersects: %d, %d -> %s", i, j, r1.toString());
+                    if (intersectionMap.get(i) == null) {
+                        intersectionMap.put(i, new ArrayList<RectF>());
+                    }
+                    addToUniqueList(intersectionMap.get(i), r1);
+                    if (intersectionMap.get(j) == null) {
+                        intersectionMap.put(j, new ArrayList<RectF>());
+                    }
+                    addToUniqueList(intersectionMap.get(j), r1);
+                }
             }
-        });
-
-        float right = leftList.get(0).right;
-        if (nextLeft != null) {
-            right = Math.min(right, nextLeft.left);
+            RectF r = list.get(i);
+            float s1 = r.width() * r.height();
+            float s2 = square(intersectionMap.get(i));
+            square += (s1 - s2);
+            Debug.e(RectUtils.class, "%s -> %f, intersections -> %f, square -> %f", r.toString(), s1, s2, square);
         }
 
-        List<RectF> topList = new ArrayList<>(leftList);
-        Collections.sort(topList, new Comparator<RectF>() {
-            @Override
-            public int compare(RectF o1, RectF o2) {
-                return (int)(o1.top - o2.top);
-            }
-        });
-
-        RectF top = topList.get(0);
-        if (top.top > bound.top) {
-            result.add(new RectF(bound.left, bound.top, right, top.top));
-        }
-
-        RectF bottom = topList.get(topList.size() - 1);
-        if (bottom.bottom < bound.bottom) {
-            result.add(new RectF(bound.left, bottom.bottom, right, bound.bottom));
-        }
-
-        for (int j = 1; j < topList.size(); j++) {
-            RectF above = topList.get(j - 1);
-            RectF below = topList.get(j);
-            if (below.top > above.bottom) {
-                result.add(new RectF(bound.left, above.bottom, right, below.top));
+        List<RectF> intersections = new ArrayList<>();
+        for (List<RectF> l : intersectionMap.values()) {
+            for (RectF r : l) {
+                addToUniqueList(intersections, r);
             }
         }
-
-        List<RectF> removeList = new ArrayList<>();
-        for (RectF rect : leftList) {
-            if (Float.compare(rect.right, right) <= 0) {
-                removeList.add(rect);
-            } else {
-                rect.left = right;
-            }
-        }
-
-        for (RectF rect : removeList) {
-            excludeByLeft.remove(rect);
-        }
-
-        bound.left = right;
-        result.addAll(cutRectByExcludingRegions(bound, excludeByLeft));
-
-        return result;
+        float s1 = square(intersections);
+        Debug.e(RectUtils.class, "intersections square -> " + s1);
+        square += s1;
+        Debug.e(RectUtils.class, "square result -> " + square);
+        return square;
     }
 
 }
