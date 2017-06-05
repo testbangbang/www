@@ -99,16 +99,16 @@ public class BatteryUtil {
     }
 
     public static String getVisualBatteryUsageTime(final Context context, final long usageTime) {
-        return context.getString(R.string.battery_stats_on_battery, formatElapsedTime(context, usageTime / 1000, true));
+        return context.getString(R.string.battery_stats_on_battery, formatElapsedTime(context, usageTime / 1000, false));
     }
 
     public static String getVisualBatteryTotalTime(final Context context){
-        return context.getString(R.string.battery_total_on_battery, formatElapsedTime(context, SECONDS_PER_MONTH* 1000, true));
+        return context.getString(R.string.battery_total_on_battery, formatElapsedTime(context, SECONDS_PER_MONTH * 1000, false));
     }
 
     public static String getVisualBatteryRemainTime(final Context context){
         return context.getString(R.string.battery_remain_on_battery, formatElapsedTime(context,
-                SECONDS_PER_MONTH * 1000 * (DeviceUtils.getBatteryPercentLevel(context) / 100), true));
+                SECONDS_PER_MONTH * 1000 * ((double)DeviceUtils.getBatteryPercentLevel(context) / 100), false));
     }
 
 }

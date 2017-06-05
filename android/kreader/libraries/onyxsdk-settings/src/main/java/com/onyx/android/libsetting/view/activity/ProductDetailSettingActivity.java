@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.onyx.android.libsetting.R;
@@ -12,6 +13,8 @@ import com.onyx.android.libsetting.databinding.ActivityProductDetailSettingBindi
 import com.onyx.android.libsetting.util.BatteryUtil;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.MimeTypeUtils;
 
 import java.io.File;
 
@@ -36,7 +39,7 @@ public class ProductDetailSettingActivity extends Activity {
                         File.separator + DEFAULT_USER_MANUAL_NAME);
                 if (file.exists() && file.canRead()) {
                     Intent intent = new Intent();
-                    intent.setData(Uri.fromFile(file));
+                    intent.setDataAndType(Uri.fromFile(file),MimeTypeUtils.mimeType(FileUtils.getFileExtension(file)));
                     intent.setAction(Intent.ACTION_VIEW);
                     ActivityUtil.startActivitySafely(ProductDetailSettingActivity.this, intent);
                 }
