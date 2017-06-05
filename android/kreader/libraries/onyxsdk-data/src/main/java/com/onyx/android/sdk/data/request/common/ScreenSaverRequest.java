@@ -1,7 +1,9 @@
 package com.onyx.android.sdk.data.request.common;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.common.ScreenSaverConfig;
@@ -35,13 +37,19 @@ public class ScreenSaverRequest extends BaseDataRequest {
                 temp.getHeight() != fullScreenPhysicalWidth) {
             temp = Bitmap.createScaledBitmap(temp, fullScreenPhysicalHeight, fullScreenPhysicalWidth, true);
         }
-        if (config.convertToBlackWhite) {
+        if (config.convertToGrayScale) {
             temp = BitmapUtils.convertToBlackWhite(temp);
         }
+        boolean success = false;
         if (config.targetFormat.contains("bmp")) {
-            BitmapUtils.saveBitmapToFile(temp, config.targetDir, config.targetPicPathString, true);
+            success = BitmapUtils.saveBitmapToFile(temp, config.targetDir, config.targetPicPathString, true);
         } else if (config.targetFormat.contains("png")) {
-            BitmapUtils.savePngToFile(temp, config.targetDir, config.targetPicPathString, true);
+            success = BitmapUtils.savePngToFile(temp, config.targetDir, config.targetPicPathString, true);
+        }
+        if (success) {
+            Log.i("screenSaver", "success");
+            Intent intent = new Intent("update_standby_pic");
+            getContext().sendBroadcast(intent);
         }
     }
 }

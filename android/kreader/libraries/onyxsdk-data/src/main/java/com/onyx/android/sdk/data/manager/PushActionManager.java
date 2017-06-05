@@ -26,24 +26,37 @@ public class PushActionManager {
     private DataManager dataManager = new DataManager();
     private CloudManager cloudManager = new CloudManager();
 
-    private Map<String, PushAction> pushActionMap = new HashMap<>();
+    private Map<String, Class<? extends PushAction>> pushActionMap = new HashMap<>();
 
     public abstract static class PushAction {
         public abstract void execute(PushActionContext actionContext);
     }
 
-    public void addAction(String action, PushAction pushAction) {
-        if (StringUtils.isNullOrEmpty(action) || pushAction == null) {
+    public void addAction(String action, Class<? extends PushAction> clazz) {
+        if (StringUtils.isNullOrEmpty(action) || clazz == null) {
             return;
         }
-        pushActionMap.put(action, pushAction);
+        pushActionMap.put(action, clazz);
     }
 
     public void processPushAction(Context context, Intent intent) {
         String action = intent.getAction();
         if (StringUtils.isNotBlank(action) && pushActionMap.containsKey(action)) {
-            pushActionMap.get(action).execute(PushActionContext.create(context, getCloudManager(), getDataManager(), intent));
+            PushAction pushAction = getPushAction(pushActionMap.get(action));
+            if (pushAction == null) {
+                return;
+            }
+            pushAction.execute(PushActionContext.create(context, getCloudManager(), getDataManager(), intent));
         }
+    }
+
+    private PushAction getPushAction(Class<? extends PushAction> clazz) {
+        try {
+            return clazz.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static String getPushData(Intent intent) {

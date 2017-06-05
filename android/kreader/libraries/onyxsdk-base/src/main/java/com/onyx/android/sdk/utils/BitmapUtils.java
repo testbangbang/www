@@ -353,9 +353,10 @@ public class BitmapUtils {
         }
     }
 
-    public static void saveBitmapToFile(Bitmap bitmap, String dirName, String bmpFileName, boolean isNeedOverrideDirPermission) {
-        if (bitmap == null)
-            return;
+    public static boolean saveBitmapToFile(Bitmap bitmap, String dirName, String bmpFileName, boolean isNeedOverrideDirPermission) {
+        if (bitmap == null) {
+            return false;
+        }
         // bmp size
         int nBmpWidth = bitmap.getWidth();
         int nBmpHeight = bitmap.getHeight();
@@ -424,8 +425,10 @@ public class BitmapUtils {
             fileos.write(bmpData);
             fileos.flush();
             fileos.close();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         } finally {
             bitmap.recycle();
         }

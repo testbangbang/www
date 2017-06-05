@@ -18,7 +18,7 @@ public class ScreenSaverConfig {
     public int fullScreenPhysicalHeight;
     public int fullScreenPhysicalWidth;
 
-    public boolean convertToBlackWhite = true;
+    public boolean convertToGrayScale = true;
 
     public ScreenSaverConfig(String name, String format, String targetDir, int initialNumber, int targetWidth, int targetHeight) {
         this.screenSaverName = name;
@@ -32,5 +32,15 @@ public class ScreenSaverConfig {
     public String createTargetPicPath(int index) {
         return targetPicPathString = targetDir + File.separator +
                 screenSaverName + index + targetFormat;
+    }
+
+    public ScreenSaverConfig copy() {
+        ScreenSaverConfig config = new ScreenSaverConfig(screenSaverName, targetFormat, targetDir,
+                screenSaverInitialNumber, fullScreenPhysicalWidth, fullScreenPhysicalHeight);
+        config.sourcePicPathString = sourcePicPathString;
+        config.targetPicPathString = targetPicPathString;
+        config.convertToGrayScale = convertToGrayScale;
+        config.picRotateDegrees = picRotateDegrees;
+        return config;
     }
 }
