@@ -1,6 +1,8 @@
 package com.onyx.edu.reader.ui.data;
 
 import android.graphics.Color;
+import android.graphics.RectF;
+import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.CheckBox;
@@ -30,6 +32,8 @@ public class FormFieldControlFactory {
         params.leftMargin = (int)textField.getRect().left;
         params.topMargin = (int)textField.getRect().top;
 
+        editText.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+        editText.setTextSize(18.0f);
         editText.setLayoutParams(params);
         return editText;
     }
@@ -37,7 +41,7 @@ public class FormFieldControlFactory {
     private static CheckBox createCheckBox(RelativeLayout parentView, ReaderFormCheckbox checkboxField) {
         CheckBox checkBox = new CheckBox(parentView.getContext());
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)checkboxField.getRect().width(),
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)checkboxField.getRect().width() + 10,
                 (int)checkboxField.getRect().height());
         params.leftMargin = (int)checkboxField.getRect().left;
         params.topMargin = (int)checkboxField.getRect().top;
@@ -51,17 +55,25 @@ public class FormFieldControlFactory {
             return null;
         }
 
+        RectF bound = new RectF(groupField.getButtons().get(0).getRect());
+        for (ReaderFormRadioButton button : groupField.getButtons()) {
+            bound.union(button.getRect());
+        }
+
         RadioGroup radioGroup = new RadioGroup(parentView.getContext());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)bound.width(),
+                (int)bound.height());
         radioGroup.setOrientation(RadioGroup.VERTICAL);
-        params.leftMargin = (int)groupField.getButtons().get(0).getRect().left;
-        params.topMargin = (int)groupField.getButtons().get(0).getRect().top;
+        params.leftMargin = (int)bound.left;
+        params.topMargin = (int)bound.top;
 
         for (ReaderFormRadioButton buttonField : groupField.getButtons()) {
             RadioButton button = new RadioButton(parentView.getContext());
             RadioGroup.LayoutParams buttonParams = new RadioGroup.LayoutParams((int)buttonField.getRect().width(),
-                    (int)buttonField.getRect().height());
+                    0);
+            buttonParams.weight = 1.0f;
+            buttonParams.setMargins(0, 0, 0, 0);
+            button.setPadding(0, 0, 0, 0);
             radioGroup.addView(button, buttonParams);
         }
 
@@ -83,16 +95,21 @@ public class FormFieldControlFactory {
     }
 
     public static View createFormControl(RelativeLayout parentView, ReaderFormField field) {
+        View view;
         if (field instanceof ReaderFormText) {
-            return createEditInput(parentView, (ReaderFormText)field);
+            view = createEditInput(parentView, (ReaderFormText)field);
         } else if (field instanceof ReaderFormCheckbox) {
-            return createCheckBox(parentView, (ReaderFormCheckbox)field);
+            view = createCheckBox(parentView, (ReaderFormCheckbox)field);
         } else if (field instanceof ReaderFormRadioGroup) {
-            return createRadioGroup(parentView, (ReaderFormRadioGroup)field);
+            view = createRadioGroup(parentView, (ReaderFormRadioGroup)field);
         } else if (field instanceof ReaderFormScribble) {
-            return createScribbleRegion(parentView, (ReaderFormScribble)field);
+            view = createScribbleRegion(parentView, (ReaderFormScribble)field);
         } else {
-            return null;
+            view = null;
         }
+        if (view != null) {
+            view.setTag(field);
+        }
+        return view;
     }
 }
