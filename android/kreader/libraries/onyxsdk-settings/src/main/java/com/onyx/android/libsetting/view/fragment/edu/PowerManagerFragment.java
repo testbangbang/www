@@ -96,6 +96,8 @@ public class PowerManagerFragment extends Fragment {
         binding.batteryLevel.setText(BatteryUtil.getVisualBatteryLevel(getActivity(), level));
         binding.batteryStatus.setText(BatteryUtil.getBatteryStatusByStatusCode(getActivity(),status));
         binding.batteryUsageTime.setText(BatteryUtil.getVisualBatteryUsageTime(getActivity(),batteryUsageTime));
+        binding.batteryTotalTime.setText(BatteryUtil.getVisualBatteryTotalTime(getActivity()));
+        binding.batteryRemainTime.setText(BatteryUtil.getVisualBatteryRemainTime(getActivity()));
     }
 
     private void buildDataList(SettingPageAdapter<TimeoutItemViewHolder, TimeoutItem> adapter, @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int category) {

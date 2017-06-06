@@ -755,6 +755,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
         jfloatArray floatArray = env->NewFloatArray(list.size());
         env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
         env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, destPage, floatArray, nullptr, -1, -1, nullptr, nullptr);
+        env->DeleteLocalRef(floatArray);
     }
 
     return true;
@@ -834,6 +835,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
         jfloatArray floatArray = env->NewFloatArray(list.size());
         env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
         env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, floatArray, nullptr, -1, -1, nullptr, nullptr);
+        env->DeleteLocalRef(floatArray);
     }
 
     return true;

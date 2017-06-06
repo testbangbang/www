@@ -161,6 +161,8 @@
     <string name="battery_percentage">当前电量: %1$d %%</string>
     <string name="battery_status">当前电池状态: %1$s</string>
     <string name="battery_stats_on_battery">"电池已用时间：<xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="battery_total_on_battery">总待机时间:<xliff:g id="time">%1$s</xliff:g></string>
+    <string name="battery_remain_on_battery">预计剩余待机时间:<xliff:g id="time">%1$s</xliff:g></string>
     <string name="battery_info">电池状态</string>
     <string name="battery_history_days">"<xliff:g id="DAYS">%1$d</xliff:g> 天 <xliff:g id="HOURS">%2$d</xliff:g> 小时 <xliff:g id="MINUTES">%3$d</xliff:g> 分 <xliff:g id="SECONDS">%4$d</xliff:g> 秒"</string>
     <string name="battery_history_hours">"<xliff:g id="HOURS">%1$d</xliff:g> 小时 <xliff:g id="MINUTES">%2$d</xliff:g> 分 <xliff:g id="SECONDS">%3$d</xliff:g> 秒"</string>
@@ -169,6 +171,8 @@
     <string name="battery_history_days_no_seconds">"<xliff:g id="DAYS">%1$d</xliff:g>天<xliff:g id="HOURS">%2$d</xliff:g>小时<xliff:g id="MINUTES">%3$d</xliff:g>分钟"</string>
     <string name="battery_history_hours_no_seconds">"<xliff:g id="HOURS">%1$d</xliff:g>小时<xliff:g id="MINUTES">%2$d</xliff:g>分钟"</string>
     <string name="battery_history_minutes_no_seconds">"<xliff:g id="MINUTES">%1$d</xliff:g>分钟"</string>
+    <string name="battery_history_days_no_minute">"<xliff:g id="DAYS">%1$d</xliff:g>天<xliff:g id="HOURS">%2$d</xliff:g>小时</string>
+    <string name="battery_history_hours_no_minute">"<xliff:g id="HOURS">%1$d</xliff:g>小时</string>
     <string name="open_manual">查看产品《用户手册》</string>
     <string name="setting_product_detail">产品规格</string>
 </resources>

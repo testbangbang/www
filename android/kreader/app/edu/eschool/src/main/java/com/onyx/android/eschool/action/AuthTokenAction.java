@@ -67,7 +67,9 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                             return;
                         }
                     }
-                    sendAccountTokenErrorEvent();
+                    if (ContentException.isCloudException(e)) {
+                        sendAccountTokenErrorEvent();
+                    }
                     return;
                 }
                 saveAccountRequest.setNeoAccountBase(accountGetRequest.getNeoAccount());
