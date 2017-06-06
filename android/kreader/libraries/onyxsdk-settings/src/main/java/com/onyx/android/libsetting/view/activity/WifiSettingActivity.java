@@ -16,12 +16,9 @@ import android.widget.Toast;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.SettingConfig;
-import com.onyx.android.libsetting.data.wifi.AccessPoint;
 import com.onyx.android.libsetting.databinding.ActivityWifiSettingBinding;
 import com.onyx.android.libsetting.databinding.WifiInfoItemBinding;
-import com.onyx.android.libsetting.manager.WifiAdmin;
 import com.onyx.android.libsetting.util.SettingRecyclerViewUtil;
-import com.onyx.android.libsetting.util.WifiUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.PageRecyclerViewItemClickListener;
 import com.onyx.android.libsetting.view.SettingPageAdapter;
@@ -33,6 +30,9 @@ import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.CompatibilityUtil;
+import com.onyx.android.sdk.wifi.AccessPoint;
+import com.onyx.android.sdk.wifi.WifiAdmin;
+import com.onyx.android.sdk.wifi.WifiUtil;
 
 import java.net.SocketException;
 import java.util.HashSet;

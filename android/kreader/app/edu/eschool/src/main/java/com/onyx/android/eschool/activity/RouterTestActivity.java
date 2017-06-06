@@ -17,14 +17,14 @@ import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.AuthTokenAction;
 import com.onyx.android.eschool.action.DownloadAction;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
-import com.onyx.android.libsetting.data.wifi.AccessPoint;
-import com.onyx.android.libsetting.manager.WifiAdmin;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.request.cloud.SyncTimeBySntpRequest;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.android.sdk.wifi.AccessPoint;
+import com.onyx.android.sdk.wifi.WifiAdmin;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.Calendar;

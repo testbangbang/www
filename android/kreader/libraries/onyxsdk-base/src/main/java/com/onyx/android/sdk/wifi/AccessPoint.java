@@ -1,4 +1,4 @@
-package com.onyx.android.libsetting.data.wifi;
+package com.onyx.android.sdk.wifi;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
@@ -7,8 +7,8 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 
-import com.onyx.android.libsetting.BR;
-import com.onyx.android.libsetting.manager.WifiAdmin;
+import com.onyx.android.sdk.BR;
+
 
 /**
  * Created by solskjaer49 on 2016/12/1 19:27.
