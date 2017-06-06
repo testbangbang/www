@@ -132,7 +132,7 @@ public class FormFieldHandler extends BaseHandler {
             @Override
             public void afterTextChanged(Editable s) {
                 FormValue value = FormValue.create(s.toString());
-                flushFormShapes(field, ReaderShapeFactory.FORM_SHAPE_SINGLE,  value);
+                flushFormShapes(field, ReaderShapeFactory.FORM_SHAPE_FILL,  value);
             }
         });
         ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());
