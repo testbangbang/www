@@ -374,20 +374,24 @@ public class RouterTestActivity extends Activity {
     }
 
     private void triggerRepeatedAlarm() {
-        Calendar c = Calendar.getInstance();
-        int minute = c.get(Calendar.MINUTE);
-        minute += ALARM_START_INTERVAL_TIME;
-        if (minute >= 60) {
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            c.set(Calendar.HOUR_OF_DAY, hour + 1);
-            minute %= 60;
-        }
-        c.set(Calendar.MINUTE, minute);
-        c.set(Calendar.SECOND, 0);
+        try {
+            Calendar c = Calendar.getInstance();
+            int minute = c.get(Calendar.MINUTE);
+            minute += ALARM_START_INTERVAL_TIME;
+            if (minute >= 60) {
+                int hour = c.get(Calendar.HOUR_OF_DAY);
+                c.set(Calendar.HOUR_OF_DAY, hour + 1);
+                minute %= 60;
+            }
+            c.set(Calendar.MINUTE, minute);
+            c.set(Calendar.SECOND, 0);
 
-        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.setTimeZone("Asia/Hong_Kong");
-        am.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), ALARM_REPEAT_INTERVAL_TIME, getAlarmPendingIntent());
+            AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+            am.setTimeZone("Asia/Hong_Kong");
+            am.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), ALARM_REPEAT_INTERVAL_TIME, getAlarmPendingIntent());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private PendingIntent getAlarmPendingIntent() {
