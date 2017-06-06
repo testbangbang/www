@@ -18,6 +18,11 @@
 
 -dontshrink
 
+# Data Binding
+-dontwarn android.databinding.**
+-keep class android.databinding.** { *; }
+-dontwarn com.onyx.android.sdk.wifi.**
+
 -keepnames class com.onyx.edu.reader.device.DeviceConfig { *; }
 -keep class com.onyx.edu.reader.ui.handler.HandlerManager
 
