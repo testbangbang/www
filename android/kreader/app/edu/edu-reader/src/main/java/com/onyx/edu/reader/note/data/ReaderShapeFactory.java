@@ -3,12 +3,10 @@ package com.onyx.edu.reader.note.data;
 import android.content.Context;
 import android.graphics.RectF;
 
-import com.onyx.android.sdk.scribble.formshape.BaseFormShape;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.shape.*;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
-import com.onyx.edu.reader.note.model.ReaderNoteDataProvider;
 import com.onyx.edu.reader.note.model.ReaderNoteShapeModel;
 
 /**

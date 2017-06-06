@@ -411,7 +411,7 @@ public class BaseShape implements Shape {
 
     @Override
     public boolean isFormShape() {
-        return false;
+        return isFormShape;
     }
 
     @Override
