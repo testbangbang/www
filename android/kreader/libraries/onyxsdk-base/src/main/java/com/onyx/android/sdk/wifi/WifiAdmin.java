@@ -12,7 +12,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-
 import com.onyx.android.sdk.R;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -143,7 +142,9 @@ public class WifiAdmin {
                     connectedPoint = point;
                 }
             }
-            resultList.add(point);
+            if (checkAccessPointLegality(point,resultList)){
+                resultList.add(point);
+            }
         }
         Collections.sort(resultList, new Comparator<AccessPoint>() {
             @Override
@@ -156,6 +157,17 @@ public class WifiAdmin {
             resultList.add(0, connectedPoint);
         }
         return resultList;
+    }
+
+    //sync from Android Settings AccessPoint Class Logic.
+    private boolean checkAccessPointLegality(AccessPoint point, List<AccessPoint> list) {
+        for (AccessPoint ap : list) {
+            if (ap.getScanResult().SSID.equals(point.getScanResult().SSID) &&
+                    ap.getSecurity() == point.getSecurity()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean registerReceiver() {
