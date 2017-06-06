@@ -6,7 +6,7 @@
 
         <variable
             name="accessPoint"
-            type="com.onyx.android.libsetting.data.wifi.AccessPoint" />
+            type="com.onyx.android.sdk.wifi.AccessPoint" />
     </data>
 
     <RelativeLayout

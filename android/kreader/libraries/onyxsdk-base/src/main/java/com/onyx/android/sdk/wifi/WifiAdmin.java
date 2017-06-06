@@ -1,4 +1,4 @@
-package com.onyx.android.libsetting.manager;
+package com.onyx.android.sdk.wifi;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,10 +12,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-import com.onyx.android.libsetting.R;
-import com.onyx.android.libsetting.data.wifi.AccessPoint;
-import com.onyx.android.libsetting.data.wifi.PskType;
-import com.onyx.android.libsetting.util.WifiUtil;
+
+import com.onyx.android.sdk.R;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -31,9 +29,9 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.onyx.android.libsetting.data.wifi.PskType.WPA;
-import static com.onyx.android.libsetting.data.wifi.PskType.WPA2;
-import static com.onyx.android.libsetting.data.wifi.PskType.WPA_WPA2;
+import static com.onyx.android.sdk.wifi.PskType.WPA;
+import static com.onyx.android.sdk.wifi.PskType.WPA2;
+import static com.onyx.android.sdk.wifi.PskType.WPA_WPA2;
 
 
 /**

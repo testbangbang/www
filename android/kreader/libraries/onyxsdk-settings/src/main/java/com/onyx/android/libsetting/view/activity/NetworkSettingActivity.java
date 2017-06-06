@@ -9,14 +9,14 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.SettingConfig;
-import com.onyx.android.libsetting.data.wifi.AccessPoint;
 import com.onyx.android.libsetting.databinding.ActivityNetworkSettingBinding;
 import com.onyx.android.libsetting.manager.BluetoothAdmin;
-import com.onyx.android.libsetting.manager.WifiAdmin;
 import com.onyx.android.libsetting.util.DeviceFeatureUtil;
 import com.onyx.android.libsetting.view.OnyxCustomSwitchPreference;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.wifi.AccessPoint;
+import com.onyx.android.sdk.wifi.WifiAdmin;
 
 import java.util.List;
 

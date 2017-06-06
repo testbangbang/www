@@ -1,9 +1,10 @@
-package com.onyx.android.libsetting.util;
+package com.onyx.android.sdk.wifi;
 
 import android.content.Context;
 
-import com.onyx.android.libsetting.R;
-import com.onyx.android.libsetting.data.wifi.WifiBand;
+import com.onyx.android.sdk.R;
+
+
 
 /**
  * Created by solskjaer49 on 2016/12/3 12:16.

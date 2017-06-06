@@ -1,4 +1,4 @@
-package com.onyx.android.libsetting.data.wifi;
+package com.onyx.android.sdk.wifi;
 
 import android.support.annotation.IntDef;
 
