@@ -118,5 +118,9 @@
       public *;
     }
 
+# Data Binding
+-dontwarn android.databinding.**
+-keep class android.databinding.** { *; }
+-dontwarn com.onyx.android.sdk.wifi.**
 
 
