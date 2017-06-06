@@ -75,7 +75,7 @@ public class FormFieldHandler extends BaseHandler {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 FormValue value = FormValue.create(isChecked);
-                flushFormShapes(field, ReaderShapeFactory.FORM_SHAPE_MULTIPLE,  value);
+                flushFormShapes(field, ReaderShapeFactory.SHAPE_FORM_MULTIPLE_SELECTION,  value);
             }
         });
         ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());
@@ -106,7 +106,7 @@ public class FormFieldHandler extends BaseHandler {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 FormValue value = FormValue.create(checkedId);
-                flushFormShapes(field, ReaderShapeFactory.FORM_SHAPE_SINGLE,  value);
+                flushFormShapes(field, ReaderShapeFactory.SHAPE_FORM_SINGLE_SELECTION,  value);
             }
         });
         ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());
@@ -132,7 +132,7 @@ public class FormFieldHandler extends BaseHandler {
             @Override
             public void afterTextChanged(Editable s) {
                 FormValue value = FormValue.create(s.toString());
-                flushFormShapes(field, ReaderShapeFactory.FORM_SHAPE_FILL,  value);
+                flushFormShapes(field, ReaderShapeFactory.SHAPE_FORM_FILL,  value);
             }
         });
         ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());

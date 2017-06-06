@@ -1,6 +1,5 @@
 package com.onyx.edu.reader.note.data;
 
-import android.content.Context;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.scribble.formshape.FormValue;
@@ -28,15 +27,15 @@ public class ReaderShapeFactory {
     static public final int SHAPE_LINE = 7;
     static public final int SHAPE_TRIANGLE = 8;
 
-    static public final int FORM_SHAPE_SINGLE = 0;
-    static public final int FORM_SHAPE_MULTIPLE = 1;
-    static public final int FORM_SHAPE_FILL = 2;
-    static public final int FORM_SHAPE_QA = 3;
+    static public final int SHAPE_FORM_SINGLE_SELECTION = 0;
+    static public final int SHAPE_FORM_MULTIPLE_SELECTION = 1;
+    static public final int SHAPE_FORM_FILL = 2;
+    static public final int SHAPE_FORM_QA = 3;
 
     public static boolean isUniqueFormShape(int formType) {
-        return formType == FORM_SHAPE_SINGLE ||
-                formType == FORM_SHAPE_MULTIPLE ||
-                formType == FORM_SHAPE_FILL;
+        return formType == SHAPE_FORM_SINGLE_SELECTION ||
+                formType == SHAPE_FORM_MULTIPLE_SELECTION ||
+                formType == SHAPE_FORM_FILL;
     }
 
     public static final Shape createShape(int type) {
