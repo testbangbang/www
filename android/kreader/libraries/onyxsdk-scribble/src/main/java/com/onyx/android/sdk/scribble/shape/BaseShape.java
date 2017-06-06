@@ -5,6 +5,7 @@ import android.graphics.*;
 import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.List;
@@ -31,6 +32,12 @@ public class BaseShape implements Shape {
     private Path originDisplayPath;
     private int originWidth;
     private int originHeight;
+
+    private boolean isFormShape;
+    private String formId;
+    private Integer formType;
+    private RectF formRect;
+    private FormValue formValue;
 
     /**
      * rectangle, circle, etc.
@@ -360,5 +367,55 @@ public class BaseShape implements Shape {
     @Override
     public boolean isFreePosition() {
         return getLayoutType() == ShapeFactory.POSITION_FREE;
+    }
+
+    @Override
+    public String getFormId() {
+        return formId;
+    }
+
+    @Override
+    public Integer getFormType() {
+        return formType;
+    }
+
+    @Override
+    public RectF getFormRect() {
+        return formRect;
+    }
+
+    @Override
+    public FormValue getFormValue() {
+        return formValue;
+    }
+
+    @Override
+    public void setFormId(String formId) {
+        this.formId = formId;
+    }
+
+    @Override
+    public void setFormType(Integer formType) {
+        this.formType = formType;
+    }
+
+    @Override
+    public void setFormRect(RectF formRect) {
+        this.formRect = formRect;
+    }
+
+    @Override
+    public void setFormValue(FormValue formValue) {
+        this.formValue = formValue;
+    }
+
+    @Override
+    public boolean isFormShape() {
+        return false;
+    }
+
+    @Override
+    public void setFormShape(boolean formShape) {
+        isFormShape = formShape;
     }
 }
