@@ -92,16 +92,21 @@ public class FormFieldControlFactory {
     }
 
     public static View createFormControl(RelativeLayout parentView, ReaderFormField field) {
+        View view;
         if (field instanceof ReaderFormText) {
-            return createEditInput(parentView, (ReaderFormText)field);
+            view = createEditInput(parentView, (ReaderFormText)field);
         } else if (field instanceof ReaderFormCheckbox) {
-            return createCheckBox(parentView, (ReaderFormCheckbox)field);
+            view = createCheckBox(parentView, (ReaderFormCheckbox)field);
         } else if (field instanceof ReaderFormRadioGroup) {
-            return createRadioGroup(parentView, (ReaderFormRadioGroup)field);
+            view = createRadioGroup(parentView, (ReaderFormRadioGroup)field);
         } else if (field instanceof ReaderFormScribble) {
-            return createScribbleRegion(parentView, (ReaderFormScribble)field);
+            view = createScribbleRegion(parentView, (ReaderFormScribble)field);
         } else {
-            return null;
+            view = null;
         }
+        if (view != null) {
+            view.setTag(field);
+        }
+        return view;
     }
 }
