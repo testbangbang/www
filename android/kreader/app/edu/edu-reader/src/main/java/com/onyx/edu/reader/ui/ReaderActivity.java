@@ -10,6 +10,9 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
@@ -40,6 +43,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.utils.TreeObserverUtils;
@@ -143,6 +147,8 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private PinchZoomingPopupMenu pinchZoomingPopupMenu;
     private List<View> formFieldControls = new ArrayList<>();
+
+    private Paint formScribbleRegionPaint = new Paint();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -1023,7 +1029,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                     getReaderDataHolder().getReaderViewInfo(),
                     getReaderDataHolder().getSelectionManager(),
                     getReaderDataHolder().getNoteManager());
-            addFormFieldControls();
+            addFormFieldControls(canvas);
         } finally {
             holder.unlockCanvasAndPost(canvas);
         }
@@ -1036,19 +1042,37 @@ public class ReaderActivity extends OnyxBaseActivity {
         formFieldControls.clear();
     }
 
-    private void addFormFieldControls() {
+    private void addFormFieldControls(Canvas canvas) {
         for (PageInfo pageInfo : getReaderDataHolder().getVisiblePages()) {
             if (getReaderDataHolder().getReaderUserDataInfo().hasFormFields(pageInfo)) {
                 List<ReaderFormField> fields = getReaderDataHolder().getReaderUserDataInfo().getFormFields(pageInfo);
                 for (ReaderFormField field : fields) {
                     View control = FormFieldControlFactory.createFormControl(mainView, field);
                     if (control != null) {
-                        mainView.addView(control);
                         formFieldControls.add(control);
+                        if (!isFormScribble(control)) {
+                            mainView.addView(control);
+                        } else {
+                            drawScribbleRegion(canvas, control);
+                        }
                     }
                 }
             }
         }
+    }
+
+    private boolean isFormScribble(View view) {
+        return view.getTag() instanceof ReaderFormScribble;
+    }
+
+    private void drawScribbleRegion(Canvas canvas, View view) {
+        formScribbleRegionPaint.setColor(Color.GRAY);
+        formScribbleRegionPaint.setStyle(Paint.Style.STROKE);
+        formScribbleRegionPaint.setStrokeWidth(3);
+        PathEffect effect = new DashPathEffect(new float[]{5,5,5,5},1);
+        formScribbleRegionPaint.setPathEffect(effect);
+
+        canvas.drawRect(((ReaderFormScribble)view.getTag()).getRect(), formScribbleRegionPaint);
     }
 
     private void renderShapeDataInBackground() {
