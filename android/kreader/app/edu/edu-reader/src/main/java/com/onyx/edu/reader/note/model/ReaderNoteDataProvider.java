@@ -2,6 +2,7 @@ package com.onyx.edu.reader.note.model;
 
 import android.content.Context;
 import com.onyx.android.sdk.scribble.data.ShapeDatabase;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.DatabaseDefinition;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -58,6 +59,28 @@ public class ReaderNoteDataProvider {
         return list;
     }
 
+    public static ReaderFormShapeModel loadFormShape(final Context context,
+                                                           final String documentUniqueId,
+                                                           final String formId) {
+        Select select = new Select();
+        Where where = select.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ReaderFormShapeModel_Table.formId.eq(formId));
+        return (ReaderFormShapeModel) where.querySingle();
+    }
+
+    public static List<ReaderFormShapeModel> loadFormShapeList(final Context context,
+                                                           final String documentUniqueId,
+                                                           final String pageUniqueId,
+                                                           final String subPageUniqueId) {
+        Select select = new Select();
+        Where where = select.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ReaderFormShapeModel_Table.pageUniqueId.eq(pageUniqueId));
+        if (StringUtils.isNotBlank(subPageUniqueId)) {
+            where = where.and(ReaderFormShapeModel_Table.subPageUniqueId.eq(subPageUniqueId));
+        }
+
+        List<ReaderFormShapeModel> list = where.queryList();
+        return list;
+    }
+
     public static List<ReaderNoteShapeModel> loadShapeList(final Context context,
                                                            final String documentUniqueId) {
         Select select = new Select();
@@ -75,6 +98,23 @@ public class ReaderNoteDataProvider {
         }
         database.setTransactionSuccessful();
         database.endTransaction();
+    }
+
+    public static void saveFormShapeList(final Context context,
+                                     final Collection<ReaderFormShapeModel> list) {
+        final DatabaseWrapper database= FlowManager.getDatabase(ReaderNoteDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for(ReaderFormShapeModel shapeModel : list) {
+            shapeModel.save();
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
+    public static boolean removeFormShape(final Context context, String documentId, String formId) {
+        Delete delete = new Delete();
+        delete.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentId)).and(ReaderFormShapeModel_Table.formId.eq(formId)).query();
+        return true;
     }
 
     public static void saveDocumentList(final Context context,

@@ -112,6 +112,7 @@ import com.onyx.edu.reader.ui.events.UpdateTabWidgetVisibilityEvent;
 import com.onyx.edu.reader.ui.gesture.MyOnGestureListener;
 import com.onyx.edu.reader.ui.gesture.MyScaleGestureListener;
 import com.onyx.edu.reader.ui.handler.BaseHandler;
+import com.onyx.edu.reader.ui.handler.FormFieldHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.SlideshowHandler;
 import com.onyx.edu.reader.ui.receiver.NetworkConnectChangedReceiver;
@@ -878,8 +879,12 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onScribbleMenuSizeChanged(final ScribbleMenuChangedEvent event) {
-        final Rect rect = new Rect();
+        Rect rect = new Rect();
         surfaceView.getLocalVisibleRect(rect);
+        Rect formRect = getFormRect();
+        if (formRect != null) {
+            rect = formRect;
+        }
         int bottomOfTopToolBar = event.getBottomOfTopToolBar();
         int topOfBottomToolBar = event.getTopOfBottomToolBar();
 
@@ -892,6 +897,19 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
         getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, getExcludeRect(event.getExcludeRect()), rotation);
+    }
+
+    private Rect getFormRect() {
+        Rect rect = null;
+        for (View formFieldControl : formFieldControls) {
+            if (isFormScribble(formFieldControl)) {
+                ReaderFormField field = (ReaderFormField) formFieldControl.getTag();
+                RectF rectF = field.getRect();
+                rect = new Rect((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom);
+                break;
+            }
+        }
+        return rect;
     }
 
     private List<RectF> getExcludeRect(final RectF scribbleMenuExcludeRect) {
@@ -1058,6 +1076,9 @@ public class ReaderActivity extends OnyxBaseActivity {
                     }
                 }
             }
+        }
+        if (formFieldControls.size() > 0) {
+            getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
         }
     }
 

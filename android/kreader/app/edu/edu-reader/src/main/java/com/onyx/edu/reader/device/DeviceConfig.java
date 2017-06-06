@@ -55,6 +55,7 @@ public class DeviceConfig {
     private boolean supportBrushPen = false;
     private boolean supportMultipleTabs = false;
     private boolean customFormEnabled = false;
+    private boolean enableDictWebSearch = true;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -571,6 +572,14 @@ public class DeviceConfig {
 
     public void setDefaultFontSizes(Float[] defaultFontSizes) {
         this.defaultFontSizes = defaultFontSizes;
+    }
+
+    public boolean isEnableDictWebSearch() {
+        return enableDictWebSearch;
+    }
+
+    public void setEnableDictWebSearch(boolean enableDictWebSearch) {
+        this.enableDictWebSearch = enableDictWebSearch;
     }
 
     public String getUmengKey() {

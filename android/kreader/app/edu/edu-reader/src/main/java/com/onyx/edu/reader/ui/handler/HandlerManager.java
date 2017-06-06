@@ -47,6 +47,7 @@ public class HandlerManager {
     public static final String ERASER_PROVIDER = "eraser";
     public static final String TTS_PROVIDER = "tts";
     public static final String SLIDESHOW_PROVIDER = "slideshow";
+    public static final String FORM_PROVIDER = "form";
 
     private static final int TOUCH_HORIZONTAL_PART = 3;
     private static final int TOUCH_VERTICAL_PART = 2;
@@ -73,6 +74,7 @@ public class HandlerManager {
         providerMap.put(ERASER_PROVIDER, new ScribbleHandler(this));
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
         providerMap.put(SLIDESHOW_PROVIDER, new SlideshowHandler(this));
+        providerMap.put(FORM_PROVIDER, new FormFieldHandler(this));
         activeProviderName = READING_PROVIDER;
         enable.set(true);
         enableTouch.set(true);

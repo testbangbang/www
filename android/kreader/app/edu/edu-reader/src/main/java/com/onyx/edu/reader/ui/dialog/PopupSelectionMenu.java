@@ -267,6 +267,10 @@ public class PopupSelectionMenu extends AppCompatLinearLayout {
             }
         });
 
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isEnableDictWebSearch()) {
+            webSearch.setVisibility(GONE);
+        }
+
         final ImageView buttonCloseMenu = (ImageView) findViewById(R.id.button_close);
         buttonCloseMenu.setOnClickListener(new OnClickListener() {
             @Override

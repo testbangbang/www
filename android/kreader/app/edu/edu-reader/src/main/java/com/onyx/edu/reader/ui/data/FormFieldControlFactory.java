@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -61,20 +62,24 @@ public class FormFieldControlFactory {
         }
 
         RadioGroup radioGroup = new RadioGroup(parentView.getContext());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)bound.width(),
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 (int)bound.height());
         radioGroup.setOrientation(RadioGroup.VERTICAL);
         params.leftMargin = (int)bound.left;
         params.topMargin = (int)bound.top;
 
+        int index = 0;
+        int buttonWidth = (int) bound.height() / groupField.getButtons().size();
         for (ReaderFormRadioButton buttonField : groupField.getButtons()) {
             RadioButton button = new RadioButton(parentView.getContext());
-            RadioGroup.LayoutParams buttonParams = new RadioGroup.LayoutParams((int)buttonField.getRect().width(),
+            RadioGroup.LayoutParams buttonParams = new RadioGroup.LayoutParams(buttonWidth,
                     0);
             buttonParams.weight = 1.0f;
             buttonParams.setMargins(0, 0, 0, 0);
             button.setPadding(0, 0, 0, 0);
             radioGroup.addView(button, buttonParams);
+            button.setId(index);
+            index++;
         }
 
         radioGroup.setLayoutParams(params);
