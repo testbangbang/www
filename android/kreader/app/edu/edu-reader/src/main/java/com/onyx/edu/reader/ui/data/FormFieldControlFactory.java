@@ -2,6 +2,7 @@ package com.onyx.edu.reader.ui.data;
 
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.CheckBox;
@@ -31,6 +32,8 @@ public class FormFieldControlFactory {
         params.leftMargin = (int)textField.getRect().left;
         params.topMargin = (int)textField.getRect().top;
 
+        editText.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+        editText.setTextSize(18.0f);
         editText.setLayoutParams(params);
         return editText;
     }
