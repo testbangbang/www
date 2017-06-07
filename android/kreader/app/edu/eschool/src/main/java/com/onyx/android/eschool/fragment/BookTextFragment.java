@@ -36,6 +36,8 @@ import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.QueryResult;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
@@ -147,7 +149,10 @@ public class BookTextFragment extends Fragment {
     }
 
     private void loadData(String libraryId) {
-        QueryArgs args = getDataHolder().getCloudViewInfo().libraryQuery(libraryId);
+        LibraryViewInfo viewInfo = getDataHolder().getCloudViewInfo();
+        viewInfo.updateSortBy(SortBy.CreationTime, SortOrder.Desc);
+        viewInfo.getQueryPagination().setCurrentPage(0);
+        QueryArgs args = viewInfo.libraryQuery(libraryId);
         args.useCloudMemDbPolicy();
         loadData(args);
     }
@@ -202,6 +207,7 @@ public class BookTextFragment extends Fragment {
     private void initPagination() {
         pagination = getDataHolder().getCloudViewInfo().getQueryPagination();
         pagination.resize(row, col, 0);
+        pagination.setCurrentPage(0);
     }
 
     private void preloadNext() {
