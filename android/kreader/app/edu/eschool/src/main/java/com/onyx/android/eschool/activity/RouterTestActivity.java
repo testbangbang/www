@@ -289,13 +289,17 @@ public class RouterTestActivity extends Activity {
     public void actionOnCloudDownload() {
         downloadDuration = reportCurrentTimeStamp();
         final String id = UUID.randomUUID().toString();
-        String filePath = "/mnt/sdcard/Download" + id;
+        final String filePath = "/mnt/sdcard/Download-" + id;
         final DownloadAction downloadAction = new DownloadAction(URL, filePath, id);
         downloadAction.execute(getLibraryDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    e.printStackTrace();
+                }
                 downloadDuration = reportCurrentTimeStamp() - downloadDuration;
                 reportDownloadResult(e == null);
+                FileUtils.deleteFile(filePath);
             }
         });
     }
@@ -374,24 +378,31 @@ public class RouterTestActivity extends Activity {
     }
 
     private void triggerRepeatedAlarm() {
-        try {
-            Calendar c = Calendar.getInstance();
-            int minute = c.get(Calendar.MINUTE);
-            minute += ALARM_START_INTERVAL_TIME;
-            if (minute >= 60) {
-                int hour = c.get(Calendar.HOUR_OF_DAY);
-                c.set(Calendar.HOUR_OF_DAY, hour + 1);
-                minute %= 60;
-            }
-            c.set(Calendar.MINUTE, minute);
-            c.set(Calendar.SECOND, 0);
-
-            AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-            am.setTimeZone("Asia/Hong_Kong");
-            am.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), ALARM_REPEAT_INTERVAL_TIME, getAlarmPendingIntent());
-        } catch (Exception e) {
-            e.printStackTrace();
+        Calendar c = Calendar.getInstance();
+        int minute = c.get(Calendar.MINUTE);
+        minute += ALARM_START_INTERVAL_TIME;
+        if (minute >= 60) {
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            c.set(Calendar.HOUR_OF_DAY, hour + 1);
+            minute %= 60;
         }
+        c.set(Calendar.MINUTE, minute);
+        c.set(Calendar.SECOND, 0);
+
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        setTimeZone(am);
+        setRepeatingAlarm(am, c);
+    }
+
+    private void setTimeZone(final AlarmManager am) {
+        try {
+            am.setTimeZone("Asia/Hong_Kong");
+        } catch (Exception e) {
+        }
+    }
+
+    private void setRepeatingAlarm(final AlarmManager am, final Calendar c) {
+        am.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), ALARM_REPEAT_INTERVAL_TIME, getAlarmPendingIntent());
     }
 
     private PendingIntent getAlarmPendingIntent() {
