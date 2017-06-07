@@ -22,6 +22,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromLocalRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.PingDatabaseRequest;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
@@ -77,7 +78,13 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        pingDatabase();
         loadAuthToken();
+    }
+
+    private void pingDatabase() {
+        final PingDatabaseRequest pingDatabaseRequest = new PingDatabaseRequest();
+        SchoolApp.getSchoolCloudStore().submitRequest(this, pingDatabaseRequest, null);
     }
 
     private void loadAuthToken() {
