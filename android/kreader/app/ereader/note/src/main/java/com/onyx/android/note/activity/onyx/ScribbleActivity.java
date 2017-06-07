@@ -822,6 +822,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 setStrokeColor(Color.MAGENTA);
                 onPenColoChanged();
                 break;
+            case ScribbleSubMenuID.TRIANGLE_45_STYLE:
+                onNoteShapeChanged(true, false, ShapeFactory.SHAPE_TRIANGLE_45, null);
+                break;
+            case ScribbleSubMenuID.TRIANGLE_60_STYLE:
+                onNoteShapeChanged(true, false, ShapeFactory.SHAPE_TRIANGLE_60, null);
+                break;
+            case ScribbleSubMenuID.TRIANGLE_90_STYLE:
+                onNoteShapeChanged(true, false, ShapeFactory.SHAPE_TRIANGLE_90, null);
+                break;
         }
     }
 

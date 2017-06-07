@@ -21,6 +21,7 @@ import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
@@ -286,7 +287,11 @@ public class BaseNoteRequest extends BaseRequest {
             dest = new Rect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);
         }
         Rect src = new Rect(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
-        canvas.drawBitmap(bitmap, src, dest, paint);
+        if (DeviceConfig.isColorDevice()) {
+            canvas.drawBitmap(bitmap, 0, 0, paint);
+        } else {
+            canvas.drawBitmap(bitmap, src, dest, paint);
+        }
         if (!bitmap.isRecycled()) {
             bitmap.recycle();
         }

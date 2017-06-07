@@ -39,6 +39,7 @@ import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.AscDescOrder;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.SortBy;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
@@ -124,6 +125,11 @@ public class ManagerActivity extends BaseManagerActivity {
                 }
             }
         });
+
+        //TODO:temp hide icon for color devices.
+        if (AppCompatUtils.isColorDevice(this)) {
+            findViewById(R.id.imageView_main_title).setVisibility(View.GONE);
+        }
         //disable choose mode function.if confirm remove,clean these code.
 //        chooseModeButton = (CheckableImageView) findViewById(R.id.multi_select_mode);
 //        chooseModeButton.setOnClickListener(new View.OnClickListener() {
