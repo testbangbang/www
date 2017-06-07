@@ -1,17 +1,11 @@
 package com.onyx.android.sdk.data.request.cloud.v2;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
-import com.onyx.android.sdk.data.model.v2.AuthToken;
-import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
-import com.onyx.android.sdk.data.v1.ServiceFactory;
-import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
-import okhttp3.ResponseBody;
-import retrofit2.Response;
 
 /**
  * Created by zhuzeng on 03/06/2017.
@@ -26,7 +20,8 @@ public class GenerateAccountInfoRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        BitmapUtils.buildBitmapFromText(authAccount.getName() + " " + authAccount.getFirstGroup(),
+        String targetString = authAccount.getName() + " " + authAccount.getFirstGroup();
+        BitmapUtils.buildBitmapFromText(StringUtils.getBlankStr(targetString).trim(),
                 100, 25, true,
                 true, true, true, 90,
                 "data/local/assets/info.png");

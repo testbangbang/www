@@ -106,4 +106,6 @@
     <string name="hardware_error">Hardware error, please check the network to retry or contact the administrator</string>
     <string name="title_activity_router_test">RouterTestActivity</string>
 
+    <string name="account_un_login">Not logged in</string>
+
 </resources>
