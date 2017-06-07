@@ -18,8 +18,8 @@ import com.onyx.android.sdk.utils.StringUtils;
 
 public class StudentAccount extends NeoAccountBase {
     private final static String UPDATE_STATUS_BAR_INFO_ACTION = "update_status_bar_info";
-    private final static String ARGS_STUDENT_NAME = "args_student_name";
-    private final static String ARGS_STUDENT_CLASS_INFO = "args_student_class_info";
+    private final static String ARGS_NAME = "args_name";
+    private final static String ARGS_ORGANIZATION_INFO = "args_organization_info";
 
     public static final String DELIMITER = ",";
 
@@ -105,8 +105,14 @@ public class StudentAccount extends NeoAccountBase {
             return;
         }
         Intent intent = new Intent(UPDATE_STATUS_BAR_INFO_ACTION);
-        intent.putExtra(ARGS_STUDENT_NAME, account.getName());
-        intent.putExtra(ARGS_STUDENT_CLASS_INFO, account.getFirstGroup());
+        intent.putExtra(ARGS_NAME, account.getName());
+        intent.putExtra(ARGS_ORGANIZATION_INFO, account.getFirstGroup());
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendUserInfoSettingIntent(Context context, String name) {
+        Intent intent = new Intent(UPDATE_STATUS_BAR_INFO_ACTION);
+        intent.putExtra(ARGS_NAME, name);
         context.sendBroadcast(intent);
     }
 }
