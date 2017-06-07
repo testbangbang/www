@@ -4,6 +4,10 @@ package com.onyx.android.sdk.scribble.shape;
  * Created by zhuzeng on 8/6/16.
  */
 public class Triangle90Shape extends TriangleShape {
+    public int getType() {
+        return ShapeFactory.SHAPE_TRIANGLE_90;
+    }
+
     @Override
     protected void calculatePoint() {
         points[0] = getDownPoint().getX();

@@ -48,6 +48,10 @@ public class ScribbleSubMenuID {
     public static final int BG_LINE_1_6 = 31;
     public static final int BG_LINE_2_0 = 32;
     public static final int BG_CALENDAR = 33;
+    public static final int TRIANGLE_45_STYLE = 34;
+    public static final int TRIANGLE_60_STYLE = 35;
+    public static final int TRIANGLE_90_STYLE = 36;
+
 
     private static Map<Float, Integer> strokeMapping;
 
@@ -59,7 +63,8 @@ public class ScribbleSubMenuID {
             THICKNESS_ULTRA_BOLD, THICKNESS_CUSTOM_BOLD, NORMAL_PEN_STYLE, BRUSH_PEN_STYLE, LINE_STYLE, TRIANGLE_STYLE,
             CIRCLE_STYLE, RECT_STYLE, ERASE_PARTIALLY, ERASE_TOTALLY, BG_EMPTY, BG_GRID, BG_LINE, BG_MATS, BG_ENGLISH, BG_MUSIC,
             PEN_COLOR_BLACK, PEN_COLOR_RED, PEN_COLOR_YELLOW, PEN_COLOR_BLUE, PEN_COLOR_GREEN, PEN_COLOR_MAGENTA, BG_TABLE_GRID,
-            BG_LEFT_GRID, BG_LINE_COLUMN, BG_GRID_5_5, BG_GRID_POINT, BG_LINE_1_6, BG_LINE_2_0, BG_CALENDAR})
+            BG_LEFT_GRID, BG_LINE_COLUMN, BG_GRID_5_5, BG_GRID_POINT, BG_LINE_1_6, BG_LINE_2_0, BG_CALENDAR,
+            TRIANGLE_45_STYLE, TRIANGLE_60_STYLE, TRIANGLE_90_STYLE})
     // Create an interface for validating int types
     public @interface ScribbleSubMenuIDDef {
     }

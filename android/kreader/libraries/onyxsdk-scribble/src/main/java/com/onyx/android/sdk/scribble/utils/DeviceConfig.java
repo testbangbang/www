@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.BuildConfig;
-import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -245,5 +244,10 @@ public class DeviceConfig {
         } finally {
             return object;
         }
+    }
+
+    public static boolean isColorDevice() {
+        //TODO:temp code to judge device is color device or not.we don't want any zoom here.
+        return Build.MODEL.equalsIgnoreCase("pl107");
     }
 }
