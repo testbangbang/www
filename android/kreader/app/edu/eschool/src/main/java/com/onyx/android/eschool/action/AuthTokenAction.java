@@ -1,7 +1,5 @@
 package com.onyx.android.eschool.action;
 
-import android.content.Context;
-
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
@@ -9,7 +7,6 @@ import com.onyx.android.eschool.events.HardwareErrorEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.common.ContentException;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
@@ -20,12 +17,6 @@ import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromCloudRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromLocalRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountSaveToLocalRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
-import com.onyx.android.sdk.data.v1.ServiceFactory;
-import com.onyx.android.sdk.data.v2.ContentService;
-import com.onyx.android.sdk.ui.utils.ToastUtils;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.NetworkUtil;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -67,8 +58,9 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                             return;
                         }
                     }
+
                     if (ContentException.isCloudException(e)) {
-                        sendAccountTokenErrorEvent();
+                        processCloudException((ContentException.CloudException) e);
                     }
                     return;
                 }
@@ -86,6 +78,10 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
             }
         });
         requestChain.execute(dataHolder.getContext(), dataHolder.getCloudManager());
+    }
+
+    private void processCloudException(ContentException.CloudException exception) {
+        sendAccountTokenErrorEvent();
     }
 
     private void sendAccountAvailableEvent(final NeoAccountBase account) {
