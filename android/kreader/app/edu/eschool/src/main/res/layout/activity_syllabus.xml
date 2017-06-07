@@ -7,6 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:scaleType="matrix"
         android:src="@drawable/syllabus" />
 
 </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>

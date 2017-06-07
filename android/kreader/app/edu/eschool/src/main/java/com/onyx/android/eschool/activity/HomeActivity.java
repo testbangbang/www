@@ -2,7 +2,6 @@ package com.onyx.android.eschool.activity;
 
 import android.content.ComponentName;
 import android.content.Intent;
-import android.graphics.Region;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -14,14 +13,10 @@ import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.AuthTokenAction;
 import com.onyx.android.eschool.events.AccountAvailableEvent;
+import com.onyx.android.eschool.events.AccountTokenErrorEvent;
 import com.onyx.android.eschool.model.AppConfig;
 import com.onyx.android.eschool.model.StudentAccount;
 import com.onyx.android.eschool.utils.ResourceUtils;
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.db.table.EduAccountProvider;
-import com.onyx.android.sdk.data.model.v2.EduAccount;
-import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromLocalRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.PingDatabaseRequest;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -111,7 +106,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void initDisplayItemView() {
-        initNormalView(R.id.home_pic_display_item, R.string.home_item_syllabus, R.drawable.home_pic_display,
+        initNormalView(R.id.home_pic_display_item, R.string.home_item_syllabus, R.drawable.home_syllabus,
                 new Intent(this, SyllabusActivity.class));
     }
 
@@ -168,5 +163,10 @@ public class HomeActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountAvailableEvent(AccountAvailableEvent event) {
         StudentAccount.sendUserInfoSettingIntent(HomeActivity.this, event.getAccount());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAccountTokenErrorEvent(AccountTokenErrorEvent errorEvent) {
+        StudentAccount.sendUserInfoSettingIntent(HomeActivity.this, getString(R.string.account_un_login));
     }
 }

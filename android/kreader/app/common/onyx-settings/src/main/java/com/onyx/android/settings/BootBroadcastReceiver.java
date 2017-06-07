@@ -12,7 +12,6 @@ import android.util.Log;
 import com.google.zxing.WriterException;
 import com.onyx.android.libsetting.util.QRCodeUtil;
 import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.ShellUtils;
 
@@ -74,7 +73,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 BitmapUtils.saveBitmap(QRCodeUtil.stringToImageEncode(context, macAddress,
                         120, true, context.getResources().getColor(android.R.color.holo_blue_dark))
                         , cacheFile.getPath());
-                ShellUtils.execCommand("busybox cadbhmod 644 " + cacheFile.getPath(), false);
+                ShellUtils.execCommand("busybox chmod 644 " + cacheFile.getPath(), false);
                 closeWifiIfNeeded();
             } catch (WriterException e) {
                 e.printStackTrace();

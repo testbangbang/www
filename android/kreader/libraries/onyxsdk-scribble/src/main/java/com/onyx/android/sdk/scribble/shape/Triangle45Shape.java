@@ -1,13 +1,13 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.RectF;
-
-import com.onyx.android.sdk.scribble.utils.ShapeUtils;
-
 /**
  * Created by zhuzeng on 8/6/16.
  */
 public class Triangle45Shape extends TriangleShape {
+
+    public int getType() {
+        return ShapeFactory.SHAPE_TRIANGLE_45;
+    }
 
     @Override
     protected void calculatePoint() {
