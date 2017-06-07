@@ -168,6 +168,12 @@ public class ReaderNoteDataProvider {
         return true;
     }
 
+    public static boolean removeFormShapesByIdList(final Context context, final List<String> list) {
+        Delete delete = new Delete();
+        delete.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.shapeUniqueId.in(list)).query();
+        return true;
+    }
+
     public static void removeShapesByIdListInBackground(final Context context,
                                                         final List<String> list,
                                                         final DataProviderCallback callback) {

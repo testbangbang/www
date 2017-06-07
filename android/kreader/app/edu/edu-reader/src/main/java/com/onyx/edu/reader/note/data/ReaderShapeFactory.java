@@ -82,12 +82,18 @@ public class ReaderShapeFactory {
         return shape;
     }
 
+    public static final Shape shapeFromFormModel(final ReaderFormShapeModel shapeModel) {
+        Shape shape = createShape(shapeModel.getShapeType());
+        syncFormShapeDataFromModel(shape, shapeModel);
+        return shape;
+    }
+
     public static boolean isDFBShape(int shape) {
         return shape == SHAPE_PENCIL_SCRIBBLE || shape == SHAPE_BRUSH_SCRIBBLE || shape == SHAPE_OILY_PEN_SCRIBBLE || shape == SHAPE_FOUNTAIN_PEN_SCRIBBLE;
     }
 
     public static final ReaderNoteShapeModel modelFromShape(final Shape shape) {
-        final ReaderNoteShapeModel shapeModel = new ReaderNoteShapeModel();
+        ReaderNoteShapeModel shapeModel = new ReaderNoteShapeModel();
         shapeModel.setDocumentUniqueId(shape.getDocumentUniqueId());
         shapeModel.setPageUniqueId(shape.getPageUniqueId());
         shapeModel.setShapeUniqueId(shape.getShapeUniqueId());
@@ -122,6 +128,15 @@ public class ReaderShapeFactory {
 
     public static ReaderFormShapeModel formModelFromShape(final Shape formShape) {
         ReaderFormShapeModel formShapeModel = new ReaderFormShapeModel();
+        formShapeModel.setDocumentUniqueId(formShape.getDocumentUniqueId());
+        formShapeModel.setPageUniqueId(formShape.getPageUniqueId());
+        formShapeModel.setShapeUniqueId(formShape.getShapeUniqueId());
+        formShapeModel.setSubPageUniqueId(formShape.getSubPageUniqueId());
+        formShapeModel.setBoundingRect(formShape.getBoundingRect());
+        formShapeModel.setColor(formShape.getColor());
+        formShapeModel.setPoints(formShape.getPoints());
+        formShapeModel.setThickness(formShape.getStrokeWidth());
+        formShapeModel.setShapeType(formShape.getType());
         formShapeModel.setDocumentUniqueId(formShape.getDocumentUniqueId());
         formShapeModel.setFormId(formShape.getFormId());
         formShapeModel.setFormRect(formShape.getFormRect());

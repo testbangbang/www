@@ -183,6 +183,10 @@ public class ReaderDataHolder {
         return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
     }
 
+    public boolean inFormProvider() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_PROVIDER);
+    }
+
     public boolean inReadingProvider() {
         return getHandlerManager().getActiveProviderName().equals(HandlerManager.READING_PROVIDER);
     }
