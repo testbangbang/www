@@ -1,6 +1,7 @@
 package com.onyx.edu.reader.ui.handler;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.annotation.IdRes;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,7 +27,7 @@ import java.util.List;
  * Created by ming on 2017/6/5.
  */
 
-public class FormFieldHandler extends BaseHandler {
+public class FormFieldHandler extends ReadingHandler {
 
     public List<View> formFieldControls;
 

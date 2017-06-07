@@ -435,6 +435,9 @@ public class HandlerManager {
         if (readerDataHolder.inNoteWritingProvider()) {
             return false;
         }
+        if (readerDataHolder.inFormProvider()) {
+            return false;
+        }
         return true;
     }
 
