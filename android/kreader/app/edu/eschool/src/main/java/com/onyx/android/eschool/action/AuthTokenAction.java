@@ -1,5 +1,8 @@
 package com.onyx.android.eschool.action;
 
+import android.content.Context;
+
+import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
@@ -58,9 +61,8 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                             return;
                         }
                     }
-
                     if (ContentException.isCloudException(e)) {
-                        processCloudException((ContentException.CloudException) e);
+                        processCloudException(dataHolder.getContext(), (ContentException.CloudException) e);
                     }
                     return;
                 }
@@ -80,8 +82,8 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         requestChain.execute(dataHolder.getContext(), dataHolder.getCloudManager());
     }
 
-    private void processCloudException(ContentException.CloudException exception) {
-        sendAccountTokenErrorEvent();
+    private void processCloudException(Context context, ContentException.CloudException exception) {
+        sendAccountTokenErrorEvent(context);
     }
 
     private void sendAccountAvailableEvent(final NeoAccountBase account) {
@@ -94,8 +96,16 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         });
     }
 
-    private void sendAccountTokenErrorEvent() {
-        EventBus.getDefault().post(new AccountTokenErrorEvent());
+    private void sendAccountTokenErrorEvent(Context context) {
+        NeoAccountBase errorAccount = new NeoAccountBase();
+        errorAccount.name = context.getString(R.string.account_un_login);
+        final GenerateAccountInfoRequest generateAccountInfoRequest = new GenerateAccountInfoRequest(errorAccount);
+        SchoolApp.getSchoolCloudStore().submitRequest(SchoolApp.singleton(), generateAccountInfoRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                EventBus.getDefault().post(new AccountTokenErrorEvent());
+            }
+        });
     }
 
     private void sendHardwareErrorEvent() {
