@@ -104,7 +104,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void initDisplayItemView() {
-        initNormalView(R.id.home_pic_display_item, R.string.home_item_syllabus, R.drawable.home_pic_display,
+        initNormalView(R.id.home_pic_display_item, R.string.home_item_syllabus, R.drawable.home_syllabus,
                 new Intent(this, SyllabusActivity.class));
     }
 
