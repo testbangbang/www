@@ -17,7 +17,7 @@ public class BookmarkIconFactory {
 
     public static Point bookmarkPosition(int displayWidth, Bitmap bitmap) {
         Point point = new Point();
-        point.set(displayWidth - bitmap.getWidth(), 10);
+        point.set(displayWidth - bitmap.getWidth() -10, 20);
         return point;
     }
 
