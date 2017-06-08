@@ -160,7 +160,7 @@
     <string name="battery_info_status_full">"电量充足"</string>
     <string name="battery_percentage">当前电量: %1$d %%</string>
     <string name="battery_status">当前电池状态: %1$s</string>
-    <string name="battery_stats_on_battery">"电池已用时间：<xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="battery_stats_on_battery">"开机时间：<xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="battery_total_on_battery">总待机时间:<xliff:g id="time">%1$s</xliff:g></string>
     <string name="battery_remain_on_battery">预计剩余待机时间:<xliff:g id="time">%1$s</xliff:g></string>
     <string name="battery_info">电池状态</string>
