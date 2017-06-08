@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,6 +18,10 @@ import com.onyx.android.eschool.events.AccountTokenErrorEvent;
 import com.onyx.android.eschool.model.AppConfig;
 import com.onyx.android.eschool.model.StudentAccount;
 import com.onyx.android.eschool.utils.ResourceUtils;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.PingDatabaseRequest;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -46,6 +51,14 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        final View view = findViewById(android.R.id.content);
+        pingDatabase();
+        loadAuthToken(new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                EpdController.invalidate(view, UpdateMode.GC);
+            }
+        });
     }
 
     @Override
@@ -73,8 +86,6 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        pingDatabase();
-        loadAuthToken();
     }
 
     private void pingDatabase() {
@@ -82,9 +93,14 @@ public class HomeActivity extends BaseActivity {
         SchoolApp.getSchoolCloudStore().submitRequest(this, pingDatabaseRequest, null);
     }
 
-    private void loadAuthToken() {
+    private void loadAuthToken(final BaseCallback callback) {
         AuthTokenAction authTokenAction = new AuthTokenAction();
-        authTokenAction.execute(SchoolApp.getLibraryDataHolder(), null);
+        authTokenAction.execute(SchoolApp.getLibraryDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                BaseCallback.invoke(callback, request, e);
+            }
+        });
     }
 
     protected void initConfig() {
