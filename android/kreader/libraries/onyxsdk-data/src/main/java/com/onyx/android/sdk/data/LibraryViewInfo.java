@@ -78,6 +78,7 @@ public class LibraryViewInfo {
         args.offset = getOffset(page);
         args.orderByList.addAll(queryArgs.orderByList);
         args.conditionGroup = queryArgs.conditionGroup;
+        args.libraryUniqueId = queryArgs.libraryUniqueId;
         args.category = queryArgs.category;
         return args;
     }

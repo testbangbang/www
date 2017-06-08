@@ -249,9 +249,17 @@ public class ReaderNotePage {
     }
 
     public boolean savePage(final Context context) {
+        saveNewAddedShapes(context);
+        deleteRemovedShapes(context);
+        newAddedShapeList.clear();
+        removedShapeList.clear();
+        return true;
+    }
+
+    private void saveNewAddedShapes(final Context context) {
         List<ReaderNoteShapeModel> noteShapeModels = new ArrayList<>();
 
-        for(Shape shape : newAddedShapeList) {
+        for (Shape shape : newAddedShapeList) {
             final ReaderNoteShapeModel model = ReaderShapeFactory.modelFromShape(shape);
             noteShapeModels.add(model);
         }
@@ -259,13 +267,15 @@ public class ReaderNotePage {
         if (noteShapeModels.size() > 0) {
             ReaderNoteDataProvider.saveShapeList(context, noteShapeModels);
         }
+    }
 
+    private void deleteRemovedShapes(final Context context) {
         List<String> removeNoteShapes = new ArrayList<>();
         List<String> removeFormShapes = new ArrayList<>();
         for(Shape shape: removedShapeList) {
             if (shape.isFormShape()) {
                 removeFormShapes.add(shape.getShapeUniqueId());
-            }else {
+            } else {
                 removeNoteShapes.add(shape.getShapeUniqueId());
             }
 
@@ -276,9 +286,6 @@ public class ReaderNotePage {
         if (removeFormShapes.size() > 0) {
             ReaderNoteDataProvider.removeFormShapesByIdList(context, removeFormShapes);
         }
-        newAddedShapeList.clear();
-        removedShapeList.clear();
-        return true;
     }
 
     public boolean isLoaded() {
