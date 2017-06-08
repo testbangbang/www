@@ -80,7 +80,6 @@ public class BookTextFragment extends Fragment {
     PageIndicator pageIndicator;
 
     LibraryDataHolder dataHolder;
-    QueryPagination pagination;
     private LibraryDataModel pageDataModel = new LibraryDataModel();
 
     private boolean newPage = false;
@@ -198,14 +197,11 @@ public class BookTextFragment extends Fragment {
     }
 
     private QueryPagination getPagination() {
-        if (pagination == null) {
-            initPagination();
-        }
-        return pagination;
+        return getDataHolder().getCloudViewInfo().getQueryPagination();
     }
 
     private void initPagination() {
-        pagination = getDataHolder().getCloudViewInfo().getQueryPagination();
+        QueryPagination pagination = getPagination();
         pagination.resize(row, col, 0);
         pagination.setCurrentPage(0);
     }
@@ -370,7 +366,7 @@ public class BookTextFragment extends Fragment {
 
     private void initPageIndicator(ViewGroup parentView) {
         initPagination();
-        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), pagination);
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), getPagination());
         pageIndicator.setTotalFormat(getString(R.string.total_format));
         pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
             @Override
