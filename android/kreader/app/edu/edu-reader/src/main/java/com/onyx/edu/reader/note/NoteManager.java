@@ -535,7 +535,7 @@ public class NoteManager {
             shape.setFormShape(true);
             shape.setFormId(field.getName());
             shape.setFormRect(field.getRect());
-            shape.setFormType(ReaderShapeFactory.FORM_SHAPE_QA);
+            shape.setFormType(ReaderShapeFactory.SHAPE_FORM_QA);
         }
     }
 
