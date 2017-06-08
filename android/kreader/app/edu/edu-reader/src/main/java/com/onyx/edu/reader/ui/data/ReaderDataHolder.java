@@ -546,8 +546,13 @@ public class ReaderDataHolder {
         closeTts();
         closeNoteManager();
         closeNoteMenu();
+        closeFormMenu();
         resetHandlerManager();
         closeDocument(callback);
+    }
+
+    private void closeFormMenu() {
+        getEventBus().post(new CloseFormMenuEvent());
     }
 
     public void resetHandlerManager() {

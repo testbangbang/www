@@ -20,8 +20,12 @@ import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
+import com.onyx.edu.reader.ui.events.CloseFormMenuEvent;
+import com.onyx.edu.reader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.edu.reader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -53,6 +57,7 @@ public class ShowFormMenuActon extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
         this.readerDataHolder = readerDataHolder;
+        readerDataHolder.getEventBus().register(this);
         if (startNoteDrawing && !readerDataHolder.inNoteWritingProvider()) {
             readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
         }
@@ -351,5 +356,10 @@ public class ShowFormMenuActon extends BaseAction {
         RectF excludeRect = new RectF();
         topOfBottomToolBar = bottomToolbar.getTop();
         readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(bottomOfTopToolBar, topOfBottomToolBar, excludeRect));
+    }
+
+    @Subscribe
+    public void close(CloseFormMenuEvent event) {
+        parent.removeView(bottomToolbar);
     }
 }
