@@ -168,8 +168,8 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnClick
 
     private void saveTotalProgress2Provider(int progress) {
         if (progress > mMaxNumStars) {
-            Settings.System.putInt(getContext().getContentResolver(), WARM_LIGHT_VALUE, mLightSteps.get(progress - mMaxNumStars));
             Settings.System.putInt(getContext().getContentResolver(), COLD_LIGHT_VALUE, mLightSteps.get(progress - mMaxNumStars));
+            Settings.System.putInt(getContext().getContentResolver(), WARM_LIGHT_VALUE, mLightSteps.get((int)((progress - mMaxNumStars) * BRIGHTNESS_RATIO)));
         } else if (progress != mLightClosedValue) {
             Settings.System.putInt(getContext().getContentResolver(), WARM_LIGHT_VALUE, 0);
             Settings.System.putInt(getContext().getContentResolver(), COLD_LIGHT_VALUE, mLightSteps.get(progress));
@@ -250,7 +250,7 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnClick
     private int calculateTotalProgress(int coldStep, int warmStep) {
         int progress = mLightClosedValue;
         if (warmStep > 0) {
-            progress = warmStep + mMaxNumStars;
+            progress = coldStep + mMaxNumStars;
         } else {
             progress = isRevertColdLightProgress ? (mMaxNumStars - coldStep) : coldStep;
         }
