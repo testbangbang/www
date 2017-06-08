@@ -26,6 +26,8 @@ import com.onyx.android.eschool.events.BookLibraryEvent;
 import com.onyx.android.eschool.events.HardwareErrorEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
@@ -161,6 +163,7 @@ public class BookTextFragment extends Fragment {
         getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                EpdController.postInvalidate(getActivity().getWindow().getDecorView().getRootView(), UpdateMode.GC);
                 if (e != null) {
                     return;
                 }
