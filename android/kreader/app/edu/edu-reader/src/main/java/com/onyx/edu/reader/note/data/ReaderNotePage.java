@@ -250,23 +250,14 @@ public class ReaderNotePage {
 
     public boolean savePage(final Context context) {
         List<ReaderNoteShapeModel> noteShapeModels = new ArrayList<>();
-        List<ReaderFormShapeModel> formShapeModels = new ArrayList<>();
 
         for(Shape shape : newAddedShapeList) {
-            if (shape.isFormShape()) {
-                final ReaderFormShapeModel model = ReaderShapeFactory.formModelFromShape(shape);
-                formShapeModels.add(model);
-            }else {
-                final ReaderNoteShapeModel model = ReaderShapeFactory.modelFromShape(shape);
-                noteShapeModels.add(model);
-            }
+            final ReaderNoteShapeModel model = ReaderShapeFactory.modelFromShape(shape);
+            noteShapeModels.add(model);
         }
 
         if (noteShapeModels.size() > 0) {
             ReaderNoteDataProvider.saveShapeList(context, noteShapeModels);
-        }
-        if (formShapeModels.size() > 0) {
-            ReaderNoteDataProvider.saveFormShapeList(context, formShapeModels);
         }
 
         List<String> removeNoteShapes = new ArrayList<>();

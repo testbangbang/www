@@ -93,7 +93,16 @@ public class ReaderShapeFactory {
     }
 
     public static final ReaderNoteShapeModel modelFromShape(final Shape shape) {
-        ReaderNoteShapeModel shapeModel = new ReaderNoteShapeModel();
+        ReaderNoteShapeModel shapeModel;
+        if (shape.isFormShape()) {
+            shapeModel = new ReaderFormShapeModel();
+            ((ReaderFormShapeModel) shapeModel).setFormId(shape.getFormId());
+            ((ReaderFormShapeModel) shapeModel).setFormRect(shape.getFormRect());
+            ((ReaderFormShapeModel) shapeModel).setFormType(shape.getFormType());
+            ((ReaderFormShapeModel) shapeModel).setFormValue(shape.getFormValue());
+        }else {
+            shapeModel = new ReaderNoteShapeModel();
+        }
         shapeModel.setDocumentUniqueId(shape.getDocumentUniqueId());
         shapeModel.setPageUniqueId(shape.getPageUniqueId());
         shapeModel.setShapeUniqueId(shape.getShapeUniqueId());
@@ -124,25 +133,6 @@ public class ReaderShapeFactory {
         shape.setFormId(model.getFormId());
         shape.setFormType(model.getFormType());
         shape.setFormRect(model.getFormRect());
-    }
-
-    public static ReaderFormShapeModel formModelFromShape(final Shape formShape) {
-        ReaderFormShapeModel formShapeModel = new ReaderFormShapeModel();
-        formShapeModel.setDocumentUniqueId(formShape.getDocumentUniqueId());
-        formShapeModel.setPageUniqueId(formShape.getPageUniqueId());
-        formShapeModel.setShapeUniqueId(formShape.getShapeUniqueId());
-        formShapeModel.setSubPageUniqueId(formShape.getSubPageUniqueId());
-        formShapeModel.setBoundingRect(formShape.getBoundingRect());
-        formShapeModel.setColor(formShape.getColor());
-        formShapeModel.setPoints(formShape.getPoints());
-        formShapeModel.setThickness(formShape.getStrokeWidth());
-        formShapeModel.setShapeType(formShape.getType());
-        formShapeModel.setDocumentUniqueId(formShape.getDocumentUniqueId());
-        formShapeModel.setFormId(formShape.getFormId());
-        formShapeModel.setFormRect(formShape.getFormRect());
-        formShapeModel.setFormType(formShape.getFormType());
-        formShapeModel.setFormValue(formShape.getFormValue());
-        return formShapeModel;
     }
 
     public static Shape createFormShape(String documentUniqueId,

@@ -28,7 +28,7 @@ public class FlushFormShapesRequest extends ReaderBaseNoteRequest {
         }
         List<ReaderFormShapeModel> formShapes = new ArrayList<>();
         for (Shape shape : shapes) {
-            ReaderFormShapeModel mode = ReaderShapeFactory.formModelFromShape(shape);
+            ReaderFormShapeModel mode = (ReaderFormShapeModel) ReaderShapeFactory.modelFromShape(shape);
             formShapes.add(mode);
             if (ReaderShapeFactory.isUniqueFormShape(shape.getFormType())) {
                 ReaderNoteDataProvider.removeFormShape(getContext(), shape.getDocumentUniqueId(), shape.getFormId());
