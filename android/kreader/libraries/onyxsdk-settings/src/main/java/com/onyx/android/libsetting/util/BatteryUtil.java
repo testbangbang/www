@@ -2,6 +2,7 @@ package com.onyx.android.libsetting.util;
 
 import android.content.Context;
 import android.os.BatteryManager;
+import android.os.SystemClock;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -16,7 +17,8 @@ public class BatteryUtil {
     private static final int SECONDS_PER_HOUR = 60 * 60;
     private static final int SECONDS_PER_DAY = 24 * 60 * 60;
     private static final long SECONDS_PER_MONTH = 30 * 24 * 60 * 60;
-    private enum TimeUnit{SEC,MINUTE,HOUR}
+
+    private enum TimeUnit {SEC, MINUTE, HOUR}
 
     public static String getBatteryStatusByStatusCode(final Context context, final int status) {
         String statusStr = null;
@@ -55,7 +57,7 @@ public class BatteryUtil {
     private static String formatElapsedTime(Context context, double millis, TimeUnit unit) {
         StringBuilder sb = new StringBuilder();
         int seconds = (int) Math.floor(millis / 1000);
-        switch (unit){
+        switch (unit) {
             case MINUTE:
             case HOUR:
                 seconds += 30;
@@ -76,7 +78,7 @@ public class BatteryUtil {
             seconds -= minutes * SECONDS_PER_MINUTE;
         }
 
-        switch (unit){
+        switch (unit) {
             case SEC:
                 if (days > 0) {
                     sb.append(context.getString(R.string.battery_history_days,
@@ -115,17 +117,17 @@ public class BatteryUtil {
         return sb.toString();
     }
 
-    public static String getVisualBatteryUsageTime(final Context context, final long usageTime) {
-        return context.getString(R.string.battery_stats_on_battery, formatElapsedTime(context, usageTime / 1000, TimeUnit.MINUTE));
+    public static String getVisualDevicePowerOnTime(final Context context) {
+        return context.getString(R.string.battery_stats_on_battery, formatElapsedTime(context, SystemClock.elapsedRealtime(), TimeUnit.MINUTE));
     }
 
-    public static String getVisualBatteryTotalTime(final Context context){
+    public static String getVisualBatteryTotalTime(final Context context) {
         return context.getString(R.string.battery_total_on_battery, formatElapsedTime(context, SECONDS_PER_MONTH * 1000, TimeUnit.HOUR));
     }
 
-    public static String getVisualBatteryRemainTime(final Context context){
+    public static String getVisualBatteryRemainTime(final Context context) {
         return context.getString(R.string.battery_remain_on_battery, formatElapsedTime(context,
-                SECONDS_PER_MONTH * 1000 * ((double)DeviceUtils.getBatteryPercentLevel(context) / 100), TimeUnit.HOUR));
+                SECONDS_PER_MONTH * 1000 * ((double) DeviceUtils.getBatteryPercentLevel(context) / 100), TimeUnit.HOUR));
     }
 
 }
