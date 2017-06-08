@@ -13,6 +13,8 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -499,10 +501,11 @@ public class NoteManager {
         if (pageInfo == null) {
             return onShapeUp(pageInfo, normal, screen);
         }
+        TouchPoint origin = new TouchPoint(normal);
         normal.normalize(pageInfo);
         if (getCurrentShape() == null) {
             if (createShape) {
-                return onShapeDown(pageInfo, normal, screen);
+                return onShapeDown(pageInfo, normal, screen, origin);
             }
             return null;
         }
@@ -512,7 +515,7 @@ public class NoteManager {
         return onShapeUp(pageInfo, normal, screen);
     }
 
-    private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
+    private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, final TouchPoint origin) {
         Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().getCurrentShapeType());
         onDownMessage(shape);
         shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth / pageInfo.getActualScale());
@@ -521,8 +524,35 @@ public class NoteManager {
         shape.ensureShapeUniqueId();
         shape.setDisplayStrokeWidth(getNoteDrawingArgs().strokeWidth);
         shape.onDown(normal, screen);
+        detectionScribbleFormShape(pageInfo, shape, origin);
         currentShape = shape;
         return shape;
+    }
+
+    private void detectionScribbleFormShape(final PageInfo pageInfo, final Shape shape, final TouchPoint origin) {
+        ReaderFormField field = getScribbleFormField(pageInfo, origin);
+        if (field != null) {
+            shape.setFormShape(true);
+            shape.setFormId(field.getName());
+            shape.setFormRect(field.getRect());
+            shape.setFormType(ReaderShapeFactory.FORM_SHAPE_QA);
+        }
+    }
+
+    private ReaderFormField getScribbleFormField(final PageInfo pageInfo, final TouchPoint origin) {
+        if (!parent.getReaderUserDataInfo().hasFormFields(pageInfo)) {
+            return null;
+        }
+        List<ReaderFormField> fields = parent.getReaderUserDataInfo().getFormFields(pageInfo);
+        for (ReaderFormField field : fields) {
+            if (field instanceof ReaderFormScribble) {
+                RectF rect = field.getRect();
+                if (rect.contains(origin.x, origin.y)) {
+                    return field;
+                }
+            }
+        }
+        return null;
     }
 
     private Shape onShapeMove(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {

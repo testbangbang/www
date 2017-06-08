@@ -34,6 +34,7 @@ import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.R;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
@@ -69,6 +70,9 @@ import com.onyx.edu.reader.ui.dialog.DialogSearch;
 import com.onyx.edu.reader.ui.dialog.DialogTableOfContent;
 import com.onyx.edu.reader.ui.dialog.DialogTextStyle;
 import com.onyx.edu.reader.device.DeviceConfig;
+import com.onyx.edu.reader.ui.events.QuitEvent;
+import com.onyx.edu.reader.ui.handler.HandlerManager;
+import com.onyx.edu.reader.ui.statistics.StatisticsActivity;
 import com.onyx.edu.reader.ui.view.EduMenu;
 
 import java.util.ArrayList;
@@ -399,9 +403,26 @@ public class ShowReaderMenuAction extends BaseAction {
         readerDataHolder.submitRenderRequest(request);
     }
 
-    private static void pushDocumentData(ReaderDataHolder readerDataHolder) {
+    private static void pushDocumentData(final ReaderDataHolder readerDataHolder) {
+        if (Device.currentDevice().hasWifi(readerDataHolder.getContext()) && !NetworkUtil.isWiFiConnected(readerDataHolder.getContext())) {
+            OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.wifi_dialog_content), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    NetworkUtil.enableWiFi(readerDataHolder.getContext(), true);
+                }
+            }, null).show();
+            return;
+        }
+
         ExportDocumentDataAction exportDocumentDataAction = new ExportDocumentDataAction();
-        exportDocumentDataAction.execute(readerDataHolder, null);
+        exportDocumentDataAction.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    Toast.makeText(readerDataHolder.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void scaleToWidth(final ReaderDataHolder readerDataHolder) {
@@ -786,6 +807,25 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
+    public static void showFormMenu(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean startNoteDrawing) {
+        readerActivity.getExtraView().removeAllViews();
+        final ShowFormMenuActon formMenuActon = new ShowFormMenuActon(disableMenus,
+                readerActivity.getExtraView(),
+                startNoteDrawing,
+                getScribbleActionCallback(readerDataHolder));
+        ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
+        if (noteDataInfo != null) {
+            int currentShapeType = noteDataInfo.getCurrentShapeType();
+            formMenuActon.setSelectShapeAction(createShapeAction(currentShapeType));
+        }
+        formMenuActon.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER);
+            }
+        });
+    }
+
     public static ShowScribbleMenuAction.ActionCallback getScribbleActionCallback(final ReaderDataHolder readerDataHolder) {
         final ShowScribbleMenuAction.ActionCallback callback = new ShowScribbleMenuAction.ActionCallback() {
             @Override
@@ -821,6 +861,12 @@ public class ShowReaderMenuAction extends BaseAction {
 
     public static void processScribbleAction(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
         switch (action) {
+            case EXIT:
+                hideReaderMenu();
+                readerDataHolder.getHandlerManager().close(readerDataHolder);
+                break;
+            case SUBMIT:
+                pushDocumentData(readerDataHolder);
             case SCRIBBLE_WIDTH1:
             case SCRIBBLE_WIDTH2:
             case SCRIBBLE_WIDTH3:

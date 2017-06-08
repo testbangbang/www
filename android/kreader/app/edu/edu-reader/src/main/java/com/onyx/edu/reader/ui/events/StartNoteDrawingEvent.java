@@ -5,4 +5,18 @@ package com.onyx.edu.reader.ui.events;
  */
 
 public class StartNoteDrawingEvent {
+
+    private boolean showFullToolbar;
+
+    public StartNoteDrawingEvent(boolean showFullToolbar) {
+        this.showFullToolbar = showFullToolbar;
+    }
+
+    public boolean isShowFullToolbar() {
+        return showFullToolbar;
+    }
+
+    public static StartNoteDrawingEvent create(boolean showFullToolbar) {
+        return new StartNoteDrawingEvent(showFullToolbar);
+    }
 }

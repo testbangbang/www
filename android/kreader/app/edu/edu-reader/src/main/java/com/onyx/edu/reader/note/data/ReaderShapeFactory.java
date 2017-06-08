@@ -81,12 +81,27 @@ public class ReaderShapeFactory {
         return shape;
     }
 
+    public static final Shape shapeFromFormModel(final ReaderFormShapeModel shapeModel) {
+        Shape shape = createShape(shapeModel.getShapeType());
+        syncFormShapeDataFromModel(shape, shapeModel);
+        return shape;
+    }
+
     public static boolean isDFBShape(int shape) {
         return shape == SHAPE_PENCIL_SCRIBBLE || shape == SHAPE_BRUSH_SCRIBBLE || shape == SHAPE_OILY_PEN_SCRIBBLE || shape == SHAPE_FOUNTAIN_PEN_SCRIBBLE;
     }
 
     public static final ReaderNoteShapeModel modelFromShape(final Shape shape) {
-        final ReaderNoteShapeModel shapeModel = new ReaderNoteShapeModel();
+        ReaderNoteShapeModel shapeModel;
+        if (shape.isFormShape()) {
+            shapeModel = new ReaderFormShapeModel();
+            ((ReaderFormShapeModel) shapeModel).setFormId(shape.getFormId());
+            ((ReaderFormShapeModel) shapeModel).setFormRect(shape.getFormRect());
+            ((ReaderFormShapeModel) shapeModel).setFormType(shape.getFormType());
+            ((ReaderFormShapeModel) shapeModel).setFormValue(shape.getFormValue());
+        }else {
+            shapeModel = new ReaderNoteShapeModel();
+        }
         shapeModel.setDocumentUniqueId(shape.getDocumentUniqueId());
         shapeModel.setPageUniqueId(shape.getPageUniqueId());
         shapeModel.setShapeUniqueId(shape.getShapeUniqueId());
@@ -117,16 +132,6 @@ public class ReaderShapeFactory {
         shape.setFormId(model.getFormId());
         shape.setFormType(model.getFormType());
         shape.setFormRect(model.getFormRect());
-    }
-
-    public static ReaderFormShapeModel formModelFromShape(final Shape formShape) {
-        ReaderFormShapeModel formShapeModel = new ReaderFormShapeModel();
-        formShapeModel.setDocumentUniqueId(formShape.getDocumentUniqueId());
-        formShapeModel.setFormId(formShape.getFormId());
-        formShapeModel.setFormRect(formShape.getFormRect());
-        formShapeModel.setFormType(formShape.getFormType());
-        formShapeModel.setFormValue(formShape.getFormValue());
-        return formShapeModel;
     }
 
     public static Shape createFormShape(String documentUniqueId,

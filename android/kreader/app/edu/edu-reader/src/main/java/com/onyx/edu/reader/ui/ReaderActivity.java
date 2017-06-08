@@ -544,6 +544,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void afterDrawPage() {
+        showFormMenu();
         ReaderDeviceManager.cleanUpdateMode(surfaceView);
         updateAllStatusBars();
     }
@@ -1077,10 +1078,31 @@ public class ReaderActivity extends OnyxBaseActivity {
                 }
             }
         }
+    }
+
+    private void showFormMenu() {
         if (formFieldControls.size() > 0) {
-            getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
+            boolean startNoteDrawing = hasScribbleFormField();
+            if (!startNoteDrawing) {
+                getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
+            }
+            ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
         }
     }
+
+    private boolean hasScribbleFormField() {
+        if (formFieldControls == null) {
+            return false;
+        }
+        for (View formFieldControl : formFieldControls) {
+            ReaderFormField field = (ReaderFormField) formFieldControl.getTag();
+            if (field instanceof ReaderFormScribble) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private boolean isFormScribble(View view) {
         return view.getTag() instanceof ReaderFormScribble;
