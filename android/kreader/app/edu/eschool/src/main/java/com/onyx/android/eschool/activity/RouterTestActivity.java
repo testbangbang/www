@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.onyx.android.eschool.R;
@@ -17,8 +18,11 @@ import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.AuthTokenAction;
 import com.onyx.android.eschool.action.DownloadAction;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.request.cloud.SyncTimeBySntpRequest;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -63,8 +67,8 @@ public class RouterTestActivity extends Activity {
     private static final String ONYX_WIFI_TEST_ROUTER_SSID = "onyx-zeng";
     private static final String ONYX_WIFI_TEST_ROUTER_PW = "OnyxWpa2009";
 
-    private static int ALARM_START_INTERVAL_TIME = 2;
-    private static long ALARM_REPEAT_INTERVAL_TIME = 90 * 1000;
+    private static int ALARM_START_INTERVAL_TIME = 1;
+    private static long ALARM_REPEAT_INTERVAL_TIME = 60 * 1000;
     private static String ALARM_INTENT_ACTION = "com.action.router.AlarmManager";
     private BroadcastReceiver alarmReceiver;
 
@@ -90,6 +94,8 @@ public class RouterTestActivity extends Activity {
     private TextView downloadFailedView;
     private TextView apFailedView;
 
+    private WakeLockHolder wakeLockHolder = new WakeLockHolder();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +105,7 @@ public class RouterTestActivity extends Activity {
         DeviceUtils.turnOffSystemPMSettings(this);
         initReceiver(this);
         triggerInitEvent();
+        initWakelock();
     }
 
     @Override
@@ -125,6 +132,10 @@ public class RouterTestActivity extends Activity {
         downloadDurationView = (TextView)findViewById(R.id.textView_download_duration);
         downloadFailedView = (TextView)findViewById(R.id.textView_download_failed_count);
         apFailedView = (TextView)findViewById(R.id.textView_ap_failed_count);
+    }
+
+    private void initWakelock() {
+        wakeLockHolder.acquireWakeLock(this, TAG);
     }
 
     private void cleanup() {
@@ -290,16 +301,19 @@ public class RouterTestActivity extends Activity {
         downloadDuration = reportCurrentTimeStamp();
         final String id = UUID.randomUUID().toString();
         final String filePath = "/mnt/sdcard/Download-" + id;
+        final View view = findViewById(android.R.id.content);
         final DownloadAction downloadAction = new DownloadAction(URL, filePath, id);
         downloadAction.execute(getLibraryDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                EpdController.postInvalidate(view, UpdateMode.GC);
                 if (e != null) {
                     e.printStackTrace();
                 }
                 downloadDuration = reportCurrentTimeStamp() - downloadDuration;
                 reportDownloadResult(e == null);
                 FileUtils.deleteFile(filePath);
+                tinyMachine.transitionTo(STATE_ALARM_SET);
             }
         });
     }
@@ -413,9 +427,11 @@ public class RouterTestActivity extends Activity {
     }
 
     private void onReceivedAlarm() {
-        ++testingCount;
-        NetworkUtil.enableWiFi(this, false);
-        tinyMachine.transitionTo(STATE_ALARM_TRIGGERED);
+        if (tinyMachine.getCurrentState() == STATE_ALARM_SET) {
+            ++testingCount;
+            NetworkUtil.enableWiFi(this, false);
+            tinyMachine.transitionTo(STATE_ALARM_TRIGGERED);
+        }
     }
 
     private void reportAverageConnectTimeToCloud() {
