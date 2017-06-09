@@ -150,6 +150,9 @@ public class ReaderDataHolder {
     }
 
     public final List<PageInfo> getVisiblePages() {
+        if (getReaderViewInfo() == null) {
+            return null;
+        }
         return getReaderViewInfo().getVisiblePages();
     }
 
@@ -180,7 +183,8 @@ public class ReaderDataHolder {
     }
 
     public boolean inNoteWritingProvider() {
-        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER) ||
+                getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_SCRIBBLE_PROVIDER);
     }
 
     public boolean inFormProvider() {
@@ -248,7 +252,7 @@ public class ReaderDataHolder {
         deviceReceiver.setSystemUIChangeListener(new DeviceReceiver.SystemUIChangeListener() {
             @Override
             public void onSystemUIChanged(String type, boolean open) {
-                getEventBus().post(new SystemUIChangedEvent(open));
+                postSystemUiChangedEvent(open);
             }
 
             @Override
@@ -257,6 +261,10 @@ public class ReaderDataHolder {
             }
         });
         deviceReceiver.registerReceiver(getContext());
+    }
+
+    public void postSystemUiChangedEvent(boolean open) {
+        getEventBus().post(new SystemUIChangedEvent(open));
     }
 
     private void unregisterReceiver() {
@@ -705,6 +713,18 @@ public class ReaderDataHolder {
 
     public void enterSlideshow() {
         getEventBus().post(new SlideshowStartEvent());
+    }
+
+    public boolean hasFormField() {
+        if (getVisiblePages() == null) {
+            return false;
+        }
+        for (PageInfo pageInfo : getVisiblePages()) {
+            if (getReaderUserDataInfo().hasFormFields(pageInfo)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

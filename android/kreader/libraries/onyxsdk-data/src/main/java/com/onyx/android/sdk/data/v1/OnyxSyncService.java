@@ -16,7 +16,7 @@ import retrofit2.http.Path;
 public interface OnyxSyncService {
 
     @Multipart
-    @POST("api/books/{id}/filedata")
-    Call<JsonRespone> pushReaderData(@Path("id") String id, @Part MultipartBody.Part file, @Part final MultipartBody.Part md5);
+    @POST("api/filedatas/uploadFileData")
+    Call<JsonRespone> pushReaderData(@Part MultipartBody.Part file, @Part final MultipartBody.Part md5, @Part final MultipartBody.Part docId);
 
 }
