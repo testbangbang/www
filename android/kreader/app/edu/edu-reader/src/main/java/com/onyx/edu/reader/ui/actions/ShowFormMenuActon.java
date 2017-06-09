@@ -21,9 +21,7 @@ import com.onyx.edu.reader.note.actions.RestoreShapeAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.events.CloseFormMenuEvent;
-import com.onyx.edu.reader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.edu.reader.ui.events.ScribbleMenuChangedEvent;
-import com.onyx.edu.reader.ui.handler.HandlerManager;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -45,12 +43,12 @@ public class ShowFormMenuActon extends BaseAction {
     private ReaderMenuAction selectWidthAction = ReaderMenuAction.SCRIBBLE_WIDTH1;
     private ReaderMenuAction selectShapeAction = ReaderMenuAction.SCRIBBLE_PENCIL;
     private ReaderMenuAction selectEraserAction = null;
-    private boolean startNoteDrawing = false;
+    private boolean showNoteMenu = false;
 
-    public ShowFormMenuActon(Set<ReaderMenuAction> disableMenuActions, ViewGroup parent, boolean startNoteDrawing, ShowScribbleMenuAction.ActionCallback actionCallback) {
+    public ShowFormMenuActon(Set<ReaderMenuAction> disableMenuActions, ViewGroup parent, boolean showNoteMenu, ShowScribbleMenuAction.ActionCallback actionCallback) {
         this.disableMenuActions = disableMenuActions;
         this.parent = parent;
-        this.startNoteDrawing = startNoteDrawing;
+        this.showNoteMenu = showNoteMenu;
         this.actionCallback = actionCallback;
     }
 
@@ -58,9 +56,6 @@ public class ShowFormMenuActon extends BaseAction {
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
         this.readerDataHolder = readerDataHolder;
         readerDataHolder.getEventBus().register(this);
-        if (startNoteDrawing && !readerDataHolder.inNoteWritingProvider()) {
-            readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
-        }
         show(readerDataHolder);
     }
 
@@ -84,7 +79,7 @@ public class ShowFormMenuActon extends BaseAction {
 
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_submit, ReaderMenuAction.SUBMIT);
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_exit, ReaderMenuAction.EXIT);
-        if (readerDataHolder.inNoteWritingProvider()) {
+        if (showNoteMenu) {
             addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width, ReaderMenuAction.SCRIBBLE_WIDTH);
             addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape, ReaderMenuAction.SCRIBBLE_SHAPE);
             addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_eraser_part, ReaderMenuAction.SCRIBBLE_ERASER);
@@ -361,5 +356,6 @@ public class ShowFormMenuActon extends BaseAction {
     @Subscribe
     public void close(CloseFormMenuEvent event) {
         parent.removeView(bottomToolbar);
+        readerDataHolder.getEventBus().unregister(this);
     }
 }

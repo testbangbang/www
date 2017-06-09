@@ -53,9 +53,11 @@ import com.onyx.edu.reader.note.actions.ChangeNoteShapeAction;
 import com.onyx.edu.reader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.edu.reader.note.actions.ClearPageAction;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
+import com.onyx.edu.reader.note.actions.PauseDrawingAction;
 import com.onyx.edu.reader.note.actions.RedoAction;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
+import com.onyx.edu.reader.note.actions.lockFormShapesAction;
 import com.onyx.edu.reader.note.actions.UndoAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.ui.ReaderActivity;
@@ -70,9 +72,7 @@ import com.onyx.edu.reader.ui.dialog.DialogSearch;
 import com.onyx.edu.reader.ui.dialog.DialogTableOfContent;
 import com.onyx.edu.reader.ui.dialog.DialogTextStyle;
 import com.onyx.edu.reader.device.DeviceConfig;
-import com.onyx.edu.reader.ui.events.QuitEvent;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
-import com.onyx.edu.reader.ui.statistics.StatisticsActivity;
 import com.onyx.edu.reader.ui.view.EduMenu;
 
 import java.util.ArrayList;
@@ -403,23 +403,63 @@ public class ShowReaderMenuAction extends BaseAction {
         readerDataHolder.submitRenderRequest(request);
     }
 
-    private static void pushDocumentData(final ReaderDataHolder readerDataHolder) {
-        if (Device.currentDevice().hasWifi(readerDataHolder.getContext()) && !NetworkUtil.isWiFiConnected(readerDataHolder.getContext())) {
-            OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.wifi_dialog_content), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    NetworkUtil.enableWiFi(readerDataHolder.getContext(), true);
-                }
-            }, null).show();
-            return;
+    public static void showPushFormConfirmDialog(final ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.inNoteWritingProvider()) {
+            readerDataHolder.postSystemUiChangedEvent(true);
         }
+        OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.submit_form_tips),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        preparePushFormData(readerDataHolder);
+                    }
+                },
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                })
+                .setOnCloseListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (readerDataHolder.inNoteWritingProvider()) {
+                            readerDataHolder.postSystemUiChangedEvent(false);
+                        }
+                    }
+                })
+                .setNegativeText(R.string.custom_dialog_continue)
+                .setPositiveText(R.string.custom_dialog_submit)
+                .show();
+    }
+
+    public static void preparePushFormData(final ReaderDataHolder readerDataHolder) {
+        if (Device.currentDevice().hasWifi(readerDataHolder.getContext()) && !NetworkUtil.isWiFiConnected(readerDataHolder.getContext())) {
+            new WifiConnectAction(6000, 1000, readerDataHolder.getContext().getString(R.string.custom_dialog_submitting)).execute(readerDataHolder, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    if (e != null) {
+                        Toast.makeText(readerDataHolder.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    pushFormData(readerDataHolder);
+                }
+            });
+        }else {
+            pushFormData(readerDataHolder);
+        }
+    }
+
+    private static void pushFormData(final ReaderDataHolder readerDataHolder) {
         ExportDocumentDataAction exportDocumentDataAction = new ExportDocumentDataAction();
         exportDocumentDataAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     Toast.makeText(readerDataHolder.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.submit_success), Toast.LENGTH_SHORT).show();
+                    new lockFormShapesAction().execute(readerDataHolder, null);
                 }
             }
         });
@@ -807,11 +847,11 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
-    public static void showFormMenu(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean startNoteDrawing) {
+    public static void showFormMenu(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean showNoteMenu) {
         readerActivity.getExtraView().removeAllViews();
         final ShowFormMenuActon formMenuActon = new ShowFormMenuActon(disableMenus,
                 readerActivity.getExtraView(),
-                startNoteDrawing,
+                showNoteMenu,
                 getScribbleActionCallback(readerDataHolder));
         ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
         if (noteDataInfo != null) {
@@ -862,11 +902,11 @@ public class ShowReaderMenuAction extends BaseAction {
     public static void processScribbleAction(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
         switch (action) {
             case EXIT:
-                hideReaderMenu();
                 readerDataHolder.getHandlerManager().close(readerDataHolder);
                 break;
             case SUBMIT:
-                pushDocumentData(readerDataHolder);
+                showPushFormConfirmDialog(readerDataHolder);
+                break;
             case SCRIBBLE_WIDTH1:
             case SCRIBBLE_WIDTH2:
             case SCRIBBLE_WIDTH3:

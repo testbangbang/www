@@ -47,8 +47,12 @@ public class ExportDocumentDataAction extends BaseAction {
 
     private void pushDocumentData(ReaderDataHolder readerDataHolder, BaseCallback baseCallback, String fileFullMd5) {
         // TODO: 2017/6/1 for test
-        String fileID = "592e8bde6ecae4b9299b4cd4";
-        SaveDocumentDataToCloudRequest saveDocumentDataToCloudRequest = new SaveDocumentDataToCloudRequest(exportDBFilePath, readerDataHolder.getContext(), Constant.SYNC_API_BASE, fileFullMd5, fileID);
+        String docId = "59351d5327c70b8b8ec481bc";
+        SaveDocumentDataToCloudRequest saveDocumentDataToCloudRequest = new SaveDocumentDataToCloudRequest(exportDBFilePath,
+                readerDataHolder.getContext(),
+                Constant.SYNC_API_BASE,
+                fileFullMd5,
+                docId);
         readerDataHolder.getCloudManager().submitRequest(readerDataHolder.getContext(), saveDocumentDataToCloudRequest, baseCallback);
     }
 

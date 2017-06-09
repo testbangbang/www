@@ -429,4 +429,12 @@
     <string name="settings_touch_binding_next_ten_page_tittle">Up ten pages</string>
     <string name="settings_touch_binding_prev_ten_page_tittle">Down ten pages</string>
     <string name="settings_touch_binding_toggle_a2_tittle">Toggle A2</string>
+
+    <string name="custom_dialog_exit">Exit</string>
+    <string name="custom_dialog_submit">Submit</string>
+    <string name="custom_dialog_submitting">Submitting....</string>
+    <string name="custom_dialog_continue">Continue</string>
+    <string name="submit_form_tips">Make sure to submit?</string>
+    <string name="exit_submit_form_tips">Is it reviewStatus before exiting?</string>
+    <string name="submit_success">Submit Success</string>
 </resources>
