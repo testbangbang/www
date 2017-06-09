@@ -331,4 +331,5 @@
   <string name="submit_form_tips">确定提交</string>
   <string name="exit_submit_form_tips">是否在退出前提交？</string>
   <string name="submit_success">提交成功</string>
+  <string name="account_no_log_in">账号未登录</string>
 </resources>
