@@ -40,7 +40,7 @@ public class ExportNoteDataAction extends BaseAction {
     private BaseDataRequest exportShapeDataRequest(ReaderDataHolder readerDataHolder, String documentUniqueId) {
         String currentDbPath = readerDataHolder.getContext().getDatabasePath(ReaderNoteDatabase.NAME).getPath() + ".db";
         String condition = "documentUniqueId='"+documentUniqueId+"' ";
-        String table = "ReaderNoteShapeModel";
+        String table = "ReaderFormShapeModel";
         return new ExportDataToDBRequest(currentDbPath, exportDBFilePath, condition, table);
 
     }

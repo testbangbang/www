@@ -2,10 +2,15 @@ package com.onyx.android.sdk.ui.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.IdRes;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.text.Editable;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -22,6 +27,18 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
     private Button btnOk;
     private EditText inputEditText;
     private SeekBar progressBar;
+    private View dividerLine;
+    private LinearLayout btnLayout;
+
+    public static OnyxCustomDialog getLoadingDialog(Context context, String message) {
+        OnyxCustomDialog dialog = new OnyxCustomDialog(context);
+        dialog.setTitle(message);
+        dialog.btnLayout.setVisibility(View.GONE);
+        dialog.dividerLine.setVisibility(View.GONE);
+        dialog.title.setGravity(Gravity.CENTER);
+        dialog.setCloseOnTouchOutside(false);
+        return dialog;
+    }
 
     public static OnyxCustomDialog getConfirmDialog(Context context, String message,
                                                     DialogInterface.OnClickListener onClickListener,
@@ -40,7 +57,7 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
         if (!showNegativeButton) {
             dialog.btnCancel.setVisibility(View.GONE);
         }
-        dialog.setCancelable(false);
+        dialog.setCloseOnTouchOutside(false);
         return dialog;
     }
 
@@ -66,6 +83,8 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
         btnOk = (Button) findViewById(R.id.btn_ok);
         inputEditText = (EditText) findViewById(R.id.input);
         progressBar = (SeekBar) findViewById(R.id.seek_bar_view);
+        dividerLine = findViewById(R.id.divider_line);
+        btnLayout = (LinearLayout) findViewById(R.id.button_layout);
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,10 +134,25 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
         }
     }
 
-    public void setCancelable(boolean cancel) {
-        setCanceledOnTouchOutside(cancel);
+    public OnyxCustomDialog setPositiveText(@StringRes int resid) {
+        btnOk.setText(resid);
+        return this;
     }
 
+    public OnyxCustomDialog setNegativeText(@StringRes int resid) {
+        btnCancel.setText(resid);
+        return this;
+    }
+
+    public OnyxCustomDialog setOnCloseListener(@Nullable OnDismissListener listener) {
+        setOnDismissListener(listener);
+        return this;
+    }
+
+    public OnyxCustomDialog setCloseOnTouchOutside(boolean cancel) {
+        setCanceledOnTouchOutside(cancel);
+        return this;
+    }
 
     public EditText getInputEditText() {
         return inputEditText;

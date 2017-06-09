@@ -64,6 +64,9 @@ public class ReaderNoteDocumentModel extends BaseModel {
     @Column(typeConverter = ConverterPageMap.class)
     ReaderNotePageNameMap readerNotePageNameMap = null;
 
+    @Column
+    int reviewStatus;
+
     Bitmap thumbnail;
 
     public ReaderNoteDocumentModel() {
@@ -179,6 +182,14 @@ public class ReaderNoteDocumentModel extends BaseModel {
             return getDefaultStrokeWidth();
         }
         return strokeWidth;
+    }
+
+    public int getReviewStatus() {
+        return reviewStatus;
+    }
+
+    public void setReviewStatus(int reviewStatus) {
+        this.reviewStatus = reviewStatus;
     }
 
     public int getBackground() {

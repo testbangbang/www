@@ -1085,7 +1085,10 @@ public class ReaderActivity extends OnyxBaseActivity {
             boolean startNoteDrawing = hasScribbleFormField();
             if (!startNoteDrawing) {
                 getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
+            }else {
+                getHandlerManager().setActiveProvider(HandlerManager.FORM_SCRIBBLE_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
             }
+
             ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
         }
     }

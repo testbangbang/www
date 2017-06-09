@@ -32,6 +32,8 @@ public class CreateDBRequest extends BaseDataRequest {
         schemaFilePath = Environment.getExternalStorageDirectory().getPath() + "/" +  Constant.READER_DATA_FOLDER + "/schema.sql";
         FileUtils.deleteFile(schemaFilePath);
         FileUtils.ensureFileExists(schemaFilePath);
+        FileUtils.deleteFile(createDbPath);
+        FileUtils.ensureFileExists(createDbPath);
         exportCommand = String.format(exportCommand, currentDbPath, schemaFilePath);
         importCommand = String.format(importCommand, createDbPath, schemaFilePath);
         ShellUtils.CommandResult commandResult = ShellUtils.execCommand(false, exportCommand, importCommand);

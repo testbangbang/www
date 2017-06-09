@@ -38,6 +38,8 @@ public class BaseShape implements Shape {
     private Integer formType;
     private RectF formRect;
     private FormValue formValue;
+    private boolean lock;
+    private boolean review;
 
     /**
      * rectangle, circle, etc.
@@ -228,6 +230,9 @@ public class BaseShape implements Shape {
     }
 
     public boolean fastHitTest(final float x, final float y, final float radius) {
+        if (isReview()) {
+            return false;
+        }
         final RectF boundingRect = getBoundingRect();
         if (boundingRect == null) {
             return false;
@@ -417,5 +422,21 @@ public class BaseShape implements Shape {
     @Override
     public void setFormShape(boolean formShape) {
         isFormShape = formShape;
+    }
+
+    public boolean isLock() {
+        return lock;
+    }
+
+    public void setLock(boolean lock) {
+        this.lock = lock;
+    }
+
+    public boolean isReview() {
+        return review;
+    }
+
+    public void setReview(boolean review) {
+        this.review = review;
     }
 }

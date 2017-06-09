@@ -1,10 +1,12 @@
 package com.onyx.edu.reader.ui.actions;
 
 import android.os.Environment;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.request.cloud.SaveDocumentDataToCloudRequest;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
@@ -22,17 +24,29 @@ public class ExportDocumentDataAction extends BaseAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
 
+        final AccountLoadFromLocalAction action = new AccountLoadFromLocalAction();
+        action.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                EduAccount account = action.getAccount();
+                if (account != null) {
+                    getFileFullMd5(readerDataHolder, account.token, baseCallback);
+                }
+            }
+        });
+    }
+
+    private void getFileFullMd5(final ReaderDataHolder readerDataHolder, final String token, final BaseCallback baseCallback) {
         final GetFileFullMd5Action getFileFullMd5Action = getFileFullMd5(readerDataHolder);
         getFileFullMd5Action.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                exportDocumentDataToDB(readerDataHolder, getFileFullMd5Action.getFullFileMd5(), baseCallback);
+                exportDocumentDataToDB(readerDataHolder, getFileFullMd5Action.getFullFileMd5(), token, baseCallback);
             }
         });
-
     }
 
-    private void exportDocumentDataToDB(final ReaderDataHolder readerDataHolder, final String fullFileMd5, final BaseCallback baseCallback) {
+    private void exportDocumentDataToDB(final ReaderDataHolder readerDataHolder, final String fullFileMd5, final String token, final BaseCallback baseCallback) {
         exportDBFilePath = Environment.getExternalStorageDirectory().getPath() + "/" + READER_DATA_FOLDER + "/"+ fullFileMd5 +".db";
         FileUtils.deleteFile(exportDBFilePath);
         FileUtils.ensureFileExists(exportDBFilePath);
@@ -40,15 +54,20 @@ public class ExportDocumentDataAction extends BaseAction {
         new ExportNoteDataAction(exportDBFilePath).execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                pushDocumentData(readerDataHolder, baseCallback, fullFileMd5);
+                pushDocumentData(readerDataHolder, baseCallback, fullFileMd5, token);
             }
         });
     }
 
-    private void pushDocumentData(ReaderDataHolder readerDataHolder, BaseCallback baseCallback, String fileFullMd5) {
+    private void pushDocumentData(ReaderDataHolder readerDataHolder, BaseCallback baseCallback, String fileFullMd5, String token) {
         // TODO: 2017/6/1 for test
-        String fileID = "592e8bde6ecae4b9299b4cd4";
-        SaveDocumentDataToCloudRequest saveDocumentDataToCloudRequest = new SaveDocumentDataToCloudRequest(exportDBFilePath, readerDataHolder.getContext(), Constant.SYNC_API_BASE, fileFullMd5, fileID);
+        String docId = "59351d5327c70b8b8ec481bc";
+        SaveDocumentDataToCloudRequest saveDocumentDataToCloudRequest = new SaveDocumentDataToCloudRequest(exportDBFilePath,
+                readerDataHolder.getContext(),
+                Constant.SYNC_API_BASE,
+                fileFullMd5,
+                docId,
+                token);
         readerDataHolder.getCloudManager().submitRequest(readerDataHolder.getContext(), saveDocumentDataToCloudRequest, baseCallback);
     }
 
