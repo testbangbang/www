@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.onyx.edu.note.manager.ManagerItemViewModel" />
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/image_button_bg"
+        android:onClick="@{() ->viewModel.itemClicked()}"
+        appCompat:alwaysLayoutImageView="true">
+
+        <TextView
+            android:id="@+id/textview_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageview_bg"
+            android:ellipsize="middle"
+            android:gravity="top|center_horizontal"
+            android:singleLine="true"
+            android:text="@{viewModel.documentName}"
+            android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/textview_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_title"
+            android:ellipsize="middle"
+            android:gravity="top|center_horizontal"
+            android:singleLine="true"
+            android:text="@{viewModel.lastModifiedDate}"
+            android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+            android:textColor="@android:color/darker_gray" />
+
+        <ImageView
+            android:id="@+id/imageview_bg"
+            thumbnail="@{viewModel.thumbnail}"
+            android:layout_width="@dimen/onyx_scribble_bg_item_width"
+            android:layout_height="@dimen/onyx_scribble_bg_item_height"
+            android:layout_centerHorizontal="true"
+            android:scaleType="center" />
+
+        <CheckBox
+            android:id="@+id/checkbox_multi_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:clickable="false"
+            android:focusable="false"
+            android:visibility="invisible" />
+
+    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+
+</layout>

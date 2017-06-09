@@ -30,7 +30,6 @@ public class NoteApplication extends Application {
     }
 
     public static void initWithAppConfig(final Activity activity) {
-        //DeviceUtils.setFullScreenOnCreate(activity, NoteAppConfig.sharedInstance(activity).useFullScreen());
         DeviceUtils.setFullScreenOnCreate(activity, true);
     }
 
