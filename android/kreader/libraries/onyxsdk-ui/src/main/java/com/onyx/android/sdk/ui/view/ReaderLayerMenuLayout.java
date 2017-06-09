@@ -14,6 +14,7 @@ public class ReaderLayerMenuLayout extends LinearLayout {
 
     private View menuDivider;
     private View subMenu;
+    private IndicatorDividerView indicator;
 
     public ReaderLayerMenuLayout(Context context) {
         super(context);
@@ -27,15 +28,17 @@ public class ReaderLayerMenuLayout extends LinearLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public void updateMenuContent(View mainMenu, View subMenu) {
+    public void updateMenuContent(View mainMenu, View subMenu, int mainMenuPosition) {
         if (menuDivider == null) {
             menuDivider = LayoutInflater.from(getContext()).inflate(R.layout.reader_layer_menu_divider, null);
+            indicator = (IndicatorDividerView) menuDivider.findViewById(R.id.indicator);
         }
         removeAllViewsInLayout();
 
         if (subMenu != null) {
             addView(subMenu);
             addView(menuDivider);
+            indicator.setPosition(mainMenuPosition);
         }
         addView(mainMenu);
         this.subMenu = subMenu;

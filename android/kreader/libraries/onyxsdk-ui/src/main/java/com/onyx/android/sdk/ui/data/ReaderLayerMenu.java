@@ -58,8 +58,13 @@ public class ReaderLayerMenu extends ReaderMenu {
     public void show(ReaderMenuState state) {
         this.state = state;
         updateMenuItemsWithState(state);
-        updateMenuContent();
-        getDialog().show(state);
+        if (!isShown()) {
+            updateMenuContent();
+            getDialog().show(state);
+        } else {
+            getDialog().updateReaderState(state);
+        }
+
     }
 
     @Override
@@ -115,9 +120,10 @@ public class ReaderLayerMenu extends ReaderMenu {
     }
 
     private void updateMenuContent() {
+        int mainMenuPosition = currentParentMenuItem.getPosition();
         mainMenuContainerView = createMainMenuContainerView(menuItems, state);
         subMenuContainerView = createSubMenuContainerView(currentParentMenuItem, currentParentMenuItem.getChildren(), state);
-        getDialog().getReaderMenuLayout().updateMenuContent(mainMenuContainerView, subMenuContainerView);
+        getDialog().getReaderMenuLayout().updateMenuContent(mainMenuContainerView, subMenuContainerView, mainMenuPosition);
     }
 
     private void updateMenuItemsWithState(final ReaderMenuState state) {

@@ -17,6 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author joy
@@ -307,6 +309,28 @@ public class OnyxCmsCenter {
                 data = OnyxMetadata.Columns.readColumnData(c);
             }
             return data;
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+    }
+
+    public static List<OnyxHistoryEntry> getHistoryByApplication(Context context, String application) {
+        Cursor c = null;
+        List<OnyxHistoryEntry> historyEntries = new ArrayList<OnyxHistoryEntry>();
+        try {
+            c = context.getContentResolver().query(OnyxHistoryEntry.CONTENT_URI,
+                    null, OnyxHistoryEntry.Columns.APPLICATION + "= ?" , new String[]{application}, null);
+            if (c == null) {
+                Log.w(TAG, "getHistoryByApplication, query database failed");
+                return null;
+            }
+            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                OnyxHistoryEntry history_entry = OnyxHistoryEntry.Columns.readColumnsData(c);
+                historyEntries.add(history_entry);
+            }
+            return historyEntries;
         } finally {
             if (c != null) {
                 c.close();

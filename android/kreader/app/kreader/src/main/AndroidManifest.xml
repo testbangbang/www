@@ -263,6 +263,9 @@
                 <data android:host="*" android:scheme="file" />
                 <data android:host="*" android:scheme="content" />
                 <data android:mimeType="application/pdf" />
+                <data android:mimeType="image/vnd.djvu"/>
+                <data android:mimeType="application/x-cbr" />
+                <data android:mimeType="application/x-cbz" />
             </intent-filter>
 
             <intent-filter>
@@ -272,6 +275,11 @@
                 <data android:scheme="file" />
                 <data android:scheme="content" />
                 <data android:pathPattern=".*\\.[pP][dD][fF]" />
+                <data android:pathPattern=".*\\.[dD][jJ][vV][uU]" />
+                <data android:pathPattern=".*\\.cbz" />
+                <data android:pathPattern=".*\\.cbr" />
+                <data android:pathPattern=".*\\.[cC][bB][zZ]" />
+                <data android:pathPattern=".*\\.[cC][bB][rR]" />
             </intent-filter>
         </service>
 
@@ -279,6 +287,11 @@
             android:authorities="com.onyx.kreader.statistics.provider"
             android:exported="true"
             android:name="com.onyx.android.sdk.data.db.OnyxStatisticsContentProvider_Provider"/>
+
+        <provider
+            android:authorities="com.onyx.content.database.ContentProvider"
+            android:exported="true"
+            android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"/>
 
         <receiver android:name=".ui.receiver.NetworkConnectChangedReceiver">
         </receiver>

@@ -42,6 +42,7 @@
     <dimen name="common_dialog_width">460dp</dimen>
     <dimen name="menu_back_text_size">20sp</dimen>
     <dimen name="dialog_reader_menu_text_view_padding">3dp</dimen>
+    <dimen name="dialog_reader_menu_recycler_view_padding">2dp</dimen>
     <dimen name="custom_dialog_title_text_size">12sp</dimen>
     <dimen name="dialog_title_text_size">25sp</dimen>
     <dimen name="global_activities_function_icon_size">40dp</dimen>

@@ -24,6 +24,7 @@ public abstract class BaseStatisticsModel extends BaseModel implements Cloneable
     public static final int DATA_STATUS_TEST = -1;
     public static final int DATA_STATUS_NOT_PUSH = 0;
     public static final int DATA_STATUS_PUSHED = 1;
+    public static final int DATA_STATUS_FROM_OREADER = 2;
 
 
     public static final int INVALID_ID = -1;

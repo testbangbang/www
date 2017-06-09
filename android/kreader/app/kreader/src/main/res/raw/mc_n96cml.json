@@ -5,7 +5,6 @@
   "hasFrontLight" : true,
   "disableNoteFunc" : false,
   "supportBrushPen": false,
-  "regalEnable" : true,
   "supportMultipleTabs": true,
   "pronounceEnable" :false,
   "keyBinding": {
