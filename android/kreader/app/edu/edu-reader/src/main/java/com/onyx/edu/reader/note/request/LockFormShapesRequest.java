@@ -10,11 +10,11 @@ import java.util.List;
  * Created by ming on 2017/6/8.
  */
 
-public class lockFormShapesRequest extends ReaderBaseNoteRequest {
+public class LockFormShapesRequest extends ReaderBaseNoteRequest {
 
     private String documentId;
 
-    public lockFormShapesRequest(String documentId) {
+    public LockFormShapesRequest(String documentId) {
         this.documentId = documentId;
     }
 

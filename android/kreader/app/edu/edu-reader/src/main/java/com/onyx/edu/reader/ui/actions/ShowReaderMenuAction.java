@@ -53,11 +53,10 @@ import com.onyx.edu.reader.note.actions.ChangeNoteShapeAction;
 import com.onyx.edu.reader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.edu.reader.note.actions.ClearPageAction;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
-import com.onyx.edu.reader.note.actions.PauseDrawingAction;
 import com.onyx.edu.reader.note.actions.RedoAction;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
-import com.onyx.edu.reader.note.actions.lockFormShapesAction;
+import com.onyx.edu.reader.note.actions.LockFormShapesAction;
 import com.onyx.edu.reader.note.actions.UndoAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.ui.ReaderActivity;
@@ -459,7 +458,7 @@ public class ShowReaderMenuAction extends BaseAction {
                     Toast.makeText(readerDataHolder.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.submit_success), Toast.LENGTH_SHORT).show();
-                    new lockFormShapesAction().execute(readerDataHolder, null);
+                    new LockFormShapesAction().execute(readerDataHolder, null);
                 }
             }
         });
