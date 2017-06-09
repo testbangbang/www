@@ -32,10 +32,12 @@ import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.NotePreference;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.note.view.CheckableImageView;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.data.AscDescOrder;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.SortBy;
@@ -77,6 +79,17 @@ public class ManagerActivity extends BaseManagerActivity {
     protected void onResume() {
         super.onResume();
         DeviceUtils.setFullScreenOnResume(this, NoteAppConfig.sharedInstance(this).useFullScreen());
+        if (AppCompatUtils.isColorDevice(this)){
+            Device.currentDevice().postInvalidate(getWindow().getDecorView(), UpdateMode.GC);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (AppCompatUtils.isColorDevice(this)){
+            Device.currentDevice().postInvalidate(getWindow().getDecorView(), UpdateMode.GC);
+        }
     }
 
     private void loadSortByAndAsc() {

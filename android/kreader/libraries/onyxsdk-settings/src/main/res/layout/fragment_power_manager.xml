@@ -85,7 +85,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/battery_usage_time"
+                android:id="@+id/device_power_on_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"

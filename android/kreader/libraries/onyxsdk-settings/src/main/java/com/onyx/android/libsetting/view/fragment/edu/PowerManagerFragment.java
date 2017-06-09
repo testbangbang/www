@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,6 @@ public class PowerManagerFragment extends Fragment {
     private BroadcastReceiver powerReceiver;
     private IntentFilter powerFilter;
     private int status, level;
-    private long batteryUsageTime;
 
     @Override
     public void onResume() {
@@ -48,13 +48,15 @@ public class PowerManagerFragment extends Fragment {
             powerReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_NOT_CHARGING);
-                    level = DeviceUtils.getBatteryPercentLevel(getContext());
-                    batteryUsageTime = intent.getLongExtra(BatteryUtil.EXTRA_USAGE_TIME,0);
+                    if (!intent.getAction().equalsIgnoreCase(Intent.ACTION_TIME_TICK)) {
+                        status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_NOT_CHARGING);
+                        level = DeviceUtils.getBatteryPercentLevel(getContext());
+                    }
                     updateBatteryStatus();
                 }
             };
             powerFilter = new IntentFilter();
+            powerFilter.addAction(Intent.ACTION_TIME_TICK);
             powerFilter.addAction(Intent.ACTION_POWER_CONNECTED);
             powerFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
             powerFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
@@ -95,7 +97,7 @@ public class PowerManagerFragment extends Fragment {
     private void updateBatteryStatus(){
         binding.batteryLevel.setText(BatteryUtil.getVisualBatteryLevel(getActivity(), level));
         binding.batteryStatus.setText(BatteryUtil.getBatteryStatusByStatusCode(getActivity(),status));
-        binding.batteryUsageTime.setText(BatteryUtil.getVisualBatteryUsageTime(getActivity(),batteryUsageTime));
+        binding.devicePowerOnTime.setText(BatteryUtil.getVisualDevicePowerOnTime(getActivity()));
         binding.batteryTotalTime.setText(BatteryUtil.getVisualBatteryTotalTime(getActivity()));
         binding.batteryRemainTime.setText(BatteryUtil.getVisualBatteryRemainTime(getActivity()));
     }

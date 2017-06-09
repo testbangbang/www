@@ -3,7 +3,6 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -14,7 +13,6 @@ import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,12 +54,14 @@ import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.note.view.LinedEditText;
 import com.onyx.android.note.view.ScribbleSubMenu;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
@@ -71,6 +71,7 @@ import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
@@ -120,12 +121,18 @@ public class ScribbleActivity extends BaseScribbleActivity {
         super.onResume();
         wakeLockHolder.acquireWakeLock(this, TAG);
         DeviceUtils.setFullScreenOnResume(this, true);
+        if (AppCompatUtils.isColorDevice(this)){
+            Device.currentDevice().postInvalidate(getWindow().getDecorView(), UpdateMode.GC);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         wakeLockHolder.releaseWakeLock();
+        if (AppCompatUtils.isColorDevice(this)){
+            Device.currentDevice().postInvalidate(getWindow().getDecorView(), UpdateMode.GC);
+        }
     }
 
     private void checkPictureEditMode() {
