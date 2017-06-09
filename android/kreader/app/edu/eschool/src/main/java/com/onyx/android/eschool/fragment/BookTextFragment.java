@@ -163,7 +163,6 @@ public class BookTextFragment extends Fragment {
         getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                EpdController.postInvalidate(getActivity().getWindow().getDecorView().getRootView(), UpdateMode.GC);
                 if (e != null) {
                     return;
                 }
@@ -491,6 +490,13 @@ public class BookTextFragment extends Fragment {
         pageIndicator.resetGPaginator(getPagination());
         pageIndicator.updateTotal(totalCount);
         pageIndicator.updateCurrentPage(totalCount);
+    }
+
+    private void fullUpdateView() {
+        if (getActivity() == null || getActivity().getWindow() == null) {
+            return;
+        }
+        EpdController.postInvalidate(getActivity().getWindow().getDecorView().getRootView(), UpdateMode.GC);
     }
 
     private int getTotalCount() {
