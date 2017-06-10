@@ -45,6 +45,7 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
+import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -163,7 +164,6 @@ public class BookTextFragment extends Fragment {
         getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                EpdController.postInvalidate(getActivity().getWindow().getDecorView().getRootView(), UpdateMode.GC);
                 if (e != null) {
                     return;
                 }
@@ -493,6 +493,13 @@ public class BookTextFragment extends Fragment {
         pageIndicator.updateCurrentPage(totalCount);
     }
 
+    private void fullUpdateView() {
+        if (getActivity() == null || getActivity().getWindow() == null) {
+            return;
+        }
+        EpdController.postInvalidate(getActivity().getWindow().getDecorView().getRootView(), UpdateMode.GC);
+    }
+
     private int getTotalCount() {
         LibraryDataModel dataModel = getDataHolder().getCloudViewInfo().getLibraryDataModel();
         return dataModel.bookCount + dataModel.libraryCount;
@@ -536,7 +543,7 @@ public class BookTextFragment extends Fragment {
             return;
         }
         ActivityUtil.startActivitySafely(getContext(),
-                ViewDocumentUtils.viewActionIntentWithMimeType(file),
+                MetadataUtils.putIntentExtraDataMetadata(ViewDocumentUtils.viewActionIntentWithMimeType(file), book),
                 ViewDocumentUtils.getEduReaderComponentName(getContext()));
     }
 
