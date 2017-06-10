@@ -17,6 +17,7 @@ import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 public class AccountLoadFromLocalAction extends BaseAction {
 
     private EduAccount account;
+    private StringBuffer token = new StringBuffer();
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
@@ -27,6 +28,8 @@ public class AccountLoadFromLocalAction extends BaseAction {
                 account = (EduAccount) localAccountRequest.getAccount();
                 if (account == null) {
                     Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.account_no_log_in), Toast.LENGTH_SHORT).show();
+                }else {
+                    token.append(account.token);
                 }
                 BaseCallback.invoke(baseCallback, request, e);
             }
@@ -35,5 +38,9 @@ public class AccountLoadFromLocalAction extends BaseAction {
 
     public EduAccount getAccount() {
         return account;
+    }
+
+    public StringBuffer getToken() {
+        return token;
     }
 }
