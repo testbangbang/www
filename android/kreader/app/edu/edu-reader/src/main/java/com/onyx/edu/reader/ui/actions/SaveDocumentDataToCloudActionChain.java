@@ -51,11 +51,8 @@ public class SaveDocumentDataToCloudActionChain extends BaseAction {
     }
 
     private SaveDocumentDataToCloudAction saveDocumentDataToCloud(StringBuffer exportDBFilePath, StringBuffer fileFullMd5, StringBuffer token) {
-        // TODO: 2017/6/1 for test
-        String cloudDocId = "59351d5327c70b8b8ec481bc";
         return new SaveDocumentDataToCloudAction(exportDBFilePath,
                 fileFullMd5,
-                cloudDocId,
                 token);
     }
 

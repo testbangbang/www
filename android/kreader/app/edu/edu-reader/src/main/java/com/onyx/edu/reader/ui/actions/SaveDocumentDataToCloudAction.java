@@ -14,15 +14,13 @@ public class SaveDocumentDataToCloudAction extends BaseAction {
 
     private StringBuffer exportDBPath;
     private StringBuffer fileFullMd5;
-    private String cloudDocId;
     private StringBuffer token;
 
     private String errorMessage;
 
-    public SaveDocumentDataToCloudAction(StringBuffer exportDBPath, StringBuffer fileFullMd5, String cloudDocId, StringBuffer token) {
+    public SaveDocumentDataToCloudAction(StringBuffer exportDBPath, StringBuffer fileFullMd5, StringBuffer token) {
         this.exportDBPath = exportDBPath;
         this.fileFullMd5 = fileFullMd5;
-        this.cloudDocId = cloudDocId;
         this.token = token;
     }
 
@@ -32,7 +30,7 @@ public class SaveDocumentDataToCloudAction extends BaseAction {
                 readerDataHolder.getContext(),
                 Constant.SYNC_API_BASE,
                 fileFullMd5.toString(),
-                cloudDocId,
+                readerDataHolder.getCloudDocId(),
                 token.toString());
         readerDataHolder.getCloudManager().submitRequest(readerDataHolder.getContext(), saveDocumentDataToCloudRequest, new BaseCallback() {
             @Override

@@ -59,6 +59,7 @@ public class ReaderDataHolder {
 
     private Context context;
     private String documentPath;
+    private String cloudDocId;
     private Reader reader;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
@@ -725,6 +726,14 @@ public class ReaderDataHolder {
             }
         }
         return false;
+    }
+
+    public String getCloudDocId() {
+        return cloudDocId;
+    }
+
+    public void setCloudDocId(String cloudDocId) {
+        this.cloudDocId = cloudDocId;
     }
 }
 
