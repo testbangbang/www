@@ -3,6 +3,8 @@ package com.onyx.kreader.ui.handler;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -51,6 +53,8 @@ public abstract class BaseHandler {
     public static  final int KEYCDOE_SCRIBE_KK = 226;
     public static  final int KEYCDOE_ERASE_KK = 227;
 
+    private float SINGLE_TAP_MOVE_TOLERANCE = 15;  //dp
+
     private Point startPoint = new Point();
     private HandlerManager parent;
     private boolean longPress = false;
@@ -58,6 +62,7 @@ public abstract class BaseHandler {
     private boolean actionUp = false;
     private boolean pinchZooming = false;
     private boolean scrolling = false;
+    private boolean smallScrollToSingleTap = false;
 
 
     public boolean isSingleTapUp() {
@@ -196,17 +201,21 @@ public abstract class BaseHandler {
         panAction.execute(readerDataHolder, null);
     }
 
-    public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (tryHitTest(readerDataHolder,e.getX(), e.getY())) {
+    public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, float x, float y) {
+        if (tryHitTest(readerDataHolder, x, y)) {
             // ignored
-        } else if (e.getX() > readerDataHolder.getDisplayWidth() * 2 / 3) {
+        } else if (x > readerDataHolder.getDisplayWidth() * 2 / 3) {
             nextScreen(readerDataHolder);
-        } else if (e.getX() < readerDataHolder.getDisplayWidth() / 3) {
+        } else if (x < readerDataHolder.getDisplayWidth() / 3) {
             prevScreen(readerDataHolder);
         } else {
             showReaderMenu(readerDataHolder);
         }
         return true;
+    }
+
+    public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        return onSingleTapUp(readerDataHolder, e.getX(), e.getY());
     }
 
     public boolean onScaleEnd(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
@@ -239,8 +248,18 @@ public abstract class BaseHandler {
         return true;
     }
 
+    public void setSingleTap(boolean s) {
+        smallScrollToSingleTap = s;
+    }
+
+    public boolean isSingleTap() {
+        return smallScrollToSingleTap;
+    }
+
     public boolean onActionUp(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
         if (isLongPress()) {
+        } else if (isSingleTap()) {
+            onSingleTapUp(readerDataHolder, endX, endY);
         } else if (isScrolling() && !isPinchZooming()) {
             panFinished(readerDataHolder,(int) (getStartPoint().x - endX), (int) (getStartPoint().y - endY));
         }
@@ -256,8 +275,18 @@ public abstract class BaseHandler {
         if (isPinchZooming()) {
             // scrolling may happens after pinch zoom, so we always reset scroll state to avoid conflicts
             setScrolling(false);
+            setSingleTap(false);
             return true;
         }
+        int dx = (int) Math.abs(e2.getX() - e1.getX());
+        int dy = (int) Math.abs(e2.getY() - e1.getY());
+        DisplayMetrics dm = readerDataHolder.getContext().getResources().getDisplayMetrics();
+        float range = dm.density * SINGLE_TAP_MOVE_TOLERANCE;
+        if(!isScrolling() && dx <= range && dy <= range){
+            setSingleTap(true);
+            return true;
+        }
+        setSingleTap(false);
         setScrolling(true);
         getStartPoint().set((int)e1.getX(), (int)e1.getY());
         if (e2.getAction() == MotionEvent.ACTION_MOVE) {
@@ -399,6 +428,7 @@ public abstract class BaseHandler {
     public void resetState() {
         scrolling = false;
         pinchZooming = false;
+        smallScrollToSingleTap = false;
     }
 
     public void close(final ReaderDataHolder readerDataHolder) {
