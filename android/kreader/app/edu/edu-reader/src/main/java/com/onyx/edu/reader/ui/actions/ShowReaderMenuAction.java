@@ -450,12 +450,13 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private static void pushFormData(final ReaderDataHolder readerDataHolder) {
-        ExportDocumentDataAction exportDocumentDataAction = new ExportDocumentDataAction();
-        exportDocumentDataAction.execute(readerDataHolder, new BaseCallback() {
+        final ExportDocumentDataActionChain exportDocumentDataActionChain = new ExportDocumentDataActionChain();
+        exportDocumentDataActionChain.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    Toast.makeText(readerDataHolder.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                String errorMessage = exportDocumentDataActionChain.getErrorMessage();
+                if (errorMessage != null) {
+                    Toast.makeText(readerDataHolder.getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.submit_success), Toast.LENGTH_SHORT).show();
                     new LockFormShapesAction().execute(readerDataHolder, null);

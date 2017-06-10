@@ -32,6 +32,8 @@ public class SaveDocumentDataToCloudRequest extends BaseCloudRequest {
     private String docId;
     private String token;
 
+    private String errorMessage;
+
     public SaveDocumentDataToCloudRequest(String uploadDBPath,
                                           Context context,
                                           String url,
@@ -70,18 +72,11 @@ public class SaveDocumentDataToCloudRequest extends BaseCloudRequest {
         MultipartBody.Part md5Body = MultipartBody.Part.createFormData(Constant.MD5_TAG, fileFullMd5);
         MultipartBody.Part docIdBody = MultipartBody.Part.createFormData(Constant.DOCID_TAG, docId);
 
-        Response<JsonRespone> response = null;
         try {
-            response = executeCall(ServiceFactory.getSyncService(url).pushReaderData(fileBody, md5Body, docIdBody));
+            executeCall(ServiceFactory.getSyncService(url).pushReaderData(fileBody, md5Body, docIdBody));
         } catch (Exception e) {
+            errorMessage = e.getMessage();
             e.printStackTrace();
-        }
-        if (response == null || !response.isSuccessful()) {
-            String error = "push fail";
-            if (response != null) {
-                error += "(code:" + response.code() + "message " + response.message() + ")";
-            }
-            throw new Exception(error);
         }
     }
 
@@ -91,5 +86,9 @@ public class SaveDocumentDataToCloudRequest extends BaseCloudRequest {
                     Constant.HEADER_AUTHORIZATION,
                     ContentService.CONTENT_AUTH_PREFIX + token);
         }
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 }
