@@ -9,7 +9,7 @@ import com.onyx.edu.reader.ui.data.ReaderDataHolder;
  * Created by ming on 2017/5/31.
  */
 
-public class ExportDocumentDataActionChain extends BaseAction {
+public class SaveDocumentDataToCloudActionChain extends BaseAction {
 
     private String errorMessage;
 
@@ -18,16 +18,17 @@ public class ExportDocumentDataActionChain extends BaseAction {
 
         ActionChain actionChain = new ActionChain();
 
-        AccountLoadFromLocalAction accountLoadFromLocalAction = accountLoadFromLocalAction(readerDataHolder);
-        GetFileFullMd5Action getFileFullMd5Action = getFileFullMd5(readerDataHolder);
-        ExportNoteDataAction exportNoteDataAction = exportNoteData(readerDataHolder, getFileFullMd5Action.getFullFileMd5());
-        final SaveDocumentDataToCloudAction saveDocumentDataToCloudAction = SaveDocumentDataToCloud(readerDataHolder, exportNoteDataAction.getExportDBFilePath(), getFileFullMd5Action.getFullFileMd5(), accountLoadFromLocalAction.getToken());
+        AccountLoadFromLocalAction accountLoadFromLocalAction = accountLoadFromLocalAction();
+        GetFileFullMd5Action getFileFullMd5Action = getFileFullMd5Action(readerDataHolder);
+        ExportNoteDataAction exportNoteDataAction = exportNoteDataAction(getFileFullMd5Action.getFullFileMd5());
+        final SaveDocumentDataToCloudAction saveDocumentDataToCloudAction = saveDocumentDataToCloud(exportNoteDataAction.getExportDBFilePath(),
+                getFileFullMd5Action.getFullFileMd5(),
+                accountLoadFromLocalAction.getToken());
 
         actionChain.addAction(accountLoadFromLocalAction);
         actionChain.addAction(getFileFullMd5Action);
         actionChain.addAction(exportNoteDataAction);
         actionChain.addAction(saveDocumentDataToCloudAction);
-
         actionChain.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -37,19 +38,19 @@ public class ExportDocumentDataActionChain extends BaseAction {
         });
     }
 
-    private AccountLoadFromLocalAction accountLoadFromLocalAction(final ReaderDataHolder readerDataHolder) {
+    private AccountLoadFromLocalAction accountLoadFromLocalAction() {
         return new AccountLoadFromLocalAction();
     }
 
-    private GetFileFullMd5Action getFileFullMd5(final ReaderDataHolder readerDataHolder) {
+    private GetFileFullMd5Action getFileFullMd5Action(final ReaderDataHolder readerDataHolder) {
         return new GetFileFullMd5Action(readerDataHolder.getDocumentPath());
     }
 
-    private ExportNoteDataAction exportNoteData(final ReaderDataHolder readerDataHolder, final StringBuffer fullFileMd5) {
+    private ExportNoteDataAction exportNoteDataAction(final StringBuffer fullFileMd5) {
         return new ExportNoteDataAction(fullFileMd5);
     }
 
-    private SaveDocumentDataToCloudAction SaveDocumentDataToCloud(ReaderDataHolder readerDataHolder, StringBuffer exportDBFilePath, StringBuffer fileFullMd5, StringBuffer token) {
+    private SaveDocumentDataToCloudAction saveDocumentDataToCloud(StringBuffer exportDBFilePath, StringBuffer fileFullMd5, StringBuffer token) {
         // TODO: 2017/6/1 for test
         String cloudDocId = "59351d5327c70b8b8ec481bc";
         return new SaveDocumentDataToCloudAction(exportDBFilePath,

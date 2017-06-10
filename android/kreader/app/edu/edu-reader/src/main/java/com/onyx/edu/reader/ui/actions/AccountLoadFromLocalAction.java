@@ -6,6 +6,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromLocalRequest;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
@@ -16,7 +17,6 @@ import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 
 public class AccountLoadFromLocalAction extends BaseAction {
 
-    private EduAccount account;
     private StringBuffer token = new StringBuffer();
 
     @Override
@@ -25,19 +25,15 @@ public class AccountLoadFromLocalAction extends BaseAction {
         readerDataHolder.getCloudManager().submitRequest(readerDataHolder.getContext(), localAccountRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                account = (EduAccount) localAccountRequest.getAccount();
+                NeoAccountBase account = localAccountRequest.getAccount();
                 if (account == null) {
                     Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.account_no_log_in), Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     token.append(account.token);
                 }
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
-    }
-
-    public EduAccount getAccount() {
-        return account;
     }
 
     public StringBuffer getToken() {

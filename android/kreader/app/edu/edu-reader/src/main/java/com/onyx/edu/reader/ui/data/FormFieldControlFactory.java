@@ -72,8 +72,7 @@ public class FormFieldControlFactory {
         int buttonWidth = (int) bound.height() / groupField.getButtons().size();
         for (ReaderFormRadioButton buttonField : groupField.getButtons()) {
             RadioButton button = new RadioButton(parentView.getContext());
-            RadioGroup.LayoutParams buttonParams = new RadioGroup.LayoutParams(buttonWidth,
-                    0);
+            RadioGroup.LayoutParams buttonParams = new RadioGroup.LayoutParams(buttonWidth, 0);
             buttonParams.weight = 1.0f;
             buttonParams.setMargins(0, 0, 0, 0);
             button.setPadding(0, 0, 0, 0);

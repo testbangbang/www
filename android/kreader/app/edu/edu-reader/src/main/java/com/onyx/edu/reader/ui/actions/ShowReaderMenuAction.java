@@ -441,23 +441,23 @@ public class ShowReaderMenuAction extends BaseAction {
                         Toast.makeText(readerDataHolder.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    pushFormData(readerDataHolder);
+                    saveDocumentDataToCloud(readerDataHolder);
                 }
             });
-        }else {
-            pushFormData(readerDataHolder);
+        } else {
+            saveDocumentDataToCloud(readerDataHolder);
         }
     }
 
-    private static void pushFormData(final ReaderDataHolder readerDataHolder) {
-        final ExportDocumentDataActionChain exportDocumentDataActionChain = new ExportDocumentDataActionChain();
-        exportDocumentDataActionChain.execute(readerDataHolder, new BaseCallback() {
+    private static void saveDocumentDataToCloud(final ReaderDataHolder readerDataHolder) {
+        final SaveDocumentDataToCloudActionChain saveDocumentDataToCloudActionChain = new SaveDocumentDataToCloudActionChain();
+        saveDocumentDataToCloudActionChain.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                String errorMessage = exportDocumentDataActionChain.getErrorMessage();
+                String errorMessage = saveDocumentDataToCloudActionChain.getErrorMessage();
                 if (errorMessage != null) {
                     Toast.makeText(readerDataHolder.getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.submit_success), Toast.LENGTH_SHORT).show();
                     new LockFormShapesAction().execute(readerDataHolder, null);
                 }
