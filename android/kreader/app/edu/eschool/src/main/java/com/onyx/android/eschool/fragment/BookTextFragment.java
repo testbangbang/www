@@ -45,6 +45,7 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
+import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -542,7 +543,7 @@ public class BookTextFragment extends Fragment {
             return;
         }
         ActivityUtil.startActivitySafely(getContext(),
-                ViewDocumentUtils.viewActionIntentWithMimeType(file),
+                MetadataUtils.putIntentExtraDataMetadata(ViewDocumentUtils.viewActionIntentWithMimeType(file), book),
                 ViewDocumentUtils.getEduReaderComponentName(getContext()));
     }
 
