@@ -26,6 +26,12 @@ public class ReaderFormShapeModel extends ReaderNoteShapeModel {
     @Column(typeConverter = ConverterFormValue.class)
     private FormValue formValue;
 
+    @Column
+    private boolean lock;
+
+    @Column
+    private boolean review;
+
     public String getFormId() {
         return formId;
     }
@@ -56,5 +62,21 @@ public class ReaderFormShapeModel extends ReaderNoteShapeModel {
 
     public void setFormValue(FormValue formValue) {
         this.formValue = formValue;
+    }
+
+    public boolean isLock() {
+        return lock;
+    }
+
+    public void setLock(boolean lock) {
+        this.lock = lock;
+    }
+
+    public boolean isReview() {
+        return review;
+    }
+
+    public void setReview(boolean review) {
+        this.review = review;
     }
 }

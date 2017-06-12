@@ -133,4 +133,12 @@ public interface Shape {
     void setFormRect(RectF formRect);
 
     void setFormValue(FormValue formValue);
+
+    boolean isLock();
+
+    void setLock(boolean lock);
+
+    boolean isReview();
+
+    void setReview(boolean review);
 }

@@ -81,6 +81,27 @@ public class ReaderNoteDataProvider {
         return list;
     }
 
+    public static List<ReaderFormShapeModel> loadFormShapeList(final Context context,
+                                                               final String documentUniqueId,
+                                                               final boolean review
+                                                               ) {
+        Select select = new Select();
+        Where where = select.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ReaderFormShapeModel_Table.review.eq(review));
+        List<ReaderFormShapeModel> list = where.queryList();
+        return list;
+    }
+
+    public static boolean hasUnLockFormShapes(final Context context,
+                                              final String documentUniqueId,
+                                              final boolean review) {
+        Select select = new Select();
+        Where where = select.from(ReaderFormShapeModel.class).
+                where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId)).
+                and(ReaderFormShapeModel_Table.lock.eq(false)).
+                and(ReaderFormShapeModel_Table.review.eq(review));
+        return where.hasData();
+    }
+
     public static List<ReaderNoteShapeModel> loadShapeList(final Context context,
                                                            final String documentUniqueId) {
         Select select = new Select();

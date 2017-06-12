@@ -42,6 +42,8 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.utils.Debug;
@@ -123,6 +125,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Created by Joy on 2016/4/14.
@@ -782,6 +785,10 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
 
+        Metadata metadata = MetadataUtils.getIntentExtraDataMetadata(getIntent());
+        if (metadata != null) {
+            getReaderDataHolder().setCloudDocId(metadata.getCloudId());
+        }
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
         if (isDocumentOpening() || isFileAlreadyOpened(path)) {
             return;
@@ -1085,7 +1092,10 @@ public class ReaderActivity extends OnyxBaseActivity {
             boolean startNoteDrawing = hasScribbleFormField();
             if (!startNoteDrawing) {
                 getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
+            }else {
+                getHandlerManager().setActiveProvider(HandlerManager.FORM_SCRIBBLE_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
             }
+
             ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
         }
     }

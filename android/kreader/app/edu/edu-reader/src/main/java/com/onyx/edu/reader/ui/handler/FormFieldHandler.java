@@ -1,7 +1,7 @@
 package com.onyx.edu.reader.ui.handler;
 
 import android.content.Context;
-import android.graphics.Rect;
+import android.content.DialogInterface;
 import android.support.annotation.IdRes;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,10 +14,13 @@ import android.widget.RadioGroup;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.note.actions.FlushFormShapesAction;
 import com.onyx.edu.reader.note.data.ReaderShapeFactory;
 import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
 import com.onyx.edu.reader.note.model.ReaderNoteDataProvider;
+import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 
 import java.util.ArrayList;
@@ -44,6 +47,9 @@ public class FormFieldHandler extends ReadingHandler {
     @Override
     public void onActivate(ReaderDataHolder readerDataHolder, HandlerInitialState initialState) {
         super.onActivate(readerDataHolder, initialState);
+        if (initialState == null) {
+            return;
+        }
         this.formFieldControls = initialState.formFieldControls;
         handleFormFieldControls();
     }
@@ -143,16 +149,63 @@ public class FormFieldHandler extends ReadingHandler {
         }
     }
 
-    private String getDocumentUniqueId() {
+    protected String getDocumentUniqueId() {
         return getReaderDataHolder().getReader().getDocumentMd5();
     }
 
-    private ReaderDataHolder getReaderDataHolder() {
+    protected ReaderDataHolder getReaderDataHolder() {
         return getParent().getReaderDataHolder();
     }
 
-    private Context getContext() {
+    protected Context getContext() {
         return getReaderDataHolder().getContext();
     }
+
+    @Override
+    public void close(ReaderDataHolder readerDataHolder) {
+        if (ensurePushedFormData()) {
+            super.close(readerDataHolder);
+        }
+    }
+
+    private boolean ensurePushedFormData() {
+        if (ReaderNoteDataProvider.hasUnLockFormShapes(getReaderDataHolder().getContext(),
+                getReaderDataHolder().getReader().getDocumentMd5(),
+                false)) {
+            pushFormData();
+            return false;
+        }
+        return true;
+    }
+
+    private void pushFormData() {
+        OnyxCustomDialog.getConfirmDialog(getReaderDataHolder().getContext(), getReaderDataHolder().getContext().getString(R.string.exit_submit_form_tips),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ShowReaderMenuAction.preparePushFormData(getReaderDataHolder());
+                    }
+                },
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        postQuitEvent(getReaderDataHolder());
+                    }
+                })
+                .setOnCloseListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (getReaderDataHolder().inNoteWritingProvider()) {
+                            getReaderDataHolder().postSystemUiChangedEvent(false);
+                        }
+                    }
+                })
+                .setCloseOnTouchOutside(false)
+                .setNegativeText(R.string.custom_dialog_exit)
+                .setPositiveText(R.string.custom_dialog_submit)
+                .show();
+
+    }
+
 }
 

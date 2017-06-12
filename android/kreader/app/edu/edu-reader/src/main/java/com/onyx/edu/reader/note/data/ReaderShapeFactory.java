@@ -99,6 +99,8 @@ public class ReaderShapeFactory {
             ((ReaderFormShapeModel) shapeModel).setFormRect(shape.getFormRect());
             ((ReaderFormShapeModel) shapeModel).setFormType(shape.getFormType());
             ((ReaderFormShapeModel) shapeModel).setFormValue(shape.getFormValue());
+            ((ReaderFormShapeModel) shapeModel).setLock(shape.isLock());
+            ((ReaderFormShapeModel) shapeModel).setReview(shape.isReview());
         }else {
             shapeModel = new ReaderNoteShapeModel();
         }
@@ -132,6 +134,8 @@ public class ReaderShapeFactory {
         shape.setFormId(model.getFormId());
         shape.setFormType(model.getFormType());
         shape.setFormRect(model.getFormRect());
+        shape.setLock(model.isLock());
+        shape.setReview(model.isReview());
     }
 
     public static Shape createFormShape(String documentUniqueId,

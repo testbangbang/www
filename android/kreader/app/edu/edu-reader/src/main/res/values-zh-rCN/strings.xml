@@ -323,4 +323,13 @@
 
   <string name="settings_touch_tittle">触控区域设置</string>
   <string name="settings_touch_summary">触控映射</string>
+
+  <string name="custom_dialog_exit">退出</string>
+  <string name="custom_dialog_submit">提交</string>
+  <string name="custom_dialog_submitting">正在提交....</string>
+  <string name="custom_dialog_continue">继续</string>
+  <string name="submit_form_tips">确定提交</string>
+  <string name="exit_submit_form_tips">是否在退出前提交？</string>
+  <string name="submit_success">提交成功</string>
+  <string name="account_no_log_in">账号未登录</string>
 </resources>

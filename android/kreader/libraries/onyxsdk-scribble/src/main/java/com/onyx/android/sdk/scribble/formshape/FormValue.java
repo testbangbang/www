@@ -8,15 +8,15 @@ public class FormValue {
 
     private String text;
 
-    private boolean isCheck;
+    private boolean check;
 
     private int index;
 
     public FormValue() {
     }
 
-    public FormValue(boolean isCheck) {
-        this.isCheck = isCheck;
+    public FormValue(boolean check) {
+        this.check = check;
     }
 
     public FormValue(String text) {
@@ -36,11 +36,11 @@ public class FormValue {
     }
 
     public boolean isCheck() {
-        return isCheck;
+        return check;
     }
 
     public void setCheck(boolean check) {
-        isCheck = check;
+        this.check = check;
     }
 
     public int getIndex() {

@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -69,6 +71,7 @@ public class RouterTestActivity extends Activity {
 
     private static int ALARM_START_INTERVAL_TIME = 1;
     private static long ALARM_REPEAT_INTERVAL_TIME = 60 * 1000;
+    private static long POST_INTERVAL = 30 * 1000;
     private static String ALARM_INTENT_ACTION = "com.action.router.AlarmManager";
     private BroadcastReceiver alarmReceiver;
 
@@ -95,6 +98,7 @@ public class RouterTestActivity extends Activity {
     private TextView apFailedView;
 
     private WakeLockHolder wakeLockHolder = new WakeLockHolder();
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -313,7 +317,12 @@ public class RouterTestActivity extends Activity {
                 downloadDuration = reportCurrentTimeStamp() - downloadDuration;
                 reportDownloadResult(e == null);
                 FileUtils.deleteFile(filePath);
-                tinyMachine.transitionTo(STATE_ALARM_SET);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tinyMachine.transitionTo(STATE_ALARM_SET);
+                    }
+                }, POST_INTERVAL);
             }
         });
     }

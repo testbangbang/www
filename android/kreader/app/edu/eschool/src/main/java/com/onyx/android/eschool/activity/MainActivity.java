@@ -26,6 +26,8 @@ import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.fragment.AccountFragment;
 import com.onyx.android.eschool.fragment.BookTextFragment;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Library;
@@ -78,6 +80,12 @@ public class MainActivity extends BaseActivity {
     protected void initView() {
         initTableView();
         initViewPager();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EpdController.postInvalidate(getWindow().getDecorView().getRootView(), UpdateMode.GC);
     }
 
     private String getLibraryParentId() {
