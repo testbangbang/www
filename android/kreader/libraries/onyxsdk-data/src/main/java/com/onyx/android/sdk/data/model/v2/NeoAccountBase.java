@@ -8,6 +8,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +25,8 @@ public class NeoAccountBase extends BaseData {
 
     @Column
     public String token;
+    @Column
+    public long tokenExpiresIn; //unit s
     public String phone;
 
     public String info;
@@ -45,12 +48,25 @@ public class NeoAccountBase extends BaseData {
         return StringUtils.getBlankStr(name);
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public static boolean isValid(NeoAccountBase account) {
         return account != null && StringUtils.isNotBlank(account.token);
     }
 
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isTokenTimeExpired() {
+        if (getCreatedAt() == null) {
+            return true;
+        }
+        return getCreatedAt().getTime() + getTokenExpiresIn() < new Date().getTime();
+    }
+
+    public long getTokenExpiresIn() {
+        return tokenExpiresIn * 1000;
+    }
+
     public static void parseName(NeoAccountBase account) {
-        if (NeoAccountBase.isValid(account)) {
+        if (account != null) {
             AccountCommon common = JSONObjectParseUtils.parseObject(account.info, AccountCommon.class);
             if (common != null) {
                 account.name = common.name;
