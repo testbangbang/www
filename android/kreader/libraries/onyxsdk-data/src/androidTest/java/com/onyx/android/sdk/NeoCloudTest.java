@@ -13,7 +13,7 @@ import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
-import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudLibraryListLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
@@ -44,9 +44,9 @@ public class NeoCloudTest extends ApplicationTestCase<Application> {
     // authentication with hardware info.
     public void testCloud1() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final BaseAuthAccount account = AccountLoadRequest.createAuthAccountFromHardware(getContext());
+        final BaseAuthAccount account = LoginByHardwareInfoRequest.createAuthAccountFromHardware(getContext());
         assertNotNull(account);
-        final AccountLoadRequest accountLoadRequest = new AccountLoadRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
+        final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
         getSchoolCloudStore().submitRequest(getContext(), accountLoadRequest, new BaseCallback() {
             public void done(BaseRequest request, Throwable e) {
                 assertNull(e);

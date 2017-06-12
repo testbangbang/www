@@ -25,7 +25,7 @@ import retrofit2.Response;
 /**
  * Created by suicheng on 2017/6/10.
  */
-public class AccountLoadRequest<T extends NeoAccountBase> extends BaseCloudRequest {
+public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCloudRequest {
     private static final String NAME_SECRET = "eefbb54a-ffd1-4e86-9513-f83e15b807c9";
     private static final String PASSWORD_SECRET = "807bb28a-623e-408c-97c5-61177091737b";
 
@@ -35,7 +35,7 @@ public class AccountLoadRequest<T extends NeoAccountBase> extends BaseCloudReque
 
     private Class<T> clazzType;
 
-    public AccountLoadRequest(Uri providerUri, Class<T> clazz) {
+    public LoginByHardwareInfoRequest(Uri providerUri, Class<T> clazz) {
         this.providerUri = providerUri;
         this.clazzType = clazz;
     }

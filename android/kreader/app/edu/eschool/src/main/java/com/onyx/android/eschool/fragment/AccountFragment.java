@@ -18,7 +18,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
-import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.ui.utils.PageTurningDetector;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
 
@@ -68,7 +68,7 @@ public class AccountFragment extends Fragment {
     }
 
     private void initView(ViewGroup viewGroup) {
-        final AccountLoadRequest accountLoadRequest = new AccountLoadRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
+        final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
         SchoolApp.getSchoolCloudStore().submitRequest(getContext(), accountLoadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

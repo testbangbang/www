@@ -14,7 +14,7 @@ import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
-import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,12 +30,12 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void requestAuthAccount(final LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
-        final BaseAuthAccount account = AccountLoadRequest.createAuthAccountFromHardware(dataHolder.getContext());
+        final BaseAuthAccount account = LoginByHardwareInfoRequest.createAuthAccountFromHardware(dataHolder.getContext());
         if (account == null) {
             sendHardwareErrorEvent();
             return;
         }
-        final AccountLoadRequest accountLoadRequest = new AccountLoadRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
+        final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
         dataHolder.getCloudManager().submitRequest(dataHolder.getContext(), accountLoadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
