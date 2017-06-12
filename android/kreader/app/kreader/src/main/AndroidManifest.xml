@@ -288,6 +288,11 @@
             android:exported="true"
             android:name="com.onyx.android.sdk.data.db.OnyxStatisticsContentProvider_Provider"/>
 
+        <provider
+            android:authorities="com.onyx.content.database.ContentProvider"
+            android:exported="true"
+            android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"/>
+
         <receiver android:name=".ui.receiver.NetworkConnectChangedReceiver">
         </receiver>
     </application>

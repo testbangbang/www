@@ -1,11 +1,10 @@
 {
-  "defaultFontSizeIndex" : 6,
+  "defaultFontSizeIndex" : 3,
   "defaultLineSpacingIndex" : 2,
-  "ttsEnabled" : true,
-  "hasFrontLight" : false,
+  "ttsEnabled" : false,
+  "hasFrontLight" : true,
   "disableNoteFunc" : false,
-  "supportBrushPen": true,
-  "regalEnable": true,
+  "supportBrushPen": false,
   "supportMultipleTabs": true,
   "pronounceEnable" :false,
   "keyBinding": {
