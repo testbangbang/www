@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.onyx.android.sdk.ui.compat.AppCompatLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                      xmlns:appCompat="http://schemas.android.com/tools"
+                                                      android:layout_width="match_parent"
+                                                      android:layout_height="match_parent"
+                                                      android:background="@android:color/white"
+                                                      android:orientation="vertical"
+                                                      appCompat:alwaysLayoutImageView="true">
+
+    <View
+        android:id="@+id/top_divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black" />
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:id="@+id/layout_dict"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+            appCompat:alwaysLayoutImageView="true"
+            android:padding="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/dict_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:singleLine="true"
+                android:ellipsize="middle"
+                android:text="@string/dialog_dictionary_title"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/control_panel_floating_tittle_text_size" />
+
+            <ImageView
+                android:background="@drawable/imagebtn_bg"
+                android:padding="@dimen/popup_selection_menu_image_view_padding"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dialog_dict_top_layout_margin"
+                android:layout_toLeftOf="@+id/pronounce_1"
+                android:src="@drawable/ic_dialog_reader_dic_i_search"
+                android:id="@+id/web_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:background="@drawable/imagebtn_bg"
+                android:padding="@dimen/popup_selection_menu_image_view_padding"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dialog_dict_top_layout_margin"
+                android:layout_toLeftOf="@+id/pronounce_2"
+                android:src="@drawable/pronounce_1_imageview_bg"
+                android:id="@+id/pronounce_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:background="@drawable/imagebtn_bg"
+                android:padding="@dimen/popup_selection_menu_image_view_padding"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dialog_dict_top_layout_margin"
+                android:layout_toLeftOf="@+id/dict_name"
+                android:src="@drawable/pronounce_2_imageview_bg"
+                android:id="@+id/pronounce_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+            <TextView
+                android:singleLine="true"
+                android:ellipsize="middle"
+                android:layout_marginRight="5dp"
+                android:textSize="@dimen/control_panel_floating_tittle_text_size"
+                android:text=""
+                android:gravity="center"
+                android:id="@+id/dict_name"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/marker_view"
+                android:maxWidth="@dimen/dict_name_text_view_layout_width"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:padding="@dimen/popup_selection_menu_image_view_padding"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dialog_dict_top_layout_margin"
+                android:layout_toLeftOf="@+id/button_close"
+                android:visibility="gone"
+                android:src="@drawable/ic_dict_unfold"
+                android:id="@+id/marker_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:background="@drawable/imagebtn_bg"
+                android:id="@+id/button_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_close"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
+                />
+
+        </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/black" />
+
+        <FrameLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.onyx.edu.reader.ui.view.HTMLReaderWebView
+                android:id="@+id/explain"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <android.support.v7.widget.RecyclerView
+                android:background="@drawable/no_top_line_bg"
+                android:visibility="gone"
+                android:id="@+id/dict_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:padding="5dp"
+                android:background="@drawable/imagebtn_bg"
+                android:visibility="invisible"
+                android:layout_toLeftOf="@+id/page_indicator"
+                android:id="@+id/dict_prev_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:contentDescription=""
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:src="@drawable/ic_dialog_reader_arrow_left_black" />
+
+
+            <TextView
+                android:visibility="invisible"
+                android:layout_toLeftOf="@+id/dict_next_page"
+                android:id="@+id/page_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/popup_selection_menu_page_indicator_default_value"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/control_panel_floating_tittle_text_size" />
+
+            <ImageView
+                android:padding="5dp"
+                android:background="@drawable/imagebtn_bg"
+                android:visibility="invisible"
+                android:layout_alignParentRight="true"
+                android:id="@+id/dict_next_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:contentDescription=""
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:src="@drawable/ic_dialog_reader_arrow_right_black" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/webView_divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black" />
+
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+        appCompat:alwaysLayoutImageView="true"
+        android:id="@+id/tools_plate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/tools_plate_left_divider_line"
+            android:background="@android:color/black"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"/>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            appCompat:alwaysLayoutImageView="true"
+            android:id="@+id/imagebutton_copy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/popup_selection_menu_item_right_background"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                style="@style/popup_selection_menu_image_view"
+                android:id="@+id/imageview_copy"
+                android:src="@drawable/ic_dialog_reader_choose_copy" />
+
+            <TextView
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/Copy"/>
+
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            appCompat:alwaysLayoutImageView="true"
+            android:id="@+id/imagebutton_highlight"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/popup_selection_menu_item_right_background"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                style="@style/popup_selection_menu_image_view"
+                android:id="@+id/imageview_highlight"
+                android:src="@drawable/ic_dialog_reader_choose_highlight" />
+
+            <TextView
+                android:id="@+id/highLightText"
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/Highlight"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            appCompat:alwaysLayoutImageView="true"
+            android:id="@+id/imagebutton_annotaion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/popup_selection_menu_item_right_background"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                style="@style/popup_selection_menu_image_view"
+                android:id="@+id/imageview_annotation"
+                android:src="@drawable/ic_dialog_reader_choose_label" />
+
+            <TextView
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/Annotation"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            appCompat:alwaysLayoutImageView="true"
+            android:id="@+id/imagebutton_dict"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/popup_selection_menu_item_right_background"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                style="@style/popup_selection_menu_image_view"
+                android:id="@+id/imageview_translate"
+                android:contentDescription="@drawable/ic_dialog_reader_choose_dictionary"
+                android:src="@drawable/ic_dialog_reader_choose_dictionary" />
+
+            <TextView
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/Dictionary" />
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            appCompat:alwaysLayoutImageView="true"
+            android:id="@+id/imagebutton_tts"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/popup_selection_menu_item_background"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageview_start_tts"
+                style="@style/popup_selection_menu_image_view"
+                android:contentDescription="@drawable/ic_dialog_reader_choose_tts"
+                android:src="@drawable/ic_dialog_reader_choose_tts" />
+
+            <TextView
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/popup_selection_menu_start_tts" />
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <View
+            android:id="@+id/tools_plate_right_divider_line"
+            android:background="@android:color/black"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"/>
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+    <View
+        android:id="@+id/bottom_divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black" />
+</com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>

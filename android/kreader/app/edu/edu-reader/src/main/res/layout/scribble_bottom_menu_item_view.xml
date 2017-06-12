@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/apk/res-auto"
+    appCompat:alwaysLayoutImageView="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/imagebtn_bg"
+    android:orientation="vertical">
+
+    <ImageView
+            android:visibility="invisible"
+            android:id="@+id/marker_view"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <ImageView
+            android:layout_marginLeft="@dimen/scribble_bottom_menu_margin"
+            android:layout_marginRight="@dimen/scribble_bottom_menu_margin"
+            android:layout_marginTop="@dimen/scribble_bottom_menu_margin_top"
+            android:layout_marginBottom="@dimen/scribble_bottom_menu_margin_top"
+            android:layout_centerInParent="true"
+            android:id="@+id/content_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+</com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>

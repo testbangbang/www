@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
+        android:id="@+id/font_page_view"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+    </com.onyx.android.sdk.ui.view.PageRecyclerView>
+
+    <LinearLayout
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|right"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/pre_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/imagebtn_bg"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_dialog_reader_arrow_left_black"/>
+
+        <TextView
+            android:textSize="@dimen/dialog_common_text_size"
+            android:id="@+id/page_size_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1/1"/>
+
+        <ImageView
+            android:id="@+id/next_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/imagebtn_bg"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_dialog_reader_arrow_right_black"/>
+    </LinearLayout>
+
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <LinearLayout
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:baselineAligned="false"
+        android:id="@+id/font_size_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:padding="5dp"
+            android:id="@+id/image_view_decrease_font_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/imagebtn_bg"
+            android:focusable="true"
+            android:src="@drawable/ic_dialog_reader_menu_font_small"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                android:id="@+id/text_view_font_size_0"
+                style="@style/fontSize_textView_style"
+                android:textSize="10sp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                android:id="@+id/text_view_font_size_1"
+                style="@style/fontSize_textView_style"
+                android:textSize="12sp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                android:id="@+id/text_view_font_size_2"
+                style="@style/fontSize_textView_style"
+                android:textSize="14sp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                android:id="@+id/text_view_font_size_3"
+                style="@style/fontSize_textView_style"
+                android:textSize="16sp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                android:id="@+id/text_view_font_size_4"
+                style="@style/fontSize_textView_style"
+                android:textSize="18sp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                android:id="@+id/text_view_font_size_5"
+                style="@style/fontSize_textView_style"
+                android:textSize="20sp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                android:id="@+id/text_view_font_size_6"
+                style="@style/fontSize_textView_style"
+                android:textSize="22sp"/>
+
+            <com.onyx.android.sdk.ui.view.AlignTextView
+                android:id="@+id/text_view_font_size_7"
+                style="@style/fontSize_textView_style"
+                android:textSize="24sp"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:padding="5dp"
+            android:id="@+id/image_view_increase_font_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/imagebtn_bg"
+            android:focusable="true"
+            android:src="@drawable/ic_dialog_reader_menu_font_big"/>
+
+    </LinearLayout>
+
+</LinearLayout>

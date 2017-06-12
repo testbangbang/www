@@ -196,7 +196,6 @@ public class DeviceReceiver extends BroadcastReceiver {
         return filter;
     }
 
-
     // should re-create the observer.
     // the observer is not recursive, so have to create new observer for each folder
     private void startFileObserver() {

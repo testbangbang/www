@@ -13,6 +13,8 @@ import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderDrmManager;
 import com.onyx.android.sdk.reader.api.ReaderException;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestOptions;
@@ -30,6 +32,7 @@ import com.onyx.android.sdk.reader.api.ReaderTextSplitter;
 import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.api.ReaderViewOptions;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.ComparatorUtils;
@@ -53,6 +56,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         ReaderNavigator,
         ReaderSearchManager,
         ReaderDrmManager,
+        ReaderFormManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
@@ -167,6 +171,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
+    }
+
+    @Override
     public boolean saveOptions() {
         return false;
     }
@@ -247,6 +256,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
      * @return
      */
     public ReaderSearchManager getSearchManager() {
+        return this;
+    }
+
+    @Override
+    public ReaderFormManager getFormManager() {
         return this;
     }
 
@@ -426,7 +440,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
 
-    public boolean activateDeviceDRM(String certificate) {
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
         return false;
     }
 
@@ -445,6 +459,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     @Override
     public ReaderSelection selectOnScreen(String pagePosition, String startPosition, String endPosition) {
+        return null;
+    }
+
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
         return null;
     }
 
@@ -470,5 +489,12 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return false;
     }
 
+    public boolean isCustomFormEnabled() {
+        return false;
+    }
 
+    @Override
+    public boolean loadFormFields(int page, List<ReaderFormField> fields) {
+        return false;
+    }
 }

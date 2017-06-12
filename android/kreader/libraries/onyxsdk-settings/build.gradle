@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 apply plugin: 'com.android.library'
 
 android {
@@ -14,6 +16,35 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+
+        sourceSets.main {
+            aidl.srcDirs = ['src/main/java']
+            jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
+            jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
+        }
+
+        // call regular ndk-build(.cmd) script from app directory
+        task ndkBuild(type: Exec) {
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine 'ndk-build.cmd', '-C', file('src/main').absolutePath, '-j10'
+            } else {
+                commandLine '/opt/adt-bundle-linux/ndk/ndk-build', '-C', file('src/main').absolutePath, '-j10'
+            }
+        }
+
+        tasks.withType(JavaCompile) {
+            compileTask -> compileTask.dependsOn ndkBuild
+        }
+
+        task ndkClean(type: Exec) {
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine 'ndk-build.cmd', '-C', file('src/main').absolutePath, 'clean'
+            } else {
+                commandLine '/opt/adt-bundle-linux/ndk/ndk-build', '-C', file('src/main').absolutePath, 'clean'
+            }
+        }
+
+        clean.dependsOn 'ndkClean'
     }
 
     dataBinding {
@@ -46,4 +77,6 @@ dependencies {
     testCompile "junit:junit:$rootProject.junitVersion"
     compile "com.android.support:multidex:$multidexVersion"
     compile "com.android.support.constraint:constraint-layout:$rootProject.constraintlayoutVersion"
+    compile "com.google.zxing:core:$rootProject.zxingVersion"
+
 }

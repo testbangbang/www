@@ -159,42 +159,48 @@ public class ThumbnailUtils {
     }
 
     public static boolean insertThumbnail(Context context, DataProviderBase dataProviderBase, String filePath,
+                                          String associationId, ThumbnailKind kind, Bitmap bitmap) {
+        Thumbnail thumbnail = new Thumbnail();
+        thumbnail.setThumbnailKind(kind);
+        thumbnail.setOriginContentPath(filePath);
+        thumbnail.setIdString(associationId);
+        thumbnail.setImageDataPath(ThumbnailUtils.getThumbnailFile(context, associationId, kind.toString()));
+        dataProviderBase.saveThumbnailEntry(context, thumbnail);
+        return insertThumbnailBitmap(thumbnail, bitmap);
+    }
+
+    public static boolean insertThumbnail(Context context, DataProviderBase dataProviderBase, String filePath,
                                           String associationId, Bitmap bitmap) {
         for (ThumbnailKind kind : ThumbnailKind.values()) {
-            Thumbnail thumbnail = new Thumbnail();
-            thumbnail.setIdString(UUID.randomUUID().toString());
-            thumbnail.setThumbnailKind(kind);
-            thumbnail.setOriginContentPath(filePath);
-            thumbnail.setIdString(associationId);
-            thumbnail.setImageDataPath(ThumbnailUtils.getThumbnailFile(context, associationId, kind.toString()));
-            dataProviderBase.saveThumbnailEntry(context, thumbnail);
-            boolean success = insertThumbnailBitmap(thumbnail, bitmap);
-            if (kind.equals(ThumbnailKind.Original) && !success) {
+            boolean success = insertThumbnail(context, dataProviderBase, filePath, associationId, kind, bitmap);
+            if (kind.equals(ThumbnailKind.Large) && !success) {
                 return false;
             }
         }
         return true;
     }
 
-    private static boolean insertThumbnailBitmap(Thumbnail thumbnail, Bitmap bmp) {
-        Bitmap transBitmap = null;
+    public static boolean writeBitmapToThumbnailFile(File file, Bitmap transBitmap) {
         OutputStream os = null;
         try {
-            transBitmap = generateBitmap(bmp, thumbnail.getThumbnailKind());
-            FileUtils.ensureFileExists(thumbnail.getImageDataPath());
-            File file = new File(thumbnail.getImageDataPath());
             os = new FileOutputStream(file);
-            transBitmap.compress(Bitmap.CompressFormat.JPEG, 85, os);
-            return true;
-        } catch (FileNotFoundException e) {
-            Log.w("insertThumbnail", e);
-            return false;
-        } finally {
-            if (transBitmap != null && transBitmap != bmp) {
-                transBitmap.recycle();
+            if (transBitmap == null || transBitmap.isRecycled()) {
+                return false;
             }
+            return transBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+        } catch (FileNotFoundException e) {
+            Log.w("writeBitmapToThumbnail", e);
+        } finally {
             FileUtils.closeQuietly(os);
         }
+        return false;
+    }
+
+    public static boolean insertThumbnailBitmap(Thumbnail thumbnail, Bitmap bmp) {
+        Bitmap transBitmap = generateBitmap(bmp, thumbnail.getThumbnailKind());
+        FileUtils.ensureFileExists(thumbnail.getImageDataPath());
+        File file = new File(thumbnail.getImageDataPath());
+        return writeBitmapToThumbnailFile(file, transBitmap);
     }
 
     public static Bitmap createLargeThumbnail(Bitmap bmp) {
@@ -264,5 +270,33 @@ public class ThumbnailUtils {
             FileUtils.closeQuietly(image);
             FileUtils.closeQuietly(pooledByteBuffer);
         }
+    }
+
+    public static boolean hasThumbnail(Context context, DataProviderBase dataProvider, String associationId) {
+        Thumbnail thumbnail = getThumbnailEntry(context, dataProvider, associationId, ThumbnailKind.Large);
+        return thumbnail != null && thumbnail.hasValidId();
+    }
+
+    public static Thumbnail getThumbnailEntry(Context context, DataProviderBase dataProvider, String associationId, ThumbnailKind kind) {
+        return dataProvider.getThumbnailEntry(context, associationId, kind);
+    }
+
+    public static boolean updateThumbnailEntrySet(Context context, DataProviderBase dataProvider, String associationId, Bitmap originBitmap) {
+        boolean success = true;
+        for (ThumbnailKind thumbnailKind : ThumbnailKind.values()) {
+            success &= updateThumbnailEntry(context, dataProvider, associationId, thumbnailKind, originBitmap);
+        }
+        return success;
+    }
+
+    public static boolean updateThumbnailEntry(Context context, DataProviderBase dataProvider, String associationId, ThumbnailKind kind, Bitmap originBitmap) {
+        Thumbnail thumbnail = getThumbnailEntry(context, dataProvider, associationId, kind);
+        if (thumbnail == null) {
+            Log.w("update thumbnail", "detect null");
+            return false;
+        }
+        thumbnail.setImageDataPath(ThumbnailUtils.getThumbnailFile(context, thumbnail.getIdString(), thumbnail.getThumbnailKind().toString()));
+        dataProvider.saveThumbnailEntry(context, thumbnail);
+        return insertThumbnailBitmap(thumbnail, originBitmap);
     }
 }

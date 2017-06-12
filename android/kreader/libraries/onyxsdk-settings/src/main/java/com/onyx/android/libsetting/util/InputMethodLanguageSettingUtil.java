@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.model.LocaleInfo;
+import com.onyx.android.sdk.utils.CompatibilityUtil;
 import com.onyx.android.sdk.utils.ReflectUtil;
 
 import java.lang.reflect.Method;
@@ -135,7 +136,7 @@ public class InputMethodLanguageSettingUtil {
     public static String getCurrentLanguage(Context context) {
         Configuration conf = context.getResources().getConfiguration();
         Locale locale;
-        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.N)) {
+        if (CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.N)) {
             locale = conf.getLocales().get(0);
         } else {
             locale = conf.locale;

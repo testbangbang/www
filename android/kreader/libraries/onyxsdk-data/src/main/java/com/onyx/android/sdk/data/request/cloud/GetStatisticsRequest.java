@@ -1,7 +1,9 @@
 package com.onyx.android.sdk.data.request.cloud;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.Book;
@@ -10,7 +12,9 @@ import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
 import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.Calendar;
@@ -27,6 +31,7 @@ import retrofit2.Response;
 
 public class GetStatisticsRequest extends BaseCloudRequest {
 
+    private static final String TAG = "GetStatisticsRequest";
     public final static int RECENT_BOOK_MAX_COUNT = 5;
 
     private Context context;
@@ -41,7 +46,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         statisticsResult = new StatisticsResult();
-        if (DeviceUtils.isWifiConnected(context)) {
+        if (NetworkUtil.isWiFiConnected(context)) {
             readCloudData(parent);
         }else {
             readLocalData();
@@ -52,7 +57,7 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         if (StringUtils.isNullOrEmpty(url)) {
             return;
         }
-        String mac = DeviceUtils.getMacAddress(context);
+        String mac = NetworkUtil.getMacAddress(context);
         if (StringUtils.isNullOrEmpty(mac)) {
             return;
         }
@@ -139,17 +144,22 @@ public class GetStatisticsRequest extends BaseCloudRequest {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -1);
         Date date = calendar.getTime();
-        Set<Integer> days = new HashSet<>();
+        Set<String> days = new HashSet<>();
         long readTimes = 0;
         List<OnyxStatisticsModel> statisticsModels = (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsList(context, date, BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE);
         for (OnyxStatisticsModel statisticsModel : statisticsModels) {
-            days.add(statisticsModel.getEventTime().getDay());
+            days.add(DateTimeUtil.formatDate(statisticsModel.getEventTime(), DateTimeUtil.DATE_FORMAT_YYYYMMDD));
             readTimes += statisticsModel.getDurationTime();
         }
         if (days.size() == 0) {
             return 0;
         }
-        return readTimes / days.size();
+        long readTimeEveryDay = readTimes / days.size();
+        if (readTimeEveryDay > 10 * 60 * 60 * 1000) {
+            Log.d(TAG, "statisticsModels:" + JSON.toJSONString(statisticsModels));
+            Log.d(TAG, "days: " + JSON.toJSONString(days) + "-------readTimes: " + readTimes + "------date: " + date);
+        }
+        return readTimeEveryDay;
     }
 
     private Book getLongestBook() {

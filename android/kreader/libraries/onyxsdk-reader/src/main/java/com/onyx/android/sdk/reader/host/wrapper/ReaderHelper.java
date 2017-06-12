@@ -2,15 +2,18 @@ package com.onyx.android.sdk.reader.host.wrapper;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.RectF;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
 import com.neverland.engbook.level1.JEBFilesZIP;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderException;
+import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.api.ReaderPlugin;
@@ -18,15 +21,18 @@ import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.api.ReaderRenderer;
 import com.onyx.android.sdk.reader.api.ReaderRendererFeatures;
 import com.onyx.android.sdk.reader.api.ReaderSearchManager;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils;
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.android.sdk.reader.host.layout.ReaderLayoutManager;
+import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.plugins.alreader.AlReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.comic.ComicReaderPlugin;
@@ -36,12 +42,15 @@ import com.onyx.android.sdk.reader.plugins.jeb.JEBReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
 import com.onyx.android.sdk.reader.reflow.ImageReflowManager;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -66,6 +75,7 @@ public class ReaderHelper {
     private ReaderRendererFeatures rendererFeatures;
     private ReaderTextStyleManager textStyleManager;
     private ReaderSearchManager searchManager;
+    private ReaderFormManager formManager;
     // to be used by UI thread
     private ReaderBitmapReferenceImpl viewportBitmap;
     private ReaderLayoutManager readerLayoutManager;
@@ -165,6 +175,7 @@ public class ReaderHelper {
         textStyleManager = view.getTextStyleManager();
         hitTestManager = view.getReaderHitTestManager();
         searchManager = view.getSearchManager();
+        formManager = view.getFormManager();
     }
 
     public void onDocumentClosed() {
@@ -174,6 +185,7 @@ public class ReaderHelper {
         renderer = null;
         navigator = null;
         searchManager = null;
+        formManager = null;
         hitTestManager = null;
 
         clearBitmapCache();
@@ -357,22 +369,57 @@ public class ReaderHelper {
         return searchManager;
     }
 
-    public void applyPostBitmapProcess(ReaderBitmapReferenceImpl bitmap) {
-        if (getDocumentOptions().isTextGamaCorrectionEnabled() &&
-                getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
-            bitmap.setTextGammaCorrection(getDocumentOptions().getTextGammaLevel());
-        } else if (getDocumentOptions().isGamaCorrectionEnabled() &&
-                !bitmap.isGammaIgnored()) {
-            applyGammaCorrection(bitmap);
+    public ReaderFormManager getFormManager() {
+        return formManager;
+    }
+
+    private void translateToScreen(PageInfo pageInfo, List<RectF> list) {
+        for (RectF rect : list) {
+            PageUtils.translate(pageInfo.getDisplayRect().left,
+                    pageInfo.getDisplayRect().top,
+                    pageInfo.getActualScale(),
+                    rect);
         }
+    }
+
+    public List<RectF> collectTextRectangleList(final ReaderViewInfo viewInfo) {
+        final List<ReaderSelection> selectionList = getHitTestManager().allText(viewInfo.getFirstVisiblePageName());
+        if (selectionList == null) {
+            return null;
+        }
+        final List<RectF> list = new ArrayList<>();
+        for(ReaderSelection selection : selectionList) {
+            list.addAll(selection.getRectangles());
+        }
+        translateToScreen(viewInfo.getFirstVisiblePage(), list);
+        return list;
+    }
+
+    public void applyPostBitmapProcess(final ReaderViewInfo viewInfo, ReaderBitmapReferenceImpl bitmap) {
+        applyGamma(viewInfo, bitmap);
         applyEmbolden(bitmap);
         applySaturation(bitmap);
     }
 
-    private void applyGammaCorrection(final ReaderBitmapReferenceImpl bitmap) {
-        if (getDocumentOptions().isGamaCorrectionEnabled() &&
-                Float.compare(bitmap.gammaCorrection(), getDocumentOptions().getGammaLevel()) != 0) {
-            if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel())) {
+    private void applyGamma(final ReaderViewInfo viewInfo, final ReaderBitmapReferenceImpl bitmap) {
+        final List<RectF> regions = collectTextRectangleList(viewInfo);
+        final RectF parent = new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight());
+        final List<RectF> imageRegions = RectUtils.cutRectByExcludingRegions(parent, regions);
+        applyTextGamma(bitmap);
+        applyImageGamma(bitmap, imageRegions);
+    }
+
+    private void applyTextGamma(final ReaderBitmapReferenceImpl bitmap) {
+        if (getDocumentOptions().isTextGamaCorrectionEnabled() &&
+                getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
+            bitmap.setTextGammaCorrection(getDocumentOptions().getTextGammaLevel());
+        }
+    }
+
+    private void applyImageGamma(final ReaderBitmapReferenceImpl bitmap, final List<RectF> regions) {
+        if (getDocumentOptions().isGammaCorrectionEnabled() &&
+                !bitmap.isGammaIgnored()) {
+            if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel(), regions)) {
                 bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
             }
         }

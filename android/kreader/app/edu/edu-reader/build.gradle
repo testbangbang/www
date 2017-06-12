@@ -1,0 +1,105 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
+apply from: file(rootProject.projectDir.absolutePath + '/versioning.gradle')
+
+android {
+    compileSdkVersion rootProject.ext.compatibleSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode gitVersionCode(projectDir)
+        versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
+        multiDexEnabled true
+
+        sourceSets.main {
+            jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
+            jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../../proguard-rules.pro', 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [channel_value: releaseChannel(),
+                                    type_value: releaseType(),
+                                    platform_value: releasePlatform()]
+        }
+
+        debug {
+            debuggable true
+            jniDebuggable true
+            manifestPlaceholders = [channel_value: releaseChannel(),
+                                    type_value: releaseType(),
+                                    platform_value: releasePlatform()]
+        }
+    }
+
+
+    dexOptions {
+        preDexLibraries = false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+apt {
+    arguments {
+        targetModuleName 'ReaderNote'
+    }
+}
+
+
+dependencies {
+    apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
+    compile project(':libraries:onyxsdk-reader')
+    compile project(':libraries:onyxsdk-base')
+    compile project(':libraries:onyxsdk-statistics')
+    compile project(':libraries:onyxsdk-ui')
+    compile project(':libraries:cropimage')
+    compile (project(':libraries:onyxsdk-scribble')) {
+        ['com.github.Raizlabs.DBFlow', 'com.alibaba'].each {
+            exclude group: it
+        }
+    }
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:design:$rootProject.supportLibraryVersion"
+    compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
+    compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
+    compile "net.lingala.zip4j:zip4j:$rootProject.zip4jVersion"
+    compile "com.android.support:multidex:$multidexVersion"
+
+    compile "com.jakewharton:disklrucache:$rootProject.disklrucacheVersion"
+    compile "org.apache.lucene:lucene-core:$rootProject.lucenecoreVersion"
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
+    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    compile "com.github.PhilJay:MPAndroidChart:v$rootProject.mpAndroidChart"
+
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
+    testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
+}

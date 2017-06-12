@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/tools"
+    appCompat:alwaysLayoutImageView="true"
+    android:paddingLeft="@dimen/dialog_scribble_full_screen_toolbar_padding"
+    android:paddingRight="@dimen/dialog_scribble_full_screen_toolbar_padding"
+    android:orientation="horizontal"
+    android:background="@drawable/scribble_full_screen_toolbar_layout_bg"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:padding="@dimen/scribble_full_toolbar_padding"
+        android:id="@+id/restore"
+        android:layout_margin="@dimen/scribble_full_toolbar_padding"
+        android:background="@drawable/imagebtn_bg"
+        android:src="@drawable/ic_scribble_unfold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/left_page"
+        android:layout_margin="@dimen/scribble_full_toolbar_padding"
+        android:padding="@dimen/scribble_full_toolbar_padding"
+        android:background="@drawable/imagebtn_bg"
+        android:src="@drawable/ic_scribble_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/right_page"
+        android:layout_margin="@dimen/scribble_full_toolbar_padding"
+        android:padding="@dimen/scribble_full_toolbar_padding"
+        android:background="@drawable/imagebtn_bg"
+        android:src="@drawable/ic_scribble_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>

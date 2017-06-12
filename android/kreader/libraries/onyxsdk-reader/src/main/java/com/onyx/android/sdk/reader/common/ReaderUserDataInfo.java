@@ -9,6 +9,9 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.provider.SearchHistoryProvider;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormRadioButton;
+import com.onyx.android.sdk.reader.api.ReaderFormRadioGroup;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -18,6 +21,7 @@ import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.ArrayList;
@@ -43,11 +47,13 @@ public class ReaderUserDataInfo {
 
     private ReaderDocumentTableOfContent toc;
     private Map<String, Bookmark> bookmarkMap = new LinkedHashMap<>();
+    private Map<String, Bookmark> pageBookmarkMap = new LinkedHashMap<>();
     private Map<String, List<Annotation>> annotationMap = new LinkedHashMap<>();
     private Map<String, List<PageAnnotation>> pageAnnotationMap = new HashMap<>();
     private List<SearchHistory> searchHistoryList = new ArrayList<>();
     private Map<String, List<ReaderSelection>> pageLinkMap = new HashMap<>();
     private Map<String, List<ReaderImage>> pageImageMap = new HashMap<>();
+    private Map<String, List<ReaderFormField>> formFieldMap = new HashMap<>();
 
     public void setDocumentPath(final String path) {
         documentPath = path;
@@ -222,11 +228,11 @@ public class ReaderUserDataInfo {
     }
 
     public boolean hasBookmark(final PageInfo pageInfo) {
-        return bookmarkMap.containsKey(pageInfo.getName());
+        return pageBookmarkMap.containsKey(pageInfo.getName());
     }
 
     public Bookmark getBookmark(final PageInfo pageInfo) {
-        return bookmarkMap.get(pageInfo.getName());
+        return pageBookmarkMap.get(pageInfo.getName());
     }
 
     public List<Bookmark> getBookmarks() {
@@ -235,7 +241,7 @@ public class ReaderUserDataInfo {
         return list;
     }
 
-    public boolean loadBookmarks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+    public boolean loadPageBookmarks(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         if (reader.getRendererFeatures().supportScale()) {
             return loadBookmarksForFixedDocument(context, reader, visiblePages);
         } else {
@@ -248,7 +254,7 @@ public class ReaderUserDataInfo {
             final Bookmark bookmark = DataProviderManager.getLocalDataProvider().loadBookmark(reader.getPlugin().displayName(),
                     reader.getDocumentMd5(), PagePositionUtils.getPageNumber(pageInfo.getName()));
             if (bookmark != null) {
-                bookmarkMap.put(pageInfo.getName(), bookmark);
+                pageBookmarkMap.put(pageInfo.getName(), bookmark);
             }
         }
         return true;
@@ -267,7 +273,7 @@ public class ReaderUserDataInfo {
                         reader.getNavigator().comparePosition(bookmark.getPosition(), endPos) <=0) {
                     int page = reader.getNavigator().getPageNumberByPosition(bookmark.getPosition());
                     bookmark.setPageNumber(page);
-                    bookmarkMap.put(PagePositionUtils.fromPageNumber(page), bookmark);
+                    pageBookmarkMap.put(PagePositionUtils.fromPageNumber(page), bookmark);
                 }
             }
         }
@@ -333,6 +339,36 @@ public class ReaderUserDataInfo {
                     translateToScreen(pageInfo, image.getRectangle());
                 }
                 pageImageMap.put(pageInfo.getName(), list);
+            }
+        }
+        return true;
+    }
+
+    public boolean hasFormFields(final PageInfo pageInfo) {
+        return formFieldMap.containsKey(pageInfo.getName());
+    }
+
+    public List<ReaderFormField> getFormFields(final PageInfo pageInfo) {
+        return formFieldMap.get(pageInfo.getName());
+    }
+
+    public boolean loadFormFields(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+        for (PageInfo pageInfo : visiblePages) {
+            List<ReaderFormField> fields = new ArrayList<>();
+            if (reader.getReaderHelper().getFormManager().loadFormFields(pageInfo.getPageNumber(), fields)) {
+                for (ReaderFormField field : fields) {
+                    Debug.e("loadFormFields: " + pageInfo.getName() + ", " + field);
+                    if (!(field instanceof ReaderFormRadioGroup)) {
+                        translateToScreen(pageInfo, field.getRect());
+                        continue;
+                    }
+
+                    ReaderFormRadioGroup group = (ReaderFormRadioGroup)field;
+                    for (ReaderFormRadioButton button : group.getButtons()) {
+                        translateToScreen(pageInfo, button.getRect());
+                    }
+                }
+                formFieldMap.put(pageInfo.getName(), fields);
             }
         }
         return true;

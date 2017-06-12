@@ -65,6 +65,7 @@ ext {
     espressoVersion = '2.2.2'
     easyPermissonVersion = '0.2.1'
     mpAndroidChart = '3.0.1'
+    pageflip = '1.0.2'
 
     //compatible
     compatibleSdkVersion = 23 // for projects which can't be built with sdk 24+
@@ -82,5 +83,6 @@ ext {
 
     avoscloudVersion = 'v3.13.7'
     glideVersion = '3.7.0'
+    zxingVersion = '3.3.0'
 }
 

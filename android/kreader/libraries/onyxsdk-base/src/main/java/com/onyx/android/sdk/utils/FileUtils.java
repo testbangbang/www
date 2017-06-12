@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
@@ -332,6 +333,28 @@ public class FileUtils {
         return digestBuffer;
     }
 
+    public static String computeMD5(String content) {
+        if (StringUtils.isNullOrEmpty(content)) {
+            return null;
+        }
+        return computeMD5(content.getBytes(Charset.defaultCharset()));
+    }
+
+    public static String computeMD5(byte[] buffer) {
+        if (buffer == null) {
+            return null;
+        }
+        String result = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(buffer, 0, buffer.length);
+            result = hexToString(md.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public static String computeFullMD5Checksum(File file) throws IOException, NoSuchAlgorithmException {
         InputStream fis = null;
         try {
@@ -460,5 +483,25 @@ public class FileUtils {
             }
         }
         return replaceString;
+    }
+
+    public static String readContentOfFile(String path) {
+        BufferedReader reader = null;
+        InputStream is = null;
+        try {
+            File file = new File(path);
+            reader = new BufferedReader(new InputStreamReader(is = new FileInputStream(file)));
+            StringBuilder total = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                total.append(line);
+            }
+            return total.toString();
+        } catch (Exception e) {
+        } finally {
+            closeQuietly(reader);
+            closeQuietly(is);
+        }
+        return null;
     }
 }

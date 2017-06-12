@@ -31,6 +31,7 @@ public class BaseOptions {
     transient static public final String SCREEN_SPLIT_POINT_TAG = "screen_split_point";
     transient static public final String CODE_PAGE_TAG = "code_page";
     transient static public final String CHINESE_CONVERT_TYPE_TAG = "chinese_convert_type";
+    transient static public final String CUSTOM_FORM_ENABLED_TAG = "custom_form_enabled";
     transient static public final String FONT_SIZE_TAG = "font_size";
     transient static public final String DEFAULT_FONT_SIZE = "default_font_size";
     transient static public final String FONT_FACE_TAG = "font_face";
@@ -71,7 +72,7 @@ public class BaseOptions {
     private static final float fallbackFontSize = 36.0f;
     public static float defaultFontSize = fallbackFontSize;
 
-    transient private static int lowerGammaLimit = 100;
+    transient private static int noGamma = 100;
     transient private static int globalDefaultGamma = 100;
     transient private static int globalDefaultTextGamma = 150;
     public static final float INVALID_FLOAT_VALUE = - 1;
@@ -162,8 +163,8 @@ public class BaseOptions {
         return 0.01;
     }
 
-    public static int getLowerGammaLimit() {
-        return lowerGammaLimit;
+    public static int getNoGamma() {
+        return noGamma;
     }
 
     public static int getGlobalDefaultGamma() {
@@ -174,8 +175,8 @@ public class BaseOptions {
         BaseOptions.globalDefaultGamma = globalDefaultGamma;
     }
 
-    public boolean isGamaCorrectionEnabled() {
-        return getGammaLevel() > lowerGammaLimit;
+    public boolean isGammaCorrectionEnabled() {
+        return getGammaLevel() > noGamma;
     }
 
     public float getGammaLevel() {
@@ -198,14 +199,14 @@ public class BaseOptions {
     }
 
     public boolean isTextGamaCorrectionEnabled() {
-        return getTextGammaLevel() > lowerGammaLimit;
+        return getTextGammaLevel() > noGamma;
     }
 
     public float getTextGammaLevel() {
         if (!backend.hasKey(TEXT_GAMMA_LEVEL)) {
             return getGlobalDefaultTextGamma();
         }
-        return backend.getFloat(GAMMA_LEVEL);
+        return backend.getFloat(TEXT_GAMMA_LEVEL);
     }
 
     public void setTextGamma(float gamma) {
@@ -337,6 +338,17 @@ public class BaseOptions {
 
     public void setChineseConvertType(ReaderChineseConvertType convertType) {
         backend.putObject(CHINESE_CONVERT_TYPE_TAG, convertType.toString());
+    }
+
+    public boolean isCustomFormEnabled () {
+        if (!backend.hasKey(CUSTOM_FORM_ENABLED_TAG)) {
+            return false;
+        }
+        return backend.getBoolean(CUSTOM_FORM_ENABLED_TAG);
+    }
+
+    public void setCustomFormEnabled(boolean enabled) {
+        backend.putBoolean(CUSTOM_FORM_ENABLED_TAG, enabled);
     }
 
     public float getFontSize() {
@@ -602,7 +614,7 @@ public class BaseOptions {
     public final ReaderDocumentOptionsImpl documentOptions() {
         return new ReaderDocumentOptionsImpl(getPassword(), getZipPassword(),
                 getCodePage(), LocaleUtils.getLocaleDefaultCodePage(),
-                getChineseConvertType());
+                getChineseConvertType(), isCustomFormEnabled());
     }
 
     public final ReaderPluginOptions pluginOptions() {

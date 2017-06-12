@@ -1,0 +1,29 @@
+<resources>
+    <dimen name="home_item_divider">8dp</dimen>
+    <dimen name="home_layout_padding">8dp</dimen>
+
+    <dimen name="home_normal_item_category_image_size">108dp</dimen>
+    <dimen name="home_normal_item_category_text_size">29sp</dimen>
+    <dimen name="home_normal_item_category_margin">18dp</dimen>
+
+    <dimen name="home_item_background_normal_stroke_width">3dp</dimen>
+    <dimen name="home_item_background_select_stroke_width">4dp</dimen>
+
+    <dimen name="library_item_get_widget_margin_top">0dp</dimen>
+    <dimen name="library_item_get_widget_width">55dp</dimen>
+    <dimen name="library_item_get_widget_height">32dp</dimen>
+    <dimen name="library_item_progress_height">14dp</dimen>
+    <dimen name="library_item_progress_margin_top">8dp</dimen>
+    <dimen name="library_item_progress_padding_left_right">2dp</dimen>
+
+    <dimen name="tab_item_text_size">32sp</dimen>
+    <dimen name="tab_item_text_padding_right">8dp</dimen>
+    <dimen name="tab_item_text_padding_bottom">8dp</dimen>
+    <dimen name="book_item_text_size">26sp</dimen>
+    <dimen name="book_item_text_margin_right">19dp</dimen>
+    <dimen name="book_item_cover_image_width">232dp</dimen>
+    <dimen name="book_item_cover_image_height">320dp</dimen>
+    <dimen name="book_item_get_image_width">55dp</dimen>
+    <dimen name="book_item_get_image_height">32dp</dimen>
+
+</resources>

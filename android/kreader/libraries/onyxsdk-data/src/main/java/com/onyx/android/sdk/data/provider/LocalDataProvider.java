@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
@@ -64,6 +65,14 @@ public class LocalDataProvider implements DataProviderBase {
         } finally {
             return MetadataUtils.ensureObject(metadata);
         }
+    }
+
+    @Override
+    public QueryResult<Metadata> findMetadataResultByQueryArgs(Context context, QueryArgs queryArgs) {
+        QueryResult<Metadata> result = new QueryResult<>();
+        result.list = findMetadataByQueryArgs(context, queryArgs);
+        result.count = count(context, queryArgs);
+        return result;
     }
 
     public List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs) {
@@ -172,7 +181,7 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Library> loadAllLibrary(String parentId) {
+    public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
         Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
         return new Select().from(Library.class).where(condition).queryList();
     }

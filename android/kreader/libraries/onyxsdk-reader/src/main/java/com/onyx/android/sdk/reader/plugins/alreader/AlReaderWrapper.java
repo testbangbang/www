@@ -21,7 +21,6 @@ import com.neverland.engbook.forpublic.AlRect;
 import com.neverland.engbook.forpublic.AlTapInfo;
 import com.neverland.engbook.forpublic.AlTextOnScreen;
 import com.neverland.engbook.forpublic.EngBookMyType;
-import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.AlStyles;
@@ -44,7 +43,7 @@ import com.onyx.android.sdk.reader.api.ReaderTextSplitter;
 import com.onyx.android.sdk.reader.host.impl.ReaderSelectionImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
-import com.onyx.android.sdk.reader.utils.RectUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 
 import java.io.File;
 import java.util.ArrayList;

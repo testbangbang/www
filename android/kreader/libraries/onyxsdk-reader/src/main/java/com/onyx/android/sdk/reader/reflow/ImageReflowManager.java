@@ -6,7 +6,7 @@ import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.utils.Benchmark;
-import com.onyx.android.sdk.reader.utils.HashUtils;
+import com.onyx.android.sdk.utils.HashUtils;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
 
 import java.io.File;

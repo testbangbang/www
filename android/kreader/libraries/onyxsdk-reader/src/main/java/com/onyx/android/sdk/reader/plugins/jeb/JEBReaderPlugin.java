@@ -13,6 +13,8 @@ import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderDrmManager;
 import com.onyx.android.sdk.reader.api.ReaderException;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestOptions;
@@ -31,6 +33,7 @@ import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.api.ReaderViewOptions;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.BitmapUtils;
@@ -54,6 +57,7 @@ public class JEBReaderPlugin implements ReaderPlugin,
         ReaderSearchManager,
         ReaderTextStyleManager,
         ReaderDrmManager,
+        ReaderFormManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
@@ -195,6 +199,11 @@ public class JEBReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
+    }
+
+    @Override
     public boolean saveOptions() {
         return true;
     }
@@ -287,6 +296,11 @@ public class JEBReaderPlugin implements ReaderPlugin,
      * @return
      */
     public ReaderSearchManager getSearchManager() {
+        return this;
+    }
+
+    @Override
+    public ReaderFormManager getFormManager() {
         return this;
     }
 
@@ -449,7 +463,7 @@ public class JEBReaderPlugin implements ReaderPlugin,
         return searchResults;
     }
 
-    public boolean activateDeviceDRM(String certificate) {
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
         return false;
     }
 
@@ -474,6 +488,11 @@ public class JEBReaderPlugin implements ReaderPlugin,
         int start = PagePositionUtils.getPosition(startPosition);
         int end = PagePositionUtils.getPosition(endPosition);
         return getPluginImpl().selectTextOnScreen(start, end);
+    }
+
+    @Override
+    public List<ReaderSelection> allText(String pagePosition) {
+        return null;
     }
 
     public boolean supportScale() {
@@ -501,5 +520,14 @@ public class JEBReaderPlugin implements ReaderPlugin,
     @Override
     public boolean supportTextPage() {
         return true;
+    }
+
+    public boolean isCustomFormEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean loadFormFields(int page, List<ReaderFormField> fields) {
+        return false;
     }
 }

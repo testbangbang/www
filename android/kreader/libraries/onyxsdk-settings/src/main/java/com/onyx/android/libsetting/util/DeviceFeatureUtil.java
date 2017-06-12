@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.onyx.android.libsetting.SettingConfig;
+import com.onyx.android.sdk.utils.CompatibilityUtil;
 
 /**
  * Class to detect device feature,
@@ -28,7 +29,7 @@ public class DeviceFeatureUtil {
 
     // TODO: 2016/12/16 api for 4.0-4.4?
     public static boolean hasAudio(Context context) {
-        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.LOLLIPOP)) {
+        if (CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.LOLLIPOP)) {
             return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_AUDIO_OUTPUT);
         }
         return true;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.plugins.images.ImagesWrapper;
 import com.onyx.android.sdk.reader.api.*;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
@@ -23,6 +24,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
         ReaderSearchManager,
         ReaderTextStyleManager,
         ReaderDrmManager,
+        ReaderFormManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
@@ -134,6 +136,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
+    }
+
+    @Override
     public boolean saveOptions() {
         return true;
     }
@@ -152,7 +159,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean activateDeviceDRM(String certificate) {
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
         return false;
     }
 
@@ -165,6 +172,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
      */
     @Override
     public ReaderSelection selectWordOnScreen(ReaderHitTestArgs hitTest, ReaderTextSplitter splitter) {
+        return null;
+    }
+
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
         return null;
     }
 
@@ -616,5 +628,19 @@ public class ComicReaderPlugin implements ReaderPlugin,
     @Override
     public ReaderSearchManager getSearchManager() {
         return this;
+    }
+
+    @Override
+    public ReaderFormManager getFormManager() {
+        return this;
+    }
+
+    public boolean isCustomFormEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean loadFormFields(int page, List<ReaderFormField> fields) {
+        return false;
     }
 }

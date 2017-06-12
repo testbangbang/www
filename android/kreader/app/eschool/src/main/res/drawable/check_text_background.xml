@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:drawable="@drawable/check_text_black_rect_white_solid" android:state_checked="true" />
-    <item android:drawable="@drawable/check_text_white_rect_transparent_solid" />
-
-</selector>

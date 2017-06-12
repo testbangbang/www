@@ -7,7 +7,10 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderImage;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -54,6 +57,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         ReaderSearchManager,
         ReaderTextStyleManager,
         ReaderDrmManager,
+        ReaderFormManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
@@ -201,6 +205,11 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
+    }
+
+    @Override
     public boolean saveOptions() {
         return true;
     }
@@ -293,6 +302,11 @@ public class AlReaderPlugin implements ReaderPlugin,
      * @return
      */
     public ReaderSearchManager getSearchManager() {
+        return this;
+    }
+
+    @Override
+    public ReaderFormManager getFormManager() {
         return this;
     }
 
@@ -455,7 +469,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         return searchResults;
     }
 
-    public boolean activateDeviceDRM(String certificate) {
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
         return false;
     }
 
@@ -480,6 +494,11 @@ public class AlReaderPlugin implements ReaderPlugin,
         int start = PagePositionUtils.getPosition(startPosition);
         int end = PagePositionUtils.getPosition(endPosition);
         return getPluginImpl().selectTextOnScreen(start, end);
+    }
+
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
+        return null;
     }
 
     public boolean supportScale() {
@@ -507,5 +526,14 @@ public class AlReaderPlugin implements ReaderPlugin,
     @Override
     public boolean supportTextPage() {
         return true;
+    }
+
+    public boolean isCustomFormEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean loadFormFields(int page, List<ReaderFormField> fields) {
+        return false;
     }
 }

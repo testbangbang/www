@@ -22,13 +22,13 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_alignParentTop="true"
-            android:background="@drawable/imagebtn_bg"
             android:clickable="true"
             android:focusable="true"
             app:layout_heightPercent="40%"
             app:layout_widthPercent="100%">
 
-            <LinearLayout
+            <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+                android:id="@+id/device_detail_area"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -44,48 +44,68 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{info.deviceName}" />
+                    android:text="@{info.deviceName}"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{info.deviceSerial}" />
+                    android:text="@{info.deviceSerial}"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{info.deviceVersion}" />
-            </LinearLayout>
+                    android:text="@{info.deviceVersion}"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium" />
+            </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
-            <LinearLayout
+            <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+                android:id="@+id/mac_qr_code_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
+                android:layout_above="@+id/button_area"
+                android:layout_alignParentRight="true"
+                android:layout_alignWithParentIfMissing="true"
+                app:alwaysLayoutImageView="true"
+                app:layout_marginBottomPercent="45%"
+                app:layout_marginRightPercent="23%">
+
+                <ImageView
+                    android:id="@+id/mac_qr_code_image_view"
+                    android:scaleType="matrix"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
                 app:layout_marginBottomPercent="1%"
-                app:layout_marginRightPercent="1%"
-                >
+                app:layout_marginRightPercent="1%">
 
                 <Button
                     android:id="@+id/button_clean_test_apps"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minHeight="@dimen/btn_minHeight"
-                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
                     android:text="@string/clean_test_apps"
-                    android:visibility="gone"
-                    />
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/button_ota"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minHeight="@dimen/btn_minHeight"
-                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
                     android:text="@string/setting_ota"
-                    />
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium" />
 
             </LinearLayout>
         </android.support.percent.PercentRelativeLayout>

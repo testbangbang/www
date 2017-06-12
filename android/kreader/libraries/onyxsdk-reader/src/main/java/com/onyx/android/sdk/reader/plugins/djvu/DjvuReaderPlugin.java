@@ -4,7 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderImage;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -45,6 +48,7 @@ public class DjvuReaderPlugin implements ReaderPlugin,
         ReaderSearchManager,
         ReaderTextStyleManager,
         ReaderDrmManager,
+        ReaderFormManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
@@ -125,6 +129,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
+    }
+
+    @Override
     public boolean saveOptions() {
         return true;
     }
@@ -140,7 +149,7 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean activateDeviceDRM(String certificate) {
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
         return false;
     }
 
@@ -161,6 +170,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
 
     @Override
     public ReaderSelection selectOnScreen(String pagePosition, String startPosition, String endPosition) {
+        return null;
+    }
+
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
         return null;
     }
 
@@ -426,5 +440,19 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     @Override
     public ReaderSearchManager getSearchManager() {
         return this;
+    }
+
+    @Override
+    public ReaderFormManager getFormManager() {
+        return this;
+    }
+
+    public boolean isCustomFormEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean loadFormFields(int page, List<ReaderFormField> fields) {
+        return false;
     }
 }

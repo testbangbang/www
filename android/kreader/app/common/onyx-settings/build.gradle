@@ -1,0 +1,55 @@
+apply plugin: 'com.android.application'
+
+apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
+apply from: file(rootProject.projectDir.absolutePath + '/versioning.gradle')
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.onyx.android.settings"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode gitVersionCode(projectDir)
+        versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
+        multiDexEnabled true
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../../proguard-rules.pro', 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [channel_value: releaseChannel(),
+                                    type_value: releaseType(),
+                                    timestamp_value: System.currentTimeMillis() + "L"]
+        }
+        debug {
+            debuggable true
+            jniDebuggable true
+            manifestPlaceholders = [channel_value: releaseChannel(),
+                                    type_value: releaseType(),
+                                    timestamp_value: System.currentTimeMillis() + "L"]
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    compile project(':libraries:onyxsdk-settings')
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:multidex:$multidexVersion"
+    testCompile "junit:junit:$rootProject.junitVersion"
+}

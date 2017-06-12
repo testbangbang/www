@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/imagebtn_bg"
+    android:padding="2dp"
+    appCompat:alwaysLayoutImageView="true">
+
+    <RelativeLayout
+        android:id="@+id/cover_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/background_shadow">
+
+        <ImageView
+            android:id="@+id/image_cover"
+            android:layout_width="204dp"
+            android:layout_height="280dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/book_default_cover" />
+
+        <ImageView
+            android:id="@+id/image_get_widget"
+            android:layout_width="@dimen/library_item_get_widget_width"
+            android:layout_height="@dimen/library_item_get_widget_height"
+            android:layout_alignLeft="@id/image_cover"
+            android:layout_alignTop="@id/image_cover"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_marginTop="@dimen/library_item_get_widget_margin_top"
+            android:src="@drawable/book_item_get_widget"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textView_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/image_cover"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/image_cover"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:lines="2"
+            android:maxLines="2"
+            android:textSize="19sp" />
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_line"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/library_item_progress_height"
+        android:layout_alignLeft="@+id/cover_panel"
+        android:layout_alignRight="@+id/cover_panel"
+        android:layout_below="@+id/cover_panel"
+        android:layout_marginTop="@dimen/library_item_progress_margin_top"
+        android:max="100"
+        android:paddingLeft="@dimen/library_item_progress_padding_left_right"
+        android:paddingRight="@dimen/library_item_progress_padding_left_right"
+        android:progressDrawable="@drawable/progressbar_square_style"
+        android:visibility="visible" />
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/multi_select_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="0dp"
+        android:background="@drawable/background_radio_button"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:minHeight="@dimen/button_minHeight"
+        android:visibility="gone" />
+
+</com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>

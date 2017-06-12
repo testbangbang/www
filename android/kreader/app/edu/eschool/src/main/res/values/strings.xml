@@ -1,0 +1,111 @@
+<resources>
+    <string name="app_name">E-School</string>
+
+    <string name="ok">@android:string/ok</string>
+
+    <string name="home_item_note_text">Note</string>
+    <string name="home_item_setting_text">Settings</string>
+    <string name="home_item_pic_display_text">Class Presence</string>
+    <string name="home_item_application_text">Application</string>
+    <string name="home_item_syllabus">Syllabus</string>
+
+    <string name="page">Page：</string>
+    <string name="no_more_items">No more content</string>
+    <string name="save">Save</string>
+    <string name="save_success">Save Successfully</string>
+    <string name="save_fail">Save Failed</string>
+    <string name="name">Name</string>
+    <string name="student_id">ID</string>
+    <string name="grade">Grade</string>
+    <string name="name_colon">Name：</string>
+    <string name="student_id_colon">ID：</string>
+    <string name="grade_colon">Grade：</string>
+    <string name="publisher">Publisher</string>
+    <string name="primary_school">Primary School</string>
+    <string name="secondary_school">Secondary School</string>
+    <string name="high_school">High School</string>
+    <string name="college_school">College</string>
+    <string name="school_grade_class">School/Grade/Class</string>
+    <string name="change_avatar">Change Avatar</string>
+    <string name="current_learning_progress">Current Progress</string>
+    <string name="last_studying_time">Last Study Time</string>
+
+    <string name="download_link_invalid">Download Link Invalid</string>
+    <string name="category_below_content_empty_tip">No Content In This Category</string>
+
+    <string name="application_list">Application List</string>
+    <string name="menu_app_npi_clear">Clean up Test Application</string>
+
+    <string name="library_activity_asc_order_key" translatable="false">library_activity_asc_order</string>
+    <string name="library_activity_sort_by_key" translatable="false">library_activity_sort_by</string>
+    <string name="library_activity_book_filter_key" translatable="false">library_activity_book_filter</string>
+
+    <string name="filter_all">All</string>
+    <string name="filter_new_books">New Books</string>
+    <string name="filter_read">Finish Read</string>
+    <string name="filter_reading">Now Reading</string>
+    <string name="filter_tag">Tag</string>
+
+    <string name="by_name">By name</string>
+    <string name="by_type">By type</string>
+    <string name="by_size">By Size</string>
+    <string name="by_tittle">By title</string>
+    <string name="by_author">By author</string>
+    <string name="by_creation_time">By creation time</string>
+
+    <string name="filter">Filter</string>
+    <string name="filter_fail">Filter fail</string>
+    <string name="sort">Sort</string>
+    <string name="sort_fail">Sort fail</string>
+    <string name="library">Library</string>
+    <string name="library_build">Build Library</string>
+    <string name="library_build_fail">Build library fail</string>
+    <string name="library_name">Library name</string>
+    <string name="description">Description</string>
+
+    <string name="tip">Tip</string>
+    <string name="library_delete_tip">Deleting a library does not remove the actual book</string>
+    <string name="library_delete_fail">Library delete fail</string>
+
+    <string name="chose_one_book_at_least">Please choose at least one</string>
+    <string name="no_library_choice">There is no library currently</string>
+    <string name="library_choose">Select the library</string>
+    <string name="library_add_to_fail">Add to the library failed</string>
+    <string name="adding">Adding...</string>
+    <string name="loading">Loading...</string>
+    <string name="library_remove_from_fail">Remove the book from the library failed</string>
+    <string name="file_path_null">The file path is empty</string>
+    <string name="file_not_exist">The file does\'t exist</string>
+    <string name="total_format">Total：%d</string>
+
+    <string name="menu_property">property</string>
+    <string name="menu_sort">Sort</string>
+    <string name="menu_filter">Filter</string>
+    <string name="menu_multi_choice_mode">Multi-Choice mode</string>
+    <string name="menu_library_toc_index">Library toc index</string>
+    <string name="menu_library_build">Build a library</string>
+    <string name="menu_library_add">Add to the library</string>
+    <string name="menu_library_remove">Remove from the library</string>
+    <string name="menu_library_delete">Delete the library</string>
+
+    <string name="go_to_page">Go To Page</string>
+    <string name="current_page">Current Page</string>
+    <string name="library_toc_loading">Library toc loading...</string>
+    <string name="library_toc_load_fail">Library toc loading failed</string>
+
+    <string name="downloading">Downloading&#8230;</string>
+    <string name="download_fail">Download fail</string>
+    <string name="file_path_invalid">File path invalid</string>
+
+    <string name="open_wifi">Wifi is not connected, is opening wifi&#8230;</string>
+    <string name="refreshing">Refreshing&#8230;</string>
+    <string name="refresh_fail">The refresh failed</string>
+    <string name="refresh_content_empty">The contents of the refresh are empty</string>
+
+    <string name="token_exception_contact_admin">Login error, please check the network to retry or contact the administrator</string>
+    <string name="hardware_error">Hardware error, please check the network to retry or contact the administrator</string>
+    <string name="title_activity_router_test">RouterTestActivity</string>
+
+    <string name="account_un_login">Not logged in</string>
+
+</resources>

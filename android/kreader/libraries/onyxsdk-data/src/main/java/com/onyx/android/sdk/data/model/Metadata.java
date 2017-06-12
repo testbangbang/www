@@ -1,7 +1,5 @@
 package com.onyx.android.sdk.data.model;
 
-import android.support.annotation.ColorInt;
-
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -9,7 +7,6 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -26,82 +23,109 @@ public class Metadata extends BaseData {
         public static int FINISHED = 2;
     }
 
+    public static class FetchSource {
+        public static int LOCAL = 0;
+        public static int CLOUD = 1;
+    }
+
     public static final String PROGRESS_DIVIDER = "/";
 
     @Column
-    String name = null;
+    private String name = null;
 
     @Column
-    String title = null;
+    private String title = null;
 
     @Column
-    String authors = null;
+    private String authors = null;
 
     @Column
-    String publisher = null;
+    private String publisher = null;
 
     @Column
-    String language = null;
+    private String language = null;
 
     @Column
-    String ISBN = null;
+    private String ISBN = null;
 
     @Column
-    String description = null;
+    private String description = null;
 
     @Column
-    String location = null;
+    private String location = null;
 
     @Column
-    String nativeAbsolutePath = null;
+    private String nativeAbsolutePath = null;
 
     @Column
-    long size = 0;
+    private long size = 0;
 
     @Column
-    String encoding = null;
+    private String encoding = null;
 
     @Column
-    Date lastAccess = null;
+    private Date lastAccess = null;
 
     @Column
-    Date lastModified = null;
+    private Date lastModified = null;
 
     @Column
-    String progress = null;
+    private String progress = null;
 
     @Column
-    int favorite = 0;
+    private int favorite = 0;
 
     @Column
-    int rating = 0;
+    private int rating = 0;
 
     @Column
-    String tags = null;
+    private String tags = null;
 
     @Column
-    String series = null;
+    private String series = null;
 
     @Column
-    String extraAttributes = null;
+    private String extraAttributes = null;
 
     @Column
-    String type = null;
+    private String type = null;
 
     @Column
-    String cloudId;
+    private String cloudId;
 
     @Column
-    String parentId;
+    private String parentId;
 
     @Column
-    int readingStatus = 0;
+    private int readingStatus = 0;
 
     @Column
-    String hashTag;
+    private String hashTag;
 
     @Column
-    String storageId;
+    private String storageId;
+
+    @Column
+    private int fetchSource;
+
+    @Column
+    private String coverUrl;
+
+    public void setFetchSource(int fetchSource) {
+        this.fetchSource = fetchSource;
+    }
+
+    public int getFetchSource() {
+        return fetchSource;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
 
     public String getName() {
         return name;
@@ -331,19 +355,25 @@ public class Metadata extends BaseData {
         return createFromFile(file, true);
     }
 
-    public static Metadata createFromFile(File file, boolean computeMd5) {
+    public static Metadata createFromMetadataPath(Metadata metadata, boolean computeMd5) {
+        File file = new File(metadata.getNativeAbsolutePath());
         try {
-            final Metadata data = new Metadata();
             if (computeMd5) {
                 String md5 = FileUtils.computeMD5(file);
-                data.setHashTag(md5);
+                metadata.setHashTag(md5);
             }
-            getBasicMetadataFromFile(data, file);
-            return data;
+            getBasicMetadataFromFile(metadata, file);
+            return metadata;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static Metadata createFromFile(File file, boolean computeMd5) {
+        final Metadata data = new Metadata();
+        data.setNativeAbsolutePath(file.getAbsolutePath());
+        return createFromMetadataPath(data, computeMd5);
     }
 
     public static void getBasicMetadataFromFile(final Metadata data, File file) {

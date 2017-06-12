@@ -84,6 +84,16 @@ public class GObject {
         return null;
     }
 
+    public String getString(final String key, final String defaultValue) {
+        if (isDummyObject()) {
+            return defaultValue;
+        }
+        if (backend.containsKey(key)) {
+            return backend.getString(key);
+        }
+        return defaultValue;
+    }
+
     public boolean putString(final String key, final String value) {
         if (isDummyObject()){
             return false;

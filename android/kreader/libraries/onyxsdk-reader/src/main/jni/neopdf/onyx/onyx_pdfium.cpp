@@ -19,6 +19,7 @@
 #include "onyx_context.h"
 #include "JNIUtils.h"
 #include "jsonxx.h"
+#include "form_helper.h"
 
 static const char * selectionClassName = "com/onyx/android/sdk/reader/plugins/neopdf/NeoPdfSelection";
 static const char * splitterClassName = "com/onyx/android/sdk/reader/api/ReaderTextSplitter";
@@ -30,47 +31,27 @@ static const char * annotationClassName = "com/onyx/android/sdk/data/model/Annot
 namespace {
 
 int libraryReference = 0;
+
+std::string deviceId;
 std::string drmCertificate;
 
-bool readDrmManifest(FPDF_DOCUMENT document, char *buf, int length) {
-    unsigned long res = FPDF_GetMetaText(document, "boox", buf, length);
-    return res > 2; // empty metadata text is '\0' in unicode
-}
-
-bool setupDrmManager(const std::string &drmManifest) {
-    const unsigned char *rsaKeyData = reinterpret_cast<const unsigned char *>(drmCertificate.c_str());
-
-    onyx::DrmDecrypt decrypt;
-    int resultLen = 0;
-    int manifestVersion = 0;
-    unsigned char *result = decrypt.rsaDecryptManifest(rsaKeyData, drmManifest.c_str(),
-                                                       &resultLen, &manifestVersion);
-    if (!result) {
-        LOGE("invalid metadata!");
+bool readDrmManifest(FPDF_DOCUMENT document, std::vector<char16_t> *manifestBuf,
+                     std::vector<char16_t> *oadBuf) {
+    unsigned long res = FPDF_GetMetaText(document, "boox", nullptr, 0);
+    if (res <= 2) { // empty metadata text is '\0' in unicode
         return false;
     }
-    onyx::DrmDecryptManager::singleton().setDrmVersion(manifestVersion);
+    manifestBuf->resize(res / 2);
+    FPDF_GetMetaText(document, "boox", manifestBuf->data(), res);
 
-    jsonxx::Object object;
-    bool succ = object.parse(reinterpret_cast<char *>(result));
-    free(result);
-    if (!succ) {
-        LOGE("invalid metadata!");
-        return false;
+    unsigned long oadLen = FPDF_GetMetaText(document, "oad", nullptr, 0);
+    if (oadLen <= 2) {
+        oadBuf->push_back(0);
+    } else {
+        oadBuf->resize(oadLen / 2);
+        FPDF_GetMetaText(document, "oad", oadBuf->data(), oadLen);
     }
 
-    if (!object.has<std::string>("publish") || !object.has<std::string>("stamp")) {
-        LOGE("invalid metadata!");
-        return false;
-    }
-    std::string aesKey = object.get<std::string>("publish");
-    std::string aesGuard = object.get<std::string>("stamp");
-    if (!onyx::DrmDecryptManager::singleton().setAESKey(aesKey.c_str(), aesGuard.c_str())) {
-        LOGE("invalid metadata!");
-        return false;
-    }
-
-    onyx::DrmDecryptManager::singleton().setEncrypted(true);
     return true;
 }
 
@@ -141,13 +122,16 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
         return errorCode;
     }
 
-    onyx::DrmDecryptManager::singleton().setEncrypted(false);
+    onyx::DrmDecryptManager &drmManager = onyx::DrmDecryptManager::singleton();
+    drmManager.reset();
 
-    char buf[4096] = { 0 };
-    if (readDrmManifest(document, buf, 4096)) {
-        LOGI("document is DRM protected, try to decrypt the document");
-        std::string drmManifest = StringUtils::utf16leto8(reinterpret_cast<const char16_t *>(buf));
-        if (!setupDrmManager(drmManifest)) {
+    std::vector<char16_t> manifestBuf;
+    std::vector<char16_t> oadBuf;
+    if (readDrmManifest(document, &manifestBuf, &oadBuf)) {
+        std::string drmManifest = StringUtils::utf16leto8(manifestBuf.data());
+        std::string additionalData = StringUtils::utf16leto8(oadBuf.data());
+        if (!drmManager.setupWithManifest(deviceId, drmCertificate, drmManifest, additionalData)) {
+            LOGE("parse document DRM failed!");
             return -1;
         }
     }
@@ -278,7 +262,9 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     }
     FPDF_RenderPageBitmap(pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
     FPDF_FORMHANDLE formHandle = OnyxPdfiumManager::getFormHandle(env, id);
-    FPDF_FFLDraw(formHandle, pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
+    if (OnyxPdfiumManager::isRenderFormFields(env, id)) {
+        FPDF_FFLDraw(formHandle, pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
+    }
     AndroidBitmap_unlockPixels(env, bitmap);
     return true;
 }
@@ -769,15 +755,88 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
         jfloatArray floatArray = env->NewFloatArray(list.size());
         env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
         env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, destPage, floatArray, nullptr, -1, -1, nullptr, nullptr);
+        env->DeleteLocalRef(floatArray);
     }
 
     return true;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeActivateDeviceDRM
-  (JNIEnv *env, jobject thiz, jstring certificate) {
-    JNIString str(env, certificate);
-    drmCertificate = str.getLocalString();
+  (JNIEnv *env, jobject thiz, jstring deviceIdJString, jstring certificateJString) {
+    deviceId = "";
+    drmCertificate = "";
+    if (deviceIdJString) {
+        JNIString strDeviceId(env, deviceIdJString);
+        deviceId = strDeviceId.getLocalString();
+    }
+    if (certificateJString) {
+        JNIString strCertificate(env, certificateJString);
+        drmCertificate = strCertificate.getLocalString();
+    }
     return true;
 }
 
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetRenderFormFields
+  (JNIEnv *env, jobject thiz, jint id, jboolean render) {
+    OnyxPdfiumManager::setRenderFormFields(env, id, render);
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeLoadFormFields
+(JNIEnv *env, jobject thiz, jint id, jint pageIndex, jobject fieldList) {
+    FPDF_DOCUMENT doc = OnyxPdfiumManager::getDocument(env, id);
+    if (doc == NULL) {
+        return false;
+    }
+    FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
+    if (page == NULL) {
+        return false;
+    }
+
+    return FormHelper::loadFormFields(env, page, fieldList);
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageTextRegions
+ (JNIEnv *env, jobject, jint id, jint pageIndex, jobject objectList) {
+    FPDF_DOCUMENT doc = OnyxPdfiumManager::getDocument(env, id);
+    if (doc == NULL) {
+        return false;
+    }
+
+    FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
+    FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(env, id, pageIndex);
+    if (page == NULL || textPage == NULL) {
+        return false;
+    }
+
+    JNIUtils utils(env);
+    if (!utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;)V", true)) {
+        return false;
+    }
+
+    int count = FPDFText_CountChars(textPage);
+    int rectangleCount = FPDFText_CountRects(textPage, 0, count);
+
+    for(int i = 0; i < rectangleCount; ++i) {
+        double left, top, right, bottom;
+        FPDFText_GetRect(textPage, i, &left, &top, &right, &bottom);
+        double newLeft, newRight, newBottom, newTop;
+        double pageWidth = FPDF_GetPageWidth(page);
+        double pageHeight = FPDF_GetPageHeight(page);
+        int rotation = 0;
+        pageToDevice(page, pageWidth, pageHeight, rotation,
+                     left, top, right, bottom,
+                     &newLeft, &newTop, &newRight, &newBottom);
+        std::vector<float> list;
+        list.push_back(static_cast<float>(newLeft));
+        list.push_back(static_cast<float>(newTop));
+        list.push_back(static_cast<float>(newRight));
+        list.push_back(static_cast<float>(newBottom));
+
+        jfloatArray floatArray = env->NewFloatArray(list.size());
+        env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
+        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, floatArray, nullptr, -1, -1, nullptr, nullptr);
+        env->DeleteLocalRef(floatArray);
+    }
+
+    return true;
+}

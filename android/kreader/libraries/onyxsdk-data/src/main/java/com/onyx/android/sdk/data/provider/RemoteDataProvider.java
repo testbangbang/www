@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.db.table.OnyxAnnotationProvider;
 import com.onyx.android.sdk.data.db.table.OnyxBookmarkProvider;
@@ -84,6 +85,14 @@ public class RemoteDataProvider implements DataProviderBase {
         } else {
             ContentUtils.update(OnyxMetadataProvider.CONTENT_URI, metadata);
         }
+    }
+
+    @Override
+    public QueryResult<Metadata> findMetadataResultByQueryArgs(Context context, QueryArgs queryArgs) {
+        QueryResult<Metadata> result = new QueryResult<>();
+        result.list = findMetadataByQueryArgs(context, queryArgs);
+        result.count = count(context, queryArgs);
+        return result;
     }
 
     @Override
@@ -241,7 +250,7 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Library> loadAllLibrary(String parentId) {
+    public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
         Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
         return ContentUtils.queryList(OnyxLibraryProvider.CONTENT_URI,
                 Library.class,

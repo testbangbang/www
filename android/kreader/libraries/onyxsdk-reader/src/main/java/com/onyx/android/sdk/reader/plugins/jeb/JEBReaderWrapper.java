@@ -41,7 +41,7 @@ import com.onyx.android.sdk.reader.api.ReaderTextSplitter;
 import com.onyx.android.sdk.reader.host.impl.ReaderSelectionImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
-import com.onyx.android.sdk.reader.utils.RectUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -98,6 +98,7 @@ public class JEBReaderWrapper {
         bookOpt.codePageDefault = documentOptions.getCodePageFallback();
         bookOpt.formatOptions = 0;
         bookOpt.readPosition = 0;
+        bookOpt.password = documentOptions.getDocumentPassword();
         if (bookEng.openBook(path, bookOpt) != TAL_RESULT.OK) {
             return ERROR_FILE_INVALID;
         }

@@ -6,14 +6,15 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
-
 import com.onyx.android.libsetting.R;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 
 import static com.onyx.android.libsetting.util.Constant.ARGS_SECURITY_MODE;
 import static com.onyx.android.libsetting.util.Constant.ARGS_SIGNAL_LEVEL;
@@ -78,7 +79,7 @@ public class WifiLoginDialog extends OnyxAlertDialog {
 
                             @Override
                             public void afterTextChanged(Editable s) {
-                                if (editTextPassword.getText().length() >= 6) {
+                                if (editTextPassword.getText().length() >= 5) {
                                     getPositiveButton().setEnabled(true);
                                 } else {
                                     getPositiveButton().setEnabled(false);
@@ -101,5 +102,14 @@ public class WifiLoginDialog extends OnyxAlertDialog {
 
     public void show(FragmentManager manager) {
         super.show(manager, TAG);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
     }
 }

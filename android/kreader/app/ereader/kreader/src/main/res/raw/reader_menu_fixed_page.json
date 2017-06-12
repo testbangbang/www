@@ -1,0 +1,164 @@
+{
+  "menu_list": [
+    {
+      "id": "Zoom",
+      "type": "Group",
+      "title": "Zoom",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale",
+      "children": [
+        {
+          "id": "FontReflow",
+          "type": "Item",
+          "title": "Font Reflow",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_reset"
+        },
+        {
+          "id": "ZoomIn",
+          "type": "Item",
+          "title": "Zoom In",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_magnify"
+        },
+        {
+          "id": "ZoomOut",
+          "type": "Item",
+          "title": "Zoom Out",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_shrink"
+        },
+        {
+          "id": "ToPage",
+          "type": "Item",
+          "title": "To Page",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_fit_page"
+        },
+        {
+          "id": "ToWidth",
+          "type": "Item",
+          "title": "To Width",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_fit_width"
+        },
+        {
+          "id": "ByRect",
+          "type": "Item",
+          "title": "By Rect",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_scale_choose"
+        }
+      ]
+    },
+    {
+      "id": "Navigation",
+      "type": "Group",
+      "title": "Navigation",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse",
+      "children": [
+        {
+          "id": "ComicMode",
+          "type": "Item",
+          "title": "Comic Mode",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_cartoon"
+        },
+        {
+          "id": "ArticleMode",
+          "type": "Item",
+          "title": "Article Mode",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_thesis"
+        },
+        {
+          "id": "Reset",
+          "type": "Item",
+          "title": "Reset",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_reset"
+        },
+        {
+          "id": "MoreSetting",
+          "type": "Item",
+          "title": "More Setting",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_more"
+        }
+      ]
+    },
+    {
+      "id": "Directory",
+      "type": "Group",
+      "title": "Directory",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_note_black",
+      "children": [
+        {
+          "id": "Write",
+          "type": "Item",
+          "title": "Write",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_write"
+        },
+        {
+          "id": "Export",
+          "type": "Item",
+          "title": "Export",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_browse_export"
+        }
+      ]
+    },
+    {
+      "id": "Rotation",
+      "type": "Group",
+      "title": "Rotation",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve",
+      "children": [
+        {
+          "id": "Rotation90",
+          "type": "Item",
+          "title": "Rotation 90",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_left"
+        },
+        {
+          "id": "Rotation0",
+          "type": "Item",
+          "title": "Rotation 0",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_up"
+        },
+        {
+          "id": "Rotation270",
+          "type": "Item",
+          "title": "Rotation 270",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_right"
+        },
+        {
+          "id": "Rotation180",
+          "type": "Item",
+          "title": "Rotation 180",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_revolve_down"
+        }
+      ]
+    },
+    {
+      "id": "More",
+      "type": "Group",
+      "title": "MORE",
+      "iconResourceId": "R.drawable.ic_dialog_reader_menu_more",
+      "children": [
+        {
+          "id": "TTS",
+          "type": "Item",
+          "title": "TTS",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_tts"
+        },
+        {
+          "id": "FrontLight",
+          "type": "Item",
+          "title": "Front Light",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_frontlight"
+        },
+        {
+          "id": "Refresh",
+          "type": "Item",
+          "title": "Refresh",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_refresh_black"
+        },
+        {
+          "id": "Setting",
+          "type": "Item",
+          "title": "Setting",
+          "iconResourceId": "R.drawable.ic_dialog_reader_menu_setting"
+        }
+      ]
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.android.sdk.reader.api.*;
 import com.onyx.android.sdk.data.PageInfo;
@@ -96,6 +97,11 @@ public class FakeReader implements ReaderDocument,
     }
 
     @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
+    }
+
+    @Override
     public boolean saveOptions() {
         return true;
     }
@@ -121,6 +127,11 @@ public class FakeReader implements ReaderDocument,
     }
 
     public ReaderSearchManager getSearchManager() {
+        return null;
+    }
+
+    @Override
+    public ReaderFormManager getFormManager() {
         return null;
     }
 

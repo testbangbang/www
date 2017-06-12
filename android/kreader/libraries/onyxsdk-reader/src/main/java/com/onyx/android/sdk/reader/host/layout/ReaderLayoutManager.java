@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.reader.host.layout;
 
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.reader.host.math.PageManager;
@@ -7,6 +8,7 @@ import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderHelper;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.*;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
@@ -17,7 +19,9 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.reflow.ImageReflowManager;
 import com.onyx.android.sdk.reader.utils.HistoryManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -342,7 +346,7 @@ public class ReaderLayoutManager {
         if (!getCurrentLayoutProvider().drawVisiblePages(reader, drawContext, viewInfo)) {
             return false;
         }
-        reader.getReaderHelper().applyPostBitmapProcess(drawContext.renderingBitmap);
+        reader.getReaderHelper().applyPostBitmapProcess(viewInfo, drawContext.renderingBitmap);
         return true;
     }
 

@@ -1127,6 +1127,30 @@ CPDF_FormField* CPDF_InterForm::GetFieldByDict(
   return m_pFieldTree->GetField(csWName);
 }
 
+std::set<CPDF_FormField *> CPDF_InterForm::GetFieldsByPage(CPDF_Page *pPage) const
+{
+    std::set<CPDF_FormField *> fields;
+
+    CPDF_Array* pAnnotList = pPage->m_pFormDict->GetArrayFor("Annots");
+    if (!pAnnotList)
+      return fields;
+
+    for (size_t i = pAnnotList->GetCount(); i > 0; --i) {
+      size_t annot_index = i - 1;
+      CPDF_Dictionary* pAnnot = pAnnotList->GetDictAt(annot_index);
+      if (!pAnnot)
+        continue;
+
+      const auto it = m_ControlMap.find(pAnnot);
+      if (it == m_ControlMap.end())
+        continue;
+
+      fields.insert(it->second->GetField());
+    }
+
+    return fields;
+}
+
 CPDF_FormControl* CPDF_InterForm::GetControlAtPoint(CPDF_Page* pPage,
                                                     FX_FLOAT pdf_x,
                                                     FX_FLOAT pdf_y,

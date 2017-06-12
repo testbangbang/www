@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
@@ -24,6 +25,8 @@ public interface DataProviderBase {
     void clearMetadata();
 
     void saveMetadata(final Context context, final Metadata metadata);
+
+    QueryResult<Metadata> findMetadataResultByQueryArgs(Context context, QueryArgs queryArgs);
 
     List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs);
 
@@ -60,7 +63,7 @@ public interface DataProviderBase {
 
     Library loadLibrary(String uniqueId);
 
-    List<Library> loadAllLibrary(String parentId);
+    List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs);
 
     void addLibrary(Library library);
 

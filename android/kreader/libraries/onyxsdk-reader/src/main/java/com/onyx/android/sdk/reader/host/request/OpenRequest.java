@@ -1,5 +1,8 @@
 package com.onyx.android.sdk.reader.host.request;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 
 import com.onyx.android.sdk.reader.api.ReaderDocument;
@@ -12,7 +15,6 @@ import com.onyx.android.sdk.reader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 
 /**
@@ -51,15 +53,7 @@ public class OpenRequest extends BaseReaderRequest {
             return;
         }
 
-        if (factory != null) {
-            final String certificate = factory.getDrmCertificate();
-            if (StringUtils.isNotBlank(certificate)) {
-                ReaderDrmManager manager = reader.getPlugin().createDrmManager();
-                if (manager != null) {
-                    manager.activateDeviceDRM(certificate);
-                }
-            }
-        }
+        prepareDrmManager(reader);
 
         try {
             ReaderDocument document = reader.getPlugin().open(documentPath, documentOptions, pluginOptions);
@@ -86,6 +80,18 @@ public class OpenRequest extends BaseReaderRequest {
             return true;
         }
         return false;
+    }
+
+    private boolean prepareDrmManager(final Reader reader) {
+        if (factory == null) {
+            return false;
+        }
+
+        ReaderDrmManager manager = reader.getPlugin().createDrmManager();
+        if (manager != null) {
+            manager.activateDeviceDRM(factory.getDeviceId(), factory.getDrmCertificate());
+        }
+        return true;
     }
 
 }
