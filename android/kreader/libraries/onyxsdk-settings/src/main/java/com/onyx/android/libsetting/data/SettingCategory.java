@@ -9,9 +9,11 @@ import android.widget.Toast;
 import com.onyx.android.libsetting.SettingConfig;
 import com.onyx.android.libsetting.view.activity.ApplicationSettingActivity;
 import com.onyx.android.libsetting.view.activity.DateTimeSettingActivity;
+import com.onyx.android.libsetting.view.activity.FirmwareOTAActivity;
 import com.onyx.android.libsetting.view.activity.LanguageInputSettingActivity;
 import com.onyx.android.libsetting.view.activity.NetworkSettingActivity;
 import com.onyx.android.libsetting.view.activity.PowerSettingActivity;
+import com.onyx.android.libsetting.view.activity.ProductDetailSettingActivity;
 import com.onyx.android.libsetting.view.activity.SecuritySettingActivity;
 import com.onyx.android.libsetting.view.activity.UserSettingActivity;
 import com.onyx.android.libsetting.view.activity.WifiSettingActivity;
@@ -38,6 +40,8 @@ public class SettingCategory {
     public static final int PRODUCTION_TEST = 10;
     public static final int WIFI = 11;
     public static final int BLUETOOTH = 12;
+    public static final int FIRMWARE_UPDATE = 13;
+    public static final int PRODUCT_DETAIL = 14;
 
     static public final String SETTING_ITEM_NETWORK_TAG = "setting_item_network";
     static public final String SETTING_ITEM_USER_SETTING_TAG = "setting_item_user_setting";
@@ -51,7 +55,8 @@ public class SettingCategory {
     static public final String SETTING_ITEM_PRODUCTION_TEST_TAG = "setting_item_production_test";
     static public final String SETTING_ITEM_WIFI_TAG = "setting_item_wifi";
     static public final String SETTING_ITEM_BLUETOOTH_TAG = "setting_item_bluetooth";
-
+    static public final String SETTING_ITEM_FIRMWARE_UPDATE_TAG = "setting_item_firmware_update";
+    static public final String SETTING_ITEM_PRODUCT_DETAIL_TAG = "setting_item_product_detail";
 
     // ... type definitions
     // Describes when the annotation will be discarded
@@ -59,7 +64,7 @@ public class SettingCategory {
     // Enumerate valid values for this interface
     @IntDef({UNKNOWN, NETWORK, USER_SETTING, SOUND, STORAGE,
             LANGUAGE_AND_INPUT, DATE_TIME_SETTING, APPLICATION_MANAGEMENT, POWER,
-            SECURITY, ERROR_REPORT, PRODUCTION_TEST, WIFI, BLUETOOTH})
+            SECURITY, ERROR_REPORT, PRODUCTION_TEST, WIFI, BLUETOOTH, FIRMWARE_UPDATE,PRODUCT_DETAIL})
     // Create an interface for validating int types
     public @interface SettingCategoryDef {
     }
@@ -98,6 +103,10 @@ public class SettingCategory {
                 return WIFI;
             case SETTING_ITEM_BLUETOOTH_TAG:
                 return BLUETOOTH;
+            case SETTING_ITEM_FIRMWARE_UPDATE_TAG:
+                return FIRMWARE_UPDATE;
+            case SETTING_ITEM_PRODUCT_DETAIL_TAG:
+                return PRODUCT_DETAIL;
         }
         return UNKNOWN;
     }
@@ -145,6 +154,12 @@ public class SettingCategory {
                 break;
             case SettingCategory.BLUETOOTH:
                 intent = config.getBluetoothSettingIntent();
+                break;
+            case SettingCategory.FIRMWARE_UPDATE:
+                intent = new Intent(context, FirmwareOTAActivity.class);
+                break;
+            case SettingCategory.PRODUCT_DETAIL:
+                intent = new Intent(context, ProductDetailSettingActivity.class);
                 break;
             default:
                 Toast.makeText(context, "Under Construction", Toast.LENGTH_SHORT).show();

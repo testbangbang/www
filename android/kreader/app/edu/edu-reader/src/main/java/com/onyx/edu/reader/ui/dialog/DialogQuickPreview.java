@@ -457,33 +457,12 @@ public class DialogQuickPreview extends OnyxBaseDialog {
         textViewProgress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final OnyxCustomDialog dlg = OnyxCustomDialog.getInputDialog(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number), new OnClickListener() {
+                ShowReaderMenuAction.showGotoPageDialog(readerDataHolder, false, new BaseCallback() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        OnyxCustomDialog onyxCustomDialog = (OnyxCustomDialog) dialog;
-                        String page = onyxCustomDialog.getInputValue().toString();
-                        if (!StringUtils.isNullOrEmpty(page)) {
-                            int pageNumber = PagePositionUtils.getPageNumber(page);
-                            pageNumber--;
-                            if (pageNumber >= 0 && pageNumber < readerDataHolder.getPageCount()) {
-                                new GotoPageAction(pageNumber, true).execute(readerDataHolder, new BaseCallback() {
-                                    @Override
-                                    public void done(BaseRequest request, Throwable e) {
-                                        DialogQuickPreview.this.dismiss();
-                                    }
-                                });
-                            } else {
-                                Toast.makeText(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number_out_of_range_error), Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(getContext(), getContext().getString(R.string.dialog_quick_view_enter_page_number_empty_error), Toast.LENGTH_SHORT).show();
-                        }
+                    public void done(BaseRequest request, Throwable e) {
+                        DialogQuickPreview.this.dismiss();
                     }
                 });
-                dlg.getInputEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
-                dlg.getInputEditText().setHint("1-" + readerDataHolder.getPageCount());
-                readerDataHolder.trackDialog(dlg);
-                dlg.show();
             }
         });
 

@@ -4,7 +4,7 @@ import android.graphics.Color;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.reader.api.ReaderSelection;
-import com.onyx.android.sdk.reader.utils.RectUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.phone.reader.reader.data.ReaderDataHolder;
 import com.onyx.phone.reader.reader.opengl.Highlight;
 import com.onyx.phone.reader.reader.opengl.IOpenGLObject;

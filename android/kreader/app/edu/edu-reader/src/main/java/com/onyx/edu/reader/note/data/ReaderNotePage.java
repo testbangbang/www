@@ -7,6 +7,7 @@ import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
 import com.onyx.edu.reader.note.model.ReaderNoteDataProvider;
 import com.onyx.edu.reader.note.model.ReaderNoteShapeModel;
 
@@ -209,6 +210,11 @@ public class ReaderNotePage {
         for(ReaderNoteShapeModel model : modelList) {
             addShapeFromModel(ReaderShapeFactory.shapeFromModel(model));
         }
+
+        final List<ReaderFormShapeModel> formShapeModels = ReaderNoteDataProvider.loadFormShapeList(context, getDocumentUniqueId(), getPageUniqueId(), getSubPageUniqueId());
+        for(ReaderFormShapeModel model : formShapeModels) {
+            addShapeFromModel(ReaderShapeFactory.shapeFromFormModel(model));
+        }
         setLoaded(true);
     }
 
@@ -243,25 +249,43 @@ public class ReaderNotePage {
     }
 
     public boolean savePage(final Context context) {
-        List<ReaderNoteShapeModel> modelList = new ArrayList<ReaderNoteShapeModel>(newAddedShapeList.size());
-        for(Shape shape : newAddedShapeList) {
-            final ReaderNoteShapeModel model = ReaderShapeFactory.modelFromShape(shape);
-            modelList.add(model);
-        }
-        if (modelList.size() > 0) {
-            ReaderNoteDataProvider.saveShapeList(context, modelList);
-        }
-
-        List<String> list = new ArrayList<>();
-        for(Shape shape: removedShapeList) {
-            list.add(shape.getShapeUniqueId());
-        }
-        if (list.size() > 0) {
-            ReaderNoteDataProvider.removeShapesByIdList(context, list);
-        }
+        saveNewAddedShapes(context);
+        deleteRemovedShapes(context);
         newAddedShapeList.clear();
         removedShapeList.clear();
         return true;
+    }
+
+    private void saveNewAddedShapes(final Context context) {
+        List<ReaderNoteShapeModel> noteShapeModels = new ArrayList<>();
+
+        for (Shape shape : newAddedShapeList) {
+            final ReaderNoteShapeModel model = ReaderShapeFactory.modelFromShape(shape);
+            noteShapeModels.add(model);
+        }
+
+        if (noteShapeModels.size() > 0) {
+            ReaderNoteDataProvider.saveShapeList(context, noteShapeModels);
+        }
+    }
+
+    private void deleteRemovedShapes(final Context context) {
+        List<String> removeNoteShapes = new ArrayList<>();
+        List<String> removeFormShapes = new ArrayList<>();
+        for(Shape shape: removedShapeList) {
+            if (shape.isFormShape()) {
+                removeFormShapes.add(shape.getShapeUniqueId());
+            } else {
+                removeNoteShapes.add(shape.getShapeUniqueId());
+            }
+
+        }
+        if (removeNoteShapes.size() > 0) {
+            ReaderNoteDataProvider.removeShapesByIdList(context, removeNoteShapes);
+        }
+        if (removeFormShapes.size() > 0) {
+            ReaderNoteDataProvider.removeFormShapesByIdList(context, removeFormShapes);
+        }
     }
 
     public boolean isLoaded() {

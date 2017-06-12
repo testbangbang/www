@@ -24,9 +24,9 @@ import com.onyx.edu.reader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.edu.reader.ui.actions.ViewImageAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.highlight.HighlightCursor;
-import com.onyx.android.sdk.reader.utils.MathUtils;
+import com.onyx.android.sdk.utils.MathUtils;
 import com.onyx.edu.reader.device.DeviceConfig;
-import com.onyx.android.sdk.reader.utils.RectUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 
 import java.util.List;
 
@@ -367,12 +367,11 @@ public class WordSelectionHandler extends BaseHandler{
     public void quitWordSelection(ReaderDataHolder readerDataHolder) {
         ReaderDeviceManager.enableRegal();
         getParent().resetToDefaultProvider();
-        clearWordSelection(readerDataHolder);
     }
 
     private void clearWordSelection(ReaderDataHolder readerDataHolder) {
         readerDataHolder.resetEpdUpdateMode();
-        ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(readerDataHolder,true);
+        ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(readerDataHolder,false);
         readerDataHolder.redrawPage();
         readerDataHolder.getSelectionManager().clear();
     }

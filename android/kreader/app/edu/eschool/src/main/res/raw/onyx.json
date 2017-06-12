@@ -22,12 +22,13 @@
     "com.onyx.android.edu",
     "com.android.music",
     "com.android.providers.downloads.ui",
-    "com.onyx.dict",
     "com.onyx.kreader"
   ],
   "test_apps": [
     "com.onyx.test",
     "com.onyx.android.production.test",
     "com.onyx.android.screenmanager"
-  ]
+  ],
+  "cloud_content_host" : "http://oa.o-in.me:9058/",
+  "cloud_content_api" : "http://oa.o-in.me:9058/api/"
 }

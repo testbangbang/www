@@ -79,8 +79,8 @@ public class OnyxPushReceiver extends BroadcastReceiver {
         if (task == null) {
             return false;
         }
-        OnyxDownloadManager.getInstance(context).addTask(product.url, task);
-        return OnyxDownloadManager.getInstance(context).startDownload(task) != 0;
+        OnyxDownloadManager.getInstance().addTask(product.url, task);
+        return OnyxDownloadManager.getInstance().startDownload(task) != 0;
     }
 
     private static void processDownloadedFile(Context context, PushContent product) {

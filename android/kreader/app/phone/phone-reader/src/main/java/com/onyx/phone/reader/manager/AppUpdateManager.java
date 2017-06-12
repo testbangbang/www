@@ -98,9 +98,9 @@ public class AppUpdateManager {
         if (StringUtils.isNullOrEmpty(url)) {
             return false;
         }
-        BaseDownloadTask task = OnyxDownloadManager.getInstance(context).downloadWithNotify(url, filePath, filePath,
+        BaseDownloadTask task = OnyxDownloadManager.getInstance().downloadWithNotify(url, filePath, filePath,
                 buildDownloadNotificationBean(context, update, file), null);
         task.setForceReDownload(true);
-        return OnyxDownloadManager.getInstance(context).startDownload(task) == 0;
+        return OnyxDownloadManager.getInstance().startDownload(task) == 0;
     }
 }

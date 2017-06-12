@@ -1,11 +1,11 @@
 package com.onyx.android.sdk.data;
 
-import com.onyx.android.sdk.data.model.CloudMetadata_Table;
+import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection;
+import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection_Table;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
-import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
@@ -169,6 +169,10 @@ public class CloudQueryBuilder {
         return CloudMetadata_Table.idString;
     }
 
+    public static Property<String> getMetadataCloudIdProperty() {
+        return CloudMetadata_Table.cloudId;
+    }
+
     public static LongProperty getMetadataSizeProperty() {
         return CloudMetadata_Table.size;
     }
@@ -182,11 +186,11 @@ public class CloudQueryBuilder {
     }
 
     public static Property<String> getMetadataCollectionDocIdProperty() {
-        return MetadataCollection_Table.documentUniqueId;
+        return CloudMetadataCollection_Table.documentUniqueId;
     }
 
     public static Property<String> getMetadataCollectionLibraryIdProperty() {
-        return MetadataCollection_Table.libraryUniqueId;
+        return CloudMetadataCollection_Table.libraryUniqueId;
     }
 
     public static ConditionGroup newBookListCondition() {
@@ -409,6 +413,17 @@ public class CloudQueryBuilder {
     }
 
     public static QueryArgs generateMetadataInQueryArgs(final QueryArgs queryArgs) {
+        Where<CloudMetadataCollection> whereCollection = new Select(getMetadataCollectionDocIdProperty().withTable())
+                .from(CloudMetadataCollection.class)
+                .where(getNotNullOrEqualCondition(getMetadataCollectionLibraryIdProperty().withTable(),
+                        queryArgs.libraryUniqueId));
+        Condition.In inCondition = inCondition(getMetadataCloudIdProperty().withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.libraryUniqueId));
+        ConditionGroup group = ConditionGroup.clause().and(inCondition);
+        if (queryArgs.conditionGroup.size() > 0) {
+            queryArgs.conditionGroup = group.and(queryArgs.conditionGroup);
+        } else {
+            queryArgs.conditionGroup = group;
+        }
         return queryArgs;
     }
 }

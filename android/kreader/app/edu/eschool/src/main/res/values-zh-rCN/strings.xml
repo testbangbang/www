@@ -2,79 +2,11 @@
 <resources>
     <string name="app_name">电子书包</string>
 
-    <string name="ask_select_answer">请选择该题答案</string>
-    <string name="paper_result" formatted="false">答中%d题，总分%s</string>
-    <string name="select_chapter">开始选择章节知识点</string>
-    <string name="wrong_subject">科目(错题数)</string>
-    <string name="check_answer">查看解析</string>
-
-    <string name="self_train">自主练习</string>
-    <string name="enter_wrong_view">进入错题本</string>
-    <string name="train_result">练习成绩</string>
-    <string name="wrong_view">错题库</string>
-    <string name="exercise_test">推荐试卷</string>
-    <string name="exercise_detail">试卷详情</string>
-    <string name="find_more">发现更多</string>
-    <string name="synchronous_practice">同步练习</string>
-    <string name="composite_practice">综合练习</string>
-    <string name="choose_chapter">章节选择</string>
-    <string name="choose_knowPoint">知识点选择</string>
-    <string name="select_subject">科目选择：</string>
-    <string name="select_version">教材版本：</string>
-    <string name="select_textbook">教材册别：</string>
-    <string name="select_learning_stage">学段选择：</string>
-    <string name="select_question_type">题型选择：</string>
-    <string name="difficulty_levels">难度级别：</string>
-    <string name="enter_select">进入选择</string>
-    <string name="history_record">历史记录：</string>
-    <string name="check_detail">查看详情</string>
-
-    <string name="my_task">我的作业</string>
-    <string name="my_exam">我的考试</string>
-
-    <string name="all">全部</string>
-    <string name="unfinished">未完成</string>
-    <string name="finished">已完成</string>
-    <string name="replied">已批复</string>
-
-    <string name="translate">翻译</string>
-    <string name="open">开启</string>
-    <string name="shutdown">关闭</string>
-
-    <string name="click_download">点击下载</string>
-    <string name="click_buy">点击购买</string>
-    <string name="subject" formatted="false">科目：%s</string>
-    <string name="publish" formatted="false">出版：%s</string>
-    <string name="price" formatted="false">价格：%s</string>
-    <string name="exercise_introduction">试题简介：</string>
-    <string name="studying_stage">学段</string>
-    <string name="select_studying_stage">学段选择</string>
-    <string name="studying_term">学期</string>
-
-    <string name="random_exercise">随机抽卷</string>
-    <string name="finished_exercise">已完成试卷</string>
-    <string name="unfinished_exercise">为完成试卷</string>
-    <string name="no_choose_textbook">未选定教材册别</string>
-    <string name="no_choose_subject">未选定科目</string>
-    <string name="no_find_chapter">未找到该教材的章节</string>
-    <string name="no_find_knowledgePoint">未找到该科目的知识点</string>
-    <string name="no_find_questions">未找到问题</string>
-
-    <string name="home_item_teaching_materials_text">教材</string>
-    <string name="home_item_teaching_auxiliary_text">教辅</string>
     <string name="home_item_note_text">笔记本</string>
-    <string name="home_item_dictionary_text">字典</string>
-    <string name="home_item_practice_text">练习</string>
-    <string name="home_item_exam_text">考试</string>
     <string name="home_item_setting_text">设置</string>
     <string name="home_item_pic_display_text">班级风采</string>
-    <string name="home_item_video_display_text">视频展示</string>
     <string name="home_item_application_text">应用</string>
-    <string name="study_preview_person">个人\n材料</string>
-    <string name="current_reading_location">阅读位置</string>
-    <string name="home_time_date_format">yyyy年MM月dd日</string>
-    <string name="home_learning_progress">学习进度</string>
-    <string name="home_no_notification">暂无更新</string>
+    <string name="home_item_syllabus">课程表</string>
 
     <string name="page">页码：</string>
     <string name="no_more_items">没有更多内容了</string>
@@ -156,4 +88,17 @@
     <string name="library_toc_loading">书库目录加载中...</string>
     <string name="library_toc_load_fail">书库目录加载异常</string>
 
+    <string name="downloading">下载中&#8230;</string>
+    <string name="download_fail">下载失败</string>
+    <string name="file_path_invalid">文件路径无效</string>
+
+    <string name="open_wifi">wifi没有连接，正在打开wifi&#8230;</string>
+    <string name="refreshing">正在刷新中&#8230;</string>
+    <string name="refresh_fail">刷新失败了</string>
+    <string name="refresh_content_empty">刷新获取的内容为空</string>
+
+    <string name="token_exception_contact_admin">登录异常，请检查网络重试或者联系管理员</string>
+    <string name="hardware_error">硬件错误, 请检查网络重试或者联系管理员</string>
+
+    <string name="account_un_login">未登录</string>
 </resources>

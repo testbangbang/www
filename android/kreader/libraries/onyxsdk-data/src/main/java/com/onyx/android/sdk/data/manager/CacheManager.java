@@ -68,6 +68,10 @@ public class CacheManager {
         getMetadataLruCache().put(key, metadataList);
     }
 
+    public void clearMetadataCache(String key) {
+        getMetadataLruCache().remove(key);
+    }
+
     public List<Metadata> getMetadataLruCache(String key) {
         return getMetadataLruCache().get(key);
     }
@@ -106,10 +110,7 @@ public class CacheManager {
     }
 
     public static String generateCloudKey(QueryArgs args) {
-        String queryKey = null;
-        if (!CollectionUtils.isNullOrEmpty(args.category)) {
-            queryKey = StringUtils.join(args.category, Metadata.DELIMITER);
-        }
+        String queryKey = args.libraryUniqueId;
         queryKey += args.getOrderByQuery();
         return queryKey;
     }

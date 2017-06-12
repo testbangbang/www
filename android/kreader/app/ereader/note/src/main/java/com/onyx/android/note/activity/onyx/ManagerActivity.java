@@ -32,13 +32,16 @@ import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.NotePreference;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.note.view.CheckableImageView;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.data.AscDescOrder;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.SortBy;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
@@ -76,8 +79,11 @@ public class ManagerActivity extends BaseManagerActivity {
     protected void onResume() {
         super.onResume();
         DeviceUtils.setFullScreenOnResume(this, NoteAppConfig.sharedInstance(this).useFullScreen());
+        if (AppCompatUtils.isColorDevice(this)){
+            Device.currentDevice().postInvalidate(getWindow().getDecorView(), UpdateMode.GC);
+        }
     }
-
+    
     private void loadSortByAndAsc() {
         currentSortBy = SortBy.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_SORT_BY, SortBy.CREATED_AT));
         ascOrder = AscDescOrder.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_ASC_ORDER, AscDescOrder.DESC));
@@ -124,6 +130,11 @@ public class ManagerActivity extends BaseManagerActivity {
                 }
             }
         });
+
+        //TODO:temp hide icon for color devices.
+        if (AppCompatUtils.isColorDevice(this)) {
+            findViewById(R.id.imageView_main_title).setVisibility(View.GONE);
+        }
         //disable choose mode function.if confirm remove,clean these code.
 //        chooseModeButton = (CheckableImageView) findViewById(R.id.multi_select_mode);
 //        chooseModeButton.setOnClickListener(new View.OnClickListener() {

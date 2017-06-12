@@ -24,6 +24,7 @@ public class PageIndicator {
 
     private GPaginator gPaginator;
     private PageChangedListener pageChangedListener;
+    private DataRefreshListener dataRefreshListener;
     private String totalFormat;
 
     public interface PageChangedListener {
@@ -32,6 +33,10 @@ public class PageIndicator {
         void next();
 
         void gotoPage(int currentPage);
+    }
+
+    public interface DataRefreshListener {
+        void onRefresh();
     }
 
     public PageIndicator(View indicatorView, GPaginator gPaginator) {
@@ -60,6 +65,10 @@ public class PageIndicator {
         currentPageView.setText(currentPage + "/" + totalPage);
     }
 
+    public void setTotalText(String content) {
+        totalText.setText(content);
+    }
+
     public void updateTotal(int totalCount) {
         String total;
         if (StringUtils.isNotBlank(totalFormat)) {
@@ -82,6 +91,10 @@ public class PageIndicator {
         this.pageChangedListener = pageChangedListener;
     }
 
+    public void setDataRefreshListener(DataRefreshListener dataRefreshListener) {
+        this.dataRefreshListener = dataRefreshListener;
+    }
+
     @OnClick(R.id.prev)
     void onPrevClick() {
         if (pageChangedListener != null) {
@@ -100,6 +113,13 @@ public class PageIndicator {
     void onGotoPageClick() {
         if (pageChangedListener != null) {
             pageChangedListener.gotoPage(gPaginator.getCurrentPage());
+        }
+    }
+
+    @OnClick(R.id.refresh)
+    void onRefresh() {
+        if (dataRefreshListener != null) {
+            dataRefreshListener.onRefresh();
         }
     }
 }

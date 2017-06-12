@@ -1,6 +1,11 @@
 package com.onyx.edu.reader.note.data;
 
+import android.graphics.RectF;
+
+import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.shape.*;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
 import com.onyx.edu.reader.note.model.ReaderNoteShapeModel;
 
 /**
@@ -22,6 +27,16 @@ public class ReaderShapeFactory {
     static public final int SHAPE_LINE = 7;
     static public final int SHAPE_TRIANGLE = 8;
 
+    static public final int SHAPE_FORM_SINGLE_SELECTION = 0;
+    static public final int SHAPE_FORM_MULTIPLE_SELECTION = 1;
+    static public final int SHAPE_FORM_FILL = 2;
+    static public final int SHAPE_FORM_QA = 3;
+
+    public static boolean isUniqueFormShape(int formType) {
+        return formType == SHAPE_FORM_SINGLE_SELECTION ||
+                formType == SHAPE_FORM_MULTIPLE_SELECTION ||
+                formType == SHAPE_FORM_FILL;
+    }
 
     public static final Shape createShape(int type) {
         Shape shape;
@@ -66,12 +81,29 @@ public class ReaderShapeFactory {
         return shape;
     }
 
+    public static final Shape shapeFromFormModel(final ReaderFormShapeModel shapeModel) {
+        Shape shape = createShape(shapeModel.getShapeType());
+        syncFormShapeDataFromModel(shape, shapeModel);
+        return shape;
+    }
+
     public static boolean isDFBShape(int shape) {
         return shape == SHAPE_PENCIL_SCRIBBLE || shape == SHAPE_BRUSH_SCRIBBLE || shape == SHAPE_OILY_PEN_SCRIBBLE || shape == SHAPE_FOUNTAIN_PEN_SCRIBBLE;
     }
 
     public static final ReaderNoteShapeModel modelFromShape(final Shape shape) {
-        final ReaderNoteShapeModel shapeModel = new ReaderNoteShapeModel();
+        ReaderNoteShapeModel shapeModel;
+        if (shape.isFormShape()) {
+            shapeModel = new ReaderFormShapeModel();
+            ((ReaderFormShapeModel) shapeModel).setFormId(shape.getFormId());
+            ((ReaderFormShapeModel) shapeModel).setFormRect(shape.getFormRect());
+            ((ReaderFormShapeModel) shapeModel).setFormType(shape.getFormType());
+            ((ReaderFormShapeModel) shapeModel).setFormValue(shape.getFormValue());
+            ((ReaderFormShapeModel) shapeModel).setLock(shape.isLock());
+            ((ReaderFormShapeModel) shapeModel).setReview(shape.isReview());
+        }else {
+            shapeModel = new ReaderNoteShapeModel();
+        }
         shapeModel.setDocumentUniqueId(shape.getDocumentUniqueId());
         shapeModel.setPageUniqueId(shape.getPageUniqueId());
         shapeModel.setShapeUniqueId(shape.getShapeUniqueId());
@@ -92,7 +124,34 @@ public class ReaderShapeFactory {
         shape.setShapeUniqueId(model.getShapeUniqueId());
         shape.addPoints(model.getPoints());
         shape.setPageOriginWidth(model.getPageOriginWidth());
+        shape.setFormShape(false);
     }
 
+    private static void syncFormShapeDataFromModel(final Shape shape, final ReaderFormShapeModel model) {
+        syncShapeDataFromModel(shape, model);
+        shape.setFormShape(true);
+        shape.setFormValue(model.getFormValue());
+        shape.setFormId(model.getFormId());
+        shape.setFormType(model.getFormType());
+        shape.setFormRect(model.getFormRect());
+        shape.setLock(model.isLock());
+        shape.setReview(model.isReview());
+    }
+
+    public static Shape createFormShape(String documentUniqueId,
+                                        String formId,
+                                        int formType,
+                                        RectF formRect,
+                                        FormValue value) {
+        Shape shape = new BaseShape();
+        shape.setDocumentUniqueId(documentUniqueId);
+        shape.setFormShape(true);
+        shape.setFormRect(formRect);
+        shape.setFormId(formId);
+        shape.setFormType(formType);
+        shape.setFormValue(value);
+        shape.setShapeUniqueId(ShapeUtils.generateUniqueId());
+        return shape;
+    }
 
 }

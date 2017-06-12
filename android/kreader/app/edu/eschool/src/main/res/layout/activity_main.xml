@@ -16,6 +16,11 @@
         app:tabTextAppearance="@style/tabLayoutTextAppearance"
         app:tabTextColor="@android:color/darker_gray" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black"/>
+
     <com.onyx.android.eschool.custom.NoSwipePager
         android:id="@+id/contentViewPager"
         android:layout_width="match_parent"

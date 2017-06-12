@@ -1,6 +1,8 @@
 package com.onyx.kreader.note.model;
 
 import android.content.Context;
+
+import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.scribble.data.ShapeDatabase;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.DatabaseDefinition;
@@ -27,8 +29,8 @@ public class ReaderNoteDataProvider {
     }
 
     public static void clear(final Context context) {
-        new Delete().from(ReaderNoteDocumentModel.class);
-        new Delete().from(ReaderNoteShapeModel.class);
+        Delete.table(ReaderNoteDocumentModel.class);
+        Delete.table(ReaderNoteShapeModel.class);
     }
 
     public static ReaderNoteDocumentModel loadDocument(final Context context, final String uniqueId) {

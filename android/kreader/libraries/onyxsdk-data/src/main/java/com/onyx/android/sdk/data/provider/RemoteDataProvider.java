@@ -250,7 +250,7 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Library> loadAllLibrary(String parentId) {
+    public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
         Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
         return ContentUtils.queryList(OnyxLibraryProvider.CONTENT_URI,
                 Library.class,

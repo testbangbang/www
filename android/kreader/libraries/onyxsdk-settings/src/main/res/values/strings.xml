@@ -19,48 +19,7 @@
     <string name="notification_sound">Notification Sound</string>
 
     <!-- NETWORK setting -->
-    <string name="wifi_network">Wi-fi network</string>
-    <string name="wifi_security_short_eap" translatable="false">802.1x</string>
-    <string name="wifi_security_eap" translatable="false">802.1x EAP</string>
-    <string name="wifi_security_short_wpa" translatable="false">WPA</string>
-    <string name="wifi_security_wpa" translatable="false">WPA PSK</string>
-    <string name="wifi_security_short_wpa2" translatable="false">WPA2</string>
-    <string name="wifi_security_wpa2" translatable="false">WPA2 PSK</string>
-    <string name="wifi_security_short_wpa_wpa2" translatable="false">WPA/WPA2</string>
-    <string name="wifi_security_wpa_wpa2" translatable="false">WPA/WPA2 PSK</string>
-    <string name="wifi_security_short_psk_generic" translatable="false">@string/wifi_security_short_wpa_wpa2</string>
-    <string name="wifi_security_psk_generic" translatable="false">@string/wifi_security_wpa_wpa2</string>
-    <string name="wifi_security_short_wep" translatable="false">WEP</string>
-    <string name="wifi_security_wep" translatable="false">WEP</string>
-    <string name="wifi_security_none">None</string>
-    <string name="wifi_remembered">Saved</string>
-    <string name="wifi_secured_first_item">Secured with <xliff:g id="wifi_security_short">%1$s</xliff:g></string>
-    <string name="wifi_secured_second_item">, secured with <xliff:g id="wifi_security_short">%1$s</xliff:g></string>
-    <string name="wifi_wps_available_first_item">Protected network available</string>
-    <string name="wifi_wps_available_second_item">\u0020(protected network available)</string>
-    <string name="wifi_disabled_password_failure">Authentication problem</string>
-    <string name="wifi_password">Password</string>
-    <string name="wifi_show_password">Show password</string>
-    <string name="wifi_show_advanced">Show advanced options</string>
-    <string name="wifi_signal">Signal strength</string>
-    <string name="wifi_security">Security</string>
-    <string name="wifi_speed">Link speed</string>
-    <string name="wifi_ip_address">IP address</string>
-    <string name="Wireless_lan">Wireless LAN</string>
-    <string name="wifi_status">Status</string>
-    <string name="open_wifi">Open Wi-Fi</string>
-    <string name="current_available_wifi_count">Currently available wifi: %1$d </string>
-    <string name="wifi_connected">Connected</string>
-    <string name="wifi_disabled_generic">Disabled</string>
-    <string name="wifi_disabled_network_failure">Avoided poor Internet connection</string>
-    <string name="wifi_forget">Forget</string>
-    <string name="wifi_connect">Connect</string>
-    <string name="closed">Closed</string>
-    <string name="wifi_rescan">Rescan</string>
     <string name="select_nearby_available_wireless">Select a nearby available wireless LAN</string>
-    <string name="bgn_net_work" translatable="false">2.4Ghz</string>
-    <string name="ac_network" translatable="false">5Ghz</string>
-    <string name="unknown_network" translatable="false">Unknown Network Type</string>
     <string name="wifi_band">Frequency</string>
     <string name="wifi_rational">Request Permission To Read Wifi AP List</string>
     <string name="no_wifi_permission">Without Wifi Permission,Quitting Settings.</string>
@@ -216,5 +175,62 @@
     <string name="firmware_is_latest">The installed firmware is latest</string>
     <string name="firmware_update_detected">New firmware detected</string>
     <string name="url_error">The url link is incorrect</string>
+
+    <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_unknown">Unknown</string>
+    <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_charging">Charging</string>
+    <!-- Battery Info screen. Units shown after a value.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_charging_ac">(AC)</string>
+    <!-- Battery Info screen. Units shown after a value.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_charging_usb">(USB)</string>
+    <!-- Battery Info screen. Units shown after a value.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_charging_wireless">(wireless)</string>
+    <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_discharging">Not charging</string>
+    <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_not_charging">Not charging</string>
+    <!-- Battery Info screen. Value for a status item.  Used for diagnostic info screens, precise translation isn't needed -->
+    <string name="battery_info_status_full">Full</string>
+
+    <string name="battery_percentage">Current Battery Level: %1$d %%</string>
+    <string name="battery_status">Current Battery Status: %1$s</string>
+    <!-- Battery usage on battery duration -->
+    <string name="battery_stats_on_battery"><xliff:g id="time">%1$s</xliff:g> on battery</string>
+    <string name="battery_total_on_battery">Total Standby:<xliff:g id="time">%1$s</xliff:g></string>
+    <string name="battery_remain_on_battery">Remain:<xliff:g id="time">%1$s</xliff:g></string>
+
+    <string name="battery_info">Battery Info</string>
+
+    <!-- Used to show an amount of time in the form "d days, h hours, m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_days"><xliff:g id="days">%1$d</xliff:g>d <xliff:g id="hours">%2$d</xliff:g>h <xliff:g id="minutes">%3$d</xliff:g>m <xliff:g id="seconds">%4$d</xliff:g>s</string>
+
+    <!-- Used to show an amount of time in the form "h hours, m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_hours"><xliff:g id="hours">%1$d</xliff:g>h <xliff:g id="minutes">%2$d</xliff:g>m <xliff:g id="seconds">%3$d</xliff:g>s</string>
+
+    <!-- Used to show an amount of time in the form "m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_minutes"><xliff:g id="minutes">%1$d</xliff:g>m <xliff:g id="seconds">%2$d</xliff:g>s</string>
+
+    <!-- Used to show an amount of time in the form "s seconds" in BatteryHistory -->
+    <string name="battery_history_seconds"><xliff:g id="seconds">%1$d</xliff:g>s</string>
+
+    <!-- Used to show an amount of time in the form "d days, h hours, m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_days_no_seconds"><xliff:g id="days">%1$d</xliff:g>d <xliff:g id="hours">%2$d</xliff:g>h <xliff:g id="minutes">%3$d</xliff:g>m</string>
+
+    <!-- Used to show an amount of time in the form "h hours, m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_hours_no_seconds"><xliff:g id="hours">%1$d</xliff:g>h <xliff:g id="minutes">%2$d</xliff:g>m</string>
+
+    <!-- Used to show an amount of time in the form "m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_minutes_no_seconds"><xliff:g id="minutes">%1$d</xliff:g>m</string>
+
+    <!-- Used to show an amount of time in the form "d days, h hours, m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_days_no_minute"><xliff:g id="days">%1$d</xliff:g>d <xliff:g id="hours">%2$d</xliff:g>h</string>
+
+    <!-- Used to show an amount of time in the form "h hours, m minutes, s seconds" in BatteryHistory -->
+    <string name="battery_history_hours_no_minute"><xliff:g id="hours">%1$d</xliff:g>h</string>
+
+    <string name="open_manual">Check User Manual.</string>
+    <string name="setting_product_detail">Product Detail</string>
+
 </resources>
 

@@ -32,6 +32,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private boolean loadBookmark = true;
     private boolean loadPageLinks = true;
     private boolean loadPageImages = true;
+    private boolean loadFormFields = true;
 
     public BaseReaderRequest() {
         super();
@@ -205,13 +206,16 @@ public abstract class BaseReaderRequest extends BaseRequest {
             }
         }
         if (readerViewInfo != null && loadBookmark) {
-            getReaderUserDataInfo().loadBookmarks(getContext(), reader, readerViewInfo.getVisiblePages());
+            getReaderUserDataInfo().loadPageBookmarks(getContext(), reader, readerViewInfo.getVisiblePages());
         }
         if (readerViewInfo != null && loadPageLinks) {
             getReaderUserDataInfo().loadPageLinks(getContext(), reader, readerViewInfo.getVisiblePages());
         }
         if (readerViewInfo != null && loadPageImages) {
             getReaderUserDataInfo().loadPageImages(getContext(), reader, readerViewInfo.getVisiblePages());
+        }
+        if (readerViewInfo != null && loadFormFields && reader.getReaderHelper().getFormManager().isCustomFormEnabled()) {
+            getReaderUserDataInfo().loadFormFields(getContext(), reader, readerViewInfo.getVisiblePages());
         }
     }
 

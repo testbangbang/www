@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.zxing.WriterException;
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.SettingConfig;
 import com.onyx.android.libsetting.data.SettingCategory;
@@ -21,9 +22,11 @@ import com.onyx.android.libsetting.databinding.DeviceMainSettingsItemBinding;
 import com.onyx.android.libsetting.model.ModelInfo;
 import com.onyx.android.libsetting.model.SettingItem;
 import com.onyx.android.libsetting.util.CommonUtil;
+import com.onyx.android.libsetting.util.QRCodeUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.DeviceMainSettingItemDecoration;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.ApplicationUtil;
 
@@ -49,7 +52,6 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     protected void onResume() {
         super.onResume();
         updateData();
-
     }
 
     private void updateData() {
@@ -60,12 +62,6 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         adapter.dataList.addAll(config.getSettingItemList(this));
         adapter.notifyDataSetChanged();
 
-        View infoArea = binding.infoArea;
-        PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) infoArea.getLayoutParams();
-        PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
-        info.heightPercent = 1 - (miniPercent * adapter.getRowCount());
-        infoArea.requestLayout();
-
         updateView();
     }
 
@@ -73,7 +69,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_device_main_setting);
         RecyclerView recyclerView = binding.functionRecyclerView;
         recyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 6);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 12);
         adapter = new SettingFunctionAdapter(this, new ArrayList<SettingItem>());
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -92,7 +88,9 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                 }
             }
         });
-        recyclerView.addItemDecoration(new DeviceMainSettingItemDecoration());
+        recyclerView.addItemDecoration(AppCompatUtils.isColorDevice(this) ?
+                new DeviceMainSettingItemDecoration(this.getResources().getColor(android.R.color.black), 3) :
+                new DeviceMainSettingItemDecoration());
         recyclerView.setAdapter(adapter);
 
         binding.icon.setClickable(false);
@@ -121,38 +119,65 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                 updateView();
             }
         });
+
+        //TODO:custom view for normal/colorDevice;
+        if (AppCompatUtils.isColorDevice(this)) {
+            binding.infoArea.setBackground(getResources().getDrawable(R.drawable.main_setting_bg));
+            try {
+                binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.getQRCodeCFABitmap(this));
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+            binding.deviceDetailArea.setVisibility(View.GONE);
+        } else {
+            binding.infoArea.setBackground(getResources().getDrawable(R.drawable.image_button_bg));
+            binding.macQrCodeLayout.setVisibility(View.GONE);
+        }
     }
 
     private void updateView() {
-        if (!verifyTestAppsRecord()) {
-            binding.buttonCleanTestApps.setVisibility(View.VISIBLE);
-        } else {
-            binding.buttonCleanTestApps.setVisibility(View.GONE);
-            for(Iterator<SettingItem> iterator = adapter.dataList.iterator(); iterator.hasNext(); ) {
-                if(SettingCategory.PRODUCTION_TEST == iterator.next().getItemCategory())
-                    iterator.remove();
+        for (Iterator<SettingItem> iterator = adapter.dataList.iterator(); iterator.hasNext(); ) {
+            switch (iterator.next().getItemCategory()) {
+                case SettingCategory.PRODUCTION_TEST:
+                    if (!verifyTestAppsRecord()) {
+                        binding.buttonCleanTestApps.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.buttonCleanTestApps.setVisibility(View.GONE);
+                        iterator.remove();
+                    }
+                    break;
+                case SettingCategory.FIRMWARE_UPDATE:
+                    binding.buttonOta.setVisibility(View.GONE);
+                    break;
+                default:
+                    break;
             }
-            adapter.notifyDataSetChanged();
         }
+        adapter.notifyDataSetChanged();
+        PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) binding.infoArea.getLayoutParams();
+        PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
+        info.heightPercent = 1 - (miniPercent * adapter.getRowCount());
+        binding.infoArea.requestLayout();
     }
 
     // TODO: 2016/11/30 temp max 3 line layout
     private int calculateSpanSizeBySettingItemSize(int position, int settingItemSize) {
         switch (settingItemSize) {
             case 2:
-            case 4:
             case 6:
+                return 6;
+            case 4:
                 return 3;
             case 5:
             case 7:
-                return position < 3 ? 2 : 3;
+                return position < 3 ? 4 : 6;
             case 8:
-                return position < 6 ? 2 : 3;
+                return position < 6 ? 4 : 6;
             case 3:
             case 9:
-                return 2;
+                return 4;
             default:
-                return 1;
+                return 2;
         }
     }
 
@@ -256,7 +281,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         public int getRowCount() {
             if (dataList.size() >= 6) {
                 return 3;
-            } else if (dataList.size() > 3) {
+            } else if (dataList.size() > 4) {
                 return 2;
             } else {
                 return 1;

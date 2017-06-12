@@ -8,6 +8,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.api.ReaderPlugin;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
@@ -112,6 +113,10 @@ public class Reader {
 
     public ReaderSearchManager getSearchManager() {
         return getReaderHelper().getSearchManager();
+    }
+
+    public ReaderFormManager getFormManager() {
+        return getReaderHelper().getFormManager();
     }
 
     public ReaderPluginOptions getPluginOptions() {

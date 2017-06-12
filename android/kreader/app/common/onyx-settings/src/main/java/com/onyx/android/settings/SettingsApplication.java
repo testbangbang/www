@@ -30,7 +30,7 @@ public class SettingsApplication extends MultiDexApplication {
         try {
             SettingsPreferenceManager.init(this);
             initDeviceConfig();
-            initCloudFileDownloader();
+            initCloudStore();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -40,8 +40,8 @@ public class SettingsApplication extends MultiDexApplication {
         AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
     }
 
-    public void initCloudFileDownloader() {
-        CloudStore.initFileDownloader(this);
+    public void initCloudStore() {
+        CloudStore.init(this);
     }
 
 }

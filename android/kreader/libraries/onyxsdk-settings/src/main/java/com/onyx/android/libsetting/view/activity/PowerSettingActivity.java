@@ -5,8 +5,10 @@ import android.os.Bundle;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.databinding.ActivityPowerSettingBinding;
+import com.onyx.android.libsetting.view.fragment.edu.PowerManagerFragment;
 import com.onyx.android.libsetting.view.fragment.onyx.PowerSettingPreferenceFragment;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 
 public class PowerSettingActivity extends OnyxAppCompatActivity {
     ActivityPowerSettingBinding binding;
@@ -20,8 +22,9 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
     private void initView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_power_setting);
         initSupportActionBarWithCustomBackFunction();
-        getSupportFragmentManager().beginTransaction().replace(R.id.power_preference,
-                new PowerSettingPreferenceFragment()).commit();
+        //TODO:temp use color device to distinguish different fragment.
+        getSupportFragmentManager().beginTransaction().replace(R.id.power_preference, AppCompatUtils.isColorDevice(this) ?
+                new PowerManagerFragment() : new PowerSettingPreferenceFragment()).commit();
     }
 
 }

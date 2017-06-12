@@ -13,6 +13,8 @@ import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderDrmManager;
 import com.onyx.android.sdk.reader.api.ReaderException;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestOptions;
@@ -54,6 +56,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         ReaderNavigator,
         ReaderSearchManager,
         ReaderDrmManager,
+        ReaderFormManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
@@ -256,6 +259,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return this;
     }
 
+    @Override
+    public ReaderFormManager getFormManager() {
+        return this;
+    }
+
     public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         final String path = getImagePath(pagePosition);
         if (StringUtils.isNullOrEmpty(path)) {
@@ -454,6 +462,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return null;
     }
 
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
+        return null;
+    }
+
     public boolean supportScale() {
         return true;
     }
@@ -476,5 +489,12 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return false;
     }
 
+    public boolean isCustomFormEnabled() {
+        return false;
+    }
 
+    @Override
+    public boolean loadFormFields(int page, List<ReaderFormField> fields) {
+        return false;
+    }
 }

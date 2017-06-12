@@ -14,11 +14,11 @@ public class MetadataCollection extends BaseData {
 
     @Column
     @Index
-    String documentUniqueId = null;
+    private String documentUniqueId = null;
 
     @Column
     @Index
-    String libraryUniqueId = null;
+    private String libraryUniqueId = null;
 
     public MetadataCollection() {
     }

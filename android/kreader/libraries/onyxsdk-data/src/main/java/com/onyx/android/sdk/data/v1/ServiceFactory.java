@@ -1,7 +1,11 @@
 package com.onyx.android.sdk.data.v1;
 
+import com.onyx.android.sdk.data.v2.ContentService;
+import com.onyx.android.sdk.data.v2.TokenHeaderInterceptor;
+
 import java.util.concurrent.ConcurrentHashMap;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 /**
@@ -12,13 +16,16 @@ public class ServiceFactory {
 
     private static Retrofit getRetrofit(String baseUrl) {
         if (!retrofitMap.containsKey(baseUrl)) {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(baseUrl)
-                    .addConverterFactory(FastJsonConverterFactory.create())
-                    .build();
+            Retrofit retrofit = getBaseRetrofitBuilder(baseUrl).build();
             retrofitMap.put(baseUrl, retrofit);
         }
         return retrofitMap.get(baseUrl);
+    }
+
+    public static Retrofit.Builder getBaseRetrofitBuilder(final String baseUrl) {
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(FastJsonConverterFactory.create());
     }
 
     public static final OnyxAccountService getAccountService(final String baseUrl) {
@@ -69,7 +76,19 @@ public class ServiceFactory {
         return getSpecifyService(ContentService.class, baseUrl);
     }
 
+    public static final OnyxSyncService getSyncService(final String baseUrl) {
+        return getSpecifyService(OnyxSyncService.class, baseUrl);
+    }
+
     public static final <T> T getSpecifyService(final Class<T> service, final String baseUrl) {
         return getRetrofit(baseUrl).create(service);
+    }
+
+    public static Retrofit addRetrofitTokenHeader(final String baseUrl, final String tokenKey, final String token) {
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .addInterceptor(new TokenHeaderInterceptor(tokenKey, token)).build();
+        Retrofit retrofit = getBaseRetrofitBuilder(baseUrl).client(httpClient).build();
+        retrofitMap.put(baseUrl, retrofit);
+        return retrofit;
     }
 }

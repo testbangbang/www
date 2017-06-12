@@ -19,6 +19,11 @@ android {
             aidl.srcDirs = ['src/main/java']
         }
     }
+
+    dataBinding {
+        enabled = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -42,7 +47,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
     compile "pub.devrel:easypermissions:$rootProject.easyPermissonVersion"
-
 }
 
 apply from: file(rootProject.projectDir.absolutePath + '/deploy.gradle')

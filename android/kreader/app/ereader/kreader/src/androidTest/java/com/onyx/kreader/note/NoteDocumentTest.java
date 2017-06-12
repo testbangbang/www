@@ -1,12 +1,16 @@
 package com.onyx.kreader.note;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Matrix;
 import android.test.ActivityInstrumentationTestCase2;
+
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.NormalPencilShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.note.data.ReaderNoteDocument;
 import com.onyx.kreader.note.data.ReaderNotePage;
@@ -236,5 +240,58 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
 
         dst.set(src);
         assertTrue(src.equals(dst));
+    }
+
+
+    public void test0Performance() {
+        ReaderNoteDataProvider.clear(getActivity());
+
+        final String docId = ShapeUtils.generateUniqueId();
+        final ReaderNoteDocument src = new ReaderNoteDocument();
+        src.open(getActivity(), docId, null);
+
+        Benchmark benchmark = new Benchmark();
+        int pages = TestUtils.randInt(10, 20);
+        for(int i = 0; i < pages; ++i) {
+            String pageName = String.valueOf(i);
+            final ReaderNotePage page = src.createPage(pageName, 0);
+            assertTrue(page.getShapeList().size() == 0);
+            int shapes = TestUtils.randInt(100, 200);
+            for(int s = 0; s < shapes; ++s) {
+                final Shape shape = randomShape(docId, page.getPageUniqueId(), 10, 100);
+                page.addShape(shape, false);
+            }
+            benchmark.restart();
+            benchmark.report("save: " + page.getShapeList().size() + " takes: ");
+        }
+        src.save(getActivity(), "test");
+        src.close(getActivity());
+    }
+
+    public void test1PerformanceDump() {
+        ReaderNoteDataProvider.clear(getActivity());
+
+        final String docId = ShapeUtils.generateUniqueId();
+        final ReaderNoteDocument src = new ReaderNoteDocument();
+        src.open(getActivity(), docId, null);
+
+        Benchmark benchmark = new Benchmark();
+        int pages = TestUtils.randInt(10, 20);
+        for(int i = 0; i < pages; ++i) {
+            String pageName = String.valueOf(i);
+            final ReaderNotePage page = src.createPage(pageName, 0);
+            assertTrue(page.getShapeList().size() == 0);
+            int shapes = TestUtils.randInt(100, 200);
+            for(int s = 0; s < shapes; ++s) {
+                final Shape shape = randomShape(docId, page.getPageUniqueId(), 10, 100);
+                page.addShape(shape, false);
+
+            }
+
+            benchmark.restart();
+            benchmark.report("save: " + page.getShapeList().size() + " takes: ");
+        }
+        src.save(getActivity(), "test");
+        src.close(getActivity());
     }
 }

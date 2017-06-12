@@ -11,21 +11,92 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/auto_sleep" />
+            android:layout_marginLeft="10dp"
+            android:text="@string/auto_sleep"
+            android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+            android:textStyle="bold" />
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/auto_sleep_recycler_view"
+            android:layout_marginLeft="80dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
+        <View
+            style="@style/single_line_X_axis_View"
+            android:layout_height="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/power_off_timeout" />
+            android:layout_marginLeft="10dp"
+            android:text="@string/power_off_timeout"
+            android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+            android:textStyle="bold" />
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/auto_power_off_recycler_view"
+            android:layout_marginLeft="80dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
+        <View
+            style="@style/single_line_X_axis_View"
+            android:layout_height="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@string/battery_info"
+            android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/power_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/battery_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/battery_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/battery_total_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/device_power_on_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/battery_remain_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 </layout>

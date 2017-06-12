@@ -25,3 +25,13 @@
 -keepclasseswithmembernames class * {
  @butterknife.* <methods>;
 }
+
+# for model
+-keepclasseswithmembernames public class com.onyx.android.eschool.model.** { *;}
+
+# for event
+-keepclasseswithmembernames public class com.onyx.android.eschool.events.** { *;}
+
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}

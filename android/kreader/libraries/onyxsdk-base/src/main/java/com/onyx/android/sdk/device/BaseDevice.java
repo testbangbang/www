@@ -11,7 +11,6 @@ import android.view.WindowManager;
 import com.onyx.android.sdk.api.device.epd.EPDMode;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.api.device.epd.UpdateScheme;
-import com.onyx.android.sdk.utils.ReflectUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,6 +25,8 @@ public class BaseDevice {
     private final int ICE_CREAM_SANDWICH = 14;
     private final String SHOW_STATUS_BAR_ACTION = "show_status_bar";
     private final String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
+    private final static String ENABLE_WIFI_CONNECT_STATUS_DETECTION_ACTION = "enable_wifi_connect_status_detection_status";
+    private final static String ARGS_WIFI_CONNECT_DETECTION_FLAG = "args_wifi_connect_detection_flag";
 
     public File getStorageRootDirectory() {
         return android.os.Environment.getExternalStorageDirectory();
@@ -335,18 +336,32 @@ public class BaseDevice {
     }
 
     public void hideSystemStatusBar(Context context) {
-        showOrHideSystemStatusBar(context, HIDE_STATUS_BAR_ACTION);
+        sendIntentToSystemStatusBar(context, HIDE_STATUS_BAR_ACTION);
     }
 
     public void showSystemStatusBar(Context context) {
-        showOrHideSystemStatusBar(context, SHOW_STATUS_BAR_ACTION);
+        sendIntentToSystemStatusBar(context, SHOW_STATUS_BAR_ACTION);
     }
 
-    private void showOrHideSystemStatusBar(Context context, String action) {
+    public void enableWifiDetect(Context context) {
+        enableWifiDetect(context, true);
+    }
+
+    public void enableWifiDetect(Context context, boolean enableDetect) {
+        Intent intent = new Intent(ENABLE_WIFI_CONNECT_STATUS_DETECTION_ACTION);
+        intent.putExtra(ARGS_WIFI_CONNECT_DETECTION_FLAG, enableDetect);
+        sendIntentToSystemStatusBar(context, intent);
+    }
+
+    private void sendIntentToSystemStatusBar(Context context, Intent intent) {
         if (Build.VERSION.SDK_INT >= ICE_CREAM_SANDWICH) {
-            Intent intent = new Intent(action);
             context.sendBroadcast(intent);
         }
+    }
+
+    private void sendIntentToSystemStatusBar(Context context, String action) {
+        Intent intent = new Intent(action);
+        sendIntentToSystemStatusBar(context, intent);
     }
 
     public void stopBootAnimation() {

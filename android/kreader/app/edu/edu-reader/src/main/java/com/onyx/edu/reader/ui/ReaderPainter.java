@@ -33,7 +33,7 @@ import com.onyx.edu.reader.ui.data.BookmarkIconFactory;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle;
 import com.onyx.edu.reader.ui.highlight.ReaderSelectionManager;
-import com.onyx.android.sdk.reader.utils.RectUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 
 import java.util.List;
 
@@ -197,6 +197,9 @@ public class ReaderPainter {
         if (!SingletonSharedPreference.isShowBookmark(context)) {
             return;
         }
+        if (hasFormField(userDataInfo, viewInfo)) {
+            return;
+        }
         Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(context, hasBookmark(userDataInfo, viewInfo));
         final Point point = BookmarkIconFactory.bookmarkPosition(canvas.getWidth(), bitmap);
         float left = AppCompatUtils.calculateEvenDigital(point.x);
@@ -328,6 +331,15 @@ public class ReaderPainter {
     private boolean hasBookmark(final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
         for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
             if (userDataInfo.hasBookmark(pageInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasFormField(final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
+        for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
+            if (userDataInfo.hasFormFields(pageInfo)) {
                 return true;
             }
         }

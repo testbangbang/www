@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
@@ -58,6 +59,7 @@ public class ReaderDataHolder {
 
     private Context context;
     private String documentPath;
+    private String cloudDocId;
     private Reader reader;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
@@ -67,6 +69,7 @@ public class ReaderDataHolder {
     private ReaderTtsManager ttsManager;
     private NoteManager noteManager;
     private DataManager dataManager;
+    private CloudManager cloudManager;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private EventBus eventBus = new EventBus();
     private EventReceiver eventReceiver;
@@ -148,6 +151,9 @@ public class ReaderDataHolder {
     }
 
     public final List<PageInfo> getVisiblePages() {
+        if (getReaderViewInfo() == null) {
+            return null;
+        }
         return getReaderViewInfo().getVisiblePages();
     }
 
@@ -178,7 +184,12 @@ public class ReaderDataHolder {
     }
 
     public boolean inNoteWritingProvider() {
-        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER) ||
+                getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_SCRIBBLE_PROVIDER);
+    }
+
+    public boolean inFormProvider() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_PROVIDER);
     }
 
     public boolean inReadingProvider() {
@@ -242,7 +253,7 @@ public class ReaderDataHolder {
         deviceReceiver.setSystemUIChangeListener(new DeviceReceiver.SystemUIChangeListener() {
             @Override
             public void onSystemUIChanged(String type, boolean open) {
-                getEventBus().post(new SystemUIChangedEvent(open));
+                postSystemUiChangedEvent(open);
             }
 
             @Override
@@ -251,6 +262,10 @@ public class ReaderDataHolder {
             }
         });
         deviceReceiver.registerReceiver(getContext());
+    }
+
+    public void postSystemUiChangedEvent(boolean open) {
+        getEventBus().post(new SystemUIChangedEvent(open));
     }
 
     private void unregisterReceiver() {
@@ -312,6 +327,13 @@ public class ReaderDataHolder {
             dataManager = new DataManager();
         }
         return dataManager;
+    }
+
+    public CloudManager getCloudManager() {
+        if (cloudManager == null) {
+            cloudManager = new CloudManager();
+        }
+        return cloudManager;
     }
 
     public void updateRawEventProcessor() {
@@ -533,8 +555,13 @@ public class ReaderDataHolder {
         closeTts();
         closeNoteManager();
         closeNoteMenu();
+        closeFormMenu();
         resetHandlerManager();
         closeDocument(callback);
+    }
+
+    private void closeFormMenu() {
+        getEventBus().post(new CloseFormMenuEvent());
     }
 
     public void resetHandlerManager() {
@@ -680,8 +707,33 @@ public class ReaderDataHolder {
         getEventBus().post(event);
     }
 
+    public void onBatteryStatusChange(int status, int level) {
+        final BatteryStatusChangeEvent event = new BatteryStatusChangeEvent(getContext(), status, level);
+        getEventBus().post(event);
+    }
+
     public void enterSlideshow() {
         getEventBus().post(new SlideshowStartEvent());
+    }
+
+    public boolean hasFormField() {
+        if (getVisiblePages() == null) {
+            return false;
+        }
+        for (PageInfo pageInfo : getVisiblePages()) {
+            if (getReaderUserDataInfo().hasFormFields(pageInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getCloudDocId() {
+        return cloudDocId;
+    }
+
+    public void setCloudDocId(String cloudDocId) {
+        this.cloudDocId = cloudDocId;
     }
 }
 

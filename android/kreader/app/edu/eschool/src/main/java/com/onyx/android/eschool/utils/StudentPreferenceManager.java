@@ -18,7 +18,7 @@ public class StudentPreferenceManager extends PreferenceManager {
     }
 
     public static void savePublisherSelected(Context context, String publisherSelected) {
-        com.onyx.android.sdk.utils.PreferenceManager.setStringValue(context, Constant.CONFIG_MATERIAL_PUBLISHER, publisherSelected);
+        setStringValue(context, Constant.CONFIG_MATERIAL_PUBLISHER, publisherSelected);
     }
 
     public static String loadPublisherSelected(Context context, String defaultValue) {
@@ -26,10 +26,18 @@ public class StudentPreferenceManager extends PreferenceManager {
     }
 
     public static void saveSchoolSelected(Context context, String schoolSelected) {
-        com.onyx.android.sdk.utils.PreferenceManager.setStringValue(context, Constant.CONFIG_SCHOOL_LEVEL, schoolSelected);
+        setStringValue(context, Constant.CONFIG_SCHOOL_LEVEL, schoolSelected);
     }
 
     public static String loadSchoolSelected(Context context, String defaultValue) {
         return getStringValue(context, Constant.CONFIG_SCHOOL_LEVEL, defaultValue);
+    }
+
+    public static void saveLibraryParentId(Context context, String libraryParentId) {
+        setStringValue(context, Constant.LIBRARY_PARENT_ID, libraryParentId);
+    }
+
+    public static String loadLibraryParentId(Context context, String defaultValue) {
+        return getStringValue(context, Constant.LIBRARY_PARENT_ID, defaultValue);
     }
 }

@@ -11,53 +11,107 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:layout_marginRight="@dimen/dialog_brightness_ratingbar_margin_right"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:text="@string/cold_light" />
-
         <ImageButton
-            android:id="@+id/imagebutton_cold_light_down"
-            android:layout_width="@dimen/dialog_brightness_button_width"
-            android:layout_height="@dimen/dialog_brightness_button_width"
-            android:layout_marginLeft="@dimen/dialog_brightness_button_margin_left"
-            android:layout_marginRight="@dimen/dialog_brightness_button_margin_right"
-            android:background="@drawable/button_focus_background"
-            android:contentDescription="@drawable/ic_light_down"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_light_down" />
-
-        <RatingBar
-            android:id="@+id/ratingbar_cold_light_settings"
-            style="@style/LightSettingsRatingBarStyle"
+            android:id="@+id/imagebutton_light_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/dialog_brightness_ratingbar_margin_right"
-            android:numStars="@integer/start_amount"
-            android:progressDrawable="@drawable/light_bar_big_step"
-            android:stepSize="1.0" />
-
-        <ImageButton
-            android:id="@+id/imagebutton_cold_light_add"
-            android:layout_width="@dimen/dialog_brightness_button_width"
-            android:layout_height="@dimen/dialog_brightness_button_width"
-            android:layout_marginRight="@dimen/dialog_brightness_button_margin_right"
             android:background="@drawable/button_focus_background"
-            android:contentDescription="@drawable/ic_light_add"
+            android:contentDescription="@drawable/ic_light"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_light_add" />
+            android:padding="9dp"
+            android:src="@drawable/ic_light" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/imagebutton_mixing_light_down"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dialog_brightness_button_width"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_focus_background"
+                    android:contentDescription="@drawable/ic_light_down"
+                    android:padding="4dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_light_moon" />
+
+                <ImageButton
+                    android:id="@+id/imagebutton_mixing_light_add"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dialog_brightness_button_width"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_focus_background"
+                    android:contentDescription="@drawable/ic_light_add"
+                    android:padding="4dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_light_sun" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <RatingBar
+                    android:id="@+id/ratingbar_netural_light_settings"
+                    style="@style/LightSettingsRatingBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:progressDrawable="@drawable/light_bar_big_step"
+                    android:stepSize="1.0" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="66px"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/ic_light_bar_normal_step_on" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:text="-16" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="0" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="+16" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <TextView
-        style="@style/single_line_X_axis_View"
-        android:layout_height="2dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -65,45 +119,19 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <TextView
+        <Button
+            android:id="@+id/btn_cold_light"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:layout_weight="1"
-            android:singleLine="true"
-            android:text="@string/warm_light" />
+            android:text="@string/cold_light" />
 
-        <ImageButton
-            android:id="@+id/imagebutton_warm_light_down"
-            android:layout_width="@dimen/dialog_brightness_button_width"
-            android:layout_height="@dimen/dialog_brightness_button_width"
-            android:layout_marginLeft="@dimen/dialog_brightness_button_margin_left"
-            android:layout_marginRight="@dimen/dialog_brightness_button_margin_right"
-            android:background="@drawable/button_focus_background"
-            android:contentDescription="@drawable/ic_light_down"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_light_down" />
-
-        <RatingBar
-            android:id="@+id/ratingbar_warm_light_settings"
-            style="@style/LightSettingsRatingBarStyle"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btn_warm_light"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/dialog_brightness_ratingbar_margin_right"
-            android:numStars="@integer/start_amount"
-            android:progressDrawable="@drawable/light_bar_big_step"
-            android:stepSize="1.0" />
-
-        <ImageButton
-            android:id="@+id/imagebutton_warm_light_add"
-            android:layout_width="@dimen/dialog_brightness_button_width"
-            android:layout_height="@dimen/dialog_brightness_button_width"
-            android:layout_marginRight="@dimen/dialog_brightness_button_margin_right"
-            android:background="@drawable/button_focus_background"
-            android:contentDescription="@drawable/ic_light_add"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_light_add" />
-
+            android:layout_weight="1"
+            android:text="@string/warm_light" />
     </LinearLayout>
+
 </LinearLayout>

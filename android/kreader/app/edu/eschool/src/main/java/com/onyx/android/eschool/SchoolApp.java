@@ -1,12 +1,15 @@
 package com.onyx.android.eschool;
 
-import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.eschool.device.DeviceConfig;
+import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -36,7 +39,8 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 
-import java.io.File;
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -46,13 +50,10 @@ import java.util.Set;
 /**
  * Created by zhuzeng on 14/11/2016.
  */
-public class SchoolApp extends Application {
+public class SchoolApp extends MultiDexApplication {
     static private final String MMC_STORAGE_ID = "flash";
-    static public final String E_BOOK_HOST = "http://192.168.11.104:8082/";
-    static public final String E_BOOK_API = "http://192.168.11.104:8082/api/";
 
     static private SchoolApp sInstance = null;
-    static private CloudStore cloudStore = new CloudStore();
     static private CloudStore schoolCloudStore;
     static private LibraryDataHolder libraryDataHolder;
 
@@ -65,8 +66,14 @@ public class SchoolApp extends Application {
     }
 
     @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(context);
+        MultiDex.install(SchoolApp.this);
+    }
+
+    @Override
     public void onTerminate() {
-        terminateCloudDatabase();
+        terminateCloudStore();
         deviceReceiver.enable(this, false);
         super.onTerminate();
     }
@@ -75,12 +82,11 @@ public class SchoolApp extends Application {
         try {
             sInstance = this;
             StudentPreferenceManager.init(this);
-            initCloudStoreConfig();
+            initCloudStore();
             initDeviceConfig();
             initEventListener();
             initFrescoLoader();
             initSystemInBackground();
-            startFileSystemScan();
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace();
@@ -193,12 +199,8 @@ public class SchoolApp extends Application {
         });
     }
 
-    public void initCloudStoreConfig() {
-        initCloudDatabase();
-        initCloudFileDownloader();
-    }
-
     private void initSystemInBackground() {
+        enableWifiDetect();
         turnOffLed();
     }
 
@@ -241,6 +243,12 @@ public class SchoolApp extends Application {
 
             }
         });
+        deviceReceiver.setWifiStateListener(new DeviceReceiver.WifiStateListener() {
+            @Override
+            public void onWifiConnected(Intent intent) {
+                EventBus.getDefault().post(new DataRefreshEvent());
+            }
+        });
         deviceReceiver.enable(getApplicationContext(), true);
     }
 
@@ -248,43 +256,41 @@ public class SchoolApp extends Application {
         Device.currentDevice().led(this, false);
     }
 
-    public void initCloudDatabase() {
-        CloudStore.initDatabase(this);
-    }
-
-    public void initCloudFileDownloader() {
-        CloudStore.initFileDownloader(this);
+    public void initCloudStore() {
+        CloudStore.init(this);
     }
 
     private void initFrescoLoader() {
         Fresco.initialize(singleton().getApplicationContext());
     }
 
-    public void terminateCloudDatabase() {
-        CloudStore.terminateCloudDatabase();
+    private void enableWifiDetect() {
+        Device.currentDevice().enableWifiDetect(this, true);
+    }
+
+    public void terminateCloudStore() {
+        CloudStore.terminate();
     }
 
     public static SchoolApp singleton() {
         return sInstance;
     }
 
-    static public CloudStore getCloudStore() {
-        return cloudStore;
-    }
-
     static public CloudStore getSchoolCloudStore() {
         if (schoolCloudStore == null) {
             schoolCloudStore = new CloudStore();
-            CloudManager cloudManager = schoolCloudStore.getCloudManager();
-            CloudConf cloudConf = new CloudConf(
-                    E_BOOK_HOST,
-                    E_BOOK_API,
-                    Constant.DEFAULT_CLOUD_STORAGE);
-            cloudManager.setChinaCloudConf(cloudConf);
-            cloudManager.setGlobalCloudConf(cloudConf);
+            schoolCloudStore.setCloudConf(getCloudConf());
         }
         return schoolCloudStore;
     }
+
+    private static CloudConf getCloudConf() {
+        String host = DeviceConfig.sharedInstance(singleton()).getCloudContentHost();
+        String api = DeviceConfig.sharedInstance(singleton()).getCloudContentApi();
+        CloudConf cloudConf = new CloudConf(host, api, Constant.DEFAULT_CLOUD_STORAGE);
+        return cloudConf;
+    }
+
 
     static public DataManager getDataManager() {
         return getLibraryDataHolder().getDataManager();
@@ -293,6 +299,7 @@ public class SchoolApp extends Application {
     public static LibraryDataHolder getLibraryDataHolder() {
         if (libraryDataHolder == null) {
             libraryDataHolder = new LibraryDataHolder(sInstance);
+            libraryDataHolder.setCloudManager(getSchoolCloudStore().getCloudManager());
         }
         return libraryDataHolder;
     }

@@ -3,22 +3,22 @@ package com.onyx.android.libsetting.view.activity;
 import android.Manifest;
 import android.databinding.DataBindingUtil;
 import android.net.NetworkInfo;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.SettingConfig;
-import com.onyx.android.libsetting.data.wifi.AccessPoint;
 import com.onyx.android.libsetting.databinding.ActivityWifiSettingBinding;
 import com.onyx.android.libsetting.databinding.WifiInfoItemBinding;
-import com.onyx.android.libsetting.manager.WifiAdmin;
 import com.onyx.android.libsetting.util.SettingRecyclerViewUtil;
-import com.onyx.android.libsetting.util.WifiUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.PageRecyclerViewItemClickListener;
 import com.onyx.android.libsetting.view.SettingPageAdapter;
@@ -30,9 +30,14 @@ import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.CompatibilityUtil;
+import com.onyx.android.sdk.wifi.AccessPoint;
+import com.onyx.android.sdk.wifi.WifiAdmin;
+import com.onyx.android.sdk.wifi.WifiUtil;
 
 import java.net.SocketException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -47,6 +52,8 @@ import static com.onyx.android.libsetting.util.Constant.ARGS_SIGNAL_LEVEL;
 import static com.onyx.android.libsetting.util.Constant.ARGS_SSID;
 
 public class WifiSettingActivity extends OnyxAppCompatActivity {
+    static final boolean DEBUG = true;
+
     static final String TAG = WifiSettingActivity.class.getSimpleName();
     static final String ACTION_WIFI_ENABLE = "android.intent.action.WIFI_ENABLE";
     ActivityWifiSettingBinding binding;
@@ -88,6 +95,23 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         }
     }
 
+    private void logScanResult(List<AccessPoint> scanResult) {
+        Set<String> set = new HashSet<>();
+        for (AccessPoint ap:scanResult){
+            if (ap == null || ap.getScanResult() == null) {
+                Log.e(TAG, "null ap found");
+                continue;
+            }
+            final ScanResult sr = ap.getScanResult();
+            Log.e(TAG, "AccessPoint SSID:" + sr.SSID + " BSSID: " + sr.BSSID);
+            if (set.contains(sr.SSID)) {
+                Log.e(TAG, "Duplicated id found:" + sr.SSID + " bssid: " + sr.BSSID);
+            }
+            set.add(sr.SSID);
+        }
+        Log.e(TAG, "Result Size:" + scanResult.size());
+    }
+
     private void initWifiAdmin() {
         wifiAdmin = new WifiAdmin(this, new WifiAdmin.Callback() {
             @Override
@@ -98,6 +122,9 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
             @Override
             public void onScanResultReady(List<AccessPoint> scanResult) {
                 adapter.setDataList(scanResult);
+                if (DEBUG){
+                    logScanResult(scanResult);
+                }
                 updateSummary(true);
                 binding.wifiScanResultRecyclerView.notifyDataSetChanged();
             }
@@ -290,6 +317,10 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
     }
 
     private void showLoginDialog(final AccessPoint accessPoint) {
+        if (wifiAdmin.getSecurity(accessPoint.getScanResult()) == WifiAdmin.SECURITY_NONE) {
+            wifiAdmin.connectWifi(accessPoint);
+            return;
+        }
         WifiLoginDialog wifiLoginDialog = new WifiLoginDialog();
         Bundle args = new Bundle();
         args.putString(ARGS_SECURITY_MODE, accessPoint.getSecurityMode());

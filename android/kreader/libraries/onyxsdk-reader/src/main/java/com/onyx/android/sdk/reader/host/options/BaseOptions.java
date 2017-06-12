@@ -31,6 +31,7 @@ public class BaseOptions {
     transient static public final String SCREEN_SPLIT_POINT_TAG = "screen_split_point";
     transient static public final String CODE_PAGE_TAG = "code_page";
     transient static public final String CHINESE_CONVERT_TYPE_TAG = "chinese_convert_type";
+    transient static public final String CUSTOM_FORM_ENABLED_TAG = "custom_form_enabled";
     transient static public final String FONT_SIZE_TAG = "font_size";
     transient static public final String DEFAULT_FONT_SIZE = "default_font_size";
     transient static public final String FONT_FACE_TAG = "font_face";
@@ -339,6 +340,17 @@ public class BaseOptions {
         backend.putObject(CHINESE_CONVERT_TYPE_TAG, convertType.toString());
     }
 
+    public boolean isCustomFormEnabled () {
+        if (!backend.hasKey(CUSTOM_FORM_ENABLED_TAG)) {
+            return false;
+        }
+        return backend.getBoolean(CUSTOM_FORM_ENABLED_TAG);
+    }
+
+    public void setCustomFormEnabled(boolean enabled) {
+        backend.putBoolean(CUSTOM_FORM_ENABLED_TAG, enabled);
+    }
+
     public float getFontSize() {
         if (!backend.hasKey(FONT_SIZE_TAG)) {
             return INVALID_FLOAT_VALUE;
@@ -602,7 +614,7 @@ public class BaseOptions {
     public final ReaderDocumentOptionsImpl documentOptions() {
         return new ReaderDocumentOptionsImpl(getPassword(), getZipPassword(),
                 getCodePage(), LocaleUtils.getLocaleDefaultCodePage(),
-                getChineseConvertType());
+                getChineseConvertType(), isCustomFormEnabled());
     }
 
     public final ReaderPluginOptions pluginOptions() {

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.onyx.android.sdk.data.model.common.FetchPolicy.CLOUD_MEM_DB;
 
 
 /**
@@ -44,6 +47,12 @@ public class QueryArgs {
     public Set<String> series = new HashSet<>();
     public Set<String> category = new HashSet<>();
     public String query;
+
+    public
+    @FetchPolicy.Type
+    int fetchPolicy = FetchPolicy.MEM_CLOUD_DB;
+
+    public String cloudToken;
 
     public static final String DEVICE_LIBRARY = "deviceLibrary";
     public static final String RECENT_READ = "recentRead";
@@ -225,5 +234,21 @@ public class QueryArgs {
     @JSONField(serialize = false, deserialize = false)
     public int getCloudFetchLimit() {
         return limit > QueryArgs.CLOUD_FETCH_LIMIT ? limit : QueryArgs.CLOUD_FETCH_LIMIT;
+    }
+
+    public void resetOffset() {
+        this.offset = 0;
+    }
+
+    public void useMemCloudDbPolicy() {
+        fetchPolicy = FetchPolicy.MEM_CLOUD_DB;
+    }
+
+    public void useCloudMemDbPolicy() {
+        fetchPolicy = FetchPolicy.CLOUD_MEM_DB;
+    }
+
+    public void useCloudOnlyPolicy() {
+        fetchPolicy = FetchPolicy.CLOUD_ONLY;
     }
 }

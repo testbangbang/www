@@ -47,6 +47,8 @@ public class HandlerManager {
     public static final String ERASER_PROVIDER = "eraser";
     public static final String TTS_PROVIDER = "tts";
     public static final String SLIDESHOW_PROVIDER = "slideshow";
+    public static final String FORM_PROVIDER = "form";
+    public static final String FORM_SCRIBBLE_PROVIDER = "form_scribble";
 
     private static final int TOUCH_HORIZONTAL_PART = 3;
     private static final int TOUCH_VERTICAL_PART = 2;
@@ -73,6 +75,8 @@ public class HandlerManager {
         providerMap.put(ERASER_PROVIDER, new ScribbleHandler(this));
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
         providerMap.put(SLIDESHOW_PROVIDER, new SlideshowHandler(this));
+        providerMap.put(FORM_PROVIDER, new FormFieldHandler(this));
+        providerMap.put(FORM_SCRIBBLE_PROVIDER, new FormScribbleHandler(this));
         activeProviderName = READING_PROVIDER;
         enable.set(true);
         enableTouch.set(true);
@@ -172,7 +176,7 @@ public class HandlerManager {
     }
 
     public void resetToDefaultProvider() {
-        setActiveProvider(READING_PROVIDER);
+        setActiveProvider(readerDataHolder.hasFormField() ? FORM_PROVIDER : READING_PROVIDER);
     }
 
     public void setActiveProvider(final String providerName) {
@@ -433,6 +437,9 @@ public class HandlerManager {
         if (readerDataHolder.inNoteWritingProvider()) {
             return false;
         }
+        if (readerDataHolder.inFormProvider()) {
+            return false;
+        }
         return true;
     }
 
@@ -631,7 +638,7 @@ public class HandlerManager {
         new ToggleBookmarkAction(readerDataHolder.getFirstPageInfo(), ToggleBookmarkAction.ToggleSwitch.On).execute(readerDataHolder, null);
     }
 
-    private void close(final ReaderDataHolder readerDataHolder) {
+    public void close(final ReaderDataHolder readerDataHolder) {
         getActiveProvider().close(readerDataHolder);
     }
 }

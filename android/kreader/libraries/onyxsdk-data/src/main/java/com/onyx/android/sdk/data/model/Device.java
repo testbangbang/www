@@ -7,6 +7,8 @@ import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.HashMap;
@@ -66,14 +68,7 @@ public class Device extends BaseData {
         if (StringUtils.isNotBlank(device.macAddress) && StringUtils.isNotBlank(device.deviceUniqueId)) {
             return;
         }
-        final WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        if (wifiManager == null) {
-            return;
-        }
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        if (wifiInfo != null) {
-            device.macAddress = wifiInfo.getMacAddress();
-            device.deviceUniqueId = device.macAddress;
-        }
+
+        device.deviceUniqueId = device.macAddress = NetworkUtil.getMacAddress(context);
     }
 }

@@ -19,6 +19,7 @@
 #include "onyx_context.h"
 #include "JNIUtils.h"
 #include "jsonxx.h"
+#include "form_helper.h"
 
 static const char * selectionClassName = "com/onyx/android/sdk/reader/plugins/neopdf/NeoPdfSelection";
 static const char * splitterClassName = "com/onyx/android/sdk/reader/api/ReaderTextSplitter";
@@ -34,14 +35,23 @@ int libraryReference = 0;
 std::string deviceId;
 std::string drmCertificate;
 
-bool readDrmManifest(FPDF_DOCUMENT document, std::vector<char16_t> *buf) {
+bool readDrmManifest(FPDF_DOCUMENT document, std::vector<char16_t> *manifestBuf,
+                     std::vector<char16_t> *oadBuf) {
     unsigned long res = FPDF_GetMetaText(document, "boox", nullptr, 0);
     if (res <= 2) { // empty metadata text is '\0' in unicode
         return false;
     }
-    buf->resize(res / 2);
-    FPDF_GetMetaText(document, "boox", buf->data(), res);
-    buf->resize(buf->size() - 1); // remove trailing '\0'
+    manifestBuf->resize(res / 2);
+    FPDF_GetMetaText(document, "boox", manifestBuf->data(), res);
+
+    unsigned long oadLen = FPDF_GetMetaText(document, "oad", nullptr, 0);
+    if (oadLen <= 2) {
+        oadBuf->push_back(0);
+    } else {
+        oadBuf->resize(oadLen / 2);
+        FPDF_GetMetaText(document, "oad", oadBuf->data(), oadLen);
+    }
+
     return true;
 }
 
@@ -115,10 +125,12 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
     onyx::DrmDecryptManager &drmManager = onyx::DrmDecryptManager::singleton();
     drmManager.reset();
 
-    std::vector<char16_t> buf;
-    if (readDrmManifest(document, &buf)) {
-        std::string drmManifest = StringUtils::utf16leto8(buf.data());
-        if (!drmManager.setupWithManifest(deviceId, drmCertificate, drmManifest)) {
+    std::vector<char16_t> manifestBuf;
+    std::vector<char16_t> oadBuf;
+    if (readDrmManifest(document, &manifestBuf, &oadBuf)) {
+        std::string drmManifest = StringUtils::utf16leto8(manifestBuf.data());
+        std::string additionalData = StringUtils::utf16leto8(oadBuf.data());
+        if (!drmManager.setupWithManifest(deviceId, drmCertificate, drmManifest, additionalData)) {
             LOGE("parse document DRM failed!");
             return -1;
         }
@@ -250,7 +262,9 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     }
     FPDF_RenderPageBitmap(pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
     FPDF_FORMHANDLE formHandle = OnyxPdfiumManager::getFormHandle(env, id);
-    FPDF_FFLDraw(formHandle, pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
+    if (OnyxPdfiumManager::isRenderFormFields(env, id)) {
+        FPDF_FFLDraw(formHandle, pdfBitmap, page, x, y, width, height, rotation, FPDF_LCD_TEXT | FPDF_ANNOT | FPDF_REVERSE_BYTE_ORDER);
+    }
     AndroidBitmap_unlockPixels(env, bitmap);
     return true;
 }
@@ -741,6 +755,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
         jfloatArray floatArray = env->NewFloatArray(list.size());
         env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
         env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, destPage, floatArray, nullptr, -1, -1, nullptr, nullptr);
+        env->DeleteLocalRef(floatArray);
     }
 
     return true;
@@ -761,3 +776,67 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     return true;
 }
 
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetRenderFormFields
+  (JNIEnv *env, jobject thiz, jint id, jboolean render) {
+    OnyxPdfiumManager::setRenderFormFields(env, id, render);
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeLoadFormFields
+(JNIEnv *env, jobject thiz, jint id, jint pageIndex, jobject fieldList) {
+    FPDF_DOCUMENT doc = OnyxPdfiumManager::getDocument(env, id);
+    if (doc == NULL) {
+        return false;
+    }
+    FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
+    if (page == NULL) {
+        return false;
+    }
+
+    return FormHelper::loadFormFields(env, page, fieldList);
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageTextRegions
+ (JNIEnv *env, jobject, jint id, jint pageIndex, jobject objectList) {
+    FPDF_DOCUMENT doc = OnyxPdfiumManager::getDocument(env, id);
+    if (doc == NULL) {
+        return false;
+    }
+
+    FPDF_PAGE page = OnyxPdfiumManager::getPage(env, id, pageIndex);
+    FPDF_TEXTPAGE textPage = OnyxPdfiumManager::getTextPage(env, id, pageIndex);
+    if (page == NULL || textPage == NULL) {
+        return false;
+    }
+
+    JNIUtils utils(env);
+    if (!utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;)V", true)) {
+        return false;
+    }
+
+    int count = FPDFText_CountChars(textPage);
+    int rectangleCount = FPDFText_CountRects(textPage, 0, count);
+
+    for(int i = 0; i < rectangleCount; ++i) {
+        double left, top, right, bottom;
+        FPDFText_GetRect(textPage, i, &left, &top, &right, &bottom);
+        double newLeft, newRight, newBottom, newTop;
+        double pageWidth = FPDF_GetPageWidth(page);
+        double pageHeight = FPDF_GetPageHeight(page);
+        int rotation = 0;
+        pageToDevice(page, pageWidth, pageHeight, rotation,
+                     left, top, right, bottom,
+                     &newLeft, &newTop, &newRight, &newBottom);
+        std::vector<float> list;
+        list.push_back(static_cast<float>(newLeft));
+        list.push_back(static_cast<float>(newTop));
+        list.push_back(static_cast<float>(newRight));
+        list.push_back(static_cast<float>(newBottom));
+
+        jfloatArray floatArray = env->NewFloatArray(list.size());
+        env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
+        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, floatArray, nullptr, -1, -1, nullptr, nullptr);
+        env->DeleteLocalRef(floatArray);
+    }
+
+    return true;
+}

@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                        android:background="@drawable/imagebtn_bg"
-                                                        android:paddingLeft="20dp"
-                                                        android:paddingRight="20dp"
-                                                        android:paddingTop="@dimen/dialog_table_of_content_list_item_padding_top"
-                                                        android:layout_width="match_parent"
-                                                        android:layout_height="wrap_content">
+<com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/tools"
+    appCompat:alwaysLayoutImageView="true"
+    android:background="@drawable/imagebtn_bg"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="@dimen/dialog_table_of_content_list_item_padding_top"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/image_view_bookmark"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="@dimen/dialog_table_of_content_list_item_padding"
         android:layout_toLeftOf="@+id/text_view_page"
         android:src="@drawable/ic_dialog_reader_bookmark_black"
         android:layout_width="wrap_content"
@@ -62,8 +65,9 @@
             android:layout_height="wrap_content"/>
 
         <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            appCompat:alwaysLayoutImageView="true"
             android:id="@+id/edit_layout"
-            android:padding="5dp"
+            android:padding="@dimen/dialog_table_of_content_list_item_padding"
             android:gravity="center"
             android:layout_marginRight="30dp"
             android:layout_toLeftOf="@+id/delete_layout"
@@ -73,7 +77,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="@dimen/dialog_table_of_content_list_item_padding"
                 android:src="@drawable/ic_dialog_reader_edit_black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -86,7 +90,8 @@
         </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
         <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
-            android:padding="5dp"
+            appCompat:alwaysLayoutImageView="true"
+            android:padding="@dimen/dialog_table_of_content_list_item_padding"
             android:gravity="center"
             android:id="@+id/delete_layout"
             android:layout_alignParentRight="true"
@@ -96,7 +101,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="@dimen/dialog_table_of_content_list_item_padding"
                 android:src="@drawable/ic_dialog_reader_delet_black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

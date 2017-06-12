@@ -54,6 +54,8 @@ public class DeviceConfig {
     private int fixedGamma = 0;
     private boolean supportBrushPen = false;
     private boolean supportMultipleTabs = false;
+    private boolean customFormEnabled = false;
+    private boolean enableDictWebSearch = true;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -296,6 +298,14 @@ public class DeviceConfig {
 
     public void setSupportMultipleTabs(boolean supportMultipleTabs) {
         this.supportMultipleTabs = supportMultipleTabs;
+    }
+
+    public boolean isCustomFormEnabled() {
+        return customFormEnabled;
+    }
+
+    public void setCustomFormEnabled(boolean customFormEnabled) {
+        this.customFormEnabled = customFormEnabled;
     }
 
     public boolean isDefaultUseSystemStatusBar() {
@@ -564,6 +574,14 @@ public class DeviceConfig {
         this.defaultFontSizes = defaultFontSizes;
     }
 
+    public boolean isEnableDictWebSearch() {
+        return enableDictWebSearch;
+    }
+
+    public void setEnableDictWebSearch(boolean enableDictWebSearch) {
+        this.enableDictWebSearch = enableDictWebSearch;
+    }
+
     public String getUmengKey() {
         return umengKey;
     }
@@ -604,6 +622,8 @@ public class DeviceConfig {
         adjustTopMargin(context, baseOptions);
         adjustRightMargin(context, baseOptions);
         adjustBottomMargin(context, baseOptions);
+
+        baseOptions.setCustomFormEnabled(DeviceConfig.sharedInstance(context).isCustomFormEnabled());
     }
 
     private static void adjustFontFace(final Context context, final BaseOptions baseOptions) {

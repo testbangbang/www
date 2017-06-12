@@ -1,6 +1,5 @@
 package com.onyx.appmarket;
 
-import android.app.Application;
 import android.content.Context;
 
 import android.support.multidex.MultiDex;
@@ -32,18 +31,19 @@ public class MarketApplication extends MultiDexApplication {
         try {
             sInstance = this;
             initDownloadManager();
-            initStoreDatabase();
+            initCloudStore();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void initDownloadManager() {
-        OnyxDownloadManager.getInstance(sInstance.getApplicationContext());
+        OnyxDownloadManager.init(sInstance.getApplicationContext());
+        OnyxDownloadManager.getInstance();
     }
 
-    private void initStoreDatabase() {
-        CloudStore.initDatabase(sInstance.getApplicationContext());
+    private void initCloudStore() {
+        CloudStore.init(sInstance.getApplicationContext());
     }
 
     public static CloudStore getCloudStore() {

@@ -2,6 +2,7 @@ package com.onyx.edu.reader.note.model;
 
 import android.content.Context;
 import com.onyx.android.sdk.scribble.data.ShapeDatabase;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.DatabaseDefinition;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -27,8 +28,8 @@ public class ReaderNoteDataProvider {
     }
 
     public static void clear(final Context context) {
-        new Delete().from(ReaderNoteDocumentModel.class);
-        new Delete().from(ReaderNoteShapeModel.class);
+        new Delete().from(ReaderNoteDocumentModel.class).execute();
+        new Delete().from(ReaderNoteShapeModel.class).execute();
     }
 
     public static ReaderNoteDocumentModel loadDocument(final Context context, final String uniqueId) {
@@ -58,6 +59,57 @@ public class ReaderNoteDataProvider {
         return list;
     }
 
+    public static ReaderFormShapeModel loadFormShape(final Context context,
+                                                           final String documentUniqueId,
+                                                           final String formId) {
+        Select select = new Select();
+        Where where = select.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ReaderFormShapeModel_Table.formId.eq(formId));
+        return (ReaderFormShapeModel) where.querySingle();
+    }
+
+    public static List<ReaderFormShapeModel> loadFormShapeList(final Context context,
+                                                           final String documentUniqueId,
+                                                           final String pageUniqueId,
+                                                           final String subPageUniqueId) {
+        Select select = new Select();
+        Where where = select.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ReaderFormShapeModel_Table.pageUniqueId.eq(pageUniqueId));
+        if (StringUtils.isNotBlank(subPageUniqueId)) {
+            where = where.and(ReaderFormShapeModel_Table.subPageUniqueId.eq(subPageUniqueId));
+        }
+
+        List<ReaderFormShapeModel> list = where.queryList();
+        return list;
+    }
+
+    public static List<ReaderFormShapeModel> loadFormShapeList(final Context context,
+                                                               final String documentUniqueId,
+                                                               final boolean review
+                                                               ) {
+        Select select = new Select();
+        Where where = select.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ReaderFormShapeModel_Table.review.eq(review));
+        List<ReaderFormShapeModel> list = where.queryList();
+        return list;
+    }
+
+    public static boolean hasUnLockFormShapes(final Context context,
+                                              final String documentUniqueId,
+                                              final boolean review) {
+        Select select = new Select();
+        Where where = select.from(ReaderFormShapeModel.class).
+                where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId)).
+                and(ReaderFormShapeModel_Table.lock.eq(false)).
+                and(ReaderFormShapeModel_Table.review.eq(review));
+        return where.hasData();
+    }
+
+    public static List<ReaderNoteShapeModel> loadShapeList(final Context context,
+                                                           final String documentUniqueId) {
+        Select select = new Select();
+        Where where = select.from(ReaderNoteShapeModel.class).where(ReaderNoteShapeModel_Table.documentUniqueId.eq(documentUniqueId));
+        List<ReaderNoteShapeModel> list = where.queryList();
+        return list;
+    }
+
     public static void saveShapeList(final Context context,
                                      final Collection<ReaderNoteShapeModel> list) {
         final DatabaseWrapper database= FlowManager.getDatabase(ReaderNoteDatabase.NAME).getWritableDatabase();
@@ -67,6 +119,23 @@ public class ReaderNoteDataProvider {
         }
         database.setTransactionSuccessful();
         database.endTransaction();
+    }
+
+    public static void saveFormShapeList(final Context context,
+                                     final Collection<ReaderFormShapeModel> list) {
+        final DatabaseWrapper database= FlowManager.getDatabase(ReaderNoteDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for(ReaderFormShapeModel shapeModel : list) {
+            shapeModel.save();
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
+    public static boolean removeFormShape(final Context context, String documentId, String formId) {
+        Delete delete = new Delete();
+        delete.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentId)).and(ReaderFormShapeModel_Table.formId.eq(formId)).query();
+        return true;
     }
 
     public static void saveDocumentList(final Context context,
@@ -117,6 +186,12 @@ public class ReaderNoteDataProvider {
     public static boolean removeShapesByIdList(final Context context, final List<String> list) {
         Delete delete = new Delete();
         delete.from(ReaderNoteShapeModel.class).where(ReaderNoteShapeModel_Table.shapeUniqueId.in(list)).query();
+        return true;
+    }
+
+    public static boolean removeFormShapesByIdList(final Context context, final List<String> list) {
+        Delete delete = new Delete();
+        delete.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.shapeUniqueId.in(list)).query();
         return true;
     }
 

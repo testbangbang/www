@@ -1,6 +1,8 @@
 package com.onyx.edu.reader.ui;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -8,9 +10,13 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -36,9 +42,13 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
-import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -64,6 +74,7 @@ import com.onyx.edu.reader.ui.actions.SaveDocumentOptionsAction;
 import com.onyx.edu.reader.ui.actions.ShowQuickPreviewAction;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.actions.ShowTextSelectionMenuAction;
+import com.onyx.edu.reader.ui.data.FormFieldControlFactory;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.edu.reader.ui.dialog.DialogScreenRefresh;
@@ -103,6 +114,7 @@ import com.onyx.edu.reader.ui.events.UpdateTabWidgetVisibilityEvent;
 import com.onyx.edu.reader.ui.gesture.MyOnGestureListener;
 import com.onyx.edu.reader.ui.gesture.MyScaleGestureListener;
 import com.onyx.edu.reader.ui.handler.BaseHandler;
+import com.onyx.edu.reader.ui.handler.FormFieldHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.SlideshowHandler;
 import com.onyx.edu.reader.ui.receiver.NetworkConnectChangedReceiver;
@@ -113,6 +125,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Created by Joy on 2016/4/14.
@@ -134,8 +147,12 @@ public class ReaderActivity extends OnyxBaseActivity {
     private ScaleGestureDetector scaleDetector;
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
     private final ReaderPainter readerPainter = new ReaderPainter();
+    private BroadcastReceiver powerReceiver;
 
     private PinchZoomingPopupMenu pinchZoomingPopupMenu;
+    private List<View> formFieldControls = new ArrayList<>();
+
+    private Paint formScribbleRegionPaint = new Paint();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -284,6 +301,20 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void initReceiver() {
+        powerReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN);
+                int level = DeviceUtils.getBatteryPercentLevel(ReaderActivity.this);
+                getReaderDataHolder().onBatteryStatusChange(status, level);
+            }
+        };
+        IntentFilter powerFilter = new IntentFilter();
+        powerFilter.addAction(Intent.ACTION_POWER_CONNECTED);
+        powerFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        powerFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        registerReceiver(powerReceiver, powerFilter);
+
         networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
             @Override
             public void onNetworkChanged(boolean connected, int networkType) {
@@ -304,6 +335,9 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (networkConnectChangedReceiver != null) {
             unregisterReceiver(networkConnectChangedReceiver);
             networkConnectChangedReceiver = null;
+        }
+        if (powerReceiver != null) {
+            unregisterReceiver(powerReceiver);
         }
     }
 
@@ -499,7 +533,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         boolean update = (event != null && event.isApplyGCIntervalUpdate());
         if (update) {
-            ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
+            ReaderDeviceManager.applyWithGcUpdate(surfaceView);
         } else {
             ReaderDeviceManager.disableRegal();
         }
@@ -513,6 +547,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void afterDrawPage() {
+        showFormMenu();
         ReaderDeviceManager.cleanUpdateMode(surfaceView);
         updateAllStatusBars();
     }
@@ -539,6 +574,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         if (event.isUseFullUpdate()) {
             ReaderDeviceManager.disableRegal();
+            EpdController.resetUpdateMode(getSurfaceView());
         }
     }
 
@@ -749,6 +785,10 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
 
+        Metadata metadata = MetadataUtils.getIntentExtraDataMetadata(getIntent());
+        if (metadata != null) {
+            getReaderDataHolder().setCloudDocId(metadata.getCloudId());
+        }
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
         if (isDocumentOpening() || isFileAlreadyOpened(path)) {
             return;
@@ -847,8 +887,12 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onScribbleMenuSizeChanged(final ScribbleMenuChangedEvent event) {
-        final Rect rect = new Rect();
+        Rect rect = new Rect();
         surfaceView.getLocalVisibleRect(rect);
+        Rect formRect = getFormRect();
+        if (formRect != null) {
+            rect = formRect;
+        }
         int bottomOfTopToolBar = event.getBottomOfTopToolBar();
         int topOfBottomToolBar = event.getTopOfBottomToolBar();
 
@@ -861,6 +905,19 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
         getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, getExcludeRect(event.getExcludeRect()), rotation);
+    }
+
+    private Rect getFormRect() {
+        Rect rect = null;
+        for (View formFieldControl : formFieldControls) {
+            if (isFormScribble(formFieldControl)) {
+                ReaderFormField field = (ReaderFormField) formFieldControl.getTag();
+                RectF rectF = field.getRect();
+                rect = new Rect((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom);
+                break;
+            }
+        }
+        return rect;
     }
 
     private List<RectF> getExcludeRect(final RectF scribbleMenuExcludeRect) {
@@ -990,6 +1047,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         try {
+            clearFormFieldControls();
             readerPainter.drawPage(this,
                     canvas,
                     pageBitmap,
@@ -997,9 +1055,77 @@ public class ReaderActivity extends OnyxBaseActivity {
                     getReaderDataHolder().getReaderViewInfo(),
                     getReaderDataHolder().getSelectionManager(),
                     getReaderDataHolder().getNoteManager());
+            addFormFieldControls(canvas);
         } finally {
             holder.unlockCanvasAndPost(canvas);
         }
+    }
+
+    private void clearFormFieldControls() {
+        for (View view : formFieldControls) {
+            mainView.removeView(view);
+        }
+        formFieldControls.clear();
+    }
+
+    private void addFormFieldControls(Canvas canvas) {
+        for (PageInfo pageInfo : getReaderDataHolder().getVisiblePages()) {
+            if (getReaderDataHolder().getReaderUserDataInfo().hasFormFields(pageInfo)) {
+                List<ReaderFormField> fields = getReaderDataHolder().getReaderUserDataInfo().getFormFields(pageInfo);
+                for (ReaderFormField field : fields) {
+                    View control = FormFieldControlFactory.createFormControl(mainView, field);
+                    if (control != null) {
+                        formFieldControls.add(control);
+                        if (!isFormScribble(control)) {
+                            mainView.addView(control);
+                        } else {
+                            drawScribbleRegion(canvas, control);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void showFormMenu() {
+        if (formFieldControls.size() > 0) {
+            boolean startNoteDrawing = hasScribbleFormField();
+            if (!startNoteDrawing) {
+                getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
+            }else {
+                getHandlerManager().setActiveProvider(HandlerManager.FORM_SCRIBBLE_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
+            }
+
+            ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
+        }
+    }
+
+    private boolean hasScribbleFormField() {
+        if (formFieldControls == null) {
+            return false;
+        }
+        for (View formFieldControl : formFieldControls) {
+            ReaderFormField field = (ReaderFormField) formFieldControl.getTag();
+            if (field instanceof ReaderFormScribble) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean isFormScribble(View view) {
+        return view.getTag() instanceof ReaderFormScribble;
+    }
+
+    private void drawScribbleRegion(Canvas canvas, View view) {
+        formScribbleRegionPaint.setColor(Color.GRAY);
+        formScribbleRegionPaint.setStyle(Paint.Style.STROKE);
+        formScribbleRegionPaint.setStrokeWidth(3);
+        PathEffect effect = new DashPathEffect(new float[]{5,5,5,5},1);
+        formScribbleRegionPaint.setPathEffect(effect);
+
+        canvas.drawRect(((ReaderFormScribble)view.getTag()).getRect(), formScribbleRegionPaint);
     }
 
     private void renderShapeDataInBackground() {
@@ -1123,7 +1249,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                 title = getReaderDataHolder().getBookTitle();
             }
         }
-        int endBatteryPercent = DeviceUtils.getBatteryPecentLevel(getReaderDataHolder().getContext());
+        int endBatteryPercent = DeviceUtils.getBatteryPercentLevel(getReaderDataHolder().getContext());
         statusBar.updateStatusBar(new ReaderStatusInfo(pageRect, displayRect,
                 current, total, endBatteryPercent, title));
     }

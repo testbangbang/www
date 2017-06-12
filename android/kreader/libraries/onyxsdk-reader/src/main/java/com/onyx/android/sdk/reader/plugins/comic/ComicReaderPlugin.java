@@ -24,6 +24,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
         ReaderSearchManager,
         ReaderTextStyleManager,
         ReaderDrmManager,
+        ReaderFormManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
@@ -171,6 +172,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
      */
     @Override
     public ReaderSelection selectWordOnScreen(ReaderHitTestArgs hitTest, ReaderTextSplitter splitter) {
+        return null;
+    }
+
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
         return null;
     }
 
@@ -622,5 +628,19 @@ public class ComicReaderPlugin implements ReaderPlugin,
     @Override
     public ReaderSearchManager getSearchManager() {
         return this;
+    }
+
+    @Override
+    public ReaderFormManager getFormManager() {
+        return this;
+    }
+
+    public boolean isCustomFormEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean loadFormFields(int page, List<ReaderFormField> fields) {
+        return false;
     }
 }

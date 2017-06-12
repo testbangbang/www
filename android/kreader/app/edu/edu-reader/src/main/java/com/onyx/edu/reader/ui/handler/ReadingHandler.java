@@ -33,8 +33,8 @@ public class ReadingHandler extends BaseHandler {
     @Override
     public void close(final ReaderDataHolder readerDataHolder) {
         final DeviceConfig deviceConfig = DeviceConfig.sharedInstance(readerDataHolder.getContext());
-        if (SingletonSharedPreference.isShowQuitDialog(readerDataHolder.getContext()) || deviceConfig.isAskForClose()) {
-            readerDataHolder.getEventBus().post(new ConfirmCloseDialogEvent(true));
+        if (deviceConfig.isAskForClose()) {
+            postConfirmDialogOpenEvent(readerDataHolder, true);
             OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.sure_exit),
                     new DialogInterface.OnClickListener() {
                         @Override
@@ -47,17 +47,26 @@ public class ReadingHandler extends BaseHandler {
                         public void onClick(DialogInterface dialog, int which) {
                             postConfirmDialogOpenEvent(readerDataHolder, false);
                         }
-                    }).show();
+                    })
+                    .setOnCloseListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            if (readerDataHolder.inNoteWritingProvider()) {
+                                readerDataHolder.postSystemUiChangedEvent(false);
+                            }
+                        }
+                    })
+                    .show();
         } else {
             postQuitEvent(readerDataHolder);
         }
     }
 
-    private void postQuitEvent(final ReaderDataHolder readerDataHolder) {
+    protected void postQuitEvent(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.getEventBus().post(new QuitEvent());
     }
 
-    private void postConfirmDialogOpenEvent(final ReaderDataHolder readerDataHolder, boolean open) {
+    protected void postConfirmDialogOpenEvent(final ReaderDataHolder readerDataHolder, boolean open) {
         readerDataHolder.getEventBus().post(new ConfirmCloseDialogEvent(open));
     }
 }

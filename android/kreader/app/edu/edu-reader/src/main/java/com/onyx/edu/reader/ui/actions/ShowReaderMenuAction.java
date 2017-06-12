@@ -3,10 +3,13 @@ package com.onyx.edu.reader.ui.actions;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.text.InputType;
 import android.util.Log;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -23,14 +26,15 @@ import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.R;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
@@ -52,6 +56,7 @@ import com.onyx.edu.reader.note.actions.FlushNoteAction;
 import com.onyx.edu.reader.note.actions.RedoAction;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
+import com.onyx.edu.reader.note.actions.LockFormShapesAction;
 import com.onyx.edu.reader.note.actions.UndoAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.ui.ReaderActivity;
@@ -65,8 +70,8 @@ import com.onyx.edu.reader.ui.dialog.DialogScreenRefresh;
 import com.onyx.edu.reader.ui.dialog.DialogSearch;
 import com.onyx.edu.reader.ui.dialog.DialogTableOfContent;
 import com.onyx.edu.reader.ui.dialog.DialogTextStyle;
-import com.onyx.edu.reader.ui.events.QuitEvent;
 import com.onyx.edu.reader.device.DeviceConfig;
+import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.view.EduMenu;
 
 import java.util.ArrayList;
@@ -177,6 +182,7 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
             disableMenus.add(ReaderMenuAction.NOTE);
             disableMenus.add(ReaderMenuAction.NAVIGATION);
+            disableMenus.add(ReaderMenuAction.DIRECTORY_SCRIBBLE);
         } else if (!readerDataHolder.isFlowDocument()) {
             disableMenus.add(ReaderMenuAction.FONT);
         }
@@ -337,7 +343,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case EXIT:
                         hideReaderMenu();
-                        readerDataHolder.getEventBus().post(new QuitEvent());
+                        readerDataHolder.getHandlerManager().close(readerDataHolder);
                         break;
                     case PREV_CHAPTER:
                         prepareGotoChapter(readerDataHolder, true);
@@ -394,6 +400,69 @@ public class ShowReaderMenuAction extends BaseAction {
         hideReaderMenu();
         final ScaleToPageRequest request = new ScaleToPageRequest(readerDataHolder.getCurrentPageName());
         readerDataHolder.submitRenderRequest(request);
+    }
+
+    public static void showPushFormConfirmDialog(final ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.inNoteWritingProvider()) {
+            readerDataHolder.postSystemUiChangedEvent(true);
+        }
+        OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.submit_form_tips),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        preparePushFormData(readerDataHolder);
+                    }
+                },
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setOnCloseListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (readerDataHolder.inNoteWritingProvider()) {
+                            readerDataHolder.postSystemUiChangedEvent(false);
+                        }
+                    }
+                })
+                .setNegativeText(R.string.custom_dialog_continue)
+                .setPositiveText(R.string.custom_dialog_submit)
+                .show();
+    }
+
+    public static void preparePushFormData(final ReaderDataHolder readerDataHolder) {
+        if (Device.currentDevice().hasWifi(readerDataHolder.getContext()) && !NetworkUtil.isWiFiConnected(readerDataHolder.getContext())) {
+            new WifiConnectAction(6000, 1000, readerDataHolder.getContext().getString(R.string.custom_dialog_submitting)).execute(readerDataHolder, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    if (e != null) {
+                        Toast.makeText(readerDataHolder.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    saveDocumentDataToCloud(readerDataHolder);
+                }
+            });
+        } else {
+            saveDocumentDataToCloud(readerDataHolder);
+        }
+    }
+
+    private static void saveDocumentDataToCloud(final ReaderDataHolder readerDataHolder) {
+        final SaveDocumentDataToCloudActionChain saveDocumentDataToCloudActionChain = new SaveDocumentDataToCloudActionChain();
+        saveDocumentDataToCloudActionChain.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                String errorMessage = saveDocumentDataToCloudActionChain.getErrorMessage();
+                if (errorMessage != null) {
+                    Toast.makeText(readerDataHolder.getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.submit_success), Toast.LENGTH_SHORT).show();
+                    new LockFormShapesAction().execute(readerDataHolder, null);
+                }
+            }
+        });
     }
 
     private void scaleToWidth(final ReaderDataHolder readerDataHolder) {
@@ -493,7 +562,62 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        new ShowQuickPreviewAction(readerDataHolder).execute(readerDataHolder, null);
+        showGotoPageDialog(readerDataHolder, true, null);
+    }
+
+    public static void showGotoPageDialog(final ReaderDataHolder readerDataHolder, boolean showProgress, final BaseCallback gotoPageCallback) {
+        final OnyxCustomDialog dlg = OnyxCustomDialog.getInputDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialog, int which) {
+                OnyxCustomDialog onyxCustomDialog = (OnyxCustomDialog) dialog;
+                String page = onyxCustomDialog.getInputValue().toString();
+                if (!StringUtils.isNullOrEmpty(page)) {
+                    int pageNumber = PagePositionUtils.getPageNumber(page);
+                    if (pageNumber >= 0 && pageNumber <= readerDataHolder.getPageCount()) {
+                        pageNumber = readerDataHolder.isFlowDocument() ? pageNumber : pageNumber - 1;
+                        new GotoPageAction(pageNumber, true).execute(readerDataHolder, new BaseCallback() {
+                            @Override
+                            public void done(BaseRequest request, Throwable e) {
+                                dialog.dismiss();
+                                if (gotoPageCallback != null) {
+                                    gotoPageCallback.done(request, e);
+                                }
+                            }
+                        });
+                    } else {
+                        Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number_out_of_range_error), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number_empty_error), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        dlg.getInputEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+        dlg.getInputEditText().setHint("1-" + readerDataHolder.getPageCount());
+        if (showProgress) {
+            dlg.enableProgress(readerDataHolder.getPageCount(), readerDataHolder.getCurrentPage(), new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    int pageNumber = readerDataHolder.isFlowDocument() ? progress : progress - 1;
+                    pageNumber = Math.max(pageNumber, 0);
+                    pageNumber = Math.min(pageNumber, readerDataHolder.getPageCount() - 1);
+                    gotoPage(readerDataHolder, pageNumber, true);
+                    dlg.getInputEditText().setText(String.valueOf(Math.max(progress, 1)));
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
+        }
+        readerDataHolder.trackDialog(dlg);
+        dlg.show();
     }
 
     private void backward(final ReaderDataHolder readerDataHolder) {
@@ -512,7 +636,7 @@ public class ShowReaderMenuAction extends BaseAction {
         new GotoPositionAction(page, abortPendingTasks).execute(readerDataHolder, null);
     }
 
-    private void gotoPage(final ReaderDataHolder readerDataHolder, Object o, final boolean abortPendingTasks) {
+    private static void gotoPage(final ReaderDataHolder readerDataHolder, Object o, final boolean abortPendingTasks) {
         if (o == null) {
             return;
         }
@@ -723,6 +847,25 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
+    public static void showFormMenu(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean showNoteMenu) {
+        readerActivity.getExtraView().removeAllViews();
+        final ShowFormMenuActon formMenuActon = new ShowFormMenuActon(disableMenus,
+                readerActivity.getExtraView(),
+                showNoteMenu,
+                getScribbleActionCallback(readerDataHolder));
+        ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
+        if (noteDataInfo != null) {
+            int currentShapeType = noteDataInfo.getCurrentShapeType();
+            formMenuActon.setSelectShapeAction(createShapeAction(currentShapeType));
+        }
+        formMenuActon.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER);
+            }
+        });
+    }
+
     public static ShowScribbleMenuAction.ActionCallback getScribbleActionCallback(final ReaderDataHolder readerDataHolder) {
         final ShowScribbleMenuAction.ActionCallback callback = new ShowScribbleMenuAction.ActionCallback() {
             @Override
@@ -758,6 +901,12 @@ public class ShowReaderMenuAction extends BaseAction {
 
     public static void processScribbleAction(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
         switch (action) {
+            case EXIT:
+                readerDataHolder.getHandlerManager().close(readerDataHolder);
+                break;
+            case SUBMIT:
+                showPushFormConfirmDialog(readerDataHolder);
+                break;
             case SCRIBBLE_WIDTH1:
             case SCRIBBLE_WIDTH2:
             case SCRIBBLE_WIDTH3:

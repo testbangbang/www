@@ -83,5 +83,6 @@ ext {
 
     avoscloudVersion = 'v3.13.7'
     glideVersion = '3.7.0'
+    zxingVersion = '3.3.0'
 }
 

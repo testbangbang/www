@@ -63,7 +63,7 @@ public interface DataProviderBase {
 
     Library loadLibrary(String uniqueId);
 
-    List<Library> loadAllLibrary(String parentId);
+    List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs);
 
     void addLibrary(Library library);
 

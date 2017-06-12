@@ -24,9 +24,9 @@ import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.actions.ViewImageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
-import com.onyx.android.sdk.reader.utils.MathUtils;
+import com.onyx.android.sdk.utils.MathUtils;
 import com.onyx.kreader.device.DeviceConfig;
-import com.onyx.android.sdk.reader.utils.RectUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 
 import java.util.List;
 

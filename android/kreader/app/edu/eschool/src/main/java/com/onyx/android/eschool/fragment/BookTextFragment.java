@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,33 +17,50 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
+import com.onyx.android.eschool.action.CloudContentRefreshAction;
+import com.onyx.android.eschool.action.DownloadAction;
 import com.onyx.android.eschool.action.LibraryGotoPageAction;
 import com.onyx.android.eschool.custom.PageIndicator;
+import com.onyx.android.eschool.events.AccountTokenErrorEvent;
+import com.onyx.android.eschool.events.BookLibraryEvent;
+import com.onyx.android.eschool.events.HardwareErrorEvent;
+import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.LibraryDataModel;
+import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.QueryResult;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.cloud.CloudContentListRequest;
-import com.onyx.android.sdk.data.request.cloud.CloudThumbnailLoadRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
+import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
-import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,13 +75,14 @@ import butterknife.ButterKnife;
  */
 public class BookTextFragment extends Fragment {
     public static final String LIBRARY_ID_ARGS = "libraryIdArgs";
+    public static final String FRAGMENT_NAME = "fragmentName";
 
     @Bind(R.id.content_pageView)
     SinglePageRecyclerView contentPageView;
 
     PageIndicator pageIndicator;
 
-    QueryPagination pagination;
+    LibraryDataHolder dataHolder;
     private LibraryDataModel pageDataModel = new LibraryDataModel();
 
     private boolean newPage = false;
@@ -72,14 +91,27 @@ public class BookTextFragment extends Fragment {
     private int row = 2;
     private int col = 3;
 
-    public static BookTextFragment newInstance(String libraryId) {
+    private String fragmentName;
+    private boolean isVisibleToUser = false;
+
+    public static BookTextFragment newInstance(String fragmentName, String libraryId) {
         BookTextFragment fragment = new BookTextFragment();
-        if (StringUtils.isNotBlank(libraryId)) {
-            Bundle bundle = new Bundle();
-            bundle.putString(LIBRARY_ID_ARGS, libraryId);
-            fragment.setArguments(bundle);
-        }
+        Bundle bundle = new Bundle();
+        resetArgumentsBundle(bundle, fragmentName, libraryId);
+        fragment.setArguments(bundle);
         return fragment;
+    }
+
+    private static void resetArgumentsBundle(Bundle bundle, String fragmentName, String libraryId) {
+        if (bundle == null) {
+            return;
+        }
+        if (StringUtils.isNotBlank(libraryId)) {
+            bundle.putString(LIBRARY_ID_ARGS, libraryId);
+        }
+        if (StringUtils.isNotBlank(fragmentName)) {
+            bundle.putString(FRAGMENT_NAME, fragmentName);
+        }
     }
 
     @Override
@@ -98,30 +130,58 @@ public class BookTextFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         loadData();
     }
 
     private void loadData() {
-        QueryArgs args = getDataHolder().getCloudViewInfo().libraryQuery(null);
-        String libraryId;
-        if (getArguments() != null && StringUtils.isNotBlank(libraryId = getArguments().getString(LIBRARY_ID_ARGS))) {
-            args.category.add(libraryId);
+        String uniqueId = null;
+        if (getArguments() != null) {
+            uniqueId = getArguments().getString(LIBRARY_ID_ARGS);
+            fragmentName = getArguments().getString(FRAGMENT_NAME);
         }
+        if (StringUtils.isNullOrEmpty(uniqueId)) {
+            return;
+        }
+        loadData(uniqueId);
+    }
+
+    private void loadData(String libraryId) {
+        LibraryViewInfo viewInfo = getDataHolder().getCloudViewInfo();
+        viewInfo.updateSortBy(SortBy.CreationTime, SortOrder.Desc);
+        viewInfo.getQueryPagination().setCurrentPage(0);
+        QueryArgs args = viewInfo.libraryQuery(libraryId);
+        args.useCloudMemDbPolicy();
+        if (NetworkUtil.isWiFiConnected(getContext())) {
+            refreshDataFormCloud();
+        } else {
+            loadData(args);
+        }
+    }
+
+    private void loadData(final QueryArgs args) {
         final CloudContentListRequest listRequest = new CloudContentListRequest(args);
         getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e == null) {
-                    QueryResult<Metadata> result = listRequest.getProductResult();
-                    updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                if (e != null) {
+                    return;
                 }
+                QueryResult<Metadata> result = listRequest.getProductResult();
+                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                getDataHolder().getCloudViewInfo().getCurrentQueryArgs().useMemCloudDbPolicy();
+                preloadNext();
             }
         });
-        nextLoad();
     }
 
     private void nextPage() {
-        if (!pagination.nextPage()) {
+        if (!getPagination().nextPage()) {
+            postNextTab();
             return;
         }
         QueryArgs queryArgs = getDataHolder().getCloudViewInfo().nextPage();
@@ -129,28 +189,33 @@ public class BookTextFragment extends Fragment {
         getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e == null) {
-                    QueryResult<Metadata> result = listRequest.getProductResult();
-                    updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                if (e != null) {
+                    return;
                 }
+                QueryResult<Metadata> result = listRequest.getProductResult();
+                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                preloadNext();
             }
         });
-        nextLoad();
     }
 
     private LibraryDataModel getLibraryDataModel(QueryResult<Metadata> result, Map<String, CloseableReference<Bitmap>> map) {
-        LibraryDataModel libraryDataModel = new LibraryDataModel();
-        libraryDataModel.visibleLibraryList = new ArrayList<>();
-        libraryDataModel.visibleBookList = result.list;
-        libraryDataModel.bookCount = (int) result.count;
-        libraryDataModel.thumbnailMap = map;
-        libraryDataModel.libraryCount = 0;
-        return libraryDataModel;
+        return LibraryViewInfo.buildLibraryDataModel(result, map);
     }
 
-    private void nextLoad() {
-        int preLoadPage = pagination.getCurrentPage() + 1;
-        if (preLoadPage >= pagination.pages()) {
+    private QueryPagination getPagination() {
+        return getDataHolder().getCloudViewInfo().getQueryPagination();
+    }
+
+    private void initPagination() {
+        QueryPagination pagination = getPagination();
+        pagination.resize(row, col, 0);
+        pagination.setCurrentPage(0);
+    }
+
+    private void preloadNext() {
+        int preLoadPage = getPagination().getCurrentPage() + 1;
+        if (preLoadPage >= getPagination().pages()) {
             return;
         }
         QueryArgs queryArgs = getDataHolder().getCloudViewInfo().pageQueryArgs(preLoadPage);
@@ -210,7 +275,7 @@ public class BookTextFragment extends Fragment {
 
                 Bitmap bitmap = getBitmap(eBook.getAssociationId());
                 if (bitmap == null) {
-                    viewHolder.coverImage.setImageResource(R.drawable.cloud_cover);
+                    viewHolder.coverImage.setImageResource(R.drawable.cloud_default_cover);
                     if (newPage) {
                         newPage = false;
                         hasNoThumbnail = position;
@@ -247,16 +312,16 @@ public class BookTextFragment extends Fragment {
 
     private void loadThumbnailRequest(final int position, final Metadata metadata) {
         final CloudThumbnailLoadRequest loadRequest = new CloudThumbnailLoadRequest(
-                getRealUrl(metadata.getCoverUrl()).replaceAll("undefined", ""),
+                metadata.getCoverUrl(),
                 metadata.getAssociationId(), OnyxThumbnail.ThumbnailKind.Original);
         if (hasNoThumbnail == position) {
             loadRequest.setAbortPendingTasks(true);
         }
-        getCloudStore().submitRequest(getContext().getApplicationContext(), loadRequest, new BaseCallback() {
+        getCloudStore().submitRequestToSingle(getContext().getApplicationContext(), loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    e.printStackTrace();
+                if(!isContentValid(request, e)) {
+                    return;
                 }
                 CloseableReference<Bitmap> closeableRef = loadRequest.getRefBitmap();
                 if (closeableRef != null && closeableRef.isValid()) {
@@ -267,9 +332,20 @@ public class BookTextFragment extends Fragment {
         });
     }
 
+    private boolean isContentValid(BaseRequest request, Throwable e) {
+        if (e != null || request.isAbort() || isContentViewInvalid()) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isContentViewInvalid() {
+        return contentPageView == null || pageIndicator == null;
+    }
+
     private String getRealUrl(String url) {
         if (!url.startsWith(Constant.HTTP_TAG)) {
-            url = SchoolApp.E_BOOK_HOST + url;
+            url = getCloudStore().getCloudConf().getHostBase() + url;
         }
         return url;
     }
@@ -296,9 +372,8 @@ public class BookTextFragment extends Fragment {
     }
 
     private void initPageIndicator(ViewGroup parentView) {
-        pagination = getDataHolder().getCloudViewInfo().getQueryPagination();
-        pagination.resize(row, col, 0);
-        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), pagination);
+        initPagination();
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), getPagination());
         pageIndicator.setTotalFormat(getString(R.string.total_format));
         pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
             @Override
@@ -316,10 +391,25 @@ public class BookTextFragment extends Fragment {
                 showGotoPageAction(page);
             }
         });
+        pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshDataFormCloud();
+            }
+        });
+    }
+
+    private void postNextTab() {
+        EventBus.getDefault().post(TabSwitchEvent.createNextTabSwitch());
+    }
+
+    private void postPrevTab() {
+        EventBus.getDefault().post(TabSwitchEvent.createPrevTabSwitch());
     }
 
     private void prevPage() {
-        if (!pagination.prevPage()) {
+        if (!getPagination().prevPage()) {
+            postPrevTab();
             return;
         }
 
@@ -327,17 +417,18 @@ public class BookTextFragment extends Fragment {
         getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e == null) {
-                    QueryResult<Metadata> result = listRequest.getProductResult();
-                    updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                if (e != null) {
+                    return;
                 }
+                QueryResult<Metadata> result = listRequest.getProductResult();
+                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                preLoadPrev();
             }
         });
-        prevLoad();
     }
 
-    private void prevLoad() {
-        int preLoadPage = pagination.getCurrentPage() - 1;
+    private void preLoadPrev() {
+        int preLoadPage = getPagination().getCurrentPage() - 1;
         if (preLoadPage < 0) {
             return;
         }
@@ -347,7 +438,7 @@ public class BookTextFragment extends Fragment {
 
     private void showGotoPageAction(int currentPage) {
         final LibraryGotoPageAction gotoPageAction = new LibraryGotoPageAction(getActivity(), currentPage,
-                pagination.pages());
+                getPagination().pages());
         gotoPageAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -358,19 +449,19 @@ public class BookTextFragment extends Fragment {
     }
 
     private void gotoPageImpl(int page) {
-        final int originPage = pagination.getCurrentPage();
+        final int originPage = getPagination().getCurrentPage();
         loadData(getDataHolder().getCloudViewInfo().gotoPage(page), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
-                    pagination.setCurrentPage(originPage);
+                    getPagination().setCurrentPage(originPage);
                     return;
                 }
-                prevLoad();
-                nextLoad();
                 CloudContentListRequest listRequest = (CloudContentListRequest) request;
                 QueryResult<Metadata> result = listRequest.getProductResult();
                 updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                preLoadPrev();
+                preloadNext();
             }
         });
     }
@@ -390,6 +481,9 @@ public class BookTextFragment extends Fragment {
     }
 
     private void updateContentView() {
+        if(isContentViewInvalid()) {
+            return;
+        }
         newPage = true;
         contentPageView.getAdapter().notifyDataSetChanged();
         updatePageIndicator();
@@ -397,9 +491,17 @@ public class BookTextFragment extends Fragment {
 
     private void updatePageIndicator() {
         int totalCount = getTotalCount();
-        pagination.resize(row, col, totalCount);
+        getPagination().resize(row, col, totalCount);
+        pageIndicator.resetGPaginator(getPagination());
         pageIndicator.updateTotal(totalCount);
         pageIndicator.updateCurrentPage(totalCount);
+    }
+
+    private void fullUpdateView() {
+        if (getActivity() == null || getActivity().getWindow() == null) {
+            return;
+        }
+        EpdController.postInvalidate(getActivity().getWindow().getDecorView().getRootView(), UpdateMode.GC);
     }
 
     private int getTotalCount() {
@@ -424,6 +526,9 @@ public class BookTextFragment extends Fragment {
     }
 
     private String getDataSaveFilePath(Metadata book) {
+        if (checkBookMetadataPathValid(book)) {
+            return book.getNativeAbsolutePath();
+        }
         String fileName = FileUtils.fixNotAllowFileName(book.getName() + "." + book.getType());
         if (StringUtils.isBlank(fileName)) {
             return null;
@@ -442,24 +547,37 @@ public class BookTextFragment extends Fragment {
             return;
         }
         ActivityUtil.startActivitySafely(getContext(),
-                ViewDocumentUtils.viewActionIntentWithMimeType(file),
-                ViewDocumentUtils.getReaderComponentName(getContext()));
+                MetadataUtils.putIntentExtraDataMetadata(ViewDocumentUtils.viewActionIntentWithMimeType(file), book),
+                ViewDocumentUtils.getEduReaderComponentName(getContext()));
+    }
+
+    private boolean checkBookMetadataPathValid(Metadata book) {
+        if (StringUtils.isNotBlank(book.getNativeAbsolutePath()) && new File(book.getNativeAbsolutePath()).exists()) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isFileExists(Metadata book) {
+        if (checkBookMetadataPathValid(book)) {
+            return true;
+        }
+        if (StringUtils.isNullOrEmpty(book.getGuid())) {
+            return false;
+        }
         File dir = CloudUtils.dataCacheDirectory(getContext(), book.getGuid());
         if (dir.list() == null || dir.list().length <= 0) {
             return false;
         }
-        boolean exist = false;
-        File[] files = dir.listFiles();
-        for (File file : files) {
-            if (file.getAbsolutePath().contains(book.getName())) {
-                exist = !"temp".equalsIgnoreCase(FileUtils.getFileExtension(file));
-                break;
-            }
+        String path = getDataSaveFilePath(book);
+        if (StringUtils.isNullOrEmpty(path)) {
+            return false;
         }
-        return exist;
+        File file = new File(path);
+        if (!file.exists() && file.length() <= 0) {
+            return false;
+        }
+        return true;
     }
 
     private BaseCallback baseCallback = new BaseCallback() {
@@ -474,19 +592,19 @@ public class BookTextFragment extends Fragment {
         }
     };
 
-    private void startDownload(Metadata eBook) {
-        if (StringUtils.isNullOrEmpty(eBook.getLocation())) {
-            ToastUtils.showToast(getContext(), R.string.download_link_invalid);
-            return;
-        }
+    private void startDownload(final Metadata eBook) {
         String filePath = getDataSaveFilePath(eBook);
-        if (StringUtils.isBlank(filePath)) {
-            return;
-        }
-        BaseDownloadTask task = getDownLoaderManager().download(getRealUrl(eBook.getLocation()),
-                filePath, eBook.getGuid(), baseCallback);
-        getDownLoaderManager().addTask(eBook.getGuid(), task);
-        getDownLoaderManager().startDownload(task);
+        DownloadAction downloadAction = new DownloadAction(getRealUrl(eBook.getLocation()), filePath, eBook.getGuid());
+        downloadAction.execute(getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                updateContentView();
+                openCloudFile(eBook);
+            }
+        });
     }
 
     private void processProductItemClick(final int position) {
@@ -495,10 +613,19 @@ public class BookTextFragment extends Fragment {
             openCloudFile(book);
             return;
         }
-        if (!NetworkHelper.requestWifi(getContext())) {
+        if(enableWifiOpenAndDetect()) {
             return;
         }
         startDownload(book);
+    }
+
+    private boolean enableWifiOpenAndDetect() {
+        if (!NetworkUtil.isWiFiConnected(getContext())) {
+            Device.currentDevice().enableWifiDetect(getContext());
+            NetworkUtil.enableWiFi(getContext(), true);
+            return true;
+        }
+        return false;
     }
 
     class BookItemHolder extends RecyclerView.ViewHolder {
@@ -526,10 +653,93 @@ public class BookTextFragment extends Fragment {
     }
 
     private OnyxDownloadManager getDownLoaderManager() {
-        return OnyxDownloadManager.getInstance(getActivity());
+        return OnyxDownloadManager.getInstance();
     }
 
     private LibraryDataHolder getDataHolder() {
-        return SchoolApp.getLibraryDataHolder();
+        if (dataHolder == null) {
+            dataHolder = new LibraryDataHolder(getContext());
+            dataHolder.setCloudManager(getCloudStore().getCloudManager());
+        }
+        return dataHolder;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onLibraryEvent(BookLibraryEvent event) {
+        if (event.library != null) {
+            if (event.library.getName().equals(fragmentName)) {
+                resetArgumentsBundle(getArguments(), fragmentName, event.library.getIdString());
+                loadData();
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onKeyEvent(KeyEvent keyEvent) {
+        if (contentPageView != null && isVisibleToUser) {
+            contentPageView.dispatchKeyEvent(keyEvent);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAccountTokenErrorEvent(AccountTokenErrorEvent event) {
+        if (pageIndicator != null) {
+            pageIndicator.setTotalText(getString(R.string.token_exception_contact_admin));
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHardwareErrorEvent(HardwareErrorEvent event) {
+        if (pageIndicator != null) {
+            pageIndicator.setTotalText(getString(R.string.hardware_error));
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        this.isVisibleToUser = isVisibleToUser;
+        if (isVisibleToUser) {
+            if (contentPageView != null) {
+                updateContentView();
+            }
+        }
+    }
+
+    private void refreshDataFormCloud() {
+        if (enableWifiOpenAndDetect()) {
+            ToastUtils.showToast(getContext(), R.string.open_wifi);
+            return;
+        }
+        final CloudContentRefreshAction refreshAction = new CloudContentRefreshAction();
+        refreshAction.execute(getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                getPagination().setCurrentPage(0);
+                updateContentView(refreshAction.getLibraryDataModel());
+                preloadNext();
+            }
+        });
     }
 }
