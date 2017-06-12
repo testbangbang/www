@@ -47,12 +47,12 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
     @Override
     public void execute(CloudManager parent) throws Exception {
         if (loadOnlyFromCloud) {
-            account = accountFromCloud(getContext(), parent);
+            account = LoginToCloud(getContext(), parent);
             return;
         }
-        account = accountFromLocal(parent);
+        account = LoginToLocal(parent);
         if (account == null) {
-            account = accountFromCloud(getContext(), parent);
+            account = LoginToCloud(getContext(), parent);
         } else {
             T updatedAccount = updateAccountInfoFromCloud(parent, account);
             if (updatedAccount != null) {
@@ -64,7 +64,7 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
     private T updateAccountInfoFromCloud(CloudManager parent, T oldAccount) {
         T cloudAccount = null;
         try {
-            cloudAccount = getContentAccount(parent);
+            cloudAccount = getAccountInfoFromCloud(parent);
             if (oldAccount != null) {
                 cloudAccount.token = oldAccount.token;
                 cloudAccount.tokenExpiresIn = oldAccount.tokenExpiresIn;
@@ -76,7 +76,7 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
         return cloudAccount;
     }
 
-    private T accountFromLocal(CloudManager parent) {
+    private T LoginToLocal(CloudManager parent) {
         T account = null;
         try {
             account = ContentUtils.querySingle(providerUri, clazzType, ConditionGroup.clause(), null);
@@ -92,12 +92,12 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
         return account;
     }
 
-    private T accountFromCloud(Context context, CloudManager parent) throws Exception {
-        AuthToken authToken = getAuthToken(context, parent);
+    private T LoginToCloud(Context context, CloudManager parent) throws Exception {
+        AuthToken authToken = getAuthTokenFromCloud(context, parent);
         if (authToken == null || StringUtils.isNullOrEmpty(authToken.token)) {
             return null;
         }
-        T account = getContentAccount(parent, authToken);
+        T account = getAccountInfoFromCloud(parent, authToken);
         accountSaveToDb(account);
         return account;
     }
@@ -115,7 +115,7 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
         }
     }
 
-    private AuthToken getAuthToken(Context context, CloudManager parent) throws Exception {
+    private AuthToken getAuthTokenFromCloud(Context context, CloudManager parent) throws Exception {
         BaseAuthAccount authAccount = createAuthAccountFromHardware(context);
         if (authAccount == null) {
             return null;
@@ -131,7 +131,7 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
         return authToken;
     }
 
-    private T getContentAccount(CloudManager parent, AuthToken authToken) throws Exception {
+    private T getAccountInfoFromCloud(CloudManager parent, AuthToken authToken) throws Exception {
         T account = null;
         Response<ResponseBody> response = executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
                 .getAccount());
@@ -146,8 +146,8 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
         return account;
     }
 
-    private T getContentAccount(CloudManager parent) throws Exception {
-        return getContentAccount(parent, null);
+    private T getAccountInfoFromCloud(CloudManager parent) throws Exception {
+        return getAccountInfoFromCloud(parent, null);
     }
 
     public static BaseAuthAccount createAuthAccountFromHardware(Context context) {
