@@ -156,7 +156,11 @@ public class BookTextFragment extends Fragment {
         viewInfo.getQueryPagination().setCurrentPage(0);
         QueryArgs args = viewInfo.libraryQuery(libraryId);
         args.useCloudMemDbPolicy();
-        loadData(args);
+        if (NetworkUtil.isWiFiConnected(getContext())) {
+            refreshDataFormCloud();
+        } else {
+            loadData(args);
+        }
     }
 
     private void loadData(final QueryArgs args) {
