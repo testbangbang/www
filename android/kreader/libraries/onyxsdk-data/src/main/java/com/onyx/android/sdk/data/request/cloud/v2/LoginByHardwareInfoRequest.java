@@ -54,14 +54,14 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
         if (account == null) {
             account = LoginToCloud(getContext(), parent);
         } else {
-            T updatedAccount = updateAccountInfoFromCloud(parent, account);
+            T updatedAccount = getAccountInfoFromCloud(parent, account);
             if (updatedAccount != null) {
                 account = updatedAccount;
             }
         }
     }
 
-    private T updateAccountInfoFromCloud(CloudManager parent, T oldAccount) {
+    private T getAccountInfoFromCloud(CloudManager parent, T oldAccount) {
         T cloudAccount = null;
         try {
             cloudAccount = getAccountInfoFromCloud(parent);
