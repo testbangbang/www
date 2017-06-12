@@ -83,15 +83,7 @@ public class ManagerActivity extends BaseManagerActivity {
             Device.currentDevice().postInvalidate(getWindow().getDecorView(), UpdateMode.GC);
         }
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (AppCompatUtils.isColorDevice(this)){
-            Device.currentDevice().postInvalidate(getWindow().getDecorView(), UpdateMode.GC);
-        }
-    }
-
+    
     private void loadSortByAndAsc() {
         currentSortBy = SortBy.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_SORT_BY, SortBy.CREATED_AT));
         ascOrder = AscDescOrder.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_ASC_ORDER, AscDescOrder.DESC));
