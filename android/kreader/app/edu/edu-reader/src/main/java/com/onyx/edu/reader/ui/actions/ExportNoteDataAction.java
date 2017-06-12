@@ -65,4 +65,8 @@ public class ExportNoteDataAction extends BaseAction {
     public StringBuffer getExportDBFilePath() {
         return exportDBFilePath;
     }
+
+    public static ExportNoteDataAction create(StringBuffer fullFileMd5) {
+        return new ExportNoteDataAction(fullFileMd5);
+    }
 }

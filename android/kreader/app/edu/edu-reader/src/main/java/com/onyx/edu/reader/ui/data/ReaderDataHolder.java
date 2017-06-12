@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -33,10 +34,15 @@ import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.actions.CloseNoteMenuAction;
+import com.onyx.edu.reader.note.actions.SaveReviewDataAction;
+import com.onyx.edu.reader.note.data.ReaderNotePageNameMap;
+import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
 import com.onyx.edu.reader.note.receiver.DeviceReceiver;
 import com.onyx.edu.reader.tts.ReaderTtsManager;
 import com.onyx.edu.reader.ui.ReaderBroadcastReceiver;
 import com.onyx.edu.reader.ui.actions.ExportAnnotationAction;
+import com.onyx.edu.reader.ui.actions.GetDocumentDataFromCloudAction;
+import com.onyx.edu.reader.ui.actions.GetDocumentDataFromCloudChain;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.events.TextSelectionEvent;
 import com.onyx.edu.reader.ui.events.*;
@@ -734,6 +740,26 @@ public class ReaderDataHolder {
 
     public void setCloudDocId(String cloudDocId) {
         this.cloudDocId = cloudDocId;
+    }
+
+    public void applyReviewDataFromCloud() {
+        if (reader == null || reader.getDocument() == null) {
+            return;
+        }
+        if (!hasFormField()) {
+            return;
+        }
+        final GetDocumentDataFromCloudChain cloudChain = new GetDocumentDataFromCloudChain();
+        cloudChain.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ReviewDocumentData reviewDocumentData = cloudChain.getReviewDocumentData();
+                List<ReaderFormShapeModel> formShapeModels = reviewDocumentData.getReaderFormShapes();
+                ReaderNotePageNameMap notePageNameMap = reviewDocumentData.getReaderNotePageNameMap();
+                new SaveReviewDataAction(notePageNameMap, formShapeModels, getReader().getDocumentMd5()).execute(ReaderDataHolder.this, null);
+
+            }
+        });
     }
 }
 

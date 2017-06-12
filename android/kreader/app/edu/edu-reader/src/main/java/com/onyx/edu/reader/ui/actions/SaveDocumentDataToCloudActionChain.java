@@ -18,10 +18,10 @@ public class SaveDocumentDataToCloudActionChain extends BaseAction {
 
         ActionChain actionChain = new ActionChain();
 
-        AccountLoadFromLocalAction accountLoadFromLocalAction = accountLoadFromLocalAction();
-        GetFileFullMd5Action getFileFullMd5Action = getFileFullMd5Action(readerDataHolder);
-        ExportNoteDataAction exportNoteDataAction = exportNoteDataAction(getFileFullMd5Action.getFullFileMd5());
-        final SaveDocumentDataToCloudAction saveDocumentDataToCloudAction = saveDocumentDataToCloud(exportNoteDataAction.getExportDBFilePath(),
+        AccountLoadFromLocalAction accountLoadFromLocalAction = AccountLoadFromLocalAction.create();
+        GetFileFullMd5Action getFileFullMd5Action = GetFileFullMd5Action.create(readerDataHolder.getDocumentPath());
+        ExportNoteDataAction exportNoteDataAction = ExportNoteDataAction.create(getFileFullMd5Action.getFullFileMd5());
+        final SaveDocumentDataToCloudAction saveDocumentDataToCloudAction = SaveDocumentDataToCloudAction.create(exportNoteDataAction.getExportDBFilePath(),
                 getFileFullMd5Action.getFullFileMd5(),
                 accountLoadFromLocalAction.getToken());
 
@@ -36,24 +36,6 @@ public class SaveDocumentDataToCloudActionChain extends BaseAction {
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
-    }
-
-    private AccountLoadFromLocalAction accountLoadFromLocalAction() {
-        return new AccountLoadFromLocalAction();
-    }
-
-    private GetFileFullMd5Action getFileFullMd5Action(final ReaderDataHolder readerDataHolder) {
-        return new GetFileFullMd5Action(readerDataHolder.getDocumentPath());
-    }
-
-    private ExportNoteDataAction exportNoteDataAction(final StringBuffer fullFileMd5) {
-        return new ExportNoteDataAction(fullFileMd5);
-    }
-
-    private SaveDocumentDataToCloudAction saveDocumentDataToCloud(StringBuffer exportDBFilePath, StringBuffer fileFullMd5, StringBuffer token) {
-        return new SaveDocumentDataToCloudAction(exportDBFilePath,
-                fileFullMd5,
-                token);
     }
 
     public String getErrorMessage() {

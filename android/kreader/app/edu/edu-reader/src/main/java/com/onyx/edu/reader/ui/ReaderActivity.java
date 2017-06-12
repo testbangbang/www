@@ -948,6 +948,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void onDocumentOpened(final DocumentOpenEvent event) {
         prepareGCUpdateInterval();
         prepareFrontLight();
+        getReaderDataHolder().applyReviewDataFromCloud();
     }
 
     @Subscribe
