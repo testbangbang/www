@@ -187,7 +187,13 @@ public class ThumbnailUtils {
             if (transBitmap == null || transBitmap.isRecycled()) {
                 return false;
             }
-            return transBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            Bitmap.CompressFormat format = Bitmap.CompressFormat.PNG;
+            if (FileUtils.isPngExtension(file)) {
+                format = Bitmap.CompressFormat.PNG;
+            } else if (FileUtils.isJpgExtension(file)) {
+                format = Bitmap.CompressFormat.JPEG;
+            }
+            return transBitmap.compress(format, 100, os);
         } catch (FileNotFoundException e) {
             Log.w("writeBitmapToThumbnail", e);
         } finally {
