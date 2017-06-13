@@ -9,9 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.edu.note.data.NoteModel;
 import com.onyx.edu.note.databinding.FragmentManagerBinding;
 import com.onyx.edu.note.databinding.NoteItemBinding;
 import com.onyx.edu.note.ui.BindingViewHolder;
@@ -28,6 +28,22 @@ public class ManagerFragment extends Fragment {
 
     FragmentManagerBinding mBinding;
     PageAdapter<NoteItemViewHolder, NoteModel, ManagerItemViewModel> mAdapter;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        mBinding = FragmentManagerBinding.inflate(inflater, container, false);
+        mBinding.setView(this);
+        mBinding.setViewModel(mManagerViewModel);
+        initRecyclerView();
+        return mBinding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mManagerViewModel.start();
+    }
 
     public void setViewModel(ManagerViewModel mManagerViewModel) {
         this.mManagerViewModel = mManagerViewModel;
@@ -58,12 +74,6 @@ public class ManagerFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mManagerViewModel.start();
-    }
-
     private void updatePageStatus() {
         if (mBinding.notePageRecyclerView == null || mBinding.notePageRecyclerView.getPaginator() == null) {
             return;
@@ -71,16 +81,6 @@ public class ManagerFragment extends Fragment {
         GPaginator paginator = mBinding.notePageRecyclerView.getPaginator();
         mManagerViewModel.setPageStatus(paginator.getVisibleCurrentPage(),
                 paginator.pages());
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        mBinding = FragmentManagerBinding.inflate(inflater, container, false);
-        mBinding.setView(this);
-        mBinding.setViewModel(mManagerViewModel);
-        initRecyclerView();
-        return mBinding.getRoot();
     }
 
     private static class NoteItemViewHolder extends BindingViewHolder<NoteItemBinding, ManagerItemViewModel> {
@@ -99,7 +99,7 @@ public class ManagerFragment extends Fragment {
     }
 
     public static class ManagerAdapter extends PageAdapter<NoteItemViewHolder, NoteModel, ManagerItemViewModel> {
-        private ManagerActivity mTaskItemNavigator;
+        private ManagerActivity mNoteItemNavigator;
         private LayoutInflater mLayoutInflater;
         /*
         * TODO:Because PageRecyclerView need it's own notifyDataSetChanged() (not the adapter one)to update page status.
@@ -109,8 +109,8 @@ public class ManagerFragment extends Fragment {
         */
         private WeakReference<ManagerFragment> fragmentWeakReference;
 
-        public ManagerAdapter(ManagerActivity taskItemNavigator, LayoutInflater layoutInflater, ManagerFragment fragment) {
-            mTaskItemNavigator = taskItemNavigator;
+        public ManagerAdapter(ManagerActivity noteItemNavigator, LayoutInflater layoutInflater, ManagerFragment fragment) {
+            mNoteItemNavigator = noteItemNavigator;
             mLayoutInflater = layoutInflater;
             fragmentWeakReference = new WeakReference<>(fragment);
         }
@@ -142,7 +142,7 @@ public class ManagerFragment extends Fragment {
                 ManagerItemViewModel viewModel = new ManagerItemViewModel(
                         context);
                 viewModel.setNote(model);
-                viewModel.setNavigator(mTaskItemNavigator);
+                viewModel.setNavigator(mNoteItemNavigator);
                 getItemVMList().add(viewModel);
             }
             if (fragmentWeakReference.get() != null) {

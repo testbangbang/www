@@ -3,10 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.onyx.edu.note.manager.ManagerViewModel" />
+    </data>
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.onyx.android.note.activity.onyx.ManagerActivity">
+        tools:context="com.onyx.edu.note.manager.ManagerActivity">
 
         <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
 
@@ -38,7 +46,7 @@
                         android:gravity="left|center_vertical"
                         android:maxEms="10"
                         android:singleLine="true"
-                        android:text="@string/app_name" />
+                        android:text="@{viewModel.currentFolderTitle??@string/app_name}" />
                 </RelativeLayout>
 
                 <LinearLayout
@@ -65,7 +73,7 @@
                         android:layout_marginRight="10dp"
                         android:background="@drawable/imagebtn_bg"
                         android:clickable="true"
-                        android:focusable="true"/>
+                        android:focusable="true" />
                 </LinearLayout>
 
                 <com.onyx.android.sdk.ui.view.CustomIconView
@@ -100,8 +108,8 @@
 
         <FrameLayout
             android:id="@+id/contentFrame"
-            android:layout_below="@id/tool_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_below="@id/tool_bar" />
     </RelativeLayout>
 </layout>

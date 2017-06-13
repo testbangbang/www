@@ -34,7 +34,7 @@ public abstract class OnyxAppCompatActivity extends AppCompatActivity implements
     boolean DEBUG_LOG_MSG = false;
 
     final static String TAG = OnyxAppCompatActivity.class.getSimpleName();
-    ActionBar actionBar;
+    protected ActionBar actionBar;
     private boolean isCustomBackFunctionLayout = true;
     protected RelativeLayout backFunctionLayout;
     protected DialogProgressHolder progressDialogHolder = new DialogProgressHolder();;

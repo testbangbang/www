@@ -3,13 +3,25 @@ package com.onyx.edu.note.manager;
 import android.content.Context;
 import android.databinding.BaseObservable;
 import android.databinding.ObservableArrayList;
+import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.databinding.ObservableList;
-import android.graphics.BitmapFactory;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
-import com.onyx.edu.note.R;
-import com.onyx.edu.note.data.NoteModel;
-import com.onyx.edu.note.data.NoteType;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.request.note.NoteLibraryLoadRequest;
+import com.onyx.edu.note.NoteManager;
+import com.onyx.edu.note.actions.common.CheckNoteNameLegalityAction;
+import com.onyx.edu.note.actions.manager.CreateLibraryAction;
+import com.onyx.edu.note.actions.manager.LoadNoteListAction;
+import com.onyx.edu.note.actions.manager.NoteLibraryRemoveAction;
+import com.onyx.edu.note.util.Utils;
+
+import java.util.List;
+
 
 /**
  * Created by solskjaer49 on 2017/6/6 18:12.
@@ -20,7 +32,7 @@ import com.onyx.edu.note.data.NoteType;
  */
 
 public class ManagerViewModel extends BaseObservable {
-    static final String TAG = ManagerViewModel.class.getSimpleName();
+    private static final String TAG = ManagerViewModel.class.getSimpleName();
 
     private Context mContext; // To avoid leaks, this must be an Application Context.
 
@@ -30,20 +42,22 @@ public class ManagerViewModel extends BaseObservable {
     public final ObservableInt noteCount = new ObservableInt();
     public final ObservableInt currentPage = new ObservableInt();
     public final ObservableInt totalPage = new ObservableInt();
+    private final ObservableField<NoteModel> currentNoteModel = new ObservableField<>();
+    public final ObservableField<String> currentFolderTitle = new ObservableField<>();
 
-    public void setNavigator(ManagerNavigator navigator) {
+    void setNavigator(ManagerNavigator navigator) {
         this.mNavigator = navigator;
     }
 
-    ManagerNavigator mNavigator;
+    private ManagerNavigator mNavigator;
 
     public void start() {
-        loadData(true);
+        loadData(true, getCurrentNoteModelUniqueID());
     }
 
-    public ManagerViewModel(
-            Context context) {
-        mContext = context.getApplicationContext(); // Force use of Application Context.
+    ManagerViewModel(Context context) {
+        // Force use of Application Context.
+        mContext = context.getApplicationContext();
         items.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<NoteModel>>() {
             @Override
             public void onChanged(ObservableList<NoteModel> sender) {
@@ -75,10 +89,10 @@ public class ManagerViewModel extends BaseObservable {
         int folderTotal = 0, noteTotal = 0;
         for (NoteModel model : sender) {
             switch (model.getType()) {
-                case NoteType.FOLDER:
+                case NoteModel.TYPE_DOCUMENT:
                     folderTotal++;
                     break;
-                case NoteType.NOTE:
+                case NoteModel.TYPE_LIBRARY:
                     noteTotal++;
                     break;
             }
@@ -87,31 +101,89 @@ public class ManagerViewModel extends BaseObservable {
         noteCount.set(noteTotal);
     }
 
-    public void setPageStatus(int curPage, int allPage) {
+    void setPageStatus(int curPage, int allPage) {
         currentPage.set(curPage);
         totalPage.set(allPage);
     }
 
-    public void loadData(boolean forceUpdate) {
+    boolean goUp() {
+        if (isTopLevelFolder()) {
+            return false;
+        } else {
+            loadData(true, currentNoteModel.get().getParentUniqueId());
+            return true;
+        }
+    }
+
+    private boolean isTopLevelFolder() {
+        return (currentNoteModel.get() == null || (TextUtils.isEmpty(currentNoteModel.get().getParentUniqueId())
+                && (TextUtils.isEmpty(currentNoteModel.get().getUniqueId()))));
+    }
+
+    //TODO:better method name?
+    void loadData() {
+        loadData(true, getCurrentNoteModelUniqueID());
+    }
+
+    @Nullable
+    String getCurrentNoteModelUniqueID(){
+        return isTopLevelFolder() ? null : currentNoteModel.get().getUniqueId();
+    }
+
+    void loadData(boolean forceUpdate, String id) {
         if (forceUpdate) {
-            //TODO:test code.
             items.clear();
-            items.add(NoteModel.buildCreateNoteModel(mContext));
-            for (int i = 0; i < 12; i++) {
-                NoteModel model = new NoteModel();
-                model.setUniqueID(Integer.toString(i));
-                model.setDocumentName("note" + i);
-                model.setLastModifiedDate("2017-5-" + i);
-                model.setType(NoteType.NOTE);
-                model.setThumbnail(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.unknown_application));
-                items.add(model);
-            }
+            LoadNoteListAction action = new LoadNoteListAction(id);
+            action.execute(NoteManager.sharedInstance(mContext), new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    NoteLibraryLoadRequest req = (NoteLibraryLoadRequest) request;
+                    items.add(Utils.createAddNoteItem(mContext));
+                    items.addAll(req.getNoteList());
+                    currentNoteModel.set(req.getNoteModel());
+                    currentFolderTitle.set((isTopLevelFolder() || currentNoteModel.get().isDocument())
+                            ? null : currentNoteModel.get().getTitle());
+                }
+            });
         }
     }
 
     void onActivityDestroyed() {
         // Clear references to avoid potential memory leaks.
         mNavigator = null;
+    }
+
+    void addFolder(final String folderTitle) {
+        final CheckNoteNameLegalityAction action =
+                new CheckNoteNameLegalityAction(folderTitle, getCurrentNoteModelUniqueID(),
+                        NoteModel.TYPE_LIBRARY, false, false);
+        action.execute(NoteManager.sharedInstance(mContext), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (action.isLegal()) {
+                    final CreateLibraryAction action =
+                            new CreateLibraryAction(getCurrentNoteModelUniqueID(), folderTitle);
+                    action.execute(NoteManager.sharedInstance(mContext), new BaseCallback() {
+                        @Override
+                        public void done(BaseRequest request, Throwable e) {
+                            mNavigator.updateFolderCreateStatus(e == null);
+                        }
+                    });
+                } else {
+                    mNavigator.showNewFolderTitleIllegal();
+                }
+            }
+        });
+    }
+
+    void deleteNote(List<String> targetIDList){
+        NoteLibraryRemoveAction action = new NoteLibraryRemoveAction(targetIDList);
+        action.execute(NoteManager.sharedInstance(mContext), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                mNavigator.updateNoteRemoveStatus(e == null);
+            }
+        });
     }
 
 }

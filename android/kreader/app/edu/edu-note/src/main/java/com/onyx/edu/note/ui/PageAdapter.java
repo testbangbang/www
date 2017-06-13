@@ -39,8 +39,10 @@ public abstract class PageAdapter<VH extends RecyclerView.ViewHolder, T, VM exte
         this.itemVMList.addAll(itemVMList);
     }
 
+    //TODO:how about partial update?e.g. notifyItemChanged(index)?
     @CallSuper
     public void setRawData(List<T> rawData, Context context) {
         this.rawData = rawData;
+        this.itemVMList.clear();
     }
 }

@@ -4,8 +4,8 @@ import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.edu.note.data.NoteModel;
 import com.onyx.edu.note.manager.ManagerFragment;
 
 import java.util.List;

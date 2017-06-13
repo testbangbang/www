@@ -5,11 +5,14 @@ import android.databinding.BaseObservable;
 import android.databinding.Observable;
 import android.databinding.ObservableField;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 
-import com.onyx.edu.note.data.NoteModel;
-import com.onyx.edu.note.data.NoteType;
+import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.edu.note.R;
+import com.onyx.edu.note.util.Utils;
 
 import java.lang.ref.WeakReference;
 
@@ -18,6 +21,7 @@ import java.lang.ref.WeakReference;
  */
 
 public class ManagerItemViewModel extends BaseObservable {
+    private static final String TAG = ManagerItemViewModel.class.getSimpleName();
     private final ObservableField<NoteModel> mNoteObservable = new ObservableField<>();
 
     // This navigator is s wrapped in a WeakReference to avoid leaks because it has references to an
@@ -31,17 +35,20 @@ public class ManagerItemViewModel extends BaseObservable {
     private final Context mContext;
 
 
-    public ManagerItemViewModel(Context context) {
-        mContext = context.getApplicationContext();// Force use of Application Context.
+    public ManagerItemViewModel(final Context context) {
+        // Force use of Application Context.
+        mContext = context.getApplicationContext();
         // Exposed observables depend on the mNoteObservable observable:
         mNoteObservable.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable observable, int i) {
                 NoteModel note = mNoteObservable.get();
                 if (note != null) {
-                    documentName.set(note.getDocumentName());
-                    lastModifiedDate.set(note.getLastModifiedDate());
-                    thumbnail.set(note.getThumbnail());
+                    documentName.set(note.getTitle());
+                    lastModifiedDate.set(Utils.isValidNote(note) ?
+                            DateFormat.format("yyyy-MM-dd", note.getUpdatedAt()).toString() : null);
+                    thumbnail.set(note.isLibrary() ?
+                            BitmapFactory.decodeResource(mContext.getResources(), R.drawable.directory) : note.getThumbnail());
                 }
             }
         });
@@ -59,23 +66,42 @@ public class ManagerItemViewModel extends BaseObservable {
      * Called by the Data Binding library when item is clicked.
      */
     public void itemClicked() {
-        String uniqueID = mNoteObservable.get().getUniqueID();
+        String uniqueID = mNoteObservable.get().getUniqueId();
         if (TextUtils.isEmpty(uniqueID)) {
             // Click happened before note was loaded, no-op.
             return;
         }
         if (mNavigator != null && mNavigator.get() != null) {
             switch (mNoteObservable.get().getType()) {
-                case NoteType.CREATE_NOTE:
-                    mNavigator.get().addNewNote();
-                    break;
-                case NoteType.FOLDER:
+                case NoteModel.TYPE_LIBRARY:
                     mNavigator.get().enterFolder(uniqueID);
                     break;
-                case NoteType.NOTE:
+                case NoteModel.TYPE_DOCUMENT:
                     mNavigator.get().editNote(uniqueID);
+                    break;
+                default:
+                    mNavigator.get().addNewNote();
                     break;
             }
         }
+    }
+
+    public boolean itemLongClicked(){
+        String uniqueID = mNoteObservable.get().getUniqueId();
+        if (TextUtils.isEmpty(uniqueID)) {
+            // Click happened before note was loaded, no-op.
+            return false;
+        }
+        if (mNavigator != null && mNavigator.get() != null) {
+            switch (mNoteObservable.get().getType()) {
+                case NoteModel.TYPE_LIBRARY:
+                case NoteModel.TYPE_DOCUMENT:
+                    mNavigator.get().onPendingItem(uniqueID);
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        return false;
     }
 }

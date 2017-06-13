@@ -11,4 +11,6 @@ public interface ManagerItemNavigator {
     void enterFolder(String uniqueID);
 
     void addNewNote();
+
+    void onPendingItem(String uniqueID);
 }

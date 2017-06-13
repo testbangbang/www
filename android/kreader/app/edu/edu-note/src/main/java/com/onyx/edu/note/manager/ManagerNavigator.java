@@ -5,7 +5,12 @@ package com.onyx.edu.note.manager;
  */
 
 public interface ManagerNavigator {
-    void deleteNote();
+    void showNewFolderTitleIllegal();
 
-    void addFolder();
+    void updateFolderCreateStatus(boolean succeed);
+
+    void updateNoteRemoveStatus(boolean succeed);
+
+    void onGoUp();
+
 }

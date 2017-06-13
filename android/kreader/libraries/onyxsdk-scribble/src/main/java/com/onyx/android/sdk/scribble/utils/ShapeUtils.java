@@ -6,6 +6,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 
+import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
@@ -122,6 +123,15 @@ public class ShapeUtils {
             return true;
         }
         return false;
+    }
+
+    public static boolean hitTest(final float x1, final float y1, final float x2, final float y2, final float x, final float y, float limit) {
+        float value = Algorithm.distance(x1, y1, x2, y2, x, y);
+        return value <= limit;
+    }
+
+    public static float distance(final float x1, final float y1, final float x2, final float y2, final float x, final float y) {
+        return Algorithm.distance(x1, y1, x2, y2, x, y);
     }
 
     public static boolean contains(final RectF rect, float cx, float cy, float limit) {

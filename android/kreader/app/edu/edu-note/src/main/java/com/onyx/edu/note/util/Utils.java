@@ -16,10 +16,15 @@
 
 package com.onyx.edu.note.util;
 
+import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+
+import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.edu.note.R;
 
 /**
  * This provides methods to help Activities load their UI.
@@ -29,10 +34,9 @@ public class Utils {
     /**
      * The {@code fragment} is added to the container view with id {@code frameId}. The operation is
      * performed by the {@code fragmentManager}.
-     *
      */
-    public static void addFragmentToActivity (@NonNull FragmentManager fragmentManager,
-                                              @NonNull Fragment fragment, int frameId) {
+    public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
+                                             @NonNull Fragment fragment, int frameId) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(frameId, fragment);
         transaction.commit();
@@ -41,12 +45,25 @@ public class Utils {
     /**
      * The {@code fragment} is added to the container view with id {@code frameId}. The operation is
      * performed by the {@code fragmentManager}.
-     *
      */
-    public static void addFragmentToActivity (@NonNull FragmentManager fragmentManager,
-                                              @NonNull Fragment fragment, String tag) {
+    public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
+                                             @NonNull Fragment fragment, String tag) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(fragment, tag);
         transaction.commit();
+    }
+
+    //TODO:place this static method in noteModel class?
+    public static NoteModel createAddNoteItem(Context context) {
+        final NoteModel document = new NoteModel();
+        document.setType(Constant.TYPE_CREATE_NOTE);
+        document.setTitle(context.getString(R.string.create_note));
+        document.setUniqueId(Long.toString(Long.MIN_VALUE));
+        document.setThumbnail(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_add_note));
+        return document;
+    }
+
+    public static boolean isValidNote(NoteModel model) {
+        return model.getType() > Constant.TYPE_CREATE_NOTE;
     }
 }

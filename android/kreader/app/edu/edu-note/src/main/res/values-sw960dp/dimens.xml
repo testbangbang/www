@@ -2,4 +2,6 @@
 <resources>
     <dimen name="onyx_scribble_bg_item_width">180dp</dimen>
     <dimen name="onyx_scribble_bg_item_height">240dp</dimen>
+    <dimen name="onyx_main_note_menu_height">72dp</dimen>
+    <dimen name="onyx_note_item_img_size">48dp</dimen>
 </resources>

@@ -26,7 +26,13 @@ import java.util.List;
  */
 public class NoteDataProvider {
 
+    @Deprecated
+    //keep method for old note compatibility.
     public static NoteModel load(final Context context, final String uniqueId) {
+       return load(uniqueId);
+    }
+
+    public static NoteModel load(final String uniqueId) {
         Select select = new Select();
         Where where = select.from(NoteModel.class).where(NoteModel_Table.uniqueId.eq(uniqueId));
         return (NoteModel) where.querySingle();
