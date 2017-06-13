@@ -200,7 +200,7 @@ public class FormFieldHandler extends ReadingHandler {
                         }
                     }
                 })
-                .setCloseOnTouchOutside(false)
+                .setCloseOnTouchOutside(true)
                 .setNegativeText(R.string.custom_dialog_exit)
                 .setPositiveText(R.string.custom_dialog_submit)
                 .show();
