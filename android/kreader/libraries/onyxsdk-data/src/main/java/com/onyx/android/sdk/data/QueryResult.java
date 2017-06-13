@@ -4,6 +4,7 @@ import com.onyx.android.sdk.data.common.ContentException;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * Created by suicheng on 2017/5/6.
  */
 
-public class QueryResult<T> {
+public class QueryResult<T> implements Serializable {
 
     public List<T> list;
     public long count;
