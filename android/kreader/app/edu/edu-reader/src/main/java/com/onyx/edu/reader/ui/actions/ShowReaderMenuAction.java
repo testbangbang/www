@@ -907,6 +907,9 @@ public class ShowReaderMenuAction extends BaseAction {
             case SUBMIT:
                 showPushFormConfirmDialog(readerDataHolder);
                 break;
+            case FETCH_REVIEW_DATA:
+                readerDataHolder.applyReviewDataFromCloud();
+                break;
             case SCRIBBLE_WIDTH1:
             case SCRIBBLE_WIDTH2:
             case SCRIBBLE_WIDTH3:

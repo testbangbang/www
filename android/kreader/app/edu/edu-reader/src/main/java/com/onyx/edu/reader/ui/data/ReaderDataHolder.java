@@ -753,10 +753,8 @@ public class ReaderDataHolder {
         cloudChain.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                ReviewDocumentData reviewDocumentData = cloudChain.getReviewDocumentData();
-                List<ReaderFormShapeModel> formShapeModels = reviewDocumentData.getReaderFormShapes();
-                ReaderNotePageNameMap notePageNameMap = reviewDocumentData.getReaderNotePageNameMap();
-                new SaveReviewDataAction(notePageNameMap, formShapeModels, getReader().getDocumentMd5()).execute(ReaderDataHolder.this, null);
+                String reviewDocumentData = cloudChain.getReviewDocumentData();
+                new SaveReviewDataAction(reviewDocumentData, getReader().getDocumentMd5()).execute(ReaderDataHolder.this, null);
 
             }
         });

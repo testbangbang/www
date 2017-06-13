@@ -517,7 +517,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         if (event != null && !event.isWaitForShapeData()) {
             beforeDrawPage();
-            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), true);
             afterDrawPage();
         }
 
@@ -571,7 +571,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             ReaderDeviceManager.applyWithGcUpdate(getSurfaceView());
         }
         beforeDrawPage();
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), false);
         if (event.isUseFullUpdate()) {
             ReaderDeviceManager.disableRegal();
             EpdController.resetUpdateMode(getSurfaceView());
@@ -700,7 +700,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onShapeDrawing(final ShapeDrawingEvent event) {
         getReaderDataHolder().getNoteManager().ensureContentRendered();
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), false);
     }
 
     @Subscribe
@@ -716,7 +716,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         boolean drawDuringErasing = false;
         if (drawDuringErasing) {
             getReaderDataHolder().getNoteManager().ensureContentRendered();
-            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), false);
         }
     }
 
@@ -862,6 +862,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         initReaderMenu();
         updateNoteHostView();
         getReaderDataHolder().updateRawEventProcessor();
+        getReaderDataHolder().applyReviewDataFromCloud();
 
         postDocumentInitRendered();
     }
@@ -948,7 +949,6 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void onDocumentOpened(final DocumentOpenEvent event) {
         prepareGCUpdateInterval();
         prepareFrontLight();
-        getReaderDataHolder().applyReviewDataFromCloud();
     }
 
     @Subscribe
@@ -1041,14 +1041,16 @@ public class ReaderActivity extends OnyxBaseActivity {
         forwardAction.execute(getReaderDataHolder(), null);
     }
 
-    private void drawPage(final Bitmap pageBitmap) {
+    private void drawPage(final Bitmap pageBitmap, boolean renderFormField) {
         Canvas canvas = holder.lockCanvas(new Rect(surfaceView.getLeft(), surfaceView.getTop(),
                 surfaceView.getRight(), surfaceView.getBottom()));
         if (canvas == null) {
             return;
         }
         try {
-            clearFormFieldControls();
+            if (renderFormField) {
+                clearFormFieldControls();
+            }
             readerPainter.drawPage(this,
                     canvas,
                     pageBitmap,
@@ -1056,7 +1058,9 @@ public class ReaderActivity extends OnyxBaseActivity {
                     getReaderDataHolder().getReaderViewInfo(),
                     getReaderDataHolder().getSelectionManager(),
                     getReaderDataHolder().getNoteManager());
-            addFormFieldControls(canvas);
+            if (renderFormField) {
+                addFormFieldControls(canvas);
+            }
         } finally {
             holder.unlockCanvasAndPost(canvas);
         }

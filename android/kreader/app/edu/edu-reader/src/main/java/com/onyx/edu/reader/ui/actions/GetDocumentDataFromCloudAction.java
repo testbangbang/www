@@ -21,7 +21,7 @@ public class GetDocumentDataFromCloudAction extends BaseAction {
     private StringBuffer token;
 
     private String errorMessage;
-    private ReviewDocumentData reviewDocumentData;
+    private String reviewDocumentData;
 
     public GetDocumentDataFromCloudAction(String url, String cloudDocId, StringBuffer token) {
         this.url = url;
@@ -36,25 +36,17 @@ public class GetDocumentDataFromCloudAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 errorMessage = cloudRequest.getErrorMessage();
-                parseDocumentData(cloudRequest.getDocumentData());
+                reviewDocumentData = cloudRequest.getDocumentData();
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
-    }
-
-    private void parseDocumentData(String documentData) {
-        if (StringUtils.isNullOrEmpty(documentData)) {
-            return;
-        }
-        Debug.d(getClass(), documentData);
-        reviewDocumentData = JSON.parseObject(documentData, ReviewDocumentData.class);
     }
 
     public String getErrorMessage() {
         return errorMessage;
     }
 
-    public ReviewDocumentData getReviewDocumentData() {
+    public String getReviewDocumentData() {
         return reviewDocumentData;
     }
 
