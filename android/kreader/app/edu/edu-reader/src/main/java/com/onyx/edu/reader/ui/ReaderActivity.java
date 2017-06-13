@@ -1066,9 +1066,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                     getReaderDataHolder().getReaderViewInfo(),
                     getReaderDataHolder().getSelectionManager(),
                     getReaderDataHolder().getNoteManager());
-            if (renderFormField) {
-                addFormFieldControls(canvas);
-            }
+            addFormFieldControls(canvas, renderFormField);
         } finally {
             holder.unlockCanvasAndPost(canvas);
         }
@@ -1081,7 +1079,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         formFieldControls.clear();
     }
 
-    private void addFormFieldControls(Canvas canvas) {
+    private void addFormFieldControls(Canvas canvas, boolean renderFormField) {
         for (PageInfo pageInfo : getReaderDataHolder().getVisiblePages()) {
             if (getReaderDataHolder().getReaderUserDataInfo().hasFormFields(pageInfo)) {
                 List<ReaderFormField> fields = getReaderDataHolder().getReaderUserDataInfo().getFormFields(pageInfo);
@@ -1089,7 +1087,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                     View control = FormFieldControlFactory.createFormControl(mainView, field);
                     if (control != null) {
                         formFieldControls.add(control);
-                        if (!isFormScribble(control)) {
+                        if (!isFormScribble(control) && renderFormField) {
                             mainView.addView(control);
                         } else {
                             drawScribbleRegion(canvas, control);

@@ -3,11 +3,8 @@ package com.onyx.edu.reader.ui.handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.view.View;
 
-import com.onyx.android.sdk.reader.api.ReaderFormField;
-import com.onyx.android.sdk.reader.api.ReaderFormScribble;
-import com.onyx.edu.reader.note.actions.FlushNoteAction;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
 import com.onyx.edu.reader.note.actions.StopNoteActionChain;
 import com.onyx.edu.reader.note.request.StartNoteRequest;
@@ -28,7 +25,7 @@ public class FormScribbleHandler extends FormFieldHandler {
     }
 
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        return false;
+        return readerDataHolder.getNoteManager().inScribbleRect(TouchPoint.create(e));
     }
 
     public boolean onScaleEnd(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {

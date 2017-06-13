@@ -421,6 +421,10 @@ public class NoteManager {
         return null;
     }
 
+    public boolean inScribbleRect(TouchPoint point) {
+        return noteEventProcessorManager.inScribbleRect(point);
+    }
+
     public final RenderContext getRenderContext() {
         return renderContext;
     }
