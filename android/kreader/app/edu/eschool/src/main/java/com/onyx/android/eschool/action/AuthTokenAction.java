@@ -10,15 +10,11 @@ import com.onyx.android.eschool.events.HardwareErrorEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.common.ContentException;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
-import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
-import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromCloudRequest;
-import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromLocalRequest;
-import com.onyx.android.sdk.data.request.cloud.v2.AccountSaveToLocalRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,55 +30,31 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void requestAuthAccount(final LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
-        final BaseAuthAccount account = AccountLoadFromCloudRequest.createAuthAccountFromHardware(dataHolder.getContext());
+        final BaseAuthAccount account = LoginByHardwareInfoRequest.createAuthAccountFromHardware(dataHolder.getContext());
         if (account == null) {
             sendHardwareErrorEvent();
             return;
         }
-        CloudRequestChain requestChain = new CloudRequestChain();
-        final AccountLoadFromLocalRequest localAccountRequest = new AccountLoadFromLocalRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
-        final AccountLoadFromCloudRequest accountGetRequest = new AccountLoadFromCloudRequest<>(account, EduAccount.class);
-        final AccountSaveToLocalRequest saveAccountRequest = new AccountSaveToLocalRequest(EduAccountProvider.CONTENT_URI, null);
-        requestChain.addRequest(localAccountRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (NeoAccountBase.isValid(localAccountRequest.getAccount())) {
-                    sendAccountAvailableEvent(localAccountRequest.getAccount());
-                }
-            }
-        });
-        requestChain.addRequest(accountGetRequest, new BaseCallback() {
+        final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
+        dataHolder.getCloudManager().submitRequest(dataHolder.getContext(), accountLoadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
-                    if (ContentException.isNetworkException(e)) {
-                        if (NeoAccountBase.isValid(localAccountRequest.getAccount())) {
-                            BaseCallback.invoke(baseCallback, request, null);
-                            return;
-                        }
-                    }
-                    if (ContentException.isCloudException(e)) {
-                        processCloudException(dataHolder.getContext(), (ContentException.CloudException) e);
-                    }
+                    processCloudException(dataHolder.getContext(), e);
                     return;
                 }
-                saveAccountRequest.setNeoAccountBase(accountGetRequest.getNeoAccount());
-            }
-        });
-        requestChain.addRequest(saveAccountRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
+                NeoAccountBase eduAccount = accountLoadRequest.getAccount();
+                if (NeoAccountBase.isValid(eduAccount)) {
+                    sendAccountAvailableEvent(eduAccount);
+                    BaseCallback.invoke(baseCallback, request, null);
+                } else {
+                    sendAccountTokenErrorEvent(dataHolder.getContext());
                 }
-                sendAccountAvailableEvent(saveAccountRequest.getNeoAccountBase());
-                BaseCallback.invoke(baseCallback, request, e);
             }
         });
-        requestChain.execute(dataHolder.getContext(), dataHolder.getCloudManager());
     }
 
-    private void processCloudException(Context context, ContentException.CloudException exception) {
+    private void processCloudException(Context context, Throwable e) {
         sendAccountTokenErrorEvent(context);
     }
 
