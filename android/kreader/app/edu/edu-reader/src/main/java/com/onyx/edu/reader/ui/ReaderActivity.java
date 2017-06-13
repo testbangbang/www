@@ -82,6 +82,7 @@ import com.onyx.edu.reader.ui.events.BeforeDocumentCloseEvent;
 import com.onyx.edu.reader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.edu.reader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.edu.reader.ui.events.ChangeOrientationEvent;
+import com.onyx.edu.reader.ui.events.ClearFormFieldControlsEvent;
 import com.onyx.edu.reader.ui.events.ClosePopupEvent;
 import com.onyx.edu.reader.ui.events.ConfirmCloseDialogEvent;
 import com.onyx.edu.reader.ui.events.DocumentInitRenderedEvent;
@@ -1056,9 +1057,6 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         try {
-            if (renderFormField) {
-                clearFormFieldControls();
-            }
             readerPainter.drawPage(this,
                     canvas,
                     pageBitmap,
@@ -1072,7 +1070,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
     }
 
-    private void clearFormFieldControls() {
+    @Subscribe
+    public void onClearFormFieldControlsEvent(final ClearFormFieldControlsEvent event) {
         for (View view : formFieldControls) {
             mainView.removeView(view);
         }

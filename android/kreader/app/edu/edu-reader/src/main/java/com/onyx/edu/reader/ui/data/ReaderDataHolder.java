@@ -421,7 +421,7 @@ public class ReaderDataHolder {
     }
 
     public void submitNonRenderRequest(final BaseReaderRequest request, final BaseCallback callback) {
-        beforeSubmitRequest();
+        beforeSubmitRequest(false);
         reader.submitRequest(context, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -435,7 +435,7 @@ public class ReaderDataHolder {
     }
 
     public void submitRenderRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
-        beforeSubmitRequest();
+        beforeSubmitRequest(true);
         reader.submitRequest(context, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -446,8 +446,11 @@ public class ReaderDataHolder {
         });
     }
 
-    private void beforeSubmitRequest() {
+    private void beforeSubmitRequest(boolean render) {
         getNoteManager().resetNoteDataInfo();
+        if (render) {
+            getEventBus().post(new ClearFormFieldControlsEvent());
+        }
     }
 
     private void onPageDrawFinished(BaseReaderRequest request, Throwable e) {
