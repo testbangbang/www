@@ -28,7 +28,6 @@ public class SaveDocumentDataToCloudAction extends BaseAction {
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
         final SaveDocumentDataToCloudRequest saveDocumentDataToCloudRequest = new SaveDocumentDataToCloudRequest(exportDBPath.toString(),
                 readerDataHolder.getContext(),
-                Constant.SYNC_API_BASE,
                 fileFullMd5.toString(),
                 readerDataHolder.getCloudDocId(),
                 token.toString());

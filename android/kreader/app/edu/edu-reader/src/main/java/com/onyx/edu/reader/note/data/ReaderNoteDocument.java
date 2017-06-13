@@ -33,6 +33,9 @@ public class ReaderNoteDocument {
     public void open(final Context context,
                      final String uniqueId,
                      final String parentLibraryUniqueId) {
+        if (StringUtils.isNullOrEmpty(uniqueId)) {
+            return;
+        }
         close(context);
         setDocumentUniqueId(uniqueId);
         setParentUniqueId(parentLibraryUniqueId);

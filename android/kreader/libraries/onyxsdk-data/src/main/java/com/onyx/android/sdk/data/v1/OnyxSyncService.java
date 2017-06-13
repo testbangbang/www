@@ -19,10 +19,10 @@ import retrofit2.http.Query;
 public interface OnyxSyncService {
 
     @Multipart
-    @POST("api/filedatas/uploadFileData")
+    @POST("filedatas/uploadFileData")
     Call<JsonRespone> pushReaderData(@Part MultipartBody.Part file, @Part final MultipartBody.Part md5, @Part final MultipartBody.Part docId);
 
-    @GET("api/filedatas/getReviewData")
+    @GET("filedatas/getReviewData")
     Call<JsonResponse> getDocumentData(@Query("docId") final String cloudDocId);
 
 }

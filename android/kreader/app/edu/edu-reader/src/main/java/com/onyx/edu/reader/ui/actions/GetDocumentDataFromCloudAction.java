@@ -16,22 +16,20 @@ import com.onyx.edu.reader.ui.data.ReviewDocumentData;
 
 public class GetDocumentDataFromCloudAction extends BaseAction {
 
-    private String url;
     private String cloudDocId;
     private StringBuffer token;
 
     private String errorMessage;
     private String reviewDocumentData;
 
-    public GetDocumentDataFromCloudAction(String url, String cloudDocId, StringBuffer token) {
-        this.url = url;
+    public GetDocumentDataFromCloudAction(String cloudDocId, StringBuffer token) {
         this.cloudDocId = cloudDocId;
         this.token = token;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        final GetDocumentDataFromCloudRequest cloudRequest = new GetDocumentDataFromCloudRequest(url, cloudDocId, token.toString());
+        final GetDocumentDataFromCloudRequest cloudRequest = new GetDocumentDataFromCloudRequest(cloudDocId, token.toString());
         readerDataHolder.getCloudManager().submitRequest(readerDataHolder.getContext(), cloudRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -50,7 +48,7 @@ public class GetDocumentDataFromCloudAction extends BaseAction {
         return reviewDocumentData;
     }
 
-    public static GetDocumentDataFromCloudAction create(String url, String cloudDocId, StringBuffer token) {
-        return new GetDocumentDataFromCloudAction(url, cloudDocId, token);
+    public static GetDocumentDataFromCloudAction create(String cloudDocId, StringBuffer token) {
+        return new GetDocumentDataFromCloudAction(cloudDocId, token);
     }
 }

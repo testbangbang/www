@@ -5,17 +5,20 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
+import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
+import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -30,18 +33,14 @@ import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
-import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.actions.CloseNoteMenuAction;
 import com.onyx.edu.reader.note.actions.SaveReviewDataAction;
-import com.onyx.edu.reader.note.data.ReaderNotePageNameMap;
-import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
 import com.onyx.edu.reader.note.receiver.DeviceReceiver;
 import com.onyx.edu.reader.tts.ReaderTtsManager;
 import com.onyx.edu.reader.ui.ReaderBroadcastReceiver;
 import com.onyx.edu.reader.ui.actions.ExportAnnotationAction;
-import com.onyx.edu.reader.ui.actions.GetDocumentDataFromCloudAction;
 import com.onyx.edu.reader.ui.actions.GetDocumentDataFromCloudChain;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.events.TextSelectionEvent;
@@ -194,8 +193,13 @@ public class ReaderDataHolder {
                 getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_SCRIBBLE_PROVIDER);
     }
 
+    public boolean inScribbleProvider() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
+    }
+
     public boolean inFormProvider() {
-        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_PROVIDER);
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_PROVIDER) ||
+                getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_SCRIBBLE_PROVIDER);
     }
 
     public boolean inReadingProvider() {
@@ -337,7 +341,9 @@ public class ReaderDataHolder {
 
     public CloudManager getCloudManager() {
         if (cloudManager == null) {
-            cloudManager = new CloudManager();
+            cloudManager = CloudStore.createCloudManager(CloudConf.create(Constant.ONYX_HOST_BASE,
+                    Constant.ONYX_API_BASE,
+                    Constant.DEFAULT_CLOUD_STORAGE));
         }
         return cloudManager;
     }
@@ -415,7 +421,7 @@ public class ReaderDataHolder {
     }
 
     public void submitNonRenderRequest(final BaseReaderRequest request, final BaseCallback callback) {
-        beforeSubmitRequest();
+        beforeSubmitRequest(false);
         reader.submitRequest(context, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -429,7 +435,7 @@ public class ReaderDataHolder {
     }
 
     public void submitRenderRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
-        beforeSubmitRequest();
+        beforeSubmitRequest(true);
         reader.submitRequest(context, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -440,8 +446,11 @@ public class ReaderDataHolder {
         });
     }
 
-    private void beforeSubmitRequest() {
+    private void beforeSubmitRequest(boolean render) {
         getNoteManager().resetNoteDataInfo();
+        if (render) {
+            getEventBus().post(new ClearFormFieldControlsEvent());
+        }
     }
 
     private void onPageDrawFinished(BaseReaderRequest request, Throwable e) {
@@ -742,7 +751,7 @@ public class ReaderDataHolder {
         this.cloudDocId = cloudDocId;
     }
 
-    public void applyReviewDataFromCloud() {
+    public void applyReviewDataFromCloud(final boolean showError) {
         if (reader == null || reader.getDocument() == null) {
             return;
         }
@@ -753,8 +762,20 @@ public class ReaderDataHolder {
         cloudChain.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                String errorMessage = cloudChain.getErrorMessage();
+                if (showError && !StringUtils.isNullOrEmpty(errorMessage)) {
+                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String reviewDocumentData = cloudChain.getReviewDocumentData();
-                new SaveReviewDataAction(reviewDocumentData, getReader().getDocumentMd5()).execute(ReaderDataHolder.this, null);
+                new SaveReviewDataAction(reviewDocumentData, getReader().getDocumentMd5()).execute(ReaderDataHolder.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (showError && e != null && !StringUtils.isNullOrEmpty(e.getMessage())) {
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
             }
         });

@@ -433,20 +433,7 @@ public class HandlerManager {
         return true;
     }
 
-    private boolean isEnableProcessSingleTapUp(final ReaderDataHolder readerDataHolder) {
-        if (readerDataHolder.inNoteWritingProvider()) {
-            return false;
-        }
-        if (readerDataHolder.inFormProvider()) {
-            return false;
-        }
-        return true;
-    }
-
     private boolean processSingleTapUp(final ReaderDataHolder readerDataHolder, final String action, final String args) {
-        if (!isEnableProcessSingleTapUp(readerDataHolder)) {
-            return false;
-        }
         if (StringUtils.isNullOrEmpty(action)) {
             return false;
         }
@@ -518,6 +505,9 @@ public class HandlerManager {
     }
 
     private void onShowMenu(final ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.inFormProvider()) {
+            return;
+        }
         new ShowReaderMenuAction().execute(readerDataHolder, null);
     }
 

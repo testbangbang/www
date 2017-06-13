@@ -77,9 +77,9 @@ public class ShowFormMenuActon extends BaseAction {
         toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         final ReaderMenuAction[] expandedActions = {ReaderMenuAction.SCRIBBLE_WIDTH, ReaderMenuAction.SCRIBBLE_SHAPE, ReaderMenuAction.SCRIBBLE_ERASER};
 
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_exit, ReaderMenuAction.EXIT);
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_submit, ReaderMenuAction.SUBMIT);
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_download, ReaderMenuAction.FETCH_REVIEW_DATA);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_exit, ReaderMenuAction.EXIT);
         if (showNoteMenu) {
             addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width, ReaderMenuAction.SCRIBBLE_WIDTH);
             addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape, ReaderMenuAction.SCRIBBLE_SHAPE);

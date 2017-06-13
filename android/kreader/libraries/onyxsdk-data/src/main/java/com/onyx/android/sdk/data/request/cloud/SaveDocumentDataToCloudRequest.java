@@ -24,7 +24,6 @@ public class SaveDocumentDataToCloudRequest extends BaseCloudRequest {
 
     private String uploadDBPath;
     private Context context;
-    private String url;
     private String fileFullMd5;
     private String cloudDocId;
     private String token;
@@ -33,13 +32,11 @@ public class SaveDocumentDataToCloudRequest extends BaseCloudRequest {
 
     public SaveDocumentDataToCloudRequest(String uploadDBPath,
                                           Context context,
-                                          String url,
                                           String fileFullMd5,
                                           String cloudDocId,
                                           String token) {
         this.uploadDBPath = uploadDBPath;
         this.context = context;
-        this.url = url;
         this.fileFullMd5 = fileFullMd5;
         this.cloudDocId = cloudDocId;
         this.token = token;
@@ -47,9 +44,6 @@ public class SaveDocumentDataToCloudRequest extends BaseCloudRequest {
 
     @Override
     public void execute(final CloudManager parent) throws Exception {
-        if (StringUtils.isNullOrEmpty(url)) {
-            return;
-        }
         if (!FileUtils.fileExist(uploadDBPath)) {
             return;
         }
@@ -70,7 +64,7 @@ public class SaveDocumentDataToCloudRequest extends BaseCloudRequest {
         MultipartBody.Part docIdBody = MultipartBody.Part.createFormData(Constant.DOCID_TAG, cloudDocId);
 
         try {
-            executeCall(ServiceFactory.getSyncService(url).pushReaderData(fileBody, md5Body, docIdBody));
+            executeCall(ServiceFactory.getSyncService(parent.getCloudConf().getApiBase()).pushReaderData(fileBody, md5Body, docIdBody));
         } catch (Exception e) {
             errorMessage = e.getMessage();
             e.printStackTrace();
@@ -79,7 +73,7 @@ public class SaveDocumentDataToCloudRequest extends BaseCloudRequest {
 
     private void updateTokenHeader(final CloudManager cloudManager) {
         if (StringUtils.isNotBlank(token)) {
-            ServiceFactory.addRetrofitTokenHeader(url,
+            ServiceFactory.addRetrofitTokenHeader(cloudManager.getCloudConf().getApiBase(),
                     Constant.HEADER_AUTHORIZATION,
                     ContentService.CONTENT_AUTH_PREFIX + token);
         }
