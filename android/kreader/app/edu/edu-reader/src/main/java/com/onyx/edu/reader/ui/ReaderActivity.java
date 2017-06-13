@@ -870,6 +870,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         updateNoteHostView();
         getReaderDataHolder().updateRawEventProcessor();
         getReaderDataHolder().applyReviewDataFromCloud();
+        getReaderDataHolder().resetHandlerManager();
 
         postDocumentInitRendered();
     }
