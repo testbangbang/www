@@ -4,6 +4,7 @@ import android.databinding.tool.util.L;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.note.NoteManager;
@@ -33,8 +34,12 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
 
     @Override
     public void execute(NoteManager noteManager) throws Exception {
+        ReviewDocumentData data = JSONObjectParseUtils.parseObject(reviewDocumentData, ReviewDocumentData.class);
+        if (data == null) {
+            return;
+        }
+
         setVisiblePages(pages);
-        ReviewDocumentData data = JSON.parseObject(reviewDocumentData, ReviewDocumentData.class);
         ReaderNotePageNameMap pageNameMap = data.getReaderNotePageNameMap();
         List<ReaderFormShapeModel> formShapeModels = data.getReaderFormShapes();
 
