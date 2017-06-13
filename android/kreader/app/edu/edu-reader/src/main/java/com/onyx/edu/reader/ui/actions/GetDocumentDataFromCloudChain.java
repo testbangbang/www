@@ -19,7 +19,7 @@ public class GetDocumentDataFromCloudChain extends BaseAction {
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
         ActionChain actionChain = new ActionChain();
         AccountLoadFromLocalAction accountLoadFromLocalAction = AccountLoadFromLocalAction.create();
-        final GetDocumentDataFromCloudAction getDocumentDataFromCloudAction = GetDocumentDataFromCloudAction.create(Constant.SYNC_API_BASE, readerDataHolder.getCloudDocId(), accountLoadFromLocalAction.getToken());
+        final GetDocumentDataFromCloudAction getDocumentDataFromCloudAction = GetDocumentDataFromCloudAction.create(readerDataHolder.getCloudDocId(), accountLoadFromLocalAction.getToken());
         actionChain.addAction(accountLoadFromLocalAction);
         actionChain.addAction(getDocumentDataFromCloudAction);
         actionChain.execute(readerDataHolder, new BaseCallback() {

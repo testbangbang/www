@@ -17,25 +17,19 @@ import retrofit2.Response;
 
 public class GetDocumentDataFromCloudRequest extends BaseCloudRequest {
 
-    private String url;
     private String cloudDocId;
     private String token;
 
     private String errorMessage;
     private String documentData;
 
-    public GetDocumentDataFromCloudRequest(String url, String cloudDocId, String token) {
-        this.url = url;
+    public GetDocumentDataFromCloudRequest(String cloudDocId, String token) {
         this.cloudDocId = cloudDocId;
         this.token = token;
     }
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        if (StringUtils.isNullOrEmpty(url)) {
-            errorMessage = "url is empty";
-            return;
-        }
         if (StringUtils.isNullOrEmpty(cloudDocId)) {
             errorMessage = "cloud document id is empty";
             return;
@@ -44,9 +38,9 @@ public class GetDocumentDataFromCloudRequest extends BaseCloudRequest {
             errorMessage = "token is empty";
             return;
         }
-        updateTokenHeader(url, token);
+        updateTokenHeader(parent, token);
         try {
-            Response<JsonResponse> response = executeCall(ServiceFactory.getSyncService(url).getDocumentData(cloudDocId));
+            Response<JsonResponse> response = executeCall(ServiceFactory.getSyncService(parent.getCloudConf().getApiBase()).getDocumentData(cloudDocId));
             if (response != null) {
                 documentData = response.body().data;
             }
@@ -65,9 +59,9 @@ public class GetDocumentDataFromCloudRequest extends BaseCloudRequest {
         return errorMessage;
     }
 
-    private void updateTokenHeader(final String url, String token) {
+    private void updateTokenHeader(CloudManager parent, String token) {
         if (StringUtils.isNotBlank(token)) {
-            ServiceFactory.addRetrofitTokenHeader(url,
+            ServiceFactory.addRetrofitTokenHeader(parent.getCloudConf().getApiBase(),
                     Constant.HEADER_AUTHORIZATION,
                     ContentService.CONTENT_AUTH_PREFIX + token);
         }

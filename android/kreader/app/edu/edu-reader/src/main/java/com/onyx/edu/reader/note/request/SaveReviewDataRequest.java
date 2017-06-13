@@ -36,12 +36,15 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
     public void execute(NoteManager noteManager) throws Exception {
         ReviewDocumentData data = JSONObjectParseUtils.parseObject(reviewDocumentData, ReviewDocumentData.class);
         if (data == null) {
-            return;
+            throw new Exception("empty data");
         }
 
         setVisiblePages(pages);
         ReaderNotePageNameMap pageNameMap = data.getReaderNotePageNameMap();
         List<ReaderFormShapeModel> formShapeModels = data.getReaderFormShapes();
+        if (pageNameMap == null && (formShapeModels == null || formShapeModels.size() == 0)) {
+            throw new Exception("empty data");
+        }
 
         ensureDocumentOpened(noteManager);
         List<ReaderFormShapeModel> newFormShapeModels = new ArrayList<>();
