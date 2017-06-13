@@ -95,6 +95,7 @@ import com.onyx.edu.reader.ui.events.QuitEvent;
 import com.onyx.edu.reader.ui.events.RequestFinishEvent;
 import com.onyx.edu.reader.ui.events.ResetEpdUpdateModeEvent;
 import com.onyx.edu.reader.ui.events.ResizeReaderWindowEvent;
+import com.onyx.edu.reader.ui.events.ReviewShapeRenderFinishEvent;
 import com.onyx.edu.reader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.edu.reader.ui.events.ShapeAddedEvent;
 import com.onyx.edu.reader.ui.events.ShapeDrawingEvent;
@@ -578,6 +579,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
     }
 
+    @Subscribe
+    public void onReviewShapeRendered(final ReviewShapeRenderFinishEvent event) {
+        beforeDrawPage();
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), false);
+    }
+
     private boolean verifyReader() {
         return getReaderDataHolder().isDocumentOpened();
     }
@@ -863,6 +870,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         updateNoteHostView();
         getReaderDataHolder().updateRawEventProcessor();
         getReaderDataHolder().applyReviewDataFromCloud();
+        getReaderDataHolder().resetHandlerManager();
 
         postDocumentInitRendered();
     }

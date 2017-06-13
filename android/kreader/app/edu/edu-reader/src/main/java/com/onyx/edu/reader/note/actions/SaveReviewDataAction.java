@@ -7,6 +7,7 @@ import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
 import com.onyx.edu.reader.note.request.SaveReviewDataRequest;
 import com.onyx.edu.reader.ui.actions.BaseAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
+import com.onyx.edu.reader.ui.events.ReviewShapeRenderFinishEvent;
 import com.onyx.edu.reader.ui.events.ShapeRenderFinishEvent;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class SaveReviewDataAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
-                    readerDataHolder.getEventBus().post(ShapeRenderFinishEvent.shapeReadyEvent());
+                    readerDataHolder.getEventBus().post(new ReviewShapeRenderFinishEvent());
                 }
                 BaseCallback.invoke(baseCallback, request, e);
             }
