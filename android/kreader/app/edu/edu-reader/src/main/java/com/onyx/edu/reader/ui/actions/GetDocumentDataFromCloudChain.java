@@ -13,7 +13,7 @@ import com.onyx.edu.reader.ui.data.ReviewDocumentData;
 public class GetDocumentDataFromCloudChain extends BaseAction {
 
     private String errorMessage;
-    private ReviewDocumentData reviewDocumentData;
+    private String reviewDocumentData;
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
@@ -36,7 +36,7 @@ public class GetDocumentDataFromCloudChain extends BaseAction {
         return errorMessage;
     }
 
-    public ReviewDocumentData getReviewDocumentData() {
+    public String getReviewDocumentData() {
         return reviewDocumentData;
     }
 }
