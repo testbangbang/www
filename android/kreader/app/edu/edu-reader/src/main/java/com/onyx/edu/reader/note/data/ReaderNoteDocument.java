@@ -1,6 +1,8 @@
 package com.onyx.edu.reader.note.data;
 
 import android.content.Context;
+import android.databinding.tool.util.L;
+
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhuzeng on 9/16/16.
@@ -191,6 +194,20 @@ public class ReaderNoteDocument {
 
     private ReaderNotePageNameMap getPageIndex() {
         return pageIndex;
+    }
+
+    public void addPageIndex(ReaderNotePageNameMap pageNameMap) {
+        for (Map.Entry<String, List<String>> stringListEntry : pageNameMap.getData().entrySet()) {
+            String pageName = stringListEntry.getKey();
+            List<String> list = stringListEntry.getValue();
+            for (String s : list) {
+                pageIndex.add(pageName, s);
+                ReaderNotePage notePage = pageMap.get(pageName);
+                if (notePage != null) {
+                    notePage.setLoaded(false);
+                }
+            }
+        }
     }
 
     private HashMap<String, ReaderNotePage> getPageMap() {

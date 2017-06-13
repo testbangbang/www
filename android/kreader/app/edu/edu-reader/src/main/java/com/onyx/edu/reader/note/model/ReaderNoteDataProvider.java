@@ -91,6 +91,13 @@ public class ReaderNoteDataProvider {
         return list;
     }
 
+    public static boolean hasFormShape(final Context context,
+                                       final String shapeUniqueId) {
+        Select select = new Select();
+        Where where = select.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.shapeUniqueId.eq(shapeUniqueId));
+        return where.hasData();
+    }
+
     public static boolean hasUnLockFormShapes(final Context context,
                                               final String documentUniqueId,
                                               final boolean review) {

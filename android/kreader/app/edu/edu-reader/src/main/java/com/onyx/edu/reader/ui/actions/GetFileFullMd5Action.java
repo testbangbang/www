@@ -33,4 +33,8 @@ public class GetFileFullMd5Action extends BaseAction {
     public StringBuffer getFullFileMd5() {
         return fullFileMd5;
     }
+
+    public static GetFileFullMd5Action create(String filePath) {
+        return new GetFileFullMd5Action(filePath);
+    }
 }

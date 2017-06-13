@@ -39,4 +39,8 @@ public class AccountLoadFromLocalAction extends BaseAction {
     public StringBuffer getToken() {
         return token;
     }
+
+    public static AccountLoadFromLocalAction create() {
+        return new AccountLoadFromLocalAction();
+    }
 }

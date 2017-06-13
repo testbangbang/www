@@ -20,10 +20,20 @@ public class ReaderNotePageNameMap {
     }
 
     public void add(final String pageName, final String subPageUniqueId) {
+        if (contains(pageName, subPageUniqueId)) {
+            return;
+        }
         getPageList(pageName, true).add(subPageUniqueId);
     }
 
+    public boolean contains(final String pageName, final String subPageUniqueId) {
+        return getPageList(pageName, true).contains(subPageUniqueId);
+    }
+
     public void add(final String pageName, int index, final String subPageUniqueId) {
+        if (contains(pageName, subPageUniqueId)) {
+            return;
+        }
         getPageList(pageName, true).add(index, subPageUniqueId);
     }
 
