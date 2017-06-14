@@ -114,4 +114,11 @@ public class CacheManager {
         queryKey += args.getOrderByQuery();
         return queryKey;
     }
+
+    public static String generateCloudThumbnailKey(String associationId, String url) {
+        if (StringUtils.isNullOrEmpty(associationId) && StringUtils.isNullOrEmpty(url)) {
+            return null;
+        }
+        return associationId + url;
+    }
 }

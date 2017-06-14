@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.db.ContentDatabase;
+import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
@@ -74,17 +75,17 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
         if (loadFromMemoryCache(cloudManager) || isAbort()) {
             return;
         }
+        if(loadFromCloud(cloudManager) || isAbort()) {
+            return;
+        }
         if (loadFromFileSystemCache(cloudManager) || isAbort()) {
             return;
         }
-        if (loadFromDatabase(cloudManager) || isAbort()) {
-            return;
-        }
-        loadFromCloud(cloudManager);
+        loadFromDatabase(cloudManager);
     }
 
     private void saveToMemoryCache(final CloudManager cloudManager) {
-        cloudManager.getCacheManager().getBitmapLruCache().put(associationId, refBitmap);
+        cloudManager.getCacheManager().getBitmapLruCache().put(getCacheKey(), refBitmap);
     }
 
     private File thumbnailFileSystemCachePathWidthId() {
@@ -93,7 +94,7 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
 
     private boolean loadFromMemoryCache(final CloudManager cloudManager) {
         BitmapReferenceLruCache lruCache = cloudManager.getCacheManager().getBitmapLruCache();
-        refBitmap = lruCache.get(associationId);
+        refBitmap = lruCache.get(getCacheKey());
         if (isValid(refBitmap)) {
             return true;
         }
@@ -226,5 +227,9 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
             return null;
         }
         return thumbnail.getImageDataPath();
+    }
+
+    private String getCacheKey() {
+        return CacheManager.generateCloudThumbnailKey(associationId, coverUrl);
     }
 }
