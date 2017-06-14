@@ -130,9 +130,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
     protected void onPause() {
         super.onPause();
         wakeLockHolder.releaseWakeLock();
-        if (AppCompatUtils.isColorDevice(this)){
-            Device.currentDevice().postInvalidate(getWindow().getDecorView(), UpdateMode.GC);
-        }
     }
 
     private void checkPictureEditMode() {
