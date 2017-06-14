@@ -28,7 +28,8 @@ public class SaveReviewDataAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        SaveReviewDataRequest saveReviewDataRequest = new SaveReviewDataRequest(reviewDocumentData, documentUniqueId, readerDataHolder.getVisiblePages());
+        boolean resume = readerDataHolder.inNoteWritingProvider();
+        SaveReviewDataRequest saveReviewDataRequest = new SaveReviewDataRequest(reviewDocumentData, documentUniqueId, readerDataHolder.getVisiblePages(), resume);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), saveReviewDataRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

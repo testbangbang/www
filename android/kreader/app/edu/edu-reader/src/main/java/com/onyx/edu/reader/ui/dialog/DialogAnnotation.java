@@ -1,7 +1,11 @@
 package com.onyx.edu.reader.ui.dialog;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -110,7 +114,7 @@ public class DialogAnnotation extends DialogBase {
         }
 
         LayoutParams params = getWindow().getAttributes();
-        params.y = -getWindow().getWindowManager().getDefaultDisplay().getHeight();
+        params.gravity = Gravity.CENTER;
         getWindow().setAttributes(params);
 
         InputMethodManager imm = (InputMethodManager) mEditTextAnnotation.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);

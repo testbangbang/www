@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
+import android.view.View;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
@@ -580,7 +581,7 @@ public class ReaderDataHolder {
     }
 
     public void resetHandlerManager() {
-        getHandlerManager().resetToDefaultProvider();
+        getHandlerManager().resetActiveProvider();
     }
 
     private void closeDocument(final BaseCallback callback) {
@@ -737,6 +738,18 @@ public class ReaderDataHolder {
         }
         for (PageInfo pageInfo : getVisiblePages()) {
             if (getReaderUserDataInfo().hasFormFields(pageInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasScribbleFormField() {
+        if (getVisiblePages() == null) {
+            return false;
+        }
+        for (PageInfo pageInfo : getVisiblePages()) {
+            if (getReaderUserDataInfo().hasScribbleFormFields(pageInfo)) {
                 return true;
             }
         }

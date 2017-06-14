@@ -134,7 +134,7 @@ public class ShowTextSelectionMenuAction{
         popupSelectionMenu.hide();
         if (clear) {
             popupSelectionMenu = null;
-            readerDataHolder.getHandlerManager().resetToDefaultProvider();
+            readerDataHolder.getHandlerManager().resetActiveProvider();
         }
     }
 

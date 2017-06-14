@@ -14,9 +14,8 @@ public class LockFormShapesAction extends BaseAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
-        final NoteManager noteManager = readerDataHolder.getNoteManager();
         String documentId = readerDataHolder.getReader().getDocumentMd5();
         LockFormShapesRequest shapesSubmittedRequest = new LockFormShapesRequest(documentId);
-        noteManager.submit(readerDataHolder.getContext(), shapesSubmittedRequest, baseCallback);
+        readerDataHolder.getDataManager().submit(readerDataHolder.getContext(), shapesSubmittedRequest, baseCallback);
     }
 }

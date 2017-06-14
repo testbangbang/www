@@ -90,9 +90,6 @@ public class FormScribbleHandler extends FormFieldHandler {
     @Override
     public void onActivate(ReaderDataHolder readerDataHolder, HandlerInitialState initialState) {
         super.onActivate(readerDataHolder, initialState);
-        if (initialState == null) {
-            return;
-        }
         final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
     }

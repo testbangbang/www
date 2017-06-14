@@ -25,15 +25,18 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
     private String documentUniqueId;
     private String reviewDocumentData;
     private List<PageInfo> pages;
+    private boolean resume;
 
-    public SaveReviewDataRequest(String reviewDocumentData, String documentUniqueId, List<PageInfo> pages) {
+    public SaveReviewDataRequest(String reviewDocumentData, String documentUniqueId, List<PageInfo> pages, boolean resume) {
         this.reviewDocumentData = reviewDocumentData;
         this.documentUniqueId = documentUniqueId;
         this.pages = pages;
+        this.resume = resume;
     }
 
     @Override
     public void execute(NoteManager noteManager) throws Exception {
+        setResumeRawInputProcessor(resume && noteManager.isDFBForCurrentShape());
         ReviewDocumentData data = JSONObjectParseUtils.parseObject(reviewDocumentData, ReviewDocumentData.class);
         if (data == null) {
             throw new Exception("empty data");

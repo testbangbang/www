@@ -858,12 +858,7 @@ public class ShowReaderMenuAction extends BaseAction {
             int currentShapeType = noteDataInfo.getCurrentShapeType();
             formMenuActon.setSelectShapeAction(createShapeAction(currentShapeType));
         }
-        formMenuActon.execute(readerDataHolder, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER);
-            }
-        });
+        formMenuActon.execute(readerDataHolder, null);
     }
 
     public static ShowScribbleMenuAction.ActionCallback getScribbleActionCallback(final ReaderDataHolder readerDataHolder) {
