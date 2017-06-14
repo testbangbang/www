@@ -21,8 +21,8 @@ public class Constant {
     public static final String ACCESS_KEY = "2016103189639748";
     public static final String ACCESS_SECRET = "8a031034af2348669842683bc6115aa5";
 
-    public static final String ONYX_HOST_BASE = "http://192.168.11.104:8082";
-    public static final String ONYX_API_BASE = "http://192.168.11.104:8082/api/";
+    public static final String ONYX_HOST_BASE = "http://oa.o-in.me:9058";
+    public static final String ONYX_API_BASE = "http://oa.o-in.me:9058/api/";
 
     public static final String WHERE_TAG = "where";
     public static final String ARGS_TAG = "args";
