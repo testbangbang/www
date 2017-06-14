@@ -16,6 +16,7 @@ import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
@@ -88,7 +89,7 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
             if (account != null) {
                 break;
             }
-            sleep(300);
+            TestUtils.sleep(300);
         }
         return account;
     }
@@ -186,12 +187,5 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
 
     public void setLocalLoadRetryCount(int retryCount) {
         this.localLoadRetryCount = retryCount <= 0 ? 1 : retryCount;
-    }
-
-    private void sleep(int time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-        }
     }
 }
