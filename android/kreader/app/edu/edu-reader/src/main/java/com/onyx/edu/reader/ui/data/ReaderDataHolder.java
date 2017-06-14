@@ -279,6 +279,10 @@ public class ReaderDataHolder {
         getEventBus().post(new SystemUIChangedEvent(open));
     }
 
+    public void postDialogUiChangedEvent(boolean open) {
+        getEventBus().post(DialogUIChangeEvent.create(open));
+    }
+
     private void unregisterReceiver() {
         deviceReceiver.unregisterReceiver(getContext());
     }
@@ -532,6 +536,15 @@ public class ReaderDataHolder {
         activeDialogs.add(dialog);
     }
 
+    public boolean hasDialogShowing() {
+        for (Object activeDialog : activeDialogs) {
+            if (activeDialog != null && ((Dialog) activeDialog).isShowing()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void removeActiveDialog(Dialog dialog) {
         activeDialogs.remove(dialog);
     }
@@ -541,12 +554,6 @@ public class ReaderDataHolder {
             return;
         }
         addActiveDialog(dialog);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                removeActiveDialog(dialog);
-            }
-        });
     }
 
     public void closeActiveDialogs() {

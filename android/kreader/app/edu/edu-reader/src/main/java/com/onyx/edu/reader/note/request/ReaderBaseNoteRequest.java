@@ -97,6 +97,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     public void setResumeRawInputProcessor(boolean resumeRawInputProcessor) {
+        Debug.d(getClass(), "setResumeRawInputProcessor:" + resumeRawInputProcessor);
         this.resumeRawInputProcessor = resumeRawInputProcessor;
     }
 
