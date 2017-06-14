@@ -23,6 +23,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by suicheng on 2017/5/18.
  */
 public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
+    private int localLoadRetryCount = 1;
 
     @Override
     public void execute(LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
@@ -36,6 +37,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
             return;
         }
         final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
+        accountLoadRequest.setLocalLoadRetryCount(localLoadRetryCount);
         dataHolder.getCloudManager().submitRequest(dataHolder.getContext(), accountLoadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -84,4 +86,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         EventBus.getDefault().post(new HardwareErrorEvent());
     }
 
+    public void setLocalLoadRetryCount(int retryCount) {
+        this.localLoadRetryCount = retryCount;
+    }
 }

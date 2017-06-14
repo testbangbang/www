@@ -22,7 +22,6 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.request.cloud.v2.PingDatabaseRequest;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
@@ -39,6 +38,7 @@ import butterknife.OnClick;
  * Created by suicheng on 2016/11/15.
  */
 public class HomeActivity extends BaseActivity {
+    private static boolean firstBoot = true;
 
     private String picDisplayPath = "/mnt/sdcard/slide/sample-cfa_01.png";
 
@@ -52,7 +52,6 @@ public class HomeActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         final View view = findViewById(android.R.id.content);
-        pingDatabase();
         loadAuthToken(new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -88,13 +87,12 @@ public class HomeActivity extends BaseActivity {
     protected void initData() {
     }
 
-    private void pingDatabase() {
-        final PingDatabaseRequest pingDatabaseRequest = new PingDatabaseRequest();
-        SchoolApp.getSchoolCloudStore().submitRequest(this, pingDatabaseRequest, null);
-    }
-
     private void loadAuthToken(final BaseCallback callback) {
         AuthTokenAction authTokenAction = new AuthTokenAction();
+        if (firstBoot) {
+            firstBoot = false;
+            authTokenAction.setLocalLoadRetryCount(3);
+        }
         authTokenAction.execute(SchoolApp.getLibraryDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
