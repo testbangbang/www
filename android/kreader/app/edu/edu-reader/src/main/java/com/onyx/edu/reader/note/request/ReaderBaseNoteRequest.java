@@ -11,6 +11,7 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.edu.reader.BuildConfig;
 import com.onyx.edu.reader.note.NoteManager;
@@ -116,6 +117,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     public void beforeExecute(final NoteManager noteManager) {
         noteManager.getRequestManager().acquireWakeLock(getContext(), getClass().getSimpleName());
         if (isPauseRawInputProcessor()) {
+            Debug.d(getClass(), "raw status: pause");
             noteManager.pauseRawEventProcessor();
         }
         benchmarkStart();
@@ -172,6 +174,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     e.printStackTrace();
                 } finally {
                     if (isResumeRawInputProcessor() && parent.isDFBForCurrentShape()) {
+                        Debug.d(getClass(), "raw status: resume");
                         parent.resumeRawEventProcessor(getContext());
                     }
                     parent.getRequestManager().releaseWakeLock();

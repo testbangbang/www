@@ -675,7 +675,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         disablePenShortcut();
         stopRawEventProcessor();
-        getReaderDataHolder().getHandlerManager().resetToDefaultProvider();
+        getReaderDataHolder().getHandlerManager().resetActiveProvider();
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
@@ -1098,6 +1098,9 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void showFormMenu() {
+        if (!getReaderDataHolder().isDocumentOpened()) {
+            return;
+        }
         if (formFieldControls.size() > 0) {
             boolean startNoteDrawing = hasScribbleFormField();
             if (!startNoteDrawing) {
