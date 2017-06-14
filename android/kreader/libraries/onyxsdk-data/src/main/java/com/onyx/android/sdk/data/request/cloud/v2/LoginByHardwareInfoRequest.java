@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data.request.cloud.v2;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
@@ -26,9 +27,12 @@ import retrofit2.Response;
  * Created by suicheng on 2017/6/10.
  */
 public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCloudRequest {
+    private static final String TAG = "LoginByHardwareRequest";
+
     private static final String NAME_SECRET = "eefbb54a-ffd1-4e86-9513-f83e15b807c9";
     private static final String PASSWORD_SECRET = "807bb28a-623e-408c-97c5-61177091737b";
 
+    private int localLoadRetryCount = 1;
     private boolean loadOnlyFromCloud = false;
     private Uri providerUri;
     private T account;
@@ -50,7 +54,7 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
             account = LoginToCloud(getContext(), parent);
             return;
         }
-        account = LoginToLocal(parent);
+        account = LoginToLocal(parent, localLoadRetryCount);
         if (account == null) {
             account = LoginToCloud(getContext(), parent);
         } else {
@@ -74,6 +78,19 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
         } catch (Exception e) {
         }
         return cloudAccount;
+    }
+
+    private T LoginToLocal(CloudManager parent, int retryCount) {
+        T account = null;
+        for (int i = 0; i < retryCount; i++) {
+            Log.w(TAG, "localLoadRetry:" + i);
+            account = LoginToLocal(parent);
+            if (account != null) {
+                break;
+            }
+            sleep(300);
+        }
+        return account;
     }
 
     private T LoginToLocal(CloudManager parent) {
@@ -165,5 +182,16 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
 
     public void setLoadOnlyFromCloud(boolean loadOnlyFromCloud) {
         this.loadOnlyFromCloud = loadOnlyFromCloud;
+    }
+
+    public void setLocalLoadRetryCount(int retryCount) {
+        this.localLoadRetryCount = retryCount <= 0 ? 1 : retryCount;
+    }
+
+    private void sleep(int time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+        }
     }
 }
