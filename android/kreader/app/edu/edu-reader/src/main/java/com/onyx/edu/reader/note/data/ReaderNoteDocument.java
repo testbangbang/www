@@ -246,8 +246,9 @@ public class ReaderNoteDocument {
         if (notePage == null) {
             return null;
         }
-        notePage.clear(true);
+        notePage.clear(true, false);
         notePage.savePage(context);
+        notePage.setLoaded(false);
         return subPageUniqueId;
     }
 

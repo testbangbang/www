@@ -107,7 +107,6 @@ public class FormScribbleHandler extends FormFieldHandler {
 
     @Override
     public void close(ReaderDataHolder readerDataHolder) {
-        getReaderDataHolder().postSystemUiChangedEvent(true);
         super.close(readerDataHolder);
     }
 }

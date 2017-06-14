@@ -85,6 +85,7 @@ import com.onyx.edu.reader.ui.events.ChangeOrientationEvent;
 import com.onyx.edu.reader.ui.events.ClearFormFieldControlsEvent;
 import com.onyx.edu.reader.ui.events.ClosePopupEvent;
 import com.onyx.edu.reader.ui.events.ConfirmCloseDialogEvent;
+import com.onyx.edu.reader.ui.events.DialogUIChangeEvent;
 import com.onyx.edu.reader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.edu.reader.ui.events.DocumentOpenEvent;
 import com.onyx.edu.reader.ui.events.ForceCloseEvent;
@@ -542,14 +543,14 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private boolean isAnyPopup() {
-        if (ShowReaderMenuAction.isReaderMenuShown() || getReaderDataHolder().isAnyActiveDialog()) {
+        if (ShowReaderMenuAction.isReaderMenuShown() || getReaderDataHolder().hasDialogShowing()) {
             return true;
         }
         return false;
     }
 
     private void afterDrawPage() {
-        showFormMenu();
+        activeFormHandler();
         ReaderDeviceManager.cleanUpdateMode(surfaceView);
         updateAllStatusBars();
     }
@@ -597,18 +598,36 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onSystemUIChanged(final SystemUIChangedEvent event) {
-        if (event == null || !getReaderDataHolder().inNoteWritingProvider()) {
+        if (event == null) {
+            return;
+        }
+        onPopUIChanged(event.isUiOpen());
+    }
+
+    @Subscribe
+    public void onDialogUIChanged(final DialogUIChangeEvent event) {
+        if (event == null) {
+            return;
+        }
+        if (!event.isUiOpen()) {
+            activeFormHandler();
+        }
+        onPopUIChanged(event.isUiOpen());
+    }
+
+    private void onPopUIChanged(boolean open) {
+        if (!getReaderDataHolder().inNoteWritingProvider()) {
             return;
         }
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
-        if (event.isUiOpen()) {
+        if (open) {
             FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(list);
             flushNoteAction.execute(getReaderDataHolder(), null);
         } else {
             ResumeDrawingAction action = new ResumeDrawingAction(list);
             action.execute(getReaderDataHolder(), null);
         }
-        enableShortcut(!event.isUiOpen());
+        enableShortcut(open);
     }
 
     private void enableShortcut(boolean enable) {
@@ -1086,8 +1105,10 @@ public class ReaderActivity extends OnyxBaseActivity {
                     View control = FormFieldControlFactory.createFormControl(mainView, field);
                     if (control != null) {
                         formFieldControls.add(control);
-                        if (!isFormScribble(control) && renderFormField) {
-                            mainView.addView(control);
+                        if (!isFormScribble(control)) {
+                            if (renderFormField) {
+                                mainView.addView(control);
+                            }
                         } else {
                             drawScribbleRegion(canvas, control);
                         }
@@ -1097,13 +1118,13 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
     }
 
-    private void showFormMenu() {
+    private void activeFormHandler() {
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
         if (formFieldControls.size() > 0) {
             boolean startNoteDrawing = hasScribbleFormField();
-            if (!startNoteDrawing) {
+            if (!startNoteDrawing || getReaderDataHolder().hasDialogShowing()) {
                 getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
             }else {
                 getHandlerManager().setActiveProvider(HandlerManager.FORM_SCRIBBLE_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));

@@ -179,6 +179,7 @@ public class FormFieldHandler extends ReadingHandler {
     }
 
     private void pushFormData() {
+        getReaderDataHolder().postDialogUiChangedEvent(true);
         OnyxCustomDialog.getConfirmDialog(getReaderDataHolder().getContext(), getReaderDataHolder().getContext().getString(R.string.exit_submit_form_tips),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -196,7 +197,7 @@ public class FormFieldHandler extends ReadingHandler {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (getReaderDataHolder().inNoteWritingProvider()) {
-                            getReaderDataHolder().postSystemUiChangedEvent(false);
+                            getReaderDataHolder().postDialogUiChangedEvent(false);
                         }
                     }
                 })

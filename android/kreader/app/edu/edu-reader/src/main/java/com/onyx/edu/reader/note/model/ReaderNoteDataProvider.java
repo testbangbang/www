@@ -95,7 +95,7 @@ public class ReaderNoteDataProvider {
                                        final String shapeUniqueId) {
         Select select = new Select();
         Where where = select.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.shapeUniqueId.eq(shapeUniqueId));
-        return where.hasData();
+        return where.queryList().size() > 0;
     }
 
     public static boolean hasUnLockFormShapes(final Context context,
@@ -106,7 +106,7 @@ public class ReaderNoteDataProvider {
                 where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId)).
                 and(ReaderFormShapeModel_Table.lock.eq(false)).
                 and(ReaderFormShapeModel_Table.review.eq(review));
-        return where.hasData();
+        return where.queryList().size() > 0;
     }
 
     public static List<ReaderNoteShapeModel> loadShapeList(final Context context,

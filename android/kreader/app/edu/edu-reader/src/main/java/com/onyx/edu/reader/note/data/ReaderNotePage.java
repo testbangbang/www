@@ -59,7 +59,17 @@ public class ReaderNotePage {
         return subPageUniqueId;
     }
 
-    public void clear(boolean addToHistory) {
+    public void clear(boolean addToHistory, boolean clearReviewShape) {
+        if (!clearReviewShape) {
+            List<Shape> unReviewShapes = new ArrayList<>();
+            for (Shape shape : shapeList) {
+                if (!shape.isReview()) {
+                    unReviewShapes.add(shape);
+                }
+            }
+            shapeList = unReviewShapes;
+        }
+
         if (shapeList.size() > 0 && addToHistory) {
             removedShapeList.addAll(shapeList);
             undoRedoManager.addToHistory(ShapeActions.removeShapeListAction(shapeList), false);
