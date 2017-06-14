@@ -46,7 +46,7 @@ public class QRCodeUtil {
             return BitmapFactory.decodeFile(cacheFile.getPath());
         } else {
             return stringToImageEncode(context, NetworkUtil.getMacAddress(context), 120, true,
-                    context.getResources().getColor(android.R.color.holo_blue_dark));
+                    context.getResources().getColor(android.R.color.black));
         }
     }
 
