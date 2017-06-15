@@ -15,7 +15,7 @@
         <TextView
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:text="科目：数学 分册：高一上册 第三章立体几何"
+            android:text="Java开发技术"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -126,6 +126,7 @@
             android:textColor="@android:color/white"
             android:id="@+id/analysis_wrong_button"
             android:text="错题解析"
+            android:visibility="invisible"
             android:layout_marginRight="100dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -135,6 +136,7 @@
             android:id="@+id/all_analysis_button"
             android:textColor="@android:color/white"
             android:text="全部解析"
+            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/round_black_rect"/>

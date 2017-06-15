@@ -11,6 +11,8 @@ import com.onyx.libedu.model.Version;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,15 +62,28 @@ public class GetChapterQuestionsRequest extends BaseEduRequest{
         }
         parent.sign(paramMap);
 
-        Call<Result<List<Question>>> call = EduServiceFactory.getEduService(parent.getEduConf().getApiBase()).getSyncChapterQuestionList(paramMap);
-        Response<Result<List<Question>>> response = call.execute();
-        if (response.isSuccessful()) {
-            Result<List<Question>> result = response.body();
-            questions = result.getData();
-        } else {
-            String errorCode = JSONObjectParseUtils.httpStatus(response.code(), new JSONObject(response.errorBody().string()));
-            throw new Exception(errorCode);
-        }
+//        Call<Result<List<Question>>> call = EduServiceFactory.getEduService(parent.getEduConf().getApiBase()).getSyncChapterQuestionList(paramMap);
+//        Response<Result<List<Question>>> response = call.execute();
+//        if (response.isSuccessful()) {
+//            Result<List<Question>> result = response.body();
+////            questions = result.getData();
+//        } else {
+//            String errorCode = JSONObjectParseUtils.httpStatus(response.code(), new JSONObject(response.errorBody().string()));
+////            throw new Exception(errorCode);
+//        }
+        questions = createTestData();
+    }
+
+    private List<Question> createTestData() {
+        Question q1 = new Question();
+        q1.setId(3);
+        q1.setDifficult(0);
+        q1.setStem("请回答面向对象的三大基本特性");
+        q1.setAnswerCount(3);
+
+        ArrayList<Question> list = new ArrayList<>();
+        list.add(q1);
+        return list;
     }
 
     public List<Question> getQuestions() {

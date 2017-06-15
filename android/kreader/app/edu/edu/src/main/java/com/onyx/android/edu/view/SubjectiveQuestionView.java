@@ -25,22 +25,25 @@ public class SubjectiveQuestionView extends BaseQuestionView {
     private List<SubjectiveQuestionItemView> mItemViews;
     private LinearLayout mMainFillView;
     private String problem;
+    private int answerCount;
 
     public SubjectiveQuestionView(Context context,
                               boolean showAnswer,
                               String answer,
                               String problem,
+                              int answerCount,
                               String questionAnalyze) {
         super(context, showAnswer);
         this.rightAnswer = answer;
         this.problem = problem;
+        this.answerCount = answerCount;
         this.questionAnalyze = questionAnalyze;
         initData();
     }
 
     private void initData(){
         mQuesTitle.setText(Html.fromHtml(problem).toString());
-        addItemViews(2);
+        addItemViews(answerCount);
     }
 
     @Override

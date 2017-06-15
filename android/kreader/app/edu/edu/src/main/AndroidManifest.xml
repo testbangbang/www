@@ -17,7 +17,8 @@
         <meta-data android:name="channel" android:value="${channel_value}"/>
         <meta-data android:name="type" android:value="${type_value}"/>
 
-        <activity android:name=".ui.exerciserespond.ExerciseRespondActivity">
+        <activity android:name=".ui.exerciserespond.ExerciseRespondActivity"
+            android:exported="true">
         </activity>
         <activity android:name=".ui.respondresult.RespondResultActivity">
         </activity>

@@ -52,6 +52,7 @@ public class ChooseExercisePresenter implements ChooseExerciseContract.ChooseExe
 
     @Override
     public void loadSubjects(Stage stage) {
+        chooseQuestionVariable.setStage(stage);
         if (Config.useLocalData) {
             List<Subject> subjects = new ArrayList<>();
             subjects.add(Subject.create("语文"));
@@ -64,7 +65,6 @@ public class ChooseExercisePresenter implements ChooseExerciseContract.ChooseExe
             return;
         }
 
-        chooseQuestionVariable.setStage(stage);
         final GetSubjectRequest subjectRequest = new GetSubjectRequest(stage.getId());
         eduCloudManager.submitRequest(EduApp.instance(), subjectRequest, new BaseCallback() {
             @Override

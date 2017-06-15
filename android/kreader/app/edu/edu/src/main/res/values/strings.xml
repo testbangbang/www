@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">好题天天练</string>
+    <string name="app_name">习题库</string>
 
     <string name="ask_select_answer">请选择该题答案</string>
     <string name="paper_result" formatted="false">答中%d题，总分%s</string>

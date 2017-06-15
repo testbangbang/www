@@ -85,4 +85,5 @@
 
     <string name="cold_light">冷光</string>
     <string name="warm_light">暖光</string>
+    <string name="reader_layer_menu_start_quiz">考试</string>
 </resources>

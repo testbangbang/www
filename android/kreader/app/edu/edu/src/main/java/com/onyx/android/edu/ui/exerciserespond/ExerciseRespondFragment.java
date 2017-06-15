@@ -170,6 +170,7 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
                 showAnswer,
                 question.getQuestionAnalytical().getAnswer(),
                 question.getStem(),
+                question.getAnswerCount(),
                 question.getQuestionAnalytical().getQuestionAnalyze());
         return subjectiveQuestionView;
     }
