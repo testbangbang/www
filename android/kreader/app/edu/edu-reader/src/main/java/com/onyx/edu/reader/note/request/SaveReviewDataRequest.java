@@ -1,11 +1,7 @@
 package com.onyx.edu.reader.note.request;
 
-import android.databinding.tool.util.L;
-
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.data.ReaderNotePageNameMap;
@@ -53,12 +49,16 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
         List<ReaderFormShapeModel> newFormShapeModels = new ArrayList<>();
         for (ReaderFormShapeModel formShapeModel : formShapeModels) {
             if (!ReaderNoteDataProvider.hasFormShape(getContext(), formShapeModel.getShapeUniqueId())) {
+                String subPageUniqueId = noteManager.getNoteDocument().getPageUniqueId(formShapeModel.getPageUniqueId(), 0);
+                if (!StringUtils.isNullOrEmpty(subPageUniqueId)) {
+                    formShapeModel.setSubPageUniqueId(subPageUniqueId);
+                }
                 formShapeModel.setDocumentUniqueId(documentUniqueId);
                 newFormShapeModels.add(formShapeModel);
             }
         }
         ReaderNoteDataProvider.saveFormShapeList(getContext(), newFormShapeModels);
-        noteManager.getNoteDocument().addPageIndex(pageNameMap);
+        noteManager.getNoteDocument().addReviewDataPageMap(pageNameMap);
         noteManager.getNoteDocument().save(getContext(), "title");
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
     }

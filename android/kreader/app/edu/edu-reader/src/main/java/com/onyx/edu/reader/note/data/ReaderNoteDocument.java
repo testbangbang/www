@@ -199,16 +199,26 @@ public class ReaderNoteDocument {
         return pageIndex;
     }
 
-    public void addPageIndex(ReaderNotePageNameMap pageNameMap) {
+    public void addReviewDataPageMap(ReaderNotePageNameMap pageNameMap) {
         for (Map.Entry<String, List<String>> stringListEntry : pageNameMap.getData().entrySet()) {
             String pageName = stringListEntry.getKey();
             List<String> list = stringListEntry.getValue();
             for (String s : list) {
-                pageIndex.add(pageName, s);
-                ReaderNotePage notePage = pageMap.get(pageName);
-                if (notePage != null) {
-                    notePage.setLoaded(false);
+                List<String> subPageUniqueIds = pageIndex.getPageList(pageName, true);
+                String subPageUniqueId = s;
+                // add when has not subPageUniqueId
+                if (subPageUniqueIds.size() == 0) {
+                    pageIndex.add(pageName, s);
+                }else {
+                    // use already existing subPageUniqueId
+                    subPageUniqueId = subPageUniqueIds.get(0);
                 }
+
+                ReaderNotePage notePage = pageMap.get(subPageUniqueId);
+                if (notePage == null) {
+                    notePage = ensureDataEntry(pageName, s);
+                }
+                notePage.setLoaded(false);
             }
         }
     }

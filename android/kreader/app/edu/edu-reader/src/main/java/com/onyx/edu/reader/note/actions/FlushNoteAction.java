@@ -71,8 +71,25 @@ public class FlushNoteAction extends BaseAction {
         });
     }
 
+    public FlushNoteAction setPauseNote(boolean pauseNote) {
+        this.pauseNote = pauseNote;
+        return this;
+    }
+
     public boolean isPauseNote() {
         return pauseNote;
     }
 
+    public static void flush(final ReaderDataHolder readerDataHolder,
+                                        boolean renderShapes,
+                                        boolean transferBitmap,
+                                        boolean saveToDatabase,
+                                        boolean show,
+                                        boolean pauseNote,
+                                        BaseCallback callback) {
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        new FlushNoteAction(pages, renderShapes, transferBitmap, saveToDatabase, show)
+                .setPauseNote(pauseNote)
+                .execute(readerDataHolder, callback);
+    }
 }

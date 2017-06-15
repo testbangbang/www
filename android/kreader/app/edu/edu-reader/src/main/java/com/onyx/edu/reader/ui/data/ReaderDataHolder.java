@@ -34,6 +34,7 @@ import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
+import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.actions.CloseNoteMenuAction;
@@ -783,9 +784,13 @@ public class ReaderDataHolder {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 String errorMessage = cloudChain.getErrorMessage();
-                if (showError && !StringUtils.isNullOrEmpty(errorMessage)) {
-                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                    return;
+                if (showError) {
+                    if (!StringUtils.isNullOrEmpty(errorMessage)) {
+                        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                        return;
+                    }else {
+                        Toast.makeText(getContext(), getContext().getString(R.string.custom_dialog_fetch_success), Toast.LENGTH_SHORT).show();
+                    }
                 }
                 String reviewDocumentData = cloudChain.getReviewDocumentData();
                 new SaveReviewDataAction(reviewDocumentData, getReader().getDocumentMd5()).execute(ReaderDataHolder.this, new BaseCallback() {

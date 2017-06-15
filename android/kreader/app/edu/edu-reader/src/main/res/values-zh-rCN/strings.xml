@@ -332,4 +332,6 @@
   <string name="exit_submit_form_tips">是否在退出前提交？</string>
   <string name="submit_success">提交成功</string>
   <string name="account_no_log_in">账号未登录</string>
+  <string name="custom_dialog_fetching">正在获取....</string>
+  <string name="custom_dialog_fetch_success">获取成功</string>
 </resources>
