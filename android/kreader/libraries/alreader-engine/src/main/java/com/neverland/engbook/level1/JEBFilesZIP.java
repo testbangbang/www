@@ -13,6 +13,8 @@ import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
@@ -45,32 +47,29 @@ public class JEBFilesZIP extends AlFiles {
     private static final String JEB_URI = "content://com.onyx.android.jdread.provider/BookDetailEntity";
     private static final String TAG_KEY = "key";
     private static final String TAG_RANDOM = "random";
-    private static final String TAG_UU_ID = "UU_ID";
+    private static final String TAG_UU_ID = "uu_id";
     public static final String JEB_TAG = ".JEB";
     public static final String TAG_BOOK_NAME = "BookName";
 
-    public static boolean queryJEBDecrypt(final Context context, final String bookPath) {
-        Cursor cursor = null;
-        boolean bState = true;
+    public static void setPassword(String password){
         try {
-            ContentResolver resolver = context.getContentResolver();
-            Uri uri = Uri.parse(JEB_URI);
-            cursor = resolver.query(uri, new String[]{TAG_KEY, TAG_RANDOM, TAG_UU_ID,TAG_BOOK_NAME}, "localPath=?", new String[]{bookPath}, null);
-            if (cursor.moveToFirst()) {
-                key = cursor.getString(0);
-                random = cursor.getString(1);
-                deviceUUID = cursor.getString(2);
-                bookName = cursor.getString(3);
+            key = "";
+            random = "";
+            deviceUUID = "";
+            JSONObject passwordObj = new JSONObject(password);
+            if(passwordObj.has(TAG_KEY)){
+                key = passwordObj.getString(TAG_KEY);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            bState = false;
-        }finally {
-            if(cursor != null){
-                cursor.close();
+            if(passwordObj.has(TAG_RANDOM)){
+                random = passwordObj.getString(TAG_RANDOM);
             }
+            if(passwordObj.has(TAG_UU_ID)){
+                deviceUUID = passwordObj.getString(TAG_UU_ID);
+            }
+        }catch (Exception e){
+
         }
-        return bState;
+
     }
 
     static public TAL_FILE_TYPE isZIPFile(String fName, AlFiles a, ArrayList<AlFileZipEntry> fList, String ext) {
