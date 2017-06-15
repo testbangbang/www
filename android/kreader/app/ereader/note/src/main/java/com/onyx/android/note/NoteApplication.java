@@ -21,10 +21,10 @@ import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 public class NoteApplication extends Application {
 
 
-    private static NoteViewHelper noteViewHelper;
+    private NoteViewHelper noteViewHelper;
     private static NoteApplication instance;
 
-    public static NoteViewHelper getNoteViewHelper() {
+    public NoteViewHelper getNoteViewHelper() {
         if (noteViewHelper == null) {
             noteViewHelper = new NoteViewHelper();
         }
