@@ -1,5 +1,7 @@
 package com.onyx.edu.reader.note.request;
 
+import android.graphics.Color;
+
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -54,6 +56,7 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
                     formShapeModel.setSubPageUniqueId(subPageUniqueId);
                 }
                 formShapeModel.setDocumentUniqueId(documentUniqueId);
+                formShapeModel.setColor(Color.RED);
                 newFormShapeModels.add(formShapeModel);
             }
         }

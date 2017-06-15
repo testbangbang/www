@@ -67,6 +67,17 @@ public class RenderContext {
         updateDisplayScale(m);
     }
 
+    public void update(final Matrix m) {
+        matrix = m;
+        updateDisplayScale(m);
+    }
+
+    public void update(final Bitmap b, final Canvas c, final Paint p) {
+        bitmap = b;
+        canvas = c;
+        paint = p;
+    }
+
     private void updateDisplayScale(final Matrix m) {
         if (m == null) {
             return;
@@ -79,5 +90,9 @@ public class RenderContext {
     public void setMatrix(Matrix matrix) {
         this.matrix = matrix;
         updateDisplayScale(matrix);
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 }

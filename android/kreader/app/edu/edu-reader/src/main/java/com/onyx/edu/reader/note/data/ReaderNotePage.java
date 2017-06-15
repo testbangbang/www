@@ -26,6 +26,7 @@ public class ReaderNotePage {
     private String subPageUniqueId;
 
     private List<Shape> shapeList = new ArrayList<>();
+    private List<Shape> reviewShapeList = new ArrayList<>();
     private List<Shape> newAddedShapeList = new ArrayList<>();
     private List<Shape> removedShapeList = new ArrayList<>();
 
@@ -60,14 +61,8 @@ public class ReaderNotePage {
     }
 
     public void clear(boolean addToHistory, boolean clearReviewShape) {
-        if (!clearReviewShape) {
-            List<Shape> unReviewShapes = new ArrayList<>();
-            for (Shape shape : shapeList) {
-                if (!shape.isReview()) {
-                    unReviewShapes.add(shape);
-                }
-            }
-            shapeList = unReviewShapes;
+        if (clearReviewShape) {
+            reviewShapeList.clear();
         }
 
         if (shapeList.size() > 0 && addToHistory) {
@@ -79,7 +74,11 @@ public class ReaderNotePage {
     }
 
     public void addShapeFromModel(final Shape shape) {
-        shapeList.add(shape);
+        if (shape.isReview()) {
+            reviewShapeList.add(shape);
+        }else {
+            shapeList.add(shape);
+        }
     }
 
     public void addShape(final Shape shape, boolean addToHistory) {
@@ -172,9 +171,9 @@ public class ReaderNotePage {
         return shapeList;
     }
 
-    public void render(final RenderContext renderContext, final RenderCallback callback) {
-        if (shapeList == null) {
-            return;
+    public boolean renderNoteShapes(final RenderContext renderContext, final RenderCallback callback) {
+        if (shapeList == null || shapeList.size() == 0) {
+            return false;
         }
         checkContextMatrix(renderContext);
         for(Shape shape : shapeList) {
@@ -183,6 +182,18 @@ public class ReaderNotePage {
                 break;
             }
         }
+        return true;
+    }
+
+    public boolean renderReviewShapes(final RenderContext renderContext) {
+        if (reviewShapeList == null || reviewShapeList.size() == 0) {
+            return false;
+        }
+        checkContextMatrix(renderContext);
+        for(Shape shape : reviewShapeList) {
+            shape.render(renderContext);
+        }
+        return true;
     }
 
     private void checkContextMatrix(final RenderContext renderContext) {
