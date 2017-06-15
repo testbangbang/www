@@ -436,11 +436,9 @@ CPDF_Object* CPDF_SyntaxParser::GetObject(CPDF_IndirectObjectHolder* pObjList,
 
   if (word[0] == '/') {
     CFX_ByteStringC objName = CFX_ByteStringC(m_WordBuffer + 1, m_WordSize - 1);
+    pRet = new CPDF_Name(PDF_NameDecode(objName));
     if (objName == JDPDFENCRYPTBY360BUY_KEY) {
-        pRet = new CPDF_JDName(PDF_NameDecode(objName));
-    }
-    else {
-        pRet = new CPDF_Name(PDF_NameDecode(objName));
+        pRet->SetExType(CPDF_Object::JDSTREAM);
     }
     return pRet;
   }
@@ -569,11 +567,9 @@ CPDF_Object* CPDF_SyntaxParser::GetObjectForStrict(
 
   if (word[0] == '/') {
     CFX_ByteStringC objName = CFX_ByteStringC(m_WordBuffer + 1, m_WordSize - 1);
+    pRet = new CPDF_Name(PDF_NameDecode(objName));
     if (objName == JDPDFENCRYPTBY360BUY_KEY) {
-       pRet = new CPDF_JDName(PDF_NameDecode(objName));
-    }
-    else {
-       pRet = new CPDF_Name(PDF_NameDecode(objName));
+        pRet->SetExType(CPDF_Object::JDSTREAM);
     }
     return pRet;
   }

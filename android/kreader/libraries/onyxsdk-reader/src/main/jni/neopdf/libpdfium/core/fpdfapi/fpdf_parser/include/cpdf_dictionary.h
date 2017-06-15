@@ -25,8 +25,6 @@ class CPDF_Dictionary : public CPDF_Object {
 
   // CPDF_Object.
   Type GetType() const override;
-  Type GetExType() override;
-  void SetExType(Type type) override;
   CPDF_Object* Clone() const override;
   CPDF_Dictionary* GetDict() const override;
   bool IsDictionary() const override;

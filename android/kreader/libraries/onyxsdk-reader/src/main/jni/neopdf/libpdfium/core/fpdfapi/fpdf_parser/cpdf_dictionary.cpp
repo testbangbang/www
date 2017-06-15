@@ -35,14 +35,6 @@ CPDF_Object::Type CPDF_Dictionary::GetType() const {
   return DICTIONARY;
 }
 
-CPDF_Object::Type CPDF_Dictionary::GetExType() {
-  return m_exType;
-}
-
-void CPDF_Dictionary::SetExType(Type type){
-	m_exType = type;
-}
-
 CPDF_Dictionary* CPDF_Dictionary::GetDict() const {
   // The method should be made non-const if we want to not be const.
   // See bug #234.

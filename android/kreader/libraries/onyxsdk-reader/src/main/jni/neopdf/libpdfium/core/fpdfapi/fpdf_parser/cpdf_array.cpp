@@ -32,14 +32,6 @@ CPDF_Object::Type CPDF_Array::GetType() const {
   return ARRAY;
 }
 
-CPDF_Object::Type CPDF_Array::GetExType(){
-  return m_exType;
-}
-
-void CPDF_Array::SetExType(Type type){
-  m_exType = type;
-}
-
 bool CPDF_Array::IsArray() const {
   return true;
 }

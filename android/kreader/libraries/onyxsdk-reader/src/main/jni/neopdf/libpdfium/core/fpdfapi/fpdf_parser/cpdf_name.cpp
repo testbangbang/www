@@ -16,16 +16,6 @@ CPDF_Object::Type CPDF_Name::GetType() const {
   return NAME;
 }
 
-CPDF_Object::Type CPDF_Name::GetExType() {
-  return m_exType;
-}
-
-void CPDF_Name::SetExType(Type type) {
-	m_exType = type;
-}
-
-
-
 CPDF_Object* CPDF_Name::Clone() const {
   return new CPDF_Name(m_Name);
 }

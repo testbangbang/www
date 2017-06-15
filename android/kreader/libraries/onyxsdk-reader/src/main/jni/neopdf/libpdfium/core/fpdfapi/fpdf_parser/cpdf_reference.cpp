@@ -18,14 +18,6 @@ CPDF_Object::Type CPDF_Reference::GetType() const {
   return REFERENCE;
 }
 
-CPDF_Object::Type CPDF_Reference::GetExType(){
-  return m_exType;
-}
-
-void CPDF_Reference::SetExType(Type type){
-  m_exType = type;
-}
-
 CFX_ByteString CPDF_Reference::GetString() const {
   CPDF_Object* obj = SafeGetDirect();
   return obj ? obj->GetString() : CFX_ByteString();

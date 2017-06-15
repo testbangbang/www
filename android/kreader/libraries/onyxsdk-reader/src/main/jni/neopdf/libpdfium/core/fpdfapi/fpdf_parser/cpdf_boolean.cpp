@@ -16,13 +16,6 @@ CPDF_Object::Type CPDF_Boolean::GetType() const {
   return BOOLEAN;
 }
 
-CPDF_Object::Type CPDF_Boolean::GetExType() {
-  return m_exType;
-}
-void CPDF_Boolean::SetExType(Type type){
-  m_exType = type;
-}
-
 CPDF_Object* CPDF_Boolean::Clone() const {
   return new CPDF_Boolean(m_bValue);
 }

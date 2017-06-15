@@ -24,8 +24,6 @@ class CPDF_Array : public CPDF_Object {
 
   // CPDF_Object.
   Type GetType() const override;
-  Type GetExType() override;
-  void SetExType(Type type) override;
   CPDF_Object* Clone() const override;
   bool IsArray() const override;
   CPDF_Array* AsArray() override;

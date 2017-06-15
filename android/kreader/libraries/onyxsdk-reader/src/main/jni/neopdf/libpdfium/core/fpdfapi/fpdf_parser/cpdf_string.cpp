@@ -23,14 +23,6 @@ CPDF_Object::Type CPDF_String::GetType() const {
   return STRING;
 }
 
-CPDF_Object::Type CPDF_String::GetExType(){
-  return m_exType;
-}
-
-void CPDF_String::SetExType(Type type){
-  m_exType = type;
-}
-
 CPDF_Object* CPDF_String::Clone() const {
   return new CPDF_String(m_String, m_bHex);
 }

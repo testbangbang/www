@@ -12,6 +12,14 @@ CPDF_Object::Type CPDF_Null::GetType() const {
   return NULLOBJ;
 }
 
+CPDF_Object::Type CPDF_Null::GetExType(){
+  return m_exType;
+}
+
+void CPDF_Null::SetExType(Type type){
+	m_exType = type;
+}
+
 CPDF_Object* CPDF_Null::Clone() const {
   return new CPDF_Null;
 }

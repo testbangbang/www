@@ -17,6 +17,7 @@ class CPDF_Array;
 class CPDF_Boolean;
 class CPDF_Dictionary;
 class CPDF_Name;
+class CPDF_JDName;
 class CPDF_Null;
 class CPDF_Number;
 class CPDF_Reference;
@@ -101,7 +102,7 @@ class CPDF_Object {
   friend class CPDF_Stream;
   friend struct std::default_delete<CPDF_Object>;
 
-  CPDF_Object() : m_ObjNum(0), m_GenNum(0) {}
+  CPDF_Object() : m_ObjNum(0), m_GenNum(0),m_exType(NULLOBJ) {}
   virtual ~CPDF_Object();
 
   CPDF_Object* CloneObjectNonCyclic(bool bDirect) const;
