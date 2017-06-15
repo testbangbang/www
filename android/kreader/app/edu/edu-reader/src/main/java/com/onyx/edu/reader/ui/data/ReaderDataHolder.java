@@ -455,8 +455,12 @@ public class ReaderDataHolder {
     private void beforeSubmitRequest(boolean render) {
         getNoteManager().resetNoteDataInfo();
         if (render) {
-            getEventBus().post(new ClearFormFieldControlsEvent());
+            clearFormFieldControls();
         }
+    }
+
+    private void clearFormFieldControls() {
+        getEventBus().post(new ClearFormFieldControlsEvent());
     }
 
     private void onPageDrawFinished(BaseReaderRequest request, Throwable e) {
@@ -580,6 +584,7 @@ public class ReaderDataHolder {
         closeNoteManager();
         closeNoteMenu();
         closeFormMenu();
+        clearFormFieldControls();
         resetHandlerManager();
         closeDocument(callback);
     }
