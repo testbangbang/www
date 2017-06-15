@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * Created by zhuzeng on 9/18/16.
- * Receive events from touch event or input event reader and send renderNoteShapes command to screen
+ * Receive events from touch event or input event reader and send render command to screen
  */
 public class NoteEventProcessorManager {
 
