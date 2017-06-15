@@ -4,31 +4,31 @@
 
 // Original code copyright 2014 Foxit Software Inc. http://www.foxitsoftware.com
 
-#ifndef CORE_FPDFAPI_FPDF_PARSER_INCLUDE_CPDF_NAME_H_
-#define CORE_FPDFAPI_FPDF_PARSER_INCLUDE_CPDF_NAME_H_
+#ifndef CORE_FPDFAPI_FPDF_PARSER_INCLUDE_CPDF_JDNAME_H_
+#define CORE_FPDFAPI_FPDF_PARSER_INCLUDE_CPDF_JDNAME_H_
 
 #include "core/fpdfapi/fpdf_parser/include/cpdf_object.h"
 
-class CPDF_Name : public CPDF_Object {
+class CPDF_JDName : public CPDF_Object {
  public:
-  explicit CPDF_Name(const CFX_ByteString& str);
+  explicit CPDF_JDName(const CFX_ByteString& str);
 
   // CPDF_Object.
   Type GetType() const override;
-  Type GetExType() override;
-  void SetExType(Type type) override;
+  Type GetExType() const override;
+  void SetExType(Type) const override;
   CPDF_Object* Clone() const override;
   CFX_ByteString GetString() const override;
   CFX_WideString GetUnicodeText() const override;
   void SetString(const CFX_ByteString& str) override;
   bool IsName() const override;
-  CPDF_Name* AsName() override;
-  const CPDF_Name* AsName() const override;
+  CPDF_JDName* AsName() override;
+  const CPDF_JDName* AsName() const override;
 
  protected:
-  ~CPDF_Name() override;
+  ~CPDF_JDName() override;
 
   CFX_ByteString m_Name;
 };
 
-#endif  // CORE_FPDFAPI_FPDF_PARSER_INCLUDE_CPDF_NAME_H_
+#endif  // CORE_FPDFAPI_FPDF_PARSER_INCLUDE_CPDF_JDNAME_H_

@@ -21,6 +21,13 @@ CPDF_Object::Type CPDF_Number::GetType() const {
   return NUMBER;
 }
 
+CPDF_Object::Type CPDF_Number::GetExType(){
+  return m_exType;
+}
+void CPDF_Number::SetExType(Type type){
+  m_exType = type;
+}
+
 CPDF_Object* CPDF_Number::Clone() const {
   return m_bInteger ? new CPDF_Number(m_Integer) : new CPDF_Number(m_Float);
 }

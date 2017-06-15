@@ -25,6 +25,14 @@ CPDF_Object::Type CPDF_Stream::GetType() const {
   return STREAM;
 }
 
+CPDF_Object::Type CPDF_Stream::GetExType(){
+  return m_exType;
+}
+
+void CPDF_Stream::SetExType(Type type){
+  m_exType = type;
+}
+
 CPDF_Dictionary* CPDF_Stream::GetDict() const {
   return m_pDict.get();
 }
