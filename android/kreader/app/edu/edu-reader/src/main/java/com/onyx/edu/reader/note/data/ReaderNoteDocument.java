@@ -199,7 +199,7 @@ public class ReaderNoteDocument {
         return pageIndex;
     }
 
-    public void addPageIndex(ReaderNotePageNameMap pageNameMap) {
+    public void addReviewDataPageMap(ReaderNotePageNameMap pageNameMap) {
         for (Map.Entry<String, List<String>> stringListEntry : pageNameMap.getData().entrySet()) {
             String pageName = stringListEntry.getKey();
             List<String> list = stringListEntry.getValue();
