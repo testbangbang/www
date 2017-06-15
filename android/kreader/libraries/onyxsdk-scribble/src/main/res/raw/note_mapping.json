@@ -356,6 +356,32 @@
   },
 
 
+  "t76_ovotec": {"mappingList": [
+      { "orientation" : 90,  "tx" : 1440, "ty" : 0},
+      { "orientation" : 180,  "tx" : 1440, "ty" : 1080},
+      { "orientation" : 270,  "tx" : 0, "ty" : 1080},
+      { "orientation" : 0,  "tx" : 0, "ty" : 0}],
+
+    "pressureList" : [
+      {"pressure": 64, "ratio": 0.30},
+      {"pressure": 128, "ratio": 0.35},
+      {"pressure": 196, "ratio": 0.40},
+      {"pressure": 256, "ratio": 0.45},
+      {"pressure": 312, "ratio": 0.50},
+      {"pressure": 378, "ratio": 0.55},
+      {"pressure": 442, "ratio": 0.60},
+      {"pressure": 512, "ratio": 0.65},
+      {"pressure": 578, "ratio": 0.70},
+      {"pressure": 642, "ratio": 0.75},
+      {"pressure": 706, "ratio": 0.83},
+      {"pressure": 770, "ratio": 0.92},
+      {"pressure": 814, "ratio": 0.83},
+      {"pressure": 878, "ratio": 0.9},
+      {"pressure": 942, "ratio": 0.95},
+      {"pressure": 1024, "ratio": 1}]
+  },
+
+
   "kepler": {"mappingList": [
       { "orientation" : 270,  "tx" : 0, "ty" : 1072},
       { "orientation" : 0,  "tx" : 0, "ty" : 0},
