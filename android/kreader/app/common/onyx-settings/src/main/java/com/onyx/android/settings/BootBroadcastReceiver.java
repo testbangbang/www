@@ -71,7 +71,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 cacheFile.createNewFile();
                 macAddress = NetworkUtil.getMacAddress(context);
                 BitmapUtils.saveBitmap(QRCodeUtil.stringToImageEncode(context, macAddress,
-                        120, true, context.getResources().getColor(android.R.color.holo_blue_dark))
+                        QRCodeUtil.DEFAULT_SIZE, true, QRCodeUtil.WHITE_MARGIN_SIZE ,
+                        context.getResources().getColor(android.R.color.black))
                         , cacheFile.getPath());
                 ShellUtils.execCommand("busybox chmod 644 " + cacheFile.getPath(), false);
                 closeWifiIfNeeded();

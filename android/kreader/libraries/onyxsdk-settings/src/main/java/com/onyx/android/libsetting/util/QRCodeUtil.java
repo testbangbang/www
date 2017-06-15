@@ -16,8 +16,6 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import java.io.File;
 import java.util.Hashtable;
 
-import retrofit2.http.HEAD;
-
 /**
  * Created by solskjaer49 on 2017/5/19 17:01.
  */
@@ -26,6 +24,10 @@ public class QRCodeUtil {
     public static final String CFA_QR_CODE_FILE_PATH = "data/local/assets/device_qr_code.png";
     private static final String TAG = QRCodeUtil.class.getSimpleName();
     private static final boolean DEBUG = false;
+    public static final int DEFAULT_SIZE = 280;
+    public static final int DEFAULT_CFA_SIZE = 120;
+    public static final int WHITE_MARGIN_SIZE = 20;
+
 
     static {
         System.loadLibrary("onyx_cfa");
@@ -45,19 +47,23 @@ public class QRCodeUtil {
         if (cacheFile.exists() && cacheFile.canRead()) {
             return BitmapFactory.decodeFile(cacheFile.getPath());
         } else {
-            return stringToImageEncode(context, NetworkUtil.getMacAddress(context), 120, true,
+            return stringToImageEncode(context, NetworkUtil.getMacAddress(context), DEFAULT_SIZE,
+                    true, WHITE_MARGIN_SIZE,
                     context.getResources().getColor(android.R.color.black));
         }
     }
 
     public static Bitmap stringToImageEncode(Context context, String value, int targetSize) throws WriterException {
-        return stringToImageEncode(context, value, targetSize, false, context.getResources().getColor(android.R.color.black));
+        return stringToImageEncode(context, value, targetSize, false,
+                -1, context.getResources().getColor(android.R.color.black));
     }
 
-    public static Bitmap stringToImageEncode(Context context, String value, int targetSize, boolean cleanWhiteMargin, int qrCodeColor) throws WriterException {
+    public static Bitmap stringToImageEncode(Context context, String value, int targetSize,
+                                             boolean customWhiteMargin, int customWhiteMarginSize,
+                                             int qrCodeColor) throws WriterException {
         Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
-        hints.put(EncodeHintType.MARGIN, 1);
+        hints.put(EncodeHintType.MARGIN, 10);
         BitMatrix bitMatrix;
         try {
             bitMatrix = new MultiFormatWriter().encode(
@@ -68,8 +74,8 @@ public class QRCodeUtil {
         } catch (IllegalArgumentException Illegalargumentexception) {
             return null;
         }
-        if (cleanWhiteMargin) {
-            bitMatrix = cleanWhiteMargin(bitMatrix);
+        if (customWhiteMargin) {
+            bitMatrix = reConfigWhiteMargin(bitMatrix, customWhiteMarginSize);
         }
         int bitMatrixWidth = bitMatrix.getWidth();
         int bitMatrixHeight = bitMatrix.getHeight();
@@ -90,17 +96,23 @@ public class QRCodeUtil {
         }
     }
 
-
-    private static BitMatrix cleanWhiteMargin(BitMatrix matrix) {
+    /**
+     *
+     * @param matrix source QR code matrix
+     * @param preservedWhiteMarginSize size for white margin width.
+     * @return
+     */
+    private static BitMatrix reConfigWhiteMargin(BitMatrix matrix, int preservedWhiteMarginSize) {
         int[] rec = matrix.getEnclosingRectangle();
-        int resWidth = rec[2] + 1;
-        int resHeight = rec[3] + 1;
+        int resWidth = rec[2] + preservedWhiteMarginSize;
+        int resHeight = rec[3] + preservedWhiteMarginSize;
+        int whiteMarginOffset = preservedWhiteMarginSize / 2;
 
         BitMatrix resMatrix = new BitMatrix(resWidth, resHeight);
         resMatrix.clear();
-        for (int i = 0; i < resWidth; i++) {
-            for (int j = 0; j < resHeight; j++) {
-                if (matrix.get(i + rec[0], j + rec[1]))
+        for (int i = whiteMarginOffset; i < resWidth; i++) {
+            for (int j = whiteMarginOffset; j < resHeight; j++) {
+                if (matrix.get(i - whiteMarginOffset + rec[0], j - whiteMarginOffset + rec[1]))
                     resMatrix.set(i, j);
             }
         }
