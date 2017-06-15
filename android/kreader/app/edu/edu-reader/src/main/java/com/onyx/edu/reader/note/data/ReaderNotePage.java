@@ -216,12 +216,12 @@ public class ReaderNotePage {
     public void loadPage(final Context context) {
         newAddedShapeList.clear();
         removedShapeList.clear();
-        final List<ReaderNoteShapeModel> modelList = ReaderNoteDataProvider.loadShapeList(context, getDocumentUniqueId(), getPageUniqueId(), getSubPageUniqueId());
+        final List<ReaderNoteShapeModel> modelList = ReaderNoteDataProvider.loadShapeList(context, getDocumentUniqueId(), getPageUniqueId());
         for(ReaderNoteShapeModel model : modelList) {
             addShapeFromModel(ReaderShapeFactory.shapeFromModel(model));
         }
 
-        final List<ReaderFormShapeModel> formShapeModels = ReaderNoteDataProvider.loadFormShapeList(context, getDocumentUniqueId(), getPageUniqueId(), getSubPageUniqueId());
+        final List<ReaderFormShapeModel> formShapeModels = ReaderNoteDataProvider.loadFormShapeList(context, getDocumentUniqueId(), getPageUniqueId());
         for(ReaderFormShapeModel model : formShapeModels) {
             addShapeFromModel(ReaderShapeFactory.shapeFromFormModel(model));
         }

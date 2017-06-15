@@ -438,4 +438,6 @@
     <string name="exit_submit_form_tips">Is it reviewStatus before exiting?</string>
     <string name="submit_success">Submit Success</string>
     <string name="account_no_log_in">Account not log in</string>
+    <string name="custom_dialog_fetching">Fetching....</string>
+    <string name="custom_dialog_fetch_success">Fetch Success</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.onyx.edu.reader.note.data;
 
+import com.onyx.android.sdk.utils.StringUtils;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +22,9 @@ public class ReaderNotePageNameMap {
     }
 
     public void add(final String pageName, final String subPageUniqueId) {
+        if (StringUtils.isNullOrEmpty(subPageUniqueId)) {
+            return;
+        }
         if (contains(pageName, subPageUniqueId)) {
             return;
         }
@@ -31,6 +36,9 @@ public class ReaderNotePageNameMap {
     }
 
     public void add(final String pageName, int index, final String subPageUniqueId) {
+        if (StringUtils.isNullOrEmpty(subPageUniqueId)) {
+            return;
+        }
         if (contains(pageName, subPageUniqueId)) {
             return;
         }

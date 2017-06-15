@@ -59,12 +59,24 @@ public class ReaderNoteDataProvider {
         return list;
     }
 
+    public static List<ReaderNoteShapeModel> loadShapeList(final Context context,
+                                                           final String documentUniqueId,
+                                                           final String pageUniqueId) {
+        return loadShapeList(context, documentUniqueId, pageUniqueId, null);
+    }
+
     public static ReaderFormShapeModel loadFormShape(final Context context,
                                                            final String documentUniqueId,
                                                            final String formId) {
         Select select = new Select();
         Where where = select.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ReaderFormShapeModel_Table.formId.eq(formId));
         return (ReaderFormShapeModel) where.querySingle();
+    }
+
+    public static List<ReaderFormShapeModel> loadFormShapeList(final Context context,
+                                                               final String documentUniqueId,
+                                                               final String pageUniqueId) {
+        return loadFormShapeList(context, documentUniqueId, pageUniqueId, null);
     }
 
     public static List<ReaderFormShapeModel> loadFormShapeList(final Context context,

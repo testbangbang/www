@@ -446,6 +446,23 @@ public class ShowReaderMenuAction extends BaseAction {
         }
     }
 
+    public static void prepareFetchReviewData(final ReaderDataHolder readerDataHolder) {
+        if (Device.currentDevice().hasWifi(readerDataHolder.getContext()) && !NetworkUtil.isWiFiConnected(readerDataHolder.getContext())) {
+            new WifiConnectAction(6000, 1000, readerDataHolder.getContext().getString(R.string.custom_dialog_fetching)).execute(readerDataHolder, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    if (e != null) {
+                        Toast.makeText(readerDataHolder.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    readerDataHolder.applyReviewDataFromCloud(true);
+                }
+            });
+        } else {
+            readerDataHolder.applyReviewDataFromCloud(true);
+        }
+    }
+
     private static void saveDocumentDataToCloud(final ReaderDataHolder readerDataHolder) {
         final SaveDocumentDataToCloudActionChain saveDocumentDataToCloudActionChain = new SaveDocumentDataToCloudActionChain();
         saveDocumentDataToCloudActionChain.execute(readerDataHolder, new BaseCallback() {
@@ -842,10 +859,15 @@ public class ShowReaderMenuAction extends BaseAction {
                 readerDataHolder.getHandlerManager().close(readerDataHolder);
                 break;
             case SUBMIT:
-                showPushFormConfirmDialog(readerDataHolder);
+                FlushNoteAction.flush(readerDataHolder, true, false, true, false, true, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        showPushFormConfirmDialog(readerDataHolder);
+                    }
+                });
                 break;
             case FETCH_REVIEW_DATA:
-                readerDataHolder.applyReviewDataFromCloud(true);
+                prepareFetchReviewData(readerDataHolder);
                 break;
             case SCRIBBLE_PAGE_POSITION:
                 DialogGotoPage.show(readerDataHolder, true, null);
