@@ -2,11 +2,13 @@ package com.onyx.android.sdk.ui.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.text.Editable;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +17,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.R;
+import com.onyx.android.sdk.ui.view.OnyxCustomEditText;
 
 /**
  * Created by ming on 2017/3/14.
@@ -25,10 +28,11 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
     private TextView title;
     private Button btnCancel;
     private Button btnOk;
-    private EditText inputEditText;
+    private OnyxCustomEditText inputEditText;
     private SeekBar progressBar;
     private View dividerLine;
     private LinearLayout btnLayout;
+    private boolean dismissOnBackPressed = false;
 
     public static OnyxCustomDialog getLoadingDialog(Context context, String message) {
         OnyxCustomDialog dialog = new OnyxCustomDialog(context);
@@ -81,7 +85,7 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
         title = (TextView) findViewById(R.id.title);
         btnCancel = (Button) findViewById(R.id.btn_cancel);
         btnOk = (Button) findViewById(R.id.btn_ok);
-        inputEditText = (EditText) findViewById(R.id.input);
+        inputEditText = (OnyxCustomEditText) findViewById(R.id.input);
         progressBar = (SeekBar) findViewById(R.id.seek_bar_view);
         dividerLine = findViewById(R.id.divider_line);
         btnLayout = (LinearLayout) findViewById(R.id.button_layout);
@@ -164,6 +168,24 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
 
     public void enableInputEditText() {
         inputEditText.setVisibility(View.VISIBLE);
+    }
+
+    public OnyxCustomDialog setDismissOnBackPressed(boolean dismissOnBackPressed) {
+        this.dismissOnBackPressed = dismissOnBackPressed;
+
+        if (dismissOnBackPressed) {
+            inputEditText.setOnKeyPreImeListener(new OnyxCustomEditText.onKeyPreImeListener() {
+                @Override
+                public void onKeyPreIme(int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        dismiss();
+                    }
+                }
+            });
+        }else {
+            inputEditText.setOnKeyPreImeListener(null);
+        }
+        return this;
     }
 
     public void enableProgress(final int max, final int progress, final SeekBar.OnSeekBarChangeListener seekBarChangeListener) {
