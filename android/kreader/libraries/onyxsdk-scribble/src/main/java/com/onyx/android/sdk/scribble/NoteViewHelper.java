@@ -372,7 +372,8 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-
+        callback = null;
+        surfaceView = null;
         getRawInputProcessor().quit();
         resetRawInputProcessor();
     }
