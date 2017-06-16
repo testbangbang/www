@@ -56,11 +56,16 @@ public class NoteManager {
     private ReaderNoteDocument noteDocument = new ReaderNoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
+
+    private ReaderBitmapImpl reviewBufferBitmap = new ReaderBitmapImpl();
+    private ReaderBitmapImpl reviewBitmapWrapper = new ReaderBitmapImpl();
+
     private volatile View view;
 
     private volatile Shape currentShape = null;
     private volatile NoteDrawingArgs noteDrawingArgs = new NoteDrawingArgs();
-    private RenderContext renderContext = new RenderContext();
+    private RenderContext noteRenderContext = new RenderContext();
+    private RenderContext reviewRenderContext = new RenderContext();
 
     private List<Shape> shapeStash = new ArrayList<>();
     private DeviceConfig noteConfig;
@@ -263,8 +268,24 @@ public class NoteManager {
         return renderBitmapWrapper.getBitmap();
     }
 
-    // copy from render bitmap to view bitmap.
-    public void copyBitmap() {
+    public Bitmap createReviewBufferBitmap(final Rect viewportSize) {
+        reviewBufferBitmap.update(viewportSize.width() / 2, viewportSize.height() / 2 , Bitmap.Config.ARGB_8888);
+        return reviewBufferBitmap.getBitmap();
+    }
+
+    public void updateReviewBufferBitmap(final Bitmap src) {
+        reviewBufferBitmap.attach(src);
+    }
+
+    public Bitmap getReviewBitmap() {
+        if (reviewBitmapWrapper == null) {
+            return null;
+        }
+        return reviewBitmapWrapper.getBitmap();
+    }
+
+    // copy from renderNoteShapes bitmap to view bitmap.
+    public void copyNoteBitmap() {
         if (renderBitmapWrapper == null) {
             return;
         }
@@ -273,6 +294,17 @@ public class NoteManager {
             return;
         }
         viewBitmapWrapper.copyFrom(bitmap);
+    }
+
+    public void copyReviewBitmap() {
+        if (reviewBufferBitmap == null) {
+            return;
+        }
+        final Bitmap bitmap = reviewBufferBitmap.getBitmap();
+        if (bitmap == null) {
+            return;
+        }
+        reviewBitmapWrapper.copyFrom(bitmap);
     }
 
     public Bitmap getViewBitmap() {
@@ -425,8 +457,12 @@ public class NoteManager {
         return noteEventProcessorManager.inScribbleRect(point);
     }
 
-    public final RenderContext getRenderContext() {
-        return renderContext;
+    public final RenderContext getNoteRenderContext() {
+        return noteRenderContext;
+    }
+
+    public RenderContext getReviewRenderContext() {
+        return reviewRenderContext;
     }
 
     public final List<Shape> detachShapeStash() {

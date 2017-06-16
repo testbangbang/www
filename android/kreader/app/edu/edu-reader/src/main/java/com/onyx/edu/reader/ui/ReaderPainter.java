@@ -285,6 +285,9 @@ public class ReaderPainter {
         }
         final Bitmap bitmap = noteManager.getViewBitmap();
         canvas.drawBitmap(bitmap, 0, 0, paint);
+
+        final Bitmap review = noteManager.getReviewBitmap();
+        canvas.drawBitmap(review, 0, 0, paint);
     }
 
     private void drawStashShapes(final Context context,
