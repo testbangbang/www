@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.data.ReaderNotePageNameMap;
@@ -37,14 +38,14 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
         setResumeRawInputProcessor(resume && noteManager.isDFBForCurrentShape());
         ReviewDocumentData data = JSONObjectParseUtils.parseObject(reviewDocumentData, ReviewDocumentData.class);
         if (data == null) {
-            throw new Exception("empty data");
+            throw ReaderException.noReviewData();
         }
 
         setVisiblePages(pages);
         ReaderNotePageNameMap pageNameMap = data.getReaderNotePageNameMap();
         List<ReaderFormShapeModel> formShapeModels = data.getReaderFormShapes();
         if (pageNameMap == null && (formShapeModels == null || formShapeModels.size() == 0)) {
-            throw new Exception("empty data");
+            throw ReaderException.noReviewData();
         }
 
         ensureDocumentOpened(noteManager);
@@ -59,6 +60,9 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
                 formShapeModel.setColor(Color.RED);
                 newFormShapeModels.add(formShapeModel);
             }
+        }
+        if (newFormShapeModels.size() == 0) {
+            throw ReaderException.noReviewData();
         }
         ReaderNoteDataProvider.saveFormShapeList(getContext(), newFormShapeModels);
         noteManager.getNoteDocument().addReviewDataPageMap(pageNameMap);

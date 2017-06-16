@@ -6,6 +6,7 @@ import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.data.v2.ContentService;
+import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -45,15 +46,19 @@ public class SaveDocumentDataToCloudRequest extends BaseCloudRequest {
     @Override
     public void execute(final CloudManager parent) throws Exception {
         if (!FileUtils.fileExist(uploadDBPath)) {
+            errorMessage = getContext().getString(R.string.no_find_upload_database_file);
             return;
         }
         if (!NetworkUtil.isWiFiConnected(context)) {
+            errorMessage = getContext().getString(R.string.network_not_connected);
             return;
         }
         if (StringUtils.isNullOrEmpty(fileFullMd5)) {
+            errorMessage = getContext().getString(R.string.empty_md5);
             return;
         }
         if (StringUtils.isNullOrEmpty(cloudDocId)) {
+            errorMessage = getContext().getString(R.string.empty_cloud_documentId);
             return;
         }
         updateTokenHeader(parent);
@@ -66,7 +71,7 @@ public class SaveDocumentDataToCloudRequest extends BaseCloudRequest {
         try {
             executeCall(ServiceFactory.getSyncService(parent.getCloudConf().getApiBase()).pushReaderData(fileBody, md5Body, docIdBody));
         } catch (Exception e) {
-            errorMessage = e.getMessage();
+            errorMessage = getContext().getString(R.string.network_request_exception);
             e.printStackTrace();
         }
     }
