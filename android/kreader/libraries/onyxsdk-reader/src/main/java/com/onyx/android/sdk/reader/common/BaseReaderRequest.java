@@ -98,6 +98,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
      */
     public void afterExecute(final Reader reader) {
         try {
+            beforeDone(reader);
             afterExecuteImpl(reader);
         } catch (Throwable tr) {
             Log.w(getClass().getSimpleName(), tr);
@@ -242,5 +243,23 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     public void setLoadBookmark(boolean loadBookmark) {
         this.loadBookmark = loadBookmark;
+    }
+
+    private void beforeDone(final Reader reader) {
+        try {
+            final Runnable beforeDoneRunnable = new Runnable() {
+                @Override
+                 public void run() {
+                    BaseCallback.invokeBeforeDone(getCallback(), BaseReaderRequest.this, getException());
+                }
+            };
+            if (isRunInBackground()) {
+                reader.getLooperHandler().post(beforeDoneRunnable);
+            } else {
+                beforeDoneRunnable.run();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
