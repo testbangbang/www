@@ -104,6 +104,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         } catch (Throwable tr) {
             Log.w(getClass().getSimpleName(), tr);
         } finally {
+            beforeDone(reader);
             transferBitmapToViewport(reader);
         }
     }
@@ -121,8 +122,26 @@ public abstract class BaseReaderRequest extends BaseRequest {
         }
     }
 
+    private void beforeDone(final Reader reader) {
+        try {
+            final Runnable beforeDoneRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    BaseCallback.invokeBeforeDone(getCallback(), BaseReaderRequest.this, getException());
+                }
+            };
+            if (isRunInBackground()) {
+                reader.getLooperHandler().post(beforeDoneRunnable);
+            } else {
+                beforeDoneRunnable.run();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void transferBitmapToViewport(final Reader reader) {
-        final Runnable runnable = new Runnable() {
+        final Runnable doneRunnable = new Runnable() {
             @Override
             public void run() {
                 if (isTransferBitmap() && getRenderBitmap() != null) {
@@ -134,9 +153,9 @@ public abstract class BaseReaderRequest extends BaseRequest {
         };
 
         if (isRunInBackground()) {
-            reader.getLooperHandler().post(runnable);
+            reader.getLooperHandler().post(doneRunnable);
         } else {
-            runnable.run();
+            doneRunnable.run();
         }
         if (getRenderBitmap() != null && !isTransferBitmap()) {
             reader.returnBitmapToCache(getRenderBitmap());

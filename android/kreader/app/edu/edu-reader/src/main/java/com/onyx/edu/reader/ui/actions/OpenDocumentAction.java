@@ -3,6 +3,8 @@ package com.onyx.edu.reader.ui.actions;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.util.Log;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
@@ -204,12 +206,17 @@ public class OpenDocumentAction extends BaseAction {
         restoreRequest.setAlwaysScaleToPage(true);
         readerDataHolder.submitRenderRequest(restoreRequest, new BaseCallback() {
             @Override
+            public void beforeDone(BaseRequest request, Throwable e) {
+                super.beforeDone(request, e);
+                hideLoadingDialog();
+            }
+
+            @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || canceled) {
                     cleanup(readerDataHolder);
                     return;
                 }
-                hideLoadingDialog();
                 readerDataHolder.submitNonRenderRequest(new SaveDocumentOptionsRequest());
                 readerDataHolder.onDocumentInitRendered();
             }
