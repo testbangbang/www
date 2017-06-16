@@ -1,0 +1,7 @@
+<resources>
+    <string name="network_request_exception">网络请求异常</string>
+    <string name="no_find_upload_database_file">找不到数据上传文件</string>
+    <string name="network_not_connected">网络未连接</string>
+    <string name="empty_md5">Md5值为空</string>
+    <string name="empty_cloud_documentId">文档云id为空</string>
+</resources>
