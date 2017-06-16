@@ -512,14 +512,14 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void valueChange(int newValue) {
                 int logicalIndex = newValue - 1;
-                GotoTargetPageAction<ScribbleActivity> action = new GotoTargetPageAction<>(logicalIndex);
+                GotoTargetPageAction<ScribbleActivity> action = new GotoTargetPageAction<>(logicalIndex, false);
                 action.execute(ScribbleActivity.this);
             }
 
             @Override
             public void done(boolean isValueChange, int newValue) {
                 GotoTargetPageAction<ScribbleActivity> action =
-                        new GotoTargetPageAction<>(isValueChange ? newValue : originalVisualPageIndex -1);
+                        new GotoTargetPageAction<>(isValueChange ? newValue : originalVisualPageIndex -1,true);
                 action.execute(ScribbleActivity.this);
                 syncWithCallback(true, true, new BaseCallback() {
                     @Override
@@ -546,7 +546,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         shapeDataInfo.getCurrentPageIndex()).execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        new GotoTargetPageAction<ScribbleActivity>(shapeDataInfo.getCurrentPageIndex()).execute(ScribbleActivity.this);
+                        new GotoTargetPageAction<ScribbleActivity>(shapeDataInfo.getCurrentPageIndex(),true).execute(ScribbleActivity.this);
                     }
                 });
             }

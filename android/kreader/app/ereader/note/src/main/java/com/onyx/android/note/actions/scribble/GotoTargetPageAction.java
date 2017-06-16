@@ -12,9 +12,11 @@ import com.onyx.android.sdk.scribble.request.navigation.PageGoToTargetIndexReque
 public class GotoTargetPageAction<T extends BaseScribbleActivity> extends BaseNoteAction<T> {
     private PageGoToTargetIndexRequest prevRequest;
     private int targetPageIndex;
+    private boolean resume;
 
-    public GotoTargetPageAction(int index) {
+    public GotoTargetPageAction(int index,boolean r) {
         this.targetPageIndex = index;
+        resume = r;
     }
 
     public void execute(final T activity) {
@@ -28,7 +30,7 @@ public class GotoTargetPageAction<T extends BaseScribbleActivity> extends BaseNo
 
     @Override
     public void execute(final T activity, final BaseCallback callback) {
-        prevRequest = new PageGoToTargetIndexRequest(targetPageIndex);
+        prevRequest = new PageGoToTargetIndexRequest(targetPageIndex, resume);
         activity.submitRequest(prevRequest, callback);
     }
 }
