@@ -7,6 +7,7 @@ import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.db.ContentDatabase;
+import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -281,11 +282,11 @@ public class DataManagerHelper {
     public static CloseableReference<Bitmap> loadCloudThumbnailBitmapWithCache(Context context, CloudManager cloudManager,
                                                                                Metadata metadata) {
         BitmapReferenceLruCache bitmapLruCache = cloudManager.getCacheManager().getBitmapLruCache();
-        String associationId = metadata.getAssociationId();
-        if (StringUtils.isNullOrEmpty(associationId)) {
+        String key = CacheManager.generateCloudThumbnailKey(metadata.getAssociationId(), metadata.getCoverUrl());
+        if (StringUtils.isNullOrEmpty(key)) {
             return null;
         }
-        CloseableReference<Bitmap> refBitmap = bitmapLruCache.get(associationId);
+        CloseableReference<Bitmap> refBitmap = bitmapLruCache.get(key);
         if (refBitmap != null) {
             return refBitmap.clone();
         }

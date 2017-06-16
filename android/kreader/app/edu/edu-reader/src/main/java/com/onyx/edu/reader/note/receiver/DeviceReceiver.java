@@ -18,7 +18,7 @@ public class DeviceReceiver extends BroadcastReceiver {
     public static final String STATUS_BAR_ICON_REFRESH_START_ACTION = "com.android.systemui.STATUS_BAR_ICON_REFRESH_START_ACTION";
     public static final String STATUS_BAR_ICON_REFRESH_FINISH_ACTION = "com.android.systemui.STATUS_BAR_ICON_REFRESH_FINISH_ACTION";
 
-    public static final String SYSTEM_WAKE_UP = "com.android.system.WAKE_UP";
+    public static final String SYSTEM_WAKE_UP = Intent.ACTION_SCREEN_ON;
     public static final String SYSTEM_HOME = "com.android.systemui.HOME_BUTTON_CLICK";
 
     public static abstract class SystemUIChangeListener {

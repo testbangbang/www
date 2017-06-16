@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.common.request;
 
 import android.os.Handler;
+import android.util.Log;
 
 /**
  * Created by zhuzeng on 10/4/15.
@@ -17,6 +18,9 @@ public abstract class BaseCallback {
     }
 
     public void progress(final BaseRequest request, final ProgressInfo info) {
+    }
+
+    public void beforeDone(final BaseRequest request, final Throwable e) {
     }
 
     public abstract void done(final BaseRequest request, final Throwable e);
@@ -49,4 +53,11 @@ public abstract class BaseCallback {
             callback.done(request, e);
         }
     }
+
+    public static void invokeBeforeDone(final BaseCallback callback, final BaseRequest request, final Throwable e) {
+        if (callback != null) {
+            callback.beforeDone(request, e);
+        }
+    }
+
 }

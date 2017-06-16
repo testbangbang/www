@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -130,9 +131,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
     protected void onPause() {
         super.onPause();
         wakeLockHolder.releaseWakeLock();
-        if (AppCompatUtils.isColorDevice(this)){
-            Device.currentDevice().postInvalidate(getWindow().getDecorView(), UpdateMode.GC);
-        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     private void checkPictureEditMode() {
