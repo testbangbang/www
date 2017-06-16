@@ -3,9 +3,7 @@ package com.onyx.edu.reader.ui.data;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Rect;
-import android.view.View;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
@@ -42,6 +40,7 @@ import com.onyx.edu.reader.note.actions.SaveReviewDataAction;
 import com.onyx.edu.reader.note.receiver.DeviceReceiver;
 import com.onyx.edu.reader.tts.ReaderTtsManager;
 import com.onyx.edu.reader.ui.ReaderBroadcastReceiver;
+import com.onyx.edu.reader.ui.actions.ApplyReviewDataFromCloudAction;
 import com.onyx.edu.reader.ui.actions.ExportAnnotationAction;
 import com.onyx.edu.reader.ui.actions.GetDocumentDataFromCloudChain;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
@@ -782,38 +781,8 @@ public class ReaderDataHolder {
         this.cloudDocId = cloudDocId;
     }
 
-    public void applyReviewDataFromCloud(final boolean showError) {
-        if (reader == null || reader.getDocument() == null) {
-            return;
-        }
-        if (!hasFormField()) {
-            return;
-        }
-        final GetDocumentDataFromCloudChain cloudChain = new GetDocumentDataFromCloudChain();
-        cloudChain.execute(this, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                String errorMessage = cloudChain.getErrorMessage();
-                if (showError) {
-                    if (!StringUtils.isNullOrEmpty(errorMessage)) {
-                        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                        return;
-                    }else {
-                        Toast.makeText(getContext(), getContext().getString(R.string.custom_dialog_fetch_success), Toast.LENGTH_SHORT).show();
-                    }
-                }
-                String reviewDocumentData = cloudChain.getReviewDocumentData();
-                new SaveReviewDataAction(reviewDocumentData, getReader().getDocumentMd5()).execute(ReaderDataHolder.this, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        if (showError && e != null && !StringUtils.isNullOrEmpty(e.getMessage())) {
-                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-            }
-        });
+    public void applyReviewDataFromCloud(boolean showTips) {
+        ApplyReviewDataFromCloudAction.apply(this, showTips);
     }
 }
 

@@ -52,7 +52,7 @@ public class DialogGotoPage {
             public void onDismiss(DialogInterface dialog) {
                 readerDataHolder.postDialogUiChangedEvent(false);
             }
-        });
+        }).setDismissOnBackPressed(true);
         dlg.getInputEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
         dlg.getInputEditText().setHint("1-" + readerDataHolder.getPageCount());
         if (showProgress) {
