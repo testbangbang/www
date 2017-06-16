@@ -65,7 +65,7 @@ public class ChooseExerciseActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        if (!AppCompatImageViewCollection.isPl107Device) {
+        if (!AppCompatImageViewCollection.isAlignView()) {
             chooseExerciseFragment = (ChooseExerciseFragment) getFragmentManager()
                     .findFragmentById(R.id.contentFrame);
             if (chooseExerciseFragment == null) {

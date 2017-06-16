@@ -3,7 +3,6 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -56,12 +55,14 @@ import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.note.view.LinedEditText;
 import com.onyx.android.note.view.ScribbleSubMenu;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
@@ -71,6 +72,7 @@ import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
@@ -82,6 +84,7 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
@@ -120,12 +123,20 @@ public class ScribbleActivity extends BaseScribbleActivity {
         super.onResume();
         wakeLockHolder.acquireWakeLock(this, TAG);
         DeviceUtils.setFullScreenOnResume(this, true);
+        if (AppCompatUtils.isColorDevice(this)){
+            Device.currentDevice().postInvalidate(getWindow().getDecorView(), UpdateMode.GC);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         wakeLockHolder.releaseWakeLock();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     private void checkPictureEditMode() {
@@ -631,8 +642,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onDelete(boolean resume) {
+        String groupId = spanTextHandler.getLastGroupId();
+        if (StringUtils.isNullOrEmpty(groupId)) {
+            syncWithCallback(false, resume, null);
+            return;
+        }
         RemoveByGroupIdAction<BaseScribbleActivity> removeByPointListAction = new
-                RemoveByGroupIdAction<>(spanTextHandler.getLastGroupId(), resume);
+                RemoveByGroupIdAction<>(groupId, resume);
         removeByPointListAction.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -816,6 +832,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
             case ScribbleSubMenuID.PEN_COLOR_MAGENTA:
                 setStrokeColor(Color.MAGENTA);
                 onPenColoChanged();
+                break;
+            case ScribbleSubMenuID.TRIANGLE_45_STYLE:
+                onNoteShapeChanged(true, false, ShapeFactory.SHAPE_TRIANGLE_45, null);
+                break;
+            case ScribbleSubMenuID.TRIANGLE_60_STYLE:
+                onNoteShapeChanged(true, false, ShapeFactory.SHAPE_TRIANGLE_60, null);
+                break;
+            case ScribbleSubMenuID.TRIANGLE_90_STYLE:
+                onNoteShapeChanged(true, false, ShapeFactory.SHAPE_TRIANGLE_90, null);
                 break;
         }
     }
@@ -1035,11 +1060,30 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
+    private static class DocumentSaveCallBack extends BaseCallback {
+        WeakReference<ScribbleActivity> activityWeakReference;
+        boolean finishAfterSave;
+
+        DocumentSaveCallBack(ScribbleActivity activity, boolean finishFlag) {
+            this.activityWeakReference = new WeakReference<>(activity);
+            finishAfterSave = finishFlag;
+        }
+
+        @Override
+        public void done(BaseRequest request, Throwable e) {
+            if (activityWeakReference.get()!=null){
+                if (finishAfterSave) {
+                    activityWeakReference.get().finish();
+                }
+            }
+        }
+    }
+
     private void saveDocumentWithTitle(final String title, final boolean finishAfterSave) {
         noteTitle = title;
         final DocumentSaveAction<ScribbleActivity> saveAction = new
                 DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
-        saveAction.execute(ScribbleActivity.this, null);
+        saveAction.execute(ScribbleActivity.this, new DocumentSaveCallBack(this, finishAfterSave));
     }
 
     private void saveExistingNoteDocument(final boolean finishAfterSave) {
@@ -1049,7 +1093,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         }
         final DocumentSaveAction<ScribbleActivity> saveAction = new
                 DocumentSaveAction<>(documentUniqueId, noteTitle, finishAfterSave);
-        saveAction.execute(ScribbleActivity.this, null);
+        saveAction.execute(ScribbleActivity.this, new DocumentSaveCallBack(this, finishAfterSave));
     }
 
     private void onNoteShapeChanged(boolean render, boolean resume, int type, BaseCallback callback) {

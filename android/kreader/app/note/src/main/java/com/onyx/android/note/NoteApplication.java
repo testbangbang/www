@@ -69,6 +69,6 @@ public class NoteApplication extends Application {
     }
 
     private void initCompatColorImageConfig() {
-        AppCompatImageViewCollection.isPl107Device = AppCompatUtils.isPL107Device(this);
+        AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
     }
 }

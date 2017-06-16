@@ -33,6 +33,7 @@ public class ReadingApplication extends Application {
     }
 
     private void initDownloadManager() {
-        OnyxDownloadManager.getInstance(sInstance.getApplicationContext());
+        OnyxDownloadManager.init(sInstance.getApplicationContext());
+        OnyxDownloadManager.getInstance();
     }
 }

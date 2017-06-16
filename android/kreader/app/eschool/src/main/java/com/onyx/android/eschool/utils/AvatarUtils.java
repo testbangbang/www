@@ -41,7 +41,7 @@ public class AvatarUtils {
 
     public static String getSpecifyArrayAvatarPath(Context context, int avatarArrayRes) {
         String avatarPath = StudentAccount.loadAvatarPath(context);
-        if (!AppCompatUtils.isPL107Device(context)) {
+        if (!AppCompatUtils.isColorDevice(context)) {
             return avatarPath;
         }
         String[] avatarArray = context.getResources().getStringArray(avatarArrayRes);

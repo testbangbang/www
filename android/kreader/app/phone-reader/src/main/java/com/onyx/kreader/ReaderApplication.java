@@ -40,7 +40,7 @@ public class ReaderApplication extends Application {
     }
 
     private void initDownloadManager() {
-        CloudStore.initFileDownloader(sInstance);
+        CloudStore.init(sInstance);
     }
 
     private void initWeChatManager() {
