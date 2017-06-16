@@ -19,6 +19,9 @@ public abstract class BaseCallback {
     public void progress(final BaseRequest request, final ProgressInfo info) {
     }
 
+    public void beforeDone(final BaseRequest request, final Throwable e) {
+    }
+
     public abstract void done(final BaseRequest request, final Throwable e);
 
     public static void invokeProgress(final BaseCallback callback, final BaseRequest request, final ProgressInfo progressInfo) {
@@ -49,4 +52,10 @@ public abstract class BaseCallback {
             callback.done(request, e);
         }
     }
+
+    public static void invokeBeforeDone(final BaseCallback callback, final BaseRequest request, final Throwable e) {
+        if (callback != null) {
+            callback.beforeDone(request, e);
+            }
+        }
 }
