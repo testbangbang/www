@@ -532,25 +532,16 @@ public class ScribbleActivity extends BaseScribbleActivity {
         penColorBtn.setImageResource(targetColorIconRes);
     }
 
-    private static class DocumentEditCallback extends BaseCallback {
-        WeakReference<ScribbleActivity> activityWeakReference;
-
-        DocumentEditCallback(ScribbleActivity activity) {
-            this.activityWeakReference = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void done(BaseRequest request, Throwable e) {
-            if (activityWeakReference.get()!=null){
-                activityWeakReference.get().onPencilClicked();
-            }
-        }
-    }
 
     @Override
     protected void handleDocumentEdit(String uniqueId, String parentId) {
         final DocumentEditAction<BaseScribbleActivity> action = new DocumentEditAction<>(uniqueId, parentId);
         //TODO:1)force edit mode resume with pencil as mx request.
-        action.execute(this,  new DocumentEditCallback(this));
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                onPencilClicked();
+            }
+        });
     }
 }

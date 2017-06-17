@@ -20,7 +20,7 @@ import com.squareup.leakcanary.LeakCanary;
  * Created by zhuzeng on 6/26/16.
  */
 public class NoteApplication extends Application {
-    static final boolean DEBUG_MEMORY_LEAK = false;
+    static final boolean DEBUG_MEMORY_LEAK = true;
 
     private NoteViewHelper noteViewHelper;
     private static NoteApplication instance;

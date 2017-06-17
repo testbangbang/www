@@ -316,24 +316,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         action.execute(this);
     }
 
-    private static class DocumentEditCallback extends BaseCallback {
-        WeakReference<BaseScribbleActivity> activityWeakReference;
-
-        DocumentEditCallback(BaseScribbleActivity activity) {
-            this.activityWeakReference = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void done(BaseRequest request, Throwable e) {
-            if (activityWeakReference.get()!=null){
-                activityWeakReference.get().onRequestFinished((BaseNoteRequest) request,true);
-            }
-        }
-    }
-
     protected void handleDocumentEdit(final String uniqueId, final String parentId) {
         final DocumentEditAction<BaseScribbleActivity> action = new DocumentEditAction<>(uniqueId, parentId);
-        action.execute(this,new DocumentEditCallback(this));
+        action.execute(this, null);
     }
 
     protected NoteViewHelper.InputCallback inputCallback() {

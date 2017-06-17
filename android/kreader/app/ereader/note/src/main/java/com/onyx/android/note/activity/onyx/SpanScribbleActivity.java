@@ -383,36 +383,17 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         });
     }
 
-    private static class DocumentSaveCallBack extends BaseCallback {
-        WeakReference<SpanScribbleActivity> activityWeakReference;
-        boolean finishAfterSave;
-
-        DocumentSaveCallBack(SpanScribbleActivity activity, boolean finishFlag) {
-            this.activityWeakReference = new WeakReference<>(activity);
-            finishAfterSave = finishFlag;
-        }
-
-        @Override
-        public void done(BaseRequest request, Throwable e) {
-            if (activityWeakReference.get()!=null){
-                if (finishAfterSave) {
-                    activityWeakReference.get().finish();
-                }
-            }
-        }
-    }
-
     private void saveDocumentWithTitle(final String title, final boolean finishAfterSave) {
         noteTitle = title;
         final DocumentSaveAction<SpanScribbleActivity> saveAction = new
                 DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
-        saveAction.execute(SpanScribbleActivity.this, new DocumentSaveCallBack(this, finishAfterSave));
+        saveAction.execute(SpanScribbleActivity.this, null);
     }
 
     private void saveExistingNoteDocument(final boolean finishAfterSave) {
         final DocumentSaveAction<SpanScribbleActivity> saveAction = new
                 DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
-        saveAction.execute(SpanScribbleActivity.this, new DocumentSaveCallBack(this, finishAfterSave));
+        saveAction.execute(SpanScribbleActivity.this, null);
     }
 
     private void onNoteShapeChanged(boolean render, boolean resume, int type, BaseCallback callback) {
