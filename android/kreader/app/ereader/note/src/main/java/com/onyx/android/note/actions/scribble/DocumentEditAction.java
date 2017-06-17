@@ -15,29 +15,23 @@ public class DocumentEditAction<T extends BaseScribbleActivity> extends BaseNote
 
     private volatile String uniqueId;
     private volatile String parentUniqueId;
-    private NoteDocumentOpenRequest openRequest;
+    private BaseCallback mCallback;
 
     public DocumentEditAction(final String id, final String parentId) {
         uniqueId = id;
         parentUniqueId = parentId;
     }
 
-    public void execute(final T activity) {
-        execute(activity, null);
-    }
-
     @Override
-    public void execute(final T activity, final BaseCallback callback) {
+    public void execute(T activity, BaseCallback callback) {
+        mCallback = callback;
         showLoadingDialog(activity, DialogLoading.ARGS_LOADING_MSG, R.string.loading);
-        openRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId, false);
+        NoteDocumentOpenRequest openRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId, false);
         activity.submitRequestWithIdentifier(uniqueId, openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dismissLoadingDialog();
-                activity.onRequestFinished(openRequest, true);
-                if (callback != null) {
-                    callback.done(request, e);
-                }
+                mCallback.done(request, e);
             }
         });
     }

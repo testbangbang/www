@@ -5,7 +5,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
@@ -39,6 +43,7 @@ import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
@@ -378,17 +383,36 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         });
     }
 
+    private static class DocumentSaveCallBack extends BaseCallback {
+        WeakReference<SpanScribbleActivity> activityWeakReference;
+        boolean finishAfterSave;
+
+        DocumentSaveCallBack(SpanScribbleActivity activity, boolean finishFlag) {
+            this.activityWeakReference = new WeakReference<>(activity);
+            finishAfterSave = finishFlag;
+        }
+
+        @Override
+        public void done(BaseRequest request, Throwable e) {
+            if (activityWeakReference.get()!=null){
+                if (finishAfterSave) {
+                    activityWeakReference.get().finish();
+                }
+            }
+        }
+    }
+
     private void saveDocumentWithTitle(final String title, final boolean finishAfterSave) {
         noteTitle = title;
         final DocumentSaveAction<SpanScribbleActivity> saveAction = new
                 DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
-        saveAction.execute(SpanScribbleActivity.this, null);
+        saveAction.execute(SpanScribbleActivity.this, new DocumentSaveCallBack(this, finishAfterSave));
     }
 
     private void saveExistingNoteDocument(final boolean finishAfterSave) {
         final DocumentSaveAction<SpanScribbleActivity> saveAction = new
                 DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
-        saveAction.execute(SpanScribbleActivity.this, null);
+        saveAction.execute(SpanScribbleActivity.this, new DocumentSaveCallBack(this, finishAfterSave));
     }
 
     private void onNoteShapeChanged(boolean render, boolean resume, int type, BaseCallback callback) {

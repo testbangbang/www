@@ -84,6 +84,7 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
@@ -511,14 +512,14 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void valueChange(int newValue) {
                 int logicalIndex = newValue - 1;
-                GotoTargetPageAction<ScribbleActivity> action = new GotoTargetPageAction<>(logicalIndex);
+                GotoTargetPageAction<ScribbleActivity> action = new GotoTargetPageAction<>(logicalIndex, false);
                 action.execute(ScribbleActivity.this);
             }
 
             @Override
             public void done(boolean isValueChange, int newValue) {
                 GotoTargetPageAction<ScribbleActivity> action =
-                        new GotoTargetPageAction<>(isValueChange ? newValue : originalVisualPageIndex -1);
+                        new GotoTargetPageAction<>(isValueChange ? newValue : originalVisualPageIndex -1,true);
                 action.execute(ScribbleActivity.this);
                 syncWithCallback(true, true, new BaseCallback() {
                     @Override
@@ -545,7 +546,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         shapeDataInfo.getCurrentPageIndex()).execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        new GotoTargetPageAction<ScribbleActivity>(shapeDataInfo.getCurrentPageIndex()).execute(ScribbleActivity.this);
+                        new GotoTargetPageAction<ScribbleActivity>(shapeDataInfo.getCurrentPageIndex(),true).execute(ScribbleActivity.this);
                     }
                 });
             }
@@ -1059,11 +1060,30 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
+    private static class DocumentSaveCallBack extends BaseCallback {
+        WeakReference<ScribbleActivity> activityWeakReference;
+        boolean finishAfterSave;
+
+        DocumentSaveCallBack(ScribbleActivity activity, boolean finishFlag) {
+            this.activityWeakReference = new WeakReference<>(activity);
+            finishAfterSave = finishFlag;
+        }
+
+        @Override
+        public void done(BaseRequest request, Throwable e) {
+            if (activityWeakReference.get()!=null){
+                if (finishAfterSave) {
+                    activityWeakReference.get().finish();
+                }
+            }
+        }
+    }
+
     private void saveDocumentWithTitle(final String title, final boolean finishAfterSave) {
         noteTitle = title;
         final DocumentSaveAction<ScribbleActivity> saveAction = new
                 DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
-        saveAction.execute(ScribbleActivity.this, null);
+        saveAction.execute(ScribbleActivity.this, new DocumentSaveCallBack(this, finishAfterSave));
     }
 
     private void saveExistingNoteDocument(final boolean finishAfterSave) {
@@ -1073,7 +1093,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         }
         final DocumentSaveAction<ScribbleActivity> saveAction = new
                 DocumentSaveAction<>(documentUniqueId, noteTitle, finishAfterSave);
-        saveAction.execute(ScribbleActivity.this, null);
+        saveAction.execute(ScribbleActivity.this, new DocumentSaveCallBack(this, finishAfterSave));
     }
 
     private void onNoteShapeChanged(boolean render, boolean resume, int type, BaseCallback callback) {

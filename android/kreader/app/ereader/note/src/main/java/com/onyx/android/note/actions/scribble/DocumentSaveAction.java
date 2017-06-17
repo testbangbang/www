@@ -16,6 +16,9 @@ public class DocumentSaveAction<T extends BaseScribbleActivity> extends BaseNote
     private volatile String title;
     private volatile String documentUniqueId;
     private volatile boolean close;
+    private BaseCallback mCallback;
+    private NoteDocumentSaveRequest saveRequest;
+
 
     public DocumentSaveAction(final String uniqueId, final String t, boolean c) {
         title = t;
@@ -24,17 +27,15 @@ public class DocumentSaveAction<T extends BaseScribbleActivity> extends BaseNote
     }
 
     @Override
-    public void execute(final T activity, final BaseCallback callback) {
+    public void execute(T activity, BaseCallback callback) {
+        mCallback = callback;
         showLoadingDialog(activity, DialogLoading.ARGS_LOADING_MSG, R.string.saving_note);
-        final NoteDocumentSaveRequest saveRequest = new NoteDocumentSaveRequest(title, close);
+        saveRequest = new NoteDocumentSaveRequest(title, close);
         activity.submitRequestWithIdentifier(documentUniqueId, saveRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dismissLoadingDialog();
-                if (close) {
-                    activity.finish();
-                }
-                callback.invoke(callback, saveRequest, e);
+                invoke(mCallback, saveRequest, e);
             }
         });
     }
