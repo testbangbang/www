@@ -441,6 +441,7 @@ public class NoteViewHelper {
                                             final String identifier,
                                             final BaseNoteRequest request,
                                             final BaseCallback callback) {
+        request.setIdentifier(identifier);
         beforeSubmit(context, request, callback);
         getRequestManager().submitRequest(context, identifier, request, generateRunnable(request), callback);
     }
