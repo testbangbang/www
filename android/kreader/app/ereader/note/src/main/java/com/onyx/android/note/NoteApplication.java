@@ -14,12 +14,13 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
+import com.squareup.leakcanary.LeakCanary;
 
 /**
  * Created by zhuzeng on 6/26/16.
  */
 public class NoteApplication extends Application {
-
+    static final boolean DEBUG_MEMORY_LEAK = false;
 
     private NoteViewHelper noteViewHelper;
     private static NoteApplication instance;
@@ -42,6 +43,9 @@ public class NoteApplication extends Application {
         initDataProvider(this);
         installExceptionHandler();
         initCompatColorImageConfig();
+        if (DEBUG_MEMORY_LEAK) {
+            LeakCanary.install(this);
+        }
     }
 
     public static NoteApplication getInstance() {

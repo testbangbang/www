@@ -123,6 +123,7 @@ public class RawInputProcessor {
     }
 
     public void quit() {
+        rawInputCallback = null;
         closeInputDevice();
         reportData = false;
         stop = true;
