@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -130,12 +131,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected void onDestroy() {
         setActivityState(ActivityState.DESTROY);
         cleanUpAllPopMenu();
-        syncWithCallback(false, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                getNoteViewHelper().quit();
-            }
-        });
+        syncWithCallback(false, false, null);
         unregisterDeviceReceiver();
         super.onDestroy();
     }
@@ -170,7 +166,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         }
     }
 
-    protected NoteViewHelper getNoteViewHelper() {
+    public NoteViewHelper getNoteViewHelper() {
         return NoteApplication.getInstance().getNoteViewHelper();
     }
 

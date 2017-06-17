@@ -374,7 +374,6 @@ public class NoteViewHelper {
             return;
         }
         callback = null;
-        surfaceView = null;
         getRawInputProcessor().quit();
         resetRawInputProcessor();
     }
@@ -424,6 +423,8 @@ public class NoteViewHelper {
             return;
         }
         surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(getGlobalLayoutListener());
+        surfaceView = null;
+        globalLayoutListener = null;
     }
 
     private Rect getViewportSize() {

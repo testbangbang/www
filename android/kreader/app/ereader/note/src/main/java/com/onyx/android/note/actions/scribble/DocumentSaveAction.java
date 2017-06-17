@@ -33,6 +33,7 @@ public class DocumentSaveAction<T extends BaseScribbleActivity> extends BaseNote
             public void done(BaseRequest request, Throwable e) {
                 dismissLoadingDialog();
                 if (close) {
+                    activity.getNoteViewHelper().quit();
                     activity.finish();
                 }
                 BaseCallback.invoke(callback, saveRequest, e);

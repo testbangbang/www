@@ -16,6 +16,8 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 import com.squareup.leakcanary.LeakCanary;
 
+import static com.onyx.android.sdk.utils.DeviceUtils.exit;
+
 /**
  * Created by zhuzeng on 6/26/16.
  */
@@ -67,6 +69,7 @@ public class NoteApplication extends Application {
                 e.printStackTrace();
                 final View view = getNoteViewHelper().getView();
                 getNoteViewHelper().reset(view);
+                exit();
             }
         });
     }
