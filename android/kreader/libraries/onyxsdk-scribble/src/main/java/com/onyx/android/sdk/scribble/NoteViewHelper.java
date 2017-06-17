@@ -34,6 +34,7 @@ import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,8 +132,8 @@ public class NoteViewHelper {
 
     public void quit() {
         pauseDrawing();
-        quitDrawing();
         removeLayoutListener();
+        quitDrawing();
         setLineLayoutMode(false);
     }
 
