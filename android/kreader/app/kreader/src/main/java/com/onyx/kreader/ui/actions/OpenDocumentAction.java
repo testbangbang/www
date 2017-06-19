@@ -37,6 +37,7 @@ public class OpenDocumentAction extends BaseAction {
     private Activity activity;
     private String documentPath;
     private String bookName;
+    private String password;
     private DataManager dataProvider;
     private boolean canceled = false;
 
@@ -44,6 +45,14 @@ public class OpenDocumentAction extends BaseAction {
         this.activity = activity;
         documentPath = path;
         this.bookName = bookName;
+        dataProvider = new DataManager();
+    }
+
+    public OpenDocumentAction(final Activity activity, final String path,final String bookName,final String password) {
+        this.activity = activity;
+        documentPath = path;
+        this.bookName = bookName;
+        this.password = password;
         dataProvider = new DataManager();
     }
 
@@ -121,6 +130,7 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void openWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
+        options.setPassword(password);
         final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, true);
         readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override

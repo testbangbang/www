@@ -29,6 +29,7 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -114,6 +115,7 @@ import java.util.List;
 public class ReaderActivity extends OnyxBaseActivity {
     private static final String DOCUMENT_PATH_TAG = "document";
     private static final String DOCUMENT_NAME_TAG = "bookName";
+    private static final String DOCUMENT_PASSWORD = "Password";
 
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
     private SurfaceView surfaceView;
@@ -743,11 +745,13 @@ public class ReaderActivity extends OnyxBaseActivity {
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this,
                 getIntent().getData());
         String bookName = "";
+        String password = "";
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             bookName = bundle.getString(DOCUMENT_NAME_TAG);
+            password = bundle.getString(DOCUMENT_PASSWORD);
         }
-        final OpenDocumentAction action = new OpenDocumentAction(this, path,bookName);
+        final OpenDocumentAction action = new OpenDocumentAction(this, path,bookName,password);
         action.execute(getReaderDataHolder(), null);
         releaseStartupWakeLock();
     }
