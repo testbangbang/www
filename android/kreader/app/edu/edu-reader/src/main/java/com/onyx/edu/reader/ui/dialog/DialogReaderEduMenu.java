@@ -68,12 +68,6 @@ public class DialogReaderEduMenu extends OnyxBaseDialog {
                 readerMenuCallback.onHideMenu();
             }
         });
-        findViewById(R.id.imageView_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.EXIT));
-            }
-        });
         positionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -5,23 +5,6 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
-        android:padding="5dp"
-        android:background="@android:color/white"
-        appCompat:alwaysLayoutImageView="true"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/imageView_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/ic_exit"/>
-
-    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
-
     <View
         style="@style/single_line_X_axis_View"
         android:layout_height="1dp"/>
