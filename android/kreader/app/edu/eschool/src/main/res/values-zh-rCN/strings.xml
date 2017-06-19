@@ -101,4 +101,9 @@
     <string name="hardware_error">硬件错误, 请检查网络重试或者联系管理员</string>
 
     <string name="account_un_login">未登录</string>
+
+    <string name="cloud_content_import_loading">正在导入预装的书&#8230;</string>
+    <string name="cloud_content_import_success">导入成功</string>
+    <string name="cloud_content_import_failed">导入失败</string>
+
 </resources>

@@ -40,4 +40,12 @@ public class StudentPreferenceManager extends PreferenceManager {
     public static String loadLibraryParentId(Context context, String defaultValue) {
         return getStringValue(context, Constant.LIBRARY_PARENT_ID, defaultValue);
     }
+
+    public static boolean isImportContentFirstBoot(Context context) {
+        return getBooleanValue(context, Constant.IMPORT_CONTENT_IN_FIRST_BOOT_TAG, false);
+    }
+
+    public static void setImportContentFirstBoot(Context context, boolean importFirstBoot) {
+        setBooleanValue(context, Constant.IMPORT_CONTENT_IN_FIRST_BOOT_TAG, importFirstBoot);
+    }
 }

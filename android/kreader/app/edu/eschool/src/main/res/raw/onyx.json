@@ -30,5 +30,6 @@
     "com.onyx.android.screenmanager"
   ],
   "cloud_content_host" : "http://oa.o-in.me:9058/",
-  "cloud_content_api" : "http://oa.o-in.me:9058/api/"
+  "cloud_content_api" : "http://oa.o-in.me:9058/api/",
+  "cloud_content_import_json_path" : "/mnt/sdcard/books/data.json"
 }
