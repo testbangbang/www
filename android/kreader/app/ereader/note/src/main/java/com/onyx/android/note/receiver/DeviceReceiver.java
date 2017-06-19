@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
-import android.util.Log;
 
 /**
  * Created by zhuzeng on 7/11/16.
@@ -63,7 +62,6 @@ public class DeviceReceiver extends BroadcastReceiver {
 
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        Log.e("TAG", "onReceive: "+action);
         switch (action) {
             case SYSTEM_UI_DIALOG_OPEN_ACTION:
             case STATUS_BAR_ICON_REFRESH_START_ACTION:
