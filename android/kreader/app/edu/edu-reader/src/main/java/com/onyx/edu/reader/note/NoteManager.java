@@ -563,6 +563,8 @@ public class NoteManager {
         shape.setPageUniqueId(pageInfo.getName());
         shape.ensureShapeUniqueId();
         shape.setDisplayStrokeWidth(getNoteDrawingArgs().strokeWidth);
+        shape.setPageOriginWidth((int) pageInfo.getOriginWidth());
+        shape.setPageOriginHeight((int) pageInfo.getOriginHeight());
         shape.onDown(normal, screen);
         detectionScribbleFormShape(pageInfo, shape, origin);
         currentShape = shape;
