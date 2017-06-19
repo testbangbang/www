@@ -513,4 +513,15 @@ public class FileUtils {
         }
         return null;
     }
+
+    public static String getFileNameFromUrl(String url) {
+        if (!StringUtils.isUrl(url)) {
+            return null;
+        }
+        int idx = url.lastIndexOf('/');
+        if (idx < 0) {
+            return null;
+        }
+        return url.substring(idx + 1, url.length());
+    }
 }
