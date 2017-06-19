@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -44,7 +43,7 @@ import butterknife.OnClick;
  * Created by suicheng on 2016/11/15.
  */
 public class HomeActivity extends BaseActivity {
-    private static boolean firstBoot = true;
+    private static boolean checkedOnBootComplete = false;
 
     private String picDisplayPath = "/mnt/sdcard/slide/sample-cfa_01.png";
 
@@ -60,8 +59,8 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void cloudContentImportFirstBoot() {
-        if (firstBoot && !StudentPreferenceManager.isImportContentFirstBoot(this)) {
-            StudentPreferenceManager.setImportContentFirstBoot(this, true);
+        if (!isCheckOnBootComplete() && !StudentPreferenceManager.hasImportContent(this)) {
+            StudentPreferenceManager.setImportContent(this, true);
             String jsonFilePath = DeviceConfig.sharedInstance(this).getCloudContentImportJsonFilePath();
             if (StringUtils.isNullOrEmpty(jsonFilePath)) {
                 return;
@@ -126,8 +125,8 @@ public class HomeActivity extends BaseActivity {
 
     private void loadAuthToken(final BaseCallback callback) {
         AuthTokenAction authTokenAction = new AuthTokenAction();
-        if (firstBoot) {
-            firstBoot = false;
+        if (!isCheckOnBootComplete()) {
+            setCheckedOnBootComplete();
             authTokenAction.setLocalLoadRetryCount(3);
         }
         authTokenAction.execute(SchoolApp.getLibraryDataHolder(), new BaseCallback() {
@@ -136,6 +135,14 @@ public class HomeActivity extends BaseActivity {
                 BaseCallback.invoke(callback, request, e);
             }
         });
+    }
+
+    private static boolean isCheckOnBootComplete() {
+        return checkedOnBootComplete;
+    }
+
+    private static void setCheckedOnBootComplete() {
+        checkedOnBootComplete = true;
     }
 
     protected void initConfig() {
