@@ -23,8 +23,6 @@
 #include "core/fpdfapi/include/cpdf_modulemgr.h"
 #include "core/fxcrt/include/fx_ext.h"
 #include "third_party/base/numerics/safe_math.h"
-#include "libjdrebr/DRM_API/DRMLib.h"
-#include "../../../../onyx/Log.h"
 
 namespace {
 
@@ -386,7 +384,6 @@ CPDF_Object* CPDF_SyntaxParser::GetObject(CPDF_IndirectObjectHolder* pObjList,
   FX_FILESIZE SavedObjPos = m_Pos;
   bool bIsNumber;
   CFX_ByteString word = GetNextWord(&bIsNumber);
-  CPDF_Object* pRet = NULL;
   if (word.GetLength() == 0)
     return nullptr;
 
@@ -425,23 +422,15 @@ CPDF_Object* CPDF_SyntaxParser::GetObject(CPDF_IndirectObjectHolder* pObjList,
 
   if (word == "[") {
     CPDF_Array* pArray = new CPDF_Array;
-    while (CPDF_Object* pObj = GetObject(pObjList, objnum, gennum, true)){
-	  if (pObj->GetExType() == CPDF_Object::JDSTREAM) {
-		   pArray->SetExType(CPDF_Object::JDSTREAM);
-	  }
-	  pArray->Add(pObj);
-    }
+    while (CPDF_Object* pObj = GetObject(pObjList, objnum, gennum, true))
+      pArray->Add(pObj);
 
     return pArray;
   }
 
   if (word[0] == '/') {
-    CFX_ByteStringC objName = CFX_ByteStringC(m_WordBuffer + 1, m_WordSize - 1);
-    pRet = new CPDF_Name(PDF_NameDecode(objName));
-    if (objName == JDPDFENCRYPTBY360BUY_KEY) {
-        pRet->SetExType(CPDF_Object::JDSTREAM);
-    }
-    return pRet;
+    return new CPDF_Name(
+        PDF_NameDecode(CFX_ByteStringC(m_WordBuffer + 1, m_WordSize - 1)));
   }
 
   if (word == "<<") {
@@ -517,7 +506,6 @@ CPDF_Object* CPDF_SyntaxParser::GetObjectForStrict(
   FX_FILESIZE SavedObjPos = m_Pos;
   bool bIsNumber;
   CFX_ByteString word = GetNextWord(&bIsNumber);
-  CPDF_Object* pRet = NULL;
   if (word.GetLength() == 0)
     return nullptr;
 
@@ -556,23 +544,15 @@ CPDF_Object* CPDF_SyntaxParser::GetObjectForStrict(
   if (word == "[") {
     std::unique_ptr<CPDF_Array, ReleaseDeleter<CPDF_Array>> pArray(
         new CPDF_Array);
-    while (CPDF_Object* pObj = GetObject(pObjList, objnum, gennum, true)){
-	     if (pObj->GetExType() == CPDF_Object::JDSTREAM) {
-		       pArray->SetExType(CPDF_Object::JDSTREAM);
-	     }
-	     pArray->Add(pObj);
-    }
+    while (CPDF_Object* pObj = GetObject(pObjList, objnum, gennum, true))
+      pArray->Add(pObj);
 
     return m_WordBuffer[0] == ']' ? pArray.release() : nullptr;
   }
 
   if (word[0] == '/') {
-    CFX_ByteStringC objName = CFX_ByteStringC(m_WordBuffer + 1, m_WordSize - 1);
-    pRet = new CPDF_Name(PDF_NameDecode(objName));
-    if (objName == JDPDFENCRYPTBY360BUY_KEY) {
-        pRet->SetExType(CPDF_Object::JDSTREAM);
-    }
-    return pRet;
+    return new CPDF_Name(
+        PDF_NameDecode(CFX_ByteStringC(m_WordBuffer + 1, m_WordSize - 1)));
   }
 
   if (word == "<<") {
@@ -648,7 +628,6 @@ CPDF_Stream* CPDF_SyntaxParser::ReadStream(CPDF_Dictionary* pDict,
                                            uint32_t objnum,
                                            uint32_t gennum) {
   CPDF_Object* pLenObj = pDict->GetObjectFor("Length");
-  CPDF_Object* pJDObj = pDict->GetObjectFor("Filter");
   FX_FILESIZE len = -1;
   CPDF_Reference* pLenObjRef = ToReference(pLenObj);
 
@@ -768,16 +747,6 @@ CPDF_Stream* CPDF_SyntaxParser::ReadStream(CPDF_Dictionary* pDict,
   if (len > 0) {
     pData = FX_Alloc(uint8_t, len);
     ReadBlock(pData, len);
-	  if (pJDObj && pJDObj->GetExType() == CPDF_Object::JDSTREAM) {
-       if(isEncrypt()){
-         unsigned char* pOutData;
-         int outLen;
-         DecryptData(pData, len, &pOutData, &outLen);
-         FX_Free(pData);
-         pData = pOutData;
-         len = outLen;
-       }
-	  }
     if (pCryptoHandler) {
       CFX_BinaryBuf dest_buf;
       dest_buf.EstimateSize(pCryptoHandler->DecryptGetSize(len));

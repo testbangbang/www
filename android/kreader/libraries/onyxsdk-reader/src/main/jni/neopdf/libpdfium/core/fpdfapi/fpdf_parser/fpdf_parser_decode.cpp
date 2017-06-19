@@ -17,7 +17,6 @@
 #include "core/fxcodec/include/fx_codec.h"
 #include "core/fxcrt/include/fx_ext.h"
 #include "third_party/base/stl_util.h"
-#include "../../../../onyx/Log.h"
 
 #define _STREAM_MAX_SIZE_ 20 * 1024 * 1024
 
@@ -401,9 +400,7 @@ FX_BOOL PDF_DataDecode(const uint8_t* src_buf,
         decoder = "DCTDecode";
       } else if (decoder == "CCF") {
         decoder = "CCITTFaxDecode";
-      }else if(decoder == JDPDFENCRYPTBY360BUY_KEY){
-		   continue;
-	    }
+      }
       ImageEncoding = decoder;
       pImageParms = pParam;
       dest_buf = (uint8_t*)last_buf;

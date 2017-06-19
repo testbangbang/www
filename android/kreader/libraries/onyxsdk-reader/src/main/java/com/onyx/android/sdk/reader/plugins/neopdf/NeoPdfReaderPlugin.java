@@ -8,7 +8,6 @@ import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
@@ -37,14 +36,10 @@ import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import retrofit2.http.PATCH;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -61,11 +56,6 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         ReaderRendererFeatures {
 
     private static final Class TAG = NeoPdfReaderPlugin.class;
-    private static final int JDPDF_HEAD_LENGTH = 4;
-    private static final int JDPDF_ONE_BYTE = 0x25;
-    private static final int JDPDF_TWO_BYTE = 0x50;
-    private static final int JDPDF_THREE_BYTE = 0x44;
-    private static final int JDPDF_FOUR_BYTE = 0x46;
     private Benchmark benchmark = new Benchmark();
 
     private NeoPdfJniWrapper impl;
@@ -96,44 +86,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         if (string.endsWith(".pdf")) {
             return true;
         }
-        if(isJDPDF(path)){
-            return true;
-        }
         return false;
-    }
-
-    public static boolean isJEB(final String path) {
-        String extension = FileUtils.getFileExtension(path);
-        if (extension.contentEquals("jeb")) {
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean isJDPDF(final String path) {
-        boolean bRet = false;
-        FileInputStream fs = null;
-        try {
-            if (isJEB(path)) {
-                if (FileUtils.fileExist(path)) {
-                    File file = new File(path);
-                    fs = new FileInputStream(file);
-                    byte[] head = new byte[JDPDF_HEAD_LENGTH];
-                    fs.read(head, 0, JDPDF_HEAD_LENGTH);
-                    if (head[0] == JDPDF_ONE_BYTE &&
-                            head[1] == JDPDF_TWO_BYTE &&
-                            head[2] == JDPDF_THREE_BYTE &&
-                            head[3] == JDPDF_FOUR_BYTE) {
-                        bRet = true;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            FileUtils.closeQuietly(fs);
-        }
-        return bRet;
     }
 
 
@@ -585,13 +538,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         if (StringUtils.isNullOrEmpty(documentPath)) {
             return false;
         }
-        if(documentPath.toLowerCase().endsWith("pdf")){
-            return true;
-        }
-        if(isJDPDF(documentPath)){
-            return true;
-        }
-        return false;
+        return documentPath.toLowerCase().endsWith("pdf");
     }
 
     public boolean supportFontSizeAdjustment() {

@@ -548,7 +548,7 @@ int CPDF_DIBSource::CreateDecoder() {
   if (decoder == "CCITTFaxDecode") {
     m_pDecoder.reset(FPDFAPI_CreateFaxDecoder(src_data, src_size, m_Width,
                                               m_Height, pParams));
-  } else if (decoder == "DCTDecode" || decoder == JDPDFENCRYPTBY360BUY_KEY) {
+  } else if (decoder == "DCTDecode") {
     m_pDecoder.reset(CPDF_ModuleMgr::Get()->GetJpegModule()->CreateDecoder(
         src_data, src_size, m_Width, m_Height, m_nComponents,
         pParams ? pParams->GetIntegerFor("ColorTransform", 1) : 1));
