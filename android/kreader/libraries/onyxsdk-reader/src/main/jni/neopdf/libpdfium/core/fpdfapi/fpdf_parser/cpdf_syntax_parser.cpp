@@ -15,7 +15,6 @@
 #include "core/fpdfapi/fpdf_parser/include/cpdf_array.h"
 #include "core/fpdfapi/fpdf_parser/include/cpdf_dictionary.h"
 #include "core/fpdfapi/fpdf_parser/include/cpdf_name.h"
-#include "core/fpdfapi/fpdf_parser/include/cpdf_jdname.h"
 #include "core/fpdfapi/fpdf_parser/include/cpdf_number.h"
 #include "core/fpdfapi/fpdf_parser/include/cpdf_reference.h"
 #include "core/fpdfapi/fpdf_parser/include/cpdf_stream.h"
@@ -24,6 +23,8 @@
 #include "core/fpdfapi/include/cpdf_modulemgr.h"
 #include "core/fxcrt/include/fx_ext.h"
 #include "third_party/base/numerics/safe_math.h"
+#include "libjdrebr/DRM_API/DRMLib.h"
+#include "../../../../onyx/Log.h"
 
 namespace {
 
@@ -425,8 +426,8 @@ CPDF_Object* CPDF_SyntaxParser::GetObject(CPDF_IndirectObjectHolder* pObjList,
   if (word == "[") {
     CPDF_Array* pArray = new CPDF_Array;
     while (CPDF_Object* pObj = GetObject(pObjList, objnum, gennum, true)){
-	  if (pObj->GetType() == CPDF_Object::JDSTREAM) {
-		pArray->SetExType(CPDF_Object::JDSTREAM);
+	  if (pObj->GetExType() == CPDF_Object::JDSTREAM) {
+		   pArray->SetExType(CPDF_Object::JDSTREAM);
 	  }
 	  pArray->Add(pObj);
     }
@@ -556,10 +557,10 @@ CPDF_Object* CPDF_SyntaxParser::GetObjectForStrict(
     std::unique_ptr<CPDF_Array, ReleaseDeleter<CPDF_Array>> pArray(
         new CPDF_Array);
     while (CPDF_Object* pObj = GetObject(pObjList, objnum, gennum, true)){
-	  if (pObj->GetType() == CPDF_Object::JDSTREAM) {
-		pArray->SetExType(CPDF_Object::JDSTREAM);
-	  }
-	  pArray->Add(pObj);
+	     if (pObj->GetExType() == CPDF_Object::JDSTREAM) {
+		       pArray->SetExType(CPDF_Object::JDSTREAM);
+	     }
+	     pArray->Add(pObj);
     }
 
     return m_WordBuffer[0] == ']' ? pArray.release() : nullptr;
@@ -647,7 +648,7 @@ CPDF_Stream* CPDF_SyntaxParser::ReadStream(CPDF_Dictionary* pDict,
                                            uint32_t objnum,
                                            uint32_t gennum) {
   CPDF_Object* pLenObj = pDict->GetObjectFor("Length");
-  CPDF_Object* jdObj = pDict->GetObjectFor("Filter");
+  CPDF_Object* pJDObj = pDict->GetObjectFor("Filter");
   FX_FILESIZE len = -1;
   CPDF_Reference* pLenObjRef = ToReference(pLenObj);
 
@@ -767,77 +768,16 @@ CPDF_Stream* CPDF_SyntaxParser::ReadStream(CPDF_Dictionary* pDict,
   if (len > 0) {
     pData = FX_Alloc(uint8_t, len);
     ReadBlock(pData, len);
-	/*if (jdObj && jdObj->m_exType == PDFOBJ_JDSTREAM) {
-		unsigned char* pOutData;
-		int outLen;
-		{
-			Cipher pdecrypt = NULL;
-			char *pKey = "11C7A62A6DB2645DD56CB0EF36698961";
-			int keyLen = 32;
-
-			if (CreateCipher(&pdecrypt))
-			{
-				printf("cipher_create failed!\n");
-				throw - 1;
-			}
-
-			if (InitCipher(pdecrypt, DECRYPT, (unsigned char *)pKey, keyLen))
-			{
-				printf("cipher_init failed!\n");
-				throw - 1;
-			}
-			int INBUFFER = 1024 * 10;
-			int nLoop = len / INBUFFER;
-			unsigned char* inbuffer = new unsigned char[INBUFFER + 1];
-			unsigned char* outbuffer = new unsigned char[INBUFFER + 1];
-			pOutData = new unsigned char[len + 1];
-			int decryptOutLen = 0;
-			int countDecryptLen = 0;
-
-			for (int i = 0; i<nLoop; i++)
-			{
-				memset(inbuffer, 0, INBUFFER + 1);
-				memset(outbuffer, 0, INBUFFER + 1);
-				memcpy(inbuffer, pData + i*INBUFFER, INBUFFER);
-				if (UpdateCipher(pdecrypt, inbuffer, INBUFFER, outbuffer, &decryptOutLen))
-				{
-					printf("cipher_update failed!\n");
-					throw - 1;
-				}
-				memcpy(pOutData + countDecryptLen, outbuffer, decryptOutLen);
-				countDecryptLen += decryptOutLen;
-			}
-
-			int finalInbufferlen = len - nLoop*INBUFFER;
-			unsigned char* finalInbuffer = new unsigned char[finalInbufferlen + 1];
-			memset(finalInbuffer, 0, finalInbufferlen + 1);
-			memcpy(finalInbuffer, pData + nLoop*INBUFFER, finalInbufferlen);
-
-			int finalOutbufferlen = finalInbufferlen + 16;
-			unsigned char* finalOutbuffer = new unsigned char[finalOutbufferlen + 1];
-			memset(finalOutbuffer, 0, finalOutbufferlen + 1);
-
-			if (FinalCipher(pdecrypt, finalInbuffer, finalInbufferlen, finalOutbuffer, &finalOutbufferlen))
-			{
-				printf("cipher_final failed!\n");
-				throw - 1;
-			}
-
-			memcpy(pOutData + countDecryptLen, finalOutbuffer, finalOutbufferlen);
-			countDecryptLen += finalOutbufferlen;
-
-			if (DestroyCipher(pdecrypt))
-			{
-				printf("cipher_destroy failed!\n");
-				throw - 1;
-			}
-
-			outLen = countDecryptLen;
-		}
-		FX_Free(pData);
-		pData = pOutData;
-		len = outLen;
-	}*/
+	  if (pJDObj && pJDObj->GetExType() == CPDF_Object::JDSTREAM) {
+       if(isEncrypt()){
+         unsigned char* pOutData;
+         int outLen;
+         DecryptData(pData, len, &pOutData, &outLen);
+         FX_Free(pData);
+         pData = pOutData;
+         len = outLen;
+       }
+	  }
     if (pCryptoHandler) {
       CFX_BinaryBuf dest_buf;
       dest_buf.EstimateSize(pCryptoHandler->DecryptGetSize(len));

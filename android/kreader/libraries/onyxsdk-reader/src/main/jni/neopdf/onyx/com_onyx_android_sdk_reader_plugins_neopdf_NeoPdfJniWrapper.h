@@ -135,6 +135,14 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageLinks
   (JNIEnv *, jobject, jint, jint, jobject);
 
+/*
+ * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
+ * Method:    nativeSetDecryptInfo
+ * Signature: (ILjava/lang/String;ILjava/lang/String;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetDecryptInfo
+  (JNIEnv *, jobject, jint, jstring, jint, jstring, jstring);
+
 #ifdef __cplusplus
 }
 #endif

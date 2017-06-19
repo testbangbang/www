@@ -39,8 +39,7 @@ class CPDF_Object {
     STREAM,
     NULLOBJ,
     REFERENCE,
-    JDSTREAM,
-    JDARRAY
+    JDSTREAM
   };
 
   virtual Type GetType() const = 0;
