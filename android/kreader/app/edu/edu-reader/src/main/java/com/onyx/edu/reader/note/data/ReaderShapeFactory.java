@@ -2,6 +2,7 @@ package com.onyx.edu.reader.note.data;
 
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.shape.*;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
@@ -113,6 +114,8 @@ public class ReaderShapeFactory {
         shapeModel.setPoints(shape.getPoints());
         shapeModel.setThickness(shape.getStrokeWidth());
         shapeModel.setShapeType(shape.getType());
+        shapeModel.setPageOriginHeight(shape.getPageOriginHeight());
+        shapeModel.setPageOriginWidth(shape.getPageOriginWidth());
         return shapeModel;
     }
 
@@ -139,6 +142,7 @@ public class ReaderShapeFactory {
     }
 
     public static Shape createFormShape(String documentUniqueId,
+                                        PageInfo pageInfo,
                                         String formId,
                                         int formType,
                                         RectF formRect,
@@ -151,6 +155,8 @@ public class ReaderShapeFactory {
         shape.setFormType(formType);
         shape.setFormValue(value);
         shape.setShapeUniqueId(ShapeUtils.generateUniqueId());
+        shape.setPageOriginHeight((int) pageInfo.getOriginHeight());
+        shape.setPageOriginWidth((int) pageInfo.getOriginWidth());
         return shape;
     }
 

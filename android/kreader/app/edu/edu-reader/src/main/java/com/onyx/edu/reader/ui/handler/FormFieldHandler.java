@@ -94,6 +94,7 @@ public class FormFieldHandler extends ReadingHandler {
 
     private void flushFormShapes(ReaderFormField field, int formType, FormValue value) {
         Shape shape = ReaderShapeFactory.createFormShape(getDocumentUniqueId(),
+                getReaderDataHolder().getFirstPageInfo(),
                 field.getName(),
                 formType,
                 field.getRect(),
