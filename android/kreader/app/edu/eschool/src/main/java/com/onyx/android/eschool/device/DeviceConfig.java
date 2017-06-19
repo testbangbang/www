@@ -40,6 +40,7 @@ public class DeviceConfig {
     static public final String VERIFY_TTS_TAG = "verify_tts";
     static public final String CLOUD_CONTENT_HOST = "cloud_content_host";
     static public final String CLOUD_CONTENT_API = "cloud_content_api";
+    static public final String CLOUD_CONTENT_IMPORT_JSON_FILE_PATH = "cloud_content_import_json_path";
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -174,5 +175,9 @@ public class DeviceConfig {
 
     public String getCloudContentApi() {
         return backend.getString(CLOUD_CONTENT_API, CLOUD_CONTENT_DEFAULT_API);
+    }
+
+    public String getCloudContentImportJsonFilePath() {
+        return backend.getString(CLOUD_CONTENT_IMPORT_JSON_FILE_PATH, "");
     }
 }

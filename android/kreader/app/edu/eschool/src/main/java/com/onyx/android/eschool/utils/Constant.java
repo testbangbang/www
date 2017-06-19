@@ -16,4 +16,5 @@ public class Constant {
     public static final String CONFIG_SCHOOL_LEVEL = "config_school_level";
 
     public static final String LIBRARY_PARENT_ID = "library_parent_Id";
+    public static final String IMPORT_CONTENT_IN_FIRST_BOOT_TAG = "metadata_import_in_first_boot";
 }
