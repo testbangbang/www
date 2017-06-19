@@ -28,7 +28,6 @@ public class SaveDocumentDataToCloudAction extends BaseAction {
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
         final SaveDocumentDataToCloudRequest saveDocumentDataToCloudRequest = new SaveDocumentDataToCloudRequest(exportDBPath.toString(),
                 readerDataHolder.getContext(),
-                Constant.SYNC_API_BASE,
                 fileFullMd5.toString(),
                 readerDataHolder.getCloudDocId(),
                 token.toString());
@@ -43,5 +42,9 @@ public class SaveDocumentDataToCloudAction extends BaseAction {
 
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    public static SaveDocumentDataToCloudAction create(StringBuffer exportDBPath, StringBuffer fileFullMd5, StringBuffer token) {
+        return new SaveDocumentDataToCloudAction(exportDBPath, fileFullMd5, token);
     }
 }

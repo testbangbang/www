@@ -34,6 +34,7 @@ public class ReadingHandler extends BaseHandler {
     public void close(final ReaderDataHolder readerDataHolder) {
         final DeviceConfig deviceConfig = DeviceConfig.sharedInstance(readerDataHolder.getContext());
         if (deviceConfig.isAskForClose()) {
+            readerDataHolder.postDialogUiChangedEvent(true);
             postConfirmDialogOpenEvent(readerDataHolder, true);
             OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.sure_exit),
                     new DialogInterface.OnClickListener() {
@@ -52,7 +53,7 @@ public class ReadingHandler extends BaseHandler {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
                             if (readerDataHolder.inNoteWritingProvider()) {
-                                readerDataHolder.postSystemUiChangedEvent(false);
+                                readerDataHolder.postDialogUiChangedEvent(false);
                             }
                         }
                     })

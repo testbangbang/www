@@ -38,6 +38,7 @@ import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
+import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -63,6 +64,7 @@ public class SchoolApp extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         initConfig();
+        LeakCanary.install(this);
     }
 
     @Override

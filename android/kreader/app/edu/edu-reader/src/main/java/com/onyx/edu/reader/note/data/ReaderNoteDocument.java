@@ -1,6 +1,8 @@
 package com.onyx.edu.reader.note.data;
 
 import android.content.Context;
+import android.databinding.tool.util.L;
+
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhuzeng on 9/16/16.
@@ -30,6 +33,9 @@ public class ReaderNoteDocument {
     public void open(final Context context,
                      final String uniqueId,
                      final String parentLibraryUniqueId) {
+        if (StringUtils.isNullOrEmpty(uniqueId)) {
+            return;
+        }
         close(context);
         setDocumentUniqueId(uniqueId);
         setParentUniqueId(parentLibraryUniqueId);
@@ -193,6 +199,30 @@ public class ReaderNoteDocument {
         return pageIndex;
     }
 
+    public void addReviewDataPageMap(ReaderNotePageNameMap pageNameMap) {
+        for (Map.Entry<String, List<String>> stringListEntry : pageNameMap.getData().entrySet()) {
+            String pageName = stringListEntry.getKey();
+            List<String> list = stringListEntry.getValue();
+            for (String s : list) {
+                List<String> subPageUniqueIds = pageIndex.getPageList(pageName, true);
+                String subPageUniqueId = s;
+                // add when has not subPageUniqueId
+                if (subPageUniqueIds.size() == 0) {
+                    pageIndex.add(pageName, s);
+                }else {
+                    // use already existing subPageUniqueId
+                    subPageUniqueId = subPageUniqueIds.get(0);
+                }
+
+                ReaderNotePage notePage = pageMap.get(subPageUniqueId);
+                if (notePage == null) {
+                    notePage = ensureDataEntry(pageName, s);
+                }
+                notePage.setLoaded(false);
+            }
+        }
+    }
+
     private HashMap<String, ReaderNotePage> getPageMap() {
         return pageMap;
     }
@@ -226,8 +256,9 @@ public class ReaderNoteDocument {
         if (notePage == null) {
             return null;
         }
-        notePage.clear(true);
+        notePage.clear(true, false);
         notePage.savePage(context);
+        notePage.setLoaded(false);
         return subPageUniqueId;
     }
 

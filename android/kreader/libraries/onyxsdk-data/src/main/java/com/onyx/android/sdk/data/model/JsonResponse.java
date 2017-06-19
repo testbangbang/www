@@ -7,5 +7,6 @@ public class JsonResponse {
     public int code;
     public String error;
     public String message;
+    public String data;
 
 }

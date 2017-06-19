@@ -52,7 +52,7 @@ ext {
     frescoVersion = '1.2.0'
     junitVersion = '4.12'
     juniversalchardetVersion = '1.0.3'
-    leakcanaryVersion = '1.4-beta2'
+    leakcanaryVersion = '1.5.1'
     lucenecoreVersion = '2.9.4'
     retrofit2Version = '2.1.0'
     ruedigermoellerfstVersion = '2.47'

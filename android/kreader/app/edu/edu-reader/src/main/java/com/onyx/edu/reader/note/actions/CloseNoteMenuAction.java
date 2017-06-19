@@ -12,7 +12,7 @@ public class CloseNoteMenuAction extends BaseAction {
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerDataHolder.getEventBus().post(new CloseScribbleMenuEvent());
-        readerDataHolder.getHandlerManager().resetToDefaultProvider();
+        readerDataHolder.getHandlerManager().resetActiveProvider();
         BaseCallback.invoke(callback, null, null);
     }
 }

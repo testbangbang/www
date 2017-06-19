@@ -21,7 +21,7 @@
             android:id="@+id/title"
             android:textSize="22sp" />
 
-        <EditText
+        <com.onyx.android.sdk.ui.view.OnyxCustomEditText
             android:layout_margin="5dp"
             android:visibility="gone"
             android:textSize="22sp"

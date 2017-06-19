@@ -42,6 +42,7 @@ import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
@@ -352,7 +353,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentSaveAction<ScribbleActivity> closeAction = new DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, true);
-                closeAction.execute(ScribbleActivity.this, null);
+                closeAction.execute(ScribbleActivity.this, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        finish();
+                    }
+                });
             }
         });
     }
@@ -526,10 +532,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
         penColorBtn.setImageResource(targetColorIconRes);
     }
 
+
     @Override
     protected void handleDocumentEdit(String uniqueId, String parentId) {
         final DocumentEditAction<BaseScribbleActivity> action = new DocumentEditAction<>(uniqueId, parentId);
-        //TODO:force edit mode resume with pencil as mx request.
+        //TODO:1)force edit mode resume with pencil as mx request.
         action.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

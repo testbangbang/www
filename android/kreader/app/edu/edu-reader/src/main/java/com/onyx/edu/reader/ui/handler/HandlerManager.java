@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.KeyBinding;
 import com.onyx.android.sdk.data.TouchAction;
 import com.onyx.android.sdk.data.TouchBinding;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.ui.ReaderTabHostBroadcastReceiver;
 import com.onyx.edu.reader.ui.actions.DecreaseFontSizeAction;
@@ -175,8 +176,18 @@ public class HandlerManager {
         touchStartPosition = null;
     }
 
-    public void resetToDefaultProvider() {
-        setActiveProvider(readerDataHolder.hasFormField() ? FORM_PROVIDER : READING_PROVIDER);
+    public void resetActiveProvider() {
+        setActiveProvider(getCurrentActiveProvider());
+    }
+
+    private String getCurrentActiveProvider() {
+        if (readerDataHolder.hasScribbleFormField()) {
+            return FORM_SCRIBBLE_PROVIDER;
+        }
+        if (readerDataHolder.hasFormField()) {
+            return FORM_PROVIDER;
+        }
+        return READING_PROVIDER;
     }
 
     public void setActiveProvider(final String providerName) {
@@ -184,6 +195,7 @@ public class HandlerManager {
     }
 
     public void setActiveProvider(final String providerName, final BaseHandler.HandlerInitialState initialState) {
+        Debug.d(getClass(), "active provider:" + providerName);
         getActiveProvider().onDeactivate(readerDataHolder);
         activeProviderName = providerName;
         getActiveProvider().onActivate(readerDataHolder, initialState);
@@ -433,20 +445,7 @@ public class HandlerManager {
         return true;
     }
 
-    private boolean isEnableProcessSingleTapUp(final ReaderDataHolder readerDataHolder) {
-        if (readerDataHolder.inNoteWritingProvider()) {
-            return false;
-        }
-        if (readerDataHolder.inFormProvider()) {
-            return false;
-        }
-        return true;
-    }
-
     private boolean processSingleTapUp(final ReaderDataHolder readerDataHolder, final String action, final String args) {
-        if (!isEnableProcessSingleTapUp(readerDataHolder)) {
-            return false;
-        }
         if (StringUtils.isNullOrEmpty(action)) {
             return false;
         }
@@ -518,6 +517,9 @@ public class HandlerManager {
     }
 
     private void onShowMenu(final ReaderDataHolder readerDataHolder) {
+        if (readerDataHolder.inFormProvider()) {
+            return;
+        }
         new ShowReaderMenuAction().execute(readerDataHolder, null);
     }
 

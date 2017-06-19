@@ -82,8 +82,10 @@ import com.onyx.edu.reader.ui.events.BeforeDocumentCloseEvent;
 import com.onyx.edu.reader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.edu.reader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.edu.reader.ui.events.ChangeOrientationEvent;
+import com.onyx.edu.reader.ui.events.ClearFormFieldControlsEvent;
 import com.onyx.edu.reader.ui.events.ClosePopupEvent;
 import com.onyx.edu.reader.ui.events.ConfirmCloseDialogEvent;
+import com.onyx.edu.reader.ui.events.DialogUIChangeEvent;
 import com.onyx.edu.reader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.edu.reader.ui.events.DocumentOpenEvent;
 import com.onyx.edu.reader.ui.events.ForceCloseEvent;
@@ -95,6 +97,7 @@ import com.onyx.edu.reader.ui.events.QuitEvent;
 import com.onyx.edu.reader.ui.events.RequestFinishEvent;
 import com.onyx.edu.reader.ui.events.ResetEpdUpdateModeEvent;
 import com.onyx.edu.reader.ui.events.ResizeReaderWindowEvent;
+import com.onyx.edu.reader.ui.events.ReviewShapeRenderFinishEvent;
 import com.onyx.edu.reader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.edu.reader.ui.events.ShapeAddedEvent;
 import com.onyx.edu.reader.ui.events.ShapeDrawingEvent;
@@ -517,7 +520,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         if (event != null && !event.isWaitForShapeData()) {
             beforeDrawPage();
-            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), true);
             afterDrawPage();
         }
 
@@ -540,14 +543,14 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private boolean isAnyPopup() {
-        if (ShowReaderMenuAction.isReaderMenuShown() || getReaderDataHolder().isAnyActiveDialog()) {
+        if (ShowReaderMenuAction.isReaderMenuShown() || getReaderDataHolder().hasDialogShowing()) {
             return true;
         }
         return false;
     }
 
     private void afterDrawPage() {
-        showFormMenu();
+        activeFormHandler();
         ReaderDeviceManager.cleanUpdateMode(surfaceView);
         updateAllStatusBars();
     }
@@ -571,11 +574,17 @@ public class ReaderActivity extends OnyxBaseActivity {
             ReaderDeviceManager.applyWithGcUpdate(getSurfaceView());
         }
         beforeDrawPage();
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), false);
         if (event.isUseFullUpdate()) {
             ReaderDeviceManager.disableRegal();
             EpdController.resetUpdateMode(getSurfaceView());
         }
+    }
+
+    @Subscribe
+    public void onReviewShapeRendered(final ReviewShapeRenderFinishEvent event) {
+        beforeDrawPage();
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), false);
     }
 
     private boolean verifyReader() {
@@ -589,18 +598,36 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onSystemUIChanged(final SystemUIChangedEvent event) {
-        if (event == null || !getReaderDataHolder().inNoteWritingProvider()) {
+        if (event == null) {
+            return;
+        }
+        onPopUIChanged(event.isUiOpen());
+    }
+
+    @Subscribe
+    public void onDialogUIChanged(final DialogUIChangeEvent event) {
+        if (event == null) {
+            return;
+        }
+        if (!event.isUiOpen()) {
+            activeFormHandler();
+        }
+        onPopUIChanged(event.isUiOpen());
+    }
+
+    private void onPopUIChanged(boolean open) {
+        if (!getReaderDataHolder().inNoteWritingProvider()) {
             return;
         }
         final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
-        if (event.isUiOpen()) {
+        if (open) {
             FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(list);
             flushNoteAction.execute(getReaderDataHolder(), null);
         } else {
             ResumeDrawingAction action = new ResumeDrawingAction(list);
             action.execute(getReaderDataHolder(), null);
         }
-        enableShortcut(!event.isUiOpen());
+        enableShortcut(open);
     }
 
     private void enableShortcut(boolean enable) {
@@ -667,7 +694,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         disablePenShortcut();
         stopRawEventProcessor();
-        getReaderDataHolder().getHandlerManager().resetToDefaultProvider();
+        getReaderDataHolder().getHandlerManager().resetActiveProvider();
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
@@ -700,7 +727,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onShapeDrawing(final ShapeDrawingEvent event) {
         getReaderDataHolder().getNoteManager().ensureContentRendered();
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), false);
     }
 
     @Subscribe
@@ -716,7 +743,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         boolean drawDuringErasing = false;
         if (drawDuringErasing) {
             getReaderDataHolder().getNoteManager().ensureContentRendered();
-            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), false);
         }
     }
 
@@ -862,6 +889,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         initReaderMenu();
         updateNoteHostView();
         getReaderDataHolder().updateRawEventProcessor();
+        getReaderDataHolder().applyReviewDataFromCloud(false);
+        getReaderDataHolder().resetHandlerManager();
 
         postDocumentInitRendered();
     }
@@ -1040,14 +1069,13 @@ public class ReaderActivity extends OnyxBaseActivity {
         forwardAction.execute(getReaderDataHolder(), null);
     }
 
-    private void drawPage(final Bitmap pageBitmap) {
+    private void drawPage(final Bitmap pageBitmap, boolean renderFormField) {
         Canvas canvas = holder.lockCanvas(new Rect(surfaceView.getLeft(), surfaceView.getTop(),
                 surfaceView.getRight(), surfaceView.getBottom()));
         if (canvas == null) {
             return;
         }
         try {
-            clearFormFieldControls();
             readerPainter.drawPage(this,
                     canvas,
                     pageBitmap,
@@ -1055,20 +1083,21 @@ public class ReaderActivity extends OnyxBaseActivity {
                     getReaderDataHolder().getReaderViewInfo(),
                     getReaderDataHolder().getSelectionManager(),
                     getReaderDataHolder().getNoteManager());
-            addFormFieldControls(canvas);
+            addFormFieldControls(canvas, renderFormField);
         } finally {
             holder.unlockCanvasAndPost(canvas);
         }
     }
 
-    private void clearFormFieldControls() {
+    @Subscribe
+    public void onClearFormFieldControlsEvent(final ClearFormFieldControlsEvent event) {
         for (View view : formFieldControls) {
             mainView.removeView(view);
         }
         formFieldControls.clear();
     }
 
-    private void addFormFieldControls(Canvas canvas) {
+    private void addFormFieldControls(Canvas canvas, boolean renderFormField) {
         for (PageInfo pageInfo : getReaderDataHolder().getVisiblePages()) {
             if (getReaderDataHolder().getReaderUserDataInfo().hasFormFields(pageInfo)) {
                 List<ReaderFormField> fields = getReaderDataHolder().getReaderUserDataInfo().getFormFields(pageInfo);
@@ -1077,7 +1106,9 @@ public class ReaderActivity extends OnyxBaseActivity {
                     if (control != null) {
                         formFieldControls.add(control);
                         if (!isFormScribble(control)) {
-                            mainView.addView(control);
+                            if (renderFormField) {
+                                mainView.addView(control);
+                            }
                         } else {
                             drawScribbleRegion(canvas, control);
                         }
@@ -1087,10 +1118,13 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
     }
 
-    private void showFormMenu() {
+    private void activeFormHandler() {
+        if (!getReaderDataHolder().isDocumentOpened()) {
+            return;
+        }
         if (formFieldControls.size() > 0) {
             boolean startNoteDrawing = hasScribbleFormField();
-            if (!startNoteDrawing) {
+            if (!startNoteDrawing || getReaderDataHolder().hasDialogShowing()) {
                 getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
             }else {
                 getHandlerManager().setActiveProvider(HandlerManager.FORM_SCRIBBLE_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));

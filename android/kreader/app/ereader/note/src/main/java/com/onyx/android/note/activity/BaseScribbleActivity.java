@@ -48,6 +48,7 @@ import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -95,9 +96,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     @Override
     protected void onPause() {
         setActivityState(ActivityState.PAUSE);
-        super.onPause();
         //TODO:pause drawing when activity Pause;
         syncWithCallback(true, false, null);
+        super.onPause();
     }
 
     public ActivityState getActivityState() {
@@ -130,24 +131,19 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected void onDestroy() {
         setActivityState(ActivityState.DESTROY);
         cleanUpAllPopMenu();
-        syncWithCallback(false, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                getNoteViewHelper().quit();
-            }
-        });
+        syncWithCallback(false, false, null);
         unregisterDeviceReceiver();
         super.onDestroy();
     }
 
     @Override
     public void submitRequest(BaseNoteRequest request, BaseCallback callback) {
-        getNoteViewHelper().submit(this, request, callback);
+        getNoteViewHelper().submit(getApplicationContext(), request, callback);
     }
 
     @Override
     public void submitRequestWithIdentifier(String identifier, BaseNoteRequest request, BaseCallback callback) {
-        getNoteViewHelper().submitRequestWithIdentifier(this, identifier, request, callback);
+        getNoteViewHelper().submitRequestWithIdentifier(getApplicationContext(), identifier, request, callback);
     }
 
     @Override
@@ -170,8 +166,8 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         }
     }
 
-    protected NoteViewHelper getNoteViewHelper() {
-        return NoteApplication.getNoteViewHelper();
+    public NoteViewHelper getNoteViewHelper() {
+        return NoteApplication.getInstance().getNoteViewHelper();
     }
 
     protected void showNoteNameIllegal() {
@@ -318,7 +314,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     protected void handleDocumentEdit(final String uniqueId, final String parentId) {
         final DocumentEditAction<BaseScribbleActivity> action = new DocumentEditAction<>(uniqueId, parentId);
-        action.execute(this);
+        action.execute(this, null);
     }
 
     protected NoteViewHelper.InputCallback inputCallback() {

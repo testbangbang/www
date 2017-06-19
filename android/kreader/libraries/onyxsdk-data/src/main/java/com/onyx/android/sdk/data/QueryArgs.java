@@ -11,6 +11,7 @@ import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +23,7 @@ import static com.onyx.android.sdk.data.model.common.FetchPolicy.CLOUD_MEM_DB;
 /**
  * Created by suicheng on 2016/9/2.
  */
-public class QueryArgs {
+public class QueryArgs implements Serializable {
     private static final String TAG = QueryArgs.class.getSimpleName();
     public static int CLOUD_FETCH_LIMIT = 50;
 

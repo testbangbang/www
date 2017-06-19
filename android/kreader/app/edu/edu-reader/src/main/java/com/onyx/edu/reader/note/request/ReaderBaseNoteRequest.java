@@ -6,11 +6,13 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.edu.reader.BuildConfig;
 import com.onyx.edu.reader.note.NoteManager;
@@ -96,6 +98,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     public void setResumeRawInputProcessor(boolean resumeRawInputProcessor) {
+        Debug.d(getClass(), "setResumeRawInputProcessor:" + resumeRawInputProcessor);
         this.resumeRawInputProcessor = resumeRawInputProcessor;
     }
 
@@ -116,6 +119,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     public void beforeExecute(final NoteManager noteManager) {
         noteManager.getRequestManager().acquireWakeLock(getContext(), getClass().getSimpleName());
         if (isPauseRawInputProcessor()) {
+            Debug.d(getClass(), "raw status: pause");
             noteManager.pauseRawEventProcessor();
         }
         benchmarkStart();
@@ -164,7 +168,8 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     synchronized (parent) {
                         updateShapeDataInfo(parent);
                         if (isRender() && isTransfer()) {
-                            parent.copyBitmap();
+                            parent.copyNoteBitmap();
+                            parent.copyReviewBitmap();
                         }
                     }
                     BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
@@ -172,6 +177,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     e.printStackTrace();
                 } finally {
                     if (isResumeRawInputProcessor() && parent.isDFBForCurrentShape()) {
+                        Debug.d(getClass(), "raw status: resume");
                         parent.resumeRawEventProcessor(getContext());
                     }
                     parent.getRequestManager().releaseWakeLock();
@@ -190,35 +196,65 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     public boolean renderVisiblePages(final NoteManager parent) {
         synchronized (parent) {
-            boolean rendered = false;
-            Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
-            bitmap.eraseColor(Color.TRANSPARENT);
-            Canvas canvas = new Canvas(bitmap);
-            Paint paint = preparePaint(parent);
+            boolean renderedNoteShape = false;
+            boolean renderedReviewShape = false;
+            final Matrix noteMatrix = new Matrix();
+            final Matrix reviewMatrix = new Matrix();
+            final RenderContext noteRenderContext = updateNoteRenderContext(parent);
+            final RenderContext reviewRenderContext = updateReviewRenderContext(parent);
 
-            drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
-            final Matrix renderMatrix = new Matrix();
-            final RenderContext renderContext = parent.getRenderContext();
-            renderContext.prepareRenderingBuffer(bitmap);
+            drawBackground(noteRenderContext.canvas, noteRenderContext.paint, parent.getNoteDocument().getBackground());
+            noteRenderContext.prepareRenderingBuffer(noteRenderContext.bitmap);
 
             for (PageInfo page : getVisiblePages()) {
-                updateMatrix(renderMatrix, page);
-                renderContext.update(bitmap, canvas, paint, renderMatrix);
+                noteRenderContext.update(updateMatrix(noteMatrix, page, 1.0f));
+                reviewRenderContext.update(updateMatrix(reviewMatrix, page, 0.5f));
+
                 final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getName(), 0);
                 if (notePage != null) {
-                    notePage.render(renderContext, null);
-                    rendered = true;
+                    renderedNoteShape |= notePage.renderNoteShapes(noteRenderContext, null);
+                    renderedReviewShape |= notePage.renderReviewShapes(reviewRenderContext);
                 }
             }
-            renderContext.flushRenderingBuffer(bitmap);
-            return rendered;
+            if (renderedReviewShape) {
+                parent.updateReviewBufferBitmap(cfaReviewBitmap(reviewRenderContext.getBitmap()));
+            }
+            noteRenderContext.flushRenderingBuffer(noteRenderContext.bitmap);
+            return renderedNoteShape || renderedReviewShape;
         }
     }
 
-    private void updateMatrix(final Matrix matrix, final PageInfo pageInfo) {
+    private RenderContext updateReviewRenderContext(NoteManager noteManager) {
+        RenderContext renderContext = noteManager.getReviewRenderContext();
+        Bitmap bitmap = noteManager.createReviewBufferBitmap(getViewportSize());
+        bitmap.eraseColor(Color.TRANSPARENT);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = preparePaint(noteManager);
+        renderContext.update(bitmap, canvas, paint);
+        return renderContext;
+    }
+
+    private RenderContext updateNoteRenderContext(NoteManager noteManager) {
+        RenderContext renderContext = noteManager.getNoteRenderContext();
+        Bitmap bitmap = noteManager.updateRenderBitmap(getViewportSize());
+        bitmap.eraseColor(Color.TRANSPARENT);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = preparePaint(noteManager);
+        renderContext.update(bitmap, canvas, paint);
+        return renderContext;
+    }
+
+    private Bitmap cfaReviewBitmap(Bitmap origin) {
+        final Bitmap result = Bitmap.createBitmap(getViewportSize().width(), getViewportSize().height(), Bitmap.Config.ARGB_8888);
+        ImageUtils.toRgbwBitmap(result, origin, 0);
+        return result;
+    }
+
+    private Matrix updateMatrix(final Matrix matrix, final PageInfo pageInfo, float scale) {
         matrix.reset();
-        matrix.postScale(pageInfo.getActualScale(), pageInfo.getActualScale());
+        matrix.postScale(pageInfo.getActualScale() * scale, pageInfo.getActualScale() * scale);
         matrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
+        return matrix;
     }
 
     private Paint preparePaint(final NoteManager parent) {

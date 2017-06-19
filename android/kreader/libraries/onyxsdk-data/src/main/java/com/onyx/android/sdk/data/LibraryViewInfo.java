@@ -12,6 +12,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ import java.util.Map;
 /**
  * Created by suicheng on 2017/4/23.
  */
-public class LibraryViewInfo {
+public class LibraryViewInfo implements Serializable {
     private int queryLimit = 9;
     private QueryArgs queryArgs;
     private QueryPagination queryPagination = QueryPagination.create(3, 3);

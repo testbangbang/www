@@ -12,6 +12,7 @@ import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormRadioButton;
 import com.onyx.android.sdk.reader.api.ReaderFormRadioGroup;
+import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -346,6 +347,18 @@ public class ReaderUserDataInfo {
 
     public boolean hasFormFields(final PageInfo pageInfo) {
         return formFieldMap.containsKey(pageInfo.getName());
+    }
+
+    public boolean hasScribbleFormFields(final PageInfo pageInfo) {
+        if (hasFormFields(pageInfo)) {
+            List<ReaderFormField> formFields = formFieldMap.get(pageInfo.getName());
+            for (ReaderFormField formField : formFields) {
+                if (formField instanceof ReaderFormScribble) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public List<ReaderFormField> getFormFields(final PageInfo pageInfo) {

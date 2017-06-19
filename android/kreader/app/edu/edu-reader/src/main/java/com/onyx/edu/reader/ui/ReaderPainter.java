@@ -197,6 +197,9 @@ public class ReaderPainter {
         if (!SingletonSharedPreference.isShowBookmark(context)) {
             return;
         }
+        if (hasFormField(userDataInfo, viewInfo)) {
+            return;
+        }
         Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(context, hasBookmark(userDataInfo, viewInfo));
         final Point point = BookmarkIconFactory.bookmarkPosition(canvas.getWidth(), bitmap);
         float left = AppCompatUtils.calculateEvenDigital(point.x);
@@ -282,6 +285,9 @@ public class ReaderPainter {
         }
         final Bitmap bitmap = noteManager.getViewBitmap();
         canvas.drawBitmap(bitmap, 0, 0, paint);
+
+        final Bitmap review = noteManager.getReviewBitmap();
+        canvas.drawBitmap(review, 0, 0, paint);
     }
 
     private void drawStashShapes(final Context context,
@@ -328,6 +334,15 @@ public class ReaderPainter {
     private boolean hasBookmark(final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
         for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
             if (userDataInfo.hasBookmark(pageInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasFormField(final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
+        for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
+            if (userDataInfo.hasFormFields(pageInfo)) {
                 return true;
             }
         }

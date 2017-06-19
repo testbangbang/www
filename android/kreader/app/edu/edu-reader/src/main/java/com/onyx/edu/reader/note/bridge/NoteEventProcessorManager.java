@@ -109,6 +109,10 @@ public class NoteEventProcessorManager {
         return screenMatrix;
     }
 
+    public boolean inScribbleRect(TouchPoint point) {
+        return getTouchEventProcessor().inScribbleRect(point);
+    }
+
     private Matrix getScreenToViewMatrix(final DeviceConfig noteConfig, final MappingConfig mappingConfig, int orientation) {
         if (!noteConfig.useRawInput()) {
             return null;

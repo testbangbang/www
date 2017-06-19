@@ -66,4 +66,7 @@ dependencies {
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile 'de.halfbit:tinymachine:1.1.+'
     compile "com.android.support:multidex:$multidexVersion"
+
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
 }

@@ -4,6 +4,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
 import com.onyx.edu.reader.note.actions.StopNoteActionChain;
@@ -89,7 +90,7 @@ public class ScribbleHandler extends BaseHandler {
         if (inSelection(readerDataHolder)) {
             return super.onSingleTapUp(readerDataHolder, e);
         }
-        return false;
+        return readerDataHolder.getNoteManager().inScribbleRect(TouchPoint.create(e));
     }
 
     public boolean onScaleEnd(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {

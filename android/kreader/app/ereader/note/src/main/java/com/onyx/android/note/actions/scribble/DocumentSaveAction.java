@@ -17,6 +17,7 @@ public class DocumentSaveAction<T extends BaseScribbleActivity> extends BaseNote
     private volatile String documentUniqueId;
     private volatile boolean close;
 
+
     public DocumentSaveAction(final String uniqueId, final String t, boolean c) {
         title = t;
         documentUniqueId = uniqueId;
@@ -32,9 +33,10 @@ public class DocumentSaveAction<T extends BaseScribbleActivity> extends BaseNote
             public void done(BaseRequest request, Throwable e) {
                 dismissLoadingDialog();
                 if (close) {
+                    activity.getNoteViewHelper().quit();
                     activity.finish();
                 }
-                callback.invoke(callback, saveRequest, e);
+                BaseCallback.invoke(callback, saveRequest, e);
             }
         });
     }

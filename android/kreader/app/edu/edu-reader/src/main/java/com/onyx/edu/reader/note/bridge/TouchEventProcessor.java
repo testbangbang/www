@@ -117,6 +117,10 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
         return true;
     }
 
+    public boolean inScribbleRect(final TouchPoint touchPoint) {
+        return inLimitRect(touchPoint.x, touchPoint.y) && !inExcludeRect(touchPoint.x, touchPoint.y);
+    }
+
     private void onErasingTouchDown(final MotionEvent motionEvent) {
         eraserPoint = new TouchPoint(motionEvent);
         historyErasingPoints = new TouchPointList();

@@ -46,6 +46,7 @@ public class BaseNoteRequest extends BaseRequest {
     private volatile boolean render = true;
     private int [] renderingBuffer = null;
     private boolean useExternal = false;
+    private String identifier;
 
     public boolean isResumeInputProcessor() {
         return resumeInputProcessor;
@@ -359,5 +360,13 @@ public class BaseNoteRequest extends BaseRequest {
 
     public final NoteDrawingArgs getDrawingArgs() {
         return getShapeDataInfo().getDrawingArgs();
+    }
+
+    public void setIdentifier(final String id) {
+        identifier = id;
+    }
+
+    public String getIdentifier() {
+        return identifier;
     }
 }

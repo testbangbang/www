@@ -59,12 +59,24 @@ public class ReaderNoteDataProvider {
         return list;
     }
 
+    public static List<ReaderNoteShapeModel> loadShapeList(final Context context,
+                                                           final String documentUniqueId,
+                                                           final String pageUniqueId) {
+        return loadShapeList(context, documentUniqueId, pageUniqueId, null);
+    }
+
     public static ReaderFormShapeModel loadFormShape(final Context context,
                                                            final String documentUniqueId,
                                                            final String formId) {
         Select select = new Select();
         Where where = select.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ReaderFormShapeModel_Table.formId.eq(formId));
         return (ReaderFormShapeModel) where.querySingle();
+    }
+
+    public static List<ReaderFormShapeModel> loadFormShapeList(final Context context,
+                                                               final String documentUniqueId,
+                                                               final String pageUniqueId) {
+        return loadFormShapeList(context, documentUniqueId, pageUniqueId, null);
     }
 
     public static List<ReaderFormShapeModel> loadFormShapeList(final Context context,
@@ -91,6 +103,13 @@ public class ReaderNoteDataProvider {
         return list;
     }
 
+    public static boolean hasFormShape(final Context context,
+                                       final String shapeUniqueId) {
+        Select select = new Select();
+        Where where = select.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.shapeUniqueId.eq(shapeUniqueId));
+        return where.queryList().size() > 0;
+    }
+
     public static boolean hasUnLockFormShapes(final Context context,
                                               final String documentUniqueId,
                                               final boolean review) {
@@ -99,7 +118,7 @@ public class ReaderNoteDataProvider {
                 where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId)).
                 and(ReaderFormShapeModel_Table.lock.eq(false)).
                 and(ReaderFormShapeModel_Table.review.eq(review));
-        return where.hasData();
+        return where.queryList().size() > 0;
     }
 
     public static List<ReaderNoteShapeModel> loadShapeList(final Context context,

@@ -108,4 +108,8 @@
 
     <string name="account_un_login">Not logged in</string>
 
+    <string name="cloud_content_import_loading">Importing preLoaded book&#8230;</string>
+    <string name="cloud_content_import_success">Import successful</string>
+    <string name="cloud_content_import_failed">Import failed</string>
+
 </resources>
