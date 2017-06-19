@@ -400,7 +400,9 @@ FX_BOOL PDF_DataDecode(const uint8_t* src_buf,
         decoder = "DCTDecode";
       } else if (decoder == "CCF") {
         decoder = "CCITTFaxDecode";
-      }
+      }else if(decoder == JDPDFENCRYPTBY360BUY_KEY){
+		   continue;
+	    }
       ImageEncoding = decoder;
       pImageParms = pParam;
       dest_buf = (uint8_t*)last_buf;

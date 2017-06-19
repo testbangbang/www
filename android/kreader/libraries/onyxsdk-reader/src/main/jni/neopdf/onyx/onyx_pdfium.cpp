@@ -10,6 +10,7 @@
 
 #include "core/fpdfapi/fpdf_page/include/cpdf_pageobject.h"
 #include "fpdf_edit.h"
+#include "libjdrebr/DRM_API/DRMLib.h"
 
 #include <memory>
 #include <cstdlib>
@@ -116,6 +117,8 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     FPDFDOC_ExitFormFillEnvironment(formHandle);
 
     FPDF_CloseDocument(document);
+
+    destroyData();
     return true;
 }
 
@@ -705,3 +708,20 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     return true;
 }
 
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetDecryptInfo
+  (JNIEnv *env, jobject thiz, jint id, jstring jbookKey, jint jbookKeyLen, jstring juuid, jstring jrand){
+   const char *bookKey = NULL;
+   const char *uuid = NULL;
+   const char *rand = NULL;
+
+   JNIString bookKeyString(env, jbookKey);
+   bookKey = bookKeyString.getLocalString();
+
+   JNIString uuidString(env, juuid);
+   uuid = uuidString.getLocalString();
+
+   JNIString randString(env, jrand);
+   rand = randString.getLocalString();
+
+   setDecryptInfo(bookKey,jbookKeyLen,uuid,rand);
+}
