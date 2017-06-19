@@ -296,7 +296,7 @@ public class CloudDataProvider implements DataProviderBase {
     public void addLibrary(Library library) {
         Library findLibrary = loadLibrary(library.getIdString());
         if (findLibrary != null) {
-            library.setId(library.getId());
+            library.setId(findLibrary.getId());
         }
         library.save();
     }

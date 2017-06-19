@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
@@ -115,13 +116,14 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
     }
 
     private boolean loadFromDatabase(final CloudManager cloudManager) {
-        if (!StringUtils.isUrl(coverUrl)) {
-            String path = loadThumbnailFilePathFromDatabase(getContext(), cloudManager.getCloudDataProvider(), associationId, thumbnailKind);
-            File file = new File(path);
-            if (file.exists() && loadRefBitmap(file)) {
-                saveToMemoryCache(cloudManager);
-                return true;
-            }
+        String path = loadThumbnailFilePathFromDatabase(getContext(), cloudManager.getCloudDataProvider(), associationId, thumbnailKind);
+        if (StringUtils.isNullOrEmpty(path) || !FileUtils.fileExist(path)) {
+            return false;
+        }
+        File file = new File(path);
+        if (file.exists() && loadRefBitmap(file)) {
+            saveToMemoryCache(cloudManager);
+            return true;
         }
         return false;
     }
