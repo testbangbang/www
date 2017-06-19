@@ -38,7 +38,7 @@ import java.util.UUID;
  */
 public class ThumbnailUtils {
     public static final String thumbnail_folder = ".thumbnails";
-    public static final String preferred_extension = ".jpg";
+    public static final String preferred_extension = "png";
 
     static private Map<String, Integer> defaultThumbnailMap = new HashMap<>();
 
@@ -106,9 +106,13 @@ public class ThumbnailUtils {
     }
 
     public static String getThumbnailFile(Context context, String sourceMD5, String thumbnailKind) {
-        String thumbnail_file = EnvironmentUtil.getExternalStorageAppCacheDirectory(context.getPackageName()) +
-                File.separator + thumbnail_folder + File.separator + sourceMD5 + "." + thumbnailKind + preferred_extension;
-        return thumbnail_file;
+        return getThumbnailFile(context, sourceMD5, thumbnailKind, preferred_extension);
+    }
+
+    public static String getThumbnailFile(Context context, String sourceMD5, String thumbnailKind, String extension) {
+        return EnvironmentUtil.getExternalStorageAppCacheDirectory(context.getPackageName()) +
+                File.separator + thumbnail_folder + File.separator + sourceMD5 + "." + thumbnailKind +
+                "." + extension;
     }
 
     public static Bitmap getThumbnailBitmap(Context context, String sourceMD5, String thumbnailKind) {
@@ -160,11 +164,17 @@ public class ThumbnailUtils {
 
     public static boolean insertThumbnail(Context context, DataProviderBase dataProviderBase, String filePath,
                                           String associationId, ThumbnailKind kind, Bitmap bitmap) {
+        return insertThumbnail(context, dataProviderBase, filePath, ThumbnailUtils.getThumbnailFile(context, associationId, kind.toString()),
+                associationId, kind, bitmap);
+    }
+
+    public static boolean insertThumbnail(Context context, DataProviderBase dataProviderBase, String bookFilePath,
+                                          String thumbnailFilePath, String associationId, ThumbnailKind kind, Bitmap bitmap) {
         Thumbnail thumbnail = new Thumbnail();
         thumbnail.setThumbnailKind(kind);
-        thumbnail.setOriginContentPath(filePath);
+        thumbnail.setOriginContentPath(bookFilePath);
         thumbnail.setIdString(associationId);
-        thumbnail.setImageDataPath(ThumbnailUtils.getThumbnailFile(context, associationId, kind.toString()));
+        thumbnail.setImageDataPath(thumbnailFilePath);
         dataProviderBase.saveThumbnailEntry(context, thumbnail);
         return insertThumbnailBitmap(thumbnail, bitmap);
     }
@@ -273,6 +283,7 @@ public class ThumbnailUtils {
             return Fresco.getImagePipelineFactory().getPlatformDecoder().decodeFromEncodedImage(image,
                     config);
         } finally {
+            FileUtils.closeQuietly(inputStream);
             FileUtils.closeQuietly(image);
             FileUtils.closeQuietly(pooledByteBuffer);
         }

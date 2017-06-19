@@ -51,6 +51,7 @@
             <intent-filter>
                 <action android:name="com.onyx.content.database.ACTION_BUILD_LIBRARY"/>
                 <action android:name="com.onyx.content.database.ACTION_ADD_TO_LIBRARY"/>
+                <action android:name="com.onyx.content.database.ACTION_ADD_JSON_CLOUD_METADATA" />
             </intent-filter>
         </receiver>
 
