@@ -42,7 +42,6 @@ import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
@@ -77,8 +76,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onPostResume() {
+        super.onPostResume();
         updateColorIndicator();
     }
 

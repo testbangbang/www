@@ -119,8 +119,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onPostResume() {
+        super.onPostResume();
         wakeLockHolder.acquireWakeLock(this, TAG);
         DeviceUtils.setFullScreenOnResume(this, true);
         if (AppCompatUtils.isColorDevice(this)){
