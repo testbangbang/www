@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -85,15 +86,17 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     @Override
     protected void onResume() {
         setActivityState(ActivityState.RESUME);
+        initSurfaceView();
         super.onResume();
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        initSurfaceView();
         //TODO:resume status when activity Resume;
-        syncWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
+        if (!isSurfaceViewFirstCreated) {
+            syncWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
+        }
     }
 
     @Override
