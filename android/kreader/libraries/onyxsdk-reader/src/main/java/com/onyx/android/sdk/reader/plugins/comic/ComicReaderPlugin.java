@@ -4,9 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 
-import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.plugins.images.ImagesWrapper;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.reader.api.*;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.data.ReaderTextStyle;
@@ -25,6 +24,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
         ReaderSearchManager,
         ReaderTextStyleManager,
         ReaderDrmManager,
+        ReaderFormManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
@@ -124,11 +124,6 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    @Override
-    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
-        return false;
-    }
-
     /**
      * Get corresponding view.
      *
@@ -138,6 +133,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
     @Override
     public ReaderView getView(ReaderViewOptions viewOptions) {
         return this;
+    }
+
+    @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
     }
 
     @Override
@@ -158,39 +158,8 @@ public class ComicReaderPlugin implements ReaderPlugin,
         
     }
 
-    /**
-     * Check if drm manager accept the file or not.
-     *
-     * @param path
-     * @return
-     */
     @Override
-    public boolean acceptDRMFile(String path) {
-        return false;
-    }
-
-    @Override
-    public boolean registerDRMCallback(ReaderDRMCallback callback) {
-        return false;
-    }
-
-    @Override
-    public boolean activateDeviceDRM(String user, String password) {
-        return false;
-    }
-
-    @Override
-    public boolean deactivateDeviceDRM() {
-        return false;
-    }
-
-    @Override
-    public String getDeviceDRMAccount() {
-        return null;
-    }
-
-    @Override
-    public boolean fulfillDRMFile(String path) {
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
         return false;
     }
 
@@ -203,6 +172,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
      */
     @Override
     public ReaderSelection selectWordOnScreen(ReaderHitTestArgs hitTest, ReaderTextSplitter splitter) {
+        return null;
+    }
+
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
         return null;
     }
 
@@ -496,35 +470,38 @@ public class ComicReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public void setTextGamma(float gamma) {
+
+    }
+
     /**
      * draw content. There are two coordinates system.
      * host coordinates system, the viewportInPage is specified in host coordinates system
      * the bitmapx, bitmapy, width and height can be regarded as viewportInPage coordinates system, whereas viewportInPage is the
      * origin point(0, 0)
-     *
-     * @param pagePosition        the page position.
+     *  @param pagePosition        the page position.
      * @param scale       the actual scale used to render page.
      * @param rotation    the rotation.
-     * @param bitmap      the target bitmap to draw content. Caller may use this method to draw part of content.
      * @param displayRect the display rect in screen coordinate system.
      * @param pageRect    the page rect in doc coordinate system.
      * @param visibleRect the visible rect in doc coordinate system.
-     *                    <p/>
-     *                    bitmap  matrix
-     *                    (viewportX, viewportY)
-     *                    |--------------|
-     *                    |              |
-     *                    | (x,y)        |
-     *                    |  |------|    |
-     *                    |  |      |    |
-     *                    |  |      |    |
-     *                    |  |------|    |
-     *                    |        (w,h) |
-     *                    |--------------|
-     * @return
-     */
+*                    <p/>
+*                    bitmap  matrix
+*                    (viewportX, viewportY)
+*                    |--------------|
+*                    |              |
+*                    | (x,y)        |
+*                    |  |------|    |
+*                    |  |      |    |
+*                    |  |      |    |
+*                    |  |------|    |
+*                    |        (w,h) |
+*                    |--------------|
+     * @param bitmap      the target bitmap to draw content. Caller may use this method to draw part of content.     @return
+     * */
     @Override
-    public boolean draw(String pagePosition, float scale, int rotation, Bitmap bitmap, RectF displayRect, RectF pageRect, RectF visibleRect) {
+    public boolean draw(String pagePosition, float scale, int rotation, RectF displayRect, RectF pageRect, RectF visibleRect, Bitmap bitmap) {
         final int pn = PagePositionUtils.getPageNumber(pagePosition);
         return getPluginImpl().drawPage(pn, scale, rotation, displayRect, pageRect, visibleRect, bitmap);
     }
@@ -546,6 +523,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
      */
     @Override
     public boolean supportFontSizeAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
         return false;
     }
 
@@ -646,5 +628,19 @@ public class ComicReaderPlugin implements ReaderPlugin,
     @Override
     public ReaderSearchManager getSearchManager() {
         return this;
+    }
+
+    @Override
+    public ReaderFormManager getFormManager() {
+        return this;
+    }
+
+    public boolean isCustomFormEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean loadFormFields(int page, List<ReaderFormField> fields) {
+        return false;
     }
 }

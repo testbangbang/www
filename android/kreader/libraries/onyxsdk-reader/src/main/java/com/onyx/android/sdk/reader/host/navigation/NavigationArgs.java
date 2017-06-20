@@ -2,7 +2,7 @@ package com.onyx.android.sdk.reader.host.navigation;
 
 import android.graphics.RectF;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.onyx.android.cropimage.data.PointMatrix;
+import com.onyx.android.sdk.data.ReaderPointMatrix;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class NavigationArgs {
         this.autoCropForEachBlock = autoCropForEachBlock;
     }
 
-    public NavigationList rowsLeftToRight(final Type t, PointMatrix pointMatrix, final RectF limit) {
+    public NavigationList rowsLeftToRight(final Type t, ReaderPointMatrix pointMatrix, final RectF limit) {
         NavigationList list = NavigationList.rowsLeftToRight(pointMatrix, limit);
         type = t;
         map.put(type, list);
@@ -43,7 +43,7 @@ public class NavigationArgs {
         return list;
     }
 
-    public NavigationList rowsRightToLeft(final Type t, PointMatrix pointMatrix, final RectF limit) {
+    public NavigationList rowsRightToLeft(final Type t, ReaderPointMatrix pointMatrix, final RectF limit) {
         NavigationList list = NavigationList.rowsRightToLeft(pointMatrix, limit);
         type = t;
         map.put(type, list);
@@ -57,7 +57,7 @@ public class NavigationArgs {
         return list;
     }
 
-    public NavigationList columnsLeftToRight(final Type t, PointMatrix pointMatrix, final RectF limit) {
+    public NavigationList columnsLeftToRight(final Type t, ReaderPointMatrix pointMatrix, final RectF limit) {
         NavigationList list = NavigationList.columnsLeftToRight(pointMatrix, limit);
         type = t;
         map.put(type, list);
@@ -71,7 +71,7 @@ public class NavigationArgs {
         return list;
     }
 
-    public NavigationList columnsRightToLeft(final Type t, PointMatrix pointMatrix, final RectF limit) {
+    public NavigationList columnsRightToLeft(final Type t, ReaderPointMatrix pointMatrix, final RectF limit) {
         NavigationList list = NavigationList.columnsRightToLeft(pointMatrix, limit);
         type = t;
         map.put(type, list);

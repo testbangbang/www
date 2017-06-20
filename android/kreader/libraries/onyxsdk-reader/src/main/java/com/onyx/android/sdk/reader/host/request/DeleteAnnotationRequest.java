@@ -18,7 +18,7 @@ public class DeleteAnnotationRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        DataProviderManager.getDataProvider().deleteAnnotation(annotation);
+        DataProviderManager.getLocalDataProvider().deleteAnnotation(annotation);
         LayoutProviderUtils.updateReaderViewInfo(reader, createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 }

@@ -3,6 +3,7 @@ package com.onyx.android.sdk.reader.plugins.images;
 import android.graphics.*;
 import android.util.Log;
 
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 
@@ -23,40 +24,24 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
         int pageWidth = (int)(positionRect.width() / scale);
         int pageHeight = (int)(positionRect.height() / scale);
 
+        ReaderBitmapReferenceImpl srcImage = null;
+        ReaderBitmapReferenceImpl subImage = null;
         try {
+            srcImage = ReaderBitmapReferenceImpl.decodeStream(stream, ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
+
             Rect bitmapRegion = new Rect((int) (visibleRect.left / scale), (int) (visibleRect.top / scale),
                     (int) (visibleRect.right / scale), (int) (visibleRect.bottom / scale));
+            subImage = createSubImage(srcImage.getBitmap(), bitmapRegion);
 
-            Bitmap src;
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inDither = false;
-            options.inPreferQualityOverSpeed = true;
-            options.inMutable = true; // set mutable to be true, so we can always get a copy of the bitmap with Bitmap.createBitmap()
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            // not using BitmapRegionDecoder because it only supports JPEG and PNG
-            Bitmap bmp = BitmapFactory.decodeStream(stream, null, options);
-            if (bmp == null) {
-                return false;
-            }
-            try {
-                src = Bitmap.createBitmap(bmp, bitmapRegion.left, bitmapRegion.top,
-                        bitmapRegion.width(), bitmapRegion.height());
-            } finally {
-                bmp.recycle();
-            }
-            if (src == null) {
-                return false;
-            }
-            try {
-                renderToBitmap(src, bitmap, bitmapRegion, pageWidth, pageHeight,
-                        (int) displayRect.left, (int) displayRect.top,
-                        (int) displayRect.width(), (int) displayRect.height());
-            } finally {
-                src.recycle();
-            }
+            renderToBitmap(subImage.getBitmap(), bitmap, bitmapRegion, pageWidth, pageHeight,
+                    (int) displayRect.left, (int) displayRect.top,
+                    (int) displayRect.width(), (int) displayRect.height());
             return true;
         } catch (Throwable tr) {
             Log.w(TAG, tr);
+        } finally {
+            FileUtils.closeQuietly(srcImage);
+            FileUtils.closeQuietly(subImage);
         }
 
         return false;
@@ -113,6 +98,17 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
         int regionOffsetY = (int)(viewportRegion.top * scaleY) + y;
         matrix.postTranslate(regionOffsetX, regionOffsetY);
         return matrix;
+    }
+
+    private static ReaderBitmapReferenceImpl createSubImage(Bitmap src, Rect region) {
+        ReaderBitmapReferenceImpl subImage = ReaderBitmapReferenceImpl.create(region.width(), region.height(),
+                ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
+        Canvas canvas = new Canvas(subImage.getBitmap());
+        canvas.drawBitmap(src,
+                region,
+                new Rect(0, 0, region.width(), region.height()),
+                new Paint(Paint.FILTER_BITMAP_FLAG));
+        return subImage;
     }
 
     private static void renderToBitmap(Bitmap viewportBitmap, Bitmap dst, Rect viewportRegion, int docWidth, int docHeight, int x, int y, int width, int height) {

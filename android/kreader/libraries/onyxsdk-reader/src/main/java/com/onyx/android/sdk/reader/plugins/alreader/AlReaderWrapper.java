@@ -44,7 +44,7 @@ import com.onyx.android.sdk.reader.api.ReaderTextSplitter;
 import com.onyx.android.sdk.reader.host.impl.ReaderSelectionImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
-import com.onyx.android.sdk.reader.utils.RectUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 
 import java.io.File;
 import java.util.ArrayList;

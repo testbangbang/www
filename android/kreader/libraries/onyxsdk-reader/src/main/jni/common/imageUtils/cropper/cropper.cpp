@@ -685,7 +685,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_emb
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_gammaCorrection
-  (JNIEnv *env, jclass thiz, jobject bitmap, jfloat gamma) {
+  (JNIEnv *env, jclass thiz, jobject bitmap, jfloat gamma, jfloatArray regions) {
     AndroidBitmapInfo info;
     void *pixels;
     int ret;
@@ -708,9 +708,28 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_gam
     imgfilter::ImageGammaFilter filter;
     filter.setGamma(gamma);
 
-    if (!filter.doFilterInPlace((AndroidBitmapFormat)info.format, (unsigned char *)pixels, info.width, info.height)) {
-        LOGE("set contrast failed");
+    int length = 0;
+    if (regions != NULL) {
+        length = env->GetArrayLength(regions);
+    }
+    if (regions == NULL || length <= 0) {
+        return true;
+        //return filter.doFilterInPlace((AndroidBitmapFormat)info.format, (unsigned char *)pixels, info.width, info.height);
+    }
+
+    jboolean isCopy = false;
+    jfloat * temp = env->GetFloatArrayElements(regions, &isCopy);
+    if (temp == NULL) {
         return false;
+    }
+    for(int i = 0; i < length / 4; ++i) {
+        filter.doRegionFilterInPlace((AndroidBitmapFormat)info.format,
+                (unsigned char *)pixels,
+                temp[i * 4],
+                temp[i * 4 + 1],
+                temp[i * 4 + 2],
+                temp[i * 4 + 3],
+                info.stride);
     }
     return true;
 }

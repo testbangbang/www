@@ -21,7 +21,7 @@ public class AddBookmarkRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        DataProviderManager.getDataProvider().addBookmark(createBookmark(reader));
+        DataProviderManager.getLocalDataProvider().addBookmark(createBookmark(reader));
         LayoutProviderUtils.updateReaderViewInfo(reader, createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 

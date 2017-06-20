@@ -2,10 +2,8 @@ package com.onyx.android.sdk.reader.api;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import com.onyx.android.sdk.data.model.Annotation;
-import com.onyx.android.sdk.scribble.shape.Shape;
 
-import java.util.List;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 
 /**
  * Created by zhuzeng on 10/2/15.
@@ -52,14 +50,19 @@ public interface ReaderDocument {
      */
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc);
 
-    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles);
-
     /**
      * Get corresponding view.
      * @param viewOptions The view options.
      * @return The created view. null if failed.
      */
     public ReaderView getView(final ReaderViewOptions viewOptions);
+
+    /**
+     * read built-in options from document
+     * @return false if not exists
+     * @param options
+     */
+    public boolean readBuiltinOptions(BaseOptions options);
 
     public boolean saveOptions();
 

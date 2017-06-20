@@ -8,7 +8,8 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
-import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
+import com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
@@ -23,7 +24,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private static final String TAG = BaseReaderRequest.class.getSimpleName();
     private volatile boolean saveOptions = false;
 
-    private ReaderBitmapImpl renderBitmap;
+    private ReaderBitmapReferenceImpl renderBitmap;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
     private volatile boolean transferBitmap = true;
@@ -31,6 +32,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private boolean loadBookmark = true;
     private boolean loadPageLinks = true;
     private boolean loadPageImages = true;
+    private boolean loadFormFields = true;
 
     public BaseReaderRequest() {
         super();
@@ -52,7 +54,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         return saveOptions;
     }
 
-    public ReaderBitmapImpl getRenderBitmap() {
+    public ReaderBitmapReferenceImpl getRenderBitmap() {
         return renderBitmap;
     }
 
@@ -102,6 +104,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
         } catch (Throwable tr) {
             Log.w(getClass().getSimpleName(), tr);
         } finally {
+            beforeDone(reader);
             transferBitmapToViewport(reader);
         }
     }
@@ -119,8 +122,26 @@ public abstract class BaseReaderRequest extends BaseRequest {
         }
     }
 
+    private void beforeDone(final Reader reader) {
+        try {
+            final Runnable beforeDoneRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    BaseCallback.invokeBeforeDone(getCallback(), BaseReaderRequest.this, getException());
+                }
+            };
+            if (isRunInBackground()) {
+                reader.getLooperHandler().post(beforeDoneRunnable);
+            } else {
+                beforeDoneRunnable.run();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void transferBitmapToViewport(final Reader reader) {
-        final Runnable runnable = new Runnable() {
+        final Runnable doneRunnable = new Runnable() {
             @Override
             public void run() {
                 if (isTransferBitmap() && getRenderBitmap() != null) {
@@ -132,9 +153,9 @@ public abstract class BaseReaderRequest extends BaseRequest {
         };
 
         if (isRunInBackground()) {
-            reader.getLooperHandler().post(runnable);
+            reader.getLooperHandler().post(doneRunnable);
         } else {
-            runnable.run();
+            doneRunnable.run();
         }
         if (getRenderBitmap() != null && !isTransferBitmap()) {
             reader.returnBitmapToCache(getRenderBitmap());
@@ -160,18 +181,18 @@ public abstract class BaseReaderRequest extends BaseRequest {
     public void saveReaderOptions(final Reader reader) {
         if (reader.getDocument().saveOptions()) {
             reader.saveOptions();
-            saveToDocumentOptionsProvider(reader);
+            saveToDocumentOptionsToLocalProvider(reader);
         }
         saveToLegacyDataProvider(reader);
     }
 
-    private void saveToDocumentOptionsProvider(final Reader reader) {
-        DataProviderManager.getDataProvider().saveDocumentOptions(getContext(),
+    private void saveToDocumentOptionsToLocalProvider(final Reader reader) {
+        DataProviderManager.getLocalDataProvider().saveDocumentOptions(getContext(),
                 reader.getDocumentPath(),
                 reader.getDocumentMd5(),
                 reader.getDocumentOptions().toJSONString());
     }
-
+    
     private void saveToLegacyDataProvider(final Reader reader) {
         try {
             if (reader.getNavigator() != null) {
@@ -180,6 +201,8 @@ public abstract class BaseReaderRequest extends BaseRequest {
                         reader.getNavigator().getInitPosition());
                 int totalPage = reader.getNavigator().getTotalPage();
                 LegacySdkDataUtils.updateProgress(getContext(), reader.getDocumentPath(),
+                        currentPage, totalPage);
+                ContentSdKDataUtils.updateProgress(getContext(), reader.getDocumentPath(),
                         currentPage, totalPage);
             }
         } catch (Throwable tr) {
@@ -202,13 +225,16 @@ public abstract class BaseReaderRequest extends BaseRequest {
             }
         }
         if (readerViewInfo != null && loadBookmark) {
-            getReaderUserDataInfo().loadBookmarks(getContext(), reader, readerViewInfo.getVisiblePages());
+            getReaderUserDataInfo().loadPageBookmarks(getContext(), reader, readerViewInfo.getVisiblePages());
         }
         if (readerViewInfo != null && loadPageLinks) {
             getReaderUserDataInfo().loadPageLinks(getContext(), reader, readerViewInfo.getVisiblePages());
         }
         if (readerViewInfo != null && loadPageImages) {
             getReaderUserDataInfo().loadPageImages(getContext(), reader, readerViewInfo.getVisiblePages());
+        }
+        if (readerViewInfo != null && loadFormFields && reader.getReaderHelper().getFormManager().isCustomFormEnabled()) {
+            getReaderUserDataInfo().loadFormFields(getContext(), reader, readerViewInfo.getVisiblePages());
         }
     }
 
