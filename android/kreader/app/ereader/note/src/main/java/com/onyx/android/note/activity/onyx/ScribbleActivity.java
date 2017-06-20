@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -83,6 +84,7 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
@@ -117,8 +119,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onPostResume() {
+        super.onPostResume();
         wakeLockHolder.acquireWakeLock(this, TAG);
         DeviceUtils.setFullScreenOnResume(this, true);
         if (AppCompatUtils.isColorDevice(this)){
@@ -130,9 +132,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
     protected void onPause() {
         super.onPause();
         wakeLockHolder.releaseWakeLock();
-        if (AppCompatUtils.isColorDevice(this)){
-            Device.currentDevice().postInvalidate(getWindow().getDecorView(), UpdateMode.GC);
-        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     private void checkPictureEditMode() {
@@ -510,14 +514,14 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void valueChange(int newValue) {
                 int logicalIndex = newValue - 1;
-                GotoTargetPageAction<ScribbleActivity> action = new GotoTargetPageAction<>(logicalIndex);
+                GotoTargetPageAction<ScribbleActivity> action = new GotoTargetPageAction<>(logicalIndex, false);
                 action.execute(ScribbleActivity.this);
             }
 
             @Override
             public void done(boolean isValueChange, int newValue) {
                 GotoTargetPageAction<ScribbleActivity> action =
-                        new GotoTargetPageAction<>(isValueChange ? newValue : originalVisualPageIndex -1);
+                        new GotoTargetPageAction<>(isValueChange ? newValue : originalVisualPageIndex -1,true);
                 action.execute(ScribbleActivity.this);
                 syncWithCallback(true, true, new BaseCallback() {
                     @Override
@@ -544,7 +548,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         shapeDataInfo.getCurrentPageIndex()).execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        new GotoTargetPageAction<ScribbleActivity>(shapeDataInfo.getCurrentPageIndex()).execute(ScribbleActivity.this);
+                        new GotoTargetPageAction<ScribbleActivity>(shapeDataInfo.getCurrentPageIndex(),true).execute(ScribbleActivity.this);
                     }
                 });
             }

@@ -97,4 +97,8 @@ public class TouchPoint implements Serializable {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+
+    public static TouchPoint create(final MotionEvent motionEvent) {
+        return new TouchPoint(motionEvent);
+    }
 }

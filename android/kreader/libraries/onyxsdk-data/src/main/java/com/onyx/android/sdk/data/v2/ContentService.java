@@ -29,10 +29,10 @@ public interface ContentService {
     Call<AuthToken> getAccountToken(@Body final BaseAuthAccount account);
 
     @GET("users/me")
-    Call<ResponseBody> getAccount(@Header(Constant.HEADER_AUTHORIZATION) final String auth);
+    Call<ResponseBody> getAccount();
 
     @GET("librarys/my")
-    Call<List<CloudLibrary>> loadLibraryList(@Header(Constant.HEADER_AUTHORIZATION) final String token);
+    Call<List<CloudLibrary>> loadLibraryList();
 
     @GET("librarys/books")
     Call<ProductResult<CloudMetadata>> loadBookList(@Query(Constant.WHERE_TAG) final String param);

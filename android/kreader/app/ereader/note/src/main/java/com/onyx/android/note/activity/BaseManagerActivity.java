@@ -81,7 +81,7 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
     }
 
     protected NoteViewHelper getNoteViewHelper() {
-        return NoteApplication.getNoteViewHelper();
+        return NoteApplication.getInstance().getNoteViewHelper();
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -57,11 +58,20 @@ public class RequestManager {
     }
 
     public void removeRequest(final BaseRequest request) {
-        getExecutor().removeRequest(request);
+        removeRequest(request, request.getIdentifier());
     }
 
     public void removeRequest(final BaseRequest request, String identifier) {
         getExecutorByIdentifier(identifier).removeRequest(request);
+    }
+
+    public void dumpRequestList() {
+        Log.e(TAG, "Dump built-in executor");
+        executor.dump();
+        for(Map.Entry<String, ExecutorContext> entry : threadPoolMap.entrySet()) {
+            Log.e(TAG, "Executor name:  " + entry.getKey());
+            entry.getValue().dump();
+        }
     }
 
     public Handler getLooperHandler() {
@@ -118,7 +128,7 @@ public class RequestManager {
     }
 
     public boolean submitRequestToMultiThreadPool(final Context context, final BaseRequest request, final Runnable runnable, final BaseCallback callback) {
-        return submitRequestToMultiThreadPool(context, null, request, runnable, callback);
+        return submitRequestToMultiThreadPool(context, request.getIdentifier(), request, runnable, callback);
     }
 
     public boolean submitRequestToMultiThreadPool(final Context context, final String identifier, final BaseRequest request, final Runnable runnable, final BaseCallback callback) {

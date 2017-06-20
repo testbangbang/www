@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.device.DeviceConfig;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.AppDataInfo;
@@ -52,6 +54,16 @@ public class ApplicationsActivity extends BaseActivity {
     @Override
     protected Integer getLayoutId() {
         return R.layout.activity_applications;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fullUpdateView();
+    }
+
+    private void fullUpdateView() {
+        EpdController.postInvalidate(getWindow().getDecorView().getRootView(), UpdateMode.GC);
     }
 
     @Override

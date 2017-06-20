@@ -5,26 +5,18 @@ import android.test.ApplicationTestCase;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.Library;
-import com.onyx.android.sdk.data.model.OnyxAccount;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
-import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
-import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
-import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromCloudRequest;
-import com.onyx.android.sdk.data.request.cloud.v2.AccountLoadFromLocalRequest;
-import com.onyx.android.sdk.data.request.cloud.v2.AccountSaveToLocalRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudLibraryListLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
-import com.onyx.android.sdk.data.v1.OnyxAccountService;
-import com.raizlabs.android.dbflow.config.DatabaseHolder;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -52,14 +44,14 @@ public class NeoCloudTest extends ApplicationTestCase<Application> {
     // authentication with hardware info.
     public void testCloud1() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final BaseAuthAccount account = AccountLoadFromCloudRequest.createAuthAccountFromHardware(getContext());
+        final BaseAuthAccount account = LoginByHardwareInfoRequest.createAuthAccountFromHardware(getContext());
         assertNotNull(account);
-        final AccountLoadFromCloudRequest accountGetRequest = new AccountLoadFromCloudRequest<>(account, EduAccount.class);
-        getSchoolCloudStore().submitRequest(getContext(), accountGetRequest, new BaseCallback() {
+        final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
+        getSchoolCloudStore().submitRequest(getContext(), accountLoadRequest, new BaseCallback() {
             public void done(BaseRequest request, Throwable e) {
                 assertNull(e);
-                assertNotNull(accountGetRequest.getToken());
-                assertNotNull(accountGetRequest.getNeoAccount().getName());
+                assertNotNull(accountLoadRequest.getAccount());
+                assertNotNull(accountLoadRequest.getAccount().getName());
                 countDownLatch.countDown();
             }
         });

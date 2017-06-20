@@ -34,4 +34,8 @@ public class CloudConf {
     public String getStatistics() {
         return statistics;
     }
+
+    public static CloudConf create(final String host, final String api, final String cloud) {
+        return new CloudConf(host, api, cloud);
+    }
 }

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 
 /**
  * Created by zhuzeng on 7/11/16.
@@ -50,7 +51,7 @@ public class DeviceReceiver extends BroadcastReceiver {
         IntentFilter filter = new IntentFilter();
         filter.addAction(SYSTEM_UI_DIALOG_OPEN_ACTION);
         filter.addAction(SYSTEM_UI_DIALOG_CLOSE_ACTION);
-        filter.addAction(SYSTEM_WAKE_UP);
+        filter.addAction(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? Intent.ACTION_SCREEN_ON : SYSTEM_WAKE_UP);
         filter.addAction(SYSTEM_HOME);
         filter.addAction(STATUS_BAR_ICON_REFRESH_START_ACTION);
         filter.addAction(STATUS_BAR_ICON_REFRESH_FINISH_ACTION);
@@ -69,6 +70,7 @@ public class DeviceReceiver extends BroadcastReceiver {
             case SYSTEM_UI_DIALOG_CLOSE_ACTION:
             case SYSTEM_WAKE_UP:
             case STATUS_BAR_ICON_REFRESH_FINISH_ACTION:
+            case Intent.ACTION_SCREEN_ON:
                 notifySystemUIChange(intent, false);
                 break;
             case SYSTEM_HOME:

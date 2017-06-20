@@ -72,6 +72,15 @@ public class FileUtils {
         return getFileExtension(file.getName());
     }
 
+    public static boolean isPngExtension(File file) {
+        return getFileExtension(file).toLowerCase().equals("png");
+    }
+
+    public static boolean isJpgExtension(File file) {
+        String extension = getFileExtension(file).toLowerCase();
+        return extension.equals("jpg") || extension.equals("jpeg");
+    }
+
     public static void collectFiles(final String parentPath, final Set<String> extensionFilters, boolean recursive, final Collection<String> fileList) {
         File parent = new File(parentPath);
         File[] files = parent.listFiles();
@@ -503,5 +512,16 @@ public class FileUtils {
             closeQuietly(is);
         }
         return null;
+    }
+
+    public static String getFileNameFromUrl(String url) {
+        if (!StringUtils.isUrl(url)) {
+            return null;
+        }
+        int idx = url.lastIndexOf('/');
+        if (idx < 0) {
+            return null;
+        }
+        return url.substring(idx + 1, url.length());
     }
 }

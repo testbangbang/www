@@ -15,7 +15,7 @@ public abstract class BaseNoteAction<T extends Activity> {
     public void showLoadingDialog(final T activity, final String key, final int stringResId) {
         loadingDialog = new DialogLoading();
         Bundle args = new Bundle();
-        args.putString(key, activity.getString(stringResId));
+        args.putString(key, activity.getApplicationContext().getString(stringResId));
         loadingDialog.setArguments(args);
         loadingDialog.show(activity.getFragmentManager());
     }

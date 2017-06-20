@@ -8,14 +8,16 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 public class PageGoToTargetIndexRequest extends BaseNoteRequest {
     private int targetIndex;
+    private boolean resume;
 
-    public PageGoToTargetIndexRequest(int index) {
+    public PageGoToTargetIndexRequest(int index,boolean r) {
         targetIndex = index;
         setPauseInputProcessor(true);
+        resume = r;
     }
 
     public void execute(final NoteViewHelper helper) throws Exception {
-        setResumeInputProcessor(helper.useDFBForCurrentState());
+        setResumeInputProcessor(resume && helper.useDFBForCurrentState());
         helper.getNoteDocument().gotoPage(targetIndex);
         renderCurrentPage(helper);
         updateShapeDataInfo(helper);

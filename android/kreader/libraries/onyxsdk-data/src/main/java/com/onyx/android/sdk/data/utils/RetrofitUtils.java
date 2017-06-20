@@ -19,6 +19,7 @@ public class RetrofitUtils {
             throw new ContentException.NetworkException(e);
         }
         if (!response.isSuccessful()) {
+
             String errorBody = response.errorBody().string();
             throw new ContentException.CloudException(JSONObjectParseUtils.parseObject(errorBody, ResultCode.class));
         }

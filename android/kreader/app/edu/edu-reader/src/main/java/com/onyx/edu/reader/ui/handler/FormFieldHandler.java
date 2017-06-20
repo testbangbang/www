@@ -94,6 +94,7 @@ public class FormFieldHandler extends ReadingHandler {
 
     private void flushFormShapes(ReaderFormField field, int formType, FormValue value) {
         Shape shape = ReaderShapeFactory.createFormShape(getDocumentUniqueId(),
+                getReaderDataHolder().getFirstPageInfo(),
                 field.getName(),
                 formType,
                 field.getRect(),
@@ -179,6 +180,7 @@ public class FormFieldHandler extends ReadingHandler {
     }
 
     private void pushFormData() {
+        getReaderDataHolder().postDialogUiChangedEvent(true);
         OnyxCustomDialog.getConfirmDialog(getReaderDataHolder().getContext(), getReaderDataHolder().getContext().getString(R.string.exit_submit_form_tips),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -196,11 +198,11 @@ public class FormFieldHandler extends ReadingHandler {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (getReaderDataHolder().inNoteWritingProvider()) {
-                            getReaderDataHolder().postSystemUiChangedEvent(false);
+                            getReaderDataHolder().postDialogUiChangedEvent(false);
                         }
                     }
                 })
-                .setCloseOnTouchOutside(false)
+                .setCloseOnTouchOutside(true)
                 .setNegativeText(R.string.custom_dialog_exit)
                 .setPositiveText(R.string.custom_dialog_submit)
                 .show();

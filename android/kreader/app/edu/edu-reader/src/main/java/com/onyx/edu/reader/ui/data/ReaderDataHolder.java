@@ -3,18 +3,21 @@ package com.onyx.edu.reader.ui.data;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Rect;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
+import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -33,10 +36,13 @@ import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.actions.CloseNoteMenuAction;
+import com.onyx.edu.reader.note.actions.SaveReviewDataAction;
 import com.onyx.edu.reader.note.receiver.DeviceReceiver;
 import com.onyx.edu.reader.tts.ReaderTtsManager;
 import com.onyx.edu.reader.ui.ReaderBroadcastReceiver;
+import com.onyx.edu.reader.ui.actions.ApplyReviewDataFromCloudAction;
 import com.onyx.edu.reader.ui.actions.ExportAnnotationAction;
+import com.onyx.edu.reader.ui.actions.GetDocumentDataFromCloudChain;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.events.TextSelectionEvent;
 import com.onyx.edu.reader.ui.events.*;
@@ -188,8 +194,13 @@ public class ReaderDataHolder {
                 getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_SCRIBBLE_PROVIDER);
     }
 
+    public boolean inScribbleProvider() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
+    }
+
     public boolean inFormProvider() {
-        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_PROVIDER);
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_PROVIDER) ||
+                getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_SCRIBBLE_PROVIDER);
     }
 
     public boolean inReadingProvider() {
@@ -268,6 +279,10 @@ public class ReaderDataHolder {
         getEventBus().post(new SystemUIChangedEvent(open));
     }
 
+    public void postDialogUiChangedEvent(boolean open) {
+        getEventBus().post(DialogUIChangeEvent.create(open));
+    }
+
     private void unregisterReceiver() {
         deviceReceiver.unregisterReceiver(getContext());
     }
@@ -331,7 +346,9 @@ public class ReaderDataHolder {
 
     public CloudManager getCloudManager() {
         if (cloudManager == null) {
-            cloudManager = new CloudManager();
+            cloudManager = CloudStore.createCloudManager(CloudConf.create(Constant.ONYX_HOST_BASE,
+                    Constant.ONYX_API_BASE,
+                    Constant.DEFAULT_CLOUD_STORAGE));
         }
         return cloudManager;
     }
@@ -409,7 +426,7 @@ public class ReaderDataHolder {
     }
 
     public void submitNonRenderRequest(final BaseReaderRequest request, final BaseCallback callback) {
-        beforeSubmitRequest();
+        beforeSubmitRequest(false);
         reader.submitRequest(context, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -423,8 +440,13 @@ public class ReaderDataHolder {
     }
 
     public void submitRenderRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
-        beforeSubmitRequest();
+        beforeSubmitRequest(true);
         reader.submitRequest(context, renderRequest, new BaseCallback() {
+            @Override
+            public void beforeDone(BaseRequest request, Throwable e) {
+                BaseCallback.invokeBeforeDone(callback, request, e);
+            }
+
             @Override
             public void done(BaseRequest request, Throwable e) {
                 onRenderRequestFinished(renderRequest, e);
@@ -434,8 +456,15 @@ public class ReaderDataHolder {
         });
     }
 
-    private void beforeSubmitRequest() {
+    private void beforeSubmitRequest(boolean render) {
         getNoteManager().resetNoteDataInfo();
+        if (render) {
+            clearFormFieldControls();
+        }
+    }
+
+    private void clearFormFieldControls() {
+        getEventBus().post(new ClearFormFieldControlsEvent());
     }
 
     private void onPageDrawFinished(BaseReaderRequest request, Throwable e) {
@@ -516,6 +545,15 @@ public class ReaderDataHolder {
         activeDialogs.add(dialog);
     }
 
+    public boolean hasDialogShowing() {
+        for (Object activeDialog : activeDialogs) {
+            if (activeDialog != null && ((Dialog) activeDialog).isShowing()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void removeActiveDialog(Dialog dialog) {
         activeDialogs.remove(dialog);
     }
@@ -525,12 +563,6 @@ public class ReaderDataHolder {
             return;
         }
         addActiveDialog(dialog);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                removeActiveDialog(dialog);
-            }
-        });
     }
 
     public void closeActiveDialogs() {
@@ -556,6 +588,7 @@ public class ReaderDataHolder {
         closeNoteManager();
         closeNoteMenu();
         closeFormMenu();
+        clearFormFieldControls();
         resetHandlerManager();
         closeDocument(callback);
     }
@@ -565,7 +598,7 @@ public class ReaderDataHolder {
     }
 
     public void resetHandlerManager() {
-        getHandlerManager().resetToDefaultProvider();
+        getHandlerManager().resetActiveProvider();
     }
 
     private void closeDocument(final BaseCallback callback) {
@@ -728,12 +761,28 @@ public class ReaderDataHolder {
         return false;
     }
 
+    public boolean hasScribbleFormField() {
+        if (getVisiblePages() == null) {
+            return false;
+        }
+        for (PageInfo pageInfo : getVisiblePages()) {
+            if (getReaderUserDataInfo().hasScribbleFormFields(pageInfo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getCloudDocId() {
         return cloudDocId;
     }
 
     public void setCloudDocId(String cloudDocId) {
         this.cloudDocId = cloudDocId;
+    }
+
+    public void applyReviewDataFromCloud(boolean showTips) {
+        ApplyReviewDataFromCloudAction.apply(this, showTips);
     }
 }
 

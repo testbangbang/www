@@ -66,7 +66,12 @@ public class CloudStore {
         return this.requestManager;
     }
 
-    public void setCloudConf(final CloudConf cloudConf) {
+    public CloudStore setCloudConf(final CloudConf cloudConf) {
         getCloudManager().setAllCloudConf(cloudConf);
+        return this;
+    }
+
+    public static CloudManager createCloudManager(final CloudConf cloudConf) {
+        return new CloudStore().setCloudConf(cloudConf).getCloudManager();
     }
 }

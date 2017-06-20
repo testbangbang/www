@@ -18,7 +18,10 @@
 
 -dontshrink
 
+-keep class com.onyx.android.sdk.reader.api.** { public protected *; }
 -keepnames class com.onyx.edu.reader.device.DeviceConfig { *; }
+-keepnames class com.onyx.edu.reader.ui.data.ReviewDocumentData { *; }
+-keepnames class com.onyx.android.sdk.scribble.formshape.FormValue { *; }
 -keep class com.onyx.edu.reader.ui.handler.HandlerManager
 
 -keepnames class org.apache.lucene.analysis.** { *; }
