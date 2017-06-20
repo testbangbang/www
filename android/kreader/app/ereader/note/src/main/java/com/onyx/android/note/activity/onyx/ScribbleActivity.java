@@ -306,14 +306,16 @@ public class ScribbleActivity extends BaseScribbleActivity {
         spanTextView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-                switch (keyCode) {
-                    case KeyEvent.KEYCODE_DEL:
-                        setKeyboardInput(true);
-                        onDelete(false);
-                        return true;
-                    case KeyEvent.KEYCODE_ENTER:
-                        onCloseKeyBoard();
-                        return false;
+                if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_DEL:
+                            setKeyboardInput(true);
+                            onDelete(false);
+                            return true;
+                        case KeyEvent.KEYCODE_ENTER:
+                            onCloseKeyBoard();
+                            return false;
+                    }
                 }
                 return false;
             }
