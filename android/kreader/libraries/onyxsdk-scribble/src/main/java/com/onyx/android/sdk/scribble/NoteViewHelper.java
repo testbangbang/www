@@ -34,6 +34,7 @@ import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,8 +132,8 @@ public class NoteViewHelper {
 
     public void quit() {
         pauseDrawing();
-        quitDrawing();
         removeLayoutListener();
+        quitDrawing();
         setLineLayoutMode(false);
     }
 
@@ -372,7 +373,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-
+        callback = null;
         getRawInputProcessor().quit();
         resetRawInputProcessor();
     }
@@ -422,6 +423,8 @@ public class NoteViewHelper {
             return;
         }
         surfaceView.getViewTreeObserver().removeGlobalOnLayoutListener(getGlobalLayoutListener());
+        surfaceView = null;
+        globalLayoutListener = null;
     }
 
     private Rect getViewportSize() {
@@ -440,6 +443,7 @@ public class NoteViewHelper {
                                             final String identifier,
                                             final BaseNoteRequest request,
                                             final BaseCallback callback) {
+        request.setIdentifier(identifier);
         beforeSubmit(context, request, callback);
         getRequestManager().submitRequest(context, identifier, request, generateRunnable(request), callback);
     }
