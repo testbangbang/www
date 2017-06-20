@@ -1,4 +1,17 @@
 {
   "has_front_light": false,
-  "hide_vpn_setting": true
+  "hide_vpn_setting": true,
+  "hide_drm_setting": true,
+  "setting_item_list": [
+    "setting_item_wifi",
+    "setting_item_power",
+    "setting_item_product_detail",
+    "setting_item_firmware_update",
+    "setting_item_production_test"
+  ],
+  "test_apps": [
+    "com.onyx.test",
+    "com.onyx.android.production.test",
+    "com.onyx.android.screenmanager"
+  ]
 }

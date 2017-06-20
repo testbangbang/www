@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.google.zxing.WriterException;
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.SettingConfig;
 import com.onyx.android.libsetting.data.SettingCategory;
@@ -21,12 +22,16 @@ import com.onyx.android.libsetting.databinding.DeviceMainSettingsItemBinding;
 import com.onyx.android.libsetting.model.ModelInfo;
 import com.onyx.android.libsetting.model.SettingItem;
 import com.onyx.android.libsetting.util.CommonUtil;
+import com.onyx.android.libsetting.util.QRCodeUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.DeviceMainSettingItemDecoration;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.ApplicationUtil;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
@@ -34,6 +39,8 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     ActivityDeviceMainSettingBinding binding;
     ModelInfo info;
     SettingFunctionAdapter adapter;
+
+    private static final float miniPercent = 0.20f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +52,6 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     protected void onResume() {
         super.onResume();
         updateData();
-
     }
 
     private void updateData() {
@@ -55,13 +61,15 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         adapter.dataList.clear();
         adapter.dataList.addAll(config.getSettingItemList(this));
         adapter.notifyDataSetChanged();
+
+        updateView();
     }
 
     private void initView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_device_main_setting);
         RecyclerView recyclerView = binding.functionRecyclerView;
         recyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 6);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 12);
         adapter = new SettingFunctionAdapter(this, new ArrayList<SettingItem>());
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -74,40 +82,15 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         adapter.setItemClickListener(new SettingFunctionAdapter.ItemClickListener() {
             @Override
             public void itemClick(@SettingCategory.SettingCategoryDef int itemCategory) {
-                Intent intent;
-                switch (itemCategory) {
-                    case SettingCategory.NETWORK:
-                        intent = new Intent(DeviceMainSettingActivity.this, NetworkSettingActivity.class);
-                        break;
-                    case SettingCategory.SECURITY:
-                        intent = new Intent(DeviceMainSettingActivity.this, SecuritySettingActivity.class);
-                        break;
-                    case SettingCategory.STORAGE:
-                        intent = config.getStorageSettingIntent(DeviceMainSettingActivity.this);
-                        break;
-                    case SettingCategory.LANGUAGE_AND_INPUT:
-                        intent = new Intent(DeviceMainSettingActivity.this, LanguageInputSettingActivity.class);
-                        break;
-                    case SettingCategory.DATE_TIME_SETTING:
-                        intent = new Intent(DeviceMainSettingActivity.this, DateTimeSettingActivity.class);
-                        break;
-                    case SettingCategory.POWER:
-                        intent = new Intent(DeviceMainSettingActivity.this, PowerSettingActivity.class);
-                        break;
-                    case SettingCategory.APPLICATION_MANAGEMENT:
-                        intent = new Intent(DeviceMainSettingActivity.this, ApplicationSettingActivity.class);
-                        break;
-                    case SettingCategory.USER_SETTING:
-                        intent = new Intent(DeviceMainSettingActivity.this, UserSettingActivity.class);
-                        break;
-                    default:
-                        Toast.makeText(DeviceMainSettingActivity.this, "Under Construction", Toast.LENGTH_SHORT).show();
-                        return;
+                Intent intent = SettingCategory.getConfigIntentByCategory(DeviceMainSettingActivity.this, itemCategory);
+                if (intent != null) {
+                    startActivity(intent);
                 }
-                startActivity(intent);
             }
         });
-        recyclerView.addItemDecoration(new DeviceMainSettingItemDecoration());
+        recyclerView.addItemDecoration(AppCompatUtils.isColorDevice(this) ?
+                new DeviceMainSettingItemDecoration(this.getResources().getColor(android.R.color.black), 3) :
+                new DeviceMainSettingItemDecoration());
         recyclerView.setAdapter(adapter);
 
         binding.icon.setClickable(false);
@@ -115,7 +98,9 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         binding.infoArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(config.getDeviceInfoIntent());
+                if (config.isEnableSystemSettings()) {
+                    startActivity(config.getDeviceInfoIntent());
+                }
             }
         });
 
@@ -126,24 +111,88 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                         new Intent(DeviceMainSettingActivity.this, FirmwareOTAActivity.class));
             }
         });
+
+        binding.buttonCleanTestApps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearAllTestApps();
+                updateView();
+            }
+        });
+
+        //TODO:custom view for normal/colorDevice;
+        if (AppCompatUtils.isColorDevice(this)) {
+            binding.infoArea.setBackground(getResources().getDrawable(R.drawable.main_setting_bg));
+            try {
+                binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.getQRCodeCFABitmap(this));
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+            binding.deviceDetailArea.setVisibility(View.GONE);
+        } else {
+            binding.infoArea.setBackground(getResources().getDrawable(R.drawable.image_button_bg));
+            binding.macQrCodeLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateView() {
+        for (Iterator<SettingItem> iterator = adapter.dataList.iterator(); iterator.hasNext(); ) {
+            switch (iterator.next().getItemCategory()) {
+                case SettingCategory.PRODUCTION_TEST:
+                    if (!verifyTestAppsRecord()) {
+                        binding.buttonCleanTestApps.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.buttonCleanTestApps.setVisibility(View.GONE);
+                        iterator.remove();
+                    }
+                    break;
+                case SettingCategory.FIRMWARE_UPDATE:
+                    binding.buttonOta.setVisibility(View.GONE);
+                    break;
+                default:
+                    break;
+            }
+        }
+        adapter.notifyDataSetChanged();
+        PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) binding.infoArea.getLayoutParams();
+        PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
+        info.heightPercent = 1 - (miniPercent * adapter.getRowCount());
+        binding.infoArea.requestLayout();
     }
 
     // TODO: 2016/11/30 temp max 3 line layout
     private int calculateSpanSizeBySettingItemSize(int position, int settingItemSize) {
         switch (settingItemSize) {
-            case 4:
+            case 2:
             case 6:
+                return 6;
+            case 4:
                 return 3;
             case 5:
             case 7:
-                return position < 3 ? 2 : 3;
+                return position < 3 ? 4 : 6;
             case 8:
-                return position < 6 ? 2 : 3;
+                return position < 6 ? 4 : 6;
+            case 3:
             case 9:
-                return 2;
+                return 4;
             default:
-                return 1;
+                return 2;
         }
+    }
+
+    private boolean clearAllTestApps() {
+        return ApplicationUtil.clearAllTestApps(this, config.getTestApps());
+    }
+
+    private boolean verifyTestAppsRecord() {
+        List<String> testApps = config.getTestApps();
+        for (String testApp : testApps) {
+            if (!ApplicationUtil.testAppRecordExist(this, testApp)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     static class SettingFunctionAdapter extends RecyclerView.Adapter<SettingFunctionAdapter.MainSettingItemViewHolder> {
@@ -185,6 +234,11 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             DeviceMainSettingsItemBinding binding = DeviceMainSettingsItemBinding
                     .inflate(layoutInflater, viewGroup, false);
             parent = viewGroup;
+
+            PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) parent.getLayoutParams();
+            PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
+            info.heightPercent = miniPercent * getRowCount();
+            parent.requestLayout();
             return new MainSettingItemViewHolder(binding);
         }
 
@@ -209,7 +263,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                 }
             });
             if (getRowCount() > 0) {
-                parentHeight = parentHeight == -1 ? calculateParentHeight() : parentHeight;
+                parentHeight = parentHeight == -1 ? calculateParentHeight(getRowCount()) : parentHeight;
                 itemHeight = itemHeight == -1 ? (int) Math.floor((parentHeight) / getRowCount()) : itemHeight;
                 if (itemHeight > 0) {
                     RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) viewHolder.itemView.getLayoutParams();
@@ -220,13 +274,18 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             viewHolder.bindTo(dataList.get(position));
         }
 
-        private int calculateParentHeight() {
-            return (int) (CommonUtil.getWindowHeight(context) * ((PercentRelativeLayout.LayoutParams)
-                    parent.getLayoutParams()).getPercentLayoutInfo().heightPercent);
+        private int calculateParentHeight(int row) {
+            return (int) (CommonUtil.getWindowHeight(context) * miniPercent * row);
         }
 
         public int getRowCount() {
-            return dataList.size() < 6 ? 2 : 3;
+            if (dataList.size() >= 6) {
+                return 3;
+            } else if (dataList.size() > 4) {
+                return 2;
+            } else {
+                return 1;
+            }
         }
 
         class MainSettingItemViewHolder extends BindingViewHolder<DeviceMainSettingsItemBinding, SettingItem> {

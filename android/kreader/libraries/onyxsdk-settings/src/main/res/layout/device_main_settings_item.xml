@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:apps="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -13,10 +14,11 @@
 
     </data>
 
-    <RelativeLayout
+    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/imagebtn_bg">
+        android:background="@drawable/imagebtn_bg"
+        apps:alwaysLayoutImageView="true">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -37,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
                 android:maxLines="2"
+                android:textStyle="bold"
                 android:text="@{item.tittle}" />
 
             <TextView
@@ -44,9 +47,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{item.subTittle}"
+                android:textStyle="bold"
                 android:visibility="@{TextUtils.isEmpty(item.subTittle)?View.GONE:View.VISIBLE}" />
 
         </LinearLayout>
-    </RelativeLayout>
+    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
 
 </layout>

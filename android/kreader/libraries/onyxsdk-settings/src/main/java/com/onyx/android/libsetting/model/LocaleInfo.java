@@ -4,10 +4,11 @@ import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.support.annotation.NonNull;
 
+import com.onyx.android.libsetting.BR;
+
 import java.text.Collator;
 import java.util.Locale;
 
-import com.onyx.android.libsetting.BR;
 
 /**
  * Created by solskjaer49 on 2016/12/5 17:22.

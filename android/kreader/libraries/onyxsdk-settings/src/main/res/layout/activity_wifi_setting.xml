@@ -92,7 +92,8 @@
                         android:textColor="@android:color/primary_text_light" />
                 </RelativeLayout>
 
-                <android.support.v7.widget.SwitchCompat
+
+                <Switch
                     android:id="@+id/wif_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -100,8 +101,10 @@
                     android:layout_centerVertical="true"
                     android:clickable="false"
                     android:focusable="false"
-                    android:longClickable="false" />
-
+                    android:longClickable="false"
+                    android:minHeight="@dimen/btn_minHeight"
+                    android:minWidth="@dimen/btn_minHeight"
+                    android:switchTextAppearance="@style/OnyxAppCompat.TextAppearance.AppCompat.Widget.Switch" />
             </RelativeLayout>
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView

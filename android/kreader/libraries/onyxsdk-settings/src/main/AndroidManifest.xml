@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.BATTERY_STATS" />
 
     <application
         android:allowBackup="true"
@@ -22,11 +23,27 @@
         android:supportsRtl="true">
         <activity
             android:name=".view.activity.DeviceMainSettingActivity"
-            android:theme="@style/OnyxAppCompat" />
+            android:exported="true"
+            android:theme="@style/OnyxAppCompat">
+            <intent-filter>
+                <action android:name="onyx.intent.action.SETTINGS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".view.activity.WifiSettingActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
             android:theme="@style/OnyxAppCompat"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustNothing">
+            <intent-filter>
+                <action android:name="android.intent.action.WIFI_ENABLE" />
+                <action android:name="com.android.systemui.CONFIGURE_NEW_WIFI_ACTION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".view.activity.SoundSettingActivity"
             android:theme="@style/OnyxAppCompat" />
@@ -63,6 +80,7 @@
         <activity
             android:name=".view.activity.FirmwareOTAActivity"
             android:theme="@style/OnyxAppCompat" />
+        <activity android:name=".view.activity.ProductDetailSettingActivity"></activity>
     </application>
 
 </manifest>

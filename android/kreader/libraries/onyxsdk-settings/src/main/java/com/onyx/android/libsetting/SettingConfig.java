@@ -8,14 +8,14 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.onyx.android.libsetting.data.DeviceType;
 import com.onyx.android.libsetting.data.PowerSettingTimeoutCategory;
 import com.onyx.android.libsetting.data.SettingCategory;
 import com.onyx.android.libsetting.model.SettingItem;
-import com.onyx.android.libsetting.util.CommonUtil;
 import com.onyx.android.libsetting.util.Constant;
 import com.onyx.android.libsetting.view.activity.StorageSettingActivity;
+import com.onyx.android.sdk.data.DeviceType;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.utils.CompatibilityUtil;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 
 import java.util.ArrayList;
@@ -25,14 +25,19 @@ import java.util.List;
 import java.util.Map;
 
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_APPLICATION_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_BLUETOOTH_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_DATE_TIME_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_ERROR_REPORT_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_FIRMWARE_UPDATE_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_LANG_INPUT_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_NETWORK_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_POWER_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_PRODUCTION_TEST_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_PRODUCT_DETAIL_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_SECURITY_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_STORAGE_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_USER_SETTING_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_WIFI_TAG;
 
 /**
  * Created by solskjaer49 on 2016/12/6 12:09.
@@ -65,6 +70,15 @@ public class SettingConfig {
         static private final String HAS_NATURAL_LIGHT_TAG = "has_natural_light";
 
         static private final String USE_SYSTEM_STORAGE_PAGE_TAG = "use_system_storage_page";
+
+        static private final String HIDE_DRM_SETTING = "hide_drm_setting";
+
+        static private final String CALIBRATION_PACKAGE_NAME_TAG = "calibration_package_name";
+        static private final String CALIBRATION_CLASS_NAME_TAG = "calibration_class_name";
+
+        static  private  final String TEST_APPS_TAG = "test_apps";
+
+        static private final String ENABLE_AUTO_WIFI_RESCAN_TAG = "enable_auto_wifi_scan";
     }
 
     static class Default {
@@ -75,6 +89,10 @@ public class SettingConfig {
         static private final String POWER_USAGE_SUMMARY_CLASS_NAME = "com.android.settings.fuelgauge.PowerUsageSummary";
         static private final String FACTORY_RESET_CLASS_NAME = "com.android.settings.MasterClear";
         static private final String DEVICE_INFO_CLASS_NAME = "com.android.settings.DeviceInfoSettings";
+        static private final String CALIBRATION_PACKAGE_NAME = "com.onyx.android.tscalibration";
+        static private final String CALIBRATION_CLASS_NAME = "com.onyx.android.tscalibration.MainActivity";
+
+
 
         static private final String TTS_ACTION = "com.android.settings.TTS_SETTINGS";
         static private final String MASTER_CLEAR_ACTION = "android.settings.MASTER_CLEAR";
@@ -82,7 +100,8 @@ public class SettingConfig {
         static private final String PRE_N_VPN_SETTING_ACTION = "android.net.vpn.SETTINGS";
     }
 
-
+    private boolean enableNetworkLatencyConfig = false;
+    private boolean enableSystemSettings = false;
     private static SettingConfig globalInstance;
     static private final boolean useDebugConfig = false;
     private ArrayList<GObject> backendList = new ArrayList<>();
@@ -93,6 +112,17 @@ public class SettingConfig {
     static private List<String> settingItemTAGList;
     static private Map<String, String> settingIconsMap;
     static private Map<String, String> settingTittleMap;
+
+    public String getErrorReportAction() {
+        return errorReportAction;
+    }
+
+    public SettingConfig setErrorReportAction(String errorReportAction) {
+        this.errorReportAction = errorReportAction;
+        return this;
+    }
+
+    private String errorReportAction;
 
 
     /**
@@ -132,7 +162,7 @@ public class SettingConfig {
             currentDeviceType = DeviceType.RK;
             return;
         }
-        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.M)) {
+        if (CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.M)) {
             currentDeviceType = DeviceType.IMX7;
         } else {
             currentDeviceType = DeviceType.IMX6;
@@ -155,7 +185,7 @@ public class SettingConfig {
         String name = "";
         switch (currentDeviceType) {
             case DeviceType.IMX6:
-                name = CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ? Constant.IMX6_KIT_KAT_BASED_CONFIG_NAME :
+                name = CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ? Constant.IMX6_KIT_KAT_BASED_CONFIG_NAME :
                         Constant.IMX6_ICS_BASED_CONFIG_NAME;
                 break;
             case DeviceType.RK:
@@ -276,7 +306,7 @@ public class SettingConfig {
     public Intent getTimeZoneSettingIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.ZONE_PICKER_CLASS_NAME);
-        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
+        return CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
                 new Intent(Default.TIME_ZONE_PICKER_ACTION) : intent;
     }
 
@@ -293,7 +323,7 @@ public class SettingConfig {
     public Intent getFactoryResetIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.FACTORY_RESET_CLASS_NAME);
-        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
+        return CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
                 new Intent(Default.MASTER_CLEAR_ACTION) : intent;
     }
 
@@ -311,7 +341,14 @@ public class SettingConfig {
     }
 
     public Intent getCalibrationIntent() {
-        return null;
+        Intent intent = new Intent();
+        String pkgName = Default.CALIBRATION_PACKAGE_NAME;
+        String className = Default.CALIBRATION_CLASS_NAME;
+        String customPkgName = getData(Custom.CALIBRATION_PACKAGE_NAME_TAG, String.class);
+        String customClassName = getData(Custom.CALIBRATION_CLASS_NAME_TAG, String.class);
+        intent.setClassName(TextUtils.isEmpty(customPkgName) ? pkgName : customPkgName,
+                TextUtils.isEmpty(customClassName) ? className : customClassName);
+        return intent;
     }
 
     public Intent getBluetoothSettingIntent() {
@@ -319,7 +356,7 @@ public class SettingConfig {
     }
 
     public Intent getVPNSettingIntent() {
-        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.N) ?
+        return CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.N) ?
                 new Intent(Settings.ACTION_VPN_SETTINGS) :
                 new Intent(Default.PRE_N_VPN_SETTING_ACTION).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
@@ -327,7 +364,7 @@ public class SettingConfig {
     public Intent getDeviceInfoIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.DEVICE_INFO_CLASS_NAME);
-        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.M) ?
+        return CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.M) ?
                 new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS) : intent;
     }
 
@@ -387,6 +424,7 @@ public class SettingConfig {
         settingItemTAGList.add(SETTING_ITEM_STORAGE_TAG);
         settingItemTAGList.add(SETTING_ITEM_SECURITY_TAG);
         settingItemTAGList.add(SETTING_ITEM_ERROR_REPORT_TAG);
+        settingItemTAGList.add(SETTING_ITEM_PRODUCTION_TEST_TAG);
     }
 
     private void buildDefaultSettingsIconsMap() {
@@ -400,6 +438,11 @@ public class SettingConfig {
         settingIconsMap.put(SETTING_ITEM_STORAGE_TAG, "ic_setting_storage");
         settingIconsMap.put(SETTING_ITEM_SECURITY_TAG, "ic_security");
         settingIconsMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "ic_error_report");
+        settingIconsMap.put(SETTING_ITEM_PRODUCTION_TEST_TAG, "ic_production_test");
+        settingIconsMap.put(SETTING_ITEM_WIFI_TAG, "ic_setting_network");
+        settingIconsMap.put(SETTING_ITEM_BLUETOOTH_TAG, "ic_setting_bluetooth");
+        settingIconsMap.put(SETTING_ITEM_FIRMWARE_UPDATE_TAG, "ic_setting_ota");
+        settingIconsMap.put(SETTING_ITEM_PRODUCT_DETAIL_TAG, "ic_setting_product_detail");
     }
 
     private void buildDefaultSettingsTittleMap() {
@@ -413,6 +456,11 @@ public class SettingConfig {
         settingTittleMap.put(SETTING_ITEM_STORAGE_TAG, "setting_storage");
         settingTittleMap.put(SETTING_ITEM_SECURITY_TAG, "setting_security");
         settingTittleMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "setting_error_report");
+        settingTittleMap.put(SETTING_ITEM_PRODUCTION_TEST_TAG, "setting_production_test");
+        settingTittleMap.put(SETTING_ITEM_WIFI_TAG, "setting_wifi");
+        settingTittleMap.put(SETTING_ITEM_BLUETOOTH_TAG, "setting_bluetooth");
+        settingTittleMap.put(SETTING_ITEM_FIRMWARE_UPDATE_TAG, "setting_ota");
+        settingTittleMap.put(SETTING_ITEM_PRODUCT_DETAIL_TAG, "setting_product_detail");
     }
 
     public List<SettingItem> getSettingItemList(Context context) {
@@ -461,6 +509,38 @@ public class SettingConfig {
 
     private boolean isUseSystemStoragePage(){
         Boolean result = getData(Custom.USE_SYSTEM_STORAGE_PAGE_TAG, Boolean.class);
+        if (result == null) {
+            return true;
+        }
+        return result;
+    }
+
+    public boolean hideDRMSettings(){
+        Boolean result = getData(Custom.HIDE_DRM_SETTING, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
+    }
+
+    public List<String> getTestApps() {
+        List<String> result = getData(Custom.TEST_APPS_TAG, List.class);
+        if (result == null) {
+            return null;
+        }
+        return result;
+    }
+
+    public boolean isEnableSystemSettings() {
+        return enableSystemSettings;
+    }
+
+    public boolean isEnableNetworkLatencyConfig() {
+        return enableNetworkLatencyConfig;
+    }
+
+    public boolean isEnableAutoWifiReScan(){
+        Boolean result = getData(Custom.ENABLE_AUTO_WIFI_RESCAN_TAG, Boolean.class);
         if (result == null) {
             return true;
         }

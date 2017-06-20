@@ -19,6 +19,7 @@ import com.onyx.android.libsetting.util.InputMethodLanguageSettingUtil;
 import com.onyx.android.libsetting.view.OnyxCustomIMEPreference;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.CompatibilityUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +124,7 @@ public class LanguageInputSettingActivity extends OnyxAppCompatActivity {
                 preference.setCallback(new OnyxCustomIMEPreference.Callback() {
                     @Override
                     public void onCheckBoxReady() {
-                        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT)) {
+                        if (CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT)) {
                             preference.setIMECheckedEnabled(
                                     !InputMethodLanguageSettingUtil.isSystemPreservedIme(preference.getImeInfo()));
                         } else {
