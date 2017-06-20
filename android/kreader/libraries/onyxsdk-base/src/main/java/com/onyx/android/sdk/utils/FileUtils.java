@@ -20,8 +20,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -69,7 +72,16 @@ public class FileUtils {
         return getFileExtension(file.getName());
     }
 
-    public static void collectFiles(final String parentPath, final Set<String> extensionFilters, boolean recursive, final List<String> fileList) {
+    public static boolean isPngExtension(File file) {
+        return getFileExtension(file).toLowerCase().equals("png");
+    }
+
+    public static boolean isJpgExtension(File file) {
+        String extension = getFileExtension(file).toLowerCase();
+        return extension.equals("jpg") || extension.equals("jpeg");
+    }
+
+    public static void collectFiles(final String parentPath, final Set<String> extensionFilters, boolean recursive, final Collection<String> fileList) {
         File parent = new File(parentPath);
         File[] files = parent.listFiles();
         if (files == null) {
@@ -80,9 +92,11 @@ public class FileUtils {
                 continue;
             }
             final String absolutePath = file.getAbsolutePath();
-            final String extension = getFileExtension(absolutePath);
-            if (file.isFile() && extensionFilters.contains(extension)) {
-                fileList.add(absolutePath);
+            if (file.isFile()) {
+                final String extension = getFileExtension(absolutePath);
+                if (extensionFilters == null || extensionFilters.contains(extension)) {
+                    fileList.add(absolutePath);
+                }
             } else if (file.isDirectory() && recursive) {
                 collectFiles(absolutePath, extensionFilters, recursive, fileList);
             }
@@ -165,9 +179,17 @@ public class FileUtils {
             reader = new InputStreamReader(in, "utf-8");
             breader = new BufferedReader(reader);
 
+            String ls = System.getProperty("line.separator");
+
             StringBuilder sb = new StringBuilder();
-            String line = null;
+            boolean firstLine = true;
+            String line;
             while ((line = breader.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                } else {
+                    sb.append(ls);
+                }
                 sb.append(line);
             }
             return sb.toString();
@@ -320,6 +342,28 @@ public class FileUtils {
         return digestBuffer;
     }
 
+    public static String computeMD5(String content) {
+        if (StringUtils.isNullOrEmpty(content)) {
+            return null;
+        }
+        return computeMD5(content.getBytes(Charset.defaultCharset()));
+    }
+
+    public static String computeMD5(byte[] buffer) {
+        if (buffer == null) {
+            return null;
+        }
+        String result = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(buffer, 0, buffer.length);
+            result = hexToString(md.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public static String computeFullMD5Checksum(File file) throws IOException, NoSuchAlgorithmException {
         InputStream fis = null;
         try {
@@ -448,5 +492,25 @@ public class FileUtils {
             }
         }
         return replaceString;
+    }
+
+    public static String readContentOfFile(String path) {
+        BufferedReader reader = null;
+        InputStream is = null;
+        try {
+            File file = new File(path);
+            reader = new BufferedReader(new InputStreamReader(is = new FileInputStream(file)));
+            StringBuilder total = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                total.append(line);
+            }
+            return total.toString();
+        } catch (Exception e) {
+        } finally {
+            closeQuietly(reader);
+            closeQuietly(is);
+        }
+        return null;
     }
 }

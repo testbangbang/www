@@ -7,6 +7,12 @@ public class Benchmark {
     private long benchmarkStart = 0;
     private long benchmarkEnd = 0;
 
+    private static Benchmark sInstance = new Benchmark();
+
+    public static Benchmark globalBenchmark() {
+        return sInstance;
+    }
+
     public Benchmark() {
         restart();
     }
@@ -17,6 +23,10 @@ public class Benchmark {
 
     public void report(final String msg) {
         Debug.i(getClass(), msg + " ---> " + String.valueOf(duration()) + "ms");
+    }
+
+    public void reportError(final String msg) {
+        Debug.e(getClass(), msg + " ---> " + String.valueOf(duration()) + "ms");
     }
 
     public long duration() {

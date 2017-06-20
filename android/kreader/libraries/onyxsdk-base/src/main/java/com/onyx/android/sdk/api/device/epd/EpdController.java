@@ -205,7 +205,11 @@ public abstract class EpdController
         return Device.currentDevice().getTouchHeight();
     }
 
-    public static void enableRegal(boolean enable) {
-        Device.currentDevice().enableRegal(enable);
+    public static void enableRegal() {
+        Device.currentDevice().enableRegal(true);
+    }
+
+    public static void disableRegal() {
+        Device.currentDevice().enableRegal(false);
     }
 }
