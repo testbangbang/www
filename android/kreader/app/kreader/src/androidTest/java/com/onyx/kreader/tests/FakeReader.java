@@ -8,9 +8,9 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.TestUtils;
-import com.onyx.kreader.api.*;
+import com.onyx.android.sdk.reader.api.*;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,6 +150,11 @@ public class FakeReader implements ReaderDocument,
         return false;
     }
 
+    @Override
+    public boolean supportConvertBetweenSimplifiedAndTraditionalChineseText() {
+        return false;
+    }
+
     public String getInitPosition() {
         return firstPage();
     }
@@ -250,6 +255,11 @@ public class FakeReader implements ReaderDocument,
     }
 
     public List<ReaderSelection> getLinks(final String position) {
+        return null;
+    }
+
+    @Override
+    public List<ReaderImage> getImages(String position) {
         return null;
     }
 

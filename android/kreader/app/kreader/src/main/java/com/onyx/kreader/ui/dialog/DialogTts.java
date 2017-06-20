@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
@@ -8,7 +7,6 @@ import android.util.Pair;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
@@ -22,9 +20,10 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.host.request.ScaleToPageRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.TtsErrorEvent;
 import com.onyx.kreader.ui.events.TtsRequestSentenceEvent;
@@ -40,7 +39,7 @@ import butterknife.ButterKnife;
 /**
  * Created by ming on 16/8/12.
  */
-public class DialogTts extends Dialog implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class DialogTts extends OnyxBaseDialog implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     public static final int VOLUME_SPAN = 2;
 
     @Bind(R.id.tts_play)
@@ -107,6 +106,7 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         initView();
         initData();
 
+        setCanceledOnTouchOutside(false);
     }
 
     private void fitDialogToWindow() {
@@ -115,8 +115,8 @@ public class DialogTts extends Dialog implements View.OnClickListener, CompoundB
         mParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         mParams.gravity = Gravity.BOTTOM;
         mWindow.setAttributes(mParams);
-        //force use all space in the screen.
-        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
     }
 
     public void show() {

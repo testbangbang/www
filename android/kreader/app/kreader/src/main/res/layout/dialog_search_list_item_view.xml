@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="@drawable/imagebtn_bg"
                 android:orientation="vertical"
                 android:paddingBottom="1dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
     <TextView
         android:textColor="@color/normal_black"
-        android:paddingRight="25dp"
-        android:gravity="left"
+        android:gravity="left|center"
         android:maxLines="1"
         android:ellipsize="end"
-        android:textSize="16sp"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/search_page"
+        android:textSize="@dimen/dialog_search_list_item_text_size"
         android:id="@+id/search_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
     <TextView
+        android:layout_alignParentRight="true"
+        android:textSize="@dimen/dialog_search_list_item_page_text_size"
+        android:layout_above="@+id/split_line"
         android:textColor="@color/normal_black"
         android:gravity="right"
         android:id="@+id/search_page"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <View
+        android:layout_alignParentBottom="true"
         android:id="@+id/split_line"
         android:layerType="software"
         android:background="@drawable/dash_line"
         android:layout_width="match_parent"
         android:layout_height="2dp"/>
 
-</LinearLayout>
+</RelativeLayout>

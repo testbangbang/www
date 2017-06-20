@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="@drawable/imagebtn_bg"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:paddingTop="5dp"
@@ -29,7 +30,7 @@
             android:id="@+id/text_view_page"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:text="第三页"
+            android:text=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -39,7 +40,7 @@
             android:id="@+id/btn_page"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:textSize="15sp"
+            android:textSize="@dimen/preview_item_page_text_size"
             android:textColor="@android:color/white"
             android:text="1"
             android:gravity="center"

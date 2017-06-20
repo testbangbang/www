@@ -20,6 +20,10 @@ public class ContainerRequest extends BaseCloudRequest {
         id = categoryId;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
     @Override
     public void execute(CloudManager parent) throws Exception {
         if (StringUtils.isNullOrEmpty(id)) {

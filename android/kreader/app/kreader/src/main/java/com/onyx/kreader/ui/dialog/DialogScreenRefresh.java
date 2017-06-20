@@ -1,7 +1,6 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -12,7 +11,7 @@ import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.kreader.R;
-import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 
 import java.util.HashMap;
 
@@ -20,6 +19,7 @@ import java.util.HashMap;
  * Created by solskjaer49 on 16/1/9 15:19.
  */
 public class DialogScreenRefresh extends OnyxAlertDialog {
+
     public interface onScreenRefreshChangedListener {
         void onRefreshIntervalChanged(int oldValue, int newValue);
     }

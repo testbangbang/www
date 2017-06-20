@@ -18,7 +18,6 @@ public class ClearPageRequest extends ReaderBaseNoteRequest {
 
     public void execute(final NoteManager noteManager) throws Exception {
         noteManager.getNoteDocument().clearPage(getContext(), pageInfo.getName(), 0);
-        noteManager.getNoteDocument().removePage(getContext(), pageInfo.getName(), 0);
         renderVisiblePages(noteManager);
         getNoteDataInfo().setContentRendered(true);
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());

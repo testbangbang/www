@@ -116,7 +116,15 @@ public class BaseDevice {
         return new ArrayList<Integer>();
     }
 
+    public List<Integer> getNaturalLightValueList(Context context) {
+        return new ArrayList<Integer>();
+    }
+
     public boolean setFrontLightDeviceValue(Context context, int value) {
+        return false;
+    }
+
+    public boolean setNaturalLightConfigValue(Context context, int value) {
         return false;
     }
 
@@ -198,6 +206,8 @@ public class BaseDevice {
     public boolean supportRegal() {
         return false;
     }
+
+    public void holdDisplay(boolean hold, UpdateMode updateMode, int ignoreFrame) {}
 
     public void setStrokeColor(int color) {
     }
@@ -351,4 +361,18 @@ public class BaseDevice {
     public boolean isLegalSystem(final Context context){
         return true;
     }
+
+    public boolean isTouchable(Context context) {
+        return true;
+    }
+
+    public void gotoSleep(final Context context) {}
+
+    public void enableRegal(boolean enable) {
+    }
+
+    public boolean hasWifi(Context context) {
+        return true;
+    }
+
 }

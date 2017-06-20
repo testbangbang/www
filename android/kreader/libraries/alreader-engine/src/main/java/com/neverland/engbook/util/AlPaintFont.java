@@ -1,7 +1,5 @@
 package com.neverland.engbook.util;
 
-import android.graphics.Paint;
-
 public class AlPaintFont {
 	public long		style;
 	

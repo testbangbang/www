@@ -10,14 +10,15 @@
             type="com.onyx.android.libsetting.model.StorageInfo" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/activity_storage_setting"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         tools:context="com.onyx.android.libsetting.view.activity.StorageSettingActivity">
 
-        <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
+        <android.support.v7.widget.Toolbar
+            style="@style/OnyxToolBarStyle"
+            android:layout_alignParentTop="true">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -54,56 +55,68 @@
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>
 
-        <com.onyx.android.sdk.ui.view.PieChartView
-            android:id="@+id/storage_usage_view"
-            pieChartMax="@{storageInfo.totalSpace}"
-            pieChartProgress="@{storageInfo.spaceInUse}"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="5dp"
-            app:progressTextSize="20sp"
-            app:roundColor="@android:color/darker_gray"
-            app:roundProgressColor="@android:color/black"
-            app:roundWidth="30dp" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:orientation="horizontal">
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/text_view_in_use"
-                android:layout_width="0dp"
+            <com.onyx.android.sdk.ui.view.PieChartView
+                android:id="@+id/storage_usage_view"
+                pieChartMax="@{storageInfo.totalSpace}"
+                pieChartProgress="@{storageInfo.spaceInUse}"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                app:progressTextSize="@dimen/storage_usage_percentage_text_size"
+                app:roundColor="@android:color/darker_gray"
+                app:progressTextColor="@android:color/black"
+                app:roundProgressColor="@android:color/black"
+                app:roundWidth="30dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@{@string/space_in_use(storageInfo.spaceInUse)}" />
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
 
-            <View
-                style="@style/single_line_Y_axis_View"
-                android:layout_width="1dp" />
+                <TextView
+                    android:id="@+id/text_view_in_use"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light"
+                    android:gravity="center"
+                    android:text="@{@string/space_in_use(storageInfo.spaceInUse)}" />
 
-            <TextView
-                android:id="@+id/text_view_free_space"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@{@string/free_space(storageInfo.freeSpace)}" />
+                <View
+                    style="@style/single_line_Y_axis_View"
+                    android:layout_width="1dp" />
 
-            <View
-                style="@style/single_line_Y_axis_View"
-                android:layout_width="1dp" />
+                <TextView
+                    android:id="@+id/text_view_free_space"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light"
+                    android:gravity="center"
+                    android:text="@{@string/free_space(storageInfo.freeSpace)}" />
 
-            <TextView
-                android:id="@+id/text_view_total"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@{@string/total_space(storageInfo.totalSpace)}" />
+                <View
+                    style="@style/single_line_Y_axis_View"
+                    android:layout_width="1dp" />
+
+                <TextView
+                    android:id="@+id/text_view_total"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light"
+                    android:gravity="center"
+                    android:text="@{@string/total_space(storageInfo.totalSpace)}" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+
+    </RelativeLayout>
 </layout>

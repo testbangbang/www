@@ -51,4 +51,7 @@
     <string name="export_success">导出成功!</string>
     <string name="export_fail">导出失败</string>
     <string name="shape_out_of_range">已经超出显示范围，请新增一页</string>
+    <string name="ask_for_delete_page">你确定要删除该页面吗？</string>
+    <string name="save_and_exit">保存并退出?</string>
+    <string name="find_old_scribble">发现旧手写数据，需要导入吗？</string>
 </resources>

@@ -30,9 +30,9 @@
     <dimen name="tree_recycler_item_view_padding">10dp</dimen>
     <dimen name="reader_layer_menu_tts_item_padding">30dp</dimen>
     <dimen name="dialog_reader_menu_text_view_size">24sp</dimen>
-    <dimen name="navigatorHeight">42dp</dimen>
+    <dimen name="navigatorHeight">28dp</dimen>
     <dimen name="reader_status_bar_text_size">20sp</dimen>
-    <dimen name="navigatorWidth">30dp</dimen>
+    <dimen name="navigatorWidth">20dp</dimen>
     <dimen name="global_activities_back_btn_image_height">36dp</dimen>
     <dimen name="global_activities_back_btn_image_width">24dp</dimen>
     <dimen name="global_activities_back_btn_category_image_height">36dp</dimen>
@@ -47,5 +47,15 @@
     <dimen name="dialog_loading_text_area_minHeight">72dp</dimen>
     <dimen name="dialog_loading_close_button_image_size">80dp</dimen>
     <dimen name="dialog_loading_text_size">24sp</dimen>
+    <dimen name="preference_title_text_size">16sp</dimen>
+    <dimen name="preference_category_text_size">14sp</dimen>
+
+    <dimen name="dialog_sort_by_item_radioButton_text_size">22sp</dimen>
+    <dimen name="dialog_sort_by_item_radioButton_margin">13dp</dimen>
+    <dimen name="dialog_sort_by_x_pos">28dp</dimen>
+    <dimen name="dialog_sort_by_y_pos">38dp</dimen>
+    <dimen name="dialog_sort_by_width">294dp</dimen>
+    <dimen name="dialog_sort_by_height">350dp</dimen>
+    <dimen name="dialog_sort_by_order_radio_button_text_size">26sp</dimen>
 
 </resources>

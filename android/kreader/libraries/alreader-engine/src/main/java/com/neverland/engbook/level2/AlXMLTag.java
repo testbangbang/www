@@ -109,7 +109,7 @@ public class AlXMLTag {
 		if (alen < 1)
 			return;
 		
-		AlXMLTagParam a = null;
+		AlXMLTagParam a/* = null*/;
 		if (attr_len < attr.size()) {
 			a = attr.get(attr_len);
 			a.name = aname;

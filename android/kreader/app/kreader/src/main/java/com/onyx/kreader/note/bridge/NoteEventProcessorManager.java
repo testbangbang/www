@@ -11,7 +11,7 @@ import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.kreader.note.NoteManager;
-import com.onyx.kreader.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 /**
  * Created by zhuzeng on 9/18/16.
@@ -45,6 +45,8 @@ public class NoteEventProcessorManager {
     public void stop() {
         if (rawEventProcessor != null) {
             rawEventProcessor.quit();
+            rawEventProcessor = null;
+
         }
     }
 

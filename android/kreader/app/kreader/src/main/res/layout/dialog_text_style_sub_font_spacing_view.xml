@@ -1,29 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:padding="10dp">
-
-
-    <LinearLayout
-        android:id="@+id/line_spacing_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="5dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp">
 
         <TextView
+            android:id="@+id/text_view_spacing_title"
             android:textSize="@dimen/dialog_common_text_size"
             android:layout_width="80dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/layout_line_spacing"
+            android:layout_alignBottom="@+id/layout_line_spacing"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
             android:gravity="center"
             android:text="@string/reader_layer_menu_font_style_font_line_spacing"
             android:textStyle="bold"/>
 
         <LinearLayout
+            android:id="@+id/layout_line_spacing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@id/text_view_spacing_title"
             android:orientation="horizontal" android:layout_gravity="center">
             <ImageView android:id="@+id/image_view_small_line_spacing"
                        android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -47,27 +53,32 @@
                        android:src="@drawable/ic_dialog_reader_menu_font_line_space_expand"/>
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/page_margin_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="5dp">
-
         <TextView
+            android:id="@+id/text_view_margin_title"
             android:textSize="@dimen/dialog_common_text_size"
             android:layout_width="80dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/layout_page_margin"
+            android:layout_alignBottom="@+id/layout_page_margin"
             android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
             android:text="@string/reader_layer_menu_font_style_page_margins"
             android:textStyle="bold"/>
 
         <LinearLayout
+            android:id="@+id/layout_page_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" android:layout_gravity="center">
+            android:layout_below="@id/layout_line_spacing"
+            android:layout_toRightOf="@id/text_view_margin_title"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
             <ImageView android:id="@+id/image_view_small_page_margins"
                        android:layout_width="wrap_content" android:layout_height="wrap_content"
                        style="@style/fontStyle_imageView_style"
@@ -90,5 +101,60 @@
                        android:src="@drawable/ic_dialog_reader_menu_font_margin_expand"/>
         </LinearLayout>
 
-    </LinearLayout>
-</LinearLayout>
+    <TextView
+        android:id="@+id/text_view_chinese_convert"
+        android:textSize="@dimen/dialog_common_text_size"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/layout_chinese_convert"
+        android:layout_alignBottom="@+id/layout_chinese_convert"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:textStyle="bold"
+        android:text="简　繁"/>
+
+    <RadioGroup
+        android:id="@+id/layout_chinese_convert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@id/layout_page_margin"
+        android:layout_alignLeft="@id/layout_page_margin"
+        android:layout_alignRight="@id/layout_page_margin"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        android:focusable="false">
+
+            <RadioButton
+                android:id="@+id/button_simplified"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:focusable="true"
+                android:gravity="center"
+                android:background="@drawable/all_line_check_bg"
+                android:textColor="@drawable/checkbox_as_button_text_selector"
+                android:textSize="@dimen/dialog_text_style_chinese_convert_font_size"
+                android:text="简体" />
+
+            <RadioButton
+                android:id="@+id/button_traditional"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:focusable="true"
+                android:gravity="center"
+                android:background="@drawable/checkbox_as_button_bg"
+                android:textColor="@drawable/checkbox_as_button_text_selector"
+                android:textSize="@dimen/dialog_text_style_chinese_convert_font_size"
+                android:text="繁体"/>
+
+        </RadioGroup>
+
+</RelativeLayout>

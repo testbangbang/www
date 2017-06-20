@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="@drawable/focused_bg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingRight="@dimen/tree_recycler_item_view_padding"
@@ -14,6 +15,7 @@
             android:src="@drawable/ic_tree_recycler_item_view_indicator"/>
 
     <TextView
+            android:textSize="@dimen/tree_item_text_size"
             android:layout_centerVertical="true"
             android:id="@+id/text_view_description"
             android:layout_width="wrap_content"
@@ -22,6 +24,9 @@
             android:layout_marginRight="5dp"/>
 
     <TextView
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textSize="@dimen/tree_item_text_size"
             android:layout_centerVertical="true"
             android:id="@+id/text_view_title"
             android:layout_width="match_parent"

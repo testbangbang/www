@@ -37,7 +37,7 @@
     <dimen name="popup_selection_menu_action_margin_top_bottom">10dp</dimen>
     <dimen name="dialog_table_of_content_list_item_padding_top">20dp</dimen>
     <dimen name="tts_layout_bg_radius">60dp</dimen>
-    <dimen name="dialog_tts_padding">20dp</dimen>
+    <dimen name="ellipse_view_padding">20dp</dimen>
     <dimen name="tts_speed_checkbox_height">80dp</dimen>
     <dimen name="tts_speed_checkbox_width">20dp</dimen>
     <dimen name="dialog_tts_voice_height">250dp</dimen>
@@ -50,4 +50,10 @@
     <dimen name="dict_name_text_view_layout_width">400dp</dimen>
     <dimen name="view_pinch_zooming_message_font_size">25sp</dimen>
     <dimen name="view_pinch_zooming_message_scale_size">48sp</dimen>
+    <dimen name="dialog_text_style_view_page_width">700dp</dimen>
+    <dimen name="preview_item_page_text_size">24sp</dimen>
+    <dimen name="dialog_table_of_content_list_item_text_size">22sp</dimen>
+    <dimen name="dialog_search_list_item_page_text_size">22sp</dimen>
+    <dimen name="dialog_quick_view_page_text_size">24sp</dimen>
+    <dimen name="dialog_search_list_item_text_size">20sp</dimen>
 </resources>

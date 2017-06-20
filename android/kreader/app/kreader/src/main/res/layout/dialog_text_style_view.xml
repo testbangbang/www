@@ -1,135 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="@dimen/dialog_text_style_view_page_width"
+              android:layout_height="wrap_content"
+                android:id="@+id/content_view"
               android:paddingBottom="1dp"
               android:paddingRight="10dp"
               android:paddingLeft="10dp">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:gravity="center_horizontal"
-            android:id="@+id/font_face_layout"
-            android:layout_marginLeft="20dp"
-            android:orientation="vertical"
-            android:layout_width="100dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/font_face_text"
-                android:textSize="@dimen/dialog_common_text_size"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:text="@string/font_face"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:focusable="true"
+                android:background="@drawable/imagebtn_bg"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/font_face_layout"
+                android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
+                android:orientation="vertical"
+                android:layout_width="@dimen/dialog_text_style_title_view_width"
+                android:layout_height="match_parent">
 
-            <View
-                android:id="@+id/font_face_bottom_view"
-                android:background="@android:color/black"
-                android:layout_width="wrap_content"
-                android:layout_height="5dp"/>
+                <TextView
+                    style="@style/dialog_text_style_title_text_view"
+                    android:id="@+id/font_face_text"
+                    android:text="@string/chinese_font_face"/>
+
+                <View
+                    android:id="@+id/font_face_bottom_view"
+                    android:background="@android:color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="5dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:background="@drawable/imagebtn_bg"
+                android:gravity="center_horizontal"
+                android:id="@+id/english_font_face_layout"
+                android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
+                android:orientation="vertical"
+                android:layout_width="@dimen/dialog_text_style_title_view_width"
+                android:layout_height="match_parent">
+
+                <TextView
+                    style="@style/dialog_text_style_title_text_view"
+                    android:id="@+id/english_font_face_text"
+                    android:text="@string/english_font_face"/>
+
+                <View
+                    android:id="@+id/english_font_face_bottom_view"
+                    android:background="@android:color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="5dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:background="@drawable/imagebtn_bg"
+                android:id="@+id/page_spacing_layout"
+                android:gravity="center_horizontal"
+                android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
+                android:orientation="vertical"
+                android:layout_width="@dimen/dialog_text_style_title_view_width"
+                android:layout_height="match_parent">
+
+                <TextView
+                    style="@style/dialog_text_style_title_text_view"
+                    android:id="@+id/page_spacing_text"
+                    android:text="@string/text_style"/>
+
+                <View
+                    android:id="@+id/page_spacing_bottom_view"
+                    android:background="@android:color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="5dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:background="@drawable/imagebtn_bg"
+                android:id="@+id/code_page_layout"
+                android:gravity="center_horizontal"
+                android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
+                android:orientation="vertical"
+                android:layout_width="@dimen/dialog_text_style_title_view_width"
+                android:layout_height="match_parent">
+
+                <TextView
+                    style="@style/dialog_text_style_title_text_view"
+                    android:id="@+id/code_page_text"
+                    android:text="@string/dialog_text_style_view_code_page"/>
+
+                <View
+                    android:id="@+id/code_page_bottom_view"
+                    android:background="@android:color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="5dp"/>
+            </LinearLayout>
+
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/page_spacing_layout"
-            android:gravity="center_horizontal"
-            android:layout_marginLeft="30dp"
-            android:orientation="vertical"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/page_spacing_text"
-                android:textSize="@dimen/dialog_common_text_size"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:text="@string/text_style"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <View
-                android:id="@+id/page_spacing_bottom_view"
-                android:background="@android:color/black"
-                android:layout_width="wrap_content"
-                android:layout_height="5dp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/code_page_layout"
-            android:gravity="center_horizontal"
-            android:layout_marginLeft="30dp"
-            android:orientation="vertical"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/code_page_text"
-                android:textSize="@dimen/dialog_common_text_size"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:text="@string/dialog_text_style_view_code_page"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <View
-                android:id="@+id/code_page_bottom_view"
-                android:background="@android:color/black"
-                android:layout_width="wrap_content"
-                android:layout_height="5dp"/>
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <View
-        android:background="@android:color/black"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"/>
-
-    <com.onyx.android.sdk.ui.view.OnyxCustomViewPager
-        android:id="@+id/view_pager"
-        android:layout_width="@dimen/dialog_text_style_view_page_width"
-        android:layout_height="@dimen/dialog_text_style_view_page_height">
-
-    </com.onyx.android.sdk.ui.view.OnyxCustomViewPager>
-
-    <View
-        android:layout_marginTop="10dp"
-        android:background="@android:color/black"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"/>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:textSize="@dimen/dialog_export_text_size"
-            android:id="@+id/btn_cancel"
-            android:text="@string/cancel"
-            android:background="@drawable/no_line_press_bg"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="50dp"/>
 
         <View
             android:background="@android:color/black"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"/>
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
 
-        <Button
-            android:textSize="@dimen/dialog_export_text_size"
-            android:id="@+id/btn_ok"
-            android:text="@string/ok"
-            android:background="@drawable/no_line_press_bg"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="50dp"/>
+        <com.onyx.android.sdk.ui.view.OnyxCustomViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_text_style_view_page_height">
+
+        </com.onyx.android.sdk.ui.view.OnyxCustomViewPager>
+
+        <View
+            android:layout_marginTop="10dp"
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.onyx.android.sdk.ui.view.OnyxButton
+                android:textSize="@dimen/dialog_export_text_size"
+                android:id="@+id/btn_cancel"
+                android:text="@string/cancel"
+                android:background="@drawable/no_line_press_bg"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="50dp"/>
+
+            <View
+                android:background="@android:color/black"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"/>
+
+            <com.onyx.android.sdk.ui.view.OnyxButton
+                android:textSize="@dimen/dialog_export_text_size"
+                android:id="@+id/btn_ok"
+                android:text="@string/ok"
+                android:background="@drawable/no_line_press_bg"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="50dp"/>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+</RelativeLayout>

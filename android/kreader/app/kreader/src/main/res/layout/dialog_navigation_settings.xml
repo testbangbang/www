@@ -177,6 +177,19 @@
     </LinearLayout>
 
     <View
+        style="@style/single_line_X_axis_View"
+        android:layout_height="2dp" />
+
+        <CheckBox
+            android:layout_marginLeft="20dp"
+            android:textSize="@dimen/dialog_navigation_setting_item_text_size"
+            android:id="@+id/auto_crop_for_each_block"
+            android:padding="20dp"
+            android:text="@string/auto_crop_for_each_block"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <View
         android:id="@+id/bottom_divider_line"
         style="@style/single_line_X_axis_View"
         android:layout_height="2dp" />
@@ -188,7 +201,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-        <Button
+        <com.onyx.android.sdk.ui.view.OnyxButton
+            android:focusable="true"
             android:textSize="@dimen/dialog_common_text_size"
             android:background="@drawable/radio_button_bg"
             android:id="@+id/buttonCancel"
@@ -198,7 +212,8 @@
             android:text="@string/cancel"
             android:layout_weight="1" />
 
-        <Button
+        <com.onyx.android.sdk.ui.view.OnyxButton
+            android:focusable="true"
             android:textSize="@dimen/dialog_common_text_size"
             android:background="@drawable/radio_button_bg"
             android:id="@+id/buttonConfirm"

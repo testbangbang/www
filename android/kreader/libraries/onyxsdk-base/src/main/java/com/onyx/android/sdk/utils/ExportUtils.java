@@ -1,9 +1,11 @@
 package com.onyx.android.sdk.utils;
 
-import com.onyx.android.sdk.utils.FileUtils;
+import android.os.Environment;
 
 import java.io.File;
 import java.io.IOException;
+
+import static android.os.Environment.DIRECTORY_PICTURES;
 
 /**
  * Created by ming on 2016/10/31.
@@ -43,5 +45,10 @@ public class ExportUtils {
     public static String getExportNotePath(String document, String page) throws IOException{
         String documentPath = NOTE_EXPORT_LOCATION + document;
         return new File(getExportFolderPath(documentPath), page + ".png").getAbsolutePath();
+    }
+
+    public static String getExportPicPath(String document) throws IOException {
+        String documentPath = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).getAbsolutePath() + File.separator +"Screenshots";
+        return new File(documentPath, document + ".png").getAbsolutePath();
     }
 }

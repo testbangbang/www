@@ -16,6 +16,7 @@
 #   public *;
 #}
 -keepnames class com.onyx.android.sdk.scribble.data.PageNameList { *; }
+-keepnames class com.onyx.android.sdk.scribble.data.ShapeExtraAttributes { *; }
 -keepattributes Exceptions,InnerClasses,...
 -keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig { *; }
 -keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig$* { *; }

@@ -1,8 +1,10 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.content.DialogInterface;
+import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -11,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,22 +25,29 @@ import com.onyx.android.sdk.data.FontInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.ReaderTextStyle.PageMargin;
 import com.onyx.android.sdk.data.ReaderTextStyle.Percentage;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.ui.view.AlignTextView;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.OnyxRadioButton;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.ui.actions.ChangeChineseConvertTypeAction;
 import com.onyx.kreader.ui.actions.ChangeCodePageAction;
 import com.onyx.kreader.ui.actions.ChangeStyleAction;
 import com.onyx.kreader.ui.actions.GetFontsAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.os.Looper.getMainLooper;
 import static com.onyx.kreader.ui.dialog.DialogTextStyle.FontLevel.DECREASE;
 import static com.onyx.kreader.ui.dialog.DialogTextStyle.FontLevel.INCREASE;
 import static com.onyx.kreader.ui.dialog.DialogTextStyle.FontLevel.LARGE;
@@ -54,7 +65,9 @@ public class DialogTextStyle extends DialogBase {
     }
 
     public interface TextStyleCallback {
-        void onSaveReaderStyle(ReaderTextStyle readerTextStyle);
+        void onSaveReaderStyle(final DialogTextStyle dialog, ReaderTextStyle readerTextStyle);
+
+        void onCancel(final DialogTextStyle dialog);
     }
 
     private static Pair<Integer, Integer>[] CODE_PAGES = new Pair[] {
@@ -80,19 +93,23 @@ public class DialogTextStyle extends DialogBase {
 
     private FontInfo defaultFont = new FontInfo();
 
-    private View fontFaceLine;
+    private View chineseFontFaceLine;
+    private View englishFontFaceLine;
     private View fontSpacingLine;
     private View codePageLine;
     private OnyxCustomViewPager viewPager;
     private Button btnOk;
     private Button btnCancel;
-    private LinearLayout fontFaceLayout;
+    private LinearLayout englishFaceLayout;
+    private LinearLayout chineseFontFaceLayout;
     private LinearLayout fontSpacingLayout;
     private LinearLayout codePageLayout;
+    private ImageView decreaseIcon;
+    private ImageView increaseIcon;
 
-    private List<FontInfo> fonts = new ArrayList<>();
-    private int selectFontIndex = -1;
     private int selectCodePageIndex = 0;
+    private SelectFontIndex chineseSelectFontIndex = new SelectFontIndex();
+    private SelectFontIndex englishSelectFontIndex = new SelectFontIndex();
     private List<View> pageViews = new ArrayList<>();
     private ReaderDataHolder readerDataHolder;
     List<AlignTextView> fontSizeTexts = new ArrayList<>();
@@ -100,6 +117,13 @@ public class DialogTextStyle extends DialogBase {
 
     private ReaderTextStyle originalStyle;
     private int originalCodePage;
+    private ReaderChineseConvertType originalChineseConvertType = ReaderChineseConvertType.NONE;
+
+    private PinchZoomingPopupMenu pinchZoomingPopupMenu;
+    private Handler handler;
+    private Runnable hideRunnable;
+    private long lastUpTime = -1;
+    private static final int HIDE_TIME_OUT = 1000;
 
     public DialogTextStyle(ReaderDataHolder readerDataHolder, TextStyleCallback callback) {
         super(readerDataHolder.getContext());
@@ -107,21 +131,25 @@ public class DialogTextStyle extends DialogBase {
         this.callback = callback;
         this.originalStyle = ReaderTextStyle.copy(readerDataHolder.getReaderViewInfo().getReaderTextStyle());
         this.originalCodePage = readerDataHolder.getReaderUserDataInfo().getDocumentCodePage();
+        this.originalChineseConvertType = readerDataHolder.getReaderUserDataInfo().getChineseConvertType();
         setContentView(R.layout.dialog_text_style_view);
         init();
     }
 
     private void init() {
-        defaultFont.setName(getContext().getString(R.string.default_font));
-        defaultFont.setId("serif"); // magic code from alreader engine
+        handler = new Handler(getMainLooper());
 
-        fontFaceLine = findViewById(R.id.font_face_bottom_view);
+
+        chineseFontFaceLine = findViewById(R.id.font_face_bottom_view);
+        englishFontFaceLine = findViewById(R.id.english_font_face_bottom_view);
         fontSpacingLine = findViewById(R.id.page_spacing_bottom_view);
         codePageLine = findViewById(R.id.code_page_bottom_view);
-        fontFaceLayout = (LinearLayout) findViewById(R.id.font_face_layout);
+        chineseFontFaceLayout = (LinearLayout) findViewById(R.id.font_face_layout);
+        englishFaceLayout = (LinearLayout) findViewById(R.id.english_font_face_layout);
         fontSpacingLayout = (LinearLayout) findViewById(R.id.page_spacing_layout);
         codePageLayout = (LinearLayout) findViewById(R.id.code_page_layout);
-        fontFaceLine.setVisibility(View.VISIBLE);
+        chineseFontFaceLine.setVisibility(View.VISIBLE);
+        englishFontFaceLine.setVisibility(View.INVISIBLE);
         fontSpacingLine.setVisibility(View.INVISIBLE);
         codePageLine.setVisibility(View.INVISIBLE);
 
@@ -129,36 +157,34 @@ public class DialogTextStyle extends DialogBase {
         btnOk = (Button) findViewById(R.id.btn_ok);
         btnCancel = (Button) findViewById(R.id.btn_cancel);
 
-        pageViews.add(initFontFaceView());
+        pageViews.add(initFontFaceView(DeviceUtils.FontType.CHINESE));
+        pageViews.add(initFontFaceView(DeviceUtils.FontType.ENGLISH));
         pageViews.add(initPageSpacingView());
         pageViews.add(initCodePageView());
 
         viewPager.setAdapter(new ViewPagerAdapter());
-        fontFaceLayout.setOnClickListener(new View.OnClickListener() {
+        chineseFontFaceLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewPager.setCurrentItem(0, false);
-                fontFaceLine.setVisibility(View.VISIBLE);
-                fontSpacingLine.setVisibility(View.INVISIBLE);
-                codePageLine.setVisibility(View.INVISIBLE);
+                switchViewPage(0);
+            }
+        });
+        englishFaceLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchViewPage(1);
             }
         });
         fontSpacingLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewPager.setCurrentItem(1, false);
-                fontFaceLine.setVisibility(View.INVISIBLE);
-                fontSpacingLine.setVisibility(View.VISIBLE);
-                codePageLine.setVisibility(View.INVISIBLE);
+                switchViewPage(2);
             }
         });
         codePageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewPager.setCurrentItem(2, false);
-                fontFaceLine.setVisibility(View.INVISIBLE);
-                fontSpacingLine.setVisibility(View.INVISIBLE);
-                codePageLine.setVisibility(View.VISIBLE);
+                switchViewPage(3);
             }
         });
 
@@ -167,7 +193,7 @@ public class DialogTextStyle extends DialogBase {
             public void onClick(View v) {
                 dismiss();
                 if (callback != null) {
-                    callback.onSaveReaderStyle(getReaderStyle());
+                    callback.onSaveReaderStyle(DialogTextStyle.this, getReaderStyle());
                 }
             }
         });
@@ -175,6 +201,9 @@ public class DialogTextStyle extends DialogBase {
             @Override
             public void onClick(View v) {
                 restoreAndDismiss();
+                if (callback != null) {
+                    callback.onCancel(DialogTextStyle.this);
+                }
             }
         });
 
@@ -186,6 +215,24 @@ public class DialogTextStyle extends DialogBase {
         });
 
         viewPager.setPagingEnabled(false);
+        switchViewPage(0);
+    }
+
+    private void switchViewPage(final int index) {
+        viewPager.setCurrentItem(index, false);
+        chineseFontFaceLine.setVisibility(index == 0 ? View.VISIBLE : View.INVISIBLE);
+        englishFontFaceLine.setVisibility(index == 1 ? View.VISIBLE : View.INVISIBLE);
+        fontSpacingLine.setVisibility(index == 2 ? View.VISIBLE : View.INVISIBLE);
+        codePageLine.setVisibility(index == 3 ? View.VISIBLE : View.INVISIBLE);
+
+        if (index == 0) {
+            updateFontSizeView(pageViews.get(0));
+            updateFontPageView(pageViews.get(0));
+        }
+        if (index == 1) {
+            updateFontSizeView(pageViews.get(1));
+            updateFontPageView(pageViews.get(1));
+        }
     }
 
     @Override
@@ -201,6 +248,10 @@ public class DialogTextStyle extends DialogBase {
         if (originalCodePage != CODE_PAGES[selectCodePageIndex].first) {
             new ChangeCodePageAction(originalCodePage).execute(readerDataHolder, null);
         }
+        if (originalChineseConvertType != readerDataHolder.getReaderUserDataInfo().getChineseConvertType()) {
+            new ChangeChineseConvertTypeAction(originalChineseConvertType).execute(readerDataHolder, null);
+        }
+        SingletonSharedPreference.setLastFontSize(originalStyle.getFontSize().getValue());
         updateReaderStyle(originalStyle, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -209,15 +260,14 @@ public class DialogTextStyle extends DialogBase {
         });
     }
 
-    private View initFontFaceView() {
+    private View initFontFaceView(final DeviceUtils.FontType fontType) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_text_style_sub_font_face_view, null, false);
-        CommonViewHolder fontFaceViewHolder = new CommonViewHolder(view);
         final PageRecyclerView pageView = (PageRecyclerView) view.findViewById(R.id.font_page_view);
         final TextView pageSizeIndicator = (TextView) view.findViewById(R.id.page_size_indicator);
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
         ImageView nextIcon = (ImageView) view.findViewById(R.id.next_icon);
-        ImageView decreaseIcon = (ImageView) view.findViewById(R.id.image_view_decrease_font_size);
-        ImageView increaseIcon = (ImageView) view.findViewById(R.id.image_view_increase_font_size);
+
+        pageView.setPageTurningCycled(true);
 
         nextIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,22 +283,6 @@ public class DialogTextStyle extends DialogBase {
             }
         });
 
-        increaseIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReaderTextStyle.SPUnit currentSize = getReaderStyle().getFontSize();
-                applyFontSize(currentSize.increaseSPUnit(ReaderTextStyle.FONT_SIZE_STEP));
-            }
-        });
-
-        decreaseIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReaderTextStyle.SPUnit currentSize = getReaderStyle().getFontSize();
-                applyFontSize(currentSize.decreaseSPUnit(ReaderTextStyle.FONT_SIZE_STEP));
-            }
-        });
-
         pageView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
@@ -257,18 +291,50 @@ public class DialogTextStyle extends DialogBase {
         });
 
         final String fontFace = getReaderStyle().getFontFace();
-        final GetFontsAction getFontsAction = new GetFontsAction(fontFace);
+        final GetFontsAction getFontsAction = new GetFontsAction(fontFace, fontType);
         getFontsAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     return;
                 }
-                initFontPageView(pageView, fontFace, getFontsAction.getFonts());
+                initFontPageView(pageView, fontFace, getFontsAction.getFonts(), fontType, fontType == DeviceUtils.FontType.ENGLISH ? englishSelectFontIndex : chineseSelectFontIndex);
                 updatePageIndicator(pageView, pageSizeIndicator);
             }
         });
 
+        updateFontSizeView(view);
+        return view;
+    }
+
+    private void updateFontPageView(View parentView) {
+        final PageRecyclerView pageView = (PageRecyclerView) parentView.findViewById(R.id.font_page_view);
+        pageView.notifyDataSetChanged();
+    }
+
+    private void updateFontSizeView(View parentView) {
+        CommonViewHolder fontFaceViewHolder = new CommonViewHolder(parentView);
+        decreaseIcon = (ImageView) parentView.findViewById(R.id.image_view_decrease_font_size);
+        increaseIcon = (ImageView) parentView.findViewById(R.id.image_view_increase_font_size);
+        increaseIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReaderTextStyle.SPUnit currentSize = getReaderStyle().getFontSize();
+                applyFontSize(currentSize.increaseSPUnit(ReaderTextStyle.FONT_SIZE_STEP));
+                showFontSize(currentSize.getValue());
+            }
+        });
+
+        decreaseIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReaderTextStyle.SPUnit currentSize = getReaderStyle().getFontSize();
+                applyFontSize(currentSize.decreaseSPUnit(ReaderTextStyle.FONT_SIZE_STEP));
+                showFontSize(currentSize.getValue());
+            }
+        });
+
+        fontSizeTexts.clear();
         fontSizeTexts.add((AlignTextView) fontFaceViewHolder.getView(com.onyx.android.sdk.ui.R.id.text_view_font_size_0));
         fontSizeTexts.add((AlignTextView) fontFaceViewHolder.getView(com.onyx.android.sdk.ui.R.id.text_view_font_size_1));
         fontSizeTexts.add((AlignTextView) fontFaceViewHolder.getView(com.onyx.android.sdk.ui.R.id.text_view_font_size_2));
@@ -278,8 +344,43 @@ public class DialogTextStyle extends DialogBase {
         fontSizeTexts.add((AlignTextView) fontFaceViewHolder.getView(com.onyx.android.sdk.ui.R.id.text_view_font_size_6));
         fontSizeTexts.add((AlignTextView) fontFaceViewHolder.getView(com.onyx.android.sdk.ui.R.id.text_view_font_size_7));
         updateFontSizeTextView(fontSizeTexts, getReaderStyle());
+    }
 
-        return view;
+    private PinchZoomingPopupMenu getPinchZoomPopupMenu() {
+        if (pinchZoomingPopupMenu == null) {
+            DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
+            int menuWidth = Math.max(dm.widthPixels, dm.heightPixels) / 4;
+            int menuHeight = Math.max(Math.min(dm.widthPixels, dm.heightPixels) / 5, 300);
+            pinchZoomingPopupMenu = new PinchZoomingPopupMenu(getContext(),
+                    (RelativeLayout)this.findViewById(R.id.content_view),menuWidth,menuHeight);
+        }
+        return pinchZoomingPopupMenu;
+    }
+
+    private void showFontSize(final float fontSize) {
+        String value = String.format("%d", (int) fontSize);
+        getPinchZoomPopupMenu().showAndUpdate(PinchZoomingPopupMenu.MessageToShown.FontSize, value);
+        long curTime = System.currentTimeMillis();
+        if (lastUpTime != -1 && (curTime - lastUpTime <= HIDE_TIME_OUT) && (hideRunnable != null)) {
+            removeHideRunnable();
+        }
+        hideRunnable = buildHideRunnable();
+        handler.postDelayed(hideRunnable, HIDE_TIME_OUT);
+    }
+
+    private Runnable buildHideRunnable(){
+        return new Runnable() {
+            @Override
+            public void run() {
+                getPinchZoomPopupMenu().hide();
+            }
+        };
+    }
+
+    private void removeHideRunnable() {
+        if (handler != null && hideRunnable != null) {
+            handler.removeCallbacks(hideRunnable);
+        }
     }
 
     private View initCodePageView() {
@@ -288,6 +389,8 @@ public class DialogTextStyle extends DialogBase {
         final TextView pageSizeIndicator = (TextView) view.findViewById(R.id.page_size_indicator);
         ImageView preIcon = (ImageView) view.findViewById(R.id.pre_icon);
         ImageView nextIcon = (ImageView) view.findViewById(R.id.next_icon);
+
+        pageView.setPageTurningCycled(true);
 
         nextIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -364,6 +467,19 @@ public class DialogTextStyle extends DialogBase {
                         new ChangeCodePageAction(CODE_PAGES[position].first).execute(readerDataHolder, null);
                     }
                 });
+                viewHolder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (hasFocus) {
+                            if (pageView.getPaginator().isInNextPage(position)) {
+                                btnCancel.requestFocus();
+                            }
+                            if (pageView.getPaginator().isInPrevPage(position)) {
+                                codePageLayout.requestFocus();
+                            }
+                        }
+                    }
+                });
             }
         });
     }
@@ -385,19 +501,48 @@ public class DialogTextStyle extends DialogBase {
         new ChangeStyleAction(style).execute(readerDataHolder, callback);
     }
 
-    private void initFontPageView(final PageRecyclerView pageView, String fontFace, List<FontInfo> fontsList) {
-        fonts.clear();
-        fonts.add(defaultFont);
-        fonts.addAll(fontsList);
+    private int updateSelectFontIndex(final SelectFontIndex selectFontIndex, final List<FontInfo> fonts, final String fontFace, final DeviceUtils.FontType fontType) {
+        int fontIndex = -1;
         if (fontFace == null) {
-            selectFontIndex = 0; // choose default
+            if (fontType == DeviceUtils.FontType.ENGLISH) {
+                fontIndex = 0; // choose default
+            }
         } else {
             for (int i = 0; i < fonts.size(); i++) {
                 if (fontFace.equals(fonts.get(i).getId())) {
-                    selectFontIndex = i;
+                    fontIndex = i;
                 }
             }
         }
+        selectFontIndex.setIndex(fontIndex);
+        return fontIndex;
+    }
+
+    private static class SelectFontIndex {
+        private int index;
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public boolean equals(int o) {
+            return index == o;
+        }
+    }
+
+    private void initFontPageView(final PageRecyclerView pageView, String fontFace, List<FontInfo> fontsList, final DeviceUtils.FontType fontType, final SelectFontIndex selectFontIndex) {
+        final List<FontInfo> fonts = new ArrayList<>();
+        if (fontType == DeviceUtils.FontType.ENGLISH) {
+            defaultFont.setName(getContext().getString(R.string.default_font));
+            defaultFont.setId("serif"); // magic code from alreader engine
+            fonts.add(defaultFont);
+        }
+        fonts.addAll(fontsList);
+        updateSelectFontIndex(selectFontIndex, fonts, fontFace, fontType);
 
         pageView.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override
@@ -428,16 +573,34 @@ public class DialogTextStyle extends DialogBase {
                 final FontInfo fontInfo = fonts.get(position);
                 button.setText(fontInfo.getName());
                 button.setTypeface(fontInfo.getTypeface());
-                button.setChecked(selectFontIndex == position);
+                button.setChecked(selectFontIndex.equals(position));
 
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        pageView.getPageAdapter().notifyItemChanged(selectFontIndex);
-                        selectFontIndex = position;
-                        pageView.getPageAdapter().notifyItemChanged(selectFontIndex);
+                        pageView.getPageAdapter().notifyItemChanged(selectFontIndex.getIndex());
+                        selectFontIndex.setIndex(position);
+                        pageView.getPageAdapter().notifyItemChanged(selectFontIndex.getIndex());
                         getReaderStyle().setFontFace(fonts.get(position).getId());
                         updateReaderStyle(getReaderStyle());
+                        if (fontType == DeviceUtils.FontType.ENGLISH) {
+                            chineseSelectFontIndex.setIndex(-1);
+                        }else {
+                            englishSelectFontIndex.setIndex(-1);
+                        }
+                    }
+                });
+                viewHolder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (hasFocus) {
+                            if (pageView.getPaginator().isInNextPage(position)) {
+                                decreaseIcon.requestFocus();
+                            }
+                            if (pageView.getPaginator().isInPrevPage(position)) {
+                                chineseFontFaceLayout.requestFocus();
+                            }
+                        }
                     }
                 });
             }
@@ -446,7 +609,7 @@ public class DialogTextStyle extends DialogBase {
 
     private View initPageSpacingView() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_text_style_sub_font_spacing_view, null, false);
-        CommonViewHolder fontSpacingViewHolder = new CommonViewHolder(view);
+        final CommonViewHolder fontSpacingViewHolder = new CommonViewHolder(view);
 
         Map<FontLevel, ImageView> spacingViewMap = new HashMap<>();
         spacingViewMap.put(SMALL, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_small_line_spacing));
@@ -462,8 +625,36 @@ public class DialogTextStyle extends DialogBase {
         marginViewMap.put(LARGE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_large_page_margins));
         marginViewMap.put(DECREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_decrease_page_margins));
         marginViewMap.put(INCREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_increase_page_margins));
-        updateFontSpacingView(marginViewMap, getReaderStyle());
         updateFontMarginView(marginViewMap, getReaderStyle());
+
+        if (LocaleUtils.isChinese()) {
+            fontSpacingViewHolder.getView(R.id.text_view_chinese_convert).setVisibility(View.VISIBLE);
+            fontSpacingViewHolder.getView(R.id.layout_chinese_convert).setVisibility(View.VISIBLE);
+
+            if (originalChineseConvertType == ReaderChineseConvertType.TRADITIONAL_TO_SIMPLIFIED) {
+                ((RadioButton) fontSpacingViewHolder.getView(R.id.button_simplified)).setChecked(true);
+            } else if (originalChineseConvertType == ReaderChineseConvertType.SIMPLIFIED_TO_TRADITIONAL) {
+                ((RadioButton) fontSpacingViewHolder.getView(R.id.button_traditional)).setChecked(true);
+            }
+
+            fontSpacingViewHolder.getView(R.id.button_simplified).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((RadioButton)fontSpacingViewHolder.getView(R.id.button_simplified)).setChecked(true);
+                    new ChangeChineseConvertTypeAction(ReaderChineseConvertType.TRADITIONAL_TO_SIMPLIFIED).execute(readerDataHolder, null);
+                }
+            });
+
+            fontSpacingViewHolder.getView(R.id.button_traditional).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((RadioButton)fontSpacingViewHolder.getView(R.id.button_traditional)).setChecked(true);
+                    new ChangeChineseConvertTypeAction(ReaderChineseConvertType.SIMPLIFIED_TO_TRADITIONAL).execute(readerDataHolder, null);
+                }
+            });
+        }
+
+
         return view;
     }
 
@@ -496,6 +687,7 @@ public class DialogTextStyle extends DialogBase {
         getReaderStyle().setFontSize(size);
         updateReaderStyle(getReaderStyle());
         updateFontSizeTextView(fontSizeTexts, getReaderStyle());
+        SingletonSharedPreference.setLastFontSize(size.getValue());
     }
 
     private void updateFontSpacingView(final Map<FontLevel, ImageView> spacingViewMap, final ReaderTextStyle readerTextStyle) {
@@ -534,6 +726,7 @@ public class DialogTextStyle extends DialogBase {
                     readerTextStyle.setLineSpacing(percentage);
                     updateReaderStyle(readerTextStyle);
                     updateFontSpacingView(spacingViewMap, readerTextStyle);
+                    SingletonSharedPreference.setLastLineSpacing(percentage.getPercent());
                 }
             });
         }
@@ -563,13 +756,13 @@ public class DialogTextStyle extends DialogBase {
                 public void onClick(View v) {
                     switch (fontLevel) {
                         case SMALL:
-                            currentPageMargin = ReaderTextStyle.SMALL_PAGE_MARGIN;
+                            currentPageMargin = PageMargin.copy(ReaderTextStyle.SMALL_PAGE_MARGIN);
                             break;
                         case NORMAL:
-                            currentPageMargin = ReaderTextStyle.NORMAL_PAGE_MARGIN;
+                            currentPageMargin = PageMargin.copy(ReaderTextStyle.NORMAL_PAGE_MARGIN);
                             break;
                         case LARGE:
-                            currentPageMargin = ReaderTextStyle.LARGE_PAGE_MARGIN;
+                            currentPageMargin = PageMargin.copy(ReaderTextStyle.LARGE_PAGE_MARGIN);
                             break;
                         case INCREASE:
                             if (currentPageMargin.getLeftMargin().getPercent() >=
@@ -589,6 +782,10 @@ public class DialogTextStyle extends DialogBase {
                             break;
                     }
                     readerTextStyle.setPageMargin(currentPageMargin);
+                    SingletonSharedPreference.setLastLeftMargin(currentPageMargin.getLeftMargin().getPercent());
+                    SingletonSharedPreference.setLastTopMargin(currentPageMargin.getTopMargin().getPercent());
+                    SingletonSharedPreference.setLastRightMargin(currentPageMargin.getRightMargin().getPercent());
+                    SingletonSharedPreference.setLastBottomMargin(currentPageMargin.getBottomMargin().getPercent());
                     updateReaderStyle(readerTextStyle);
                     updateFontMarginView(marginViewMap, readerTextStyle);
                 }

@@ -48,5 +48,33 @@ public class AlOnePage {
 	public static void free(AlOnePage a) {			
 		a.items.clear();
 	}
-	
+
+	public void dublicate(AlOnePage a) {
+		while (realLength < a.realLength)
+			addItem(this);
+
+		for (int i = 0; i < a.realLength; i++)
+			items.get(i).dublicate(a.items.get(i));
+
+		//AlOneBlock		block;
+		block.height = a.block.height;
+		block.left = a.block.left;
+		block.use = a.block.use;
+		//
+
+		start_position = a.start_position;
+		end_position = a.end_position;
+		countItems = a.countItems;
+		textHeight = a.textHeight;
+		pageHeight = a.pageHeight;
+		topMarg = a.topMarg;
+		overhead = a.overhead;
+		selectStart = a.selectStart;
+		selectEnd = a.selectEnd;
+		notePresent = a.notePresent;
+
+		notesShift = a.notesShift;
+
+		textHeightWONotes = a.textHeightWONotes;
+	}
 }

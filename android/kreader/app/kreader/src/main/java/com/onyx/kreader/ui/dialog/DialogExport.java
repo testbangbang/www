@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -17,9 +16,10 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.ui.view.DynamicMultiRadioGroupView;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.request.ExportNotesRequest;
+import com.onyx.kreader.ui.requests.ExportNotesRequest;
 import com.onyx.kreader.ui.actions.ExportNotesActionChain;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
 /**
  * Created by ming on 16/9/26.
  */
-public class DialogExport extends Dialog implements CompoundButton.OnCheckedChangeListener {
+public class DialogExport extends OnyxBaseDialog implements CompoundButton.OnCheckedChangeListener {
 
     @Bind(R.id.annotation_checkbox)
     CheckBox annotationCheckbox;
@@ -106,7 +106,7 @@ public class DialogExport extends Dialog implements CompoundButton.OnCheckedChan
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogExport.this.dismiss();
+                dismiss();
             }
         });
 

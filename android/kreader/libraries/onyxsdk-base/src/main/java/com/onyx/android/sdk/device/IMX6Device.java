@@ -2,6 +2,8 @@ package com.onyx.android.sdk.device;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
@@ -83,6 +85,8 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
 
+    private static Method sMethodGetRemovableSDCardDirectory;
+
     /**
      * View.postInvalidate(int updateMode)
      */
@@ -144,6 +148,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodCloseFrontLight;
     private static Method sMethodGetFrontLightValue;
     private static Method sMethodSetFrontLightValue;
+    private static Method sMethodSetNaturalLightValue;
     private static Method sMethodGetFrontLightConfigValue;
     private static Method sMethodSetFrontLightConfigValue;
     private static Method sMethodLed;
@@ -154,6 +159,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodReadSystemConfig;
     private static Method sMethodSaveSystemConfig;
     private static Method sMethodUpdateMetadataDB;
+    private static Method sMethodGotoSleep;
 
     private static Method sMethodUseBigPen;
     private static Method sMethodStopTpd;
@@ -220,6 +226,9 @@ public class IMX6Device extends BaseDevice {
     @Override
     public File getExternalStorageDirectory() {
         // TODO or Environment.getExternalStorageDirectory()?
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return Environment.getExternalStorageDirectory();
+        }
         return new File("/mnt/sdcard");
     }
 
@@ -228,6 +237,9 @@ public class IMX6Device extends BaseDevice {
         // if system has an emulated SD card(/mnt/sdcard) provided by device's NAND flash,
         // then real SD card will be mounted as a child directory(/mnt/sdcard/extsd) in it, which names "extsd" here
         //final String SDCARD_MOUNTED_FOLDER = "extsd";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return (File) ReflectUtil.invokeMethodSafely(sMethodGetRemovableSDCardDirectory, null);
+        }
         return new File("/mnt/extsd");
     }
 
@@ -559,12 +571,14 @@ public class IMX6Device extends BaseDevice {
             sMethodCloseFrontLight = ReflectUtil.getMethodSafely(deviceControllerClass, "closeFrontLight", Context.class);
             sMethodGetFrontLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "getFrontLightValue", Context.class);
             sMethodSetFrontLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setFrontLightValue", Context.class, int.class);
+            sMethodSetNaturalLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setNaturalLightValue", Context.class, int.class);
             sMethodGetFrontLightConfigValue = ReflectUtil.getMethodSafely(deviceControllerClass, "getFrontLightConfigValue", Context.class);
             sMethodSetFrontLightConfigValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setFrontLightConfigValue", Context.class, int.class);
             sMethodUseBigPen = ReflectUtil.getMethodSafely(deviceControllerClass, "useBigPen", boolean.class);
             sMethodStopTpd = ReflectUtil.getMethodSafely(deviceControllerClass, "stopTpd");
             sMethodStartTpd = ReflectUtil.getMethodSafely(deviceControllerClass, "startTpd");
             sMethodEnableTpd = ReflectUtil.getMethodSafely(cls, "enableOnyxTpd", int.class);
+            sMethodGotoSleep = ReflectUtil.getMethodSafely(cls, "gotoSleep", Context.class, long.class);
 
             sMethodLed = ReflectUtil.getMethodSafely(deviceControllerClass, "led", boolean.class);
             sMethodSetLedColor = ReflectUtil.getMethodSafely(deviceControllerClass, "setLedColor", String.class, int.class);
@@ -632,6 +646,8 @@ public class IMX6Device extends BaseDevice {
             sMethodEnableA2 = ReflectUtil.getMethodSafely(cls, "enableA2");
             // signature of "public void disableA2()"
             sMethodDisableA2 = ReflectUtil.getMethodSafely(cls, "disableA2");
+
+            sMethodGetRemovableSDCardDirectory = ReflectUtil.getMethodSafely(Environment.class,"getRemovableSDCardDirectory");
             Log.d(TAG, "init device EINK_ONYX_GC_MASK.");
             return sInstance;
         }
@@ -757,6 +773,12 @@ public class IMX6Device extends BaseDevice {
     }
 
     @Override
+    public boolean setNaturalLightConfigValue(Context context, int value) {
+        Object res = this.invokeDeviceControllerMethod(context, sMethodSetNaturalLightValue, context, Integer.valueOf(value));
+        return res != null;
+    }
+
+    @Override
     public int getFrontLightConfigValue(Context context) {
         Integer res = (Integer) this.invokeDeviceControllerMethod(context, sMethodGetFrontLightConfigValue, context);
         return res.intValue();
@@ -771,6 +793,12 @@ public class IMX6Device extends BaseDevice {
     @Override
     public List<Integer> getFrontLightValueList(Context context) {
         Integer intValues[] = {0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160};
+        return Arrays.asList(intValues);
+    }
+
+    @Override
+    public List<Integer> getNaturalLightValueList(Context context) {
+        Integer intValues[] = {0,3,6,9,12,15,17,19,21,23,25,26,27,28,29,30,31};
         return Arrays.asList(intValues);
     }
 
@@ -945,5 +973,10 @@ public class IMX6Device extends BaseDevice {
     @Override
     public void enableA2ForSpecificView(View view) {
         ReflectUtil.invokeMethodSafely(sMethodEnableA2, view);
+    }
+
+    public void gotoSleep(final Context context) {
+        long value = System.currentTimeMillis();
+        ReflectUtil.invokeMethodSafely(sMethodGotoSleep, context, value);
     }
 }

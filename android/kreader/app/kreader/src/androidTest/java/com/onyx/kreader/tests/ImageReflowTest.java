@@ -8,9 +8,9 @@ import android.test.ApplicationTestCase;
 import android.util.DisplayMetrics;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.reflow.ImageReflowSettings;
-import com.onyx.kreader.utils.ImageUtils;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
+import com.onyx.android.sdk.reader.utils.ImageUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

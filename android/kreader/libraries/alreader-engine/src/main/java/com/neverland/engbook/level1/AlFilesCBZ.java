@@ -16,7 +16,7 @@ public class AlFilesCBZ extends AlFilesZIPRecord {
 
         AlCBZFiles(String name, String ext) {
             realName = name + ext;
-            sortName = AlUnicode.getStringForAlphabeticSort(name, 4);
+            sortName = AlUnicode.getStringForAlphabeticSort(name, 6);
         }
     }
 

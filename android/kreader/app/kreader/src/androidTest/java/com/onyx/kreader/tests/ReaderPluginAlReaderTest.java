@@ -6,10 +6,10 @@ import android.test.ApplicationTestCase;
 import com.neverland.engbook.bookobj.AlBookEng;
 import com.neverland.engbook.forpublic.AlBookProperties;
 import com.neverland.engbook.forpublic.AlOneContent;
-import com.onyx.kreader.api.ReaderDocumentTableOfContent;
-import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
-import com.onyx.kreader.host.impl.ReaderPluginOptionsImpl;
-import com.onyx.kreader.plugins.alreader.AlReaderWrapper;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
+import com.onyx.android.sdk.reader.host.impl.ReaderPluginOptionsImpl;
+import com.onyx.android.sdk.reader.plugins.alreader.AlReaderWrapper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

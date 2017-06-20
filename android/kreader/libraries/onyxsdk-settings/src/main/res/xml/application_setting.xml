@@ -26,4 +26,10 @@
         android:key="@string/key_binding_key"
         android:title="@string/key_binding_title" />
 
+    <android.support.v7.preference.ListPreference
+        android:key="@string/long_press_feature_key"
+        android:entries="@array/long_press_feature_summary"
+        android:entryValues="@array/long_press_feature_value"
+        android:title="@string/dpad_center_long_press_title" />
+
 </android.support.v7.preference.PreferenceScreen>

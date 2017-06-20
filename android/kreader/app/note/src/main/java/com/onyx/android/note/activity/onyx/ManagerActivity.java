@@ -1,10 +1,9 @@
 package com.onyx.android.note.activity.onyx;
 
-import android.app.Instrumentation;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +16,7 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.manager.CreateLibraryAction;
+import com.onyx.android.note.actions.manager.GetOldScribbleCountAction;
 import com.onyx.android.note.actions.manager.ImportScribbleAction;
 import com.onyx.android.note.actions.manager.LoadNoteListAction;
 import com.onyx.android.note.actions.manager.ManageLoadPageAction;
@@ -39,7 +39,7 @@ import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.AscDescOrder;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.SortBy;
-import com.onyx.android.sdk.ui.dialog.DialogProgress;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
@@ -69,6 +69,7 @@ public class ManagerActivity extends BaseManagerActivity {
         loadSortByAndAsc();
         initView();
         initNoteViewHelper();
+        checkOldScribbleData();
     }
 
     @Override
@@ -80,6 +81,30 @@ public class ManagerActivity extends BaseManagerActivity {
     private void loadSortByAndAsc() {
         currentSortBy = SortBy.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_SORT_BY, SortBy.CREATED_AT));
         ascOrder = AscDescOrder.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_ASC_ORDER, AscDescOrder.DESC));
+    }
+
+    private void checkOldScribbleData() {
+        boolean imported = NotePreference.getBooleanValue(this, NotePreference.KEY_HAS_IMPORT_OLD_SCRIBBLE, false);
+        boolean hasOpened = NotePreference.getBooleanValue(this, NotePreference.KEY_HAS_OPEN_IMPORT_OLD_SCRIBBLE_DIALOG, false);
+        if (imported || hasOpened) {
+            return;
+        }
+        final GetOldScribbleCountAction action = new GetOldScribbleCountAction();
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                int count = action.getCount();
+                if (count > 0) {
+                    NotePreference.setBooleanValue(NotePreference.KEY_HAS_OPEN_IMPORT_OLD_SCRIBBLE_DIALOG, true);
+                    OnyxCustomDialog.getConfirmDialog(ManagerActivity.this, getString(R.string.find_old_scribble), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            importScribbleData();
+                        }
+                    }).show();
+                }
+            }
+        });
     }
 
     private void initNoteViewHelper() {
@@ -196,7 +221,7 @@ public class ManagerActivity extends BaseManagerActivity {
         final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
         Bundle bundle = new Bundle();
         bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.rename));
-        bundle.putString(DialogNoteNameInput.ARGS_HINT, object.getString(GAdapterUtil.TAG_TITLE_STRING));
+        bundle.putString(DialogNoteNameInput.ARGS_HINT, object.getString(GAdapterUtil.TAG_ORIGIN_TITLE_STRING));
         bundle.putBoolean(DialogNoteNameInput.ARGS_ENABLE_NEUTRAL_OPTION, false);
         dialogNoteNameInput.setArguments(bundle);
         dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
@@ -305,13 +330,13 @@ public class ManagerActivity extends BaseManagerActivity {
     }
 
     private void importScribbleData() {
+        NotePreference.setBooleanValue(NotePreference.KEY_HAS_IMPORT_OLD_SCRIBBLE, true);
         final ImportScribbleAction<ManagerActivity> scribbleAction = new ImportScribbleAction();
         scribbleAction.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
                     loadNoteList();
-                    NotePreference.setBooleanValue(NotePreference.KEY_IMPORT_MENU_VISIBLE, false);
                 }
             }
         });

@@ -31,8 +31,8 @@
             android:focusable="true"
             android:layout_marginLeft="@dimen/dialog_brightness_toggle_button_margin_left"
             android:layout_marginRight="@dimen/dialog_brightness_toggle_button_margin_right"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp" />
+            android:layout_marginTop="@dimen/dialog_brightness_margin"
+            android:layout_marginBottom="@dimen/dialog_brightness_margin" />
 
         <ImageView
             android:id="@+id/imageview_line"
@@ -61,8 +61,8 @@
             android:numStars="@integer/start_amount"
             android:layout_gravity="center_vertical"
             android:stepSize="1.0"
-            android:minHeight="63px"
-            android:minWidth="63px"
+            android:minHeight="@dimen/dialog_brightness_rating_bar_min_max_value"
+            android:minWidth="@dimen/dialog_brightness_rating_bar_min_max_value"
             android:layout_marginRight="@dimen/dialog_brightness_ratingbar_margin_right" />
 
         <ImageButton

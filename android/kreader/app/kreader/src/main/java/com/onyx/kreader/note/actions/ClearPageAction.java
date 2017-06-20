@@ -26,7 +26,8 @@ public class ClearPageAction extends BaseAction {
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), clearPageRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                readerDataHolder.getEventBus().post(ShapeRenderFinishEvent.shapeReadyEvent());
+                final ShapeRenderFinishEvent event = ShapeRenderFinishEvent.shapeReadyEventWithFullUpdate();
+                readerDataHolder.getEventBus().post(event);
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });

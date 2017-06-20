@@ -1,4 +1,6 @@
 {
+  "defaultFontSizeIndex" : 6,
+  "defaultLineSpacingIndex" : 1,
   "ttsEnabled" : true,
   "hasFrontLight" : false,
   "disableNoteFunc" : false,

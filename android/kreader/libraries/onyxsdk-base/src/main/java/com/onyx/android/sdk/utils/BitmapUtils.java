@@ -1,11 +1,20 @@
 package com.onyx.android.sdk.utils;
 
 import android.annotation.SuppressLint;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.util.Log;
+
 import com.onyx.android.sdk.data.Size;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -44,6 +53,26 @@ public class BitmapUtils {
         Canvas canvas = new Canvas(dst);
         paint.setFilterBitmap(true);
         canvas.drawBitmap(src, srcRegion, dstRegion, paint);
+    }
+
+    static public void scaleToFitCenter(final Bitmap src, final Bitmap dst) {
+        Rect srcBitmapRegion = new Rect(0, 0, src.getWidth(), src.getHeight());
+        Rect dstScaleRegion = null;
+        int offsetValue = 0;
+        int scalerResult = 0;
+        float ratioSrc = src.getWidth()/(float)src.getHeight();
+        float ratioDest = dst.getWidth()/(float)dst.getHeight();
+
+        if(ratioSrc >= ratioDest) {
+            scalerResult = Math.round(dst.getWidth()/ratioSrc);
+            offsetValue = Math.abs((dst.getHeight()-scalerResult)/2);
+            dstScaleRegion = new Rect(0, offsetValue, dst.getWidth(), scalerResult + offsetValue);
+        } else {
+            scalerResult = Math.round(dst.getHeight() * ratioSrc);
+            offsetValue = Math.abs((dst.getWidth() - scalerResult) / 2);
+            dstScaleRegion = new Rect(offsetValue, 0, scalerResult + offsetValue, dst.getHeight());
+        }
+        BitmapUtils.scaleBitmap(src,srcBitmapRegion ,dst, dstScaleRegion);
     }
 
     public static Bitmap createScaledBitmap(final Bitmap origin, int newWidth, int newHeight) {
@@ -185,6 +214,51 @@ public class BitmapUtils {
             }
         }
         return data;
+    }
+
+    public static byte[] bitmapToBytes(Bitmap bitmap) {
+        return bitmapToBytes(bitmap, Bitmap.CompressFormat.PNG);
+    }
+
+    public static byte[] bitmapToBytes(Bitmap bitmap, Bitmap.CompressFormat format) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        bitmap.compress(format, 100, os);
+        return os.toByteArray();
+    }
+
+    /**
+     *
+     * @param renderTargetHeight
+     * @param renderTargetWidth
+     * @param sourceHeight
+     * @param sourceWidth
+     * @param zoomToWidth if true means zoomToWidth,otherwise means zoomToHeight
+     * @return
+     */
+    public static Rect getScaleInSideAndCenterRect(int renderTargetHeight, int renderTargetWidth,
+                                                   int sourceHeight, int sourceWidth, boolean zoomToWidth) {
+        Rect resultRect;
+        float ratio;
+        if (zoomToWidth) {
+            ratio = ((float) (renderTargetWidth - 1)) / ((float) (sourceWidth - 1));
+            int targetHeight = (int) ((renderTargetHeight - 1) * ratio);
+            int top = (sourceHeight - 1 - targetHeight) / 2;
+            resultRect = new Rect(0, top, renderTargetWidth - 1,
+                    targetHeight + top);
+        } else {
+            ratio = ((float) (renderTargetHeight - 1)) / ((float) (sourceHeight - 1));
+            int targetWidth = (int) ((renderTargetWidth - 1) * ratio);
+            int left = (sourceWidth - 1 - targetWidth) / 2;
+            resultRect = new Rect(left, 0, targetWidth + left,
+                    renderTargetHeight - 1);
+        }
+        return resultRect;
+    }
+
+    public static Bitmap rotateBmp(Bitmap bmp, int degrees) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        return Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
     }
 
 }

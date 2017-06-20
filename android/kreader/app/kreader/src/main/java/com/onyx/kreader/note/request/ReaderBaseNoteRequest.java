@@ -172,7 +172,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     e.printStackTrace();
                 } finally {
                     if (isResumeRawInputProcessor() && parent.isDFBForCurrentShape()) {
-                        parent.resumeRawEventProcessor();
+                        parent.resumeRawEventProcessor(getContext());
                     }
                     parent.getRequestManager().releaseWakeLock();
                 }

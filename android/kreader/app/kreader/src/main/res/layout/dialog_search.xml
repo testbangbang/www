@@ -5,12 +5,15 @@
                 android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/search_input_layout"
         android:padding="@dimen/dialog_search_edit_padding"
         android:background="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:background="@drawable/imagebtn_bg"
+            android:focusable="true"
             android:gravity="center"
             android:id="@+id/back_layout"
             android:orientation="horizontal"
@@ -67,6 +70,7 @@
     </RelativeLayout>
 
     <View
+        android:id="@+id/divider_line"
         style="@style/single_line_X_axis_View"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
@@ -84,6 +88,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:textSize="20sp"
                 android:textColor="@color/normal_black"
                 android:layout_margin="10dp"
                 android:gravity="center_horizontal"
@@ -96,7 +101,7 @@
                 android:id="@+id/search_recycler_view"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="0dp">
 
             </com.onyx.android.sdk.ui.view.PageRecyclerView>
 
@@ -164,6 +169,8 @@
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/delete_history"
                 android:id="@+id/close_history"
+                android:focusable="true"
+                android:background="@drawable/focused_bg"
                 android:text="@string/close_history"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -176,6 +183,8 @@
                 android:layout_marginRight="10dp"
                 android:layout_alignParentEnd="true"
                 android:id="@+id/delete_history"
+                android:focusable="true"
+                android:background="@drawable/focused_bg"
                 android:text="@string/delete_history"
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
@@ -203,7 +212,7 @@
                 android:text="@string/searching"
                 android:id="@+id/textview_message"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textColor="@android:color/black"
@@ -223,6 +232,56 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
+
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/search_float_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginBottom="10dp"
+                android:paddingLeft="@dimen/ellipse_view_padding"
+                android:paddingRight="@dimen/ellipse_view_padding"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/search_toolbar_layout_bg"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/search_back"
+                    style="@style/search_button"
+                    android:src="@drawable/ic_dialog_search_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <ImageButton
+                    android:id="@+id/search_prev"
+                    style="@style/search_button"
+                    android:src="@drawable/ic_dialog_search_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <ImageButton
+                    android:id="@+id/search_next"
+                    style="@style/search_button"
+                    android:src="@drawable/ic_dialog_search_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <ImageButton
+                    android:id="@+id/search_close"
+                    style="@style/search_button"
+                    android:src="@drawable/ic_dialog_search_close"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+        </RelativeLayout>
     </FrameLayout>
 
 </LinearLayout>

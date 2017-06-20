@@ -1,9 +1,10 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.content.DialogInterface;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
@@ -54,6 +55,8 @@ public class DialogNavigationSettings extends DialogBase {
     private GAdapter mCropAdapter;
     private GAdapter mSubScreenAdapter;
     private GAdapter mNavigationAdapter;
+    private boolean autoCropForEachBlock = false;
+    private CheckBox autoCropForEachBlockCheckBox;
     private ReaderCropArgs.CropPageMode currentChoosingCropMode = ReaderCropArgs.CropPageMode.None;
     private ReaderCropArgs.CropPageMode currentUsingCropMode = ReaderCropArgs.CropPageMode.None;
     private SubScreenMode currentChoosingSubScreenMode = SubScreenMode.SUB_SCREEN_1_1;
@@ -80,6 +83,7 @@ public class DialogNavigationSettings extends DialogBase {
         currentUsingNavigationMode = ReaderCropArgs.NavigationMode.ROWS_LEFT_TO_RIGHT_MODE;
 
         mCropContentView = (ContentView) findViewById(R.id.crop_contentView);
+        autoCropForEachBlockCheckBox = (CheckBox) findViewById(R.id.auto_crop_for_each_block);
         setupContentView(mCropContentView, R.layout.dialog_navigation_settings_mode_icon_view, new ObjectSelectedCallback() {
             @Override
             public void onObjectSelected(GObject object) {
@@ -126,7 +130,7 @@ public class DialogNavigationSettings extends DialogBase {
                 navigationArgs.setCropPageMode(currentChoosingCropMode);
                 navigationArgs.setRows(getRowNumber());
                 navigationArgs.setColumns(getColumnNumber());
-                new ChangeNavigationSettingsAction(navigationArgs).execute(readerDataHolder, null);
+                new ChangeNavigationSettingsAction(navigationArgs, autoCropForEachBlock).execute(readerDataHolder, null);
                 DialogNavigationSettings.this.dismiss();
             }
         });
@@ -136,19 +140,19 @@ public class DialogNavigationSettings extends DialogBase {
                 DialogNavigationSettings.this.dismiss();
             }
         });
+        autoCropForEachBlockCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                autoCropForEachBlock = isChecked;
+            }
+        });
+        autoCropForEachBlockCheckBox.setChecked(readerDataHolder.getReaderViewInfo().autoCropForEachBlock);
         buildCropModeAdapter();
         buildSubScreenAdapter();
         buildNavigationModeAdapter();
         mCropContentView.setAdapter(mCropAdapter, 0);
         mSubScreenContentView.setAdapter(mSubScreenAdapter, 0);
         mNavigationContentView.setAdapter(mNavigationAdapter, 0);
-
-        setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                readerDataHolder.removeActiveDialog(DialogNavigationSettings.this);
-            }
-        });
     }
 
     private void setupContentView(final ContentView view, int rows, int columns, int layoutId, final ObjectSelectedCallback callback) {
@@ -219,7 +223,7 @@ public class DialogNavigationSettings extends DialogBase {
 
     private GAdapter buildCropModeAdapter() {
         mCropAdapter = new GAdapter();
-        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_four,getContext().getString(R.string.four), ReaderCropArgs.CropPageMode.AUTO_CROP_PAGE));
+        mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_four,getContext().getString(R.string.auto), ReaderCropArgs.CropPageMode.AUTO_CROP_PAGE));
         mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_single,getContext().getString(R.string.single_page), ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE));
         mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_double,getContext().getString(R.string.double_page), ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE_BY_ODD_AND_EVEN));
         mCropAdapter.addObject(createCropPageModeItem(R.drawable.ic_dialog_reader_browse_cut_nothing,getContext().getString(R.string.nothing), ReaderCropArgs.CropPageMode.None));
@@ -228,12 +232,13 @@ public class DialogNavigationSettings extends DialogBase {
 
     private GAdapter buildSubScreenAdapter() {
         mSubScreenAdapter = new GAdapter();
+        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_1_1, SubScreenMode.SUB_SCREEN_1_1));
+        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_1_2, SubScreenMode.SUB_SCREEN_1_2));
         mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_2_1, SubScreenMode.SUB_SCREEN_2_1));
         mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_2_2, SubScreenMode.SUB_SCREEN_2_2));
         mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_3_2, SubScreenMode.SUB_SCREEN_3_2));
         mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_2_3, SubScreenMode.SUB_SCREEN_2_3));
         mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_3_3, SubScreenMode.SUB_SCREEN_3_3));
-        mSubScreenAdapter.addObject(createSubScreenModeItem(R.drawable.ic_dialog_navigation_settings_subscreen_1_1, SubScreenMode.SUB_SCREEN_1_1));
         return mSubScreenAdapter;
     }
 

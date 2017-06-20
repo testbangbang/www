@@ -9,7 +9,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.kreader.host.request.RenderThumbnailRequest;
+import com.onyx.android.sdk.reader.host.request.RenderThumbnailRequest;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -62,7 +62,7 @@ public class GetScribbleBitmapAction {
 
         final String currentPage = requestPages.remove(0);
         contentBitmap = ReaderBitmapImpl.create(width, height, Bitmap.Config.ARGB_8888);
-        final RenderThumbnailRequest thumbnailRequest = new RenderThumbnailRequest(currentPage, contentBitmap);
+        final RenderThumbnailRequest thumbnailRequest = RenderThumbnailRequest.renderByPage(currentPage, null, contentBitmap);
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), thumbnailRequest, new BaseCallback() {
 
             @Override

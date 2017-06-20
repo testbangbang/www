@@ -61,6 +61,10 @@
     <string name="ac_network" translatable="false">5Ghz</string>
     <string name="unknown_network" translatable="false">Unknown Network Type</string>
     <string name="wifi_band">Frequency</string>
+    <string name="wifi_rational">Request Permission To Read Wifi AP List</string>
+    <string name="no_wifi_permission">Without Wifi Permission,Quitting Settings.</string>
+
+
     <!--Temporarily fix unit.-->
     <string name="space_in_use">Space In Use: %1$s GB</string>
     <string name="free_space">Free Space: %1$s GB</string>
@@ -107,6 +111,14 @@
         <item quantity="one">%1$d Minute</item>
         <item quantity="other">%1$d Minutes</item>
     </plurals>
+    <plurals name="hour">
+        <item quantity="one">%1$d Hour</item>
+        <item quantity="other">%1$d Hours</item>
+    </plurals>
+    <plurals name="day">
+        <item quantity="one">%1$d Day</item>
+        <item quantity="other">%1$d Days</item>
+    </plurals>
     <string name="never_sleep">Never</string>
     <string name="sleep_summary">After %1$s of inactivity</string>
     <string name="power_off_timeout_summary">Adjust the delay before the power off automatically</string>
@@ -121,6 +133,7 @@
     <string name="unknown_resource_key" translatable="false">unknown_resource_key</string>
     <string name="calibration_key" translatable="false">calibration_key</string>
     <string name="key_binding_key" translatable="false">key_binding_key</string>
+    <string name="long_press_feature_key" translatable="false">long_press_feature_key</string>
 
     <string name="usb_debug_mode_title">USB debugging</string>
     <string name="application_management_title">Manage apps</string>
@@ -128,6 +141,7 @@
     <string name="unknown_resource_title">Unknown sources</string>
     <string name="calibration_title">Calibration</string>
     <string name="key_binding_title">Key Binding</string>
+    <string name="dpad_center_long_press_title">Dpad Center Long Press Features</string>
 
     <string name="usb_debug_mode_summary">Debug mode When USB is connected</string>
     <string name="unknown_resource_summary">Allow installation of non_Market apps</string>
@@ -185,6 +199,9 @@
     <string name="ota_auto_summary">Check for updates automatically</string>
     <string name="model_number_title">Model number : </string>
     <string name="firmware_number_title">Build number : </string>
+    <string name="find_package_from_local">New update package found, do you want to update?</string>
+    <string name="title_update">OTA update</string>
+    <string name="no_update">No update package available.</string>
 
 </resources>
 

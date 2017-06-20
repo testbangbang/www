@@ -1,9 +1,6 @@
 package com.onyx.kreader.tts;
 
-import android.app.Activity;
-import android.content.Context;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.host.request.RenderRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**

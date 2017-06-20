@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="ime_setting_btn_drawing_size">48dp</dimen>
+</resources>

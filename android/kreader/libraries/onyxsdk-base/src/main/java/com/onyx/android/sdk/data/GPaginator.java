@@ -6,6 +6,8 @@ package com.onyx.android.sdk.data;
 public class GPaginator {
     private int rows;
     private int columns;
+    private int currentPage = -1;
+    private int size;
 
     public int getCurrentPage() {
         return currentPage;
@@ -14,9 +16,6 @@ public class GPaginator {
     public void setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
     }
-
-    private int currentPage = -1;
-    private int size;
 
     public GPaginator() {
         resize(1, 1, 0);
@@ -149,6 +148,14 @@ public class GPaginator {
         return getCurrentPageBegin() <= index && index < (getCurrentPageBegin() + itemsInCurrentPage());
     }
 
+    public boolean isInPrevPage(int index) {
+        return index < getCurrentPageBegin() ;
+    }
+
+    public boolean isInNextPage(int index) {
+        return index >= (getCurrentPageBegin() + itemsInCurrentPage());
+    }
+
     public int getCurrentPageBegin() {
         return getPageBegin(currentPage);
     }
@@ -193,6 +200,10 @@ public class GPaginator {
 
     public int prevRow(int index) {
         return index - getColumns();
+    }
+
+    public boolean isFirstPage() {
+        return currentPage == 0;
     }
 
     public boolean isLastPage() {

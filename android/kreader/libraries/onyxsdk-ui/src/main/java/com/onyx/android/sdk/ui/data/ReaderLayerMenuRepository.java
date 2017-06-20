@@ -25,12 +25,12 @@ public class ReaderLayerMenuRepository {
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.ZOOM_BY_CROP_WIDTH, null, R.string.reader_layer_menu_zoom_by_crop_width, "", R.drawable.ic_dialog_reader_menu_scale_cut_two),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.NAVIGATION, null, R.string.reader_layer_menu_navigation, "", R.drawable.ic_dialog_reader_menu_browse),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.IMAGE_REFLOW, null, R.string.reader_layer_menu_font_reflow, "", R.drawable.ic_dialog_reader_menu_scale_reset),
-            new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.GAMMA_CORRECTION, null, R.string.gamma_correction, "", R.drawable.ic_dialog_reader_menu_browse_gamma),
+            new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.MANUAL_CROP, null, R.string.manual_crop, "", R.drawable.ic_dialog_reader_menu_cut),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_COMIC_MODE, null, R.string.reader_layer_menu_navigation_comic_mode, "", R.drawable.ic_dialog_reader_menu_browse_cartoon),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_ARTICLE_MODE, null, R.string.reader_layer_menu_navigation_article_mode, "", R.drawable.ic_dialog_reader_menu_browse_thesis),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_RESET, null, R.string.reader_layer_menu_navigation_reset, "", R.drawable.ic_dialog_reader_menu_browse_reset),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NAVIGATION_MORE_SETTINGS, null, R.string.reader_layer_menu_navigation_more_settings, "", R.drawable.ic_dialog_reader_menu_browse_more),
-            new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.GROUP_GAMMA_CORRECTION, null, R.string.gamma_correction, "", R.drawable.ic_dialog_reader_menu_browse_gamma),
+            new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.GAMMA_CORRECTION, null, R.string.gamma_correction, "", R.drawable.ic_dialog_reader_menu_browse_gamma),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.NOTE, null, R.string.reader_layer_menu_notes, "", R.drawable.ic_dialog_reader_menu_note),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.DIRECTORY_SCRIBBLE, null, R.string.reader_layer_menu_directory_scribble, "", R.drawable.ic_dialog_reader_menu_browse_write),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.SHOW_NOTE, null, R.string.reader_layer_menu_show_scribble, "", R.drawable.ic_dialog_reader_menu_note_show),
@@ -44,6 +44,7 @@ public class ReaderLayerMenuRepository {
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.MORE, null, R.string.reader_layer_menu_more, "", R.drawable.ic_dialog_reader_menu_more),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.TTS, null, R.string.reader_layer_menu_tts, "", R.drawable.ic_dialog_reader_menu_tts),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.FRONT_LIGHT, null, R.string.reader_layer_menu_front_light, "", R.drawable.ic_dialog_reader_menu_frontlight),
+            new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NATURAL_LIGHT, null, R.string.reader_layer_menu_front_light, "", R.drawable.ic_dialog_reader_menu_frontlight),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.REFRESH, null, R.string.reader_layer_menu_refresh, "", R.drawable.ic_dialog_reader_menu_refresh_black),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.SLIDESHOW, null, R.string.reader_layer_menu_slideshow, "", R.drawable.ic_dialog_reader_menu_slideshow),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.SETTINGS, null, R.string.reader_layer_menu_settings, "", R.drawable.ic_dialog_reader_menu_setting),
@@ -91,11 +92,27 @@ public class ReaderLayerMenuRepository {
                 ReaderLayerMenuItem group = new ReaderLayerMenuItem(item);
                 menuGroupList.add(group);
                 currentGroup = group;
-            } else {
+            } else if (isChildItem(currentGroup.getAction(), item.getAction())){
                 (currentGroup.getChildren()).add(new ReaderLayerMenuItem(item.getItemType(),
                         item.getAction(), currentGroup, item.getTitleResourceId(), item.getTitle(), item.getDrawableResourceId(), item.getItemId()));
             }
         }
         return menuGroupList;
+    }
+
+    private static boolean isChildItem(ReaderMenuAction groupAction, ReaderMenuAction childAction) {
+        boolean findGroup = false;
+        for (ReaderLayerMenuItem fixedPageMenuItem : fixedPageMenuItems) {
+            if (findGroup && fixedPageMenuItem.getItemType() == ReaderMenuItem.ItemType.Group) {
+                break;
+            }
+            if (fixedPageMenuItem.getAction() == groupAction) {
+                findGroup = true;
+            }
+            if (findGroup && fixedPageMenuItem.getAction() == childAction) {
+                return true;
+            }
+        }
+        return false;
     }
 }

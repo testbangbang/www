@@ -3,10 +3,13 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url "http://mvn.leancloud.cn/nexus/content/repositories/releases" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -17,6 +20,8 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
+        maven { url  "http://dl.bintray.com/dasar/maven" }
+        maven { url "http://mvn.leancloud.cn/nexus/content/repositories/releases" }
         repositories {
             flatDir {
                 dirs 'libs' //this way we can find the .aar file in libs folder
@@ -56,10 +61,24 @@ ext {
     okhttpurlconnectionVersion = '2.0.0'
     picassoVersion = '2.5.2'
     multidexVersion = '1.0.1'
+    espressoVersion = '2.2.2'
+    easyPermissonVersion = '0.2.1'
+    mpAndroidChart = '3.0.1'
 
     //compatible
     compatibleSdkVersion = 23 // for projects which can't be built with sdk 24+
     compatibleSupportLibraryVersion = '23.4.0' // for projects which can't be built with sdk 24+
 
+    aliyunOssSdkVersion = '2.3.0'
+    wechatSdkWithMtaVersion = '1.0.2'
+
+    jsoupVersion = '1.10.2'
+    slf4jVersion = '1.7.12'
+    epublibVersion = "1.0"
+
+    phone_supportLibraryVersion = '25.1.1'
+    phone_materialDialogsCommonVersion= '0.9.3.0'
+
+    avoscloudVersion = 'v3.13.7'
 }
 

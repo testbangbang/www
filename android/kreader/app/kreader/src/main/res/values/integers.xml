@@ -7,9 +7,10 @@
     <integer name="quick_view_default_grid_type">1</integer>
     <integer name="search_chinese_content_length">35</integer>
     <integer name="search_alpha_content_length">65</integer>
-    <integer name="dict_height_denominator_value">2</integer>
+    <integer name="dict_height_absolutely_value">43</integer>
     <integer name="dialog_navigation_setting_sub_screen_rows">1</integer>
-    <integer name="dialog_navigation_setting_sub_screen_columns">6</integer>
+    <integer name="dialog_navigation_setting_sub_screen_columns">7</integer>
     <integer name="dialog_navigation_setting_landscape_sub_screen_rows">1</integer>
-    <integer name="dialog_navigation_setting_landscape_sub_screen_columns">6</integer>
+    <integer name="dialog_navigation_setting_landscape_sub_screen_columns">7</integer>
+    <integer name="statistics_recently_book_count">3</integer>
 </resources>

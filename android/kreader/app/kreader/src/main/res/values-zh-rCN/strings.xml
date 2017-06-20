@@ -61,7 +61,7 @@
   <string name="Copy">复制</string>
   <string name="Highlight">高亮</string>
   <string name="Dictionary">字典</string>
-  <string name="popup_selection_menu_start_tts">启动TTS</string>
+  <string name="popup_selection_menu_start_tts">TTS</string>
   <string name="toc">目录</string>
   <string name="bookmark">书签</string>
   <string name="annotation">标注</string>
@@ -76,7 +76,7 @@
   <string name="direction">方向</string>
   <string name="six">6</string>
   <string name="nine">9</string>
-  <string name="four">自动</string>
+  <string name="auto">自动</string>
   <string name="single_page">单页</string>
   <string name="double_page">双页</string>
   <string name="nothing">无</string>
@@ -125,6 +125,7 @@
   <string name="settings_time_show_format_12hours">1:00 PM</string>
   <string name="settings_enable_system_status_bar_tittle">启用系统状态栏</string>
   <string name="setting_enable_reader_status_bar_tittle">启用阅读状态栏</string>
+  <string name="settings_enable_multiple_tabs_title">启用多文档</string>
   <string name="settings_search_menu_position_tittle">设置搜索菜单位置</string>
   <string name="settings_bookmark_tittle">显示书签</string>
   <string name="settings_hyperlink_tittle">显示超链接</string>
@@ -258,4 +259,46 @@
   <string name="view_slideshow_status_bar_battery" formatted="false">电量: %d/%d (%%)</string>
   <string name="slideshow_quit_warning">按Back键退出自动翻页!</string>
   <string name="code_page">设置文字编码...</string>
+  <string name="read_count">读过的书(本)</string>
+  <string name="finish_count">读完的书(本)</string>
+  <string name="read_time">阅读时长(h)</string>
+  <string name="look_up_dictionary_count">查阅字典次数</string>
+  <string name="statistics_annotation_count">批注数量</string>
+  <string name="data_analysis">数据分析</string>
+  <string name="reading_record">阅读记录</string>
+  <string name="reading_level" formatted="false">你的阅读排名超过了%.2f%%的人</string>
+  <string name="reading_time_every_day" formatted="false">你平均每天阅读%.2f小时，主要阅读时间分布在%d:00 - %d:00</string>
+  <string name="read_longest_book" formatted="false">阅读时间最长的一本书: %s</string>
+  <string name="read_most_carefully_book" formatted="false">阅读最仔细的一本书 : %s</string>
+  <string name="read_start_time" formatted="false">%s \n 开始</string>
+  <string name="read_use_time" formatted="false">此书总共阅读时长 \n %s</string>
+  <string name="read_end_time" formatted="false">%s \n 为止</string>
+  <string name="high_light_count" formatted="false">高亮: %d处</string>
+  <string name="annotation_count" formatted="false">备注: %d点</string>
+  <string name="look_up_dict_count" formatted="false">字典查阅: %d次</string>
+  <string name="time_distribution">时间分布</string>
+  <string name="self_time_distribution">你的阅读时间分布</string>
+  <string name="other_time_distribution">其他用户平均阅读时间分布</string>
+  <string name="reading_content_analysis">阅读内容分析</string>
+  <string name="recently_read_content">最近阅读内容</string>
+  <string name="statistics_shortcut_name">阅读统计</string>
+  <string name="science">科学</string>
+  <string name="social_science">社科</string>
+  <string name="art">文艺</string>
+  <string name="life">生活</string>
+  <string name="education">教育</string>
+  <string name="children_book">童书</string>
+  <string name="finance_and_economics">财经</string>
+  <string name="magazine">期刊杂志</string>
+  <string name="fiction">小说</string>
+  <string name="other">其他</string>
+  <string name="load_statistical_data_failed">加载统计数据失败</string>
+  <string name="no_more_search_results">没有更多的搜索结果</string>
+  <string name="no_chapters">本文不含章节信息</string>
+  <string name="first_chapter">已是首章</string>
+  <string name="last_chapter">已是尾章</string>
+  <string name="auto_crop_for_each_block">以上手动设置后，自动裁剪可见范围内空白区域</string>
+  <string name="network_data">联网数据</string>
+  <string name="local_data">本地数据</string>
+    <string name="file_not_exists">文件不存在!</string>
 </resources>

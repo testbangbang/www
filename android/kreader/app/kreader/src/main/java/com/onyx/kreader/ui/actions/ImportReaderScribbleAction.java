@@ -1,13 +1,12 @@
 package com.onyx.kreader.ui.actions;
 
-import android.app.Activity;
 import android.view.View;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.dialog.DialogProgress;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.request.ImportReaderScribbleRequest;
+import com.onyx.kreader.ui.requests.ImportReaderScribbleRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 

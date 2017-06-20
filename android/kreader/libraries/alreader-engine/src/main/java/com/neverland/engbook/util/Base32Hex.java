@@ -3,7 +3,7 @@ package com.neverland.engbook.util;
 public class Base32Hex {
 	public static long decode2int(String src, boolean verifyPresent) {
 		long res = 0;
-		long val = 0;
+		long val/* = 0*/;
 		long shift = 0; 
 		int last = verifyPresent ? src.length() - 2 : src.length() - 1;
 		for (int i = last; i >=0 ;  i--) {

@@ -6,6 +6,7 @@
 
 
     <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
         android:id="@+id/code_page_view"
         android:layout_weight="1"
         android:layout_width="match_parent"

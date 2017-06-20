@@ -185,7 +185,7 @@ public class AlCalc {
 	public void drawText(int x, int y, char[] text, int start, int count) {
 		if (canvas == null)
 			return;
-		
+
 		canvas.drawText(text, start, count, x, y, fontPaint);
 	}
 	

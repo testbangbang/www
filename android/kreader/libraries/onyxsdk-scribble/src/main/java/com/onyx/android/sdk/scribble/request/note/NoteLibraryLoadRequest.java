@@ -52,10 +52,22 @@ public class NoteLibraryLoadRequest extends BaseNoteRequest {
         int i = 0;
         for (NoteModel noteModel : noteList) {
             if (noteModel.isDocument() && i < thumbnailLimit) {
-                noteModel.setThumbnail(NoteDataProvider.loadThumbnail(getContext(), noteModel.getUniqueId()));
+                loadThumbnail(noteModel);
                 i++;
             }
+            if (!noteModel.isDocument()){
+                loadSubDocCount(noteModel);
+            }
         }
+    }
+
+    private void loadThumbnail(NoteModel noteModel) {
+        noteModel.setThumbnail(NoteDataProvider.loadThumbnail(getContext(), noteModel.getUniqueId()));
+    }
+
+    private void loadSubDocCount(NoteModel noteModel) {
+        List<NoteModel> subNoteList = NoteDataProvider.loadNoteList(getContext(), noteModel.getUniqueId(), sortBy, ascDesc);
+        noteModel.setSubDocCount(subNoteList == null ? 0 : subNoteList.size());
     }
 
     public List<NoteModel> getNoteList() {

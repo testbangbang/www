@@ -1,6 +1,7 @@
 package com.neverland.engbook.level2;
 
 import com.neverland.engbook.forpublic.AlBookOptions;
+import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
@@ -11,6 +12,7 @@ import com.neverland.engbook.unicode.CP949;
 import com.neverland.engbook.unicode.CP950;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStylesOptions;
+import com.neverland.engbook.util.ChineseTextSectionRecognizer;
 
 public class AlFormatTXT extends AlFormat {
 	
@@ -22,6 +24,8 @@ public class AlFormatTXT extends AlFormat {
 	static final int TXT_MODE_SPACE = 2;
 
 	private int txt_mode;
+
+	private ChineseTextSectionRecognizer chineseTextSectionRecognizer = ChineseTextSectionRecognizer.create();
 
 	public void initState(AlBookOptions bookOptions, AlFiles myParent, 
 			AlPreferenceOptions pref, AlStylesOptions stl) {
@@ -155,6 +159,8 @@ public class AlFormatTXT extends AlFormat {
 
 	@Override
 	protected void doTextChar(char ch, boolean addSpecial) {
+		chineseTextSectionRecognizer.onNewCharacter(ch);
+
 		if (allState.isOpened) {
 			if (allState.text_present) {
 
@@ -424,5 +430,21 @@ public class AlFormatTXT extends AlFormat {
 		if (allState.isOpened)
 			newParagraph();
 		// end must be cod
+	}
+
+	@Override
+	void newParagraph() {
+		if (chineseTextSectionRecognizer.matches()) {
+			addContent(AlOneContent.add(chineseTextSectionRecognizer.getSectionText(), parStart, 0));
+		}
+
+		chineseTextSectionRecognizer.reset();
+		super.newParagraph();
+	}
+
+	@Override
+	void newEmptyTextParagraph() {
+		chineseTextSectionRecognizer.reset();
+		super.newEmptyTextParagraph();
 	}
 }

@@ -231,7 +231,9 @@ public class TeachingMaterialActivity extends BaseActivity {
 
     private Metadata loadRandomMetadata() {
         Metadata metadata = new Metadata();
-        metadata.setTitle(syllabusList.get(syllabusCurrentIndex));
+        if (!CollectionUtils.isNullOrEmpty(syllabusList)) {
+            metadata.setTitle(syllabusList.get(syllabusCurrentIndex));
+        }
         metadata.setUpdatedAt(getRandomTime());
         metadata.setProgress(getRandomProgress());
         metadata.setPublisher(TestUtils.randString());
@@ -242,7 +244,10 @@ public class TeachingMaterialActivity extends BaseActivity {
         String gradeSelected = StudentPreferenceManager.loadGradeSelected(this, "小学一年级");
         String schoolSelected = StudentPreferenceManager.loadSchoolSelected(this, "小学");
         gradeLabelTextView.setText(gradeSelected);
-        syllabusList.addAll(loadRowSyllabusConfig(schoolSelected, gradeSelected.replace("上", "").replace("下", "")));
+        List<String> syllabusConfigList = loadRowSyllabusConfig(schoolSelected, gradeSelected.replace("上", "").replace("下", ""));
+        if (syllabusConfigList != null) {
+            syllabusList.addAll(syllabusConfigList);
+        }
         if (syllabusCurrentIndex >= syllabusList.size()) {
             syllabusCurrentIndex = 0;
         }
@@ -262,7 +267,7 @@ public class TeachingMaterialActivity extends BaseActivity {
         Map<String, Object> map = JSON.parseObject(content, new TypeReference<Map<String, Object>>() {
         });
         Map<String, List<String>> dataMap = (Map<String, List<String>>) map.get(schoolSelected);
-        if (CollectionUtils.isNullOrEmpty(dataMap)) {
+        if (CollectionUtils.isNullOrEmpty(dataMap) || !dataMap.containsKey(gradeSelected)) {
             return new ArrayList<>();
         }
         return dataMap.get(gradeSelected);

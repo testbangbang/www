@@ -20,6 +20,7 @@ public class ShapeSpan extends ReplacementSpan {
     }
 
     public static int SHAPE_SPAN_MARGIN = 5;
+    public static float HEIGHT_SCALE_LIMIT_RANGE = 5.0f;
     private List<Shape> shapeList;
     private float scale = 1.0f;
     private int width = 1;
@@ -42,11 +43,13 @@ public class ShapeSpan extends ReplacementSpan {
         if (fm == null) {
             return width;
         }
-        float height = fm.bottom - fm.top - 2 * SHAPE_SPAN_MARGIN;
         RectF rect = boundingRect();
-        scale = height / rect.height();
-        if (scale > 1.0f) {
-            scale = Math.min(height / rect.width(), scale);
+        if (needUpdateShape) {
+            float height = fm.bottom - fm.top - 2 * SHAPE_SPAN_MARGIN;
+            scale = height / rect.height();
+            if (scale > HEIGHT_SCALE_LIMIT_RANGE) {
+                scale = Math.min(height / rect.width(), scale);
+            }
         }
         width = (int)(rect.width() * scale) + 2 * SHAPE_SPAN_MARGIN;
         return width;

@@ -6,13 +6,11 @@ import android.view.ScaleGestureDetector;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.note.request.StopNoteRequest;
-import com.onyx.kreader.ui.actions.PinchZoomAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 
@@ -29,14 +27,14 @@ public class ScribbleHandler extends BaseHandler {
         return true;
     }
 
-    public void onActivate(final ReaderDataHolder readerDataHolder) {
+    public void onActivate(final ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
         final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
-        final StopNoteRequest request = new StopNoteRequest(false);
-        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
+        StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, true);
+        stopNoteActionChain.execute(readerDataHolder, null);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class ScribbleHandler extends BaseHandler {
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 return false;
             case KeyEvent.KEYCODE_MENU:
-                return false;
+                return true;
             case KEYCDOE_ERASE:
             case KEYCDOE_ERASE_KK:
             case KeyEvent.KEYCODE_ALT_LEFT:
@@ -143,7 +141,7 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     public void close(final ReaderDataHolder readerDataHolder) {
-        StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, false, false, false, true);
+        StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, true);
         stopNoteActionChain.execute(readerDataHolder, null);
     }
 }

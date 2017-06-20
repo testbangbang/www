@@ -7,17 +7,17 @@ import com.onyx.android.cropimage.data.PointMatrix;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.host.navigation.NavigationArgs;
-import com.onyx.kreader.host.request.ChangeLayoutRequest;
-import com.onyx.kreader.host.request.GotoPositionRequest;
-import com.onyx.kreader.host.request.ScaleToPageCropRequest;
-import com.onyx.kreader.host.request.ScaleToPageRequest;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.reader.host.math.PageUtils;
+import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
+import com.onyx.android.sdk.reader.host.request.GotoPositionRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.data.ReaderCropArgs;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 /**
  * Created by joy on 7/12/16.
@@ -28,9 +28,11 @@ public class ChangeNavigationSettingsAction extends BaseAction {
 
     private ReaderCropArgs cropArgs;
     private CropByOddAndEventStep step = CropByOddAndEventStep.First;
+    private boolean autoCropForEachBlock;
 
-    public ChangeNavigationSettingsAction(ReaderCropArgs args) {
+    public ChangeNavigationSettingsAction(ReaderCropArgs args, boolean autoCropForEachBlock) {
         this.cropArgs = args;
+        this.autoCropForEachBlock = autoCropForEachBlock;
     }
 
     @Override
@@ -92,6 +94,7 @@ public class ChangeNavigationSettingsAction extends BaseAction {
                 }
 
                 NavigationArgs navigationArgs = new NavigationArgs();
+                navigationArgs.setAutoCropForEachBlock(autoCropForEachBlock);
                 buildNavigationArgs(dataHolder, request, navigationArgs);
                 dataHolder.submitRenderRequest(new ChangeLayoutRequest(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, navigationArgs));
             }
@@ -167,7 +170,7 @@ public class ChangeNavigationSettingsAction extends BaseAction {
             nextPage = currentPage + 1;
         }
         BaseReaderRequest request = new GotoPositionRequest(PagePositionUtils.fromPageNumber(nextPage));
-        readerDataHolder.submitRenderRequest(request, new BaseCallback() {
+        readerDataHolder.submitNonRenderRequest(request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 setupNavigationSettings(readerDataHolder, nextPage);

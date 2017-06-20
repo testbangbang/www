@@ -10,6 +10,9 @@ import com.onyx.android.libsetting.data.wifi.WifiBand;
  */
 
 public class WifiUtil {
+    static final String SSID_REGEX = "^\"(.*)\"$";
+    static final String SSID_REPLACEMENT = "$1";
+
     public static
     @WifiBand.WifiBandDef
     int convertFrequencyToBand(int freq) {
@@ -32,6 +35,11 @@ public class WifiUtil {
             default:
                 return context.getString(R.string.unknown_network);
         }
+    }
+
+    public static boolean isSameSSID(String ssid1, String ssid2) {
+        return (ssid1.replaceAll(SSID_REGEX, SSID_REPLACEMENT))
+                .equals((ssid2.replaceAll(SSID_REGEX, SSID_REPLACEMENT)));
     }
 
 }

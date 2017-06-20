@@ -1,10 +1,9 @@
 package com.onyx.kreader.ui.actions;
 
-import android.net.Uri;
-
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.kreader.host.request.DictionaryQueryRequest;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.ui.requests.DictionaryQueryRequest;
 import com.onyx.kreader.ui.data.DictionaryQuery;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -40,8 +39,34 @@ public class DictionaryQueryAction extends BaseAction {
         });
     }
 
-    public List<DictionaryQuery> getDictionaryQueries() {
+    public List<DictionaryQuery> getAllDictionaryQueries() {
         return dictionaryQueries;
+    }
+
+    public List<DictionaryQuery> getSoundDictionaryQueries() {
+        List<DictionaryQuery> SoundDictionaryQueries = new ArrayList<>();
+        if (dictionaryQueries != null) {
+            for (DictionaryQuery dictionaryQuery : dictionaryQueries) {
+                String soundPath = dictionaryQuery.getSoundPath();
+                if (!StringUtils.isNullOrEmpty(soundPath)) {
+                    SoundDictionaryQueries.add(dictionaryQuery);
+                }
+            }
+        }
+        return SoundDictionaryQueries;
+    }
+
+    public List<DictionaryQuery> getTextDictionaryQueries() {
+        List<DictionaryQuery> SoundDictionaryQueries = new ArrayList<>();
+        if (dictionaryQueries != null) {
+            for (DictionaryQuery dictionaryQuery : dictionaryQueries) {
+                String soundPath = dictionaryQuery.getSoundPath();
+                if (StringUtils.isNullOrEmpty(soundPath)) {
+                    SoundDictionaryQueries.add(dictionaryQuery);
+                }
+            }
+        }
+        return SoundDictionaryQueries;
     }
 
     public String getErrorInfo() {

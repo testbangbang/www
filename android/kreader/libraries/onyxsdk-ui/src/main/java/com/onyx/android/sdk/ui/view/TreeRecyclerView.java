@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.R;
+import com.onyx.android.sdk.ui.dialog.DialogChoose;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -126,6 +127,44 @@ public class TreeRecyclerView extends PageRecyclerView {
             }
         }
 
+        public int getCurrentNotePosition(TreeNode currentNode) {
+            Stack<TreeNode> stack = new Stack<>();
+            TreeNode node = currentNode;
+            while (node.parent != null) {
+                stack.push(node.parent);
+                node = node.parent;
+            }
+            int idx = list.indexOf(node);
+            if (idx < 0) {
+                return -1;
+            }
+            int position = idx + 1;
+            while (!stack.isEmpty()) {
+                TreeNode parent = stack.pop();
+                if (!parent.hasChildren()) {
+                    continue;
+                }
+                int index = getIndexOfChildren(parent, currentNode);
+                position += index < 0 ? parent.children.size() : index;
+
+            }
+            return position;
+        }
+
+        private int getIndexOfChildren(TreeNode parent, TreeNode node) {
+            int index = -1;
+            if (node.parent == null || !node.parent.equals(parent)) {
+                return index;
+            }
+            for (TreeNode child : parent.children) {
+                index++;
+                if (child.title.equals(node.title) && child.description.equals(node.description)) {
+                    return index;
+                }
+            }
+            return index;
+        }
+
         public void collapse(TreeNode parent) {
             if (!isNodeExpanded(parent)) {
                 assert false;
@@ -190,7 +229,7 @@ public class TreeRecyclerView extends PageRecyclerView {
             splitLine = itemView.findViewById(R.id.split_line);
         }
 
-        public void bindView(final FlattenTreeNodeDataList list, final int position,int rowCount,ViewGroup parent,TreeNode currentNode) {
+        public void bindView(final FlattenTreeNodeDataList list, final int position, int rowCount, final ViewGroup parent, TreeNode currentNode) {
             final TreeNode node = list.get(position);
 
             final RelativeLayout.LayoutParams imageParams = (RelativeLayout.LayoutParams)imageViewIndicator.getLayoutParams();
@@ -237,6 +276,32 @@ public class TreeRecyclerView extends PageRecyclerView {
                 public void onClick(View v) {
                     if (callback != null) {
                         callback.onTreeNodeClicked(node);
+                    }
+                }
+            });
+
+            itemView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!v.isPressed()) {
+                        if (!node.hasChildren()) {
+                            textViewTitle.performClick();
+                            return;
+                        }
+                        DialogChoose choose = new DialogChoose(parent.getContext(), list.isNodeExpanded(node) ? R.string.collapse : R.string.expand, R.string.jump, new DialogChoose.Callback() {
+                            @Override
+                            public void onClickListener(int index) {
+                                switch (index) {
+                                    case 0:
+                                        imageViewIndicator.performClick();
+                                        break;
+                                    case 1:
+                                        textViewTitle.performClick();
+                                        break;
+                                }
+                            }
+                        });
+                        choose.show();
                     }
                 }
             });
@@ -335,5 +400,15 @@ public class TreeRecyclerView extends PageRecyclerView {
 
     public void setCurrentNode(TreeNode node){
         adapter.setCurrentNode(node);
+    }
+
+    public void jumpToNode(final TreeNode node) {
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                int position = Math.max(list.getCurrentNotePosition(node) - 1, 0);
+                gotoPage(getPaginator().pageByIndex(position));
+            }
+        });
     }
 }

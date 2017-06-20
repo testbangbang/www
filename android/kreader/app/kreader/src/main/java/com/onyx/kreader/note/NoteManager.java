@@ -10,6 +10,7 @@ import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
@@ -22,7 +23,7 @@ import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
-import com.onyx.kreader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.note.bridge.NoteEventProcessorBase;
 import com.onyx.kreader.note.bridge.NoteEventProcessorManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
@@ -47,6 +48,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class NoteManager {
 
+    private static final String TAG = NoteManager.class.getSimpleName();
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
     private NoteEventProcessorManager noteEventProcessorManager;
     private ReaderNoteDocument noteDocument = new ReaderNoteDocument();
@@ -69,6 +71,8 @@ public class NoteManager {
     private AtomicBoolean noteDirty = new AtomicBoolean(false);
     private volatile boolean enableShortcutDrawing = false;
     private volatile boolean enableShortcutErasing = false;
+    private boolean useWakeLock = true;
+    private WakeLockHolder wakeLockHolder = new WakeLockHolder(false);
 
     public NoteManager(final ReaderDataHolder p) {
         parent = p;
@@ -88,18 +92,36 @@ public class NoteManager {
 
     public void enableRawEventProcessor(boolean enable) {
         enableRawEventProcessor = enable;
+        if (!enable) {
+            releaseWakeLock();
+        }
     }
 
     public void stopRawEventProcessor() {
+        releaseWakeLock();
         getNoteEventProcessorManager().stop();
     }
 
     public void pauseRawEventProcessor() {
+        releaseWakeLock();
         getNoteEventProcessorManager().pause();
     }
 
-    public void resumeRawEventProcessor() {
+    public void resumeRawEventProcessor(final Context context) {
+        if (enableRawEventProcessor) {
+            acquireWakeLock(context);
+        }
         getNoteEventProcessorManager().resume();
+    }
+
+    private void acquireWakeLock(final Context context) {
+        if (useWakeLock) {
+            wakeLockHolder.acquireWakeLock(context, WakeLockHolder.FULL_FLAGS, TAG, 40 * 60 * 1000);
+        }
+    }
+
+    private void releaseWakeLock() {
+        wakeLockHolder.releaseWakeLock();
     }
 
     private void initNoteArgs(final Context context) {
@@ -206,7 +228,10 @@ public class NoteManager {
             }
 
             public boolean enableShortcutDrawing() {
-                return enableShortcutDrawing;
+                if (getNoteDataInfo() == null) {
+                    return enableShortcutDrawing;
+                }
+                return enableShortcutDrawing && !isInSelection();
             }
 
             public boolean enableShortcutErasing() {
@@ -360,6 +385,12 @@ public class NoteManager {
 
     public boolean isInSelection() {
         return getNoteDrawingArgs().getCurrentShapeType() == ShapeFactory.SHAPE_SELECTOR;
+    }
+
+    public void resetSelection() {
+        if (isInSelection()) {
+            getNoteDrawingArgs().resetCurrentShapeType();
+        }
     }
 
     public void resetCurrentShape() {

@@ -1,6 +1,9 @@
 package com.neverland.engbook.level1;
 
+import android.util.SparseIntArray;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_RESULT;
@@ -36,7 +39,8 @@ public abstract class AlFiles {
 	private final int[]		slot_end = {0, 0};
 	private final byte[][] 	slot = {new byte[LEVEL1_FILE_BUF_SIZE], new byte[LEVEL1_FILE_BUF_SIZE]};
 	
-	public static long			time_load;
+	public static long			time_load1;
+	public static long			time_load2;
 	AlFiles				parent;
 	String				ident;	
 	
@@ -82,13 +86,22 @@ public abstract class AlFiles {
 		return fileList;
 	}
 
-	public long setLoadTime(boolean setStart) {
+	public long setLoadTime1(boolean setStart) {
 		if (setStart) {
-			time_load = System.currentTimeMillis();
+			time_load1 = System.currentTimeMillis();
 		} else {
-			time_load = System.currentTimeMillis() - time_load;
+			time_load1 = System.currentTimeMillis() - time_load1;
 		}	
-		return time_load;
+		return time_load1;
+	}
+
+	public long setLoadTime2(boolean setStart) {
+		if (setStart) {
+			time_load2 = System.currentTimeMillis();
+		} else {
+			time_load2 = System.currentTimeMillis() - time_load2;
+		}
+		return time_load2;
 	}
 	
 	boolean				useUnpack = false;
@@ -247,7 +260,7 @@ public abstract class AlFiles {
 
 	@Override
 	public String toString() {
-		String s = "" + time_load;
+		String s = "" + ((int)(time_load1 + time_load2)) + '/' + time_load1 + '/' + time_load2;
 		if (parent != null)
 			s = parent.toString();
 		return s + "\r\n" + (fileName != null ? fileName : ' ') + " " + size + " " + getIdentStr();
@@ -286,32 +299,35 @@ public abstract class AlFiles {
 			if (outCounter < 0)
 				return outCounter;
 		}
-		
-		AlRandomAccessFile df = new AlRandomAccessFile();
-		
-		String tmp = pathForDebug + "s_taldeb.l" + outCounter;
 
-		if (df.open(tmp, 1) == TAL_RESULT.OK) {
-			
-			byte[] buff = new byte [LEVEL1_FILE_BUF_SIZE];
-			int cnt_buff = 0;
-						
-			for (int i = 0; i < size; i++) {
-				buff[cnt_buff++] = getByte(i);			
-				if (cnt_buff == LEVEL1_FILE_BUF_SIZE || i == size - 1) {
-					df.write(buff, 0, cnt_buff);
-					cnt_buff = 0;
+		if (parent != null) {
+
+			AlRandomAccessFile df = new AlRandomAccessFile();
+
+			String tmp = pathForDebug + "s_taldeb.l" + outCounter;
+
+			if (df.open(tmp, 1) == TAL_RESULT.OK) {
+
+				byte[] buff = new byte[LEVEL1_FILE_BUF_SIZE];
+				int cnt_buff = 0;
+
+				for (int i = 0; i < size; i++) {
+					buff[cnt_buff++] = getByte(i);
+					if (cnt_buff == LEVEL1_FILE_BUF_SIZE || i == size - 1) {
+						df.write(buff, 0, cnt_buff);
+						cnt_buff = 0;
+					}
 				}
+
+				df.close();
+				buff = null;
+
+			} else {
+				outCounter = -100;
 			}
-			
-			df.close();
-			buff = null;
-			
-		} else {
-			outCounter = -100;
+
+			df = null;
 		}
-		
-		df = null;
 
 		return ++outCounter;
 	}
@@ -413,7 +429,9 @@ public abstract class AlFiles {
 
 		if (fName.charAt(0) == EngBookMyType.AL_ROOT_RIGHTPATH)
 			return fName.toString();
-
+		if(baseName == null){
+			return fName.toString();
+		}
 		// need base
         StringBuilder bName = new StringBuilder(baseName.trim());
 
@@ -459,19 +477,31 @@ public abstract class AlFiles {
 		return res.toString();
 	}
 
+	protected final HashMap<String, Integer> mapFile = new HashMap<>();
+
 	public int getExternalFileNum(String fname) {
 		if (fname == null)
 			return LEVEL1_FILE_NOT_FOUND;
 
+		if (mapFile.size() == 0) {
+			for (int i = 0; i < fileList.size(); i++) {
+				mapFile.put(fileList.get(i).name, i);
+			}
+		}
+
         for (int j = 0; j < 2; j++) {
             fname = j == 0 ? getAbsoluteName(fileName, fname) : AlUnicode.URLDecode(fname);
 
-            if (fname != null)
-                for (int i = 0; i < fileList.size(); i++) {
+            if (fname != null) {
+				Integer i = mapFile.get(fname);
+				if (i != null)
+					return i;
+                /*for (int i = 0; i < fileList.size(); i++) {
                     if (fileList.get(i).name.contentEquals(fname)) {
                         return i;
                     }
-                }
+                }*/
+			}
         }
 
 		return LEVEL1_FILE_NOT_FOUND;

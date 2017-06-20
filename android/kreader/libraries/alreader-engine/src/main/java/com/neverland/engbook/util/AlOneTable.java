@@ -15,7 +15,7 @@ public class AlOneTable {
     public int		                            crow = 0;
 
     public int				                    cntrow;
-	public ArrayList<AlOneTableRow>             rows = new ArrayList<>();
+	public final ArrayList<AlOneTableRow>             rows = new ArrayList<>();
 
     public String		                        title = "Table";
     public int			                        startParagraph = 0;
@@ -30,7 +30,7 @@ public class AlOneTable {
                 break;
             }
         }
-        isOneColumn = !(rows.size() > 0 && rows.get(0).cells.size() > 0);
+        isOneColumn = !(rows.size() > 0 && rows.get(0).cells.size() > 1);
     }
 
 	@Override

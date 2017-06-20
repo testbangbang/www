@@ -39,12 +39,11 @@
     <dimen name="tts_layout_bg_radius">40dp</dimen>
     <dimen name="tts_speed_checkbox_height">60dp</dimen>
     <dimen name="tts_speed_checkbox_width">15dp</dimen>
-    <dimen name="seebar_thumb_height">35dp</dimen>
     <dimen name="dialog_quick_preview_padding">10dp</dimen>
     <dimen name="dialog_export_text_size">18sp</dimen>
     <dimen name="dialog_export_margin">8dp</dimen>
     <dimen name="dialog_table_of_content_radio_button_padding">8dp</dimen>
     <dimen name="view_pinch_zooming_message_font_size">25sp</dimen>
     <dimen name="view_pinch_zooming_message_scale_size">48sp</dimen>
-    <dimen name="dialog_text_style_view_page_width">550dp</dimen>
+    <dimen name="dialog_text_style_view_page_width">620dp</dimen>
 </resources>

@@ -77,7 +77,7 @@ public class ChooseExerciseColorFragment extends BaseFragment implements ChooseE
 
 
     private ChooseExerciseContract.ChooseExercisePresenter presenter;
-    private String documentDisplayPath = "/mnt/sdcard/slide/sample-cfa-png.pdf";
+    private String documentDisplayPath = "/mnt/sdcard/edu/reading.pdf";
 
     public static ChooseExerciseColorFragment newInstance() {
         return new ChooseExerciseColorFragment();

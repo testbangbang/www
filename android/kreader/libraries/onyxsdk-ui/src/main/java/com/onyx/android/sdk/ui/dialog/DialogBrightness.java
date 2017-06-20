@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.ui.dialog;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DialogBrightness extends Dialog {
+public class DialogBrightness extends OnyxBaseDialog {
 
     static final String TAG = DialogBrightness.class.getSimpleName();
 

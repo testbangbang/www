@@ -63,14 +63,14 @@ public class AlUnicode {
 
 	public static boolean isLetterOrDigit(char ch) {
 		return ((((1 << Character.UPPERCASE_LETTER) |
-				  (1 << Character.LOWERCASE_LETTER) |
-				  (1 << Character.TITLECASE_LETTER) |
-				  (1 << Character.MODIFIER_LETTER) |
-				  (1 << Character.OTHER_LETTER) |
-				  (1 << Character.DECIMAL_DIGIT_NUMBER)
-				 ) >> Character.getType((int)ch)
-				) & 1
-			   ) != 0;	
+				(1 << Character.LOWERCASE_LETTER) |
+				(1 << Character.TITLECASE_LETTER) |
+				(1 << Character.MODIFIER_LETTER) |
+				(1 << Character.OTHER_LETTER) |
+				(1 << Character.DECIMAL_DIGIT_NUMBER)
+		) >> Character.getType((int)ch)
+		) & 1
+		) != 0;
 	}
 	
 	public static boolean isChineze(char ch) {
@@ -181,7 +181,7 @@ public class AlUnicode {
 	}
 
 	public static boolean isDigit(char ch) {
-		return Character.DECIMAL_DIGIT_NUMBER== Character.getType((int)ch);		
+		return Character.DECIMAL_DIGIT_NUMBER == Character.getType((int)ch);
 	}
 
 	public static boolean isCSSFirstLetter(char ch) {
@@ -769,7 +769,7 @@ public class AlUnicode {
 		if (src_len > 3 && ((char)src[0]) == 0xef && ((char)src[1]) == 0xbb && ((char)src[2]) == 0xbf)
 			return UTFbuffer2Ustring(src, src_len);
 
-		char ch, ch1;
+		char ch/*, ch1*/;
 		while (pos < src_len) {
 			ch = (char)src[pos++];
 			if (ch >= 0x80)

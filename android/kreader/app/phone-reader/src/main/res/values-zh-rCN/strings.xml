@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="double_back_press_tip">再按一次退出</string>
+    <string name="waiting_for_wechat_oauth">正在请求微信登录授权，请稍等&#8230;</string>
+    <string name="get_wx_token_failed">获取微信token口令牌失败</string>
+    <string name="get_wx_user_info_failed">获取微信用户信息失败</string>
+    <string name="get_onyx_account_oauth_failed">获取Onyx账号认证失败</string>
+    <string name="get_onyx_account_bound_failed">无法获取Onyx绑定的账号</string>
+    <string name="request_permission_rationale">微信登录需要申请访问存储卡和电话状态的权限，方便上传文件分享推送</string>
+    <string name="upload_file">文件上传</string>
+    <string name="push_to_device">推送到设备</string>
+    <string name="success">成功</string>
+    <string name="failed">失败</string>
+    <string name="go_to">前往</string>
+    <string name="warning_of_permissions_denied">申请权限被拒绝，无法往下操作</string>
+    <string name="tip_of_permissions_request">本应用涉及到文件上传，如果不开启权限的话，没法往下操作了</string>
+    <string name="goto_permission_setting">去往权限管理设置界面</string>
+    <string name="generating_epub_file">正在生成epub文件&#8230;</string>
+    <string name="generate_epub_file_failed">生成epub文件失败</string>
+
+    <string name="loading">加载中&#8230;</string>
+    <string name="cancel">取消</string>
+    <string name="ok">确认</string>
+
+    <string name="wifi_dialog_title">WiFi连接</string>
+    <string name="wifi_dialog_content">无网络连接，是否打开WiFi？</string>
+    <string name="share_file_warning_as_wifi_disconnect">您当前没有使用wifi流量，确定还要分享吗？</string>
+</resources>

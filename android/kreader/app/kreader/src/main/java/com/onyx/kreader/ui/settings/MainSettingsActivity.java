@@ -11,8 +11,8 @@ import android.view.Window;
 import android.widget.RelativeLayout;
 
 import com.onyx.kreader.R;
-import com.onyx.kreader.utils.DeviceConfig;
-import com.onyx.kreader.utils.DeviceUtils;
+import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.util.HashMap;
 

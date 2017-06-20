@@ -13,14 +13,14 @@ public class TTFScan {
 	}
 	
 	private static int getUInt16Buff(byte[] b, int offset) {
-		int 	res = 0;
+		int    res = 0;
 		res = (b[offset++] & 0xff) << 8;
 		res |= (b[offset] & 0xff);
 		return res;
 	}
 	
 	private static int getUInt32Buff(byte[] b, int offset) {
-		int 	res = 0;
+		int    res = 0;
 		res  = (b[offset++] & 0xff) << 24;
 		res |= (b[offset++] & 0xff) << 16;
 		res |= (b[offset++] & 0xff) << 8;
@@ -157,35 +157,35 @@ public class TTFScan {
 		try {
 			is = new FileInputStream(f);
 			int flen = (int) f.length();
-			
+
 			byte[] buff0 = new byte[12];
 			is.read(buff0);
-			
+
 			int version = getUInt32Buff(buff0, 0);
 			if (version != 0x00010000 && version != 0x4f54544f)
 				return null;
-			
+
 			int cnt_tbl = getUInt16Buff(buff0, 4) << 4;
-						
+
 			byte[] buff1 = new byte[cnt_tbl];
 			if (12 + cnt_tbl >= flen)
 				return null;
 			is.read(buff1);
-			
+
 			int i, need_skip, len_name;
-			for (i = 0; i < cnt_tbl;) {
-				version = getUInt32Buff(buff1, i);				
+			for (i = 0; i < cnt_tbl; ) {
+				version = getUInt32Buff(buff1, i);
 				if (version == 0x6e616d65) {
 					need_skip = getUInt32Buff(buff1, i + 8);
-					len_name  = getUInt32Buff(buff1, i + 12);
-					
-					if (need_skip + len_name >= flen) 
+					len_name = getUInt32Buff(buff1, i + 12);
+
+					if (need_skip + len_name >= flen)
 						return null;
-					
-					need_skip-= 12 + cnt_tbl;					
-					if (is.skip(need_skip) != need_skip) 
+
+					need_skip -= 12 + cnt_tbl;
+					if (is.skip(need_skip) != need_skip)
 						return null;
-					
+
 					buff1 = new byte[len_name];
 					if (is.read(buff1) != len_name)
 						return null;
@@ -195,7 +195,7 @@ public class TTFScan {
 				}
 				i += 16;
 			}
-			
+
 		} catch (IOException e) {
 			Log.e("error font", f.getPath());
 		} finally {
@@ -203,9 +203,11 @@ public class TTFScan {
 				try {
 					is.close();
 				} catch (IOException e) {
+
 				}
 			}
 		}
+
 		return null;
 	}
 }

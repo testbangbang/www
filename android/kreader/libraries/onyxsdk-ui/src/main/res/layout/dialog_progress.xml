@@ -24,12 +24,12 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/dialog_title_text_size" />
 
-    <SeekBar
+    <ProgressBar
+        style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true"
-        android:progressDrawable="@drawable/seekbar_progress"
         android:max="20"
         android:id="@+id/progress" />
 </LinearLayout>

@@ -1,11 +1,12 @@
 package com.onyx.android.sdk.ui.activity;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -20,18 +21,22 @@ import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder.DialogCancelListener;
 import com.onyx.android.sdk.ui.utils.ScreenSpecUtil;
-import com.onyx.android.sdk.utils.DeviceUtils;
+
+import java.util.List;
+
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Created by solskjaer49 on 16/6/22 16:32.
  */
 
-public abstract class OnyxAppCompatActivity extends AppCompatActivity {
+public abstract class OnyxAppCompatActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
+    boolean DEBUG_LOG_MSG = false;
+
     final static String TAG = OnyxAppCompatActivity.class.getSimpleName();
     ActionBar actionBar;
     private boolean isCustomBackFunctionLayout = true;
     protected RelativeLayout backFunctionLayout;
-
     protected DialogProgressHolder progressDialogHolder = new DialogProgressHolder();;
 
     protected void initSupportActionBarWithCustomBackFunction() {
@@ -192,6 +197,43 @@ public abstract class OnyxAppCompatActivity extends AppCompatActivity {
         if (progressDialogHolder != null) {
             progressDialogHolder.dismissAllProgressDialog();
             progressDialogHolder = null;
+        }
+    }
+
+    /**
+     * Permission Related:
+     * 1.Using EasyPermissions#hasPermissions(...) to check if the app already has the required permissions.
+     * This method can take any number of permissions as its final argument.
+     * 2.Requesting permissions with EasyPermissions#requestPermissions.
+     *  This method will request the system permissions and show the rationale string provided if necessary.
+     *  The request code provided should be unique to this request,
+     *  and the method can take any number of permissions as its final argument.
+     * 3.Use rather AfterPermissionGranted annotation or override onPermissionsGranted/onPermissionsDenied to handle
+     *  user permission control.
+     *
+     *  example:com.onyx.android.libsetting.view.activity.WifiSettingActivity
+     *  ref link/more info:https://github.com/googlesamples/easypermissions/blob/master/README.md
+     */
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @CallSuper
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if (DEBUG_LOG_MSG) {
+            Log.d(TAG, "onPermissionsGranted:" + requestCode + ":" + perms.size());
+        }
+    }
+
+    @CallSuper
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        if (DEBUG_LOG_MSG) {
+            Log.d(TAG, "onPermissionsDenied:" + requestCode + ":" + perms.size());
         }
     }
 }

@@ -74,10 +74,10 @@ public class ScribbleSubMenuID {
         if (strokeMapping == null) {
             strokeMapping = new HashMap<>();
             strokeMapping.put(NoteModel.getDefaultStrokeWidth(), ScribbleSubMenuID.THICKNESS_ULTRA_LIGHT);
-            strokeMapping.put(5.0f, ScribbleSubMenuID.THICKNESS_LIGHT);
-            strokeMapping.put(7.0f, ScribbleSubMenuID.THICKNESS_NORMAL);
-            strokeMapping.put(9.0f, ScribbleSubMenuID.THICKNESS_BOLD);
-            strokeMapping.put(11.0f, ScribbleSubMenuID.THICKNESS_ULTRA_BOLD);
+            strokeMapping.put(4.0f, ScribbleSubMenuID.THICKNESS_LIGHT);
+            strokeMapping.put(6.0f, ScribbleSubMenuID.THICKNESS_NORMAL);
+            strokeMapping.put(8.0f, ScribbleSubMenuID.THICKNESS_BOLD);
+            strokeMapping.put(10.0f, ScribbleSubMenuID.THICKNESS_ULTRA_BOLD);
         }
         return strokeMapping;
     }

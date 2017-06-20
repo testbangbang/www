@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
@@ -25,7 +24,7 @@ import java.util.List;
  * Created by ming on 2016/11/21.
  */
 
-public class DialogReaderColorMenu extends Dialog {
+public class DialogReaderColorMenu extends OnyxBaseDialog {
 
     private Context context;
     private ReaderMenu.ReaderMenuCallback readerMenuCallback;

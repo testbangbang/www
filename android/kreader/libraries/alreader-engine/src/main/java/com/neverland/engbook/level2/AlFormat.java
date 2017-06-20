@@ -76,6 +76,10 @@ public abstract class AlFormat {
     final ArrayList<AlOneLink> lnk = new ArrayList<>(0);
     public final ArrayList<AlOneContent> ttl = new ArrayList<>(0);
 
+    public ArrayList<AlOneImage> getAllImages() {
+        return im;
+    }
+
     boolean autoCodePage;
 
     protected long parStack[] = null;
@@ -1752,7 +1756,7 @@ public abstract class AlFormat {
             }
         }
 
-        if (correct < 2)
+        if (correct < 1)
             return res;
 
 
@@ -1847,7 +1851,7 @@ public abstract class AlFormat {
                 stackPos[fPos & InternalConst.FIND_MASK] = ap.start + i;
 
                 if (ch == lastChar) {
-                    for (j = 1; j <= fLen; j++) {
+                    for (j = 0; j <= fLen; j++) {
                         if (stackChar[(fPos - j) & InternalConst.FIND_MASK] != sFind.charAt(fLen - j) && sFind.charAt(fLen - j) != AlStyles.CHAR_ANYCHAR) {
                             break;
                         } else if (j == fLen) {

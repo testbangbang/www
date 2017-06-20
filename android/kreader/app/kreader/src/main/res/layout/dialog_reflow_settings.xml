@@ -29,7 +29,7 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/dialog_reflow_setting_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -54,7 +54,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/dialog_reflow_setting_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -79,7 +79,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_margin="20dp"
+            android:layout_margin="@dimen/dialog_reflow_setting_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -104,7 +104,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_margin="20dp"
+            android:layout_margin="@dimen/dialog_reflow_setting_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -129,7 +129,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_margin="20dp"
+            android:layout_margin="@dimen/dialog_reflow_setting_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -154,7 +154,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/dialog_reflow_setting_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -192,7 +192,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/directory_tab_height">
 
-        <Button
+        <com.onyx.android.sdk.ui.view.OnyxButton
+            android:focusable="true"
             android:text="@string/reset"
             android:gravity="center"
             android:textSize="@dimen/dialog_common_text_size"
@@ -202,7 +203,8 @@
             android:layout_weight="1"
             android:layout_height="match_parent"/>
 
-        <Button
+        <com.onyx.android.sdk.ui.view.OnyxButton
+            android:focusable="true"
             android:gravity="center"
             android:textSize="@dimen/dialog_common_text_size"
             android:id="@+id/cancel_button"
@@ -212,7 +214,8 @@
             android:layout_weight="1"
             android:layout_height="match_parent"/>
 
-        <Button
+        <com.onyx.android.sdk.ui.view.OnyxButton
+            android:focusable="true"
             android:gravity="center"
             android:textSize="@dimen/dialog_common_text_size"
             android:id="@+id/confirm_button"
@@ -221,7 +224,6 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"/>
-
 
     </LinearLayout>
 </LinearLayout>

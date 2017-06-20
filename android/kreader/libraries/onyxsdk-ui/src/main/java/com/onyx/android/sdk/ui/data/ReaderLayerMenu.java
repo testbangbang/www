@@ -83,7 +83,7 @@ public class ReaderLayerMenu extends ReaderMenu {
 
     private DialogReaderMenu getDialog() {
         if (dialog == null) {
-            dialog = new DialogReaderMenu(context, readerMenuCallback);
+            dialog = new DialogReaderMenu(context, readerMenuCallback, isFullscreen());
         }
         return dialog;
     }

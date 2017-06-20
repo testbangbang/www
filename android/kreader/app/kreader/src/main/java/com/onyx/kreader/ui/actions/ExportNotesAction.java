@@ -1,9 +1,8 @@
 package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.kreader.host.request.ExportNotesRequest;
+import com.onyx.kreader.ui.requests.ExportNotesRequest;
 import com.onyx.kreader.note.actions.GetAllShapesAction;
-import com.onyx.kreader.note.request.GetAllShapesRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**

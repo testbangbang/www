@@ -46,6 +46,7 @@
     <string name="reader_layer_menu_font_style_page_margins">Page margins</string>
     <string name="font_size_example_text" translatable="false">Aa</string>
     <string name="brightness">Brightness</string>
+    <string name="natural_light">Natural light</string>
     <string name="always">Always</string>
     <string name="every_3_pages">Every 3 pages</string>
     <string name="every_5_pages">Every 5 pages</string>
@@ -55,6 +56,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="gamma_correction">Contrast</string>
+    <string name="manual_crop">Manual Crop</string>
     <string name="outOfRangRerror">Out of Range</string>
     <string name="illegalInput">Illegal Input</string>
 
@@ -72,7 +74,20 @@
 
     <string name="importing">Importing old scribble data...</string>
     <string name="import_success">Import success！</string>
+    <string name="no_old_scribble_data">There is no old scribble data</string>
     <string name="import_fail">Import failure</string>
     <string name="import_success_info" formatted="false">Import total of %d data</string>
 
+    <string name="expand">Expand</string>
+    <string name="collapse">Collapse</string>
+    <string name="jump">Jump</string>
+
+    <string name="filter">Filter</string>
+    <string name="order_asc">Ascend</string>
+    <string name="order_desc">Descend</string>
+
+    <string name="chinese_font_face">Chinese Font face</string>
+    <string name="english_font_face">English Font face</string>
+    <string name="cold_light">Cold light</string>
+    <string name="warm_light">Warm light</string>
 </resources>

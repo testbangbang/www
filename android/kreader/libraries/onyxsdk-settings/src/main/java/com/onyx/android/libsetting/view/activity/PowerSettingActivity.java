@@ -72,7 +72,7 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     PowerUtil.setCurrentTimeoutValue(getContext(),
-                            PowerSettingTimeoutCategory.POWER_OFF_TIMEOUT, (Integer) newValue);
+                            PowerSettingTimeoutCategory.POWER_OFF_TIMEOUT, Integer.parseInt((String) newValue));
                     return true;
                 }
             });
@@ -80,7 +80,7 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     PowerUtil.setCurrentTimeoutValue(getContext(),
-                            PowerSettingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT, (Integer) newValue);
+                            PowerSettingTimeoutCategory.WIFI_INACTIVITY_TIMEOUT, Integer.parseInt((String) newValue));
                     return true;
                 }
             });
@@ -121,7 +121,7 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
 
         private void updateAutoSleepListSummary(int ms) {
             autoSleepListPreference.setSummary(ms == -1 ? getString(R.string.never_sleep) :
-                    getString(R.string.sleep_summary, CommonUtil.msToMinuteStringWithUnit(getContext(), ms)));
+                    getString(R.string.sleep_summary, CommonUtil.msToTimeStringWithUnit(getContext(), ms)));
         }
 
         private void hidePreferenceByDeviceFeature() {
@@ -129,6 +129,10 @@ public class PowerSettingActivity extends OnyxAppCompatActivity {
                 networkLatencyListPreference.setVisible(false);
             }
             if (!DeviceFeatureUtil.hasFrontLight(getContext())) {
+                wakeupPreference.setVisible(false);
+            }
+
+            if (!DeviceFeatureUtil.hasNaturalLight(getContext())) {
                 wakeupPreference.setVisible(false);
             }
         }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.preference.PreferenceActivity;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.onyx.android.libsetting.data.DeviceType;
@@ -13,6 +14,7 @@ import com.onyx.android.libsetting.data.SettingCategory;
 import com.onyx.android.libsetting.model.SettingItem;
 import com.onyx.android.libsetting.util.CommonUtil;
 import com.onyx.android.libsetting.util.Constant;
+import com.onyx.android.libsetting.view.activity.StorageSettingActivity;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 
@@ -29,6 +31,7 @@ import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_LANG
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_NETWORK_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_POWER_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_SECURITY_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_STORAGE_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_USER_SETTING_TAG;
 
 /**
@@ -56,19 +59,27 @@ public class SettingConfig {
         static private final String AUTO_POWER_OFF_KEY_TAG = "system_power_off_key";
         static private final String WIFI_INACTIVITY_KEY_TAG = "system_wifi_inactivity_key";
         static private final String ENABLE_KEY_BINDING_TAG = "enable_key_binding_key";
+        static private final String HIDE_VPN_SETTING_TAG = "hide_vpn_setting";
+
+        static private final String HAS_FRONT_LIGHT_TAG = "has_front_light";
+        static private final String HAS_NATURAL_LIGHT_TAG = "has_natural_light";
+
+        static private final String USE_SYSTEM_STORAGE_PAGE_TAG = "use_system_storage_page";
     }
 
     static class Default {
         static private final String ANDROID_SETTING_PACKAGE_NAME = "com.android.settings";
         static private final String ANDROID_SETTING_CLASS_NAME = "com.android.settings.Settings";
         static private final String TTS_CLASS_NAME = "com.android.settings.TextToSpeechSettings";
-        static private final String BLUETOOTH_CLASS_NAME = "com.android.settings.bluetooth.BluetoothSettings";
         static private final String ZONE_PICKER_CLASS_NAME = "com.android.settings.ZonePicker";
         static private final String POWER_USAGE_SUMMARY_CLASS_NAME = "com.android.settings.fuelgauge.PowerUsageSummary";
-        static private final String APPLICATION_MANAGEMENT_CLASS_NAME = "com.android.settings.applications.ManageApplications";
         static private final String FACTORY_RESET_CLASS_NAME = "com.android.settings.MasterClear";
-        static private final String VPN_SETTING_CLASS_NAME = "com.android.settings.vpn2.VpnSettings";
         static private final String DEVICE_INFO_CLASS_NAME = "com.android.settings.DeviceInfoSettings";
+
+        static private final String TTS_ACTION = "com.android.settings.TTS_SETTINGS";
+        static private final String MASTER_CLEAR_ACTION = "android.settings.MASTER_CLEAR";
+        static private final String TIME_ZONE_PICKER_ACTION = "android.settings.TIME_ZONE_SETTING";
+        static private final String PRE_N_VPN_SETTING_ACTION = "android.net.vpn.SETTINGS";
     }
 
 
@@ -83,6 +94,17 @@ public class SettingConfig {
     static private Map<String, String> settingIconsMap;
     static private Map<String, String> settingTittleMap;
 
+    public String getErrorReportAction() {
+        return errorReportAction;
+    }
+
+    public SettingConfig setErrorReportAction(String errorReportAction) {
+        this.errorReportAction = errorReportAction;
+        return this;
+    }
+
+    private String errorReportAction;
+
 
     /**
      * New backend logic,to avoid duplicate property copy in json.
@@ -93,6 +115,8 @@ public class SettingConfig {
      * <p>
      * model json:contain all custom properties which only effect on this model.(Do not copy the common properties to the json file!).
      * manufacture based json:contain all default properties which will be different by manufacture.
+     *                       (Special case:imx6 platform has 2 different sdk version(ics and kitkat),
+     *                       all imx6 special items should implement both json.
      * non manufacture based json:contain all default properties which are not depend on manufacture.
      *
      * @param context
@@ -126,6 +150,7 @@ public class SettingConfig {
         }
     }
 
+    @Nullable
     private <T> T getData(String dataKey, Class<T> clazz) {
         GObject backend = new GObject();
         for (GObject object : backendList) {
@@ -141,29 +166,34 @@ public class SettingConfig {
         String name = "";
         switch (currentDeviceType) {
             case DeviceType.IMX6:
-                name = Constant.IMX6_BASED_CONFIG_NAME;
+                name = CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ? Constant.IMX6_KIT_KAT_BASED_CONFIG_NAME :
+                        Constant.IMX6_ICS_BASED_CONFIG_NAME;
                 break;
             case DeviceType.RK:
                 name = Constant.RK3026_BASED_CONFIG_NAME;
                 break;
         }
-        return objectFromRawResource(context, name);
+        return objectFromRawResource(context, buildJsonConfigName(name));
     }
 
     private GObject objectFromDebugModel(Context context) {
         if (BuildConfig.DEBUG && useDebugConfig) {
-            return objectFromRawResource(context, Constant.DEBUG_CONFIG_NAME);
+            return objectFromRawResource(context, buildJsonConfigName(Constant.DEBUG_CONFIG_NAME));
         }
         return null;
     }
 
     private GObject objectFromModel(Context context) {
         final String name = Build.MODEL;
-        return objectFromRawResource(context, name);
+        return objectFromRawResource(context, buildJsonConfigName(name));
     }
 
     private GObject objectFromNonManufactureBasedDefaultConfig(Context context) {
-        return objectFromRawResource(context, Constant.NON_MANUFACTURE_BASED_CONFIG_NAME);
+        return objectFromRawResource(context, buildJsonConfigName(Constant.NON_MANUFACTURE_BASED_CONFIG_NAME));
+    }
+
+    private String buildJsonConfigName(String target) {
+        return Constant.SETTING_JSON_PREFIX + target;
     }
 
     private GObject objectFromRawResource(Context context, final String name) {
@@ -193,15 +223,27 @@ public class SettingConfig {
     }
 
     private List<Integer> getSystemScreenOffValues() {
-        return getData(Custom.SCREEN_OFF_VALUES_TAG, List.class);
+        List<Integer> result = getData(Custom.SCREEN_OFF_VALUES_TAG, List.class);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        return result;
     }
 
     private List<Integer> getSystemAutoPowerOffValues() {
-        return getData(Custom.AUTO_POWER_OFF_VALUES_TAG, List.class);
+        List<Integer> result = getData(Custom.AUTO_POWER_OFF_VALUES_TAG, List.class);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        return result;
     }
 
     private List<Integer> getSystemWifiInactivityTimeoutValues() {
-        return getData(Custom.WIFI_INACTIVITY_VALUES_TAG, List.class);
+        List<Integer> result = getData(Custom.WIFI_INACTIVITY_VALUES_TAG, List.class);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+        return result;
     }
 
     public String getSystemScreenOffKey() {
@@ -227,17 +269,17 @@ public class SettingConfig {
     public Intent getTTSSettingIntent() {
         Intent intent = new Intent();
         String pkgName = getData(Custom.TTS_PACKAGE_NAME_TAG, String.class);
-        if (TextUtils.isEmpty(pkgName)) {
-            pkgName = Default.ANDROID_SETTING_PACKAGE_NAME;
-        }
         String className = getData(Custom.TTS_CLASS_NAME_TAG, String.class);
-        if (TextUtils.isEmpty(className)) {
-            className = Default.TTS_CLASS_NAME;
-        }
-        intent.setClassName(pkgName, className);
-        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
-            intent = buildDefaultSettingIntent();
-            intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.TTS_CLASS_NAME);
+        if (TextUtils.isEmpty(pkgName) && TextUtils.isEmpty(className)) {
+            intent = new Intent(Default.TTS_ACTION);
+        } else {
+            if (TextUtils.isEmpty(pkgName)) {
+                pkgName = Default.ANDROID_SETTING_PACKAGE_NAME;
+            }
+            if (TextUtils.isEmpty(className)) {
+                className = Default.TTS_CLASS_NAME;
+            }
+            intent.setClassName(pkgName, className);
         }
         return intent;
     }
@@ -245,25 +287,25 @@ public class SettingConfig {
     public Intent getTimeZoneSettingIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.ZONE_PICKER_CLASS_NAME);
-        return intent;
+        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
+                new Intent(Default.TIME_ZONE_PICKER_ACTION) : intent;
     }
 
     public Intent getBatteryStatusIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.POWER_USAGE_SUMMARY_CLASS_NAME);
-        return intent;
+        return new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
     }
 
     public Intent getApplicationManagementIntent() {
-        Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.APPLICATION_MANAGEMENT_CLASS_NAME);
-        return intent;
+        return new Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS);
     }
 
     public Intent getFactoryResetIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.FACTORY_RESET_CLASS_NAME);
-        return intent;
+        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.KITKAT) ?
+                new Intent(Default.MASTER_CLEAR_ACTION) : intent;
     }
 
     private Intent buildDefaultSettingIntent() {
@@ -283,33 +325,33 @@ public class SettingConfig {
         return null;
     }
 
-    public Intent getKeyBindingIntent() {
-        return null;
-    }
-
     public Intent getBluetoothSettingIntent() {
-        Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.BLUETOOTH_CLASS_NAME);
-        return intent;
+        return new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
     }
 
     public Intent getVPNSettingIntent() {
-        Intent intent = buildDefaultSettingIntent();
-        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.VPN_SETTING_CLASS_NAME);
-        return intent;
+        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.N) ?
+                new Intent(Settings.ACTION_VPN_SETTINGS) :
+                new Intent(Default.PRE_N_VPN_SETTING_ACTION).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     public Intent getDeviceInfoIntent() {
         Intent intent = buildDefaultSettingIntent();
         intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, Default.DEVICE_INFO_CLASS_NAME);
-        return intent;
+        return CommonUtil.apiLevelCheck(Build.VERSION_CODES.M) ?
+                new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS) : intent;
+    }
+
+    public Intent getStorageSettingIntent(Context context) {
+        return isUseSystemStoragePage() ? new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS) :
+                new Intent(context, StorageSettingActivity.class);
     }
 
     private List<String> getSettingItemTAGList() {
         if (settingItemTAGList == null) {
             settingItemTAGList = new ArrayList<>();
             List<String> rawResourceList = getData(Custom.ITEM_LIST_TAG, List.class);
-            if (rawResourceList == null) {
+            if (rawResourceList == null || rawResourceList.size() == 0) {
                 buildDefaultSettingTAGList();
             } else {
                 settingItemTAGList.addAll(rawResourceList);
@@ -327,7 +369,7 @@ public class SettingConfig {
         if (settingIconsMap == null) {
             buildDefaultSettingsIconsMap();
             Map<String, String> rawResourceMap = (Map<String, String>) (getData(Custom.ICON_MAPS_TAG, Map.class));
-            if (rawResourceMap != null) {
+            if (rawResourceMap != null && rawResourceMap.size() != 0) {
                 settingIconsMap.putAll(rawResourceMap);
             }
         }
@@ -338,7 +380,7 @@ public class SettingConfig {
         if (settingTittleMap == null) {
             buildDefaultSettingsTittleMap();
             Map<String, String> rawResourceMap = (Map<String, String>) (getData(Custom.TITTLE_MAPS_TAG, Map.class));
-            if (rawResourceMap != null) {
+            if (rawResourceMap != null && rawResourceMap.size() != 0) {
                 settingTittleMap.putAll(rawResourceMap);
             }
         }
@@ -353,6 +395,7 @@ public class SettingConfig {
         settingItemTAGList.add(SETTING_ITEM_LANG_INPUT_TAG);
         settingItemTAGList.add(SETTING_ITEM_DATE_TIME_TAG);
         settingItemTAGList.add(SETTING_ITEM_APPLICATION_TAG);
+        settingItemTAGList.add(SETTING_ITEM_STORAGE_TAG);
         settingItemTAGList.add(SETTING_ITEM_SECURITY_TAG);
         settingItemTAGList.add(SETTING_ITEM_ERROR_REPORT_TAG);
     }
@@ -365,6 +408,7 @@ public class SettingConfig {
         settingIconsMap.put(SETTING_ITEM_LANG_INPUT_TAG, "ic_setting_language");
         settingIconsMap.put(SETTING_ITEM_DATE_TIME_TAG, "ic_setting_date");
         settingIconsMap.put(SETTING_ITEM_APPLICATION_TAG, "ic_setting_application");
+        settingIconsMap.put(SETTING_ITEM_STORAGE_TAG, "ic_setting_storage");
         settingIconsMap.put(SETTING_ITEM_SECURITY_TAG, "ic_security");
         settingIconsMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "ic_error_report");
     }
@@ -377,6 +421,7 @@ public class SettingConfig {
         settingTittleMap.put(SETTING_ITEM_LANG_INPUT_TAG, "setting_lang_input");
         settingTittleMap.put(SETTING_ITEM_DATE_TIME_TAG, "setting_date_time");
         settingTittleMap.put(SETTING_ITEM_APPLICATION_TAG, "setting_application");
+        settingTittleMap.put(SETTING_ITEM_STORAGE_TAG, "setting_storage");
         settingTittleMap.put(SETTING_ITEM_SECURITY_TAG, "setting_security");
         settingTittleMap.put(SETTING_ITEM_ERROR_REPORT_TAG, "setting_error_report");
     }
@@ -394,6 +439,42 @@ public class SettingConfig {
     }
 
     public boolean isEnableKeyBinding() {
-        return getData(Custom.ENABLE_KEY_BINDING_TAG, Boolean.class);
+        Boolean result = getData(Custom.ENABLE_KEY_BINDING_TAG, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
+    }
+
+    public boolean hasFrontLight() {
+        Boolean result = getData(Custom.HAS_FRONT_LIGHT_TAG, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
+    }
+
+    public boolean hasNaturalLight() {
+        Boolean result = getData(Custom.HAS_NATURAL_LIGHT_TAG, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
+    }
+
+    public boolean hideVPNSettings(){
+        Boolean result = getData(Custom.HIDE_VPN_SETTING_TAG, Boolean.class);
+        if (result == null) {
+            return false;
+        }
+        return result;
+    }
+
+    private boolean isUseSystemStoragePage(){
+        Boolean result = getData(Custom.USE_SYSTEM_STORAGE_PAGE_TAG, Boolean.class);
+        if (result == null) {
+            return true;
+        }
+        return result;
     }
 }

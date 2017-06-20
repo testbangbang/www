@@ -3,7 +3,7 @@ package com.onyx.kreader.ui.actions;
 import android.content.pm.ActivityInfo;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.kreader.host.request.UpdateScreenOrientationOptionRequest;
+import com.onyx.android.sdk.reader.host.request.UpdateScreenOrientationOptionRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 

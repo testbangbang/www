@@ -32,4 +32,8 @@ public class ApplicationUpdate extends BaseData {
     public int versionCode;
     @Column
     public int size;
+    @Column
+    public String macAddress;
+    @Column
+    public String platform;
 }

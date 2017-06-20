@@ -15,6 +15,8 @@ public class Constant {
     public static final String CN_HOST_BASE = "http://dev.onyx-international.cn";
     public static final String CN_API_BASE = "http://dev.onyx-international.cn/api/1/";
 
+    public static final String STATISTICS_API_BASE = "http://192.168.11.111/api/1/";
+
     public static final String EDU_API_BASE = "http://dev.zxxk.com/api/";
     public static final String ACCESS_KEY = "2016103189639748";
     public static final String ACCESS_SECRET = "8a031034af2348669842683bc6115aa5";
@@ -29,6 +31,8 @@ public class Constant {
     static public final String PASSWORD_TAG = "password";
     static public final String AVATAR_TAG = "avatar";
     static public final String ID_TAG = "id";
+    static public final String URL_TAG = "url";
+    static public final String HTTP_TAG = "http";
 
     public static final String COVER_TYPE_SMALL = "small";
     public static final String COVER_TYPE_NORMAL = "normal";
@@ -39,4 +43,7 @@ public class Constant {
     public static final String DEFAULT_COVER_EXT = "png";
 
     public static final String PUSH_KEY = "leanCloud";
+    public static final String APP_ID = "50ed40debbdc4bb1bfdddcd4791d862c";
+
+    public static final String PLATFORM_WECHAT = "wechat";
 }

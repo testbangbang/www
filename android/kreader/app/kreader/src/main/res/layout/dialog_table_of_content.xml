@@ -32,11 +32,13 @@
 
 
     <RelativeLayout
+        android:focusable="false"
         android:id="@+id/layout_turn"
         android:layout_width="match_parent"
         android:layout_height="@dimen/directory_page_indicator_height">
 
         <TextView
+            android:focusable="false"
             android:visibility="gone"
             android:textSize="20sp"
             android:layout_marginLeft="20dp"
@@ -47,6 +49,7 @@
             android:layout_height="wrap_content"/>
 
         <LinearLayout
+            android:focusable="false"
             android:layout_marginLeft="20dp"
             android:id="@+id/page_indicator_layout"
             android:layout_centerInParent="true"
@@ -55,6 +58,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:focusable="false"
                 android:background="@drawable/imagebtn_bg"
                 android:id="@+id/pre_icon"
                 android:scaleType="fitXY"
@@ -64,6 +68,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:focusable="false"
                 android:id="@+id/page_size_indicator"
                 android:text="1/7"
                 android:textSize="20sp"
@@ -71,6 +76,7 @@
                 android:layout_height="wrap_content"/>
 
             <ImageView
+                android:focusable="false"
                 android:background="@drawable/imagebtn_bg"
                 android:id="@+id/next_icon"
                 android:scaleType="fitXY"
@@ -82,6 +88,7 @@
 
 
         <LinearLayout
+            android:focusable="false"
             android:layout_toLeftOf="@+id/back_layout"
             android:id="@+id/export_layout"
             android:layout_centerVertical="true"
@@ -94,6 +101,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:focusable="false"
                 android:scaleType="fitXY"
                 android:layout_marginRight="2dp"
                 android:src="@drawable/ic_dialog_reader_export"
@@ -101,6 +109,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:focusable="false"
                 android:visibility="gone"
                 android:text="@string/export"
                 android:textSize="20sp"
@@ -109,6 +118,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:focusable="false"
             android:id="@+id/back_layout"
             android:layout_centerVertical="true"
             android:padding="5dp"
@@ -122,6 +132,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:focusable="false"
                 android:id="@+id/back_icon"
                 android:scaleType="fitXY"
                 android:layout_marginRight="2dp"
@@ -130,6 +141,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:focusable="false"
                 android:visibility="gone"
                 android:id="@+id/back_text"
                 android:text="@string/action_return"
@@ -142,6 +154,7 @@
     </RelativeLayout>
 
     <RadioGroup
+        android:focusable="false"
         android:id="@+id/layout_menu"
         android:orientation="horizontal"
         android:layout_width="match_parent"

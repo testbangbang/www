@@ -14,26 +14,49 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
-        <ImageView
+        <LinearLayout
+            android:gravity="center"
             android:background="@drawable/square_bg"
-            android:id="@+id/image_view_one_grids"
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_dialog_reader_page_one_black_focused"/>
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:background="@drawable/top_bottom_line_button_bg"
-            android:id="@+id/image_view_four_grids"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_dialog_reader_page_four_white_focused"/>
+            <ImageView
+                android:focusable="true"
+                android:background="@drawable/quick_view_item_bg"
+                android:id="@+id/image_view_one_grids"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dialog_reader_page_one_black_focused"/>
 
-        <ImageView
-            android:background="@drawable/square_bg"
-            android:id="@+id/image_view_nine_grids"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_dialog_reader_page_nine_white_focused"/>
+            <View
+                android:background="@android:color/black"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"/>
+
+            <ImageView
+                android:focusable="true"
+                android:background="@drawable/quick_view_item_bg"
+                android:id="@+id/image_view_four_grids"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dialog_reader_page_four_white_focused"/>
+
+            <View
+                android:background="@android:color/black"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"/>
+
+            <ImageView
+                android:focusable="true"
+                android:background="@drawable/quick_view_item_bg"
+                android:id="@+id/image_view_nine_grids"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dialog_reader_page_nine_white_focused"/>
+        </LinearLayout>
+
+
 
         <LinearLayout
             android:layout_marginLeft="20dp"
@@ -57,9 +80,11 @@
                     android:layout_height="wrap_content"/>
 
                 <TextView
+                    android:focusable="true"
+                    android:background="@drawable/imagebtn_bg"
                     android:gravity="center"
                     android:layout_weight="1"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/dialog_quick_view_page_text_size"
                     android:id="@+id/text_view_progress"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -78,6 +103,7 @@
 
 
             <SeekBar
+                android:background="@drawable/focused_bg"
                 android:layout_marginTop="5dp"
                 android:thumb="@drawable/seekbar_thumb"
                 android:id="@+id/seek_bar_page"
@@ -140,6 +166,7 @@
     </RelativeLayout>
 
     <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:focusable="false"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:id="@+id/grid_view_preview"

@@ -1,13 +1,9 @@
 package com.neverland.engbook.level2;
 
-import android.text.TextUtils;
-
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlOneContent;
-import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.level1.AlFilesMOBI;
-import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.AlOneLink;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
@@ -270,7 +266,7 @@ public class AlFormatMOBI extends AlAXML {
                     return false;
             }
 
-            if (s != null && s.startsWith("kindle:embed:")) {
+            if (/*s != null && */s.startsWith("kindle:embed:")) {
                 s = s.substring(13);
 
                 int i = s.indexOf('?');

@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.NotePreference;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -23,6 +23,7 @@ public class NoteApplication extends Application {
 
 
     private static NoteViewHelper noteViewHelper;
+    private static NoteApplication instance;
 
     public static NoteViewHelper getNoteViewHelper() {
         if (noteViewHelper == null) {
@@ -38,8 +39,14 @@ public class NoteApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         initDataProvider(this);
         installExceptionHandler();
+        initCompatColorImageConfig();
+    }
+
+    public static NoteApplication getInstance() {
+        return instance;
     }
 
     private void initDataProvider(final Context context) {
@@ -61,4 +68,7 @@ public class NoteApplication extends Application {
         });
     }
 
+    private void initCompatColorImageConfig() {
+        AppCompatImageViewCollection.isPl107Device = AppCompatUtils.isPL107Device(this);
+    }
 }

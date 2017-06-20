@@ -53,6 +53,7 @@
     <string name="ok">确认</string>
     <string name="cancel">取消</string>
     <string name="gamma_correction">对比度</string>
+    <string name="manual_crop">选切模式</string>
     <string name="outOfRangRerror">超出区域</string>
     <string name="illegalInput">无效输入</string>
     <string name="save">保存</string>
@@ -67,7 +68,21 @@
 
     <string name="importing">正在导入旧手写板数据...</string>
     <string name="import_success">导入成功！</string>
+    <string name="no_old_scribble_data">没有找到旧手写数据</string>
     <string name="import_fail">导入失败</string>
     <string name="import_success_info" formatted="false">总共导入%d条数据</string>
 
+    <string name="expand">展开</string>
+    <string name="collapse">收缩</string>
+    <string name="jump">跳转</string>
+    
+    <string name="filter">筛选</string>
+    <string name="order_asc">升序</string>
+    <string name="order_desc">降序</string>
+
+    <string name="chinese_font_face">中文字体</string>
+    <string name="english_font_face">英文字体</string>
+
+    <string name="cold_light">冷光</string>
+    <string name="warm_light">暖光</string>
 </resources>

@@ -17,14 +17,14 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.kreader.R;
-import com.onyx.kreader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogSlideshowStatistic;
 import com.onyx.kreader.ui.events.UpdateSlideshowEvent;
 import com.onyx.kreader.ui.view.SlideshowStatusBar;
-import com.onyx.kreader.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -73,6 +73,14 @@ public class SlideshowHandler extends BaseHandler {
         }
     };
 
+    public static HandlerInitialState createInitialState(RelativeLayout parentLayout, int maxPageCount, int intervalInSeconds) {
+        HandlerInitialState state = new HandlerInitialState();
+        state.slideShowParentLayout = parentLayout;
+        state.slideShowMaxPageCount = maxPageCount;
+        state.slideShowIntervalInSeconds = intervalInSeconds;
+        return state;
+    }
+
     public SlideshowHandler(HandlerManager parent) {
         super(parent);
         readerDataHolder = getParent().getReaderDataHolder();
@@ -80,10 +88,20 @@ public class SlideshowHandler extends BaseHandler {
     }
 
     @Override
-    public void onActivate(ReaderDataHolder readerDataHolder) {
+    public void onActivate(ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
+        if (initialState == null) {
+            throw new IllegalArgumentException();
+        }
+
+        parent = initialState.slideShowParentLayout;
+        maxPageCount = initialState.slideShowMaxPageCount;
+        intervalInSeconds = initialState.slideShowIntervalInSeconds;
+
         activated = true;
         readerDataHolder.getContext().registerReceiver(broadcastReceiver, new IntentFilter(intent.getAction()));
         readerDataHolder.getEventBus().register(this);
+
+        startSlideShow();
     }
 
     @Override
@@ -183,13 +201,7 @@ public class SlideshowHandler extends BaseHandler {
         return true;
     }
 
-    public void setInterval(int seconds) {
-        intervalInSeconds = seconds;
-    }
-
-    public void start(RelativeLayout parent, int maxPageCount) {
-        this.parent = parent;
-        this.maxPageCount = maxPageCount;
+    public void startSlideShow() {
         pageCount = 0;
         startBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
         startTime = Calendar.getInstance();
@@ -214,6 +226,7 @@ public class SlideshowHandler extends BaseHandler {
     }
 
     private void loopNextScreen() {
+        ReaderDeviceManager.holdDisplayUpdate(readerDataHolder.getContext(), getSlideshowStatusBar());
         pageCount++;
         if (readerDataHolder.getReaderViewInfo().canNextScreen) {
             nextScreen(readerDataHolder, pageLimitCallback);
@@ -244,7 +257,7 @@ public class SlideshowHandler extends BaseHandler {
         int endBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
         DialogSlideshowStatistic dlg = new DialogSlideshowStatistic(readerDataHolder.getContext(), startTime, endTime,
                 pageCount, startBatteryPercent, endBatteryPercent);
-        readerDataHolder.addActiveDialog(dlg);
+        readerDataHolder.trackDialog(dlg);
         dlg.show();
     }
 }

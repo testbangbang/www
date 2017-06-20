@@ -5,7 +5,6 @@ import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
-import com.neverland.engbook.level1.AlFilesEPUB;
 import com.neverland.engbook.level1.AlFilesFB3;
 import com.neverland.engbook.level1.AlOneZIPRecord;
 import com.neverland.engbook.util.AlOneImage;
@@ -14,6 +13,7 @@ import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.AlStylesOptions;
 import com.neverland.engbook.util.InternalFunc;
 
+import java.util.Collections;
 import java.util.HashMap;
 
 public class AlFormatFB3 extends AlAXML {
@@ -24,8 +24,8 @@ public class AlFormatFB3 extends AlAXML {
     private static final String LEVELE2_FB3_BODY_TYPE = "application/fb3-body+xml";
 
 
-    protected int active_file = UNKNOWN_FILE_SOURCE_NUM;
-    protected int active_type = 0x00;
+    /*protected int active_file = UNKNOWN_FILE_SOURCE_NUM;
+    protected int active_type = 0x00;*/
 
     private int section_count;
     private int content_start;
@@ -124,7 +124,7 @@ public class AlFormatFB3 extends AlAXML {
                     sTarget.startsWith("mailto:")*/) {
                     target = sTarget.toString();
                 } else {
-                    target = aFiles.getAbsoluteName("/fb3/", sTarget.toString());
+                    target = AlFiles.getAbsoluteName("/fb3/", sTarget.toString());
                 }
 
                 allId.put(sId.toString(), target);
@@ -136,7 +136,7 @@ public class AlFormatFB3 extends AlAXML {
             if (sId != null && sTarget != null) {
                 if (sId.indexOf(LEVELE2_FB3_COVER_TYPE) == 0 && sId.length() > 0 && sTarget.length() > 0) {
                     if (sTarget.indexOf(":") == -1) {
-                        coverName = aFiles.getAbsoluteName("/", sTarget.toString());
+                        coverName = AlFiles.getAbsoluteName("/", sTarget.toString());
                     }
                 }
                 return;
@@ -162,8 +162,8 @@ public class AlFormatFB3 extends AlAXML {
     void doSpecialGetParagraph(long iType, int addon, long level, long[] stk, int[] cpl) {
         paragraph = iType;
         allState.state_parser = 0;
-        active_type = addon & 0xffff;
-        active_file = (addon >> 16) & 0x0fff;
+        active_type = addon & 0xff;
+        active_file = (addon >> 8) & 0x0fffff;
         paragraph_level = (int) (level & LEVEL2_MASK_FOR_LEVEL);
         paragraph_tag = (int) ((level >> 31) & 0xffffffff);
         allState.state_skipped_flag = (addon & LEVEL2_FRM_ADDON_SKIPPEDTEXT) != 0;
@@ -174,8 +174,8 @@ public class AlFormatFB3 extends AlAXML {
     @Override
     void formatAddonInt() {
         pariType = paragraph;
-        parAddon = active_type & 0xffff;
-        parAddon += (active_file & 0x0fff) << 16;
+        parAddon = active_type & 0xff;
+        parAddon += (active_file & 0x0fffff) << 8;
 
         parLevel = paragraph_level | (((long)paragraph_tag) << 31);
 
@@ -271,8 +271,7 @@ public class AlFormatFB3 extends AlAXML {
             if (isGenreList) {
                 if (allState.isOpened) {
                     String[] spl = state_specialBuff0.toString().split(" ");
-                    for (int i = 0; i < spl.length; i++)
-                        bookGenres.add(spl[i]);
+                    Collections.addAll(bookGenres, spl);
                 }
                 isGenreList = false;
             } else

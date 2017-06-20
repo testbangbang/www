@@ -26,6 +26,11 @@ public class DisableScrollGridManager extends GridLayoutManager {
         super(context, spanCount);
     }
 
+    public DisableScrollGridManager(Context context, int spanCount, int orientation,
+                             boolean reverseLayout) {
+        super(context, spanCount, orientation, reverseLayout);
+    }
+
     public void setScrollEnable(boolean enable) {
         this.canScroll = enable;
     }

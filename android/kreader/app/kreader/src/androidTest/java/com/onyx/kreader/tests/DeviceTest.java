@@ -3,8 +3,7 @@ package com.onyx.kreader.tests;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.onyx.android.sdk.device.Device;
-import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.utils.ImageUtils;
+import com.onyx.android.sdk.reader.utils.ImageUtils;
 
 /**
  * Created by zhuzeng on 29/12/2016.

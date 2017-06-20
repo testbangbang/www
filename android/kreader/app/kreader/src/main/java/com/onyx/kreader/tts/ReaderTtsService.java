@@ -6,16 +6,13 @@ package com.onyx.kreader.tts;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-import android.util.Log;
 
 import com.onyx.android.sdk.common.request.WakeLockHolder;
-import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.Benchmark;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.common.Debug;
 
 import java.io.File;
 import java.util.HashMap;
@@ -26,7 +23,7 @@ import java.util.Locale;
  */
 public class ReaderTtsService {
 
-    private static final String TAG = ReaderTtsService.class.getSimpleName();
+    private static final Class TAG = ReaderTtsService.class;
 
     public enum TtsState { Ready, SynthesizeTtsPrepare, SynthesizeTtsStart, SynthesizeTtsDone, MediaPlayStart, MediaPaused, MediaResume, MediaPlayDone, Stopped, Error}
 
@@ -38,7 +35,7 @@ public class ReaderTtsService {
         public abstract void onError();
     }
 
-    private static final String UTTERANCE_ID = TAG;
+    private static final String UTTERANCE_ID = ReaderTtsService.class.getSimpleName();
 
     private volatile WakeLockHolder wakeLockHolder = new WakeLockHolder();
 
@@ -115,7 +112,7 @@ public class ReaderTtsService {
             try {
                 locale = new Locale(languageCode);
             } catch (Exception e) {
-                Log.w(TAG, e);
+                Debug.w(TAG, e);
             }
         }
         if (locale == null || ttsService.isLanguageAvailable(locale) < 0) {
@@ -262,7 +259,7 @@ public class ReaderTtsService {
         benchmark.report("synthesizeToFile");
 
         if (res == TextToSpeech.ERROR) {
-            Log.w(TAG, "TTS synthesize failed");
+            Debug.w(TAG, "TTS synthesize failed");
             return false;
         } else {
             return true;
@@ -272,7 +269,7 @@ public class ReaderTtsService {
     private boolean prepareMediaPlayer() {
         try {
             if (!getTempWaveFile().exists()) {
-                Log.w(TAG, "tts wave file not exists: " + getTempWaveFile().getAbsolutePath());
+                Debug.w(TAG, "tts wave file not exists: " + getTempWaveFile().getAbsolutePath());
                 return false;
             }
 
@@ -305,7 +302,7 @@ public class ReaderTtsService {
             }
             return true;
         } catch (Exception e) {
-            Log.w(TAG, e);
+            Debug.w(TAG, e);
             return false;
         }
     }
@@ -335,7 +332,7 @@ public class ReaderTtsService {
             mediaPlayer.release();
             mediaPlayer = null;
         } catch (Throwable tr) {
-            Log.w(TAG, tr);
+            Debug.w(TAG, tr);
         }
     }
 
@@ -359,7 +356,7 @@ public class ReaderTtsService {
     }
 
     private void acquireWakeLock() {
-        wakeLockHolder.acquireWakeLock(context, WakeLockHolder.WAKEUP_FLAGS, TAG);
+        wakeLockHolder.acquireWakeLock(context, WakeLockHolder.WAKEUP_FLAGS, getClass().getSimpleName());
     }
 
     private void releaseWakeLock() {

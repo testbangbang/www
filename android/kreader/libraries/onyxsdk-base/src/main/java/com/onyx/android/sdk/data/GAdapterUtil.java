@@ -20,6 +20,7 @@ public final class GAdapterUtil {
     public static final String TAG_UNIQUE_ID = "id";
     public static final String TAG_TITLE_RESOURCE = "title_resource";
     public static final String TAG_TITLE_STRING = "title_string";
+    public static final String TAG_ORIGIN_TITLE_STRING = "origin_title_string";
     public static final String TAG_SUB_TITLE_RESOURCE = "sub_title";
     public static final String TAG_SUB_TITLE_STRING = "sub_title_string";
     public static final String TAG_IMAGE_RESOURCE = "image_resource";

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string-array name="wifi_status">
+        <!-- Status message of Wi-Fi when it is idle. -->
+        <item />
+        <!-- Status message of Wi-Fi when it is scanning. -->
+        <item>Сканирование\u2026</item>
+        <!-- Status message of Wi-Fi when it is connecting. -->
+        <item>Подключение\u2026</item>
+        <!-- Status message of Wi-Fi when it is authenticating. -->
+        <item>Аутентификация\u2026</item>
+        <!-- Status message of Wi-Fi when it is obtaining IP address. -->
+        <item>Получение IP адреса\u2026</item>
+        <!-- Status message of Wi-Fi when it is connected. -->
+        <item>Подключено</item>
+        <!-- Status message of Wi-Fi when it is suspended. -->
+        <item>Остановлено</item>
+        <!-- Status message of Wi-Fi when it is disconnecting. -->
+        <item>Отключение\u2026</item>
+        <!-- Status message of Wi-Fi when it is disconnected. -->
+        <item>Отключено</item>
+        <!-- Status message of Wi-Fi when it is a failure. -->
+        <item>Ошибка</item>
+    </string-array>
+    <string-array name="wifi_status_with_ssid">
+        <!-- Status message of Wi-Fi when it is idle. -->
+        <item />
+        <!-- Status message of Wi-Fi when it is scanning. -->
+        <item>Сканирование\u2026</item>
+        <!-- Status message of Wi-Fi when it is connecting to a network. -->
+        <item>Подключение к <xliff:g id="network_name">%1$s</xliff:g>\u2026</item>
+        <!-- Status message of Wi-Fi when it is authenticating with a network. -->
+        <item>Аутентификация <xliff:g id="network_name">%1$s</xliff:g>\u2026</item>
+        <!-- Status message of Wi-Fi when it is obtaining IP address from a network. -->
+        <item>Получение IP-адреса от <xliff:g id="network_name">%1$s</xliff:g>\u2026</item>
+        <!-- Status message of Wi-Fi when it is connected to a network. -->
+        <item>Подключено к <xliff:g id="network_name">%1$s</xliff:g></item>
+        <!-- Status message of Wi-Fi when it is suspended. -->
+        <item>Остановлено</item>
+        <!-- Status message of Wi-Fi when it is disconnecting from a network. -->
+        <item>Отключение от <xliff:g id="network_name">%1$s</xliff:g>\u2026</item>
+        <!-- Status message of Wi-Fi when it is disconnected. -->
+        <item>Отключено</item>
+        <!-- Status message of Wi-Fi when it is a failure. -->
+        <item>Ошибка</item>
+    </string-array>
+    <string-array name="wifi_signal">
+        <item>Плохой</item>
+        <item>Стабильный</item>
+        <item>Хороший</item>
+        <item>Отличный</item>
+    </string-array>
+    <string-array name="long_short_click_key_map_mode">
+        <item>"Вариант 1" </item>
+        <item>"Вариант 2" </item>
+        <item>"Вариант 3" </item>
+        <item>"Вариант 4" </item>
+    </string-array>
+    <string-array name="long_short_click_key_map_mode_for_tp_model">
+        <item>"Вариант 1" </item>
+        <item>"Вариант 2" </item>
+        <item>"Вариант 3" </item>
+        <item>"Вариант 4" </item>
+    </string-array>
+    <string-array name="long_short_click_key_map_summary">
+        <item>"Левая кнопка (кратковременное нажатие) -&gt; Назад \nЛевая кнопка (длительное нажатие) -&gt; Меню \nПравая кнопка (длительное нажатие) -&gt; Предыдущая страница \nПравая кнопка (кратковременное нажатие) -&gt; Следующая страница" </item>
+        <item>"Левая кнопка (кратковременное нажатие) -&gt; Предыдущая страница \nЛевая кнопка (длительное нажатие) -&gt; Назад \nПравая кнопка (длительное нажатие) -&gt; Меню \nПравая кнопка (короткое нажатие) -&gt; Следующая страница" </item>
+        <item>"Левая кнопка (кратковременное нажатие) -&gt; Следующая страница \nЛевая кнопка (длительное нажатие) -&gt; Предыдущая страница \nПравая кнопка (длительное нажатие) -&gt; Меню \nПравая кнопка (кратковременное нажатие) -&gt; Назад" </item>
+        <item>"Левая кнопка (кратковременное нажатие) -&gt; Следующая страница \nЛевая кнопка (длительное нажатие) -&gt; Меню \nПравая кнопка (длительное нажатие) -&gt; Назад \nПравая кнопка (кратковременное нажатие) -&gt; Предыдущая страница" </item>
+        <item>"Left button (short press) -&gt; Page down \nLeft button (long press) -&gt; Menu \nRight button (long press) -&gt; Back \nRight button (short press) -&gt; Page up" </item>
+    </string-array>
+    <string-array name="long_short_click_key_map_summary_for_tp_model">
+        <item>"Левая кнопка (кратковременное нажатие) -&gt; Предыдущая страница\nЛевая кнопка (длительное нажатие) -&gt; Обновление экрана\nПравая кнопка (кратковременное нажатие) -&gt; Следующая страница\nПравая кнопка (длительное нажатие) -&gt; Меню" </item>
+        <item>"Левая кнопка (кратковременное нажатие) -&gt; Следующая страница\nЛевая кнопка (длительное нажатие) -&gt; Обновление экрана\nПравая кнопка (кратковременное нажатие) -&gt; Следующая страница\nПравая кнопка (длительное нажатие) -&gt; Предыдущая страница" </item>
+        <item>"Левая кнопка (кратковременное нажатие) -&gt; Следующая страница\nЛевая кнопка (длительное нажатие) -&gt; Предыдущая страница\nПравая кнопка (кратковременное нажатие) -&gt; Следующая страница\nПравая кнопка (длительное нажатие) -&gt; Словарь" </item>
+        <item>"Левая кнопка (кратковременное нажатие) -&gt; Предыдущая страница\nЛевая кнопка (длительное нажатие) -&gt; Обновление экрана\nПравая кнопка (кратковременное нажатие) -&gt; Следующая страница\nПравая кнопка (длительное нажатие) -&gt; Словарь" </item>
+        <item>"Left button (Short press) -&gt; Page up\nLeft button (Long press) -&gt; Screen refresh\nRight button (short press) -&gt; Page down\nRight button (Long press) -&gt; Dictionary" </item>
+    </string-array>
+    <string-array name="long_press_feature_summary">
+        <item>Включение подсветки</item>
+        <item>Вызов строки состояния</item>
+    </string-array>
+</resources>

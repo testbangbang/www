@@ -3,9 +3,8 @@ package com.onyx.android.sdk.scribble.request.note;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Color;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
@@ -40,7 +39,7 @@ import static android.provider.BaseColumns._ID;
 
 public class ImportScribbleRequest extends BaseNoteRequest {
 
-    private final String url = "content://com.onyx.android.sdk.OnyxCmsProvider/library_scribble";
+    public final static String OLD_SCRIBBLE_URL = "content://com.onyx.android.sdk.OnyxCmsProvider/library_scribble";
     private final String OLD_SCRIBBLE_APPLICATION = "com.onyx.android.scribbler";
 
     private Context context;
@@ -82,7 +81,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
     public void execute(NoteViewHelper helper) throws Exception {
         Cursor cursor = null;
         try {
-            Uri uri = Uri.parse(url);
+            Uri uri = Uri.parse(OLD_SCRIBBLE_URL);
             cursor = context.getContentResolver().query(
                     uri, null, null, null,
                     null);
@@ -133,7 +132,9 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         byte[] pts = CursorUtil.getBlob(c, sColumnPointsBlob);
         String uniqueId = CursorUtil.getString(c, sColumnUniqueId);
 
-        if (StringUtils.isNullOrEmpty(uniqueId)) {
+        if (StringUtils.isNullOrEmpty(uniqueId)
+                || StringUtils.isNullOrEmpty(md5)
+                || StringUtils.isNullOrEmpty(position)) {
             return;
         }
         if (StringUtils.isNullOrEmpty(application) || !application.equals(OLD_SCRIBBLE_APPLICATION)) {
@@ -146,7 +147,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         shapeModel.setPageUniqueId(position);
         shapeModel.setThickness((float) thickness);
         shapeModel.setAppId(application);
-        shapeModel.setColor(color);
+        shapeModel.setColor(color != null ? color : Color.BLACK);
         if (!StringUtils.isNullOrEmpty(update_time)) {
             Date date = new Date(Long.valueOf(update_time));
             shapeModel.setUpdatedAt(date);
@@ -157,7 +158,7 @@ public class ImportScribbleRequest extends BaseNoteRequest {
         points.scaleAllPoints(scaleValue);
         shapeModel.setPoints(points);
         Shape shape = new NormalPencilShape();
-        shapeModel.setShapeUniqueId(uniqueId);
+        shapeModel.generateShapeUniqueId();
         shapeModel.setShapeType(shape.getType());
         for (TouchPoint touchPoint : points.getPoints()) {
             shapeModel.updateBoundingRect(touchPoint.x, touchPoint.y);

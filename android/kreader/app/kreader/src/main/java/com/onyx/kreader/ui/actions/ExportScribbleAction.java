@@ -6,7 +6,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.request.ExportScribbleRequest;
+import com.onyx.android.sdk.reader.host.request.ExportScribbleRequest;
 import com.onyx.kreader.note.actions.GetScribbleBitmapAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 

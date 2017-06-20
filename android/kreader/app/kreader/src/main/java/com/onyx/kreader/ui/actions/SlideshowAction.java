@@ -5,6 +5,7 @@ import android.widget.RelativeLayout;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogSlideshowSettings;
+import com.onyx.kreader.ui.handler.BaseHandler;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.handler.SlideshowHandler;
 
@@ -29,13 +30,11 @@ public class SlideshowAction extends BaseAction {
                 new DialogSlideshowSettings.Callback() {
                     @Override
                     public void done(int interval, int maxPageCount) {
-                        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SLIDESHOW_PROVIDER);
-                        SlideshowHandler handler = (SlideshowHandler) readerDataHolder.getHandlerManager().getActiveProvider();
-                        handler.setInterval(interval);
-                        handler.start(parent, maxPageCount);
+                        BaseHandler.HandlerInitialState state = SlideshowHandler.createInitialState(parent, maxPageCount, interval);
+                        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SLIDESHOW_PROVIDER, state);
                     }
                 });
-        readerDataHolder.addActiveDialog(dlg);
+        readerDataHolder.trackDialog(dlg);
         dlg.show();
     }
 

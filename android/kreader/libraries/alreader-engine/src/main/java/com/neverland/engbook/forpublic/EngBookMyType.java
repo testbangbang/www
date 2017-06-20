@@ -235,6 +235,7 @@ public class EngBookMyType {
 		CBZ,
 		RAR,
 		RARUnk,
+		JEB,
 	}
 	
 }

@@ -54,4 +54,7 @@
     <string name="export_success">Export Success!</string>
     <string name="export_fail">Export failure</string>
     <string name="shape_out_of_range">has out of range, please add new page</string>
+    <string name="ask_for_delete_page">Are you sure you want to delete the page？</string>
+    <string name="save_and_exit">Save And Exit?</string>
+    <string name="find_old_scribble">Find old scribble data, need to import?</string>
 </resources>

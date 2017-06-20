@@ -229,4 +229,27 @@ public class ReflectUtil
         
         return null;
     }
+
+    public static Method getDeclaredMethodSafely(Class<?> cls, String name,  Class<?>... parameterTypes) {
+        RefValue<Method> result = new RefValue<Method>();
+        if (getDeclaredMethod(result, cls, name, parameterTypes)) {
+            return result.getValue();
+        }
+        return null;
+    }
+
+    public static boolean getDeclaredMethod(RefValue<Method> result, Class<?> cls, String name,  Class<?>... parameterTypes) {
+        try {
+            if (cls == null) {
+                return false;
+            }
+            Method method = cls.getDeclaredMethod(name, parameterTypes);
+            method.setAccessible(true);
+            result.setValue(method);
+            return true;
+        } catch (SecurityException e) {
+        } catch (NoSuchMethodException e) {
+        }
+        return false;
+    }
 }

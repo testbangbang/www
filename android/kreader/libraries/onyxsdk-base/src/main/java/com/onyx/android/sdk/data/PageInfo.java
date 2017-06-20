@@ -148,6 +148,9 @@ public class PageInfo {
     }
 
     public int getPageNumber() {
+        if (StringUtils.isNullOrEmpty(name)) {
+            return -1;
+        }
         return Integer.parseInt(name);
     }
 

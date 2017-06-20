@@ -2,7 +2,7 @@ package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.kreader.host.request.ForwardRequest;
+import com.onyx.android.sdk.reader.host.request.ForwardRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**

@@ -6,4 +6,5 @@ package com.onyx.android.note.utils;
 
 public class Constant {
     public static final int PERTIME_THUMBNAIL_LOAD_LIMIT = 12;
+    public static final String RELOAD_DOCUMENT_TAG = "reload_document";
 }

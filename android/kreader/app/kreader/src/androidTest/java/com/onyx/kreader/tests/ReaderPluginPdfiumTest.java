@@ -9,17 +9,17 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
-import com.onyx.kreader.api.ReaderDocument;
-import com.onyx.kreader.api.ReaderNavigator;
-import com.onyx.kreader.api.ReaderPlugin;
-import com.onyx.kreader.api.ReaderRenderer;
-import com.onyx.kreader.api.ReaderSentence;
-import com.onyx.kreader.api.ReaderView;
-import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.host.impl.ReaderDocumentMetadataImpl;
-import com.onyx.kreader.host.impl.ReaderViewOptionsImpl;
-import com.onyx.kreader.host.math.PageManager;
-import com.onyx.kreader.plugins.neopdf.NeoPdfReaderPlugin;
+import com.onyx.android.sdk.reader.api.ReaderDocument;
+import com.onyx.android.sdk.reader.api.ReaderNavigator;
+import com.onyx.android.sdk.reader.api.ReaderPlugin;
+import com.onyx.android.sdk.reader.api.ReaderRenderer;
+import com.onyx.android.sdk.reader.api.ReaderSentence;
+import com.onyx.android.sdk.reader.api.ReaderView;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
+import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
+import com.onyx.android.sdk.reader.host.math.PageManager;
+import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
 
 /**
  * Created by zhuzeng on 10/5/15.

@@ -4,7 +4,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.provider.LocalDataProvider;
-import com.onyx.kreader.host.options.BaseOptions;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 
 import java.util.UUID;
 

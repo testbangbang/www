@@ -3,6 +3,7 @@ package com.onyx.android.sdk.utils;
 import com.onyx.android.sdk.data.GAdapter;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,4 +53,31 @@ public class CollectionUtils {
         return firstSet.equals(secondSet);
     }
 
+    static public boolean contains(final List<String> list, final String string) {
+        if (list == null) {
+            return true;
+        }
+        if (list.contains(string)) {
+            return true;
+        }
+        return false;
+    }
+
+    static public int getSize(Collection collection) {
+        return collection == null ? 0 : collection.size();
+    }
+
+    static public boolean safelyContains(final Set<String> set, final String string) {
+        return set != null && set.contains(string);
+    }
+
+    static public boolean safelyContains(final List<String> list, final String string) {
+        if (list == null) {
+            return true;
+        }
+        if (list.contains(string)) {
+            return true;
+        }
+        return false;
+    }
 }

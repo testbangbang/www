@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import com.onyx.android.libsetting.SettingConfig;
+
 /**
  * Class to detect device feature,
  * For example:
@@ -34,6 +36,10 @@ public class DeviceFeatureUtil {
 
     // TODO: 2016/12/16 need design
     public static boolean hasFrontLight(Context context) {
-        return true;
+        return SettingConfig.sharedInstance(context).hasFrontLight();
+    }
+
+    public static boolean hasNaturalLight(Context context) {
+        return SettingConfig.sharedInstance(context).hasNaturalLight();
     }
 }

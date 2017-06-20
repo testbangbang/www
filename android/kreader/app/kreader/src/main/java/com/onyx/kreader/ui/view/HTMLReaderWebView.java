@@ -15,7 +15,9 @@ import android.webkit.WebViewClient;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
-import com.onyx.kreader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.DimenUtils;
+import com.onyx.kreader.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +31,7 @@ import java.io.OutputStreamWriter;
 public class HTMLReaderWebView extends WebView
 {
 
-    private static final String TAG = "HTMLReaderWebView";
+    private static final Class TAG = HTMLReaderWebView.class;
 
     private int mCurrentPage;
     private int mTotalPage;
@@ -220,10 +222,11 @@ public class HTMLReaderWebView extends WebView
                 + "}";
 
         int width = webView.getMeasuredWidth();
+        float fontSize = DimenUtils.getCssPx(getContext(), getResources().getDimension(R.dimen.control_panel_floating_tittle_text_size));
         String insertRule1 = "addCSSRule('html', '"
                 + " -webkit-column-gap: 0px; -webkit-column-width: "
                 + width + "px; margin-top:"+ marginTop + "px;"
-                + " line-height:130%; letter-spacing:2px; text-align:justify;')";
+                + " line-height:130%; letter-spacing:2px; text-align:justify; font-size: " + fontSize + "px')";
 
 
         String css = varMySheet + addCSSRule + insertRule1;

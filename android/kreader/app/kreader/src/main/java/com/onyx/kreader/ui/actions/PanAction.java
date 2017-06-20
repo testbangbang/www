@@ -3,9 +3,9 @@ package com.onyx.kreader.ui.actions;
 import android.graphics.*;
 import android.view.SurfaceHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.kreader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.host.request.PanRequest;
+import com.onyx.android.sdk.reader.host.request.PanRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 

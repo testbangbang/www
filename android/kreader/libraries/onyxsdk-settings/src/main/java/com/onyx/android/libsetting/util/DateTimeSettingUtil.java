@@ -21,13 +21,20 @@ public class DateTimeSettingUtil {
     private static final String HOURS_24 = "24";
 
     public static void setAutoTimeEnabled(Context context, boolean enable) {
-        Settings.System.putInt(context.getContentResolver(), AUTO_TIME_KEY,
-                enable ? 1 : 0);
+        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
+            Settings.Global.putInt(context.getContentResolver(), AUTO_TIME_KEY,
+                    enable ? 1 : 0);
+        } else {
+            Settings.System.putInt(context.getContentResolver(), AUTO_TIME_KEY,
+                    enable ? 1 : 0);
+        }
     }
 
     public static boolean isAutoTimeEnabled(Context context) {
         try {
-            return Settings.System.getInt(context.getContentResolver(), AUTO_TIME_KEY) > 0;
+            return CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1) ?
+                    Settings.Global.getInt(context.getContentResolver(), AUTO_TIME_KEY) > 0
+                    : Settings.System.getInt(context.getContentResolver(), AUTO_TIME_KEY) > 0;
         } catch (Settings.SettingNotFoundException snfe) {
             return false;
         }

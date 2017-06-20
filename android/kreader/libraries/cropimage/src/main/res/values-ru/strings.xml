@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <string name="crop__saving">Сохранение: … </string>
+    <string name="crop__wait">Пожалуйста, подождите: … </string>
+    <string name="crop__pick_error">Изображения не найдены</string>
+</resources>

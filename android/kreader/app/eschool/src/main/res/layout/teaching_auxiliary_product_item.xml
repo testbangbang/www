@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/imagebtn_bg"
     android:gravity="center"
-    android:padding="2dp">
+    android:padding="2dp"
+    appCompat:alwaysLayoutImageView="true">
 
     <RelativeLayout
         android:id="@+id/cover_panel"
-        android:layout_width="@dimen/teaching_auxiliary_product_cover_panel_width"
-        android:layout_height="@dimen/teaching_auxiliary_product_cover_panel_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/background_shadow">
 
         <ImageView
             android:id="@+id/image_cover"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/image_border"
-            android:padding="1dp"
+            android:layout_width="@dimen/teaching_auxiliary_product_cover_panel_width"
+            android:layout_height="@dimen/teaching_auxiliary_product_cover_panel_height"
             android:scaleType="fitXY"
             android:src="@drawable/cloud_cover" />
 
@@ -49,4 +49,4 @@
         android:progressDrawable="@drawable/progressbar_square_style"
         android:visibility="invisible" />
 
-</RelativeLayout>
+</com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>

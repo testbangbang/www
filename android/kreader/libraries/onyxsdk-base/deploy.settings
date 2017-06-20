@@ -1,0 +1,9 @@
+siteUrl = https://github.com/onyx-intl/OnyxAndroidSample
+gitUrl = https://github.com/onyx-intl/OnyxAndroidSample.git
+version = 1.3.1
+groupId = com.onyx.android.sdk
+licenses = ['Apache-2.0']
+license = Apache-2.0
+licenseUrl = Unknown
+id = onyxsdk-base
+name = onyxsdk-base

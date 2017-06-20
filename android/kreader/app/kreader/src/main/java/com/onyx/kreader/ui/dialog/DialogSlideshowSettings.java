@@ -7,7 +7,7 @@ import android.widget.Button;
 
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.ui.view.SeekBarWithEditTextView;
-import com.onyx.kreader.utils.DeviceConfig;
+import com.onyx.kreader.device.DeviceConfig;
 
 
 /**

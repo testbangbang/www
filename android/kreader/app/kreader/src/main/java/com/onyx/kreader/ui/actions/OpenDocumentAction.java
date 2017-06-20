@@ -7,23 +7,24 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderException;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.host.options.BaseOptions;
-import com.onyx.kreader.host.request.CreateViewRequest;
-import com.onyx.kreader.host.request.LoadDocumentOptionsRequest;
-import com.onyx.kreader.host.request.OpenRequest;
-import com.onyx.kreader.host.request.RestoreRequest;
-import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
+import com.onyx.android.sdk.reader.api.ReaderException;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
+import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
+import com.onyx.kreader.ui.events.ForceCloseEvent;
+import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
+import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
+import com.onyx.android.sdk.reader.host.request.OpenRequest;
+import com.onyx.kreader.ui.requests.RestoreRequest;
+import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogMessage;
 import com.onyx.kreader.ui.dialog.DialogPassword;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
-import com.onyx.kreader.ui.events.QuitEvent;
-import com.onyx.kreader.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 /**
  * Created by zhuzeng on 5/17/16.
@@ -46,13 +47,38 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
+        if (!readerDataHolder.isDocumentOpened()) {
+            openDocumentImpl(readerDataHolder, callback);
+            return;
+        }
+
+        readerDataHolder.destroy(new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    showErrorDialog(readerDataHolder);
+                    return;
+                }
+                openDocumentImpl(readerDataHolder, callback);
+            }
+        });
+    }
+
+    private void openDocumentImpl(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerDataHolder.initReaderFromPath(documentPath);
         readerDataHolder.getEventBus().post(new BeforeDocumentOpenEvent(documentPath));
-        showLoadingDialog(readerDataHolder, R.string.loading_document, new DialogLoading.Callback() {
+
+        //LoadingDialog shows only after the decorview is drawn,preventing the dialog from swinging.
+        activity.getWindow().getDecorView().post(new Runnable() {
             @Override
-            public void onCanceled() {
-                canceled = true;
-                cleanup(readerDataHolder);
+            public void run() {
+                showLoadingDialog(readerDataHolder, R.string.loading_document, new DialogLoading.Callback() {
+                    @Override
+                    public void onCanceled() {
+                        canceled = true;
+                        cleanup(readerDataHolder);
+                    }
+                });
             }
         });
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(documentPath,
@@ -64,9 +90,10 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup(readerDataHolder);
                     return;
                 }
-                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
-                    return;
-                }
+                // ignore document's orientation temporary for multi-document
+//                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
+//                    return;
+//                }
                 openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
             }
         });
@@ -81,6 +108,11 @@ public class OpenDocumentAction extends BaseAction {
         Debug.d("current orientation: " + current + ", target orientation: " + target);
         if (current != target) {
             readerDataHolder.getEventBus().post(new ChangeOrientationEvent(target));
+            if (target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+                // reverse portrait will not trigger onConfigurationChanged() in activity,
+                // so we process as orientation not changed
+                return true;
+            }
             hideLoadingDialog();
             return false;
         }
@@ -153,19 +185,24 @@ public class OpenDocumentAction extends BaseAction {
 
     private void cleanup(final ReaderDataHolder holder) {
         hideLoadingDialog();
-        holder.getEventBus().post(new QuitEvent());
+        holder.getEventBus().post(new OpenDocumentFailedEvent());
     }
 
     private void restoreWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
         final RestoreRequest restoreRequest = new RestoreRequest(options);
         readerDataHolder.submitRenderRequest(restoreRequest, new BaseCallback() {
             @Override
+            public void beforeDone(BaseRequest request, Throwable e) {
+                super.beforeDone(request, e);
+                hideLoadingDialog();
+            }
+
+            @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || canceled) {
                     cleanup(readerDataHolder);
                     return;
                 }
-                hideLoadingDialog();
                 readerDataHolder.submitNonRenderRequest(new SaveDocumentOptionsRequest());
                 readerDataHolder.onDocumentInitRendered();
             }

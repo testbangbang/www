@@ -31,9 +31,15 @@ public class ImportScribbleAction<T extends BaseManagerActivity> extends BaseNot
                 if (e == null) {
                     int count  = scribbleRequest.getImportCount();
                     int max = scribbleRequest.getMaxCount();
-                    progress.setTitle(activity.getString(R.string.import_success));
-                    progress.setSubTitle(activity.getString(R.string.import_success_info, count));
-                    progress.setProgress(max);
+                    if (max == 0) {
+                        progress.setTitle(activity.getString(R.string.no_old_scribble_data));
+                        progress.getProgressBar().setVisibility(View.GONE);
+                    }else {
+                        progress.setTitle(activity.getString(R.string.import_success));
+                        progress.setSubTitle(activity.getString(R.string.import_success_info, count));
+                        progress.setProgress(max);
+                        progress.setMaxValue(max);
+                    }
                 }else {
                     progress.getProgressBar().setVisibility(View.GONE);
                     progress.setTitle(activity.getString(R.string.import_fail));

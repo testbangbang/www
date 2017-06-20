@@ -14,6 +14,7 @@ import com.onyx.android.eschool.model.AppConfig;
 import com.onyx.android.eschool.model.StudentAccount;
 import com.onyx.android.eschool.utils.AvatarUtils;
 import com.onyx.android.eschool.utils.ResourceUtils;
+import com.onyx.android.libsetting.view.activity.DeviceMainSettingActivity;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -147,7 +148,7 @@ public class HomeActivity extends BaseActivity {
 
     private void initNormalItem() {
         initNormalView(R.id.home_note_item, R.string.home_item_note_text, R.drawable.home_note, getNoteIntent());
-        initNormalView(R.id.home_dictionary_item, R.string.home_item_dictionary_text, R.drawable.home_dictionary, getDictIntent());
+        initNormalView(R.id.home_dictionary_item, R.string.home_item_application_text, R.drawable.home_application, getApplicationListIntent());
         initNormalView(R.id.home_practice_item, R.string.home_item_practice_text, R.drawable.home_practice, getEduIntent());
         initNormalView(R.id.home_setting_item, R.string.home_item_setting_text, R.drawable.home_setting, getSettingIntent());
     }
@@ -220,6 +221,10 @@ public class HomeActivity extends BaseActivity {
         return getPackageManager().getLaunchIntentForPackage("com.onyx.dict");
     }
 
+    private Intent getApplicationListIntent() {
+        return new Intent(this, ApplicationsActivity.class);
+    }
+
     private Intent getEduIntent() {
         Intent intent = new Intent();
         intent.setClassName("com.onyx.android.edu", "com.onyx.android.edu.ui.chooseexercise.ChooseExerciseActivity");
@@ -227,9 +232,6 @@ public class HomeActivity extends BaseActivity {
     }
 
     private Intent getSettingIntent() {
-        Intent intent = new Intent();
-        //intent.setClassName("com.onyx.android.libsetting", "con.onyx.android.libsetting.view.activity.DeviceMainSettingActivity");
-        intent.setClassName("com.onyx", "com.onyx.content.browser.activity.SettingsActivity");
-        return intent;
+        return new Intent(this, DeviceMainSettingActivity.class);
     }
 }

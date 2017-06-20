@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,10 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
-import com.onyx.android.sdk.ui.utils.DialogHelp;
+import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.ui.dialog.DialogChoose;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -39,23 +43,22 @@ import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderDocumentTableOfContent;
-import com.onyx.kreader.api.ReaderDocumentTableOfContentEntry;
-import com.onyx.kreader.host.request.DeleteAnnotationRequest;
-import com.onyx.kreader.host.request.DeleteBookmarkRequest;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
+import com.onyx.android.sdk.reader.host.request.DeleteAnnotationRequest;
+import com.onyx.android.sdk.reader.host.request.DeleteBookmarkRequest;
 import com.onyx.kreader.note.actions.ClearPageAction;
 import com.onyx.kreader.note.actions.GetScribbleBitmapAction;
 import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ExportScribbleAction;
 import com.onyx.kreader.ui.actions.GetDocumentInfoChain;
-import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.view.PreviewViewHolder;
-import com.onyx.kreader.utils.DeviceConfig;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -64,7 +67,7 @@ import java.util.List;
 /**
  * Created by joy on 7/6/16.
  */
-public class DialogTableOfContent extends Dialog implements CompoundButton.OnCheckedChangeListener, PageRecyclerView.OnPagingListener {
+public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButton.OnCheckedChangeListener, PageRecyclerView.OnPagingListener {
 
     private static final String TAG = DialogTableOfContent.class.getSimpleName();
 
@@ -96,6 +99,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     private GetScribbleBitmapAction getScribbleBitmapAction;
     private List<String> requestPages;
     private boolean loadedScribble = false;
+    private View.OnFocusChangeListener onFocusChangeListener;
 
     public enum DirectoryTab {TOC, Bookmark, Annotation, Scribble}
 
@@ -126,7 +130,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             deleteLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogHelp.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
+                    OnyxCustomDialog.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (currentTab == DirectoryTab.Bookmark) {
@@ -149,12 +153,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new GotoPositionAction(pagePosition).execute(readerDataHolder, new BaseCallback() {
-                        @Override
-                        public void done(BaseRequest request, Throwable e) {
-                            DialogTableOfContent.this.dismiss();
-                        }
-                    });
+                    onItemClick(v, pagePosition, position);
                 }
             });
         }
@@ -173,6 +172,50 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
 
             editLayout.setVisibility(currentTab == DirectoryTab.Annotation ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private void onDelete(final int position) {
+        OnyxCustomDialog.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (currentTab == DirectoryTab.Bookmark) {
+                    deleteBookmark(readerDataHolder, position);
+                } else {
+                    deleteAnnotation(readerDataHolder, position);
+                }
+            }
+        }).show();
+    }
+
+    private void onItemClick(View v, final String pagePosition, final int position) {
+        if (v.isPressed()) {
+            onJump(pagePosition);
+            return;
+        }
+        if (currentTab == DirectoryTab.Bookmark) {
+            new DialogChoose(getContext(), R.string.jump, R.string.delete, new DialogChoose.Callback() {
+                @Override
+                public void onClickListener(int index) {
+                    switch (index) {
+                        case 0:
+                            onJump(pagePosition);
+                            break;
+                        case 1:
+                            onDelete(position);
+                            break;
+                    }
+                }
+            }).show();
+        }
+    }
+
+    private void onJump(final String pagePosition) {
+        new GotoPositionAction(pagePosition).execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                DialogTableOfContent.this.dismiss();
+            }
+        });
     }
 
     private void showAnnotationEditDialog(final int position) {
@@ -281,6 +324,21 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         btnAnt.setTag(DirectoryTab.Annotation);
         btnScribble.setTag(DirectoryTab.Scribble);
 
+        this.setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_DPAD_LEFT:
+                        btnToc.setChecked(true);
+                        return true;
+                    case KeyEvent.KEYCODE_DPAD_RIGHT:
+                        btnBookmark.setChecked(true);
+                        return true;
+                }
+                return false;
+            }
+        });
+
         showExportLayout(currentTab);
         setViewListener();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
@@ -289,7 +347,9 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 !readerDataHolder.isFixedPageDocument()) {
             btnScribble.setVisibility(View.GONE);
         }
-
+        if (!Device.detectDevice().isTouchable(readerDataHolder.getContext())){
+            btnAnt.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -365,13 +425,6 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
             }
         });
 
-        setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                readerDataHolder.removeActiveDialog(DialogTableOfContent.this);
-            }
-        });
-
         exportLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -387,7 +440,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 return;
             }
 
-            new ExportAnnotationAction(annotationList).execute(readerDataHolder, new BaseCallback() {
+            new ExportAnnotationAction(annotationList, false, true).execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     String text = getContext().getString(e == null ? R.string.export_success : R.string.export_fail);
@@ -500,11 +553,12 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         }, row);
 
         if (toc != null && hasChildren(toc.getRootEntry())) {
-            ReaderDocumentTableOfContentEntry entry = locateEntry(toc.getRootEntry().getChildren(), readerDataHolder.getCurrentPage());
+            ReaderDocumentTableOfContentEntry entry = locateEntry(toc.getRootEntry().getChildren(), PagePositionUtils.getPosition(readerDataHolder.getCurrentPagePosition()));
             TreeRecyclerView.TreeNode treeNode = findTreeNodeByTag(rootNodes, entry);
             if (treeNode != null) {
-                treeRecyclerView.expandTo(treeNode);
                 treeRecyclerView.setCurrentNode(treeNode);
+                treeRecyclerView.expandTo(treeNode);
+                treeRecyclerView.jumpToNode(treeNode);
             }
         }
 
@@ -653,7 +707,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
                 previewViewHolder.getCloseView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DialogHelp.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
+                        OnyxCustomDialog.getConfirmDialog(getContext(), getContext().getString(R.string.sure_delete), new OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 removeScribble(page, position);
@@ -776,30 +830,36 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
         }
     }
 
-    private ReaderDocumentTableOfContentEntry locateEntry(List<ReaderDocumentTableOfContentEntry> entries, int page) {
+    private ReaderDocumentTableOfContentEntry locateEntry(List<ReaderDocumentTableOfContentEntry> entries, int pagePosition) {
         for (int i = 0; i < entries.size() - 1; i++) {
             ReaderDocumentTableOfContentEntry current = entries.get(i);
-            int currentPage = PagePositionUtils.getPageNumber(current.getPosition());
-            int nextPage = PagePositionUtils.getPageNumber(entries.get(i + 1).getPosition());
-            if (currentPage <= page && page < nextPage) {
-                return locateEntryWithChildren(current, page);
+            int currentPagePosition = PagePositionUtils.getPosition(current.getPosition());
+            int nextPagePosition = PagePositionUtils.getPosition(entries.get(i + 1).getPosition());
+            if (currentPagePosition <= pagePosition && pagePosition < nextPagePosition) {
+                return locateEntryWithChildren(current, pagePosition);
             }
         }
 
-        ReaderDocumentTableOfContentEntry current = entries.get(entries.size() - 1);
-        return locateEntryWithChildren(current, page);
+        int startEntryPosition = getDocumentTableOfContentEntryPosition(entries, 0);
+        ReaderDocumentTableOfContentEntry current = entries.get(pagePosition < startEntryPosition ? 0 : entries.size() - 1);
+        return locateEntryWithChildren(current, pagePosition);
     }
 
-    private ReaderDocumentTableOfContentEntry locateEntryWithChildren(ReaderDocumentTableOfContentEntry entry, int page) {
-        int currentPage = PagePositionUtils.getPageNumber(entry.getPosition());
+    private int getDocumentTableOfContentEntryPosition(final List<ReaderDocumentTableOfContentEntry> entries, final int index) {
+        ReaderDocumentTableOfContentEntry entry = entries.get(index);
+        return PagePositionUtils.getPosition(entry.getPosition());
+    }
+
+    private ReaderDocumentTableOfContentEntry locateEntryWithChildren(ReaderDocumentTableOfContentEntry entry, int pagePosition) {
+        int currentPagePosition = PagePositionUtils.getPosition(entry.getPosition());
         if (!hasChildren(entry)) {
             return entry;
         }
-        int firstChildPage = PagePositionUtils.getPageNumber(entry.getChildren().get(0).getPosition());
-        if (currentPage <= page && page < firstChildPage) {
+        int firstChildPagePosition = PagePositionUtils.getPosition(entry.getChildren().get(0).getPosition());
+        if (currentPagePosition <= pagePosition && pagePosition < firstChildPagePosition) {
             return entry;
         }
-        return locateEntry(entry.getChildren(), page);
+        return locateEntry(entry.getChildren(), pagePosition);
     }
 
     private TreeRecyclerView.TreeNode findTreeNodeByTag(List<TreeRecyclerView.TreeNode> nodeList, ReaderDocumentTableOfContentEntry entry) {
@@ -846,7 +906,7 @@ public class DialogTableOfContent extends Dialog implements CompoundButton.OnChe
     public void dismiss() {
         clearRequestPages();
         if (loadedScribble) {
-            new GotoPageAction(PagePositionUtils.getPageNumber(readerDataHolder.getCurrentPagePosition())).execute(readerDataHolder);
+            new GotoPositionAction(readerDataHolder.getCurrentPagePosition()).execute(readerDataHolder);
         }
         super.dismiss();
     }

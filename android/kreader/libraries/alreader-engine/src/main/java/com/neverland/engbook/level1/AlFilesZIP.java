@@ -1,6 +1,7 @@
 package com.neverland.engbook.level1;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
@@ -10,6 +11,7 @@ import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
+import com.neverland.engbook.util.ZipUtil;
 
 public class AlFilesZIP extends AlFiles {
 	
@@ -31,9 +33,14 @@ public class AlFilesZIP extends AlFiles {
 	private int		zip_out_buff_size;
 	private final byte[]	zip_in_buff = new byte [ZIP_CHUNK_SIZE];
 	private final byte[] 	zip_out_buff = new byte [ZIP_CHUNK_SIZE];
-	
+
 	static public TAL_FILE_TYPE isZIPFile(String fName, AlFiles a, ArrayList<AlFileZipEntry> fList, String ext) {
 		TAL_FILE_TYPE res = TAL_FILE_TYPE.TXT;
+		Map<String,Integer> fileSizeMap = null;
+		if ((ext == null || ext.equalsIgnoreCase(".JEB"))) {
+			fileSizeMap = ZipUtil.unzipFile(a.fileName, null, JEBFilesZIP.key,
+					JEBFilesZIP.deviceUUID, JEBFilesZIP.random);
+		}
 
 		int			fsize = a.getSize();
 		int			arr_size = 0x1000f;
@@ -88,7 +95,8 @@ public class AlFilesZIP extends AlFiles {
 		a.read_pos = scd;
 		while (a.read_pos < ecd) {
 
-			ZIP_LCD.ReadLCD(zipLCD, a);
+			//ZIP_LCD.ReadLCD0(zipLCD, a);
+			zipLCD.ReadLCD(a);
 			if (zipLCD.sig != 0x02014b50 || zipLCD.namelength == 0)				
 				return cnt_files > 0 ? res : TAL_FILE_TYPE.TXT;		
 		
@@ -116,7 +124,8 @@ public class AlFilesZIP extends AlFiles {
 
 				if (zipLCD.csize == 0xffffffff && zipLCD.usize == 0xffffffff) {
 					if (zipLCD.extralength >= 40) {
-						ZIP_EXLZH.ReadEXLZH(zipExLZH, a);						
+						//ZIP_EXLZH.ReadEXLZH0(zipExLZH, a);
+						zipExLZH.ReadEXLZH(a);
 						
 						if (zipExLZH.cs > 0 && zipExLZH.us > 0 && zipExLZH.cs <= zipExLZH.us) {
 							zipLCD.csize = zipExLZH.cs;
@@ -134,7 +143,8 @@ public class AlFilesZIP extends AlFiles {
 				{
 					int saved = a.read_pos;
 					a.read_pos = (int) zipLCD.offset;
-					ZIP_LZH.ReadLZH(zipLZH, a);
+					//ZIP_LZH.ReadLZH0(zipLZH, a);
+					zipLZH.ReadLZH(a);
 					a.read_pos += 
 							zipLZH.extralength +
 							zipLZH.namelength;
@@ -143,7 +153,7 @@ public class AlFilesZIP extends AlFiles {
 				}				
 							
 				AlFileZipEntry of = new AlFileZipEntry();
-				
+
 				of.compress = zipLCD.compressed;
 				of.cSize = (int) zipLCD.csize;
 				of.uSize = (int) zipLCD.usize;
@@ -161,6 +171,7 @@ public class AlFilesZIP extends AlFiles {
 
 				of.name = newName.toString();
 
+
 				/*if (ext != null && (ext.equalsIgnoreCase(".odt") || ext.equalsIgnoreCase(".sxw")) && zipLCD.fName.equalsIgnoreCase(FIRSTNAME_ODT))
 					res = ArchiveType.ODT;*/
 				if ((ext == null || ext.equalsIgnoreCase(".odt") || ext.equalsIgnoreCase(".sxw")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_ODT))
@@ -171,6 +182,16 @@ public class AlFilesZIP extends AlFiles {
 					res = TAL_FILE_TYPE.EPUB;
 				if ((ext == null || ext.equalsIgnoreCase(".fb3")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_FB3))
 					res = TAL_FILE_TYPE.FB3;
+				if ((ext == null || ext.equalsIgnoreCase(".JEB"))) {
+						res = TAL_FILE_TYPE.JEB;
+					Integer fileSize = 0;
+					if(of.compress == 8) {
+						fileSize = fileSizeMap.get(of.name);
+						if (fileSize != null && fileSize > 0) {
+							of.uSize = fileSize;
+						}
+					}
+				}
 
 				fList.add(of);
 				
@@ -324,6 +345,10 @@ public class AlFilesZIP extends AlFiles {
 		return res;
 	}
 
+	private byte[] in_external_buff = null;
+	private byte[] out_external_buff = null;
+	private Inflater external_infl = null;
+
 	@Override
 	public boolean fillBufFromExternalFile(int num, int pos, byte[] dst, int dst_pos, int cnt) {
 		int res = 0;
@@ -335,52 +360,59 @@ public class AlFilesZIP extends AlFiles {
 			} else {
 
 				if (fileList.get(num).compress == 8) {
+					if (external_infl == null)
+						external_infl = new Inflater(true);
+					external_infl.reset();
 
-					Inflater infl = new Inflater(true);
 					int	total_out, in_buff_size, out_buff_size, tmp;
-					byte[] in_buff = new byte [ZIP_CHUNK_SIZE], out_buff = new byte [ZIP_CHUNK_SIZE];
+
+					if (in_external_buff == null)
+						in_external_buff = new byte [ZIP_CHUNK_SIZE];
+					if (out_external_buff == null)
+						out_external_buff = new byte [ZIP_CHUNK_SIZE];
+
 					int	position = fileList.get(num).position;
 
-					infl.reset();
+					external_infl.reset();
 					total_out = out_buff_size = 0;
 
 					while (res < cnt && pos < fileList.get(num).uSize) {
 						if (pos >= total_out && pos < (total_out + out_buff_size)) {
 							tmp = Math.min((total_out + out_buff_size) - pos, cnt - res);
-							System.arraycopy(out_buff, pos - total_out, dst, res + dst_pos, tmp);
+							System.arraycopy(out_external_buff, pos - total_out, dst, res + dst_pos, tmp);
 							res += tmp;
 							pos += tmp;
 						} else {
 							total_out += out_buff_size;
 
-							if (infl.needsInput()) {
+							if (external_infl.needsInput()) {
 								in_buff_size = //parent.getBuffer(
 										parent.getByteBuffer(
-												infl.getTotalIn() + position, in_buff, ZIP_CHUNK_SIZE);
-								infl.setInput(in_buff, 0, in_buff_size);
+												external_infl.getTotalIn() + position, in_external_buff, ZIP_CHUNK_SIZE);
+								external_infl.setInput(in_external_buff, 0, in_buff_size);
 							}
 
 							try {
-								out_buff_size = infl.inflate(out_buff, 0, ZIP_CHUNK_SIZE);
+								out_buff_size = external_infl.inflate(out_external_buff, 0, ZIP_CHUNK_SIZE);
 
-								if (out_buff_size == 0 && infl.finished()) {
-									out_buff_size = out_buff.length;
+								if (out_buff_size == 0 && external_infl.finished()) {
+									out_buff_size = out_external_buff.length;
 									for (int err = 0; err < out_buff_size; err++)
-										out_buff[err] = 0x00;
+										out_external_buff[err] = 0x00;
 								}
 
 							} catch (DataFormatException e) {
-								out_buff_size = out_buff.length;
+								out_buff_size = out_external_buff.length;
 								for (int err = 0; err < out_buff_size; err++)
-									out_buff[err] = 0x00;
+									out_external_buff[err] = 0x00;
 								e.printStackTrace();
 							}
 
 						}
 					}
 
-					infl.end();
-					infl = null;
+					//external_infl.finished();
+					//external_infl = null;
 
 				} else if (fileList.get(num).compress == 0) {
 					res = parent.getByteBuffer(fileList.get(num).position + pos, dst, dst_pos, cnt);

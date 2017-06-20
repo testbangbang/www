@@ -6,6 +6,27 @@
     android:orientation="vertical"
     android:padding="10dp">
 
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_view_connection_status_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wifi_status"
+            android:textAppearance="@style/TextAppearance.Design.Hint" />
+
+        <TextView
+            android:id="@+id/text_view_connection_status"
+            android:layout_width="wrap_content"
+            android:text="@string/wifi_connected"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +43,46 @@
             android:id="@+id/text_view_signal_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/wifi_connected" />
+            android:text="@string/wifi_connected"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_view_link_speed_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wifi_speed"
+            android:textAppearance="@style/TextAppearance.Design.Hint" />
+
+        <TextView
+            android:id="@+id/text_view_link_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/band_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_view_band_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wifi_band"
+            android:textAppearance="@style/TextAppearance.Design.Hint" />
+
+        <TextView
+            android:id="@+id/text_view_band"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
@@ -40,6 +100,25 @@
 
         <TextView
             android:id="@+id/text_view_security"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_view_ip_address_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wifi_ip_address"
+            android:textAppearance="@style/TextAppearance.Design.Hint" />
+
+        <TextView
+            android:id="@+id/text_view_ip_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

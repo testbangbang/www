@@ -3,12 +3,14 @@ package com.onyx.kreader.note.data;
 import android.content.Context;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.*;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.note.model.ReaderNoteDataProvider;
 import com.onyx.kreader.note.model.ReaderNoteDocumentModel;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -302,5 +304,22 @@ public class ReaderNoteDocument {
         return pageIndex.nameList();
     }
 
-
+    public final List<String> getNoEmptyPageList(final Context context) {
+        List<String> pageList = new ArrayList<>();
+        for (String pageName : getPageList()) {
+            String pageUniqueId = getPageUniqueId(pageName, 0);
+            ReaderNotePage notePage = pageMap.get(pageUniqueId);
+            if (notePage == null) {
+                notePage = loadPage(context, pageName, 0);
+            }
+            if (notePage == null) {
+                continue;
+            }
+            List<Shape> shapeList = notePage.getShapeList();
+            if (shapeList != null && shapeList.size() > 0) {
+                pageList.add(pageName);
+            }
+        }
+        return pageList;
+    }
 }

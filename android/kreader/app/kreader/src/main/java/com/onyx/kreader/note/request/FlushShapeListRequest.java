@@ -1,10 +1,8 @@
 package com.onyx.kreader.note.request;
 
-import android.util.Log;
-
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.kreader.common.Debug;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNotePage;
 
@@ -22,6 +20,7 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
     private volatile List<Shape> shapeList = new ArrayList<>();
     private volatile boolean saveDocument;
     private volatile int count;
+    private volatile boolean pause = false;
 
     public FlushShapeListRequest(final List<PageInfo> pages, final List<Shape> list, int spi, boolean r, boolean t, boolean save) {
         setAbortPendingTasks(false);
@@ -34,7 +33,7 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
-        setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
+        setResumeRawInputProcessor(noteManager.isDFBForCurrentShape() && !isPause());
         ensureDocumentOpened(noteManager);
         for(Shape shape : shapeList) {
             final ReaderNotePage readerNotePage = noteManager.getNoteDocument().ensurePageExist(getContext(), shape.getPageUniqueId(), subPageIndex);
@@ -53,4 +52,11 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
         }
     }
 
+    public boolean isPause() {
+        return pause;
+    }
+
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
 }

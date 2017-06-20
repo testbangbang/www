@@ -10,12 +10,20 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
+
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.scribble.data.*;
+import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
+import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.data.NoteDocument;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
@@ -75,7 +83,7 @@ public class NoteViewHelper {
     }
 
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
-    private RawInputProcessor rawInputProcessor = new RawInputProcessor();
+    private RawInputProcessor rawInputProcessor = null;
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
@@ -96,6 +104,8 @@ public class NoteViewHelper {
     private boolean supportBigPen = false;
     private boolean isLineLayoutMode = false;
     private volatile boolean isDrawing = false;
+
+    private Rect customLimitRect = null;
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, PEN_PAUSE);
@@ -124,6 +134,15 @@ public class NoteViewHelper {
         quitDrawing();
         removeLayoutListener();
         setLineLayoutMode(false);
+    }
+
+    public void flushTouchPointList() {
+        TouchPointList touchPointList = getRawInputProcessor().detachTouchPointList();
+        boolean erasing = getRawInputProcessor().isErasing();
+        if (touchPointList == null || erasing) {
+            return;
+        }
+        onNewTouchPointListReceived(touchPointList);
     }
 
     public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
@@ -233,7 +252,7 @@ public class NoteViewHelper {
         screenMatrix.postTranslate(deviceConfig.getEpdPostTx(), deviceConfig.getEpdPostTy());
         screenMatrix.preScale(deviceConfig.getEpdWidth() / getTouchWidth(),
                 deviceConfig.getEpdHeight() / getTouchHeight());
-        rawInputProcessor.setScreenMatrix(screenMatrix);
+        getRawInputProcessor().setScreenMatrix(screenMatrix);
     }
 
     // consider view offset to screen.
@@ -245,7 +264,7 @@ public class NoteViewHelper {
 
         final Matrix viewMatrix = new Matrix();
         viewMatrix.postTranslate(-viewPosition[0], -viewPosition[1]);
-        rawInputProcessor.setViewMatrix(viewMatrix);
+        getRawInputProcessor().setViewMatrix(viewMatrix);
     }
 
     private OnyxMatrix initViewToEpdMatrix() {
@@ -260,21 +279,51 @@ public class NoteViewHelper {
         return viewToEpdMatrix;
     }
 
+    public void setCustomLimitRect(Rect targetRect){
+        customLimitRect = targetRect;
+        updateLimitRect();
+    }
+
+    private void resetRawInputProcessor() {
+        rawInputProcessor = null;
+    }
+
     private void updateLimitRect() {
         Rect dfbLimitRect = new Rect();
         softwareLimitRect = new Rect();
+        int xAxisOffset = 0, yAxisOffset = 0;
 
-        //for software render limit rect
-        surfaceView.getLocalVisibleRect(softwareLimitRect);
 
-        //for dfb render limit rect
-        surfaceView.getGlobalVisibleRect(dfbLimitRect);
+        if (customLimitRect == null) {
+            //for software render limit rect
+            surfaceView.getLocalVisibleRect(softwareLimitRect);
+            //for dfb render limit rect
+            surfaceView.getGlobalVisibleRect(dfbLimitRect);
+        } else {
+            Rect surfaceLocalVisibleRect = new Rect();
+
+            surfaceView.getLocalVisibleRect(surfaceLocalVisibleRect);
+            softwareLimitRect = customLimitRect;
+
+            //a little tricky here,we assume target rect is always smaller than visible rect.
+            xAxisOffset = customLimitRect.left - surfaceLocalVisibleRect.left;
+            yAxisOffset = surfaceLocalVisibleRect.bottom - customLimitRect.bottom;
+
+            surfaceView.getGlobalVisibleRect(dfbLimitRect);
+
+            //do the transform here.
+            dfbLimitRect.set(dfbLimitRect.left + xAxisOffset,
+                    dfbLimitRect.top + yAxisOffset,
+                    dfbLimitRect.right - xAxisOffset,
+                    dfbLimitRect.bottom - yAxisOffset);
+        }
+
         dfbLimitRect.offsetTo(0, 0);
-        rawInputProcessor.setLimitRect(dfbLimitRect);
+        getRawInputProcessor().setLimitRect(customLimitRect == null ? dfbLimitRect : customLimitRect);
 
         int viewPosition[] = {0, 0};
         surfaceView.getLocationOnScreen(viewPosition);
-        dfbLimitRect.offsetTo(viewPosition[0], viewPosition[1]);
+        dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, viewPosition[1] + yAxisOffset);
 
         final OnyxMatrix matrix = matrixFromViewToEpd();
         matrix.mapInPlace(dfbLimitRect);
@@ -325,10 +374,15 @@ public class NoteViewHelper {
         }
 
         getRawInputProcessor().quit();
+        resetRawInputProcessor();
     }
 
     public void setBackground(int bgType) {
         getNoteDocument().setBackground(bgType);
+    }
+
+    public void setBackgroundFilePath(String filePath){
+        getNoteDocument().setBackgroundFilePath(filePath);
     }
 
     public void setLineLayoutBackground(int bgType) {
@@ -402,6 +456,9 @@ public class NoteViewHelper {
     }
 
     public final RawInputProcessor getRawInputProcessor() {
+        if (rawInputProcessor == null) {
+            rawInputProcessor = new RawInputProcessor();
+        }
         return rawInputProcessor;
     }
 
@@ -461,7 +518,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-        rawInputProcessor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
+        getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
             public void onBeginRawData() {
                 if (callback != null) {
@@ -483,7 +540,13 @@ public class NoteViewHelper {
             public void onEraseTouchPointListReceived(final TouchPointList pointList) {
             }
 
+            @Override
+            public void onEndRawData() {
+            }
 
+            @Override
+            public void onEndErasing() {
+            }
         });
         startDrawing();
     }

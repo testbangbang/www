@@ -3,35 +3,45 @@ package com.onyx.kreader.ui.data;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Rect;
+
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.data.model.DocumentInfo;
+import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.common.ReaderUserDataInfo;
-import com.onyx.kreader.common.ReaderViewInfo;
-import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.host.request.CloseRequest;
-import com.onyx.kreader.host.request.PreRenderRequest;
-import com.onyx.kreader.host.request.RenderRequest;
-import com.onyx.kreader.host.request.SaveDocumentOptionsRequest;
-import com.onyx.kreader.host.wrapper.Reader;
-import com.onyx.kreader.host.wrapper.ReaderManager;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.common.ReaderUserDataInfo;
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.host.math.PageUtils;
+import com.onyx.android.sdk.reader.host.request.CloseRequest;
+import com.onyx.android.sdk.reader.host.request.PreRenderRequest;
+import com.onyx.android.sdk.reader.host.request.RenderRequest;
+import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
+import com.onyx.android.sdk.reader.host.wrapper.Reader;
+import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.receiver.DeviceReceiver;
 import com.onyx.kreader.tts.ReaderTtsManager;
+import com.onyx.kreader.ui.ReaderBroadcastReceiver;
+import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
+import com.onyx.kreader.ui.events.TextSelectionEvent;
 import com.onyx.kreader.ui.events.*;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
-import com.onyx.kreader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +50,8 @@ import java.util.Set;
  * Created by ming on 16/7/27.
  */
 public class ReaderDataHolder {
+
+    public enum DocumentOpenState { INIT, OPENING, OPENED }
 
     private Context context;
     private String documentPath;
@@ -53,10 +65,12 @@ public class ReaderDataHolder {
     private NoteManager noteManager;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private EventBus eventBus = new EventBus();
+    private EventReceiver eventReceiver;
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
-    private boolean documentOpened = false;
+    private DocumentOpenState documentOpenState = DocumentOpenState.INIT;
+    private boolean documentInitRendered = false;
 
     private int displayWidth;
     private int displayHeight;
@@ -70,6 +84,7 @@ public class ReaderDataHolder {
 
     public ReaderDataHolder(Context context) {
         this.context = context;
+        ReaderBroadcastReceiver.setEventBus(eventBus);
     }
 
     public Context getContext() {
@@ -141,23 +156,17 @@ public class ReaderDataHolder {
     }
 
     public void initReaderFromPath(final String path) {
-        documentOpened = false;
+        documentOpenState = DocumentOpenState.OPENING;
         documentPath = path;
         reader = ReaderManager.getReader(documentPath);
     }
 
-    public void onDocumentOpened() {
-        documentOpened = true;
-        getEventBus().post(new DocumentOpenEvent(documentPath));
-        registerDeviceReceiver();
-    }
-
-    public void onDocumentInitRendered() {
-        getEventBus().post(new DocumentInitRenderedEvent());
+    public boolean isDocumentOpening() {
+        return documentOpenState == DocumentOpenState.OPENING;
     }
 
     public boolean isDocumentOpened() {
-        return documentOpened && reader != null;
+        return documentOpenState == DocumentOpenState.OPENED && reader != null;
     }
 
     public boolean inNoteWritingProvider() {
@@ -295,6 +304,13 @@ public class ReaderDataHolder {
         getNoteManager().pauseRawEventProcessor();
     }
 
+    public void stopRawEventProcessor() {
+        if (!supportScalable()) {
+            return;
+        }
+        getNoteManager().stopRawEventProcessor();
+    }
+
     public void enablePenShortcut()  {
         if (!supportScalable()) {
             return;
@@ -369,12 +385,20 @@ public class ReaderDataHolder {
         beforeSubmitRequest();
         reader.submitRequest(context, renderRequest, new BaseCallback() {
             @Override
+            public void beforeDone(BaseRequest request, Throwable e) {
+                BaseCallback.invokeBeforeDone(callback, request, e);
+            }
+
+            @Override
             public void done(BaseRequest request, Throwable e) {
                 onRenderRequestFinished(renderRequest, e);
                 callback.invoke(callback, request, e);
                 onPageDrawFinished(renderRequest, e);
 
-                updateReaderMenuState();
+                if (!renderRequest.isAbort()) {
+                    updateReaderMenuState();
+                }
+
             }
         });
     }
@@ -428,6 +452,7 @@ public class ReaderDataHolder {
                                         Throwable e,
                                         boolean applyGCIntervalUpdate,
                                         boolean renderShapeData) {
+        Debug.d(getClass(), "onRenderRequestFinished: " + request);
         if (e != null || request.isAbort()) {
             return;
         }
@@ -454,11 +479,7 @@ public class ReaderDataHolder {
         getEventBus().post(new ShowReaderSettingsEvent());
     }
 
-    public void addActiveDialog(Dialog dialog) {
-        activeDialogs.add(dialog);
-    }
-
-    public void addActiveDialog(DialogFragment dialog) {
+    private void addActiveDialog(Dialog dialog) {
         activeDialogs.add(dialog);
     }
 
@@ -466,8 +487,17 @@ public class ReaderDataHolder {
         activeDialogs.remove(dialog);
     }
 
-    public void removeActiveDialog(DialogFragment dialog) {
-        activeDialogs.remove(dialog);
+    public void trackDialog(final Dialog dialog) {
+        if (dialog == null) {
+            return;
+        }
+        addActiveDialog(dialog);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                removeActiveDialog(dialog);
+            }
+        });
     }
 
     public void closeActiveDialogs() {
@@ -482,6 +512,10 @@ public class ReaderDataHolder {
         activeDialogs.clear();
     }
 
+    public boolean isAnyActiveDialog() {
+        return activeDialogs.size() > 0;
+    }
+
     public void destroy(final BaseCallback callback) {
         unregisterReceiver();
         closeActiveDialogs();
@@ -492,12 +526,13 @@ public class ReaderDataHolder {
         closeDocument(callback);
     }
 
-    private void resetHandlerManager() {
+    public void resetHandlerManager() {
         getHandlerManager().resetToDefaultProvider();
     }
 
     private void closeDocument(final BaseCallback callback) {
-        documentOpened = false;
+        documentInitRendered = false;
+        documentOpenState = DocumentOpenState.INIT;
         if (reader == null || reader.getDocument() == null) {
             BaseCallback.invoke(callback, null, null);
             return;
@@ -507,6 +542,7 @@ public class ReaderDataHolder {
         submitNonRenderRequest(closeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                onDocumentClosed();
                 ReaderManager.releaseReader(documentPath);
                 BaseCallback.invoke(callback, request, e);
             }
@@ -538,6 +574,99 @@ public class ReaderDataHolder {
 
     public void setLastRequestSequence(int lastRequestSequence) {
         this.lastRequestSequence = lastRequestSequence;
+    }
+
+    public void prepareEventReceiver() {
+        if (eventReceiver == null) {
+            eventReceiver = new EventReceiver(getContext());
+            getEventBus().register(eventReceiver);
+        }
+    }
+
+    public void onDocumentOpened() {
+        prepareEventReceiver();
+        registerDeviceReceiver();
+        documentOpenState = DocumentOpenState.OPENED;
+        ReaderDocumentMetadata metadata = getReader().getDocumentMetadataSafely();
+        DocumentInfo documentInfo = DocumentInfo.create(metadata.getAuthors(),
+                getReader().getDocumentMd5(),
+                getBookName(),
+                documentPath,
+                metadata.getTitle());
+        getEventBus().post(new DocumentOpenEvent(getContext(), documentInfo));
+    }
+
+    public void onDocumentClosed() {
+        getEventBus().post(new DocumentCloseEvent(getContext()));
+        if (eventReceiver != null) {
+            getEventBus().unregister(eventReceiver);
+            eventReceiver = null;
+        }
+    }
+
+    public void onActivityPause() {
+        getEventBus().post(new ActivityPauseEvent(getContext()));
+    }
+
+    public void onActivityResume() {
+        getEventBus().post(new ActivityResumeEvent(getContext()));
+    }
+
+    public void onDocumentInitRendered() {
+        documentInitRendered = true;
+        getEventBus().post(new DocumentInitRenderedEvent());
+    }
+
+    public boolean isDocumentInitRendered() {
+        return documentInitRendered;
+    }
+
+    public final PageChangedEvent beforePageChange() {
+        final PageChangedEvent pageChangedEvent = PageChangedEvent.beforePageChange(this);
+        return pageChangedEvent;
+    }
+
+    public void afterPageChange(final PageChangedEvent pageChangedEvent) {
+        pageChangedEvent.afterPageChange(this);
+        getEventBus().post(pageChangedEvent);
+        if (!getReaderViewInfo().canNextScreen) {
+            // TODO: 2017/2/16 default value because  not finish comment
+            getEventBus().post(new DocumentFinishEvent(getContext(), "", 100));
+        }
+    }
+
+    public void onTextSelected(final Annotation annotation) {
+        if (annotation == null) {
+            return;
+        }
+        String originText = annotation.getQuote();
+        String userNote = annotation.getNote();
+        if (StringUtils.isBlank(userNote)) {
+            final TextSelectionEvent event = TextSelectionEvent.onTextSelected(getContext(), originText);
+            getEventBus().post(event);
+            return;
+        }
+        final AnnotationEvent event = AnnotationEvent.onAddAnnotation(getContext(), originText, userNote);
+        getEventBus().post(event);
+    }
+
+    public void exportAnnotation(final Annotation annotation) {
+        if (annotation == null) {
+            return;
+        }
+        List<Annotation> annotations = new ArrayList<>();
+        annotations.add(annotation);
+        new ExportAnnotationAction(annotations, true, false).execute(this, null);
+    }
+
+    public void onDictionaryLookup(final String text) {
+        final DictionaryLookupEvent event = DictionaryLookupEvent.create(getContext(), text);
+        getEventBus().post(event);
+    }
+
+    public void onNetworkChanged(boolean connected, int networkType) {
+        final NetworkChangedEvent event = NetworkChangedEvent.create(getContext(), connected, networkType);
+        getEventBus().post(event);
     }
 }
 

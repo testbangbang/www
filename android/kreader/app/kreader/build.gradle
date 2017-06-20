@@ -21,29 +21,6 @@ android {
             jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
             jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
         }
-        
-        // call regular ndk-build(.cmd) script from app directory
-        task ndkBuild(type: Exec) {
-            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'ndk-build.cmd', '-C', file('src/main').absolutePath, '-j10'
-            } else {
-                commandLine '/opt/adt-bundle-linux/ndk/ndk-build', '-C', file('src/main').absolutePath, '-j10'
-            }
-        }
-
-        tasks.withType(JavaCompile) {
-            compileTask -> compileTask.dependsOn ndkBuild
-        }
-
-        task ndkClean(type: Exec) {
-            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'ndk-build.cmd', '-C', file('src/main').absolutePath, 'clean'
-            } else {
-                commandLine '/opt/adt-bundle-linux/ndk/ndk-build', '-C', file('src/main').absolutePath, 'clean'
-            }
-        }
-        
-        clean.dependsOn 'ndkClean'
     }
 
     buildTypes {
@@ -95,8 +72,9 @@ apt {
 
 dependencies {
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
+    compile project(':libraries:onyxsdk-reader')
     compile project(':libraries:onyxsdk-base')
-    compile project(':libraries:onyxsdk-data')
+    compile project(':libraries:onyxsdk-statistics')
     compile project(':libraries:onyxsdk-ui')
     compile project(':libraries:cropimage')
     compile project(':libraries:alreader-engine')
@@ -122,6 +100,7 @@ dependencies {
     compile "org.apache.lucene:lucene-core:$rootProject.lucenecoreVersion"
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
     compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    compile "com.github.PhilJay:MPAndroidChart:v$rootProject.mpAndroidChart"
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"

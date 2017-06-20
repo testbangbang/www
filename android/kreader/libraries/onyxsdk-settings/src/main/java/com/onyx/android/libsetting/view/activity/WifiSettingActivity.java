@@ -1,13 +1,30 @@
 package com.onyx.android.libsetting.view.activity;
 
+import android.Manifest;
 import android.databinding.DataBindingUtil;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.onyx.android.libsetting.R;
+import com.onyx.android.libsetting.data.wifi.AccessPoint;
+import com.onyx.android.libsetting.databinding.ActivityWifiSettingBinding;
+import com.onyx.android.libsetting.databinding.WifiInfoItemBinding;
+import com.onyx.android.libsetting.manager.WifiAdmin;
+import com.onyx.android.libsetting.util.CommonUtil;
+import com.onyx.android.libsetting.util.SettingRecyclerViewUtil;
+import com.onyx.android.libsetting.util.WifiUtil;
+import com.onyx.android.libsetting.view.BindingViewHolder;
+import com.onyx.android.libsetting.view.PageRecyclerViewItemClickListener;
+import com.onyx.android.libsetting.view.SettingPageAdapter;
+import com.onyx.android.libsetting.view.dialog.WifiConnectedDialog;
+import com.onyx.android.libsetting.view.dialog.WifiLoginDialog;
+import com.onyx.android.libsetting.view.dialog.WifiSavedDialog;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
@@ -16,20 +33,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import java.net.SocketException;
 import java.util.List;
 
-import com.onyx.android.libsetting.R;
-import com.onyx.android.libsetting.data.wifi.AccessPoint;
-import com.onyx.android.libsetting.databinding.ActivityWifiSettingBinding;
-import com.onyx.android.libsetting.databinding.WifiInfoItemBinding;
-import com.onyx.android.libsetting.util.CommonUtil;
-import com.onyx.android.libsetting.util.SettingRecyclerViewUtil;
-import com.onyx.android.libsetting.manager.WifiAdmin;
-import com.onyx.android.libsetting.util.WifiUtil;
-import com.onyx.android.libsetting.view.BindingViewHolder;
-import com.onyx.android.libsetting.view.PageRecyclerViewItemClickListener;
-import com.onyx.android.libsetting.view.SettingPageAdapter;
-import com.onyx.android.libsetting.view.dialog.WifiConnectedDialog;
-import com.onyx.android.libsetting.view.dialog.WifiLoginDialog;
-import com.onyx.android.libsetting.view.dialog.WifiSavedDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.net.wifi.WifiInfo.LINK_SPEED_UNITS;
 import static com.onyx.android.libsetting.util.Constant.ARGS_BAND;
@@ -42,14 +46,28 @@ import static com.onyx.android.libsetting.util.Constant.ARGS_SSID;
 public class WifiSettingActivity extends OnyxAppCompatActivity {
     static final String TAG = WifiSettingActivity.class.getSimpleName();
     ActivityWifiSettingBinding binding;
-    WifiAdmin wifiAdmin;
+    @Nullable
+    WifiAdmin wifiAdmin = null;
     OnyxPageDividerItemDecoration itemDecoration;
-    SettingPageAdapter<WifiResultItemViewHolder,AccessPoint> adapter;
+    SettingPageAdapter<WifiResultItemViewHolder, AccessPoint> adapter;
+
+    final static String[] WIFI_PERMS = {Manifest.permission.ACCESS_COARSE_LOCATION};
+    final static int WIFI_PERMS_REQUEST_CODE = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+        if (EasyPermissions.hasPermissions(this, WIFI_PERMS)) {
+            initWifiAdmin();
+        } else {
+            EasyPermissions.requestPermissions(this,
+                    getString(R.string.wifi_rational), WIFI_PERMS_REQUEST_CODE, WIFI_PERMS);
+        }
+    }
+
+    private void initWifiAdmin() {
         wifiAdmin = new WifiAdmin(this, new WifiAdmin.Callback() {
             @Override
             public void onWifiStateChange(boolean isWifiEnable) {
@@ -60,19 +78,19 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
             public void onScanResultReady(List<AccessPoint> scanResult) {
                 adapter.setDataList(scanResult);
                 updateSummary(true);
-                adapter.notifyDataSetChanged();
+                binding.wifiScanResultRecyclerView.notifyDataSetChanged();
             }
 
             @Override
             public void onSupplicantStateChanged(NetworkInfo.DetailedState state) {
                 updateAccessPointDetailedState(state);
-                adapter.notifyDataSetChanged();
+                binding.wifiScanResultRecyclerView.notifyDataSetChanged();
             }
 
             @Override
             public void onNetworkConnectionChange(NetworkInfo.DetailedState state) {
                 updateAccessPointDetailedState(state);
-                adapter.notifyDataSetChanged();
+                binding.wifiScanResultRecyclerView.notifyDataSetChanged();
             }
         });
     }
@@ -83,7 +101,7 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
             if (config == null) {
                 continue;
             }
-            if (accessPoint.getWifiConfiguration().networkId ==
+            if (wifiAdmin != null && accessPoint.getWifiConfiguration().networkId ==
                     wifiAdmin.getCurrentConnectionInfo().getNetworkId()) {
                 accessPoint.setDetailedState(state);
                 if (state == NetworkInfo.DetailedState.CONNECTED) {
@@ -100,13 +118,17 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        wifiAdmin.registerReceiver();
+        if (wifiAdmin != null) {
+            wifiAdmin.registerReceiver();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        wifiAdmin.unregisterReceiver();
+        if (wifiAdmin != null) {
+            wifiAdmin.unregisterReceiver();
+        }
     }
 
     private void updateUI(boolean isWifiEnable) {
@@ -114,7 +136,7 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         binding.wifiScanResultRecyclerView.setVisibility(isWifiEnable ? View.VISIBLE : View.GONE);
         if (!isWifiEnable) {
             adapter.getDataList().clear();
-            adapter.notifyDataSetChanged();
+            binding.wifiScanResultRecyclerView.notifyDataSetChanged();
         }
         updateSummary(isWifiEnable);
         binding.rescanBtn.setVisibility(isWifiEnable ? View.VISIBLE : View.GONE);
@@ -132,13 +154,17 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         binding.wifiToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wifiAdmin.toggleWifi();
+                if (wifiAdmin != null) {
+                    wifiAdmin.toggleWifi();
+                }
             }
         });
         binding.rescanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wifiAdmin.triggerWifiScan();
+                if (wifiAdmin != null) {
+                    wifiAdmin.triggerWifiScan();
+                }
             }
         });
         initRecyclerView();
@@ -157,7 +183,7 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
     }
 
     private void buildAdapter() {
-        adapter = new SettingPageAdapter<WifiResultItemViewHolder,AccessPoint>() {
+        adapter = new SettingPageAdapter<WifiResultItemViewHolder, AccessPoint>() {
             @Override
             public int getRowCount() {
                 return WifiSettingActivity.this.getResources().getInteger(R.integer.wifi_per_page_item_count);
@@ -176,15 +202,15 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
             @Override
             public void onPageBindViewHolder(WifiResultItemViewHolder holder, int position) {
                 super.onPageBindViewHolder(holder, position);
-                SettingRecyclerViewUtil.updateItemDecoration(pageRecyclerView,this,itemDecoration);
+                SettingRecyclerViewUtil.updateItemDecoration(pageRecyclerView, this, itemDecoration);
                 holder.bindTo(getDataList().get(position));
             }
         };
 
         adapter.setItemClickListener(new PageRecyclerViewItemClickListener<AccessPoint>() {
             @Override
-            public void itemClick(final AccessPoint accessPoint) {
-                if (accessPoint.getWifiInfo() != null) {
+            public void itemClick(AccessPoint accessPoint) {
+                if (accessPoint.isConnected()) {
                     showConnectDialog(accessPoint);
                 } else if (accessPoint.getWifiConfiguration() == null) {
                     showLoginDialog(accessPoint);
@@ -201,7 +227,9 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         args.putString(ARGS_SSID, accessPoint.getScanResult().SSID);
         args.putString(ARGS_LINK_SPEED, accessPoint.getWifiInfo().getLinkSpeed() + LINK_SPEED_UNITS);
         try {
-            args.putString(ARGS_IP_ADDRESS, wifiAdmin.getLocalIPAddress());
+            if (wifiAdmin != null) {
+                args.putString(ARGS_IP_ADDRESS, wifiAdmin.getLocalIPAddress());
+            }
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -227,7 +255,9 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         WifiLoginDialog wifiLoginDialog = new WifiLoginDialog();
         Bundle args = new Bundle();
         args.putString(ARGS_SECURITY_MODE, accessPoint.getSecurityMode());
-        args.putString(ARGS_SIGNAL_LEVEL, wifiAdmin.getSignalString(accessPoint.getSignalLevel()));
+        if (wifiAdmin != null) {
+            args.putString(ARGS_SIGNAL_LEVEL, wifiAdmin.getSignalString(accessPoint.getSignalLevel()));
+        }
         args.putString(ARGS_SSID, accessPoint.getScanResult().SSID);
         wifiLoginDialog.setArguments(args);
         wifiLoginDialog.setCallback(new WifiLoginDialog.Callback() {
@@ -244,7 +274,9 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         WifiSavedDialog wifiSavedDialog = new WifiSavedDialog();
         Bundle args = new Bundle();
         args.putString(ARGS_SSID, accessPoint.getScanResult().SSID);
-        args.putString(ARGS_SIGNAL_LEVEL, wifiAdmin.getSignalString(accessPoint.getSignalLevel()));
+        if (wifiAdmin != null) {
+            args.putString(ARGS_SIGNAL_LEVEL, wifiAdmin.getSignalString(accessPoint.getSignalLevel()));
+        }
         args.putString(ARGS_SECURITY_MODE, accessPoint.getSecurityMode());
         wifiSavedDialog.setArguments(args);
         wifiSavedDialog.setCallback(new WifiSavedDialog.Callback() {
@@ -270,6 +302,31 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         public void bindTo(AccessPoint accessPoint) {
             mBinding.setAccessPoint(accessPoint);
             mBinding.executePendingBindings();
+        }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        super.onPermissionsGranted(requestCode, perms);
+        if (requestCode == WIFI_PERMS_REQUEST_CODE) {
+            initWifiAdmin();
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        super.onPermissionsDenied(requestCode, perms);
+        if (requestCode == WIFI_PERMS_REQUEST_CODE) {
+            showToast(R.string.no_wifi_permission, Toast.LENGTH_SHORT);
+            /*
+              onBackPressed() here may cause some illegal state.
+              ref link:http://stackoverflow.com/a/38972502/4192473
+            */
+            try {
+                onBackPressed();
+            } catch (IllegalStateException e) {
+                finish();
+            }
         }
     }
 }

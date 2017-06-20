@@ -12,16 +12,18 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.host.math.PageUtils;
-import com.onyx.kreader.host.request.RenderRequest;
-import com.onyx.kreader.host.request.ScaleRequest;
-import com.onyx.kreader.host.request.ScaleToPageRequest;
+import com.onyx.android.sdk.reader.host.math.PageUtils;
+import com.onyx.android.sdk.reader.host.request.RenderRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.events.PinchZoomEvent;
 
 /**
@@ -141,10 +143,10 @@ public class PinchZoomAction extends BaseAction {
             readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), callback);
             return;
         } else if (deltaScale > 1.0f && !readerDataHolder.canCurrentPageScaleUp()) {
+            newScale = PageConstants.MAX_SCALE;
+            pageInfo.setScale(newScale);
             Toast.makeText(readerDataHolder.getContext(),
                     R.string.max_scroll_toast, Toast.LENGTH_SHORT).show();
-            readerDataHolder.submitRenderRequest(new RenderRequest(), callback);
-            return;
         }
 
         final ScaleRequest scaleRequest = new ScaleRequest(pageInfo.getName(), newScale, left, top);
@@ -171,6 +173,9 @@ public class PinchZoomAction extends BaseAction {
         new ChangeStyleAction(style).execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                if (e == null) {
+                    SingletonSharedPreference.setLastFontSize(lastFontSize);
+                }
             }
         });
         hideFontSizeInfo(readerDataHolder);

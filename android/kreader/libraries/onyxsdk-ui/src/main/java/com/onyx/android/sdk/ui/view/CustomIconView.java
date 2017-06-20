@@ -23,6 +23,7 @@ import com.onyx.android.sdk.ui.R;
 
 public class CustomIconView extends android.support.v7.widget.AppCompatImageView {
     float drawingSize = -1;
+    boolean enableZoomDrawable = true;
 
     public CustomIconView(Context context) {
         this(context, null);
@@ -44,6 +45,7 @@ public class CustomIconView extends android.support.v7.widget.AppCompatImageView
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.CustomIconView);
         drawingSize = a.getDimension(R.styleable.CustomIconView_iconDrawingSize, -1);
+        enableZoomDrawable = a.getBoolean(R.styleable.CustomIconView_enableZoomDrawable, true);
 
         a.recycle();
         Drawable d = getDrawable();
@@ -57,6 +59,9 @@ public class CustomIconView extends android.support.v7.widget.AppCompatImageView
     }
 
     private Drawable zoomDrawable(Drawable drawable, float size) {
+        if (!enableZoomDrawable) {
+            return drawable;
+        }
         int width = drawable.getIntrinsicWidth();
         int height = drawable.getIntrinsicHeight();
         Bitmap oldBmp = drawableToBitmap(drawable);

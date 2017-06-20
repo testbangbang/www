@@ -3,8 +3,8 @@ package com.onyx.kreader.ui.actions;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.host.request.ChangeViewConfigRequest;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.host.request.ChangeViewConfigRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
@@ -14,10 +14,8 @@ public class ChangeViewConfigAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        final PageInfo pageInfo = readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
         BaseReaderRequest config = new ChangeViewConfigRequest(readerDataHolder.getDisplayWidth(),
-                readerDataHolder.getDisplayHeight(),
-                pageInfo != null ? pageInfo.getName() : null);
+                readerDataHolder.getDisplayHeight());
         readerDataHolder.submitRenderRequest(config, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

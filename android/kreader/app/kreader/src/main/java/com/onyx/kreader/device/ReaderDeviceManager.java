@@ -1,18 +1,11 @@
 package com.onyx.kreader.device;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.os.Build;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Surface;
 import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 /**
  * Created by Joy on 2016/5/6.
@@ -25,6 +18,7 @@ public class ReaderDeviceManager {
     private static int gcInterval;
     private static int refreshCount;
     private static boolean inFastUpdateMode = false;
+    private static boolean enableHoldDisplay = true;
 
     private final static EpdDevice epdDevice;
 
@@ -80,9 +74,21 @@ public class ReaderDeviceManager {
         }
     }
 
+    public static void applyRegalUpdate(final Context context, final View view) {
+        if (!isUsingRegal(context)) {
+            return;
+        }
+        epdDevice.setUpdateMode(view, UpdateMode.REGAL);
+    }
+
     public static boolean isUsingRegal(Context context) {
         boolean useRegal = SingletonSharedPreference.isEnableRegal(context);
-        return EpdController.supportRegal() && useRegal;
+        return supportRegal(context) && useRegal;
+    }
+
+    public static boolean supportRegal(final Context context) {
+        boolean regalEnable = DeviceConfig.sharedInstance(context).isRegalEnable();
+        return EpdController.supportRegal() && regalEnable;
     }
 
     public static void enableScreenUpdate(View view, boolean enable) {
@@ -96,6 +102,10 @@ public class ReaderDeviceManager {
         } else {
             refreshScreenWithGCIntervalWithoutRegal(view);
         }
+    }
+
+    public static boolean isApplyFullUpdate() {
+        return refreshCount == 0;
     }
 
     public static void refreshScreenWithGCIntervalWithRegal(View view) {
@@ -121,6 +131,7 @@ public class ReaderDeviceManager {
             refreshCount = 0;
             epdDevice.applyGCUpdate(view);
         } else {
+            enableRegal();
             epdDevice.applyRegalUpdate(view);
         }
     }
@@ -134,6 +145,10 @@ public class ReaderDeviceManager {
         }
     }
 
+    public static void applyWithGcUpdate(View view) {
+        epdDevice.applyGCUpdate(view);
+    }
+
     public static void setUpdateMode(final View view, UpdateMode mode) {
         epdDevice.setUpdateMode(view, mode);
     }
@@ -144,6 +159,29 @@ public class ReaderDeviceManager {
 
     public static void cleanUpdateMode(final View view) {
         epdDevice.cleanUpdate(view);
+    }
+
+    public static void holdDisplay(boolean hold) {
+        if (enableHoldDisplay) {
+            epdDevice.holdDisplay(hold, UpdateMode.REGAL, 1);
+        }
+    }
+
+    public static void holdDisplayUpdate(Context context, View view) {
+        if (!view.isShown()) {
+            return;
+        }
+        applyRegalUpdate(context, view);
+        boolean hold = !isApplyFullUpdate();
+        holdDisplay(hold);
+    }
+
+    public static void enableRegal() {
+        epdDevice.enableRegal();
+    }
+
+    public static void disableRegal() {
+        epdDevice.disableRegal();
     }
 
 }

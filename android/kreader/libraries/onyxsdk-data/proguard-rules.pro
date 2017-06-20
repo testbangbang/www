@@ -32,3 +32,17 @@
 #}
 
 -dontshrink
+
+-keepparameternames
+
+-keepattributes Exceptions,InnerClasses
+
+-keep class com.onyx.android.sdk.api.** { *; }
+
+-keep public class * {
+      public protected *;
+}
+
+-keepclassmembers,allowoptimization enum * {
+    public static **[] values(); public static ** valueOf(java.lang.String);
+}

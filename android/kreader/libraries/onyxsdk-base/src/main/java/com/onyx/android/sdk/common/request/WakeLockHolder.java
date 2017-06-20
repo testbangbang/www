@@ -15,9 +15,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class WakeLockHolder {
 
     private volatile PowerManager.WakeLock wakeLock;
-    private AtomicInteger wakeLockCounting = new AtomicInteger();
+    private AtomicInteger wakeLockCounting = new AtomicInteger(0);
     public final static int FULL_FLAGS = PowerManager.FULL_WAKE_LOCK;
     public final static int WAKEUP_FLAGS = PowerManager.FULL_WAKE_LOCK|PowerManager.ACQUIRE_CAUSES_WAKEUP;
+    private boolean referenceCounted = true;
+
+    public WakeLockHolder() {
+    }
+
+    public WakeLockHolder(boolean ref) {
+        referenceCounted = ref;
+    }
 
     public void acquireWakeLock(final Context context, final String tag) {
         acquireWakeLock(context, FULL_FLAGS, tag, -1);
@@ -31,6 +39,7 @@ public class WakeLockHolder {
         try {
             if (wakeLock == null) {
                 wakeLock = Device.currentDevice().newWakeLockWithFlags(context, flags, tag);
+                wakeLock.setReferenceCounted(referenceCounted);
             }
             if (wakeLock != null) {
                 if (ms > 0) {
@@ -38,7 +47,11 @@ public class WakeLockHolder {
                 } else {
                     wakeLock.acquire();
                 }
-                wakeLockCounting.incrementAndGet();
+                if (referenceCounted) {
+                    wakeLockCounting.incrementAndGet();
+                } else {
+                    wakeLockCounting.set(1);
+                }
             }
         } catch (java.lang.Exception e) {
             e.printStackTrace();
@@ -51,7 +64,8 @@ public class WakeLockHolder {
                 if (wakeLock.isHeld()) {
                     wakeLock.release();
                 }
-                if (wakeLockCounting.decrementAndGet() <= 0) {
+                if (wakeLockCounting.decrementAndGet() <= 0 || !referenceCounted) {
+                    wakeLockCounting.set(0);
                     wakeLock = null;
                 }
             }
@@ -67,12 +81,15 @@ public class WakeLockHolder {
                 wakeLock.release();
             }
             wakeLock = null;
+            wakeLockCounting.set(0);
         }
     }
 
     public void dumpWakelocks(final String tag) {
         if (wakeLock != null || wakeLockCounting.get() > 0) {
-            Log.w(tag, "wake lock not released. check wake lock." + wakeLock.toString() + " counting: " + wakeLockCounting.get());
+            Log.w(tag, "wake lock acquired. " + wakeLock.toString() + " counting: " + wakeLockCounting.get());
+        } else {
+            Log.w(tag, "wake lock released.");
         }
     }
 

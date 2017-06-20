@@ -86,11 +86,11 @@ public class AlFormatHTML extends AlAXML {
         allState.isOpened = false;
     }
 
-    protected int 		section_count = 0;
-    protected boolean 	is_title = false;
-    protected boolean 	is_book_title = false;
-    protected int 		content_start = 0;
-    protected int		skip_count = 0;
+    private int 		section_count = 0;
+    private boolean 	is_title = false;
+    private boolean 	is_book_title = false;
+    private int 		content_start = 0;
+    private int		skip_count = 0;
 
     @Override
     boolean isNeedAttribute(int atr) {
@@ -119,7 +119,7 @@ public class AlFormatHTML extends AlAXML {
             addContent(AlOneContent.add(s, content_start, level));
     }
 
-    protected  void setSpecialText(boolean flag) {
+    private void setSpecialText(boolean flag) {
         if (flag) {
             allState.state_special_flag0 = true;
             state_specialBuff0.setLength(0);
@@ -140,7 +140,7 @@ public class AlFormatHTML extends AlAXML {
         }
     }
 
-    public  boolean addImages() {
+    private boolean addImages() {
         StringBuilder s = tag.getATTRValue(AlFormatTag.TAG_SRC);
 
         if (s != null && s.indexOf("data:image") == 0) {
@@ -171,7 +171,7 @@ public class AlFormatHTML extends AlAXML {
         return false;
     }
 
-    protected  boolean addNotes() {
+    private boolean addNotes() {
         StringBuilder s = tag.getATTRValue(AlFormatTag.TAG_HREF);
 
         if (s != null) {

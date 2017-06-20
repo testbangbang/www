@@ -6,7 +6,7 @@ import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogAnnotation;
@@ -47,7 +47,7 @@ public class ShowTextSelectionMenuAction{
             popupSelectionMenu = new PopupSelectionMenu(readerDataHolder, (RelativeLayout) readerActivity.findViewById(R.id.main_view), new PopupSelectionMenu.MenuCallback() {
                 @Override
                 public void resetSelection() {
-
+                    readerDataHolder.getSelectionManager().clear();
                 }
 
                 @Override
@@ -96,8 +96,17 @@ public class ShowTextSelectionMenuAction{
                     if (StringUtils.isNullOrEmpty(text)) {
                         return;
                     }
-                    lookupInDictionary(readerActivity, text);
+                    lookupInDictionary(readerActivity, readerDataHolder, text);
                     closeMenu();
+                }
+
+                @Override
+                public void startTts() {
+                    closeMenu();
+
+                    ReaderSelection readerSelection = readerDataHolder.getReaderUserDataInfo().getHighlightResult();
+                    String startPosition = readerSelection == null ? null : readerSelection.getStartPosition();
+                    new StartTtsAction(startPosition).execute(readerDataHolder, null);
                 }
 
                 @Override
@@ -144,8 +153,10 @@ public class ShowTextSelectionMenuAction{
                 selection.getRectangles(), selection.getText(), note).execute(readerDataHolder, null);
     }
 
-    private static void lookupInDictionary(final ReaderActivity activity, String text) {
+    private static void lookupInDictionary(final ReaderActivity activity, final ReaderDataHolder readerDataHolder, String text) {
+        readerDataHolder.onDictionaryLookup(text);
         text = StringUtils.trim(text);
+        text = StringUtils.trimPunctuation(text);
         OnyxDictionaryInfo info = OnyxDictionaryInfo.getDefaultDictionary();
         Intent intent = new Intent(info.action).setComponent(new ComponentName(info.packageName, info.className));
         intent.setAction(Intent.ACTION_VIEW);

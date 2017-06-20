@@ -7,8 +7,8 @@ import android.util.Log;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.kreader.plugins.neopdf.NeoPdfJniWrapper;
-import com.onyx.kreader.utils.ImageUtils;
+import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfJniWrapper;
+import com.onyx.android.sdk.reader.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,6 +36,25 @@ public class CFATest extends ActivityInstrumentationTestCase2<ReaderTestActivity
             return Integer.valueOf(array[0]);
         }
         return -1;
+    }
+
+    // convert screencap to normal color image.
+    public void testAReverseCfa() throws Exception {
+        Set<String> filter = new HashSet<>();
+        filter.add("jpg");
+        filter.add("png");
+        List<String> fileList = new ArrayList<>();
+        FileUtils.collectFiles("/mnt/sdcard/screencap/", filter, true, fileList);
+
+        for(String path : fileList) {
+            if (path.contains(".color.")) {
+                continue;
+            }
+            final Bitmap origin = BitmapUtils.loadBitmapFromFile(path);
+            final Bitmap result = Bitmap.createBitmap(origin.getWidth() / 2, origin.getHeight() / 2, Bitmap.Config.ARGB_8888);
+            ImageUtils.toColorBitmap(result, origin, 0);
+            BitmapUtils.saveBitmap(result, path + ".color.png");
+        }
     }
 
     public void testCfaResource() throws Exception {

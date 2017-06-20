@@ -18,21 +18,22 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.common.PageAnnotation;
-import com.onyx.kreader.common.ReaderUserDataInfo;
-import com.onyx.kreader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.common.PageAnnotation;
+import com.onyx.android.sdk.reader.common.ReaderUserDataInfo;
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
-import com.onyx.kreader.utils.RectUtils;
+import com.onyx.android.sdk.reader.utils.RectUtils;
 
 import java.util.List;
 
@@ -112,8 +113,14 @@ public class ReaderPainter {
         paint.setPathEffect(null);
     }
 
+    private boolean skipCropRectIndicator(final ReaderViewInfo viewInfo) {
+        return viewInfo.subScreenCount <= 1;
+    }
+
     private void drawCropRectIndicator(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
-        if (viewInfo.cropRegionInViewport == null || viewInfo.cropRegionInViewport.isEmpty()) {
+        if (viewInfo.cropRegionInViewport == null ||
+                viewInfo.cropRegionInViewport.isEmpty() ||
+                skipCropRectIndicator(viewInfo)) {
             return;
         }
         initPaintWithAuxiliaryLineStyle(paint);
@@ -192,7 +199,9 @@ public class ReaderPainter {
         }
         Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(context, hasBookmark(userDataInfo, viewInfo));
         final Point point = BookmarkIconFactory.bookmarkPosition(canvas.getWidth(), bitmap);
-        canvas.drawBitmap(bitmap, point.x, point.y, null);
+        float left = AppCompatUtils.calculateEvenDigital(point.x);
+        float top = AppCompatUtils.calculateEvenDigital(point.y);
+        canvas.drawBitmap(bitmap, left, top, null);
     }
 
     private void drawReaderSelection(Context context, Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, ReaderSelection selection, AnnotationHighlightStyle highlightStyle) {
@@ -263,7 +272,8 @@ public class ReaderPainter {
                             final Paint paint,
                             final ReaderUserDataInfo userDataInfo,
                             final NoteManager noteManager) {
-        if (!SingletonSharedPreference.isShowNote(context) || userDataInfo.hasHighlightResult()) {
+        boolean showNote = SingletonSharedPreference.isShowNote(context);
+        if (!showNote || userDataInfo.hasHighlightResult()) {
             return;
         }
         final ReaderNoteDataInfo noteDataInfo = noteManager.getNoteDataInfo();

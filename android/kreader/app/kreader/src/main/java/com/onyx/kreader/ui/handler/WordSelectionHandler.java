@@ -10,20 +10,25 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
-import com.onyx.kreader.host.request.AnalyzeWordAction;
-import com.onyx.kreader.host.request.SelectWordRequest;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
+import com.onyx.kreader.device.ReaderDeviceManager;
+import com.onyx.kreader.ui.actions.AnalyzeWordAction;
+import com.onyx.android.sdk.reader.host.request.SelectWordRequest;
 import com.onyx.kreader.ui.actions.SelectWordAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
+import com.onyx.kreader.ui.actions.ViewImageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
-import com.onyx.kreader.utils.MathUtils;
-import com.onyx.kreader.utils.DeviceConfig;
-import com.onyx.kreader.utils.RectUtils;
+import com.onyx.android.sdk.reader.utils.MathUtils;
+import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.android.sdk.reader.utils.RectUtils;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,6 +54,8 @@ public class WordSelectionHandler extends BaseHandler{
     private SelectWordRequest selectWordRequest;
     private PointF highLightBeginTop;
     private PointF highLightEndBottom;
+    private int lastSelectStartPosition = 0;
+    private int lastSelectEndPosition = 0;
 
     public WordSelectionHandler(HandlerManager parent, Context context) {
         super(parent);
@@ -57,6 +64,10 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
+        if (tryPageImage(readerDataHolder, x2, y2)){
+            quitWordSelection(readerDataHolder);
+            return;
+        }
         longPressPoint.set((int) x2, (int) y2);
         lastMovedPoint = new Point((int) x2, (int) y2);
         cursorSelected = getCursorSelected(readerDataHolder, (int) x2, (int) y2);
@@ -65,12 +76,30 @@ public class WordSelectionHandler extends BaseHandler{
             highLightEndBottom = new PointF(x2, y2);
             movedAfterLongPress = false;
             showSelectionCursor = false;
+            lastSelectStartPosition = 0;
+            lastSelectEndPosition = 0;
             super.onLongPress(readerDataHolder, x1, y1, x2, y2);
             selectWord(readerDataHolder, x1, y1, x2, y2);
         } else if (cursorSelected < 0) {
             quitWordSelection(readerDataHolder);
         }
         readerDataHolder.changeEpdUpdateMode(UpdateMode.DU);
+    }
+
+    private boolean tryPageImage(ReaderDataHolder readerDataHolder, final float x, final float y) {
+        for (PageInfo pageInfo : readerDataHolder.getReaderViewInfo().getVisiblePages()) {
+            if (!readerDataHolder.getReaderUserDataInfo().hasPageImages(pageInfo)) {
+                continue;
+            }
+            List<ReaderImage> images = readerDataHolder.getReaderUserDataInfo().getPageImages(pageInfo);
+            for (ReaderImage image : images) {
+                if (image.getRectangle().contains(x, y)) {
+                    new ViewImageAction(image.getBitmap()).execute(readerDataHolder, null);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -94,6 +123,17 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public boolean onActionUp(final ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
+        onReleaseClick(readerDataHolder);
+        return true;
+    }
+
+    @Override
+    public boolean onActionCancel(ReaderDataHolder readerDataHolder, float startX, float startY, float endX, float endY) {
+        onReleaseClick(readerDataHolder);
+        return true;
+    }
+
+    private void onReleaseClick(final ReaderDataHolder readerDataHolder) {
         if (readerDataHolder.getReaderUserDataInfo().hasHighlightResult() && !isSingleTapUp()) {
             String text = readerDataHolder.getReaderUserDataInfo().getHighlightResult().getText();
             if (!StringUtils.isNullOrEmpty(text)) {
@@ -105,7 +145,6 @@ public class WordSelectionHandler extends BaseHandler{
         updateHighLightRect(readerDataHolder);
         setSingleTapUp(false);
         setActionUp(true);
-        return true;
     }
 
     private boolean isWord(String text) {
@@ -247,6 +286,7 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public void selectWord(final ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
+        ReaderDeviceManager.disableRegal();
         SelectWordAction.selectWord(readerDataHolder, readerDataHolder.getCurrentPagePosition(), new PointF(x1, y1), new PointF(x2, y2), new PointF(x2, y2),new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -287,15 +327,19 @@ public class WordSelectionHandler extends BaseHandler{
         }
 
         if (cursorSelected == HighlightCursor.END_CURSOR_INDEX) {
-            if (selection.getStartPosition().equals(updatedSelection.getEndPosition())) {
+            int selectStartPosition = Integer.valueOf(selection.getStartPosition());
+            if (lastSelectStartPosition !=0 && lastSelectStartPosition != selectStartPosition) {
                 highLightEndBottom.set(highLightBeginTop.x, highLightBeginTop.y);
                 cursorSelected = HighlightCursor.BEGIN_CURSOR_INDEX;
             }
+            lastSelectStartPosition = selectStartPosition;
         }else if (cursorSelected == HighlightCursor.BEGIN_CURSOR_INDEX) {
-            if (selection.getEndPosition().equals(updatedSelection.getStartPosition())) {
+            int selectEndPosition = Integer.valueOf(selection.getEndPosition());
+            if (lastSelectEndPosition !=0 && lastSelectEndPosition != selectEndPosition) {
                 highLightBeginTop.set(highLightEndBottom.x, highLightEndBottom.y);
                 cursorSelected = HighlightCursor.END_CURSOR_INDEX;
             }
+            lastSelectEndPosition = selectEndPosition;
         }
     }
 
@@ -321,12 +365,16 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public void quitWordSelection(ReaderDataHolder readerDataHolder) {
+        ReaderDeviceManager.enableRegal();
+        getParent().resetToDefaultProvider();
+        clearWordSelection(readerDataHolder);
+    }
+
+    private void clearWordSelection(ReaderDataHolder readerDataHolder) {
         readerDataHolder.resetEpdUpdateMode();
         ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(readerDataHolder,true);
-        getParent().resetToDefaultProvider();
         readerDataHolder.redrawPage();
         readerDataHolder.getSelectionManager().clear();
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
     }
 
     public void onSelectWordFinished(ReaderDataHolder readerDataHolder, SelectWordRequest request, Throwable e) {
@@ -352,5 +400,10 @@ public class WordSelectionHandler extends BaseHandler{
         readerDataHolder.getSelectionManager().setEnable(true);
         readerDataHolder.onRenderRequestFinished(request, null, false, false);
         showSelectionCursor = true;
+    }
+
+    @Override
+    public void onDeactivate(ReaderDataHolder readerDataHolder) {
+        clearWordSelection(readerDataHolder);
     }
 }

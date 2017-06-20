@@ -1,19 +1,16 @@
 package com.onyx.kreader.ui.actions;
 
-import android.content.IntentFilter;
 import android.graphics.RectF;
-import android.net.Uri;
-import android.os.Environment;
+
 import com.onyx.android.cropimage.CropImage;
+import com.onyx.android.cropimage.CropImageDialog;
+import com.onyx.android.cropimage.CropImageResultCallback;
 import com.onyx.android.cropimage.CropImageResultReceiver;
 import com.onyx.android.cropimage.data.CropArgs;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.host.request.ScaleByRectRequest;
-import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.android.sdk.reader.host.request.ScaleByRectRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-
-import java.io.File;
 
 /**
  * Created by zhuzeng on 5/18/16.
@@ -25,7 +22,6 @@ public class SelectionScaleAction extends BaseAction {
 
     private CropArgs cropArgs;
     private Callback callback;
-    private CropImageResultReceiver selectionZoomAreaReceiver;
 
     public SelectionScaleAction() {
         cropArgs = new CropArgs();
@@ -61,32 +57,16 @@ public class SelectionScaleAction extends BaseAction {
     }
 
     private void showSelectionActivity(final ReaderDataHolder readerDataHolder, final CropArgs args, final CropImage.SelectionCallback callback) {
-        Uri outputUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "cropped.png"));
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(CropImage.INTENT_ACTION_SELECT_ZOOM_RECT);
-
-        if (selectionZoomAreaReceiver != null) {
-            readerDataHolder.getContext().unregisterReceiver(selectionZoomAreaReceiver);
-        }
-        selectionZoomAreaReceiver = new CropImageResultReceiver() {
+        new CropImageDialog(readerDataHolder.getContext(),
+                readerDataHolder.getReader().getViewportBitmap().getBitmap(),
+                args, new CropImageResultCallback() {
             @Override
-            public void onSelectionFinished(final CropArgs navigationArgs) {
+            public void onSelectionFinished(CropArgs args) {
                 if (callback != null) {
-                    callback.onSelectionFinished(navigationArgs);
+                    callback.onSelectionFinished(args);
                 }
-                resetEventListener(readerDataHolder);
             }
-        };
-        readerDataHolder.getContext().registerReceiver(selectionZoomAreaReceiver, filter);
-        CropImage crop = new CropImage(readerDataHolder.getReader().getViewportBitmap().getBitmap());
-        crop.output(outputUri).start((ReaderActivity)readerDataHolder.getContext(), false, false, false, args);
-    }
-
-    private void resetEventListener(final ReaderDataHolder readerDataHolder) {
-        if (selectionZoomAreaReceiver != null) {
-            readerDataHolder.getContext().unregisterReceiver(selectionZoomAreaReceiver);
-            selectionZoomAreaReceiver = null;
-        }
+        }).show();
     }
 
     private void scaleByRect(final ReaderDataHolder readerDataHolder, final RectF rect) {

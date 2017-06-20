@@ -213,4 +213,39 @@ public class BookStoreTest extends ApplicationTestCase<Application> {
             }
         }
     }
+
+    private void runProductSharedListTest(BaseQuery query) throws Exception {
+        Response<ProductResult<ProductShared>> resp = getService().productSharedList(JSON.toJSONString(query)).execute();
+        assertNotNull(resp);
+        assertNotNull(resp.body());
+        assertNotNull(resp.body().list);
+
+        List<ProductShared> list = resp.body().list;
+        assertTrue(list.size() <= query.count);
+        if (list.size() > 0) {
+            ProductShared tmp = list.get(0);
+            for (int i = 0; i < list.size(); i++) {
+                assertNotNull(tmp.productId);
+                assertNotNull(tmp.productTitle);
+                assertNotNull(tmp.productName);
+                assertTrue(tmp.productSize > 0);
+                assertNotNull(tmp.sharerId);
+                assertNotNull(tmp.sharerName);
+                assertTrue(tmp.shareDate.getTime() >= list.get(i).shareDate.getTime());
+                tmp = list.get(i);
+            }
+        }
+    }
+
+    public void testProductSharedList() throws Exception {
+        BaseQuery query = new BaseQuery();
+        query.sortOrder = false;
+        query.sortBy = "shareDate";//basedOn ProductShared.shareDate method
+        int testCount = 0;
+        while (testCount != 10) {
+            runProductSharedListTest(query);
+            query.offset += query.count;
+            testCount++;
+        }
+    }
 }

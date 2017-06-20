@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodInfo;
 
 import com.onyx.android.libsetting.R;
-import com.onyx.android.libsetting.util.InputMethodLanguageSettingUtil;
 import com.onyx.android.sdk.ui.view.CustomIconView;
 import com.onyx.android.sdk.utils.ActivityUtil;
 
@@ -28,8 +27,13 @@ public class OnyxCustomIMEPreference extends Preference {
 
     private Callback callback;
     private AppCompatCheckBox checkBox;
+
+    public InputMethodInfo getImeInfo() {
+        return imeInfo;
+    }
+
     private InputMethodInfo imeInfo;
-    CustomIconView settingIcon;
+    private CustomIconView settingIcon;
 
     public interface Callback {
         void onCheckBoxReady();
@@ -58,12 +62,11 @@ public class OnyxCustomIMEPreference extends Preference {
         super.onBindViewHolder(holder);
         settingIcon = (CustomIconView) holder.findViewById(R.id.onyx_custom_setting_icon);
         checkBox = (AppCompatCheckBox) holder.findViewById(R.id.ime_enable_cb);
-        checkBox.setEnabled(!InputMethodLanguageSettingUtil.isSystemIme(imeInfo));
         holder.itemView.setClickable(false);
         holder.findViewById(R.id.title_area).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!InputMethodLanguageSettingUtil.isSystemIme(imeInfo)) {
+                if (checkBox.isEnabled()) {
                     checkBox.toggle();
                     holder.itemView.performClick();
                 }
@@ -96,6 +99,14 @@ public class OnyxCustomIMEPreference extends Preference {
         if (checkBox != null) {
             checkBox.setChecked(isChecked);
         }
+    }
+
+    public void setIMECheckedEnabled(boolean isEnabled) {
+        checkBox.setEnabled(isEnabled);
+    }
+
+    public boolean isIMECheckedEnbaled() {
+        return checkBox != null && checkBox.isEnabled();
     }
 
     public OnyxCustomIMEPreference setImeInfo(InputMethodInfo imeInfo) {

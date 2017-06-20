@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuState;
@@ -27,9 +29,16 @@ public class DialogReaderMenu extends Dialog {
     private ReaderLayerMenuLayout menuLayout;
     private ImageButton prevButton;
     private ImageButton nextButton;
+    private SeekBar seekBarProgress;
+    private TextView textViewProgress;
+    private ImageButton nextChapter;
+    private ImageButton prevChapter;
 
-    public DialogReaderMenu(Context context, ReaderMenu.ReaderMenuCallback menuCallback) {
-        super(context, android.R.style.Theme_Translucent_NoTitleBar);
+    private ReaderMenuState readerMenuState;
+    private int currentPage = 0;
+
+    public DialogReaderMenu(Context context, ReaderMenu.ReaderMenuCallback menuCallback, boolean fullscreen) {
+        super(context, fullscreen ? android.R.style.Theme_Translucent_NoTitleBar_Fullscreen : android.R.style.Theme_Translucent_NoTitleBar);
         this.context = context;
         readerMenuCallback = menuCallback;
 
@@ -62,9 +71,13 @@ public class DialogReaderMenu extends Dialog {
             }
         });
 
-        menuLayout = (ReaderLayerMenuLayout)findViewById(R.id.layout_reader_menu);
+        menuLayout = (ReaderLayerMenuLayout) findViewById(R.id.layout_reader_menu);
         prevButton = (ImageButton) findViewById(R.id.pre_button);
-        nextButton = (ImageButton)findViewById(R.id.next_button);
+        nextButton = (ImageButton) findViewById(R.id.next_button);
+        seekBarProgress = (SeekBar) findViewById(R.id.seek_bar_page);
+        textViewProgress = (TextView) findViewById(R.id.text_view_progress);
+        nextChapter = (ImageButton) findViewById(R.id.chapter_forward);
+        prevChapter = (ImageButton) findViewById(R.id.chapter_back);
 
         findViewById(R.id.layout_back_area).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,21 +131,72 @@ public class DialogReaderMenu extends Dialog {
             }
         });
 
+        nextChapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.NEXT_CHAPTER));
+            }
+        });
+
+        prevChapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.PREV_CHAPTER));
+            }
+        });
+
+        initPageProgress();
     }
 
     public void show(ReaderMenuState state) {
+        EpdController.disableRegal();
         updateReaderState(state);
         show();
     }
 
     public void updateReaderState(ReaderMenuState state) {
+        readerMenuState = state;
+        currentPage = readerMenuState.getPageIndex();
         ((TextView)findViewById(R.id.text_view_title)).setText(state.getTitle());
         ((TextView)findViewById(R.id.text_view_progress)).setText(formatPageProgress(state));
         nextButton.setEnabled(state.canGoForward());
         prevButton.setEnabled(state.canGoBack());
+        updatePageProgress(readerMenuState.getPageIndex());
+        seekBarProgress.setMax(readerMenuState.getPageCount());
+        seekBarProgress.setProgress(currentPage);
     }
 
     private String formatPageProgress(ReaderMenuState state) {
         return String.valueOf(state.getPageIndex() + 1) + "/" + String.valueOf(state.getPageCount());
+    }
+
+    private void initPageProgress() {
+        seekBarProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (!fromUser) {
+                    return;
+                }
+
+                int page = Math.max(progress - 1, 0);
+                currentPage = page;
+                updatePageProgress(page);
+                readerMenuCallback.onMenuItemValueChanged(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.JUMP_PAGE), null, currentPage);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
+
+    private void updatePageProgress(int page) {
+        textViewProgress.setText(String.format("%d/%d", page + 1, readerMenuState.getPageCount()));
     }
 }

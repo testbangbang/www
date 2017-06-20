@@ -20,6 +20,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author jim
@@ -44,18 +45,21 @@ public class RK3026Device extends BaseDevice {
     private static int sViewA2 = DEFAULT_VIEW_MODE;
     private static int sViewAuto = DEFAULT_VIEW_MODE;
     private static int sViewPart = DEFAULT_VIEW_MODE;
+    private static int sViewRegla = DEFAULT_VIEW_MODE;
 
     private static final int INDEX_EPD_NULL = 0;
     private static final int INDEX_EPD_AUTO = 1;
     private static final int INDEX_EPD_FULL = 2;
     private static final int INDEX_EPD_A2 = 3;
     private static final int INDEX_EPD_PART = 4;
+    private static final int INDEX_EPD_REGLA = 16;
 
     private static final String NAME_EPD_NULL = "EPD_NULL";
     private static final String NAME_EPD_AUTO = "EPD_AUTO";
     private static final String NAME_EPD_FULL = "EPD_FULL";
     private static final String NAME_EPD_A2 = "EPD_A2";
     private static final String NAME_EPD_PART = "EPD_PART";
+    private static final String NAME_EPD_REGLA = "EPD_REGLA";
 
     private Context mContext = null;
 
@@ -87,6 +91,9 @@ public class RK3026Device extends BaseDevice {
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
     private static Method sMethodSystemIntegrityCheck;
+    private static Method sMethodSupportRegal;
+    private static Method sMethodHoldDisplay;
+    private static Method sMethodEnableRegal;
 
     private static final String UNKNOWN = "unknown";
     private static final String DEVICE_ID = "ro.deviceid";
@@ -114,6 +121,14 @@ public class RK3026Device extends BaseDevice {
                 sViewFull = (Integer) mth.invoke(einkModeConstants[INDEX_EPD_FULL]);
                 sViewA2 = (Integer) mth.invoke(einkModeConstants[INDEX_EPD_A2]);
                 sViewPart = (Integer) mth.invoke(einkModeConstants[INDEX_EPD_PART]);
+                if (einkModeConstants.length > INDEX_EPD_REGLA) {
+                    sViewRegla = (Integer) mth.invoke(einkModeConstants[INDEX_EPD_REGLA]);
+                } else {
+                    sViewRegla = sViewPart;
+                }
+                sMethodSupportRegal = ReflectUtil.getMethodSafely(class_view, "supportRegal");
+                sMethodHoldDisplay = ReflectUtil.getMethodSafely(class_view, "holdDisplay", boolean.class, int.class, int.class);
+                sMethodEnableRegal = ReflectUtil.getMethodSafely(class_view, "enableRegal", boolean.class);
 
                 @SuppressWarnings("rawtypes")
                 Class class_device_controller = Class.forName("android.hardware.DeviceController");
@@ -240,6 +255,9 @@ public class RK3026Device extends BaseDevice {
             case AUTO_A2:
                 einkModeString = NAME_EPD_A2;
                 break;
+            case EPD_REGLA:
+                einkModeString = NAME_EPD_REGLA;
+                break;
             default:
                 assert (false);
                 break;
@@ -261,6 +279,9 @@ public class RK3026Device extends BaseDevice {
                 break;
             case DU:
                 einkModeString = NAME_EPD_A2;
+                break;
+            case REGAL:
+                einkModeString = NAME_EPD_REGLA;
                 break;
             default:
                 assert (false);
@@ -468,11 +489,20 @@ public class RK3026Device extends BaseDevice {
         this.invokeDeviceControllerMethod(context, sMethodLed, on);
     }
 
+    public boolean supportRegal() {
+        Object object = ReflectUtil.invokeMethodSafely(sMethodSupportRegal, null);
+        if (object != null) {
+            return (Boolean) object;
+        }
+        return false;
+    }
+
+    public void holdDisplay(boolean hold,  UpdateMode updateMode, int ignoreFrame) {
+        ReflectUtil.invokeMethodSafely(sMethodHoldDisplay, null, hold, sViewRegla, ignoreFrame);
+    }
+
     @Override
-
-
     public int getVCom(Context context, String path) {
-
         String value = FileUtils.readContentOfFile(new File(path));
         if (StringUtils.isNullOrEmpty(value)) {
             return Integer.MIN_VALUE;
@@ -501,5 +531,50 @@ public class RK3026Device extends BaseDevice {
             return true;
         }
         return (Boolean)this.invokeDeviceControllerMethod(context, sMethodSystemIntegrityCheck);
+    }
+
+    @Override
+    public boolean isTouchable(Context context) {
+        Boolean touchable = true;
+        try {
+            Object instance = sDeviceControllerConstructor.newInstance(context);
+            touchable = (Boolean) sMethodIsTouchable.invoke(instance);
+            if (touchable == null) {
+                return true;
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return touchable.booleanValue();
+    }
+
+    @Override
+    public boolean hasWifi(Context context) {
+        try {
+            Object instance = sDeviceControllerConstructor.newInstance(context);
+            Boolean succ = (Boolean) sMethodHasWifi.invoke(instance);
+            if (succ != null) {
+                return succ.booleanValue();
+            }
+        }
+        catch (IllegalArgumentException e) {
+        }
+        catch (InstantiationException e) {
+        }
+        catch (IllegalAccessException e) {
+        }
+        catch (InvocationTargetException e) {
+        }
+
+        return false;
+    }
+
+    @Override
+    public void enableRegal(boolean enable) {
+        ReflectUtil.invokeMethodSafely(sMethodEnableRegal, null, enable);
     }
 }

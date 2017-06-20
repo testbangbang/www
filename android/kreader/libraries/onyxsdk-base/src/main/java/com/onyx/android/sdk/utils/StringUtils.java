@@ -145,4 +145,38 @@ public class StringUtils {
         input = input.substring(start, end + 1);
         return input;
     }
+
+    public static boolean isAlpha(char ch) {
+        /**
+         * The following defines which characters are included in these sets. The values are Unicode code points.
+         * - ALPHA
+         *		- 0x0041 - 0x007A Basic Latin
+         *		- 0x00C0 - 0x00D6 Latin-1 Supplement
+         *		- 0x00D8 - 0x00F6 Latin-1 Supplement
+         *		- 0x00F8 - 0x00FF Latin-1 Supplement
+         *		- 0x0100 - 0x017F Latin Extended-A
+         *		- 0x0180 - 0x024F Latin Extended-B
+         *		- 0x0386          Greek
+         *		- 0x0388 - 0x03FF Greek
+         *		- 0x0400 - 0x0481 Cyrillic
+         *		- 0x048A - 0x04FF Cyrillic
+         *		- 0x0500 - 0x052F Cyrillic Supplement
+         *		- 0x1E00 - 0x1EFF Latin Extended Additional
+         */
+        int codepoint = (int)ch;
+        return (0x0041 <= codepoint && codepoint <= 0x007A) ||
+                (0x00C0 <= codepoint && codepoint <= 0x00D6) ||
+                (0x00D8 <= codepoint && codepoint <= 0x00F6) ||
+                (0x00F8 <= codepoint && codepoint <= 0x00FF) ||
+                (0x0100 <= codepoint && codepoint <= 0x017F) ||
+                (0x0180 <= codepoint && codepoint <= 0x024F) ||
+                (0x0386 == codepoint) ||
+                (0x0388 <= codepoint && codepoint <= 0x03FF) ||
+                (0x0400 <= codepoint && codepoint <= 0x0481) ||
+                (0x048A <= codepoint && codepoint <= 0x04FF) ||
+                (0x0500 <= codepoint && codepoint <= 0x052F) ||
+                (0x1E00 <= codepoint && codepoint <= 0x1EFF);
+
+    }
+
 }

@@ -164,4 +164,7 @@
     <dimen name="activity_user_setting_button_confirm_save_text_size">13sp</dimen>
     <dimen name="activity_user_setting_button_confirm_save_text_margin">15dp</dimen>
 
+    <dimen name="application_item_image_size">108dp</dimen>
+    <dimen name="application_item_text_size">24sp</dimen>
+
 </resources>

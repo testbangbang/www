@@ -16,6 +16,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
@@ -62,16 +63,19 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private ReaderDataHolder readerDataHolder;
     private boolean isDrag = false;
     private Set<ReaderMenuAction> disableMenuActions;
+    private boolean showFullToolbar = false;
 
     public ShowScribbleMenuAction(ViewGroup parent,
                                   final ActionCallback actionCallback,
-                                  Set<ReaderMenuAction> disableMenuActions) {
+                                  Set<ReaderMenuAction> disableMenuActions,
+                                  boolean showFullToolbar) {
         this.parent = parent;
         this.actionCallback = actionCallback;
         this.disableMenuActions = disableMenuActions;
+        this.showFullToolbar = showFullToolbar;
     }
 
-    public void execute(ReaderDataHolder readerDataHolder, BaseCallback callback) {
+    public void execute(ReaderDataHolder readerDataHolder,  BaseCallback callback) {
         this.callback = callback;
         readerDataHolder.getEventBus().register(this);
         show(readerDataHolder);
@@ -88,7 +92,17 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
         fullToolbar = createFullScreenToolbar(readerDataHolder);
         parent.addView(fullToolbar);
-        fullToolbar.setVisibility(View.GONE);
+
+        fullToolbar.setVisibility(showFullToolbar ? View.VISIBLE : View.GONE);
+        topToolbar.setVisibility(showFullToolbar ? View.GONE : View.VISIBLE);
+        bottomToolbar.setVisibility(showFullToolbar ? View.GONE : View.VISIBLE);
+
+        fullToolbar.post(new Runnable() {
+            @Override
+            public void run() {
+                postMenuChangedEvent(readerDataHolder);
+            }
+        });
 
         topToolbar.setOnSizeChangeListener(new OnyxToolbar.OnSizeChangeListener() {
             @Override
@@ -107,6 +121,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private OnyxToolbar createScribbleBottomToolbar(final ReaderDataHolder readerDataHolder) {
         OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Bottom, OnyxToolbar.FillStyle.WrapContent);
+        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isPL107Device(readerDataHolder.getContext()));
         final ReaderMenuAction[] expandedActions = {ReaderMenuAction.SCRIBBLE_WIDTH, ReaderMenuAction.SCRIBBLE_SHAPE, ReaderMenuAction.SCRIBBLE_ERASER};
 
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_SHAPE);
@@ -303,6 +318,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private OnyxToolbar createColorToolbar(ReaderDataHolder readerDataHolder) {
         final OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext());
+        toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isPL107Device(readerDataHolder.getContext()));
         toolbar.setClickedDismissToolbar(true);
 
         final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_BLACK, ReaderMenuAction.SCRIBBLE_BLUE, ReaderMenuAction.SCRIBBLE_MAGENTA, ReaderMenuAction.SCRIBBLE_GREEN, ReaderMenuAction.SCRIBBLE_RED, ReaderMenuAction.SCRIBBLE_YELLOW};

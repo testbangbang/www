@@ -80,7 +80,9 @@ public class PieChartView extends View {
         float textWidth = paint.measureText(percent + "%");
 
         if (showText && percent != 0 && style == STROKE) {
+            paint.setStyle(Paint.Style.FILL);
             canvas.drawText(percent + "%", center - textWidth / 2, center + textSize / 2, paint);
+            paint.setStyle(Paint.Style.STROKE);
         }
 
         paint.setStrokeWidth(roundWidth);

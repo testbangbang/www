@@ -1,0 +1,9 @@
+siteUrl = https://github.com/onyx-intl/public-wiki
+gitUrl = https://github.com/onyx-intl/public-wiki.git
+version = 1.0.4
+groupId = com.onyx.android.sdk
+licenses = ['Apache-2.0']
+license = Apache-2.0
+licenseUrl = Unknown
+id = onyxsdk-appcompat
+name = onyxsdk-appcompat

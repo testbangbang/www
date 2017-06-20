@@ -1,10 +1,11 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
+
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.kreader.R;
 
-public class DialogBase extends Dialog
+public class DialogBase extends OnyxBaseDialog
 {
     public DialogBase(Context context)
     {

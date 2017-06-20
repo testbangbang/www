@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="OnyxAppCompat" parent="Theme.AppCompat.Light.NoActionBar"> 
         <item name="colorAccent">@android:color/black</item>
         <item name="colorPrimaryDark">@android:color/black</item>
@@ -32,6 +32,7 @@
         <item name="preferenceTheme">@style/OnyxAppCompat.PreferenceTheme</item>
         <item name="alertDialogTheme">@style/OnyxAppCompat.AlertDialog</item>
         <item name="buttonStyle">@style/OnyxAppCompat.ButtonStyle</item>
+        <item name="dialogTheme">@style/OnyxAppCompat.Light.Dialog</item>
     </style>
 
     <style name="OnyxAppCompat.PreferenceFragment.Material" parent="PreferenceFragment.Material">
@@ -45,6 +46,7 @@
     </style>
 
     <style name="OnyxAppCompat.AlertDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_border</item>
         <item name="colorAccent">@android:color/black</item>
         <item name="colorPrimaryDark">@android:color/black</item>
          <item name="colorControlNormal">@android:color/black</item> 
@@ -56,7 +58,7 @@
 
     <style name="OnyxAppCompat.ButtonStyle" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/default_button_background</item>
-        <item name="android:textColor">@color/primary_text_device_default_light</item>
+        <item name="android:textAppearance">@style/OnyxAppCompat.TextAppearance.Light.Medium</item>
     </style>
 
     <style name="OnyxAppCompat.TextAppearance.Light" parent="TextAppearance.AppCompat">
@@ -85,6 +87,11 @@
 
     <style name="OnyxAppCompat.TextAppearance.Light.PopupMenu.Small" parent="TextAppearance.AppCompat.Light.Widget.PopupMenu.Small">
         <item name="android:textColor">@color/primary_text_device_default_light</item>
+    </style>
+
+    <style name="OnyxAppCompat.TextAppearance.AppCompat.Widget.Switch" parent="TextAppearance.AppCompat.Widget.Switch">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/switch_text_device_default_light</item>
     </style>
 
     <style name="OnyxAppCompat.PopupMenuListView" parent="@style/Widget.AppCompat.ListView.DropDown">
@@ -140,6 +147,10 @@
 
     <style name="OnyxAppCompat.TextAppearance.AppCompat.Title" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="OnyxAppCompat.Light.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_border</item>
     </style>
 
     <!---->
@@ -241,6 +252,7 @@
     </style>
 
     <style name="fontStyle_imageView_style">
+        <item name="android:focusable">true</item>
         <item name="android:padding">5dp</item>
         <item name="android:layout_margin">5dp</item>
         <item name="android:background">@drawable/font_item_bg</item>
@@ -250,13 +262,15 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:textColor">@android:color/black</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@drawable/alert_bg</item>
         <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="LightSettingsRatingBarStyle">
         <item name="android:indeterminateOnly">false</item>
         <item name="android:thumb">@null</item>
+        <item name="android:minHeight">@dimen/light_settings_rating_bar_minHeight</item>
+        <item name="android:maxHeight">@dimen/light_settings_rating_bar_maxHeight</item>
     </style>
 
     <style name="seek_bar_tts" parent="@android:style/Widget.SeekBar">
@@ -280,6 +294,34 @@
         <item name="android:windowFrame">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="base_dialog" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
+    </style>
+
+    <style name="Preference_TextAppearanceMaterialSubhead" tools:override="true">
+        <item name="android:textSize">@dimen/preference_title_text_size</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="Preference_TextAppearanceMaterialBody2" tools:override="true">
+        <item name="android:textSize">@dimen/preference_category_text_size</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="radio_button_style">
+        <item name="android:background">@drawable/radio_button_background_no_stroke</item>
+        <item name="android:button">@null</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">@dimen/dialog_sort_by_order_radio_button_text_size</item>
+        <item name="android:textColor">@drawable/radio_button_text_color</item>
     </style>
 
 </resources>

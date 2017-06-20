@@ -23,14 +23,14 @@ public class BookmarkIconFactory {
 
     private static Bitmap getBookmarkActivated(Context context) {
         if (sBookmarkActivated == null) {
-            sBookmarkActivated = generateBookmarkDrawable(context, true);
+            sBookmarkActivated = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_dialog_reader_bookmark_mark_black);
         }
         return sBookmarkActivated;
     }
 
     private static Bitmap getBookmarkDeactivated(Context context) {
         if (sBookmarkDeactivated == null) {
-            sBookmarkDeactivated = generateBookmarkDrawable(context, false);
+            sBookmarkDeactivated = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_dialog_reader_bookmark_mark);
         }
         return sBookmarkDeactivated;
     }

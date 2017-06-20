@@ -7,7 +7,7 @@
                 android:gravity="center"
                 android:paddingTop="@dimen/dialog_reader_menu_text_view_padding"
                 android:paddingBottom="@dimen/dialog_reader_menu_text_view_padding"
-                android:background="@drawable/menu_item_bg"
+                android:background="@drawable/imagebtn_bg"
 >
 
     <ImageView

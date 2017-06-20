@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
@@ -17,6 +18,10 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
@@ -24,20 +29,23 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
+import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.common.BaseReaderRequest;
-import com.onyx.kreader.common.Debug;
-import com.onyx.kreader.dataprovider.LegacySdkDataUtils;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.kreader.host.request.ChangeLayoutRequest;
-import com.onyx.kreader.host.request.ScaleRequest;
-import com.onyx.kreader.host.request.ScaleToPageCropRequest;
-import com.onyx.kreader.host.request.ScaleToPageRequest;
-import com.onyx.kreader.host.request.ScaleToWidthContentRequest;
-import com.onyx.kreader.host.request.ScaleToWidthRequest;
+import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToWidthContentRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.ClearPageAction;
@@ -45,10 +53,10 @@ import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RedoAction;
 import com.onyx.kreader.note.actions.RestoreShapeAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
-import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.ui.ReaderActivity;
+import com.onyx.kreader.ui.data.ReaderCropArgs;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogContrast;
@@ -59,7 +67,7 @@ import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.dialog.DialogTextStyle;
 import com.onyx.kreader.ui.events.QuitEvent;
-import com.onyx.kreader.utils.DeviceConfig;
+import com.onyx.kreader.device.DeviceConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,12 +90,12 @@ public class ShowReaderMenuAction extends BaseAction {
     private static Set<ReaderMenuAction> disableMenus = new HashSet<>();
     private static List<String> fontFaces = new ArrayList<>();
     private static Map<Float, ReaderMenuAction> strokeMapping;
-
+    private static List<Integer> tocChapterNodeList;
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerActivity = (ReaderActivity)readerDataHolder.getContext();
-        showReaderMenu(readerDataHolder);
+        showReaderMenu(readerDataHolder, DeviceUtils.isFullScreen(readerActivity));
         BaseCallback.invoke(callback, null, null);
     }
 
@@ -95,6 +103,10 @@ public class ShowReaderMenuAction extends BaseAction {
         if (readerMenu != null) {
             readerMenu.hide();
             readerMenu = null;
+        }
+        if (tocChapterNodeList != null) {
+            tocChapterNodeList.clear();
+            tocChapterNodeList = null;
         }
     }
 
@@ -108,8 +120,18 @@ public class ShowReaderMenuAction extends BaseAction {
         }
     }
 
-    private void showReaderMenu(final ReaderDataHolder readerDataHolder) {
-        getReaderMenu(readerDataHolder).show(getReaderMenuState(readerDataHolder));
+    public static List<Integer> getTocChapterNodeList() {
+        return tocChapterNodeList;
+    }
+
+    public static void setTocChapterNodeList(List<Integer> tocChapterNodeList) {
+        ShowReaderMenuAction.tocChapterNodeList = tocChapterNodeList;
+    }
+
+    private void showReaderMenu(final ReaderDataHolder readerDataHolder, boolean fullscreen) {
+        ReaderMenu readerMenu = getReaderMenu(readerDataHolder);
+        readerMenu.setFullScreen(fullscreen);
+        readerMenu.show(getReaderMenuState(readerDataHolder));
     }
 
     private ReaderMenu getReaderMenu(final ReaderDataHolder readerDataHolder) {
@@ -136,6 +158,10 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.FRONT_LIGHT);
         }
 
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).hasNaturalLight()) {
+            disableMenus.add(ReaderMenuAction.NATURAL_LIGHT);
+        }
+
         if (!readerDataHolder.supportTextPage()) {
             disableMenus.add(ReaderMenuAction.TTS);
         }
@@ -149,16 +175,20 @@ public class ShowReaderMenuAction extends BaseAction {
             disableMenus.add(ReaderMenuAction.NAVIGATION_ARTICLE_MODE);
             disableMenus.add(ReaderMenuAction.NAVIGATION_RESET);
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
-            disableMenus.add(ReaderMenuAction.GAMMA_CORRECTION);
             disableMenus.add(ReaderMenuAction.NOTE);
             disableMenus.add(ReaderMenuAction.NAVIGATION);
         } else if (!readerDataHolder.isFlowDocument()) {
             disableMenus.add(ReaderMenuAction.FONT);
-            disableMenus.add(ReaderMenuAction.GROUP_GAMMA_CORRECTION);
         }
 
         if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportBrushPen()) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_BRUSH);
+        }
+
+        if (!Device.detectDevice().isTouchable(readerDataHolder.getContext())){
+            disableMenus.add(ReaderMenuAction.ZOOM_BY_RECT);
+            disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
+            disableMenus.add(ReaderMenuAction.MANUAL_CROP);
         }
 
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
@@ -245,8 +275,10 @@ public class ShowReaderMenuAction extends BaseAction {
                         showNavigationSettingsDialog(readerDataHolder);
                         break;
                     case GAMMA_CORRECTION:
-                    case GROUP_GAMMA_CORRECTION:
                         adjustContrast(readerDataHolder);
+                        break;
+                    case MANUAL_CROP:
+                        manualCrop(readerDataHolder);
                         break;
                     case GLYPH_EMBOLDEN:
                         adjustEmbolden(readerDataHolder);
@@ -261,7 +293,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         showTocDialog(readerDataHolder, DialogTableOfContent.DirectoryTab.Annotation);
                         break;
                     case DIRECTORY_SCRIBBLE:
-                        startNoteDrawing(readerDataHolder, readerActivity);
+                        startNoteDrawing(readerDataHolder, readerActivity, false);
                         break;
                     case NOTE_EXPORT:
                         showExportDialog(readerDataHolder);
@@ -284,6 +316,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case FRONT_LIGHT:
                         showBrightnessDialog(readerDataHolder);
                         break;
+                    case NATURAL_LIGHT:
+                        showNaturalBrightnessDialog(readerDataHolder);
+                        break;
                     case GOTO_PAGE:
                         gotoPage(readerDataHolder);
                         break;
@@ -303,10 +338,17 @@ public class ShowReaderMenuAction extends BaseAction {
                         showReaderSettings(readerDataHolder);
                         break;
                     case NOTE_WRITING:
-                        startNoteDrawing(readerDataHolder, readerActivity);
+                        startNoteDrawing(readerDataHolder, readerActivity, false);
                         break;
                     case EXIT:
+                        hideReaderMenu();
                         readerDataHolder.getEventBus().post(new QuitEvent());
+                        break;
+                    case PREV_CHAPTER:
+                        prepareGotoChapter(readerDataHolder, true);
+                        break;
+                    case NEXT_CHAPTER:
+                        prepareGotoChapter(readerDataHolder, false);
                         break;
                 }
             }
@@ -316,7 +358,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 Debug.d("onMenuItemValueChanged: " + menuItem.getAction() + ", " + oldValue + ", " + newValue);
                 switch (menuItem.getAction()) {
                     case JUMP_PAGE:
-                        gotoPage(readerDataHolder, newValue);
+                        gotoPage(readerDataHolder, newValue, true);
                         break;
                 }
             }
@@ -328,7 +370,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void rotateScreen(final ReaderDataHolder readerDataHolder, int rotationOperation) {
-        final ChangeOrientationAction action = new ChangeOrientationAction(readerActivity.getRequestedOrientation(), rotationOperation);
+        final ChangeOrientationAction action = new ChangeOrientationAction(DeviceUtils.getScreenOrientation(readerActivity), rotationOperation);
         action.execute(readerDataHolder, null);
     }
 
@@ -348,6 +390,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void scaleToPage(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         final ScaleToPageRequest request = new ScaleToPageRequest(readerDataHolder.getCurrentPageName());
         readerDataHolder.submitRenderRequest(request);
     }
@@ -358,11 +401,13 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void cropPage(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         final ScaleToPageCropRequest request = new ScaleToPageCropRequest(readerDataHolder.getCurrentPageName());
         readerDataHolder.submitRenderRequest(request);
     }
 
     private void cropWidth(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         final ScaleToWidthContentRequest request = new ScaleToWidthContentRequest(readerDataHolder.getCurrentPageName());
         readerDataHolder.submitRenderRequest(request);
     }
@@ -378,6 +423,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void switchNavigationToArticleMode(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         NavigationArgs args = new NavigationArgs();
         RectF limit = new RectF(0, 0, 0, 0);
         args.columnsLeftToRight(NavigationArgs.Type.ALL, 2, 2, limit);
@@ -385,10 +431,20 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void switchNavigationToComicMode(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         NavigationArgs args = new NavigationArgs();
         RectF limit = new RectF(0, 0, 0, 0);
         args.rowsRightToLeft(NavigationArgs.Type.ALL, 2, 2, limit);
         switchPageNavigationMode(readerDataHolder, args);
+    }
+
+    private void manualCrop(final ReaderDataHolder readerDataHolder) {
+        ReaderCropArgs navigationArgs = new ReaderCropArgs();
+        navigationArgs.setNavigationMode(ReaderCropArgs.NavigationMode.SINGLE_PAGE_MODE);
+        navigationArgs.setCropPageMode(ReaderCropArgs.CropPageMode.MANUAL_CROP_PAGE);
+        navigationArgs.setRows(1);
+        navigationArgs.setColumns(1);
+        new ChangeNavigationSettingsAction(navigationArgs, true).execute(readerDataHolder, null);
     }
 
     private void switchPageNavigationMode(final ReaderDataHolder readerDataHolder, NavigationArgs args) {
@@ -397,6 +453,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void resetNavigationMode(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
         BaseReaderRequest request = new ChangeLayoutRequest(PageConstants.SINGLE_PAGE, new NavigationArgs());
         readerDataHolder.submitRenderRequest(request);
     }
@@ -404,15 +461,15 @@ public class ShowReaderMenuAction extends BaseAction {
     private void showNavigationSettingsDialog(ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         Dialog dlg = new DialogNavigationSettings(readerDataHolder);
+        readerDataHolder.trackDialog(dlg);
         dlg.show();
-        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void adjustContrast(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         Dialog dialogContrast = new DialogContrast(readerDataHolder);
+        readerDataHolder.trackDialog(dialogContrast);
         dialogContrast.show();
-        readerDataHolder.addActiveDialog(dialogContrast);
     }
 
     private void adjustEmbolden(final ReaderDataHolder readerDataHolder) {
@@ -429,8 +486,8 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void showTocDialog(final ReaderDataHolder readerDataHolder, DialogTableOfContent.DirectoryTab tab) {
         Dialog dialog = new DialogTableOfContent(readerDataHolder, tab);
+        readerDataHolder.trackDialog(dialog);
         dialog.show();
-        readerDataHolder.addActiveDialog(dialog);
     }
 
     private void gotoPage(final ReaderDataHolder readerDataHolder) {
@@ -446,12 +503,20 @@ public class ShowReaderMenuAction extends BaseAction {
         new ForwardAction().execute(readerDataHolder, null);
     }
 
-    private void gotoPage(final ReaderDataHolder readerDataHolder, Object o) {
+    private void gotoPosition(final ReaderDataHolder readerDataHolder, Object o, final boolean abortPendingTasks) {
         if (o == null) {
             return;
         }
         int page = (int) o;
-        new GotoPageAction(page).execute(readerDataHolder);
+        new GotoPositionAction(page, abortPendingTasks).execute(readerDataHolder, null);
+    }
+
+    private void gotoPage(final ReaderDataHolder readerDataHolder, Object o, final boolean abortPendingTasks) {
+        if (o == null) {
+            return;
+        }
+        int page = (int) o;
+        new GotoPageAction(page, abortPendingTasks).execute(readerDataHolder);
     }
 
     private void showScreenRefreshDialog(final ReaderDataHolder readerDataHolder) {
@@ -465,7 +530,6 @@ public class ShowReaderMenuAction extends BaseAction {
             }
         });
         dlg.show(readerActivity.getFragmentManager());
-        readerDataHolder.addActiveDialog(dlg);
     }
 
     private void enterSlideshow(final ReaderDataHolder readerDataHolder) {
@@ -477,14 +541,19 @@ public class ShowReaderMenuAction extends BaseAction {
         hideReaderMenu();
         Dialog dlg = new DialogBrightness(readerDataHolder.getContext());
         dlg.show();
-        readerDataHolder.addActiveDialog(dlg);
+    }
+
+    private void showNaturalBrightnessDialog(ReaderDataHolder readerDataHolder){
+        hideReaderMenu();
+        Dialog dlg = new DialogNaturalLightBrightness(readerDataHolder.getContext());
+        dlg.show();
     }
 
     private void showExportDialog(ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         Dialog exportDialog = new DialogExport(readerDataHolder);
+        readerDataHolder.trackDialog(exportDialog);
         exportDialog.show();
-        readerDataHolder.addActiveDialog(exportDialog);
     }
 
     private void importScribbleData(final ReaderDataHolder readerDataHolder) {
@@ -508,27 +577,113 @@ public class ShowReaderMenuAction extends BaseAction {
         return true;
     }
 
-    private void showTextStyleDialog(ReaderDataHolder readerDataHolder) {
+    private void showTextStyleDialog(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         final Dialog dialog = new DialogTextStyle(readerDataHolder, new DialogTextStyle.TextStyleCallback() {
             @Override
-            public void onSaveReaderStyle(ReaderTextStyle readerStyle) {
+            public void onSaveReaderStyle(final DialogTextStyle dialogTextStyle, ReaderTextStyle readerStyle) {
+                readerDataHolder.removeActiveDialog(dialogTextStyle);
+            }
 
+            public void onCancel(final DialogTextStyle dialogTextStyle) {
+                readerDataHolder.removeActiveDialog(dialogTextStyle);
             }
         });
+        readerDataHolder.trackDialog(dialog);
         dialog.show();
-        readerDataHolder.addActiveDialog(dialog);
     }
 
     private void showSearchDialog(final ReaderDataHolder readerDataHolder){
-        Dialog dlg = new DialogSearch(readerDataHolder);
+        final Dialog dlg = new DialogSearch(readerDataHolder);
+        readerDataHolder.trackDialog(dlg);
         dlg.show();
-        readerDataHolder.addActiveDialog(dlg);
+    }
+
+    private void prepareGotoChapter(final ReaderDataHolder readerDataHolder, final boolean back) {
+        List<Integer> tocChapterNodeList = getTocChapterNodeList();
+        if (tocChapterNodeList == null) {
+            new GetTableOfContentAction().execute(readerDataHolder, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    BaseReaderRequest readerRequest = (BaseReaderRequest) request;
+                    ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
+                    boolean hasToc = toc != null && !toc.isEmpty();
+                    if (!hasToc) {
+                        Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.no_chapters), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    List<Integer> readTocChapterNodeList = TocUtils.buildChapterNodeList(toc);
+                    setTocChapterNodeList(readTocChapterNodeList);
+                    gotoChapter(readerDataHolder, back, readTocChapterNodeList);
+                }
+            });
+        }else {
+            gotoChapter(readerDataHolder, back, tocChapterNodeList);
+        }
+    }
+
+    private void gotoChapter(final ReaderDataHolder readerDataHolder, final boolean back, final List<Integer> tocChapterNodeList) {
+        if (tocChapterNodeList.size() <= 0) {
+            return;
+        }
+        int currentPagePosition = PagePositionUtils.getPosition(readerDataHolder.getCurrentPagePosition());
+        if (back && currentPagePosition <= tocChapterNodeList.get(0)) {
+            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.first_chapter), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!back && currentPagePosition >= tocChapterNodeList.get(tocChapterNodeList.size() - 1)) {
+            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.last_chapter), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int chapterPosition;
+        if (back) {
+            chapterPosition = getChapterPositionByPage(currentPagePosition, back, tocChapterNodeList);
+        } else {
+            chapterPosition = getChapterPositionByPage(currentPagePosition, back, tocChapterNodeList);
+        }
+        gotoPosition(readerDataHolder, chapterPosition, true);
+    }
+
+    private int getChapterPositionByPage(int pagePosition, boolean back, List<Integer> tocChapterNodeList) {
+        int size = tocChapterNodeList.size();
+        for (int i = 0; i < size; i++) {
+            if (pagePosition < tocChapterNodeList.get(i)) {
+                if (back) {
+                    int index = i - 1;
+                    if (index < 0) {
+                        return 0;
+                    }
+                    int position = tocChapterNodeList.get(Math.max(0, index));
+                    if (position < pagePosition) {
+                        return position;
+                    }else {
+                        return getChapterPositionByPage(pagePosition - 1, back, tocChapterNodeList);
+                    }
+                } else {
+                    int position = tocChapterNodeList.get(i);
+                    if (position > pagePosition) {
+                        return position;
+                    }else {
+                        return getChapterPositionByPage(pagePosition + 1, back, tocChapterNodeList);
+                    }
+                }
+
+            }
+        }
+
+        if (back) {
+            return pagePosition - 1;
+        } else {
+            return pagePosition + 1;
+        }
+
     }
 
     private void showTtsDialog(final ReaderDataHolder readerDataHolder){
         hideReaderMenu();
-        StartTtsAction action = new StartTtsAction();
+        StartTtsAction action = new StartTtsAction(null);
         action.execute(readerDataHolder, null);
     }
 
@@ -548,11 +703,12 @@ public class ShowReaderMenuAction extends BaseAction {
         readerMenu.updateReaderMenuState(getReaderMenuState(readerDataHolder));
     }
 
-    public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
+    public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean showFullToolbar) {
         hideReaderMenu();
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
                 getScribbleActionCallback(readerDataHolder),
-                disableMenus);
+                disableMenus,
+                showFullToolbar);
         ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
         if (noteDataInfo != null) {
             int currentShapeType = noteDataInfo.getCurrentShapeType();
@@ -561,8 +717,7 @@ public class ShowReaderMenuAction extends BaseAction {
         menuAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, false, false, false, true);
-                stopNoteActionChain.execute(readerDataHolder, null);
+                readerDataHolder.resetHandlerManager();
             }
         });
     }
@@ -804,7 +959,11 @@ public class ShowReaderMenuAction extends BaseAction {
         return new ReaderMenuState() {
             @Override
             public String getTitle() {
-                return FileUtils.getFileName(readerDataHolder.getReader().getDocumentPath());
+                String bookName = readerDataHolder.getReader().getBookName();
+                if(StringUtils.isNullOrEmpty(bookName)){
+                    bookName = readerDataHolder.getReader().getDocumentPath();
+                }
+                return FileUtils.getFileName(bookName);
             }
 
             @Override

@@ -64,5 +64,6 @@
         android:id="@+id/cb_show_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Small"
         android:text="@string/wifi_show_password" />
 </LinearLayout>

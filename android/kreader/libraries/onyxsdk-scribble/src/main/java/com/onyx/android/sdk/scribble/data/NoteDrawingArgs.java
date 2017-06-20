@@ -3,7 +3,6 @@ package com.onyx.android.sdk.scribble.data;
 import android.graphics.Color;
 
 import com.onyx.android.sdk.scribble.EPDRenderer;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
 /**
@@ -29,6 +28,9 @@ public class NoteDrawingArgs {
     public volatile PenState penState;
     public final static int MAX_STROKE_WIDTH = 20;
 
+    //TODO:for picture edit.
+    public volatile String bgFilePath;
+
     public void copyFrom(final NoteDrawingArgs other) {
         strokeWidth = other.strokeWidth;
         strokeColor = other.strokeColor;
@@ -37,6 +39,7 @@ public class NoteDrawingArgs {
         eraserRadius = other.eraserRadius;
         background = other.background;
         penState = other.penState;
+        bgFilePath = other.bgFilePath;
         setLineLayoutBackground(other.getLineLayoutBackground());
     }
 
@@ -51,6 +54,10 @@ public class NoteDrawingArgs {
     public void setCurrentShapeType(int newShape) {
         lastShapeType = currentShapeType;
         currentShapeType = newShape;
+    }
+
+    public void resetCurrentShapeType() {
+        currentShapeType = defaultShape();
     }
 
     public int getLineLayoutBackground() {

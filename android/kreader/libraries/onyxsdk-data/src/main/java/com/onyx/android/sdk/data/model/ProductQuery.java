@@ -8,15 +8,11 @@ import java.util.List;
 /**
  * Created by zhuzeng on 11/20/15.
  */
-public class ProductQuery {
+public class ProductQuery extends BaseQuery{
 
-    public int offset;
-    public int count = 30;
     public int consumer = 0;
     public List<Integer> domains;
     public String category;
-    public String sortBy = QueryUtils.defaultSortBy();
-    public Boolean sortOrder = QueryUtils.defaultSortOrder();
     public String key;
     public String value;
     public String ownerId;
@@ -39,6 +35,10 @@ public class ProductQuery {
 
     public void setCategory(final String value) {
         category = value;
+    }
+
+    public void resetKey() {
+        key = null;
     }
 
     public void resetOffset() {

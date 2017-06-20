@@ -6,7 +6,10 @@ package com.onyx.kreader.ui.dialog;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.RectF;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,9 +25,11 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.ui.wifi.NetworkHelper;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.host.impl.ReaderTextSplitterImpl;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.actions.DictionaryQueryAction;
 import com.onyx.kreader.ui.data.DictionaryQuery;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -32,10 +37,9 @@ import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
 import com.onyx.kreader.ui.view.HTMLReaderWebView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle.Highlight;
 
@@ -43,6 +47,8 @@ public class PopupSelectionMenu extends LinearLayout {
     private static final String TAG = PopupSelectionMenu.class.getSimpleName();
     private static final int MAX_DICTIONARY_LOAD_COUNT = 6;
     private static final int DELAY_DICTIONARY_LOAD_TIME = 2000;
+    public static final String BAIDU_BAIKE = "https://wapbaike.baidu.com/item/";
+    public static final String WIKTIONARY_URL = "https://en.wiktionary.org/wiki/";
 
     public enum SelectionType {
         SingleWordType,
@@ -56,13 +62,15 @@ public class PopupSelectionMenu extends LinearLayout {
         public abstract void highLight();
         public abstract void addAnnotation();
         public abstract void showDictionary();
+        public abstract void startTts();
         public abstract boolean supportSelectionMode();
         public abstract void closeMenu();
     }
 
     private final Activity mActivity;
     private List<String> dicts = new ArrayList<>();
-    private List<DictionaryQuery> dictionaryQueries = new ArrayList<>();
+    private List<DictionaryQuery> textDictionaryQueries = new ArrayList<>();
+    private List<DictionaryQuery> soundDictionaryQueries = new ArrayList<>();
     private TextView mDictTitle;
     private HTMLReaderWebView mWebView;
     private TextView mPageIndicator;
@@ -80,6 +88,9 @@ public class PopupSelectionMenu extends LinearLayout {
     private RecyclerView dictListView;
     private LinearLayout dictLayout;
     private ImageView markerView;
+    private ImageView pronounce1;
+    private ImageView pronounce2;
+    private ImageView webSearch;
     private int dictViewHeight;
     private int dictViewWidth;
     private int dictionaryLoadCount;
@@ -103,11 +114,11 @@ public class PopupSelectionMenu extends LinearLayout {
         inflater.inflate(R.layout.popup_selection_menu, this, true);
         mMenuCallback = menuCallback;
 
-        int heightDenominator = getResources().getInteger(R.integer.dict_height_denominator_value);
+        int heightDenominator = getResources().getInteger(R.integer.dict_height_absolutely_value);
         dictViewWidth = layout.getMeasuredWidth();
-        dictViewHeight = (layout.getMeasuredHeight() / heightDenominator);
+        dictViewHeight = (layout.getMeasuredHeight() * heightDenominator / 100);
         layout.addView(this);
-
+        disableMenuByConfig();
         highlightView = (ImageView) findViewById(R.id.imageview_highlight);
         highLightText = (TextView) findViewById(R.id.highLightText);
         mDictTitle = (TextView) findViewById(R.id.dict_title);
@@ -121,6 +132,11 @@ public class PopupSelectionMenu extends LinearLayout {
         dictListView = (RecyclerView) findViewById(R.id.dict_list);
         dictLayout = (LinearLayout) findViewById(R.id.layout_dict);
         markerView = (ImageView) findViewById(R.id.marker_view);
+        pronounce1 = (ImageView) findViewById(R.id.pronounce_1);
+        pronounce2 = (ImageView) findViewById(R.id.pronounce_2);
+        webSearch = (ImageView) findViewById(R.id.web_search);
+        pronounce1.setEnabled(false);
+        pronounce2.setEnabled(false);
         mDictNextPage.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -220,6 +236,34 @@ public class PopupSelectionMenu extends LinearLayout {
             }
         });
 
+        findViewById(R.id.imagebutton_tts).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMenuCallback.resetSelection();
+                mMenuCallback.startTts();
+                PopupSelectionMenu.this.hide();
+            }
+        });
+
+        pronounce1.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playSoundDictionary(soundDictionaryQueries, 0);
+            }
+        });
+        pronounce2.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playSoundDictionary(soundDictionaryQueries, 1);
+            }
+        });
+        webSearch.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webSearchWord();
+            }
+        });
+
         final ImageView buttonCloseMenu = (ImageView) findViewById(R.id.button_close);
         buttonCloseMenu.setOnClickListener(new OnClickListener() {
             @Override
@@ -236,6 +280,29 @@ public class PopupSelectionMenu extends LinearLayout {
         });
         setVisibility(View.GONE);
         initDictList();
+    }
+
+    private void disableMenuByConfig() {
+        boolean ttsEnabled = DeviceConfig.sharedInstance(getContext()).isTtsEnabled();
+        if (!ttsEnabled) {
+            findViewById(R.id.imagebutton_tts).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.imagebutton_tts).setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void webSearchWord(){
+        if (!NetworkHelper.requestWifi(getActivity())) {
+            return;
+        }
+
+        String headWord = mDictTitle.getText().toString();
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        String uriString = DeviceUtils.isChinese(getContext()) ? BAIDU_BAIKE : WIKTIONARY_URL;
+        Uri content_url = Uri.parse(uriString + headWord);
+        intent.setData(content_url);
+        getActivity().startActivity(intent);
     }
 
     private void toggleDictList() {
@@ -278,11 +345,11 @@ public class PopupSelectionMenu extends LinearLayout {
             @Override
             public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
                 DictViewHolder dictViewHolder = (DictViewHolder) holder;
-                dictViewHolder.dictName.setText(dictionaryQueries.get(position).getDictName());
+                dictViewHolder.dictName.setText(textDictionaryQueries.get(position).getDictName());
                 dictViewHolder.dictName.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showExplanation(dictionaryQueries.get(position));
+                        showExplanation(textDictionaryQueries.get(position));
                         hideDictListView();
                     }
                 });
@@ -290,7 +357,7 @@ public class PopupSelectionMenu extends LinearLayout {
 
             @Override
             public int getItemCount() {
-                return dictionaryQueries.size();
+                return textDictionaryQueries.size();
             }
         });
     }
@@ -417,15 +484,16 @@ public class PopupSelectionMenu extends LinearLayout {
         dictionaryQueryAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                dictionaryQueries = dictionaryQueryAction.getDictionaryQueries();
-                handleDictionaryQuery(readerDataHolder, dictionaryQueries, token, dictionaryQueryAction.getErrorInfo());
+                textDictionaryQueries = dictionaryQueryAction.getTextDictionaryQueries();
+                soundDictionaryQueries = dictionaryQueryAction.getSoundDictionaryQueries();
+                handleDictionaryQuery(readerDataHolder, textDictionaryQueries, soundDictionaryQueries, token, dictionaryQueryAction.getErrorInfo());
             }
         });
     }
 
-    private void handleDictionaryQuery(final ReaderDataHolder readerDataHolder, List<DictionaryQuery> dictionaryQueries, final String token, final String error) {
-        if (dictionaryQueries.size() > 0) {
-            DictionaryQuery query = dictionaryQueries.get(0);
+    private void handleDictionaryQuery(final ReaderDataHolder readerDataHolder, List<DictionaryQuery> textDictionaryQueries, List<DictionaryQuery> soundDictionaryQueries, final String token, final String error) {
+        if (textDictionaryQueries.size() > 0 || soundDictionaryQueries.size() > 0) {
+            DictionaryQuery query = textDictionaryQueries.size() > 0 ? textDictionaryQueries.get(0) : soundDictionaryQueries.get(0);
             int state = query.getState();
             if (state == DictionaryQuery.DICT_STATE_LOADING) {
                 if (dictionaryLoadCount < MAX_DICTIONARY_LOAD_COUNT) {
@@ -443,11 +511,22 @@ public class PopupSelectionMenu extends LinearLayout {
             }else {
                 dictListView.getAdapter().notifyDataSetChanged();
             }
+            if (state == DictionaryQuery.DICT_STATE_QUERY_SUCCESSFUL && textDictionaryQueries.size() > 0) {
+                query = textDictionaryQueries.get(0);
+            }
+            if (state == DictionaryQuery.DICT_STATE_QUERY_SUCCESSFUL && soundDictionaryQueries.size() > 0) {
+                enableSoundDictionary(soundDictionaryQueries);
+            }
             showExplanation(query);
         }else {
             mWebView.setLoadCssStyle(false);
             mWebView.loadDataWithBaseURL(null, error, "text/html", "utf-8", "about:blank");
         }
+    }
+
+    private void enableSoundDictionary(final List<DictionaryQuery> soundDictionaryQueries) {
+        pronounce1.setEnabled(soundDictionaryQueries.size() > 0);
+        pronounce2.setEnabled(soundDictionaryQueries.size() > 1);
     }
 
     private void showExplanation(DictionaryQuery dictionaryQuery) {
@@ -466,4 +545,22 @@ public class PopupSelectionMenu extends LinearLayout {
         mWebView.loadDataWithBaseURL(url, dictionaryQuery.getExplanation(), "text/html", "utf-8", "about:blank");
     }
 
+    private void playSoundDictionary(final List<DictionaryQuery> soundDictionaryQueries, final int index) {
+        if (soundDictionaryQueries.size() <= index) {
+            return;
+        }
+        DictionaryQuery query = soundDictionaryQueries.get(index);
+        String soundPath = query.getSoundPath();
+        if (StringUtils.isNullOrEmpty(soundPath)) {
+            return;
+        }
+        try {
+            MediaPlayer player  =  new MediaPlayer();
+            player.setDataSource(soundPath);
+            player.prepare();
+            player.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

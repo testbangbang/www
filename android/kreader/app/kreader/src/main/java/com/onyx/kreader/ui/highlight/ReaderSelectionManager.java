@@ -3,8 +3,8 @@ package com.onyx.kreader.ui.highlight;
 import android.content.Context;
 import android.graphics.*;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderSelection;
-import com.onyx.kreader.utils.RectUtils;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.utils.RectUtils;
 
 import java.util.ArrayList;
 import java.util.List;

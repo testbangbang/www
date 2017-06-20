@@ -1,13 +1,19 @@
-include ':libraries:cropimage',
+include ':libraries:cropimage', ':libraries:onyxsdk-appcompat',
+        ':libraries:onyxsdk-reader',
         ':libraries:onyxsdk-ui',
         ':libraries:onyxsdk-base',
         ':libraries:onyxsdk-data',
         ':libraries:onyxsdk-scribble',
+        ':libraries:onyxsdk-settings',
         ':libraries:chinese-analyzer',
         ':libraries:alreader-engine',
+        ':libraries:onyxsdk-statistics',
         ':libraries:libedu',
+        ':libraries:onyxsdk-ebookservice',
         ':app:note',
         ':app:kreader',
         ':app:eschool',
-        ':app-edu'
-project(':app-edu').projectDir = new File('app/edu')
+        ':app:edu',
+        ':app:phone-reader',
+        ':app:app-market',
+        ':app:demo-push'

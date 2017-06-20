@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.onyx.kreader.R;
-import com.onyx.kreader.utils.DateTimeUtil;
 
 import java.util.Calendar;
 
@@ -23,7 +22,7 @@ public class DialogSlideshowStatistic extends DialogBase
 
     private void setupLayout(Calendar startTime, Calendar endTime,
                              int pageCount, int startBatteryPercent, int endBatteryPercent) {
-        ((TextView)findViewById(R.id.textview_duration_value)).setText(DateTimeUtil.formatDuration(getContext(),
+        ((TextView)findViewById(R.id.textview_duration_value)).setText(formatDuration(getContext(),
                 ((endTime.getTimeInMillis() - startTime.getTimeInMillis()) / 1000)));
         ((TextView)findViewById(R.id.textview_page_count_value)).setText(String.valueOf(pageCount));
         ((TextView)findViewById(R.id.textview_start_battery_value)).setText(String.valueOf(startBatteryPercent) + "%");
@@ -35,6 +34,17 @@ public class DialogSlideshowStatistic extends DialogBase
                 dismiss();
             }
         });
+    }
+
+    private static String formatDuration(Context context, long seconds) {
+        long h = seconds / (60 * 60);
+        long remainder = seconds % (60 * 60);
+        long m = remainder / 60;
+        long s = remainder % 60;
+        String strHour = h <= 0 ? "" : String.valueOf(h) + context.getString(R.string.hour_symbol);
+        String strMinute = m <= 0 ? "" : String.valueOf(m) + context.getString(R.string.minute_symbol);
+        String strSecond = s <= 0 ? "" : String.valueOf(s) + context.getString(R.string.second_symbol);
+        return strHour + strMinute + strSecond;
     }
 
 }

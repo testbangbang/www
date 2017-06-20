@@ -57,6 +57,14 @@ public class ServiceFactory {
         return getSpecifyService(OnyxPushService.class, baseUrl);
     }
 
+    public static final OnyxStatisticsService getStatisticsService(final String baseUrl) {
+        return getSpecifyService(OnyxStatisticsService.class, baseUrl);
+    }
+
+    public static final OnyxLogService getLogService(final String baseUrl) {
+        return getSpecifyService(OnyxLogService.class, baseUrl);
+    }
+
     public static final <T> T getSpecifyService(final Class<T> service, final String baseUrl) {
         return getRetrofit(baseUrl).create(service);
     }

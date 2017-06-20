@@ -7,6 +7,8 @@ import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import com.onyx.android.sdk.utils.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +37,7 @@ public class Device extends BaseData {
 
     static public Device updateCurrentDeviceInfo(final Context context) {
         if (currentDevice != null) {
+            updateDeviceUniqueId(context, currentDevice);
             return currentDevice;
         }
 
@@ -52,12 +55,25 @@ public class Device extends BaseData {
         currentDevice.model = Build.MODEL;
         currentDevice.brand = Build.BRAND;
         currentDevice.fingerprint = Build.FINGERPRINT;
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        if (wifiInfo != null) {
-            currentDevice.macAddress = wifiInfo.getMacAddress();
-            currentDevice.deviceUniqueId = currentDevice.macAddress;
-        }
+        updateDeviceUniqueId(context, currentDevice);
         return currentDevice;
     }
 
+    static private void updateDeviceUniqueId(Context context, Device device) {
+        if (device == null) {
+            return;
+        }
+        if (StringUtils.isNotBlank(device.macAddress) && StringUtils.isNotBlank(device.deviceUniqueId)) {
+            return;
+        }
+        final WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager == null) {
+            return;
+        }
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        if (wifiInfo != null) {
+            device.macAddress = wifiInfo.getMacAddress();
+            device.deviceUniqueId = device.macAddress;
+        }
+    }
 }

@@ -1,17 +1,13 @@
 package com.onyx.kreader.ui.actions;
 
-import android.app.Dialog;
-import android.content.Context;
-
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.kreader.R;
-import com.onyx.kreader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.kreader.note.actions.GetNotePageListAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 
 import java.util.List;
 

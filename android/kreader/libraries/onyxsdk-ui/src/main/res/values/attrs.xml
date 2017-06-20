@@ -20,6 +20,7 @@
 
     <declare-styleable name="CustomIconView">
         <attr name="iconDrawingSize" format="dimension" />
+        <attr name="enableZoomDrawable" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="pieChartView">
@@ -40,4 +41,10 @@
         <attr name="alwaysLayoutImageView" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="DashedLine">
+        <attr name="dashLine_orientation">
+            <enum name="horizontal" value="0"/>
+            <enum name="vertical" value="1"/>
+        </attr>
+    </declare-styleable>
 </resources>

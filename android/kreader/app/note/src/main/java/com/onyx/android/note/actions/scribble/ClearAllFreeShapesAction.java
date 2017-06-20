@@ -14,6 +14,7 @@ public class ClearAllFreeShapesAction<T extends BaseScribbleActivity> extends Ba
     @Override
     public void execute(final T activity, final BaseCallback callback) {
         final ClearAllFreeShapesRequest clearAllFreeShapesRequest = new ClearAllFreeShapesRequest();
+        activity.setFullUpdate(true);
         activity.submitRequest(clearAllFreeShapesRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

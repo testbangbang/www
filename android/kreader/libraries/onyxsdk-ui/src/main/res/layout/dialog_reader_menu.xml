@@ -19,6 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:focusable="true"
             android:background="@drawable/imagebtn_bg">
 
             <ImageView
@@ -114,62 +115,105 @@
         android:layout_height="0dp"
         android:background="@android:color/transparent"/>
 
-    <LinearLayout
-        android:id="@+id/menu_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_height="@dimen/dialog_reader_menu_top_divider_height"/>
+
+    <com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout
         android:background="@android:color/white"
-        android:orientation="vertical">
+        android:id="@+id/layout_reader_menu"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <View
-            style="@style/single_line_X_axis_View"
-            android:layout_height="@dimen/dialog_reader_menu_top_divider_height"/>
+    </com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout>
 
-        <com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout
-            android:id="@+id/layout_reader_menu"
-            android:orientation="vertical"
+    <View
+        style="@style/single_line_X_axis_View"
+        android:layout_height="@dimen/dialog_reader_menu_top_divider_height"/>
+
+    <LinearLayout
+        android:padding="5dp"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:id="@+id/layout_grid_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        </com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout>
+            <ImageButton
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/chapter_back"
+                android:padding="5dp"
+                android:background="@drawable/imagebtn_bg"
+                android:src="@drawable/reader_page_chapter_back_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-        <View
-            style="@style/single_line_X_axis_View"
-            android:layout_height="@dimen/dialog_reader_menu_top_divider_height"/>
+            <SeekBar
+                android:minHeight="@dimen/menu_seek_bar_height"
+                android:maxHeight="@dimen/menu_seek_bar_height"
+                android:padding="5dp"
+                android:background="@drawable/focused_bg"
+                android:thumb="@drawable/seekbar_thumb"
+                android:id="@+id/seek_bar_page"
+                android:layout_weight="8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:progressDrawable="@drawable/seekbar_progress"
+                android:max="20"/>
+
+            <ImageButton
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/chapter_forward"
+                android:padding="5dp"
+                android:background="@drawable/imagebtn_bg"
+                android:src="@drawable/reader_page_chapter_forward_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
 
         <LinearLayout
-            android:gravity="center_vertical"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
+            android:layout_marginTop="@dimen/main_menu_page_progress_margin"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
             <TextView
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
                 android:singleLine="true"
                 android:ellipsize="middle"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
                 android:id="@+id/text_view_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@android:color/primary_text_light"
-                android:textSize="@dimen/dialog_reader_menu_text_view_size"/>
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/reader_status_bar_text_size"/>
 
             <TextView
+                android:layout_marginRight="10dp"
+                android:focusable="true"
                 android:background="@drawable/imagebtn_bg"
+                android:gravity="center"
+                android:textSize="18sp"
                 android:id="@+id/text_view_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
                 android:textColor="@android:color/primary_text_light"
-                android:textSize="@dimen/dialog_reader_menu_text_view_size"
                 android:text="1/1"/>
+        </LinearLayout>
 
 
-        </LinearLayout>>
+
     </LinearLayout>
 
 </LinearLayout>

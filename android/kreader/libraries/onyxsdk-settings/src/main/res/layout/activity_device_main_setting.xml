@@ -65,6 +65,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:minHeight="@dimen/btn_minHeight"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
                 android:text="@string/setting_ota"
                 app:layout_marginBottomPercent="1%"
                 app:layout_marginRightPercent="1%" />

@@ -14,11 +14,15 @@ import android.graphics.Typeface;
 
 
 public class AlFonts {
-	private final ArrayList<AlOneFont> allfonts = new ArrayList<AlOneFont>();
+	private final ArrayList<AlOneFont> allfonts = new ArrayList<>();
+
+	private final HashMap<String, Integer> allfontsMaps = new HashMap<>();
 	
-	private final HashMap<Long, AlTypefaces> collTPF = new HashMap<Long, AlTypefaces>();
+	private final HashMap<Long, AlTypefaces> collTPF = new HashMap<>();
 	private final FontMetricsInt font_metrics = new FontMetricsInt();
-	private final static String SPACE_SPECIAL_STRCHAR = " ";
+	// work around the issue of different width of space character with different fonts
+	// use Chinese character to compute the space width we want, which is half of chinese character width
+	private final static String SPACE_SPECIAL_STRCHAR = "中";
 	private final static char SPACE_SPECIAL_CHAR = ' ';
 	private final static String HYPH_SPECIAL_STRCHAR = "-";
 	private final static char HYPH_SPECIAL_CHAR = '-';
@@ -32,7 +36,7 @@ public class AlFonts {
 		calc = c;
 		fparam = fontparam;
         assetManager = opt.appInstance.getResources().getAssets();
-		loadAllFonts(opt.font_catalog, opt.font_resource);
+		loadAllFonts(opt.font_catalog, opt.font_catalogs_addon, opt.font_resource);
 		switch (opt.DPI) {
 		case TAL_SCREEN_DPI_320:
 			multiplexer = 2;
@@ -102,8 +106,8 @@ public class AlFonts {
 			case (int) AlStyles.SL_SIZE_M4: text_size -= 4 * multiplexer; break;
 			case (int) AlStyles.SL_SIZE_M3: text_size -= 3 * multiplexer; break;
 			case (int) AlStyles.SL_SIZE_M2: text_size -= 2 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_M1: text_size -= 1 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_P1: text_size += 1 * multiplexer; break;
+			case (int) AlStyles.SL_SIZE_M1: text_size -= multiplexer; break;
+			case (int) AlStyles.SL_SIZE_P1: text_size += multiplexer; break;
 			case (int) AlStyles.SL_SIZE_P2: text_size += 2 * multiplexer; break;
 			case (int) AlStyles.SL_SIZE_P3: text_size += 3 * multiplexer; break;
 			case (int) AlStyles.SL_SIZE_P4: text_size += 4 * multiplexer; break;
@@ -134,11 +138,12 @@ public class AlFonts {
 			calc.fontPaint.getFontMetricsInt(font_metrics);
 			
 			if (fparam.style == 0) {
-				if (calc.mainWidth[SPACE_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH) 
-					calc.mainWidth[SPACE_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);
+				if (calc.mainWidth[SPACE_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
+					// 4 is chosen by practice
+					calc.mainWidth[SPACE_SPECIAL_CHAR] = (char) (calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR) / 4);
 				fparam.space_width_current = calc.mainWidth[SPACE_SPECIAL_CHAR];
 			} else {
-				fparam.space_width_current = (int) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);
+				fparam.space_width_current = (int) (calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR) / 4);
 			}
 			
 			fparam.space_width_standart = fparam.space_width_current;
@@ -237,20 +242,188 @@ public class AlFonts {
 			st0 ^= st1;
 		}
 		
+		//String s = profile.font_names[(int) tmp].toLowerCase();
 		String s = profile.font_names[(int) tmp];
-		
+
 		AlTypefaces typeface = null;
-		if (s.equalsIgnoreCase("serif")) {
+
+		int i;
+		Integer iFont = allfontsMaps.get(s);
+		if (iFont == null) i = 0; else i = iFont;
+
+		switch (i) {
+		case 0:
+			typeface = new AlTypefaces();
+			typeface.tpf = Typeface.create(allfonts.get(0).aName, (int) st0);
+			break;
+		case 1:
+			typeface = new AlTypefaces();
+			typeface.tpf = Typeface.create(allfonts.get(1).aName, (int) (st0 & 0x01));
+			if ((st0 & 0x02) != 0)
+				typeface.emul_italic = true;
+			break;
+		case 2:
+			typeface = new AlTypefaces();
+			typeface.tpf = Typeface.create(allfonts.get(2).aName, 0);
+			if ((st0 & 0x02) != 0)
+				typeface.emul_italic = true;
+			if ((st0 & 0x01) != 0)
+				typeface.emul_bold = true;
+			break;
+		default:
+			int j;
+			boolean ebold = false;
+			boolean eitalic = false;
+			AlOneFont fi = allfonts.get(iFont);
+			if (fi.res != null) {
+				String f = null;
+				switch ((int) st0) {
+				case 0:
+					f = fi.res.aFile[0];
+					break;
+				case 1:
+					f = fi.res.aFile[1];
+					if (f == null) {
+						f = fi.res.aFile[0];
+						ebold = true;
+					}
+					break;
+				case 2:
+					f = fi.res.aFile[2];
+					if (f == null) {
+						f = fi.res.aFile[0];
+						eitalic = true;
+					}
+					break;
+				case 3:
+					f = fi.res.aFile[3];
+					if (f == null) {
+						if (fi.res.aFile[2] != null) {
+							f = fi.res.aFile[2];
+							ebold = true;
+						} else if (fi.res.aFile[1] != null) {
+							f = fi.res.aFile[1];
+							eitalic = true;
+						} else {
+							f = fi.res.aFile[0];
+							eitalic = true;
+							ebold = true;
+						}
+					}
+					break;
+				}
+
+				if (f == null) {
+					for (j = 0; j < 4; j++)
+						if (fi.res.aFile[j] != null)
+							f = fi.res.aFile[j];
+				}
+
+				try {
+					if (f != null) {
+						typeface = new AlTypefaces();
+						typeface.tpf = Typeface.createFromAsset(assetManager, f);
+						typeface.emul_bold = ebold;
+						typeface.emul_italic = eitalic;
+						if (typeface.tpf != null) {
+							return typeface;
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				File f = null;
+				switch ((int) st0) {
+				case 0:
+					f = fi.aFile[0];
+					break;
+				case 1:
+					f = fi.aFile[1];
+					if (f == null) {
+						f = fi.aFile[0];
+						ebold = true;
+					}
+					break;
+				case 2:
+					f = fi.aFile[2];
+					if (f == null) {
+						f = fi.aFile[0];
+						eitalic = true;
+					}
+					break;
+				case 3:
+					f = fi.aFile[3];
+					if (f == null) {
+						if (fi.aFile[2] != null) {
+							f = fi.aFile[2];
+							ebold = true;
+						} else if (fi.aFile[1] != null) {
+							f = fi.aFile[1];
+							eitalic = true;
+						} else {
+							f = fi.aFile[0];
+							eitalic = true;
+							ebold = true;
+						}
+					}
+					break;
+				}
+
+				if (f == null) {
+					for (j = 0; j < 4; j++)
+						if (fi.aFile[j] != null)
+							f = fi.aFile[j];
+				}
+
+				try {
+					if (f != null) {
+						typeface = new AlTypefaces();
+						typeface.tpf = Typeface.createFromFile(f);
+						typeface.emul_bold = ebold;
+						typeface.emul_italic = eitalic;
+						if (typeface.tpf != null) {
+							return typeface;
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			break;
+		}
+
+		return typeface;
+	}
+
+
+	/*private AlTypefaces addTPF(long style, AlProfileOptions	profile) {
+		long st0 = style & (Typeface.BOLD_ITALIC);
+		long tmp = (style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT;
+
+		long st1 = (profile.font_bold[(int) tmp] ? Typeface.BOLD : 0) |
+				  (profile.font_italic[(int) tmp] ? Typeface.ITALIC : 0);
+
+		if (profile.style_summ) {
+			st0 |= st1;
+		} else {
+			st0 ^= st1;
+		}
+
+		String s = profile.font_names[(int) tmp].toLowerCase();
+
+		AlTypefaces typeface = null;
+		if (s.contentEquals("serif")) {
 			typeface = new AlTypefaces();
 			typeface.tpf = Typeface.create(s, (int) st0);
 		} else
-		if (s.equalsIgnoreCase("sans-serif")) {
+		if (s.contentEquals("sans-serif")) {
 			typeface = new AlTypefaces();
 			typeface.tpf = Typeface.create(s, (int) (st0 & 0x01));
 			if ((st0 & 0x02) != 0)
-				typeface.emul_italic = true;			
-		} else 
-		if (s.equalsIgnoreCase("monospace")) {			
+				typeface.emul_italic = true;
+		} else
+		if (s.contentEquals("monospace")) {
 			typeface = new AlTypefaces();
 			typeface.tpf = Typeface.create(s, 0);
 			if ((st0 & 0x02) != 0)
@@ -260,8 +433,8 @@ public class AlFonts {
 		} else {
 			int i, j;
 			boolean ebold = false;
-			boolean eitalic = false;			
-			
+			boolean eitalic = false;
+
 			AlOneFont fi;
 			for (i = 3; i < allfonts.size(); i++) {
 				fi = allfonts.get(i);
@@ -382,15 +555,17 @@ public class AlFonts {
                             e.printStackTrace();
                         }
                     }
-					break;	
+					break;
 				}
-			}		
+			}
 			typeface = new AlTypefaces();
 			typeface.tpf = Typeface.create("serif", (int) st0);
 		}
-				
+
 		return typeface;
-	}
+	}*/
+
+
 
 	
 	private AlTypefaces getTPF(long style, AlProfileOptions profile) {
@@ -488,7 +663,7 @@ public class AlFonts {
 
 	private int	internalFontCount = 0;
 
-	private void loadAllFonts(String path[], AlResourceFont resFont[]) {
+	private void loadAllFonts(String mainPath, String[] addPaths, AlResourceFont resFont[]) {
 		if (internalFontCount != 0)
 			return;
 		
@@ -504,10 +679,15 @@ public class AlFonts {
 		reinitExtPath("/system/fonts", true);		
 		internalFontCount = allfonts.size();
 
-		if (path != null) {
-			for (String p : path)
-				reinitExtPath(p, false);
-		}
+		if (mainPath != null)
+			reinitExtPath(mainPath, false);
+		if (addPaths != null && addPaths.length > 0)
+			for (String item : addPaths) {
+				reinitExtPath(item, false);
+			}
+
+		for (int i = 0; i < allfonts.size(); i++)
+			allfontsMaps.put(allfonts.get(i).aName, i);
 	}
 	
 }

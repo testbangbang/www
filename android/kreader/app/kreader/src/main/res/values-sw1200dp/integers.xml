@@ -7,5 +7,4 @@
     <integer name="quick_view_default_grid_type">4</integer>
     <integer name="search_chinese_content_length">100</integer>
     <integer name="search_alpha_content_length">150</integer>
-    <integer name="dict_height_denominator_value">3</integer>
 </resources>

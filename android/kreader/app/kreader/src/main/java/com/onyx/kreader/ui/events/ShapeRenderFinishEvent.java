@@ -7,9 +7,16 @@ package com.onyx.kreader.ui.events;
 public class ShapeRenderFinishEvent {
 
     private int uniqueId;
+    private boolean useFullUpdate = false;
 
     public static ShapeRenderFinishEvent shapeReadyEvent() {
         return shapeReadyEventWithUniqueId(Integer.MAX_VALUE);
+    }
+
+    public static ShapeRenderFinishEvent shapeReadyEventWithFullUpdate() {
+        final ShapeRenderFinishEvent event = shapeReadyEventWithUniqueId(Integer.MAX_VALUE);
+        event.setUseFullUpdate(true);
+        return event;
     }
 
     public static ShapeRenderFinishEvent shapeReadyEventWithUniqueId(int id) {
@@ -24,5 +31,13 @@ public class ShapeRenderFinishEvent {
 
     public void setUniqueId(int uniqueId) {
         this.uniqueId = uniqueId;
+    }
+
+    public boolean isUseFullUpdate() {
+        return useFullUpdate;
+    }
+
+    public void setUseFullUpdate(boolean useFullUpdate) {
+        this.useFullUpdate = useFullUpdate;
     }
 }
