@@ -2,6 +2,7 @@ package com.onyx.kreader.note.bridge;
 
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -12,6 +13,8 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.android.sdk.utils.DeviceUtils;
+
+import java.util.List;
 
 /**
  * Created by zhuzeng on 9/18/16.
@@ -66,7 +69,7 @@ public class NoteEventProcessorManager {
                        final DeviceConfig noteConfig,
                        final MappingConfig mappingConfig,
                        final Rect visibleDrawRect,
-                       final Rect excludeRect,
+                       final List<RectF> excludeRect,
                        int orientation) {
         detectTouchType();
         view = targetView;

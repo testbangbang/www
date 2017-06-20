@@ -44,6 +44,11 @@ public class ReaderDeviceManager {
         }
     }
 
+    public static void toggleAnimationUpdate(boolean clear) {
+        EpdController.applyApplicationFastMode(APP, !inFastUpdateMode, clear);
+        inFastUpdateMode = !inFastUpdateMode;
+    }
+
     public static void startScreenHandWriting(final View view) {
         EpdController.setScreenHandWritingPenState(view, 1);
     }
@@ -131,6 +136,7 @@ public class ReaderDeviceManager {
             refreshCount = 0;
             epdDevice.applyGCUpdate(view);
         } else {
+            enableRegal();
             epdDevice.applyRegalUpdate(view);
         }
     }
@@ -164,6 +170,23 @@ public class ReaderDeviceManager {
         if (enableHoldDisplay) {
             epdDevice.holdDisplay(hold, UpdateMode.REGAL, 1);
         }
+    }
+
+    public static void holdDisplayUpdate(Context context, View view) {
+        if (!view.isShown()) {
+            return;
+        }
+        applyRegalUpdate(context, view);
+        boolean hold = !isApplyFullUpdate();
+        holdDisplay(hold);
+    }
+
+    public static void enableRegal() {
+        epdDevice.enableRegal();
+    }
+
+    public static void disableRegal() {
+        epdDevice.disableRegal();
     }
 
 }

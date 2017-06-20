@@ -34,4 +34,12 @@ public class EpdRk3026 extends EpdDevice {
     public void holdDisplay(boolean hold, UpdateMode mode, int ignoreFrame) {
         EpdController.holdDisplay(hold, mode, ignoreFrame);
     }
+
+    public void enableRegal() {
+        EpdController.enableRegal();
+    }
+
+    public void disableRegal() {
+        EpdController.disableRegal();
+    }
 }

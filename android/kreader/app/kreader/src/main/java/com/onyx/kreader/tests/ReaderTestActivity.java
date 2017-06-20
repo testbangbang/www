@@ -53,6 +53,7 @@ import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfJniWrapper;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfSelection;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
+import com.onyx.kreader.ui.data.DrmCertificateFactory;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -277,7 +278,8 @@ public class ReaderTestActivity extends Activity {
 
     public void testReaderOpen() {
         reader = ReaderManager.getReader(path);
-        BaseReaderRequest open = new OpenRequest(path, getDocumentOptions(), false);
+        final DrmCertificateFactory factory = new DrmCertificateFactory(this);
+        BaseReaderRequest open = new OpenRequest(path, getDocumentOptions(), factory, false);
         reader.submitRequest(this, open, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -559,7 +561,7 @@ public class ReaderTestActivity extends Activity {
                 break;
         }
         if (contrast > 0) {
-            ImageUtils.applyGammaCorrection(bitmap, contrast);
+            ImageUtils.applyGammaCorrection(bitmap, contrast, null);
         }
     }
 

@@ -31,12 +31,16 @@ public class MainSettingsActivity extends PreferenceActivity {
         Intent mScreenIntent=new Intent(MainSettingsActivity.this, ScreenSettingsActivity.class);
         Intent mConfigIntent=new Intent(MainSettingsActivity.this, ConfigSettingsActivity.class);
         Intent mControlIntent=new Intent(MainSettingsActivity.this, ControlSettingsActivity.class);
+        mControlIntent.putExtra(ControlSettingsActivity.CONTROL_TYPE, ControlSettingsActivity.CONTROL_KEY);
+        Intent mTouchIntent=new Intent(MainSettingsActivity.this, ControlSettingsActivity.class);
+        mTouchIntent.putExtra(ControlSettingsActivity.CONTROL_TYPE, ControlSettingsActivity.CONTROL_TOUCH);
         Intent mStatusBarIntent=new Intent(MainSettingsActivity.this, StatusBarSettingsActivity.class);
         mScribbleBarIntent=new Intent(MainSettingsActivity.this, ScribbleBarSettingsActivity.class);
         sPreferenceIntentHashMap.put(getString(R.string.settings_system_key), mSystemIntent);
         sPreferenceIntentHashMap.put(getString(R.string.settings_screen_key), mScreenIntent);
 //        sPreferenceIntentHashMap.put(getString(R.string.setting_config_key), mConfigIntent);
         sPreferenceIntentHashMap.put(getString(R.string.settings_control_key), mControlIntent);
+        sPreferenceIntentHashMap.put(getString(R.string.settings_touch_key), mTouchIntent);
         sPreferenceIntentHashMap.put(getString(R.string.settings_status_bar_key), mStatusBarIntent);
         sPreferenceIntentHashMap.put(getString(R.string.settings_scribble_bar_key), mScribbleBarIntent);
         RelativeLayout mBackFunctionLayout = (RelativeLayout) findViewById(R.id.back_function_layout);

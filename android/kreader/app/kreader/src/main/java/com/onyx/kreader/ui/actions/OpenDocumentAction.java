@@ -6,16 +6,18 @@ import android.content.pm.ActivityInfo;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
+import com.onyx.android.sdk.reader.host.request.RestoreRequest;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
-import com.onyx.kreader.ui.events.ForceCloseEvent;
-import com.onyx.kreader.ui.requests.LoadDocumentOptionsRequest;
+import com.onyx.kreader.ui.data.DrmCertificateFactory;
+import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
 import com.onyx.android.sdk.reader.host.request.OpenRequest;
-import com.onyx.kreader.ui.requests.RestoreRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
@@ -40,13 +42,7 @@ public class OpenDocumentAction extends BaseAction {
     private String password;
     private DataManager dataProvider;
     private boolean canceled = false;
-
-    public OpenDocumentAction(final Activity activity, final String path,final String bookName) {
-        this.activity = activity;
-        documentPath = path;
-        this.bookName = bookName;
-        dataProvider = new DataManager();
-    }
+    private boolean processOrientation = false;
 
     public OpenDocumentAction(final Activity activity, final String path,final String bookName,final String password) {
         this.activity = activity;
@@ -104,7 +100,15 @@ public class OpenDocumentAction extends BaseAction {
 //                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
 //                    return;
 //                }
-                openWithOptions(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions());
+
+                if (processOrientation) {
+                    if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
+                        return;
+                    }
+                }
+                BaseOptions baseOptions = loadDocumentOptionsRequest.getDocumentOptions();
+                DeviceConfig.adjustOptionsWithDeviceConfig(baseOptions, readerDataHolder.getContext());
+                openWithOptions(readerDataHolder, baseOptions);
             }
         });
     }
@@ -130,8 +134,9 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void openWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
-        options.setPassword(password);
-        final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, true);
+        final DrmCertificateFactory factory = new DrmCertificateFactory(activity);
+		options.setPassword(password);
+        final BaseReaderRequest openRequest = new OpenRequest(documentPath, options, factory, true);
         readerDataHolder.submitNonRenderRequest(openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -196,7 +201,7 @@ public class OpenDocumentAction extends BaseAction {
 
     private void cleanup(final ReaderDataHolder holder) {
         hideLoadingDialog();
-        holder.getEventBus().post(new ForceCloseEvent(true));
+        holder.getEventBus().post(new OpenDocumentFailedEvent());
     }
 
     private void restoreWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {

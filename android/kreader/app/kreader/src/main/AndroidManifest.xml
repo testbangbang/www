@@ -38,7 +38,7 @@
 
         <activity android:name=".ui.ReaderTabHostActivity"
                   android:launchMode="singleInstance"
-                  android:configChanges="keyboardHidden|orientation|screenSize|locale">
+                  android:configChanges="keyboardHidden|orientation|screenSize|locale|layoutDirection">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -162,7 +162,7 @@
             android:launchMode="singleInstance"
             android:taskAffinity=""
             android:process=":reader_tab_1"
-            android:configChanges="keyboardHidden|orientation|screenSize|locale">
+            android:configChanges="keyboardHidden|orientation|screenSize|locale|layoutDirection">
         </activity>
 
         <receiver android:name=".ui.ReaderTab1BroadcastReceiver"
@@ -181,7 +181,7 @@
             android:launchMode="singleInstance"
             android:taskAffinity=""
             android:process=":reader_tab_2"
-            android:configChanges="keyboardHidden|orientation|screenSize|locale">
+            android:configChanges="keyboardHidden|orientation|screenSize|locale|layoutDirection">
         </activity>
 
         <receiver android:name=".ui.ReaderTab2BroadcastReceiver"
@@ -200,7 +200,7 @@
             android:launchMode="singleInstance"
             android:taskAffinity=""
             android:process=":reader_tab_3"
-            android:configChanges="keyboardHidden|orientation|screenSize|locale">
+            android:configChanges="keyboardHidden|orientation|screenSize|locale|layoutDirection">
         </activity>
 
         <receiver android:name=".ui.ReaderTab3BroadcastReceiver"
@@ -219,7 +219,7 @@
             android:launchMode="singleInstance"
             android:taskAffinity=""
             android:process=":reader_tab_4"
-            android:configChanges="keyboardHidden|orientation|screenSize|locale">
+            android:configChanges="keyboardHidden|orientation|screenSize|locale|layoutDirection">
         </activity>
 
         <receiver android:name=".ui.ReaderTab4BroadcastReceiver"
@@ -279,6 +279,17 @@
             android:authorities="com.onyx.kreader.statistics.provider"
             android:exported="true"
             android:name="com.onyx.android.sdk.data.db.OnyxStatisticsContentProvider_Provider"/>
+
+        <provider
+            android:authorities="com.onyx.content.database.ContentProvider"
+            android:exported="true"
+            android:process=":database_content_provider"
+            android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"/>
+
+        <provider
+            android:authorities="com.onyx.account.database.ContentProvider"
+            android:exported="true"
+            android:name="com.onyx.android.sdk.data.db.OnyxAccountContentProvider_Provider"/>
 
         <receiver android:name=".ui.receiver.NetworkConnectChangedReceiver">
         </receiver>

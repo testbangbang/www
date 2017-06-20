@@ -3,7 +3,7 @@ package com.onyx.kreader.ui.actions;
 import android.graphics.RectF;
 
 import com.onyx.android.cropimage.data.CropArgs;
-import com.onyx.android.cropimage.data.PointMatrix;
+import com.onyx.android.sdk.data.ReaderPointMatrix;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
@@ -103,9 +103,9 @@ public class ChangeNavigationSettingsAction extends BaseAction {
 
     private void buildNavigationArgs(final ReaderDataHolder readerDataHolder, final BaseReaderRequest request, final NavigationArgs navigationArgs) {
         RectF defaultLimit = getNavigationArgsLimitRect(readerDataHolder, request, cropArgs.getManualCropDocRegions().get(0));
-        PointMatrix defaultMatrix = cropArgs.getManualPointMatrixList().get(0);
+        ReaderPointMatrix defaultMatrix = cropArgs.getManualPointMatrixList().get(0);
         RectF oddLimit = null;
-        PointMatrix oddMatrix = null;
+        ReaderPointMatrix oddMatrix = null;
         if (isManualCropPageByOddAndEven()) {
             oddLimit = getNavigationArgsLimitRect(readerDataHolder, request, cropArgs.getManualCropDocRegions().get(1));
             oddMatrix = cropArgs.getManualPointMatrixList().get(1);
@@ -185,8 +185,8 @@ public class ChangeNavigationSettingsAction extends BaseAction {
     private void initNavigationArgsForOddAndEvenCrop() {
         cropArgs.getManualCropDocRegions().add(new RectF());
         cropArgs.getManualCropDocRegions().add(new RectF());
-        cropArgs.getManualPointMatrixList().add(new PointMatrix());
-        cropArgs.getManualPointMatrixList().add(new PointMatrix());
+        cropArgs.getManualPointMatrixList().add(new ReaderPointMatrix());
+        cropArgs.getManualPointMatrixList().add(new ReaderPointMatrix());
     }
 
     private boolean isLastPage(final ReaderDataHolder readerDataHolder, final int page) {

@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.events;
 
 import android.graphics.Rect;
+import android.graphics.RectF;
 
 /**
  * Created by zhuzeng on 9/25/16.
@@ -11,15 +12,15 @@ public class ScribbleMenuChangedEvent {
     private int bottomOfTopToolBar;
     private int topOfBottomToolBar;
 
-    private Rect excludeRect;
+    private RectF excludeRect;
 
-    public ScribbleMenuChangedEvent(int bottomOfTopToolBar, int topOfBottomToolBar, Rect excludeRect) {
+    public ScribbleMenuChangedEvent(int bottomOfTopToolBar, int topOfBottomToolBar, RectF excludeRect) {
         this.bottomOfTopToolBar = bottomOfTopToolBar;
         this.topOfBottomToolBar = topOfBottomToolBar;
         this.excludeRect = excludeRect;
     }
 
-    public static ScribbleMenuChangedEvent create(int bottomToolBarTop, int topToolBarBottom, Rect excludeRect) {
+    public static ScribbleMenuChangedEvent create(int bottomToolBarTop, int topToolBarBottom, RectF excludeRect) {
         return new ScribbleMenuChangedEvent(bottomToolBarTop, topToolBarBottom, excludeRect);
     }
 
@@ -31,7 +32,7 @@ public class ScribbleMenuChangedEvent {
         return topOfBottomToolBar;
     }
 
-    public Rect getExcludeRect() {
+    public RectF getExcludeRect() {
         return excludeRect;
     }
 }

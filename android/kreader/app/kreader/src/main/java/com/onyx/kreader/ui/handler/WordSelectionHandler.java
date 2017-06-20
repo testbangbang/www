@@ -16,6 +16,7 @@ import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.actions.AnalyzeWordAction;
 import com.onyx.android.sdk.reader.host.request.SelectWordRequest;
 import com.onyx.kreader.ui.actions.SelectWordAction;
@@ -23,9 +24,9 @@ import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.actions.ViewImageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.highlight.HighlightCursor;
-import com.onyx.android.sdk.reader.utils.MathUtils;
+import com.onyx.android.sdk.utils.MathUtils;
 import com.onyx.kreader.device.DeviceConfig;
-import com.onyx.android.sdk.reader.utils.RectUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 
 import java.util.List;
 
@@ -285,6 +286,7 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public void selectWord(final ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
+        ReaderDeviceManager.disableRegal();
         SelectWordAction.selectWord(readerDataHolder, readerDataHolder.getCurrentPagePosition(), new PointF(x1, y1), new PointF(x2, y2), new PointF(x2, y2),new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -363,6 +365,7 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     public void quitWordSelection(ReaderDataHolder readerDataHolder) {
+        ReaderDeviceManager.enableRegal();
         getParent().resetToDefaultProvider();
         clearWordSelection(readerDataHolder);
     }

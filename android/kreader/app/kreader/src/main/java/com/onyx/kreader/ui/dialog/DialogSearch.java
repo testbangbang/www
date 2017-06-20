@@ -198,6 +198,7 @@ public class DialogSearch extends OnyxBaseDialog{
             public void onClick(View v) {
                 stopSearch();
                 loadSearchHistoryData();
+                showSoftInputWindow();
             }
         });
 

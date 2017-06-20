@@ -30,6 +30,7 @@ public class SingletonSharedPreference {
     private final static String LAST_BOTTOM_MARGIN = "last_bottom_margin";
     private final static String SCREEN_ORIENTATION = "screen_orientation";
     private final static String MULTIPLE_TAB_STATE = "multiple_tab_state";
+    private final static String MULTIPLE_TAB_VISIBILITY = "multiple_tab_visibility";
 
     private static Context sContext;
     private static SharedPreferences.Editor sDefaultEditor;
@@ -124,6 +125,10 @@ public class SingletonSharedPreference {
 
     public static boolean isReaderStatusBarEnabled(Context context) {
         return getBooleanByStringID(context, R.string.settings_enable_reader_status_bar_key, DeviceConfig.sharedInstance(context).isDefaultUseReaderStatusBar());
+    }
+
+    public static boolean isMultipleTabsEnabled(Context context) {
+        return getBooleanByStringID(context, R.string.settings_enable_multiple_tabs_key, DeviceConfig.sharedInstance(context).isSupportMultipleTabs());
     }
 
     public static boolean isAnimationEnabled(Context context) {
@@ -367,5 +372,13 @@ public class SingletonSharedPreference {
 
     public static String getMultipleTabState() {
         return getStringValue(MULTIPLE_TAB_STATE);
+    }
+
+    public static void setMultipleTabVisibility(boolean visible) {
+        setBooleanValue(MULTIPLE_TAB_VISIBILITY, visible);
+    }
+
+    public static boolean getMultipleTabVisibility() {
+        return getPrefs().getBoolean(MULTIPLE_TAB_VISIBILITY, true);
     }
 }

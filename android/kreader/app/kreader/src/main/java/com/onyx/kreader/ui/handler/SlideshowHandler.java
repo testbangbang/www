@@ -18,6 +18,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogSlideshowStatistic;
@@ -202,7 +203,7 @@ public class SlideshowHandler extends BaseHandler {
 
     public void startSlideShow() {
         pageCount = 0;
-        startBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
+        startBatteryPercent = DeviceUtils.getBatteryPercentLevel(readerDataHolder.getContext());
         startTime = Calendar.getInstance();
         setAlarm();
         updateSlideshowStatusBar(null);
@@ -210,7 +211,7 @@ public class SlideshowHandler extends BaseHandler {
 
     @Subscribe
     public void updateSlideshowStatusBar(UpdateSlideshowEvent event) {
-        int battery = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
+        int battery = DeviceUtils.getBatteryPercentLevel(readerDataHolder.getContext());
         getSlideshowStatusBar().updateValue(maxPageCount, pageCount + 1,
                 startBatteryPercent, battery);
         getSlideshowStatusBar().setVisibility(View.VISIBLE);
@@ -225,6 +226,7 @@ public class SlideshowHandler extends BaseHandler {
     }
 
     private void loopNextScreen() {
+        ReaderDeviceManager.holdDisplayUpdate(readerDataHolder.getContext(), getSlideshowStatusBar());
         pageCount++;
         if (readerDataHolder.getReaderViewInfo().canNextScreen) {
             nextScreen(readerDataHolder, pageLimitCallback);
@@ -252,7 +254,7 @@ public class SlideshowHandler extends BaseHandler {
 
     private void showStatisticDialog() {
         Calendar endTime = Calendar.getInstance();
-        int endBatteryPercent = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
+        int endBatteryPercent = DeviceUtils.getBatteryPercentLevel(readerDataHolder.getContext());
         DialogSlideshowStatistic dlg = new DialogSlideshowStatistic(readerDataHolder.getContext(), startTime, endTime,
                 pageCount, startBatteryPercent, endBatteryPercent);
         readerDataHolder.trackDialog(dlg);
