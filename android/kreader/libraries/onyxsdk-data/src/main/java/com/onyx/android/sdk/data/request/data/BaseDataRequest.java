@@ -33,5 +33,9 @@ public class BaseDataRequest extends BaseRequest {
         }
     }
 
+    public String getIdentifier() {
+        return "data";
+    }
+
 
 }

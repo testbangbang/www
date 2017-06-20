@@ -9,79 +9,123 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by zhuzeng on 6/2/16.
  */
 @Table(database = ContentDatabase.class)
 public class Metadata extends BaseData {
+
+    public static class ReadingStatus {
+        public static int NEW = 0;
+        public static int READING = 1;
+        public static int FINISHED = 2;
+    }
+
+    public static class FetchSource {
+        public static int LOCAL = 0;
+        public static int CLOUD = 1;
+    }
+
     public static final String PROGRESS_DIVIDER = "/";
 
     @Column
-    String name = null;
+    private String name = null;
 
     @Column
-    String title = null;
+    private String title = null;
 
     @Column
-    String authors = null;
+    private String authors = null;
 
     @Column
-    String publisher = null;
+    private String publisher = null;
 
     @Column
-    String language = null;
+    private String language = null;
 
     @Column
-    String ISBN = null;
+    private String ISBN = null;
 
     @Column
-    String description = null;
+    private String description = null;
 
     @Column
-    String location = null;
+    private String location = null;
 
     @Column
-    String nativeAbsolutePath = null;
+    private String nativeAbsolutePath = null;
 
     @Column
-    long size = 0;
+    private long size = 0;
 
     @Column
-    String encoding = null;
+    private String encoding = null;
 
     @Column
-    Date lastAccess = null;
+    private Date lastAccess = null;
 
     @Column
-    Date lastModified = null;
+    private Date lastModified = null;
 
     @Column
-    String progress = null;
+    private String progress = null;
 
     @Column
-    int favorite = 0;
+    private int favorite = 0;
 
     @Column
-    int rating = 0;
+    private int rating = 0;
 
     @Column
-    String tags = null;
+    private String tags = null;
 
     @Column
-    String series = null;
+    private String series = null;
 
     @Column
-    String extraAttributes = null;
+    private String extraAttributes = null;
 
     @Column
-    String type = null;
+    private String type = null;
 
     @Column
-    String cloudId;
+    private String cloudId;
 
     @Column
-    String parentId;
+    private String parentId;
+
+    @Column
+    private int readingStatus = 0;
+
+    @Column
+    private String hashTag;
+
+    @Column
+    private String storageId;
+
+    @Column
+    private int fetchSource;
+
+    @Column
+    private String coverUrl;
+
+    public void setFetchSource(int fetchSource) {
+        this.fetchSource = fetchSource;
+    }
+
+    public int getFetchSource() {
+        return fetchSource;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
 
     public String getName() {
         return name;
@@ -183,6 +227,10 @@ public class Metadata extends BaseData {
         this.lastAccess = lastAccess;
     }
 
+    public void updateLastAccess() {
+        setLastAccess(new Date());
+    }
+
     public Date getLastModified() {
         return lastModified;
     }
@@ -197,6 +245,10 @@ public class Metadata extends BaseData {
 
     public void setProgress(final String p) {
         progress = p;
+    }
+
+    public void setProgress(int currentPage, int totalPage) {
+        setProgress(String.format(Locale.getDefault(), "%d" + PROGRESS_DIVIDER + "%d", currentPage, totalPage));
     }
 
     public int getFavorite() {
@@ -271,6 +323,30 @@ public class Metadata extends BaseData {
         this.parentId = id;
     }
 
+    public int getReadingStatus() {
+        return readingStatus;
+    }
+
+    public void setReadingStatus(int status) {
+        this.readingStatus = status;
+    }
+
+    public String getHashTag() {
+        return hashTag;
+    }
+
+    public void setHashTag(String hashTag) {
+        this.hashTag = hashTag;
+    }
+
+    public void setStorageId(String storageId) {
+        this.storageId = storageId;
+    }
+
+    public String getStorageId() {
+        return storageId;
+    }
+
     public static Metadata createFromFile(String path) {
         return createFromFile(new File(path));
     }
@@ -279,28 +355,59 @@ public class Metadata extends BaseData {
         return createFromFile(file, true);
     }
 
-    public static Metadata createFromFile(File file, boolean computeMd5) {
+    public static Metadata createFromMetadataPath(Metadata metadata, boolean computeMd5) {
+        File file = new File(metadata.getNativeAbsolutePath());
         try {
-            final Metadata data = new Metadata();
             if (computeMd5) {
                 String md5 = FileUtils.computeMD5(file);
-                data.setIdString(md5);
+                metadata.setHashTag(md5);
             }
-            getBasicMetadataFromFile(data, file);
-            return data;
+            getBasicMetadataFromFile(metadata, file);
+            return metadata;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    public static Metadata createFromFile(File file, boolean computeMd5) {
+        final Metadata data = new Metadata();
+        data.setNativeAbsolutePath(file.getAbsolutePath());
+        return createFromMetadataPath(data, computeMd5);
+    }
+
     public static void getBasicMetadataFromFile(final Metadata data, File file) {
         data.setName(file.getName());
+        data.setIdString(file.getAbsolutePath());
         data.setLocation(file.getAbsolutePath());
         data.setNativeAbsolutePath(file.getAbsolutePath());
         data.setSize(file.length());
         data.setLastModified(new Date(FileUtils.getLastChangeTime(file)));
         data.setType(FileUtils.getFileExtension(file.getName()));
+    }
+
+    private int parseProgress(String progress) {
+        try {
+            return Integer.parseInt(progress);
+        } catch (Exception e) {
+        }
+        return 0;
+    }
+
+    public int getProgressPercent() {
+        if (StringUtils.isNullOrEmpty(progress)) {
+            return 0;
+        }
+        String[] progressSplit = progress.split(PROGRESS_DIVIDER);
+        if (progressSplit.length != 2) {
+            return 0;
+        }
+        int readingProgress = parseProgress(progressSplit[0]);
+        int totalProgress = parseProgress(progressSplit[1]);
+        if (totalProgress == 0) {
+            return 0;
+        }
+        return readingProgress * 100 / totalProgress;
     }
 
     public boolean internalProgressEqual(String progress) {
@@ -311,16 +418,20 @@ public class Metadata extends BaseData {
         return progressSplit[0].equals(progressSplit[1]);
     }
 
-    public boolean isReaded() {
-        return (lastAccess != null && progress != null && internalProgressEqual(progress));
+    public String getAssociationId() {
+        return getHashTag();
+    }
+
+    public boolean isFinished() {
+        return readingStatus == ReadingStatus.FINISHED;
     }
 
     public boolean isReading() {
-        return (lastAccess != null && lastAccess.getTime() > 0 && progress != null);
+        return readingStatus == ReadingStatus.READING;
     }
 
     public boolean isNew() {
-        return (lastAccess == null || lastAccess.getTime() <= 0) && (progress == null);
+        return readingStatus == ReadingStatus.NEW;
     }
 
 }

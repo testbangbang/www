@@ -122,7 +122,7 @@ public class PushRecordListRequest extends BaseCloudRequest {
             Metadata meta = DataManagerHelper.getMetadataByCloudReference(context, product.getGuid());
             if (meta == null) {
                 if (StringUtils.isNotBlank(product.getIdString())) {
-                    meta = DataManagerHelper.getMetadataByMD5(context, product.getIdString());
+                    meta = DataManagerHelper.getMetadataByHashTag(context, product.getIdString());
                 }
             }
             if (meta != null) {

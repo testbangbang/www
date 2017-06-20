@@ -1,0 +1,7 @@
+<resources>
+    <string name="network_request_exception">Network request exception</string>
+    <string name="no_find_upload_database_file">Could not find upload database file</string>
+    <string name="network_not_connected">The network is not connected</string>
+    <string name="empty_md5">Md5 is empty</string>
+    <string name="empty_cloud_documentId">Cloud document Id is empty</string>
+</resources>

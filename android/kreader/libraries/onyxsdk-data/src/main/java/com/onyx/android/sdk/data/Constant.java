@@ -21,6 +21,9 @@ public class Constant {
     public static final String ACCESS_KEY = "2016103189639748";
     public static final String ACCESS_SECRET = "8a031034af2348669842683bc6115aa5";
 
+    public static final String ONYX_HOST_BASE = "http://oa.o-in.me:9058";
+    public static final String ONYX_API_BASE = "http://oa.o-in.me:9058/api/";
+
     public static final String WHERE_TAG = "where";
     public static final String ARGS_TAG = "args";
     static public final String JSON_TAG = "application/json";
@@ -33,6 +36,10 @@ public class Constant {
     static public final String ID_TAG = "id";
     static public final String URL_TAG = "url";
     static public final String HTTP_TAG = "http";
+    static public final String FILE_TAG = "file";
+    static public final String MD5_TAG = "md5";
+    static public final String DOCID_TAG = "docId";
+    static public final String READER_DATA_FOLDER = "OnyxReader";
 
     public static final String COVER_TYPE_SMALL = "small";
     public static final String COVER_TYPE_NORMAL = "normal";
@@ -46,4 +53,7 @@ public class Constant {
     public static final String APP_ID = "50ed40debbdc4bb1bfdddcd4791d862c";
 
     public static final String PLATFORM_WECHAT = "wechat";
+
+    public static final String HEADER_AUTHORIZATION = "authorization";
+
 }

@@ -4,17 +4,21 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.*;
-import com.onyx.android.sdk.data.utils.ThumbnailUtils;
+import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
+import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.io.File;
@@ -30,36 +34,61 @@ public class LocalDataProvider implements DataProviderBase {
         Delete.table(Metadata.class);
     }
 
-    public Metadata findMetadata(final Context context, final String path, String md5) {
+    public Metadata findMetadataByIdString(final Context context, final String idString) {
         Metadata metadata = null;
         try {
-            if (StringUtils.isNullOrEmpty(md5)) {
-                md5 = FileUtils.computeMD5(new File(path));
-            }
-            metadata = new Select().from(Metadata.class).where(Metadata_Table.idString.eq(md5)).querySingle();
-            return metadata;
+            metadata = new Select().from(Metadata.class).where(Metadata_Table.idString.eq(idString)).querySingle();
         } catch (Exception e) {
+        } finally {
+            return MetadataUtils.ensureObject(metadata);
         }
-        return metadata;
     }
 
-    public Metadata loadMetadata(final Context context, final String path, String md5) {
-        Metadata metadata = findMetadata(context, path, md5);
-        if (metadata == null) {
-            metadata = new Metadata();
+    public Metadata findMetadataByPath(final Context context, final String path) {
+        Metadata metadata = null;
+        try {
+            metadata = new Select().from(Metadata.class).where(Metadata_Table.nativeAbsolutePath.eq(path)).querySingle();
+        } catch (Exception e) {
+        } finally {
+            return MetadataUtils.ensureObject(metadata);
         }
-        return metadata;
     }
 
-    public List<Metadata> findMetadata(final Context context, final QueryArgs queryArgs) {
+    public Metadata findMetadataByHashTag(final Context context, final String path, String hashTag) {
+        Metadata metadata = null;
+        try {
+            if (StringUtils.isNullOrEmpty(hashTag)) {
+                hashTag = FileUtils.computeMD5(new File(path));
+            }
+            metadata = new Select().from(Metadata.class).where(Metadata_Table.hashTag.eq(hashTag)).querySingle();
+        } catch (Exception e) {
+        } finally {
+            return MetadataUtils.ensureObject(metadata);
+        }
+    }
+
+    @Override
+    public QueryResult<Metadata> findMetadataResultByQueryArgs(Context context, QueryArgs queryArgs) {
+        QueryResult<Metadata> result = new QueryResult<>();
+        result.list = findMetadataByQueryArgs(context, queryArgs);
+        result.count = count(context, queryArgs);
+        return result;
+    }
+
+    public List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs) {
         if (queryArgs.conditionGroup != null) {
-            Where<Metadata> where = new Select().from(Metadata.class).where(queryArgs.conditionGroup);
+            Where<Metadata> where = new Select(queryArgs.propertyList.toArray(new IProperty[0])).from(Metadata.class)
+                    .where(queryArgs.conditionGroup);
             for (OrderBy orderBy : queryArgs.orderByList) {
                 where.orderBy(orderBy);
             }
             return where.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
         }
         return new ArrayList<>();
+    }
+
+    public long count(final Context context, final QueryArgs queryArgs) {
+        return new Select(Method.count()).from(Metadata.class).where(queryArgs.conditionGroup).count();
     }
 
     public void saveMetadata(final Context context, final Metadata metadata) {
@@ -72,16 +101,11 @@ public class LocalDataProvider implements DataProviderBase {
 
     public boolean saveDocumentOptions(final Context context, final String path, String md5, final String json) {
         try {
-            Metadata document;
-            final Metadata options = findMetadata(context, path, md5);
-            if (options == null) {
-                document = new Metadata();
-                document.setIdString(md5);
-            } else {
-                document = options;
-            }
+            final Metadata document = findMetadataByHashTag(context, path, md5);
             document.setExtraAttributes(json);
-            if (options == null) {
+            if (!document.hasValidId()) {
+                document.setNativeAbsolutePath(path);
+                document.setHashTag(md5);
                 document.save();
             } else {
                 document.update();
@@ -94,16 +118,16 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
 
-    public final List<Annotation> loadAnnotations(final String application, final String md5, final int pageNumber, final OrderBy orderBy) {
-        return new Select().from(Annotation.class).where(Annotation_Table.idString.eq(md5))
+    public final List<Annotation> loadAnnotations(final String application, final String associationId, final int pageNumber, final OrderBy orderBy) {
+        return new Select().from(Annotation.class).where(Annotation_Table.idString.eq(associationId))
                 .and(Annotation_Table.application.eq(application))
                 .and(Annotation_Table.pageNumber.eq(pageNumber))
                 .orderBy(orderBy)
                 .queryList();
     }
 
-    public final List<Annotation> loadAnnotations(final String application, final String md5, final OrderBy orderBy) {
-        return new Select().from(Annotation.class).where(Annotation_Table.idString.eq(md5))
+    public final List<Annotation> loadAnnotations(final String application, final String associationId, final OrderBy orderBy) {
+        return new Select().from(Annotation.class).where(Annotation_Table.idString.eq(associationId))
                 .and(Annotation_Table.application.eq(application))
                 .orderBy(orderBy)
                 .queryList();
@@ -121,15 +145,15 @@ public class LocalDataProvider implements DataProviderBase {
         annotation.delete();
     }
 
-    public final Bookmark loadBookmark(final String application, final String md5, final int pageNumber) {
-        return new Select().from(Bookmark.class).where(Bookmark_Table.idString.eq(md5))
+    public final Bookmark loadBookmark(final String application, final String associationId, final int pageNumber) {
+        return new Select().from(Bookmark.class).where(Bookmark_Table.idString.eq(associationId))
                 .and(Bookmark_Table.application.eq(application))
                 .and(Bookmark_Table.pageNumber.eq(pageNumber))
                 .querySingle();
     }
 
-    public final List<Bookmark> loadBookmarks(final String application, final String md5, final OrderBy orderBy) {
-        return new Select().from(Bookmark.class).where(Bookmark_Table.idString.eq(md5))
+    public final List<Bookmark> loadBookmarks(final String application, final String associationId, final OrderBy orderBy) {
+        return new Select().from(Bookmark.class).where(Bookmark_Table.idString.eq(associationId))
                 .and(Bookmark_Table.application.eq(application))
                 .orderBy(orderBy)
                 .queryList();
@@ -157,7 +181,7 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Library> loadAllLibrary(String parentId) {
+    public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
         Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
         return new Select().from(Library.class).where(condition).queryList();
     }
@@ -183,53 +207,52 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public void clearThumbnail() {
+    public void clearThumbnails() {
         Delete.table(Thumbnail.class);
     }
 
     @Override
-    public List<Thumbnail> addThumbnail(Context context, String sourceMD5, Bitmap saveBitmap) {
-        List<Thumbnail> list = new ArrayList<>();
-        for (ThumbnailKind tk : ThumbnailKind.values()) {
-            Thumbnail thumbnail = new Thumbnail();
-            thumbnail.setSourceMD5(sourceMD5);
-            thumbnail.setThumbnailKind(tk);
-            ThumbnailUtils.saveThumbnailBitmap(context, thumbnail, saveBitmap);
-            list.add(thumbnail);
-        }
-        return list;
+    public void saveThumbnailEntry(Context context, Thumbnail thumbnail) {
+        thumbnail.save();
     }
 
-    @Override
-    public void updateThumbnail(Thumbnail thumbnail) {
-        thumbnail.update();
+    public Thumbnail getThumbnailEntry(Context context, String associationId, final ThumbnailKind kind) {
+        return new Select().from(Thumbnail.class)
+                .where()
+                .and(Thumbnail_Table.idString.eq(associationId))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind))
+                .querySingle();
     }
 
-    @Override
-    public void deleteThumbnail(Thumbnail thumbnail) {
+    public void deleteThumbnailEntry(Thumbnail thumbnail) {
         thumbnail.delete();
     }
 
     @Override
-    public List<Thumbnail> loadThumbnail(Context context, String sourceMd5) {
-        return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
+    public boolean saveThumbnailBitmap(Context context, String associationId, ThumbnailKind kind, final Bitmap saveBitmap) {
+        return false;
+    }
+
+    public boolean removeThumbnailBitmap(Context context, String associationId, ThumbnailKind kind) {
+        new Delete().from(Thumbnail.class)
+                .where()
+                .and(Thumbnail_Table.idString.eq(associationId))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind))
+                .execute();
+        return true;
+    }
+
+    public Bitmap getThumbnailBitmap(Context context, String associationId, final ThumbnailKind kind) {
+        Thumbnail thumbnail = getThumbnailEntry(context, associationId, kind);
+        if (thumbnail == null || StringUtils.isNullOrEmpty(thumbnail.getImageDataPath())) {
+            return null;
+        }
+        return BitmapUtils.loadBitmapFromFile(thumbnail.getImageDataPath());
+    }
+
+    public List<Thumbnail> loadThumbnail(Context context, String associationId) {
+        return new Select().from(Thumbnail.class).where(Thumbnail_Table.idString.eq(associationId))
                 .queryList();
-    }
-
-    @Override
-    public Thumbnail loadThumbnail(Context context, String sourceMd5, ThumbnailKind kind) {
-        return new Select().from(Thumbnail.class).where(Thumbnail_Table.sourceMD5.eq(sourceMd5))
-                .and(Thumbnail_Table.thumbnailKind.eq(kind)).querySingle();
-    }
-
-    @Override
-    public Bitmap loadThumbnailBitmap(Context context, String sourceMd5, ThumbnailKind kind) {
-        return ThumbnailUtils.getThumbnailBitmap(context, sourceMd5, kind.toString());
-    }
-
-    @Override
-    public Bitmap loadThumbnailBitmap(Context context, Thumbnail thumbnail) {
-        return ThumbnailUtils.getThumbnailBitmap(context, thumbnail);
     }
 
     @Override
@@ -243,13 +266,25 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public void deleteMetadataCollection(Context context, String libraryUniqueId, String metadataMD5) {
+    public void deleteMetadataCollection(Context context, String libraryUniqueId, String associationId) {
         Where<MetadataCollection> where = SQLite.delete(MetadataCollection.class)
                 .where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId));
-        if (StringUtils.isNotBlank(metadataMD5)) {
-            where.and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5));
+        if (StringUtils.isNotBlank(associationId)) {
+            where.and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         }
         where.execute();
+    }
+
+    @Override
+    public void deleteMetadataCollection(Context context, String libraryUniqueId) {
+        new Delete().from(MetadataCollection.class).where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId))
+                .execute();
+    }
+
+    @Override
+    public void deleteMetadataCollectionByDocId(Context context, String docId) {
+        new Delete().from(MetadataCollection.class).where(MetadataCollection_Table.documentUniqueId.eq(docId))
+                .execute();
     }
 
     @Override
@@ -258,10 +293,10 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String metadataMD5) {
+    public MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String associationId) {
         return new Select().from(MetadataCollection.class)
                 .where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId))
-                .and(MetadataCollection_Table.documentUniqueId.eq(metadataMD5)).querySingle();
+                .and(MetadataCollection_Table.documentUniqueId.eq(associationId)).querySingle();
     }
 
     @Override
@@ -270,4 +305,9 @@ public class LocalDataProvider implements DataProviderBase {
                 .where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId)).queryList();
     }
 
+    @Override
+    public MetadataCollection findMetadataCollection(Context context, String associationId) {
+        return new Select().from(MetadataCollection.class)
+                .where(MetadataCollection_Table.documentUniqueId.eq(associationId)).querySingle();
+    }
 }

@@ -16,6 +16,7 @@ public class ProductQuery extends BaseQuery{
     public String key;
     public String value;
     public String ownerId;
+    public int[] sourceTypes = new int[]{3};
     public long parentId;
     public int coverLimit = 10;
 

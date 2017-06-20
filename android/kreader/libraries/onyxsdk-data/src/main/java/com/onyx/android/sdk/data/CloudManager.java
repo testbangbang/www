@@ -6,6 +6,9 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.data.manager.CacheManager;
+import com.onyx.android.sdk.data.provider.DataProviderBase;
+import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.dataprovider.BuildConfig;
 import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
@@ -21,6 +24,9 @@ public class CloudManager {
     private RequestManager requestManager;
     private CloudConf chinaCloudConf;
     private CloudConf globalCloudConf;
+    private CacheManager cacheManager;
+
+    private String token;
 
     public CloudManager() {
         requestManager = new RequestManager(Thread.NORM_PRIORITY);
@@ -39,6 +45,19 @@ public class CloudManager {
             cloudConf = globalCloudConf;
         }
         return cloudConf;
+    }
+
+    public void setAllCloudConf(CloudConf cloudConf) {
+        setChinaCloudConf(cloudConf);
+        setGlobalCloudConf(cloudConf);
+    }
+
+    public void setChinaCloudConf(CloudConf cloudConf) {
+        chinaCloudConf = cloudConf;
+    }
+
+    public void setGlobalCloudConf(CloudConf cloudConf) {
+        globalCloudConf = cloudConf;
     }
 
     public void acquireWakeLock(final Context context, final String tag) {
@@ -71,6 +90,11 @@ public class CloudManager {
     public boolean submitRequest(final Context context, final BaseCloudRequest request, final BaseCallback callback) {
         final Runnable runnable = generateRunnable(request);
         return requestManager.submitRequestToMultiThreadPool(context, request, runnable, callback);
+    }
+
+    public boolean submitRequestToSingle(final Context context, final BaseCloudRequest request, final BaseCallback callback) {
+        final Runnable runnable = generateRunnable(request);
+        return requestManager.submitRequest(context, request, runnable, callback);
     }
 
     public Handler getLooperHandler() {
@@ -106,5 +130,24 @@ public class CloudManager {
 
     static public void terminateCloudDatabase() {
         FlowManager.destroy();
+    }
+
+    public CacheManager getCacheManager() {
+        if (cacheManager == null) {
+            cacheManager = new CacheManager();
+        }
+        return cacheManager;
+    }
+
+    public DataProviderBase getCloudDataProvider() {
+        return DataProviderManager.getCloudDataProvider(getCloudConf());
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
