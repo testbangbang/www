@@ -8,6 +8,9 @@ import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.kreader.note.NoteManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by zhuzeng on 9/19/16.
  */
@@ -47,7 +50,7 @@ public class NoteEventProcessorBase {
     private NoteManager noteManager;
     private PageInfo lastPageInfo;
     private volatile RectF limitRect = new RectF();
-    private volatile RectF excludeRect = new RectF();
+    private volatile List<RectF> excludeRect = new ArrayList<>();
 
     public NoteEventProcessorBase(final NoteManager p) {
         noteManager = p;
@@ -85,8 +88,9 @@ public class NoteEventProcessorBase {
         limitRect.set(rect);
     }
 
-    public void setExcludeRect(Rect rect) {
-        excludeRect.set(rect);
+    public void addExcludeRect(List<RectF> exclude) {
+        clearExcludeRect();
+        excludeRect.addAll(exclude);
     }
 
     public boolean inLimitRect(final float x, final float y) {
@@ -94,7 +98,19 @@ public class NoteEventProcessorBase {
     }
 
     public boolean inExcludeRect(final float x, final float y) {
-        return excludeRect.contains(x, y);
+        if (excludeRect == null || excludeRect.size() == 0) {
+            return false;
+        }
+        for (RectF rect : excludeRect) {
+            if (rect.contains(x, y)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void clearExcludeRect() {
+        excludeRect.clear();
     }
 
     public boolean isInValidRegion(final float x, final float y) {

@@ -21,9 +21,11 @@ import com.onyx.android.sdk.data.StatisticsCloudManager;
 import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.data.request.cloud.GetStatisticsRequest;
 import com.onyx.android.sdk.data.request.cloud.PushStatisticsRequest;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.dialog.DialogLoading;
@@ -100,13 +102,13 @@ public class StatisticsActivity extends ActionBarActivity {
     }
 
     private void checkWifi() {
-        if (!DeviceUtils.isWifiConnected(this)) {
+        if (Device.currentDevice().hasWifi(this) && !NetworkUtil.isWiFiConnected(this)) {
             OnyxCustomDialog.getConfirmDialog(this, getString(R.string.wifi_dialog_content), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    DeviceUtils.changeWiFi(StatisticsActivity.this, true);
+                    NetworkUtil.enableWiFi(StatisticsActivity.this, true);
                 }
-            }).show();
+            }, null).show();
         }
     }
 
@@ -116,7 +118,7 @@ public class StatisticsActivity extends ActionBarActivity {
         String pagePosition = String.format("%d/%d", index + 1, count);
         page.setText(pagePosition);
         String pageTitle = getString(pageTitles[index]);
-        String network = String.format("(%s)", DeviceUtils.isWifiConnected(this) ? getString(R.string.network_data) : getString(R.string.local_data));
+        String network = String.format("(%s)", NetworkUtil.isWiFiConnected(this) ? getString(R.string.network_data) : getString(R.string.local_data));
         String text = pageTitle + network;
         title.setText(text);
     }

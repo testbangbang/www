@@ -42,4 +42,5 @@
     <dimen name="dialog_table_of_content_radio_button_padding">8dp</dimen>
     <dimen name="view_pinch_zooming_message_font_size">25sp</dimen>
     <dimen name="view_pinch_zooming_message_scale_size">48sp</dimen>
+    <dimen name="dialog_dict_top_layout_margin">20dp</dimen>
 </resources>

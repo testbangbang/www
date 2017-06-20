@@ -40,4 +40,14 @@ public class EpdImx6 extends EpdDevice {
     public void cleanUpdate(View view) {
         resetUpdate(view);
     }
+
+    @Override
+    public void enableRegal() {
+        EpdController.enableRegal();
+    }
+
+    @Override
+    public void disableRegal() {
+        EpdController.disableRegal();
+    }
 }

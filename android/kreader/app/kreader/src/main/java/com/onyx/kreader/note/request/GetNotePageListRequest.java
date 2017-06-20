@@ -13,7 +13,7 @@ public class GetNotePageListRequest extends ReaderBaseNoteRequest{
 
     @Override
     public void execute(NoteManager noteManager) throws Exception {
-        pageList = noteManager.getNoteDocument().getNoEmptyPageList();
+        pageList = noteManager.getNoteDocument().getNoEmptyPageList(getContext());
     }
 
     public List<String> getPageList() {

@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -30,6 +29,7 @@ import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.actions.DictionaryQueryAction;
 import com.onyx.kreader.ui.data.DictionaryQuery;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -48,6 +48,7 @@ public class PopupSelectionMenu extends LinearLayout {
     private static final int MAX_DICTIONARY_LOAD_COUNT = 6;
     private static final int DELAY_DICTIONARY_LOAD_TIME = 2000;
     public static final String BAIDU_BAIKE = "https://wapbaike.baidu.com/item/";
+    public static final String WIKTIONARY_URL = "https://en.wiktionary.org/wiki/";
 
     public enum SelectionType {
         SingleWordType,
@@ -117,7 +118,7 @@ public class PopupSelectionMenu extends LinearLayout {
         dictViewWidth = layout.getMeasuredWidth();
         dictViewHeight = (layout.getMeasuredHeight() * heightDenominator / 100);
         layout.addView(this);
-
+        disableMenuByConfig();
         highlightView = (ImageView) findViewById(R.id.imageview_highlight);
         highLightText = (TextView) findViewById(R.id.highLightText);
         mDictTitle = (TextView) findViewById(R.id.dict_title);
@@ -259,7 +260,7 @@ public class PopupSelectionMenu extends LinearLayout {
         webSearch.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                openBaiduBaike();
+                webSearchWord();
             }
         });
 
@@ -281,7 +282,16 @@ public class PopupSelectionMenu extends LinearLayout {
         initDictList();
     }
 
-    private void openBaiduBaike(){
+    private void disableMenuByConfig() {
+        boolean ttsEnabled = DeviceConfig.sharedInstance(getContext()).isTtsEnabled();
+        if (!ttsEnabled) {
+            findViewById(R.id.imagebutton_tts).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.imagebutton_tts).setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void webSearchWord(){
         if (!NetworkHelper.requestWifi(getActivity())) {
             return;
         }
@@ -289,7 +299,8 @@ public class PopupSelectionMenu extends LinearLayout {
         String headWord = mDictTitle.getText().toString();
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
-        Uri content_url = Uri.parse(BAIDU_BAIKE + headWord);
+        String uriString = DeviceUtils.isChinese(getContext()) ? BAIDU_BAIKE : WIKTIONARY_URL;
+        Uri content_url = Uri.parse(uriString + headWord);
         intent.setData(content_url);
         getActivity().startActivity(intent);
     }

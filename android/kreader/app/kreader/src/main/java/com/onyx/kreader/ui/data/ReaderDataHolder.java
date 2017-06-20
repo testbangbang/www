@@ -5,12 +5,15 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -27,6 +30,8 @@ import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
+import com.onyx.kreader.R;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.receiver.DeviceReceiver;
@@ -63,6 +68,7 @@ public class ReaderDataHolder {
     private ReaderSelectionManager selectionManager;
     private ReaderTtsManager ttsManager;
     private NoteManager noteManager;
+    private DataManager dataManager;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private EventBus eventBus = new EventBus();
     private EventReceiver eventReceiver;
@@ -119,6 +125,10 @@ public class ReaderDataHolder {
         return !isFixedPageDocument();
     }
 
+    public boolean supportNoteFunc() {
+        return !DeviceConfig.sharedInstance(getContext()).isDisableNoteFunc() && isFixedPageDocument();
+    }
+
     public boolean supportScalable() {
         return getReaderViewInfo() != null && getReaderViewInfo().supportScalable;
     }
@@ -172,6 +182,10 @@ public class ReaderDataHolder {
 
     public boolean inNoteWritingProvider() {
         return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
+    }
+
+    public boolean inReadingProvider() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.READING_PROVIDER);
     }
 
     public boolean isNoteDirty() {
@@ -296,6 +310,13 @@ public class ReaderDataHolder {
         return noteManager;
     }
 
+    public DataManager getDataManager() {
+        if (dataManager == null) {
+            dataManager = new DataManager();
+        }
+        return dataManager;
+    }
+
     public void updateRawEventProcessor() {
         if (!supportScalable()) {
             getNoteManager().stopRawEventProcessor();
@@ -390,11 +411,6 @@ public class ReaderDataHolder {
                 onRenderRequestFinished(renderRequest, e);
                 callback.invoke(callback, request, e);
                 onPageDrawFinished(renderRequest, e);
-
-                if (!renderRequest.isAbort()) {
-                    updateReaderMenuState();
-                }
-
             }
         });
     }
@@ -407,6 +423,7 @@ public class ReaderDataHolder {
         if (e != null || request.isAbort()) {
             return;
         }
+        updateReaderMenuState();
         saveDocumentOptions(request);
         preRenderNext();
     }
@@ -664,5 +681,10 @@ public class ReaderDataHolder {
         final NetworkChangedEvent event = NetworkChangedEvent.create(getContext(), connected, networkType);
         getEventBus().post(event);
     }
+
+    public void enterSlideshow() {
+        getEventBus().post(new SlideshowStartEvent());
+    }
 }
+
 

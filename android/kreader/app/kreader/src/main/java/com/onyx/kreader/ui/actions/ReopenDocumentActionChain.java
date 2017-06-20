@@ -24,7 +24,7 @@ public class ReopenDocumentActionChain extends BaseAction {
             actionChain.addAction(new FlushNoteAction(null, false, false, true, true));
         }
         actionChain.addAction(new CloseAction());
-        actionChain.addAction(new OpenDocumentAction(activity, readerDataHolder.getDocumentPath(),readerDataHolder.getBookName()));
+        actionChain.addAction(new OpenDocumentAction(activity, readerDataHolder.getDocumentPath(),readerDataHolder.getBookName(),""));
         actionChain.execute(readerDataHolder, callback);
     }
 }

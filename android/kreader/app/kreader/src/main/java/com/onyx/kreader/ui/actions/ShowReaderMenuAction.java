@@ -95,7 +95,7 @@ public class ShowReaderMenuAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerActivity = (ReaderActivity)readerDataHolder.getContext();
-        showReaderMenu(readerDataHolder, DeviceUtils.isFullScreen(readerActivity));
+        showReaderMenu(readerDataHolder, !SingletonSharedPreference.isSystemStatusBarEnabled(readerActivity));
         BaseCallback.invoke(callback, null, null);
     }
 
@@ -188,13 +188,14 @@ public class ShowReaderMenuAction extends BaseAction {
         if (!Device.detectDevice().isTouchable(readerDataHolder.getContext())){
             disableMenus.add(ReaderMenuAction.ZOOM_BY_RECT);
             disableMenus.add(ReaderMenuAction.NAVIGATION_MORE_SETTINGS);
+            disableMenus.add(ReaderMenuAction.MANUAL_CROP);
         }
 
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_DRAG);
-        }else {
-            disableMenus.add(ReaderMenuAction.SCRIBBLE_COLOR);
         }
+
+        disableMenus.add(ReaderMenuAction.SCRIBBLE_COLOR);
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
@@ -310,7 +311,7 @@ public class ShowReaderMenuAction extends BaseAction {
                         showScreenRefreshDialog(readerDataHolder);
                         break;
                     case SLIDESHOW:
-                        enterSlideshow(readerDataHolder);
+                        enterSlideshow(readerDataHolder, readerActivity);
                         break;
                     case FRONT_LIGHT:
                         showBrightnessDialog(readerDataHolder);
@@ -531,7 +532,7 @@ public class ShowReaderMenuAction extends BaseAction {
         dlg.show(readerActivity.getFragmentManager());
     }
 
-    private void enterSlideshow(final ReaderDataHolder readerDataHolder) {
+    public static void enterSlideshow(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
         hideReaderMenu();
         new SlideshowAction(readerActivity.getMainView()).execute(readerDataHolder, null);
     }
@@ -680,7 +681,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     }
 
-    private void showTtsDialog(final ReaderDataHolder readerDataHolder){
+    public static void showTtsDialog(final ReaderDataHolder readerDataHolder){
         hideReaderMenu();
         StartTtsAction action = new StartTtsAction(null);
         action.execute(readerDataHolder, null);
@@ -704,7 +705,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean showFullToolbar) {
         hideReaderMenu();
-        final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getMainView(),
+        final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getExtraView(),
                 getScribbleActionCallback(readerDataHolder),
                 disableMenus,
                 showFullToolbar);
@@ -922,7 +923,7 @@ public class ShowReaderMenuAction extends BaseAction {
         clearPageAction.execute(readerDataHolder, null);
     }
 
-    private static void startErasing(final ReaderDataHolder readerDataHolder) {
+    public static void startErasing(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
