@@ -1,8 +1,10 @@
 package com.onyx.android.sdk.ui.dialog;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -30,6 +32,7 @@ public class DialogLoading extends OnyxBaseDialog {
             findViewById(R.id.divider_line).setVisibility(View.INVISIBLE);
             mCancelButton.setVisibility(View.INVISIBLE);
         }
+        setToastViewMaxWidth(getPercentageWidth(context));
         setCanceledOnTouchOutside(false);
     }
 
@@ -94,5 +97,16 @@ public class DialogLoading extends OnyxBaseDialog {
     public void setConfirmButtonClickListener(Button.OnClickListener confirmClickListener) {
         clickListener = confirmClickListener;
         mConfirmButton.setOnClickListener(confirmClickListener);
+    }
+
+    public void setToastViewMaxWidth(int width) {
+        mTextViewToastMessage.setMaxWidth(width);
+    }
+
+    private int getPercentageWidth(Context context) {
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(dm);
+        return (dm.widthPixels * 5 / 10);
     }
 }

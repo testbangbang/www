@@ -72,4 +72,6 @@
     <string name="expand">Расширение</string>
     <string name="collapse">Сужение</string>
     <string name="jump">Переход</string>
+    <string name="cold_light">Яркость</string>
+    <string name="warm_light">Теплый свет</string>
 </resources>

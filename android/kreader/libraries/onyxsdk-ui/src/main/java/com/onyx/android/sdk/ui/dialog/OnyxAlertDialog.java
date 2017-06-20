@@ -132,54 +132,13 @@ public class OnyxAlertDialog extends DialogFragment {
             alertTittleBarLayout.setVisibility(View.GONE);
         }
 
-        if (params.enableNegativeButton) {
-            negativeButton.setVisibility(View.VISIBLE);
-            if (StringUtils.isNotBlank(params.negativeButtonText)) {
-                negativeButton.setText(params.negativeButtonText);
-            }
-            if (params.negativeAction != null) {
-                negativeButton.setOnClickListener(params.negativeAction);
-            }
-        } else {
-            negativeButton.setVisibility(View.GONE);
-        }
-
-        if (params.enablePositiveButton) {
-            positiveButton.setVisibility(View.VISIBLE);
-            if (StringUtils.isNotBlank(params.positiveButtonText)) {
-                positiveButton.setText(params.positiveButtonText);
-            }
-            if (params.positiveAction != null) {
-                positiveButton.setOnClickListener(params.positiveAction);
-            }
-        } else {
-            positiveButton.setVisibility(View.GONE);
-        }
-
-        if (params.enableNeutralButton) {
-            neutralButton.setVisibility(View.VISIBLE);
-            btnNeutralDivider.setVisibility(View.VISIBLE);
-            neutralButton.setText(params.neutralButtonText);
-            if (params.neutralAction != null) {
-                neutralButton.setOnClickListener(params.neutralAction);
-            }
-        } else {
-            neutralButton.setVisibility(View.GONE);
-            btnNeutralDivider.setVisibility(View.GONE);
-        }
-
+        setNegativeButton(params.enableNegativeButton, params.negativeButtonText, params.negativeAction);
+        setPositiveButton(params.enablePositiveButton, params.positiveButtonText, params.positiveAction);
+        setNeutralButton(params.enableNeutralButton, params.neutralButtonText, params.neutralAction);
+        setEnableFunctionPanel(params.enableFunctionPanel);
         if (!(params.enableNegativeButton && params.enablePositiveButton)) {
             functionButtonDividerLine.setVisibility(View.GONE);
         }
-
-        if (params.enableFunctionPanel) {
-            functionPanelLayout.setVisibility(View.VISIBLE);
-            bottomDivider.setVisibility(View.VISIBLE);
-        } else {
-            functionPanelLayout.setVisibility(View.GONE);
-            bottomDivider.setVisibility(View.GONE);
-        }
-
         parentView.findViewById(R.id.button_function_panel).setVisibility(params.enablePageIndicator ? View.VISIBLE : View.GONE);
         pageSizeIndicator.setVisibility(params.enablePageIndicator ? View.VISIBLE : View.GONE);
 
@@ -192,7 +151,7 @@ public class OnyxAlertDialog extends DialogFragment {
                     params.customLayoutHeight, params.customLayoutWidth);
             params.customViewAction.onCreateCustomView(customContentView, pageSizeIndicator);
         } else {
-            alertMessageView.setText(params.alertMsgString);
+            setAlertMsg(params.alertMsgString);
         }
         if (params.customLayoutBackgroundResId != -1) {
             ViewGroup viewGroup = (ViewGroup) parentView.findViewById(R.id.layout_dialog);
@@ -219,13 +178,13 @@ public class OnyxAlertDialog extends DialogFragment {
 
     @Override
     public void show(FragmentManager manager, String tag) {
-        EpdController.enableRegal(false);
+        EpdController.disableRegal();
         super.show(manager, tag);
     }
 
     @Override
     public void dismiss() {
-        EpdController.enableRegal(true);
+        EpdController.enableRegal();
         super.dismiss();
     }
 
@@ -506,5 +465,48 @@ public class OnyxAlertDialog extends DialogFragment {
             return this;
         }
 
+    }
+
+    public void setAlertMsg(String alertMsg) {
+        alertMessageView.setVisibility(View.VISIBLE);
+        alertMessageView.setText(alertMsg);
+    }
+
+    public void setEnableFunctionPanel(boolean enable) {
+        functionPanelLayout.setVisibility(enable ? View.VISIBLE : View.GONE);
+        bottomDivider.setVisibility(enable ? View.VISIBLE : View.GONE);
+    }
+
+    public void setNegativeButton(boolean enable, String text, View.OnClickListener listener) {
+        setButtonView(negativeButton, enable, text, listener);
+        if (!(getParams().isEnablePositiveButton() && enable)) {
+            functionButtonDividerLine.setVisibility(View.GONE);
+        }
+    }
+
+    public void setPositiveButton(boolean enable, String text, View.OnClickListener listener) {
+        setButtonView(positiveButton, enable, text, listener);
+        if (!(getParams().isEnableNegativeButton() && enable)) {
+            functionButtonDividerLine.setVisibility(View.GONE);
+        }
+    }
+
+    public void setNeutralButton(boolean enable, String text, View.OnClickListener listener) {
+        setButtonView(neutralButton, enable, text, listener);
+        btnNeutralDivider.setVisibility(enable ? View.VISIBLE : View.GONE);
+    }
+
+    private void setButtonView(Button button, boolean enable, String text, View.OnClickListener listener) {
+        if (!enable) {
+            button.setVisibility(View.GONE);
+            return;
+        }
+        button.setVisibility(View.VISIBLE);
+        if (StringUtils.isNotBlank(text)) {
+            button.setText(text);
+        }
+        if (listener != null) {
+            button.setOnClickListener(listener);
+        }
     }
 }
