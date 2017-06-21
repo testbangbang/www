@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.onyx.android.sdk.scribble.shape.*;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -166,11 +167,15 @@ public class NotePage {
         }
 
         for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
-            for(TouchPoint touchPoint : touchPointList.getPoints()) {
-                if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
-                    removeShape(entry.getValue(), true);
-                    break;
-                }
+            hitTestShape(entry, touchPointList, radius);
+        }
+    }
+
+    private void hitTestShape(Map.Entry<String, Shape> entry, final TouchPointList touchPointList, final float radius) {
+        for(TouchPoint touchPoint : touchPointList.getPoints()) {
+            if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                removeShape(entry.getValue(), true);
+                return;
             }
         }
     }
