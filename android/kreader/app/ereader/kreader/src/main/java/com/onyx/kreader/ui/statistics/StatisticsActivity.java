@@ -161,10 +161,10 @@ public class StatisticsActivity extends ActionBarActivity {
         getCloudStore().submitRequest(this, statisticsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (dialogLoading != null && dialogLoading.isShowing()) {
-                    dialogLoading.dismiss();
-                    dialogLoading = null;
+                if (StatisticsActivity.this.isFinishing()) {
+                    return;
                 }
+                dismissDialog();
                 if (e != null) {
                     Toast.makeText(StatisticsActivity.this, R.string.load_statistical_data_failed, Toast.LENGTH_SHORT).show();
                     return;
@@ -210,11 +210,19 @@ public class StatisticsActivity extends ActionBarActivity {
 
     @Override
     protected void onDestroy() {
+        dismissDialog();
         super.onDestroy();
         if (networkConnectChangedReceiver != null) {
             unregisterReceiver(networkConnectChangedReceiver);
         }
         ButterKnife.unbind(this);
+    }
+
+    private void dismissDialog() {
+        if (dialogLoading != null && dialogLoading.isShowing()) {
+            dialogLoading.dismiss();
+            dialogLoading = null;
+        }
     }
 
     private class PageAdapter extends FragmentPagerAdapter {
