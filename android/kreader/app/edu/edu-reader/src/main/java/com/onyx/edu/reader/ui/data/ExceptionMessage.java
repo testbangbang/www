@@ -15,8 +15,8 @@ public class ExceptionMessage {
         switch (code) {
             case ReaderException.NO_REVIEW_DATA:
                 return context.getString(R.string.no_review_data);
-            case ReaderException.JSON_EXCEPTION:
-                return context.getString(R.string.json_exception);
+            case ReaderException.DATA_EXCEPTION:
+                return context.getString(R.string.data_exception);
         }
         return null;
     }

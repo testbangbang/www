@@ -1,11 +1,8 @@
 package com.onyx.edu.reader.note.request;
 
-import android.graphics.Color;
-
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.reader.api.ReaderException;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.data.ReaderNotePageNameMap;
@@ -42,7 +39,7 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
         }
         ReviewDocumentData data = JSONObjectParseUtils.parseObject(reviewDocumentData, ReviewDocumentData.class);
         if (data == null) {
-            throw ReaderException.jsonException();
+            throw ReaderException.dataException();
         }
 
         setVisiblePages(pages);
