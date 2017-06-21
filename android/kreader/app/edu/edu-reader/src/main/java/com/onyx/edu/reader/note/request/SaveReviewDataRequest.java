@@ -5,6 +5,7 @@ import android.graphics.Color;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.reader.api.ReaderException;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.data.ReaderNotePageNameMap;
@@ -36,9 +37,12 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
     @Override
     public void execute(NoteManager noteManager) throws Exception {
         setResumeRawInputProcessor(resume && noteManager.isDFBForCurrentShape());
+        if (StringUtils.isNullOrEmpty(reviewDocumentData)) {
+            throw ReaderException.noReviewData();
+        }
         ReviewDocumentData data = JSONObjectParseUtils.parseObject(reviewDocumentData, ReviewDocumentData.class);
         if (data == null) {
-            throw ReaderException.noReviewData();
+            throw ReaderException.jsonException();
         }
 
         setVisiblePages(pages);
@@ -57,7 +61,6 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
                     formShapeModel.setSubPageUniqueId(subPageUniqueId);
                 }
                 formShapeModel.setDocumentUniqueId(documentUniqueId);
-                formShapeModel.setColor(Color.RED);
                 newFormShapeModels.add(formShapeModel);
             }
         }

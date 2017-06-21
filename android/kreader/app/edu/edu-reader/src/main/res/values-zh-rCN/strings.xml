@@ -336,4 +336,5 @@
   <string name="synchronization_success">同步批改完成</string>
   <string name="update_fail">更新失败</string>
   <string name="no_review_data">没有批改作业</string>
+  <string name="json_exception">Json异常</string>
 </resources>
