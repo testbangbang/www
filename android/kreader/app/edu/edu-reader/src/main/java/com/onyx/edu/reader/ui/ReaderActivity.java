@@ -246,6 +246,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     public void onBackPressed() {
+        getReaderDataHolder().stop();
         ReaderTabHostBroadcastReceiver.sendTabBackPressedIntent(this);
     }
 
