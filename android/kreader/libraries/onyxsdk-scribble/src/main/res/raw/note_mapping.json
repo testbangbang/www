@@ -231,6 +231,31 @@
       {"pressure": 1024, "ratio": 1}]
   },
 
+  "mc_max": {"mappingList":  [
+    { "orientation" : 270,  "tx" : 0, "ty" : 1650, "epd": 90, "etx": 1650, "ety": 0},
+    { "orientation" : 180,  "tx" : 2200, "ty" : 1650,  "epd": 0, "etx": 0, "ety": 0},
+    { "orientation" : 90,  "tx" : 2200, "ty" : 0,  "epd": 270, "etx": 0, "ety": 2200},
+    { "orientation" : 0,  "tx" : 0, "ty" : 0,  "epd": 180, "etx": 2200, "ety": 1650}],
+
+    "pressureList" : [
+      {"pressure": 64, "ratio": 0.30},
+      {"pressure": 128, "ratio": 0.35},
+      {"pressure": 196, "ratio": 0.40},
+      {"pressure": 256, "ratio": 0.45},
+      {"pressure": 312, "ratio": 0.50},
+      {"pressure": 378, "ratio": 0.55},
+      {"pressure": 442, "ratio": 0.60},
+      {"pressure": 512, "ratio": 0.65},
+      {"pressure": 578, "ratio": 0.70},
+      {"pressure": 642, "ratio": 0.75},
+      {"pressure": 706, "ratio": 0.83},
+      {"pressure": 770, "ratio": 0.92},
+      {"pressure": 814, "ratio": 0.83},
+      {"pressure": 878, "ratio": 0.9},
+      {"pressure": 942, "ratio": 0.95},
+      {"pressure": 1024, "ratio": 1}]
+  },
+
   "egf": {"mappingList":  [
     { "orientation" : 270,  "tx" : 0, "ty" : 1650, "epd": 90, "etx": 1650, "ety": 0},
     { "orientation" : 180,  "tx" : 2200, "ty" : 1650,  "epd": 0, "etx": 0, "ety": 0},
