@@ -15,6 +15,8 @@ public class Algorithm {
         }
     }
 
+    public native static float distance(final float x1, final float y1, final float x2, final float y2, final float x, final float y);
+
     /**
      * 画图预处理函数
      * 调用时机:在画图窗口建立时，调用此函数
