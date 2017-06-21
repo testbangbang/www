@@ -593,6 +593,10 @@ public class ReaderDataHolder {
         closeDocument(callback);
     }
 
+    public void stop() {
+        clearFormFieldControls();
+    }
+
     private void closeFormMenu() {
         getEventBus().post(new CloseFormMenuEvent());
     }
