@@ -16,6 +16,7 @@ public class ReaderException extends Exception {
     public static final int UNKNOWN_EXCEPTION = 8;
     public static final int FILE_READ_ONLY = 9;
     public static final int NO_REVIEW_DATA = 10;
+    public static final int DATA_EXCEPTION = 11;
     public static final int ACTIVATION_FAILED = 0xff;
 
     public ReaderException(int theCode, String theMessage) {
@@ -53,6 +54,10 @@ public class ReaderException extends Exception {
 
     static public ReaderException noReviewData() {
         return exceptionFromCode(NO_REVIEW_DATA, "No correction data.");
+    }
+
+    static public ReaderException dataException() {
+        return exceptionFromCode(DATA_EXCEPTION, "data exception.");
     }
 
     static public ReaderException fileReadOnly() {

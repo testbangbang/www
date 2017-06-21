@@ -442,4 +442,5 @@
     <string name="synchronization_success">Synchronization is completed</string>
     <string name="update_fail">Update failed</string>
     <string name="no_review_data">No corrections</string>
+    <string name="data_exception">Data Exception</string>
 </resources>
