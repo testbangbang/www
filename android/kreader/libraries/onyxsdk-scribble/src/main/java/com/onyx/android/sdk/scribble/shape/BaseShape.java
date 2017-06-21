@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.*;
+import android.util.Log;
 
 import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -230,11 +231,8 @@ public class BaseShape implements Shape {
     }
 
     public boolean hitTest(final float x, final float y, final float radius) {
-        final float limit = radius * radius;
-        float thickness = getStrokeWidth();
+        final float limit = radius;
         float x1, y1, x2, y2;
-        float left, top, right, bottom;
-        float xMin = Float.MAX_VALUE, xMax = Float.MIN_VALUE, yMin = Float.MAX_VALUE, yMax = Float.MIN_VALUE;
         boolean hit = false;
         int first, second;
         final List<TouchPoint> points = normalizedPoints.getPoints();
@@ -248,27 +246,11 @@ public class BaseShape implements Shape {
             x2 = points.get(second).getX();
             y2 = points.get(second).getY();
 
-            left = x1 - thickness;
-            top = y1 - thickness;
-            right = x1 + thickness;
-            bottom = y1 + thickness;
-
-            boolean isIntersect = ShapeUtils.contains(x1, y1, x2, y2, x, y, limit);
+            boolean isIntersect = ShapeUtils.hitTest(x1, y1, x2, y2, x, y, limit);
+            Log.d("###","=========="+isIntersect);
             if (isIntersect) {
                 hit = true;
                 break;
-            }
-            if (xMin > left) {
-                xMin = left;
-            }
-            if (xMax < right) {
-                xMax = right;
-            }
-            if (yMin > top) {
-                yMin = top;
-            }
-            if (yMax < bottom) {
-                yMax = bottom;
             }
         }
         return hit;
