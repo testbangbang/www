@@ -35,3 +35,7 @@
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);
 }
+
+-keep class com.alibaba.fastjson.** { *; }
+-dontwarn com.alibaba.fastjson.**
+-dontnote com.alibaba.fastjson.**
