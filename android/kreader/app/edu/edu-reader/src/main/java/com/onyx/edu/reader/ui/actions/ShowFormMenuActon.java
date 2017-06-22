@@ -77,24 +77,25 @@ public class ShowFormMenuActon extends BaseAction {
         toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         final ReaderMenuAction[] expandedActions = {ReaderMenuAction.SCRIBBLE_WIDTH, ReaderMenuAction.SCRIBBLE_SHAPE, ReaderMenuAction.SCRIBBLE_ERASER};
 
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_exit, ReaderMenuAction.EXIT);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_submit, ReaderMenuAction.SUBMIT);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_download, ReaderMenuAction.FETCH_REVIEW_DATA);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_exit, ReaderMenuAction.EXIT, R.string.exit);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_submit, ReaderMenuAction.SUBMIT, R.string.submit);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_download, ReaderMenuAction.FETCH_REVIEW_DATA, R.string.fetch);
         if (showNoteMenu) {
-            addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width, ReaderMenuAction.SCRIBBLE_WIDTH);
-            addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape, ReaderMenuAction.SCRIBBLE_SHAPE);
-            addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_eraser_part, ReaderMenuAction.SCRIBBLE_ERASER);
-            addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_undo, ReaderMenuAction.SCRIBBLE_UNDO);
-            addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_save, ReaderMenuAction.SCRIBBLE_SAVE);
+            addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape, ReaderMenuAction.SCRIBBLE_SHAPE, R.string.shape);
+            addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width, ReaderMenuAction.SCRIBBLE_WIDTH, R.string.width);
+            addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_eraser_part, ReaderMenuAction.SCRIBBLE_ERASER, R.string.eraser);
+            addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_undo, ReaderMenuAction.SCRIBBLE_UNDO, R.string.undo);
+            addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_redo, ReaderMenuAction.SCRIBBLE_REDO, R.string.redo);
+            addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_save, ReaderMenuAction.SCRIBBLE_SAVE, R.string.save);
         }
 
         toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
 
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.prevbtn_bg, ReaderMenuAction.SCRIBBLE_PREV_PAGE);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.prevbtn_bg, ReaderMenuAction.SCRIBBLE_PREV_PAGE, R.string.prev_page);
 
         String positionText = (readerDataHolder.getCurrentPage() + 1) + "/" + readerDataHolder.getPageCount();
-        addTextViewHolder(toolbar, readerDataHolder.getContext(), readerDataHolder.getContext().getResources().getDimension(R.dimen.scribble_page_position_size), positionText, ReaderMenuAction.SCRIBBLE_PAGE_POSITION);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.nextbtn_bg, ReaderMenuAction.SCRIBBLE_NEXT_PAGE);
+        addPageTextViewHolder(toolbar, readerDataHolder.getContext(), readerDataHolder.getContext().getResources().getDimension(R.dimen.scribble_page_position_size), positionText, ReaderMenuAction.SCRIBBLE_PAGE_POSITION);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.nextbtn_bg, ReaderMenuAction.SCRIBBLE_NEXT_PAGE, R.string.next_page);
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -121,7 +122,7 @@ public class ShowFormMenuActon extends BaseAction {
         return toolbar;
     }
 
-    private void addImageViewHolder(OnyxToolbar toolbar, Context context, int imageResId, final ReaderMenuAction action) {
+    private void addImageViewTitleHolder(OnyxToolbar toolbar, Context context, int imageResId, final ReaderMenuAction action) {
         if (disableMenuActions.contains(action)) {
             return;
         }
@@ -132,14 +133,25 @@ public class ShowFormMenuActon extends BaseAction {
         scribbleViewHolderMap.put(action, viewHolder);
     }
 
-    private void addTextViewHolder(OnyxToolbar toolbar, Context context, float textSize, String text, final ReaderMenuAction action) {
+    private void addImageViewTitleHolder(OnyxToolbar toolbar, Context context, int imageResId, final ReaderMenuAction action, int titleResId) {
+        if (disableMenuActions.contains(action)) {
+            return;
+        }
+        CommonViewHolder viewHolder = OnyxToolbar.Builder.createImageViewTitleHolder(context, R.id.content_view, imageResId, R.id.title, titleResId, R.layout.tool_bar_image_title_view, action);
+        toolbar.addViewHolder(viewHolder);
+        scribbleViewHolderMap.put(action, viewHolder);
+    }
+
+    private void addPageTextViewHolder(OnyxToolbar toolbar, Context context, float textSize, String text, final ReaderMenuAction action) {
         if (disableMenuActions.contains(action)) {
             return;
         }
         TextView textView = new TextView(context);
         textView.setText(text);
         textView.setTextSize(textSize);
+
         OnyxToolbar.Builder.setLayoutParams(context, textView, 0, 0);
+        textView.setPadding(0, 0, 0, (int) context.getResources().getDimension(R.dimen.menu_text_padding_bottom));
         CommonViewHolder viewHolder = new CommonViewHolder(textView);
         textView.setTag(action);
         toolbar.addViewHolder(viewHolder);
