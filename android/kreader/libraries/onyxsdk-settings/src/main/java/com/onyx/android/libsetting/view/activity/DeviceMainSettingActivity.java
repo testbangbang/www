@@ -156,7 +156,6 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             }
         }
         if (config.isForceUseSingleRow()) {
-            Log.e("TAG", "adapter.dataList.size())"+adapter.dataList.size());
             layoutManager.setSpanCount(adapter.dataList.size());
         }
         adapter.notifyDataSetChanged();
