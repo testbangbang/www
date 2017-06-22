@@ -1,7 +1,6 @@
 package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.*;
-import android.util.Log;
 
 import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -247,7 +246,6 @@ public class BaseShape implements Shape {
             y2 = points.get(second).getY();
 
             boolean isIntersect = ShapeUtils.hitTest(x1, y1, x2, y2, x, y, limit);
-            Log.d("###","=========="+isIntersect);
             if (isIntersect) {
                 hit = true;
                 break;
