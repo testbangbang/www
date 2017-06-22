@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.v2;
 
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
@@ -24,6 +25,10 @@ import retrofit2.http.Query;
 
 public interface ContentService {
     String CONTENT_AUTH_PREFIX = "Bearer ";
+
+    @GET("devices/findByMac")
+    Call<IndexService> getIndexService(@Query("mac") final String macAddress,
+                                       @Query("installationId") final String installationId);
 
     @POST("auth/local")
     Call<AuthToken> getAccountToken(@Body final BaseAuthAccount account);
