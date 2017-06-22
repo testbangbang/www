@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    appCompat:alwaysLayoutImageView="true">
+
+    <ImageView
+        android:background="@drawable/imagebtn_bg"
+        android:id="@+id/content_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/menu_item_view_margin"
+        android:src="@drawable/ic_width_1"/>
+
+    <TextView
+        android:textSize="@dimen/scribble_page_position_size"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="@dimen/menu_item_view_margin"
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>

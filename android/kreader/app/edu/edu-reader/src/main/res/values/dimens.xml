@@ -105,4 +105,6 @@
     <dimen name="scribble_full_toolbar_padding">4dp</dimen>
     <dimen name="scribble_page_position_size">25sp</dimen>
     <dimen name="dialog_table_of_content_list_item_padding">4dp</dimen>
+    <dimen name="menu_item_view_margin">10dp</dimen>
+    <dimen name="menu_text_padding_bottom">34dp</dimen>
 </resources>
