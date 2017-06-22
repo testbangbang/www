@@ -41,6 +41,7 @@ public class FormFieldControlFactory {
 
     private static CheckBox createCheckBox(RelativeLayout parentView, ReaderFormCheckbox checkboxField) {
         CheckBox checkBox = new CheckBox(parentView.getContext());
+        checkBox.setBackgroundColor(Color.TRANSPARENT);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)checkboxField.getRect().width() + 10,
                 (int)checkboxField.getRect().height());
@@ -69,10 +70,10 @@ public class FormFieldControlFactory {
         params.topMargin = (int)bound.top;
 
         int index = 0;
-        int buttonWidth = (int) bound.height() / groupField.getButtons().size();
         for (ReaderFormRadioButton buttonField : groupField.getButtons()) {
             RadioButton button = new RadioButton(parentView.getContext());
-            RadioGroup.LayoutParams buttonParams = new RadioGroup.LayoutParams(buttonWidth, 0);
+            button.setBackgroundColor(Color.TRANSPARENT);
+            RadioGroup.LayoutParams buttonParams = new RadioGroup.LayoutParams((int) bound.width(), (int) buttonField.getRect().height());
             buttonParams.weight = 1.0f;
             buttonParams.setMargins(0, 0, 0, 0);
             button.setPadding(0, 0, 0, 0);
