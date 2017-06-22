@@ -2,8 +2,10 @@
   "has_front_light": false,
   "hide_vpn_setting": true,
   "hide_drm_setting": true,
+  "force_use_single_row":true,
   "setting_item_list": [
     "setting_item_wifi",
+    "setting_item_bluetooth",
     "setting_item_power",
     "setting_item_product_detail",
     "setting_item_firmware_update",

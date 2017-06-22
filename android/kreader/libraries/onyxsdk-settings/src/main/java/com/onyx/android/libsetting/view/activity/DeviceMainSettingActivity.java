@@ -9,6 +9,7 @@ import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     ActivityDeviceMainSettingBinding binding;
     ModelInfo info;
     SettingFunctionAdapter adapter;
+    GridLayoutManager layoutManager;
 
     private static final float miniPercent = 0.20f;
 
@@ -69,7 +71,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_device_main_setting);
         RecyclerView recyclerView = binding.functionRecyclerView;
         recyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 12);
+        layoutManager = new GridLayoutManager(this, 12);
         adapter = new SettingFunctionAdapter(this, new ArrayList<SettingItem>());
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -153,6 +155,9 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                     break;
             }
         }
+        if (config.isForceUseSingleRow()) {
+            layoutManager.setSpanCount(adapter.dataList.size());
+        }
         adapter.notifyDataSetChanged();
         PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) binding.infoArea.getLayoutParams();
         PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
@@ -162,6 +167,9 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
 
     // TODO: 2016/11/30 temp max 3 line layout
     private int calculateSpanSizeBySettingItemSize(int position, int settingItemSize) {
+        if (config.isForceUseSingleRow()){
+            return 1;
+        }
         switch (settingItemSize) {
             case 2:
             case 6:
@@ -279,6 +287,10 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         }
 
         public int getRowCount() {
+            if (SettingConfig.sharedInstance(context).isForceUseSingleRow()) {
+                return 1;
+            }
+
             if (dataList.size() >= 6) {
                 return 3;
             } else if (dataList.size() > 4) {

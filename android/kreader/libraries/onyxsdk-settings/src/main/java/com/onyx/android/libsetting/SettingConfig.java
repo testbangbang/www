@@ -79,6 +79,7 @@ public class SettingConfig {
         static  private  final String TEST_APPS_TAG = "test_apps";
 
         static private final String ENABLE_AUTO_WIFI_RESCAN_TAG = "enable_auto_wifi_scan";
+        static private final String FORCE_USE_SINGLE_ROW_TAG = "force_use_single_row";
     }
 
     static class Default {
@@ -543,6 +544,14 @@ public class SettingConfig {
         Boolean result = getData(Custom.ENABLE_AUTO_WIFI_RESCAN_TAG, Boolean.class);
         if (result == null) {
             return true;
+        }
+        return result;
+    }
+
+    public boolean isForceUseSingleRow(){
+        Boolean result =  getData(Custom.FORCE_USE_SINGLE_ROW_TAG,Boolean.class);
+        if (result == null) {
+            return false;
         }
         return result;
     }
