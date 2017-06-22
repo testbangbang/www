@@ -11,6 +11,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
+import com.onyx.android.eschool.manager.LeanCloudManager;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -88,6 +89,7 @@ public class SchoolApp extends MultiDexApplication {
             initDeviceConfig();
             initEventListener();
             initFrescoLoader();
+            initLeanCloud();
             initSystemInBackground();
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
@@ -256,6 +258,11 @@ public class SchoolApp extends MultiDexApplication {
 
     public void turnOffLed() {
         Device.currentDevice().led(this, false);
+    }
+
+    private void initLeanCloud() {
+        LeanCloudManager.initialize(this, DeviceConfig.sharedInstance(this).getLeanCloudApplicationId(),
+                DeviceConfig.sharedInstance(this).getLeanCloudClientKey());
     }
 
     public void initCloudStore() {

@@ -41,6 +41,8 @@ public class DeviceConfig {
     static public final String CLOUD_CONTENT_HOST = "cloud_content_host";
     static public final String CLOUD_CONTENT_API = "cloud_content_api";
     static public final String CLOUD_CONTENT_IMPORT_JSON_FILE_PATH = "cloud_content_import_json_path";
+    static public final String LEAN_CLOUD_APPLICATION_ID = "leanCloudAppId";
+    static public final String LEAN_CLOUD_CLIENT_KEY = "leanCloudClientKey";
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -179,5 +181,13 @@ public class DeviceConfig {
 
     public String getCloudContentImportJsonFilePath() {
         return backend.getString(CLOUD_CONTENT_IMPORT_JSON_FILE_PATH, "");
+    }
+
+    public String getLeanCloudApplicationId() {
+        return backend.getString(LEAN_CLOUD_APPLICATION_ID);
+    }
+
+    public String getLeanCloudClientKey() {
+        return backend.getString(LEAN_CLOUD_CLIENT_KEY);
     }
 }
