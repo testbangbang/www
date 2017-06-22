@@ -84,7 +84,7 @@
     <string name="double_page">Double\npage</string>
     <string name="nothing">no\ncrop</string>
     <string name="search">Search</string>
-    <string name="total_page" formatted="false">Total: %d </string>
+    <string name="total_page" formatted="false">Total: %d</string>
     <string name="min_scroll_toast">Has been scaled to the minimum value</string>
     <string name="max_scroll_toast">Has been scaled to the maximum value</string>
     <string name="did_not_find_the_dictionary">Didn\'t find the dictionary</string>
@@ -128,17 +128,27 @@
     <string name="settings_reflow_cache_tittle">Cache Reflow bitmap</string>
     <string name="settings_enable">Enabled</string>
     <string name="settings_disable">Disabled</string>
-    <string name="settings_battery_percentage_show_key" translatable="false">setting_battery_percentage_show</string>
-    <string name="settings_battery_graphic_show_key" translatable="false">setting_battery_graphic_show</string>
+    <string name="settings_battery_percentage_show_key" translatable="false">
+        setting_battery_percentage_show
+    </string>
+    <string name="settings_battery_graphic_show_key" translatable="false">
+        setting_battery_graphic_show
+    </string>
     <string name="settings_time_show_key" translatable="false">setting_time_status</string>
     <string name="settings_battery_percentage_show_tittle">Show Current Battery Percentage</string>
     <string name="settings_battery_graphic_show_tittle">Show Current Battery Graphic</string>
     <string name="settings_time_show_tittle">Show Current Time</string>
-    <string name="settings_scribble_bar_show_reader_status_bar_key" translatable="false">setting_scribble_bar_show_reader_status_bar</string>
-    <string name="settings_scribble_bar_show_reader_status_bar_tittle">Show Reader Status Bar In Scribble Mode</string>
+    <string name="settings_scribble_bar_show_reader_status_bar_key" translatable="false">
+        setting_scribble_bar_show_reader_status_bar
+    </string>
+    <string name="settings_scribble_bar_show_reader_status_bar_tittle">Show Reader Status Bar In
+        Scribble Mode
+    </string>
     <string name="settings_show">Show</string>
     <string name="settings_hide">Hide</string>
-    <string name="settings_save_reader_option_paginally_key" translatable="false">setting_save_reader_option_paginally</string>
+    <string name="settings_save_reader_option_paginally_key" translatable="false">
+        setting_save_reader_option_paginally
+    </string>
     <string name="settings_save_reader_option_paginally_tittle">Save Options Paginally</string>
     <string name="settings_key_binding_prev_page_key" translatable="false">prevPage</string>
     <string name="settings_key_binding_next_page_key" translatable="false">nextPage</string>
@@ -148,24 +158,37 @@
     <string name="settings_key_binding_move_right_key" translatable="false">moveRight</string>
     <string name="settings_key_binding_move_up_key" translatable="false">moveUp</string>
     <string name="settings_key_binding_move_down_key" translatable="false">moveDown</string>
-    <string name="settings_key_binding_increase_font_size_key" translatable="false">increaseFontSize</string>
-    <string name="settings_key_binding_decrease_font_size_key" translatable="false">decreaseFontSize</string>
+    <string name="settings_key_binding_increase_font_size_key" translatable="false">
+        increaseFontSize
+    </string>
+    <string name="settings_key_binding_decrease_font_size_key" translatable="false">
+        decreaseFontSize
+    </string>
     <string name="settings_key_binding_prev_page_tittle">Prev Page</string>
     <string name="settings_key_binding_next_page_tittle">Next Page</string>
     <string name="settings_key_binding_prev_view_tittle">Prev View</string>
     <string name="settings_key_binding_next_view_tittle">Next View</string>
     <string name="settings_config_key_function">Set this key\'s function</string>
-    <string name="settings_time_show_format_key" translatable="false">setting_time_show_format</string>
+    <string name="settings_time_show_format_key" translatable="false">setting_time_show_format
+    </string>
     <string name="settings_time_show_format_tittle">Use 24-hours format</string>
     <string name="settings_time_show_format_24hours">13:00</string>
     <string name="settings_time_show_format_12hours">1:00 PM</string>
-    <string name="settings_enable_system_status_bar_key" translatable="false">setting_enable_system_status_bar</string>
+    <string name="settings_enable_system_status_bar_key" translatable="false">
+        setting_enable_system_status_bar
+    </string>
     <string name="settings_enable_system_status_bar_tittle">Enable System Status Bar</string>
-    <string name="settings_enable_reader_status_bar_key" translatable="false">setting_enable_reader_status_bar</string>
+    <string name="settings_enable_reader_status_bar_key" translatable="false">
+        setting_enable_reader_status_bar
+    </string>
     <string name="setting_enable_reader_status_bar_tittle">Enable Reader Status Bar</string>
-    <string name="settings_enable_multiple_tabs_key" translatable="false">setting_enable_multiple_tabs</string>
+    <string name="settings_enable_multiple_tabs_key" translatable="false">
+        setting_enable_multiple_tabs
+    </string>
     <string name="settings_enable_multiple_tabs_title">Enable multiple documents</string>
-    <string name="settings_search_menu_position_key" translatable="false">settings_search_menu_position</string>
+    <string name="settings_search_menu_position_key" translatable="false">
+        settings_search_menu_position
+    </string>
     <string name="settings_search_menu_position_tittle">Set Search Menu Position</string>
     <string name="settings_bookmark_key" translatable="false">show_bookmark</string>
     <string name="settings_note_key" translatable="false">show_note</string>
@@ -181,15 +204,21 @@
 
     <string name="settings_show_doc_title_key" translatable="false">setting_show_title_key</string>
     <string name="settings_show_doc_title">Show document title in status bar</string>
-    <string name="settings_crop_to_width_in_landscape_key" translatable="false">crop_to_width_in_landscape_key</string>
+    <string name="settings_crop_to_width_in_landscape_key" translatable="false">
+        crop_to_width_in_landscape_key
+    </string>
     <string name="settings_crop_to_width_in_landscape_title">Crop to width in landscape</string>
 
-    <string name="settings_show_annotation_key" translatable="false">setting_show_annotation_key</string>
+    <string name="settings_show_annotation_key" translatable="false">setting_show_annotation_key
+    </string>
     <string name="settings_show_annotation_title">Show annotation</string>
 
-    <string name="settings_annotation_highlight_style_key" translatable="false">settings_annotation_highlight_style_key</string>
+    <string name="settings_annotation_highlight_style_key" translatable="false">
+        settings_annotation_highlight_style_key
+    </string>
 
-    <string name="settings_scribble_smooth_key" translatable="false">setting_scribble_smooth_key</string>
+    <string name="settings_scribble_smooth_key" translatable="false">setting_scribble_smooth_key
+    </string>
     <string name="settings_scribble_smooth_title">Smooth scribble</string>
 
     <string name="settings_left_margin_key" translatable="false">setting_left_margin_key</string>
@@ -204,14 +233,19 @@
     <string name="settings_right_margin_key_function">right margin</string>
     <string name="settings_right_margin_tittle">right margin</string>
 
-    <string name="settings_bottom_margin_key" translatable="false">setting_bottom_margin_key</string>
+    <string name="settings_bottom_margin_key" translatable="false">setting_bottom_margin_key
+    </string>
     <string name="settings_bottom_margin_key_function">bottom margin</string>
     <string name="settings_bottom_margin_tittle">bottom margin</string>
 
-    <string name="settings_acquire_scribble_lock_key" translatable="false">acquire_scribble_lock_key</string>
+    <string name="settings_acquire_scribble_lock_key" translatable="false">
+        acquire_scribble_lock_key
+    </string>
     <string name="settings_acquire_scribble_lock_title">Keep screen on when scribble.</string>
 
-    <string name="settings_scribble_base_width_key" translatable="false">settings_scribble_base_width_key</string>
+    <string name="settings_scribble_base_width_key" translatable="false">
+        settings_scribble_base_width_key
+    </string>
     <string name="settings_scribble_base_width_summary">Set scribble minimum line width</string>
     <string name="settings_scribble_base_width_tittle">Set scribble minimum line width</string>
     <string name="settings_key_binding_move_up_tittle">Move Up</string>
@@ -220,7 +254,9 @@
     <string name="settings_key_binding_move_right_tittle">Move Right</string>
     <string name="settings_key_binding_increase_font_size_tittle">Increase Font Size</string>
     <string name="settings_key_binding_decrease_font_size_tittle">Decrease Font Size</string>
-    <string name="settings_key_binding_reset_default_key" translatable="false">settings_key_binding_reset_default_key</string>
+    <string name="settings_key_binding_reset_default_key" translatable="false">
+        settings_key_binding_reset_default_key
+    </string>
     <string name="settings_key_binding_reset_default">Reset Default Key Binding</string>
     <string name="tts_play_failed" translatable="false">TTS failed!</string>
 
@@ -231,14 +267,20 @@
     <string name="dialog_bind_hot_key_tittle">Bind Hot Key</string>
     <string name="dialog_bind_hot_key_current_bind_function">Function To Bind Hot Key:</string>
     <string name="dialog_bind_hot_key_current_bind_key">Current Binding Key:</string>
-    <string name="dialog_bind_hot_key_press_key_to_bind_function">Press Key To Bind This Function.(Except Return Key And Menu Key)</string>
+    <string name="dialog_bind_hot_key_press_key_to_bind_function">Press Key To Bind This
+        Function.(Except Return Key And Menu Key)
+    </string>
     <string name="dialog_bind_hot_key_none">None</string>
     <string name="dialog_bind_hot_key_next_page_button">Next Page Button</string>
     <string name="dialog_bind_hot_key_prev_page_button">Prev Page Button</string>
 
     <string name="dialog_quick_view_enter_page_number">Please enter the jump page number</string>
-    <string name="dialog_quick_view_enter_page_number_out_of_range_error">The jump page number out of range</string>
-    <string name="dialog_quick_view_enter_page_number_empty_error">The jump page number can not be empty</string>
+    <string name="dialog_quick_view_enter_page_number_out_of_range_error">The jump page number out
+        of range
+    </string>
+    <string name="dialog_quick_view_enter_page_number_empty_error">The jump page number can not be
+        empty
+    </string>
 
     <string name="reflowing">Reflowing</string>
     <string name="loading">Loading</string>
@@ -253,11 +295,17 @@
     <string name="export_all">Export all documentation page</string>
     <string name="export_part">Only export document containing notes page</string>
     <string name="export_options">Export Options</string>
-    <string name="export_annotation_explain">(Part only text annotation, exported as TXT format)</string>
-    <string name="export_highlight_explain">(Part only highlight show, exported as TXT format)</string>
-    <string name="export_scribble_explain">(Part only scribble annotation view, exported as PNG format)</string>
+    <string name="export_annotation_explain">(Part only text annotation, exported as TXT format)
+    </string>
+    <string name="export_highlight_explain">(Part only highlight show, exported as TXT format)
+    </string>
+    <string name="export_scribble_explain">(Part only scribble annotation view, exported as PNG
+        format)
+    </string>
     <string name="export_data_page">Export Data Page</string>
-    <string name="export_scribble_full_document_explain">(With scribble and all the original documents, exported as PDF format)</string>
+    <string name="export_scribble_full_document_explain">(With scribble and all the original
+        documents, exported as PDF format)
+    </string>
     <string name="export_brush_stroke_color">Export Brush Stroke Color</string>
     <string name="export_location_explain" formatted="false">Export Location: %s</string>
     <string name="export_success" formatted="false">Export success</string>
@@ -271,7 +319,9 @@
     <string name="Blue">Blue</string>
 
     <string name="sure_exit">Are you sure want to exit</string>
-    <string name="pinch_zooming_can_not_be_used">Pinch zoom is not supported by current page layout.</string>
+    <string name="pinch_zooming_can_not_be_used">Pinch zoom is not supported by current page
+        layout.
+    </string>
     <string name="dictionary_error">The dictionary is not installed or have exception</string>
     <string name="dictionary_data_no_find">Failed to find dictionary data</string>
     <string name="no_data">There is no data</string>
@@ -279,8 +329,10 @@
     <string name="max_page_toast">Has come to the last page</string>
     <string name="current_value">Current Value:</string>
     <string name="open_document_failed">Open document failed!</string>
-    <string name="annotation_export_format" formatted="false">Page %d   %s \n%s\n--------------------\n</string>
-    <string name="fail_create_export_directory">Failed to create export directory: </string>
+    <string name="annotation_export_format" formatted="false">Page %d %s
+        \n%s\n--------------------\n
+    </string>
+    <string name="fail_create_export_directory">Failed to create export directory:</string>
     <string name="show_password">Show the password</string>
 
     <string name="fast">fast</string>
@@ -298,10 +350,10 @@
     <string name="dialog_slideshow_title">Slideshow</string>
     <string name="dialog_slideshow_intervals_title">Intervals (in seconds)</string>
     <string name="dialog_slideshow_max_page_count_title">Max Page</string>
-    <string name="dialog_slideshow_statistic_duration">Duration: </string>
-    <string name="dialog_slideshow_statistic_page_count">Page count: </string>
-    <string name="dialog_slideshow_statistic_start_battery">Start battery: </string>
-    <string name="dialog_slideshow_statistic_end_battery">End battery: </string>
+    <string name="dialog_slideshow_statistic_duration">Duration:</string>
+    <string name="dialog_slideshow_statistic_page_count">Page count:</string>
+    <string name="dialog_slideshow_statistic_start_battery">Start battery:</string>
+    <string name="dialog_slideshow_statistic_end_battery">End battery:</string>
     <string name="default_font" translatable="false">Serif</string>
     <string name="view_pinch_zooming_menu_font_size">Font size:</string>
     <string name="view_pinch_zooming_menu_scale_factor">Zoom factor:</string>
@@ -336,8 +388,11 @@
     <string name="statistics_annotation_count">Annotation</string>
     <string name="data_analysis">Data analysis</string>
     <string name="reading_record">Reading record</string>
-    <string name="reading_level" formatted="false">You read no more than %.2f%%of the people</string>
-    <string name="reading_time_every_day" formatted="false">On an average day you read %.2f hours, mainly reading time distribution in %d:00 - %d:00</string>
+    <string name="reading_level" formatted="false">You read no more than %.2f%%of the people
+    </string>
+    <string name="reading_time_every_day" formatted="false">On an average day you read %.2f hours,
+        mainly reading time distribution in %d:00 - %d:00
+    </string>
     <string name="read_longest_book" formatted="false">A book to read for the longest: %s</string>
     <string name="read_most_carefully_book" formatted="false">Read the book carefully : %s</string>
     <string name="read_start_time" formatted="false">%s \n start</string>
@@ -348,7 +403,8 @@
     <string name="look_up_dict_count" formatted="false">Look Up dictionary count: %d</string>
     <string name="time_distribution">Time distribution</string>
     <string name="self_time_distribution">Your reading time distribution</string>
-    <string name="other_time_distribution">The average reading time distribution to other users</string>
+    <string name="other_time_distribution">The average reading time distribution to other users
+    </string>
     <string name="reading_content_analysis">Reading content analysis</string>
     <string name="recently_read_content">Recently read content</string>
     <string name="statistics_shortcut_name">Read statistics</string>
@@ -384,30 +440,32 @@
     <string name="setting_keycode_clear_key" translatable="false">KEYCODE_CLEAR</string>
     <string name="setting_keycode_alt_left_key" translatable="false">KEYCODE_ALT_LEFT</string>
     <string name="setting_keycode_alt_right_key" translatable="false">KEYCODE_ALT_RIGHT</string>
-    <string name="setting_keycode_button_start_key" translatable="false">KEYCODE_BUTTON_START</string>
+    <string name="setting_keycode_button_start_key" translatable="false">KEYCODE_BUTTON_START
+    </string>
     <string name="setting_keycode_eraser_key" translatable="false">KEYCODE_ERASER</string>
     <string name="setting_keycode_scribbler_key" translatable="false">KEYCODE_SCRIBBLER</string>
 
-    <string name="setting_keycode_page_down_title" >Next Page Button</string>
-    <string name="setting_keycode_page_up_title" >Prev Page Button</string>
-    <string name="setting_keycode_volume_down_title" >Volume Button Add</string>
-    <string name="setting_keycode_volume_up_title" >Volume Button Reduce</string>
-    <string name="setting_keycode_dpad_left_title" >Left Dpad Button</string>
-    <string name="setting_keycode_dpad_right_title" >Right Dpad Button</string>
-    <string name="setting_keycode_dpad_up_title" >Up Dpad Button</string>
-    <string name="setting_keycode_dpad_down_title" >Down Dpad Button</string>
-    <string name="setting_keycode_dpad_center_title" >Center Dpad Button</string>
-    <string name="setting_keycode_clear_title" >Clear Button</string>
-    <string name="setting_keycode_alt_left_title" >Alt Left Button</string>
-    <string name="setting_keycode_alt_right_title" >Alt Right Button</string>
-    <string name="setting_keycode_button_start_title" >Start Button</string>
-    <string name="setting_keycode_eraser_title" >Eraser Button</string>
-    <string name="setting_keycode_scribbler_title" >Scribbler Button</string>
+    <string name="setting_keycode_page_down_title">Next Page Button</string>
+    <string name="setting_keycode_page_up_title">Prev Page Button</string>
+    <string name="setting_keycode_volume_down_title">Volume Button Add</string>
+    <string name="setting_keycode_volume_up_title">Volume Button Reduce</string>
+    <string name="setting_keycode_dpad_left_title">Left Dpad Button</string>
+    <string name="setting_keycode_dpad_right_title">Right Dpad Button</string>
+    <string name="setting_keycode_dpad_up_title">Up Dpad Button</string>
+    <string name="setting_keycode_dpad_down_title">Down Dpad Button</string>
+    <string name="setting_keycode_dpad_center_title">Center Dpad Button</string>
+    <string name="setting_keycode_clear_title">Clear Button</string>
+    <string name="setting_keycode_alt_left_title">Alt Left Button</string>
+    <string name="setting_keycode_alt_right_title">Alt Right Button</string>
+    <string name="setting_keycode_button_start_title">Start Button</string>
+    <string name="setting_keycode_eraser_title">Eraser Button</string>
+    <string name="setting_keycode_scribbler_title">Scribbler Button</string>
 
     <string name="settings_key_binding_show_menu_tittle">Show Menu</string>
     <string name="settings_key_binding_toggle_bookmark_tittle">Toggle Bookmark</string>
     <string name="settings_key_binding_change_to_erase_mode_tittle">Change To Erase Mode</string>
-    <string name="settings_key_binding_change_to_scribble_mode_tittle">Change To Scribble Mode</string>
+    <string name="settings_key_binding_change_to_scribble_mode_tittle">Change To Scribble Mode
+    </string>
     <string name="setting_custom_function_key">Set custom function key</string>
     <string name="unable_to_enable_this_feature">Unable to enable this feature</string>
 
@@ -443,4 +501,19 @@
     <string name="update_fail">Update failed</string>
     <string name="no_review_data">No corrections</string>
     <string name="data_exception">Data Exception</string>
+
+    <string name="shape">shape</string>
+    <string name="width">width</string>
+    <string name="eraser">eraser</string>
+    <string name="black">black</string>
+    <string name="white">white</string>
+    <string name="undo">undo</string>
+    <string name="redo">redo</string>
+    <string name="pack_up">pack up</string>
+    <string name="prev_page">prev page</string>
+    <string name="next_page">next page</string>
+
+    <string name="exit">Exit</string>
+    <string name="submit">Submit</string>
+    <string name="fetch">Fetch</string>
 </resources>
