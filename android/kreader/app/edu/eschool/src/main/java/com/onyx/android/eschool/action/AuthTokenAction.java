@@ -62,7 +62,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                 public void done(BaseRequest request, Throwable e) {
                     if (e != null || !IndexService.hasValidServer(indexServiceRequest.getResultIndexService())) {
                         Log.w(TAG, "indexService error,ready to use backup service");
-                        useBackupServerCloudConf(request.getContext(), dataHolder.getCloudManager());
+                        useFallbackServerCloudConf(request.getContext(), dataHolder.getCloudManager());
                     }
                 }
             });
@@ -137,7 +137,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         cloudManager.setCloudDataProvider(cloudManager.getCloudConf());
     }
 
-    public static void useBackupServerCloudConf(Context context, CloudManager cloudManager) {
+    public static void useFallbackServerCloudConf(Context context, CloudManager cloudManager) {
         cloudManager.setAllCloudConf(CloudConf.create(
                 DeviceConfig.sharedInstance(context).getCloudContentHost(),
                 DeviceConfig.sharedInstance(context).getCloudContentApi(),
