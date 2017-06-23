@@ -14,20 +14,6 @@ import com.onyx.edu.reader.note.model.ReaderNoteShapeModel;
  */
 public class ReaderShapeFactory {
 
-
-    static public final int SHAPE_ERASER = -2;
-    static public final int SHAPE_INVALID = -1;
-
-    static public final int SHAPE_CIRCLE = 0;
-    static public final int SHAPE_RECTANGLE = 1;
-    static public final int SHAPE_PENCIL_SCRIBBLE = 2;
-    static public final int SHAPE_OILY_PEN_SCRIBBLE = 3;
-    static public final int SHAPE_FOUNTAIN_PEN_SCRIBBLE = 4;
-    static public final int SHAPE_BRUSH_SCRIBBLE = 5;
-    static public final int SHAPE_TEXT = 6;
-    static public final int SHAPE_LINE = 7;
-    static public final int SHAPE_TRIANGLE = 8;
-
     static public final int SHAPE_FORM_SINGLE_SELECTION = 0;
     static public final int SHAPE_FORM_MULTIPLE_SELECTION = 1;
     static public final int SHAPE_FORM_FILL = 2;
@@ -39,66 +25,23 @@ public class ReaderShapeFactory {
                 formType == SHAPE_FORM_FILL;
     }
 
-    public static final Shape createShape(int type) {
-        Shape shape;
-        switch (type) {
-            case ShapeFactory.SHAPE_PENCIL_SCRIBBLE:
-                shape = new NormalPencilShape();
-                break;
-            case ShapeFactory.SHAPE_LINE:
-                shape = new LineShape();
-                break;
-            case ShapeFactory.SHAPE_OILY_PEN_SCRIBBLE:
-                shape = new NormalPencilShape();
-                break;
-            case ShapeFactory.SHAPE_FOUNTAIN_PEN_SCRIBBLE:
-                shape = new NormalPencilShape();
-                break;
-            case ShapeFactory.SHAPE_BRUSH_SCRIBBLE:
-                shape = new BrushScribbleShape();
-                break;
-            case ShapeFactory.SHAPE_CIRCLE:
-                shape = new CircleShape();
-                break;
-            case ShapeFactory.SHAPE_RECTANGLE:
-                shape = new RectangleShape();
-                break;
-            case ShapeFactory.SHAPE_TEXT:
-                shape = new TexShape();
-                break;
-            case ShapeFactory.SHAPE_TRIANGLE:
-                shape = new TriangleShape();
-                break;
-            case ShapeFactory.SHAPE_TRIANGLE_45:
-                shape = new Triangle45Shape();
-                break;
-            case ShapeFactory.SHAPE_TRIANGLE_60:
-                shape = new Triangle60Shape();
-                break;
-            case ShapeFactory.SHAPE_TRIANGLE_90:
-                shape = new Triangle90Shape();
-                break;
-            default:
-                shape = new NormalPencilShape();
-                break;
-        }
-        return shape;
-    }
-
     public static final Shape shapeFromModel(final ReaderNoteShapeModel shapeModel) {
-        Shape shape = createShape(shapeModel.getShapeType());
+        Shape shape = ShapeFactory.createShape(shapeModel.getShapeType());
         syncShapeDataFromModel(shape, shapeModel);
         return shape;
     }
 
     public static final Shape shapeFromFormModel(final ReaderFormShapeModel shapeModel) {
-        Shape shape = createShape(shapeModel.getShapeType());
+        Shape shape = ShapeFactory.createShape(shapeModel.getShapeType());
         syncFormShapeDataFromModel(shape, shapeModel);
         return shape;
     }
 
     public static boolean isDFBShape(int shape) {
-        return shape == SHAPE_PENCIL_SCRIBBLE || shape == SHAPE_BRUSH_SCRIBBLE || shape == SHAPE_OILY_PEN_SCRIBBLE || shape == SHAPE_FOUNTAIN_PEN_SCRIBBLE;
+        return shape == ShapeFactory.SHAPE_PENCIL_SCRIBBLE ||
+                shape == ShapeFactory.SHAPE_BRUSH_SCRIBBLE ||
+                shape == ShapeFactory.SHAPE_OILY_PEN_SCRIBBLE ||
+                shape == ShapeFactory.SHAPE_FOUNTAIN_PEN_SCRIBBLE;
     }
 
     public static final ReaderNoteShapeModel modelFromShape(final Shape shape) {
@@ -123,6 +66,7 @@ public class ReaderShapeFactory {
         shapeModel.setPoints(shape.getPoints());
         shapeModel.setThickness(shape.getStrokeWidth());
         shapeModel.setShapeType(shape.getType());
+        shapeModel.setExtraAttributes(shape.getShapeExtraAttributes());
         shapeModel.setPageOriginHeight(shape.getPageOriginHeight());
         shapeModel.setPageOriginWidth(shape.getPageOriginWidth());
         return shapeModel;
@@ -135,6 +79,7 @@ public class ReaderShapeFactory {
         shape.setStrokeWidth(model.getThickness());
         shape.setShapeUniqueId(model.getShapeUniqueId());
         shape.addPoints(model.getPoints());
+        shape.setShapeExtraAttributes(model.getExtraAttributes());
         shape.setPageOriginWidth(model.getPageOriginWidth());
         shape.setFormShape(false);
     }
