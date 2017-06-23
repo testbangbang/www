@@ -3,6 +3,7 @@ package com.onyx.android.eschool.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
@@ -125,6 +127,31 @@ public class AccountFragment extends Fragment {
                 } else if (direction == PageTurningDirection.PREV) {
                     prevTab();
                 }
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onKeyEvent(KeyEvent event) {
+        if (isUserVisible) {
+            processKeyEvent(event);
+        }
+    }
+
+    private void processKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_UP) {
+            return;
+        }
+        switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_PAGE_DOWN:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                nextTab();
+                break;
+            case KeyEvent.KEYCODE_PAGE_UP:
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                prevTab();
                 break;
             default:
                 break;
