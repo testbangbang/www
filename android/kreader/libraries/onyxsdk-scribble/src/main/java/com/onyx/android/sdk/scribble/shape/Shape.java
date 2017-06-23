@@ -141,4 +141,10 @@ public interface Shape {
     boolean isReview();
 
     void setReview(boolean review);
+
+    boolean inVisibleDrawRectF(RectF rect);
+
+    TouchPoint getCurrentPoint();
+
+    TouchPoint getCurrentScreenPoint();
 }
