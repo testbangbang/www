@@ -17,14 +17,14 @@ import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.common.ContentException;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
-import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
+import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudIndexServiceRequest;
-import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.utils.NetworkUtil;
 
@@ -51,25 +51,33 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
 
         final CloudRequestChain requestChain = new CloudRequestChain();
         requestChain.setAbortException(false);
+        addIndexLookupRequest(dataHolder, requestChain);
+        addLoginRequest(dataHolder, requestChain, baseCallback);
+        requestChain.execute(dataHolder.getContext(), dataHolder.getCloudManager());
+    }
 
+    private void addIndexLookupRequest(final LibraryDataHolder dataHolder, final CloudRequestChain requestChain) {
+        useFallbackServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
+        if (!DeviceConfig.sharedInstance(dataHolder.getContext()).isUseCloudIndexServer()) {
+            return;
+        }
+        final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(createIndexService(dataHolder.getContext()));
+        indexServiceRequest.setLocalLoadRetryCount(localLoadRetryCount);
+        requestChain.addRequest(indexServiceRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e == null && IndexService.hasValidServer(indexServiceRequest.getResultIndexService())) {
+                    useMainIndexServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
+                } else {
+                    Log.w(TAG, "indexService error,ready to use backup service");
+                }
+            }
+        });
+    }
+
+    private void addLoginRequest(final LibraryDataHolder dataHolder, final CloudRequestChain requestChain, final BaseCallback baseCallback) {
         final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
         accountLoadRequest.setLocalLoadRetryCount(localLoadRetryCount);
-
-        if (DeviceConfig.sharedInstance(dataHolder.getContext()).isUseCloudIndexServer()) {
-            final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(createIndexService(dataHolder.getContext()));
-            indexServiceRequest.setLocalLoadRetryCount(localLoadRetryCount);
-            requestChain.addRequest(indexServiceRequest, new BaseCallback() {
-                @Override
-                public void done(BaseRequest request, Throwable e) {
-                    if (e != null || !IndexService.hasValidServer(indexServiceRequest.getResultIndexService())) {
-                        Log.w(TAG, "indexService error,ready to use backup service");
-                        useFallbackServerCloudConf(request.getContext(), dataHolder.getCloudManager());
-                    }
-                }
-            });
-            useMainIndexServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
-        }
-
         requestChain.addRequest(accountLoadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -87,7 +95,6 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
-        requestChain.execute(dataHolder.getContext(), dataHolder.getCloudManager());
     }
 
     private void processCloudException(Context context, Throwable e) {
