@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.edu.reader.note.actions.FlushNoteAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
 import com.onyx.edu.reader.note.actions.StopNoteActionChain;
 import com.onyx.edu.reader.note.request.StartNoteRequest;
@@ -108,5 +109,11 @@ public class FormScribbleHandler extends FormFieldHandler {
     @Override
     public void close(ReaderDataHolder readerDataHolder) {
         super.close(readerDataHolder);
+    }
+
+    @Override
+    public void beforeChangePosition(ReaderDataHolder readerDataHolder) {
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, true, false);
+        flushNoteAction.execute(getParent().getReaderDataHolder(), null);
     }
 }
