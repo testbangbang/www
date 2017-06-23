@@ -18,7 +18,6 @@ public class ReaderFormText extends ReaderFormField {
 
     public static ReaderFormText create(String name, float left, float top, float right, float bottom,
                                  String defaultText) {
-        Debug.e(ReaderFormText.class, "create: " + name + ", " + left + ", " + top + ", " + right + ", " + bottom);
         return new ReaderFormText(name, left, top, right, bottom, defaultText);
     }
 

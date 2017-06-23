@@ -144,7 +144,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        int margin = DimenUtils.dip2px(readerDataHolder.getContext(), 5);
+        int margin = (int) readerDataHolder.getContext().getResources().getDimension(R.dimen.menu_item_view_margin);
         toolbar.setMenuViewMargin(margin, 0, margin, 0);
         toolbar.setLayoutParams(lp);
         updateStrokeColor();
@@ -176,7 +176,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        int margin = DimenUtils.dip2px(readerDataHolder.getContext(), 5);
+        int margin = (int) readerDataHolder.getContext().getResources().getDimension(R.dimen.menu_item_view_margin);
         toolbar.setMenuViewMargin(margin, 0, margin, 0);
         toolbar.setLayoutParams(lp);
 
@@ -253,6 +253,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         }
         TextView textView = new TextView(context);
         textView.setText(text);
+        textView.setTextColor(Color.BLACK);
         textView.setTextSize(textSize);
         OnyxToolbar.Builder.setLayoutParams(context, textView, 0, 0);
         textView.setPadding(0, 0, 0, (int) context.getResources().getDimension(R.dimen.menu_text_padding_bottom));

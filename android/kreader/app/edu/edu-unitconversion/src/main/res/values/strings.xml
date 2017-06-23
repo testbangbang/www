@@ -10,6 +10,7 @@
     <string name="time">时间</string>
 
     <string name="meter">米(m)</string>
+    <string name="decimeter">分米(dm)</string>
     <string name="centimeter">厘米(cm)</string>
     <string name="kilometer">千米(km)</string>
     <string name="millimeter">毫米(mm)</string>

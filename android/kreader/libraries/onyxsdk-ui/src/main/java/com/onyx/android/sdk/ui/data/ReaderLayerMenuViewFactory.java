@@ -57,8 +57,12 @@ public class ReaderLayerMenuViewFactory {
     }
 
     public static View createMainMenuContainerView(final Context context, final List<ReaderLayerMenuItem> items, ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback, final boolean ignoreEmptyChildMenu) {
+        return createMainMenuContainerView(context, items, R.layout.reader_layer_menu_button_item, state, callback, ignoreEmptyChildMenu);
+    }
+
+    public static View createMainMenuContainerView(final Context context, final List<ReaderLayerMenuItem> items, int menuLayoutId, ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback, final boolean ignoreEmptyChildMenu) {
         List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items, ignoreEmptyChildMenu);
-        final View view = createSimpleButtonContainerView(context, visibleItems, state, callback);
+        final View view = createSimpleButtonContainerView(context, visibleItems, menuLayoutId, state, callback);
         view.post(new Runnable() {
             @Override
             public void run() {
@@ -68,13 +72,13 @@ public class ReaderLayerMenuViewFactory {
         return view;
     }
 
-    public static View createSubMenuContainerView(final Context context, final ReaderLayerMenuItem parent, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final boolean ignoreEmptyChildMenu, final ReaderMenu.ReaderMenuCallback callback) {
+    public static View createSubMenuContainerView(final Context context, final ReaderLayerMenuItem parent, int menuLayoutId, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final boolean ignoreEmptyChildMenu, final ReaderMenu.ReaderMenuCallback callback) {
         if (parent.getChildren().size() == 0) {
             return null;
         }
 
         List<ReaderLayerMenuItem> visibleItems = collectVisibleItems(items, ignoreEmptyChildMenu);
-        View subView = createSimpleButtonContainerView(context, visibleItems, state, callback);
+        View subView = createSimpleButtonContainerView(context, visibleItems, menuLayoutId, state, callback);
         if (mainMenuContainerViewHeight > 0) {
             subView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mainMenuContainerViewHeight));
         }
@@ -97,7 +101,7 @@ public class ReaderLayerMenuViewFactory {
         return result;
     }
 
-    private static View createSimpleButtonContainerView(final Context context, final List<ReaderLayerMenuItem> items, final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
+    private static View createSimpleButtonContainerView(final Context context, final List<ReaderLayerMenuItem> items, final int menuLayoutId,final ReaderMenuState state, final ReaderMenu.ReaderMenuCallback callback) {
         final PageRecyclerView view = (PageRecyclerView) LayoutInflater.from(context).inflate(R.layout.reader_layer_menu_simple_button_container_recylerview, null);
         GridLayoutManager gridLayoutManager = new DisableScrollGridManager(context, 1);
         view.setDefaultMoveKeyBinding();
@@ -121,7 +125,7 @@ public class ReaderLayerMenuViewFactory {
 
             @Override
             public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-                return new MainMenuItemViewHolder(inflater.inflate(R.layout.reader_layer_menu_button_item, parent, false), callback);
+                return new MainMenuItemViewHolder(inflater.inflate(menuLayoutId, parent, false), callback);
             }
 
             @Override

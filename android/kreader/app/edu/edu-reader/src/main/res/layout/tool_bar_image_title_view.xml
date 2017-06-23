@@ -13,7 +13,10 @@
         android:id="@+id/content_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/menu_item_view_margin"
+        android:layout_marginTop="@dimen/menu_item_view_margin"
+        android:layout_marginBottom="@dimen/menu_item_view_margin"
+        android:layout_marginLeft="@dimen/menu_item_view_left_margin"
+        android:layout_marginRight="@dimen/menu_item_view_left_margin"
         android:src="@drawable/ic_width_1"/>
 
     <TextView
