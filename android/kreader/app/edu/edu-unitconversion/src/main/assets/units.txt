@@ -1,5 +1,6 @@
 == Length
 meter, 1.0, 0.0
+decimeter, 10.0, 0.0
 centimeter, 100.0, 0.0
 kilometer, 0.001, 0.0
 millimeter, 1000.0, 0.0
