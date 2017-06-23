@@ -17,13 +17,14 @@ import com.onyx.android.sdk.utils.TestUtils;
 
 import retrofit2.Response;
 
+import static com.onyx.android.sdk.data.provider.SystemConfigProvider.KEY_CONTENT_SERVER_INFO;
+
 /**
  * Created by suicheng on 2017/6/16.
  */
 
 public class CloudIndexServiceRequest extends BaseCloudRequest {
     private static final String TAG = "CloudIndexServerRequest";
-    public static final String KEY_CENTRAL_INDEX_AUTH_SERVER = "sys.central_index_auth_server";
 
     private IndexService requestService;
     private IndexService resultService;
@@ -39,11 +40,11 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        resultService = loadAuthServiceFromLocal(getContext(), localRetryCount);
-        IndexService cloudService = loadAuthServiceFromCloud(parent);
+        resultService = loadContentServiceInfoFromLocal(getContext(), localRetryCount);
+        IndexService cloudService = loadContentServiceInfoFromCloud(parent);
         if (cloudService != null) {
             resultService = cloudService;
-            saveAuthServiceToDb(getContext(), cloudService);
+            saveContentServiceInfo(getContext(), cloudService);
         }
         if (resultService != null && resultService.server != null) {
             String host = resultService.server.createServerHost();
@@ -53,11 +54,11 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
         }
     }
 
-    private IndexService loadAuthServiceFromLocal(Context context, int retryCount) {
+    private IndexService loadContentServiceInfoFromLocal(Context context, int retryCount) {
         IndexService service = null;
         for (int i = 0; i < retryCount; i++) {
             Log.w(TAG, "localLoadRetry:" + i);
-            service = loadAuthServiceFromLocal(context);
+            service = loadContentServiceInfoFromLocalImpl(context);
             if (service != null) {
                 break;
             }
@@ -66,12 +67,12 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
         return service;
     }
 
-    private IndexService loadAuthServiceFromLocal(Context context) {
-        return JSONObjectParseUtils.parseObject(getKeyCentralIndexAuthServer(context),
-                IndexService.class);
+    private IndexService loadContentServiceInfoFromLocalImpl(Context context) {
+        final String value = SystemConfigProvider.getStringValue(context, KEY_CONTENT_SERVER_INFO);
+        return JSONObjectParseUtils.parseObject(value, IndexService.class);
     }
 
-    private IndexService loadAuthServiceFromCloud(CloudManager parent) {
+    private IndexService loadContentServiceInfoFromCloud(CloudManager parent) {
         try {
             Response<IndexService> response = RetrofitUtils.executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
                     .getIndexService(requestService.mac, requestService.installationId));
@@ -85,16 +86,8 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
         }
     }
 
-    private void saveAuthServiceToDb(Context context, IndexService authService) {
-        setKeyCentralIndexAuthServer(context, JSON.toJSONString(authService));
-    }
-
-    private String getKeyCentralIndexAuthServer(Context context) {
-        return SystemConfigProvider.getStringValue(context, KEY_CENTRAL_INDEX_AUTH_SERVER);
-    }
-
-    private boolean setKeyCentralIndexAuthServer(Context context, String value) {
-        return SystemConfigProvider.setStringValue(context, KEY_CENTRAL_INDEX_AUTH_SERVER, value);
+    private void saveContentServiceInfo(Context context, IndexService authService) {
+        SystemConfigProvider.setStringValue(context, KEY_CONTENT_SERVER_INFO, JSONObjectParseUtils.toJson(authService));
     }
 
     public void setLocalLoadRetryCount(int retryCount) {

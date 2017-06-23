@@ -15,6 +15,7 @@ import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
  */
 public class SystemConfigProvider {
     public static final int INT_INVALID = -1;
+    public static final String KEY_CONTENT_SERVER_INFO = "sys.content_server_info";
 
     public static String getStringValue(Context context, String key) {
         SystemKeyValueItem item = queryKeyValueItem(context, key);
