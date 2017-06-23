@@ -99,7 +99,7 @@ public class ShowFormMenuActon extends BaseAction {
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        int margin = DimenUtils.dip2px(readerDataHolder.getContext(), 5);
+        int margin = (int) readerDataHolder.getContext().getResources().getDimension(R.dimen.menu_item_view_margin);
         toolbar.setMenuViewMargin(margin, 0, margin, 0);
         toolbar.setLayoutParams(lp);
         updateStrokeColor();
@@ -148,6 +148,7 @@ public class ShowFormMenuActon extends BaseAction {
         }
         TextView textView = new TextView(context);
         textView.setText(text);
+        textView.setTextColor(Color.BLACK);
         textView.setTextSize(textSize);
 
         OnyxToolbar.Builder.setLayoutParams(context, textView, 0, 0);

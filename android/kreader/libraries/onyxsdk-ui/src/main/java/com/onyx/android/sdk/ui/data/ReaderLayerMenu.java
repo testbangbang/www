@@ -98,8 +98,8 @@ public class ReaderLayerMenu extends ReaderMenu {
         return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback, true);
     }
 
-    private View createSubMenuContainerView(ReaderLayerMenuItem parent, List<ReaderLayerMenuItem> items, ReaderMenuState state) {
-        return ReaderLayerMenuViewFactory.createSubMenuContainerView(context, parent, items, state, true, readerMenuCallback);
+    private View createSubMenuContainerView(ReaderLayerMenuItem parent, List<ReaderLayerMenuItem> items, int menuLayoutId, ReaderMenuState state) {
+        return ReaderLayerMenuViewFactory.createSubMenuContainerView(context, parent, menuLayoutId,items, state, true, readerMenuCallback);
     }
 
     private void handleMenuItemClicked(ReaderMenuItem item) {
@@ -122,7 +122,7 @@ public class ReaderLayerMenu extends ReaderMenu {
 
     private void updateMenuContent() {
         mainMenuContainerView = createMainMenuContainerView(menuItems, state);
-        subMenuContainerView = createSubMenuContainerView(currentParentMenuItem, currentParentMenuItem.getChildren(), state);
+        subMenuContainerView = createSubMenuContainerView(currentParentMenuItem, currentParentMenuItem.getChildren(), R.layout.reader_layer_menu_button_item, state);
         getDialog().getReaderMenuLayout().updateMenuContent(mainMenuContainerView, subMenuContainerView);
     }
 
