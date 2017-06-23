@@ -57,19 +57,18 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void addIndexLookupRequest(final LibraryDataHolder dataHolder, final CloudRequestChain requestChain) {
-        useFallbackServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
         if (!DeviceConfig.sharedInstance(dataHolder.getContext()).isUseCloudIndexServer()) {
             return;
         }
+        useMainIndexServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
         final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(createIndexService(dataHolder.getContext()));
         indexServiceRequest.setLocalLoadRetryCount(localLoadRetryCount);
         requestChain.addRequest(indexServiceRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e == null && IndexService.hasValidServer(indexServiceRequest.getResultIndexService())) {
-                    useMainIndexServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
-                } else {
+                if (e != null || !IndexService.hasValidServer(indexServiceRequest.getResultIndexService())) {
                     Log.w(TAG, "indexService error,ready to use backup service");
+                    useFallbackServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
                 }
             }
         });
