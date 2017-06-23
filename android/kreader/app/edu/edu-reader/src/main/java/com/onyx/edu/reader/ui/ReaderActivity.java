@@ -1077,6 +1077,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         try {
+            ensureClearFormFieldControls(renderFormField);
             readerPainter.drawPage(this,
                     canvas,
                     pageBitmap,
@@ -1090,8 +1091,15 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
     }
 
+    private void ensureClearFormFieldControls(boolean renderFormField) {
+        if (!renderFormField) {
+            return;
+        }
+        clearFormFieldControls(null);
+    }
+
     @Subscribe
-    public void onClearFormFieldControlsEvent(final ClearFormFieldControlsEvent event) {
+    public void clearFormFieldControls(final ClearFormFieldControlsEvent event) {
         for (View view : formFieldControls) {
             mainView.removeView(view);
         }

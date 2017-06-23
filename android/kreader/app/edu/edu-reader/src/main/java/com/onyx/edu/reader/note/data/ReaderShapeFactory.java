@@ -69,6 +69,15 @@ public class ReaderShapeFactory {
             case ShapeFactory.SHAPE_TRIANGLE:
                 shape = new TriangleShape();
                 break;
+            case ShapeFactory.SHAPE_TRIANGLE_45:
+                shape = new Triangle45Shape();
+                break;
+            case ShapeFactory.SHAPE_TRIANGLE_60:
+                shape = new Triangle60Shape();
+                break;
+            case ShapeFactory.SHAPE_TRIANGLE_90:
+                shape = new Triangle90Shape();
+                break;
             default:
                 shape = new NormalPencilShape();
                 break;

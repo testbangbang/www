@@ -19,6 +19,7 @@ public class BaseShape implements Shape {
     private TouchPointList normalizedPoints = new TouchPointList(400);
     private TouchPoint downPoint = new TouchPoint();
     private TouchPoint currentPoint = new TouchPoint();
+    private TouchPoint currentScreenPoint = new TouchPoint();
     private String uniqueId;
     private String documentUniqueId;
     private String pageUniqueId;
@@ -173,6 +174,8 @@ public class BaseShape implements Shape {
         downPoint.y = normalizedPoint.y;
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
+        currentScreenPoint.x = screenPoint.x;
+        currentScreenPoint.y = screenPoint.y;
         normalizedPoints.add(normalizedPoint);
         updateBoundingRect();
     }
@@ -184,6 +187,8 @@ public class BaseShape implements Shape {
     public void addMovePoint(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
+        currentScreenPoint.x = screenPoint.x;
+        currentScreenPoint.y = screenPoint.y;
         if (isAddMovePoint()) {
             normalizedPoints.add(normalizedPoint);
         }
@@ -208,6 +213,8 @@ public class BaseShape implements Shape {
     public void addUpPoint(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
+        currentScreenPoint.x = screenPoint.x;
+        currentScreenPoint.y = screenPoint.y;
         normalizedPoints.add(normalizedPoint);
         updateBoundingRect();
     }
@@ -269,6 +276,10 @@ public class BaseShape implements Shape {
 
     public final TouchPoint getCurrentPoint() {
         return currentPoint;
+    }
+
+    public TouchPoint getCurrentScreenPoint() {
+        return currentScreenPoint;
     }
 
     public final TouchPoint getDownPoint() {
@@ -418,5 +429,10 @@ public class BaseShape implements Shape {
 
     public void setReview(boolean review) {
         this.review = review;
+    }
+
+    @Override
+    public boolean inVisibleDrawRectF(RectF rect) {
+        return true;
     }
 }
