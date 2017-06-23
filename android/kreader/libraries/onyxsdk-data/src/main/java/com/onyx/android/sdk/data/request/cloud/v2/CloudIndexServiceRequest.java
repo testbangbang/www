@@ -57,12 +57,13 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
     private IndexService loadContentServiceInfoFromLocal(Context context, int retryCount) {
         IndexService service = null;
         for (int i = 0; i < retryCount; i++) {
-            Log.w(TAG, "localLoadRetry:" + i);
             service = loadContentServiceInfoFromLocalImpl(context);
             if (service != null) {
                 break;
             }
-            TestUtils.sleep(300);
+            if (retryCount > 1) {
+                TestUtils.sleep(300);
+            }
         }
         return service;
     }
@@ -81,7 +82,6 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
             }
             return null;
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }

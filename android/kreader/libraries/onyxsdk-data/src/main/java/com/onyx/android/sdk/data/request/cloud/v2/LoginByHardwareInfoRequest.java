@@ -84,12 +84,13 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
     private T LoginToLocal(CloudManager parent, int retryCount) {
         T account = null;
         for (int i = 0; i < retryCount; i++) {
-            Log.w(TAG, "localLoadRetry:" + i);
             account = LoginToLocal(parent);
             if (account != null) {
                 break;
             }
-            TestUtils.sleep(300);
+            if (retryCount > 1) {
+                TestUtils.sleep(300);
+            }
         }
         return account;
     }
