@@ -71,6 +71,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected int totalPageCount;
     protected boolean isLineLayoutMode = false;
     protected boolean fullUpdate = false;
+    protected boolean drawPageDuringErasing = false;
 
     private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY}
     private ActivityState activityState;
@@ -86,18 +87,25 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     @Override
     protected void onResume() {
         setActivityState(ActivityState.RESUME);
-        super.onResume();
         initSurfaceView();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
         //TODO:resume status when activity Resume;
-        syncWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
+        if (!isSurfaceViewFirstCreated) {
+            syncWithCallback(true, !shapeDataInfo.isInUserErasing(), null);
+        }
     }
 
     @Override
     protected void onPause() {
         setActivityState(ActivityState.PAUSE);
-        super.onPause();
         //TODO:pause drawing when activity Pause;
         syncWithCallback(true, false, null);
+        super.onPause();
     }
 
     public ActivityState getActivityState() {
@@ -130,24 +138,19 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected void onDestroy() {
         setActivityState(ActivityState.DESTROY);
         cleanUpAllPopMenu();
-        syncWithCallback(false, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                getNoteViewHelper().quit();
-            }
-        });
+        syncWithCallback(false, false, null);
         unregisterDeviceReceiver();
         super.onDestroy();
     }
 
     @Override
     public void submitRequest(BaseNoteRequest request, BaseCallback callback) {
-        getNoteViewHelper().submit(this, request, callback);
+        getNoteViewHelper().submit(getApplicationContext(), request, callback);
     }
 
     @Override
     public void submitRequestWithIdentifier(String identifier, BaseNoteRequest request, BaseCallback callback) {
-        getNoteViewHelper().submitRequestWithIdentifier(this, identifier, request, callback);
+        getNoteViewHelper().submitRequestWithIdentifier(getApplicationContext(), identifier, request, callback);
     }
 
     @Override
@@ -170,8 +173,8 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         }
     }
 
-    protected NoteViewHelper getNoteViewHelper() {
-        return NoteApplication.getNoteViewHelper();
+    public NoteViewHelper getNoteViewHelper() {
+        return NoteApplication.getInstance().getNoteViewHelper();
     }
 
     protected void showNoteNameIllegal() {
@@ -318,7 +321,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     protected void handleDocumentEdit(final String uniqueId, final String parentId) {
         final DocumentEditAction<BaseScribbleActivity> action = new DocumentEditAction<>(uniqueId, parentId);
-        action.execute(this);
+        action.execute(this, null);
     }
 
     protected NoteViewHelper.InputCallback inputCallback() {
@@ -398,15 +401,21 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         }
         erasePoint.x = touchPoint.getX();
         erasePoint.y = touchPoint.getY();
-        drawPage();
+        if (drawPageDuringErasing) {
+            drawPage();
+        }
     }
 
     protected void onFinishErasing(TouchPointList pointList) {
         erasePoint = null;
-        drawPage();
         RemoveByPointListAction<BaseScribbleActivity> removeByPointListAction = new
                 RemoveByPointListAction<>(pointList);
-        removeByPointListAction.execute(this);
+        removeByPointListAction.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                drawPage();
+            }
+        });
     }
 
     private void drawContent(final Canvas canvas, final Paint paint) {
