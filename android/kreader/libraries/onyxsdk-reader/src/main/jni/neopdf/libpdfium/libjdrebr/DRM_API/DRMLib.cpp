@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include "des.h"
 #include "md5.h"
-#include "../../../onyx/Log.h"
 #include <stdio.h>
 extern "C"
 {
