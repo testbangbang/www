@@ -246,7 +246,6 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     public void onBackPressed() {
-        getReaderDataHolder().stop();
         ReaderTabHostBroadcastReceiver.sendTabBackPressedIntent(this);
     }
 
@@ -465,6 +464,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         enablePenShortcut();
         updateNoteState();
         getReaderDataHolder().onActivityResume();
+    }
+
+    @Override
+    protected void onStop() {
+        getReaderDataHolder().stop();
+        super.onStop();
     }
 
     private void enablePenShortcut() {
