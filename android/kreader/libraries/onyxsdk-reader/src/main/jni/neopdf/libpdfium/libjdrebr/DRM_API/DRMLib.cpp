@@ -91,7 +91,7 @@ bool DecryptData(unsigned char* pInputData, int inputLen, unsigned char** pOutDa
   printf("cipher_init failed!\n");
   throw - 1;
  }
- int INBUFFER = 1024 * 100;
+ int INBUFFER = 1024 * 10;
  int nLoop = inputLen / INBUFFER;
  unsigned char* inbuffer = new unsigned char[INBUFFER + 1];
  unsigned char* outbuffer = new unsigned char[INBUFFER + 1];
@@ -109,6 +109,8 @@ bool DecryptData(unsigned char* pInputData, int inputLen, unsigned char** pOutDa
   if (UpdateCipher(pdecrypt, inbuffer, INBUFFER, outbuffer, &decryptOutLen))
   {
    printf("cipher_update failed!\n");
+   delete[] inbuffer;
+   delete[] outbuffer;
    throw - 1;
   }
   memcpy(ppOutData + countDecryptLen, outbuffer, decryptOutLen);
@@ -127,6 +129,10 @@ bool DecryptData(unsigned char* pInputData, int inputLen, unsigned char** pOutDa
  if (FinalCipher(pdecrypt, finalInbuffer, finalInbufferlen, finalOutbuffer, &finalOutbufferlen))
  {
   printf("cipher_final failed!\n");
+  delete[] inbuffer;
+  delete[] outbuffer;
+  delete[] finalInbuffer;
+  delete[] finalOutbuffer;
   throw - 1;
  }
 
@@ -136,10 +142,18 @@ bool DecryptData(unsigned char* pInputData, int inputLen, unsigned char** pOutDa
  if (DestroyCipher(pdecrypt))
  {
   printf("cipher_destroy failed!\n");
+  delete[] inbuffer;
+  delete[] outbuffer;
+  delete[] finalInbuffer;
+  delete[] finalOutbuffer;
   throw - 1;
  }
 
  *outLen = countDecryptLen;
+ delete[] inbuffer;
+ delete[] outbuffer;
+ delete[] finalInbuffer;
+ delete[] finalOutbuffer;
  return true;
 }
 
