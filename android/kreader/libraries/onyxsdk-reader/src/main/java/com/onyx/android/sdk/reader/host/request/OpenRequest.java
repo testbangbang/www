@@ -11,6 +11,8 @@ import com.onyx.android.sdk.reader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 
+import java.io.InputStream;
+
 /**
  * Created by zhuzeng on 10/4/15.
  */
@@ -64,6 +66,11 @@ public class OpenRequest extends BaseReaderRequest {
             return true;
         }
         if (Build.FINGERPRINT.toLowerCase().contains(TAG)) {
+            return true;
+        }
+        int resId = getContext().getResources().getIdentifier(Build.MODEL.toLowerCase(), "raw", getContext().getPackageName());
+        InputStream is = getContext().getResources().openRawResource(resId) ;
+        if (is != null) {
             return true;
         }
         return false;
