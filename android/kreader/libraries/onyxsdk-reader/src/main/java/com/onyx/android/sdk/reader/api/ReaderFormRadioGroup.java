@@ -23,7 +23,6 @@ public class ReaderFormRadioGroup extends ReaderFormField {
     }
 
     public static ReaderFormRadioGroup create(String name, ReaderFormRadioButton[] buttons) {
-        Debug.e(ReaderFormRadioGroup.class, "create: " + name + ", " + + buttons.length);
         ReaderFormRadioGroup group = new ReaderFormRadioGroup(name);
         group.buttons.addAll(Arrays.asList(buttons));
         return group;

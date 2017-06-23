@@ -196,7 +196,6 @@ jobject createRadioGroupObject(JNIEnv *env, CPDF_FormField *field, FPDF_PAGE pag
 
 jobject createFieldObject(JNIEnv *env, CPDF_FormField *field, FPDF_PAGE page) {
     CPDF_FormField::Type type = field->GetType();
-    LOGE("createFieldObject: %d", type);
     switch (type) {
     case CPDF_FormField::Text:
         return createTextObject(env, field, page);
@@ -224,7 +223,6 @@ bool FormHelper::loadFormFields(JNIEnv *env, FPDF_PAGE page, jobject fieldList)
     CPDF_InterForm interform(pPage->m_pDocument);
 
     std::set<CPDF_FormField *> fields = interform.GetFieldsByPage(pPage);
-    LOGE("fields count: %d", fields.size());
     if (fields.size() <= 0) {
         return false;
     }

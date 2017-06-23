@@ -18,7 +18,6 @@ public class ReaderFormRadioButton extends ReaderFormField {
 
     public static ReaderFormRadioButton create(float left, float top, float right, float bottom,
                                             boolean checked) {
-        Debug.e(ReaderFormRadioButton.class, "create: " + left + ", " + top + ", " + right + ", " + bottom);
         return new ReaderFormRadioButton(left, top, right, bottom, checked);
     }
 

@@ -30,7 +30,6 @@ public class ReaderFormField {
     }
 
     public static void addToFieldList(List<ReaderFormField> list, ReaderFormField field) {
-        Debug.e("addToFieldList: " + field);
         list.add(field);
     }
 

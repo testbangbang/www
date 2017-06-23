@@ -13,7 +13,6 @@ public class ReaderFormScribble extends ReaderFormField {
     }
 
     public static ReaderFormScribble create(String name, float left, float top, float right, float bottom) {
-        Debug.e(ReaderFormScribble.class, "create: " + name + ", " + left + ", " + top + ", " + right + ", " + bottom);
         return new ReaderFormScribble(name, left, top, right, bottom);
     }
 
