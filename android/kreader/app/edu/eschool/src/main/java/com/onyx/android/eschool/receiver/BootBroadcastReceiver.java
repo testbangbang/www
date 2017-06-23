@@ -25,8 +25,6 @@ import java.lang.ref.WeakReference;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
     static final boolean DEBUG = false;
-    static boolean restoreWifiStatus = false;
-    static WifiManager wifiManager;
     static File cacheFile;
     DeviceBindQrCodeGenerateTask task;
 
@@ -68,16 +66,15 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
             context = contextWeakReference.get();
             DeviceBind deviceBind = null;
             try {
-                preEnableWifi(context);
                 cacheFile.getParentFile().mkdirs();
                 cacheFile.createNewFile();
                 deviceBind = createDeviceBind(context);
+                Log.e("#################", "generate device qr code");
                 BitmapUtils.saveBitmap(QRCodeUtil.stringToImageEncode(context, JSONObjectParseUtils.toJson(deviceBind),
                         QRCodeUtil.DEFAULT_SIZE, true, QRCodeUtil.WHITE_MARGIN_SIZE,
                         context.getResources().getColor(android.R.color.black))
                         , cacheFile.getPath());
                 ShellUtils.execCommand("busybox chmod 644 " + cacheFile.getPath(), false);
-                closeWifiIfNeeded();
             } catch (WriterException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -107,27 +104,5 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         return cacheFile.exists() && cacheFile.canRead();
     }
 
-    static private void preEnableWifi(Context context) {
-        if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI)) {
-            return;
-        }
-        wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (!wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(true);
-            restoreWifiStatus = true;
-        }
-        //TODO:boot up wifi enable use quite a long time could get mac address.so just sleep 3s here.
-        try {
-            Thread.sleep(3000);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void closeWifiIfNeeded() {
-        if (restoreWifiStatus && wifiManager != null) {
-            wifiManager.setWifiEnabled(false);
-        }
-    }
 }
 
