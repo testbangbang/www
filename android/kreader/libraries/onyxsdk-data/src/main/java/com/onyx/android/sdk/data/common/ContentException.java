@@ -12,12 +12,14 @@ public class ContentException extends Exception {
     public static final int URL_INVALID_EXCEPTION = 1;
     public static final int FILE_PATH_EXCEPTION = 2;
     public static final int NETWORK_EXCEPTION = 3;
+    public static final int TOKEN_EXCEPTION = 4;
     public static final int UNKNOWN_EXCEPTION = 0xffff;
 
     public static final String URL_INVALID_EXCEPTION_MESSAGE = "Url is invalid.";
     public static final String FILE_PATH_EXCEPTION_MESSAGE = "File path is invalid.";
     public static final String NETWORK_EXCEPTION_MESSAGE = "Network is exception.";
     public static final String UNKNOWN_EXCEPTION_MESSAGE = "Unknown exception.";
+    public static final String TOKEN_EXCEPTION_MESSAGE = "Token exception.";
 
     public int getCode() {
         return code;
@@ -70,6 +72,10 @@ public class ContentException extends Exception {
 
     static public ContentException UnKnowException() {
         return exceptionFromCode(UNKNOWN_EXCEPTION, UNKNOWN_EXCEPTION_MESSAGE);
+    }
+
+    static public ContentException TokenException() {
+        return exceptionFromCode(TOKEN_EXCEPTION, TOKEN_EXCEPTION_MESSAGE);
     }
 
     public static class NetworkException extends ContentException {

@@ -15,6 +15,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.common.ContentException;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
@@ -74,15 +75,16 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     processCloudException(dataHolder.getContext(), e);
-                    return;
-                }
-                NeoAccountBase eduAccount = accountLoadRequest.getAccount();
-                if (NeoAccountBase.isValid(eduAccount)) {
-                    sendAccountAvailableEvent(eduAccount);
-                    BaseCallback.invoke(baseCallback, request, null);
                 } else {
-                    sendAccountTokenErrorEvent(dataHolder.getContext());
+                    NeoAccountBase eduAccount = accountLoadRequest.getAccount();
+                    if (NeoAccountBase.isValid(eduAccount)) {
+                        sendAccountAvailableEvent(eduAccount);
+                    } else {
+                        sendAccountTokenErrorEvent(dataHolder.getContext());
+                        e = ContentException.TokenException();
+                    }
                 }
+                BaseCallback.invoke(baseCallback, request, e);
             }
         });
         requestChain.execute(dataHolder.getContext(), dataHolder.getCloudManager());
