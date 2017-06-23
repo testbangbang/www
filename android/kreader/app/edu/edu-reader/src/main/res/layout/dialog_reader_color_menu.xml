@@ -37,15 +37,34 @@
             android:layout_height="wrap_content">
         </LinearLayout>
 
-        <ImageView
-            android:layout_marginRight="10dp"
-            android:layout_gravity="center_vertical"
-            android:id="@+id/prev"
-            android:src="@drawable/prevbtn_bg"
+
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_margin="@dimen/dialog_reader_menu_text_view_padding"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/prev"
+                android:src="@drawable/prevbtn_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_gravity="center_horizontal"
+                android:text="@string/prev_page"
+                android:layout_marginBottom="@dimen/dialog_reader_menu_text_view_padding"
+                android:textSize="@dimen/reader_layer_menu_button_item_text_size"
+                android:textColor="@android:color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
 
         <TextView
+            android:paddingBottom="24dp"
             android:minWidth="80dp"
             android:textSize="25sp"
             android:layout_gravity="center_vertical"
@@ -56,14 +75,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <ImageView
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_gravity="center_vertical"
-            android:id="@+id/next"
-            android:src="@drawable/nextbtn_bg"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_margin="@dimen/dialog_reader_menu_text_view_padding"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/next"
+                android:src="@drawable/nextbtn_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="@string/next_page"
+                android:layout_marginBottom="@dimen/dialog_reader_menu_text_view_padding"
+                android:textSize="@dimen/reader_layer_menu_button_item_text_size"
+                android:textColor="@android:color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 

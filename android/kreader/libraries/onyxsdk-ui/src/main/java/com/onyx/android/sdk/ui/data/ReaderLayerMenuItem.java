@@ -44,6 +44,10 @@ public class ReaderLayerMenuItem extends ReaderMenuItem {
         return new ReaderLayerMenuItem(ItemType.Group, action, null, -1, null, drawableResourceId);
     }
 
+    public static ReaderMenuItem createSimpleMenuItem(ReaderMenuAction action, int drawableResourceId, int titleResourceId) {
+        return new ReaderLayerMenuItem(ItemType.Group, action, null, titleResourceId, null, drawableResourceId);
+    }
+
     /**
      * get resource name of resource id in the form "R.drawable.xxx"
      * @param resourceId

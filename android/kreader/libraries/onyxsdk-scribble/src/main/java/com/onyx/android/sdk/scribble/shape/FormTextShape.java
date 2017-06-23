@@ -1,25 +1,18 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.Typeface;
-import android.util.Log;
 
 import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.utils.StringUtils;
 
 /**
- * Created by zhuzeng on 4/19/16.
+ * Created by ming on 6/22/17.
  */
-public class TexShape extends BaseShape  {
+public class FormTextShape extends BaseShape  {
 
-    /**
-     * rectangle, circle, etc.
-     * @return
-     */
     public int getType() {
-        return ShapeFactory.SHAPE_TEXT;
+        return ShapeFactory.SHAPE_FORM_TEXT;
     }
 
     public void render(final RenderContext renderContext) {
@@ -42,11 +35,11 @@ public class TexShape extends BaseShape  {
         }
 
         float textSize = shapeExtraAttributes.getTextSize();
-        renderContext.paint.setTextSize(textSize);
+        renderContext.paint.setTextSize(textSize/2);
         Paint.Style beforeStyle = renderContext.paint.getStyle();
         renderContext.paint.setStyle(Paint.Style.FILL_AND_STROKE);
         renderContext.paint.setStrokeWidth(getStrokeWidth());
-        renderContext.canvas.drawText(shapeExtraAttributes.getTextContent(), rect.left, rect.bottom, renderContext.paint);
+        renderContext.canvas.drawText(shapeExtraAttributes.getTextContent(), rect.left, rect.top, renderContext.paint);
         renderContext.paint.setStyle(beforeStyle);
     }
 

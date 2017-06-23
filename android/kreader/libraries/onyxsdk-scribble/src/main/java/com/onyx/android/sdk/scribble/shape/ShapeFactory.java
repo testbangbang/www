@@ -30,6 +30,7 @@ public class ShapeFactory {
     static public final int SHAPE_TRIANGLE_45 = 10;
     static public final int SHAPE_TRIANGLE_60 = 11;
     static public final int SHAPE_TRIANGLE_90 = 12;
+    static public final int SHAPE_FORM_TEXT = 13;
 
     static public final int POSITION_FREE = 0;
     static public final int POSITION_LINE_LAYOUT = 1;
@@ -75,6 +76,9 @@ public class ShapeFactory {
                 break;
             case ShapeFactory.SHAPE_ANNOTATION:
                 shape = new AnnotationShape();
+                break;
+            case ShapeFactory.SHAPE_FORM_TEXT:
+                shape = new FormTextShape();
                 break;
             default:
                 shape = new NormalPencilShape();
