@@ -3,7 +3,6 @@ package com.onyx.android.note.activity.onyx;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -14,7 +13,6 @@ import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -309,6 +307,23 @@ public class ScribbleActivity extends BaseScribbleActivity {
                             setKeyboardInput(true);
                             onEnter();
                             return true;
+                        case KeyEvent.KEYCODE_TAB:
+                            setKeyboardInput(true);
+                            onTab();
+                            return true;
+                        case KeyEvent.KEYCODE_1:
+                        case KeyEvent.KEYCODE_2:
+                        case KeyEvent.KEYCODE_3:
+                        case KeyEvent.KEYCODE_4:
+                        case KeyEvent.KEYCODE_5:
+                        case KeyEvent.KEYCODE_6:
+                        case KeyEvent.KEYCODE_7:
+                        case KeyEvent.KEYCODE_8:
+                        case KeyEvent.KEYCODE_9:
+                        case KeyEvent.KEYCODE_0:
+                            char displayLabel = keyEvent.getDisplayLabel();
+                            buildTextShape(String.valueOf(displayLabel));
+                            return true;
                     }
               }
                 return false;
@@ -331,12 +346,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         spanTextView.setInputConnectionListener(new LinedEditText.InputConnectionListener() {
             @Override
             public void commitText(CharSequence text, int newCursorPosition) {
-                if (isBuildingSpan()) {
-                    return;
-                }
-                int width = (int) spanTextView.getPaint().measureText(text.toString());
-                setKeyboardInput(true);
-                spanTextHandler.buildTextShape(text.toString(), width, getSpanTextFontHeight());
+                buildTextShape(text.toString());
             }
         });
 
@@ -347,6 +357,19 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 switchScribbleMode(isLineLayoutMode());
             }
         });
+    }
+
+    private void onTab() {
+        spanTextHandler.buildSpaceShape(SpanTextHandler.SPACE_WIDTH * 2, getSpanTextFontHeight());
+    }
+
+    private void buildTextShape(String text) {
+        if (isBuildingSpan()) {
+            return;
+        }
+        setKeyboardInput(true);
+        int width = (int) spanTextView.getPaint().measureText(text);
+        spanTextHandler.buildTextShape(text, width, getSpanTextFontHeight());
     }
 
     private void updateLineLayoutArgs() {
