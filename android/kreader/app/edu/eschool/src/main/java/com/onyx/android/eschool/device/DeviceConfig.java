@@ -44,6 +44,10 @@ public class DeviceConfig {
     static public final String LEAN_CLOUD_APPLICATION_ID = "leanCloudAppId";
     static public final String LEAN_CLOUD_CLIENT_KEY = "leanCloudClientKey";
 
+    static public final String CLOUD_INDEX_SERVER_USE = "cloud_index_server_use";
+    static public final String CLOUD_MAIN_INDEX_SERVER_HOST = "cloud_main_index_server_host";
+    static public final String CLOUD_MAIN_INDEX_SERVER_API = "cloud_main_index_server_api";
+
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
             globalInstance = new DeviceConfig(context);
@@ -189,5 +193,17 @@ public class DeviceConfig {
 
     public String getLeanCloudClientKey() {
         return backend.getString(LEAN_CLOUD_CLIENT_KEY);
+    }
+
+    public String getCloudMainIndexServerHost() {
+        return backend.getString(CLOUD_MAIN_INDEX_SERVER_HOST, "");
+    }
+
+    public String getCloudMainIndexServerApi() {
+        return backend.getString(CLOUD_MAIN_INDEX_SERVER_API, "");
+    }
+
+    public boolean isUseCloudIndexServer() {
+        return backend.getBoolean(CLOUD_INDEX_SERVER_USE);
     }
 }

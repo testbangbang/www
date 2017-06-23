@@ -60,6 +60,10 @@ public class CloudDataProvider implements DataProviderBase {
         this.conf = conf;
     }
 
+    public void setCloudConf(CloudConf cloudConf) {
+        this.conf = cloudConf;
+    }
+
     @Override
     public void clearMetadata() {
         Delete.table(CloudMetadata.class);

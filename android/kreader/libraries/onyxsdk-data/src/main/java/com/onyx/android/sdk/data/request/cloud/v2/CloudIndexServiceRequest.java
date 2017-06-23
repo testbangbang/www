@@ -33,7 +33,7 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
         this.requestService = service;
     }
 
-    public IndexService getResultAuthService() {
+    public IndexService getResultIndexService() {
         return resultService;
     }
 
@@ -49,6 +49,7 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
             String host = resultService.server.createServerHost();
             parent.setAllCloudConf(CloudConf.create(host,
                     host + "api/", Constant.DEFAULT_CLOUD_STORAGE));
+            parent.setCloudDataProvider(parent.getCloudConf());
         }
     }
 
