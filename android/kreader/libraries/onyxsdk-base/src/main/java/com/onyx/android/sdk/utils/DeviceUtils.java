@@ -1,21 +1,23 @@
 package com.onyx.android.sdk.utils;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
@@ -24,12 +26,15 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.onyx.android.sdk.data.FontInfo;
+import com.onyx.android.sdk.device.Device;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -41,13 +46,13 @@ import static android.content.Context.POWER_SERVICE;
  */
 
 public class DeviceUtils {
-
     public static final String TAG = DeviceUtils.class.getSimpleName();
 
     private final static String SHOW_STATUS_BAR_ACTION = "show_status_bar";
     private final static String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
 
     private final static String DEFAULT_TOUCH_DEVICE_PATH = "/dev/input/event1";
+    public static final int NEVER_SLEEP = Integer.MAX_VALUE;
 
     public static boolean isRkDevice() {
         return Build.HARDWARE.startsWith("rk");
@@ -253,7 +258,7 @@ public class DeviceUtils {
         }
     }
 
-    public static int getBatteryPecentLevel(final Context context) {
+    public static int getBatteryPercentLevel(final Context context) {
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = context.registerReceiver(null, ifilter);
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
@@ -295,6 +300,17 @@ public class DeviceUtils {
     }
 
     static void adjustFullScreenStatusForAPIAbove19(final Activity activity, boolean fullScreen) {
+        adjustFullScreenStatus(activity.getWindow(), fullScreen);
+    }
+
+    public static void adjustDialogFullScreenStatusForAPIAbove19(Dialog dialog, boolean fullScreen) {
+        if (Build.VERSION.SDK_INT <= 19) {
+            return;
+        }
+        adjustFullScreenStatus(dialog.getWindow(), fullScreen);
+    }
+
+    public static void adjustFullScreenStatus(Window window, boolean fullScreen) {
         int clearFlag, targetFlag, uiOption;
         if (fullScreen) {
             clearFlag = WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
@@ -305,9 +321,9 @@ public class DeviceUtils {
             targetFlag = WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
             uiOption = View.SYSTEM_UI_FLAG_VISIBLE;
         }
-        activity.getWindow().clearFlags(clearFlag);
-        activity.getWindow().setFlags(targetFlag, targetFlag);
-        View decorView = activity.getWindow().getDecorView();
+        window.clearFlags(clearFlag);
+        window.setFlags(targetFlag, targetFlag);
+        View decorView = window.getDecorView();
         decorView.setSystemUiVisibility(uiOption);
     }
 
@@ -323,30 +339,15 @@ public class DeviceUtils {
         System.exit(1);
     }
 
-    public static String getMacAddress(Context mContext) {
-        String macStr = "";
-        WifiManager wifiManager = (WifiManager) mContext
-                .getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        if (wifiInfo != null) {
-            macStr = wifiInfo.getMacAddress();
-        }
-        return macStr;
-    }
-
-    public static boolean isWifiConnected(Context context) {
-        if (context != null) {
-            ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-            if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI)
-                return networkInfo.isAvailable();
-        }
-        return false;
-    }
-
     public static boolean isFullScreen(Activity activity) {
-        int flag = activity.getWindow().getAttributes().flags;
-        return (flag & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        if (Build.VERSION.SDK_INT >= 19) {
+            int flag = activity.getWindow().getAttributes().flags;
+            return (flag & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        }
+
+        int[] location = new int[2];
+        activity.getWindow().getDecorView().getLocationOnScreen(location);
+        return location[1] <= 0;
     }
 
     /**
@@ -367,9 +368,14 @@ public class DeviceUtils {
                 : powerManager.isScreenOn();
     }
 
-    public static void changeWiFi(Context context, boolean enabled) {
-        WifiManager wm = (WifiManager) context
-                .getSystemService(Context.WIFI_SERVICE);
-        wm.setWifiEnabled(enabled);
+    public static boolean isChinese(final Context context) {
+        Locale locale = context.getResources().getConfiguration().locale;
+        String language = locale.getLanguage();
+        return language.endsWith("zh");
+    }
+
+    static public void turnOffSystemPMSettings(Context context) {
+        android.provider.Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, NEVER_SLEEP);
+        android.provider.Settings.System.putInt(context.getContentResolver(), "auto_poweroff_timeout", NEVER_SLEEP);
     }
 }

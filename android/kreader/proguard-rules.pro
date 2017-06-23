@@ -34,6 +34,8 @@
 -dontwarn com.github.junrar.**
 -dontwarn com.squareup.**
 -dontwarn com.raizlabs.**
+-dontwarn com.facebook.**
+-dontwarn org.apache.**
 
 -dontwarn butterknife.internal.ButterKnifeProcessor
 
@@ -50,6 +52,25 @@
 -keep class * implements java.io.Serializable { *; }
 
 -keepnames class org.greenrobot.eventbus.** { *; }
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
+
+# Fresco
+-keep class com.facebook.fresco.** {*;}
+-keep interface com.facebook.fresco.** {*;}
+-keep enum com.facebook.fresco.** {*;}
+
+# Facebook
+-keep class com.facebook.** {*;}
+-keep interface com.facebook.** {*;}
+-keep enum com.facebook.** {*;}
 
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -keep class * extends com.raizlabs.android.dbflow.converter.TypeConverter { *; }
@@ -89,3 +110,15 @@
 # for leanCloud
 -keep class com.avos.** { *; }
 -dontwarn com.avos.**
+
+# for glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+    -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+      **[] $VALUES;
+      public *;
+    }
+
+# Data Binding
+-dontwarn android.databinding.**
+-keep class android.databinding.** { *; }
+-dontwarn com.onyx.android.sdk.wifi.**

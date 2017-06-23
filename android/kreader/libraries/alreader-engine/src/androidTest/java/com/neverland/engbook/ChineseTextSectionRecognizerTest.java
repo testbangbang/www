@@ -32,6 +32,10 @@ public class ChineseTextSectionRecognizerTest extends ApplicationTestCase<Applic
 
     public void testChineseSections() {
         ChineseTextSectionRecognizer recognizer = ChineseTextSectionRecognizer.create();
+        matchWith(recognizer, "第一卷", true);
+        matchWith(recognizer, "第235章 出击", true);
+        matchWith(recognizer, "第一章", true);
+        matchWith(recognizer, "第一章 ", true);
         matchWith(recognizer, "第一章 少年壮志不言愁", true);
         matchWith(recognizer, "　　第五章 高岗的失误 18 ", true);
         matchWith(recognizer, "   第二篇 反教条中刘伯承和粟裕", true);

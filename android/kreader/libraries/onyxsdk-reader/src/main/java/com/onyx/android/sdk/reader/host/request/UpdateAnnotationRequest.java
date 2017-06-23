@@ -18,7 +18,7 @@ public class UpdateAnnotationRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        DataProviderManager.getDataProvider().updateAnnotation(annotation);
+        DataProviderManager.getLocalDataProvider().updateAnnotation(annotation);
         LayoutProviderUtils.updateReaderViewInfo(reader, createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 }

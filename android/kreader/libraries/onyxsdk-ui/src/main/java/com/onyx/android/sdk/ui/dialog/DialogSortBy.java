@@ -52,10 +52,12 @@ public class DialogSortBy extends OnyxAlertDialog {
     }
 
     private void initAlignLayoutParam() {
-        alignParams = new AlignLayoutParams(getResources().getDimensionPixelSize(R.dimen.dialog_sort_by_x_pos),
-                getResources().getDimensionPixelSize(R.dimen.dialog_sort_by_y_pos));
-        alignParams.width = getResources().getDimensionPixelSize(R.dimen.dialog_sort_by_width);
-        alignParams.height = getResources().getDimensionPixelSize(R.dimen.dialog_sort_by_height);;
+        if (alignParams == null) {
+            alignParams = new AlignLayoutParams(getResources().getDimensionPixelSize(R.dimen.dialog_sort_by_x_pos),
+                    getResources().getDimensionPixelSize(R.dimen.dialog_sort_by_y_pos));
+            alignParams.width = getResources().getDimensionPixelSize(R.dimen.dialog_sort_by_width);
+            alignParams.height = getResources().getDimensionPixelSize(R.dimen.dialog_sort_by_height);
+        }
     }
 
     public interface OnSortByListener {

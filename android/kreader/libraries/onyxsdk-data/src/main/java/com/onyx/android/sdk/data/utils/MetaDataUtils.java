@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data.utils;
 
+import android.content.Intent;
+
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.BookFilter;
@@ -19,7 +21,8 @@ import java.util.Set;
 /**
  * Created by suicheng on 2016/9/5.
  */
-public class MetaDataUtils {
+public class MetadataUtils {
+    public static final String INTENT_EXTRA_DATA_METADATA = "intent_extra_data_metadata";
 
     static public int compareStringAsc(final String a, final String b) {
         if (a == null && b == null) {
@@ -616,15 +619,29 @@ public class MetaDataUtils {
     }
 
     static public List<Metadata> verifyReadedStatus(List<Metadata> list, BookFilter filter) {
-        if (filter != BookFilter.READED) {
+        if (filter != BookFilter.FINISHED) {
             return list;
         }
         List<Metadata> readList = new ArrayList<>();
         for (Metadata metadata : list) {
-            if (metadata.isReaded()) {
+            if (metadata.isFinished()) {
                 readList.add(metadata);
             }
         }
         return readList;
+    }
+
+    public static Metadata ensureObject(final Metadata metadata) {
+        return metadata != null ? metadata : new Metadata();
+    }
+
+    public static Intent putIntentExtraDataMetadata(Intent intent, Metadata metadata) {
+        intent.putExtra(INTENT_EXTRA_DATA_METADATA, JSONObjectParseUtils.toJson(metadata));
+        return intent;
+    }
+
+    public static Metadata getIntentExtraDataMetadata(Intent intent) {
+        String json = intent.getStringExtra(INTENT_EXTRA_DATA_METADATA);
+        return JSONObjectParseUtils.parseObject(json, Metadata.class);
     }
 }

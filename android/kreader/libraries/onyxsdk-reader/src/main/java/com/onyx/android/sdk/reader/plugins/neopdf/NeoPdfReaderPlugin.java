@@ -3,14 +3,17 @@ package com.onyx.android.sdk.reader.plugins.neopdf;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import com.onyx.android.sdk.data.model.Annotation;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderImage;
-import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
@@ -57,6 +60,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         ReaderSearchManager,
         ReaderTextStyleManager,
         ReaderDrmManager,
+        ReaderFormManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
@@ -75,6 +79,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     Map<String, List<ReaderSelection>> pageLinks = new HashMap<>();
 
     private ReaderViewOptions readerViewOptions;
+    private boolean customFormEnabled;
 
     public NeoPdfReaderPlugin(final Context context, final ReaderPluginOptions pluginOptions) {
     }
@@ -146,7 +151,9 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
             archivePassword = documentOptions.getDocumentPassword();
         }
         long ret = getPluginImpl().openDocument(path, docPassword);
-        if (ret  == NeoPdfJniWrapper.NO_ERROR) {
+        if (ret == NeoPdfJniWrapper.NO_ERROR) {
+            customFormEnabled = documentOptions.isCustomFormEnabled();
+            getPluginImpl().setRenderFormFields(!customFormEnabled);
             return this;
         }
         if (ret == NeoPdfJniWrapper.ERROR_PASSWORD_INVALID) {
@@ -154,7 +161,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         } else if (ret == NeoPdfJniWrapper.ERROR_UNKNOWN) {
             throw ReaderException.cannotOpen();
         }
-        return null;
+        throw ReaderException.cannotOpen();
     }
 
     public boolean supportDrm() {
@@ -168,6 +175,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     public boolean readMetadata(final ReaderDocumentMetadata metadata) {
         metadata.setTitle(getPluginImpl().metadataString("Title"));
         metadata.getAuthors().add(getPluginImpl().metadataString("Author"));
+        metadata.setOptions(getPluginImpl().metadataString("OnyxOptions"));
         return true;
     }
 
@@ -217,14 +225,31 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return getPluginImpl().getTableOfContent(toc.getRootEntry());
     }
 
-    @Override
-    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
-        return false;
-    }
-
     public ReaderView getView(final ReaderViewOptions viewOptions) {
         readerViewOptions = viewOptions;
         return this;
+    }
+
+    @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        ReaderDocumentMetadata metadata = new ReaderDocumentMetadataImpl();
+        if (!readMetadata(metadata)) {
+            return false;
+        }
+        String optionsJson = metadata.getOptions();
+        if (StringUtils.isBlank(optionsJson)) {
+            return false;
+        }
+        try {
+            JSONObject object = JSON.parseObject(optionsJson);
+            if (!object.containsKey("gamma")) {
+                return false;
+            }
+            options.setTextGamma(object.getIntValue("gamma"));
+            return true;
+        } catch (Throwable tr) {
+            return false;
+        }
     }
 
     @Override
@@ -239,6 +264,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     @Override
     public void setChineseConvertType(ReaderChineseConvertType convertType) {
 
+    }
+
+    @Override
+    public void setTextGamma(float gamma) {
+        getPluginImpl().setTextGamma(gamma);
     }
 
     public void close() {
@@ -329,7 +359,12 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    @Override
+    public ReaderFormManager getFormManager() {
+        return this;
+    }
+
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         benchmark.restart();
         boolean ret = getPluginImpl().drawPage(PagePositionUtils.getPageNumber(pagePosition),
                 (int)displayRect.left,
@@ -518,27 +553,8 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     }
 
 
-    public boolean acceptDRMFile(final String path) {
-        return false;
-    }
-
-    public boolean registerDRMCallback(final ReaderDRMCallback callback) {
-        return false;
-    }
-
-    public boolean activateDeviceDRM(String user, String password) {
-        return false;
-    }
-
-    public boolean deactivateDeviceDRM() {
-        return false;
-    }
-
-    public String getDeviceDRMAccount() {
-        return "";
-    }
-    public boolean fulfillDRMFile(String path) {
-        return false;
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
+        return getPluginImpl().activateDeviceDRM(deviceId, certificate);
     }
 
     public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
@@ -581,14 +597,22 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return selection;
     }
 
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
+        int page = PagePositionUtils.getPageNumber(pagePosition);
+        final List<ReaderSelection> list = new ArrayList<>();
+        getPluginImpl().getPageTextRegions(page, list);
+        return list;
+    }
+
     public boolean supportScale() {
         if (StringUtils.isNullOrEmpty(documentPath)) {
             return false;
         }
-        if(documentPath.toLowerCase().endsWith("pdf")){
+        if (documentPath.toLowerCase().endsWith("pdf")) {
             return true;
         }
-        if(isJDPDF(documentPath)){
+        if (isJDPDF(documentPath)) {
             return true;
         }
         return false;
@@ -596,6 +620,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     public boolean supportFontSizeAdjustment() {
         return false;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
+        return true;
     }
 
     public boolean supportTypefaceAdjustment() {
@@ -607,5 +636,12 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         return false;
     }
 
+    public boolean isCustomFormEnabled() {
+        return customFormEnabled;
+    }
 
+    @Override
+    public boolean loadFormFields(int page, List<ReaderFormField> fields) {
+        return getPluginImpl().loadFormFields(page, fields);
+    }
 }

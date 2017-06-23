@@ -878,7 +878,10 @@ public abstract class AlAXML extends AlFormat {
 							continue label_get_next_char;
 						case STATE_XML_TAG_ERROR:
 							if (ch == '>') {
-								allState.state_parser = STATE_XML_TEXT;					
+								allState.state_parser = STATE_XML_TEXT;
+							} else if (ch == '<') {
+								allState.state_parser = STATE_XML_STAG;
+								tag.resetTag(allState.start_position);
 							}
 							continue label_get_next_char;
 						case STATE_XML_ETAG:

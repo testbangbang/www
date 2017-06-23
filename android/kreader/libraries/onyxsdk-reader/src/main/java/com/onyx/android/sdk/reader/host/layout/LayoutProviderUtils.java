@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.reader.host.layout;
 
-import android.graphics.Bitmap;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.api.ReaderBitmap;
@@ -8,8 +7,8 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderRenderer;
-import com.onyx.android.sdk.reader.cache.BitmapSoftLruCache;
-import com.onyx.android.sdk.reader.cache.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
@@ -20,7 +19,6 @@ import com.onyx.android.sdk.reader.host.navigation.NavigationList;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
 
@@ -54,7 +52,7 @@ public class LayoutProviderUtils {
                                         final boolean enableCache) throws ReaderException {
         // step1: prepare.
         final ReaderRenderer renderer = reader.getRenderer();
-        final BitmapSoftLruCache cache = reader.getBitmapCache();
+        final BitmapReferenceLruCache cache = reader.getBitmapCache();
         List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
 
         // step2: check cache.
@@ -63,20 +61,22 @@ public class LayoutProviderUtils {
         if (ENABLE_CACHE && enableCache && checkCache(cache, key, drawContext)) {
             hitCache = true;
         }
+        Debug.d(TAG, "hit cache: " + hitCache + ", " + key);
         if (!hitCache) {
-            drawContext.renderingBitmap = new ReaderBitmapImpl();
-            drawContext.renderingBitmap.attachWith(key, cache.getFreeBitmap(reader.getViewOptions().getViewWidth(),
-                    reader.getViewOptions().getViewHeight(), Bitmap.Config.ARGB_8888).getBitmap());
-            drawContext.renderingBitmap.clear();
+            ReaderBitmapReferenceImpl freeBitmap = cache.getFreeBitmap(reader.getViewOptions().getViewWidth(),
+                    reader.getViewOptions().getViewHeight(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
+            try {
+                drawContext.renderingBitmap = new ReaderBitmapReferenceImpl();
+                drawContext.renderingBitmap.attachWith(key, freeBitmap.getBitmapReference());
+                drawContext.renderingBitmap.clear();
+            } finally {
+                freeBitmap.close();
+            }
         }
+        Debug.d(TAG, "rendering bitmap reference count: " + drawContext.renderingBitmap.getBitmapReference().getUnderlyingReferenceTestOnly().getRefCountTestOnly());
 
         // step3: render
-        drawVisiblePagesImpl(renderer, layoutManager, drawContext.renderingBitmap, visiblePages, hitCache);
-
-        // step4: update cache
-        if (!hitCache && ENABLE_CACHE && enableCache && StringUtils.isNotBlank(key)) {
-            addToCache(cache, key, drawContext.renderingBitmap);
-        }
+        drawVisiblePagesImpl(renderer, layoutManager, drawContext, drawContext.renderingBitmap, visiblePages, hitCache);
 
         // final step: update view info.
         updateReaderViewInfo(reader, readerViewInfo, layoutManager);
@@ -84,7 +84,8 @@ public class LayoutProviderUtils {
 
     static private void drawVisiblePagesImpl(final ReaderRenderer renderer,
                                              final ReaderLayoutManager layoutManager,
-                                             final ReaderBitmapImpl bitmap,
+                                             final ReaderDrawContext drawContext,
+                                             final ReaderBitmapReferenceImpl bitmap,
                                              final List<PageInfo> visiblePages,
                                              boolean hitCache) {
 
@@ -108,8 +109,8 @@ public class LayoutProviderUtils {
                         ", page rect: " + pageRect +
                         ", visible rect: " + visibleRect);
                 renderer.draw(documentPosition, pageInfo.getActualScale(),
-                        pageInfo.getPageDisplayOrientation(), bitmap.getBitmap(), displayRect,
-                        pageRect, visibleRect);
+                        pageInfo.getPageDisplayOrientation(), displayRect, pageRect, visibleRect, bitmap.getBitmap()
+                );
             }
         }
     }
@@ -173,7 +174,7 @@ public class LayoutProviderUtils {
 
     static public PageInfo drawReflowablePage(final PageInfo pageInfo, final ReaderBitmap bitmap, final ReaderRenderer readerRenderer) {
         final RectF viewport = new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight());
-        if (!readerRenderer.draw(pageInfo.getPositionSafely(), 1.0f, 0, bitmap.getBitmap(), viewport, viewport, viewport)) {
+        if (!readerRenderer.draw(pageInfo.getPositionSafely(), 1.0f, 0, viewport, viewport, viewport, bitmap.getBitmap())) {
             return null;
         }
         return pageInfo;
@@ -201,10 +202,8 @@ public class LayoutProviderUtils {
         readerRenderer.draw(pageInfo.getPositionSafely(),
                 scale,
                 pageInfo.getPageDisplayOrientation(),
-                bitmap.getBitmap(),
-                visiblePage.getDisplayRect(),
-                visiblePage.getPositionRect(),
-                visibleRect);
+                visiblePage.getDisplayRect(), visiblePage.getPositionRect(), visibleRect, bitmap.getBitmap()
+        );
 
         List<PageInfo> pageInfos = internalPageManager.collectVisiblePages();
         if (pageInfos.size() > 0){
@@ -213,18 +212,20 @@ public class LayoutProviderUtils {
         return null;
     }
 
-    static public boolean addToCache(final BitmapSoftLruCache cache, final String key, final ReaderBitmapImpl bitmap) {
-        cache.put(key, bitmap);
-        return true;
+    static private boolean canReuse(ReaderBitmapReferenceImpl cache, ReaderDrawContext context) {
+        return (cache.isGammaIgnored() || cache.isGammaApplied(context.targetGammaCorrection)) &&
+                cache.isTextGammaApplied(context.targetTextGammaCorrection) &&
+                cache.isEmboldenApplied(context.targetEmboldenLevel);
     }
 
-    static public boolean checkCache(final BitmapSoftLruCache cache, final String key, final ReaderDrawContext context) {
-        ReaderBitmapImpl result = cache.get(key);
-        if (result == null || !result.isGammaApplied(context.targetGammaCorrection) || !result.isEmboldenApplied(context.targetEmboldenLevel)) {
+    static public boolean checkCache(final BitmapReferenceLruCache cache, final String key, final ReaderDrawContext context) {
+        ReaderBitmapReferenceImpl result = cache.get(key);
+        if (result == null || !canReuse(result, context)) {
             return false;
         }
 
-        cache.remove(key, false);
+        result = result.clone();
+        cache.remove(key);
         context.renderingBitmap = result;
         return true;
     }

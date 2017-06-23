@@ -2,27 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="@dimen/common_dialog_width"
               android:layout_height="wrap_content"
-              android:background="@drawable/alert_bg"
               android:orientation="vertical">
 
     <LinearLayout
         android:layout_margin="10dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:orientation="vertical"
         android:id="@+id/input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center"
             android:textColor="@android:color/black"
             android:id="@+id/title"
             android:textSize="22sp" />
 
-        <EditText
+        <com.onyx.android.sdk.ui.view.OnyxCustomEditText
             android:layout_margin="5dp"
             android:visibility="gone"
             android:textSize="22sp"
@@ -30,9 +29,25 @@
             android:textColor="@android:color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <SeekBar
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:minHeight="@dimen/dialog_custom_seek_bar_height"
+            android:maxHeight="@dimen/dialog_custom_seek_bar_height"
+            android:background="@drawable/focused_bg"
+            android:thumb="@drawable/dialog_custom_seekbar_thumb"
+            android:id="@+id/seek_bar_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:progressDrawable="@drawable/seekbar_progress"
+            android:max="20"/>
     </LinearLayout>
 
     <View
+        android:id="@+id/divider_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="10dp"
@@ -40,20 +55,24 @@
         android:background="@android:color/black" />
 
     <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_marginLeft="1dp"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="50dp">
 
         <Button
+            android:textColor="@drawable/button_text_selector"
             android:id="@+id/btn_cancel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/no_top_line_press_bg"
+            android:background="@drawable/no_left_top_line_press_bg"
             android:text="@string/cancel"
             android:textSize="20sp" />
 
         <Button
+            android:textColor="@drawable/button_text_selector"
             android:id="@+id/btn_ok"
             android:layout_width="0dp"
             android:layout_height="match_parent"

@@ -65,6 +65,14 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 
 /*
  * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
+ * Method:    nativeSetTextGamma
+ * Signature: (IF)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetTextGamma
+  (JNIEnv *, jobject, jint, jfloat);
+
+/*
+ * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
  * Method:    nativeRenderPage
  * Signature: (IIIIIIILandroid/graphics/Bitmap;)Z
  */
@@ -137,12 +145,39 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 
 /*
  * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
+ * Method:    nativeActivateDeviceDRM
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeActivateDeviceDRM
+  (JNIEnv *, jobject, jstring, jstring);
+
+/*
+ * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
+ * Method:    nativeSetRenderFormFields
+ * Signature: (IZ)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetRenderFormFields
+  (JNIEnv *, jobject, jint, jboolean);
+
+/*
+ * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
+ * Method:    nativeLoadFormFields
+ * Signature: (IILjava/util/List;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeLoadFormFields
+  (JNIEnv *, jobject, jint, jint, jobject);
+
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageTextRegions
+  (JNIEnv *, jobject, jint, jint, jobject);
+
+/*
+ * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
  * Method:    nativeSetDecryptInfo
  * Signature: (ILjava/lang/String;ILjava/lang/String;Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetDecryptInfo
   (JNIEnv *, jobject, jint, jstring, jint, jstring, jstring);
-
 #ifdef __cplusplus
 }
 #endif

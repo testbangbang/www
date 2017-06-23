@@ -18,4 +18,6 @@ public interface ReaderDocumentOptions {
 
     ReaderChineseConvertType getChineseConvertType();
 
+    public boolean isCustomFormEnabled();
+
 }

@@ -23,28 +23,28 @@ public class OnyxDownloadManager {
 
     private static int DEFAULT_PROGRESS_MIN_INTERVAL = 1200;
     private static OnyxDownloadManager instance;
+    private static Context appContext;
     private FileDownloadNotificationHelper<NotificationItem> helper = new FileDownloadNotificationHelper<>();
-    private Handler handler = new Handler(Looper.getMainLooper());
 
     private LinkedHashMap<Object, BaseDownloadTask> taskMap = new LinkedHashMap<>();
 
-    private OnyxDownloadManager(Context context) {
-        FileDownloader.init(context);
+    private OnyxDownloadManager() {
+    }
+
+    public static void init(final Context context) {
+        appContext = context;
+        FileDownloader.init(appContext);
         FileDownloader.getImpl().setMaxNetworkThreadCount(5);
     }
 
     /**
      * must init in Application
      */
-    public static synchronized OnyxDownloadManager getInstance(Context context) {
+    public static synchronized OnyxDownloadManager getInstance() {
         if (instance == null) {
-            instance = new OnyxDownloadManager(context);
+            instance = new OnyxDownloadManager();
         }
         return instance;
-    }
-
-    public static synchronized OnyxDownloadManager getInstance() {
-        return getInstance(getContext());
     }
 
     public static synchronized Context getContext() {
@@ -68,8 +68,9 @@ public class OnyxDownloadManager {
         return listener;
     }
 
-    public BaseDownloadTask download(final String url, final String path, final Object tag, final BaseCallback baseCallback) {
+    public BaseDownloadTask download(final Context context, final String url, final String path, final Object tag, final BaseCallback baseCallback) {
         CloudFileDownloadRequest request = createDownloadRequest(url, path, tag);
+        request.setContext(context);
         return download(request, baseCallback);
     }
 
@@ -98,8 +99,8 @@ public class OnyxDownloadManager {
         return task;
     }
 
-    public int downloadDirectly(final String url, final String path, final Object tag, final BaseCallback baseCallback) {
-        return startDownload(download(url, path, tag, baseCallback));
+    public int downloadDirectly(final Context context, final String url, final String path, final Object tag, final BaseCallback baseCallback) {
+        return startDownload(download(context, url, path, tag, baseCallback));
     }
 
     public int downloadDirectly(final CloudFileDownloadRequest request, final BaseCallback baseCallback) {

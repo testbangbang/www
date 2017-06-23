@@ -19,7 +19,7 @@ public class DeleteBookmarkRequest extends BaseReaderRequest {
 
     public void execute(final Reader reader) throws Exception {
         if (bookmark != null) {
-            DataProviderManager.getDataProvider().deleteBookmark(bookmark);
+            DataProviderManager.getLocalDataProvider().deleteBookmark(bookmark);
         }
         LayoutProviderUtils.updateReaderViewInfo(reader, createReaderViewInfo(), reader.getReaderLayoutManager());
     }

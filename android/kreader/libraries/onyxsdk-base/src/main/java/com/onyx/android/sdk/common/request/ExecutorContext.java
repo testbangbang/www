@@ -1,8 +1,11 @@
 package com.onyx.android.sdk.common.request;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Exchanger;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -50,9 +53,19 @@ public class ExecutorContext {
         }
     }
 
+    public void dump() {
+        Log.e(ExecutorContext.class.getSimpleName(), "Request size list:" + requestList.size());
+    }
+
     public boolean hasPendingRequests() {
         synchronized (requestList) {
             return requestList.size() > 0;
+        }
+    }
+
+    public boolean isRequestQueueEmpty() {
+        synchronized (requestList) {
+            return requestList.size() <= 0;
         }
     }
 

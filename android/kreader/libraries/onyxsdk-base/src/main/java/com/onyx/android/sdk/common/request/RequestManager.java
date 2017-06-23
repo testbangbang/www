@@ -6,7 +6,11 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -54,7 +58,20 @@ public class RequestManager {
     }
 
     public void removeRequest(final BaseRequest request) {
-        getExecutor().removeRequest(request);
+        removeRequest(request, request.getIdentifier());
+    }
+
+    public void removeRequest(final BaseRequest request, String identifier) {
+        getExecutorByIdentifier(identifier).removeRequest(request);
+    }
+
+    public void dumpRequestList() {
+        Log.e(TAG, "Dump built-in executor");
+        executor.dump();
+        for(Map.Entry<String, ExecutorContext> entry : threadPoolMap.entrySet()) {
+            Log.e(TAG, "Executor name:  " + entry.getKey());
+            entry.getValue().dump();
+        }
     }
 
     public Handler getLooperHandler() {
@@ -62,11 +79,7 @@ public class RequestManager {
     }
 
     public boolean submitRequest(final Context context, final BaseRequest request, final Runnable runnable, final BaseCallback callback) {
-        if (!beforeSubmitRequest(context, getExecutor(), request, callback)) {
-            return false;
-        }
-
-        return submitRequestToSingleThreadPoolImpl(getExecutor(), request, runnable);
+        return submitRequest(context, request.getIdentifier(), request, runnable, callback);
     }
 
     private boolean beforeSubmitRequest(final Context context, final ExecutorContext executorContext, final BaseRequest request, final BaseCallback callback) {
@@ -101,6 +114,9 @@ public class RequestManager {
     }
 
     private final ExecutorContext getExecutorByIdentifier(final String identifier) {
+        if (StringUtils.isNullOrEmpty(identifier)) {
+            return executor;
+        }
         if (threadPoolMap.containsKey(identifier)) {
             return threadPoolMap.get(identifier);
         }
@@ -112,12 +128,44 @@ public class RequestManager {
     }
 
     public boolean submitRequestToMultiThreadPool(final Context context, final BaseRequest request, final Runnable runnable, final BaseCallback callback) {
-        if (!beforeSubmitRequest(context, getExecutor(), request, callback)) {
+        return submitRequestToMultiThreadPool(context, request.getIdentifier(), request, runnable, callback);
+    }
+
+    public boolean submitRequestToMultiThreadPool(final Context context, final String identifier, final BaseRequest request, final Runnable runnable, final BaseCallback callback) {
+        final ExecutorContext executorOfIdentifier = getExecutorByIdentifier(identifier);
+        if (!beforeSubmitRequest(context, executorOfIdentifier, request, callback)) {
             return false;
         }
-        getExecutor().submitToMultiThreadPool(runnable);
+        return submitRequestToMultiThreadPoolImpl(executorOfIdentifier, request, runnable);
+    }
+
+    private boolean submitRequestToMultiThreadPoolImpl(final ExecutorContext executorContext, final BaseRequest request, final Runnable runnable) {
+        if (request.isRunInBackground()) {
+            executorContext.submitToMultiThreadPool(runnable);
+        } else {
+            runnable.run();
+        }
         return true;
     }
 
+    public boolean isAllQueueEmpty() {
+        boolean isEmpty = getExecutor().isRequestQueueEmpty();
+        if (!isEmpty) {
+            return false;
+        }
+        synchronized (threadPoolMap) {
+            if (CollectionUtils.isNullOrEmpty(threadPoolMap)) {
+                return true;
+            }
 
+            Iterator<ExecutorContext> iterator = threadPoolMap.values().iterator();
+            while (iterator.hasNext()) {
+                ExecutorContext executorContext = iterator.next();
+                if (!executorContext.isRequestQueueEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

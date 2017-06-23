@@ -74,8 +74,21 @@ public class ViewDocumentUtils {
     }
 
     public static ComponentName getReaderComponentName(Context context) {
+        return getReaderComponentName(context, getKreaderComponentName());
+    }
+
+    private static ComponentName getEduReaderComponentName() {
+        String packageName = "com.onyx.edu.reader";
+        String className = packageName + ".ui.ReaderTabHostActivity";
+        return new ComponentName(packageName, className);
+    }
+
+    public static ComponentName getEduReaderComponentName(Context context) {
+        return getReaderComponentName(context, getEduReaderComponentName());
+    }
+
+    public static ComponentName getReaderComponentName(Context context, ComponentName componentName) {
         ActivityInfo activityInfo = null;
-        ComponentName componentName = getKreaderComponentName();
         try {
             activityInfo = context.getPackageManager().getActivityInfo(componentName, 0);
         } catch (PackageManager.NameNotFoundException e) {

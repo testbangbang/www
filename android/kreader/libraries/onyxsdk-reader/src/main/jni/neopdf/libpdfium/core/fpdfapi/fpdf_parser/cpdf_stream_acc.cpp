@@ -72,6 +72,16 @@ const uint8_t* CPDF_StreamAcc::GetData() const {
   return m_pStream ? m_pStream->GetRawData() : nullptr;
 }
 
+void CPDF_StreamAcc::SetData(uint8_t *pData, uint32_t size)
+{
+  if (m_bNewBuf && m_pData) {
+    FX_Free(m_pData);
+  }
+  m_pData = pData;
+  m_dwSize = size;
+  m_bNewBuf = true;
+}
+
 uint32_t CPDF_StreamAcc::GetSize() const {
   if (m_bNewBuf)
     return m_dwSize;

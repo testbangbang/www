@@ -3,6 +3,7 @@ package com.onyx.android.sdk.utils;
 import com.onyx.android.sdk.data.GAdapter;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,5 +80,13 @@ public class CollectionUtils {
             return true;
         }
         return false;
+    }
+
+    public static void diff(final HashSet<String> origin, final HashSet<String> target, final HashSet<String> diff) {
+        for(String s : target) {
+            if (!origin.contains(s)) {
+                diff.add(s);
+            }
+        }
     }
 }

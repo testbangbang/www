@@ -11,6 +11,16 @@ public class ChineseTextSectionRecognizer {
     private static final HashSet<Character> SECTION_END_CHARACTER_SET = new HashSet<>();
 
     static {
+        SECTION_NUMBER_CHARACTER_SET.add('0');
+        SECTION_NUMBER_CHARACTER_SET.add('1');
+        SECTION_NUMBER_CHARACTER_SET.add('2');
+        SECTION_NUMBER_CHARACTER_SET.add('3');
+        SECTION_NUMBER_CHARACTER_SET.add('4');
+        SECTION_NUMBER_CHARACTER_SET.add('5');
+        SECTION_NUMBER_CHARACTER_SET.add('6');
+        SECTION_NUMBER_CHARACTER_SET.add('7');
+        SECTION_NUMBER_CHARACTER_SET.add('8');
+        SECTION_NUMBER_CHARACTER_SET.add('9');
         SECTION_NUMBER_CHARACTER_SET.add('一');
         SECTION_NUMBER_CHARACTER_SET.add('二');
         SECTION_NUMBER_CHARACTER_SET.add('三');
@@ -25,6 +35,7 @@ public class ChineseTextSectionRecognizer {
         SECTION_NUMBER_CHARACTER_SET.add('千');
         SECTION_NUMBER_CHARACTER_SET.add('万');
 
+        SECTION_END_CHARACTER_SET.add('卷');
         SECTION_END_CHARACTER_SET.add('部');
         SECTION_END_CHARACTER_SET.add('篇');
         SECTION_END_CHARACTER_SET.add('章');
@@ -47,7 +58,8 @@ public class ChineseTextSectionRecognizer {
     }
 
     public boolean matches() {
-        return succeed && state == SectionState.SECTION_TITLE;
+        return succeed && (state == SectionState.SECTION_TITLE |
+                state == SectionState.SECTION_END);
     }
 
     public String getSectionText() {

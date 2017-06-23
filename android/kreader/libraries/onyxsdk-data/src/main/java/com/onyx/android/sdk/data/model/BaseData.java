@@ -20,15 +20,15 @@ public class BaseData extends BaseModel {
     @Column
     @PrimaryKey(autoincrement = true)
     @Index
-    long id = INVALID_ID;
+    private long id = INVALID_ID;
 
     @Column
     @Index
-    String guid = null;
+    private String guid = null;
 
     @Column
     @Index
-    String idString = null;
+    private String idString = null;
 
     @Column
     private Date createdAt = null;
@@ -42,6 +42,10 @@ public class BaseData extends BaseModel {
 
     public void setId(long value) {
         id = value;
+    }
+
+    public boolean hasValidId() {
+        return id > INVALID_ID;
     }
 
     public final String getIdString() {
@@ -76,7 +80,7 @@ public class BaseData extends BaseModel {
         updatedAt = d;
     }
 
-    private void beforeSave() {
+    public void beforeSave() {
         Date now = new Date();
         if (createdAt == null) {
             createdAt = now;

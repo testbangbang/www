@@ -6,15 +6,15 @@ import android.graphics.RectF;
 import android.util.Log;
 
 import com.onyx.android.sdk.data.SortOrder;
-import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
-import com.onyx.android.sdk.reader.api.ReaderDRMCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderDrmManager;
 import com.onyx.android.sdk.reader.api.ReaderException;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestOptions;
@@ -32,8 +32,8 @@ import com.onyx.android.sdk.reader.api.ReaderTextSplitter;
 import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.api.ReaderViewOptions;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.ComparatorUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -56,6 +56,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         ReaderNavigator,
         ReaderSearchManager,
         ReaderDrmManager,
+        ReaderFormManager,
         ReaderHitTestManager,
         ReaderRendererFeatures {
 
@@ -165,13 +166,13 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return false;
     }
 
-    @Override
-    public boolean exportNotes(String sourceDocPath, String targetDocPath, List<Annotation> annotations, List<Shape> scribbles) {
-        return false;
-    }
-
     public ReaderView getView(final ReaderViewOptions viewOptions) {
         return this;
+    }
+
+    @Override
+    public boolean readBuiltinOptions(BaseOptions options) {
+        return false;
     }
 
     @Override
@@ -185,6 +186,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     @Override
     public void setChineseConvertType(ReaderChineseConvertType convertType) {
+
+    }
+
+    @Override
+    public void setTextGamma(float gamma) {
 
     }
 
@@ -253,7 +259,12 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return this;
     }
 
-    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect) {
+    @Override
+    public ReaderFormManager getFormManager() {
+        return this;
+    }
+
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap) {
         final String path = getImagePath(pagePosition);
         if (StringUtils.isNullOrEmpty(path)) {
             return false;
@@ -429,26 +440,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     }
 
 
-    public boolean acceptDRMFile(final String path) {
-        return false;
-    }
-
-    public boolean registerDRMCallback(final ReaderDRMCallback callback) {
-        return false;
-    }
-
-    public boolean activateDeviceDRM(String user, String password) {
-        return false;
-    }
-
-    public boolean deactivateDeviceDRM() {
-        return false;
-    }
-
-    public String getDeviceDRMAccount() {
-        return "";
-    }
-    public boolean fulfillDRMFile(String path) {
+    public boolean activateDeviceDRM(String deviceId, String certificate) {
         return false;
     }
 
@@ -470,11 +462,21 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return null;
     }
 
+    @Override
+    public List<ReaderSelection> allText(final String pagePosition) {
+        return null;
+    }
+
     public boolean supportScale() {
         return true;
     }
 
     public boolean supportFontSizeAdjustment() {
+        return false;
+    }
+
+    @Override
+    public boolean supportFontGammaAdjustment() {
         return false;
     }
 
@@ -487,5 +489,12 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return false;
     }
 
+    public boolean isCustomFormEnabled() {
+        return false;
+    }
 
+    @Override
+    public boolean loadFormFields(int page, List<ReaderFormField> fields) {
+        return false;
+    }
 }

@@ -6,11 +6,15 @@ import android.graphics.Point;
 import android.os.Build;
 import android.support.v7.view.ContextThemeWrapper;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
 
 import com.onyx.android.libsetting.R;
+import com.onyx.android.sdk.utils.ReflectUtil;
+
+import java.lang.reflect.Method;
 
 
 /**
@@ -76,7 +80,16 @@ public class CommonUtil {
             d.getRealSize(point);
             windowHeight = point.y - getStatusBarHeight(context);
         } else {
-            windowHeight = dm.heightPixels;
+            int realHeight = 0;
+            //reflection for this weird in-between time
+            Method getRawHeight =  ReflectUtil.getMethodSafely(Display.class,"getRawHeight");
+            realHeight = (int) ReflectUtil.invokeMethodSafely(getRawHeight, d);
+            if (realHeight == 0){
+                windowHeight = d.getHeight();
+            }else {
+                //this may not be 100% accurate, but it's all we've got
+                windowHeight = realHeight - getStatusBarHeight(context);
+            }
         }
         return windowHeight;
     }

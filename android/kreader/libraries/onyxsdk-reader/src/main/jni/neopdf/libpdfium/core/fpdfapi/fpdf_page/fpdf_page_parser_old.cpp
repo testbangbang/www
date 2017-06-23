@@ -33,11 +33,30 @@
 #include "core/fxge/include/cfx_fxgedevice.h"
 #include "core/fxge/include/cfx_renderdevice.h"
 
+#include "core/fpdfapi/onyx_drm_decrypt.h"
+
 namespace {
 
 const uint32_t kMaxNestedArrayLevel = 512;
 const uint32_t kMaxWordBuffer = 256;
 const FX_STRSIZE kMaxStringLength = 32767;
+
+// added by joy@onyx for DRM decryption
+void drmDecrypt(CPDF_StreamAcc *stream) {
+  int size = stream->GetSize();
+  onyx::DrmDecryptManager &decrypt = onyx::DrmDecryptManager::singleton();
+  if (decrypt.isEncrypted()) {
+    const unsigned char *rawData = reinterpret_cast<const unsigned char *>(stream->GetData());
+    int rawSize = stream->GetSize();
+    size_t dataLen = 0;
+    unsigned char *data = decrypt.aesDecrypt(rawData,
+                                             rawSize,
+                                             &dataLen);
+    if (data) {
+      stream->SetData(data, dataLen);
+    }
+  }
+}
 
 }  // namespace
 
@@ -660,6 +679,8 @@ void CPDF_ContentParser::Start(CPDF_Page* pPage) {
     m_nStreams = 0;
     m_pSingleStream.reset(new CPDF_StreamAcc);
     m_pSingleStream->LoadAllData(pStream, FALSE);
+
+    drmDecrypt(m_pSingleStream.get());
   } else if (CPDF_Array* pArray = pContent->AsArray()) {
     m_nStreams = pArray->GetCount();
     if (m_nStreams)
@@ -764,6 +785,7 @@ void CPDF_ContentParser::Continue(IFX_Pause* pPause) {
         CPDF_Stream* pStreamObj = ToStream(
             pContent ? pContent->GetDirectObjectAt(m_CurrentOffset) : nullptr);
         m_StreamArray[m_CurrentOffset]->LoadAllData(pStreamObj, FALSE);
+        drmDecrypt(m_StreamArray[m_CurrentOffset].get());
         m_CurrentOffset++;
       }
     }

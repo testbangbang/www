@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:appCompat="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
@@ -83,12 +84,33 @@
         style="@style/single_line_X_axis_View"
         android:layout_height="1dp"/>
 
-    <LinearLayout
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
         android:background="@android:color/white"
-        android:orientation="vertical"
-        android:id="@+id/menu_view"
+        appCompat:alwaysLayoutImageView="true"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    </LinearLayout>
+        <LinearLayout
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:id="@+id/menu_view"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="wrap_content">
+        </LinearLayout>
+
+        <ImageView
+            android:paddingTop="@dimen/dialog_reader_menu_text_view_padding"
+            android:paddingBottom="@dimen/dialog_reader_menu_text_view_padding"
+            android:background="@drawable/imagebtn_bg"
+            android:id="@+id/close_menu"
+            android:src="@drawable/ic_dialog_reader_menu_close"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+
 </LinearLayout>

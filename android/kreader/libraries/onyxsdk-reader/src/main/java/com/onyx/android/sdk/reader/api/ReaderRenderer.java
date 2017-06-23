@@ -16,6 +16,8 @@ public interface ReaderRenderer {
 
     public void setChineseConvertType(ReaderChineseConvertType convertType);
 
+    public void setTextGamma(float gamma);
+
     /**
      * draw content. There are two coordinates system.
      * host coordinates system, the viewportInPage is specified in host coordinates system
@@ -40,9 +42,8 @@ public interface ReaderRenderer {
      *                |  |------|    |
      *                |        (w,h) |
      *                |--------------|
-     *
      * @return
      */
-    public boolean draw(final String pagePosition, final float scale, final int rotation, final Bitmap bitmap, final RectF displayRect, final RectF pageRect, final RectF visibleRect);
+    public boolean draw(final String pagePosition, final float scale, final int rotation, final RectF displayRect, final RectF pageRect, final RectF visibleRect, final Bitmap bitmap);
 
 }

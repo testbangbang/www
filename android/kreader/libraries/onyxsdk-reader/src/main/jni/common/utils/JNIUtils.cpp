@@ -109,6 +109,15 @@ void JNIUtils::invokeStaticMethod(JNIEnv *env, ...) {
     va_end(args);
 }
 
+jobject JNIUtils::invokeStaticObjectMethod(JNIEnv *env, ...)
+{
+    va_list args;
+    va_start(args, env);
+    jobject obj = env->CallObjectMethod(clazz, methodId, args);
+    va_end(args);
+    return obj;
+}
+
 unsigned char ColorUtils::blue(int argb) {
     return (unsigned char)((argb & 0x000000FF));
 }

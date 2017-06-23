@@ -20,7 +20,8 @@ LOCAL_SHARED_LIBRARIES := libdl
 LOCAL_LDLIBS := -llog -lz -ljnigraphics
 
 LOCAL_SRC_FILES := \
-    onyx_pdfium.cpp
+    onyx_pdfium.cpp \
+    form_helper.cpp
 
 MY_SRC_ROOT := $(LOCAL_PATH)/..
 LOCAL_C_INCLUDES := \

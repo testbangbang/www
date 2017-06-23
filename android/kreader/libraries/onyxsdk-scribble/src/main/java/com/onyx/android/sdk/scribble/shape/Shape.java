@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.formshape.FormValue;
 
 /**
  * Created by zhuzeng on 4/19/16.
@@ -112,4 +113,32 @@ public interface Shape {
     void setShapeExtraAttributes(final ShapeExtraAttributes shapeExtraAttributes);
 
     boolean isFreePosition();
+
+    String getFormId();
+
+    Integer getFormType();
+
+    RectF getFormRect();
+
+    FormValue getFormValue();
+
+    boolean isFormShape();
+
+    void setFormShape(boolean formShape);
+
+    void setFormId(String formId);
+
+    void setFormType(Integer formType);
+
+    void setFormRect(RectF formRect);
+
+    void setFormValue(FormValue formValue);
+
+    boolean isLock();
+
+    void setLock(boolean lock);
+
+    boolean isReview();
+
+    void setReview(boolean review);
 }

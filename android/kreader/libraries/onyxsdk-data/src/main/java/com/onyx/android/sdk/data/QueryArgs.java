@@ -1,29 +1,44 @@
 package com.onyx.android.sdk.data;
 
+import android.util.Log;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
+import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.onyx.android.sdk.data.model.common.FetchPolicy.CLOUD_MEM_DB;
+
+
 /**
  * Created by suicheng on 2016/9/2.
  */
-public class QueryArgs {
+public class QueryArgs implements Serializable {
+    private static final String TAG = QueryArgs.class.getSimpleName();
+    public static int CLOUD_FETCH_LIMIT = 50;
 
-    public int limit = Integer.MAX_VALUE;
     public int offset = 0;
+    public int limit = Integer.MAX_VALUE;
+
     @JSONField(serialize = false, deserialize = false)
     public ConditionGroup conditionGroup = ConditionGroup.clause();
+    @JSONField(serialize = false, deserialize = false)
+    public List<IProperty> propertyList = new ArrayList<>();
     @JSONField(serialize = false, deserialize = false)
     public List<OrderBy> orderByList = new ArrayList<>();
     public String libraryUniqueId = null;
     public BookFilter filter = BookFilter.ALL;
+
     public SortBy sortBy = SortBy.Name;
     public SortOrder order = SortOrder.Desc;
     public Set<String> fileType = new HashSet<>();
@@ -31,7 +46,14 @@ public class QueryArgs {
     public Set<String> title = new HashSet<>();
     public Set<String> tags = new HashSet<>();
     public Set<String> series = new HashSet<>();
+    public Set<String> category = new HashSet<>();
     public String query;
+
+    public
+    @FetchPolicy.Type
+    int fetchPolicy = FetchPolicy.MEM_CLOUD_DB;
+
+    public String cloudToken;
 
     public static final String DEVICE_LIBRARY = "deviceLibrary";
     public static final String RECENT_READ = "recentRead";
@@ -150,6 +172,7 @@ public class QueryArgs {
         return true;
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public boolean isAllSetContentEmpty() {
         if (!CollectionUtils.isNullOrEmpty(fileType)) {
             return false;
@@ -167,5 +190,66 @@ public class QueryArgs {
             return false;
         }
         return true;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public String getOrderByQuery() {
+        if(CollectionUtils.isNullOrEmpty(orderByList)){
+            return null;
+        }
+        String orderBy = "";
+        for (OrderBy by : orderByList) {
+            orderBy += by.getQuery();
+        }
+        return orderBy;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public String getLimitOffsetQuery() {
+        return " LIMIT " + limit + " OFFSET " + offset + " ";
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public String getOrderByQueryWithLimitOffset() {
+        String orderByQuery = getOrderByQuery();
+        String limitOffsetQuery = getLimitOffsetQuery();
+        if(StringUtils.isNullOrEmpty(orderByQuery)) {
+            Log.w(TAG, "NULL orderBy detected, offset and limit does not work.");
+            return null;
+        }
+        return orderByQuery + limitOffsetQuery;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public String[] getProjectionSet() {
+        if (CollectionUtils.isNullOrEmpty(propertyList)) {
+            return null;
+        }
+        String[] projection = new String[propertyList.size()];
+        for (int i = 0; i < propertyList.size(); i++) {
+            projection[i] = propertyList.get(i).getQuery();
+        }
+        return projection;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public int getCloudFetchLimit() {
+        return limit > QueryArgs.CLOUD_FETCH_LIMIT ? limit : QueryArgs.CLOUD_FETCH_LIMIT;
+    }
+
+    public void resetOffset() {
+        this.offset = 0;
+    }
+
+    public void useMemCloudDbPolicy() {
+        fetchPolicy = FetchPolicy.MEM_CLOUD_DB;
+    }
+
+    public void useCloudMemDbPolicy() {
+        fetchPolicy = FetchPolicy.CLOUD_MEM_DB;
+    }
+
+    public void useCloudOnlyPolicy() {
+        fetchPolicy = FetchPolicy.CLOUD_ONLY;
     }
 }

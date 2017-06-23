@@ -10,10 +10,23 @@ import android.view.View;
  */
 
 public class DeviceMainSettingItemDecoration extends RecyclerView.ItemDecoration {
+    private int color = -1;
+    private int width = 1;
+
+    //all use default setting.
+    public DeviceMainSettingItemDecoration() {
+    }
+
+    public DeviceMainSettingItemDecoration(int color, int width) {
+        this.color = color;
+        this.width = width;
+    }
+
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         Paint paint = new Paint();
-        paint.setColor(parent.getContext().getResources().getColor(android.R.color.black));
+        paint.setColor(color == -1 ? parent.getContext().getResources().getColor(android.R.color.black) : color);
+        paint.setStrokeWidth(width);
 
         int childCount = parent.getChildCount();
 
