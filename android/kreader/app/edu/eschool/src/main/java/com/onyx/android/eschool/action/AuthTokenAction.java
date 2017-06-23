@@ -1,6 +1,7 @@
 package com.onyx.android.eschool.action;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
@@ -32,6 +33,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by suicheng on 2017/5/18.
  */
 public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
+    private static final String TAG = "AuthTokenAction";
     private int localLoadRetryCount = 1;
 
     @Override
@@ -45,14 +47,28 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
             sendHardwareErrorEvent();
             return;
         }
-        setMainIndexServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
+
         final CloudRequestChain requestChain = new CloudRequestChain();
-        final CloudIndexServiceRequest authServiceRequest = new CloudIndexServiceRequest(createAuthService(dataHolder.getContext()));
-        final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
-        authServiceRequest.setLocalLoadRetryCount(localLoadRetryCount);
-        accountLoadRequest.setLocalLoadRetryCount(localLoadRetryCount);
         requestChain.setAbortException(false);
-        requestChain.addRequest(authServiceRequest, null);
+
+        final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
+        accountLoadRequest.setLocalLoadRetryCount(localLoadRetryCount);
+
+        if (DeviceConfig.sharedInstance(dataHolder.getContext()).isUseCloudIndexServer()) {
+            final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(createIndexService(dataHolder.getContext()));
+            indexServiceRequest.setLocalLoadRetryCount(localLoadRetryCount);
+            requestChain.addRequest(indexServiceRequest, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    if (e != null || !IndexService.hasValidServer(indexServiceRequest.getResultIndexService())) {
+                        Log.w(TAG, "indexService error,ready to use backup service");
+                        useBackupServerCloudConf(request.getContext(), dataHolder.getCloudManager());
+                    }
+                }
+            });
+            useMainIndexServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
+        }
+
         requestChain.addRequest(accountLoadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -106,17 +122,26 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         this.localLoadRetryCount = retryCount;
     }
 
-    private IndexService createAuthService(Context context) {
+    private IndexService createIndexService(Context context) {
         IndexService authService = new IndexService();
         authService.mac = NetworkUtil.getMacAddress(context);
         authService.installationId = LeanCloudManager.getInstallationId();
         return authService;
     }
 
-    public static void setMainIndexServerCloudConf(Context context, CloudManager cloudManager) {
+    public static void useMainIndexServerCloudConf(Context context, CloudManager cloudManager) {
         cloudManager.setAllCloudConf(CloudConf.create(
                 DeviceConfig.sharedInstance(context).getCloudMainIndexServerHost(),
                 DeviceConfig.sharedInstance(context).getCloudMainIndexServerApi(),
                 Constant.DEFAULT_CLOUD_STORAGE));
+        cloudManager.setCloudDataProvider(cloudManager.getCloudConf());
+    }
+
+    public static void useBackupServerCloudConf(Context context, CloudManager cloudManager) {
+        cloudManager.setAllCloudConf(CloudConf.create(
+                DeviceConfig.sharedInstance(context).getCloudContentHost(),
+                DeviceConfig.sharedInstance(context).getCloudContentApi(),
+                Constant.DEFAULT_CLOUD_STORAGE));
+        cloudManager.setCloudDataProvider(cloudManager.getCloudConf());
     }
 }

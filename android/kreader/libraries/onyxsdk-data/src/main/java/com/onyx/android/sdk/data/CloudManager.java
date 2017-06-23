@@ -143,6 +143,10 @@ public class CloudManager {
         return DataProviderManager.getCloudDataProvider(getCloudConf());
     }
 
+    public void setCloudDataProvider(CloudConf cloudConf) {
+        DataProviderManager.setCloudDataProvider(cloudConf);
+    }
+
     public String getToken() {
         return token;
     }
