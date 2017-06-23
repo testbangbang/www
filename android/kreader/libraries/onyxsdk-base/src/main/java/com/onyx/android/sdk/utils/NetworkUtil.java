@@ -8,6 +8,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.onyx.android.sdk.device.Device;
 
@@ -20,6 +21,7 @@ import java.util.List;
  */
 
 public class NetworkUtil {
+    private static final String TAG = NetworkUtil.class.getSimpleName();
     private static final String MAC_ADDRESS_KEY = "mac_address";
 
     public static boolean isWiFiConnected(Context context) {
@@ -61,12 +63,13 @@ public class NetworkUtil {
 
     public static String getMacAddressFromSystem(Context context) {
         String macAddress = null;
-        for(int i = 0; i < 3; ++i) {
+        for(int i = 0; i < 5; ++i) {
             macAddress = getMacAddressFromSystemImpl(context);
             if (StringUtils.isNotBlank(macAddress)) {
                 return macAddress.toLowerCase();
             }
         }
+        Log.e(TAG, "No mac address acquired");
         return macAddress;
     }
 
