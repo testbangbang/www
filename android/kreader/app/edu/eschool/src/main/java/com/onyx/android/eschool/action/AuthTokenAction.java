@@ -60,8 +60,8 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         if (!DeviceConfig.sharedInstance(dataHolder.getContext()).isUseCloudIndexServer()) {
             return;
         }
-        useMainIndexServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
-        final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(createIndexService(dataHolder.getContext()));
+        final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(Constant.CLOUD_MAIN_INDEX_SERVER_API,
+                createIndexService(dataHolder.getContext()));
         indexServiceRequest.setLocalLoadRetryCount(localLoadRetryCount);
         requestChain.addRequest(indexServiceRequest, new BaseCallback() {
             @Override
@@ -135,14 +135,6 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         authService.mac = NetworkUtil.getMacAddress(context);
         authService.installationId = LeanCloudManager.getInstallationId();
         return authService;
-    }
-
-    public static void useMainIndexServerCloudConf(Context context, CloudManager cloudManager) {
-        cloudManager.setAllCloudConf(CloudConf.create(
-                DeviceConfig.sharedInstance(context).getCloudMainIndexServerHost(),
-                DeviceConfig.sharedInstance(context).getCloudMainIndexServerApi(),
-                Constant.DEFAULT_CLOUD_STORAGE));
-        cloudManager.setCloudDataProvider(cloudManager.getCloudConf());
     }
 
     public static void useFallbackServerCloudConf(Context context, CloudManager cloudManager) {

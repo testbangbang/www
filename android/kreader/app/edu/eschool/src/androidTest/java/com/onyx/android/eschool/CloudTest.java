@@ -46,7 +46,8 @@ public class CloudTest extends ApplicationTestCase<Application> {
     public void testIndexService() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         useMainIndexServerCloudConf(getContext(), cloudManager);
-        final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(createIndexService(getContext()));
+        final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(Constant.CLOUD_MAIN_INDEX_SERVER_API,
+                createIndexService(getContext()));
         cloudManager.submitRequest(getContext(), indexServiceRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -65,13 +66,6 @@ public class CloudTest extends ApplicationTestCase<Application> {
         return authService;
     }
 
-    public static void useMainIndexServerCloudConf(Context context, CloudManager cloudManager) {
-        cloudManager.setAllCloudConf(CloudConf.create(
-                DeviceConfig.sharedInstance(context).getCloudMainIndexServerHost(),
-                DeviceConfig.sharedInstance(context).getCloudMainIndexServerApi(),
-                Constant.DEFAULT_CLOUD_STORAGE));
-        cloudManager.setCloudDataProvider(cloudManager.getCloudConf());
-    }
 
 }
 
