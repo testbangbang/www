@@ -15,7 +15,7 @@ public class Server extends BaseData {
     public String address;
     public String organization;
 
-    public String createServerHost() {
+    public String getServerHost() {
         String host = "http://";
         if (StringUtils.isNotBlank(ip)) {
             host += ip;
@@ -27,4 +27,9 @@ public class Server extends BaseData {
         }
         return host + "/";
     }
+
+    public String getApiBase() {
+        return getServerHost() + "api/";
+    }
+
 }

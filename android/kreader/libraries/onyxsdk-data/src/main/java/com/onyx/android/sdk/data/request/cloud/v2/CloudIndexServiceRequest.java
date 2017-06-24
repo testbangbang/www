@@ -1,9 +1,7 @@
 package com.onyx.android.sdk.data.request.cloud.v2;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.v2.IndexService;
@@ -24,14 +22,15 @@ import static com.onyx.android.sdk.data.provider.SystemConfigProvider.KEY_CONTEN
  */
 
 public class CloudIndexServiceRequest extends BaseCloudRequest {
-    private static final String TAG = "CloudIndexServerRequest";
 
+    private volatile String apiBase;
     private IndexService requestService;
     private IndexService resultService;
     private int localRetryCount = 1;
 
-    public CloudIndexServiceRequest(IndexService service) {
-        this.requestService = service;
+    public CloudIndexServiceRequest(final String base, IndexService service) {
+        requestService = service;
+        apiBase = base;
     }
 
     public IndexService getResultIndexService() {
@@ -47,9 +46,10 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
             saveContentServiceInfo(getContext(), cloudService);
         }
         if (resultService != null && resultService.server != null) {
-            String host = resultService.server.createServerHost();
+            String host = resultService.server.getServerHost();
+            String api = resultService.server.getApiBase();
             parent.setAllCloudConf(CloudConf.create(host,
-                    host + "api/", Constant.DEFAULT_CLOUD_STORAGE));
+                    api, Constant.DEFAULT_CLOUD_STORAGE));
             parent.setCloudDataProvider(parent.getCloudConf());
         }
     }
@@ -75,7 +75,7 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
 
     private IndexService loadContentServiceInfoFromCloud(CloudManager parent) {
         try {
-            Response<IndexService> response = RetrofitUtils.executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
+            Response<IndexService> response = RetrofitUtils.executeCall(ServiceFactory.getContentService(apiBase)
                     .getIndexService(requestService.mac, requestService.installationId));
             if (response.isSuccessful()) {
                 return response.body();
