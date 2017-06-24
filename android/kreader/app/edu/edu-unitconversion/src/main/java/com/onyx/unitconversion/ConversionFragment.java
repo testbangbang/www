@@ -1,5 +1,6 @@
 package com.onyx.unitconversion;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -75,6 +76,7 @@ public class ConversionFragment extends Fragment {
     }
 
     private void initView() {
+        inputText.setRawInputType(Configuration.KEYBOARD_12KEY);
         initInputUnitSelector();
         initOutPutUnitSelector();
         outputContent.setLayoutManager(new LinearLayoutManager(getActivity()));
