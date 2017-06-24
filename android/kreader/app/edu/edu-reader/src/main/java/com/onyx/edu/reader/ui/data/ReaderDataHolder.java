@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Rect;
-import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -32,17 +31,15 @@ import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
-import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.actions.CloseNoteMenuAction;
-import com.onyx.edu.reader.note.actions.SaveReviewDataAction;
 import com.onyx.edu.reader.note.receiver.DeviceReceiver;
 import com.onyx.edu.reader.tts.ReaderTtsManager;
 import com.onyx.edu.reader.ui.ReaderBroadcastReceiver;
+import com.onyx.edu.reader.ui.actions.CloudConfInitAction;
 import com.onyx.edu.reader.ui.actions.ApplyReviewDataFromCloudAction;
 import com.onyx.edu.reader.ui.actions.ExportAnnotationAction;
-import com.onyx.edu.reader.ui.actions.GetDocumentDataFromCloudChain;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.events.TextSelectionEvent;
 import com.onyx.edu.reader.ui.events.*;
@@ -690,6 +687,16 @@ public class ReaderDataHolder {
     public void onDocumentInitRendered() {
         documentInitRendered = true;
         getEventBus().post(new DocumentInitRenderedEvent());
+        cloudConfInit();
+    }
+
+    private void cloudConfInit() {
+        new CloudConfInitAction().execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                getEventBus().post(new CloudConfInitEvent());
+            }
+        });
     }
 
     public boolean isDocumentInitRendered() {

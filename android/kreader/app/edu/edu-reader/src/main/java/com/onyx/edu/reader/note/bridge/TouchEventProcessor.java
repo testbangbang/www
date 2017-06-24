@@ -194,6 +194,7 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
     private void finishCurrentShape(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, boolean create) {
         final Shape shape = getNoteManager().getCurrentShape();
         if (getCallback() != null && shape != null) {
+            getNoteManager().collectPoint(pageInfo, normal, screen, create, true);
             getCallback().onDrawingTouchUp(null, shape);
         }
         getNoteManager().resetCurrentShape();

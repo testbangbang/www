@@ -84,6 +84,7 @@ import com.onyx.edu.reader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.edu.reader.ui.events.ChangeOrientationEvent;
 import com.onyx.edu.reader.ui.events.ClearFormFieldControlsEvent;
 import com.onyx.edu.reader.ui.events.ClosePopupEvent;
+import com.onyx.edu.reader.ui.events.CloudConfInitEvent;
 import com.onyx.edu.reader.ui.events.ConfirmCloseDialogEvent;
 import com.onyx.edu.reader.ui.events.DialogUIChangeEvent;
 import com.onyx.edu.reader.ui.events.DocumentInitRenderedEvent;
@@ -895,10 +896,14 @@ public class ReaderActivity extends OnyxBaseActivity {
         initReaderMenu();
         updateNoteHostView();
         getReaderDataHolder().updateRawEventProcessor();
-        getReaderDataHolder().applyReviewDataFromCloud(false);
         getReaderDataHolder().resetHandlerManager();
 
         postDocumentInitRendered();
+    }
+
+    @Subscribe
+    public void onCloudConfInit(final CloudConfInitEvent event) {
+        getReaderDataHolder().applyReviewDataFromCloud(false);
     }
 
     private void postDocumentInitRendered() {
