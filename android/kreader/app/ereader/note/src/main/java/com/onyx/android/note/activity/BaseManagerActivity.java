@@ -2,6 +2,7 @@ package com.onyx.android.note.activity;
 
 import android.content.Intent;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -383,12 +384,28 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
     }
 
     protected void onItemDelete(){
-        ArrayList<String> targetRemoveIDList = new ArrayList<>();
+        final ArrayList<String> targetRemoveIDList = new ArrayList<>();
         for (GObject object : chosenItemsList) {
             targetRemoveIDList.add(GAdapterUtil.getUniqueId(object));
         }
-        new NoteLibraryRemoveAction<>(targetRemoveIDList).execute(BaseManagerActivity.this);
-        switchMode(SelectionMode.NORMAL_MODE);
+        final OnyxAlertDialog deleteAlertDialog = new OnyxAlertDialog();
+        deleteAlertDialog.setParams(new OnyxAlertDialog.Params().setEnableTittle(false)
+                .setAlertMsgString(getString(R.string.ask_for_delete_note))
+                .setPositiveAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new NoteLibraryRemoveAction<>(targetRemoveIDList).execute(BaseManagerActivity.this);
+                        deleteAlertDialog.dismiss();
+                        switchMode(SelectionMode.NORMAL_MODE);
+                    }
+                }).setNegativeAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deleteAlertDialog.dismiss();
+                        switchMode(SelectionMode.NORMAL_MODE);
+                    }
+                }));
+        deleteAlertDialog.show(getFragmentManager(),"DeleteAlert");
     }
 
     protected void onItemMove() {

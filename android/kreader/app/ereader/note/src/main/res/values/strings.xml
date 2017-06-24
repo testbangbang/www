@@ -57,4 +57,5 @@
     <string name="ask_for_delete_page">Are you sure you want to delete the page？</string>
     <string name="save_and_exit">Save And Exit?</string>
     <string name="find_old_scribble">Find old scribble data, need to import?</string>
+    <string name="ask_for_delete_note">Are you sure want to delete？</string>
 </resources>
