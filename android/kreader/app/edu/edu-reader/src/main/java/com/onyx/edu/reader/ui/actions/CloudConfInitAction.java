@@ -20,6 +20,9 @@ public class CloudConfInitAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
+        readerDataHolder.getCloudManager().setAllCloudConf(CloudConf.create(Constant.CLOUD_MAIN_INDEX_SERVER_HOST,
+                Constant.CLOUD_MAIN_INDEX_SERVER_API,
+                Constant.DEFAULT_CLOUD_STORAGE));
         final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(createIndexService(readerDataHolder.getContext()));
         readerDataHolder.getCloudManager().submitRequest(readerDataHolder.getContext(), indexServiceRequest, new BaseCallback() {
             @Override

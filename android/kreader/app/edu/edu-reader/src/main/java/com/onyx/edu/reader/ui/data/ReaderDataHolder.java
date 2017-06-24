@@ -343,8 +343,8 @@ public class ReaderDataHolder {
 
     public CloudManager getCloudManager() {
         if (cloudManager == null) {
-            cloudManager = CloudStore.createCloudManager(CloudConf.create(Constant.CLOUD_MAIN_INDEX_SERVER_HOST,
-                    Constant.CLOUD_MAIN_INDEX_SERVER_API,
+            cloudManager = CloudStore.createCloudManager(CloudConf.create(Constant.ONYX_HOST_BASE,
+                    Constant.ONYX_API_BASE,
                     Constant.DEFAULT_CLOUD_STORAGE));
         }
         return cloudManager;
