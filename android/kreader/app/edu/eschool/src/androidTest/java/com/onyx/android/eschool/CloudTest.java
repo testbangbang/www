@@ -45,7 +45,6 @@ public class CloudTest extends ApplicationTestCase<Application> {
 
     public void testIndexService() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        useMainIndexServerCloudConf(getContext(), cloudManager);
         final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(Constant.CLOUD_MAIN_INDEX_SERVER_API,
                 createIndexService(getContext()));
         cloudManager.submitRequest(getContext(), indexServiceRequest, new BaseCallback() {
