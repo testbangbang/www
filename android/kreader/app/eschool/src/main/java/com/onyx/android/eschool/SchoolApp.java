@@ -42,11 +42,10 @@ public class SchoolApp extends Application {
 
     public void initCloudStoreConfig() {
         initCloudDatabase();
-        initCloudFileDownloader();
     }
 
     public void initPl107DeviceConfig() {
-        AppCompatImageViewCollection.isPl107Device = AppCompatUtils.isPL107Device(this);
+        AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
     }
 
     private void initSystemInBackground() {
@@ -62,15 +61,11 @@ public class SchoolApp extends Application {
     }
 
     public void initCloudDatabase() {
-        CloudStore.initDatabase(this);
-    }
-
-    public void initCloudFileDownloader() {
-        CloudStore.initFileDownloader(this);
+        CloudStore.init(this);
     }
 
     public void terminateCloudDatabase() {
-        CloudStore.terminateCloudDatabase();
+        CloudStore.terminate();
     }
 
     public static SchoolApp singleton() {

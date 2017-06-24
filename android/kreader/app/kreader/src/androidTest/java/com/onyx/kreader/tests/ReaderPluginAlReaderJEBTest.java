@@ -64,9 +64,12 @@ public class ReaderPluginAlReaderJEBTest extends ActivityInstrumentationTestCase
                     ReaderPluginOptionsImpl.create(this.getActivity().getBaseContext()));
 
 
-            final ReaderDocumentOptionsImpl documentOptions = new ReaderDocumentOptionsImpl(null, null,
-                    0, LocaleUtils.getLocaleDefaultCodePage(),
-                    ReaderChineseConvertType.NONE);
+            final ReaderDocumentOptionsImpl documentOptions = new ReaderDocumentOptionsImpl(null,
+                    null,
+                    0,
+                    LocaleUtils.getLocaleDefaultCodePage(),
+                    ReaderChineseConvertType.NONE,
+                    false);
 
             assertEquals(wrapper.openDocument(bookPaths.get(i), documentOptions), wrapper.NO_ERROR);
 

@@ -438,7 +438,7 @@ public class MainActivity extends OnyxAppCompatActivity {
         if (StringUtils.isNullOrEmpty(url)) {
             return false;
         }
-        BaseDownloadTask task = OnyxDownloadManager.getInstance(this).download(url, file.getAbsolutePath(),
+        BaseDownloadTask task = OnyxDownloadManager.getInstance().download(this, url, file.getAbsolutePath(),
                 product.getGuid(), new BaseCallback() {
 
                     @Override
@@ -512,7 +512,7 @@ public class MainActivity extends OnyxAppCompatActivity {
     }
 
     private OnyxDownloadManager getDownLoaderManager() {
-        return OnyxDownloadManager.getInstance(this);
+        return OnyxDownloadManager.getInstance();
     }
 
     class AppViewHolder extends RecyclerView.ViewHolder {

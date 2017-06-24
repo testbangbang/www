@@ -2,7 +2,7 @@ package com.onyx.kreader.tests.text;
 
 import android.test.ActivityInstrumentationTestCase2;
 import com.onyx.kreader.tests.ReaderTestActivity;
-import com.onyx.android.sdk.reader.utils.UnicodeUtils;
+import com.onyx.android.sdk.utils.UnicodeUtils;
 
 /**
  * Created by zengzhu on 3/13/16.

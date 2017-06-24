@@ -561,7 +561,7 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
             return;
         }
 
-        BaseDownloadTask task = getDownLoaderManager().download(link.url,
+        BaseDownloadTask task = getDownLoaderManager().download(this, link.url,
                 filePath, link.displayName, baseCallback);
         getDownLoaderManager().addTask(product.getGuid(), task);
         getDownLoaderManager().startDownload(task);
@@ -659,6 +659,6 @@ public class TeachingAuxiliaryActivity extends BaseActivity {
     }
 
     private OnyxDownloadManager getDownLoaderManager() {
-        return OnyxDownloadManager.getInstance(this);
+        return OnyxDownloadManager.getInstance();
     }
 }

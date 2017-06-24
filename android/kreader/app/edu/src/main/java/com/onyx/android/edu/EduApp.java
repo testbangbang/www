@@ -25,7 +25,7 @@ public class EduApp extends Application{
     }
 
     public void initPl107DeviceConfig() {
-        AppCompatImageViewCollection.isPl107Device = AppCompatUtils.isPL107Device(this);
+        AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
     }
 
 }

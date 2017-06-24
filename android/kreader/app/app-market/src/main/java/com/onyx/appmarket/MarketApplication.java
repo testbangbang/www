@@ -29,11 +29,12 @@ public class MarketApplication extends Application {
     }
 
     private void initDownloadManager() {
-        OnyxDownloadManager.getInstance(sInstance.getApplicationContext());
+        OnyxDownloadManager.init(sInstance.getApplicationContext());
+        OnyxDownloadManager.getInstance();
     }
 
     private void initStoreDatabase() {
-        CloudStore.initDatabase(sInstance.getApplicationContext());
+        CloudStore.init(sInstance.getApplicationContext());
     }
 
     public static CloudStore getCloudStore() {
