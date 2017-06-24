@@ -251,6 +251,7 @@ public class SchoolApp extends MultiDexApplication {
             @Override
             public void onWifiConnected(Intent intent) {
                 EventBus.getDefault().post(new DataRefreshEvent());
+                LeanCloudManager.saveInstallation(singleton().getApplicationContext());
             }
         });
         deviceReceiver.enable(getApplicationContext(), true);

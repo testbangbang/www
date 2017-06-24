@@ -51,4 +51,13 @@ public class DeviceInfoUtil {
         }
         return new Point(widthPixels, heightPixels);
     }
+
+    public static String deviceInfo() {
+        String s = "";
+        s += "\n OS Version: " + System.getProperty("os.version") + "(" + android.os.Build.VERSION.INCREMENTAL + ")";
+        s += "\n OS API Level: " + Build.VERSION.SDK_INT;
+        s += "\n Device: " + android.os.Build.DEVICE;
+        s += "\n Model (and Product): " + android.os.Build.MODEL + " (" + android.os.Build.PRODUCT + ")";
+        return s;
+    }
 }
