@@ -86,8 +86,8 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
         }
     }
 
-    private void saveContentServiceInfo(Context context, IndexService authService) {
-        SystemConfigProvider.setStringValue(context, KEY_CONTENT_SERVER_INFO, JSONObjectParseUtils.toJson(authService));
+    private void saveContentServiceInfo(Context context, IndexService contentService) {
+        SystemConfigProvider.setStringValue(context, KEY_CONTENT_SERVER_INFO, JSONObjectParseUtils.toJson(contentService));
     }
 
     public void setLocalLoadRetryCount(int retryCount) {
