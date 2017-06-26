@@ -77,6 +77,7 @@ public class FormFieldControlFactory {
             buttonParams.weight = 1.0f;
             buttonParams.setMargins(0, 0, 0, 0);
             button.setPadding(0, 0, 0, 0);
+            button.setTag(buttonField);
             radioGroup.addView(button, buttonParams);
             button.setId(index);
             index++;
