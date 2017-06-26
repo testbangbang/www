@@ -9,6 +9,7 @@ import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.onyx.android.libsetting.databinding.DeviceMainSettingsItemBinding;
 import com.onyx.android.libsetting.model.ModelInfo;
 import com.onyx.android.libsetting.model.SettingItem;
 import com.onyx.android.libsetting.util.CommonUtil;
+import com.onyx.android.libsetting.util.Constant;
 import com.onyx.android.libsetting.util.QRCodeUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.DeviceMainSettingItemDecoration;
@@ -38,12 +40,14 @@ import java.util.List;
 import static com.onyx.android.libsetting.util.Constant.EDU_DEVICE_INFO_TRIGGER_VALUE;
 
 public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
+    private static final String TAG = DeviceMainSettingActivity.class.getSimpleName();
     SettingConfig config;
     ActivityDeviceMainSettingBinding binding;
     ModelInfo info;
     SettingFunctionAdapter adapter;
     GridLayoutManager layoutManager;
     int eduDeviceInfoCount = 0;
+    long eduDeviceInfoTriggerStartTime = 0;
 
     private static final float miniPercent = 0.20f;
 
@@ -133,10 +137,20 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                 binding.deviceInfoEnterImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        eduDeviceInfoCount++;
+                        if (eduDeviceInfoCount == 0) {
+                            eduDeviceInfoTriggerStartTime = System.currentTimeMillis();
+                        }
+                        if (System.currentTimeMillis() - eduDeviceInfoTriggerStartTime <= Constant.EDU_DEVICE_INFO_TRIGGER_TIME_LIMIT) {
+                            eduDeviceInfoCount++;
+                        } else {
+                            eduDeviceInfoTriggerStartTime = 0;
+                            eduDeviceInfoCount = 0;
+                        }
+
                         if (eduDeviceInfoCount > (EDU_DEVICE_INFO_TRIGGER_VALUE / 2)) {
                             if (eduDeviceInfoCount >= EDU_DEVICE_INFO_TRIGGER_VALUE) {
                                 eduDeviceInfoCount = 0;
+                                eduDeviceInfoTriggerStartTime = 0;
                                 Intent intent = SettingCategory.getConfigIntentByCategory(DeviceMainSettingActivity.this, SettingCategory.DEVICE_INFO);
                                 if (intent != null) {
                                     startActivity(intent);
