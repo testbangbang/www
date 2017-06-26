@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+  <string name="app_name">App Store</string>
+  <string name="get_empty_download_link">Liên kết tải xuống trống rỗng</string>
+  <string name="get_empty_content">Nội dung trống</string>
+  <string name="download_success">Tải xuống thành công</string>
+  <string name="download_fail">Tải xuống không thành công</string>
+  <string name="downloading">Tải xuống&#8230;</string>
+  <string name="download">Tải xuống</string>
+  <string name="install">Cài đặt</string>
+  <string name="updated">Nâng cấp</string>
+  <string name="search_hint">Tìm (chuỗi trống)</string>
+  <string name="no_category_found">Không tìm thấy danh mục</string>
+  <string name="all">Tất cả</string>
+</resources>

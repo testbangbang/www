@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+  <string-array name="wifi_status">
+    <item>Đang kết nối\u2026</item>
+    <item>Đang xác thực\u2026</item>
+    <item>Đang lấy địa chỉ \u2026</item>
+    <item>Đã treo</item>
+    <item>Đang ngắt kết nối\u2026</item>
+    <item>Ngắt kết nối</item>
+    <item>Không thành công</item>
+  </string-array>
+  <string-array name="wifi_status_with_ssid">
+    <item>X</item>
+    <item>Đang quét\u2026</item>
+    <item>Kết nối tới <xliff:g id="network_name">%1$s</xliff:g>\u2026</item>
+    <item>Đang lấy địa chỉ từ  <xliff:g id="network_name">%1$s</xliff:g>\u2026</item>
+    <item>Đã treo</item>
+    <item>Ngắt kêt nối với <xliff:g id="network_name">%1$s</xliff:g>\u2026</item>
+    <item>Ngắt kết nối</item>
+    <item>Không thành công</item>
+  </string-array>
+  <string-array name="wifi_signal">
+    <item>Tốt</item>
+    <item>Xuất sắc</item>
+  </string-array>
+  <string-array name="homepage_preference">
+    <item>Hiển thị sách đã đọc gần đây</item>
+    <item>Hiển thị sách đã thêm gần đây</item>
+  </string-array>
+  <string-array name="long_short_click_key_map_mode">
+    <item>"Lựa chọn 1"</item>
+    <item>"Lựa chọn 2"</item>
+    <item>"Lựa chọn 3"</item>
+    <item>"Lựa chọn 4"</item>
+    <item>"Lựa chọn "</item>
+  </string-array>
+  <string-array name="long_short_click_key_map_mode_for_tp_model">
+    <item>"Lựa chọn 2"</item>
+    <item>"Lựa chọn 3"</item>
+    <item>"Lựa chọn 4"</item>
+  </string-array>
+  <string-array name="long_short_click_key_map_summary">
+    <item>"Nút trái (nhấn không giữ) -&gt; Trở lại\nNút  trái (nhấn giữ) -&gt; Menu\nNút phải (nhấn giữ) -&gt; Menu\nNút phải (nhấn không giữ) -&gt; Nút Page Down"</item>
+    <item>"Nút trái (nhấn không giữ) -&gt; Page up\nNút trái (nhấn giữ) -&gt; Back\nNút phải (nhấn giữ) -&gt; Menu\nRight button (short press) -&gt; Page down"</item>
+    <item>"Nút trái (nhấn không giữ) -&gt; Page down\nNút  trái (nhấn giữ) -&gt; Page Up\nNút phải (nhấn giữ) -&gt; Menu\nNút phải (nhấn không giữ) -&gt; Trở lại"</item>
+    <item>"Nút trái (nhấn không giữ) -&gt; Page down\nNút trái (nhấn giữ) -&gt; Menu\nNút phải (nhấn giữ) -&gt; Trở lại\nNút phải (nhấn không giữ) -&gt; Page up"</item>
+    <item>"Nút trái (nhấn không giữ) -&gt; Page down\nNút trái (nhấn giữ) -&gt; Page Up\nNút phải (nhấn giữ) -&gt; Menu\nNút phải (nhấn không giữ) -&gt; Trở lại"</item>
+  </string-array>
+  <string-array name="long_short_click_key_map_summary_for_tp_model">
+    <item>"Nút trái (nhấn không giữ) -&gt; Page up\nNút trái (nhấn giữ) -&gt; Làm mới trang\nNút phải (nhấn không giữ) -&gt; Page down\nNút phải (nhấn giữ) -&gt; Menu"</item>
+    <item>"Nút trái (nhấn không giữ) -&gt; Page down\nNút trái (nhấn giữ) -&gt; Làm mới trang\nNút phải (nhấn không giữ) -&gt; Page down\nNút phải (nhấn giữ) -&gt; Page up"</item>
+    <item>"Nút trái (nhấn không giữ) -&gt; Page down\nNút trái (nhấn giữ) -&gt; Page up\nNút phải (nhấn không giữ) -&gt; Page down\nNút phải (nhấn giữ) -&gt; Từ điển"</item>
+    <item>"Nút trái (nhấn không giữ) -&gt; Page up\nNút trái (nhấn giữ) -&gt; Làm mới trang\nNút phải (nhấn giữ) -&gt; Page down\nNút phải (nhấn giữ) -&gt; Từ điển"</item>
+    <item>"Nút trái (nhấn không giữ) -&gt; Page down\nNút trái (nhấn giữ) -&gt; Page up\nNút phải (nhấn không giữ) -&gt; Page down\nNút phải (nhấn giữ) -&gt; Từ điển"</item>
+  </string-array>
+  <string-array name="long_press_feature_summary">
+    <item>"Chuyển đèn trước"</item>
+    <item/>
+    <item>"Chuyển thanh trạng thái"</item>
+  </string-array>
+</resources>
