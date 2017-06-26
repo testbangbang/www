@@ -1,0 +1,70 @@
+apply plugin: 'com.android.application'
+
+apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
+apply from: file(rootProject.projectDir.absolutePath + '/versioning.gradle')
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.onyx.edu.manager"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode gitVersionCode(projectDir)
+        versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
+        multiDexEnabled true
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../../proguard-rules.pro', 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [channel_value: releaseChannel(),
+                                    type_value: releaseType(),
+                                    timestamp_value: System.currentTimeMillis() + "L"]
+        }
+        debug {
+            debuggable true
+            manifestPlaceholders = [channel_value: releaseChannel(),
+                                    type_value: releaseType(),
+                                    timestamp_value: System.currentTimeMillis() + "L"]
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    productFlavors {
+        factory {}
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    testCompile "junit:junit:$rootProject.junitVersion"
+
+    compile project(':libraries:onyxsdk-base')
+    compile project(':libraries:onyxsdk-ui')
+    compile project(':libraries:onyxsdk-qrcodescanner')
+    compile project(':libraries:onyxsdk-data')
+
+    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    compile "com.android.support:support-v4:$rootProject.phone_supportLibraryVersion"
+    compile "com.android.support:appcompat-v7:$rootProject.phone_supportLibraryVersion"
+    compile "com.android.support:recyclerview-v7:$rootProject.phone_supportLibraryVersion"
+    compile "com.android.support:design:$rootProject.phone_supportLibraryVersion"
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
+    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    compile "pub.devrel:easypermissions:$rootProject.easyPermissonVersion"
+    compile "com.afollestad.material-dialogs:commons:$rootProject.phone_materialDialogsCommonVersion"
+    compile "com.github.jiang111:IndexRecyclerView:v1.1"
+}
