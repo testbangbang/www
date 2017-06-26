@@ -40,7 +40,6 @@ android {
     lintOptions {
         abortOnError false
     }
-    buildToolsVersion '25.0.3'
 }
 apt {
     arguments {
