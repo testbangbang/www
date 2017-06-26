@@ -130,12 +130,12 @@ public class BookTextFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loadData();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        loadData();
     }
 
     private void loadData() {
