@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
 apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
 apply from: file(rootProject.projectDir.absolutePath + '/versioning.gradle')
 android {
@@ -6,26 +8,65 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.onyx.android.dr"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode gitVersionCode(projectDir)
         versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
         multiDexEnabled true
+        testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
     }
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../../proguard-rules.pro', 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [channel_value  : releaseChannel(),
+                                    type_value     : releaseType(),
+                                    timestamp_value: System.currentTimeMillis() + "L"]
         }
+        debug {
+            debuggable true
+            jniDebuggable true
+            manifestPlaceholders = [channel_value  : releaseChannel(),
+                                    type_value     : releaseType(),
+                                    timestamp_value: System.currentTimeMillis() + "L"]
+        }
+    }
+
+    dexOptions {
+        preDexLibraries = false
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+    buildToolsVersion '25.0.3'
+}
+apt {
+    arguments {
+        targetModuleName 'DR'
     }
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    testCompile "junit:junit:$rootProject.junitVersion"
+    androidTestCompile('com.android.support.test:runner:0.5') {
         exclude group: 'com.android.support', module: 'support-annotations'
-    })
+    }
+    androidTestCompile('com.android.support.test:rules:0.5') {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile(name:'onyxdownloadservice-release', ext:'aar')
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     testCompile "junit:junit:$rootProject.junitVersion"
+    apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.dbflowVersion"
+    compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.dbflowVersion"
+    compile "com.onyx.android.sdk:onyxsdk-data:$rootProject.onyxSDKDataVersion"
 }
