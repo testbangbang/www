@@ -60,6 +60,15 @@
                     android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium" />
             </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
+            <ImageView
+                android:id="@+id/device_info_enter_image_view"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                />
+
             <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
                 android:id="@+id/mac_qr_code_layout"
                 android:layout_width="wrap_content"

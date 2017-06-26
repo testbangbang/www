@@ -232,5 +232,12 @@
     <string name="open_manual">Check User Manual.</string>
     <string name="setting_product_detail">Product Detail</string>
 
+    <!--Device Info Setting Page For Edu Device-->
+    <string name="device_info">Device Info</string>
+    <string name="vcom_key" translatable="false">vcom_key</string>
+    <string name="vcom" translatable="false">VCom</string>
+    <string name="barcode_key" translatable="false">barcode_key</string>
+    <string name="barcode">Screen Barcode</string>
+    <string name="still_need_times_to_activate">Still need %1$d times to enter device info settings.</string>
 </resources>
 

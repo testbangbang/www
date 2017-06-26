@@ -1,24 +1,23 @@
 package com.onyx.android.libsetting.view.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.libsetting.databinding.ActivityProductDetailSettingBinding;
 import com.onyx.android.libsetting.util.BatteryUtil;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.MimeTypeUtils;
 
 import java.io.File;
 
-public class ProductDetailSettingActivity extends Activity {
+public class ProductDetailSettingActivity extends OnyxAppCompatActivity {
     static public final String DEFAULT_USER_RESOURCES_CONFIG_PATH = Device.currentDevice.getExternalStorageDirectory().getPath() + File.separator + "PL107_user_manual";
     //TODO:avoid hard code here?
     static public final String DEFAULT_USER_MANUAL_NAME = "YOUNGY BOOX用户手册.pdf";
@@ -32,6 +31,7 @@ public class ProductDetailSettingActivity extends Activity {
 
     private void initView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_product_detail_setting);
+        initSupportActionBarWithCustomBackFunction();
         binding.buttonOpenManual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
