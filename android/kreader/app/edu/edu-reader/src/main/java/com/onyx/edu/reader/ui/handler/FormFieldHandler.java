@@ -2,6 +2,8 @@ package com.onyx.edu.reader.ui.handler;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.annotation.IdRes;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -82,7 +84,7 @@ public class FormFieldHandler extends ReadingHandler {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 FormValue value = FormValue.create(isChecked);
-                flushFormShapes(field, ReaderShapeFactory.SHAPE_FORM_MULTIPLE_SELECTION,  value);
+                flushFormShapes(field.getName(), field.getRect(), ReaderShapeFactory.SHAPE_FORM_MULTIPLE_SELECTION,  value);
             }
         });
         ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());
@@ -92,13 +94,14 @@ public class FormFieldHandler extends ReadingHandler {
         }
     }
 
-    private void flushFormShapes(ReaderFormField field, int formType, FormValue value) {
+    private void flushFormShapes(String fieldId, RectF formRect, int formType, FormValue value) {
         Shape shape = ReaderShapeFactory.createFormShape(getDocumentUniqueId(),
                 getReaderDataHolder().getFirstPageInfo(),
-                field.getName(),
+                fieldId,
                 formType,
-                field.getRect(),
+                formRect,
                 value);
+        shape.setPageUniqueId(getReaderDataHolder().getFirstPageInfo().getName());
         List<Shape> shapes = new ArrayList<>();
         shapes.add(shape);
         new FlushFormShapesAction(shapes).execute(getReaderDataHolder(), null);
@@ -108,20 +111,25 @@ public class FormFieldHandler extends ReadingHandler {
         return (ReaderFormField) view.getTag();
     }
 
-    private void processRadioGroupForm(RadioGroup radioGroup) {
-        final ReaderFormField field = getReaderFormField(radioGroup);
+    private void processRadioGroupForm(final RadioGroup radioGroup) {
+        final ReaderFormField groupField = getReaderFormField(radioGroup);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 FormValue value = FormValue.create(checkedId);
-                flushFormShapes(field, ReaderShapeFactory.SHAPE_FORM_SINGLE_SELECTION,  value);
+                value.setCheck(true);
+                View view = radioGroup.findViewById(checkedId);
+                ReaderFormField field = getReaderFormField(view);
+                flushFormShapes(groupField.getName(), field.getRect(), ReaderShapeFactory.SHAPE_FORM_SINGLE_SELECTION,  value);
             }
         });
-        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());
+
+        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), groupField.getName());
         if (formShapeModel != null) {
             FormValue value = formShapeModel.getFormValue();
             radioGroup.check(value.getIndex());
         }
+
     }
 
     private void processEditTextForm(final EditText editText) {
@@ -140,7 +148,7 @@ public class FormFieldHandler extends ReadingHandler {
             @Override
             public void afterTextChanged(Editable s) {
                 FormValue value = FormValue.create(s.toString());
-                flushFormShapes(field, ReaderShapeFactory.SHAPE_FORM_FILL,  value);
+                flushFormShapes(field.getName(), field.getRect(), ReaderShapeFactory.SHAPE_FORM_FILL,  value);
             }
         });
         ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());
