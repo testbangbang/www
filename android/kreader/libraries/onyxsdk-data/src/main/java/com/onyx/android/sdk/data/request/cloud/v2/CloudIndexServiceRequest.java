@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.common.ContentException;
+import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.provider.SystemConfigProvider;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
@@ -12,6 +14,7 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.RetrofitUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.TestUtils;
+import com.raizlabs.android.dbflow.config.FlowManager;
 
 import retrofit2.Response;
 
@@ -42,9 +45,11 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
         resultService = loadContentServiceInfoFromLocal(getContext(), localRetryCount);
         IndexService cloudService = loadContentServiceInfoFromCloud(parent);
         if (cloudService != null) {
-            resultService = cloudService;
-            saveContentServiceInfo(getContext(), cloudService);
+            if (!cloudService.equals(resultService)) {
+                onContentServerChanged(parent, cloudService);
+            }
         }
+
         if (resultService != null && resultService.server != null) {
             String host = resultService.server.getServerHost();
             String api = resultService.server.getApiBase();
@@ -52,6 +57,20 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
                     api, Constant.DEFAULT_CLOUD_STORAGE));
             parent.setCloudDataProvider(parent.getCloudConf());
         }
+    }
+
+    private void clearAccountDb() {
+        try {
+            FlowManager.getContext().getContentResolver().delete(EduAccountProvider.CONTENT_URI, null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onContentServerChanged(CloudManager parent, IndexService newIndexService) {
+        clearAccountDb();
+        parent.setToken(null);
+        saveContentServiceInfo(getContext(), resultService = newIndexService);
     }
 
     private IndexService loadContentServiceInfoFromLocal(Context context, int retryCount) {
@@ -73,16 +92,25 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
         return JSONObjectParseUtils.parseObject(value, IndexService.class);
     }
 
-    private IndexService loadContentServiceInfoFromCloud(CloudManager parent) {
+    private IndexService loadContentServiceInfoFromCloud(CloudManager parent) throws Exception {
         try {
             Response<IndexService> response = RetrofitUtils.executeCall(ServiceFactory.getContentService(apiBase)
                     .getIndexService(requestService.mac, requestService.installationId));
             if (response.isSuccessful()) {
                 return response.body();
             }
-            return null;
         } catch (Exception e) {
-            return null;
+            if (ContentException.isCloudException(e)) {
+                processCloudException(parent, (ContentException) e);
+            }
+        }
+        return null;
+    }
+
+    private void processCloudException(CloudManager parent, ContentException cloudException) {
+        cloudException.printStackTrace();
+        if (cloudException.isCloudNotFound()) {
+            onContentServerChanged(parent, null);
         }
     }
 
