@@ -175,4 +175,7 @@
     <string name="battery_history_hours_no_minute">"<xliff:g id="HOURS">%1$d</xliff:g>小时</string>
     <string name="open_manual">查看产品《用户手册》</string>
     <string name="setting_product_detail">产品规格</string>
+    <string name="device_info">系统信息</string>
+    <string name="barcode">屏幕条码</string>
+    <string name="still_need_times_to_activate">尚需点击%1$d次以进入设备信息设置.</string>
 </resources>

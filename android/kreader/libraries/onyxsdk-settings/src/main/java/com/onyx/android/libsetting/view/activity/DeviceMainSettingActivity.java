@@ -9,10 +9,10 @@ import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.zxing.WriterException;
 import com.onyx.android.libsetting.R;
@@ -35,12 +35,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.onyx.android.libsetting.util.Constant.EDU_DEVICE_INFO_TRIGGER_VALUE;
+
 public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     SettingConfig config;
     ActivityDeviceMainSettingBinding binding;
     ModelInfo info;
     SettingFunctionAdapter adapter;
     GridLayoutManager layoutManager;
+    int eduDeviceInfoCount = 0;
 
     private static final float miniPercent = 0.20f;
 
@@ -127,6 +130,24 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             binding.infoArea.setBackground(getResources().getDrawable(R.drawable.main_setting_bg));
             try {
                 binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.getQRCodeCFABitmap(this));
+                binding.deviceInfoEnterImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        eduDeviceInfoCount++;
+                        if (eduDeviceInfoCount > (EDU_DEVICE_INFO_TRIGGER_VALUE / 2)) {
+                            if (eduDeviceInfoCount >= EDU_DEVICE_INFO_TRIGGER_VALUE) {
+                                eduDeviceInfoCount = 0;
+                                Intent intent = SettingCategory.getConfigIntentByCategory(DeviceMainSettingActivity.this, SettingCategory.DEVICE_INFO);
+                                if (intent != null) {
+                                    startActivity(intent);
+                                }
+                            } else {
+                                Toast.makeText(DeviceMainSettingActivity.this, getString(R.string.still_need_times_to_activate,
+                                        EDU_DEVICE_INFO_TRIGGER_VALUE - eduDeviceInfoCount), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
             } catch (WriterException e) {
                 e.printStackTrace();
             }

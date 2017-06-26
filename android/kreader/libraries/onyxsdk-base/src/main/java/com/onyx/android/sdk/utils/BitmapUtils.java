@@ -43,10 +43,17 @@ public class BitmapUtils {
     }
 
     static public boolean saveBitmap(Bitmap bitmap, final String path) {
+        return saveBitmap(bitmap, path, false);
+    }
+
+    static public boolean saveBitmap(Bitmap bitmap, final String path, boolean overrideFilePermission) {
         try {
             FileOutputStream out = new FileOutputStream(path);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.close();
+            if (overrideFilePermission) {
+                ShellUtils.execCommand("busybox chmod 644 " + path, false);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

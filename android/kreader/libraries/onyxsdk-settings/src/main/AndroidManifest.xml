@@ -80,7 +80,12 @@
         <activity
             android:name=".view.activity.FirmwareOTAActivity"
             android:theme="@style/OnyxAppCompat" />
-        <activity android:name=".view.activity.ProductDetailSettingActivity"></activity>
+        <activity
+            android:name=".view.activity.ProductDetailSettingActivity"
+            android:theme="@style/OnyxAppCompat" />
+        <activity
+            android:name=".view.activity.edu.DeviceInfoActivity"
+            android:theme="@style/OnyxAppCompat" />
     </application>
 
 </manifest>
