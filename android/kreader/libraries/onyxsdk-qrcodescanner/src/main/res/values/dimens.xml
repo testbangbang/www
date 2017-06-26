@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="text_size_13sp">13sp</dimen>
+    <dimen name="title_bar_height">54dp</dimen>
+</resources>
