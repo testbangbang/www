@@ -872,10 +872,6 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
             pageToDevice(fpdfPage, pageWidth, pageHeight, rotation,
                          left, top, right, bottom,
                          &newLeft, &newTop, &newRight, &newBottom);
-            LOGE("%f, %f, %f, %f, %f, %f, %f, %f, %f, %f",
-                 (float)left, (float)top, (float)right, (float)bottom,
-                 (float)pageWidth, (float)pageHeight,
-                 (float)newLeft, (float)newTop, (float)newRight, (float)newBottom);
 
             std::vector<float> list;
             list.push_back(static_cast<float>(newLeft));
