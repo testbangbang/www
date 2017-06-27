@@ -213,6 +213,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     private void loadUserData(final Reader reader) {
         getReaderUserDataInfo().setDocumentPath(reader.getDocumentPath());
+        getReaderUserDataInfo().setDocumentCategory(reader.getDocumentOptions().getDocumentCategory());
         getReaderUserDataInfo().setDocumentCodePage(reader.getDocumentOptions().getCodePage());
         getReaderUserDataInfo().setChineseConvertType(reader.getDocumentOptions().getChineseConvertType());
         getReaderUserDataInfo().setDocumentMetadata(reader.getDocumentMetadata());

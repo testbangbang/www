@@ -7,6 +7,7 @@ import android.graphics.RectF;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderImage;
@@ -196,10 +197,13 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         }
         try {
             JSONObject object = JSON.parseObject(optionsJson);
-            if (!object.containsKey("gamma")) {
-                return false;
+            if (object.containsKey("textGamma")) {
+                options.setTextGamma(object.getIntValue("textGamma"));
             }
-            options.setTextGamma(object.getIntValue("gamma"));
+            if (object.containsKey("documentCategory")) {
+                ReaderDocumentCategory category = ReaderDocumentCategory.valueOf(object.getString("documentCategory").toUpperCase());
+                options.setDocumentCategory(category);
+            }
             return true;
         } catch (Throwable tr) {
             return false;
