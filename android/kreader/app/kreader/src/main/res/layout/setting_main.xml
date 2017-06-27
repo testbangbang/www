@@ -36,8 +36,6 @@
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:divider="@drawable/settings_button_divider_default"
-        android:dividerHeight="11dp"
-        android:listSelector="@drawable/settings_button_status_background"/>
+        android:dividerHeight="@dimen/setting_list_divider_height"/>
 
 </LinearLayout>
