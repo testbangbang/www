@@ -109,4 +109,5 @@
     <dimen name="menu_bottom_item_view_margin">4dp</dimen>
     <dimen name="menu_item_view_left_margin">10dp</dimen>
     <dimen name="menu_text_padding_bottom">34dp</dimen>
+    <dimen name="divider_view_height">2dp</dimen>
 </resources>

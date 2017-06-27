@@ -123,6 +123,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private OnyxToolbar createScribbleBottomToolbar(final ReaderDataHolder readerDataHolder) {
         OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Bottom, OnyxToolbar.FillStyle.WrapContent);
+        toolbar.setDividerViewHeight((int) readerDataHolder.getContext().getResources().getDimension(R.dimen.divider_view_height));
         toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         final ReaderMenuAction[] expandedActions = {ReaderMenuAction.SCRIBBLE_WIDTH, ReaderMenuAction.SCRIBBLE_SHAPE, ReaderMenuAction.SCRIBBLE_ERASER};
 
@@ -169,6 +170,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private OnyxToolbar createScribbleTopToolbar(ReaderDataHolder readerDataHolder) {
         OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Top, OnyxToolbar.FillStyle.WrapContent);
+        toolbar.setDividerViewHeight((int) readerDataHolder.getContext().getResources().getDimension(R.dimen.divider_view_height));
 
         toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_save, ReaderMenuAction.SCRIBBLE_SAVE);

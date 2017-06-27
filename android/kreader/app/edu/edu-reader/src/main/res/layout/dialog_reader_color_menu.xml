@@ -6,10 +6,6 @@
               android:layout_height="match_parent">
 
     <View
-        style="@style/single_line_X_axis_View"
-        android:layout_height="1dp"/>
-
-    <View
         android:layout_weight="1"
         android:id="@+id/dismiss_zone"
         android:layout_width="match_parent"
@@ -18,7 +14,7 @@
 
     <View
         style="@style/single_line_X_axis_View"
-        android:layout_height="1dp"/>
+        android:layout_height="@dimen/divider_view_height"/>
 
     <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
         android:gravity="center_vertical"
