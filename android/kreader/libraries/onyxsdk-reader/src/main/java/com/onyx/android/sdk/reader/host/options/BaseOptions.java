@@ -8,6 +8,7 @@ import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentOptionsImpl;
@@ -29,6 +30,7 @@ public class BaseOptions {
     transient static public final String ACTUAL_SCALE_TAG = "actual_scale";
     transient static public final String MANUAL_CROP_REGION_TAG = "manual_crop_region";
     transient static public final String SCREEN_SPLIT_POINT_TAG = "screen_split_point";
+    transient static public final String DOCUMENT_CATEGORY_TAG = "document_category";
     transient static public final String CODE_PAGE_TAG = "code_page";
     transient static public final String CHINESE_CONVERT_TYPE_TAG = "chinese_convert_type";
     transient static public final String CUSTOM_FORM_ENABLED_TAG = "custom_form_enabled";
@@ -319,6 +321,17 @@ public class BaseOptions {
 
     static public double fontSizeFromActualPixelSize(int pixelSize) {
         return (pixelSize / 6) - 1;
+    }
+
+    public ReaderDocumentCategory getDocumentCategory() {
+        if (!backend.hasKey(DOCUMENT_CATEGORY_TAG)) {
+            return ReaderDocumentCategory.NORMAL;
+        }
+        return ReaderDocumentCategory.valueOf(backend.getString(DOCUMENT_CATEGORY_TAG));
+    }
+
+    public void setDocumentCategory(ReaderDocumentCategory documentType) {
+        backend.putObject(DOCUMENT_CATEGORY_TAG, documentType.toString());
     }
 
     public int getCodePage() {

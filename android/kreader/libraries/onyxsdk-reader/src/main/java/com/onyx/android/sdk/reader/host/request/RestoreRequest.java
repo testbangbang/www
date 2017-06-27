@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.reader.host.request;
 
-import android.content.Context;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageConstants;
@@ -35,6 +34,7 @@ public class RestoreRequest extends BaseReaderRequest {
         // overrides with doc built-in options
         reader.getDocument().readBuiltinOptions(baseOptions);
 
+        restoreDocumentCategory(reader);
         restoreLayoutType(reader);
         restorePagePosition(reader);
         restoreScale(reader);
@@ -55,6 +55,10 @@ public class RestoreRequest extends BaseReaderRequest {
             position = reader.getNavigator().getInitPosition();
         }
         reader.getReaderLayoutManager().scaleToPage(position);
+    }
+
+    private void restoreDocumentCategory(final Reader reader) {
+        reader.getDocumentOptions().setDocumentCategory(baseOptions.getDocumentCategory());
     }
 
     private void restoreLayoutType(final Reader reader) throws Exception {
