@@ -45,10 +45,6 @@ public class FrontLightController
         return Device.currentDevice().getFrontLightValueList(context);
     }
 
-    public static List<Integer> getNaturalLightValueList(Context context) {
-        return Device.currentDevice().getNaturalLightValueList(context);
-    }
-
     public static int getMaxFrontLightValue(final Context context) {
         List<Integer> frontLightValue = getFrontLightValueList(context);
         return frontLightValue.get(frontLightValue.size() - 1);
@@ -58,7 +54,7 @@ public class FrontLightController
         List<Integer> frontLightValue = getFrontLightValueList(context);
         return frontLightValue.get(0);
     }
-    
+
     /**
      * value is valid only when light is on
      * 
