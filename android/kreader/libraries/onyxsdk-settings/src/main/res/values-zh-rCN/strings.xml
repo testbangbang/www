@@ -178,4 +178,5 @@
     <string name="device_info">系统信息</string>
     <string name="barcode">屏幕条码</string>
     <string name="still_need_times_to_activate">尚需点击%1$d次以进入设备信息设置.</string>
+    <string name="digitizer_fw">电磁屏版本</string>
 </resources>
