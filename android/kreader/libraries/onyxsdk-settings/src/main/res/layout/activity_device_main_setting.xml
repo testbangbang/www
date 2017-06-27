@@ -78,7 +78,7 @@
                 android:layout_alignWithParentIfMissing="true"
                 app:alwaysLayoutImageView="true"
                 app:layout_marginBottomPercent="45%"
-                app:layout_marginRightPercent="23%">
+                app:layout_marginRightPercent="22%">
 
                 <ImageView
                     android:id="@+id/mac_qr_code_image_view"
