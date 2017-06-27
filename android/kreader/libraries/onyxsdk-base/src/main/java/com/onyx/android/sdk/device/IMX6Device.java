@@ -797,12 +797,6 @@ public class IMX6Device extends BaseDevice {
     }
 
     @Override
-    public List<Integer> getNaturalLightValueList(Context context) {
-        Integer intValues[] = {0,3,6,9,12,15,17,19,21,23,25,26,27,28,29,30,31};
-        return Arrays.asList(intValues);
-    }
-
-    @Override
     public void led(Context context, boolean on) {
         this.invokeDeviceControllerMethod(context, sMethodLed, on);
     }

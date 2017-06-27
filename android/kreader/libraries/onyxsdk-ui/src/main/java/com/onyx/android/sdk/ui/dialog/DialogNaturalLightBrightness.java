@@ -17,6 +17,7 @@ import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.android.sdk.utils.IntentFilterFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,12 +28,8 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnClick
     private String COLD_LIGHT_VALUE = "cold_light_value";
     private String WARM_LIGHT_VALUE = "warm_light_value";
     private String NATURAL_LIGHT = "natural_light";
-    private String WARM_LIGHT = "warm_light";
-    private String COLD_LIGHT = "cold_light";
     private String TAG_MIXING_LIGHT_RECOMMEND_PROGRESS = "mixing_light_recommend_progress";
     private String TAG_COLD_LIGHT_RECOMMEND_PROGRESS = "cold_light_recommend_progress";
-    public static int BRIGHTNESS_ON = 31;
-    public static float BRIGHTNESS_RATIO = 0.7f;
     public static int TYPE_WARM_LIGHT = 0;
     public static int TYPE_COLD_LIGHT = 1;
     private int defMixingLightProgress = 6;
@@ -42,7 +39,7 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnClick
     private boolean isRevertColdLightProgress = false;
     private int mMaxNumStars;
     private int mLightClosedValue;
-    private List<Integer> mLightSteps = new ArrayList<Integer>();
+    private int[][] mLightValues = {{0,3,6,9,12,15,17,19,21,23,25,26,27,28,29,30,31},{0,3,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21}};
 
     private BroadcastReceiver mOpenAndCloseNaturalLightReceiver = null;
     private IntentFilter filter = null;
@@ -80,30 +77,17 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnClick
     }
 
     private void initData() {
-        mLightSteps = FrontLightController.getNaturalLightValueList(getContext());
-        if (mLightSteps != null) {
-            mMaxNumStars = mLightSteps.size() - 1;
+        if (mLightValues != null) {
+            mMaxNumStars = mLightValues[TYPE_WARM_LIGHT].length - 1;
             mRatingBarNeturalLight.setNumStars(mMaxNumStars * 2);
             mRatingBarNeturalLight.setMax(mMaxNumStars * 2);
-        } else {
-            mMaxNumStars = mRatingBarNeturalLight.getNumStars();
-            mLightSteps = initRangeArray(mMaxNumStars);
         }
-        Collections.sort(mLightSteps);
         defMixingLightProgress = Settings.System.getInt(getContext().getContentResolver(),
                 TAG_MIXING_LIGHT_RECOMMEND_PROGRESS, defMixingLightProgress) + mMaxNumStars;
         defColdLightProgress = Settings.System.getInt(getContext().getContentResolver(),
                 TAG_COLD_LIGHT_RECOMMEND_PROGRESS, defColdLightProgress);
         mLightClosedValue = isRevertColdLightProgress ? mMaxNumStars : 0;
         defColdLightProgress = isRevertColdLightProgress ? (mMaxNumStars - defColdLightProgress) : defColdLightProgress;
-    }
-
-    private List<Integer> initRangeArray(int numStarts) {
-        List<Integer> brightnessList = new ArrayList<Integer>(numStarts);
-        for (int i = 0; i <= numStarts; i++) {
-            brightnessList.add(BRIGHTNESS_ON * i / numStarts);
-        }
-        return brightnessList;
     }
 
     private void initEvent() {
@@ -129,9 +113,9 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnClick
         if (isLongClickOpenAndCloseLight) {
             return;
         }
-        if (mLightSteps.size() > 0) {
+        if (mLightValues[lightType].length > 0) {
             saveTotalProgress2Provider(mRatingBarNeturalLight.getProgress());
-            int lightValue = mLightSteps.get(progress);
+            int lightValue = mLightValues[lightType][progress];
             Settings.System.putInt(getContext().getContentResolver(), NATURAL_LIGHT, lightType);
             FrontLightController.setNaturalBrightness(this.getContext(), lightValue);
         }
@@ -161,18 +145,18 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnClick
     }
 
     private int readTotalProgressFromProvider() {
-        int coldValue = getIndex(Settings.System.getInt(getContext().getContentResolver(), COLD_LIGHT_VALUE, 0));
-        int warmValue = getIndex(Settings.System.getInt(getContext().getContentResolver(), WARM_LIGHT_VALUE, 0));
+        int coldValue = getIndex(Settings.System.getInt(getContext().getContentResolver(), COLD_LIGHT_VALUE, 0), TYPE_COLD_LIGHT);
+        int warmValue = getIndex(Settings.System.getInt(getContext().getContentResolver(), WARM_LIGHT_VALUE, 0), TYPE_WARM_LIGHT);
         return calculateTotalProgress(coldValue, warmValue);
     }
 
     private void saveTotalProgress2Provider(int progress) {
         if (progress > mMaxNumStars) {
-            Settings.System.putInt(getContext().getContentResolver(), COLD_LIGHT_VALUE, mLightSteps.get(progress - mMaxNumStars));
-            Settings.System.putInt(getContext().getContentResolver(), WARM_LIGHT_VALUE, mLightSteps.get((int)((progress - mMaxNumStars) * BRIGHTNESS_RATIO)));
+            Settings.System.putInt(getContext().getContentResolver(), COLD_LIGHT_VALUE, mLightValues[TYPE_COLD_LIGHT][progress - mMaxNumStars]);
+            Settings.System.putInt(getContext().getContentResolver(), WARM_LIGHT_VALUE, mLightValues[TYPE_WARM_LIGHT][progress - mMaxNumStars]);
         } else if (progress != mLightClosedValue) {
+            Settings.System.putInt(getContext().getContentResolver(), COLD_LIGHT_VALUE, mLightValues[TYPE_COLD_LIGHT][progress]);
             Settings.System.putInt(getContext().getContentResolver(), WARM_LIGHT_VALUE, 0);
-            Settings.System.putInt(getContext().getContentResolver(), COLD_LIGHT_VALUE, mLightSteps.get(progress));
         }
     }
 
@@ -180,24 +164,24 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnClick
     public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
         int progress = ratingBar.getProgress();
         updateSwitchButtonStatus(progress);
-        int lightValue = 0;
+        int lightStep = 0;
         if (progress > mMaxNumStars) {
             isMixingOpen = true;
-            lightValue = progress - mMaxNumStars;
+            lightStep = progress - mMaxNumStars;
         } else {
             isMixingOpen = false;
-            lightValue = isRevertColdLightProgress ? (mMaxNumStars - progress) : progress;
+            lightStep = isRevertColdLightProgress ? (mMaxNumStars - progress) : progress;
         }
-        updateLightValue(lightValue);
+        updateLightValue(lightStep);
     }
 
-    private void updateLightValue(int lightValue) {
+    private void updateLightValue(int lightStep) {
         if (isMixingOpen) {
-            setLightValue(lightValue, TYPE_COLD_LIGHT);
-            setLightValue((int) (lightValue * BRIGHTNESS_RATIO), TYPE_WARM_LIGHT);
+            setLightValue(lightStep, TYPE_COLD_LIGHT);
+            setLightValue(lightStep, TYPE_WARM_LIGHT);
         } else {
             setLightValue(0, TYPE_WARM_LIGHT);
-            setLightValue(lightValue, TYPE_COLD_LIGHT);
+            setLightValue(lightStep, TYPE_COLD_LIGHT);
         }
         isLongClickOpenAndCloseLight = false;
     }
@@ -257,16 +241,11 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnClick
         return progress;
     }
 
-    private int getIndex(int val) {
-        int index = Collections.binarySearch(mLightSteps, val);
-        if (index == -1) {
-            index = 0;
-        } else if (index < 0) {
-            if (Math.abs(index) <= mLightSteps.size()) {
-                index = Math.abs(index) - 2;
-            } else {
-                index = mLightSteps.size() - 1;
-            }
+    private int getIndex(int val, int type) {
+        int index = 0;
+        index = Arrays.binarySearch(mLightValues[type], val);
+        if (index < 0) {
+            index = Math.abs(index + 1);
         }
         return index;
     }
