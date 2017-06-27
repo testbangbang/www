@@ -86,6 +86,9 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
 
+    private static Method sMethodSetQRShowConfig;
+    private static Method sMethodSetInfoShowConfig;
+
     private static Method sMethodGetRemovableSDCardDirectory;
 
     /**
@@ -653,6 +656,9 @@ public class IMX6Device extends BaseDevice {
             // signature of "public void disableA2()"
             sMethodDisableA2 = ReflectUtil.getMethodSafely(cls, "disableA2");
 
+            sMethodSetQRShowConfig = ReflectUtil.getMethodSafely(cls,"setQRShowConfig",int.class,int.class,int.class);
+            sMethodSetInfoShowConfig = ReflectUtil.getMethodSafely(cls,"setInfoShowConfig",int.class,int.class,int.class);
+
             sMethodGetRemovableSDCardDirectory = ReflectUtil.getMethodSafely(Environment.class,"getRemovableSDCardDirectory");
             Log.d(TAG, "init device EINK_ONYX_GC_MASK.");
             return sInstance;
@@ -978,6 +984,16 @@ public class IMX6Device extends BaseDevice {
     @Override
     public void enableA2ForSpecificView(View view) {
         ReflectUtil.invokeMethodSafely(sMethodEnableA2, view);
+    }
+
+    @Override
+    public void setQRShowConfig(int orientation, int startX, int startY) {
+        ReflectUtil.invokeMethodSafely(sMethodSetQRShowConfig, null, orientation, startX, startY);
+    }
+
+    @Override
+    public void setInfoShowConfig(int orientation, int startX, int startY) {
+        ReflectUtil.invokeMethodSafely(sMethodSetInfoShowConfig, null, orientation, startX, startY);
     }
 
     public void gotoSleep(final Context context) {
