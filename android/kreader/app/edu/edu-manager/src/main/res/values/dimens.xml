@@ -1,0 +1,21 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="activity_login_avatar_margin_top">90dp</dimen>
+    <dimen name="activity_login_edit_height">40dp</dimen>
+    <dimen name="activity_login_edit_padding">10dp</dimen>
+    <dimen name="activity_login_edit_text_size">14sp</dimen>
+    <dimen name="activity_login_edit_drawable_padding">11dp</dimen>
+    <dimen name="activity_login_user_name_margin">40dp</dimen>
+    <dimen name="activity_login_user_password_margin_top">18dp</dimen>
+    <dimen name="activity_login_password_forget_margin_top">12dp</dimen>
+    <dimen name="activity_login_password_forget_text_size">12sp</dimen>
+    <dimen name="activity_login_button_height">40dp</dimen>
+    <dimen name="activity_login_button_margin_top">85dp</dimen>
+    <dimen name="activity_login_button_text_size">18sp</dimen>
+    <dimen name="activity_contact_commit_button_height">@dimen/activity_login_button_height</dimen>
+    <dimen name="activity_contact_commit_button_text_margin_left_right">@dimen/activity_login_user_name_margin</dimen>
+    <dimen name="activity_contact_commit_button_text_size">@dimen/activity_login_button_text_size</dimen>
+</resources>

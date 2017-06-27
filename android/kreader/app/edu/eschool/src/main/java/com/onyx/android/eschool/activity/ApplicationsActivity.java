@@ -139,6 +139,8 @@ public class ApplicationsActivity extends BaseActivity {
     private Map<String, String> getCustomizedIconApps() {
         Map<String, String> iconMaps = DeviceConfig.sharedInstance(this).getCustomizedIconApps();
         iconMaps.put("com.youngy.ui", "app_youngy");
+        iconMaps.put("com.onyx.edu.reader", "app_statistics");
+        iconMaps.put("com.onyx.unitconversion", "app_unit_conversion");
         return iconMaps;
     }
 
