@@ -273,6 +273,11 @@ public class FakeReader implements ReaderDocument,
     }
 
     @Override
+    public List<ReaderRichMedia> getRichMedias(String position) {
+        return null;
+    }
+
+    @Override
     public ReaderTextStyle getStyle() {
         return null;
     }

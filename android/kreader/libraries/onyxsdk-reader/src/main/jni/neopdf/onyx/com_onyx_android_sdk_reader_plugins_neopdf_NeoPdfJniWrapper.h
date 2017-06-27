@@ -145,6 +145,14 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 
 /*
  * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
+ * Method:    nativeGetPageRichMedias
+ * Signature: (IILjava/util/List;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageRichMedias
+  (JNIEnv *, jobject, jint, jint, jobject);
+
+/*
+ * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
  * Method:    nativeActivateDeviceDRM
  * Signature: (Ljava/lang/String;Ljava/lang/String;)Z
  */
@@ -167,7 +175,11 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeLoadFormFields
   (JNIEnv *, jobject, jint, jint, jobject);
 
-
+/*
+ * Class:     com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper
+ * Method:    nativeGetPageTextRegions
+ * Signature: (IILjava/util/List;)Z
+ */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageTextRegions
   (JNIEnv *, jobject, jint, jint, jobject);
 

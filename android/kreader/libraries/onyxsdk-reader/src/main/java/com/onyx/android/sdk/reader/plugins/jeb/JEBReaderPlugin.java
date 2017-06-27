@@ -24,6 +24,7 @@ import com.onyx.android.sdk.reader.api.ReaderPlugin;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.api.ReaderRenderer;
 import com.onyx.android.sdk.reader.api.ReaderRendererFeatures;
+import com.onyx.android.sdk.reader.api.ReaderRichMedia;
 import com.onyx.android.sdk.reader.api.ReaderSearchManager;
 import com.onyx.android.sdk.reader.api.ReaderSearchOptions;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
@@ -289,6 +290,11 @@ public class JEBReaderPlugin implements ReaderPlugin,
     @Override
     public List<ReaderImage> getImages(String position) {
         return getPluginImpl().getPageImages();
+    }
+
+    @Override
+    public List<ReaderRichMedia> getRichMedias(String position) {
+        return null;
     }
 
     /**

@@ -16,6 +16,8 @@
 #include "core/fpdfapi/fpdf_page/include/cpdf_pageobject.h"
 #include "core/fpdfapi/onyx_drm_decrypt.h"
 
+#include "podofo/podofo.h"
+
 #include "onyx_context.h"
 #include "JNIUtils.h"
 #include "jsonxx.h"
@@ -64,9 +66,10 @@ OnyxPdfiumContext * OnyxPdfiumManager::getContext(JNIEnv *env, jint id) {
 }
 
 OnyxPdfiumContext * OnyxPdfiumManager::createContext(JNIEnv *env, jint id,
+                                                     const std::string &filePath,
                                                      FPDF_DOCUMENT document,
                                                      FPDF_FORMHANDLE formHandle) {
-    OnyxPdfiumContext *context = new OnyxPdfiumContext(document, formHandle);
+    OnyxPdfiumContext *context = new OnyxPdfiumContext(filePath, document, formHandle);
     contextHolder.insertContext(env, id, std::unique_ptr<OnyxPdfiumContext>(context));
     return context;
 }
@@ -147,7 +150,8 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
     FPDF_SetFormFieldHighlightColor(formHandle, 0, 0xFFE4DD);
     FPDF_SetFormFieldHighlightAlpha(formHandle, 100);
 
-    OnyxPdfiumManager::createContext(env, id, document, formHandle);
+    std::string path(filename);
+    OnyxPdfiumManager::createContext(env, id, path, document, formHandle);
     return 0;
 }
 
@@ -756,6 +760,144 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
         env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
         env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, destPage, floatArray, nullptr, -1, -1, nullptr, nullptr);
         env->DeleteLocalRef(floatArray);
+    }
+
+    return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageRichMedias
+  (JNIEnv *env, jobject thiz, jint id, jint pageIndex, jobject objectList) {
+    std::string path = OnyxPdfiumManager::getFilePath(env, id);
+    if (path.empty()) {
+        return false;
+    }
+
+    PoDoFo::PdfMemDocument document((path).c_str());
+
+    const PoDoFo::PdfVecObjects &objects = document.GetObjects();
+
+    PoDoFo::PdfPage *page = document.GetPage(pageIndex);
+    if (!page) {
+        return false;
+    }
+
+    const int count = page->GetNumAnnots();
+
+    for (int i = 0; i < count; i++) {
+        PoDoFo::PdfAnnotation *annot = page->GetAnnotation(i);
+
+        const PoDoFo::PdfObject *content = annot->GetObject()->GetIndirectKey("RichMediaContent");
+        if (!content) {
+            continue;
+        }
+
+        const PoDoFo::PdfObject *rect = annot->GetObject()->GetIndirectKey("Rect");
+        if (!rect) {
+            continue;
+        }
+
+        const PoDoFo::PdfArray rectArray = rect->GetArray();
+        double left = rectArray[0].GetReal();
+        double top = rectArray[1].GetReal();
+        double right = rectArray[2].GetReal();
+        double bottom = rectArray[3].GetReal();
+
+        const PoDoFo::PdfObject *assets = content->GetIndirectKey("Assets");
+        if (!assets) {
+            continue;
+        }
+        const PoDoFo::PdfObject *names = assets->GetIndirectKey("Names");
+        if (!names) {
+            continue;
+        }
+
+        const PoDoFo::PdfArray &namesArray = names->GetArray();
+        if (namesArray.GetSize() < 2) {
+            // there should be at least 2 entries in the array, first is file name,
+            // second is file object indirect reference
+            continue;
+        }
+
+        size_t index = 0;
+        if (namesArray.GetSize() > 2) {
+            // ignore first .swf file, which is hard-coded by looking into PDF file
+            index = 2;
+        }
+
+        std::string fileName = namesArray[index].GetString().GetStringUtf8();
+
+        const PoDoFo::PdfObject *assetObj = objects.GetObject(namesArray[index + 1].GetReference());
+        if (!assetObj) {
+            continue;
+        }
+
+        const PoDoFo::PdfObject *embededObj = assetObj->GetIndirectKey("EF");
+        if (!embededObj) {
+            continue;
+        }
+        const PoDoFo::PdfObject *fileObj = embededObj->GetIndirectKey("F");
+        if (!fileObj) {
+            continue;
+        }
+
+        if (!fileObj->HasStream()) {
+            fileObj->DelayedStreamLoad();
+            if (!fileObj->HasStream()) {
+                continue;
+            }
+        }
+
+        char *buf = nullptr;
+        PoDoFo::pdf_long len = 0;
+        fileObj->GetStream()->GetFilteredCopy(&buf, &len);
+        if (len > 0) {
+            FPDF_PAGE fpdfPage = OnyxPdfiumManager::getPage(env, id, pageIndex);
+            if (fpdfPage == NULL) {
+                return false;
+            }
+
+
+            const char *richMediaClassName = "com/onyx/android/sdk/reader/host/impl/ReaderRichMediaImpl";
+
+            JNIUtils utils(env);
+            if (!utils.findStaticMethod(richMediaClassName, "addToList", "(Ljava/util/List;Ljava/lang/String;[F[B)V", true)) {
+                LOGE("find method failed: ReaderRichMediaImpl.addToList()");
+                return false;
+            }
+
+            double newLeft, newRight, newBottom, newTop;
+            double pageWidth = FPDF_GetPageWidth(fpdfPage);
+            double pageHeight = FPDF_GetPageHeight(fpdfPage);
+            int rotation = 0;
+            pageToDevice(fpdfPage, pageWidth, pageHeight, rotation,
+                         left, top, right, bottom,
+                         &newLeft, &newTop, &newRight, &newBottom);
+            LOGE("%f, %f, %f, %f, %f, %f, %f, %f, %f, %f",
+                 (float)left, (float)top, (float)right, (float)bottom,
+                 (float)pageWidth, (float)pageHeight,
+                 (float)newLeft, (float)newTop, (float)newRight, (float)newBottom);
+
+            std::vector<float> list;
+            list.push_back(static_cast<float>(newLeft));
+            list.push_back(static_cast<float>(newTop));
+            list.push_back(static_cast<float>(newRight));
+            list.push_back(static_cast<float>(newBottom));
+
+            jfloatArray rectFloatArray = env->NewFloatArray(list.size());
+            env->SetFloatArrayRegion(rectFloatArray, 0, list.size(), &list[0]);
+
+            jbyteArray dataByteArray = env->NewByteArray(len);
+            env->SetByteArrayRegion(dataByteArray, 0, len, (jbyte *)buf);
+
+            std::shared_ptr<_jstring> jstrName = StringUtils::newLocalStringUTF(env, fileName.c_str());
+
+            env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, jstrName.get(), rectFloatArray, dataByteArray);
+
+            env->DeleteLocalRef(rectFloatArray);
+            env->DeleteLocalRef(dataByteArray);
+
+            PoDoFo::podofo_free(buf);
+        }
     }
 
     return true;

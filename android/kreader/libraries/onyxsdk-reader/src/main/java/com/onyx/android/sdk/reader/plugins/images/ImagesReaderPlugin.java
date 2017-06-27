@@ -24,6 +24,7 @@ import com.onyx.android.sdk.reader.api.ReaderPlugin;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.api.ReaderRenderer;
 import com.onyx.android.sdk.reader.api.ReaderRendererFeatures;
+import com.onyx.android.sdk.reader.api.ReaderRichMedia;
 import com.onyx.android.sdk.reader.api.ReaderSearchManager;
 import com.onyx.android.sdk.reader.api.ReaderSearchOptions;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
@@ -248,6 +249,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     @Override
     public List<ReaderImage> getImages(String position) {
+        return null;
+    }
+
+    @Override
+    public List<ReaderRichMedia> getRichMedias(String position) {
         return null;
     }
 
