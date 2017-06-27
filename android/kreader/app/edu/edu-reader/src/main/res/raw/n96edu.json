@@ -1,14 +1,14 @@
 {
   "defaultFontSizeIndex" : 3,
   "defaultLineSpacingIndex" : 2,
-  "ttsEnabled" : true,
+  "ttsEnabled" : false,
   "askForClose" : true,
   "hasFrontLight" : false,
   "disableNoteFunc" : false,
   "supportBrushPen": true,
-  "customFormEnabled" : false,
-  "supportMultipleTabs": true,
-  "enableDictWebSearch" : true,
+  "customFormEnabled" : true,
+  "supportMultipleTabs": false,
+  "enableDictWebSearch" : false,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
