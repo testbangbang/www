@@ -209,6 +209,13 @@ public class OnyxToolbar extends ViewGroup {
         return view;
     }
 
+    public void setDividerViewHeight(int height) {
+        if (dividerView == null) {
+            return;
+        }
+        dividerView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int rw = MeasureSpec.getSize(widthMeasureSpec);
