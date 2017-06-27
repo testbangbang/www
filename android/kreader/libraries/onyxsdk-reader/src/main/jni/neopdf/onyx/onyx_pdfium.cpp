@@ -773,6 +773,10 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     }
 
     PoDoFo::PdfMemDocument document((path).c_str());
+    if (!document.IsLoaded()) {
+        LOGE("can't load the document!");
+        return false;
+    }
 
     const PoDoFo::PdfVecObjects &objects = document.GetObjects();
 
