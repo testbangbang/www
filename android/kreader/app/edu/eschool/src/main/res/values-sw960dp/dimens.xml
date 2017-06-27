@@ -9,6 +9,9 @@
     <dimen name="home_item_background_normal_stroke_width">3dp</dimen>
     <dimen name="home_item_background_select_stroke_width">4dp</dimen>
 
+    <dimen name="application_item_image_size">120dp</dimen>
+    <dimen name="application_item_text_size">24sp</dimen>
+
     <dimen name="library_item_get_widget_margin_top">0dp</dimen>
     <dimen name="library_item_get_widget_width">55dp</dimen>
     <dimen name="library_item_get_widget_height">32dp</dimen>
