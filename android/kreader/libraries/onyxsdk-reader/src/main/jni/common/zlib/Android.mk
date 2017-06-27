@@ -22,7 +22,7 @@ zlib_files := \
 	src/uncompr.c \
 	src/zutil.c
 
-LOCAL_MODULE := libz
+LOCAL_MODULE := libz_onyx
 LOCAL_MODULE_TAGS := optional
 LOCAL_CFLAGS += -O3 -DUSE_MMAP
 
