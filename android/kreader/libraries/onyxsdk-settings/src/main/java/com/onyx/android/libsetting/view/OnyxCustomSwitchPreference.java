@@ -71,6 +71,12 @@ public class OnyxCustomSwitchPreference extends Preference {
         }
     }
 
+    public void setSwitchEnabled(boolean isEnabled) {
+        if (switchWidget != null) {
+            switchWidget.setEnabled(isEnabled);
+        }
+    }
+
     public void setSwitchChecked(boolean isChecked) {
         if (switchWidget != null) {
             switchWidget.setChecked(isChecked);

@@ -72,7 +72,7 @@ public class WifiAdmin {
     }
 
     public interface Callback {
-        void onWifiStateChange(boolean isWifiEnable);
+        void onWifiStateChange(boolean isWifiEnable,int wifiExtraState);
 
         void onScanResultReady(List<AccessPoint> scanResult);
 
@@ -103,7 +103,8 @@ public class WifiAdmin {
             public void onReceive(Context context, Intent intent) {
                 switch (intent.getAction()) {
                     case WifiManager.WIFI_STATE_CHANGED_ACTION:
-                        callback.onWifiStateChange(wifiManager.isWifiEnabled());
+                        int wifiExtraState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,WifiManager.WIFI_STATE_UNKNOWN);
+                        callback.onWifiStateChange(wifiManager.isWifiEnabled(), wifiExtraState);
                         if (wifiManager.isWifiEnabled()) {
                             triggerWifiScan();
                         }

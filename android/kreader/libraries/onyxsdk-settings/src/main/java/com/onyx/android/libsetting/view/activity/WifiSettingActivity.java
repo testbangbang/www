@@ -5,7 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -115,8 +115,8 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
     private void initWifiAdmin() {
         wifiAdmin = new WifiAdmin(this, new WifiAdmin.Callback() {
             @Override
-            public void onWifiStateChange(boolean isWifiEnable) {
-                updateUI(isWifiEnable);
+            public void onWifiStateChange(boolean isWifiEnable, int wifiExtraState) {
+                updateUI(isWifiEnable,wifiExtraState);
             }
 
             @Override
@@ -196,8 +196,14 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         }
     }
 
-    private void updateUI(boolean isWifiEnable) {
+    private void updateUI(boolean isWifiEnable, int wifiExtraState) {
         binding.wifSwitch.setChecked(isWifiEnable);
+        switch (wifiExtraState){
+            case WifiManager.WIFI_STATE_DISABLED:
+            case WifiManager.WIFI_STATE_ENABLED:
+                binding.wifiToggleButton.setEnabled(true);
+                break;
+        }
         binding.wifiScanResultRecyclerView.setVisibility(isWifiEnable ? View.VISIBLE : View.GONE);
         if (!isWifiEnable) {
             adapter.getDataList().clear();
@@ -221,6 +227,7 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
             public void onClick(View v) {
                 if (wifiAdmin != null) {
                     wifiAdmin.toggleWifi();
+                    binding.wifiToggleButton.setEnabled(false);
                 }
             }
         });
