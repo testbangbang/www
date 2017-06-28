@@ -366,7 +366,7 @@ public class WordSelectionHandler extends BaseHandler{
 
     public void quitWordSelection(ReaderDataHolder readerDataHolder) {
         ReaderDeviceManager.enableRegal();
-        getParent().resetActiveProvider();
+        getParent().resetDefaultProvider();
     }
 
     private void clearWordSelection(ReaderDataHolder readerDataHolder) {

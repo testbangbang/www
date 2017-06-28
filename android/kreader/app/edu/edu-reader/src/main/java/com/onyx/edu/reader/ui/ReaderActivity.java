@@ -701,7 +701,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         disablePenShortcut();
         stopRawEventProcessor();
-        getReaderDataHolder().getHandlerManager().resetActiveProvider();
+        getReaderDataHolder().getHandlerManager().resetDefaultProvider();
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
@@ -1141,16 +1141,17 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
-        if (formFieldControls.size() > 0) {
-            boolean startNoteDrawing = hasScribbleFormField();
-            if (!startNoteDrawing || getReaderDataHolder().hasDialogShowing()) {
-                getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
-            }else {
-                getHandlerManager().setActiveProvider(HandlerManager.FORM_SCRIBBLE_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
-            }
-
-            ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
+        if (!getReaderDataHolder().useCustomFormMode()) {
+            return;
         }
+        boolean startNoteDrawing = hasScribbleFormField();
+        if (!startNoteDrawing || getReaderDataHolder().hasDialogShowing()) {
+            getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
+        }else {
+            getHandlerManager().setActiveProvider(HandlerManager.FORM_SCRIBBLE_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
+        }
+
+        ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
     }
 
     private boolean hasScribbleFormField() {
