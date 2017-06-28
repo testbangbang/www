@@ -85,7 +85,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                 } else {
                     NeoAccountBase eduAccount = accountLoadRequest.getAccount();
                     if (NeoAccountBase.isValid(eduAccount)) {
-                        sendAccountAvailableEvent(eduAccount);
+                        sendAccountAvailableEvent(dataHolder.getContext(), eduAccount);
                     } else {
                         sendAccountTokenErrorEvent(dataHolder.getContext());
                         e = ContentException.TokenException();
@@ -100,9 +100,8 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         sendAccountTokenErrorEvent(context);
     }
 
-    private void sendAccountAvailableEvent(final NeoAccountBase account) {
-        final GenerateAccountInfoRequest generateAccountInfoRequest = new GenerateAccountInfoRequest(account);
-        SchoolApp.getSchoolCloudStore().submitRequest(SchoolApp.singleton(), generateAccountInfoRequest, new BaseCallback() {
+    private void sendAccountAvailableEvent(final Context context, final NeoAccountBase account) {
+        sendAccountEvent(context, account, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 EventBus.getDefault().post(new AccountAvailableEvent(account));
@@ -113,13 +112,18 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     private void sendAccountTokenErrorEvent(Context context) {
         NeoAccountBase errorAccount = new NeoAccountBase();
         errorAccount.name = context.getString(R.string.account_un_login);
-        final GenerateAccountInfoRequest generateAccountInfoRequest = new GenerateAccountInfoRequest(errorAccount);
-        SchoolApp.getSchoolCloudStore().submitRequest(SchoolApp.singleton(), generateAccountInfoRequest, new BaseCallback() {
+        sendAccountEvent(context, errorAccount, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 EventBus.getDefault().post(new AccountTokenErrorEvent());
             }
         });
+    }
+
+    private void sendAccountEvent(Context context, NeoAccountBase account, final BaseCallback baseCallback) {
+        final GenerateAccountInfoRequest generateAccountInfoRequest = new GenerateAccountInfoRequest(account,
+                DeviceConfig.sharedInstance(context).getInfoShowConfig());
+        SchoolApp.getSchoolCloudStore().submitRequest(SchoolApp.singleton(), generateAccountInfoRequest, baseCallback);
     }
 
     private void sendHardwareErrorEvent() {
