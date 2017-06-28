@@ -29,7 +29,7 @@ import java.util.Locale;
 public class OTAManager {
     private static final String TAG = OTAManager.class.getSimpleName();
     private static OTAManager instance;
-    private CloudStore cloudStore = new CloudStore();
+    private CloudStore cloudStore;
 
     private static final String OTA_SERVICE_PACKAGE = "com.onyx.android.onyxotaservice";
     private static final String OTA_SERVICE_ACTIVITY = "com.onyx.android.onyxotaservice.OtaInfoActivity";
@@ -92,13 +92,12 @@ public class OTAManager {
     }
 
     public CloudStore getCloudStore() {
+        if (cloudStore == null) {
+            cloudStore = new CloudStore().setCloudConf(CloudConf.create(Constant.ONYX_HOST_BASE,
+                    Constant.ONYX_API_BASE,
+                    Constant.DEFAULT_CLOUD_STORAGE));
+        }
         return cloudStore;
-    }
-
-    public void useLocalServerCloudConf() {
-        cloudStore.setCloudConf(CloudConf.create(Constant.ONYX_HOST_BASE,
-                Constant.ONYX_API_BASE,
-                Constant.DEFAULT_CLOUD_STORAGE));
     }
 
     public IndexService createIndexService(Context context) {

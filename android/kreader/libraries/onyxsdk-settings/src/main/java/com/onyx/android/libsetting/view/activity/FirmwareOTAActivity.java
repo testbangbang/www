@@ -173,7 +173,6 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || !IndexService.hasValidServer(indexServiceRequest.getResultIndexService())) {
                     Log.w("FirmwareOTA", "indexService error, ready to use backup service");
-                    OTAManager.sharedInstance().useLocalServerCloudConf();
                 }
             }
         });
