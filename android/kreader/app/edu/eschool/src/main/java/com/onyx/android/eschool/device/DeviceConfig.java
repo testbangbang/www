@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.onyx.android.eschool.BuildConfig;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.data.model.common.DeviceInfoShowConfig;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -47,6 +49,9 @@ public class DeviceConfig {
     static public final String CLOUD_INDEX_SERVER_USE = "cloud_index_server_use";
     static public final String CLOUD_MAIN_INDEX_SERVER_HOST = "cloud_main_index_server_host";
     static public final String CLOUD_MAIN_INDEX_SERVER_API = "cloud_main_index_server_api";
+
+    static public final String DEVICE_QR_CODE_SHOW_CONFIG = "qr_code_show_config";
+    static public final String DEVICE_INFO_SHOW_CONFIG = "info_show_config";
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -205,5 +210,19 @@ public class DeviceConfig {
 
     public boolean isUseCloudIndexServer() {
         return backend.getBoolean(CLOUD_INDEX_SERVER_USE);
+    }
+
+    public DeviceInfoShowConfig getQrCodeShowConfig() {
+        if (!backend.hasKey(DEVICE_QR_CODE_SHOW_CONFIG)) {
+            return null;
+        }
+        return JSONObjectParseUtils.parseObject(backend.getString(DEVICE_QR_CODE_SHOW_CONFIG), DeviceInfoShowConfig.class);
+    }
+
+    public DeviceInfoShowConfig getInfoShowConfig() {
+        if (!backend.hasKey(DEVICE_INFO_SHOW_CONFIG)) {
+            return null;
+        }
+        return JSONObjectParseUtils.parseObject(backend.getString(DEVICE_INFO_SHOW_CONFIG), DeviceInfoShowConfig.class);
     }
 }

@@ -11,10 +11,13 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.zxing.WriterException;
+import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.manager.LeanCloudManager;
 import com.onyx.android.eschool.utils.QRCodeUtil;
+import com.onyx.android.sdk.data.model.common.DeviceInfoShowConfig;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.ShellUtils;
@@ -69,11 +72,18 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 cacheFile.getParentFile().mkdirs();
                 cacheFile.createNewFile();
                 deviceBind = createDeviceBind(context);
-                Log.e("#################", "generate device qr code");
                 BitmapUtils.saveBitmap(QRCodeUtil.stringToImageEncode(context, JSONObjectParseUtils.toJson(deviceBind),
                         QRCodeUtil.DEFAULT_SIZE, true, QRCodeUtil.WHITE_MARGIN_SIZE,
                         context.getResources().getColor(android.R.color.black))
                         , cacheFile.getPath());
+                DeviceInfoShowConfig qrShowConfig = DeviceConfig.sharedInstance(context)
+                        .getQrCodeShowConfig();
+                if (qrShowConfig != null) {
+                    Device.currentDevice().setQRShowConfig(qrShowConfig.orientation,
+                            qrShowConfig.startX, qrShowConfig.startY);
+                } else {
+                    Log.e("QrCodeGenerateTask", "qrShowConfig detects null");
+                }
                 ShellUtils.execCommand("busybox chmod 644 " + cacheFile.getPath(), false);
             } catch (WriterException e) {
                 e.printStackTrace();
