@@ -1,5 +1,6 @@
 package com.onyx.android.libsetting.view.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -7,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,12 +19,16 @@ import com.onyx.android.libsetting.util.DeviceFeatureUtil;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.manager.OTAManager;
 import com.onyx.android.sdk.data.model.Firmware;
+import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
+import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareLocalCheckLegalityRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudIndexServiceRequest;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogInformation;
@@ -133,8 +139,16 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
 
     private void checkUpdateFromCloud() {
         showMessage(getString(R.string.checking_update));
-        final FirmwareUpdateRequest updateRequest = OTAManager.cloudFirmwareCheckRequest(this);
-        OTAManager.sharedInstance().submitRequest(this, updateRequest, new BaseCallback() {
+        CloudRequestChain requestChain = new CloudRequestChain();
+        requestChain.setAbortException(false);
+        addIndexLookupRequest(this, requestChain);
+        addCloudFirmwareCheckRequest(this, requestChain);
+        requestChain.execute(this, OTAManager.sharedInstance().getCloudStore().getCloudManager());
+    }
+
+    private void addCloudFirmwareCheckRequest(final Context context, final CloudRequestChain requestChain) {
+        final FirmwareUpdateRequest updateRequest = OTAManager.cloudFirmwareCheckRequest(context);
+        requestChain.addRequest(updateRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || !updateRequest.isResultFirmwareValid()) {
@@ -145,6 +159,21 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                 cleanup();
                 Firmware otaFirmware = updateRequest.getResultFirmware();
                 showCloudUpdateDialog(otaFirmware);
+            }
+        });
+    }
+
+    private void addIndexLookupRequest(final Context context, final CloudRequestChain requestChain) {
+        final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(
+                Constant.CLOUD_MAIN_INDEX_SERVER_API,
+                OTAManager.sharedInstance().createIndexService(context));
+        indexServiceRequest.setLocalLoadRetryCount(3);
+        requestChain.addRequest(indexServiceRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null || !IndexService.hasValidServer(indexServiceRequest.getResultIndexService())) {
+                    Log.w("FirmwareOTA", "indexService error, ready to use backup service");
+                }
             }
         });
     }
