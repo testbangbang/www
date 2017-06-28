@@ -1,11 +1,11 @@
 package com.onyx.android.sdk.data.request.cloud.v2;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.common.ContentException;
+import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.provider.SystemConfigProvider;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
@@ -14,23 +14,26 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.RetrofitUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.TestUtils;
+import com.raizlabs.android.dbflow.config.FlowManager;
 
 import retrofit2.Response;
+
+import static com.onyx.android.sdk.data.provider.SystemConfigProvider.KEY_CONTENT_SERVER_INFO;
 
 /**
  * Created by suicheng on 2017/6/16.
  */
 
 public class CloudIndexServiceRequest extends BaseCloudRequest {
-    private static final String TAG = "CloudIndexServerRequest";
-    public static final String KEY_CENTRAL_INDEX_AUTH_SERVER = "sys.central_index_auth_server";
 
+    private volatile String apiBase;
     private IndexService requestService;
     private IndexService resultService;
     private int localRetryCount = 1;
 
-    public CloudIndexServiceRequest(IndexService service) {
-        this.requestService = service;
+    public CloudIndexServiceRequest(final String base, IndexService service) {
+        requestService = service;
+        apiBase = base;
     }
 
     public IndexService getResultIndexService() {
@@ -39,62 +42,83 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        resultService = loadAuthServiceFromLocal(getContext(), localRetryCount);
-        IndexService cloudService = loadAuthServiceFromCloud(parent);
+        resultService = loadContentServiceInfoFromLocal(getContext(), localRetryCount);
+        IndexService cloudService = loadContentServiceInfoFromCloud(parent);
         if (cloudService != null) {
-            resultService = cloudService;
-            saveAuthServiceToDb(getContext(), cloudService);
+            if (!cloudService.equals(resultService)) {
+                onContentServerChanged(parent, cloudService);
+            }
         }
+
         if (resultService != null && resultService.server != null) {
-            String host = resultService.server.createServerHost();
+            String host = resultService.server.getServerHost();
+            String api = resultService.server.getApiBase();
             parent.setAllCloudConf(CloudConf.create(host,
-                    host + "api/", Constant.DEFAULT_CLOUD_STORAGE));
+                    api, Constant.DEFAULT_CLOUD_STORAGE));
             parent.setCloudDataProvider(parent.getCloudConf());
         }
     }
 
-    private IndexService loadAuthServiceFromLocal(Context context, int retryCount) {
+    private void clearAccountDb() {
+        try {
+            FlowManager.getContext().getContentResolver().delete(EduAccountProvider.CONTENT_URI, null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onContentServerChanged(CloudManager parent, IndexService newIndexService) {
+        clearAccountDb();
+        parent.setToken(null);
+        saveContentServiceInfo(getContext(), resultService = newIndexService);
+    }
+
+    private IndexService loadContentServiceInfoFromLocal(Context context, int retryCount) {
         IndexService service = null;
         for (int i = 0; i < retryCount; i++) {
-            Log.w(TAG, "localLoadRetry:" + i);
-            service = loadAuthServiceFromLocal(context);
+            service = loadContentServiceInfoFromLocalImpl(context);
             if (service != null) {
                 break;
             }
-            TestUtils.sleep(300);
+            if (retryCount > 1) {
+                TestUtils.sleep(300);
+            }
         }
         return service;
     }
 
-    private IndexService loadAuthServiceFromLocal(Context context) {
-        return JSONObjectParseUtils.parseObject(getKeyCentralIndexAuthServer(context),
-                IndexService.class);
+    private IndexService loadContentServiceInfoFromLocalImpl(Context context) {
+        final String value = SystemConfigProvider.getStringValue(context, KEY_CONTENT_SERVER_INFO);
+        return JSONObjectParseUtils.parseObject(value, IndexService.class);
     }
 
-    private IndexService loadAuthServiceFromCloud(CloudManager parent) {
+    private IndexService loadContentServiceInfoFromCloud(CloudManager parent) throws Exception {
         try {
-            Response<IndexService> response = RetrofitUtils.executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
+            Response<IndexService> response = RetrofitUtils.executeCall(ServiceFactory.getContentService(apiBase)
                     .getIndexService(requestService.mac, requestService.installationId));
             if (response.isSuccessful()) {
                 return response.body();
             }
-            return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            if (ContentException.isCloudException(e)) {
+                processCloudException(parent, (ContentException) e);
+            }
+        }
+        return null;
+    }
+
+    private void processCloudException(CloudManager parent, ContentException cloudException) {
+        cloudException.printStackTrace();
+        if (cloudException.isCloudNotFound()) {
+            onContentServerChanged(parent, null);
         }
     }
 
-    private void saveAuthServiceToDb(Context context, IndexService authService) {
-        setKeyCentralIndexAuthServer(context, JSON.toJSONString(authService));
-    }
-
-    private String getKeyCentralIndexAuthServer(Context context) {
-        return SystemConfigProvider.getStringValue(context, KEY_CENTRAL_INDEX_AUTH_SERVER);
-    }
-
-    private boolean setKeyCentralIndexAuthServer(Context context, String value) {
-        return SystemConfigProvider.setStringValue(context, KEY_CENTRAL_INDEX_AUTH_SERVER, value);
+    private void saveContentServiceInfo(Context context, IndexService contentService) {
+        try {
+            SystemConfigProvider.setStringValue(context, KEY_CONTENT_SERVER_INFO, JSONObjectParseUtils.toJson(contentService));
+        } catch (Exception e) {
+        }
     }
 
     public void setLocalLoadRetryCount(int retryCount) {

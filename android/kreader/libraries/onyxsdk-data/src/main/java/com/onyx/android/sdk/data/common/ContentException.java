@@ -15,6 +15,8 @@ public class ContentException extends Exception {
     public static final int TOKEN_EXCEPTION = 4;
     public static final int UNKNOWN_EXCEPTION = 0xffff;
 
+    public static final int CLOUD_NO_FOUND = 404;
+
     public static final String URL_INVALID_EXCEPTION_MESSAGE = "Url is invalid.";
     public static final String FILE_PATH_EXCEPTION_MESSAGE = "File path is invalid.";
     public static final String NETWORK_EXCEPTION_MESSAGE = "Network is exception.";
@@ -85,8 +87,10 @@ public class ContentException extends Exception {
     }
 
     public static class CloudException extends ContentException {
+
         public CloudException(ResultCode resultCode) {
             super(exceptionFromResultCode(resultCode));
+            setCode(resultCode == null ? UNKNOWN_EXCEPTION : resultCode.code);
         }
     }
 
@@ -96,5 +100,9 @@ public class ContentException extends Exception {
 
     public static boolean isCloudException(Throwable throwable) {
         return throwable instanceof CloudException;
+    }
+
+    public boolean isCloudNotFound() {
+        return getCode() == CLOUD_NO_FOUND;
     }
 }
