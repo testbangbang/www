@@ -16,7 +16,7 @@ import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 
 public class DeviceInfoFragment extends PreferenceFragmentCompat {
     CheckBoxPreference adbPreference;
-    Preference vcomPreference, screenBarCodePreference;
+    Preference vcomPreference, screenBarCodePreference, digitizerFwPreference;
     SettingConfig config;
 
     @Override
@@ -30,6 +30,7 @@ public class DeviceInfoFragment extends PreferenceFragmentCompat {
         adbPreference = (CheckBoxPreference) findPreference(getString(R.string.usb_debug_key));
         vcomPreference = findPreference(getString(R.string.vcom_key));
         screenBarCodePreference = findPreference(getString(R.string.barcode_key));
+        digitizerFwPreference = findPreference(getString(R.string.digitizer_fw_key));
 
         // TODO: 2016/12/21 should simplify this method.
         adbPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -85,6 +86,7 @@ public class DeviceInfoFragment extends PreferenceFragmentCompat {
         adbPreference.setChecked(ApplicationSettingUtil.isEnableADB(getContext()));
         vcomPreference.setSummary(EduDeviceInfoUtil.getVComInfo());
         screenBarCodePreference.setSummary(EduDeviceInfoUtil.getBarCode());
+        digitizerFwPreference.setSummary(EduDeviceInfoUtil.getDigitizerFW());
     }
 
 }

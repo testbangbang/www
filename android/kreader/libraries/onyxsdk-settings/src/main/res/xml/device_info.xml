@@ -8,6 +8,10 @@
         android:key="@string/barcode_key"
         android:title="@string/barcode" />
 
+    <android.support.v7.preference.Preference
+        android:key="@string/digitizer_fw_key"
+        android:title="@string/digitizer_fw" />
+
     <android.support.v7.preference.CheckBoxPreference
         android:key="@string/usb_debug_key"
         android:summary="@string/usb_debug_mode_summary"

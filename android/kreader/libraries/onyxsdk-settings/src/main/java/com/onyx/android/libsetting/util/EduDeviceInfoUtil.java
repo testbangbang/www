@@ -28,6 +28,10 @@ public class EduDeviceInfoUtil {
         return OnyxSystemProperties.get("sys.panel.barcode", "");
     }
 
+    static public String getDigitizerFW() {
+        return OnyxSystemProperties.get("sys.onyx.emtp", "");
+    }
+
     static public String getVComInfo() {
         String vcomEndPoint = getVComEndPoint();
         if (TextUtils.isEmpty(vcomEndPoint)) {
