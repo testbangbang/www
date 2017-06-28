@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.data.utils.CloudConf;
+import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -303,6 +304,11 @@ public class ReaderDataHolder {
             ttsManager = new ReaderTtsManager(this);
         }
         return ttsManager;
+    }
+
+    public boolean useCustomFormMode() {
+        ReaderDocumentCategory documentCategory = getReaderUserDataInfo().getDocumentCategory();
+        return documentCategory == ReaderDocumentCategory.HOMEWORK || documentCategory == ReaderDocumentCategory.EXERCISE;
     }
 
     public void notifyTtsStateChanged() {
@@ -599,7 +605,7 @@ public class ReaderDataHolder {
     }
 
     public void resetHandlerManager() {
-        getHandlerManager().resetActiveProvider();
+        getHandlerManager().resetDefaultProvider();
     }
 
     private void closeDocument(final BaseCallback callback) {

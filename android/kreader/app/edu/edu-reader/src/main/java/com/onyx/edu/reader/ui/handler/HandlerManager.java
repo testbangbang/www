@@ -176,15 +176,15 @@ public class HandlerManager {
         touchStartPosition = null;
     }
 
-    public void resetActiveProvider() {
-        setActiveProvider(getCurrentActiveProvider());
+    public void resetDefaultProvider() {
+        setActiveProvider(getDefaultProvider());
     }
 
-    private String getCurrentActiveProvider() {
-        if (readerDataHolder.hasScribbleFormField()) {
-            return FORM_SCRIBBLE_PROVIDER;
-        }
-        if (readerDataHolder.hasFormField()) {
+    private String getDefaultProvider() {
+        if (readerDataHolder.useCustomFormMode()) {
+            if (readerDataHolder.hasScribbleFormField()) {
+                return FORM_SCRIBBLE_PROVIDER;
+            }
             return FORM_PROVIDER;
         }
         return READING_PROVIDER;
