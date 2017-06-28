@@ -21,6 +21,7 @@ public abstract class BaseStatisticsModel extends BaseModel implements Cloneable
     public static final int DATA_TYPE_CLOSE = 5;
     public static final int DATA_TYPE_FINISH = 6;
     public static final int DATA_TYPE_BATTERY = 7;
+    public static final int DATA_TYPE_FORM = 8;
 
     public static final int DATA_STATUS_TEST = -1;
     public static final int DATA_STATUS_NOT_PUSH = 0;

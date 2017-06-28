@@ -17,8 +17,10 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.data.utils.CloudConf;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -735,6 +737,17 @@ public class ReaderDataHolder {
             return;
         }
         final AnnotationEvent event = AnnotationEvent.onAddAnnotation(getContext(), originText, userNote);
+        getEventBus().post(event);
+    }
+
+    public void onFormFieldSelected(final String formId, final FormValue value) {
+        if (StringUtils.isNullOrEmpty(formId)) {
+            return;
+        }
+        if (value == null) {
+            return;
+        }
+        FormFieldSelectedEvent event = FormFieldSelectedEvent.create(getContext(), formId, JSONObjectParseUtils.toJson(value));
         getEventBus().post(event);
     }
 

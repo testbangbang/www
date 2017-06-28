@@ -165,4 +165,12 @@ public class OnyxStatistics implements StatisticsBase {
         statisticsData.setScore(level);
         saveToCloud(context, statisticsData);
     }
+
+    @Override
+    public void onFormFieldSelected(Context context, String formId, String value) {
+        OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_FORM);
+        statisticsData.setName(formId);
+        statisticsData.setOrgText(value);
+        saveToCloud(context, statisticsData);
+    }
 }

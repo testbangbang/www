@@ -104,6 +104,7 @@ public class FormFieldHandler extends ReadingHandler {
         shape.setPageUniqueId(getReaderDataHolder().getFirstPageInfo().getName());
         List<Shape> shapes = new ArrayList<>();
         shapes.add(shape);
+        getReaderDataHolder().onFormFieldSelected(fieldId, value);
         new FlushFormShapesAction(shapes).execute(getReaderDataHolder(), null);
     }
 
