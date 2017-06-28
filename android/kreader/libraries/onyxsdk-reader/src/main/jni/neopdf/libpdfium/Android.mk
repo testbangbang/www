@@ -10,7 +10,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE:= libfx_freetype
 
-LOCAL_STATIC_LIBRARIES += libpng_ndk libz
+LOCAL_STATIC_LIBRARIES += libpng_ndk libfx_zlib
 
 # the following is for testing only, and should not be used in final builds
 # of the product

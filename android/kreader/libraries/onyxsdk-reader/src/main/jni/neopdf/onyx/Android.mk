@@ -12,16 +12,18 @@ LOCAL_CXXFLAGS += -Wno-non-virtual-dtor -Wall
 
 
 # LOCAL_STATIC_LIBRARIES := libpdfium libpdfiumcore libutils
-LOCAL_STATIC_LIBRARIES := libutils libpdfium-new
+LOCAL_STATIC_LIBRARIES := libutils libpdfium-new libpodofo
 
 # TODO: figure out why turning on exceptions requires manually linking libdl
 LOCAL_SHARED_LIBRARIES := libdl
 
-LOCAL_LDLIBS := -llog -lz -ljnigraphics
+LOCAL_LDLIBS := -llog -ljnigraphics -lz
 
 LOCAL_SRC_FILES := \
     onyx_pdfium.cpp \
-    form_helper.cpp
+    form_helper.cpp \
+    pdfwriter/onyx_pdf_writer.cpp \
+    pdfwriter/writer_jni.cpp
 
 MY_SRC_ROOT := $(LOCAL_PATH)/..
 LOCAL_C_INCLUDES := \
@@ -29,26 +31,9 @@ LOCAL_C_INCLUDES := \
     $(MY_SRC_ROOT)/libpdfium \
     $(MY_SRC_ROOT)/libpdfium/public \
     $(MY_SRC_ROOT)/libpdfium/third_party/freetype/include \
-    $(MY_SRC_ROOT)/../common/utils
-
-include $(BUILD_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := neo_pdfwriter
-
-LOCAL_STATIC_LIBRARIES := libutils libpodofo
-
-LOCAL_LDLIBS := -llog -lz -ljnigraphics
-
-LOCAL_SRC_FILES := \
-    pdfwriter/onyx_pdf_writer.cpp \
-    pdfwriter/writer_jni.cpp
-
-MY_SRC_ROOT := $(LOCAL_PATH)/..
-LOCAL_C_INCLUDES := \
-    $(MY_SRC_ROOT)/../common/utils   \
+    $(MY_SRC_ROOT)/../common/utils \
     $(MY_SRC_ROOT)/third_party/podofo \
     $(MY_SRC_ROOT)/third_party/podofo/src
 
 include $(BUILD_SHARED_LIBRARY)
+

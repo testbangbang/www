@@ -10,6 +10,7 @@ import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderImage;
+import com.onyx.android.sdk.reader.api.ReaderRichMedia;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.BitmapUtils;
@@ -295,6 +296,11 @@ public class AlReaderPlugin implements ReaderPlugin,
     @Override
     public List<ReaderImage> getImages(String position) {
         return getPluginImpl().getPageImages();
+    }
+
+    @Override
+    public List<ReaderRichMedia> getRichMedias(String position) {
+        return null;
     }
 
     /**

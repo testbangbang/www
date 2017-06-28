@@ -3,6 +3,7 @@ package com.onyx.android.sdk.reader.plugins.neopdf;
 import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderRichMedia;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
@@ -72,6 +73,8 @@ public class NeoPdfJniWrapper {
     private native boolean nativeGetTableOfContent(int id, ReaderDocumentTableOfContentEntry root);
 
     private native boolean nativeGetPageLinks(int id, int page, final List<ReaderSelection> list);
+
+    private native boolean nativeGetPageRichMedias(int id, int page, final List<ReaderRichMedia> list);
 
     private native boolean nativeActivateDeviceDRM(String deviceId, String certificate);
 
@@ -172,6 +175,10 @@ public class NeoPdfJniWrapper {
 
     public boolean getPageLinks(int page, final List<ReaderSelection> list) {
         return nativeGetPageLinks(id, page, list);
+    }
+
+    public boolean getPageRichMedias(int page, final List<ReaderRichMedia> list) {
+        return nativeGetPageRichMedias(id, page, list);
     }
 
     public boolean activateDeviceDRM(String deviceId, String certificate) {

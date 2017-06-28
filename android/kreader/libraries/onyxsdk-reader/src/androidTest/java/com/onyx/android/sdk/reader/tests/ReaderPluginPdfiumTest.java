@@ -3,13 +3,14 @@ package com.onyx.android.sdk.reader.tests;
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import android.test.ActivityInstrumentationTestCase2;
 import android.test.ApplicationTestCase;
 import android.test.suitebuilder.annotation.Suppress;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.api.ReaderRichMedia;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.HashUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
@@ -22,6 +23,8 @@ import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.android.sdk.reader.host.math.PageManager;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
+
+import java.util.List;
 
 /**
  * Created by zhuzeng on 10/5/15.
@@ -116,6 +119,19 @@ public class ReaderPluginPdfiumTest extends ApplicationTestCase<Application> {
         Bitmap bitmap = Bitmap.createBitmap(600, 800, Bitmap.Config.ARGB_8888);
         assertTrue(document.readCover(bitmap));
         assertTrue(BitmapUtils.saveBitmap(bitmap, "/sdcard/cover.png"));
+    }
+
+    public void testRichMedia() throws Exception {
+        ReaderPlugin plugin = new NeoPdfReaderPlugin(getContext(), null);
+        ReaderDocument document = plugin.open("/mnt/sdcard/audio.pdf", null, null);
+        assertNotNull(document);
+
+        List<ReaderRichMedia> list = ((ReaderNavigator)document).getRichMedias("0");
+        assertNotNull(list);
+        assertEquals(list.size(), 2);
+        for (ReaderRichMedia media : list) {
+            Debug.e(getClass(), "name: %s, rect: %s, length: %d, md5: %s", media.getName(), media.getRectangle().toString(), media.getData().length, HashUtils.computeMD5(media.getData()));
+        }
     }
 
 }

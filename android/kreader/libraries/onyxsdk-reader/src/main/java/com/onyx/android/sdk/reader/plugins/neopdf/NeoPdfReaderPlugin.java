@@ -11,6 +11,7 @@ import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderImage;
+import com.onyx.android.sdk.reader.api.ReaderRichMedia;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.Benchmark;
@@ -107,8 +108,10 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
         }
         long ret = getPluginImpl().openDocument(path, docPassword);
         if (ret == NeoPdfJniWrapper.NO_ERROR) {
-            customFormEnabled = documentOptions.isCustomFormEnabled();
-            getPluginImpl().setRenderFormFields(!customFormEnabled);
+            if (documentOptions != null) {
+                customFormEnabled = documentOptions.isCustomFormEnabled();
+                getPluginImpl().setRenderFormFields(!customFormEnabled);
+            }
             return this;
         }
         if (ret == NeoPdfJniWrapper.ERROR_PASSWORD_INVALID) {
@@ -307,6 +310,18 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     @Override
     public List<ReaderImage> getImages(String position) {
         return null;
+    }
+
+    @Override
+    public List<ReaderRichMedia> getRichMedias(String position) {
+        int page = PagePositionUtils.getPageNumber(position);
+
+        List<ReaderRichMedia> list = new ArrayList<>();
+        if (!getPluginImpl().getPageRichMedias(page, list)) {
+            return null;
+        }
+
+        return list;
     }
 
     /**

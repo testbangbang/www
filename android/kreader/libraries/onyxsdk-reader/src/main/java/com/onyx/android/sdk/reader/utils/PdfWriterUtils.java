@@ -6,7 +6,7 @@ package com.onyx.android.sdk.reader.utils;
 public class PdfWriterUtils {
 
     static {
-        System.loadLibrary("neo_pdfwriter");
+        System.loadLibrary("neo_pdf");
     }
 
     public static native boolean openExistingDocument(String path);

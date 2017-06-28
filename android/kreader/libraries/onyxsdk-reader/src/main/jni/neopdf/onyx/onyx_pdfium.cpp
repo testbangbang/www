@@ -16,6 +16,8 @@
 #include "core/fpdfapi/fpdf_page/include/cpdf_pageobject.h"
 #include "core/fpdfapi/onyx_drm_decrypt.h"
 
+#include "podofo/podofo.h"
+
 #include "onyx_context.h"
 #include "JNIUtils.h"
 #include "jsonxx.h"
@@ -34,6 +36,24 @@ int libraryReference = 0;
 
 std::string deviceId;
 std::string drmCertificate;
+
+// convert page's left-bottom origin to screen's left-top origin
+// but there are some documents we can't get normalized coordinates simply by subtracting with page width/height,
+// so it's safer to use pdfium's built-in FPDF_PageToDevice()
+void pageToDevice(FPDF_PAGE page, double pageWidth, double pageHeight, int rotation,
+                         double left, double top, double right, double bottom,
+                         double *newLeft, double *newTop, double *newRight, double *newBottom) {
+    int pw = static_cast<int>(pageWidth);
+    int ph = static_cast<int>(pageHeight);
+    FPDF_PageToDeviceEx(page, 0, 0, pw, ph, rotation, left, top, newLeft, newTop);
+    FPDF_PageToDeviceEx(page, 0, 0, pw, ph, rotation, right, bottom, newRight, newBottom);
+    if (*newRight < *newLeft) {
+        std::swap(*newRight, *newLeft);
+    }
+    if (*newBottom < *newTop) {
+        std::swap(*newBottom, *newTop);
+    }
+}
 
 bool readDrmManifest(FPDF_DOCUMENT document, std::vector<char16_t> *manifestBuf,
                      std::vector<char16_t> *oadBuf) {
@@ -55,6 +75,121 @@ bool readDrmManifest(FPDF_DOCUMENT document, std::vector<char16_t> *manifestBuf,
     return true;
 }
 
+bool getRichMediaObject(const PoDoFo::PdfVecObjects &objects,
+                        const PoDoFo::PdfAnnotation *annot,
+                        std::string *name,
+                        double *left, double *top, double *right, double *bottom,
+                        char **buf, size_t *len) {
+    const PoDoFo::PdfObject *content = annot->GetObject()->GetIndirectKey("RichMediaContent");
+    if (!content) {
+        return false;
+    }
+
+    const PoDoFo::PdfObject *rect = annot->GetObject()->GetIndirectKey("Rect");
+    if (!rect) {
+        return false;
+    }
+
+    const PoDoFo::PdfArray rectArray = rect->GetArray();
+    *left = rectArray[0].GetReal();
+    *top = rectArray[1].GetReal();
+    *right = rectArray[2].GetReal();
+    *bottom = rectArray[3].GetReal();
+
+    const PoDoFo::PdfObject *assets = content->GetIndirectKey("Assets");
+    if (!assets) {
+        return false;
+    }
+    const PoDoFo::PdfObject *names = assets->GetIndirectKey("Names");
+    if (!names) {
+        return false;
+    }
+
+    const PoDoFo::PdfArray &namesArray = names->GetArray();
+    if (namesArray.GetSize() < 2) {
+        // there should be at least 2 entries in the array, first is file name,
+        // second is file object indirect reference
+        return false;
+    }
+
+    size_t index = 0;
+    if (namesArray.GetSize() > 2) {
+        // ignore first .swf file, which is hard-coded by looking into PDF file
+        index = 2;
+    }
+
+    *name = namesArray[index].GetString().GetStringUtf8();
+
+    const PoDoFo::PdfObject *assetObj = objects.GetObject(namesArray[index + 1].GetReference());
+    if (!assetObj) {
+        return false;
+    }
+
+    const PoDoFo::PdfObject *embededObj = assetObj->GetIndirectKey("EF");
+    if (!embededObj) {
+        return false;
+    }
+    const PoDoFo::PdfObject *fileObj = embededObj->GetIndirectKey("F");
+    if (!fileObj) {
+        return false;
+    }
+
+    if (!fileObj->HasStream()) {
+        fileObj->DelayedStreamLoad();
+        if (!fileObj->HasStream()) {
+            return false;
+        }
+    }
+
+    fileObj->GetStream()->GetFilteredCopy(buf, (PoDoFo::pdf_long *)len);
+    return *len > 0;
+}
+
+bool addRichMediaObjectToList(JNIEnv *env, jint id, jint pageIndex, jobject objectList,
+                              const std::string &mediaName,
+                              const double left, const double top, const double right, const double bottom,
+                              const char *buf, const size_t len) {
+    FPDF_PAGE fpdfPage = OnyxPdfiumManager::getPage(env, id, pageIndex);
+    if (fpdfPage == NULL) {
+        return false;
+    }
+
+    const char *richMediaClassName = "com/onyx/android/sdk/reader/host/impl/ReaderRichMediaImpl";
+
+    JNIUtils utils(env);
+    if (!utils.findStaticMethod(richMediaClassName, "addToList", "(Ljava/util/List;Ljava/lang/String;[F[B)V", true)) {
+        LOGE("find method failed: ReaderRichMediaImpl.addToList()");
+        return false;
+    }
+
+    double newLeft, newRight, newBottom, newTop;
+    double pageWidth = FPDF_GetPageWidth(fpdfPage);
+    double pageHeight = FPDF_GetPageHeight(fpdfPage);
+    int rotation = 0;
+    pageToDevice(fpdfPage, pageWidth, pageHeight, rotation,
+                 left, top, right, bottom,
+                 &newLeft, &newTop, &newRight, &newBottom);
+
+    std::vector<float> list;
+    list.push_back(static_cast<float>(newLeft));
+    list.push_back(static_cast<float>(newTop));
+    list.push_back(static_cast<float>(newRight));
+    list.push_back(static_cast<float>(newBottom));
+
+    jfloatArray rectFloatArray = env->NewFloatArray(list.size());
+    env->SetFloatArrayRegion(rectFloatArray, 0, list.size(), &list[0]);
+
+    jbyteArray dataByteArray = env->NewByteArray(len);
+    env->SetByteArrayRegion(dataByteArray, 0, len, (jbyte *)buf);
+
+    std::shared_ptr<_jstring> jstrName = StringUtils::newLocalStringUTF(env, mediaName.c_str());
+
+    env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, jstrName.get(), rectFloatArray, dataByteArray);
+
+    env->DeleteLocalRef(rectFloatArray);
+    env->DeleteLocalRef(dataByteArray);
+}
+
 }
 
 PluginContextHolder<OnyxPdfiumContext> OnyxPdfiumManager::contextHolder;
@@ -64,9 +199,10 @@ OnyxPdfiumContext * OnyxPdfiumManager::getContext(JNIEnv *env, jint id) {
 }
 
 OnyxPdfiumContext * OnyxPdfiumManager::createContext(JNIEnv *env, jint id,
+                                                     const std::string &filePath,
                                                      FPDF_DOCUMENT document,
                                                      FPDF_FORMHANDLE formHandle) {
-    OnyxPdfiumContext *context = new OnyxPdfiumContext(document, formHandle);
+    OnyxPdfiumContext *context = new OnyxPdfiumContext(filePath, document, formHandle);
     contextHolder.insertContext(env, id, std::unique_ptr<OnyxPdfiumContext>(context));
     return context;
 }
@@ -147,7 +283,8 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
     FPDF_SetFormFieldHighlightColor(formHandle, 0, 0xFFE4DD);
     FPDF_SetFormFieldHighlightAlpha(formHandle, 100);
 
-    OnyxPdfiumManager::createContext(env, id, document, formHandle);
+    std::string path(filename);
+    OnyxPdfiumManager::createContext(env, id, path, document, formHandle);
     return 0;
 }
 
@@ -285,24 +422,6 @@ static jobject createEmptySelection(JNIEnv *env, int page) {
         return NULL;
     }
     return env->NewObject(utils.getClazz(), utils.getMethodId(), page);
-}
-
-// convert page's left-bottom origin to screen's left-top origin
-// but there are some documents we can't get normalized coordinates simply by subtracting with page width/height,
-// so it's safer to use pdfium's built-in FPDF_PageToDevice()
-static void pageToDevice(FPDF_PAGE page, double pageWidth, double pageHeight, int rotation,
-                         double left, double top, double right, double bottom,
-                         double *newLeft, double *newTop, double *newRight, double *newBottom) {
-    int pw = static_cast<int>(pageWidth);
-    int ph = static_cast<int>(pageHeight);
-    FPDF_PageToDeviceEx(page, 0, 0, pw, ph, rotation, left, top, newLeft, newTop);
-    FPDF_PageToDeviceEx(page, 0, 0, pw, ph, rotation, right, bottom, newRight, newBottom);
-    if (*newRight < *newLeft) {
-        std::swap(*newRight, *newLeft);
-    }
-    if (*newBottom < *newTop) {
-        std::swap(*newBottom, *newTop);
-    }
 }
 
 static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int rotation, int start, int end, std::vector<float> &list) {
@@ -756,6 +875,49 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
         env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
         env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, destPage, floatArray, nullptr, -1, -1, nullptr, nullptr);
         env->DeleteLocalRef(floatArray);
+    }
+
+    return true;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageRichMedias
+  (JNIEnv *env, jobject thiz, jint id, jint pageIndex, jobject objectList) {
+    std::string path = OnyxPdfiumManager::getFilePath(env, id);
+    if (path.empty()) {
+        return false;
+    }
+
+    PoDoFo::PdfMemDocument document((path).c_str());
+    if (!document.IsLoaded()) {
+        LOGE("can't load the document!");
+        return false;
+    }
+
+    const PoDoFo::PdfVecObjects &objects = document.GetObjects();
+
+    PoDoFo::PdfPage *page = document.GetPage(pageIndex);
+    if (!page) {
+        return false;
+    }
+
+    const int count = page->GetNumAnnots();
+
+    for (int i = 0; i < count; i++) {
+        PoDoFo::PdfAnnotation *annot = page->GetAnnotation(i);
+
+        std::string mediaName;
+        double left, top, right, bottom;
+        char *buf = nullptr;
+        size_t len = 0;
+        if (!getRichMediaObject(objects, annot, &mediaName, &left, &top, &right, &bottom, &buf, &len)) {
+            continue;
+        }
+
+        addRichMediaObjectToList(env, id, pageIndex, objectList,
+                                 mediaName, left, top, right, bottom,
+                                 buf, len);
+
+        PoDoFo::podofo_free(buf);
     }
 
     return true;
