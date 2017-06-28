@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account_un_login">未登录</string>
+    <string name="graded_books">分级读物</string>
+    <string name="real_time_articles">时文篇章</string>
+    <string name="school_based_materials">校本材料</string>
+    <string name="dict">字典</string>
+    <string name="notes">笔记</string>
+    <string name="listen_and_say">听说</string>
+    <string name="teaching_aids">教学辅助</string>
+    <string name="settings">设置</string>
+    <string name="article_push">文章推送</string>
+    <string name="my_books">我的读物</string>
+    <string name="professional_materials">专业材料</string>
+</resources>

@@ -1,4 +1,4 @@
-package com.onyx.android.dr.Util;
+package com.onyx.android.dr.util;
 
 
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
