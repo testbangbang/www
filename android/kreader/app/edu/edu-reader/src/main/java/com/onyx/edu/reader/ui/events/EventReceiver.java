@@ -143,6 +143,14 @@ public class EventReceiver {
     }
 
     @Subscribe
+    public void onFormFieldSelected(final FormFieldSelectedEvent event) {
+        if (!isEnable()) {
+            return;
+        }
+        statisticsManager.onFormFieldSelectedEvent(event.getContext(), event.getFormId(), event.getValue());
+    }
+
+    @Subscribe
     public void onBatteryStatusChange(final BatteryStatusChangeEvent event) {
         if (!isEnable()) {
             return;

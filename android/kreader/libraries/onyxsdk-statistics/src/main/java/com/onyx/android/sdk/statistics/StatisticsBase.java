@@ -42,4 +42,6 @@ public interface StatisticsBase {
     void onDictionaryLookupEvent(final Context context, final String originText);
 
     void onBatteryStatusChange(final Context context, final String status, final int level);
+
+    void onFormFieldSelected(final Context context, final String formId, final String value);
 }

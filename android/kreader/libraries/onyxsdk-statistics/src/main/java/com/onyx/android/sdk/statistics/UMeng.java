@@ -121,4 +121,9 @@ public class UMeng implements StatisticsBase {
     public void onBatteryStatusChange(Context context, String status, int level) {
 
     }
+
+    @Override
+    public void onFormFieldSelected(Context context, String formId, String value) {
+
+    }
 }
