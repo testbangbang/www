@@ -387,16 +387,19 @@ public class JEBFilesZIP extends AlFiles {
                     if (external_infl == null)
                         external_infl = new Inflater(true);
                     external_infl.reset();
-                    int bufferSize = ZIP_CHUNK_SIZE * 16;
+                    int bufferSize = cnt * 2;
 
                     int total_out, in_buff_size, out_buff_size, tmp, unzip_out_buff_size;
 
-                    if (in_external_buff == null)
+                    if (in_external_buff == null) {
                         in_external_buff = new byte[ZIP_CHUNK_SIZE];
-                    if (out_external_buff == null)
+                    }
+                    if (out_external_buff == null || bufferSize > out_external_buff.length) {
                         out_external_buff = new byte[bufferSize];
-                    if (unzip_external_buff == null)
+                    }
+                    if (unzip_external_buff == null) {
                         unzip_external_buff = new byte[ZIP_CHUNK_SIZE];
+                    }
 
                     int position = fileList.get(num).position;
 
