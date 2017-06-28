@@ -6,12 +6,16 @@ import android.graphics.Point;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.model.Firmware;
+import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareLocalCheckLegalityRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
+import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.utils.DeviceInfoUtil;
+import com.onyx.android.sdk.utils.NetworkUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -91,4 +95,15 @@ public class OTAManager {
         return cloudStore;
     }
 
+    public void useLocalServerCloudConf() {
+        cloudStore.setCloudConf(CloudConf.create(Constant.ONYX_HOST_BASE,
+                Constant.ONYX_API_BASE,
+                Constant.DEFAULT_CLOUD_STORAGE));
+    }
+
+    public IndexService createIndexService(Context context) {
+        IndexService authService = new IndexService();
+        authService.mac = NetworkUtil.getMacAddress(context);
+        return authService;
+    }
 }
