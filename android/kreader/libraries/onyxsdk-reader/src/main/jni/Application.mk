@@ -34,3 +34,5 @@ APP_STL := gnustl_static
 #APP_CFLAGS += -std=c++11
 APP_CPPFLAGS := -fexceptions  -std=c++11
 
+APP_CFLAGS += -fvisibility=hidden
+APP_CPPFLAGS += -fvisibility=hidden
