@@ -37,6 +37,24 @@ int libraryReference = 0;
 std::string deviceId;
 std::string drmCertificate;
 
+// convert page's left-bottom origin to screen's left-top origin
+// but there are some documents we can't get normalized coordinates simply by subtracting with page width/height,
+// so it's safer to use pdfium's built-in FPDF_PageToDevice()
+void pageToDevice(FPDF_PAGE page, double pageWidth, double pageHeight, int rotation,
+                         double left, double top, double right, double bottom,
+                         double *newLeft, double *newTop, double *newRight, double *newBottom) {
+    int pw = static_cast<int>(pageWidth);
+    int ph = static_cast<int>(pageHeight);
+    FPDF_PageToDeviceEx(page, 0, 0, pw, ph, rotation, left, top, newLeft, newTop);
+    FPDF_PageToDeviceEx(page, 0, 0, pw, ph, rotation, right, bottom, newRight, newBottom);
+    if (*newRight < *newLeft) {
+        std::swap(*newRight, *newLeft);
+    }
+    if (*newBottom < *newTop) {
+        std::swap(*newBottom, *newTop);
+    }
+}
+
 bool readDrmManifest(FPDF_DOCUMENT document, std::vector<char16_t> *manifestBuf,
                      std::vector<char16_t> *oadBuf) {
     unsigned long res = FPDF_GetMetaText(document, "boox", nullptr, 0);
@@ -55,6 +73,121 @@ bool readDrmManifest(FPDF_DOCUMENT document, std::vector<char16_t> *manifestBuf,
     }
 
     return true;
+}
+
+bool getRichMediaObject(const PoDoFo::PdfVecObjects &objects,
+                        const PoDoFo::PdfAnnotation *annot,
+                        std::string *name,
+                        double *left, double *top, double *right, double *bottom,
+                        char **buf, size_t *len) {
+    const PoDoFo::PdfObject *content = annot->GetObject()->GetIndirectKey("RichMediaContent");
+    if (!content) {
+        return false;
+    }
+
+    const PoDoFo::PdfObject *rect = annot->GetObject()->GetIndirectKey("Rect");
+    if (!rect) {
+        return false;
+    }
+
+    const PoDoFo::PdfArray rectArray = rect->GetArray();
+    *left = rectArray[0].GetReal();
+    *top = rectArray[1].GetReal();
+    *right = rectArray[2].GetReal();
+    *bottom = rectArray[3].GetReal();
+
+    const PoDoFo::PdfObject *assets = content->GetIndirectKey("Assets");
+    if (!assets) {
+        return false;
+    }
+    const PoDoFo::PdfObject *names = assets->GetIndirectKey("Names");
+    if (!names) {
+        return false;
+    }
+
+    const PoDoFo::PdfArray &namesArray = names->GetArray();
+    if (namesArray.GetSize() < 2) {
+        // there should be at least 2 entries in the array, first is file name,
+        // second is file object indirect reference
+        return false;
+    }
+
+    size_t index = 0;
+    if (namesArray.GetSize() > 2) {
+        // ignore first .swf file, which is hard-coded by looking into PDF file
+        index = 2;
+    }
+
+    *name = namesArray[index].GetString().GetStringUtf8();
+
+    const PoDoFo::PdfObject *assetObj = objects.GetObject(namesArray[index + 1].GetReference());
+    if (!assetObj) {
+        return false;
+    }
+
+    const PoDoFo::PdfObject *embededObj = assetObj->GetIndirectKey("EF");
+    if (!embededObj) {
+        return false;
+    }
+    const PoDoFo::PdfObject *fileObj = embededObj->GetIndirectKey("F");
+    if (!fileObj) {
+        return false;
+    }
+
+    if (!fileObj->HasStream()) {
+        fileObj->DelayedStreamLoad();
+        if (!fileObj->HasStream()) {
+            return false;
+        }
+    }
+
+    fileObj->GetStream()->GetFilteredCopy(buf, (PoDoFo::pdf_long *)len);
+    return *len > 0;
+}
+
+bool addRichMediaObjectToList(JNIEnv *env, jint id, jint pageIndex, jobject objectList,
+                              const std::string &mediaName,
+                              const double left, const double top, const double right, const double bottom,
+                              const char *buf, const size_t len) {
+    FPDF_PAGE fpdfPage = OnyxPdfiumManager::getPage(env, id, pageIndex);
+    if (fpdfPage == NULL) {
+        return false;
+    }
+
+    const char *richMediaClassName = "com/onyx/android/sdk/reader/host/impl/ReaderRichMediaImpl";
+
+    JNIUtils utils(env);
+    if (!utils.findStaticMethod(richMediaClassName, "addToList", "(Ljava/util/List;Ljava/lang/String;[F[B)V", true)) {
+        LOGE("find method failed: ReaderRichMediaImpl.addToList()");
+        return false;
+    }
+
+    double newLeft, newRight, newBottom, newTop;
+    double pageWidth = FPDF_GetPageWidth(fpdfPage);
+    double pageHeight = FPDF_GetPageHeight(fpdfPage);
+    int rotation = 0;
+    pageToDevice(fpdfPage, pageWidth, pageHeight, rotation,
+                 left, top, right, bottom,
+                 &newLeft, &newTop, &newRight, &newBottom);
+
+    std::vector<float> list;
+    list.push_back(static_cast<float>(newLeft));
+    list.push_back(static_cast<float>(newTop));
+    list.push_back(static_cast<float>(newRight));
+    list.push_back(static_cast<float>(newBottom));
+
+    jfloatArray rectFloatArray = env->NewFloatArray(list.size());
+    env->SetFloatArrayRegion(rectFloatArray, 0, list.size(), &list[0]);
+
+    jbyteArray dataByteArray = env->NewByteArray(len);
+    env->SetByteArrayRegion(dataByteArray, 0, len, (jbyte *)buf);
+
+    std::shared_ptr<_jstring> jstrName = StringUtils::newLocalStringUTF(env, mediaName.c_str());
+
+    env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, jstrName.get(), rectFloatArray, dataByteArray);
+
+    env->DeleteLocalRef(rectFloatArray);
+    env->DeleteLocalRef(dataByteArray);
 }
 
 }
@@ -289,24 +422,6 @@ static jobject createEmptySelection(JNIEnv *env, int page) {
         return NULL;
     }
     return env->NewObject(utils.getClazz(), utils.getMethodId(), page);
-}
-
-// convert page's left-bottom origin to screen's left-top origin
-// but there are some documents we can't get normalized coordinates simply by subtracting with page width/height,
-// so it's safer to use pdfium's built-in FPDF_PageToDevice()
-static void pageToDevice(FPDF_PAGE page, double pageWidth, double pageHeight, int rotation,
-                         double left, double top, double right, double bottom,
-                         double *newLeft, double *newTop, double *newRight, double *newBottom) {
-    int pw = static_cast<int>(pageWidth);
-    int ph = static_cast<int>(pageHeight);
-    FPDF_PageToDeviceEx(page, 0, 0, pw, ph, rotation, left, top, newLeft, newTop);
-    FPDF_PageToDeviceEx(page, 0, 0, pw, ph, rotation, right, bottom, newRight, newBottom);
-    if (*newRight < *newLeft) {
-        std::swap(*newRight, *newLeft);
-    }
-    if (*newBottom < *newTop) {
-        std::swap(*newBottom, *newTop);
-    }
 }
 
 static int getSelectionRectangles(FPDF_PAGE page, FPDF_TEXTPAGE textPage, int x, int y, int width, int height, int rotation, int start, int end, std::vector<float> &list) {
@@ -790,114 +905,19 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     for (int i = 0; i < count; i++) {
         PoDoFo::PdfAnnotation *annot = page->GetAnnotation(i);
 
-        const PoDoFo::PdfObject *content = annot->GetObject()->GetIndirectKey("RichMediaContent");
-        if (!content) {
-            continue;
-        }
-
-        const PoDoFo::PdfObject *rect = annot->GetObject()->GetIndirectKey("Rect");
-        if (!rect) {
-            continue;
-        }
-
-        const PoDoFo::PdfArray rectArray = rect->GetArray();
-        double left = rectArray[0].GetReal();
-        double top = rectArray[1].GetReal();
-        double right = rectArray[2].GetReal();
-        double bottom = rectArray[3].GetReal();
-
-        const PoDoFo::PdfObject *assets = content->GetIndirectKey("Assets");
-        if (!assets) {
-            continue;
-        }
-        const PoDoFo::PdfObject *names = assets->GetIndirectKey("Names");
-        if (!names) {
-            continue;
-        }
-
-        const PoDoFo::PdfArray &namesArray = names->GetArray();
-        if (namesArray.GetSize() < 2) {
-            // there should be at least 2 entries in the array, first is file name,
-            // second is file object indirect reference
-            continue;
-        }
-
-        size_t index = 0;
-        if (namesArray.GetSize() > 2) {
-            // ignore first .swf file, which is hard-coded by looking into PDF file
-            index = 2;
-        }
-
-        std::string fileName = namesArray[index].GetString().GetStringUtf8();
-
-        const PoDoFo::PdfObject *assetObj = objects.GetObject(namesArray[index + 1].GetReference());
-        if (!assetObj) {
-            continue;
-        }
-
-        const PoDoFo::PdfObject *embededObj = assetObj->GetIndirectKey("EF");
-        if (!embededObj) {
-            continue;
-        }
-        const PoDoFo::PdfObject *fileObj = embededObj->GetIndirectKey("F");
-        if (!fileObj) {
-            continue;
-        }
-
-        if (!fileObj->HasStream()) {
-            fileObj->DelayedStreamLoad();
-            if (!fileObj->HasStream()) {
-                continue;
-            }
-        }
-
+        std::string mediaName;
+        double left, top, right, bottom;
         char *buf = nullptr;
-        PoDoFo::pdf_long len = 0;
-        fileObj->GetStream()->GetFilteredCopy(&buf, &len);
-        if (len > 0) {
-            FPDF_PAGE fpdfPage = OnyxPdfiumManager::getPage(env, id, pageIndex);
-            if (fpdfPage == NULL) {
-                return false;
-            }
-
-
-            const char *richMediaClassName = "com/onyx/android/sdk/reader/host/impl/ReaderRichMediaImpl";
-
-            JNIUtils utils(env);
-            if (!utils.findStaticMethod(richMediaClassName, "addToList", "(Ljava/util/List;Ljava/lang/String;[F[B)V", true)) {
-                LOGE("find method failed: ReaderRichMediaImpl.addToList()");
-                return false;
-            }
-
-            double newLeft, newRight, newBottom, newTop;
-            double pageWidth = FPDF_GetPageWidth(fpdfPage);
-            double pageHeight = FPDF_GetPageHeight(fpdfPage);
-            int rotation = 0;
-            pageToDevice(fpdfPage, pageWidth, pageHeight, rotation,
-                         left, top, right, bottom,
-                         &newLeft, &newTop, &newRight, &newBottom);
-
-            std::vector<float> list;
-            list.push_back(static_cast<float>(newLeft));
-            list.push_back(static_cast<float>(newTop));
-            list.push_back(static_cast<float>(newRight));
-            list.push_back(static_cast<float>(newBottom));
-
-            jfloatArray rectFloatArray = env->NewFloatArray(list.size());
-            env->SetFloatArrayRegion(rectFloatArray, 0, list.size(), &list[0]);
-
-            jbyteArray dataByteArray = env->NewByteArray(len);
-            env->SetByteArrayRegion(dataByteArray, 0, len, (jbyte *)buf);
-
-            std::shared_ptr<_jstring> jstrName = StringUtils::newLocalStringUTF(env, fileName.c_str());
-
-            env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, jstrName.get(), rectFloatArray, dataByteArray);
-
-            env->DeleteLocalRef(rectFloatArray);
-            env->DeleteLocalRef(dataByteArray);
-
-            PoDoFo::podofo_free(buf);
+        size_t len = 0;
+        if (!getRichMediaObject(objects, annot, &mediaName, &left, &top, &right, &bottom, &buf, &len)) {
+            continue;
         }
+
+        addRichMediaObjectToList(env, id, pageIndex, objectList,
+                                 mediaName, left, top, right, bottom,
+                                 buf, len);
+
+        PoDoFo::podofo_free(buf);
     }
 
     return true;
