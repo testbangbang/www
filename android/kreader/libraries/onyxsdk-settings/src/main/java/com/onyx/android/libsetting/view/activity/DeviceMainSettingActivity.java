@@ -190,8 +190,9 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                     break;
             }
         }
-        if (config.isForceUseSingleRow()) {
-            layoutManager.setSpanCount(adapter.dataList.size());
+        if (config.isCustomRowCount()) {
+            layoutManager.setSpanCount(adapter.dataList.size() / config.customRowCount() +
+                    (adapter.dataList.size() % config.customRowCount()));
         }
         adapter.notifyDataSetChanged();
         PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) binding.infoArea.getLayoutParams();
@@ -202,7 +203,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
 
     // TODO: 2016/11/30 temp max 3 line layout
     private int calculateSpanSizeBySettingItemSize(int position, int settingItemSize) {
-        if (config.isForceUseSingleRow()){
+        if (config.isCustomRowCount()) {
             return 1;
         }
         switch (settingItemSize) {
@@ -322,8 +323,9 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         }
 
         public int getRowCount() {
-            if (SettingConfig.sharedInstance(context).isForceUseSingleRow()) {
-                return 1;
+            SettingConfig config = SettingConfig.sharedInstance(context);
+            if (config.isCustomRowCount()) {
+                return config.customRowCount();
             }
 
             if (dataList.size() >= 6) {
