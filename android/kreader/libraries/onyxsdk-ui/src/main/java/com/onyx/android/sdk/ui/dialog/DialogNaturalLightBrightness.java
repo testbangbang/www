@@ -15,6 +15,7 @@ import android.widget.RatingBar;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.android.sdk.utils.IntentFilterFactory;
+import com.onyx.android.sdk.utils.LightConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +40,7 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnClick
     private boolean isRevertColdLightProgress = false;
     private int mMaxNumStars;
     private int mLightClosedValue;
-    private int[][] mLightValues = {{0,3,6,9,12,15,17,19,21,23,25,26,27,28,29,30,31},{0,3,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21}};
+    private Integer[][] mLightValues;
 
     private BroadcastReceiver mOpenAndCloseNaturalLightReceiver = null;
     private IntentFilter filter = null;
@@ -77,6 +78,7 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnClick
     }
 
     private void initData() {
+        mLightValues = LightConfig.sharedInstance(getContext()).getNaturalLightValues();
         if (mLightValues != null) {
             mMaxNumStars = mLightValues[TYPE_WARM_LIGHT].length - 1;
             mRatingBarNeturalLight.setNumStars(mMaxNumStars * 2);
