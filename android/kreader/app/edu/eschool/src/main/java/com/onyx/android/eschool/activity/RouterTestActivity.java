@@ -177,7 +177,7 @@ public class RouterTestActivity extends Activity {
         getWifiAdmin().registerReceiver();
         getWifiAdmin().setCallback(new WifiAdmin.Callback() {
             @Override
-            public void onWifiStateChange(boolean isWifiEnable) {
+            public void onWifiStateChange(boolean isWifiEnable,int wifiExtraState) {
                 if (isWifiEnable && tinyMachine.getCurrentState() == STATE_INIT) {
                     tinyMachine.transitionTo(STATE_WIFI_INIT_ENABLED);
                 }
