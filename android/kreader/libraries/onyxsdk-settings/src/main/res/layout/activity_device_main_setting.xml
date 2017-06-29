@@ -84,7 +84,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignWithParentIfMissing="true"
                 app:alwaysLayoutImageView="true"
-                app:layout_marginBottomPercent="45%"
+                app:layout_marginBottomPercent="40%"
                 app:layout_marginRightPercent="22%">
 
                 <ImageView
