@@ -131,7 +131,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
 
         //TODO:custom view for normal/colorDevice;
         if (AppCompatUtils.isColorDevice(this)) {
-            binding.infoArea.setBackground(getResources().getDrawable(R.drawable.main_setting_bg));
+            binding.backGroundImageView.setImageResource(R.drawable.main_setting_bg);
             try {
                 binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.getQRCodeCFABitmap(this));
                 binding.deviceInfoEnterImageView.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +167,8 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
             }
             binding.deviceDetailArea.setVisibility(View.GONE);
         } else {
+            binding.deviceInfoEnterImageView.setVisibility(View.GONE);
+            binding.backGroundImageView.setVisibility(View.GONE);
             binding.infoArea.setBackground(getResources().getDrawable(R.drawable.image_button_bg));
             binding.macQrCodeLayout.setVisibility(View.GONE);
         }
