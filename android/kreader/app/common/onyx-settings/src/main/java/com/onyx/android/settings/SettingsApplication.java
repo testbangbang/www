@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.onyx.android.libsetting.SettingConfig;
 import com.onyx.android.libsetting.manager.SettingsPreferenceManager;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.data.manager.OssManager;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
@@ -17,6 +19,11 @@ import com.onyx.android.sdk.ui.compat.AppCompatUtils;
  * Created by suicheng on 2017/4/28.
  */
 public class SettingsApplication extends MultiDexApplication {
+
+    static public final String OSS_LOG_KEY_ID = "LTAIXvqBXTJUKEf0";
+    static public final String OSS_LOG_KEY_SECRET = "tKRDXDOPGBm9wK0GHHaJG2HaqfKWbY";
+    static public final String OSS_LOG_BUCKET = "onyx-log-collection";
+    static public final String OSS_LOG_ENDPOINT = "http://onyx-log-collection.onyx-international.cn";
 
     @Override
     public void onCreate() {
@@ -36,9 +43,14 @@ public class SettingsApplication extends MultiDexApplication {
             SettingsPreferenceManager.init(this);
             initDeviceConfig();
             initCloudStore();
+            initErrorReportAction();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void initErrorReportAction() {
+        SettingConfig.sharedInstance(this).setErrorReportAction("com.onyx.intent.action.ERROR_REPORT");
     }
 
     private void initDeviceConfig() {
@@ -90,4 +102,12 @@ public class SettingsApplication extends MultiDexApplication {
         CloudStore.init(this);
     }
 
+    public static OssManager getLogOssManger(Context context) {
+        OssManager.OssConfig ossConfig = new OssManager.OssConfig();
+        ossConfig.setBucketName(OSS_LOG_BUCKET);
+        ossConfig.setEndPoint(OSS_LOG_ENDPOINT);
+        ossConfig.setKeyId(OSS_LOG_KEY_ID);
+        ossConfig.setKeySecret(OSS_LOG_KEY_SECRET);
+        return new OssManager(context.getApplicationContext(), ossConfig);
+    }
 }

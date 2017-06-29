@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">onyx-settings</string>
+
+    <string name="desc_can_not_empty">Description can not be empty</string>
+    <string name="feedback_submitting">Submitting feedback…</string>
+    <string name="feedback_success">Feedback success</string>
+    <string name="feedback_fail">Feedback failed</string>
+    <string name="feedback_fail_and_network_check">Feedback failed, please check the network and try again</string>
+    <string name="wanna_give_up_edit">Give up this edit?</string>
+
 </resources>
