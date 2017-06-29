@@ -69,6 +69,11 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
     lintOptions {
         abortOnError false
     }
@@ -101,6 +106,7 @@ dependencies {
     compile "com.android.support:multidex:$multidexVersion"
     compile "cn.leancloud.android:avoscloud-sdk:$rootProject.avoscloudVersion"
     compile("cn.leancloud.android:avoscloud-push:$rootProject.avoscloudVersion@aar") { transitive = true }
+    compile "cn.leancloud.android:avoscloud-statistics:$rootProject.avoscloudVersion"
     compile "com.google.zxing:core:$rootProject.zxingVersion"
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"

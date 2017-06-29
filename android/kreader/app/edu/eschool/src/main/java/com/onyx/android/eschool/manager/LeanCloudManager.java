@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.util.Log;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVInstallation;
 import com.avos.avoscloud.AVOSCloud;
@@ -22,6 +23,7 @@ public class LeanCloudManager {
 
     private static boolean isLastModifyEnabled = true;
     private static boolean isDebugLogEnabled = false;
+    private static boolean isEnableCrashReport = true;
 
     private static final String LEAN_CLOUD_CACHE = "app_leanCloud";
     private static int RETRY_COUNT = 3;
@@ -44,6 +46,7 @@ public class LeanCloudManager {
             AVOSCloud.initialize(context, appId, clientKey);
             AVOSCloud.setLastModifyEnabled(isLastModifyEnabled);
             AVOSCloud.setDebugLogEnabled(isDebugLogEnabled);
+            AVAnalytics.enableCrashReport(context, isEnableCrashReport);
             saveInstallation(context);
         } catch (Exception e) {
             e.printStackTrace();
