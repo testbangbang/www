@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
         android:name=".SettingsApplication"
@@ -26,6 +27,15 @@
         <meta-data
             android:name="timestamp"
             android:value="${timestamp_value}" />
+
+        <activity android:name=".view.activity.ErrorReportActivity">
+            <intent-filter>
+                <action android:name="ocom.onyx.intent.action.ERROR_REPORT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
