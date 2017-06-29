@@ -16,11 +16,15 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.StatisticsCloudManager;
 import com.onyx.android.sdk.data.model.StatisticsResult;
+import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.request.cloud.GetStatisticsRequest;
 import com.onyx.android.sdk.data.request.cloud.PushStatisticsRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudIndexServiceRequest;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
@@ -67,7 +71,7 @@ public class StatisticsActivity extends ActionBarActivity {
         initView();
         initData();
         registerReceiver();
-        getStatistics();
+        getCloudIndex();
         checkWifi();
     }
 
@@ -123,20 +127,36 @@ public class StatisticsActivity extends ActionBarActivity {
         title.setText(text);
     }
 
+    private void getCloudIndex() {
+        final CloudManager cloudManager = new CloudManager();
+        final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(Constant.CLOUD_MAIN_INDEX_SERVER_API,
+                IndexService.createIndexService(this));
+        cloudManager.submitRequest(this, indexServiceRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                String url = DeviceConfig.sharedInstance(StatisticsActivity.this).getStatisticsUrl();
+                if (e == null && IndexService.hasValidServer(indexServiceRequest.getResultIndexService())) {
+                    url = cloudManager.getCloudConf().getApiBase();
+                }
+                pushStatistics(url);
+                getStatistics(url);
+            }
+        });
+    }
+
     private void registerReceiver() {
         networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
             @Override
             public void onNetworkChanged(boolean connected, int networkType) {
                 updatePageTitle();
                 if (connected) {
-                    pushStatistics();
-                    getStatistics();
+                    getCloudIndex();
                 }
             }
 
             @Override
             public void onNoNetwork() {
-                getStatistics();
+                getCloudIndex();
             }
         });
         IntentFilter filter = new IntentFilter();
@@ -144,8 +164,8 @@ public class StatisticsActivity extends ActionBarActivity {
         registerReceiver(networkConnectChangedReceiver, filter);
     }
 
-    private void pushStatistics() {
-        final PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(this, null, DeviceConfig.sharedInstance(this).getStatisticsUrl());
+    private void pushStatistics(String url) {
+        final PushStatisticsRequest statisticsRequest = new PushStatisticsRequest(this, null, url);
         getCloudManager().submitRequest(this, statisticsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -154,10 +174,10 @@ public class StatisticsActivity extends ActionBarActivity {
         });
     }
 
-    private void getStatistics() {
+    private void getStatistics(String url) {
         dialogLoading = getDialogLoading();
         dialogLoading.show();
-        final GetStatisticsRequest statisticsRequest = new GetStatisticsRequest(this, DeviceConfig.sharedInstance(this).getStatisticsUrl());
+        final GetStatisticsRequest statisticsRequest = new GetStatisticsRequest(this, url);
         getCloudStore().submitRequest(this, statisticsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

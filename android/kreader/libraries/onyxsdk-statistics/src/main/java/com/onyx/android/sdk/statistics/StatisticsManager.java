@@ -24,7 +24,7 @@ public class StatisticsManager {
         this.impl = impl;
     }
 
-    public boolean init(final Context context, final Map<String, String> args, final StatisticsType type) {
+    public boolean init(final Context context, final Map<String, Object> args, final StatisticsType type) {
         switch (type) {
             case UMeng:
                 setImpl(new UMeng());

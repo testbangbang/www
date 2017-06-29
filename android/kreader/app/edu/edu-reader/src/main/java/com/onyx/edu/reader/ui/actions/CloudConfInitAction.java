@@ -21,7 +21,7 @@ public class CloudConfInitAction extends BaseAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
         final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(Constant.CLOUD_MAIN_INDEX_SERVER_API,
-                createIndexService(readerDataHolder.getContext()));
+                IndexService.createIndexService(readerDataHolder.getContext()));
         readerDataHolder.getCloudManager().submitRequest(readerDataHolder.getContext(), indexServiceRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -38,11 +38,5 @@ public class CloudConfInitAction extends BaseAction {
                 Constant.ONYX_API_BASE,
                 Constant.DEFAULT_CLOUD_STORAGE));
         cloudManager.setCloudDataProvider(cloudManager.getCloudConf());
-    }
-
-    private IndexService createIndexService(Context context) {
-        IndexService authService = new IndexService();
-        authService.mac = NetworkUtil.getMacAddress(context);
-        return authService;
     }
 }
