@@ -30,7 +30,7 @@
 
         <activity android:name=".view.activity.ErrorReportActivity">
             <intent-filter>
-                <action android:name="ocom.onyx.intent.action.ERROR_REPORT" />
+                <action android:name="com.onyx.intent.action.ERROR_REPORT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
