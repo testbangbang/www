@@ -18,7 +18,6 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
-import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
@@ -60,6 +59,7 @@ public class ScribbleSubMenu extends RelativeLayout {
     static HashMap<String, Integer> mapping = null;
     private int mPositionID;
     private ShapeDataInfo curShapeDataInfo;
+    private NoteAppConfig config;
     private
     @ScribbleMenuCategory.ScribbleMenuCategoryDef
     int currentCategory;
@@ -98,6 +98,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         setBackgroundColor(Color.TRANSPARENT);
         mMenuContentView = (ContentView) findViewById(R.id.layout_sub_menu);
         curShapeDataInfo = shapeDataInfo;
+        config = NoteAppConfig.sharedInstance(context);
         View dismissZone = findViewById(R.id.dismiss_zone);
         dismissZone.setOnClickListener(new OnClickListener() {
             @Override
@@ -369,7 +370,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         }
         styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_line, ScribbleSubMenuID.LINE_STYLE, true));
         styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_triangle, ScribbleSubMenuID.TRIANGLE_STYLE, true));
-        if (AppCompatUtils.isColorDevice(getContext())) {
+        if (config.useEduConfig()) {
             styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_triangle_45, ScribbleSubMenuID.TRIANGLE_45_STYLE, true));
             styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_triangle_60, ScribbleSubMenuID.TRIANGLE_60_STYLE, true));
             styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_triangle_90, ScribbleSubMenuID.TRIANGLE_90_STYLE, true));
@@ -381,7 +382,7 @@ public class ScribbleSubMenu extends RelativeLayout {
 
     private GAdapter createBGAdapter() {
         GAdapter bgMenus = new GAdapter();
-        if (AppCompatUtils.isColorDevice(getContext())) {
+        if (config.useEduConfig()) {
             bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_white, ScribbleSubMenuID.BG_EMPTY, true));
             bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_line, ScribbleSubMenuID.BG_LINE, true));
             bgMenus.addObject(createImageButtonMenu(R.drawable.ic_template_left_grid, ScribbleSubMenuID.BG_LEFT_GRID, true));
@@ -435,7 +436,7 @@ public class ScribbleSubMenu extends RelativeLayout {
                                          int category, boolean isLineLayoutMode, final BaseCallback callback) {
         int rows;
         if ((category == ScribbleMenuCategory.BG && !isLineLayoutMode) ||
-                (category == ScribbleMenuCategory.PEN_STYLE && AppCompatUtils.isColorDevice(getContext()))) {
+                (category == ScribbleMenuCategory.PEN_STYLE && config.useEduConfig())) {
             rows = 2;
         } else {
             rows = getResources().getInteger(R.integer.note_menu_rows);
