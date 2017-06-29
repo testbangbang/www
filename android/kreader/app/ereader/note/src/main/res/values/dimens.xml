@@ -23,4 +23,5 @@
     <dimen name="onyx_scribble_activity_text_size">22sp</dimen>
 
     <dimen name="onyx_scribble_btn_page_progress_width">@dimen/wrap_content</dimen>
+    <dimen name="dialog_move_folder_item_height">40dp</dimen>
 </resources>

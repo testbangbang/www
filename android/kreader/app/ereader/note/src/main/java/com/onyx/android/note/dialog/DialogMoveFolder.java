@@ -56,7 +56,7 @@ public class DialogMoveFolder extends OnyxAlertDialog {
         final boolean isUseMXStyle = NoteAppConfig.sharedInstance(getActivity()).useMXUIStyle();
         Params params = new Params().setTittleString(getString(R.string.move))
                 .setCustomContentLayoutResID(R.layout.alert_dialog_content_move_folder)
-                .setCustomLayoutHeight((int) (5 * getResources().getDimension(R.dimen.button_minHeight)))
+                .setCustomLayoutHeight((int) (5 * getResources().getDimension(R.dimen.dialog_move_folder_item_height)))
                 .setEnableNegativeButton(false)
                 .setPositiveAction(new View.OnClickListener() {
                     @Override

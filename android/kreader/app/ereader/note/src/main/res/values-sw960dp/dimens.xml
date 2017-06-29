@@ -13,4 +13,5 @@
     <dimen name="page_indicator_area_bottom_margin">10dp</dimen>
     <dimen name="onyx_note_style_width">380dp</dimen>
     <dimen name="onyx_scribble_activity_text_size">26sp</dimen>
+    <dimen name="dialog_move_folder_item_height">48dp</dimen>
 </resources>
