@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
-    <dimen name="main_menu_tab_height">80dp</dimen>
+    <dimen name="main_menu_tab_height">100dp</dimen>
+    <dimen name="title_bar_right_menu_padding">8dp</dimen>
+    <dimen name="title_bar_title_padding">8dp</dimen>
+    <dimen name="title_bar_margin">8dp</dimen>
+    <dimen name="line_width">1dp</dimen>
+    <dimen name="rectangle_stroke_width">2dp</dimen>
+    <dimen name="rectangle_stroke_radius">5dp</dimen>
 </resources>

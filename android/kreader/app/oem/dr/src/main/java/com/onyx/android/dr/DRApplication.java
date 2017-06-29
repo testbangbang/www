@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.manager.LeanCloudManager;
@@ -47,6 +48,7 @@ public class DRApplication extends MultiDexApplication {
             initDownloadManager();
             initCloudStore();
             initLeanCloud();
+            initFrescoLoader();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -64,6 +66,10 @@ public class DRApplication extends MultiDexApplication {
     private void initLeanCloud() {
         LeanCloudManager.initialize(this, DeviceConfig.sharedInstance(this).getLeanCloudApplicationId(),
                 DeviceConfig.sharedInstance(this).getLeanCloudClientKey());
+    }
+
+    private void initFrescoLoader() {
+        Fresco.initialize(sInstance.getApplicationContext());
     }
 
     public static CloudStore getCloudStore() {

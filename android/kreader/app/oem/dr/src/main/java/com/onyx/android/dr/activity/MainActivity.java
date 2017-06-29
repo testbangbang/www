@@ -1,6 +1,10 @@
 package com.onyx.android.dr.activity;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
+import android.util.SparseArray;
 import android.widget.FrameLayout;
 
 import com.onyx.android.dr.DRApplication;
@@ -10,6 +14,7 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.MenuData;
 import com.onyx.android.dr.event.ArticlePushMenuEvent;
+import com.onyx.android.dr.event.BackToMainViewEvent;
 import com.onyx.android.dr.event.DictMenuEvent;
 import com.onyx.android.dr.event.GradedBooksEvent;
 import com.onyx.android.dr.event.MyBooksMenuEvent;
@@ -19,6 +24,11 @@ import com.onyx.android.dr.event.RealTimeBooksMenuEvent;
 import com.onyx.android.dr.event.SchoolBasedMaterialsMenuEvent;
 import com.onyx.android.dr.event.SettingsMenuEvent;
 import com.onyx.android.dr.event.TeachingAidsMenuEvent;
+import com.onyx.android.dr.fragment.BaseFragment;
+import com.onyx.android.dr.fragment.ChildViewID;
+import com.onyx.android.dr.fragment.MainViewFragment;
+import com.onyx.android.dr.fragment.RealTimeBooksFragment;
+import com.onyx.android.dr.fragment.SchoolBasedMaterialsFragment;
 import com.onyx.android.dr.presenter.MainPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.data.model.Library;
@@ -42,6 +52,10 @@ public class MainActivity extends BaseActivity implements MainView {
     private MainPresenter mainPresenter;
     private List<Library> libraryList;
     private TabMenuAdapter tabMenuAdapter;
+    private FragmentManager fragmentManager;
+    private Fragment currentFragment;
+    private int currentPageID;
+    private SparseArray<BaseFragment> childViewList = new SparseArray<>();
 
     @Override
     protected Integer getLayoutId() {
@@ -55,6 +69,11 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected void initView() {
+        initTabMenu();
+        switchCurrentFragment(ChildViewID.FRAGMENT_MAIN_VIEW);
+    }
+
+    private void initTabMenu() {
         tabMenu.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
@@ -91,12 +110,12 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRealTimeBooksMenuEvent(RealTimeBooksMenuEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.real_time_articles));
+        switchCurrentFragment(ChildViewID.FRAGMENT_REAL_TIME_BOOKS);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSchoolBasedMaterialsMenuEvent(SchoolBasedMaterialsMenuEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.school_based_materials));
+        switchCurrentFragment(ChildViewID.FRAGMENT_SCHOOL_BASED_MATERIALS);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -127,6 +146,55 @@ public class MainActivity extends BaseActivity implements MainView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onArticlePushMenuEvent(ArticlePushMenuEvent event) {
         CommonNotices.showMessage(this, getString(R.string.article_push));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBackToMainViewEvent(BackToMainViewEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_MAIN_VIEW);
+    }
+
+    public void switchCurrentFragment(int pageID) {
+        if (currentPageID == pageID) {
+            return;
+        }
+        if (fragmentManager == null) {
+            fragmentManager = getFragmentManager();
+        }
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        if (currentFragment != null && currentFragment.isVisible()) {
+            transaction.hide(currentFragment);
+        }
+        BaseFragment baseFragment = getPageView(pageID);
+        if (baseFragment.isStored) {
+            transaction.show(baseFragment);
+        } else {
+            transaction.add(R.id.main_view_container, baseFragment);
+            childViewList.put(pageID, baseFragment);
+        }
+        currentFragment = baseFragment;
+        currentPageID = pageID;
+        transaction.commitAllowingStateLoss();
+    }
+
+    private BaseFragment getPageView(int pageID) {
+        BaseFragment baseFragment = childViewList.get(pageID);
+        if (baseFragment == null) {
+            switch (pageID) {
+                case ChildViewID.FRAGMENT_MAIN_VIEW:
+                    baseFragment = new MainViewFragment();
+                    break;
+                case ChildViewID.FRAGMENT_REAL_TIME_BOOKS:
+                    baseFragment = new RealTimeBooksFragment();
+                    break;
+                case ChildViewID.FRAGMENT_SCHOOL_BASED_MATERIALS:
+                    baseFragment = new SchoolBasedMaterialsFragment();
+                    break;
+            }
+        } else {
+            baseFragment.isStored = true;
+        }
+        return baseFragment;
     }
 
     @Override
