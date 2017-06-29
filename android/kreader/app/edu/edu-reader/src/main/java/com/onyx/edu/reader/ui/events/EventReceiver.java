@@ -26,7 +26,7 @@ public class EventReceiver {
     private StatisticsManager.StatisticsType statisticsType = StatisticsManager.StatisticsType.Onyx;
 
     public EventReceiver(final Context context) {
-        Map<String, Object> args = new HashedMap<>();
+        Map<String, String> args = new HashedMap<>();
         switch (statisticsType) {
             case UMeng:
                 final String key = DeviceConfig.sharedInstance(context).getUmengKey();
@@ -41,7 +41,7 @@ public class EventReceiver {
             case Onyx:
                 final String url = DeviceConfig.sharedInstance(context).getStatisticsUrl();
                 args.put(StatisticsBase.STATISTICS_URL, url);
-                args.put(StatisticsBase.USE_CLOUD_INDEX, true);
+                args.put(StatisticsBase.USE_CLOUD_INDEX, String.valueOf(true));
                 break;
         }
 

@@ -20,7 +20,7 @@ public interface StatisticsBase {
     static final String STATISTICS_URL = "url";
     static final String USE_CLOUD_INDEX = "use cloud index";
 
-    boolean init(final Context context, final Map<String, Object> args);
+    boolean init(final Context context, final Map<String, String> args);
 
     void onActivityResume(final Context context);
 

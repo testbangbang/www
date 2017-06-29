@@ -28,7 +28,7 @@ public class EventReceiver {
     private StatisticsManager.StatisticsType statisticsType = StatisticsManager.StatisticsType.Onyx;
 
     public EventReceiver(final Context context) {
-        Map<String, Object> args = new HashedMap<>();
+        Map<String, String> args = new HashedMap<>();
         switch (statisticsType) {
             case UMeng:
                 final String key = DeviceConfig.sharedInstance(context).getUmengKey();

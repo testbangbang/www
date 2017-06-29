@@ -45,11 +45,14 @@ public class OnyxStatistics implements StatisticsBase {
     private List<OnyxStatisticsModel> statisticsQueue;
 
     @Override
-    public boolean init(Context context, Map<String, Object> args) {
+    public boolean init(Context context, Map<String, String> args) {
         cloudManager = new StatisticsCloudManager();
         statisticsQueue = new ArrayList<>();
-        url = (String) args.get(STATISTICS_URL);
-        useCloudIndex = (boolean) args.get(USE_CLOUD_INDEX);
+        url = args.get(STATISTICS_URL);
+        String cloudArg = args.get(USE_CLOUD_INDEX);
+        if (!StringUtils.isNullOrEmpty(cloudArg)) {
+            useCloudIndex = Boolean.parseBoolean(args.get(USE_CLOUD_INDEX));
+        }
         return true;
     }
 
