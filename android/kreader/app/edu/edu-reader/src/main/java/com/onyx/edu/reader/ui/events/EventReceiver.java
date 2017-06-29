@@ -41,6 +41,7 @@ public class EventReceiver {
             case Onyx:
                 final String url = DeviceConfig.sharedInstance(context).getStatisticsUrl();
                 args.put(StatisticsBase.STATISTICS_URL, url);
+                args.put(StatisticsBase.USE_CLOUD_INDEX, String.valueOf(true));
                 break;
         }
 

@@ -82,7 +82,7 @@ public class DeviceConfig {
     private int defaultSlideshowPages = 2000;
 
     private String defaultFontFileForChinese = "/system/fonts/OnyxCustomFont-Regular.ttf";
-    private String statisticsUrl = "http://dev.onyx-international.cn/api/1/";
+    private String statisticsUrl = "http://oa.o-in.me:9058/api/";
     private String defaultAnnotationHighlightStyle = "Highlight";
     private Float[] defaultFontSizes = {20.0f, 24.0f, 28.0f, 32.0f, 36.0f, 40.0f, 44.0f, 48.0f};
 

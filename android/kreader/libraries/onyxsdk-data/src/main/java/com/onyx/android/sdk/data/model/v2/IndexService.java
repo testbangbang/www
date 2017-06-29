@@ -1,6 +1,9 @@
 package com.onyx.android.sdk.data.model.v2;
 
+import android.content.Context;
+
 import com.onyx.android.sdk.data.model.BaseData;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
 /**
@@ -33,5 +36,11 @@ public class IndexService extends BaseData {
             return false;
         }
         return server.getApiBase().equals(targetServer.getApiBase());
+    }
+
+    public static IndexService createIndexService(Context context) {
+        IndexService authService = new IndexService();
+        authService.mac = NetworkUtil.getMacAddress(context);
+        return authService;
     }
 }
