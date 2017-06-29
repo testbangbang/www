@@ -7,4 +7,5 @@
     <dimen name="line_width">1dp</dimen>
     <dimen name="rectangle_stroke_width">2dp</dimen>
     <dimen name="rectangle_stroke_radius">5dp</dimen>
+    <dimen name="item_main_menu_tab_padding">10dp</dimen>
 </resources>

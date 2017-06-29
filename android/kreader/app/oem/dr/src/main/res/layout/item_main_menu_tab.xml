@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:padding="10dp"
+    android:padding="@dimen/item_main_menu_tab_padding"
     android:orientation="vertical">
 
     <ImageView
