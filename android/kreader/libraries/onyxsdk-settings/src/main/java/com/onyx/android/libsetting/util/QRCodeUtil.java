@@ -52,14 +52,13 @@ public class QRCodeUtil {
         return dst;
     }
 
-    public static Bitmap getQRCodeCFABitmap(Context context) throws WriterException {
+    @Nullable
+    public static Bitmap getQRCodeCFABitmap() throws WriterException {
         File cacheFile = new File(CFA_QR_CODE_FILE_PATH);
         if (cacheFile.exists() && cacheFile.canRead()) {
             return BitmapFactory.decodeFile(cacheFile.getPath());
-        } else {
-            return stringToImageEncode(context, NetworkUtil.getMacAddress(context), DEFAULT_SIZE,
-                    true, WHITE_MARGIN_SIZE,
-                    context.getResources().getColor(android.R.color.black));
+        }else {
+            return null;
         }
     }
 

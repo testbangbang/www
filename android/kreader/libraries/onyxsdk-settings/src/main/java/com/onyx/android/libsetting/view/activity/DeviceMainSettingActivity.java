@@ -133,7 +133,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         if (AppCompatUtils.isColorDevice(this)) {
             binding.backGroundImageView.setImageResource(R.drawable.main_setting_bg);
             try {
-                binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.getQRCodeCFABitmap(this));
+                binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.getQRCodeCFABitmap());
                 binding.deviceInfoEnterImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
