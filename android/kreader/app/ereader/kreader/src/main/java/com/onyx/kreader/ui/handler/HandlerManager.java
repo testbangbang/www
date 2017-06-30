@@ -15,21 +15,17 @@ import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.KeyBinding;
 import com.onyx.android.sdk.data.TouchAction;
 import com.onyx.android.sdk.data.TouchBinding;
-import com.onyx.android.sdk.reader.host.request.RenderRequest;
-import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.ui.ReaderTabHostBroadcastReceiver;
 import com.onyx.kreader.ui.actions.DecreaseFontSizeAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.IncreaseFontSizeAction;
-import com.onyx.kreader.ui.actions.RefreshCurrentPageAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ToggleAnimationUpdateAction;
 import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.device.DeviceConfig;
+import com.onyx.kreader.ui.events.ToggleFullScreenEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -482,11 +478,7 @@ public class HandlerManager {
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
             return;
         }
-        if (SingletonSharedPreference.isSystemStatusBarEnabled(readerDataHolder.getContext())) {
-            ReaderTabHostBroadcastReceiver.sendEnterFullScreenIntent(readerDataHolder.getContext());
-        }else {
-            ReaderTabHostBroadcastReceiver.sendQuitFullScreenIntent(readerDataHolder.getContext());
-        }
+        readerDataHolder.getEventBus().post(new ToggleFullScreenEvent());
     }
 
     private void increaseBrightness(final ReaderDataHolder readerDataHolder) {

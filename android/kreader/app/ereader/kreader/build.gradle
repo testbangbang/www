@@ -66,6 +66,13 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    productFlavors {
+        multipleProcess {
+        }
+        singleProcess {
+        }
+    }
 }
 
 apt {

@@ -123,6 +123,10 @@ public class SingletonSharedPreference {
         return getBooleanByStringID(context, R.string.settings_enable_system_status_bar_key, DeviceConfig.sharedInstance(context).isDefaultUseSystemStatusBar());
     }
 
+    public static void setSystemStatusBarEnabled(Context context, boolean enabled) {
+        setBooleanValue(context, R.string.settings_enable_system_status_bar_key, enabled);
+    }
+
     public static boolean isReaderStatusBarEnabled(Context context) {
         return getBooleanByStringID(context, R.string.settings_enable_reader_status_bar_key, DeviceConfig.sharedInstance(context).isDefaultUseReaderStatusBar());
     }
