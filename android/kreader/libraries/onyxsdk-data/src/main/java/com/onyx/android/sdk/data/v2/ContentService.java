@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.v2;
 
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.model.v2.Course;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
@@ -35,6 +36,9 @@ public interface ContentService {
 
     @GET("users/me")
     Call<ResponseBody> getAccount();
+
+    @GET("courses/my")
+    Call<List<Course>> getMyCourses();
 
     @GET("librarys/my")
     Call<List<CloudLibrary>> loadLibraryList();
