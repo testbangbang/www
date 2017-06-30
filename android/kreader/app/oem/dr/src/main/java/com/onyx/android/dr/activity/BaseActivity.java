@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.ButterKnife;
 
 /**
@@ -25,6 +27,7 @@ public abstract class BaseActivity extends OnyxAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
 
         initConfig();
         initView();
@@ -35,6 +38,7 @@ public abstract class BaseActivity extends OnyxAppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

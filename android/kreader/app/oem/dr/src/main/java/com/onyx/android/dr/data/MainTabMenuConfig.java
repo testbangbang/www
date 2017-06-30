@@ -2,8 +2,10 @@ package com.onyx.android.dr.data;
 
 import android.content.Context;
 
+import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.event.ApplicationEvent;
 import com.onyx.android.dr.event.ArticlePushMenuEvent;
 import com.onyx.android.dr.event.DictMenuEvent;
@@ -15,9 +17,9 @@ import com.onyx.android.dr.event.ProfessionalMaterialsMenuEvent;
 import com.onyx.android.dr.event.RealTimeBooksMenuEvent;
 import com.onyx.android.dr.event.SchoolBasedMaterialsMenuEvent;
 import com.onyx.android.dr.event.SettingsMenuEvent;
-import com.onyx.android.dr.event.TeachingAidsMenuEvent;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -32,63 +34,78 @@ public class MainTabMenuConfig {
     private static List<MenuData> teacherMenuData = new ArrayList<>();
 
     public static void loadMenuInfo(Context context) {
-        MenuData menuData = new MenuData(context.getResources().getString(R.string.graded_books), R.drawable.ic_books, new GradedBooksEvent());
+        MenuData menuData = new MenuData(context.getResources().getString(R.string.menu_graded_books), R.drawable.ic_books, new GradedBooksEvent());
         highSchoolMenuData.add(menuData);
-        menuData = new MenuData(context.getResources().getString(R.string.my_books), R.drawable.ic_books, new MyBooksMenuEvent());
+        menuData = new MenuData(context.getResources().getString(R.string.menu_my_books), R.drawable.ic_books, new MyBooksMenuEvent());
         universityMenuData.add(menuData);
         teacherMenuData.add(menuData);
 
-        menuData = new MenuData(context.getResources().getString(R.string.real_time_articles), R.drawable.ic_real_time_books, new RealTimeBooksMenuEvent());
-        highSchoolMenuData.add(menuData);
-        universityMenuData.add(menuData);
-        teacherMenuData.add(menuData);
-
-        menuData = new MenuData(context.getResources().getString(R.string.school_based_materials), R.drawable.ic_professional_materials, new SchoolBasedMaterialsMenuEvent());
-        highSchoolMenuData.add(menuData);
-        menuData = new MenuData(context.getResources().getString(R.string.professional_materials), R.drawable.ic_professional_materials, new ProfessionalMaterialsMenuEvent());
-        universityMenuData.add(menuData);
-        teacherMenuData.add(menuData);
-
-        menuData = new MenuData(context.getResources().getString(R.string.dict), R.drawable.ic_dict, new DictMenuEvent());
+        menuData = new MenuData(context.getResources().getString(R.string.menu_real_time_articles), R.drawable.ic_real_time_books, new RealTimeBooksMenuEvent());
         highSchoolMenuData.add(menuData);
         universityMenuData.add(menuData);
         teacherMenuData.add(menuData);
 
-        menuData = new MenuData(context.getResources().getString(R.string.notes), R.drawable.ic_note, new NotesMenuEvent());
+        menuData = new MenuData(context.getResources().getString(R.string.menu_school_based_materials), R.drawable.ic_professional_materials, new SchoolBasedMaterialsMenuEvent());
+        highSchoolMenuData.add(menuData);
+        menuData = new MenuData(context.getResources().getString(R.string.menu_professional_materials), R.drawable.ic_professional_materials, new ProfessionalMaterialsMenuEvent());
+        universityMenuData.add(menuData);
+        teacherMenuData.add(menuData);
+
+        menuData = new MenuData(context.getResources().getString(R.string.menu_dict), R.drawable.ic_dict, new DictMenuEvent());
         highSchoolMenuData.add(menuData);
         universityMenuData.add(menuData);
         teacherMenuData.add(menuData);
 
-        menuData = new MenuData(context.getResources().getString(R.string.listen_and_say), R.drawable.ic_listen, new ListenAndSayMenuEvent());
+        menuData = new MenuData(context.getResources().getString(R.string.menu_notes), R.drawable.ic_note, new NotesMenuEvent());
         highSchoolMenuData.add(menuData);
         universityMenuData.add(menuData);
         teacherMenuData.add(menuData);
 
-        menuData = new MenuData(context.getResources().getString(R.string.application),R.drawable.ic_application,new ApplicationEvent());
+        menuData = new MenuData(context.getResources().getString(R.string.menu_listen_and_say), R.drawable.ic_listen, new ListenAndSayMenuEvent());
         highSchoolMenuData.add(menuData);
         universityMenuData.add(menuData);
         teacherMenuData.add(menuData);
 
-        menuData = new MenuData(context.getResources().getString(R.string.settings), R.drawable.ic_settings, new SettingsMenuEvent());
+        menuData = new MenuData(context.getResources().getString(R.string.menu_application), R.drawable.ic_application, new ApplicationEvent());
         highSchoolMenuData.add(menuData);
         universityMenuData.add(menuData);
         teacherMenuData.add(menuData);
 
-        menuData = new MenuData(context.getResources().getString(R.string.article_push), R.drawable.ic_add, new ArticlePushMenuEvent());
+        menuData = new MenuData(context.getResources().getString(R.string.menu_settings), R.drawable.ic_settings, new SettingsMenuEvent());
+        highSchoolMenuData.add(menuData);
+        universityMenuData.add(menuData);
+        teacherMenuData.add(menuData);
+
+        menuData = new MenuData(context.getResources().getString(R.string.menu_article_push), R.drawable.ic_add, new ArticlePushMenuEvent());
         highSchoolMenuData.add(menuData);
         universityMenuData.add(menuData);
         teacherMenuData.add(menuData);
     }
 
     public static List<MenuData> getMenuData(int UserType) {
+        List<MenuData> menuData = highSchoolMenuData;
         switch (UserType) {
             case Constants.ACCOUNT_TYPE_HIGH_SCHOOL:
-                return highSchoolMenuData;
+                menuData = highSchoolMenuData;
+                break;
             case Constants.ACCOUNT_TYPE_UNIVERSITY:
-                return universityMenuData;
+                menuData = universityMenuData;
+                break;
             case Constants.ACCOUNT_TYPE_TEACHER:
-                return teacherMenuData;
+                menuData = teacherMenuData;
+                break;
         }
-        return highSchoolMenuData;
+        getJsonConfig(menuData);
+        return menuData;
+    }
+
+    private static void getJsonConfig(List<MenuData> menuData) {
+        Iterator<MenuData> it = menuData.iterator();
+        while (it.hasNext()) {
+            MenuData next = it.next();
+            if (DeviceConfig.sharedInstance(DRApplication.getInstance()).getMainMenuItem(next.getTabName())) {
+                it.remove();
+            }
+        }
     }
 }

@@ -9,7 +9,6 @@ import com.onyx.android.sdk.utils.PreferenceManager;
  * Created by suicheng on 2016/11/18.
  */
 public class DRPreferenceManager extends PreferenceManager {
-
     public static void saveGradeSelected(Context context, String gradleSelected) {
         setStringValue(context, Constants.CONFIG_STUDENT_GRADE, gradleSelected);
     }

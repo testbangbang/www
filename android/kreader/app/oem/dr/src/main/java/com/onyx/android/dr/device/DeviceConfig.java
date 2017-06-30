@@ -52,8 +52,6 @@ public class DeviceConfig {
     static public final String CLOUD_MAIN_INDEX_SERVER_API = "cloud_main_index_server_api";
 
     static public final String MAIN_TAB_MENU_TAG = "main_tab_menu_tag";
-    static public final int MAIN_TAB_MENU_ROW = 1;
-    static public final int MAIN_TAB_MENU_COLUMN = 6;
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -253,21 +251,42 @@ public class DeviceConfig {
         return viewObject;
     }
 
-    public int getRecyclerViewRow(final String tag, final int defaultRow) {
-        int row = defaultRow;
-        JSONObject jsonObject = gitViewObject(tag);
-        if (jsonObject != null) {
-            row = jsonObject.getInteger(ROW_TAG);
-        }
-        return row;
+    public static class MainMenuInfo {
+        public static final String MAIN_MENU = "main_menu";
+        public static final String MENU_GRADED_BOOKS = "menu_graded_books";
+        public static final String MENU_MY_BOOKS = "menu_my_books";
+        public static final String MENU_REAL_TIME_ARTICLES = "menu_real_time_articles";
+        public static final String MENU_SCHOOL_BASED_MATERIALS = "menu_school_based_materials";
+        public static final String MENU_PROFESSIONAL_MATERIALS = "menu_professional_materials";
+        public static final String MENU_DICT = "menu_dict";
+        public static final String MENU_NOTES = "menu_notes";
+        public static final String MENU_LISTEN_AND_SAY = "menu_listen_and_say";
+        public static final String MENU_APPLICATION = "menu_application";
+        public static final String MENU_SETTINGS = "menu_settings";
+        public static final String MENU_ARTICLE_PUSH = "menu_article_push";
     }
 
-    public int getRecyclerViewColumn(final String tag, final int defaultColumn) {
-        int column = defaultColumn;
-        JSONObject jsonObject = gitViewObject(tag);
-        if (jsonObject != null) {
-            column = jsonObject.getInteger(COLUMN_TAG);
+    private JSONObject getMenuObject() {
+        try {
+            if (backend != null && backend.hasKey(MainMenuInfo.MAIN_MENU)) {
+                Object object = backend.getObject(MainMenuInfo.MAIN_MENU);
+                if (object != null) {
+                    return (JSONObject) object;
+                }
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return column;
+        return null;
+    }
+
+    public boolean getMainMenuItem(final String menuItem) {
+        boolean state = true;
+        JSONObject mainMenu = getMenuObject();
+        if (mainMenu != null) {
+            state = mainMenu.getBooleanValue(menuItem);
+        }
+        return state;
     }
 }

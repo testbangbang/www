@@ -41,7 +41,7 @@ public class SchoolBasedMaterialsFragment extends BaseFragment {
 
     @Override
     protected void initView(View rootView) {
-        titleBarTitle.setText(getString(R.string.school_based_materials));
+        titleBarTitle.setText(getString(R.string.menu_school_based_materials));
         image.setImageResource(R.drawable.ic_professional_materials);
     }
 

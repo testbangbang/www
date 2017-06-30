@@ -1,16 +1,16 @@
 <resources>
     <string name="app_name">dr</string>
     <string name="account_un_login">account un login</string>
-    <string name="graded_books">graded books</string>
-    <string name="real_time_articles">real time articles</string>
-    <string name="school_based_materials">school based materials</string>
-    <string name="dict">dict</string>
-    <string name="notes">notes</string>
-    <string name="listen_and_say">listen and say</string>
+    <string name="menu_graded_books">graded books</string>
+    <string name="menu_real_time_articles">real time articles</string>
+    <string name="menu_school_based_materials">school based materials</string>
+    <string name="menu_dict">dict</string>
+    <string name="menu_notes">notes</string>
+    <string name="menu_listen_and_say">listen and say</string>
     <string name="teaching_aids">teaching aids</string>
-    <string name="settings">settings</string>
-    <string name="article_push">article push</string>
-    <string name="my_books">my books</string>
-    <string name="professional_materials">professional materials</string>
-    <string name="application">application</string>
+    <string name="menu_settings">settings</string>
+    <string name="menu_article_push">article push</string>
+    <string name="menu_my_books">my books</string>
+    <string name="menu_professional_materials">professional materials</string>
+    <string name="menu_application">application</string>
 </resources>

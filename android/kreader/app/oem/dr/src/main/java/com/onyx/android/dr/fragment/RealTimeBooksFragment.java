@@ -43,7 +43,7 @@ public class RealTimeBooksFragment extends BaseFragment {
 
     @Override
     protected void initView(View rootView) {
-        titleBarTitle.setText(getString(R.string.real_time_articles));
+        titleBarTitle.setText(getString(R.string.menu_real_time_articles));
         image.setImageResource(R.drawable.ic_real_time_books);
     }
 

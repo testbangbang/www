@@ -9,8 +9,6 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.data.MenuData;
-import com.onyx.android.dr.data.RecyclerViewConfig;
-import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -24,7 +22,7 @@ import butterknife.ButterKnife;
  * Created by hehai on 17-6-28.
  */
 
-public class TabMenuAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
+public class TabMenuAdapter extends PageRecyclerView.PageAdapter<TabMenuAdapter.ViewHolder> implements View.OnClickListener {
     private List<MenuData> menuDatas;
 
     public void setMenuDatas(List<MenuData> menuDatas) {
@@ -33,12 +31,12 @@ public class TabMenuAdapter extends PageRecyclerView.PageAdapter implements View
 
     @Override
     public int getRowCount() {
-        return DeviceConfig.sharedInstance(DRApplication.getInstance()).getRecyclerViewRow(RecyclerViewConfig.MAIN_TAB_MENU_TAG, RecyclerViewConfig.MAIN_TAB_MENU_ROW);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.main_tab_row);
     }
 
     @Override
     public int getColumnCount() {
-        return DeviceConfig.sharedInstance(DRApplication.getInstance()).getRecyclerViewColumn(RecyclerViewConfig.MAIN_TAB_MENU_TAG, RecyclerViewConfig.MAIN_TAB_MENU_COLUMN);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.main_tab_column);
     }
 
     @Override
@@ -47,19 +45,18 @@ public class TabMenuAdapter extends PageRecyclerView.PageAdapter implements View
     }
 
     @Override
-    public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
         View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_main_menu_tab, null);
         return new ViewHolder(inflate);
     }
 
     @Override
-    public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ViewHolder viewHolder = (ViewHolder) holder;
+    public void onPageBindViewHolder(ViewHolder holder, int position) {
         MenuData menuData = menuDatas.get(position);
-        viewHolder.tabMenuIcon.setImageResource(menuData.getImageResources());
-        viewHolder.tabMenuTitle.setText(menuData.getTabName());
-        viewHolder.rootView.setTag(position);
-        viewHolder.rootView.setOnClickListener(this);
+        holder.tabMenuIcon.setImageResource(menuData.getImageResources());
+        holder.tabMenuTitle.setText(menuData.getTabName());
+        holder.rootView.setTag(position);
+        holder.rootView.setOnClickListener(this);
     }
 
     @Override
@@ -68,7 +65,10 @@ public class TabMenuAdapter extends PageRecyclerView.PageAdapter implements View
             return;
         }
         int position = (int) v.getTag();
-        EventBus.getDefault().post(menuDatas.get(position).getEventBean());
+        Object eventBean = menuDatas.get(position).getEventBean();
+        if (eventBean != null) {
+            EventBus.getDefault().post(eventBean);
+        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

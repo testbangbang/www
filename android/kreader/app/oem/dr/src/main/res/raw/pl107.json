@@ -1,8 +1,16 @@
 {
-  "device_setting": {
-    "main_tab_menu_tag": {
-      "row": 1,
-      "column": 6
-    }
+  "main_menu": {
+    "menu_graded_books": true,
+    "menu_real_time_articles": true,
+    "menu_school_based_materials": true,
+    "menu_dict": true,
+    "menu_notes": true,
+    "menu_listen_and_say": true,
+    "teaching_aids": true,
+    "menu_settings": true,
+    "menu_article_push": true,
+    "menu_my_books": true,
+    "menu_professional_materials": true,
+    "menu_application": true
   }
 }
