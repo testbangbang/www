@@ -17,6 +17,7 @@ import com.onyx.android.dr.event.ArticlePushMenuEvent;
 import com.onyx.android.dr.event.BackToMainViewEvent;
 import com.onyx.android.dr.event.DictMenuEvent;
 import com.onyx.android.dr.event.GradedBooksEvent;
+import com.onyx.android.dr.event.ListenAndSayMenuEvent;
 import com.onyx.android.dr.event.MyBooksMenuEvent;
 import com.onyx.android.dr.event.NotesMenuEvent;
 import com.onyx.android.dr.event.ProfessionalMaterialsMenuEvent;
@@ -132,8 +133,8 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTeachingAidsMenuEvent(TeachingAidsMenuEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.teaching_aids));
+    public void onListenAndSayMenuEvent(ListenAndSayMenuEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.menu_listen_and_say));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
