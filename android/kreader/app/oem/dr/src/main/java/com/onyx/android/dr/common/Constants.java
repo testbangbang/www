@@ -20,7 +20,7 @@ public class Constants {
     public static final String LIBRARY_PARENT_ID = "library_parent_Id";
     public static final String IMPORT_CONTENT_IN_FIRST_BOOT_TAG = "metadata_import_in_first_boot";
 
-    public static final int ACCOUNT_TYPE_HIGH_SCHOOL = 0;
-    public static final int ACCOUNT_TYPE_UNIVERSITY = 1;
-    public static final int ACCOUNT_TYPE_TEACHER = 2;
+    public static final String ACCOUNT_TYPE_HIGH_SCHOOL = "account_type_high_school";
+    public static final String ACCOUNT_TYPE_UNIVERSITY = "account_type_university";
+    public static final String ACCOUNT_TYPE_TEACHER = "account_type_teacher";
 }

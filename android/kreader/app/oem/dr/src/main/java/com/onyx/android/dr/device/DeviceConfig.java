@@ -252,7 +252,6 @@ public class DeviceConfig {
     }
 
     public static class MainMenuInfo {
-        public static final String MAIN_MENU = "main_menu";
         public static final String MENU_GRADED_BOOKS = "menu_graded_books";
         public static final String MENU_MY_BOOKS = "menu_my_books";
         public static final String MENU_REAL_TIME_ARTICLES = "menu_real_time_articles";
@@ -266,10 +265,10 @@ public class DeviceConfig {
         public static final String MENU_ARTICLE_PUSH = "menu_article_push";
     }
 
-    private JSONObject getMenuObject() {
+    private JSONObject getMenuObject(String userType) {
         try {
-            if (backend != null && backend.hasKey(MainMenuInfo.MAIN_MENU)) {
-                Object object = backend.getObject(MainMenuInfo.MAIN_MENU);
+            if (backend != null && backend.hasKey(userType)) {
+                Object object = backend.getObject(userType);
                 if (object != null) {
                     return (JSONObject) object;
                 }
@@ -281,9 +280,9 @@ public class DeviceConfig {
         return null;
     }
 
-    public boolean getMainMenuItem(final String menuItem) {
+    public boolean getMainMenuItem(String userType, final String menuItem) {
         boolean state = true;
-        JSONObject mainMenu = getMenuObject();
+        JSONObject mainMenu = getMenuObject(userType);
         if (mainMenu != null) {
             state = mainMenu.getBooleanValue(menuItem);
         }

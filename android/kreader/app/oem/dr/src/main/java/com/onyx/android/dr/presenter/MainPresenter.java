@@ -23,7 +23,7 @@ public class MainPresenter {
         MainTabMenuConfig.loadMenuInfo(context);
     }
 
-    public void loadTabMenu(int userType) {
-        mainView.setTabMenuData(MainTabMenuConfig.getMenuData(userType));
+    public void loadTabMenu(String userType) {
+        mainView.setTabMenuData(mainData.loadTabMenu(userType));
     }
 }

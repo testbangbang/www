@@ -5,11 +5,13 @@ package com.onyx.android.dr.data;
  */
 
 public class MenuData {
+    private String tabKey;
     private String tabName;
     private int imageResources;
     private Object eventBean;
 
-    public MenuData(String tabName, int imageResources, Object eventBean) {
+    public MenuData(String tabKey, String tabName, int imageResources, Object eventBean) {
+        this.tabKey = tabKey;
         this.tabName = tabName;
         this.imageResources = imageResources;
         this.eventBean = eventBean;
@@ -25,5 +27,9 @@ public class MenuData {
 
     public Object getEventBean() {
         return eventBean;
+    }
+
+    public String getTabKey() {
+        return tabKey;
     }
 }
