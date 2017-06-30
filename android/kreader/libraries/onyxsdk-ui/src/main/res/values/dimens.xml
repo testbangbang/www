@@ -22,6 +22,7 @@
     <dimen name="dialog_brightness_toggle_button_margin_left">15dp</dimen>
     <dimen name="dialog_brightness_toggle_button_margin_right">15dp</dimen>
     <dimen name="dialog_brightness_button_margin_left">10dp</dimen>
+    <dimen name="dialog_brightness_padding">3dp</dimen>
     <dimen name="dialog_brightness_button_margin_right">10dp</dimen>
     <dimen name="dialog_brightness_ratingbar_margin_right">10dp</dimen>
     <dimen name="dialog_font_setting_display_text_size">18sp</dimen>
@@ -98,4 +99,7 @@
     <dimen name="dialog_sort_by_width">260dp</dimen>
     <dimen name="dialog_sort_by_height">290dp</dimen>
     <dimen name="dialog_sort_by_order_radio_button_text_size">22sp</dimen>
+
+    <dimen name="light_settings_rating_bar_minHeight">64px</dimen>
+    <dimen name="light_settings_rating_bar_maxHeight">64px</dimen>
 </resources>
