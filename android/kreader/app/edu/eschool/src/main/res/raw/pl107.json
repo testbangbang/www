@@ -22,7 +22,8 @@
     "com.onyx.android.edu",
     "com.android.music",
     "com.android.providers.downloads.ui",
-    "com.onyx.kreader"
+    "com.onyx.kreader",
+    "com.android.soundrecorder"
   ],
   "test_apps": [
     "com.onyx.test",
