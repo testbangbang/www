@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui;
 
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 
 /**
@@ -9,6 +10,8 @@ import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 public class ReaderIPCManager {
 
     public static void onChangeOrientation(final ReaderActivity activity, final ChangeOrientationEvent event) {
+        activity.setRequestedOrientation(event.getOrientation());
+        SingletonSharedPreference.setScreenOrientation(event.getOrientation());
     }
 
     public static void onOpenDocumentFailed(final ReaderActivity activity, final String path) {
@@ -21,6 +24,7 @@ public class ReaderIPCManager {
     }
 
     public static void onBackPressed(final ReaderActivity activity) {
+        activity.finish();
     }
 
     public static void onShowTabHostWidget(final ReaderActivity activity) {
