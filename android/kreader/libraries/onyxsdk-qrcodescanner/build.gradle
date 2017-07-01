@@ -38,4 +38,5 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.phone_supportLibraryVersion"
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile "pub.devrel:easypermissions:$rootProject.easyPermissonVersion"
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
 }

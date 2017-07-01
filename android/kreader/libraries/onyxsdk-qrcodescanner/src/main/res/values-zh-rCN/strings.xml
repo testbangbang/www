@@ -17,7 +17,7 @@
 
     <string name="request_camera_permission_rationale">Android6.0系统以上需要申请照相机权限，不然无法操作</string>
     <string name="warning_of_permissions_denied">申请权限被拒绝，无法往下操作</string>
-    <string name="tip_of_permissions_request">本应用涉及到蓝牙权限，如果不开启权限的话，没法往下操作了</string>
+    <string name="tip_of_permissions_request">本应用涉及到照相机权限，如果不开启权限的话，没法往下操作了</string>
     <string name="goto_permission_setting">去往权限管理设置界面</string>
 
     <string name="go_to">前往</string>
