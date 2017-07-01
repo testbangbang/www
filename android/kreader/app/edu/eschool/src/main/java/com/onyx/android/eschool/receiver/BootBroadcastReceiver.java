@@ -3,8 +3,6 @@ package com.onyx.android.eschool.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.text.TextUtils;
@@ -37,6 +35,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         cacheFile = new File(QRCodeUtil.CFA_QR_CODE_FILE_PATH);
         if (!TextUtils.isEmpty(action)) {
             if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
+                updateQrCodePosition(context);
                 if (!checkCacheQRFile()) {
                     buildTask(context);
                     task.execute();
@@ -76,14 +75,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                         QRCodeUtil.DEFAULT_SIZE, true, QRCodeUtil.WHITE_MARGIN_SIZE,
                         context.getResources().getColor(android.R.color.black))
                         , cacheFile.getPath());
-                DeviceInfoShowConfig qrShowConfig = DeviceConfig.sharedInstance(context)
-                        .getQrCodeShowConfig();
-                if (qrShowConfig != null) {
-                    Device.currentDevice().setQRShowConfig(qrShowConfig.orientation,
-                            qrShowConfig.startX, qrShowConfig.startY);
-                } else {
-                    Log.e("QrCodeGenerateTask", "qrShowConfig detects null");
-                }
+                updateQrCodePosition(context);
                 ShellUtils.execCommand("busybox chmod 644 " + cacheFile.getPath(), false);
             } catch (WriterException e) {
                 e.printStackTrace();
@@ -102,6 +94,17 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
+    static private void updateQrCodePosition(Context context) {
+        DeviceInfoShowConfig qrShowConfig = DeviceConfig.sharedInstance(context)
+                .getQrCodeShowConfig();
+        if (qrShowConfig != null) {
+            Device.currentDevice().setQRShowConfig(qrShowConfig.orientation,
+                    qrShowConfig.startX, qrShowConfig.startY);
+        } else {
+            Log.e("QrCodeGenerateTask", "qrShowConfig detects null");
+        }
+    }
+
     static private DeviceBind createDeviceBind(Context context) {
         DeviceBind deviceBind = new DeviceBind();
         deviceBind.mac = NetworkUtil.getMacAddress(context);
@@ -110,7 +113,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         return deviceBind;
     }
 
-    private boolean checkCacheQRFile() {
+    private static boolean checkCacheQRFile() {
         return cacheFile.exists() && cacheFile.canRead();
     }
 
