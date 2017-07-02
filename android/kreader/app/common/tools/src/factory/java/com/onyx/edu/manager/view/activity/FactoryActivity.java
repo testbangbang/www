@@ -24,6 +24,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.DatabaseInfo;
+import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
 import com.onyx.android.sdk.data.request.data.db.BackupRestoreDBRequest;
@@ -53,9 +54,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -83,7 +86,7 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
     private DataManager dataManager;
     private MediaPlayer beepPlayer;
 
-    private List<String> deviceMacList = new ArrayList<>();
+    private Set<String> deviceMacList = new HashSet<>();
     private List<DeviceBind> deviceBindList = new ArrayList<>();
 
     private long countScanned = 0;
@@ -301,14 +304,30 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
     }
 
     private void loadDeviceBindCount(final BaseCallback baseCallback) {
-        final DeviceBindLoadRequest countRequest = new DeviceBindLoadRequest(true);
+        final DeviceBindLoadRequest countRequest = new DeviceBindLoadRequest(false);
         getDataManager().submit(this, countRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 updateCountScanned(countRequest.getQueryResult().count);
+                updateDeviceListScanned(countRequest.getQueryResult());
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
+    }
+
+    private void updateDeviceListScanned(final QueryResult<DeviceBind> queryResult) {
+        if (queryResult == null || queryResult.isContentEmpty()) {
+            return;
+        }
+        deviceMacList.clear();
+        deviceBindList.clear();
+        for(DeviceBind deviceBind : queryResult.list) {
+            if (!deviceMacList.contains(deviceBind.mac)) {
+                deviceMacList.add(deviceBind.mac);
+                deviceBindList.add(deviceBind);
+            }
+        }
+        bindListView.getAdapter().notifyDataSetChanged();
     }
 
     @Override

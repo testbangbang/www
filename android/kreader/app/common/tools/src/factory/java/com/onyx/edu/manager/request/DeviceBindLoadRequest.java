@@ -39,7 +39,7 @@ public class DeviceBindLoadRequest extends BaseDBRequest {
     }
 
     private List<DeviceBind> loadDeviceBindList() {
-        return new Select(DeviceBind_Table.mac.distinct()).from(DeviceBind.class).where().queryList();
+        return new Select().from(DeviceBind.class).where().queryList();
     }
 
     private long count() {
