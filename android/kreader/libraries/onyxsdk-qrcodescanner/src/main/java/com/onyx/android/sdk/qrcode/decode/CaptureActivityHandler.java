@@ -89,4 +89,9 @@ public final class CaptureActivityHandler extends Handler {
             CameraManager.get().requestAutoFocus(this, R.id.auto_focus);
         }
     }
+
+    public void stopPreviewAndDecode() {
+        mState = State.DONE;
+        CameraManager.get().stopPreview();
+    }
 }

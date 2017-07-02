@@ -38,8 +38,11 @@ import com.onyx.android.sdk.qrcode.decode.DecodeImageCallback;
 import com.onyx.android.sdk.qrcode.decode.DecodeImageThread;
 import com.onyx.android.sdk.qrcode.decode.DecodeManager;
 import com.onyx.android.sdk.qrcode.decode.InactivityTimer;
+import com.onyx.android.sdk.qrcode.event.QrCodeEvent;
 import com.onyx.android.sdk.qrcode.view.QrCodeFinderView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -63,6 +66,9 @@ public class QrCodeActivity extends AppCompatActivity implements Callback, OnCli
 
     public static final int MSG_DECODE_SUCCEED = 1;
     public static final int MSG_DECODE_FAIL = 2;
+    public static final String EXTRA_USE_CUSTOM_BEEP = "extra_use_custom_beep";
+    public static final String EXTRA_CONTINUOUSLY_SCAN = "extra_continuously_scan";
+    public static final String EXTRA_CONTINUOUSLY_SCAN_INTERVAL = "extra_continuously_scan_interval";
 
     private CaptureActivityHandler mCaptureActivityHandler;
     private boolean mHasSurface;
@@ -76,6 +82,7 @@ public class QrCodeActivity extends AppCompatActivity implements Callback, OnCli
     private static final float BEEP_VOLUME = 0.10f;
     private static final long VIBRATE_DURATION = 200L;
     private MediaPlayer mMediaPlayer;
+    private boolean useCustomBeep;
     private boolean mPlayBeep;
     private boolean mVibrate;
     private boolean mNeedFlashLightOpen = true;
@@ -84,13 +91,16 @@ public class QrCodeActivity extends AppCompatActivity implements Callback, OnCli
     private Executor mQrCodeExecutor;
     private Handler mHandler;
 
-    private static Intent createIntent(Context context) {
-        return new Intent(context, QrCodeActivity.class);
-    }
+    private static final int DEFAULT_SCAN_INTERVAL = 3000;
+    private boolean continuouslyScan = true;
+    private int continuouslyScanInterval = DEFAULT_SCAN_INTERVAL;
+    private Handler continueHandler;
 
-    public static void launch(Context context) {
-        Intent i = createIntent(context);
-        context.startActivity(i);
+    public static Intent createIntent(Context context, boolean continuouslyScan, int continuouslyScanInterval) {
+        Intent intent = new Intent(context, QrCodeActivity.class);
+        intent.putExtra(EXTRA_CONTINUOUSLY_SCAN, continuouslyScan);
+        intent.putExtra(EXTRA_CONTINUOUSLY_SCAN_INTERVAL, continuouslyScanInterval);
+        return intent;
     }
 
     @Override
@@ -159,6 +169,10 @@ public class QrCodeActivity extends AppCompatActivity implements Callback, OnCli
         mInactivityTimer = new InactivityTimer(QrCodeActivity.this);
         mQrCodeExecutor = Executors.newSingleThreadExecutor();
         mHandler = new WeakHandler(this);
+
+        continuouslyScan = getIntent().getBooleanExtra(EXTRA_CONTINUOUSLY_SCAN, false);
+        continuouslyScanInterval = getIntent().getIntExtra(EXTRA_CONTINUOUSLY_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL);
+        useCustomBeep = getIntent().getBooleanExtra(EXTRA_USE_CUSTOM_BEEP, false);
     }
 
     private boolean hasCameraPermission() {
@@ -239,6 +253,12 @@ public class QrCodeActivity extends AppCompatActivity implements Callback, OnCli
         }
     }
 
+    private void stopPreviewAndDecode() {
+        if (null != mCaptureActivityHandler) {
+            mCaptureActivityHandler.stopPreviewAndDecode();
+        }
+    }
+
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
     }
@@ -270,7 +290,7 @@ public class QrCodeActivity extends AppCompatActivity implements Callback, OnCli
     private void initBeepSound() {
         AudioManager audioService = (AudioManager) getSystemService(AUDIO_SERVICE);
         mPlayBeep = audioService.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
-        if (mPlayBeep && mMediaPlayer == null) {
+        if (!useCustomBeep && mPlayBeep && mMediaPlayer == null) {
             // The volume on STREAM_SYSTEM is not adjustable, and users found it too loud,
             // so we now play on the music stream.
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -360,7 +380,7 @@ public class QrCodeActivity extends AppCompatActivity implements Callback, OnCli
                 }
             });
         } else {
-            finishQrCode(resultString);
+            processQrCodeScanned(resultString);
         }
     }
 
@@ -398,6 +418,36 @@ public class QrCodeActivity extends AppCompatActivity implements Callback, OnCli
                     }
                 }
                 break;
+        }
+    }
+
+    private Handler getContinueHandler() {
+        if (continueHandler == null) {
+            continueHandler = new Handler();
+        }
+        return continueHandler;
+    }
+
+    private void postRestartPreview() {
+        getContinueHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                restartPreview();
+            }
+        }, continuouslyScanInterval);
+    }
+
+    private void postQrCodeEvent(String qrCodeMessage) {
+        stopPreviewAndDecode();
+        postRestartPreview();
+        EventBus.getDefault().post(new QrCodeEvent(qrCodeMessage));
+    }
+
+    private void processQrCodeScanned(String qrCodeMessage) {
+        if (continuouslyScan) {
+            postQrCodeEvent(qrCodeMessage);
+        } else {
+            finishQrCode(qrCodeMessage);
         }
     }
 
