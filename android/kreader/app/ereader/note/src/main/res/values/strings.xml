@@ -58,4 +58,5 @@
     <string name="save_and_exit">Save And Exit?</string>
     <string name="find_old_scribble">Find old scribble data, need to import?</string>
     <string name="ask_for_delete_note">Are you sure want to delete？</string>
+    <string name="name_length_illegal">20 Character Only.</string>
 </resources>

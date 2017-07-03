@@ -2,6 +2,8 @@ package com.onyx.android.note.dialog;
 
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -38,12 +40,30 @@ public class DialogCreateNewFolder extends OnyxAlertDialog {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Params params = new OnyxAlertDialog.Params().setTittleString(getString(R.string.new_folder))
+        Params params = new Params().setTittleString(getString(R.string.new_folder))
                 .setCustomContentLayoutResID(R.layout.alert_dialog_content_input)
-                .setCustomViewAction(new OnyxAlertDialog.CustomViewAction() {
+                .setCustomViewAction(new CustomViewAction() {
                     @Override
                     public void onCreateCustomView(View customView, TextView pageIndicator) {
                         mInputEditText = (EditText) customView.findViewById(R.id.editText_Input);
+                        mInputEditText.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable s) {
+                                if (s.length() >=20) {
+                                    mInputEditText.setError(getString(R.string.name_length_illegal));
+                                }else {
+                                    mInputEditText.setError(null);
+                                }
+                            }
+                        });
                     }
                 }).setPositiveAction(new View.OnClickListener() {
                     @Override
