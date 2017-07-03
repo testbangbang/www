@@ -67,4 +67,5 @@ dependencies {
     compile "pub.devrel:easypermissions:$rootProject.easyPermissonVersion"
     compile "com.afollestad.material-dialogs:commons:$rootProject.phone_materialDialogsCommonVersion"
     compile "com.github.jiang111:IndexRecyclerView:v1.1"
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
 }

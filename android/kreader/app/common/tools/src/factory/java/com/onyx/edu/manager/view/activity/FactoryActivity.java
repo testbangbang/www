@@ -2,9 +2,10 @@ package com.onyx.edu.manager.view.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -12,11 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,39 +24,46 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.DatabaseInfo;
+import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
-import com.onyx.android.sdk.data.model.v2.DeviceBind_Table;
 import com.onyx.android.sdk.data.request.data.db.BackupRestoreDBRequest;
-import com.onyx.android.sdk.data.request.data.db.BaseDBRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.qrcode.QrCodeActivity;
+import com.onyx.android.sdk.qrcode.event.QrCodeEvent;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
-import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.edu.manager.PermissionManager;
 import com.onyx.edu.manager.R;
+import com.onyx.edu.manager.adapter.DeviceBindAdapter;
+import com.onyx.edu.manager.request.DeviceBindLoadRequest;
 import com.onyx.edu.manager.view.ui.DividerDecoration;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.Method;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 /**
@@ -79,6 +84,9 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
     TextView countScannedTv;
 
     private DataManager dataManager;
+    private MediaPlayer beepPlayer;
+
+    private Set<String> deviceMacList = new HashSet<>();
     private List<DeviceBind> deviceBindList = new ArrayList<>();
 
     private long countScanned = 0;
@@ -94,8 +102,19 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
         initData();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onQrCodeEvent(QrCodeEvent event) {
+        processRequestQrCode(event.qrCode);
+    }
+
     private void initData() {
-        queryDeviceBindTableCount();
+        loadDeviceBindCount(null);
     }
 
     private void initConfig() {
@@ -105,6 +124,7 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
         } catch (Exception e) {
             e.printStackTrace();
         }
+        EventBus.getDefault().register(this);
     }
 
     private void initView() {
@@ -115,27 +135,13 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
 
         bindListView.setLayoutManager(new LinearLayoutManager(this));
         bindListView.addItemDecoration(new DividerDecoration(this));
-        bindListView.setAdapter(new RecyclerView.Adapter<DeviceBindHolder>() {
-            @Override
-            public DeviceBindHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new DeviceBindHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.device_bind_item, null));
-            }
-
-            @Override
-            public void onBindViewHolder(DeviceBindHolder holder, int position) {
-                holder.macTv.setText(String.valueOf(deviceBindList.get(position).mac));
-            }
-
-            @Override
-            public int getItemCount() {
-                return CollectionUtils.getSize(deviceBindList);
-            }
-        });
+        bindListView.setAdapter(new DeviceBindAdapter(deviceBindList));
     }
 
     @OnClick(R.id.btn_scanner)
     public void onDeviceScanClick() {
-        Intent intent = new Intent("onyx.intent.action.QrCodeScanner");
+        Intent intent = QrCodeActivity.createIntent(this, true, 1800);
+        intent.putExtra(QrCodeActivity.EXTRA_USE_CUSTOM_BEEP, true);
         startActivityForResult(intent, REQUEST_QR_CODE);
     }
 
@@ -143,7 +149,6 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
         return getDatabasePath(ContentDatabase.NAME + ".db");
     }
 
-    //@OnClick(R.id.toolbar_db_export)
     public void onDBExportClick() {
         if (!getContentDatabaseFile().exists()) {
             ToastUtils.showToast(getApplicationContext(), "数据文件不存在");
@@ -152,22 +157,53 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
         requestExportDbFile();
     }
 
-    public void onDBClearClick() {
-        showAlertDialog("警告", "此操作会清除掉数据库里所有的记录，请谨慎操作！！", new MaterialDialog.SingleButtonCallback() {
+    private void processDeleteDBTable() {
+        Delete.table(DeviceBind.class);
+        loadDeviceBindCount(new BaseCallback() {
             @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                Delete.table(DeviceBind.class);
-                queryDeviceBindTableCount();
+            public void done(BaseRequest request, Throwable e) {
+                ToastUtils.showToast(request.getContext().getApplicationContext(), "已清空数据库！！");
+                countScanned = 0;
+                deviceMacList.clear();
+                deviceBindList.clear();
+                bindListView.getAdapter().notifyDataSetChanged();
             }
         });
     }
 
-    private void showAlertDialog(String title, String content, MaterialDialog.SingleButtonCallback positiveCallback) {
+    public void onDBClearClick() {
+        MaterialDialog.Builder builder = getAlertDialogBuilder("警告", "此操作会清除掉数据库里所有的记录，请谨慎操作！！",
+                new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        String input = dialog.getInputEditText().getText().toString();
+                        if (!"确认清空".equals(input)) {
+                            ToastUtils.showToast(dialog.getContext().getApplicationContext(),
+                                    "请输入\"确认清空\"来防止误操作");
+                            return;
+                        }
+                        dialog.dismiss();
+                        processDeleteDBTable();
+                    }
+                });
+        builder.input("输入\"确认清空\"四个字进行校验", null, false, new MaterialDialog.InputCallback() {
+            @Override
+            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+            }
+        }).onNegative(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                dialog.dismiss();
+            }
+        }).autoDismiss(false).show();
+    }
+
+    private MaterialDialog.Builder getAlertDialogBuilder(String title, String content, MaterialDialog.SingleButtonCallback positiveCallback) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(this)
                 .positiveColorRes(R.color.colorPrimary)
                 .negativeColor(Color.GRAY)
-                .positiveText("确认")
-                .negativeText("取消")
+                .positiveText(R.string.ok)
+                .negativeText(R.string.cancel)
                 .onPositive(positiveCallback);
         if (StringUtils.isNotBlank(title)) {
             builder.title(title);
@@ -175,7 +211,7 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
         if (StringUtils.isNotBlank(content)) {
             builder.content(content);
         }
-        builder.show();
+        return builder;
     }
 
     @Override
@@ -195,16 +231,62 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
             return;
         }
         String qrCode = intent.getStringExtra("qrCode");
+        processRequestQrCode(qrCode);
+    }
+
+    private void processRequestQrCode(String qrCode) {
         final DeviceBind deviceBind = JSONObjectParseUtils.parseObject(qrCode, DeviceBind.class);
-        if (deviceBind != null) {
-            saveDeviceBind(deviceBind, new ProcessModelTransaction.OnModelProcessListener<DeviceBind>() {
-                @Override
-                public void onModelProcessed(long current, long total, DeviceBind modifiedModel) {
-                    deviceBindList.add(0, modifiedModel);
-                    bindListView.getAdapter().notifyItemInserted(0);
-                    updateCountScanned(countScanned++);
+        if (deviceBind == null) {
+            ToastUtils.showToast(getApplicationContext(), "扫码失败，设备绑定的信息不对!");
+            return;
+        }
+        saveDeviceBind(deviceBind, new ProcessModelTransaction.OnModelProcessListener<DeviceBind>() {
+            @Override
+            public void onModelProcessed(long current, long total, DeviceBind modifiedModel) {
+                if (!isModelModifiedSuccess(modifiedModel)) {
+                    ToastUtils.showToast(getApplicationContext(), "设备信息存储失败");
+                    return;
                 }
-            });
+                deviceBindInserted(modifiedModel);
+            }
+        });
+    }
+
+    private boolean isModelModifiedSuccess(DeviceBind deviceBind) {
+        if (deviceBind != null && deviceBind.hasValidId()) {
+            return true;
+        }
+        return false;
+    }
+
+    private void deviceBindInserted(DeviceBind deviceBind) {
+        if (!deviceMacList.contains(deviceBind.mac)) {
+            deviceMacList.add(deviceBind.mac);
+            deviceBindList.add(0, deviceBind);
+            bindListView.getAdapter().notifyItemInserted(0);
+        }
+        countScanned = deviceMacList.size();
+        updateCountScanned(countScanned);
+        ToastUtils.showToast(getApplicationContext(), String.format("本次扫码成功，已扫了%d台", countScanned));
+        playBeepSound();
+    }
+
+    private void playBeepSound() {
+        if (beepPlayer == null) {
+            try {
+                AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.beep);
+                beepPlayer = new MediaPlayer();
+                beepPlayer.setLooping(false);
+                beepPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
+                beepPlayer.setVolume(1f, 1f);
+                beepPlayer.prepare();
+                file.close();
+            } catch (IOException e) {
+                beepPlayer = null;
+            }
+        }
+        if (beepPlayer != null) {
+            beepPlayer.start();
         }
     }
 
@@ -221,19 +303,31 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
         transaction.execute();
     }
 
-    private void queryDeviceBindTableCount() {
-        final CountRequest countRequest = new CountRequest();
+    private void loadDeviceBindCount(final BaseCallback baseCallback) {
+        final DeviceBindLoadRequest countRequest = new DeviceBindLoadRequest(false);
         getDataManager().submit(this, countRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                updateCountScanned(countScanned = countRequest.getCount());
+                updateCountScanned(countRequest.getQueryResult().count);
+                updateDeviceListScanned(countRequest.getQueryResult());
+                BaseCallback.invoke(baseCallback, request, e);
             }
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    private void updateDeviceListScanned(final QueryResult<DeviceBind> queryResult) {
+        if (queryResult == null || queryResult.isContentEmpty()) {
+            return;
+        }
+        deviceMacList.clear();
+        deviceBindList.clear();
+        for(DeviceBind deviceBind : queryResult.list) {
+            if (!deviceMacList.contains(deviceBind.mac)) {
+                deviceMacList.add(deviceBind.mac);
+                deviceBindList.add(deviceBind);
+            }
+        }
+        bindListView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -263,7 +357,7 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
 
     @SuppressLint("DefaultLocale")
     private void updateCountScanned(long count) {
-        countScannedTv.setText(String.format("已扫描过的设备数量：%d", countScanned));
+        countScannedTv.setText(String.format("已扫描过的设备(不含重复)：%d", count));
     }
 
     protected int getPermissionRequestCode() {
@@ -281,32 +375,15 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, list)) {
-            showAppSettingsDialog(FactoryActivity.this, getPermissionRequestCode());
-        } else {
-            processTemporaryPermissionsDenied(requestCode, list);
-        }
-    }
-
-    private void showAppSettingsDialog(Activity context, int requestCode) {
-        new AppSettingsDialog.Builder(context, "db文件导出到sd卡，需要获取读取外部存储卡的权限")
-                .setTitle("去往权限管理设置界面")
-                .setPositiveButton("前往")
-                .setNegativeButton("取消", null)
-                .setRequestCode(requestCode)
-                .build()
-                .show();
-    }
-
-    protected void processTemporaryPermissionsDenied(int requestCode, List<String> list) {
-        Toast.makeText(getApplicationContext(), "申请权限被拒绝，无法往下操作",
-                Toast.LENGTH_SHORT).show();
+        PermissionManager.processPermissionPermanentlyDenied(FactoryActivity.this,
+                "db文件导出到sd卡，需要获取读取外部存储卡的权限",
+                requestCode, list);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
     @AfterPermissionGranted(STORAGE_PERMS_REQUEST_CODE)
@@ -322,13 +399,13 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
 
     private void afterExportDbPermissionGranted() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            showAlertDialog(null, "导出的路径：" + getExportFilePath().replaceAll(Environment.getExternalStorageDirectory().getAbsolutePath(), ""),
+            getAlertDialogBuilder(null, "导出的路径：" + getExportFilePath().replaceAll(Environment.getExternalStorageDirectory().getAbsolutePath(), ""),
                     new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             exportDbFileToSdCard(getExportFilePath());
                         }
-                    });
+                    }).show();
         } else {
             ToastUtils.showToast(getApplicationContext(), "没有外部存储");
         }
@@ -348,8 +425,7 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
     private void exportDbFileToSdCard(String exportFilePath) {
         Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap = new HashMap<>();
         backupRestoreDBMap.put(DatabaseInfo.create(ContentDatabase.NAME, ContentDatabase.VERSION,
-                getContentDatabaseFile().getAbsolutePath()),
-                DatabaseInfo.create(exportFilePath));
+                getContentDatabaseFile().getAbsolutePath()), DatabaseInfo.create(exportFilePath));
         BackupRestoreDBRequest restoreDBRequest = new BackupRestoreDBRequest(backupRestoreDBMap, true);
         getDataManager().submit(this, restoreDBRequest, new BaseCallback() {
             @Override
@@ -359,35 +435,10 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
         });
     }
 
-    private class CountRequest extends BaseDBRequest {
-        long count = 0;
-
-        public long getCount() {
-            return count;
-        }
-
-        @Override
-        public void execute(DataManager dataManager) throws Exception {
-            //SELECT COUNT(DISTINCT column(s)) FROM table
-            count = new Select(Method.count(DeviceBind_Table.mac.distinct()))
-                    .from(DeviceBind.class).where().count();
-        }
-    }
-
     private DataManager getDataManager() {
         if (dataManager == null) {
             dataManager = new DataManager();
         }
         return dataManager;
-    }
-
-    class DeviceBindHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.mac_tv)
-        TextView macTv;
-
-        public DeviceBindHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
     }
 }
