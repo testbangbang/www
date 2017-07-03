@@ -14,6 +14,8 @@
   "touch_height": 6144,
 
   "use_raw_input" : 1,
-  "finger_erasing" : 0
+  "finger_erasing" : 0,
+
+  "shortcut_drawing": true
 
 }
