@@ -264,8 +264,8 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
             deviceMacList.add(deviceBind.mac);
             deviceBindList.add(0, deviceBind);
             bindListView.getAdapter().notifyItemInserted(0);
-            countScanned++;
         }
+        countScanned = deviceMacList.size();
         updateCountScanned(countScanned);
         ToastUtils.showToast(getApplicationContext(), String.format("本次扫码成功，已扫了%d台", countScanned));
         playBeepSound();
