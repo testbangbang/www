@@ -3,6 +3,8 @@ package com.onyx.android.note.dialog;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -55,6 +57,24 @@ public class DialogNoteNameInput extends OnyxAlertDialog {
                     public void onCreateCustomView(View customView, TextView pageIndicator) {
                         mInputEditText = (EditText) customView.findViewById(R.id.editText_Input);
                         mInputEditText.setHint(dialog_hint);
+                        mInputEditText.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable s) {
+                                if (s.length() >=20) {
+                                    mInputEditText.setError(getString(R.string.name_length_illegal));
+                                }else {
+                                    mInputEditText.setError(null);
+                                }
+                            }
+                        });
                     }
                 })
                 .setNeutralButtonText(getString(R.string.discard))
