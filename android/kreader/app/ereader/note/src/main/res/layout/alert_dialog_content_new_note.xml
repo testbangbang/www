@@ -23,6 +23,7 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/mx_button_bg_no_selected"
         android:maxLines="1"
+        android:maxLength="20"
         android:minHeight="@dimen/button_minHeight"
         android:paddingLeft="15dp"
         android:paddingRight="15dp" />
