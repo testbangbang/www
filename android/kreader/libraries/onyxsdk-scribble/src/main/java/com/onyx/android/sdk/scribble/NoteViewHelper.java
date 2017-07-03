@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.scribble;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -34,7 +35,6 @@ import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
-import com.onyx.android.sdk.utils.TreeObserverUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -324,7 +324,12 @@ public class NoteViewHelper {
 
         int viewPosition[] = {0, 0};
         surfaceView.getLocationOnScreen(viewPosition);
-        dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, viewPosition[1] + yAxisOffset);
+        if (DeviceConfig.sharedInstance(surfaceView.getContext()).getEpdPostOrientation() == 270) {
+            int reverseTop = ((Activity) surfaceView.getContext()).getWindow().getDecorView().getBottom() - surfaceView.getHeight() - viewPosition[1];
+            dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, reverseTop + yAxisOffset);
+        }else {
+            dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, viewPosition[1] + yAxisOffset);
+        }
 
         final OnyxMatrix matrix = matrixFromViewToEpd();
         matrix.mapInPlace(dfbLimitRect);
