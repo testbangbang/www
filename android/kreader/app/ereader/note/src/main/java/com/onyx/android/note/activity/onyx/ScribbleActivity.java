@@ -162,7 +162,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         rootView = (RelativeLayout) findViewById(R.id.onyx_activity_scribble);
         spanTextView = (LinedEditText) findViewById(R.id.span_text_view);
         switchBtn = (ImageView) findViewById(R.id.button_switch);
-        exportBtn.setVisibility(NoteAppConfig.sharedInstance(this).isEnableExport() ? View.VISIBLE : View.GONE);
+        settingBtn.setVisibility(NoteAppConfig.sharedInstance(this).useEduConfig() ? View.GONE : View.VISIBLE);
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
         functionContentView = (ContentView) findViewById(R.id.function_content_view);
         functionContentView.setShowPageInfoArea(false);
