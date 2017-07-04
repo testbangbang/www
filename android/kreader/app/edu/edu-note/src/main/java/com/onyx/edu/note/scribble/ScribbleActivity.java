@@ -10,19 +10,18 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
+import com.onyx.edu.note.HandlerManager;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.R;
-import com.onyx.edu.note.actions.scribble.DocumentCreateAction;
-import com.onyx.edu.note.actions.scribble.DocumentEditAction;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.databinding.ActivityScribbleBinding;
 import com.onyx.edu.note.receiver.DeviceReceiver;
 import com.onyx.edu.note.util.Constant;
+import com.onyx.edu.note.util.NoteViewUtil;
 
 public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleNavigator {
     private static final String TAG = ScribbleActivity.class.getSimpleName();
@@ -31,6 +30,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     protected SurfaceHolder.Callback surfaceCallback;
     DeviceReceiver deviceReceiver = new DeviceReceiver();
     NoteManager mNoteManager;
+    HandlerManager mHandlerManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         mNoteManager = NoteManager.sharedInstance(this);
+        mHandlerManager = new HandlerManager(this);
         mViewModel = new ScribbleViewModel(this);
         // Link View and ViewModel
         mBinding.setViewModel(mViewModel);
@@ -49,42 +50,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         deviceReceiver.registerReceiver(this);
     }
 
-    private void handleIntent(Intent intent) {
-        @ScribbleAction.ScribbleActionDef int scribbleAction = intent.getIntExtra(Constant.SCRIBBLE_ACTION_TAG,ScribbleAction.INVALID);
-        if (!ScribbleAction.isValidAction(scribbleAction)){
-            //TODO:clean up and exit here.
-            return;
-        }
-        String uniqueID = intent.getStringExtra(Constant.NOTE_ID_TAG);
-        String parentID = intent.getStringExtra(Constant.NOTE_PARENT_ID_TAG);
-        BaseCallback callback = new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                mNoteManager.syncWithCallback(true, true, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        InputMethodUtils.hideInputKeyboard(ScribbleActivity.this);
-                        BaseNoteRequest req = (BaseNoteRequest) request;
-                        mNoteManager.setShapeDataInfo(req.getShapeDataInfo());
-                    }
-                });
-            }
-        };
-        switch (scribbleAction) {
-            case ScribbleAction.CREATE:
-                DocumentCreateAction createAction = new DocumentCreateAction(uniqueID, parentID);
-                createAction.execute(mNoteManager, callback);
-                break;
-            case ScribbleAction.EDIT:
-                DocumentEditAction editAction = new DocumentEditAction(uniqueID, parentID);
-                editAction.execute(mNoteManager, callback);
-                break;
-        }
-    }
-
     @Override
     protected void onResume() {
-        initSurfaceView();
+        addSurfaceViewCallback();
         super.onResume();
         DeviceUtils.setFullScreenOnResume(this, true);
     }
@@ -92,7 +60,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     @Override
     protected void onPause() {
         super.onPause();
-        mNoteManager.syncWithCallback(false,false,null);
+        mNoteManager.sync(false, false);
+        removeSurfaceViewCallback();
     }
 
     @Override
@@ -102,11 +71,41 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         super.onStop();
     }
 
-    protected void initSurfaceView() {
-        mBinding.noteView.getHolder().addCallback(surfaceCallback());
+    private void handleIntent(Intent intent) {
+        @ScribbleAction.ScribbleActionDef int scribbleAction = intent.getIntExtra(Constant.SCRIBBLE_ACTION_TAG, ScribbleAction.INVALID);
+        if (!ScribbleAction.isValidAction(scribbleAction)) {
+            //TODO:direct call finish here.because we don't want incorrect illegal call.
+            finish();
+            return;
+        }
+        String uniqueID = intent.getStringExtra(Constant.NOTE_ID_TAG);
+        String parentID = intent.getStringExtra(Constant.NOTE_PARENT_ID_TAG);
+        BaseCallback callback = new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                InputMethodUtils.hideInputKeyboard(ScribbleActivity.this);
+                mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        NoteViewUtil.drawPage(mBinding.noteView, mNoteManager.getViewBitmap(), mNoteManager.getDirtyShape());
+                    }
+                });
+            }
+        };
+        mViewModel.start(uniqueID, parentID, scribbleAction, callback);
     }
 
-    protected SurfaceHolder.Callback surfaceCallback() {
+    private void addSurfaceViewCallback() {
+        mBinding.noteView.getHolder().addCallback(getSurfaceCallback());
+    }
+
+    private void removeSurfaceViewCallback() {
+        if (surfaceCallback != null) {
+            mBinding.noteView.getHolder().removeCallback(surfaceCallback);
+        }
+    }
+
+    protected SurfaceHolder.Callback getSurfaceCallback() {
         if (surfaceCallback == null) {
             surfaceCallback = new SurfaceHolder.Callback() {
                 @Override
@@ -155,22 +154,42 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
             @Override
             public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
                 if (!shape.supportDFB()) {
+                    NoteViewUtil.drawPage(mBinding.noteView, mNoteManager.getViewBitmap(), mNoteManager.getDirtyShape());
                 }
             }
 
             @Override
             public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
                 if (last && !shape.supportDFB()) {
+                    NoteViewUtil.drawPage(mBinding.noteView, mNoteManager.getViewBitmap(), mNoteManager.getDirtyShape());
                 }
             }
 
             @Override
             public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
                 if (!shape.supportDFB()) {
+                    NoteViewUtil.drawPage(mBinding.noteView, mNoteManager.getViewBitmap(), mNoteManager.getDirtyShape());
                 }
             }
 
         };
+    }
+
+    @Override
+    public void onBackPressed() {
+        mNoteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                mViewModel.onSaveDocument(true, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (!request.isAbort() && e == null) {
+                            ScribbleActivity.super.onBackPressed();
+                        }
+                    }
+                });           
+            }
+        });
     }
 
     @Override

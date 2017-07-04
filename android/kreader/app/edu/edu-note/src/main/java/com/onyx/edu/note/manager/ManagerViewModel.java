@@ -44,6 +44,7 @@ public class ManagerViewModel extends BaseObservable {
     public final ObservableInt totalPage = new ObservableInt();
     private final ObservableField<NoteModel> currentNoteModel = new ObservableField<>();
     public final ObservableField<String> currentFolderTitle = new ObservableField<>();
+    private NoteManager mNoteManager;
 
     void setNavigator(ManagerNavigator navigator) {
         this.mNavigator = navigator;
@@ -58,6 +59,7 @@ public class ManagerViewModel extends BaseObservable {
     ManagerViewModel(Context context) {
         // Force use of Application Context.
         mContext = context.getApplicationContext();
+        mNoteManager = NoteManager.sharedInstance(mContext);
         items.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<NoteModel>>() {
             @Override
             public void onChanged(ObservableList<NoteModel> sender) {
@@ -126,7 +128,7 @@ public class ManagerViewModel extends BaseObservable {
     }
 
     @Nullable
-    String getCurrentNoteModelUniqueID(){
+    String getCurrentNoteModelUniqueID() {
         return isTopLevelFolder() ? null : currentNoteModel.get().getUniqueId();
     }
 
@@ -134,7 +136,7 @@ public class ManagerViewModel extends BaseObservable {
         if (forceUpdate) {
             items.clear();
             LoadNoteListAction action = new LoadNoteListAction(id);
-            action.execute(NoteManager.sharedInstance(mContext), new BaseCallback() {
+            action.execute(mNoteManager, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     NoteLibraryLoadRequest req = (NoteLibraryLoadRequest) request;
@@ -157,13 +159,13 @@ public class ManagerViewModel extends BaseObservable {
         final CheckNoteNameLegalityAction action =
                 new CheckNoteNameLegalityAction(folderTitle, getCurrentNoteModelUniqueID(),
                         NoteModel.TYPE_LIBRARY, false, false);
-        action.execute(NoteManager.sharedInstance(mContext), new BaseCallback() {
+        action.execute(mNoteManager, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (action.isLegal()) {
                     final CreateLibraryAction action =
                             new CreateLibraryAction(getCurrentNoteModelUniqueID(), folderTitle);
-                    action.execute(NoteManager.sharedInstance(mContext), new BaseCallback() {
+                    action.execute(mNoteManager, new BaseCallback() {
                         @Override
                         public void done(BaseRequest request, Throwable e) {
                             mNavigator.updateFolderCreateStatus(e == null);
@@ -176,9 +178,9 @@ public class ManagerViewModel extends BaseObservable {
         });
     }
 
-    void deleteNote(List<String> targetIDList){
+    void deleteNote(List<String> targetIDList) {
         NoteLibraryRemoveAction action = new NoteLibraryRemoveAction(targetIDList);
-        action.execute(NoteManager.sharedInstance(mContext), new BaseCallback() {
+        action.execute(mNoteManager, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 mNavigator.updateNoteRemoveStatus(e == null);

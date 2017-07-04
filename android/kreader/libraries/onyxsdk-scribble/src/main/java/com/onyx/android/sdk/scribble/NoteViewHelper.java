@@ -432,7 +432,7 @@ public class NoteViewHelper {
         globalLayoutListener = null;
     }
 
-    private Rect getViewportSize() {
+    public Rect getViewportSize() {
         if (surfaceView != null) {
             return new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
         }

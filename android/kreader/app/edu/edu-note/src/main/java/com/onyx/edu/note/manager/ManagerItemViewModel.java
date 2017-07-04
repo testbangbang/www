@@ -3,6 +3,7 @@ package com.onyx.edu.note.manager;
 import android.content.Context;
 import android.databinding.BaseObservable;
 import android.databinding.Observable;
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,10 +33,11 @@ public class ManagerItemViewModel extends BaseObservable {
     public final ObservableField<String> documentName = new ObservableField<>();
     public final ObservableField<String> lastModifiedDate = new ObservableField<>();
     public final ObservableField<Bitmap> thumbnail = new ObservableField<>();
+    public final ObservableBoolean isDocument = new ObservableBoolean();
     private final Context mContext;
 
 
-    public ManagerItemViewModel(final Context context) {
+    ManagerItemViewModel(final Context context) {
         // Force use of Application Context.
         mContext = context.getApplicationContext();
         // Exposed observables depend on the mNoteObservable observable:
@@ -48,13 +50,15 @@ public class ManagerItemViewModel extends BaseObservable {
                     lastModifiedDate.set(Utils.isValidNote(note) ?
                             DateFormat.format("yyyy-MM-dd", note.getUpdatedAt()).toString() : null);
                     thumbnail.set(note.isLibrary() ?
-                            BitmapFactory.decodeResource(mContext.getResources(), R.drawable.directory) : note.getThumbnail());
+                            BitmapFactory.decodeResource(
+                                    mContext.getResources(), R.drawable.directory) : note.getThumbnail());
+                    isDocument.set(note.isDocument());
                 }
             }
         });
     }
 
-    public void setNavigator(ManagerItemNavigator navigator) {
+    void setNavigator(ManagerItemNavigator navigator) {
         mNavigator = new WeakReference<>(navigator);
     }
 
@@ -86,7 +90,7 @@ public class ManagerItemViewModel extends BaseObservable {
         }
     }
 
-    public boolean itemLongClicked(){
+    public boolean itemLongClicked() {
         String uniqueID = mNoteObservable.get().getUniqueId();
         if (TextUtils.isEmpty(uniqueID)) {
             // Click happened before note was loaded, no-op.

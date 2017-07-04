@@ -1,6 +1,8 @@
 package com.onyx.edu.note;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
@@ -68,7 +70,15 @@ public class NoteManager {
         };
     }
 
+    private void beforeSubmit(BaseNoteRequest request) {
+        final Rect rect = noteViewHelper.getViewportSize();
+        if (rect != null) {
+            request.setViewportSize(rect);
+        }
+    }
+
     public boolean submitRequest(final BaseNoteRequest request, final BaseCallback callback) {
+        beforeSubmit(request);
         if (contextWeakReference.get() != null) {
             return requestManager.submitRequestToMultiThreadPool(contextWeakReference.get(),
                     request, generateRunnable(request), callback);
@@ -80,13 +90,20 @@ public class NoteManager {
 
     public boolean submitRequestWithIdentifier(final BaseNoteRequest request, final String identifier,
                                                final BaseCallback callback) {
+        beforeSubmit(request);
+        request.setIdentifier(identifier);
         if (contextWeakReference.get() != null) {
-            return requestManager.submitRequestToMultiThreadPool(contextWeakReference.get(), identifier,
+            return requestManager.submitRequestToMultiThreadPool(contextWeakReference.get(),identifier,
                     request, generateRunnable(request), callback);
         } else {
             Log.e(TAG, "Context has been GC");
             return false;
         }
+    }
+
+    public void sync(boolean render,
+                     boolean resume) {
+        syncWithCallback(render, resume, null);
     }
 
     public void syncWithCallback(boolean render,
@@ -111,7 +128,6 @@ public class NoteManager {
     public void setShapeDataInfo(ShapeDataInfo shapeDataInfo) {
         this.shapeDataInfo = shapeDataInfo;
     }
-
 
     //TODO:avoid direct obtain note view helper,because we plan to remove this class.
 
@@ -153,5 +169,21 @@ public class NoteManager {
 
     public NoteDocument getNoteDocument() {
         return noteViewHelper.getNoteDocument();
+    }
+
+    public void pauseDrawing(){
+        noteViewHelper.pauseDrawing();
+    }
+
+    public void resumeDrawing(){
+        noteViewHelper.resumeDrawing();
+    }
+
+    public Bitmap getViewBitmap() {
+        return noteViewHelper.getViewBitmap();
+    }
+
+    public List<Shape> getDirtyShape() {
+        return noteViewHelper.getDirtyStash();
     }
 }
