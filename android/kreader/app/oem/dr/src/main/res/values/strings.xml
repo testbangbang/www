@@ -13,4 +13,16 @@
     <string name="menu_my_books">my books</string>
     <string name="menu_professional_materials">professional materials</string>
     <string name="menu_application">application</string>
+    <string name="username_or_password_error">用户名或密码错误</string>
+    <string name="login_succeed">login succeed</string>
+    <string name="now_reading">now reading</string>
+    <string name="recent_reading">recent reading</string>
+    <string name="author_search">author search</string>
+    <string name="book_name_search">book name search</string>
+    <string name="english_bookshelf">english bookshelf</string>
+    <string name="chinese_bookshelf">chinese bookshelf</string>
+    <string name="small_language_bookshelf">small language bookshelf</string>
+    <string name="total_format">total:%d</string>
+    <string name="go_to_page">go to page</string>
+    <string name="current_page">current page</string>
 </resources>

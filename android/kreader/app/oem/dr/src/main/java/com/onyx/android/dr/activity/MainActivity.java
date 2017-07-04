@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.TabMenuAdapter;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.MenuData;
@@ -24,12 +25,10 @@ import com.onyx.android.dr.event.ProfessionalMaterialsMenuEvent;
 import com.onyx.android.dr.event.RealTimeBooksMenuEvent;
 import com.onyx.android.dr.event.SchoolBasedMaterialsMenuEvent;
 import com.onyx.android.dr.event.SettingsMenuEvent;
-import com.onyx.android.dr.event.TeachingAidsMenuEvent;
 import com.onyx.android.dr.fragment.BaseFragment;
 import com.onyx.android.dr.fragment.ChildViewID;
+import com.onyx.android.dr.fragment.CommonBooksFragment;
 import com.onyx.android.dr.fragment.MainViewFragment;
-import com.onyx.android.dr.fragment.RealTimeBooksFragment;
-import com.onyx.android.dr.fragment.SchoolBasedMaterialsFragment;
 import com.onyx.android.dr.presenter.MainPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.data.model.Library;
@@ -39,7 +38,9 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 
@@ -49,12 +50,12 @@ public class MainActivity extends BaseActivity implements MainView {
     @Bind(R.id.tab_menu)
     PageRecyclerView tabMenu;
     private MainPresenter mainPresenter;
-    private List<Library> libraryList;
     private TabMenuAdapter tabMenuAdapter;
     private FragmentManager fragmentManager;
     private Fragment currentFragment;
-    private int currentPageID;
+    private int currentPageID = ChildViewID.BASE_VIEW;
     private SparseArray<BaseFragment> childViewList = new SparseArray<>();
+    private Map<String, Library> libraryMap = new HashMap<>();
 
     @Override
     protected Integer getLayoutId() {
@@ -86,11 +87,19 @@ public class MainActivity extends BaseActivity implements MainView {
         mainPresenter = new MainPresenter(this);
         mainPresenter.loadData(this);
         mainPresenter.loadTabMenu(Constants.ACCOUNT_TYPE_HIGH_SCHOOL);
+        mainPresenter.lookCloudLibraryList(null);
     }
 
     @Override
     public void setTabMenuData(List<MenuData> menuData) {
-        tabMenuAdapter.setMenuDatas(menuData);
+        tabMenuAdapter.setMenuDataList(menuData);
+    }
+
+    @Override
+    public void setLibraryList(List<Library> libraryList) {
+        for (Library library : libraryList) {
+            libraryMap.put(library.getName(), library);
+        }
     }
 
     private String getLibraryParentId() {
@@ -99,27 +108,34 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGradedBooksEvent(GradedBooksEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
+        switchCommonFragment(Constants.GRADED_BOOKS);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMyBooksMenuEvent(MyBooksMenuEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_my_books));
+        switchCommonFragment(Constants.MY_BOOKS);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRealTimeBooksMenuEvent(RealTimeBooksMenuEvent event) {
-        switchCurrentFragment(ChildViewID.FRAGMENT_REAL_TIME_BOOKS);
+        switchCommonFragment(Constants.REAL_TIME_BOOKS_LIBRARY_NAME);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSchoolBasedMaterialsMenuEvent(SchoolBasedMaterialsMenuEvent event) {
-        switchCurrentFragment(ChildViewID.FRAGMENT_SCHOOL_BASED_MATERIALS);
+        switchCommonFragment(Constants.SCHOOL_BASED_MATERIALS_LIBRARY_NAME);
+    }
+
+    private void switchCommonFragment(String libraryName) {
+        Library library = libraryMap.get(libraryName);
+        switchCurrentFragment(ChildViewID.FRAGMENT_COMMON_BOOKS);
+        CommonBooksFragment fragment = (CommonBooksFragment) getPageView(ChildViewID.FRAGMENT_COMMON_BOOKS);
+        fragment.setData(library.getIdString(), library.getName(), R.drawable.ic_professional_materials);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onProfessionalMaterialsMenuEvent(ProfessionalMaterialsMenuEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_professional_materials));
+        switchCommonFragment(Constants.PROFESSIONAL_MATERIALS);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -183,11 +199,8 @@ public class MainActivity extends BaseActivity implements MainView {
                 case ChildViewID.FRAGMENT_MAIN_VIEW:
                     baseFragment = new MainViewFragment();
                     break;
-                case ChildViewID.FRAGMENT_REAL_TIME_BOOKS:
-                    baseFragment = new RealTimeBooksFragment();
-                    break;
-                case ChildViewID.FRAGMENT_SCHOOL_BASED_MATERIALS:
-                    baseFragment = new SchoolBasedMaterialsFragment();
+                case ChildViewID.FRAGMENT_COMMON_BOOKS:
+                    baseFragment = new CommonBooksFragment();
                     break;
             }
         } else {

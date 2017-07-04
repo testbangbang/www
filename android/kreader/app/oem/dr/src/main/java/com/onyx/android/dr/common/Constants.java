@@ -23,4 +23,10 @@ public class Constants {
     public static final String ACCOUNT_TYPE_HIGH_SCHOOL = "account_type_high_school";
     public static final String ACCOUNT_TYPE_UNIVERSITY = "account_type_university";
     public static final String ACCOUNT_TYPE_TEACHER = "account_type_teacher";
+
+    public static final String GRADED_BOOKS = "分级读物";
+    public static final String REAL_TIME_BOOKS_LIBRARY_NAME = "时文篇章";
+    public static final String SCHOOL_BASED_MATERIALS_LIBRARY_NAME = "校本材料";
+    public static final String MY_BOOKS = "我的读物";
+    public static final String PROFESSIONAL_MATERIALS = "我的读物";
 }

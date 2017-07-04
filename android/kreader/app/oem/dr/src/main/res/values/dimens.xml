@@ -8,4 +8,16 @@
     <dimen name="rectangle_stroke_width">2dp</dimen>
     <dimen name="rectangle_stroke_radius">5dp</dimen>
     <dimen name="item_main_menu_tab_padding">10dp</dimen>
+    <dimen name="library_item_get_widget_width">55dp</dimen>
+    <dimen name="library_item_get_widget_height">32dp</dimen>
+    <dimen name="library_item_get_widget_margin_top">0dp</dimen>
+    <dimen name="library_item_progress_height">7dp</dimen>
+    <dimen name="library_item_progress_margin_top">8dp</dimen>
+    <dimen name="library_item_progress_padding_left_right">2dp</dimen>
+    <dimen name="library_item_padding">2dp</dimen>
+    <dimen name="page_count_margin">50dp</dimen>
+    <dimen name="main_view_button_margin">30dp</dimen>
+    <dimen name="now_reading_progress_bar_margin_top">10dp</dimen>
+    <dimen name="now_reading_progress_bar_height">5dp</dimen>
+    <dimen name="fragment_content_padding">20dp</dimen>
 </resources>

@@ -13,4 +13,16 @@
     <string name="menu_my_books">我的读物</string>
     <string name="menu_professional_materials">专业材料</string>
     <string name="menu_application">应用</string>
+    <string name="username_or_password_error">用户名或密码错误</string>
+    <string name="login_succeed">登陆成功</string>
+    <string name="now_reading">正在阅读</string>
+    <string name="recent_reading">最近阅读</string>
+    <string name="author_search">作者搜索</string>
+    <string name="book_name_search">书名搜索</string>
+    <string name="english_bookshelf">英文书架</string>
+    <string name="chinese_bookshelf">中文书架</string>
+    <string name="small_language_bookshelf">小语种书架</string>
+    <string name="total_format">总计:%d</string>
+    <string name="go_to_page">页面跳转</string>
+    <string name="current_page">当前页面</string>
 </resources>

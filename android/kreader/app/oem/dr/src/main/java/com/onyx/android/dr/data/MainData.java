@@ -14,15 +14,11 @@ import java.util.List;
  */
 
 public class MainData {
-    public void lookCloudLibraryList(AuthTokenAction authTokenAction, CloudLibraryListLoadAction loadAction, String parentId, BaseCallback baseCallback) {
+    public void lookCloudLibraryList(AuthTokenAction authTokenAction, CloudLibraryListLoadAction loadAction, BaseCallback baseCallback) {
         ActionChain actionChain = new ActionChain();
         actionChain.addAction(authTokenAction);
         actionChain.addAction(loadAction);
         actionChain.execute(DRApplication.getLibraryDataHolder(), baseCallback);
-    }
-
-    public void loadBooksOfLibrary(CloudContentListRequest listRequest, BaseCallback baseCallback) {
-        DRApplication.getCloudStore().getCloudManager().submitRequest(DRApplication.getInstance(), listRequest, baseCallback);
     }
 
     public List<MenuData> loadTabMenu(String userType) {

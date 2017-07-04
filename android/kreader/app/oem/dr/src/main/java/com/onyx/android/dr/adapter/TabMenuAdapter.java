@@ -23,10 +23,10 @@ import butterknife.ButterKnife;
  */
 
 public class TabMenuAdapter extends PageRecyclerView.PageAdapter<TabMenuAdapter.ViewHolder> implements View.OnClickListener {
-    private List<MenuData> menuDatas;
+    private List<MenuData> menuDataList;
 
-    public void setMenuDatas(List<MenuData> menuDatas) {
-        this.menuDatas = menuDatas;
+    public void setMenuDataList(List<MenuData> menuDataList) {
+        this.menuDataList = menuDataList;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class TabMenuAdapter extends PageRecyclerView.PageAdapter<TabMenuAdapter.
 
     @Override
     public int getDataCount() {
-        return menuDatas == null ? 0 : menuDatas.size();
+        return menuDataList == null ? 0 : menuDataList.size();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class TabMenuAdapter extends PageRecyclerView.PageAdapter<TabMenuAdapter.
 
     @Override
     public void onPageBindViewHolder(ViewHolder holder, int position) {
-        MenuData menuData = menuDatas.get(position);
+        MenuData menuData = menuDataList.get(position);
         holder.tabMenuIcon.setImageResource(menuData.getImageResources());
         holder.tabMenuTitle.setText(menuData.getTabName());
         holder.rootView.setTag(position);
@@ -65,7 +65,7 @@ public class TabMenuAdapter extends PageRecyclerView.PageAdapter<TabMenuAdapter.
             return;
         }
         int position = (int) v.getTag();
-        Object eventBean = menuDatas.get(position).getEventBean();
+        Object eventBean = menuDataList.get(position).getEventBean();
         if (eventBean != null) {
             EventBus.getDefault().post(eventBean);
         }

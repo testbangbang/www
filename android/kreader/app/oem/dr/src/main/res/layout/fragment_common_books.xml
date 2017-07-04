@@ -26,9 +26,11 @@
             android:src="@drawable/ic_dialog_next" />
     </LinearLayout>
 
-    <com.onyx.android.sdk.ui.view.PageRecyclerView
+    <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
         android:id="@+id/page_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
+    <include layout="@layout/page_indicator_layout" />
 </LinearLayout>
