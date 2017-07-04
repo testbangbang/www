@@ -25,4 +25,5 @@
     <string name="total_format">total:%d</string>
     <string name="go_to_page">go to page</string>
     <string name="current_page">current page</string>
+    <string name="page_indicator_initial_data">0/0</string>
 </resources>

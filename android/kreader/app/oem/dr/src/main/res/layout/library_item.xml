@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/image_cover"
-            android:layout_width="204dp"
-            android:layout_height="280dp"
+            android:layout_width="@dimen/library_item_cover_width"
+            android:layout_height="@dimen/library_item_cover_height"
             android:scaleType="fitXY"
             android:src="@drawable/book_default_cover" />
 
@@ -43,8 +43,7 @@
             android:ellipsize="end"
             android:gravity="center"
             android:lines="2"
-            android:maxLines="2"
-            android:textSize="19sp" />
+            android:maxLines="2" />
 
     </RelativeLayout>
 

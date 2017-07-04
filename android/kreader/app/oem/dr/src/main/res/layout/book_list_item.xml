@@ -3,24 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <RelativeLayout
         android:id="@+id/cover_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/image_selector_bg"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:background="@drawable/image_selector_bg">
 
         <ImageView
             android:id="@+id/image_cover"
-            android:layout_width="232dp"
-            android:layout_height="320dp"
+            android:layout_width="@dimen/book_list_item_cover_width"
+            android:layout_height="@dimen/book_list_item_cover_height"
             android:scaleType="fitXY"
             android:src="@drawable/book_cover" />
 
         <ImageView
             android:id="@+id/image_get_widget"
-            android:layout_width="55dp"
-            android:layout_height="32dp"
+            android:layout_width="@dimen/book_list_item_widget_width"
+            android:layout_height="@dimen/book_list_item_widget_height"
             android:layout_marginTop="0dp"
             android:src="@drawable/book_item_get_widget"
             android:visibility="gone" />
@@ -34,11 +35,10 @@
         android:layout_alignLeft="@+id/cover_panel"
         android:layout_alignRight="@+id/cover_panel"
         android:layout_below="@+id/cover_panel"
-        android:layout_marginRight="19dp"
         android:layout_centerInParent="true"
+        android:layout_marginRight="@dimen/book_list_item_title_margin_right"
         android:ellipsize="end"
         android:gravity="center_horizontal"
         android:lines="2"
-        android:maxLines="2"
-        android:textSize="24sp" />
+        android:maxLines="2" />
 </RelativeLayout>

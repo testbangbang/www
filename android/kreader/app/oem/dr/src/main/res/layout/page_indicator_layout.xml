@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:layout_margin="10dp"
+    android:layout_margin="@dimen/page_indicator_padding"
     android:gravity="center_vertical">
 
     <TextView
@@ -12,8 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:text="0"
-        android:textSize="26sp" />
+        android:text="0" />
 
     <LinearLayout
         android:id="@+id/page_panel"
@@ -34,11 +33,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="@dimen/page_indicator_margin"
+            android:layout_marginRight="@dimen/page_indicator_margin"
             android:gravity="center_vertical"
-            android:text="0/0"
-            android:textSize="26sp" />
+            android:text="@string/page_indicator_initial_data" />
 
         <ImageView
             android:id="@+id/next"
@@ -53,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginRight="25dp"
+        android:layout_marginRight="@dimen/page_indicator_refresh_margin"
         android:layout_toLeftOf="@+id/page_panel"
         android:src="@drawable/ic_refresh" />
 
