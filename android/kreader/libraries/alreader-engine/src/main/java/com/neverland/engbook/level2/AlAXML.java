@@ -105,6 +105,9 @@ public abstract class AlAXML extends AlFormat {
 		if (tag.closed) {
 			// dec style stack
 			paragraph_level--;
+			if(paragraph_level < 0){
+				paragraph_level = 0;
+			}
 		} else
 		if (!tag.ended && !tag.special) {
 			// inc style stack
