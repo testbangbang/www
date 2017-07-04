@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.onyx.edu.note.manager.ManagerViewModel" />
+    </data>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.onyx.edu.note.manager.ManagerActivity">
+
+        <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
+
+            <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true">
+
+                <RelativeLayout
+                    android:id="@id/back_function_layout"
+                    style="@style/global_activities_back_function_layout">
+
+                    <ImageView
+                        android:id="@+id/back_icon"
+                        style="@style/global_activities_back_btn_image"
+                        android:contentDescription="" />
+
+                    <ImageView
+                        android:id="@+id/imageView_main_title"
+                        style="@style/global_activities_back_btn_category_image"
+                        android:layout_toRightOf="@+id/back_icon"
+                        android:src="@mipmap/ic_launcher" />
+
+                    <TextView
+                        android:id="@+id/textView_main_title"
+                        style="@style/global_activities_back_btn_category_tittle"
+                        android:layout_toRightOf="@+id/imageView_main_title"
+                        android:ellipsize="middle"
+                        android:gravity="left|center_vertical"
+                        android:maxEms="10"
+                        android:singleLine="true"
+                        android:text="@{viewModel.currentFolderTitle??@string/app_name}" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/control_panel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/add_folder_btn"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/delete_btn"
+                        android:layout_width="?attr/actionBarSize"
+                        android:layout_height="?attr/actionBarSize"
+                        android:background="@drawable/imagebtn_bg"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/move_btn"
+                        android:layout_width="?attr/actionBarSize"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/imagebtn_bg"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
+
+                <com.onyx.android.sdk.ui.view.CustomIconView
+                    android:id="@+id/setting_btn"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@+id/add_folder_btn"
+                    android:src="@drawable/ic_setting"
+                    app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
+
+                <com.onyx.android.sdk.ui.view.CustomIconView
+                    android:id="@+id/add_folder_btn"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@+id/button_sort_by"
+                    android:src="@drawable/ic_folder_add"
+                    app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
+
+                <com.onyx.android.sdk.ui.view.CustomIconView
+                    android:id="@+id/button_sort_by"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="15dp"
+                    android:src="@drawable/button_filter"
+                    app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
+
+            </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+        <FrameLayout
+            android:id="@+id/contentFrame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tool_bar" />
+    </RelativeLayout>
+</layout>

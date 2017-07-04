@@ -15,6 +15,7 @@ import java.util.List;
 public class NoteLibraryLoadRequest extends BaseNoteRequest {
 
     private String parentUniqueId;
+    private NoteModel noteModel;
     private List<NoteModel> noteList;
     private volatile boolean loadThumbnail;
     public int thumbnailLimit;
@@ -24,6 +25,7 @@ public class NoteLibraryLoadRequest extends BaseNoteRequest {
     private
     @AscDescOrder.AscDescOrderDef
     int ascDesc;
+
 
     public NoteLibraryLoadRequest(final String id, int thumbLimit) {
         this(id, thumbLimit, SortBy.CREATED_AT, AscDescOrder.DESC);
@@ -45,6 +47,11 @@ public class NoteLibraryLoadRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {
+        noteModel = NoteDataProvider.load(parentUniqueId);
+        if (noteModel != null) {
+            noteModel.setExtraAttributes(NoteDataProvider.getNoteAbsolutePath(
+                    getContext(), noteModel.getUniqueId(), "/"));
+        }
         noteList = NoteDataProvider.loadNoteList(getContext(), parentUniqueId, sortBy, ascDesc);
         if (!loadThumbnail) {
             return;
@@ -72,6 +79,10 @@ public class NoteLibraryLoadRequest extends BaseNoteRequest {
 
     public List<NoteModel> getNoteList() {
         return noteList;
+    }
+
+    public NoteModel getNoteModel() {
+        return noteModel;
     }
 
 }
