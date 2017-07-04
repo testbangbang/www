@@ -11,9 +11,9 @@ import android.view.Window;
 import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
-import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.util.HashMap;
 
@@ -66,6 +66,7 @@ public class MainSettingsActivity extends PreferenceActivity {
             }
         }
         updateVersionName();
+        EpdController.waitForUpdateFinished();
     }
 
     private void updateVersionName() {
