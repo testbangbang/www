@@ -12,7 +12,6 @@ import java.util.List;
  */
 
 public class ActionChain {
-
     private List<BaseAction> actionList = new ArrayList<>();
 
     public ActionChain addAction(final BaseAction action) {

@@ -17,7 +17,6 @@ import butterknife.ButterKnife;
  * Created by hehai on 17/6/28.
  */
 public abstract class BaseActivity extends OnyxAppCompatActivity {
-
     protected abstract Integer getLayoutId();
 
     protected abstract void initConfig();

@@ -19,7 +19,6 @@ import java.util.List;
  */
 
 public class CloudLibraryListLoadAction extends BaseAction<LibraryDataHolder> {
-
     private String parentId;
     private List<Library> libraryList;
 

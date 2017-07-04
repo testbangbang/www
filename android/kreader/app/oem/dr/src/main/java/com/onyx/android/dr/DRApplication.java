@@ -24,7 +24,6 @@ import java.util.List;
  */
 
 public class DRApplication extends MultiDexApplication {
-
     private static DRApplication sInstance;
     private static CloudStore cloudStore;
     private static LibraryDataHolder libraryDataHolder;

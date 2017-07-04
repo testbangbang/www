@@ -13,7 +13,6 @@ import com.onyx.android.sdk.ui.dialog.DialogSetValue;
  * Created by suicheng on 2017/4/25.
  */
 public class LibraryGotoPageAction extends BaseAction<LibraryDataHolder> {
-
     private FragmentManager fragmentManager;
     private int currentPage = 0;
     private int pages;
