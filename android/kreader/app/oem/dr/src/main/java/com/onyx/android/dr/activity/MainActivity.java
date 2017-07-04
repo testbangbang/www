@@ -130,7 +130,7 @@ public class MainActivity extends BaseActivity implements MainView {
         Library library = libraryMap.get(libraryName);
         switchCurrentFragment(ChildViewID.FRAGMENT_COMMON_BOOKS);
         CommonBooksFragment fragment = (CommonBooksFragment) getPageView(ChildViewID.FRAGMENT_COMMON_BOOKS);
-        fragment.setData(library.getIdString(), library.getName(), R.drawable.ic_professional_materials);
+        fragment.setData(library.getIdString(), libraryName, R.drawable.ic_professional_materials);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
