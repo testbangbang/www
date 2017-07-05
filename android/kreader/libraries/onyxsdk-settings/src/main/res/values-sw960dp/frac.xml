@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="qrcode_bottom_margin" type="fraction">40%</item>
+    <item name="qrcode_right_margin" type="fraction">22%</item>
+
+</resources>
