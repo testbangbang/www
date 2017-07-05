@@ -202,13 +202,13 @@ public class LibraryAdapter extends PageRecyclerView.PageAdapter<LibraryAdapter.
     }
 
     class LibraryItemViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.image_cover)
+        @Bind(R.id.library_item_image_cover)
         ImageView imageCover;
-        @Bind(R.id.textView_title)
+        @Bind(R.id.library_item_textView_title)
         TextView titleView;
-        @Bind(R.id.progress_line)
+        @Bind(R.id.library_item_progress_line)
         ProgressBar progressBar;
-        @Bind(R.id.multi_select_check_box)
+        @Bind(R.id.library_item_multi_select_check_box)
         CheckBox checkBox;
 
         public LibraryItemViewHolder(final View itemView) {

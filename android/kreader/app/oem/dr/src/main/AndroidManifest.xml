@@ -40,30 +40,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
+        <activity
+            android:name=".activity.MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.LoginActivity"></activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
 
         <provider
+            android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"
             android:authorities="com.onyx.content.database.ContentProvider"
             android:exported="true"
-            android:process=":database_content_provider"
-            android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"/>
+            android:process=":database_content_provider" />
 
         <provider
+            android:name="com.onyx.android.sdk.data.db.OnyxAccountContentProvider_Provider"
             android:authorities="com.onyx.account.database.ContentProvider"
-            android:exported="true"
-            android:name="com.onyx.android.sdk.data.db.OnyxAccountContentProvider_Provider"/>
+            android:exported="true" />
 
         <provider
+            android:name="com.onyx.android.sdk.data.db.OnyxSystemContentProvider_Provider"
             android:authorities="com.onyx.system.database.ContentProvider"
-            android:exported="true"
-            android:name="com.onyx.android.sdk.data.db.OnyxSystemContentProvider_Provider"/>
+            android:exported="true" />
     </application>
 
 </manifest>

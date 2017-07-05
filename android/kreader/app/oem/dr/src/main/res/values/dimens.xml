@@ -30,4 +30,17 @@
     <dimen name="book_list_item_title_margin_right">19dp</dimen>
     <dimen name="library_item_cover_width">204dp</dimen>
     <dimen name="library_item_cover_height">280dp</dimen>
+    <dimen name="login_layout_width">450dp</dimen>
+    <dimen name="login_layout_margin_top">300dp</dimen>
+    <dimen name="edit_text_margin_top">10dp</dimen>
+    <dimen name="edit_text_padding">10dp</dimen>
+    <dimen name="login_text_margin_left">20dp</dimen>
+    <dimen name="spinner_drop_down_ver_offset">48dp</dimen>
+    <dimen name="login_text_margin_right">5dp</dimen>
+    <dimen name="login_layout_title_margin_top">30dp</dimen>
+    <dimen name="user_info_edit_text_width">300dp</dimen>
+    <dimen name="user_info_text_view_width">280dp</dimen>
+    <dimen name="login_next_button_margin_bottom">400dp</dimen>
+    <dimen name="login_next_button_margin_right">200dp</dimen>
+    <dimen name="user_info_edit_text_margin_right">10dp</dimen>
 </resources>

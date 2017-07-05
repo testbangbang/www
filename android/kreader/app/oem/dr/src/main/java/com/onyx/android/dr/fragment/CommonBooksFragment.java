@@ -230,7 +230,7 @@ public class CommonBooksFragment extends BaseFragment {
 
     private void updatePageIndicator() {
         int totalCount = getTotalCount();
-        getPagination().resize(3, 3, totalCount);
+        getPagination().resize(row, col, totalCount);
         pageIndicator.resetGPaginator(getPagination());
         pageIndicator.updateTotal(totalCount);
         pageIndicator.updateCurrentPage(totalCount);

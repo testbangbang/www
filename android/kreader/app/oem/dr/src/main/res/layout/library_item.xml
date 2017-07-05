@@ -8,37 +8,37 @@
     appCompat:alwaysLayoutImageView="true">
 
     <RelativeLayout
-        android:id="@+id/cover_panel"
+        android:id="@+id/library_item_cover_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@drawable/background_shadow">
 
         <ImageView
-            android:id="@+id/image_cover"
+            android:id="@+id/library_item_image_cover"
             android:layout_width="@dimen/library_item_cover_width"
             android:layout_height="@dimen/library_item_cover_height"
             android:scaleType="fitXY"
             android:src="@drawable/book_default_cover" />
 
         <ImageView
-            android:id="@+id/image_get_widget"
+            android:id="@+id/library_item_image_get_widget"
             android:layout_width="@dimen/library_item_get_widget_width"
             android:layout_height="@dimen/library_item_get_widget_height"
-            android:layout_alignLeft="@id/image_cover"
-            android:layout_alignTop="@id/image_cover"
+            android:layout_alignLeft="@id/library_item_image_cover"
+            android:layout_alignTop="@id/library_item_image_cover"
             android:layout_alignWithParentIfMissing="true"
             android:layout_marginTop="@dimen/library_item_get_widget_margin_top"
             android:src="@drawable/book_item_get_widget"
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/textView_title"
+            android:id="@+id/library_item_textView_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/image_cover"
+            android:layout_alignLeft="@+id/library_item_image_cover"
             android:layout_alignParentTop="true"
-            android:layout_alignRight="@+id/image_cover"
+            android:layout_alignRight="@+id/library_item_image_cover"
             android:layout_centerInParent="true"
             android:ellipsize="end"
             android:gravity="center"
@@ -48,13 +48,13 @@
     </RelativeLayout>
 
     <ProgressBar
-        android:id="@+id/progress_line"
+        android:id="@+id/library_item_progress_line"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/library_item_progress_height"
-        android:layout_alignLeft="@+id/cover_panel"
-        android:layout_alignRight="@+id/cover_panel"
-        android:layout_below="@+id/cover_panel"
+        android:layout_alignLeft="@+id/library_item_cover_panel"
+        android:layout_alignRight="@+id/library_item_cover_panel"
+        android:layout_below="@+id/library_item_cover_panel"
         android:layout_marginTop="@dimen/library_item_progress_margin_top"
         android:max="100"
         android:paddingLeft="@dimen/library_item_progress_padding_left_right"
@@ -63,7 +63,7 @@
         android:visibility="visible" />
 
     <android.support.v7.widget.AppCompatCheckBox
-        android:id="@+id/multi_select_check_box"
+        android:id="@+id/library_item_multi_select_check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

@@ -13,7 +13,6 @@ import com.facebook.common.references.CloseableReference;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.holder.LibraryDataHolder;
-import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.LibraryDataModel;
@@ -39,14 +38,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by suicheng on 2017/4/22.
+ * Created by hehai on 2017/7/5.
  */
-
 public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapter.LibraryItemViewHolder> implements View.OnClickListener {
-
-    private Activity context;
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_row);
     private int col = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_col);
+    private Activity context;
     private boolean newPage = false;
     private int noThumbnailPosition = 0;
     private boolean isVisibleToUser = false;
@@ -99,7 +96,6 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
 
         Metadata eBook = getEBookList().get(position);
         viewHolder.getWidgetImage.setVisibility(isFileExists(eBook) ? View.VISIBLE : View.GONE);
-        //updateDownloadPanel(viewHolder, eBook);
         viewHolder.titleView.setVisibility(View.VISIBLE);
         viewHolder.titleView.setText(String.valueOf(eBook.getName()));
 
@@ -141,11 +137,11 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
     }
 
     static class LibraryItemViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.image_cover)
+        @Bind(R.id.library_item_image_cover)
         ImageView coverImage;
-        @Bind(R.id.image_get_widget)
+        @Bind(R.id.library_item_image_get_widget)
         ImageView getWidgetImage;
-        @Bind(R.id.textView_title)
+        @Bind(R.id.library_item_textView_title)
         TextView titleView;
         View rootView;
 
@@ -208,7 +204,6 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
         if (refBitmap != null && refBitmap.isValid()) {
             bitmap = refBitmap.get();
         }
-
         return bitmap;
     }
 

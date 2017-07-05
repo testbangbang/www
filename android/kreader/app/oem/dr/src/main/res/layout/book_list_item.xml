@@ -5,21 +5,21 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/cover_panel"
+        android:id="@+id/library_item_cover_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@drawable/image_selector_bg">
 
         <ImageView
-            android:id="@+id/image_cover"
+            android:id="@+id/library_item_image_cover"
             android:layout_width="@dimen/book_list_item_cover_width"
             android:layout_height="@dimen/book_list_item_cover_height"
             android:scaleType="fitXY"
             android:src="@drawable/book_cover" />
 
         <ImageView
-            android:id="@+id/image_get_widget"
+            android:id="@+id/library_item_image_get_widget"
             android:layout_width="@dimen/book_list_item_widget_width"
             android:layout_height="@dimen/book_list_item_widget_height"
             android:layout_marginTop="0dp"
@@ -29,12 +29,12 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/textView_title"
+        android:id="@+id/library_item_textView_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/cover_panel"
-        android:layout_alignRight="@+id/cover_panel"
-        android:layout_below="@+id/cover_panel"
+        android:layout_alignLeft="@+id/library_item_cover_panel"
+        android:layout_alignRight="@+id/library_item_cover_panel"
+        android:layout_below="@+id/library_item_cover_panel"
         android:layout_centerInParent="true"
         android:layout_marginRight="@dimen/book_list_item_title_margin_right"
         android:ellipsize="end"

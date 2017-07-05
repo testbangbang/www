@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <array name="Identity">
+        <item>@string/Schoolchildren</item>
+        <item>@string/College_Students</item>
+        <item>@string/teacher</item>
+        <item>@string/other</item>
+    </array>
+</resources>
