@@ -130,7 +130,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         });
 
         //TODO:custom view for normal/colorDevice;
-        if (AppCompatUtils.isColorDevice(this)) {
+        if (SettingConfig.sharedInstance(this).useEduConfig()) {
             binding.backGroundImageView.setImageResource(R.drawable.main_setting_bg);
             try {
                 binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.getQRCodeCFABitmap());

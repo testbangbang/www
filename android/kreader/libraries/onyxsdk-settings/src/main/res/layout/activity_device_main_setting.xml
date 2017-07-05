@@ -84,8 +84,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignWithParentIfMissing="true"
                 app:alwaysLayoutImageView="true"
-                app:layout_marginBottomPercent="40%"
-                app:layout_marginRightPercent="22%">
+                app:layout_marginBottomPercent="@fraction/qrcode_bottom_margin"
+                app:layout_marginRightPercent="@fraction/qrcode_right_margin">
 
                 <ImageView
                     android:id="@+id/mac_qr_code_image_view"
