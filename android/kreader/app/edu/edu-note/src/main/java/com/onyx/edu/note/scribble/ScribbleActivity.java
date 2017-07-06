@@ -17,11 +17,11 @@ import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.edu.note.HandlerManager;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.R;
+import com.onyx.edu.note.actions.scribble.DrawPageAction;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.databinding.ActivityScribbleBinding;
 import com.onyx.edu.note.receiver.DeviceReceiver;
 import com.onyx.edu.note.util.Constant;
-import com.onyx.edu.note.util.NoteViewUtil;
 
 public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleNavigator {
     private static final String TAG = ScribbleActivity.class.getSimpleName();
@@ -40,6 +40,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         mNoteManager = NoteManager.sharedInstance(this);
         mHandlerManager = new HandlerManager(this);
         mViewModel = new ScribbleViewModel(this);
+        mViewModel.setNavigator(this);
         // Link View and ViewModel
         mBinding.setViewModel(mViewModel);
     }
@@ -71,8 +72,15 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         super.onStop();
     }
 
+    @Override
+    protected void onDestroy() {
+        mViewModel.onActivityDestroyed();
+        super.onDestroy();
+    }
+
     private void handleIntent(Intent intent) {
-        @ScribbleAction.ScribbleActionDef int scribbleAction = intent.getIntExtra(Constant.SCRIBBLE_ACTION_TAG, ScribbleAction.INVALID);
+        @ScribbleAction.ScribbleActionDef int scribbleAction =
+                intent.getIntExtra(Constant.SCRIBBLE_ACTION_TAG, ScribbleAction.INVALID);
         if (!ScribbleAction.isValidAction(scribbleAction)) {
             //TODO:direct call finish here.because we don't want incorrect illegal call.
             finish();
@@ -87,7 +95,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 mNoteManager.syncWithCallback(true, true, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        NoteViewUtil.drawPage(mBinding.noteView, mNoteManager.getViewBitmap(), mNoteManager.getDirtyShape());
+                        DrawPageAction drawPageAction = new DrawPageAction(mBinding.noteView);
+                        drawPageAction.execute(mNoteManager,null);
                     }
                 });
             }
@@ -154,21 +163,21 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
             @Override
             public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
                 if (!shape.supportDFB()) {
-                    NoteViewUtil.drawPage(mBinding.noteView, mNoteManager.getViewBitmap(), mNoteManager.getDirtyShape());
+                    renderCurrentPage();
                 }
             }
 
             @Override
             public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
                 if (last && !shape.supportDFB()) {
-                    NoteViewUtil.drawPage(mBinding.noteView, mNoteManager.getViewBitmap(), mNoteManager.getDirtyShape());
+                    renderCurrentPage();
                 }
             }
 
             @Override
             public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
                 if (!shape.supportDFB()) {
-                    NoteViewUtil.drawPage(mBinding.noteView, mNoteManager.getViewBitmap(), mNoteManager.getDirtyShape());
+                    renderCurrentPage();
                 }
             }
 
@@ -193,38 +202,15 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     @Override
-    public void prevPage() {
-
+    public void renderCurrentPage() {
+        DrawPageAction drawPageAction = new DrawPageAction(mBinding.noteView);
+        drawPageAction.execute(mNoteManager,null);
     }
 
     @Override
-    public void nextPage() {
-
-    }
-
-    @Override
-    public void goToTargetPage() {
-
-    }
-
-    @Override
-    public void addPage() {
-
-    }
-
-    @Override
-    public void deletePage() {
-
-    }
-
-    @Override
-    public void undo() {
-
-    }
-
-    @Override
-    public void redo() {
-
+    public void renderCurrentPageWithCallback(BaseCallback callback) {
+        DrawPageAction drawPageAction = new DrawPageAction(mBinding.noteView);
+        drawPageAction.execute(mNoteManager,callback);
     }
 
     @Override

@@ -1,23 +1,15 @@
 package com.onyx.edu.note.scribble;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+
 /**
  * Created by solskjaer49 on 2017/6/22 12:01.
  */
 
 public interface ScribbleNavigator {
-    void prevPage();
+    void renderCurrentPage();
 
-    void nextPage();
-
-    void goToTargetPage();
-
-    void addPage();
-
-    void deletePage();
-
-    void undo();
-
-    void redo();
+    void renderCurrentPageWithCallback(BaseCallback callback);
 
     void save();
 

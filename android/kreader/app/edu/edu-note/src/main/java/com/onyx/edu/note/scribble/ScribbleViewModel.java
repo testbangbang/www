@@ -8,13 +8,18 @@ import android.databinding.ObservableInt;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.request.note.NoteDocumentOpenRequest;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.edu.note.NoteManager;
+import com.onyx.edu.note.actions.scribble.DocumentAddNewPageAction;
 import com.onyx.edu.note.actions.scribble.DocumentCreateAction;
+import com.onyx.edu.note.actions.scribble.DocumentDeletePageAction;
 import com.onyx.edu.note.actions.scribble.DocumentEditAction;
 import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
+import com.onyx.edu.note.actions.scribble.GotoNextPageAction;
+import com.onyx.edu.note.actions.scribble.GotoPrevPageAction;
 import com.onyx.edu.note.data.ScribbleAction;
 
 import java.util.Date;
@@ -35,7 +40,12 @@ public class ScribbleViewModel extends BaseObservable {
     private final ObservableField<NoteModel> mCurrentNoteModel = new ObservableField<>();
     private final ObservableField<ShapeDataInfo> mShapeDataInfo = new ObservableField<>();
     public final ObservableField<String> mNoteTitle = new ObservableField<>();
-    private ScribbleNavigator mScribbleNavigator;
+
+    public void setNavigator(ScribbleNavigator mScribbleNavigator) {
+        this.mNavigator = mScribbleNavigator;
+    }
+
+    private ScribbleNavigator mNavigator;
     private NoteManager mNoteManager;
     private String mCurrentDocumentUniqueID;
 
@@ -52,8 +62,7 @@ public class ScribbleViewModel extends BaseObservable {
             public void done(BaseRequest request, Throwable e) {
                 if (!request.isAbort() && e == null) {
                     NoteDocumentOpenRequest req = (NoteDocumentOpenRequest) request;
-                    mNoteManager.setShapeDataInfo(req.getShapeDataInfo());
-                    mShapeDataInfo.set(mNoteManager.getShapeDataInfo());
+                    updateInfo(req);
                     mCurrentNoteModel.set(req.getNoteModel());
                     mNoteTitle.set(mCurrentNoteModel.get() != null ? mCurrentNoteModel.get().getTitle() :
                             DateTimeUtil.formatDate(new Date()));
@@ -74,11 +83,87 @@ public class ScribbleViewModel extends BaseObservable {
     }
 
     public void onPrevPage() {
-
+        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GotoPrevPageAction prevPageAction = new GotoPrevPageAction();
+                prevPageAction.execute(mNoteManager, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (!request.isAbort() && e == null) {
+                            updateInfo((BaseNoteRequest) request);
+                            mNavigator.renderCurrentPage();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     public void onNextPage() {
+        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GotoNextPageAction nextPageAction = new GotoNextPageAction();
+                nextPageAction.execute(mNoteManager, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (!request.isAbort() && e == null) {
+                            updateInfo((BaseNoteRequest) request);
+                            mNavigator.renderCurrentPage();
+                        }
+                    }
+                });
+            }
+        });
+    }
 
+    public void addPage() {
+        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                DocumentAddNewPageAction addNewPageAction = new DocumentAddNewPageAction();
+                addNewPageAction.execute(mNoteManager, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (!request.isAbort() && e == null) {
+                            updateInfo((BaseNoteRequest) request);
+                            mNavigator.renderCurrentPage();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    public void deletePage() {
+        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                DocumentDeletePageAction deletePageAction = new DocumentDeletePageAction();
+                deletePageAction.execute(mNoteManager, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (!request.isAbort() && e == null) {
+                            updateInfo((BaseNoteRequest) request);
+                            mNavigator.renderCurrentPage();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    void updateInfo(BaseNoteRequest request) {
+        mNoteManager.setShapeDataInfo(request.getShapeDataInfo());
+        mShapeDataInfo.set(mNoteManager.getShapeDataInfo());
+        mCurrentPage.set(mShapeDataInfo.get().getHumanReadableCurPageIndex());
+        mTotalPage.set(mShapeDataInfo.get().getPageCount());
+    }
+
+    void onActivityDestroyed() {
+        // Clear references to avoid potential memory leaks.
+        mNavigator = null;
     }
 
     void setDocumentTitle(String title) {

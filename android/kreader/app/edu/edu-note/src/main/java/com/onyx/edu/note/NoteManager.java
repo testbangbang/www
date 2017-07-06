@@ -34,6 +34,7 @@ public class NoteManager {
     private RequestManager requestManager;
     private NoteViewHelper noteViewHelper;
     private static NoteManager instance;
+    //TODO:use WeakReference here avoid context leak in static class as AndroidStudio lint check.
     private WeakReference<Context> contextWeakReference;
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
 
