@@ -7,6 +7,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
+import com.onyx.android.sdk.reader.host.request.OpenAndRestoreRequest;
 import com.onyx.android.sdk.reader.host.request.PostOpenRequest;
 import com.onyx.android.sdk.reader.host.request.RestoreRequest;
 import com.onyx.kreader.R;
@@ -100,7 +101,7 @@ public class OpenDocumentAction extends BaseAction {
                 }
                 BaseOptions baseOptions = loadDocumentOptionsRequest.getDocumentOptions();
                 DeviceConfig.adjustOptionsWithDeviceConfig(baseOptions, readerDataHolder.getContext());
-                openWithOptions(readerDataHolder, baseOptions);
+                openAndRestoreWithOptions(readerDataHolder, baseOptions);
             }
         });
     }
@@ -142,6 +143,41 @@ public class OpenDocumentAction extends BaseAction {
                 onFileOpenSucceed(readerDataHolder, options);
             }
         });
+    }
+
+    private void openAndRestoreWithOptions(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
+        final DrmCertificateFactory factory = new DrmCertificateFactory(activity);
+        final BaseReaderRequest openRequest = new OpenAndRestoreRequest(documentPath, options, factory, true, readerDataHolder.getDisplayWidth(), readerDataHolder.getDisplayHeight(), true);
+        readerDataHolder.submitRenderRequest(openRequest, new BaseCallback() {
+
+            @Override
+            public void beforeDone(BaseRequest request, Throwable e) {
+                if (!canceled && e == null) {
+                    readerDataHolder.onDocumentOpened();
+                }
+            }
+
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (canceled) {
+                    cleanup(readerDataHolder);
+                    return;
+                }
+                if (e != null) {
+                    processOpenException(readerDataHolder, options, e);
+                    return;
+                }
+                onFileRestoreSucceed(readerDataHolder, options);
+            }
+        });
+    }
+
+    private void onFileRestoreSucceed(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
+        hideLoadingDialog();
+        readerDataHolder.getHandlerManager().setEnable(true);
+        readerDataHolder.onDocumentInitRendered();
+
+        readerDataHolder.submitNonRenderRequest(new PostOpenRequest());
     }
 
     private void onFileOpenSucceed(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
