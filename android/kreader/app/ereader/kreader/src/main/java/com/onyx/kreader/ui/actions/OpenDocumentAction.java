@@ -7,6 +7,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
+import com.onyx.android.sdk.reader.host.request.PostOpenRequest;
 import com.onyx.android.sdk.reader.host.request.RestoreRequest;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.api.ReaderException;
@@ -19,7 +20,6 @@ import com.onyx.kreader.ui.data.DrmCertificateFactory;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
 import com.onyx.android.sdk.reader.host.request.OpenRequest;
-import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogLoading;
 import com.onyx.kreader.ui.dialog.DialogMessage;
@@ -205,8 +205,9 @@ public class OpenDocumentAction extends BaseAction {
                     return;
                 }
                 hideLoadingDialog();
-                readerDataHolder.submitNonRenderRequest(new SaveDocumentOptionsRequest());
                 readerDataHolder.onDocumentInitRendered();
+
+                readerDataHolder.submitNonRenderRequest(new PostOpenRequest());
             }
         });
     }

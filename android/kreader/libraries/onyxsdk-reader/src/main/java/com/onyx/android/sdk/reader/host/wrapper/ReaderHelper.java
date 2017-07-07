@@ -124,11 +124,10 @@ public class ReaderHelper {
         getDocumentOptions().setCodePage(options.getCodePage());
         getDocumentOptions().setChineseConvertType(options.getChineseConvertType());
         this.pluginOptions = pluginOptions;
-        saveMetadata(context, documentPath);
-        saveThumbnail(context, documentPath);
+
     }
 
-    private void saveMetadata(final Context context, final String path) {
+    public void saveMetadata(final Context context, final String path) {
         ReaderDocumentMetadata metadata = new ReaderDocumentMetadataImpl();
         if (getDocument().readMetadata(metadata)) {
             documentMetadata = metadata;
@@ -137,7 +136,7 @@ public class ReaderHelper {
         }
     }
 
-    private void saveThumbnail(final Context context, final String path) {
+    public void saveThumbnail(final Context context, final String path) {
         if (LegacySdkDataUtils.hasThumbnail(context, path) && ContentSdKDataUtils.hasThumbnail(context, path)) {
             return;
         }
@@ -279,7 +278,6 @@ public class ReaderHelper {
     public void initData(Context context) {
         initImageReflowManager(context);
         initBitmapCache();
-        initWordAnalyzerInBackground(context);
         if(AlReaderPlugin.isJEB(documentPath)){
             bookName = JEBFilesZIP.bookName;
         }
@@ -290,7 +288,7 @@ public class ReaderHelper {
         getReaderLayoutManager().init();
     }
 
-    private void initWordAnalyzerInBackground(final Context context) {
+    public void initWordAnalyzerInBackground(final Context context) {
         AnalyzerAndroidWrapper.initialize(context.getApplicationContext(), true);
     }
 
