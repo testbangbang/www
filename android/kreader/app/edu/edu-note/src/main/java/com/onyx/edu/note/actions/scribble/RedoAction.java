@@ -13,6 +13,7 @@ public class RedoAction extends BaseNoteAction {
     public void execute(NoteManager noteManager, BaseCallback callback) {
         RedoRequest redoRequest = new RedoRequest();
         redoRequest.setResumeInputProcessor(true);
+        redoRequest.setDrawToView(true);
         noteManager.submitRequest(redoRequest, callback);
     }
 }

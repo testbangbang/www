@@ -15,7 +15,7 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.edu.note.actions.scribble.DocumentFlushAction;
-import com.onyx.edu.note.util.NoteViewUtil;
+import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -103,12 +103,12 @@ public class NoteManager {
     }
 
     public void sync(boolean render,
-                     boolean resume) {
-        syncWithCallback(render, resume, null);
+                     boolean resume, boolean drawToView) {
+        syncWithCallback(render, resume, drawToView, null);
     }
 
     public void syncWithCallback(boolean render,
-                                 boolean resume,
+                                 boolean resume, boolean drawToView,
                                  final BaseCallback callback) {
         final List<Shape> stash = detachStash();
         if (isLineLayoutMode()) {
@@ -117,10 +117,10 @@ public class NoteManager {
         final DocumentFlushAction action = new DocumentFlushAction(stash,
                 render,
                 resume,
+                drawToView,
                 shapeDataInfo.getDrawingArgs());
         action.execute(this, callback);
     }
-
 
     public ShapeDataInfo getShapeDataInfo() {
         return shapeDataInfo;

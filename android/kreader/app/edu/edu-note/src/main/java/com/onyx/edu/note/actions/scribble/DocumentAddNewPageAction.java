@@ -8,7 +8,7 @@ import com.onyx.edu.note.actions.BaseNoteAction;
 /**
  * Created by zhuzeng on 6/30/16.
  * @param mAddPosition page will add to target position,
- *                     if this value <0,will add page to the end of current page list.
+ *                     if this value <0,will add page to the end of current page.
  */
 public class DocumentAddNewPageAction extends BaseNoteAction {
     private int mAddPosition;
@@ -24,6 +24,7 @@ public class DocumentAddNewPageAction extends BaseNoteAction {
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
         PageAddRequest pageAddRequest = new PageAddRequest(mAddPosition);
+        pageAddRequest.setDrawToView(true);
         noteManager.submitRequest(pageAddRequest, callback);
     }
 }

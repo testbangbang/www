@@ -13,6 +13,7 @@ public class GotoPrevPageAction extends BaseNoteAction {
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
         PagePrevRequest prevRequest = new PagePrevRequest();
+        prevRequest.setDrawToView(true);
         noteManager.submitRequest(prevRequest, callback);
     }
 }

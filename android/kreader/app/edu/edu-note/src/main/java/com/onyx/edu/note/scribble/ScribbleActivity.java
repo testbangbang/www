@@ -67,7 +67,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     @Override
     protected void onPause() {
         super.onPause();
-        mNoteManager.sync(false, false);
+        mNoteManager.sync(false, false,false);
         removeSurfaceViewCallback();
     }
 
@@ -98,13 +98,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
             @Override
             public void done(BaseRequest request, Throwable e) {
 //                InputMethodUtils.hideInputKeyboard(ScribbleActivity.this);
-                mNoteManager.syncWithCallback(true, true, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        DrawPageAction drawPageAction = new DrawPageAction(mBinding.noteView);
-                        drawPageAction.execute(mNoteManager,null);
-                    }
-                });
+                mNoteManager.sync(true, true, true);
             }
         };
         mViewModel.start(uniqueID, parentID, scribbleAction, callback);
@@ -192,7 +186,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     @Override
     public void onBackPressed() {
-        mNoteManager.syncWithCallback(true, false, new BaseCallback() {
+        mNoteManager.syncWithCallback(true, false, false,new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 mViewModel.onSaveDocument(true, new BaseCallback() {

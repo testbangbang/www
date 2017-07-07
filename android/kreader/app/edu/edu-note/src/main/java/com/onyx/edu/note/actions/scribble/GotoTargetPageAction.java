@@ -19,7 +19,8 @@ public class GotoTargetPageAction extends BaseNoteAction {
 
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
-        PageGoToTargetIndexRequest prevRequest = new PageGoToTargetIndexRequest(targetPageIndex, resume);
-        noteManager.submitRequest(prevRequest, callback);
+        PageGoToTargetIndexRequest goToTargetIndexRequest = new PageGoToTargetIndexRequest(targetPageIndex, resume);
+        goToTargetIndexRequest.setDrawToView(true);
+        noteManager.submitRequest(goToTargetIndexRequest, callback);
     }
 }

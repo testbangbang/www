@@ -22,6 +22,7 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
@@ -47,6 +48,16 @@ public class BaseNoteRequest extends BaseRequest {
     private int [] renderingBuffer = null;
     private boolean useExternal = false;
     private String identifier;
+
+    private volatile boolean mDrawToView = false;
+
+    public void setDrawToView(boolean drawToView) {
+        mDrawToView = drawToView;
+    }
+
+    public boolean isDrawToView() {
+        return mDrawToView;
+    }
 
     public boolean isResumeInputProcessor() {
         return resumeInputProcessor;
@@ -156,6 +167,9 @@ public class BaseNoteRequest extends BaseRequest {
                 }
                 if (isResumeInputProcessor()) {
                     helper.resumeDrawing();
+                }
+                if (isDrawToView()) {
+                    NoteViewUtil.drawPage(helper.getView(), helper.getViewBitmap(), helper.getDirtyStash());
                 }
                 helper.getRequestManager().releaseWakeLock();
             }};

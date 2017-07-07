@@ -6,7 +6,7 @@ import android.view.SurfaceView;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.edu.note.util.NoteViewUtil;
+import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
 
 import java.util.List;
 

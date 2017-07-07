@@ -1,4 +1,4 @@
-package com.onyx.edu.note.util;
+package com.onyx.android.sdk.scribble.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

@@ -43,7 +43,7 @@ public class ScribbleViewModel extends BaseObservable {
     private final ObservableField<ShapeDataInfo> mShapeDataInfo = new ObservableField<>();
     public final ObservableField<String> mNoteTitle = new ObservableField<>();
 
-    public void setNavigator(ScribbleNavigator mScribbleNavigator) {
+    void setNavigator(ScribbleNavigator mScribbleNavigator) {
         this.mNavigator = mScribbleNavigator;
     }
 
@@ -85,14 +85,14 @@ public class ScribbleViewModel extends BaseObservable {
     }
 
     public void onPrevPage() {
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        mNoteManager.syncWithCallback(true, true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GotoPrevPageAction prevPageAction = new GotoPrevPageAction();
                 prevPageAction.execute(mNoteManager, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished(true, (BaseNoteRequest) request, e);
+                        onRequestFinished((BaseNoteRequest) request, e);
                     }
                 });
             }
@@ -100,14 +100,14 @@ public class ScribbleViewModel extends BaseObservable {
     }
 
     public void onNextPage() {
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        mNoteManager.syncWithCallback(true, true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GotoNextPageAction nextPageAction = new GotoNextPageAction();
                 nextPageAction.execute(mNoteManager, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished(true, (BaseNoteRequest) request, e);
+                        onRequestFinished((BaseNoteRequest) request, e);
                     }
                 });
             }
@@ -115,14 +115,14 @@ public class ScribbleViewModel extends BaseObservable {
     }
 
     public void addPage() {
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        mNoteManager.syncWithCallback(true, true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 DocumentAddNewPageAction addNewPageAction = new DocumentAddNewPageAction();
                 addNewPageAction.execute(mNoteManager, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished(true, (BaseNoteRequest) request, e);
+                        onRequestFinished((BaseNoteRequest) request, e);
                     }
                 });
             }
@@ -130,14 +130,14 @@ public class ScribbleViewModel extends BaseObservable {
     }
 
     public void deletePage() {
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        mNoteManager.syncWithCallback(true, true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 DocumentDeletePageAction deletePageAction = new DocumentDeletePageAction();
                 deletePageAction.execute(mNoteManager, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished(true, (BaseNoteRequest) request, e);
+                        onRequestFinished((BaseNoteRequest) request, e);
                     }
                 });
             }
@@ -145,14 +145,14 @@ public class ScribbleViewModel extends BaseObservable {
     }
 
     public void reDo() {
-        mNoteManager.syncWithCallback(false, true, new BaseCallback() {
+        mNoteManager.syncWithCallback(false, true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 RedoAction reDoAction = new RedoAction();
                 reDoAction.execute(mNoteManager, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished(true, (BaseNoteRequest) request, e);
+                        onRequestFinished((BaseNoteRequest) request, e);
                     }
                 });
             }
@@ -160,26 +160,23 @@ public class ScribbleViewModel extends BaseObservable {
     }
 
     public void unDo() {
-        mNoteManager.syncWithCallback(false, true, new BaseCallback() {
+        mNoteManager.syncWithCallback(false, true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 UndoAction unDoAction = new UndoAction();
                 unDoAction.execute(mNoteManager, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished(true, (BaseNoteRequest) request, e);
+                        onRequestFinished((BaseNoteRequest) request, e);
                     }
                 });
             }
         });
     }
 
-    private void onRequestFinished(boolean renderPage, BaseNoteRequest request, Throwable throwable) {
+    private void onRequestFinished(BaseNoteRequest request, Throwable throwable) {
         if (!request.isAbort() && throwable == null) {
             updateInfo(request);
-            if (renderPage) {
-                mNavigator.renderCurrentPage();
-            }
         }
     }
 
