@@ -18,6 +18,7 @@ import com.onyx.android.sdk.reader.api.ReaderFormRadioButton;
 import com.onyx.android.sdk.reader.api.ReaderFormRadioGroup;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.reader.api.ReaderFormText;
+import com.onyx.android.sdk.ui.view.RelativeRadioGroup;
 
 /**
  * Created by joy on 5/25/17.
@@ -52,7 +53,7 @@ public class FormFieldControlFactory {
         return checkBox;
     }
 
-    private static RadioGroup createRadioGroup(RelativeLayout parentView, ReaderFormRadioGroup groupField) {
+    private static RelativeRadioGroup createRadioGroup(RelativeLayout parentView, ReaderFormRadioGroup groupField) {
         if (groupField.getButtons().size() <= 0) {
             return null;
         }
@@ -62,10 +63,9 @@ public class FormFieldControlFactory {
             bound.union(button.getRect());
         }
 
-        RadioGroup radioGroup = new RadioGroup(parentView.getContext());
+        RelativeRadioGroup radioGroup = new RelativeRadioGroup(parentView.getContext());
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                (int)bound.height());
-        radioGroup.setOrientation(RadioGroup.VERTICAL);
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = (int)bound.left;
         params.topMargin = (int)bound.top;
 
@@ -73,11 +73,10 @@ public class FormFieldControlFactory {
         for (ReaderFormRadioButton buttonField : groupField.getButtons()) {
             RadioButton button = new RadioButton(parentView.getContext());
             button.setBackgroundColor(Color.TRANSPARENT);
-            RadioGroup.LayoutParams buttonParams = new RadioGroup.LayoutParams((int) bound.width(), (int) buttonField.getRect().height());
-            buttonParams.weight = 1.0f;
-            buttonParams.setMargins(0, 0, 0, 0);
-            button.setPadding(0, 0, 0, 0);
+            RelativeRadioGroup.LayoutParams buttonParams = new RelativeRadioGroup.LayoutParams((int) buttonField.getRect().width() + 10, (int) buttonField.getRect().height() + 10);
             button.setTag(buttonField);
+            buttonParams.leftMargin = (int) buttonField.getRect().left - (int)bound.left;
+            buttonParams.topMargin = (int) buttonField.getRect().top - (int)bound.top;
             radioGroup.addView(button, buttonParams);
             button.setId(index);
             index++;

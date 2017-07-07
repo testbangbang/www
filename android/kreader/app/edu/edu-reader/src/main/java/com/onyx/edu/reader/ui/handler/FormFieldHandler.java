@@ -17,6 +17,7 @@ import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.ui.view.RelativeRadioGroup;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.note.actions.FlushFormShapesAction;
 import com.onyx.edu.reader.note.data.ReaderShapeFactory;
@@ -71,8 +72,8 @@ public class FormFieldHandler extends ReadingHandler {
         }
         if (view instanceof CheckBox) {
             processCheckBoxForm((CheckBox) view);
-        }else if (view instanceof RadioGroup) {
-            processRadioGroupForm((RadioGroup) view);
+        }else if (view instanceof RelativeRadioGroup) {
+            processRadioGroupForm((RelativeRadioGroup) view);
         }else if (view instanceof EditText) {
             processEditTextForm((EditText) view);
         }
@@ -105,18 +106,18 @@ public class FormFieldHandler extends ReadingHandler {
         List<Shape> shapes = new ArrayList<>();
         shapes.add(shape);
         getReaderDataHolder().onFormFieldSelected(fieldId, value);
-        new FlushFormShapesAction(shapes).execute(getReaderDataHolder(), null);
+        new FlushFormShapesAction(shapes, this instanceof FormScribbleHandler).execute(getReaderDataHolder(), null);
     }
 
     private ReaderFormField getReaderFormField(View view) {
         return (ReaderFormField) view.getTag();
     }
 
-    private void processRadioGroupForm(final RadioGroup radioGroup) {
+    private void processRadioGroupForm(final RelativeRadioGroup radioGroup) {
         final ReaderFormField groupField = getReaderFormField(radioGroup);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        radioGroup.setOnCheckedChangeListener(new RelativeRadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+            public void onCheckedChanged(RelativeRadioGroup group, @IdRes int checkedId) {
                 FormValue value = FormValue.create(checkedId);
                 value.setCheck(true);
                 View view = radioGroup.findViewById(checkedId);

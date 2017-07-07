@@ -1,0 +1,59 @@
+<resources>
+    <string name="app_name">单位换算</string>
+    <string name="all">全部</string>
+
+    <string name="length">长度</string>
+    <string name="area">面积</string>
+    <string name="volume">体积</string>
+    <string name="mass">质量</string>
+    <string name="temperature">温度</string>
+    <string name="time">时间</string>
+
+    <string name="meter">米(m)</string>
+    <string name="decimeter">分米(dm)</string>
+    <string name="centimeter">厘米(cm)</string>
+    <string name="kilometer">千米(km)</string>
+    <string name="millimeter">毫米(mm)</string>
+    <string name="foot">英尺(ft)</string>
+    <string name="chinese_foot">尺</string>
+    <string name="yard">码(yd)</string>
+
+    <string name="square_meters">平方米(㎡)</string>
+    <string name="square_decimetres">平方分米(dm²)</string>
+    <string name="square_kilometers">平方千米(km²)</string>
+    <string name="square_centimeters">平方厘米(cm²)</string>
+    <string name="square_foots">平方英尺(sq.ft)</string>
+    <string name="ha">公顷(ha)</string>
+    <string name="mu">亩</string>
+
+    <string name="cubic_meter">立方米(m³)</string>
+    <string name="cubic_millimeter">立方毫米(mm³)</string>
+    <string name="cubic_centimeter">立方厘米(cm³)</string>
+    <string name="cubic_decimetre">立方分米(dm³)</string>
+    <string name="cubic_foot">立方英尺(cu ft)</string>
+    <string name="rise">升(l)</string>
+    <string name="milliliter">毫升(ml)</string>
+
+    <string name="kg">千克(kg)</string>
+    <string name="jin">斤</string>
+    <string name="ton">吨(t)</string>
+    <string name="two">两</string>
+    <string name="pound">磅(lb)</string>
+    <string name="g">克(g)</string>
+    <string name="ounce">盎司(oz)</string>
+
+    <string name="kelvin">开氏度(K)</string>
+    <string name="celsius">摄氏度(℃)</string>
+    <string name="fahrenheit">华氏度(℉)</string>
+    <string name="reaumur">列氏度(°Re)</string>
+    <string name="rankine">兰氏度(°R)</string>
+
+    <string name="second">秒(s)</string>
+    <string name="millisecond">	毫秒(ms)</string>
+    <string name="day">天(d)</string>
+    <string name="minute">分(min)</string>
+    <string name="week">周(week)</string>
+    <string name="hour">时(h)</string>
+    <string name="year">年(yr)</string>
+
+</resources>
