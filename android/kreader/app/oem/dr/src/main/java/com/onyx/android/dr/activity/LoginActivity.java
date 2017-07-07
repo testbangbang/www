@@ -21,6 +21,8 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity implements LoginView {
+    private static final int STEP_SECOND = 2;
+    private static final int STEP_FIRST = 1;
     @Bind(R.id.editText_account)
     EditText editTextAccount;
     @Bind(R.id.editText_password)
@@ -115,7 +117,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     }
 
     private void collectUserInfo() {
-        step = 1;
+        step = STEP_FIRST;
         login_layout.setVisibility(View.GONE);
         identity_layout.setVisibility(View.VISIBLE);
         loginNextButton.setVisibility(View.VISIBLE);
@@ -143,7 +145,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             if (readingInfo != null) {
                 readingInfo.setVisibility(View.VISIBLE);
                 identity_layout.setVisibility(View.GONE);
-                step = 2;
+                step = STEP_SECOND;
             }
         } else {
             saveUserInfo();
@@ -174,7 +176,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            if (step == 2) {
+            if (step == STEP_SECOND) {
                 collectUserInfo();
                 return true;
             }
