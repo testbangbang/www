@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.View;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -13,7 +14,6 @@ import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.utils.DeviceUtils;
-import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.edu.note.HandlerManager;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.R;
@@ -36,6 +36,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_scribble);
+
+
+        //TODO:temp disable edit text.
+        mBinding.spanTextView.setVisibility(View.GONE);
+
+
         initSupportActionBarWithCustomBackFunction();
         mNoteManager = NoteManager.sharedInstance(this);
         mHandlerManager = new HandlerManager(this);
@@ -91,7 +97,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         BaseCallback callback = new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                InputMethodUtils.hideInputKeyboard(ScribbleActivity.this);
+//                InputMethodUtils.hideInputKeyboard(ScribbleActivity.this);
                 mNoteManager.syncWithCallback(true, true, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {

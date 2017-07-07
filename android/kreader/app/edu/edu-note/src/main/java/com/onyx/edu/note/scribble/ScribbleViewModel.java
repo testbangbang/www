@@ -20,6 +20,8 @@ import com.onyx.edu.note.actions.scribble.DocumentEditAction;
 import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
 import com.onyx.edu.note.actions.scribble.GotoNextPageAction;
 import com.onyx.edu.note.actions.scribble.GotoPrevPageAction;
+import com.onyx.edu.note.actions.scribble.RedoAction;
+import com.onyx.edu.note.actions.scribble.UndoAction;
 import com.onyx.edu.note.data.ScribbleAction;
 
 import java.util.Date;
@@ -90,10 +92,7 @@ public class ScribbleViewModel extends BaseObservable {
                 prevPageAction.execute(mNoteManager, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        if (!request.isAbort() && e == null) {
-                            updateInfo((BaseNoteRequest) request);
-                            mNavigator.renderCurrentPage();
-                        }
+                        onRequestFinished(true, (BaseNoteRequest) request, e);
                     }
                 });
             }
@@ -108,10 +107,7 @@ public class ScribbleViewModel extends BaseObservable {
                 nextPageAction.execute(mNoteManager, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        if (!request.isAbort() && e == null) {
-                            updateInfo((BaseNoteRequest) request);
-                            mNavigator.renderCurrentPage();
-                        }
+                        onRequestFinished(true, (BaseNoteRequest) request, e);
                     }
                 });
             }
@@ -126,10 +122,7 @@ public class ScribbleViewModel extends BaseObservable {
                 addNewPageAction.execute(mNoteManager, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        if (!request.isAbort() && e == null) {
-                            updateInfo((BaseNoteRequest) request);
-                            mNavigator.renderCurrentPage();
-                        }
+                        onRequestFinished(true, (BaseNoteRequest) request, e);
                     }
                 });
             }
@@ -144,17 +137,53 @@ public class ScribbleViewModel extends BaseObservable {
                 deletePageAction.execute(mNoteManager, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        if (!request.isAbort() && e == null) {
-                            updateInfo((BaseNoteRequest) request);
-                            mNavigator.renderCurrentPage();
-                        }
+                        onRequestFinished(true, (BaseNoteRequest) request, e);
                     }
                 });
             }
         });
     }
 
-    void updateInfo(BaseNoteRequest request) {
+    public void reDo() {
+        mNoteManager.syncWithCallback(false, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                RedoAction reDoAction = new RedoAction();
+                reDoAction.execute(mNoteManager, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        onRequestFinished(true, (BaseNoteRequest) request, e);
+                    }
+                });
+            }
+        });
+    }
+
+    public void unDo() {
+        mNoteManager.syncWithCallback(false, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                UndoAction unDoAction = new UndoAction();
+                unDoAction.execute(mNoteManager, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        onRequestFinished(true, (BaseNoteRequest) request, e);
+                    }
+                });
+            }
+        });
+    }
+
+    private void onRequestFinished(boolean renderPage, BaseNoteRequest request, Throwable throwable) {
+        if (!request.isAbort() && throwable == null) {
+            updateInfo(request);
+            if (renderPage) {
+                mNavigator.renderCurrentPage();
+            }
+        }
+    }
+
+    private void updateInfo(BaseNoteRequest request) {
         mNoteManager.setShapeDataInfo(request.getShapeDataInfo());
         mShapeDataInfo.set(mNoteManager.getShapeDataInfo());
         mCurrentPage.set(mShapeDataInfo.get().getHumanReadableCurPageIndex());

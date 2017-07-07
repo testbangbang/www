@@ -64,6 +64,7 @@
                         android:layout_height="?attr/actionBarSize"
                         android:layout_marginRight="12dp"
                         android:src="@drawable/ic_undo"
+                        android:onClick="@{()->viewModel.unDo()}"
                         app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
 
                     <com.onyx.android.sdk.ui.view.CustomIconView
@@ -80,6 +81,7 @@
                         android:layout_height="?attr/actionBarSize"
                         android:layout_marginRight="12dp"
                         android:src="@drawable/ic_redo"
+                        android:onClick="@{()->viewModel.reDo()}"
                         app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
 
                     <com.onyx.android.sdk.ui.view.CustomIconView
