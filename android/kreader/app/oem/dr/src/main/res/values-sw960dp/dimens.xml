@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <dimen name="main_menu_tab_height">100dp</dimen>
+    <dimen name="title_bar_right_menu_padding">8dp</dimen>
+    <dimen name="title_bar_title_padding">8dp</dimen>
+    <dimen name="title_bar_margin">8dp</dimen>
+    <dimen name="line_width">1dp</dimen>
+    <dimen name="rectangle_stroke_width">2dp</dimen>
+    <dimen name="rectangle_stroke_radius">5dp</dimen>
+    <dimen name="item_main_menu_tab_padding">10dp</dimen>
+    <dimen name="library_item_get_widget_width">55dp</dimen>
+    <dimen name="library_item_get_widget_height">32dp</dimen>
+    <dimen name="library_item_get_widget_margin_top">0dp</dimen>
+    <dimen name="library_item_progress_height">7dp</dimen>
+    <dimen name="library_item_progress_margin_top">8dp</dimen>
+    <dimen name="library_item_progress_padding_left_right">2dp</dimen>
+    <dimen name="library_item_padding">2dp</dimen>
+    <dimen name="page_count_margin">50dp</dimen>
+    <dimen name="main_view_button_margin">30dp</dimen>
+    <dimen name="now_reading_progress_bar_margin_top">10dp</dimen>
+    <dimen name="now_reading_progress_bar_height">5dp</dimen>
+    <dimen name="fragment_content_padding">20dp</dimen>
+    <dimen name="page_indicator_margin">5dp</dimen>
+    <dimen name="page_indicator_refresh_margin">25dp</dimen>
+    <dimen name="page_indicator_padding">10dp</dimen>
+    <dimen name="book_list_item_cover_width">232dp</dimen>
+    <dimen name="book_list_item_cover_height">320dp</dimen>
+    <dimen name="book_list_item_widget_width">55dp</dimen>
+    <dimen name="book_list_item_widget_height">32dp</dimen>
+    <dimen name="book_list_item_title_margin_right">19dp</dimen>
+    <dimen name="library_item_cover_width">204dp</dimen>
+    <dimen name="library_item_cover_height">280dp</dimen>
+    <dimen name="login_layout_width">450dp</dimen>
+    <dimen name="login_layout_margin_top">300dp</dimen>
+    <dimen name="edit_text_margin_top">10dp</dimen>
+    <dimen name="edit_text_padding">10dp</dimen>
+    <dimen name="login_text_margin_left">20dp</dimen>
+    <dimen name="spinner_drop_down_ver_offset">48dp</dimen>
+    <dimen name="login_text_margin_right">5dp</dimen>
+    <dimen name="login_layout_title_margin_top">30dp</dimen>
+    <dimen name="user_info_edit_text_width">300dp</dimen>
+    <dimen name="user_info_text_view_width">280dp</dimen>
+    <dimen name="login_next_button_margin_bottom">400dp</dimen>
+    <dimen name="login_next_button_margin_right">200dp</dimen>
+    <dimen name="user_info_edit_text_margin_right">10dp</dimen>
+</resources>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/school" />
+
+        <EditText
+            android:id="@+id/schoolchildren_school_name"
+            style="@style/UserInfoEditTextStyle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/edit_text_margin_top">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/grade_class" />
+
+        <LinearLayout
+            android:layout_width="@dimen/user_info_edit_text_width"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/schoolchildren_grade"
+                style="@style/UserInfoEditTextStyle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:hint="@string/grade" />
+
+            <EditText
+                style="@style/UserInfoEditTextStyle"
+                android:layout_width="0dp"
+                android:layout_marginLeft="@dimen/user_info_edit_text_margin_right"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:hint="@string/class_" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        style="@style/UserInfoTextViewStyle"
+        android:text="@string/textbook_publishing_house" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/edit_text_margin_top"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/english_subject" />
+
+        <EditText
+            android:id="@+id/english_publishers"
+            style="@style/UserInfoEditTextStyle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/login_text_margin_right"
+            android:text="@string/publishers" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/edit_text_margin_top"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/chinese" />
+
+        <EditText
+            android:id="@+id/chinese_publishers"
+            style="@style/UserInfoEditTextStyle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/login_text_margin_right"
+            android:text="@string/publishers" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/edit_text_margin_top"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/third_language" />
+
+        <EditText
+            android:id="@+id/third_language_publishers"
+            style="@style/UserInfoEditTextStyle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/login_text_margin_right"
+            android:text="@string/publishers" />
+    </LinearLayout>
+
+</LinearLayout>

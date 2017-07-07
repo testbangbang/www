@@ -1,7 +1,7 @@
 package com.onyx.android.dr.request.local;
 
-import com.onyx.android.dr.Util.Scanner;
 import com.onyx.android.dr.data.database.BookDetailEntity;
+import com.onyx.android.dr.util.Scanner;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 

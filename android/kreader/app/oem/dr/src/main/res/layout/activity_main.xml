@@ -3,11 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.onyx.android.dr.activity.MainActivity">
 
-    <TextView
+    <FrameLayout
+        android:id="@+id/main_view_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
+    <include
+        android:id="@+id/main_tab_menu"
+        layout="@layout/tab_menu"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_menu_tab_height" />
 </LinearLayout>

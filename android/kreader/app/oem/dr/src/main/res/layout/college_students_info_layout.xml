@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/grade" />
+
+        <EditText
+            android:id="@+id/college_student_grade"
+            style="@style/UserInfoEditTextStyle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/edit_text_margin_top">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/grade" />
+
+        <EditText
+            android:id="@+id/college_student_discipline"
+            style="@style/UserInfoEditTextStyle" />
+    </LinearLayout>
+
+    <TextView
+        style="@style/UserInfoTextViewStyle"
+        android:layout_marginTop="@dimen/edit_text_margin_top"
+        android:text="@string/interested_direction" />
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/college_student_interested_subject"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/edit_text_margin_top" />
+</LinearLayout>

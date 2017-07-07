@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/username" />
+
+        <EditText
+            android:id="@+id/username"
+            style="@style/UserInfoEditTextStyle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/edit_text_margin_top">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/identity" />
+
+        <Spinner
+            android:id="@+id/user_identity"
+            style="@style/UserInfoEditTextStyle"
+            android:dropDownVerticalOffset="@dimen/spinner_drop_down_ver_offset"
+            android:entries="@array/Identity" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/edit_text_margin_top">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:layout_marginTop="@dimen/edit_text_padding"
+            android:text="@string/city" />
+
+        <LinearLayout
+            android:layout_width="@dimen/user_info_edit_text_width"
+            android:layout_height="wrap_content">
+
+            <EditText
+                style="@style/UserInfoEditTextStyle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:hint="@string/province" />
+
+            <EditText
+                style="@style/UserInfoEditTextStyle"
+                android:layout_width="0dp"
+                android:layout_marginLeft="@dimen/user_info_edit_text_margin_right"
+                android:layout_marginRight="@dimen/user_info_edit_text_margin_right"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:hint="@string/district" />
+
+            <EditText
+                style="@style/UserInfoEditTextStyle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:hint="@string/county" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/edit_text_margin_top">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/email" />
+
+        <EditText
+            android:id="@+id/email"
+            style="@style/UserInfoEditTextStyle"
+            android:gravity="end"
+            android:hint="\@" />
+    </LinearLayout>
+</LinearLayout>

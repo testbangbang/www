@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    tools:context="com.onyx.android.dr.activity.LoginActivity">
+
+    <TextView
+        android:id="@+id/login_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/login_layout_title_margin_top"
+        android:text="@string/identity_title" />
+
+    <include
+        android:id="@+id/login_layout"
+        layout="@layout/login_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/login_layout_margin_top"
+        android:orientation="vertical"
+        android:visibility="visible" />
+
+    <include
+        android:id="@+id/identity_layout"
+        layout="@layout/identity_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/login_layout_margin_top"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/schoolchildren_layout"
+        layout="@layout/schoolchildren_info_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/login_layout_margin_top"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/teacher_info_layout"
+        layout="@layout/teacher_info_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/login_layout_margin_top"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/college_students_info_layout"
+        layout="@layout/college_students_info_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/login_layout_margin_top"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/other_identity_info_layout"
+        layout="@layout/other_identity_info_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/login_layout_margin_top"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/login_next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/login_next_button_margin_bottom"
+        android:layout_marginRight="@dimen/login_next_button_margin_right"
+        android:text="@string/next_step"
+        android:visibility="gone" />
+
+</RelativeLayout>

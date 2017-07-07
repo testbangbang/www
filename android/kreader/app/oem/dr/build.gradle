@@ -67,5 +67,19 @@ dependencies {
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.dbflowVersion"
     compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.dbflowVersion"
-    compile "com.onyx.android.sdk:onyxsdk-data:$rootProject.onyxSDKDataVersion"
+    compile (project(path: ':libraries:onyxsdk-data')){
+        ['com.github.Raizlabs.DBFlow', 'com.alibaba'].each {
+            exclude group: it
+        }
+    }
+    compile(project(':libraries:onyxsdk-ui')) {
+        exclude group: 'com.alibaba', module: 'fastjson'
+    }
+    compile "com.android.support:multidex:$multidexVersion"
+    compile "cn.leancloud.android:avoscloud-sdk:$rootProject.avoscloudVersion"
+    compile("cn.leancloud.android:avoscloud-push:$rootProject.avoscloudVersion@aar") {
+        transitive = true
+    }
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
+    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
 }
