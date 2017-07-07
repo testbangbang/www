@@ -68,13 +68,13 @@ public class DialogReflowSettings extends DialogBase {
 
     private ImageReflowSettings settings;
     private ReflowCallback callback;
-    private double[] fontSizeValues = {0.75, 1.0, 1.2, 1.5};
+    private double[] fontSizeValues = {0.75, 1.0, 1.2, 1.5, 2.0};
     private int[] autoStraightenValues = {0, 5, 10};
     private int[] justificationValues = {0, 3, 2};
     private int[] columnValues = {1, 2, 3};
     private double[][] formatValues = {{1.0, 0.05}, {1.2, 0.10}, {1.4, 0.15}};
 
-    private final String[] fontSizes = {"1", "2", "3", "4"};
+    private final String[] fontSizes = {"1", "2", "3", "4", "5"};
     private final String[] upgradeSizes = {"0", "5", "10",};
     private final String[] columnsSize = {"1", "2", "3"};
 
