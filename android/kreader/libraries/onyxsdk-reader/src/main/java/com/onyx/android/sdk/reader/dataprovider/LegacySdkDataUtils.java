@@ -9,7 +9,9 @@ import com.onyx.android.sdk.data.compatability.OnyxCmsCenter;
 import com.onyx.android.sdk.data.compatability.OnyxMetadata;
 import com.onyx.android.sdk.data.compatability.OnyxSysCenter;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.utils.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,8 +29,15 @@ public class LegacySdkDataUtils {
 
     public static boolean saveMetadata(final Context context, final String documentPath,
                                          final ReaderDocumentMetadata metadata) {
+        return saveMetadata(context, documentPath, null, metadata);
+    }
+
+    public static boolean saveMetadata(final Context context,
+                                       final String documentPath,
+                                       final String documentMd5,
+                                       final ReaderDocumentMetadata metadata) {
         try {
-            OnyxMetadata data = getMetadataByPath(documentPath);
+            OnyxMetadata data = getMetadataByPath(documentPath, documentMd5);
             if (data == null) {
                 Log.w(TAG, "saveMetadata: create file metadata failed, " + documentPath);
                 return false;
@@ -49,7 +58,7 @@ public class LegacySdkDataUtils {
     public static boolean updateProgress(final Context context, final String documentPath,
                                          final int currentPage, final int totalPage) {
         try {
-            OnyxMetadata data = getMetadataByPath(documentPath);
+            OnyxMetadata data = getMetadataByPath(documentPath, null);
             if (data == null) {
                 Log.w(TAG, "updateProgress: create file metadata failed, " + documentPath);
                 return false;
@@ -66,7 +75,7 @@ public class LegacySdkDataUtils {
     }
 
     public static boolean hasThumbnail(final Context context, final String documentPath) {
-        OnyxMetadata data = getMetadataByPath(documentPath);
+        OnyxMetadata data = getMetadataByPath(documentPath, null);
         if (data == null) {
             Log.w(TAG, "hasThumbnail: create file metadata failed, " + documentPath);
             return false;
@@ -77,7 +86,7 @@ public class LegacySdkDataUtils {
     public static boolean saveThumbnail(final Context context, final String documentPath,
                                         final Bitmap bitmap) {
         try {
-            OnyxMetadata data = getMetadataByPath(documentPath);
+            OnyxMetadata data = getMetadataByPath(documentPath, null);
             if (data == null) {
                 Log.w(TAG, "saveThumbnailEntry: create file metadata failed, " + documentPath);
                 return false;
@@ -116,10 +125,15 @@ public class LegacySdkDataUtils {
         }
     }
 
-    private static OnyxMetadata getMetadataByPath(final String documentPath) {
+    private static OnyxMetadata getMetadataByPath(final String documentPath, final String documentMd5) {
         OnyxMetadata data = metadataCache.get(documentPath);
         if (data == null) {
-            data = OnyxMetadata.createFromFile(documentPath);
+            if (StringUtils.isNullOrEmpty(documentMd5)) {
+                data = OnyxMetadata.createFromFile(documentPath);
+            } else {
+                data = OnyxMetadata.createFromFile(new File(documentPath), false);
+                data.setMD5(documentMd5);
+            }
         }
         if (data == null) {
             return null;

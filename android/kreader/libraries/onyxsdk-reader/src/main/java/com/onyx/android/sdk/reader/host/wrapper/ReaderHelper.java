@@ -132,7 +132,7 @@ public class ReaderHelper {
         ReaderDocumentMetadata metadata = new ReaderDocumentMetadataImpl();
         if (getDocument().readMetadata(metadata)) {
             documentMetadata = metadata;
-            LegacySdkDataUtils.saveMetadata(context, path, metadata);
+            LegacySdkDataUtils.saveMetadata(context, path, documentMd5, metadata);
             ContentSdKDataUtils.saveMetadata(context, path, metadata);
         }
     }
