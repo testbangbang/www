@@ -16,9 +16,11 @@ import java.util.List;
 public class FlushFormShapesRequest extends ReaderBaseNoteRequest {
 
     private List<Shape> shapes;
+    private boolean resume;
 
-    public FlushFormShapesRequest(List<Shape> shapes) {
+    public FlushFormShapesRequest(List<Shape> shapes, boolean resume) {
         this.shapes = shapes;
+        this.resume = resume;
     }
 
     @Override
@@ -35,6 +37,7 @@ public class FlushFormShapesRequest extends ReaderBaseNoteRequest {
             }
         }
         ReaderNoteDataProvider.saveFormShapeList(getContext(), formShapes);
+        setResumeRawInputProcessor(resume && noteManager.isDFBForCurrentShape());
 
     }
 }

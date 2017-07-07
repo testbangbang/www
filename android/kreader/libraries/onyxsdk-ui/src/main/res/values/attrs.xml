@@ -47,4 +47,7 @@
             <enum name="vertical" value="1"/>
         </attr>
     </declare-styleable>
+    <declare-styleable name="com_nachorater_RadioGroup">
+        <attr name="android:checkedButton" />
+    </declare-styleable>
 </resources>
