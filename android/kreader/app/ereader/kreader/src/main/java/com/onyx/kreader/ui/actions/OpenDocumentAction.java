@@ -14,6 +14,7 @@ import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CreateViewRequest;
+import com.onyx.kreader.ui.ReaderIPCManager;
 import com.onyx.kreader.ui.data.DrmCertificateFactory;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
@@ -40,7 +41,6 @@ public class OpenDocumentAction extends BaseAction {
     private String documentPath;
     private DataManager dataProvider;
     private boolean canceled = false;
-    private boolean processOrientation = false;
 
     public OpenDocumentAction(final Activity activity, final String path) {
         this.activity = activity;
@@ -92,12 +92,8 @@ public class OpenDocumentAction extends BaseAction {
                     cleanup(readerDataHolder);
                     return;
                 }
-                // ignore document's orientation temporary for multi-document
-//                if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
-//                    return;
-//                }
 
-                if (processOrientation) {
+                if (!ReaderIPCManager.isIgnoreLoadingOrientation()) {
                     if (!processOrientation(readerDataHolder, loadDocumentOptionsRequest.getDocumentOptions())) {
                         return;
                     }

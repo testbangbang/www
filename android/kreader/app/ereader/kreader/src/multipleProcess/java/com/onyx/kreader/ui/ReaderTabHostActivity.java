@@ -29,15 +29,15 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.device.EnvironmentUtil;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.Debug;
-import com.onyx.android.sdk.reader.host.options.BaseOptions;
-import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -540,7 +540,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             }
             finish();
             return true;
-        } catch (java.lang.Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             releaseStartupWakeLock();

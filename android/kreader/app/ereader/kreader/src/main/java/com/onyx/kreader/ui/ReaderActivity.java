@@ -36,14 +36,14 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
-import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
@@ -73,6 +73,7 @@ import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
 import com.onyx.kreader.ui.events.ConfirmCloseDialogEvent;
+import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
@@ -95,9 +96,9 @@ import com.onyx.kreader.ui.events.ShortcutErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
-import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.SlideshowStartEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
+import com.onyx.kreader.ui.events.ToggleFullScreenEvent;
 import com.onyx.kreader.ui.events.UpdateScribbleMenuEvent;
 import com.onyx.kreader.ui.events.UpdateTabWidgetVisibilityEvent;
 import com.onyx.kreader.ui.gesture.MyOnGestureListener;
@@ -226,7 +227,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     public void onBackPressed() {
-        ReaderTabHostBroadcastReceiver.sendTabBackPressedIntent(this);
+        ReaderIPCManager.onBackPressed(this);
     }
 
     private final ReaderDataHolder getReaderDataHolder() {
@@ -278,7 +279,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             @Override
             public void onClick(View v) {
                 buttonShowTabWidget.setVisibility(View.GONE);
-                ReaderTabHostBroadcastReceiver.sendShowTabWidgetEvent(ReaderActivity.this);
+                ReaderIPCManager.onShowTabHostWidget(ReaderActivity.this);
             }
         });
     }
@@ -455,6 +456,16 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private void syncSystemStatusBar() {
         boolean fullScreen = !SingletonSharedPreference.isSystemStatusBarEnabled(this) || DeviceConfig.sharedInstance(this).isSupportColor();
+        setFullScreen(fullScreen);
+    }
+
+    @Subscribe
+    public void onToggleFullScreen(final ToggleFullScreenEvent event) {
+        if (DeviceConfig.sharedInstance(this).isSupportColor()) {
+            return;
+        }
+        boolean fullScreen = SingletonSharedPreference.isSystemStatusBarEnabled(this);
+        SingletonSharedPreference.setSystemStatusBarEnabled(this, fullScreen);
         setFullScreen(fullScreen);
     }
 
@@ -918,7 +929,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onChangeOrientation(final ChangeOrientationEvent event) {
-        ReaderTabHostBroadcastReceiver.sendChangeOrientationIntent(this, event.getOrientation());
+        ReaderIPCManager.onChangeOrientation(this, event);
     }
 
     @Subscribe
@@ -1045,7 +1056,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         getReaderDataHolder().getEventBus().unregister(this);
         releaseStartupWakeLock();
-        ReaderTabHostBroadcastReceiver.sendOpenDocumentFailedEvent(this, getReaderDataHolder().getDocumentPath());
+        ReaderIPCManager.onOpenDocumentFailed(this, getReaderDataHolder().getDocumentPath());
 
         finish();
         postFinish();
@@ -1087,7 +1098,6 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void postFinish() {
-        DeviceUtils.exit();
     }
 
     private boolean hasPopupWindow() {
@@ -1142,11 +1152,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     public void setFullScreen(boolean fullScreen) {
         DeviceUtils.setFullScreenOnResume(this, fullScreen);
-        if (fullScreen) {
-            ReaderTabHostBroadcastReceiver.sendEnterFullScreenIntent(this);
-        } else {
-            ReaderTabHostBroadcastReceiver.sendQuitFullScreenIntent(this);
-        }
+        ReaderIPCManager.onFullScreenChanged(this, fullScreen);
     }
 
     public SurfaceView getSurfaceView() {
