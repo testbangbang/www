@@ -20,4 +20,4 @@
 -keepclasseswithmembernames public class com.onyx.edu.manager.model.** { *;}
 
 # for event
--keepclasseswithmembernames public class com.onyx.edu.manager.events.** { *;}
+-keepclasseswithmembernames public class com.onyx.edu.manager.event.** { *;}

@@ -51,7 +51,10 @@ public class NetworkUtil {
         return Device.currentDevice().readSystemConfig(context, MAC_ADDRESS_KEY);
     }
 
-    private static boolean isStringValidMacAddress(String val){
+    public static boolean isStringValidMacAddress(String val) {
+        if (StringUtils.isNullOrEmpty(val)) {
+            return false;
+        }
         String macAddressRegex = "([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}";
         return val.matches(macAddressRegex);
     }
