@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">dr</string>
     <string name="account_un_login">未登录</string>
     <string name="menu_graded_books">分级读物</string>
     <string name="menu_real_time_articles">时文篇章</string>
@@ -122,4 +123,5 @@
     <string name="screen_success">截屏成功</string>
     <string name="screen_success_prompt">截图已保存至设备下%s文件夹中,可使用USB先连接PC导出。</string>
     <string name="no_chapters">本文不含章节信息</string>
+    <string name="popup_selection_menu_page_indicator_default_value">1/1</string>
 </resources>

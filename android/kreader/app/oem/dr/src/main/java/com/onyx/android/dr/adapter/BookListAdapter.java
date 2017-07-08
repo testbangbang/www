@@ -3,6 +3,7 @@ package com.onyx.android.dr.adapter;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +11,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.common.references.CloseableReference;
+import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.LibraryDataModel;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
@@ -41,6 +47,7 @@ import butterknife.ButterKnife;
  * Created by hehai on 2017/7/5.
  */
 public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapter.LibraryItemViewHolder> implements View.OnClickListener {
+    private static final String TAG = BookListAdapter.class.getSimpleName();
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_row);
     private int col = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_col);
     private Activity context;
@@ -133,7 +140,23 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
 
     private void startDownload(final Metadata eBook) {
         String filePath = getDataSaveFilePath(eBook);
-        // TODO: 17-7-3 download book
+        OnyxDownloadManager downLoaderManager = getDownLoaderManager();
+        BaseDownloadTask download = downLoaderManager.download(DRApplication.getInstance(), eBook.getLocation(), filePath, eBook.getGuid(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+
+            }
+
+            @Override
+            public void progress(BaseRequest request, ProgressInfo info) {
+
+            }
+        });
+        getDownLoaderManager().startDownload(download);
+    }
+
+    private OnyxDownloadManager getDownLoaderManager() {
+        return OnyxDownloadManager.getInstance();
     }
 
     static class LibraryItemViewHolder extends RecyclerView.ViewHolder {
@@ -245,9 +268,7 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
         if (!file.exists()) {
             return;
         }
-        ActivityUtil.startActivitySafely(context,
-                MetadataUtils.putIntentExtraDataMetadata(ViewDocumentUtils.viewActionIntentWithMimeType(file), book),
-                ViewDocumentUtils.getEduReaderComponentName(context));
+        ActivityManager.openBook(DRApplication.getInstance(), book, path);
     }
 
     private String getDataSaveFilePath(Metadata book) {

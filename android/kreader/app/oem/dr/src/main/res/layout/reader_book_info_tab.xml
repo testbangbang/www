@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:paddingTop="30dp"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    android:paddingBottom="10dp">
+
+    <TextView
+        android:id="@+id/book_info_catalog"
+        style="@style/BookInfoTabStyle"
+        android:text="目录" />
+
+    <TextView
+        android:id="@+id/book_info_bookmark"
+        style="@style/BookInfoTabStyle"
+        android:text="书签" />
+
+    <TextView
+        android:id="@+id/book_info_note"
+        style="@style/BookInfoTabStyle"
+        android:text="笔记" />
+
+</LinearLayout>

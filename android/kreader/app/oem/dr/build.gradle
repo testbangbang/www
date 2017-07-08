@@ -4,7 +4,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
 apply from: file(rootProject.projectDir.absolutePath + '/versioning.gradle')
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion rootProject.ext.compatibleSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
@@ -82,4 +82,7 @@ dependencies {
     }
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
     compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    compile (project(path: ':libraries:onyxsdk-reader')){
+        exclude group: 'com.alibaba', module: 'fastjson'
+    }
 }

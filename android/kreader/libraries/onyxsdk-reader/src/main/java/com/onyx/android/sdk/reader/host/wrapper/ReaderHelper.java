@@ -99,8 +99,8 @@ public class ReaderHelper {
             plugin = new ComicReaderPlugin(context, pluginOptions);
         } else if (AlReaderPlugin.accept(path)) {
             plugin = new AlReaderPlugin(context, pluginOptions);
-        } else if(JEBReaderPlugin.accept(path)){
-            plugin = new JEBReaderPlugin(context,pluginOptions);
+        } else if (JEBReaderPlugin.accept(path)) {
+            plugin = new JEBReaderPlugin(context, pluginOptions);
         }
         return (plugin != null);
     }
@@ -141,7 +141,7 @@ public class ReaderHelper {
         if (LegacySdkDataUtils.hasThumbnail(context, path) && ContentSdKDataUtils.hasThumbnail(context, path)) {
             return;
         }
-        WindowManager window = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager window = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         if (window == null) {
             Log.w(TAG, "getById display metrics failed: " + documentPath);
             return;
@@ -280,7 +280,7 @@ public class ReaderHelper {
         initImageReflowManager(context);
         initBitmapCache();
         initWordAnalyzerInBackground(context);
-        if(AlReaderPlugin.isJEB(documentPath)){
+        if (AlReaderPlugin.isJEB(documentPath)) {
             bookName = JEBFilesZIP.bookName;
         }
     }
@@ -291,7 +291,7 @@ public class ReaderHelper {
     }
 
     private void initWordAnalyzerInBackground(final Context context) {
-        AnalyzerAndroidWrapper.initialize(context.getApplicationContext(), true);
+        AnalyzerAndroidWrapper.initialize(context, true);
     }
 
     private void initImageReflowManager(Context context) {
@@ -388,7 +388,7 @@ public class ReaderHelper {
             return null;
         }
         final List<RectF> list = new ArrayList<>();
-        for(ReaderSelection selection : selectionList) {
+        for (ReaderSelection selection : selectionList) {
             list.addAll(selection.getRectangles());
         }
         translateToScreen(viewInfo.getFirstVisiblePage(), list);
@@ -441,11 +441,11 @@ public class ReaderHelper {
         return documentPath;
     }
 
-    public final String getBookName(){
+    public final String getBookName() {
         return bookName;
     }
 
-    public void setBookName(String bookName){
+    public void setBookName(String bookName) {
         this.bookName = bookName;
     }
 

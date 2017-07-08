@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/tts_setting_voice_reading_padding_left"
+        android:text="@string/tts_setting_voice_reading"
+        android:textColor="@android:color/black"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/reader_tts_menu_play"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/tts_setting_voice_speed_speech_ll_padding">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/tts_setting_voice_speed_speech"
+                    android:textColor="@android:color/black"/>
+
+                <SeekBar
+                    android:id="@+id/reader_tts_menu_speed_rate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="8"
+                    android:background="@drawable/focused_bg"
+                    android:max="20"
+                    android:maxHeight="@dimen/menu_seek_bar_height"
+                    android:minHeight="@dimen/menu_seek_bar_height"
+                    android:padding="@dimen/reader_page_info_menu_reading_process_padding"
+                    android:progressDrawable="@drawable/seekbar_progress"
+                    android:thumb="@drawable/seekbar_thumb" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="@dimen/tts_setting_voice_volume_ll_padding">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/tts_setting_voice_volume"
+                    android:textColor="@android:color/black"/>
+
+                <SeekBar
+                    android:id="@+id/reader_tts_menu_volume"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="8"
+                    android:background="@drawable/focused_bg"
+                    android:max="20"
+                    android:maxHeight="@dimen/menu_seek_bar_height"
+                    android:minHeight="@dimen/menu_seek_bar_height"
+                    android:padding="@dimen/reader_page_info_menu_reading_process_padding"
+                    android:progressDrawable="@drawable/seekbar_progress"
+                    android:thumb="@drawable/seekbar_thumb" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/reader_tts_menu_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/reader_tts_menu_play_margin_right"
+            android:layout_marginRight="@dimen/reader_tts_menu_play_margin_right"
+            android:background="@drawable/imagebtn_bg"
+            android:src="@drawable/ic_reader_play" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/tts_setting_voice_line_view_margin_left"
+        android:layout_marginRight="@dimen/tts_setting_voice_line_view_margin_right"
+        android:background="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/reader_tts_menu_quit_reading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/tts_setting_voice_quit_reading_padding"
+        android:text="@string/tts_setting_voice_quit_reading"
+        android:background="@drawable/imagebtn_bg"
+        android:textColor="@android:color/black"/>
+</LinearLayout>

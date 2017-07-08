@@ -94,7 +94,7 @@
     <string name="sure_delete">Are you sure you want to delete this</string>
     <string name="dialog_dictionary_title">No Explanation</string>
     <string name="popup_selection_menu_page_indicator_default_value">1/1</string>
-    <string name="Copy">Copy</string>
+    <string name="copy">Copy</string>
     <string name="Highlight">Highlight</string>
     <string name="Dictionary">Dictionary</string>
     <string name="popup_selection_menu_start_tts">TTS</string>

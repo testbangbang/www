@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/reader_physical_key_setting_menu_page_key_padding"
+        android:text="@string/page_key"
+        android:textSize="@dimen/level_two_font_size"
+        android:textColor="@android:color/black"/>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/reader_physical_key_setting_menu_radio_padding_left"
+        android:paddingRight="@dimen/reader_physical_key_setting_menu_radio_padding_right">
+
+        <RadioButton
+            android:id="@+id/reader_physical_key_menu_one"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/reader_physical_key_menu_one_padding_bottom"
+            android:paddingLeft="@dimen/reader_physical_key_menu_one_padding_left"
+            android:paddingTop="@dimen/reader_physical_key_menu_one_padding_top"
+            android:text="@string/reader_physical_key_menu_one_name"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_font_size" />
+
+        <RadioButton
+            android:id="@+id/reader_physical_key_menu_two"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/reader_physical_key_menu_one_padding_bottom"
+            android:paddingLeft="@dimen/reader_physical_key_menu_one_padding_left"
+            android:paddingTop="@dimen/reader_physical_key_menu_one_padding_top"
+            android:text="@string/reader_physical_key_menu_two_name"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_font_size" />
+
+        <RadioButton
+            android:id="@+id/reader_physical_key_menu_three"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/reader_physical_key_menu_one_padding_bottom"
+            android:paddingLeft="@dimen/reader_physical_key_menu_one_padding_left"
+            android:paddingTop="@dimen/reader_physical_key_menu_one_padding_top"
+            android:text="@string/reader_physical_key_menu_three_name"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_font_size" />
+    </RadioGroup>
+</LinearLayout>
