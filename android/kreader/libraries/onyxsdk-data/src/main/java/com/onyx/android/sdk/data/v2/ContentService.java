@@ -1,13 +1,19 @@
 package com.onyx.android.sdk.data.v2;
 
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.model.v2.AdminApplyModel;
+import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.Course;
+import com.onyx.android.sdk.data.model.v2.DeviceBind;
+import com.onyx.android.sdk.data.model.v2.GroupUserInfo;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.ProductResult;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.model.v2.UserInfoBind;
 
 import java.util.List;
 
@@ -52,4 +58,29 @@ public interface ContentService {
 
     @GET("books/{id}")
     Call<CloudMetadata> loadBook(@Path(Constant.ID_TAG) final String idString);
+
+    @POST("groups/{id}/createUserByDevices")
+    Call<NeoAccountBase> createUserByDevice(@Path(Constant.ID_TAG) final String groupId,
+                                            @Body final DeviceBind deviceBind);
+
+    @GET("userinfos/getByGroup")
+    Call<List<UserInfoBind>> getDeviceBindList(@Query("groupId") final String groupId);
+
+    @GET("groups/{id}/groupusers")
+    Call<List<NeoAccountBase>> getGroupUserList(@Path(Constant.ID_TAG) final String groupId);
+
+    @GET("groups/{id}")
+    Call<CloudGroup> getGroupList(@Path(Constant.ID_TAG) final String parentGroupId);
+
+    @GET("groups//recursive")
+    Call<List<CloudGroup>> getRecursiveGroupList();
+
+    @POST("adusers")
+    Call<ResponseBody> applyAdminRequest(@Body final AdminApplyModel applyModel);
+
+    @GET("adusers/findByMac")
+    Call<IndexService> getAdminIndexService(@Query("mac") final String macAddress);
+
+    @GET("users/findByDeviceMac")
+    Call<GroupUserInfo> getGroupUserInfo(@Query("mac") final String macAddress);
 }

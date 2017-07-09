@@ -55,6 +55,7 @@
         <item name="android:singleLine">true</item>
         <item name="android:background">@drawable/edit_background</item>
         <item name="android:textSize">@dimen/activity_login_edit_text_size</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
 </resources>

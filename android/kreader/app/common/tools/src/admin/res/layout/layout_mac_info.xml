@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <View style="@style/divider_style" />
+
+    <TextView
+        android:id="@+id/tv_mac_info"
+        style="@style/user_info_text_style"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Mac:   " />
+
+    <View style="@style/divider_style" />
+
+</LinearLayout>
