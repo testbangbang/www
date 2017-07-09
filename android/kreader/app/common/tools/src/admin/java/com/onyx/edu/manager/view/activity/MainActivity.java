@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                         if (indexServiceRequest.isIndexServiceHasChanged()) {
                             clearAccountInfo();
                         }
-                        afterLoadIndexService();
+                        postLoadIndexService();
                     }
                 });
     }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         showFragment(ApplyFragment.newInstance());
     }
 
-    private void afterLoadIndexService() {
+    private void postLoadIndexService() {
         if (hasAccount()) {
             showFragment(FuncSelectFragment.newInstance());
         } else {

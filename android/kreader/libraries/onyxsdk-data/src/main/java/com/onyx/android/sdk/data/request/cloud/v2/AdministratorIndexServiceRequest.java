@@ -61,9 +61,10 @@ public class AdministratorIndexServiceRequest extends BaseCloudRequest {
     }
 
     private void onContentServerChanged(CloudManager parent, IndexService newIndexService) {
+        resultService = newIndexService;
         indexServiceHasChanged = true;
         parent.setToken(null);
-        saveContentServiceInfo(getContext(), resultService = newIndexService);
+        saveContentServiceInfo(getContext(), resultService);
     }
 
     private IndexService loadContentServiceInfoFromLocal(Context context, int retryCount) {
