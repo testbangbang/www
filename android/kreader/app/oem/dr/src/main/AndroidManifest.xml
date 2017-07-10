@@ -55,6 +55,12 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustPan" />
 
+        <activity
+            android:name=".activity.DictQueryActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+
+        <activity android:name=".activity.DictResultShowActivity"></activity>
+
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"
             android:authorities="com.onyx.content.database.ContentProvider"

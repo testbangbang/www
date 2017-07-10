@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="webview_default_font_size" format="float" type="dimen">1.6</string>
+</resources>
