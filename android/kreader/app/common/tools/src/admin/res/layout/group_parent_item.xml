@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/group_ref"
+    style="@style/parent_group_layout_style"
+    android:layout_centerVertical="true"
+    android:layout_gravity="center_vertical" />

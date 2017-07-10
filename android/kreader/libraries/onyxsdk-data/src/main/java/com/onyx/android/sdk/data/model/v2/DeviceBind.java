@@ -11,6 +11,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
  */
 @Table(database = ContentDatabase.class, allFields = true)
 public class DeviceBind extends BaseData {
+    public String _id;
     public String userInfoId;
     public String model;
     public String mac;

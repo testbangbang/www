@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Tool-Manager</string>
+
+    <string name="mac_address_format" translatable="false">Mac:   %s</string>
+    <string name="username_do">姓名:</string>
+    <string name="phone_do">电话:</string>
+    <string name="grade_class_do">班级:</string>
+    <string name="login">登录</string>
+    <string name="account_hint">账号:</string>
+    <string name="password_hint">密码:</string>
+    <string name="password_forget">忘记密码</string>
+    <string name="double_back_press_tip">再按一次退出</string>
+</resources>

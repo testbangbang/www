@@ -3,10 +3,12 @@ package com.onyx.android.sdk.data.model.v2;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.data.converter.ListStringConverter;
 import com.onyx.android.sdk.data.model.BaseData;
+import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ColumnIgnore;
 
 import java.util.Date;
 import java.util.List;
@@ -31,6 +33,8 @@ public class NeoAccountBase extends BaseData {
 
     public String info;
     public String library;
+    @ColumnIgnore
+    public List<Device> devices;
 
     @JSONField(serialize = false, deserialize = false)
     public String getFirstGroup() {
@@ -38,6 +42,14 @@ public class NeoAccountBase extends BaseData {
             return "";
         }
         return groups.get(0).replaceAll(DELIMITER, "");
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public Device getFirstDevice() {
+        if(CollectionUtils.isNullOrEmpty(devices)) {
+            return null;
+        }
+        return devices.get(0);
     }
 
     public String getPhone() {
@@ -72,5 +84,10 @@ public class NeoAccountBase extends BaseData {
                 account.name = common.name;
             }
         }
+    }
+
+    public void setAuthToken(String token, long tokenExpiresIn) {
+        this.token = token;
+        this.tokenExpiresIn = tokenExpiresIn;
     }
 }
