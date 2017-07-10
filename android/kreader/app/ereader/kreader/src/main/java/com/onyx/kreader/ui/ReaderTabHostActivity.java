@@ -335,6 +335,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 ReaderTabHostActivity.this.onMediaUnmounted(intent);
             }
         });
+        deviceReceiver.setMtpEventListener(new DeviceReceiver.MtpEventListener() {
+            @Override
+            public void onMtpEvent(Intent intent) {
+                ReaderTabHostActivity.this.onMediaUnmounted(intent);
+            }
+        });
     }
 
     private void onMediaUnmounted(Intent intent) {
