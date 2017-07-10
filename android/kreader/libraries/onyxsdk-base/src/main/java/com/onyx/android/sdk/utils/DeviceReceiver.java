@@ -43,6 +43,7 @@ public class DeviceReceiver extends BroadcastReceiver {
     public static final String START_ONYX_SETTINGS = "start_onyx_settings";
 
     public static final String OPEN_DOCUMENT_ACTION = "com.onyx.open";
+    public static final String MTP_EVENT_ACTION = "com.onyx.action.MTP_EVENT_ACTION";
 
     public static int count = 0;
     static private FileObserver observer;
@@ -103,6 +104,11 @@ public class DeviceReceiver extends BroadcastReceiver {
         }
     }
 
+    static public class MtpEventListener {
+        public void onMtpEvent(Intent intent){
+        }
+    }
+
     static public class FileSystemListener {
         public void onFileRemoved(final String path) {
         }
@@ -142,6 +148,7 @@ public class DeviceReceiver extends BroadcastReceiver {
     private OpenDocumentListener openDocumentListener;
     private LocaleChangedListener localeChangedListener;
     private BluetoothStateListener bluetoothStateListener;
+    private MtpEventListener mtpEventListener;
 
     public void initReceiver(Context context) {
         enable(context, true);
@@ -166,6 +173,7 @@ public class DeviceReceiver extends BroadcastReceiver {
         filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         filter.addAction(Intent.ACTION_MEDIA_REMOVED);
         filter.addAction(Intent.ACTION_MEDIA_SHARED);
+        filter.addAction(MTP_EVENT_ACTION);
         filter.addDataScheme("file");
 
         return filter;
@@ -283,6 +291,8 @@ public class DeviceReceiver extends BroadcastReceiver {
             onOpenDocumentAction(intent);
         } else if (action.equals(Intent.ACTION_LOCALE_CHANGED)) {
             onLocaleChanged();
+        } else if (action.equals(MTP_EVENT_ACTION)) {
+            onMtpEvent(intent);
         }
     }
 
@@ -322,6 +332,9 @@ public class DeviceReceiver extends BroadcastReceiver {
         bluetoothStateListener = l;
     }
 
+    public void setMtpEventListener(final MtpEventListener l) {
+        mtpEventListener = l;
+    }
 
     public void onReceiveBootComplete(Intent intent) {
         if (bootCompleteListener != null) {
@@ -415,6 +428,12 @@ public class DeviceReceiver extends BroadcastReceiver {
     public void onMediaStateChanged(Intent intent) {
         if (mediaStateListener != null) {
             mediaStateListener.onMediaScanStarted(intent);
+        }
+    }
+
+    public void onMtpEvent(Intent intent) {
+        if (mtpEventListener != null) {
+            mtpEventListener.onMtpEvent(intent);
         }
     }
 
