@@ -59,7 +59,7 @@ public class DRApplication extends MultiDexApplication {
             initCloudStore();
             initLeanCloud();
             initFrescoLoader();
-			initDatabases(this, databaseHolderList());
+            initDatabases(this, databaseHolderList());
             initDictDatas();
         } catch (Exception e) {
             e.printStackTrace();
