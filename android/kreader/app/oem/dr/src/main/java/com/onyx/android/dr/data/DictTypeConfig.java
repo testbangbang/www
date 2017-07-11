@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * Created by zhouzhiming on 17-6-28.
  */
-
 public class DictTypeConfig {
 
     public List<DictTypeData> dictLanguageData = new ArrayList<>();

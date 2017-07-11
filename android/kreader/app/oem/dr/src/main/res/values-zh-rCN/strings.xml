@@ -143,4 +143,7 @@
     <string name="dict_query_bracket_right">]</string>
     <string name="hint">hint</string>
     <string name="webview_default_font_size" format="float" type="dimen">1.5</string>
+    <string name="my_notes_activity_my_tracks">我的轨迹</string>
+    <string name="my_notes_activity_my_think">我的思考</string>
+    <string name="my_notes_activity_my_creation">我的创作</string>
 </resources>

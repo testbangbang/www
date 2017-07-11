@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <include
-            layout="@layout/activity_common_tital"
+            layout="@layout/title_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -32,38 +32,17 @@
                 style="@style/dict_query_type"
                 android:text="@string/word_query" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dict_query_bracket_margin_left"
-                android:text="@string/dict_query_bracket_left"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+            <TextView style="@style/dict_query_bracket_left" />
 
             <EditText
                 android:id="@+id/activity_query_word"
-                android:layout_width="@dimen/dict_query_edittext_width"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionSearch"
-                android:maxLines="@integer/dict_query_edittext_lines"
-                android:singleLine="true"
-                />
+                style="@style/dict_query_edittext" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dict_query_bracket_right"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+            <TextView style="@style/dict_query_bracket_right" />
 
             <Button
                 android:id="@+id/activity_word_query_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_query_search_margin_left"
-                android:text="@string/activity_query_search"
-                android:textSize="@dimen/level_two_heading_font"
-                android:visibility="visible" />
+                style="@style/activity_query_search" />
 
         </LinearLayout>
 
@@ -75,37 +54,17 @@
                 style="@style/dict_query_type"
                 android:text="@string/dim_query" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dict_query_bracket_margin_left"
-                android:text="@string/dict_query_bracket_left"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+            <TextView style="@style/dict_query_bracket_left" />
 
             <EditText
                 android:id="@+id/activity_query_fuzzy"
-                android:layout_width="@dimen/dict_query_edittext_width"
-                android:imeOptions="actionSearch"
-                android:maxLines="@integer/dict_query_edittext_lines"
-                android:singleLine="true"
-                android:layout_height="wrap_content" />
+                style="@style/dict_query_edittext" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dict_query_bracket_right"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+            <TextView style="@style/dict_query_bracket_right" />
 
             <Button
                 android:id="@+id/activity_fuzzy_query_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_query_search_margin_left"
-                android:text="@string/activity_query_search"
-                android:textSize="@dimen/level_two_heading_font"
-                android:visibility="visible" />
+                style="@style/activity_query_search" />
 
         </LinearLayout>
 
@@ -117,37 +76,17 @@
                 style="@style/dict_query_type"
                 android:text="@string/phrase_query" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dict_query_bracket_margin_left"
-                android:text="@string/dict_query_bracket_left"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+            <TextView style="@style/dict_query_bracket_left" />
 
             <EditText
                 android:id="@+id/activity_query_phrase"
-                android:layout_width="@dimen/dict_query_edittext_width"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionSearch"
-                android:singleLine="true"
-                android:maxLines="@integer/dict_query_edittext_lines" />
+                style="@style/dict_query_edittext" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dict_query_bracket_right"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+            <TextView style="@style/dict_query_bracket_right" />
 
             <Button
                 android:id="@+id/activity_phrase_query_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_query_search_margin_left"
-                android:text="@string/activity_query_search"
-                android:textSize="@dimen/level_two_heading_font"
-                android:visibility="visible" />
+                style="@style/activity_query_search" />
 
         </LinearLayout>
 
@@ -159,37 +98,17 @@
                 style="@style/dict_query_type"
                 android:text="@string/example_query" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dict_query_bracket_margin_left"
-                android:text="@string/dict_query_bracket_left"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+            <TextView style="@style/dict_query_bracket_left" />
 
             <EditText
                 android:id="@+id/activity_query_example"
-                android:layout_width="@dimen/dict_query_edittext_width"
-                android:imeOptions="actionSearch"
-                android:maxLines="@integer/dict_query_edittext_lines"
-                android:singleLine="true"
-                android:layout_height="wrap_content" />
+                style="@style/dict_query_edittext" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dict_query_bracket_right"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+            <TextView style="@style/dict_query_bracket_right" />
 
             <Button
                 android:id="@+id/activity_example_query_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/activity_query_search_margin_left"
-                android:text="@string/activity_query_search"
-                android:textSize="@dimen/level_two_heading_font"
-                android:visibility="visible" />
+                style="@style/activity_query_search" />
 
         </LinearLayout>
 

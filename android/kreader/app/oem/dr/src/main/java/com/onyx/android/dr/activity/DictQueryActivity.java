@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
@@ -43,7 +44,7 @@ import butterknife.OnClick;
  * Created by zhouzhiming on 17-6-26.
  */
 
-public class DictQueryActivity extends BaseActivity implements DictResultShowView, View.OnClickListener {
+public class DictQueryActivity extends BaseActivity implements DictResultShowView, View.OnClickListener{
     @Bind(R.id.tab_menu)
     PageRecyclerView tabMenu;
     @Bind(R.id.activity_query_word)
@@ -62,6 +63,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     Button phraseQuerySearch;
     @Bind(R.id.activity_example_query_search)
     Button exampleQuerySearch;
+    @Bind(R.id.image_view_back)
+    ImageView imageViewBack;
     private MainPresenter mainPresenter;
     private List<Library> libraryList;
     private TabMenuAdapter tabMenuAdapter;
@@ -121,42 +124,19 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     }
 
     public void initEvent() {
-        wordQuery.setOnKeyListener(new View.OnKeyListener() {
+        startSoftKeyboardSearch(wordQuery);
+        startSoftKeyboardSearch(fuzzyQuery);
+        startSoftKeyboardSearch(phraseQuery);
+        startSoftKeyboardSearch(exampleQuery);
+    }
+
+    private void startSoftKeyboardSearch(final EditText editText) {
+        editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
                     Utils.hideSoftWindow(DictQueryActivity.this);
-                    startDictResultShowActivity(wordQuery);
-                }
-                return false;
-            }
-        });
-        fuzzyQuery.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    Utils.hideSoftWindow(DictQueryActivity.this);
-                    startDictResultShowActivity(wordQuery);
-                }
-                return false;
-            }
-        });
-        phraseQuery.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    Utils.hideSoftWindow(DictQueryActivity.this);
-                    startDictResultShowActivity(wordQuery);
-                }
-                return false;
-            }
-        });
-        exampleQuery.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    Utils.hideSoftWindow(DictQueryActivity.this);
-                    startDictResultShowActivity(wordQuery);
+                    startDictResultShowActivity(editText);
                 }
                 return false;
             }
@@ -191,11 +171,11 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     @OnClick({R.id.activity_word_query_search,
             R.id.activity_fuzzy_query_search,
             R.id.activity_phrase_query_search,
-            R.id.imageView_back,
+            R.id.image_view_back,
             R.id.activity_example_query_search})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.imageView_back:
+            case R.id.image_view_back:
                 finish();
             case R.id.activity_word_query_search:
                 startDictResultShowActivity(wordQuery);

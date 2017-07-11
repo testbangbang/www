@@ -143,4 +143,7 @@
     <string name="hint">hint</string>
     <string name="webview_default_font_size" format="float" type="dimen">1.5</string>
     <string name="headword_search_empty">result 0</string>
+    <string name="my_notes_activity_my_tracks">my tracks</string>
+    <string name="my_notes_activity_my_think">my think</string>
+    <string name="my_notes_activity_my_creation">my creation</string>
 </resources>

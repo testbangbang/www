@@ -72,7 +72,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     ImageView ivVoiceTwo;
     @Bind(R.id.activity_dict_iv_voice_one)
     ImageView ivVoiceOne;
-    @Bind(R.id.imageView_back)
+    @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     private DictFunctionPresenter dictPresenter;
     private DictFunctionAdapter dictFunctionAdapter;
@@ -274,11 +274,11 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     }
 
     @OnClick({R.id.activity_dict_iv_voice_one,
-            R.id.imageView_back,
+            R.id.image_view_back,
             R.id.activity_dict_iv_voice_two})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.imageView_back:
+            case R.id.image_view_back:
                 finish();
                 break;
             case R.id.activity_dict_iv_voice_one:

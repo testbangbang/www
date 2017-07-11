@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -352,6 +353,11 @@ public class AutoPagedWebView extends WebView {
             });
         }
         disableA2ForSpecificView(this);
+    }
+
+    @Override
+    public ActionMode startActionModeForChild(View originalView, ActionMode.Callback callback, int type) {
+        return super.startActionModeForChild(originalView, callback, type);
     }
 
     public void setPageChangedListener(final PageChangedListener l) {

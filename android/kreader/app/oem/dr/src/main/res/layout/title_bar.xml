@@ -16,9 +16,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="left"
+            android:background="@drawable/rectangle_stroke_selector"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:background="@drawable/rectangle_stroke_selector">
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/image_view_back"
