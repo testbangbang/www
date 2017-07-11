@@ -75,12 +75,9 @@ public class AutoPagedWebView extends WebView {
     public void enableA2ForSpecificView(View view) {
     }
 
-    ;
-
     public void disableA2ForSpecificView(View view) {
     }
 
-    ;
     private String headwordSoundPath = null;
     private List<Set<DictionaryQueryResult>> resultList = new ArrayList<Set<DictionaryQueryResult>>();
     private Context mContext = null;
