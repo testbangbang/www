@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class MyNotesAdapter extends PageRecyclerView.PageAdapter<MyNotesAdapter.ViewHolder> implements View.OnClickListener {
+public class MyThinkAdapter extends PageRecyclerView.PageAdapter<MyThinkAdapter.ViewHolder> implements View.OnClickListener {
     private List<MenuData> menuDataList;
 
     public void setMenuDataList(List<MenuData> menuDataList) {

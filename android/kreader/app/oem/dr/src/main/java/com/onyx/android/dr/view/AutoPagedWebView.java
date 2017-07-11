@@ -6,7 +6,6 @@ import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -72,8 +71,16 @@ public class AutoPagedWebView extends WebView {
     private UpdateDictionaryListCallback updateDictionaryListCallback;
     private int measuredHeight = 0;
     private int measuredWidth = 0;
-    public void enableA2ForSpecificView(View view){};
-    public void disableA2ForSpecificView(View view){};
+
+    public void enableA2ForSpecificView(View view) {
+    }
+
+    ;
+
+    public void disableA2ForSpecificView(View view) {
+    }
+
+    ;
     private String headwordSoundPath = null;
     private List<Set<DictionaryQueryResult>> resultList = new ArrayList<Set<DictionaryQueryResult>>();
     private Context mContext = null;
@@ -355,11 +362,6 @@ public class AutoPagedWebView extends WebView {
         disableA2ForSpecificView(this);
     }
 
-    @Override
-    public ActionMode startActionModeForChild(View originalView, ActionMode.Callback callback, int type) {
-        return super.startActionModeForChild(originalView, callback, type);
-    }
-
     public void setPageChangedListener(final PageChangedListener l) {
         pageChangedListener = l;
     }
@@ -496,7 +498,7 @@ public class AutoPagedWebView extends WebView {
             String resultString = "";
             boolean isShow = false;
             for (Map.Entry<String, DictionaryQueryResult> entry : result.entrySet()) {
-                if(entry.getValue().dictionary.dictVoiceInfo != null){
+                if (entry.getValue().dictionary.dictVoiceInfo != null) {
                     continue;
                 }
                 if (resourceList.indexOf(entry.getKey()) >= 0) {
@@ -647,7 +649,7 @@ public class AutoPagedWebView extends WebView {
     }
 
     @JavascriptInterface
-    public void loadOver(){
+    public void loadOver() {
         EventBus.getDefault().post(new WebViewLoadOverEvent());
     }
 

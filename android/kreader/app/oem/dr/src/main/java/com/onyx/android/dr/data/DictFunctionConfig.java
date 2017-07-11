@@ -13,9 +13,7 @@ import java.util.List;
 /**
  * Created by zhouzhiming on 17-6-28.
  */
-
 public class DictFunctionConfig {
-
     public List<DictFunctionData> dictFunctionData = new ArrayList<>();
 
     public void loadDictInfo(Context context) {

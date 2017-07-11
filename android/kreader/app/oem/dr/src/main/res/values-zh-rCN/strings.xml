@@ -146,4 +146,13 @@
     <string name="my_notes_activity_my_tracks">我的轨迹</string>
     <string name="my_notes_activity_my_think">我的思考</string>
     <string name="my_notes_activity_my_creation">我的创作</string>
+    <string name="new_word_notebook">生词本</string>
+    <string name="postil">批注</string>
+    <string name="reader_response">读后感</string>
+    <string name="good_sentence_notebook">好句本</string>
+    <string name="read_summary">阅读纪要</string>
+    <string name="informal_essay">随笔</string>
+    <string name="reading_rate">阅读统计</string>
+    <string name="memorandum">备忘</string>
+    <string name="sketch">素描</string>
 </resources>

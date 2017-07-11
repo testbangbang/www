@@ -146,4 +146,13 @@
     <string name="my_notes_activity_my_tracks">my tracks</string>
     <string name="my_notes_activity_my_think">my think</string>
     <string name="my_notes_activity_my_creation">my creation</string>
+    <string name="new_word_notebook">new word notebook</string>
+    <string name="postil">postil</string>
+    <string name="reader_response">reader response</string>
+    <string name="good_sentence_notebook">good sentence notebook</string>
+    <string name="read_summary">read summary</string>
+    <string name="informal_essay">informal essay</string>
+    <string name="reading_rate">reading rate</string>
+    <string name="memorandum">memorandum</string>
+    <string name="sketch">sketch</string>
 </resources>

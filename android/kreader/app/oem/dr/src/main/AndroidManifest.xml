@@ -57,9 +57,11 @@
 
         <activity
             android:name=".activity.DictQueryActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+            android:windowSoftInputMode="stateVisible|adjustResize" />
 
-        <activity android:name=".activity.DictResultShowActivity"></activity>
+        <activity android:name=".activity.DictResultShowActivity" />
+
+        <activity android:name=".activity.MyNotesActivity" />
 
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"
