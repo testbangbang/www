@@ -47,7 +47,7 @@
                 android:layout_marginLeft="@dimen/user_info_edit_text_margin_right"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:hint="@string/class_" />
+                android:hint="@string/clazz" />
         </LinearLayout>
     </LinearLayout>
 

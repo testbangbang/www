@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * Created by hehai on 17-6-26.
  */
-
 public class RequestLocalBooks extends BaseDataRequest {
     private List<BookDetailEntity> books;
 

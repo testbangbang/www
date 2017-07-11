@@ -118,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="@string/recent_reading" />
+                android:text="@string/now_reading" />
 
             <ImageView
                 android:id="@+id/image_next"

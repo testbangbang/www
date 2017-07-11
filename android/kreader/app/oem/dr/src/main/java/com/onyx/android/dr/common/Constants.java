@@ -29,4 +29,14 @@ public class Constants {
     public static final String SCHOOL_BASED_MATERIALS_LIBRARY_NAME = "校本材料";
     public static final String MY_BOOKS = "我的读物";
     public static final String PROFESSIONAL_MATERIALS = "我的读物";
+
+    public static final int ACCOUNT_TYPE_DICT_FUNCTION = 3;
+    public static final int ACCOUNT_TYPE_DICT_LANGUAGE = 5;
+
+    public static final String DICT_ROOT = "/dicts";
+    public static final String DICTIONARY_ROOT = "/dictionary";
+
+    public static final int ACCOUNT_TYPE_MY_TRACKS = 0;
+    public static final int ACCOUNT_TYPE_MY_THINK = 1;
+    public static final int ACCOUNT_TYPE_MY_CREATION = 2;
 }
