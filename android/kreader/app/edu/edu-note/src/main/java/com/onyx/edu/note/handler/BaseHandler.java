@@ -1,6 +1,11 @@
 package com.onyx.edu.note.handler;
 
+import android.support.annotation.CallSuper;
+
 import com.onyx.edu.note.NoteManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by solskjaer49 on 2017/5/27 12:30.
@@ -9,14 +14,26 @@ import com.onyx.edu.note.NoteManager;
 public abstract class BaseHandler {
     private static final String TAG = BaseHandler.class.getSimpleName();
     protected NoteManager mNoteManager;
+    protected List<Integer> mMainMenuFunctionIDList = new ArrayList<>();
 
     public BaseHandler(NoteManager mNoteManager) {
         this.mNoteManager = mNoteManager;
     }
 
-    public abstract void onActivate();
+    @CallSuper
+    public void onActivate() {
+        buildMainMenuFunctionList();
+    }
 
-    public abstract void onDeactivate();
+    public void onDeactivate() {
+    }
 
-    public abstract void close();
+    public void close() {
+    }
+
+    protected abstract void buildMainMenuFunctionList();
+
+    public final List<Integer> getMainMenuFunctionIDList() {
+        return mMainMenuFunctionIDList;
+    }
 }

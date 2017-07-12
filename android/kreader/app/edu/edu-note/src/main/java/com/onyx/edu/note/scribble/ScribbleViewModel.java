@@ -2,8 +2,10 @@ package com.onyx.edu.note.scribble;
 
 import android.content.Context;
 import android.databinding.BaseObservable;
+import android.databinding.ObservableArrayList;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
+import android.databinding.ObservableList;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -25,6 +27,7 @@ import com.onyx.edu.note.actions.scribble.UndoAction;
 import com.onyx.edu.note.data.ScribbleAction;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by solskjaer49 on 2017/6/22 11:56.
@@ -39,6 +42,8 @@ public class ScribbleViewModel extends BaseObservable {
     // These observable fields will update Views automatically
     public final ObservableInt mCurrentPage = new ObservableInt();
     public final ObservableInt mTotalPage = new ObservableInt();
+    public final ObservableList<Integer> mMainMenuIDList = new ObservableArrayList<>();
+    public final ObservableList<Integer> mSubMenuIDList = new ObservableArrayList<>();
     private final ObservableField<NoteModel> mCurrentNoteModel = new ObservableField<>();
     private final ObservableField<ShapeDataInfo> mShapeDataInfo = new ObservableField<>();
     public final ObservableField<String> mNoteTitle = new ObservableField<>();
@@ -196,9 +201,23 @@ public class ScribbleViewModel extends BaseObservable {
         mNoteTitle.set(title);
     }
 
+    public void onSaveDocument(boolean closeAfterSave) {
+        onSaveDocument(closeAfterSave, null);
+    }
+
     void onSaveDocument(boolean closeAfterSave, BaseCallback callback) {
         DocumentSaveAction documentSaveAction = new DocumentSaveAction(mCurrentDocumentUniqueID,
                 mNoteTitle.get(), closeAfterSave);
         documentSaveAction.execute(mNoteManager, callback);
+    }
+
+    public void setMainMenuIDList(List<Integer> mainMenuIDList) {
+        mMainMenuIDList.clear();
+        mMainMenuIDList.addAll(mainMenuIDList);
+    }
+
+    public void setSubMenuIDList(List<Integer> subMenuIDList) {
+        mSubMenuIDList.clear();
+        mSubMenuIDList.addAll(subMenuIDList);
     }
 }

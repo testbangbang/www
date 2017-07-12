@@ -63,8 +63,8 @@
                         android:layout_width="?attr/actionBarSize"
                         android:layout_height="?attr/actionBarSize"
                         android:layout_marginRight="12dp"
-                        android:src="@drawable/ic_undo"
                         android:onClick="@{()->viewModel.unDo()}"
+                        android:src="@drawable/ic_undo"
                         app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
 
                     <com.onyx.android.sdk.ui.view.CustomIconView
@@ -72,6 +72,7 @@
                         android:layout_width="?attr/actionBarSize"
                         android:layout_height="?attr/actionBarSize"
                         android:layout_marginRight="12dp"
+                        android:onClick="@{()->viewModel.onSaveDocument(Boolean.FALSE)}"
                         android:src="@drawable/ic_save"
                         app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
 
@@ -80,8 +81,8 @@
                         android:layout_width="?attr/actionBarSize"
                         android:layout_height="?attr/actionBarSize"
                         android:layout_marginRight="12dp"
-                        android:src="@drawable/ic_redo"
                         android:onClick="@{()->viewModel.reDo()}"
+                        android:src="@drawable/ic_redo"
                         app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
 
                     <com.onyx.android.sdk.ui.view.CustomIconView
@@ -150,7 +151,8 @@
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
                 android:id="@+id/function_recycler_view"
-                android:layout_width="@dimen/wrap_content"
+                items="@{viewModel.mMainMenuIDList}"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
 
             <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
@@ -159,7 +161,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/page_indicator"
-                android:layout_toRightOf="@+id/function_content_view"
+                android:layout_toRightOf="@+id/function_recycler_view"
                 android:orientation="horizontal">
 
                 <com.onyx.android.sdk.ui.view.CustomIconView
@@ -167,9 +169,9 @@
                     android:layout_width="@dimen/onyx_main_note_menu_height"
                     android:layout_height="@dimen/onyx_main_note_menu_height"
                     android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_delete"
                     android:onClick="@{()->viewModel.deletePage()}"
-                    app:iconDrawingSize="@dimen/onyx_note_item_img_size" />
+                    android:src="@drawable/ic_delete"
+                    app:iconDrawingSize="@dimen/note_function_item_img_size" />
 
                 <com.onyx.android.sdk.ui.view.CustomIconView
                     android:id="@+id/button_add_page"
@@ -177,9 +179,9 @@
                     android:layout_height="@dimen/onyx_main_note_menu_height"
                     android:layout_marginRight="5dp"
                     android:layout_toLeftOf="@+id/button_delete_page"
-                    android:src="@drawable/ic_add"
                     android:onClick="@{()->viewModel.addPage()}"
-                    app:iconDrawingSize="@dimen/onyx_note_item_img_size" />
+                    android:src="@drawable/ic_add"
+                    app:iconDrawingSize="@dimen/note_function_item_img_size" />
 
             </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
 
@@ -196,9 +198,9 @@
                     android:id="@+id/button_previous_page"
                     android:layout_width="@dimen/onyx_main_note_menu_height"
                     android:layout_height="@dimen/onyx_main_note_menu_height"
-                    android:src="@drawable/ic_note_prev_page_black"
                     android:onClick="@{()->viewModel.onPrevPage()}"
-                    app:iconDrawingSize="@dimen/onyx_note_item_img_size" />
+                    android:src="@drawable/ic_note_prev_page_black"
+                    app:iconDrawingSize="@dimen/note_function_item_img_size" />
 
                 <Button
                     android:id="@+id/button_page_progress"
@@ -206,16 +208,16 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/imagebtn_bg"
                     android:focusable="true"
-                    android:text="@{@string/page_count(viewModel.mCurrentPage,viewModel.mTotalPage)}"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:text="@{@string/page_count(viewModel.mCurrentPage,viewModel.mTotalPage)}" />
 
                 <com.onyx.android.sdk.ui.view.CustomIconView
                     android:id="@+id/button_next_page"
                     android:layout_width="@dimen/onyx_main_note_menu_height"
                     android:layout_height="@dimen/onyx_main_note_menu_height"
-                    android:src="@drawable/ic_note_next_page_black"
                     android:onClick="@{()->viewModel.onNextPage()}"
-                    app:iconDrawingSize="@dimen/onyx_note_item_img_size" />
+                    android:src="@drawable/ic_note_next_page_black"
+                    app:iconDrawingSize="@dimen/note_function_item_img_size" />
             </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
         </RelativeLayout>
     </RelativeLayout>

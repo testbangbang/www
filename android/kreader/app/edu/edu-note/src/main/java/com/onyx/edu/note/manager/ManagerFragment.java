@@ -95,7 +95,7 @@ public class ManagerFragment extends Fragment {
     }
 
     private void buildAdapter() {
-        mAdapter = new ManagerAdapter((ManagerActivity) getActivity(), getActivity().getLayoutInflater(), this);
+        mAdapter = new ManagerAdapter(this);
     }
 
     public static class ManagerAdapter extends PageAdapter<NoteItemViewHolder, NoteModel, ManagerItemViewModel> {
@@ -109,9 +109,9 @@ public class ManagerFragment extends Fragment {
         */
         private WeakReference<ManagerFragment> fragmentWeakReference;
 
-        public ManagerAdapter(ManagerActivity noteItemNavigator, LayoutInflater layoutInflater, ManagerFragment fragment) {
-            mNoteItemNavigator = noteItemNavigator;
-            mLayoutInflater = layoutInflater;
+        ManagerAdapter(ManagerFragment fragment) {
+            mNoteItemNavigator = (ManagerActivity) fragment.getActivity();
+            mLayoutInflater = mNoteItemNavigator.getLayoutInflater();
             fragmentWeakReference = new WeakReference<>(fragment);
         }
 

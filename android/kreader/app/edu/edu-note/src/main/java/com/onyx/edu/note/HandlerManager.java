@@ -1,7 +1,9 @@
 package com.onyx.edu.note;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
@@ -14,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 public class HandlerManager {
+    public interface Callback {
+        void onActiveProviderChanged(HandlerManager handlerManager);
+    }
+
     public static final String TAG = HandlerManager.class.getSimpleName();
     public static final String SCRIBBLE_PROVIDER = "scribble";
     public static final String SPAN_TEXT_PROVIDER = "span_text";
@@ -22,9 +28,11 @@ public class HandlerManager {
     private String activeProviderName;
     private Context mContext;
     private Map<String, BaseHandler> providerMap = new HashMap<>();
+    private Callback mCallback;
 
-    public HandlerManager(Context context) {
+    public HandlerManager(Context context, Callback callback) {
         mContext = context;
+        mCallback = callback;
         initProviderMap();
     }
 
@@ -37,7 +45,7 @@ public class HandlerManager {
 
             }
         }));
-        activeProviderName = SCRIBBLE_PROVIDER;
+        resetToDefaultProvider();
     }
 
     public void resetToDefaultProvider() {
@@ -45,16 +53,32 @@ public class HandlerManager {
     }
 
     public void setActiveProvider(final String providerName) {
-        getActiveProvider().onDeactivate();
+        if (getActiveProvider() != null) {
+            getActiveProvider().onDeactivate();
+        }
         activeProviderName = providerName;
         getActiveProvider().onActivate();
+        if (mCallback != null) {
+            mCallback.onActiveProviderChanged(this);
+        }
     }
 
+    @Nullable
     public BaseHandler getActiveProvider() {
+        if (TextUtils.isEmpty(activeProviderName)) {
+            return null;
+        }
         return providerMap.get(activeProviderName);
     }
 
     public String getActiveProviderName() {
         return activeProviderName;
+    }
+
+    public List<Integer> getMainMenuFunctionIDList() {
+        if (getActiveProvider() == null) {
+            return null;
+        }
+        return getActiveProvider().getMainMenuFunctionIDList();
     }
 }
