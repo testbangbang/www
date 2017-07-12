@@ -1100,7 +1100,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void onStrokeWidthChanged(float width, BaseCallback callback) {
         if (shapeDataInfo.isInUserErasing()) {
-            setCurrentShapeType(PenType.PENCIL);
+            setCurrentShapeType(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
         }
         setStrokeWidth(width);
         syncWithCallback(true, true, callback);
