@@ -5,13 +5,6 @@
     android:gravity="center"
     android:background="@drawable/dialog_border">
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleInverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:id="@+id/progressBar" />
-
     <TextView
         android:id="@+id/textview_message"
         android:layout_width="wrap_content"
