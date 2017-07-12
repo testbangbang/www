@@ -54,6 +54,14 @@ public class ShapeDataInfo {
         return currentPageIndex;
     }
 
+    public int getHumanReadableCurPageIndex(){
+        if (getPageCount() == 0) {
+            return 0;
+        } else {
+            return currentPageIndex + 1;
+        }
+    }
+
     public boolean isCanUndoShape() {
         return canUndoShape;
     }

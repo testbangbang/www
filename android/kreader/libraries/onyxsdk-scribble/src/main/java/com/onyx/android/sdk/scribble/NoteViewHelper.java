@@ -126,7 +126,7 @@ public class NoteViewHelper {
         pauseDrawing();
     }
 
-    public View getView() {
+    public SurfaceView getView() {
         return surfaceView;
     }
 

@@ -1,10 +1,11 @@
-package com.onyx.edu.note.util;
+package com.onyx.android.sdk.scribble.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 
@@ -20,6 +21,7 @@ import java.util.List;
  */
 
 public class NoteViewUtil {
+    private static final String TAG = NoteViewUtil.class.getSimpleName();
     private static boolean mIsFullUpdate = false;
 
     public static void clearSurfaceView(SurfaceView surfaceView) {
@@ -57,7 +59,7 @@ public class NoteViewUtil {
         mIsFullUpdate = isFullUpdate;
     }
 
-    public static void resetFullUpdate() {
+    private static void resetFullUpdate() {
         mIsFullUpdate = false;
     }
 
@@ -66,7 +68,12 @@ public class NoteViewUtil {
         mIsFullUpdate = false;
     }
 
+    //TODO:use drawPage Action to draw in worker thread.direct call will work in UI thread.
     public static void drawPage(SurfaceView surfaceView, Bitmap viewBitmap, List<Shape> stashShapeList) {
+        if (!surfaceView.getHolder().getSurface().isValid()) {
+            Log.e(TAG, "surfaceView is not valid");
+            return;
+        }
         Rect rect = getViewportSize(surfaceView);
         Canvas canvas = getCanvasForDraw(surfaceView, rect);
         if (canvas == null) {

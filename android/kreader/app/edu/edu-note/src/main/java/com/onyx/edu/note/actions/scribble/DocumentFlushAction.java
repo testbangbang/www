@@ -19,19 +19,22 @@ public class DocumentFlushAction extends BaseNoteAction {
     private volatile boolean resumeDrawing;
     private volatile boolean render;
     private volatile NoteDrawingArgs drawingArgs;
+    private volatile boolean mDrawToView;
 
-    public DocumentFlushAction(final List<Shape> list, boolean r, boolean resume, final NoteDrawingArgs args) {
+    public DocumentFlushAction(final List<Shape> list, boolean r, boolean resume, boolean drawToView,final NoteDrawingArgs args) {
         if (list != null) {
             shapeList.addAll(list);
         }
         render = r;
         resumeDrawing = resume;
         drawingArgs = args;
+        mDrawToView = drawToView;
     }
 
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
         PageFlushRequest flushRequest = new PageFlushRequest(shapeList, render, resumeDrawing, drawingArgs);
+        flushRequest.setDrawToView(mDrawToView);
         noteManager.submitRequest(flushRequest, callback);
     }
 }
