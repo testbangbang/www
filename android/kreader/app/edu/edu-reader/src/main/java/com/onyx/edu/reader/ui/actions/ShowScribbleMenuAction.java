@@ -22,6 +22,7 @@ import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
 import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.edu.reader.R;
+import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
@@ -245,6 +246,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             return;
         }
         CommonViewHolder viewHolder = OnyxToolbar.Builder.createImageViewTitleHolder(context, R.id.content_view, imageResId, R.id.title, titleResId, R.layout.tool_bar_image_title_view, action);
+        viewHolder.setVisibility(R.id.title, DeviceConfig.sharedInstance(context).isShowMenuTitle() ? View.VISIBLE : View.GONE);
         toolbar.addViewHolder(viewHolder);
         scribbleViewHolderMap.put(action, viewHolder);
     }
@@ -258,7 +260,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         textView.setTextColor(Color.BLACK);
         textView.setTextSize(textSize);
         OnyxToolbar.Builder.setLayoutParams(context, textView, 0, 0);
-        textView.setPadding(0, 0, 0, (int) context.getResources().getDimension(R.dimen.menu_text_padding_bottom));
+        textView.setPadding(0, 0, 0, DeviceConfig.sharedInstance(context).isShowMenuTitle() ? (int) context.getResources().getDimension(R.dimen.menu_text_padding_bottom) : 0);
         CommonViewHolder viewHolder = new CommonViewHolder(textView);
         textView.setTag(action);
         toolbar.addViewHolder(viewHolder);

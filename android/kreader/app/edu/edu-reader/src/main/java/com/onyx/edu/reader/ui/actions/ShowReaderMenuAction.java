@@ -204,10 +204,11 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
+        boolean showTitle = DeviceConfig.sharedInstance(readerDataHolder.getContext()).isShowMenuTitle();
         ReaderLayerMenuItem[] menuItems = new ReaderLayerMenuItem[]{
-                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.EXIT, R.drawable.ic_exit, R.string.exit),
-                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_SCRIBBLE, R.drawable.ic_write, R.string.scribble),
-                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC, R.drawable.ic_topic, R.string.toc)
+                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.EXIT, R.drawable.ic_exit, showTitle ? R.string.exit : 0),
+                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_SCRIBBLE, R.drawable.ic_write, showTitle ? R.string.scribble : 0),
+                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC, R.drawable.ic_topic, showTitle ? R.string.toc : 0)
         };
         readerMenu = new EduMenu(readerDataHolder.getContext());
         updateReaderMenuCallback(readerMenu, readerDataHolder);

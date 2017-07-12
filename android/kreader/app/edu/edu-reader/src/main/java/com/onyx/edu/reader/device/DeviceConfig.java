@@ -56,6 +56,7 @@ public class DeviceConfig {
     private boolean supportMultipleTabs = false;
     private boolean customFormEnabled = false;
     private boolean enableDictWebSearch = true;
+    private boolean showMenuTitle = false;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -580,6 +581,14 @@ public class DeviceConfig {
 
     public void setEnableDictWebSearch(boolean enableDictWebSearch) {
         this.enableDictWebSearch = enableDictWebSearch;
+    }
+
+    public boolean isShowMenuTitle() {
+        return showMenuTitle;
+    }
+
+    public void setShowMenuTitle(boolean showMenuTitle) {
+        this.showMenuTitle = showMenuTitle;
     }
 
     public String getUmengKey() {
