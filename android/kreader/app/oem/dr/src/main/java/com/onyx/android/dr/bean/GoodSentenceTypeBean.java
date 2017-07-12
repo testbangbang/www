@@ -1,18 +1,18 @@
-package com.onyx.android.dr.data;
+package com.onyx.android.dr.bean;
 
 /**
  * Created by zhouzhiming on 17-6-28.
  */
 
-public class DictTypeData {
+public class GoodSentenceTypeBean {
     private String tabName;
     private Object eventBean;
 
-    public DictTypeData(String tabName) {
+    public GoodSentenceTypeBean(String tabName) {
         this.tabName = tabName;
     }
 
-    public DictTypeData(String tabName, Object eventBean) {
+    public GoodSentenceTypeBean(String tabName, Object eventBean) {
         this.tabName = tabName;
         this.eventBean = eventBean;
     }

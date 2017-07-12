@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_weight="1"
+            android:text="@string/good_sentence_activity_check_all" />
+
+        <LinearLayout style="@style/good_sentence_activity_spinner_linearlayout">
+
+            <Spinner
+                android:id="@+id/good_sentence_activity_month_spinner"
+                style="@style/good_sentence_activity_spinner" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/good_sentence_activity_spinner_linearlayout">
+
+            <Spinner
+                android:id="@+id/good_sentence_activity_week_spinner"
+                style="@style/good_sentence_activity_spinner" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/good_sentence_activity_spinner_linearlayout">
+
+            <Spinner
+                android:id="@+id/good_sentence_activity_day_spinner"
+                style="@style/good_sentence_activity_spinner" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="4"
+            android:text="@string/good_sentence_activity_good_sentence" />
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="2"
+            android:text="@string/good_sentence_activity_involved_reading_matter" />
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="2"
+            android:text="@string/good_sentence_activity_page_number" />
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="2"
+            android:text="@string/good_sentence_activity_recitation" />
+    </LinearLayout>
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/good_sentence_activity_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

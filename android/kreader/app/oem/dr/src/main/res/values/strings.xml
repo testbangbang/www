@@ -155,4 +155,15 @@
     <string name="reading_rate">reading rate</string>
     <string name="memorandum">memorandum</string>
     <string name="sketch">sketch</string>
+    <string name="english_good_sentence_notebook">english good sentence notebook</string>
+    <string name="chinese_good_sentence_notebook">chinese good sentence notebook</string>
+    <string name="minority_language_good_sentence_notebook">minority language good sentence notebook</string>
+    <string name="good_sentence_activity_check_all">check all</string>
+    <string name="good_sentence_activity_week">week</string>
+    <string name="good_sentence_activity_good_sentence">good sentence</string>
+    <string name="good_sentence_activity_involved_reading_matter">involved reading matter</string>
+    <string name="good_sentence_activity_page_number">page number</string>
+    <string name="good_sentence_activity_month">month</string>
+    <string name="good_sentence_activity_day">day</string>
+    <string name="good_sentence_activity_recitation">recitation</string>
 </resources>

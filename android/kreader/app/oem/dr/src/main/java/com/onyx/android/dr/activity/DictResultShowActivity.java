@@ -13,8 +13,8 @@ import com.onyx.android.dr.adapter.DictFunctionAdapter;
 import com.onyx.android.dr.adapter.DictTypeAdapter;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.data.DictFunctionData;
-import com.onyx.android.dr.data.DictTypeData;
+import com.onyx.android.dr.bean.DictFunctionBean;
+import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.dr.event.GoodExcerptEvent;
 import com.onyx.android.dr.event.PlaySoundEvent;
 import com.onyx.android.dr.event.QueryRecordEvent;
@@ -82,7 +82,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     private DictTypeAdapter dictTypeAdapter;
     private DividerItemDecoration dividerItemDecoration;
     private int customFontSize = 10;
-    private List<DictTypeData> searchResultList = new ArrayList<DictTypeData>();
+    private List<DictTypeBean> searchResultList = new ArrayList<DictTypeBean>();
     private List<String> wordSoundList = new ArrayList<>();
     private String editQuery = "";
     private static final int SOUND_ONE = 1;
@@ -154,12 +154,12 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     }
 
     @Override
-    public void setDictResultData(List<DictFunctionData> functionData) {
+    public void setDictResultData(List<DictFunctionBean> functionData) {
         dictFunctionAdapter.setMenuDatas(functionData);
     }
 
     @Override
-    public void setDictTypeData(List<DictTypeData> dictData) {
+    public void setDictTypeData(List<DictTypeBean> dictData) {
         dictTypeAdapter.setMenuDatas(dictData);
     }
 
@@ -263,7 +263,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         resultView.setScroll(0, 0);
         resultView.stopPlayer(0);
         //get dictionary result
-        DictTypeData dictTypeData = searchResultList.get(position);
+        DictTypeBean dictTypeData = searchResultList.get(position);
         String dictName = dictTypeData.getTabName();
         DictionaryQueryResult dictionaryQueryResult = queryResult.get(dictName);
         if (dictionaryQueryResult == null) {
@@ -291,7 +291,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     }
 
     private void saveDictionary(String dictName) {
-        DictTypeData dictTypeData = new DictTypeData(dictName);
+        DictTypeBean dictTypeData = new DictTypeBean(dictName);
         if (!searchResultList.contains(dictTypeData)) {
             searchResultList.add(dictTypeData);
         }

@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.TabMenuAdapter;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.MenuData;
@@ -140,13 +141,13 @@ public class MainActivity extends BaseActivity implements MainView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDictMenuEvent(DictMenuEvent event) {
         CommonNotices.showMessage(this, getString(R.string.menu_dict));
-        DictQueryActivity.startDictQueryActivity(this);
+        ActivityManager.startDictQueryActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNotesMenuEvent(NotesMenuEvent event) {
         CommonNotices.showMessage(this, getString(R.string.menu_notes));
-        MyNotesActivity.startMyNotesActivity(this);
+        ActivityManager.startMyNotesActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

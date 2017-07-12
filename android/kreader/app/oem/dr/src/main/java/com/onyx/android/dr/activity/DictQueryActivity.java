@@ -1,7 +1,5 @@
 package com.onyx.android.dr.activity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,10 +11,11 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.DictTypeAdapter;
 import com.onyx.android.dr.adapter.TabMenuAdapter;
+import com.onyx.android.dr.bean.DictFunctionBean;
+import com.onyx.android.dr.bean.DictTypeBean;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.data.DictFunctionData;
-import com.onyx.android.dr.data.DictTypeData;
 import com.onyx.android.dr.event.ChineseQueryEvent;
 import com.onyx.android.dr.event.EnglishQueryEvent;
 import com.onyx.android.dr.event.FrenchQueryEvent;
@@ -72,13 +71,6 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     private DictTypeAdapter dictTypeAdapter;
     private DictFunctionPresenter dictPresenter;
 
-    public static void startDictQueryActivity(Context context) {
-        Intent intent = new Intent();
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClass(context, DictQueryActivity.class);
-        context.startActivity(intent);
-    }
-
     @Override
     protected Integer getLayoutId() {
         return R.layout.activity_dict_query;
@@ -115,11 +107,11 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     }
 
     @Override
-    public void setDictResultData(List<DictFunctionData> functionData) {
+    public void setDictResultData(List<DictFunctionBean> functionData) {
     }
 
     @Override
-    public void setDictTypeData(List<DictTypeData> dictData) {
+    public void setDictTypeData(List<DictTypeBean> dictData) {
         dictTypeAdapter.setMenuDatas(dictData);
     }
 
@@ -195,9 +187,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     public void startDictResultShowActivity(EditText editText) {
         String editQueryString = editText.getText().toString();
         if (!StringUtils.isNullOrEmpty(editQueryString)) {
-            Intent intent = new Intent(this, DictResultShowActivity.class);
-            intent.putExtra("editQuery", editQueryString);
-            startActivity(intent);
+            ActivityManager.startDictResultShowActivity(this, editQueryString);
         } else {
             CommonNotices.showMessage(this, getString(R.string.illegalInput));
         }

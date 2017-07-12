@@ -5,9 +5,8 @@ import android.os.Environment;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
-import com.onyx.android.dr.common.Constants;
-
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.manager.LeanCloudManager;
@@ -15,6 +14,7 @@ import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.DictPreference;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.dict.DictDatasInit;
@@ -144,5 +144,9 @@ public class DRApplication extends MultiDexApplication {
 
     public int getCustomFontSize() {
         return DictPreference.getCustomTextSize(this);
+    }
+
+    public static DataManager getDataManager() {
+        return getLibraryDataHolder().getDataManager();
     }
 }

@@ -1,14 +1,11 @@
 package com.onyx.android.dr.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.support.v7.widget.DividerItemDecoration;
-
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.MyCreationAdapter;
 import com.onyx.android.dr.adapter.MyThinkAdapter;
 import com.onyx.android.dr.adapter.MyTracksAdapter;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.MenuData;
@@ -38,18 +35,10 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     PageRecyclerView thinkRecyclerView;
     @Bind(R.id.my_notes_activity_creation_recyclerview)
     PageRecyclerView creationRecyclerView;
-    private DividerItemDecoration dividerItemDecoration;
     private MyTracksAdapter myTracksAdapter;
     private MyThinkAdapter myThinkAdapter;
     private MyCreationAdapter myCreationAdapter;
     private MyNotesPresenter myNotesPresenter;
-
-    public static void startMyNotesActivity(Context context) {
-        Intent intent = new Intent();
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClass(context, MyNotesActivity.class);
-        context.startActivity(intent);
-    }
 
     @Override
     protected Integer getLayoutId() {
@@ -70,17 +59,12 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     }
 
     private void initRecylcerView() {
-        dividerItemDecoration =
-                new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         myTracksAdapter = new MyTracksAdapter();
         myThinkAdapter = new MyThinkAdapter();
         myCreationAdapter = new MyCreationAdapter();
         tracksRecyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
-        tracksRecyclerView.addItemDecoration(dividerItemDecoration);
         thinkRecyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
-        thinkRecyclerView.addItemDecoration(dividerItemDecoration);
         creationRecyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
-        creationRecyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
@@ -121,7 +105,7 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoodSentenceNoteEntity(GoodSentenceNotebookEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
+        ActivityManager.startGoodSentenceTypeActivity(this);
     }
 
     @Override

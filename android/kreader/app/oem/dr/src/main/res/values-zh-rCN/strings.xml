@@ -155,4 +155,15 @@
     <string name="reading_rate">阅读统计</string>
     <string name="memorandum">备忘</string>
     <string name="sketch">素描</string>
+    <string name="english_good_sentence_notebook">英文好句本</string>
+    <string name="chinese_good_sentence_notebook">中文好句本</string>
+    <string name="minority_language_good_sentence_notebook">小语种好句本</string>
+    <string name="good_sentence_activity_check_all">全选</string>
+    <string name="good_sentence_activity_week">周</string>
+    <string name="good_sentence_activity_good_sentence">好句</string>
+    <string name="good_sentence_activity_involved_reading_matter">涉及读物</string>
+    <string name="good_sentence_activity_page_number">页码</string>
+    <string name="good_sentence_activity_month">月</string>
+    <string name="good_sentence_activity_day">日</string>
+    <string name="good_sentence_activity_recitation">好句评述</string>
 </resources>
