@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuViewFactory;
 import com.onyx.edu.reader.R;
+import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.ui.dialog.DialogReaderEduMenu;
 
 import java.util.ArrayList;

@@ -16,6 +16,7 @@ import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.edu.reader.R;
+import com.onyx.edu.reader.device.DeviceConfig;
 
 
 /**
@@ -74,6 +75,9 @@ public class DialogReaderEduMenu extends OnyxBaseDialog {
                 readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.GOTO_PAGE));
             }
         });
+        findViewById(R.id.prev_title).setVisibility(DeviceConfig.sharedInstance(context).isShowMenuTitle() ? View.VISIBLE : View.GONE);
+        findViewById(R.id.next_title).setVisibility(DeviceConfig.sharedInstance(context).isShowMenuTitle() ? View.VISIBLE : View.GONE);
+        positionView.setPadding(0,0,0, DeviceConfig.sharedInstance(context).isShowMenuTitle() ? (int) context.getResources().getDimension(R.dimen.menu_text_padding_bottom) : 0);
 
     }
 

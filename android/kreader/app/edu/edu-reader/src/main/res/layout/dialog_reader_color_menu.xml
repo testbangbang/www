@@ -48,6 +48,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:id="@+id/prev_title"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/prev_page"
                 android:layout_marginTop="@dimen/menu_item_view_margin"
@@ -61,7 +62,6 @@
 
         <TextView
             android:layout_marginRight="@dimen/menu_item_view_margin"
-            android:paddingBottom="@dimen/menu_text_padding_bottom"
             android:minWidth="80dp"
             android:textSize="25sp"
             android:layout_gravity="center_vertical"
@@ -86,6 +86,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:id="@+id/next_title"
                 android:text="@string/next_page"
                 android:layout_marginTop="@dimen/menu_item_view_margin"
                 android:textSize="@dimen/scribble_page_position_size"
