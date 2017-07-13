@@ -2,6 +2,7 @@ package com.onyx.edu.note.util;
 
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -43,8 +44,14 @@ public class OnyxDataBindingUtil {
     @BindingAdapter("android:layout_centerInParent")
     public static void setCenterInParent(View view, boolean centerInParent) {
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-        if (centerInParent){
+        if (centerInParent) {
             layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                layoutParams.removeRule(RelativeLayout.CENTER_IN_PARENT);
+            } else {
+                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, 0);
+            }
         }
         view.setLayoutParams(layoutParams);
     }

@@ -5,4 +5,5 @@
     <dimen name="onyx_main_note_menu_height">64dp</dimen>
     <dimen name="note_function_item_img_size">48dp</dimen>
     <dimen name="note_function_item_img_top_margin">5dp</dimen>
+    <dimen name="onyx_sub_note_menu_height">72dp</dimen>
 </resources>

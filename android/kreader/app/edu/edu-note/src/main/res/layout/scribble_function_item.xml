@@ -14,6 +14,7 @@
     <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:minWidth="@dimen/onyx_main_note_menu_height"
         android:background="@drawable/image_button_bg"
         android:onClick="@{() ->viewModel.itemClicked()}"
         appCompat:alwaysLayoutImageView="true">

@@ -11,7 +11,7 @@
     </data>
 
     <RelativeLayout
-        android:id="@+id/onyx_activity_scribble"
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.onyx.edu.note.scribble.ScribbleActivity">
@@ -105,11 +105,17 @@
 
         </android.support.v7.widget.Toolbar>
 
+        <View
+            android:id="@+id/divider"
+            style="@style/single_line_X_axis_View"
+            android:layout_height="1dp"
+            android:layout_above="@+id/layout_footer" />
+
         <FrameLayout
             android:id="@+id/work_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/divider"
+            android:layout_above="@id/divider"
             android:layout_below="@+id/tool_bar">
 
             <com.onyx.edu.note.ui.view.LinedEditText
@@ -136,12 +142,6 @@
                 android:layout_height="match_parent" />
 
         </FrameLayout>
-
-        <View
-            android:id="@+id/divider"
-            style="@style/single_line_X_axis_View"
-            android:layout_height="1dp"
-            android:layout_above="@+id/layout_footer" />
 
         <RelativeLayout
             android:id="@+id/layout_footer"

@@ -43,7 +43,6 @@ public class ScribbleViewModel extends BaseObservable {
     public final ObservableInt mCurrentPage = new ObservableInt();
     public final ObservableInt mTotalPage = new ObservableInt();
     public final ObservableList<Integer> mMainMenuIDList = new ObservableArrayList<>();
-    public final ObservableList<Integer> mSubMenuIDList = new ObservableArrayList<>();
     private final ObservableField<NoteModel> mCurrentNoteModel = new ObservableField<>();
     private final ObservableField<ShapeDataInfo> mShapeDataInfo = new ObservableField<>();
     public final ObservableField<String> mNoteTitle = new ObservableField<>();
@@ -211,13 +210,8 @@ public class ScribbleViewModel extends BaseObservable {
         documentSaveAction.execute(mNoteManager, callback);
     }
 
-    public void setMainMenuIDList(List<Integer> mainMenuIDList) {
+    void setMainMenuIDList(List<Integer> mainMenuIDList) {
         mMainMenuIDList.clear();
         mMainMenuIDList.addAll(mainMenuIDList);
-    }
-
-    public void setSubMenuIDList(List<Integer> subMenuIDList) {
-        mSubMenuIDList.clear();
-        mSubMenuIDList.addAll(subMenuIDList);
     }
 }

@@ -23,12 +23,13 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.edu.note.HandlerManager;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.R;
-import com.onyx.edu.note.actions.scribble.DrawPageAction;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
+import com.onyx.edu.note.data.ScribbleMainMenuID;
 import com.onyx.edu.note.databinding.ActivityScribbleBinding;
 import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
 import com.onyx.edu.note.receiver.DeviceReceiver;
+import com.onyx.edu.note.scribble.view.ScribbleSubMenu;
 import com.onyx.edu.note.ui.PageAdapter;
 import com.onyx.edu.note.util.Constant;
 
@@ -44,6 +45,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     DeviceReceiver deviceReceiver = new DeviceReceiver();
     NoteManager mNoteManager;
     HandlerManager mHandlerManager;
+    ScribbleSubMenu mSubMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         // Link View and ViewModel
         mBinding.setViewModel(mViewModel);
         initRecyclerView();
+        buildSubMenu();
         mHandlerManager = new HandlerManager(this, new HandlerManager.Callback() {
             @Override
             public void onActiveProviderChanged(HandlerManager handlerManager) {
@@ -101,6 +104,20 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     protected void onDestroy() {
         mViewModel.onActivityDestroyed();
         super.onDestroy();
+    }
+
+    private void buildSubMenu() {
+        mSubMenu = new ScribbleSubMenu(this, mNoteManager.getShapeDataInfo(), mBinding.mainLayout, new ScribbleSubMenu.Callback() {
+            @Override
+            public void onLayoutStateChanged() {
+
+            }
+
+            @Override
+            public void onCancel() {
+                mNoteManager.sync(true, true, false);
+            }
+        }, R.id.divider);
     }
 
     private void handleIntent(Intent intent) {
@@ -222,14 +239,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     @Override
     public void renderCurrentPage() {
-        DrawPageAction drawPageAction = new DrawPageAction(mBinding.noteView);
-        drawPageAction.execute(mNoteManager, null);
+        mNoteManager.sync(true, true, true);
     }
 
     @Override
     public void renderCurrentPageWithCallback(BaseCallback callback) {
-        DrawPageAction drawPageAction = new DrawPageAction(mBinding.noteView);
-        drawPageAction.execute(mNoteManager, callback);
+        mNoteManager.syncWithCallback(true, true, true, callback);
     }
 
     @Override
@@ -254,30 +269,41 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     @Override
-    public void onMainMenuFunctionItem(int mainMenuID) {
+    public void onMainMenuFunctionItem(final int mainMenuID) {
         Log.e(TAG, "onMainMenuFunctionItem: " + mainMenuID);
+        mNoteManager.syncWithCallback(true, false, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                showSubMenu(mainMenuID);
+            }
+        });
     }
 
     @Override
     public void onSubMenuFunctionItem(int subMenuID) {
         Log.e(TAG, "onSubMenuFunctionItem: " + subMenuID);
+        mSubMenu.dismiss();
+    }
+
+    private void showSubMenu(@ScribbleMainMenuID.ScribbleMainMenuDef int mainMenuID) {
+        mSubMenu.show(mainMenuID, false);
     }
 
     public static class ScribbleFunctionAdapter extends PageAdapter<ScribbleFunctionItemViewHolder, Integer, ScribbleFunctionItemViewModel> {
-        private ScribbleActivity mScribbleItemNavigator;
+        private ScribbleActivity mItemNavigator;
         private LayoutInflater mLayoutInflater;
         /*
         * TODO:Because PageRecyclerView need it's own notifyDataSetChanged() (not the adapter one)to update page status.
-        * so we had to obtain a fragment weakReference (avoid leak)to update page info text when first load.
+        * so we had to obtain a weakReference (avoid leak)to update page info text when first load.
         * Maybe OnPagingListener should always trigger when data load into view,which we didn't
         * need to update some page info text manually for first time loading.
         */
         private WeakReference<ScribbleActivity> activityWeakReference;
 
-        ScribbleFunctionAdapter(ScribbleActivity scribbleItemNavigator) {
-            mScribbleItemNavigator = scribbleItemNavigator;
-            mLayoutInflater = scribbleItemNavigator.getLayoutInflater();
-            activityWeakReference = new WeakReference<>(scribbleItemNavigator);
+        ScribbleFunctionAdapter(ScribbleActivity itemNavigator) {
+            mItemNavigator = itemNavigator;
+            mLayoutInflater = itemNavigator.getLayoutInflater();
+            activityWeakReference = new WeakReference<>(itemNavigator);
         }
 
         @Override
@@ -305,7 +331,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
             super.setRawData(rawData, context);
             for (Integer mainMenuID : rawData) {
                 ScribbleFunctionItemViewModel viewModel = new ScribbleFunctionItemViewModel(mainMenuID, ScribbleFunctionMenuIDType.MAIN_MENU);
-                viewModel.setNavigator(mScribbleItemNavigator);
+                viewModel.setNavigator(mItemNavigator);
                 getItemVMList().add(viewModel);
             }
             if (activityWeakReference.get() != null) {

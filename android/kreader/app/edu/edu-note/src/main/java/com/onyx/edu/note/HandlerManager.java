@@ -75,6 +75,11 @@ public class HandlerManager {
         return activeProviderName;
     }
 
+    //TODO:temp solution for 2 handler only situation.
+    public void switchProvider(){
+        setActiveProvider(activeProviderName.equals(SCRIBBLE_PROVIDER) ? SPAN_TEXT_PROVIDER : SCRIBBLE_PROVIDER);
+    }
+
     public List<Integer> getMainMenuFunctionIDList() {
         if (getActiveProvider() == null) {
             return null;

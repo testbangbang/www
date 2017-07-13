@@ -47,6 +47,7 @@ public class ScribbleFunctionItemViewModel extends BaseObservable {
                 break;
             case ScribbleFunctionMenuIDType.SUB_MENU:
                 mIconRes.set(ScribbleFunctionItemUtils.getSubItemIDIconRes(itemID));
+                mShowIndicator.set(true);
                 break;
         }
     }
@@ -60,7 +61,7 @@ public class ScribbleFunctionItemViewModel extends BaseObservable {
                 break;
             case ScribbleFunctionMenuIDType.SUB_MENU:
                 if (mNavigator != null && mNavigator.get() != null) {
-                    mNavigator.get().onMainMenuFunctionItem(ScribbleSubMenuID.translate(mItemID));
+                    mNavigator.get().onSubMenuFunctionItem(ScribbleSubMenuID.translate(mItemID));
                 }
                 break;
         }
