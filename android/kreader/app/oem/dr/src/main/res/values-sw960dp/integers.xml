@@ -12,4 +12,6 @@
     <integer name="common_books_fragment_col">3</integer>
     <integer name="bookshelf_item_row">1</integer>
     <integer name="bookshelf_item_col">3</integer>
+    <integer name="bookshelf_group_row">3</integer>
+    <integer name="bookshelf_group_col">1</integer>
 </resources>

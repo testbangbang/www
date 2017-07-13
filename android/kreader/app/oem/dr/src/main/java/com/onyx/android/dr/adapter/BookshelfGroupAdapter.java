@@ -38,8 +38,8 @@ import butterknife.ButterKnife;
 public class BookshelfGroupAdapter extends PageRecyclerView.PageAdapter<BookshelfGroupAdapter.GroupItemViewHolder> implements View.OnClickListener {
     private Context context;
     private List<QueryArgs> groups;
-    private int row = 3;
-    private int col = 1;
+    private int row = DRApplication.getInstance().getResources().getInteger(R.integer.bookshelf_group_row);
+    private int col = DRApplication.getInstance().getResources().getInteger(R.integer.bookshelf_group_col);
     private LibraryDataHolder dataHolder;
     private int mode;
 
