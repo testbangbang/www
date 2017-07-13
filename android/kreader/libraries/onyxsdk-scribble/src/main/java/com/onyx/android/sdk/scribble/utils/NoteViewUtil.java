@@ -70,6 +70,7 @@ public class NoteViewUtil {
 
     //TODO:use drawPage Action to draw in worker thread.direct call will work in UI thread.
     public static void drawPage(SurfaceView surfaceView, Bitmap viewBitmap, List<Shape> stashShapeList) {
+        Log.e(TAG, "drawPage");
         if (!surfaceView.getHolder().getSurface().isValid()) {
             Log.e(TAG, "surfaceView is not valid");
             return;
