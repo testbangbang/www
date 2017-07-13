@@ -132,7 +132,7 @@
     <string name="phrase_query">phrase query:</string>
     <string name="example_query">example query:</string>
     <string name="activity_query_search">search</string>
-    <string name="vocabulary_notebook">vocabulary notebook</string>
+    <string name="vocabulary_notebook">income vocabulary notebook</string>
     <string name="good_sentence_excerpt">good sentence excerpt</string>
     <string name="query_record">query record</string>
     <string name="okxford_advanced">okxford_advanced</string>
@@ -166,4 +166,6 @@
     <string name="good_sentence_activity_month">month</string>
     <string name="good_sentence_activity_day">day</string>
     <string name="good_sentence_activity_recitation">recitation</string>
+    <string name="new_word_query">new word query</string>
+    <string name="exit">exit</string>
 </resources>

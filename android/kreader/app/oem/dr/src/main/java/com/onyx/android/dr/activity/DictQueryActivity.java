@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.DictTypeAdapter;
-import com.onyx.android.dr.adapter.TabMenuAdapter;
 import com.onyx.android.dr.bean.DictFunctionBean;
 import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.dr.common.ActivityManager;
@@ -22,9 +21,7 @@ import com.onyx.android.dr.event.FrenchQueryEvent;
 import com.onyx.android.dr.event.JapaneseQueryEvent;
 import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
-import com.onyx.android.dr.presenter.MainPresenter;
 import com.onyx.android.dr.util.Utils;
-import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -43,7 +40,7 @@ import butterknife.OnClick;
  * Created by zhouzhiming on 17-6-26.
  */
 
-public class DictQueryActivity extends BaseActivity implements DictResultShowView, View.OnClickListener{
+public class DictQueryActivity extends BaseActivity implements DictResultShowView, View.OnClickListener {
     @Bind(R.id.tab_menu)
     PageRecyclerView tabMenu;
     @Bind(R.id.activity_query_word)
@@ -64,9 +61,6 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     Button exampleQuerySearch;
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
-    private MainPresenter mainPresenter;
-    private List<Library> libraryList;
-    private TabMenuAdapter tabMenuAdapter;
     private DividerItemDecoration dividerItemDecoration;
     private DictTypeAdapter dictTypeAdapter;
     private DictFunctionPresenter dictPresenter;

@@ -26,9 +26,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-import static com.onyx.android.dr.R.layout.item_spinner_expanded_pattern;
-import static com.onyx.android.dr.R.layout.item_spinner_unexpanded_pattern;
-
 /**
  * Created by zhouzhiming on 17-7-11.
  */
@@ -82,18 +79,18 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
 
     private void initSpinnerDatas() {
         String[] monthDatas = getResources().getStringArray(R.array.month);
-        ArrayAdapter<String> monthAdapter=new ArrayAdapter<String>(this, item_spinner_unexpanded_pattern, monthDatas);
-        monthAdapter.setDropDownViewResource(item_spinner_expanded_pattern);
+        ArrayAdapter<String> monthAdapter=new ArrayAdapter<String>(this, R.layout.item_spinner_unexpanded_pattern, monthDatas);
+        monthAdapter.setDropDownViewResource(R.layout.item_spinner_expanded_pattern);
         monthSpinner .setAdapter(monthAdapter);
 
         String[] weekDatas = getResources().getStringArray(R.array.week);
-        ArrayAdapter<String> weekAdapter=new ArrayAdapter<String>(this, item_spinner_unexpanded_pattern, weekDatas);
-        weekAdapter.setDropDownViewResource(item_spinner_expanded_pattern);
+        ArrayAdapter<String> weekAdapter=new ArrayAdapter<String>(this,  R.layout.item_spinner_unexpanded_pattern, weekDatas);
+        weekAdapter.setDropDownViewResource(R.layout.item_spinner_expanded_pattern);
         weekSpinner .setAdapter(weekAdapter);
 
         String[] dayDatas = getResources().getStringArray(R.array.day);
-        ArrayAdapter<String> dayAdapter=new ArrayAdapter<String>(this, item_spinner_unexpanded_pattern, dayDatas);
-        dayAdapter.setDropDownViewResource(item_spinner_expanded_pattern);
+        ArrayAdapter<String> dayAdapter=new ArrayAdapter<String>(this,  R.layout.item_spinner_unexpanded_pattern, dayDatas);
+        dayAdapter.setDropDownViewResource(R.layout.item_spinner_expanded_pattern);
         daySpinner .setAdapter(dayAdapter);
     }
 

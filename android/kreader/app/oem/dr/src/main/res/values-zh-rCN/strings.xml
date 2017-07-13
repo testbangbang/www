@@ -130,7 +130,7 @@
     <string name="phrase_query">惯用语查询：</string>
     <string name="example_query">例句查询：</string>
     <string name="activity_query_search">搜索</string>
-    <string name="vocabulary_notebook">生词本</string>
+    <string name="vocabulary_notebook">收入生词本</string>
     <string name="good_sentence_excerpt">好句摘录</string>
     <string name="query_record">查询记录</string>
     <string name="okxford_advanced">牛津高阶</string>
@@ -166,4 +166,6 @@
     <string name="good_sentence_activity_month">月</string>
     <string name="good_sentence_activity_day">日</string>
     <string name="good_sentence_activity_recitation">好句评述</string>
+    <string name="new_word_query">生词查询</string>
+    <string name="exit">退出</string>
 </resources>

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by zhouzhiming on 2017/7/5.
  */
-public class GoodSentenceExcerptQuery extends BaseDataRequest {
+public class GoodSentenceExcerptQueryAll extends BaseDataRequest {
     private List<GoodSentenceNoteEntity> goodSentenceList;
 
     @Override

@@ -71,4 +71,9 @@
     <dimen name="tab_good_sentence_type">30dp</dimen>
     <dimen name="tab_good_sentence_type_height">80dp</dimen>
     <dimen name="tab_good_sentence_type_margin_left">30dp</dimen>
+    <dimen name="dialog_result_spinner_margin">20dp</dimen>
+    <dimen name="select_dialog_close_cancel_margin">20dp</dimen>
+    <dimen name="select_dialog_close_cancel_padding">20dp</dimen>
+    <dimen name="dialog_resutl_view_margin">20dp</dimen>
+    <dimen name="dialog_result_bottom">20dp</dimen>
 </resources>

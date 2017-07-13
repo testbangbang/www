@@ -9,6 +9,7 @@ import com.onyx.android.dr.activity.GoodSentenceNotebookActivity;
 import com.onyx.android.dr.activity.GoodSentenceTypeActivity;
 import com.onyx.android.dr.activity.LoginActivity;
 import com.onyx.android.dr.activity.MyNotesActivity;
+import com.onyx.android.dr.activity.QueryRecordActivity;
 
 /**
  * Created by hehai on 17-6-29.
@@ -52,6 +53,13 @@ public class ActivityManager {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, GoodSentenceNotebookActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startQueryRecordActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, QueryRecordActivity.class);
         context.startActivity(intent);
     }
 }

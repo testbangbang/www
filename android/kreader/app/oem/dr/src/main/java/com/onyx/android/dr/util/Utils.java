@@ -8,6 +8,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -649,5 +651,20 @@ public class Utils {
     public static void hideSoftWindow(Activity activity) {
         InputMethodManager imm = (InputMethodManager) DRApplication.getInstance().getSystemService(DRApplication.getInstance().INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+    }
+
+    public static DisplayMetrics getDisplayMetrics(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics;
+    }
+
+    public static int getScreenWidth(Context context) {
+        return getDisplayMetrics(context).widthPixels;
+    }
+
+    public static int getScreenHeight(Context context) {
+        return getDisplayMetrics(context).heightPixels;
     }
 }

@@ -2,7 +2,7 @@ package com.onyx.android.dr.presenter;
 
 import com.onyx.android.dr.data.GoodSentenceData;
 import com.onyx.android.dr.interfaces.GoodSentenceView;
-import com.onyx.android.dr.request.local.GoodSentenceExcerptQuery;
+import com.onyx.android.dr.request.local.GoodSentenceExcerptQueryAll;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 
@@ -19,7 +19,7 @@ public class GoodSentencePresenter {
     }
 
     public void getAllGoodSentenceData() {
-        final GoodSentenceExcerptQuery req = new GoodSentenceExcerptQuery();
+        final GoodSentenceExcerptQueryAll req = new GoodSentenceExcerptQueryAll();
         goodSentenceData.getAllGoodSentence(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

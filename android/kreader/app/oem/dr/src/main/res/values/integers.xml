@@ -16,4 +16,6 @@
     <integer name="good_sentence_tab_column">1</integer>
     <integer name="good_sentence_tab_row">3</integer>
     <integer name="good_sentence_notebook_row">10</integer>
+    <integer name="query_recor_row">20</integer>
+    <integer name="query_record_column">1</integer>
 </resources>

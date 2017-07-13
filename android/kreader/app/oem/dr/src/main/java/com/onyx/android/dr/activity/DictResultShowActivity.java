@@ -11,10 +11,11 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.DictFunctionAdapter;
 import com.onyx.android.dr.adapter.DictTypeAdapter;
-import com.onyx.android.dr.common.CommonNotices;
-import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.bean.DictFunctionBean;
 import com.onyx.android.dr.bean.DictTypeBean;
+import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.GoodExcerptEvent;
 import com.onyx.android.dr.event.PlaySoundEvent;
 import com.onyx.android.dr.event.QueryRecordEvent;
@@ -165,6 +166,15 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     private void getIntentDatas() {
         editQuery = getIntent().getStringExtra("editQuery");
+        insertQueryRecord();
+    }
+
+    private void insertQueryRecord() {
+        if (!StringUtils.isNullOrEmpty(editQuery)) {
+            long timeMillis = System.currentTimeMillis();
+            timeMillis = timeMillis / 1000;
+            dictPresenter.insertQueryRecord(editQuery, timeMillis);
+        }
     }
 
     private void initSound() {
@@ -219,7 +229,6 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     }
 
     public void testWordDictQuery() {
-        reset();
         if (!StringUtils.isNullOrEmpty(editQuery)) {
             dictionaryManager = DRApplication.getDictionaryManager();
             queryWordRequest = new QueryWordRequest(editQuery);
@@ -407,7 +416,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onQueryRecordEvent(QueryRecordEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.query_record));
+        ActivityManager.startQueryRecordActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

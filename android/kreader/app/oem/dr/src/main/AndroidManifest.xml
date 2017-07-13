@@ -76,6 +76,10 @@
             android:name=".activity.GoodSentenceNotebookActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".activity.QueryRecordActivity"
+            android:screenOrientation="portrait" />
+
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"
             android:authorities="com.onyx.content.database.ContentProvider"
