@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
-    <dimen name="main_menu_tab_height">100dp</dimen>
+    <dimen name="main_menu_tab_height">120dp</dimen>
     <dimen name="title_bar_right_menu_padding">8dp</dimen>
     <dimen name="title_bar_title_padding">8dp</dimen>
     <dimen name="title_bar_margin">8dp</dimen>
@@ -124,4 +124,5 @@
     <dimen name="level_one_heading_font">22sp</dimen>
     <dimen name="level_two_heading_font">18sp</dimen>
     <dimen name="level_three_heading_font">16sp</dimen>
+    <dimen name="application_item_image_size">108dp</dimen>
 </resources>

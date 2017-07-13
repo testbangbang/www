@@ -43,4 +43,5 @@
     <dimen name="login_next_button_margin_bottom">400dp</dimen>
     <dimen name="login_next_button_margin_right">200dp</dimen>
     <dimen name="user_info_edit_text_margin_right">10dp</dimen>
+    <dimen name="application_item_image_size">108dp</dimen>
 </resources>

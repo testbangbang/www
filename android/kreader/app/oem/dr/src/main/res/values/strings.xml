@@ -124,4 +124,7 @@
     <string name="screen_success">Screen Success</string>
     <string name="screen_success_prompt">The screenshot has been saved to the device under the %s folder, and you can use the USB to connect to the PC.</string>
     <string name="no_chapters">This article does not contain section information</string>
+    <string name="application_list">application_list</string>
+    <string name="menu_app_npi_clear">clear test app</string>
+    <string name="enter_bookstore">enter bookstore</string>
 </resources>

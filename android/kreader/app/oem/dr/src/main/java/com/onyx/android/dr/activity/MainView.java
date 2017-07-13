@@ -1,6 +1,6 @@
 package com.onyx.android.dr.activity;
 
-import com.onyx.android.dr.data.MenuData;
+import com.onyx.android.dr.data.MenuBean;
 import com.onyx.android.sdk.data.model.Library;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 public interface MainView {
-    void setTabMenuData(List<MenuData> menuData);
+    void setTabMenuData(List<MenuBean> menuData);
 
     void setLibraryList(List<Library> libraryList);
 }

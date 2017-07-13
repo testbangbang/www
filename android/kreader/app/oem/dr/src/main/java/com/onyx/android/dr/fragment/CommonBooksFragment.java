@@ -185,13 +185,11 @@ public class CommonBooksFragment extends BaseFragment {
         return true;
     }
 
-    @OnClick({R.id.menu_back, R.id.title_bar_title, R.id.pre_button, R.id.next_button})
+    @OnClick({R.id.menu_back, R.id.pre_button, R.id.next_button})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
                 EventBus.getDefault().post(new BackToMainViewEvent());
-                break;
-            case R.id.title_bar_title:
                 break;
             case R.id.pre_button:
                 break;

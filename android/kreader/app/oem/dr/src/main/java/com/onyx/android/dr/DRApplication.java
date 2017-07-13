@@ -11,6 +11,7 @@ import com.onyx.android.dr.manager.LeanCloudManager;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.raizlabs.android.dbflow.config.DRGeneratedDatabaseHolder;
@@ -79,7 +80,7 @@ public class DRApplication extends MultiDexApplication {
         return cloudStore;
     }
 
-    public static DRApplication getInstance(){
+    public static DRApplication getInstance() {
         return sInstance;
     }
 
@@ -102,5 +103,9 @@ public class DRApplication extends MultiDexApplication {
             libraryDataHolder.setCloudManager(getCloudStore().getCloudManager());
         }
         return libraryDataHolder;
+    }
+
+    static public DataManager getDataManager() {
+        return getLibraryDataHolder().getDataManager();
     }
 }

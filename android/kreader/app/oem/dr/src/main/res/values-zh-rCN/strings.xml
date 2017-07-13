@@ -124,4 +124,7 @@
     <string name="screen_success_prompt">截图已保存至设备下%s文件夹中,可使用USB先连接PC导出。</string>
     <string name="no_chapters">本文不含章节信息</string>
     <string name="popup_selection_menu_page_indicator_default_value">1/1</string>
+    <string name="application_list">应用列表</string>
+    <string name="menu_app_npi_clear">清除测试应用</string>
+    <string name="enter_bookstore">进入书城</string>
 </resources>

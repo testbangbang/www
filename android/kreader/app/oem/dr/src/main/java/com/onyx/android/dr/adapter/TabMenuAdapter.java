@@ -6,10 +6,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.data.MenuData;
+import com.onyx.android.dr.data.MenuBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,9 +25,9 @@ import butterknife.ButterKnife;
  */
 
 public class TabMenuAdapter extends PageRecyclerView.PageAdapter<TabMenuAdapter.ViewHolder> implements View.OnClickListener {
-    private List<MenuData> menuDataList;
+    private List<MenuBean> menuDataList;
 
-    public void setMenuDataList(List<MenuData> menuDataList) {
+    public void setMenuDataList(List<MenuBean> menuDataList) {
         this.menuDataList = menuDataList;
     }
 
@@ -52,11 +54,21 @@ public class TabMenuAdapter extends PageRecyclerView.PageAdapter<TabMenuAdapter.
 
     @Override
     public void onPageBindViewHolder(ViewHolder holder, int position) {
-        MenuData menuData = menuDataList.get(position);
-        holder.tabMenuIcon.setImageResource(menuData.getImageResources());
+        MenuBean menuData = menuDataList.get(position);
+        setImage(menuData,holder.tabMenuIcon);
         holder.tabMenuTitle.setText(menuData.getTabName());
         holder.rootView.setTag(position);
         holder.rootView.setOnClickListener(this);
+    }
+
+    private void setImage(MenuBean menuData, ImageView tabMenuIcon) {
+        if (menuData.getImageResources() != 0) {
+            tabMenuIcon.setImageResource(menuData.getImageResources());
+        }else if (StringUtils.isNotBlank(menuData.getImageUrl())){
+            Glide.with(DRApplication.getInstance()).load(menuData.getImageUrl()).into(tabMenuIcon);
+        }else {
+            tabMenuIcon.setImageResource(R.drawable.ic_books);
+        }
     }
 
     @Override

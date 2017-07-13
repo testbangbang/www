@@ -10,4 +10,6 @@
     <integer name="library_item_padding_bottom">10</integer>
     <integer name="common_books_fragment_row">3</integer>
     <integer name="common_books_fragment_col">3</integer>
+    <integer name="bookshelf_item_row">1</integer>
+    <integer name="bookshelf_item_col">3</integer>
 </resources>

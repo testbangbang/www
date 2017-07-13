@@ -56,23 +56,27 @@
 
         <activity
             android:name=".reader.activity.ReaderActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"/>
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" />
 
-    <provider
-        android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"
-        android:authorities="com.onyx.content.database.ContentProvider"
-        android:exported="true"
-        android:process=":database_content_provider" />
+        <activity
+            android:name=".activity.ApplicationsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-    <provider
-        android:name="com.onyx.android.sdk.data.db.OnyxAccountContentProvider_Provider"
-        android:authorities="com.onyx.account.database.ContentProvider"
-        android:exported="true" />
+        <provider
+            android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"
+            android:authorities="com.onyx.content.database.ContentProvider"
+            android:exported="true"
+            android:process=":database_content_provider" />
 
-    <provider
-        android:name="com.onyx.android.sdk.data.db.OnyxSystemContentProvider_Provider"
-        android:authorities="com.onyx.system.database.ContentProvider"
-        android:exported="true" />
-</application>
+        <provider
+            android:name="com.onyx.android.sdk.data.db.OnyxAccountContentProvider_Provider"
+            android:authorities="com.onyx.account.database.ContentProvider"
+            android:exported="true" />
+
+        <provider
+            android:name="com.onyx.android.sdk.data.db.OnyxSystemContentProvider_Provider"
+            android:authorities="com.onyx.system.database.ContentProvider"
+            android:exported="true" />
+    </application>
 
 </manifest>

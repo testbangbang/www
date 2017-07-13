@@ -1,9 +1,8 @@
 package com.onyx.android.dr.adapter;
 
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
-import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -23,18 +21,14 @@ import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
-import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.sdk.utils.ViewDocumentUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,13 +44,13 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
     private static final String TAG = BookListAdapter.class.getSimpleName();
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_row);
     private int col = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_col);
-    private Activity context;
+    private Context context;
     private boolean newPage = false;
     private int noThumbnailPosition = 0;
     private boolean isVisibleToUser = false;
     private LibraryDataHolder dataHolder;
 
-    public BookListAdapter(Activity context, LibraryDataHolder dataHolder) {
+    public BookListAdapter(Context context, LibraryDataHolder dataHolder) {
         this.context = context;
         this.dataHolder = dataHolder;
     }

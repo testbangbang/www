@@ -25,6 +25,7 @@
                 android:id="@+id/now_reading_book_cover"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/image_selector_bg"
                 android:src="@drawable/book_cover" />
 
             <TextView
@@ -108,7 +109,8 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -141,6 +143,7 @@
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/recent_reading_recycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
     </LinearLayout>
 </LinearLayout>
