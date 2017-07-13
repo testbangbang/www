@@ -127,4 +127,35 @@
     <string name="application_list">application_list</string>
     <string name="menu_app_npi_clear">clear test app</string>
     <string name="enter_bookstore">enter bookstore</string>
+    <string name="dict_query_bracket_left">[</string>
+    <string name="dict_query_bracket_right">]</string>
+    <string name="dict_query_language">english</string>
+    <string name="word_query">word query:</string>
+    <string name="dim_query">fuzzy query:</string>
+    <string name="phrase_query">phrase query:</string>
+    <string name="example_query">example query:</string>
+    <string name="activity_query_search">search</string>
+    <string name="vocabulary_notebook">vocabulary notebook</string>
+    <string name="good_sentence_excerpt">good sentence excerpt</string>
+    <string name="query_record">query record</string>
+    <string name="okxford_advanced">okxford_advanced</string>
+    <string name="english_query">english query</string>
+    <string name="chinese_query">chinese query</string>
+    <string name="japanese_query">japanese query</string>
+    <string name="french_query">french query</string>
+    <string name="hint">hint</string>
+    <string name="webview_default_font_size" format="float" type="dimen">1.5</string>
+    <string name="headword_search_empty">result 0</string>
+    <string name="my_notes_activity_my_tracks">my tracks</string>
+    <string name="my_notes_activity_my_think">my think</string>
+    <string name="my_notes_activity_my_creation">my creation</string>
+    <string name="new_word_notebook">new word notebook</string>
+    <string name="postil">postil</string>
+    <string name="reader_response">reader response</string>
+    <string name="good_sentence_notebook">good sentence notebook</string>
+    <string name="read_summary">read summary</string>
+    <string name="informal_essay">informal essay</string>
+    <string name="reading_rate">reading rate</string>
+    <string name="memorandum">memorandum</string>
+    <string name="sketch">sketch</string>
 </resources>

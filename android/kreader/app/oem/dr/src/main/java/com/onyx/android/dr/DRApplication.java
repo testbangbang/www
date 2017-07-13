@@ -1,22 +1,31 @@
 package com.onyx.android.dr;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+
+import com.onyx.android.dr.common.Constants;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.manager.LeanCloudManager;
 import com.onyx.android.dr.util.DRPreferenceManager;
+import com.onyx.android.dr.util.DictPreference;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.utils.CloudConf;
+import com.onyx.android.sdk.dict.DictDatasInit;
+import com.onyx.android.sdk.dict.data.DictionaryManager;
 import com.raizlabs.android.dbflow.config.DRGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +37,7 @@ public class DRApplication extends MultiDexApplication {
     private static DRApplication sInstance;
     private static CloudStore cloudStore;
     private static LibraryDataHolder libraryDataHolder;
+    private static DictionaryManager dictionaryManager;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -38,6 +48,7 @@ public class DRApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        DictPreference.init(this);
         initConfig();
     }
 
@@ -49,6 +60,8 @@ public class DRApplication extends MultiDexApplication {
             initCloudStore();
             initLeanCloud();
             initFrescoLoader();
+            initDatabases(this, databaseHolderList());
+            initDictDatas();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,5 +120,34 @@ public class DRApplication extends MultiDexApplication {
 
     static public DataManager getDataManager() {
         return getLibraryDataHolder().getDataManager();
+    }
+
+    public void initDatabases(final Context context, final List<Class<? extends DatabaseHolder>> list) {
+        FlowConfig.Builder builder = new FlowConfig.Builder(context);
+        if (list != null) {
+            for (Class tClass : list) {
+                builder.addDatabaseHolder(tClass);
+            }
+        }
+        FlowManager.init(builder.build());
+    }
+
+    public void initDictDatas() {
+        List<String> dictPaths = new ArrayList<>();
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            File path = Environment.getExternalStorageDirectory();
+            dictPaths.add(path + Constants.DICT_ROOT);
+            dictPaths.add(path + Constants.DICTIONARY_ROOT);
+        }
+        DictDatasInit dictDatasInit = new DictDatasInit(DRApplication.getInstance(), dictPaths);
+        dictionaryManager = dictDatasInit.dictionaryManager;
+    }
+
+    public static DictionaryManager getDictionaryManager() {
+        return dictionaryManager;
+    }
+
+    public int getCustomFontSize() {
+        return DictPreference.getCustomTextSize(this);
     }
 }

@@ -61,13 +61,13 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile(name:'onyxdownloadservice-release', ext:'aar')
+    compile(name: 'onyxdownloadservice-release', ext: 'aar')
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     testCompile "junit:junit:$rootProject.junitVersion"
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.dbflowVersion"
     compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.dbflowVersion"
-    compile (project(path: ':libraries:onyxsdk-data')){
+    compile(project(path: ':libraries:onyxsdk-data')) {
         ['com.github.Raizlabs.DBFlow', 'com.alibaba'].each {
             exclude group: it
         }
@@ -85,4 +85,6 @@ dependencies {
     compile (project(path: ':libraries:onyxsdk-reader')){
         exclude group: 'com.alibaba', module: 'fastjson'
     }
+    compile(name: 'onyxsdk-dict-release', ext: 'aar')
+    compile "org.jsoup:jsoup:$rootProject.jsoupVersion"
 }

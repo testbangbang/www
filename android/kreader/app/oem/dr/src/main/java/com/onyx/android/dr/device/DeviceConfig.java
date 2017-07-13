@@ -265,6 +265,18 @@ public class DeviceConfig {
         public static final String MENU_ARTICLE_PUSH = "menu_article_push";
     }
 
+    public static class MyNotesInfo {
+        public static final String MY_NOTES_NEW_WORD_NOTEBOOK = "my_notes_new_word_notebook";
+        public static final String MY_NOTES_GOOD_SENTENCE_NOTEBOOK = "my_notes_good_sentence_notebook";
+        public static final String MY_NOTES_READING_RATE = "my_notes_reading_rate";
+        public static final String MY_NOTES_POSTIL = "my_notes_postil";
+        public static final String MY_NOTES_READ_SUMMARY = "my_notes_read_summary";
+        public static final String MY_NOTES_MEMORANDUM = "my_notes_memorandum";
+        public static final String MY_NOTES_READER_RESPONSE = "my_notes_reader_response";
+        public static final String MY_NOTES_INFORMAL_ESSAY = "my_notes_informal_essay";
+        public static final String MY_NOTES_SKETCH = "my_notes_sketch";
+    }
+
     private JSONObject getMenuObject(String userType) {
         try {
             if (backend != null && backend.hasKey(userType)) {

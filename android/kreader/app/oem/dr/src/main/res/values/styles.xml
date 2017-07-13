@@ -97,7 +97,8 @@
     </style>
 
     <style name="popup_selection_menu_image_view">
-        <item name="android:layout_marginTop">@dimen/popup_selection_menu_action_margin_top_bottom</item>
+        <item name="android:layout_marginTop">@dimen/popup_selection_menu_action_margin_top_bottom
+        </item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
@@ -109,8 +110,11 @@
         <item name="android:maxLines">1</item>
         <item name="android:textSize">@dimen/level_two_font_size</item>
         <item name="android:paddingTop">@dimen/popup_selection_menu_text_view_padding_top</item>
-        <item name="android:paddingBottom">@dimen/popup_selection_menu_text_view_padding_bottom</item>
-        <item name="android:layout_marginBottom">@dimen/popup_selection_menu_action_margin_top_bottom</item>
+        <item name="android:paddingBottom">@dimen/popup_selection_menu_text_view_padding_bottom
+        </item>
+        <item name="android:layout_marginBottom">
+            @dimen/popup_selection_menu_action_margin_top_bottom
+        </item>
     </style>
 
     <style name="loading">
@@ -129,5 +133,61 @@
     <style name="BookDialog" parent="android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="Horizontal_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@android:color/black</item>
+    </style>
+
+    <style name="dict_query_type">
+        <item name="android:layout_width">@dimen/dict_type_query_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:layout_marginLeft">@dimen/dict_type_query_margin_left</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+    </style>
+
+    <style name="dict_query_bracket_left">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:text">@string/dict_query_bracket_left</item>
+        <item name="android:layout_marginLeft">@dimen/dict_query_bracket_margin_left</item>
+    </style>
+
+    <style name="dict_query_bracket_right">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:text">@string/dict_query_bracket_right</item>
+    </style>
+
+    <style name="activity_query_search">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:text">@string/activity_query_search</item>
+        <item name="android:layout_marginLeft">@dimen/activity_query_search_margin_left</item>
+    </style>
+
+    <style name="dict_query_edittext">
+        <item name="android:layout_width">@dimen/dict_query_edittext_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:imeOptions">actionSearch</item>
+        <item name="android:maxLines">@integer/dict_query_edittext_lines</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="dict_tab_voice">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginRight">1dp</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginBottom">1dp</item>
+        <item name="android:layout_centerInParent">true</item>
     </style>
 </resources>

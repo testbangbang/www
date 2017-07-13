@@ -14,4 +14,7 @@
     <integer name="bookshelf_item_col">3</integer>
     <integer name="bookshelf_group_row">3</integer>
     <integer name="bookshelf_group_col">1</integer>
+    <integer name="dict_tab_menu_column">3</integer>
+    <integer name="dict_query_edittext_lines">1</integer>
+    <integer name="my_notes_column">3</integer>
 </resources>
