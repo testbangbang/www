@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-
 import com.onyx.android.dr.R;
 
 /**
@@ -13,8 +12,6 @@ import com.onyx.android.dr.R;
 public class SelectAlertDialog extends CommunityBaseDialog {
 	private Context mContext;
 	private LinearLayout contentView;
-//	private TextView typeChooseBtnConfirm;
-//	private TextView typeChooseBtnCancel;
 
 	public SelectAlertDialog(Context context) {
 		super(context, R.style.base_dialog);
@@ -30,11 +27,6 @@ public class SelectAlertDialog extends CommunityBaseDialog {
 		setCanceledOnTouchOutside(true);
 	}
 
-	/**
-	 * add view
-	 *
-	 * @param view
-	 */
 	public void setView(View view) {
 		contentView.removeAllViews();
 		contentView.addView(view);
