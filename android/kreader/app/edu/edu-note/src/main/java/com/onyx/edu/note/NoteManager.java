@@ -184,6 +184,10 @@ public class NoteManager {
         return noteViewHelper.getViewBitmap();
     }
 
+    public Bitmap getRenderBitmap() {
+        return noteViewHelper.getRenderBitmap();
+    }
+
     public List<Shape> getDirtyShape() {
         return noteViewHelper.getDirtyStash();
     }

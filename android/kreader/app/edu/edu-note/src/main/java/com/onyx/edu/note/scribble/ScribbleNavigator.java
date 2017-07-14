@@ -11,8 +11,6 @@ public interface ScribbleNavigator {
 
     void renderCurrentPageWithCallback(BaseCallback callback);
 
-    void save();
-
     void goToSetting();
 
     void switchScribbleMode();

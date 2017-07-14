@@ -16,6 +16,7 @@ import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.actions.scribble.NotePageShapeAction;
 import com.onyx.edu.note.actions.scribble.SpannableAction;
+import com.onyx.edu.note.data.ScribbleMainMenuID;
 
 import org.apache.commons.collections4.MapUtils;
 
@@ -182,17 +183,16 @@ public class SpanTextHandler extends BaseHandler {
     }
 
     @Override
-    public void onActivate() {
-
-    }
-
-    @Override
     public void onDeactivate() {
         clear();
     }
 
     @Override
-    public void close() {
-
+    public void buildMainMenuFunctionList() {
+        mMainMenuFunctionIDList = new ArrayList<>();
+        mMainMenuFunctionIDList.add(ScribbleMainMenuID.KEYBOARD);
+        mMainMenuFunctionIDList.add(ScribbleMainMenuID.ENTER);
+        mMainMenuFunctionIDList.add(ScribbleMainMenuID.DELETE);
+        mMainMenuFunctionIDList.add(ScribbleMainMenuID.SPACE);
     }
 }

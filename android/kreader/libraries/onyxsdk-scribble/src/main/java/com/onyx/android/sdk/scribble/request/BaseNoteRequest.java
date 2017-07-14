@@ -152,11 +152,14 @@ public class BaseNoteRequest extends BaseRequest {
         if (getException() != null) {
             getException().printStackTrace();
         }
+        if (isDrawToView()) {
+            NoteViewUtil.drawPage(helper.getView(), helper.getRenderBitmap(), helper.getDirtyStash());
+        }
         benchmarkEnd();
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (isRender()) {
+                if (isRender() && !isDrawToView()) {
                     synchronized (helper) {
                         helper.copyBitmap();
                     }
@@ -167,9 +170,6 @@ public class BaseNoteRequest extends BaseRequest {
                 }
                 if (isResumeInputProcessor()) {
                     helper.resumeDrawing();
-                }
-                if (isDrawToView()) {
-                    NoteViewUtil.drawPage(helper.getView(), helper.getViewBitmap(), helper.getDirtyStash());
                 }
                 helper.getRequestManager().releaseWakeLock();
             }};
