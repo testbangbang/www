@@ -1,23 +1,27 @@
 package com.onyx.android.sdk.im;
 
+import com.onyx.android.sdk.im.socket.SocketIOConfig;
+
 /**
  * Created by ming on 2017/7/14.
  */
 
-public class IMInitialState {
+public class IMInitArgs {
 
     private String applicationId;
     private String clientKey;
 
     private String serverUri;
+    private SocketIOConfig config;
 
-    public IMInitialState(String applicationId, String clientKey, String serverUri) {
+    public IMInitArgs(String applicationId, String clientKey, String serverUri, SocketIOConfig config) {
         this.applicationId = applicationId;
         this.clientKey = clientKey;
         this.serverUri = serverUri;
+        this.config = config;
     }
 
-    public IMInitialState(String applicationId, String clientKey) {
+    public IMInitArgs(String applicationId, String clientKey) {
         this.applicationId = applicationId;
         this.clientKey = clientKey;
     }
@@ -42,11 +46,19 @@ public class IMInitialState {
         return serverUri;
     }
 
+    public SocketIOConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(SocketIOConfig config) {
+        this.config = config;
+    }
+
     public void setServerUri(String serverUri) {
         this.serverUri = serverUri;
     }
 
-    public static IMInitialState create(String applicationId, String clientKey, String serverUri) {
-        return new IMInitialState(applicationId, clientKey, serverUri);
+    public static IMInitArgs create(String applicationId, String clientKey, String serverUri, SocketIOConfig config) {
+        return new IMInitArgs(applicationId, clientKey, serverUri, config);
     }
 }

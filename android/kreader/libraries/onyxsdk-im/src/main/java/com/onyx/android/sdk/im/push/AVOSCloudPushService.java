@@ -7,7 +7,7 @@ import android.content.Intent;
 import com.avos.avoscloud.AVInstallation;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.PushService;
-import com.onyx.android.sdk.im.IMInitialState;
+import com.onyx.android.sdk.im.IMInitArgs;
 
 /**
  * Created by ming on 2017/7/13.
@@ -16,12 +16,12 @@ import com.onyx.android.sdk.im.IMInitialState;
 public class AVOSCloudPushService implements BasePushService {
 
     @Override
-    public void init(Context context, IMInitialState initialState) {
-        if (initialState == null) {
+    public void init(Context context, IMInitArgs imInitArgs) {
+        if (imInitArgs == null) {
             return;
         }
-        AVOSCloud.initialize(context, initialState.getApplicationId(),
-                initialState.getClientKey());
+        AVOSCloud.initialize(context, imInitArgs.getApplicationId(),
+                imInitArgs.getClientKey());
         AVInstallation.getCurrentInstallation().saveInBackground();
     }
 

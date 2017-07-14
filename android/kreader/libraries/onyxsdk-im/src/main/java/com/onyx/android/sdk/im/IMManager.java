@@ -33,7 +33,7 @@ public class IMManager {
     private boolean pushEnable = false;
     private boolean socketEnable = false;
     private Set<String> messageIdSets = new HashSet<>();
-    private IMInitialState initialState;
+    private IMInitArgs imInitArgs;
     private EventBus eventBus = new EventBus();
 
     public static IMManager getInstance() {
@@ -46,8 +46,8 @@ public class IMManager {
     public IMManager() {
     }
 
-    public IMManager start(IMInitialState initialState) {
-        this.initialState = initialState;
+    public IMManager start(IMInitArgs imInitArgs) {
+        this.imInitArgs = imInitArgs;
         return this;
     }
 
@@ -82,14 +82,14 @@ public class IMManager {
     }
 
     private void startSocketIOClient(Context context) {
-        if (initialState == null) {
+        if (imInitArgs == null) {
             return;
         }
-        String serverUri = initialState.getServerUri();
+        String serverUri = imInitArgs.getServerUri();
         if (StringUtils.isNullOrEmpty(serverUri)) {
             return;
         }
-        socketIOClient = new SocketIOClient(serverUri);
+        socketIOClient = new SocketIOClient(imInitArgs.getConfig(), serverUri);
         socketIOClient.connect();
         socketIOClient.on(Constant.PUSH, new Emitter.Listener() {
             @Override
@@ -114,14 +114,17 @@ public class IMManager {
     }
 
     private void startPushService(Context activityContext, PushServiceType type) {
-        if (initialState == null) {
+        if (imInitArgs == null) {
             return;
         }
         switch (type) {
             case AVCLOUDPUSH:
                 basePushService = new AVOSCloudPushService();
+                break;
+            default:
+                basePushService = new AVOSCloudPushService();
         }
-        basePushService.init(activityContext, initialState);
+        basePushService.init(activityContext, imInitArgs);
         basePushService.start(activityContext);
     }
 
