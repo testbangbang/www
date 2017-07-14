@@ -24,7 +24,7 @@ public class DocumentAddNewPageAction extends BaseNoteAction {
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
         PageAddRequest pageAddRequest = new PageAddRequest(mAddPosition);
-        pageAddRequest.setDrawToView(true);
+        pageAddRequest.setRender(true);
         noteManager.submitRequest(pageAddRequest, callback);
     }
 }

@@ -13,7 +13,7 @@ public class GotoNextPageAction extends BaseNoteAction {
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
         PageNextRequest nextRequest = new PageNextRequest();
-        nextRequest.setDrawToView(true);
+        nextRequest.setRender(true);
         noteManager.submitRequest(nextRequest, callback);
     }
 }

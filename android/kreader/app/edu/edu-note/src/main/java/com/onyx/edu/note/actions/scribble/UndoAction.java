@@ -13,7 +13,7 @@ public class UndoAction extends BaseNoteAction {
     public void execute(NoteManager noteManager, BaseCallback callback) {
         UndoRequest undoRequest = new UndoRequest();
         undoRequest.setResumeInputProcessor(true);
-        undoRequest.setDrawToView(true);
+        undoRequest.setRender(true);
         noteManager.submitRequest(undoRequest, callback);
     }
 }

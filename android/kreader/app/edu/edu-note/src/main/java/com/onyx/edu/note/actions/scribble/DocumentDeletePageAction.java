@@ -13,7 +13,7 @@ public class DocumentDeletePageAction extends BaseNoteAction {
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
         PageRemoveRequest pageRemoveRequest = new PageRemoveRequest();
-        pageRemoveRequest.setDrawToView(true);
+        pageRemoveRequest.setRender(true);
         noteManager.submitRequest(pageRemoveRequest, callback);
     }
 }

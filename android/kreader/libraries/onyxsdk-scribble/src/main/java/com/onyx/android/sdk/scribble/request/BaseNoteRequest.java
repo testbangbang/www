@@ -49,16 +49,6 @@ public class BaseNoteRequest extends BaseRequest {
     private boolean useExternal = false;
     private String identifier;
 
-    private volatile boolean mDrawToView = false;
-
-    public void setDrawToView(boolean drawToView) {
-        mDrawToView = drawToView;
-    }
-
-    public boolean isDrawToView() {
-        return mDrawToView;
-    }
-
     public boolean isResumeInputProcessor() {
         return resumeInputProcessor;
     }
@@ -148,18 +138,48 @@ public class BaseNoteRequest extends BaseRequest {
     public void execute(final NoteViewHelper helper) throws Exception {
     }
 
-    public void afterExecute(final NoteViewHelper helper) {
+    /**
+     * drawToView Instantly when finish request,reused isRender Flag
+     * @param helper
+     */
+    public void postExecute(final NoteViewHelper helper){
         if (getException() != null) {
             getException().printStackTrace();
         }
-        if (isDrawToView()) {
+        if (isRender()) {
             NoteViewUtil.drawPage(helper.getView(), helper.getRenderBitmap(), helper.getDirtyStash());
         }
         benchmarkEnd();
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (isRender() && !isDrawToView()) {
+                helper.enableScreenPost(true);
+                if (getCallback() != null) {
+                    getCallback().done(BaseNoteRequest.this, getException());
+                }
+                if (isResumeInputProcessor()) {
+                    helper.resumeDrawing();
+                }
+                helper.getRequestManager().releaseWakeLock();
+            }};
+
+        if (isRunInBackground()) {
+            helper.getRequestManager().getLooperHandler().post(runnable);
+        } else {
+            runnable.run();
+        }
+    }
+
+    @Deprecated
+    public void afterExecute(final NoteViewHelper helper) {
+        if (getException() != null) {
+            getException().printStackTrace();
+        }
+        benchmarkEnd();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (isRender()) {
                     synchronized (helper) {
                         helper.copyBitmap();
                     }
