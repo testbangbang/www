@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">屏幕共享</string>
+    <string name="exit_confirm">退出共享?</string>
+</resources>
