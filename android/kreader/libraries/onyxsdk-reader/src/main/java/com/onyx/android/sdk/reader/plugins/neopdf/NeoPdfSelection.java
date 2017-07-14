@@ -39,7 +39,7 @@ public class NeoPdfSelection extends ReaderSelection {
         this.pagePosition = pagePosition;
     }
 
-    public NeoPdfSelection(int page, float [] data, byte [] string, int start, int end, String leftText, String rightText) {
+    public NeoPdfSelection(int page, float [] data, byte [] string, int start, int end, String selectionText, String leftText, String rightText) {
         pagePosition = PagePositionUtils.fromPosition(page);
         for(int i = 0; i < data.length / 4; ++i) {
             rectangles.add(new RectF(data[i * 4], data[i * 4 + 1], data[i * 4 + 2], data[i * 4 + 3]));
@@ -47,6 +47,7 @@ public class NeoPdfSelection extends ReaderSelection {
         text = StringUtils.utf16le(string);
         startCharIndex = start;
         endCharIndex = end;
+        this.text = selectionText;
         this.leftText = leftText;
         this.rightText = rightText;
     }
@@ -136,8 +137,8 @@ public class NeoPdfSelection extends ReaderSelection {
     }
 
     @SuppressWarnings("unused")
-    public static void addToSelectionList(List<ReaderSelection> list, int page, float [] rectangles, final byte[] utf16le, int startIndex, int endIndex, String leftText, String rightText) {
-        list.add(new NeoPdfSelection(page, rectangles, utf16le, startIndex, endIndex, leftText, rightText));
+    public static void addToSelectionList(List<ReaderSelection> list, int page, float [] rectangles, final byte[] utf16le, int startIndex, int endIndex, String text, String leftText, String rightText) {
+        list.add(new NeoPdfSelection(page, rectangles, utf16le, startIndex, endIndex, text, leftText, rightText));
     }
 
 }

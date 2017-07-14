@@ -644,13 +644,15 @@ JNIEXPORT jint JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJni
     int count = 0;
     FPDF_SCHHANDLE searchHandle = FPDFText_FindStart(textPage, (unsigned short *)stringData, flags, 0);
     JNIUtils utils(env);
-    utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;)V", true);
+    utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", true);
     while (searchHandle != NULL && FPDFText_FindNext(searchHandle)) {
         ++count;
         int startIndex = FPDFText_GetSchResultIndex(searchHandle);
         int endIndex = startIndex + FPDFText_GetSchCount(searchHandle) - 1;
         std::vector<float> list;
         getSelectionRectangles(page, textPage, x, y, width, height, rotation, startIndex, endIndex, list);
+
+        std::shared_ptr<_jstring> text = getJStringText(env, textPage, startIndex, endIndex);
 
         int contextLeftIndex = std::max(startIndex - contextOffset, 0);
         std::shared_ptr<_jstring> leftText;
@@ -670,7 +672,7 @@ JNIEXPORT jint JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJni
 
         jfloatArray floatArray = env->NewFloatArray(list.size());
         env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
-        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, floatArray, array, startIndex, endIndex, leftText.get(), rightText.get());
+        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, floatArray, array, startIndex, endIndex, text.get(), leftText.get(), rightText.get());
         env->DeleteLocalRef(floatArray);
     }
     FPDFText_FindClose(searchHandle);
@@ -835,7 +837,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     }
 
     JNIUtils utils(env);
-    if (!utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;)V", true)) {
+    if (!utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", true)) {
         return false;
     }
 
@@ -873,7 +875,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 
         jfloatArray floatArray = env->NewFloatArray(list.size());
         env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
-        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, destPage, floatArray, nullptr, -1, -1, nullptr, nullptr);
+        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, destPage, floatArray, nullptr, -1, -1, nullptr, nullptr, nullptr);
         env->DeleteLocalRef(floatArray);
     }
 
@@ -971,7 +973,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     }
 
     JNIUtils utils(env);
-    if (!utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;)V", true)) {
+    if (!utils.findStaticMethod(selectionClassName, "addToSelectionList", "(Ljava/util/List;I[F[BIILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", true)) {
         return false;
     }
 
@@ -996,7 +998,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 
         jfloatArray floatArray = env->NewFloatArray(list.size());
         env->SetFloatArrayRegion(floatArray, 0, list.size(), &list[0]);
-        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, floatArray, nullptr, -1, -1, nullptr, nullptr);
+        env->CallStaticVoidMethod(utils.getClazz(), utils.getMethodId(), objectList, pageIndex, floatArray, nullptr, -1, -1, nullptr, nullptr, nullptr);
         env->DeleteLocalRef(floatArray);
     }
 

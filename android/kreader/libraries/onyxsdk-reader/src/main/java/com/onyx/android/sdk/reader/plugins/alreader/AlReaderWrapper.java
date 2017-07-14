@@ -531,7 +531,7 @@ public class AlReaderWrapper {
                 selection.setPagePosition(PagePositionUtils.fromPosition(result.pos_start));
                 selection.setStartPosition(PagePositionUtils.fromPosition(result.pos_start));
                 selection.setEndPosition(PagePositionUtils.fromPosition(result.pos_end));
-                selection.setText(text);
+                selection.setText(getTextOfSearchResult(result));
                 selection.setLeftText(getLeftContextOfSearchResult(result));
                 selection.setRightText(getRightContextOfSearchResult(result));
                 selection.setDisplayRects(new ArrayList<RectF>());
@@ -543,6 +543,21 @@ public class AlReaderWrapper {
         }
 
         return true;
+    }
+
+    private String getTextOfSearchResult(AlOneSearchResult searchResult) {
+        if (StringUtils.isNullOrEmpty(searchResult.context)) {
+            return "";
+        }
+        int leftIndex = searchResult.context.indexOf((char) AlStyles.CHAR_MARKER_FIND_S);
+        if (leftIndex == -1 || leftIndex >= searchResult.context.length() - 1) {
+            return "";
+        }
+        int rightIndex = searchResult.context.indexOf((char) AlStyles.CHAR_MARKER_FIND_E);
+        if (rightIndex == -1 || rightIndex >= searchResult.context.length() - 1) {
+            return "";
+        }
+        return searchResult.context.substring(leftIndex + 1, rightIndex);
     }
 
     private String getLeftContextOfSearchResult(AlOneSearchResult searchResult) {
