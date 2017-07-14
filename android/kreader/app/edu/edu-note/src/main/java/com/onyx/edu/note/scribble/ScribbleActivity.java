@@ -65,12 +65,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         mBinding.setViewModel(mViewModel);
         initRecyclerView();
         buildSubMenu();
-        mHandlerManager = new HandlerManager(this, new HandlerManager.Callback() {
-            @Override
-            public void onActiveProviderChanged(HandlerManager handlerManager) {
-                mViewModel.setMainMenuIDList(handlerManager.getMainMenuFunctionIDList());
-            }
-        });
+        mHandlerManager = new HandlerManager(this, mViewModel);
     }
 
     @Override
@@ -107,7 +102,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     private void buildSubMenu() {
-        mSubMenu = new ScribbleSubMenu(this, mNoteManager.getShapeDataInfo(), mBinding.mainLayout, new ScribbleSubMenu.Callback() {
+        mSubMenu = new ScribbleSubMenu(this, mNoteManager.getShapeDataInfo(),
+                mBinding.mainLayout, new ScribbleSubMenu.Callback() {
             @Override
             public void onLayoutStateChanged() {
 
@@ -282,6 +278,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     @Override
     public void onSubMenuFunctionItem(int subMenuID) {
         Log.e(TAG, "onSubMenuFunctionItem: " + subMenuID);
+        mHandlerManager.handleSubMenuFunction(subMenuID);
         mSubMenu.dismiss();
     }
 

@@ -2,6 +2,7 @@ package com.onyx.edu.note.handler;
 
 import android.os.Handler;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -194,5 +195,10 @@ public class SpanTextHandler extends BaseHandler {
         mMainMenuFunctionIDList.add(ScribbleMainMenuID.ENTER);
         mMainMenuFunctionIDList.add(ScribbleMainMenuID.DELETE);
         mMainMenuFunctionIDList.add(ScribbleMainMenuID.SPACE);
+    }
+
+    @Override
+    public void handleSubMenuFunction(int subMenuID) {
+        Log.e(TAG, "handleSubMenuFunction: "+subMenuID );
     }
 }

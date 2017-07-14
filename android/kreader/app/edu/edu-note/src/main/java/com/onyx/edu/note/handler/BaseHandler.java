@@ -3,6 +3,7 @@ package com.onyx.edu.note.handler;
 import android.support.annotation.CallSuper;
 
 import com.onyx.edu.note.NoteManager;
+import com.onyx.edu.note.data.ScribbleSubMenuID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,4 +37,6 @@ public abstract class BaseHandler {
     public final List<Integer> getMainMenuFunctionIDList() {
         return mMainMenuFunctionIDList;
     }
+
+    public abstract void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID);
 }

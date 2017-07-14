@@ -210,7 +210,7 @@ public class ScribbleViewModel extends BaseObservable {
         documentSaveAction.execute(mNoteManager, callback);
     }
 
-    void setMainMenuIDList(List<Integer> mainMenuIDList) {
+    public void setMainMenuIDList(List<Integer> mainMenuIDList) {
         mMainMenuIDList.clear();
         mMainMenuIDList.addAll(mainMenuIDList);
     }
