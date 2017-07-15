@@ -51,30 +51,30 @@ public class IMManager {
     }
 
     public void close(Context context) {
-        disablePushService(context);
-        disableSocketService(context);
+        stopPushService(context);
+        stopSocketService(context);
         messageIdSets.clear();
     }
 
-    public IMManager enablePushService(Context activityContext) {
+    public IMManager startPushService(Context activityContext) {
         this.pushEnable = true;
-        startPushService(activityContext);
+        startPushServiceImpl(activityContext);
         return this;
     }
 
-    public IMManager disablePushService(Context activityContext) {
+    public IMManager stopPushService(Context activityContext) {
         this.pushEnable = false;
-        stopPushService(activityContext);
+        stopPushServiceImpl(activityContext);
         return this;
     }
 
-    public IMManager enableSocketService(Context context) {
+    public IMManager startSocketService(Context context) {
         this.socketEnable = true;
         startSocketIOClient(context);
         return this;
     }
 
-    public IMManager disableSocketService(Context context) {
+    public IMManager stopSocketService(Context context) {
         this.socketEnable = false;
         stopSocketIOClient(context);
         return this;
@@ -93,7 +93,7 @@ public class IMManager {
                 if (args.length > 0) {
                     JSONObject data = (JSONObject) args[0];
                     Message message = JSONObject.parseObject(data.toJSONString(), Message.class);
-                    forwardSocketMessage(message);
+                    onReceivedSocketMessage(message);
                 }
             }
         });
@@ -108,7 +108,7 @@ public class IMManager {
         socketIOClient = null;
     }
 
-    private void startPushService(Context activityContext) {
+    private void startPushServiceImpl(Context activityContext) {
         if (config == null) {
             return;
         }
@@ -124,26 +124,26 @@ public class IMManager {
         basePushService.start(activityContext);
     }
 
-    private void stopPushService(Context activityContext) {
+    private void stopPushServiceImpl(Context activityContext) {
         basePushService.stop(activityContext);
         basePushService = null;
     }
 
-    public void forwardPushMessage(Message message) {
+    public void onReceivedPushMessage(Message message) {
         if (!pushEnable) {
             return;
         }
-        forwardMessage(message);
+        broadcastMessage(message);
     }
 
-    public void forwardSocketMessage(Message message) {
+    private void onReceivedSocketMessage(Message message) {
         if (!socketEnable) {
             return;
         }
-        forwardMessage(message);
+        broadcastMessage(message);
     }
 
-    public void forwardMessage(Message message) {
+    public void broadcastMessage(Message message) {
         String messageId = message.getId();
         if (messageIdSets.contains(messageId)) {
             return;

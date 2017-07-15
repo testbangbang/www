@@ -18,7 +18,8 @@ public class SocketIOTest  extends ApplicationTestCase<Application> {
         config.setServerUri("http://localhost:3000");
         IMManager.getInstance().init(config);
         IMManager.getInstance()
-                .enableSocketService(getContext())
-                .enablePushService(getContext());
+                .startPushService(getContext())
+                .startSocketService(getContext());
+
     }
 }

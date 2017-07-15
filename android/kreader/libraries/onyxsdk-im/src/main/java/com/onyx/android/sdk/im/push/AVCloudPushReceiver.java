@@ -29,7 +29,7 @@ public class AVCloudPushReceiver extends BroadcastReceiver {
             String content = json.getString(Constant.MESSAGE_CONTENT);
             String action = json.getString(Constant.MESSAGE_ACTION);
             Message message = Message.create(channel, action, id, content);
-            IMManager.getInstance().forwardPushMessage(message);
+            IMManager.getInstance().onReceivedPushMessage(message);
         }catch (Exception e) {
 
         }
