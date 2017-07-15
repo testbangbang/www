@@ -188,6 +188,9 @@ public class ReaderHelper {
         formManager = null;
         hitTestManager = null;
 
+        viewportBitmap.close();
+        viewportBitmap = null;
+
         clearBitmapCache();
         clearImageReflowManager();
         releaseWordAnalyzer();
