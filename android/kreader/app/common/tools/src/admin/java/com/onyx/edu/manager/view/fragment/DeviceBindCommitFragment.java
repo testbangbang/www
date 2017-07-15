@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,14 +19,15 @@ import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
 import com.onyx.android.sdk.data.model.v2.GroupUserInfo;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
-import com.onyx.android.sdk.data.model.v2.UserInfoBind;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountBindByDeviceRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.AccountCreateByDeviceRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.AccountUnBindByDeviceRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.qrcode.utils.ScreenUtils;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.edu.manager.AppApplication;
+import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.event.DeviceUserInfoSwitchEvent;
 import com.onyx.edu.manager.manager.ContentManager;
@@ -45,6 +47,8 @@ public class DeviceBindCommitFragment extends Fragment {
 
     @Bind(R.id.layout_user_info)
     LinearLayout userInfoLayout;
+    @Bind(R.id.btn_unbind)
+    Button unbindBtn;
 
     private EditText usernameEdit;
     private EditText phoneTvEdit;
@@ -70,6 +74,7 @@ public class DeviceBindCommitFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_device_bind_commit, container, false);
         ButterKnife.bind(this, view);
+
         initView(view);
         return view;
     }
@@ -80,7 +85,14 @@ public class DeviceBindCommitFragment extends Fragment {
         initData();
     }
 
+    private void initToolbar(View parentView) {
+        View view = parentView.findViewById(R.id.toolbar_header);
+        TextView titleView = (TextView) view.findViewById(R.id.toolbar_title);
+        titleView.setText(R.string.device_bind_info_edit_title);
+    }
+
     private void initView(View parentView) {
+        initToolbar(parentView);
         macAddressTv = getMacAddressTv(parentView, R.id.layout_mac_address);
         usernameEdit = getUserInfoEditView(parentView, R.id.layout_username, getString(R.string.username_do));
         phoneTvEdit = getUserInfoEditView(parentView, R.id.layout_phone, getString(R.string.phone_do));
@@ -88,31 +100,23 @@ public class DeviceBindCommitFragment extends Fragment {
 
     private void initData() {
         updateUserInfo();
+        updateUnBindButton();
         updateMacAddressView(getDeviceBind().mac);
     }
 
     private String getUsername() {
-        GroupUserInfo groupUserInfo = getCommitEntity();
-        if (groupUserInfo.user != null) {
-            NeoAccountBase.parseName(groupUserInfo.user);
-            return groupUserInfo.user.getName();
-        } else {
-            if (groupUserInfo.userBind == null) {
-                return null;
-            }
-            return groupUserInfo.userBind.name;
+        if (getNeoAccount() == null) {
+            return null;
         }
+        NeoAccountBase.parseInfo(getNeoAccount());
+        return getNeoAccount().getName();
     }
 
     private String getPhone() {
-        GroupUserInfo groupUserInfo = getCommitEntity();
-        if (groupUserInfo.user != null) {
-            return groupUserInfo.user.getPhone();
+        if (getNeoAccount() != null) {
+            return getNeoAccount().getPhone();
         } else {
-            if (groupUserInfo.userBind == null) {
-                return null;
-            }
-            return groupUserInfo.userBind.phone;
+            return null;
         }
     }
 
@@ -120,6 +124,13 @@ public class DeviceBindCommitFragment extends Fragment {
         usernameEdit.setText(getUsername());
         phoneTvEdit.setText(getPhone());
         updateGroupsInfo();
+    }
+
+    private void updateUnBindButton() {
+        if (fromGroupSelect || getNeoAccount() == null) {
+            unbindBtn.setClickable(false);
+            unbindBtn.setBackgroundResource(R.drawable.button_disable_background);
+        }
     }
 
     private void updateGroupsInfo() {
@@ -160,31 +171,39 @@ public class DeviceBindCommitFragment extends Fragment {
         return (EditText) viewGroup.findViewById(R.id.info_edit);
     }
 
-    @OnClick(R.id.button_commit)
-    public void onCommitClick() {
+    @OnClick(R.id.btn_bind)
+    public void onDeviceBindClick() {
         AccountCommon accountCommon = new AccountCommon();
         accountCommon.name = getEditText(usernameEdit);
         accountCommon.phone = getEditText(phoneTvEdit);
         DeviceBind deviceBind = getDeviceBind();
         deviceBind.info = accountCommon;
         deviceBind.mac = macAddress;
-        UserInfoBind userInfoBind = getCommitEntity().userBind;
-        deviceBind.userInfoId = userInfoBind == null ? null : userInfoBind._id;
         if (!checkDeviceBindValid(deviceBind)) {
-            ToastUtils.showToast(getContext().getApplicationContext(), "必填项没有完成...");
+            ToastUtils.showToast(getContext().getApplicationContext(), R.string.required_fields_is_empty);
             return;
         }
-        startAccountBindByDevice(getCommitEntity().groups, deviceBind);
+
+        if (getCommitEntity().user == null) {
+            startAccountCreateByDevice(getCommitEntity().groups, deviceBind);
+        } else {
+            startAccountBindByDevice();
+        }
     }
 
-    private void startAccountBindByDevice(List<CloudGroup> groupList, DeviceBind deviceBind) {
-        final AccountBindByDeviceRequest bindByDeviceRequest = new AccountBindByDeviceRequest(groupList,
+    @OnClick(R.id.btn_unbind)
+    public void onDeviceUnbindClick() {
+        startAccountUnbindByDevice();
+    }
+
+    private void startAccountCreateByDevice(List<CloudGroup> groupList, DeviceBind deviceBind) {
+        final AccountCreateByDeviceRequest bindByDeviceRequest = new AccountCreateByDeviceRequest(groupList,
                 deviceBind);
-        AppApplication.getCloudManager().submitRequest(getContext(), bindByDeviceRequest, new BaseCallback() {
+        AdminApplication.getCloudManager().submitRequest(getContext(), bindByDeviceRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || (bindByDeviceRequest.getAccount()) == null) {
-                    ToastUtils.showToast(request.getContext().getApplicationContext(), "设备绑定失败");
+                    ToastUtils.showToast(request.getContext().getApplicationContext(), R.string.device_bind_fail);
                     return;
                 }
                 processBindSuccess();
@@ -192,8 +211,46 @@ public class DeviceBindCommitFragment extends Fragment {
         });
     }
 
+    private void startAccountBindByDevice() {
+        final AccountBindByDeviceRequest bindByDeviceRequest = new AccountBindByDeviceRequest(getNeoAccount(),
+                getDeviceBind());
+        AdminApplication.getCloudManager().submitRequest(getContext(), bindByDeviceRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null || !bindByDeviceRequest.isSuccessResult()) {
+                    ToastUtils.showToast(getContext().getApplicationContext(), R.string.device_bind_success);
+                    return;
+                }
+                processBindSuccess();
+            }
+        });
+    }
+
+    private void startAccountUnbindByDevice() {
+        final AccountUnBindByDeviceRequest unBindByDeviceRequest = new AccountUnBindByDeviceRequest(getNeoAccount(),
+                getDeviceBind());
+        AdminApplication.getCloudManager().submitRequest(getContext(), unBindByDeviceRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null || !unBindByDeviceRequest.isSuccessResult()) {
+                    ToastUtils.showToast(getContext().getApplicationContext(), R.string.device_unbind_fail);
+                    return;
+                }
+                processUnBindSuccess();
+            }
+        });
+    }
+
     private void processBindSuccess() {
-        ToastUtils.showToast(getContext().getApplicationContext(), "绑定成功");
+        finishWithToast(getString(R.string.device_bind_success));
+    }
+
+    private void processUnBindSuccess() {
+        finishWithToast(getString(R.string.device_unbind_success));
+    }
+
+    private void finishWithToast(String toast) {
+        ToastUtils.showToast(getContext().getApplicationContext(), toast);
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -238,6 +295,10 @@ public class DeviceBindCommitFragment extends Fragment {
 
     private DeviceBind getDeviceBind() {
         return getCommitEntity().device;
+    }
+
+    private NeoAccountBase getNeoAccount() {
+        return getCommitEntity().user;
     }
 
     @Override

@@ -13,13 +13,16 @@
 
 package com.onyx.android.sdk.qrcode.view;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -31,14 +34,10 @@ import com.onyx.android.sdk.qrcode.utils.ScreenUtils;
  * it, as well as the laser scanner animation and result points.
  */
 public final class QrCodeFinderView extends RelativeLayout {
-
-    private static final int[] SCANNER_ALPHA = {0, 64, 128, 192, 255, 192, 128, 64};
-    private static final long ANIMATION_DELAY = 100L;
     private static final int OPAQUE = 0xFF;
 
     private Context mContext;
     private Paint mPaint;
-    private int mScannerAlpha;
     private int mMaskColor;
     private int mFrameColor;
     private int mLaserColor;
@@ -48,6 +47,8 @@ public final class QrCodeFinderView extends RelativeLayout {
     private int mAngleThick;
     private int mAngleLength;
     private int mLaserWidth;
+
+    private ValueAnimator laserValueAnimator;
 
     public QrCodeFinderView(Context context) {
         this(context, null);
@@ -69,11 +70,10 @@ public final class QrCodeFinderView extends RelativeLayout {
         mTextColor = resources.getColor(R.color.qr_code_white);
 
         mFocusThick = (int) ScreenUtils.getDimenPixelSize(context, 2);
-        ;
+
         mAngleThick = (int) ScreenUtils.getDimenPixelSize(context, 6);
         mAngleLength = (int) ScreenUtils.getDimenPixelSize(context, 20);
-        mLaserWidth = (int) ScreenUtils.getDimenPixelSize(context, 3);
-        mScannerAlpha = 0;
+        mLaserWidth = (int) ScreenUtils.getDimenPixelSize(context, 5);
         init(context);
     }
 
@@ -92,6 +92,30 @@ public final class QrCodeFinderView extends RelativeLayout {
         mFrameRect.top = layoutParams.topMargin;
         mFrameRect.right = mFrameRect.left + layoutParams.width;
         mFrameRect.bottom = mFrameRect.top + layoutParams.height;
+
+        initValueAnimator();
+    }
+
+    private void initValueAnimator() {
+        laserValueAnimator = new ValueAnimator();
+        laserValueAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        laserValueAnimator.setRepeatMode(ValueAnimator.RESTART);
+        laserValueAnimator.setInterpolator(new DecelerateInterpolator());
+        laserValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                postInvalidateView();
+            }
+        });
+        startAnimator();
+    }
+
+    public void startAnimator() {
+        if (laserValueAnimator != null) {
+            laserValueAnimator.setFloatValues(0, 1);
+            laserValueAnimator.setDuration((long) (2.3f * 1000));
+            laserValueAnimator.start();
+        }
     }
 
     @Override
@@ -116,10 +140,16 @@ public final class QrCodeFinderView extends RelativeLayout {
         drawAngle(canvas, frame);
         drawText(canvas, frame);
         drawLaser(canvas, frame);
+    }
 
+    private void postInvalidateView() {
+        Rect frame = mFrameRect;
+        if (frame == null) {
+            return;
+        }
         // Request another update at the animation interval, but only repaint the laser line,
         // not the entire viewfinder mask.
-        postInvalidateDelayed(ANIMATION_DELAY, frame.left, frame.top, frame.right, frame.bottom);
+        postInvalidate(frame.left, frame.top, frame.right, frame.bottom);
     }
 
     private void drawFocusRect(Canvas canvas, Rect rect) {
@@ -171,9 +201,8 @@ public final class QrCodeFinderView extends RelativeLayout {
 
     private void drawLaser(Canvas canvas, Rect rect) {
         mPaint.setColor(mLaserColor);
-        mPaint.setAlpha(SCANNER_ALPHA[mScannerAlpha]);
-        mScannerAlpha = (mScannerAlpha + 1) % SCANNER_ALPHA.length;
-        int middle = rect.height() / 2 + rect.top;
-        canvas.drawRect(rect.left + 2, middle - mLaserWidth / 2, rect.right - 1, middle + mLaserWidth / 2, mPaint);
+        float laserPercent = (Float) laserValueAnimator.getAnimatedValue();
+        int pos = (int) (rect.height() * laserPercent + rect.top - mLaserWidth);
+        canvas.drawRect(rect.left + 4, pos, rect.right - 4, pos + mLaserWidth, mPaint);
     }
 }

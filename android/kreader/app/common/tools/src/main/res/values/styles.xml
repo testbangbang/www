@@ -47,7 +47,8 @@
 
     <style name="login_edit_style">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/activity_login_edit_height</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/activity_login_edit_height</item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:drawablePadding">@dimen/activity_login_edit_drawable_padding</item>
         <item name="android:gravity">center_vertical</item>

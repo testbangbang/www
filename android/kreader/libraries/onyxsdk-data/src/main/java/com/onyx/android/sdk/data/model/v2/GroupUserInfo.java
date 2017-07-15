@@ -13,5 +13,4 @@ public class GroupUserInfo extends BaseData {
     public List<CloudGroup> groups = new ArrayList<>();
     public NeoAccountBase user;
     public DeviceBind device;
-    public UserInfoBind userBind;
 }

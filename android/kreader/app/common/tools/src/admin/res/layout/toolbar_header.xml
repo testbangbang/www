@@ -11,7 +11,7 @@
         android:layout_centerVertical="true"
         android:drawableLeft="@drawable/ic_back"
         android:gravity="center_vertical"
-        android:text="返回"
+        android:text="@string/back"
         android:textColor="@android:color/white"
         android:textSize="15sp" />
 
@@ -20,8 +20,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="选择功能"
+        android:text="@string/main_item_func_select"
         android:textColor="@color/qr_code_white"
         android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/toolbar_other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:textColor="@android:color/white"
+        android:textSize="15sp" />
 
 </RelativeLayout>

@@ -19,7 +19,7 @@ import com.onyx.android.sdk.qrcode.utils.ScreenUtils;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.edu.manager.AppApplication;
+import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.adapter.GroupSelectAdapter;
 import com.onyx.edu.manager.adapter.ItemClickListener;
@@ -72,7 +72,7 @@ public class GroupListFragment extends Fragment {
             }
         });
         TextView titleView = (TextView) view.findViewById(R.id.toolbar_title);
-        titleView.setText("节点选择");
+        titleView.setText(R.string.node_select);
     }
 
     private void initView() {
@@ -112,7 +112,7 @@ public class GroupListFragment extends Fragment {
     private void loadGroup(final CloudGroup group, final BaseCallback baseCallback) {
         final String groupId = group != null ? group._id : null;
         final CloudGroupListRequest groupListRequest = new CloudGroupListRequest(String.valueOf(groupId));
-        AppApplication.getCloudManager().submitRequest(getContext(), groupListRequest, new BaseCallback() {
+        AdminApplication.getCloudManager().submitRequest(getContext(), groupListRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null && StringUtils.isNotBlank(groupId)) {
@@ -174,7 +174,7 @@ public class GroupListFragment extends Fragment {
     public void onGroupSelectClick() {
         CloudGroup currentGroup = getCurrentGroup();
         if (currentGroup == null) {
-            ToastUtils.showToast(getContext().getApplicationContext(), "至少选择一个节点");
+            ToastUtils.showToast(getContext().getApplicationContext(), R.string.node_select_empty_tip);
             return;
         }
         GroupSelectEvent selectEvent = new GroupSelectEvent(currentGroup);

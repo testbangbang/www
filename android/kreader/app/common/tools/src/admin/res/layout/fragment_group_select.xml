@@ -28,7 +28,7 @@
             <TextView
                 android:id="@+id/root_group"
                 style="@style/parent_group_layout_style"
-                android:text="根节点" />
+                android:text="@string/node_root" />
 
             <LinearLayout
                 android:id="@+id/parent_group"
@@ -58,7 +58,7 @@
         android:background="@drawable/button_background"
         android:gravity="center"
         android:padding="10dp"
-        android:text="进入选择的节点"
+        android:text="@string/node_select_entrance"
         android:textSize="18sp" />
 
 </LinearLayout>

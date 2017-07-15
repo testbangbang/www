@@ -13,13 +13,13 @@ import retrofit2.Response;
 /**
  * Created by suicheng on 2017/7/12.
  */
-public class AccountBindByDeviceRequest extends BaseCloudRequest {
+public class AccountUnBindByDeviceRequest extends BaseCloudRequest {
 
     private NeoAccountBase account;
     private DeviceBind deviceBind;
     private boolean successResult;
 
-    public AccountBindByDeviceRequest(NeoAccountBase account, DeviceBind deviceBind) {
+    public AccountUnBindByDeviceRequest(NeoAccountBase account, DeviceBind deviceBind) {
         this.account = account;
         this.deviceBind = deviceBind;
     }
@@ -31,7 +31,7 @@ public class AccountBindByDeviceRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         Response<ResponseBody> response = RetrofitUtils.executeCall(ServiceFactory.getContentService(
-                parent.getCloudConf().getApiBase()).bindUserByDevice(account._id, deviceBind));
+                parent.getCloudConf().getApiBase()).unbindUserByDevice(account._id, deviceBind));
         successResult = response.isSuccessful();
     }
 }

@@ -1,7 +1,8 @@
 package com.onyx.edu.manager;
 
-import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.CloudStore;
@@ -16,10 +17,10 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 /**
  * Created by suicheng on 2017/6/16.
  */
-public class AppApplication extends Application {
+public class AdminApplication extends MultiDexApplication {
 
     private static CloudManager cloudManager;
-    private static AppApplication sInstance;
+    private static AdminApplication sInstance;
 
     @Override
     public void onCreate() {
@@ -37,7 +38,13 @@ public class AppApplication extends Application {
         }
     }
 
-    public static final AppApplication sInstance() {
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(context);
+        MultiDex.install(AdminApplication.this);
+    }
+
+    public static final AdminApplication sInstance() {
         return sInstance;
     }
 
@@ -53,7 +60,7 @@ public class AppApplication extends Application {
     }
 
     public static void updateCloudManagerToken(String newToken) {
-        CloudManager cloudManager = AppApplication.getCloudManager();
+        CloudManager cloudManager = AdminApplication.getCloudManager();
         cloudManager.setToken(newToken);
         ServiceFactory.addRetrofitTokenHeader(cloudManager.getCloudConf().getApiBase(),
                 Constant.HEADER_AUTHORIZATION,

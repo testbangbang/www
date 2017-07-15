@@ -12,6 +12,7 @@ import android.util.Log;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.common.ContentException;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
 import com.onyx.android.sdk.data.model.v2.GroupUserInfo;
@@ -20,10 +21,11 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.qrcode.QrCodeActivity;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
-import com.onyx.edu.manager.AppApplication;
+import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.event.DeviceBindCommitEvent;
 import com.onyx.edu.manager.event.DeviceUserInfoSwitchEvent;
+import com.onyx.edu.manager.event.GroupReSelectEvent;
 import com.onyx.edu.manager.event.GroupSelectEvent;
 import com.onyx.edu.manager.view.dialog.DialogHolder;
 import com.onyx.edu.manager.view.fragment.DeviceBindCommitFragment;
@@ -45,7 +47,6 @@ public class QrScannerActivity extends AppCompatActivity {
     private static final int REQUEST_QR_CODE = 1000;
 
     public static CloudGroup groupSelected;
-
     private DeviceBind scannedDeviceBind;
 
     @Override
@@ -87,7 +88,7 @@ public class QrScannerActivity extends AppCompatActivity {
         String qrCode = intent.getStringExtra("qrCode");
         scannedDeviceBind = JSONObjectParseUtils.parseObject(qrCode, DeviceBind.class);
         if (scannedDeviceBind == null || !NetworkUtil.isStringValidMacAddress(scannedDeviceBind.mac)) {
-            ToastUtils.showToast(getApplicationContext(), "二维码信息不对！！");
+            ToastUtils.showToast(getApplicationContext(), R.string.qr_code_not_match);
             finish();
             return;
         }
@@ -95,21 +96,37 @@ public class QrScannerActivity extends AppCompatActivity {
     }
 
     private void fetchUserInfoFromCloud(final DeviceBind deviceBind) {
-        final MaterialDialog dialog = DialogHolder.showProgressDialog(this, "正在查询绑定信息...");
+        final MaterialDialog dialog = DialogHolder.showProgressDialog(this, getString(R.string.qr_code_querying));
         final CloudUserInfoByMacRequest userInfoByMacRequest = new CloudUserInfoByMacRequest(deviceBind.mac);
-        AppApplication.getCloudManager().submitRequest(this, userInfoByMacRequest, new BaseCallback() {
+        AdminApplication.getCloudManager().submitRequest(this, userInfoByMacRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dialog.dismiss();
-                GroupUserInfo groupUserInfo = userInfoByMacRequest.getGroupUserInfo();
-                Log.e("##groupUserInfo", JSONObjectParseUtils.toJson(groupUserInfo));
-                if (e != null || groupUserInfo == null) {
-                    processUnboundUserInfo(deviceBind);
+                if (e != null) {
+                    if (ContentException.isCloudException(e)) {
+                        processCloudException((ContentException) e, deviceBind);
+                        return;
+                    }
+                    processNetWorkException();
                     return;
                 }
-                processBoundUserInfo(groupUserInfo);
+                processBoundUserInfo(userInfoByMacRequest.getGroupUserInfo());
             }
         });
+    }
+
+    private void processNetWorkException() {
+        ToastUtils.showToast(getApplicationContext(), R.string.qr_code_query_exception);
+        finish();
+    }
+
+    private void processCloudException(ContentException cloudException, DeviceBind deviceBind) {
+        if (cloudException.isCloudNotFound()) {
+            processUnboundUserInfo(deviceBind);
+            return;
+        }
+        ToastUtils.showToast(getApplicationContext(), String.valueOf(cloudException.getMessage()));
+        finish();
     }
 
     private void processBoundUserInfo(GroupUserInfo groupUserInfo) {
@@ -161,5 +178,10 @@ public class QrScannerActivity extends AppCompatActivity {
     public void onGroupSelectEvent(GroupSelectEvent event) {
         groupSelected = event.group;
         processUnboundUserInfo(scannedDeviceBind);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGroupReSelectEvent(GroupReSelectEvent event) {
+        showFragment(GroupListFragment.newInstance());
     }
 }

@@ -11,11 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.adapter.FuncSelectAdapter;
 import com.onyx.edu.manager.adapter.ItemClickListener;
 import com.onyx.edu.manager.model.FuncItemEntity;
+import com.onyx.edu.manager.view.activity.AccountInfoActivity;
 import com.onyx.edu.manager.view.activity.QrScannerActivity;
 import com.onyx.edu.manager.view.activity.UserManagerActivity;
 
@@ -74,19 +77,25 @@ public class FuncSelectFragment extends Fragment {
             }
         });
         TextView titleView = (TextView) view.findViewById(R.id.toolbar_title);
-        titleView.setText("选择功能");
+        titleView.setText(R.string.main_item_func_select);
     }
 
     private void initData() {
+        if (!NetworkUtil.isWiFiConnected(getContext())) {
+            ToastUtils.showToast(getContext().getApplicationContext(), R.string.network_is_not_connected);
+        }
         funcItemEntityList.addAll(loadData());
+        selectAdapter.notifyDataSetChanged();
     }
 
     private List<FuncItemEntity> loadData() {
         List<FuncItemEntity> itemEntityList = new ArrayList<>();
-        itemEntityList.add(FuncItemEntity.create(R.mipmap.ic_code, "扫一扫",
+        itemEntityList.add(FuncItemEntity.create(R.mipmap.ic_code, getString(R.string.main_item_scanner),
                 new Intent(getContext(), QrScannerActivity.class)));
-        itemEntityList.add(FuncItemEntity.create(R.mipmap.ic_manage, "管理",
+        itemEntityList.add(FuncItemEntity.create(R.mipmap.ic_manage, getString(R.string.main_item_user_manager),
                 new Intent(getContext(), UserManagerActivity.class)));
+        itemEntityList.add(FuncItemEntity.create(R.mipmap.ic_account, getString(R.string.main_item_account_info),
+                new Intent(getContext(), AccountInfoActivity.class)));
         return itemEntityList;
     }
 }

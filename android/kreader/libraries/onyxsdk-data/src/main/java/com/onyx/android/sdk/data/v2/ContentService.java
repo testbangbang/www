@@ -13,7 +13,6 @@ import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
-import com.onyx.android.sdk.data.model.v2.UserInfoBind;
 
 import java.util.List;
 
@@ -21,8 +20,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -63,16 +62,13 @@ public interface ContentService {
     Call<NeoAccountBase> createUserByDevice(@Path(Constant.ID_TAG) final String groupId,
                                             @Body final DeviceBind deviceBind);
 
-    @GET("userinfos/getByGroup")
-    Call<List<UserInfoBind>> getDeviceBindList(@Query("groupId") final String groupId);
-
     @GET("groups/{id}/groupusers")
     Call<List<NeoAccountBase>> getGroupUserList(@Path(Constant.ID_TAG) final String groupId);
 
     @GET("groups/{id}")
     Call<CloudGroup> getGroupList(@Path(Constant.ID_TAG) final String parentGroupId);
 
-    @GET("groups//recursive")
+    @GET("groups/recursive")
     Call<List<CloudGroup>> getRecursiveGroupList();
 
     @POST("adusers")
@@ -83,4 +79,12 @@ public interface ContentService {
 
     @GET("users/findByDeviceMac")
     Call<GroupUserInfo> getGroupUserInfo(@Query("mac") final String macAddress);
+
+    @PUT("users/{id}/bindDevice")
+    Call<ResponseBody> bindUserByDevice(@Path(Constant.ID_TAG) final String userId,
+                                            @Body final DeviceBind deviceBind);
+
+    @PUT("users/{id}/unbindDevice")
+    Call<ResponseBody> unbindUserByDevice(@Path(Constant.ID_TAG) final String userId,
+                                            @Body final DeviceBind deviceBind);
 }

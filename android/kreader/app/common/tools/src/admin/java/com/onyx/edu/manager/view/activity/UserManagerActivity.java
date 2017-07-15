@@ -1,13 +1,17 @@
 package com.onyx.edu.manager.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,16 +22,22 @@ import com.afollestad.materialdialogs.Theme;
 import com.jiang.android.lib.adapter.expand.StickyRecyclerHeadersDecoration;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.Device;
+import com.onyx.android.sdk.data.model.v2.AccountCommon;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
+import com.onyx.android.sdk.data.model.v2.DeviceBind;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
+import com.onyx.android.sdk.data.request.cloud.v2.AccountUnBindByDeviceRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudGroupListRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudGroupUserListRequest;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.qrcode.utils.ScreenUtils;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.edu.manager.AppApplication;
+import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.adapter.ContactAdapter;
 import com.onyx.edu.manager.adapter.GroupSelectAdapter;
@@ -61,9 +71,12 @@ public class UserManagerActivity extends AppCompatActivity {
     SideBar contactSidebar;
     @Bind(R.id.contact_dialog)
     TextView contactTextDialog;
+    @Bind(R.id.edit_search)
+    EditText contactSearch;
 
-    private ContactAdapter contactAdapter;
+    private ContactAdapter<ContactEntity> contactAdapter;
     private List<ContactEntity> contactEntityList = new ArrayList<>();
+    private List<ContactEntity> searchContactEntityList = new ArrayList<>();
     private CharacterParser characterParser = CharacterParser.getInstance();
     private PinyinComparator pinyinComparator = new PinyinComparator();
 
@@ -85,7 +98,38 @@ public class UserManagerActivity extends AppCompatActivity {
         initToolbar();
         initChildGroupPageView();
         initContentPageView();
+        initContactSearchView();
         initSideBarView();
+    }
+
+    private void initContactSearchView() {
+        contactSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    InputMethodUtils.hideInputKeyboard(UserManagerActivity.this);
+                    startSearch(contactSearch.getEditableText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void startSearch(String searchText) {
+        if (StringUtils.isNullOrEmpty(searchText)) {
+            contactAdapter.setContactEntityList(contactEntityList);
+            return;
+        }
+        List<ContactEntity> list = new ArrayList<>();
+        for (ContactEntity entity : contactEntityList) {
+            if (entity.username.contains(searchText) || entity.sortLetter.contains(searchText)) {
+                list.add(entity);
+            }
+        }
+        searchContactEntityList.clear();
+        searchContactEntityList.addAll(list);
+        contactAdapter.setContactEntityList(searchContactEntityList);
     }
 
     private void initToolbar() {
@@ -97,7 +141,19 @@ public class UserManagerActivity extends AppCompatActivity {
             }
         });
         TextView titleView = (TextView) view.findViewById(R.id.toolbar_title);
-        titleView.setText("选择组织");
+        titleView.setText(R.string.main_item_user_manager);
+        TextView otherTextView = (TextView) view.findViewById(R.id.toolbar_other);
+        otherTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNewUserItemClick();
+            }
+        });
+        otherTextView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.icon_add_white), null, null, null);
+    }
+
+    private void onNewUserItemClick() {
+        startActivity(new Intent(this, QrScannerActivity.class));
     }
 
     private void initData() {
@@ -127,12 +183,11 @@ public class UserManagerActivity extends AppCompatActivity {
         loadGroupAndUserList(group, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null && group != null && StringUtils.isNotBlank(group._id)) {
-                    ToastUtils.showToast(request.getContext().getApplicationContext(), "获取组员失败");
-                    return;
-                }
                 if (group != null) {
                     addLibraryToParentRefList(group);
+                }
+                if (e != null && group != null && StringUtils.isNotBlank(group._id)) {
+                    ToastUtils.showToast(request.getContext().getApplicationContext(), R.string.group_has_no_users);
                 }
             }
         });
@@ -141,18 +196,28 @@ public class UserManagerActivity extends AppCompatActivity {
     private void loadGroupAndUserList(CloudGroup group, final BaseCallback baseCallback) {
         final String groupId = group != null ? group._id : null;
         CloudRequestChain requestChain = new CloudRequestChain();
+        addCloudGroupListRequest(requestChain, groupId);
+        addCloudGroupUserListRequest(requestChain, groupId, baseCallback);
+        requestChain.setAbortException(false);
+        requestChain.execute(this, AdminApplication.getCloudManager());
+    }
+
+    private void addCloudGroupListRequest(CloudRequestChain requestChain, String groupId) {
         final CloudGroupListRequest groupListRequest = new CloudGroupListRequest(String.valueOf(groupId));
-        final CloudGroupUserListRequest userListRequest = new CloudGroupUserListRequest(groupId);
         requestChain.addRequest(groupListRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null && StringUtils.isNotBlank(groupId)) {
-                    BaseCallback.invoke(baseCallback, request, e);
-                    return;
-                }
                 groupAdapter.setGroupContainer(childGroup = groupListRequest.getChildGroup());
             }
         });
+    }
+
+    private void addCloudGroupUserListRequest(CloudRequestChain requestChain, String groupId,
+                                              final BaseCallback baseCallback) {
+        if (StringUtils.isNullOrEmpty(groupId)) {
+            return;
+        }
+        final CloudGroupUserListRequest userListRequest = new CloudGroupUserListRequest(groupId);
         requestChain.addRequest(userListRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -162,10 +227,12 @@ public class UserManagerActivity extends AppCompatActivity {
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
-        requestChain.execute(this, AppApplication.getCloudManager());
     }
 
     private void processUserList(List<NeoAccountBase> userInfoList) {
+        if (CollectionUtils.isNullOrEmpty(userInfoList)) {
+            userInfoList = new ArrayList<>();
+        }
         List<ContactEntity> list = new ArrayList<>();
         for (NeoAccountBase accountBase : userInfoList) {
             ContactEntity entity = new ContactEntity();
@@ -176,7 +243,7 @@ public class UserManagerActivity extends AppCompatActivity {
         contactEntityList.clear();
         contactEntityList.addAll(list);
         sortContactEntityList(contactEntityList);
-        contactRecyclerView.getAdapter().notifyDataSetChanged();
+        contactAdapter.setContactEntityList(contactEntityList);
     }
 
     private String getContactEntityUsername(ContactEntity entity) {
@@ -292,7 +359,7 @@ public class UserManagerActivity extends AppCompatActivity {
         contactAdapter.setItemUnbundledClickListener(new ItemClickListener() {
             @Override
             public void onClick(int position, View view) {
-                processDeviceUnbundled(contactEntityList.get(position));
+                showDeviceUnbundledDialog(contactAdapter.getItem(position));
             }
 
             @Override
@@ -301,12 +368,15 @@ public class UserManagerActivity extends AppCompatActivity {
         });
     }
 
-    private void processDeviceUnbundled(ContactEntity entity) {
-        String content = entity.accountInfo.getName() + "\n" +
-                StringUtils.getBlankStr(entity.accountInfo.getFirstDevice().macAddress);
+    private void showDeviceUnbundledDialog(final ContactEntity entity) {
+        if (StringUtils.isNullOrEmpty(getContactEntityMac(entity))) {
+            ToastUtils.showToast(getApplicationContext(), R.string.mac_address_invalid);
+            return;
+        }
+        String content = StringUtils.getBlankStr(entity.username) + "\n" + getContactEntityMac(entity);
         new MaterialDialog.Builder(this)
                 .theme(Theme.LIGHT)
-                .title("用户设备解绑")
+                .title(R.string.user_device_un_bind)
                 .content(content)
                 .contentGravity(GravityEnum.CENTER)
                 .positiveText(R.string.ok)
@@ -316,22 +386,47 @@ public class UserManagerActivity extends AppCompatActivity {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        ToastUtils.showToast(getApplicationContext(), "暂未支持");
+                        startAccountUnbindByDevice(entity);
                     }
                 }).show();
+    }
+
+    private void startAccountUnbindByDevice(final ContactEntity entity) {
+        Device device = entity.accountInfo.getFirstDevice();
+        DeviceBind deviceBind = new DeviceBind();
+        deviceBind.mac = device.macAddress;
+        deviceBind.model = device.model;
+        deviceBind.info = JSONObjectParseUtils.parseObject(entity.accountInfo.info, AccountCommon.class);
+        final AccountUnBindByDeviceRequest unBindByDeviceRequest = new AccountUnBindByDeviceRequest(entity.accountInfo,
+                deviceBind);
+        AdminApplication.getCloudManager().submitRequest(this, unBindByDeviceRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null || !unBindByDeviceRequest.isSuccessResult()) {
+                    ToastUtils.showToast(getApplicationContext(), R.string.device_unbind_fail);
+                    return;
+                }
+                processUnBindSuccess(entity);
+            }
+        });
+    }
+
+    private void processUnBindSuccess(ContactEntity entity) {
+        Device device = entity.accountInfo.getFirstDevice();
+        if (device != null) {
+            device.macAddress = null;
+        }
+        contactAdapter.notifyDataSetChanged();
+        ToastUtils.showToast(getApplicationContext(), R.string.device_unbind_success);
     }
 
     @OnClick(R.id.root_group)
     public void onRootGroupClick() {
         parentGroupLayout.removeAllViews();
         parentGroupList.clear();
-        loadGroupAndUserList(null, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                contactEntityList.clear();
-                contactRecyclerView.getAdapter().notifyDataSetChanged();
-            }
-        });
+        contactEntityList.clear();
+        contactRecyclerView.getAdapter().notifyDataSetChanged();
+        loadGroupAndUserList(null, null);
     }
 
     @Override
