@@ -66,6 +66,9 @@ ext {
     easyPermissonVersion = '0.2.1'
     mpAndroidChart = '3.0.1'
     pageflip = '1.0.2'
+    socketio = '0.8.3'
+    avoscloudsdk = '4.3.2'
+    avoscloudpush = '4.3.2'
 
     //compatible
     compatibleSdkVersion = 23 // for projects which can't be built with sdk 24+
