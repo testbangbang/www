@@ -63,7 +63,7 @@ public class NoteManager {
                 } catch (Throwable tr) {
                     request.setException(tr);
                 } finally {
-                    request.afterExecute(noteViewHelper);
+                    request.postExecute(noteViewHelper);
                     requestManager.dumpWakelocks();
                     requestManager.removeRequest(request);
                 }

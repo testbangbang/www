@@ -34,6 +34,7 @@ public class LoadNoteListAction extends BaseNoteAction {
     public void execute(final NoteManager manager, BaseCallback callback) {
         NoteLibraryLoadRequest loadRequest = new NoteLibraryLoadRequest(parentLibraryId,
                 Constant.PER_PAGE_THUMBNAIL_LOAD_LIMIT, sortBy, ascOrder);
+        loadRequest.setRender(false);
         manager.submitRequest(loadRequest, callback);
     }
 }

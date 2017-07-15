@@ -15,6 +15,7 @@ public class CreateLibraryAction extends BaseNoteAction {
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
         final NoteLibraryCreateRequest createRequest = new NoteLibraryCreateRequest(parentLibraryId, title);
+        createRequest.setRender(false);
         noteManager.submitRequest(createRequest, callback);
     }
 

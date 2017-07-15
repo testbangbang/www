@@ -7,18 +7,17 @@ import android.text.TextUtils;
 
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
+import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.handler.BaseHandler;
 import com.onyx.edu.note.handler.ScribbleHandler;
 import com.onyx.edu.note.handler.SpanTextHandler;
+import com.onyx.edu.note.scribble.ScribbleViewModel;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class HandlerManager {
-    public interface Callback {
-        void onActiveProviderChanged(HandlerManager handlerManager);
-    }
 
     public static final String TAG = HandlerManager.class.getSimpleName();
     public static final String SCRIBBLE_PROVIDER = "scribble";
@@ -28,11 +27,11 @@ public class HandlerManager {
     private String activeProviderName;
     private Context mContext;
     private Map<String, BaseHandler> providerMap = new HashMap<>();
-    private Callback mCallback;
+    private ScribbleViewModel mViewModel;
 
-    public HandlerManager(Context context, Callback callback) {
+    public HandlerManager(Context context, ScribbleViewModel viewModel) {
         mContext = context;
-        mCallback = callback;
+        mViewModel = viewModel;
         initProviderMap();
     }
 
@@ -58,9 +57,7 @@ public class HandlerManager {
         }
         activeProviderName = providerName;
         getActiveProvider().onActivate();
-        if (mCallback != null) {
-            mCallback.onActiveProviderChanged(this);
-        }
+        mViewModel.setMainMenuIDList(getMainMenuFunctionIDList());
     }
 
     @Nullable
@@ -76,7 +73,7 @@ public class HandlerManager {
     }
 
     //TODO:temp solution for 2 handler only situation.
-    public void switchProvider(){
+    public void switchProvider() {
         setActiveProvider(activeProviderName.equals(SCRIBBLE_PROVIDER) ? SPAN_TEXT_PROVIDER : SCRIBBLE_PROVIDER);
     }
 
@@ -85,5 +82,9 @@ public class HandlerManager {
             return null;
         }
         return getActiveProvider().getMainMenuFunctionIDList();
+    }
+
+    public void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
+       getActiveProvider().handleSubMenuFunction(subMenuID);
     }
 }

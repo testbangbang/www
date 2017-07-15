@@ -21,6 +21,7 @@ public class NoteLibraryRemoveAction extends BaseNoteAction {
     @Override
     public void execute(NoteManager manager, final BaseCallback callback) {
         final NoteLibraryRemoveRequest request = new NoteLibraryRemoveRequest(targetRemoveLibraryList);
+        request.setRender(false);
         manager.submitRequest(request, callback);
     }
 }

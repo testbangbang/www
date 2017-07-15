@@ -1,7 +1,10 @@
 package com.onyx.edu.note.handler;
 
+import android.util.Log;
+
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.data.ScribbleMainMenuID;
+import com.onyx.edu.note.data.ScribbleSubMenuID;
 
 import java.util.ArrayList;
 
@@ -23,6 +26,22 @@ public class ScribbleHandler extends BaseHandler {
         mMainMenuFunctionIDList.add(ScribbleMainMenuID.BG);
         mMainMenuFunctionIDList.add(ScribbleMainMenuID.ERASER);
         mMainMenuFunctionIDList.add(ScribbleMainMenuID.PEN_WIDTH);
+    }
+
+    @Override
+    public void handleSubMenuFunction(int subMenuID) {
+        Log.e(TAG, "handleSubMenuFunction: "+subMenuID );
+        if (ScribbleSubMenuID.isThicknessGroup(subMenuID)) {
+
+        } else if (ScribbleSubMenuID.isBackgroundGroup(subMenuID)) {
+
+        } else if (ScribbleSubMenuID.isEraserGroup(subMenuID)) {
+
+        } else if (ScribbleSubMenuID.isPenColorGroup(subMenuID)) {
+
+        } else if (ScribbleSubMenuID.isPenStyleGroup(subMenuID)) {
+
+        }
     }
 
 }

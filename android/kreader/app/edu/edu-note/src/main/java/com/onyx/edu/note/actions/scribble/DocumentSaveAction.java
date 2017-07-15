@@ -24,7 +24,7 @@ public class DocumentSaveAction extends BaseNoteAction {
     public void execute(NoteManager noteManager, BaseCallback callback) {
         NoteDocumentSaveRequest saveRequest = new NoteDocumentSaveRequest(mDocumentTitle, mCloseAfterSave);
         if (!mCloseAfterSave) {
-            saveRequest.setDrawToView(true);
+            saveRequest.setRender(true);
         }
         noteManager.submitRequestWithIdentifier(saveRequest, mDocumentUniqueId, callback);
     }
