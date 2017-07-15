@@ -5,7 +5,6 @@ import android.content.Context;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.im.push.AVOSCloudPushService;
 import com.onyx.android.sdk.im.push.BasePushService;
-import com.onyx.android.sdk.im.push.PushServiceType;
 import com.onyx.android.sdk.im.socket.SocketIOClient;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -33,7 +32,7 @@ public class IMManager {
     private boolean pushEnable = false;
     private boolean socketEnable = false;
     private Set<String> messageIdSets = new HashSet<>();
-    private IMInitArgs imInitArgs;
+    private IMConfig config;
     private EventBus eventBus = new EventBus();
 
     public static IMManager getInstance() {
@@ -46,8 +45,8 @@ public class IMManager {
     public IMManager() {
     }
 
-    public IMManager start(IMInitArgs imInitArgs) {
-        this.imInitArgs = imInitArgs;
+    public IMManager init(IMConfig imConfig) {
+        this.config = imConfig;
         return this;
     }
 
@@ -57,9 +56,9 @@ public class IMManager {
         messageIdSets.clear();
     }
 
-    public IMManager enablePushService(Context activityContext, PushServiceType type) {
+    public IMManager enablePushService(Context activityContext) {
         this.pushEnable = true;
-        startPushService(activityContext, type);
+        startPushService(activityContext);
         return this;
     }
 
@@ -82,14 +81,10 @@ public class IMManager {
     }
 
     private void startSocketIOClient(Context context) {
-        if (imInitArgs == null) {
+        if (config == null || StringUtils.isNullOrEmpty(config.getServerUri())) {
             return;
         }
-        String serverUri = imInitArgs.getServerUri();
-        if (StringUtils.isNullOrEmpty(serverUri)) {
-            return;
-        }
-        socketIOClient = new SocketIOClient(imInitArgs.getConfig(), serverUri);
+        socketIOClient = new SocketIOClient(config);
         socketIOClient.connect();
         socketIOClient.on(Constant.PUSH, new Emitter.Listener() {
             @Override
@@ -113,18 +108,19 @@ public class IMManager {
         socketIOClient = null;
     }
 
-    private void startPushService(Context activityContext, PushServiceType type) {
-        if (imInitArgs == null) {
+    private void startPushService(Context activityContext) {
+        if (config == null) {
             return;
         }
-        switch (type) {
+        switch (config.getPushServiceType()) {
             case AVCLOUDPUSH:
                 basePushService = new AVOSCloudPushService();
                 break;
             default:
                 basePushService = new AVOSCloudPushService();
+                break;
         }
-        basePushService.init(activityContext, imInitArgs);
+        basePushService.init(activityContext, config);
         basePushService.start(activityContext);
     }
 

@@ -1,9 +1,7 @@
 package com.onyx.android.sdk.im.socket;
 
-import android.content.Context;
-
+import com.onyx.android.sdk.im.IMConfig;
 import com.onyx.android.sdk.utils.Debug;
-import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -20,26 +18,26 @@ import io.socket.emitter.Emitter;
  */
 
 public class SocketIOClient {
-
-    private String serverUri;
-
     private Socket socket;
     private Map<String,Emitter.Listener> listenerMap = new HashMap<>();
     private boolean isConnected = false;
     private boolean closed = false;
     private int reconnectCount = 0;
-    private SocketIOConfig config;
+    private IMConfig config;
     private Timer timer = new Timer();
 
-    public SocketIOClient(SocketIOConfig config, String serverUri) {
-        this.serverUri = serverUri;
-        this.config = config;
+    public SocketIOClient(IMConfig c) {
+        config = c;
         initSocketIOClient();
     }
 
     private void initSocketIOClient() {
         try {
-            socket = IO.socket(serverUri);
+            IO.Options options = new IO.Options();
+            options.reconnection = true;
+            options.reconnectionAttempts = config.getReconnectLimit();
+            options.reconnectionDelayMax = config.getReconnectInterval();
+            socket = IO.socket(config.getServerUri(), options);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -88,7 +86,6 @@ public class SocketIOClient {
         public void call(Object... args) {
             Debug.d(getClass(), "onConnectError");
             isConnected = false;
-            reconnect();
         }
     };
 
@@ -109,7 +106,7 @@ public class SocketIOClient {
                 reconnectCount++;
                 getSocket().connect();
             }
-        }, config.getIntervalAfterConnectFailed());
+        }, config.getReconnectInterval());
     }
 
     public void close() {

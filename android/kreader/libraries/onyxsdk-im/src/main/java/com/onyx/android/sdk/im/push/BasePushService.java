@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.onyx.android.sdk.im.IMInitArgs;
+import com.onyx.android.sdk.im.IMConfig;
 
 /**
  * Created by ming on 2017/7/12.
@@ -12,7 +12,7 @@ import com.onyx.android.sdk.im.IMInitArgs;
 
 public interface BasePushService {
 
-    void init(Context context, IMInitArgs imInitArgs);
+    void init(Context context, IMConfig imConfig);
 
     void start(Context context);
 
