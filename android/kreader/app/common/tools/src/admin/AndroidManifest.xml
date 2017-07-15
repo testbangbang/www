@@ -20,7 +20,7 @@
         android:required="false" />
 
     <application
-        android:name=".AppApplication"
+        android:name=".AdminApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -29,7 +29,7 @@
 
         <activity
             android:name=".view.activity.MainActivity"
-            android:windowSoftInputMode="stateUnspecified">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,6 +41,8 @@
         <activity android:name=".view.activity.QrScannerActivity" />
 
         <activity android:name=".view.activity.UserManagerActivity" />
+
+        <activity android:name=".view.activity.AccountInfoActivity" />
 
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxSystemContentProvider_Provider"

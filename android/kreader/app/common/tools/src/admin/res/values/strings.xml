@@ -2,12 +2,77 @@
     <string name="app_name">Tool-Manager</string>
 
     <string name="mac_address_format" translatable="false">Mac:   %s</string>
-    <string name="username_do">姓名:</string>
-    <string name="phone_do">电话:</string>
-    <string name="grade_class_do">班级:</string>
-    <string name="login">登录</string>
-    <string name="account_hint">账号:</string>
-    <string name="password_hint">密码:</string>
-    <string name="password_forget">忘记密码</string>
-    <string name="double_back_press_tip">再按一次退出</string>
+    <string name="username">Username</string>
+    <string name="username_do">Username:</string>
+    <string name="phone_do">Phone:</string>
+    <string name="grade_class_do">Grade/Class:</string>
+    <string name="organization_do">Organization,details:</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="account_hint">Username/ID:</string>
+    <string name="password_hint">Password:</string>
+    <string name="password_forget">Password forgot</string>
+    <string name="double_back_press_tip">Press again to exit</string>
+
+    <string name="main_item_func_select">Function selection</string>
+    <string name="main_item_scanner">QrCode Scan</string>
+    <string name="main_item_user_manager">User Manager</string>
+    <string name="main_item_account_info">Account Info</string>
+
+    <string name="back">Back</string>
+    <string name="exit">Exit</string>
+
+    <string name="btn_admin_bind">Administrator phone binding</string>
+    <string name="fields_following_required">*The following are required</string>
+    <string name="required_fields_is_empty">The fields required is empty</string>
+    <string name="apply_bind_fail">Applying a binding failed</string>
+    <string name="apply_bind_success">You has submitted a binding request, please wait 1&#8211;3 working days for approval</string>
+
+    <string name="account_info_user_name_id">@string/account_hint</string>
+    <string name="account_info_organization">Organization</string>
+    <string name="account_info_phone">Phone</string>
+    <string name="account_info_permission">Permission</string>
+
+    <string name="name_email_empty_tip">The username or e-mail can not be empty</string>
+    <string name="password_empty_tip">Password can not be blank</string>
+    <string name="administrator_login_fail">The administrator logged in failed&#8230;</string>
+    <string name="administrator_login_success">The administrator logged in successfully&#8230;</string>
+
+    <string name="node_root">Root node</string>
+    <string name="node_select">Node selection</string>
+    <string name="node_re_select">Node Reselect</string>
+    <string name="node_select_empty_tip">Select at least one node</string>
+    <string name="node_select_entrance">Enter the selected node</string>
+
+    <string name="has_bound">Bound</string>
+    <string name="has_no_bind">Unbounded</string>
+    <string name="mac_address_invalid">Mac address isn\'t legal</string>
+    <string name="mac_address_invalid_for_bind">Mac address isn\'t legal and can\'t provide binding</string>
+    <string name="select_user_to_bind_device">Please select a user who needs to be bound</string>
+    <string name="user_add_new">Add a new user</string>
+    <string name="user_device_bind">Bind the user</string>
+    <string name="user_device_un_bind">User unbundled</string>
+    <string name="device_bind">Bind</string>
+    <string name="device_bind_fail">Device binding failed</string>
+    <string name="device_bind_success">Device binding is successful</string>
+    <string name="device_bind_info_edit_title">Fill in info</string>
+    <string name="device_unbind">Unbind</string>
+    <string name="device_unbind_fail">Unbind failed</string>
+    <string name="device_unbind_success">Unbind success</string>
+
+    <string name="group_has_no_users">There are no users in this group</string>
+    <string name="operation_not_support">Not yet supported</string>
+    <string name="user_search_edit_hint">Search for users, blank search all</string>
+
+    <string name="logout_success">Logout success</string>
+
+    <string name="qr_code_not_match">QrCode information does not match!!</string>
+    <string name="qr_code_querying">Querying the QrCode info&#8230;</string>
+    <string name="qr_code_query_exception">QrCode query exception</string>
+
+    <string name="network_is_not_connected">The current network isn\'t connected</string>
+    <string name="preparing">Preparing now&#8230;</string>
+    <string name="count_down_timer_desc_format">Can apply again After %d seconds</string>
+    <string name="account_is_invalid">Account is abnormal, please re-login</string>
+
 </resources>

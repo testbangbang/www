@@ -17,19 +17,22 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
 import com.onyx.android.sdk.data.model.v2.GroupUserInfo;
-import com.onyx.android.sdk.data.model.v2.UserInfoBind;
-import com.onyx.android.sdk.data.request.cloud.v2.CloudGroupDeviceBindRequest;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudGroupUserListRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.edu.manager.AppApplication;
+import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.adapter.ContactAdapter;
 import com.onyx.edu.manager.adapter.ItemClickListener;
 import com.onyx.edu.manager.event.DeviceBindCommitEvent;
+import com.onyx.edu.manager.event.GroupReSelectEvent;
 import com.onyx.edu.manager.manager.ContentManager;
-import com.onyx.edu.manager.model.UserInfoBindEntity;
+import com.onyx.edu.manager.model.ContactEntity;
 import com.onyx.edu.manager.pinyin.CharacterParser;
 import com.onyx.edu.manager.view.ui.DividerDecoration;
 import com.onyx.edu.manager.view.ui.SideBar;
@@ -43,13 +46,12 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by suicheng on 2017/7/7.
  */
 public class DeviceUserInfoFragment extends Fragment {
-
-    private static final int REQUEST_BIND_DEVICE = 1001;
 
     @Bind(R.id.contact_recycler)
     RecyclerView contactRecyclerView;
@@ -64,13 +66,13 @@ public class DeviceUserInfoFragment extends Fragment {
 
     private GroupUserInfo groupUserInfo;
 
-    private ContactAdapter contactAdapter;
-    private List<UserInfoBindEntity> deviceBindEntityList = new ArrayList<>();
-    private List<UserInfoBindEntity> searchDeviceEntityList = new ArrayList<>();
+    private ContactAdapter<ContactEntity> contactAdapter;
+    private List<ContactEntity> deviceBindEntityList = new ArrayList<>();
+    private List<ContactEntity> searchDeviceEntityList = new ArrayList<>();
     private CharacterParser characterParser = CharacterParser.getInstance();
-    private Comparator pinyinComparator = new Comparator<UserInfoBindEntity>() {
+    private Comparator pinyinComparator = new Comparator<ContactEntity>() {
         @Override
-        public int compare(UserInfoBindEntity o1, UserInfoBindEntity o2) {
+        public int compare(ContactEntity o1, ContactEntity o2) {
             return o1.sortLetter.compareTo(o2.sortLetter);
         }
     };
@@ -89,6 +91,8 @@ public class DeviceUserInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bind_user_info_list, container, false);
         ButterKnife.bind(this, view);
+
+        initToolbar(view);
         initView();
         initData();
         return view;
@@ -101,11 +105,26 @@ public class DeviceUserInfoFragment extends Fragment {
         updateMacAddress(getGroupUserInfo().device);
     }
 
+    private void initToolbar(View parentView) {
+        View view = parentView.findViewById(R.id.toolbar_header);
+        TextView titleView = (TextView) view.findViewById(R.id.toolbar_title);
+        titleView.setText(R.string.user_device_bind);
+        TextView otherTextView = (TextView) view.findViewById(R.id.toolbar_other);
+        otherTextView.setText(R.string.node_re_select);
+        otherTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                groupReselectClick();
+            }
+        });
+    }
+
     private void initContactSearchView() {
         contactSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    InputMethodUtils.hideInputKeyboard(getContext());
                     startSearch(contactSearch.getEditableText().toString());
                     return true;
                 }
@@ -119,8 +138,8 @@ public class DeviceUserInfoFragment extends Fragment {
             contactAdapter.setContactEntityList(deviceBindEntityList);
             return;
         }
-        List<UserInfoBindEntity> list = new ArrayList<>();
-        for (UserInfoBindEntity entity : deviceBindEntityList) {
+        List<ContactEntity> list = new ArrayList<>();
+        for (ContactEntity entity : deviceBindEntityList) {
             if (entity.username.contains(searchText) || entity.sortLetter.contains(searchText)) {
                 list.add(entity);
             }
@@ -144,11 +163,14 @@ public class DeviceUserInfoFragment extends Fragment {
     }
 
     private void updateMacAddress(DeviceBind deviceBind) {
+        if (deviceBind == null) {
+            return;
+        }
         macAddressTv.setText(String.format(getString(R.string.mac_address_format), deviceBind.mac));
     }
 
-    private boolean isUserInfoBound(UserInfoBindEntity entity) {
-        if (entity.userInfoBind == null || StringUtils.isNullOrEmpty(entity.userInfoBind.userId)) {
+    private boolean isUserDeviceBound(ContactEntity entity) {
+        if (entity.accountInfo == null || CollectionUtils.isNullOrEmpty(entity.accountInfo.devices)) {
             return false;
         }
         return true;
@@ -156,11 +178,11 @@ public class DeviceUserInfoFragment extends Fragment {
 
     private void initContentPageView() {
         contactRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        contactRecyclerView.setAdapter(contactAdapter = new ContactAdapter<UserInfoBindEntity>(getContext(),
+        contactRecyclerView.setAdapter(contactAdapter = new ContactAdapter<ContactEntity>(getContext(),
                 deviceBindEntityList) {
             @Override
-            public String getMacAddress(UserInfoBindEntity entity) {
-                return isUserInfoBound(entity) ? "已绑定" : "未绑定";
+            public String getMacAddress(ContactEntity entity) {
+                return isUserDeviceBound(entity) ? getString(R.string.has_bound) : getString(R.string.has_no_bind);
             }
         });
 
@@ -178,10 +200,10 @@ public class DeviceUserInfoFragment extends Fragment {
             @Override
             public void onClick(int position, View view) {
                 if (!NetworkUtil.isStringValidMacAddress(groupUserInfo.device.mac)) {
-                    ToastUtils.showToast(getContext().getApplicationContext(), "Mac地址不合法，无法提供绑定");
+                    ToastUtils.showToast(getContext().getApplicationContext(), R.string.mac_address_invalid_for_bind);
                     return;
                 }
-                startCommitDeviceInfoBind(deviceBindEntityList.get(position).userInfoBind);
+                startCommitDeviceBind(contactAdapter.getItem(position).accountInfo);
             }
 
             @Override
@@ -203,26 +225,27 @@ public class DeviceUserInfoFragment extends Fragment {
     }
 
     private void initData() {
-        final CloudGroupDeviceBindRequest bindRequest = new CloudGroupDeviceBindRequest(getGroupUserInfo().groups.get(0)._id);
-        AppApplication.getCloudManager().submitRequest(getContext(), bindRequest, new BaseCallback() {
+        final CloudGroupUserListRequest userListRequest = new CloudGroupUserListRequest(getGroupUserInfo().groups.get(0)._id);
+        AdminApplication.getCloudManager().submitRequest(getContext(), userListRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                List<UserInfoBind> deviceBindList;
-                if (e != null || (deviceBindList = bindRequest.getUserInfoBindList()) == null) {
-                    ToastUtils.showToast(getContext().getApplicationContext(), "群组里无用户");
+                List<NeoAccountBase> groupUserList;
+                if (e != null || (CollectionUtils.isNullOrEmpty(groupUserList = userListRequest.getGroupUserList()))) {
+                    ToastUtils.showToast(getContext().getApplicationContext(), R.string.group_has_no_users);
                     return;
                 }
-                processDeviceBindList(deviceBindList);
+                processDeviceBindList(groupUserList);
             }
         });
     }
 
-    private void processDeviceBindList(List<UserInfoBind> deviceBindList) {
-        List<UserInfoBindEntity> list = new ArrayList<>();
-        for (UserInfoBind userInfo : deviceBindList) {
-            UserInfoBindEntity entity = new UserInfoBindEntity();
-            entity.username = userInfo.name;
-            entity.userInfoBind = userInfo;
+    private void processDeviceBindList(List<NeoAccountBase> accountList) {
+        List<ContactEntity> list = new ArrayList<>();
+        for (NeoAccountBase account : accountList) {
+            ContactEntity entity = new ContactEntity();
+            NeoAccountBase.parseInfo(account);
+            entity.username = account.getName();
+            entity.accountInfo = account;
             list.add(entity);
         }
         deviceBindEntityList.clear();
@@ -231,9 +254,9 @@ public class DeviceUserInfoFragment extends Fragment {
         contactRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
-    private void splitContactList(List<UserInfoBindEntity> contactEntityList) {
-        for (UserInfoBindEntity entity : contactEntityList) {
-            String pinyin = characterParser.getSelling(entity.username);
+    private void splitContactList(List<ContactEntity> contactEntityList) {
+        for (ContactEntity entity : contactEntityList) {
+            String pinyin = characterParser.getSelling(getContactEntityUsername(entity));
             String sortString = pinyin.substring(0, 1).toUpperCase();
             if (sortString.matches("[A-Z]")) {
                 entity.sortLetter = sortString;
@@ -244,10 +267,32 @@ public class DeviceUserInfoFragment extends Fragment {
         Collections.sort(contactEntityList, pinyinComparator);
     }
 
-    private void startCommitDeviceInfoBind(UserInfoBind userInfoBind) {
+    private String getContactEntityUsername(ContactEntity entity) {
+        if (StringUtils.isNullOrEmpty(entity.username)) {
+            entity.username = "------";
+        }
+        return entity.username.replaceAll("\\b", "")
+                .replaceAll("\b", "");
+    }
+
+    private void startCommitDeviceBind(NeoAccountBase accountBase) {
         GroupUserInfo groupUserInfo = getGroupUserInfo();
-        groupUserInfo.userBind = userInfoBind;
+        groupUserInfo.user = accountBase;
         EventBus.getDefault().post(new DeviceBindCommitEvent(groupUserInfo));
+    }
+
+    private void groupReselectClick() {
+        EventBus.getDefault().post(new GroupReSelectEvent());
+    }
+
+    @OnClick(R.id.toolbar_back)
+    public void onToolbarBackClick() {
+        getActivity().finish();
+    }
+
+    @OnClick(R.id.tv_add_new_user)
+    public void onAddNewUserClick() {
+        startCommitDeviceBind(null);
     }
 
     @Override

@@ -41,7 +41,7 @@ public class CloudGroupUserListRequest extends BaseCloudRequest {
                 return;
             }
             for (NeoAccountBase accountBase : groupUserList) {
-                NeoAccountBase.parseName(accountBase);
+                NeoAccountBase.parseInfo(accountBase);
             }
         }
     }

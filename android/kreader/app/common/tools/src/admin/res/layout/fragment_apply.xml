@@ -12,14 +12,24 @@
         android:layout_marginTop="@dimen/activity_login_avatar_margin_top"
         android:src="@drawable/ic_avatar" />
 
+    <TextView
+        android:id="@+id/tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/image_avatar"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="@dimen/activity_login_user_name_margin"
+        android:layout_marginTop="@dimen/activity_login_user_name_margin"
+        android:text="@string/fields_following_required"
+        android:textColor="@android:color/holo_red_light" />
+
     <EditText
         android:id="@+id/edit_username"
         style="@style/login_edit_style"
-        android:layout_below="@+id/image_avatar"
+        android:layout_below="@+id/tip"
         android:layout_marginLeft="@dimen/activity_login_user_name_margin"
         android:layout_marginRight="@dimen/activity_login_user_name_margin"
-        android:layout_marginTop="@dimen/activity_login_user_name_margin"
-        android:hint="姓名(必填):"
+        android:hint="@string/username_do"
         android:imeOptions="actionNext" />
 
     <EditText
@@ -29,7 +39,7 @@
         android:layout_alignRight="@+id/edit_username"
         android:layout_below="@+id/edit_username"
         android:layout_marginTop="@dimen/activity_login_user_password_margin_top"
-        android:hint="组织,具体到省市县区(必填):"
+        android:hint="@string/organization_do"
         android:imeOptions="actionNext" />
 
     <EditText
@@ -39,20 +49,22 @@
         android:layout_alignRight="@+id/edit_username"
         android:layout_below="@+id/edit_organization"
         android:layout_marginTop="@dimen/activity_login_user_password_margin_top"
-        android:hint="电话(必填):"
+        android:hint="@string/phone_do"
         android:imeOptions="actionDone"
         android:inputType="number" />
 
-    <Button
+    <com.onyx.edu.manager.view.ui.CountDownTimerButton
         android:id="@+id/button_apply"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/activity_login_button_height"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
         android:layout_alignLeft="@+id/edit_username"
         android:layout_alignRight="@+id/edit_username"
         android:layout_below="@+id/edit_phone"
         android:layout_marginTop="@dimen/activity_login_button_margin_top"
         android:background="@drawable/button_background"
-        android:text="管理员账号申请"
+        android:gravity="center"
+        android:text="@string/btn_admin_bind"
         android:textColor="@android:color/white"
         android:textSize="@dimen/activity_login_button_text_size" />
 

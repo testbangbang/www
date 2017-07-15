@@ -11,31 +11,9 @@
         android:focusable="true"
         android:focusableInTouchMode="true">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp">
-
-            <TextView
-                android:id="@+id/toolbar_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:drawableLeft="@drawable/ic_back"
-                android:gravity="center_vertical"
-                android:text="返回"
-                android:textColor="@android:color/white"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="信息填写"
-                android:textColor="@color/qr_code_white"
-                android:textSize="18sp" />
-
-        </RelativeLayout>
+        <include
+            android:id="@+id/toolbar_header"
+            layout="@layout/toolbar_header" />
 
     </android.support.v7.widget.Toolbar>
 
@@ -90,17 +68,37 @@
                     android:textSize="20sp" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/button_commit"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/activity_contact_commit_button_height"
-                android:layout_marginLeft="@dimen/activity_contact_commit_button_text_margin_left_right"
-                android:layout_marginRight="@dimen/activity_contact_commit_button_text_margin_left_right"
-                android:layout_marginTop="34dp"
-                android:background="@drawable/button_background"
-                android:text="提交"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/activity_contact_commit_button_text_size" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:padding="20dp">
+
+                <Button
+                    android:id="@+id/btn_unbind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/activity_contact_commit_button_height"
+                    android:layout_marginLeft="@dimen/activity_contact_commit_button_text_margin_left_right"
+                    android:layout_marginRight="@dimen/activity_contact_commit_button_text_margin_left_right"
+                    android:background="@drawable/button_background"
+                    android:text="@string/device_unbind"
+                    android:layout_centerVertical="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/activity_contact_commit_button_text_size" />
+
+                <Button
+                    android:id="@+id/btn_bind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/activity_contact_commit_button_height"
+                    android:layout_marginLeft="@dimen/activity_contact_commit_button_text_margin_left_right"
+                    android:layout_marginRight="@dimen/activity_contact_commit_button_text_margin_left_right"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/button_background"
+                    android:text="@string/device_bind"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/activity_contact_commit_button_text_size" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 

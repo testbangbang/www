@@ -20,6 +20,7 @@ public class NeoAccountBase extends BaseData {
 
     public static final String DELIMITER = ",";
 
+    public String _id;
     public String name;
     public String orgName;
     @Column(typeConverter = ListStringConverter.class)
@@ -82,6 +83,18 @@ public class NeoAccountBase extends BaseData {
             AccountCommon common = JSONObjectParseUtils.parseObject(account.info, AccountCommon.class);
             if (common != null) {
                 account.name = common.name;
+            }
+        }
+    }
+
+    public static void parseInfo(NeoAccountBase account) {
+        if (account != null) {
+            AccountCommon common = JSONObjectParseUtils.parseObject(account.info, AccountCommon.class);
+            if (common != null) {
+                account.name = common.name;
+                if (StringUtils.isNotBlank(common.phone)) {
+                    account.phone = common.phone;
+                }
             }
         }
     }

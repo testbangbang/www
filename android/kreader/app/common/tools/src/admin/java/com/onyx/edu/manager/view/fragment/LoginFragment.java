@@ -17,7 +17,7 @@ import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.v2.LoginByAdminRequest;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.edu.manager.AppApplication;
+import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.event.LoginSuccessEvent;
 import com.onyx.edu.manager.manager.ContentManager;
@@ -71,21 +71,21 @@ public class LoginFragment extends Fragment {
     public void onLoginClick() {
         String username = getEditText(usernameEdit);
         if (StringUtils.isNullOrEmpty(username)) {
-            ToastUtils.showToast(getContext().getApplicationContext(), "用户名或者邮箱不能为空");
+            ToastUtils.showToast(getContext().getApplicationContext(), R.string.name_email_empty_tip);
             return;
         }
         String password = getEditText(passwordEdit);
         if (StringUtils.isNullOrEmpty(username)) {
-            ToastUtils.showToast(getContext().getApplicationContext(), "密码不能为空");
+            ToastUtils.showToast(getContext().getApplicationContext(), R.string.password_empty_tip);
             return;
         }
         final LoginByAdminRequest loginRequest = new LoginByAdminRequest(BaseAuthAccount.create(username, password));
-        AppApplication.getCloudManager().submitRequest(getContext(), loginRequest, new BaseCallback() {
+        AdminApplication.getCloudManager().submitRequest(getContext(), loginRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 NeoAccountBase account;
                 if (e != null || (account = loginRequest.getNeoAccount()) == null) {
-                    ToastUtils.showToast(request.getContext().getApplicationContext(), "管理员登录失败...");
+                    ToastUtils.showToast(request.getContext().getApplicationContext(), R.string.administrator_login_fail);
                     return;
                 }
                 afterLogin(account);
@@ -94,7 +94,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void afterLogin(NeoAccountBase account) {
-        ToastUtils.showToast(getContext().getApplicationContext(), "登录成功...");
+        ToastUtils.showToast(getContext().getApplicationContext(), R.string.administrator_login_success);
         ContentManager.saveAccount(getContext(), account);
         EventBus.getDefault().post(new LoginSuccessEvent());
     }

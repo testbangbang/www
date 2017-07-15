@@ -1,7 +1,6 @@
 package com.onyx.edu.manager.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -19,8 +18,9 @@ import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.edu.manager.AppApplication;
+import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
+import com.onyx.edu.manager.view.ui.CountDownTimerButton;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,13 +38,11 @@ public class ApplyFragment extends Fragment {
     @Bind(R.id.edit_phone)
     EditText etPhone;
 
+    @Bind(R.id.button_apply)
+    CountDownTimerButton applyButton;
+
     public static ApplyFragment newInstance() {
         return new ApplyFragment();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -67,12 +65,29 @@ public class ApplyFragment extends Fragment {
                 return false;
             }
         });
+        initCountDownTimeView();
+    }
+
+    private void initCountDownTimeView() {
+        applyButton.setNormalBackgroundRes(R.drawable.button_background);
+        applyButton.setTimerBackgroundRes(R.drawable.button_disable_background);
+        applyButton.setCountDownStringFormat(getString(R.string.count_down_timer_desc_format));
+    }
+
+    private void applyButtonStartCountDown() {
+        applyButton.start(60 * 1000, 1000);
+    }
+
+    private void applyButtonStop() {
+        if (applyButton != null) {
+            applyButton.stopCountDownTimer();
+        }
     }
 
     @OnClick(R.id.button_apply)
     public void onApplyClick() {
         if (!checkEditInfoValid()) {
-            ToastUtils.showToast(getContext().getApplicationContext(), "还有必填项没有填写");
+            ToastUtils.showToast(getContext().getApplicationContext(), R.string.required_fields_is_empty);
             return;
         }
         startApplyAdmin();
@@ -88,13 +103,17 @@ public class ApplyFragment extends Fragment {
     }
 
     private void startApplyAdmin() {
+        if (!NetworkUtil.isWiFiConnected(getContext())) {
+            ToastUtils.showToast(getContext().getApplicationContext(), R.string.network_is_not_connected);
+            return;
+        }
         AdminApplyModel applyModel = createAdminApplyModel();
-        AdministratorApplyRequest applyRequest = new AdministratorApplyRequest(applyModel);
-        AppApplication.getCloudManager().submitRequest(getContext(), applyRequest, new BaseCallback() {
+        final AdministratorApplyRequest applyRequest = new AdministratorApplyRequest(applyModel);
+        AdminApplication.getCloudManager().submitRequest(getContext(), applyRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    ToastUtils.showToast(request.getContext().getApplicationContext(), "申请提交失败");
+                if (e != null || !applyRequest.isApplySuccess()) {
+                    ToastUtils.showToast(request.getContext().getApplicationContext(), R.string.apply_bind_fail);
                     return;
                 }
                 afterApplyAdmin();
@@ -103,7 +122,8 @@ public class ApplyFragment extends Fragment {
     }
 
     private void afterApplyAdmin() {
-        ToastUtils.showToast(getContext().getApplicationContext(), "已经提交开通申请，等待审核批准");
+        applyButtonStartCountDown();
+        ToastUtils.showToast(getContext().getApplicationContext(), R.string.apply_bind_success);
     }
 
     private boolean checkEditInfoValid() {
@@ -121,6 +141,7 @@ public class ApplyFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        applyButtonStop();
         super.onDestroy();
         ButterKnife.unbind(this);
     }
