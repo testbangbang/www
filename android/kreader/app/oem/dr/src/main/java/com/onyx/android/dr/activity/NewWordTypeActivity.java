@@ -9,9 +9,9 @@ import com.onyx.android.dr.bean.GoodSentenceTypeBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.event.ChineseGoodSentenceEvent;
-import com.onyx.android.dr.event.EnglishGoodSentenceEvent;
-import com.onyx.android.dr.event.MinorityLanguageGoodSentenceEvent;
+import com.onyx.android.dr.event.ChineseNewWordEvent;
+import com.onyx.android.dr.event.EnglishNewWordEvent;
+import com.onyx.android.dr.event.MinorityLanguageNewWordEvent;
 import com.onyx.android.dr.interfaces.GoodSentenceTpyeView;
 import com.onyx.android.dr.presenter.GoodSentenceTypePresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -29,8 +29,8 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class GoodSentenceTypeActivity extends BaseActivity implements GoodSentenceTpyeView {
-    @Bind(R.id.good_sentence_activity_type_recyclerview)
+public class NewWordTypeActivity extends BaseActivity implements GoodSentenceTpyeView {
+    @Bind(R.id.new_word_activity_type_recyclerview)
     PageRecyclerView typeRecyclerView;
     private DividerItemDecoration dividerItemDecoration;
     private GoodSentenceTypeAdapter goodSentenceTypeAdapter;
@@ -41,7 +41,7 @@ public class GoodSentenceTypeActivity extends BaseActivity implements GoodSenten
 
     @Override
     protected Integer getLayoutId() {
-        return R.layout.activity_good_sentence_type;
+        return R.layout.activity_new_word_type;
     }
 
     @Override
@@ -63,17 +63,17 @@ public class GoodSentenceTypeActivity extends BaseActivity implements GoodSenten
 
     @Override
     protected void initData() {
-        initGoodSentenceData();
+        initNewWordData();
         initEvent();
     }
 
-    private void initGoodSentenceData() {
-        englishUsed = "(已存156/500句)";
-        chineseUsed = "(已存156/500句)";
-        otherLanguageUsed = "(已存156/500句)";
+    private void initNewWordData() {
+        englishUsed = "(已用156/500词)";
+        chineseUsed = "(已用156/500词)";
+        otherLanguageUsed = "(已用156/500词)";
         goodSentenceTypePresenter = new GoodSentenceTypePresenter(this);
-        goodSentenceTypePresenter.loadGoodSentenceData(this, englishUsed, chineseUsed, otherLanguageUsed);
-        goodSentenceTypePresenter.loadDataByType(Constants.ACCOUNT_TYPE_GOOD_SENTENCE);
+        goodSentenceTypePresenter.loadNewWordData(this, englishUsed, chineseUsed, otherLanguageUsed);
+        goodSentenceTypePresenter.loadDataByType(Constants.ACCOUNT_TYPE_NEW_WORD);
     }
 
     @Override
@@ -86,17 +86,17 @@ public class GoodSentenceTypeActivity extends BaseActivity implements GoodSenten
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEnglishGoodSentenceEvent(EnglishGoodSentenceEvent event) {
+    public void onEnglishNewWordEvent(EnglishNewWordEvent event) {
         CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onChineseGoodSentenceEvent(ChineseGoodSentenceEvent event) {
-        ActivityManager.startGoodSentenceNotebookActivity(this);
+    public void onChineseNewWordEvent(ChineseNewWordEvent event) {
+        ActivityManager.startNewWordNotebookActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMinorityLanguageGoodSentenceEvent(MinorityLanguageGoodSentenceEvent event) {
+    public void onMinorityLanguageNewWordEvent(MinorityLanguageNewWordEvent event) {
         CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
     }
 

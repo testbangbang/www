@@ -72,10 +72,6 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
 
     @Override
     protected void initConfig() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-        ButterKnife.bind(this);
     }
 
     @Override
@@ -152,6 +148,10 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     @Override
     protected void onStart() {
         super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+        ButterKnife.bind(this);
     }
 
     @OnClick({R.id.activity_word_query_search,

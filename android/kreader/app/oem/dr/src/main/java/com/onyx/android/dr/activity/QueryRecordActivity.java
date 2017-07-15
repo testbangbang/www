@@ -3,6 +3,7 @@ package com.onyx.android.dr.activity;
 import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.adapter.DictSpinnerAdapter;
 import com.onyx.android.dr.adapter.QueryRecordAdapter;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.QueryRecordEntity;
@@ -23,6 +25,7 @@ import com.onyx.android.dr.dialog.SelectAlertDialog;
 import com.onyx.android.dr.event.RefreshWebviewEvent;
 import com.onyx.android.dr.interfaces.QueryRecordView;
 import com.onyx.android.dr.presenter.QueryRecordPresenter;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
@@ -66,11 +69,21 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     private int customFontSize = 10;
     private SelectAlertDialog selectTimeDialog;
     private List<QueryRecordEntity> queryRecordList;
+    private static final String TAG = QueryRecordActivity.class.getSimpleName();
     private Spinner resultSpinner;
     private Runnable runnable;
     private Handler handler;
     private TextView incomeNewWordNote;
     private TextView exit;
+    private String newWord = "";
+    private String dictionaryLookup = "";
+    private String week = "";
+    private String month = "";
+    private String day = "";
+    private String readingMatter = "";
+    private long millisecond = 2000;
+    private ArrayAdapter<String> spinnerAdapter;
+    private DictSpinnerAdapter dictSpinnerAdapter;
 
     @Override
     protected Integer getLayoutId() {
@@ -79,10 +92,6 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
 
     @Override
     protected void initConfig() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-        ButterKnife.bind(this);
     }
 
     @Override
@@ -107,6 +116,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         customFontSize = DRApplication.getInstance().getCustomFontSize();
         queryRecordPresenter = new QueryRecordPresenter(this);
         queryRecordPresenter.getAllQueryRecordData();
+        dictSpinnerAdapter =  new DictSpinnerAdapter(this);
         initEvent();
     }
 
@@ -120,6 +130,10 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     @Override
     protected void onStart() {
         super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+        ButterKnife.bind(this);
     }
 
     @Override
@@ -165,9 +179,12 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         resultSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String dictName = (String) resultSpinner.getItemAtPosition(position);
-                if (StringUtils.isNullOrEmpty(dictName)) {
-                    showResultToWebview(dictName);
+                if (searchResultList.size() > 0) {
+                    String dictName = (String) resultSpinner.getItemAtPosition(position);
+                    dictionaryLookup = dictName;
+                    if (!StringUtils.isNullOrEmpty(dictName)) {
+                        showResultToWebview(dictName);
+                    }
                 }
             }
 
@@ -179,7 +196,8 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
 
     private void loadDialogData(int position) {
         QueryRecordEntity queryRecordEntity = queryRecordList.get(position);
-        testWordDictQuery(queryRecordEntity.word);
+        newWord = queryRecordEntity.word;
+        testWordDictQuery(newWord);
         resultView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
             @Override
             public void onPageChanged(int totalPage, int curPage) {
@@ -217,6 +235,11 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         incomeNewWordNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                month = TimeUtils.getCurrentMonth() + "";
+                day = TimeUtils.getCurrentDay() + "";
+                week = TimeUtils.getWeekOfMonth() + "";
+                queryRecordPresenter.insertNewWord(month, week, day, newWord, dictionaryLookup, readingMatter);
+                CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getResources().getString(R.string.new_word_notebook_already_exist));
             }
         });
         selectTimeDialog.show();
@@ -239,6 +262,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         if (!StringUtils.isNullOrEmpty(editQuery)) {
             dictionaryManager = DRApplication.getDictionaryManager();
             queryWordRequest = new QueryWordRequest(editQuery);
+            reset();
             boolean bRet = dictionaryManager.sendRequest(DRApplication.getInstance(), queryWordRequest, new DictBaseCallback() {
                 @Override
                 public void done(DictBaseRequest request, Exception e) {
@@ -249,13 +273,12 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                         runnable = new Runnable() {
                             @Override
                             public void run() {
-                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(QueryRecordActivity.this, R.layout.item_spinner_unexpanded_pattern_second, searchResultList);
-                                adapter.setDropDownViewResource(R.layout.item_spinner_expanded_pattern);
-                                resultSpinner.setAdapter(adapter);
+                                dictSpinnerAdapter.setDatas(searchResultList);
+                                resultSpinner.setAdapter(dictSpinnerAdapter);
                             }
                         };
                     }
-                    handler.postDelayed(runnable, 2000);
+                    handler.postDelayed(runnable, millisecond);
                 }
             });
             if (!bRet) {
@@ -265,6 +288,9 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     }
 
     private void reset() {
+        resultView.setScroll(0, 0);
+        resultView.stopPlayer(0);
+        resultView.clearPreviousResult();
         searchResultList.clear();
         queryResult.clear();
     }
@@ -280,6 +306,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                 }
                 queryResult.put(entry.getValue().dictionary.name, entry.getValue());
             }
+            Log.i("###result.size()",  result.size() + "");
         }
     }
 

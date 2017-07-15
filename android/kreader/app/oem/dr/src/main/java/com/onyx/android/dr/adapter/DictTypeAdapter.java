@@ -18,7 +18,6 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-6-28.
  */
-
 public class DictTypeAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
     private List<DictTypeBean> dictDatas;
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;

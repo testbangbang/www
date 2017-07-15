@@ -1,11 +1,13 @@
 package com.onyx.android.dr.activity;
 
+import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
@@ -25,6 +27,7 @@ import com.onyx.android.dr.event.UpdateSoundIconEvent;
 import com.onyx.android.dr.event.VocabularyNotebookEvent;
 import com.onyx.android.dr.event.WebViewLoadOverEvent;
 import com.onyx.android.dr.event.WebviewPageChangedEvent;
+import com.onyx.android.dr.interfaces.ActionSelectListener;
 import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
 import com.onyx.android.dr.view.AutoPagedWebView;
@@ -89,6 +92,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     private static final int SOUND_ONE = 1;
     private static final int SOUND_TWO = 2;
     public volatile Map<String, DictionaryQueryResult> queryResult;
+    public Handler handler;
+    public Runnable runnable;
+    private ArrayList<String> itemList;
 
     @Override
     protected Integer getLayoutId() {
@@ -97,10 +103,6 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Override
     protected void initConfig() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-        ButterKnife.bind(this);
     }
 
     @Override
@@ -112,6 +114,10 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     @Override
     protected void onStart() {
         super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+        ButterKnife.bind(this);
     }
 
     @Override
@@ -143,15 +149,24 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Override
     protected void initData() {
+        handler = new Handler();
         queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
         dictPresenter = new DictFunctionPresenter(this);
         dictPresenter.loadData(this);
         dictPresenter.loadTabMenu(Constants.ACCOUNT_TYPE_DICT_FUNCTION);
+        initItemData();
         getIntentDatas();
         initSound();
         settingDictionaryFunction();
         initEvent();
+    }
+
+    private void initItemData() {
+        itemList = new ArrayList<>();
+        itemList.add("复制");
+        itemList.add("取消");
+        resultView.setActionList(itemList);
     }
 
     @Override
@@ -226,6 +241,18 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
                 showResultToWebview(position);
             }
         });
+
+        //增加点击回调
+        resultView.setActionSelectListener(new ActionSelectListener() {
+            @Override
+            public void onClick(String title, String selectText) {
+                if(title.equals("取消")){
+                    Toast.makeText(DictResultShowActivity.this, "取消复制", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Toast.makeText(DictResultShowActivity.this, "Click Item: " + title + "。\n\nValue: " + selectText, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void testWordDictQuery() {
@@ -239,8 +266,16 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
                     getSoundData(queryWordRequest.queryResult);
                     addSearchResult(queryWordRequest.queryResult);
 
-                    dictTypeAdapter.setMenuDatas(searchResultList);
-                    dictTypeRecyclerView.setAdapter(dictTypeAdapter);
+                    if (runnable == null) {
+                        runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                dictTypeAdapter.setMenuDatas(searchResultList);
+                                dictTypeRecyclerView.setAdapter(dictTypeAdapter);
+                            }
+                        };
+                    }
+                    handler.postDelayed(runnable, 1000);
                 }
             });
             if (!bRet) {
@@ -466,6 +501,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+        if(resultView != null) {
+            resultView.dismissAction();
+        }
     }
 
     @Override

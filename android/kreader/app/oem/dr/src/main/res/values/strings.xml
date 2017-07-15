@@ -168,4 +168,11 @@
     <string name="good_sentence_activity_recitation">recitation</string>
     <string name="new_word_query">new word query</string>
     <string name="exit">exit</string>
+    <string name="english_new_word_notebook">english new word notebook</string>
+    <string name="chinese_new_word_notebook">chinese new word notebook</string>
+    <string name="minority_language_new_word_notebook">minority language new word notebook</string>
+    <string name="new_word_activity_dictionaryLookup">dictionaryLookup</string>
+    <string name="new_word_activity_new_word">new word</string>
+    <string name="already_add_new_word_notebook">already add new word notebook</string>
+    <string name="new_word_notebook_already_exist">new word notebook already exist</string>
 </resources>

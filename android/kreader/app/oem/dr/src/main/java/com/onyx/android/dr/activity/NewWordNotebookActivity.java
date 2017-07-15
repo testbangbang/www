@@ -6,12 +6,12 @@ import android.widget.Spinner;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.adapter.GoodSentenceAdapter;
+import com.onyx.android.dr.adapter.NewWordAdapter;
 import com.onyx.android.dr.common.CommonNotices;
-import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
+import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.event.EnglishGoodSentenceEvent;
-import com.onyx.android.dr.interfaces.GoodSentenceView;
-import com.onyx.android.dr.presenter.GoodSentencePresenter;
+import com.onyx.android.dr.interfaces.NewWordView;
+import com.onyx.android.dr.presenter.NewWordPresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -27,22 +27,22 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSentenceView {
-    @Bind(R.id.good_sentence_activity_recyclerview)
+public class NewWordNotebookActivity extends BaseActivity implements NewWordView {
+    @Bind(R.id.new_word_activity_recyclerview)
     PageRecyclerView goodSentenceRecyclerView;
-    @Bind(R.id.good_sentence_activity_month_spinner)
+    @Bind(R.id.new_word_activity_month_spinner)
     Spinner monthSpinner;
-    @Bind(R.id.good_sentence_activity_week_spinner)
+    @Bind(R.id.new_word_activity_week_spinner)
     Spinner weekSpinner;
-    @Bind(R.id.good_sentence_activity_day_spinner)
+    @Bind(R.id.new_word_activity_day_spinner)
     Spinner daySpinner;
     private DividerItemDecoration dividerItemDecoration;
-    private GoodSentenceAdapter goodSentenceAdapter;
-    private GoodSentencePresenter goodSentencePresenter;
+    private NewWordAdapter newWordAdapter;
+    private NewWordPresenter newWordPresenter;
 
     @Override
     protected Integer getLayoutId() {
-        return R.layout.activity_good_sentence_notebook;
+        return R.layout.activity_new_word_notebook;
     }
 
     @Override
@@ -57,15 +57,15 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     private void initRecylcerView() {
         dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
-        goodSentenceAdapter = new GoodSentenceAdapter();
+        newWordAdapter = new NewWordAdapter();
         goodSentenceRecyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         goodSentenceRecyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
     protected void initData() {
-        goodSentencePresenter = new GoodSentencePresenter(this);
-        goodSentencePresenter.getAllGoodSentenceData();
+        newWordPresenter = new NewWordPresenter(this);
+        newWordPresenter.getAllNewWordData();
 
         initSpinnerDatas();
         initEvent();
@@ -89,9 +89,9 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     }
 
     @Override
-    public void setGoodSentenceData(List<GoodSentenceNoteEntity> goodSentenceList) {
-        goodSentenceAdapter.setDataList(goodSentenceList);
-        goodSentenceRecyclerView.setAdapter(goodSentenceAdapter);
+    public void setNewWordData(List<NewWordNoteBookEntity> dataList) {
+        newWordAdapter.setDataList(dataList);
+        goodSentenceRecyclerView.setAdapter(newWordAdapter);
     }
 
     public void initEvent() {

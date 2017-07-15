@@ -9,6 +9,8 @@ import com.onyx.android.dr.activity.GoodSentenceNotebookActivity;
 import com.onyx.android.dr.activity.GoodSentenceTypeActivity;
 import com.onyx.android.dr.activity.LoginActivity;
 import com.onyx.android.dr.activity.MyNotesActivity;
+import com.onyx.android.dr.activity.NewWordNotebookActivity;
+import com.onyx.android.dr.activity.NewWordTypeActivity;
 import com.onyx.android.dr.activity.QueryRecordActivity;
 
 /**
@@ -60,6 +62,20 @@ public class ActivityManager {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, QueryRecordActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startNewWordTypeActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, NewWordTypeActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startNewWordNotebookActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, NewWordNotebookActivity.class);
         context.startActivity(intent);
     }
 }

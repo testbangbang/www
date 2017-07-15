@@ -77,7 +77,15 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".activity.NewWordTypeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".activity.QueryRecordActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.NewWordNotebookActivity"
             android:screenOrientation="portrait" />
 
         <provider

@@ -168,4 +168,11 @@
     <string name="good_sentence_activity_recitation">好句评述</string>
     <string name="new_word_query">生词查询</string>
     <string name="exit">退出</string>
+    <string name="english_new_word_notebook">英文生词本</string>
+    <string name="chinese_new_word_notebook">中文生词本</string>
+    <string name="minority_language_new_word_notebook">小语种生词本</string>
+    <string name="new_word_activity_dictionaryLookup">查询词典</string>
+    <string name="new_word_activity_new_word">生词</string>
+    <string name="already_add_new_word_notebook">收入生词本</string>
+    <string name="new_word_notebook_already_exist">生词本已存在</string>
 </resources>

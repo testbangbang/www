@@ -6,7 +6,6 @@ import com.onyx.android.dr.adapter.MyCreationAdapter;
 import com.onyx.android.dr.adapter.MyThinkAdapter;
 import com.onyx.android.dr.adapter.MyTracksAdapter;
 import com.onyx.android.dr.common.ActivityManager;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.MenuData;
 import com.onyx.android.dr.event.GoodSentenceNotebookEvent;
@@ -47,10 +46,6 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
 
     @Override
     protected void initConfig() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-        ButterKnife.bind(this);
     }
 
     @Override
@@ -100,7 +95,7 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNewWordNotebookEvent(NewWordNotebookEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
+        ActivityManager.startNewWordTypeActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -111,6 +106,10 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     @Override
     protected void onStart() {
         super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+        ButterKnife.bind(this);
     }
 
     @Override

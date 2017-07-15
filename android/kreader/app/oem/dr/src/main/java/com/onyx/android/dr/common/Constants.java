@@ -39,4 +39,7 @@ public class Constants {
     public static final int ACCOUNT_TYPE_MY_TRACKS = 0;
     public static final int ACCOUNT_TYPE_MY_THINK = 1;
     public static final int ACCOUNT_TYPE_MY_CREATION = 2;
+
+    public static final int ACCOUNT_TYPE_GOOD_SENTENCE = 0;
+    public static final int ACCOUNT_TYPE_NEW_WORD = 1;
 }

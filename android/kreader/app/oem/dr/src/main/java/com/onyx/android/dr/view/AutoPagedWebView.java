@@ -3,10 +3,14 @@ package com.onyx.android.dr.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.ConsoleMessage;
@@ -24,6 +28,7 @@ import com.onyx.android.dr.event.RefreshWebviewEvent;
 import com.onyx.android.dr.event.ReloadDictImageEvent;
 import com.onyx.android.dr.event.UpdateVoiceStatusEvent;
 import com.onyx.android.dr.event.WebViewLoadOverEvent;
+import com.onyx.android.dr.interfaces.ActionSelectListener;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
 import com.onyx.android.sdk.dict.data.DictionaryProviderBase;
@@ -71,6 +76,9 @@ public class AutoPagedWebView extends WebView {
     private UpdateDictionaryListCallback updateDictionaryListCallback;
     private int measuredHeight = 0;
     private int measuredWidth = 0;
+    private ActionMode mActionMode;
+    List<String> actionList = new ArrayList<>();
+    private ActionSelectListener actionSelectListener;
 
     public void enableA2ForSpecificView(View view) {
     }
@@ -152,6 +160,91 @@ public class AutoPagedWebView extends WebView {
 
     public void setCurrentDictionary(int currentDictionary) {
         this.currentDictionary = currentDictionary;
+    }
+
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback) {
+        ActionMode actionMode = super.startActionMode(callback);
+        return resolveActionMode(actionMode);
+    }
+
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback, int type) {
+        ActionMode actionMode = super.startActionMode(callback, type);
+        return resolveActionMode(actionMode);
+    }
+
+    /**
+     * setting popup action list
+     *
+     * @param actionList
+     */
+    public void setActionList(List<String> actionList) {
+        actionList = actionList;
+    }
+
+    public void setActionSelectListener(ActionSelectListener actionSelectListener) {
+        this.actionSelectListener = actionSelectListener;
+    }
+
+    public void dismissAction() {
+        releaseAction();
+    }
+
+    private void releaseAction() {
+        if (mActionMode != null) {
+            mActionMode.finish();
+            mActionMode = null;
+        }
+    }
+
+    /**
+     * click item
+     *
+     * @param actionMode
+     */
+    private ActionMode resolveActionMode(ActionMode actionMode) {
+        if (actionMode != null) {
+            final Menu menu = actionMode.getMenu();
+            mActionMode = actionMode;
+            menu.clear();
+            for (int i = 0; i < actionList.size(); i++) {
+                menu.add(actionList.get(i));
+            }
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem menuItem = menu.getItem(i);
+                menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        getSelectedData((String) item.getTitle());
+                        releaseAction();
+                        return true;
+                    }
+                });
+            }
+        }
+        mActionMode = actionMode;
+        return actionMode;
+    }
+
+    private void getSelectedData(String title) {
+        String js = "(function getSelectedText() {" +
+                "var txt;" +
+                "var title = \"" + title + "\";" +
+                "if (window.getSelection) {" +
+                "txt = window.getSelection().toString();" +
+                "} else if (window.document.getSelection) {" +
+                "txt = window.document.getSelection().toString();" +
+                "} else if (window.document.selection) {" +
+                "txt = window.document.selection.createRange().text;" +
+                "}" +
+                "JSInterface.callback(txt,title);" +
+                "})()";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            evaluateJavascript("javascript:" + js, null);
+        } else {
+            loadUrl("javascript:" + js);
+        }
     }
 
     public int getPageCount() {
@@ -725,6 +818,13 @@ public class AutoPagedWebView extends WebView {
         ReloadDictImageEvent reloadDictImageEvent = new ReloadDictImageEvent();
         reloadDictImageEvent.setObj(dictPath);
         EventBus.getDefault().post(reloadDictImageEvent);
+    }
+
+    @JavascriptInterface
+    public void callback(final String value, final String title) {
+        if (actionSelectListener != null) {
+            actionSelectListener.onClick(title, value);
+        }
     }
 
     /**

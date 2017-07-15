@@ -17,11 +17,15 @@ public class GoodSentenceTypePresenter {
         goodSentenceTypeConfig = new GoodSentenceTypeConfig();
     }
 
-    public void loadData(Context context) {
-        goodSentenceTypeConfig.loadDictInfo(context);
+    public void loadGoodSentenceData(Context context, String englishUsed, String chineseUsed, String otherLanguageUsed) {
+        goodSentenceTypeConfig.loadGoodSentenceInfo(context, englishUsed, chineseUsed, otherLanguageUsed);
     }
 
-    public void loadGoodSentenceType() {
-        goodSentenceTpyeView.setGoodSentenceTpyeData(goodSentenceTypeConfig.getDatas());
+    public void loadNewWordData(Context context, String englishUsed, String chineseUsed, String otherLanguageUsed) {
+        goodSentenceTypeConfig.loadNewWordInfo(context, englishUsed, chineseUsed, otherLanguageUsed);
+    }
+
+    public void loadDataByType(int type) {
+        goodSentenceTpyeView.setGoodSentenceTpyeData(goodSentenceTypeConfig.getDatas(type));
     }
 }
