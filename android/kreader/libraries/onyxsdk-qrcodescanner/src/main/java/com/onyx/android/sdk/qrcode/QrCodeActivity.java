@@ -469,11 +469,7 @@ public class QrCodeActivity extends AppCompatActivity implements Callback, OnCli
         }
     }
 
-    private void afterPermissionGranted() {
-        if (permissionGranted) {
-            return;
-        }
-        permissionGranted = true;
+    private void initSurfaceHolder() {
         SurfaceHolder surfaceHolder = mSurfaceView.getHolder();
         if (mHasSurface) {
             initCamera(surfaceHolder);
@@ -481,6 +477,15 @@ public class QrCodeActivity extends AppCompatActivity implements Callback, OnCli
             surfaceHolder.addCallback(this);
             surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         }
+    }
+
+    private void afterPermissionGranted() {
+        if (permissionGranted) {
+            initSurfaceHolder();
+            return;
+        }
+        permissionGranted = true;
+        initSurfaceHolder();
         turnFlashLightOff();
         initBeepSound();
         mVibrate = true;
