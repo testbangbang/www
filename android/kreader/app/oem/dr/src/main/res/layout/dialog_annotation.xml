@@ -60,7 +60,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:gravity="top"
-        android:hint="@string/Annotation"
+        android:hint="@string/annotation"
         android:lines="5"
         android:textColor="@android:color/black"
         android:textSize="@dimen/level_two_font_size" />

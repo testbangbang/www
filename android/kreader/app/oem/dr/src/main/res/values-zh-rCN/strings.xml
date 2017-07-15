@@ -86,7 +86,7 @@
     <string name="jump">跳转</string>
     <string name="delete">删除</string>
     <string name="edit">编辑</string>
-    <string name="Annotation">标注</string>
+    <string name="annotation">标注</string>
     <string name="Cancel">取消</string>
     <string name="save_annotation">保存</string>
     <string name="update">更新</string>
@@ -158,4 +158,6 @@
     <string name="reading_rate">阅读统计</string>
     <string name="memorandum">备忘</string>
     <string name="sketch">素描</string>
+    <string name="listen_books">听文章</string>
+    <string name="after_reading">读后感</string>
 </resources>

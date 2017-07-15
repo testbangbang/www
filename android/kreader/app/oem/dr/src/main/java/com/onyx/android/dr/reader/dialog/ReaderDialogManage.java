@@ -14,7 +14,7 @@ public class ReaderDialogManage {
 
     public static void onShowMainMenu(ReaderPresenter readerPresenter) {
         EventBus.getDefault().post(new DisplayStatusBarEvent(false));
-        ReaderMainMenuDialog readerMainMenuDialog = new ReaderMainMenuDialog(readerPresenter,
+        ReaderBottomDialog readerMainMenuDialog = new ReaderBottomDialog(readerPresenter,
                 readerPresenter.getReaderView().getViewContext(), -1, null);
         readerMainMenuDialog.show();
     }
