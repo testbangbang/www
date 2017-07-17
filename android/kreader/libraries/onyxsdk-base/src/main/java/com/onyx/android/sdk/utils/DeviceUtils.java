@@ -1,18 +1,23 @@
 package com.onyx.android.sdk.utils;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
@@ -21,12 +26,15 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.onyx.android.sdk.data.FontInfo;
+import com.onyx.android.sdk.device.Device;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -302,19 +310,19 @@ public class DeviceUtils {
         adjustFullScreenStatus(dialog.getWindow(), fullScreen);
     }
 
-    @TargetApi(19)
     public static void adjustFullScreenStatus(Window window, boolean fullScreen) {
-        int uiOption;
+        int clearFlag, targetFlag, uiOption;
         if (fullScreen) {
-            uiOption = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            clearFlag = WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
+            targetFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            uiOption = View.SYSTEM_UI_FLAG_FULLSCREEN;
         } else {
-            uiOption = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+            clearFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            targetFlag = WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
+            uiOption = View.SYSTEM_UI_FLAG_VISIBLE;
         }
+        window.clearFlags(clearFlag);
+        window.setFlags(targetFlag, targetFlag);
         View decorView = window.getDecorView();
         decorView.setSystemUiVisibility(uiOption);
     }
