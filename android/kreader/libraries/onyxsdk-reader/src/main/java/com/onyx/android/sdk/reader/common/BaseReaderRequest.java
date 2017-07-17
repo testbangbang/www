@@ -15,6 +15,7 @@ import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by zhuzeng on 10/4/15.
@@ -141,11 +142,17 @@ public abstract class BaseReaderRequest extends BaseRequest {
     }
 
     private void transferBitmapToViewport(final Reader reader) {
+        final AtomicBoolean waitTransfer = new AtomicBoolean(false);
+
         final Runnable doneRunnable = new Runnable() {
             @Override
             public void run() {
                 if (isTransferBitmap() && getRenderBitmap() != null) {
                     reader.transferRenderBitmapToViewport(getRenderBitmap());
+                }
+                synchronized (waitTransfer) {
+                    waitTransfer.set(true);
+                    waitTransfer.notify();
                 }
                 BaseCallback.invoke(getCallback(), BaseReaderRequest.this, getException());
                 reader.releaseWakeLock(BaseReaderRequest.this.getClass().getSimpleName());
@@ -159,6 +166,16 @@ public abstract class BaseReaderRequest extends BaseRequest {
         }
         if (getRenderBitmap() != null && !isTransferBitmap()) {
             reader.returnBitmapToCache(getRenderBitmap());
+        }
+
+        try {
+            synchronized (waitTransfer) {
+                while (!waitTransfer.get()) {
+                    waitTransfer.wait();
+                }
+            }
+        } catch (Throwable e) {
+            Log.w(TAG, e);
         }
     }
 
