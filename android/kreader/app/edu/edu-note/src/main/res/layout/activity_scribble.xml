@@ -43,64 +43,13 @@
                         android:text="@{viewModel.mNoteTitle}" />
                 </RelativeLayout>
 
-                <LinearLayout
-                    android:id="@+id/function_panel_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+
+                <com.onyx.android.sdk.ui.view.PageRecyclerView
+                    android:id="@+id/tool_bar_recycler_view"
+                    items="@{viewModel.mToolBarMenuIDList}"
                     android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true">
-
-                    <com.onyx.android.sdk.ui.view.CustomIconView
-                        android:id="@+id/button_switch"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:layout_marginRight="12dp"
-                        android:src="@drawable/ic_vector"
-                        app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
-
-                    <com.onyx.android.sdk.ui.view.CustomIconView
-                        android:id="@+id/button_undo"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:layout_marginRight="12dp"
-                        android:onClick="@{()->viewModel.unDo()}"
-                        android:src="@drawable/ic_undo"
-                        app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
-
-                    <com.onyx.android.sdk.ui.view.CustomIconView
-                        android:id="@+id/button_save"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:layout_marginRight="12dp"
-                        android:onClick="@{()->viewModel.onSaveDocument(Boolean.FALSE)}"
-                        android:src="@drawable/ic_save"
-                        app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
-
-                    <com.onyx.android.sdk.ui.view.CustomIconView
-                        android:id="@+id/button_redo"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:layout_marginRight="12dp"
-                        android:onClick="@{()->viewModel.reDo()}"
-                        android:src="@drawable/ic_redo"
-                        app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
-
-                    <com.onyx.android.sdk.ui.view.CustomIconView
-                        android:id="@+id/button_setting"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:layout_marginRight="12dp"
-                        android:src="@drawable/ic_setting"
-                        app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
-
-                    <com.onyx.android.sdk.ui.view.CustomIconView
-                        android:id="@+id/button_export"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:layout_marginRight="12dp"
-                        android:src="@drawable/ic_export"
-                        app:iconDrawingSize="@dimen/global_activities_function_icon_size" />
-                </LinearLayout>
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
             </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
 
         </android.support.v7.widget.Toolbar>
@@ -151,7 +100,7 @@
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
                 android:id="@+id/function_recycler_view"
-                items="@{viewModel.mMainMenuIDList}"
+                items="@{viewModel.mFunctionBarMenuIDList}"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
 

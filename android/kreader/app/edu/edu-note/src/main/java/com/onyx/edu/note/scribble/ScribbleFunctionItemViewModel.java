@@ -6,7 +6,7 @@ import android.databinding.ObservableInt;
 import android.support.annotation.Nullable;
 
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
-import com.onyx.edu.note.data.ScribbleMainMenuID;
+import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.util.ScribbleFunctionItemUtils;
 
@@ -40,8 +40,8 @@ public class ScribbleFunctionItemViewModel extends BaseObservable {
         mItemMenuIDType = itemMenuIDType;
         mItemID = itemID;
         switch (mItemMenuIDType) {
-            case ScribbleFunctionMenuIDType.MAIN_MENU:
-                mIconRes.set(ScribbleFunctionItemUtils.getMainItemIDIconRes(itemID));
+            case ScribbleFunctionMenuIDType.FUNCTION_BAR_MENU:
+                mIconRes.set(ScribbleFunctionItemUtils.getFunctionBarItemIDIconRes(itemID));
                 mIsChecked.set(false);
                 mShowIndicator.set(false);
                 break;
@@ -49,19 +49,28 @@ public class ScribbleFunctionItemViewModel extends BaseObservable {
                 mIconRes.set(ScribbleFunctionItemUtils.getSubItemIDIconRes(itemID));
                 mShowIndicator.set(true);
                 break;
+            case ScribbleFunctionMenuIDType.TOOL_BAR_MENU:
+                mIconRes.set(ScribbleFunctionItemUtils.getToolBarItemIDIconRes(itemID));
+                mShowIndicator.set(false);
+                break;
         }
     }
 
     public void itemClicked() {
         switch (mItemMenuIDType) {
-            case ScribbleFunctionMenuIDType.MAIN_MENU:
+            case ScribbleFunctionMenuIDType.FUNCTION_BAR_MENU:
                 if (mNavigator != null && mNavigator.get() != null) {
-                    mNavigator.get().onMainMenuFunctionItem(ScribbleMainMenuID.translate(mItemID));
+                    mNavigator.get().onFunctionBarMenuFunctionItem(ScribbleFunctionBarMenuID.translate(mItemID));
                 }
                 break;
             case ScribbleFunctionMenuIDType.SUB_MENU:
                 if (mNavigator != null && mNavigator.get() != null) {
                     mNavigator.get().onSubMenuFunctionItem(ScribbleSubMenuID.translate(mItemID));
+                }
+                break;
+            case ScribbleFunctionMenuIDType.TOOL_BAR_MENU:
+                if (mNavigator != null && mNavigator.get() != null) {
+                    mNavigator.get().onToolBarMenuFunctionItem(ScribbleSubMenuID.translate(mItemID));
                 }
                 break;
         }

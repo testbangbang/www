@@ -2,8 +2,11 @@ package com.onyx.edu.note.handler;
 
 import android.support.annotation.CallSuper;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
+import com.onyx.edu.note.data.ScribbleToolBarMenuID;
+import com.onyx.edu.note.scribble.ScribbleViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +18,14 @@ import java.util.List;
 public abstract class BaseHandler {
     private static final String TAG = BaseHandler.class.getSimpleName();
     protected NoteManager mNoteManager;
-    protected List<Integer> mMainMenuFunctionIDList = new ArrayList<>();
+
+    public void setScribbleViewModel(ScribbleViewModel mScribbleViewModel) {
+        this.mScribbleViewModel = mScribbleViewModel;
+    }
+
+    protected ScribbleViewModel mScribbleViewModel;
+    protected List<Integer> mFunctionBarMenuFunctionIDList = new ArrayList<>();
+    protected List<Integer> mToolBarMenuFunctionIDList = new ArrayList<>();
 
     public BaseHandler(NoteManager mNoteManager) {
         this.mNoteManager = mNoteManager;
@@ -23,7 +33,10 @@ public abstract class BaseHandler {
 
     @CallSuper
     public void onActivate() {
-        buildMainMenuFunctionList();
+        buildFunctionBarMenuFunctionList();
+        buildToolBarMenuFunctionList();
+        mScribbleViewModel.setFunctionBarMenuIDList(mFunctionBarMenuFunctionIDList);
+        mScribbleViewModel.setToolBarMenuIDList(mToolBarMenuFunctionIDList);
     }
 
     public void onDeactivate() {
@@ -32,11 +45,27 @@ public abstract class BaseHandler {
     public void close() {
     }
 
-    protected abstract void buildMainMenuFunctionList();
+    protected abstract void buildFunctionBarMenuFunctionList();
 
-    public final List<Integer> getMainMenuFunctionIDList() {
-        return mMainMenuFunctionIDList;
+    protected abstract void buildToolBarMenuFunctionList();
+
+    public final List<Integer> getFunctionBarMenuFunctionIDList() {
+        return mFunctionBarMenuFunctionIDList;
     }
 
     public abstract void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID);
+
+    public abstract void handleToolBarMenuFunction(@ScribbleToolBarMenuID.ScribbleToolBarMenuDef int toolBarMenuID);
+
+    public final List<Integer> getToolBarMenuFunctionIDList() {
+        return mToolBarMenuFunctionIDList;
+    }
+
+    public abstract void saveDocument(boolean closeAfterSave, BaseCallback callback);
+
+    public abstract void prevPage();
+    public abstract void nextPage();
+    public abstract void addPage();
+    public abstract void deletePage();
+
 }

@@ -6,10 +6,10 @@ import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.note.NotePageShapesRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.request.note.NotePageShapesRequest;
-import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
@@ -17,7 +17,7 @@ import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.actions.scribble.NotePageShapeAction;
 import com.onyx.edu.note.actions.scribble.SpannableAction;
-import com.onyx.edu.note.data.ScribbleMainMenuID;
+import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 
 import org.apache.commons.collections4.MapUtils;
 
@@ -189,16 +189,50 @@ public class SpanTextHandler extends BaseHandler {
     }
 
     @Override
-    public void buildMainMenuFunctionList() {
-        mMainMenuFunctionIDList = new ArrayList<>();
-        mMainMenuFunctionIDList.add(ScribbleMainMenuID.KEYBOARD);
-        mMainMenuFunctionIDList.add(ScribbleMainMenuID.ENTER);
-        mMainMenuFunctionIDList.add(ScribbleMainMenuID.DELETE);
-        mMainMenuFunctionIDList.add(ScribbleMainMenuID.SPACE);
+    public void buildFunctionBarMenuFunctionList() {
+        mFunctionBarMenuFunctionIDList = new ArrayList<>();
+        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.KEYBOARD);
+        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.ENTER);
+        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.DELETE);
+        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.SPACE);
+    }
+
+    @Override
+    protected void buildToolBarMenuFunctionList() {
+
     }
 
     @Override
     public void handleSubMenuFunction(int subMenuID) {
-        Log.e(TAG, "handleSubMenuFunction: "+subMenuID );
+        Log.e(TAG, "handleSubMenuFunction: " + subMenuID);
+    }
+
+    @Override
+    public void handleToolBarMenuFunction(int toolBarMenuID) {
+
+    }
+
+    @Override
+    public void saveDocument(boolean closeAfterSave, BaseCallback callback) {
+    }
+
+    @Override
+    public void prevPage() {
+
+    }
+
+    @Override
+    public void nextPage() {
+
+    }
+
+    @Override
+    public void addPage() {
+
+    }
+
+    @Override
+    public void deletePage() {
+
     }
 }

@@ -16,7 +16,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.edu.note.NoteAppConfig;
 import com.onyx.edu.note.R;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
-import com.onyx.edu.note.data.ScribbleMainMenuID;
+import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
 import com.onyx.edu.note.databinding.ScribbleSubMenuBinding;
@@ -52,7 +52,7 @@ public class ScribbleSubMenu extends RelativeLayout {
     private ScribbleSubMenuBinding mBinding;
     private ScribbleFunctionAdapter mAdapter;
     private
-    @ScribbleMainMenuID.ScribbleMainMenuDef
+    @ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef
     int currentCategory;
 
     public void setCurShapeDataInfo(ShapeDataInfo curShapeDataInfo) {
@@ -60,10 +60,11 @@ public class ScribbleSubMenu extends RelativeLayout {
     }
 
     private void initRecyclerView() {
-        PageRecyclerView resultRecyclerView = mBinding.subMenuRecyclerView;
-        resultRecyclerView.setLayoutManager(new DisableScrollGridManager(getContext()));
+        PageRecyclerView subMenuRecyclerView = mBinding.subMenuRecyclerView;
+        subMenuRecyclerView.setLayoutManager(new DisableScrollGridManager(getContext()));
+        subMenuRecyclerView.setHasFixedSize(true);
         buildFunctionAdapter();
-        resultRecyclerView.setAdapter(mAdapter);
+        subMenuRecyclerView.setAdapter(mAdapter);
     }
 
     public ScribbleSubMenu(Context context, ShapeDataInfo shapeDataInfo, RelativeLayout parentLayout, Callback callback, int positionID) {
@@ -91,12 +92,12 @@ public class ScribbleSubMenu extends RelativeLayout {
     }
 
     public
-    @ScribbleMainMenuID.ScribbleMainMenuDef
+    @ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef
     int getCurrentCategory() {
         return currentCategory;
     }
 
-    public void show(final @ScribbleMainMenuID.ScribbleMainMenuDef
+    public void show(final @ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef
                              int category, final boolean isLineLayoutMode) {
         currentCategory = category;
         mAdapter.setRawData(ScribbleFunctionItemUtils.getSubMenuIDList(currentCategory), getContext());

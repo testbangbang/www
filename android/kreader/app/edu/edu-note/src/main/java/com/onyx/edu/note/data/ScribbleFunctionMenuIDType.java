@@ -14,13 +14,14 @@ public class ScribbleFunctionMenuIDType {
     // Describes when the annotation will be discarded
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
-    @IntDef({MAIN_MENU, SUB_MENU})
+    @IntDef({FUNCTION_BAR_MENU, SUB_MENU, TOOL_BAR_MENU})
     // Create an interface for validating int types
     public @interface ScribbleMenuIDTypeDef {
     }
 
-    public static final int MAIN_MENU = 0;
+    public static final int FUNCTION_BAR_MENU = 0;
     public static final int SUB_MENU = 1;
+    public static final int TOOL_BAR_MENU = 2;
 
     public
     @ScribbleFunctionMenuIDType.ScribbleMenuIDTypeDef
