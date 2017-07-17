@@ -175,4 +175,7 @@
     <string name="new_word_activity_new_word">生词</string>
     <string name="already_add_new_word_notebook">收入生词本</string>
     <string name="new_word_notebook_already_exist">生词本已存在</string>
+    <string name="webview_action_copy">复制</string>
+    <string name="webview_action_cancel">取消</string>
+    <string name="webview_toast_cancel_copy">取消复制</string>
 </resources>

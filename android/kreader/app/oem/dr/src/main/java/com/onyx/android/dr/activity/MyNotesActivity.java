@@ -12,6 +12,7 @@ import com.onyx.android.dr.event.GoodSentenceNotebookEvent;
 import com.onyx.android.dr.event.NewWordNotebookEvent;
 import com.onyx.android.dr.interfaces.MyNotesView;
 import com.onyx.android.dr.presenter.MyNotesPresenter;
+import com.onyx.android.dr.util.EventBusUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -64,7 +65,7 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
 
     @Override
     protected void initData() {
-        myNotesPresenter = new MyNotesPresenter(this);
+        myNotesPresenter = new MyNotesPresenter(getApplicationContext(), this);
         myNotesPresenter.loadData(this);
         myNotesPresenter.loadMyTracks(Constants.ACCOUNT_TYPE_MY_TRACKS);
         myNotesPresenter.loadMyThink(Constants.ACCOUNT_TYPE_MY_THINK);
@@ -106,9 +107,7 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     @Override
     protected void onStart() {
         super.onStart();
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+        EventBusUtils.registerEventBus(this);
         ButterKnife.bind(this);
     }
 

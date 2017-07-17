@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.onyx.android.dr.data.DictFunctionConfig;
 import com.onyx.android.dr.data.DictTypeConfig;
-import com.onyx.android.dr.data.MainData;
 import com.onyx.android.dr.data.QueryRecordData;
 import com.onyx.android.dr.data.database.QueryRecordEntity;
 import com.onyx.android.dr.interfaces.DictResultShowView;
@@ -20,12 +19,12 @@ public class DictFunctionPresenter {
     private final DictFunctionConfig functionConfig;
     private final DictTypeConfig dictTypeConfig;
     private final QueryRecordData queryRecordData;
+    private Context context;
     private DictResultShowView dictView;
-    private MainData mainData;
 
-    public DictFunctionPresenter(DictResultShowView dictView) {
+    public DictFunctionPresenter(Context context, DictResultShowView dictView) {
         this.dictView = dictView;
-        mainData = new MainData();
+        this.context = context;
         functionConfig = new DictFunctionConfig();
         dictTypeConfig = new DictTypeConfig();
         queryRecordData = new QueryRecordData();
@@ -48,7 +47,7 @@ public class DictFunctionPresenter {
         bean.word = word;
         bean.time = time;
         final QueryRecordInsert req = new QueryRecordInsert(bean);
-        queryRecordData.insertQueryRecord(req, new BaseCallback() {
+        queryRecordData.insertQueryRecord(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
             }

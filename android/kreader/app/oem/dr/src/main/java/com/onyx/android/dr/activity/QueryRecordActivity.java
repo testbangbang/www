@@ -25,6 +25,7 @@ import com.onyx.android.dr.dialog.SelectAlertDialog;
 import com.onyx.android.dr.event.RefreshWebviewEvent;
 import com.onyx.android.dr.interfaces.QueryRecordView;
 import com.onyx.android.dr.presenter.QueryRecordPresenter;
+import com.onyx.android.dr.util.EventBusUtils;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
@@ -114,7 +115,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
         queryRecordList = new ArrayList<QueryRecordEntity>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
-        queryRecordPresenter = new QueryRecordPresenter(this);
+        queryRecordPresenter = new QueryRecordPresenter(getApplicationContext(), this);
         queryRecordPresenter.getAllQueryRecordData();
         dictSpinnerAdapter =  new DictSpinnerAdapter(this);
         initEvent();
@@ -130,9 +131,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     @Override
     protected void onStart() {
         super.onStart();
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+        EventBusUtils.registerEventBus(this);
         ButterKnife.bind(this);
     }
 
@@ -239,7 +238,6 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                 day = TimeUtils.getCurrentDay() + "";
                 week = TimeUtils.getWeekOfMonth() + "";
                 queryRecordPresenter.insertNewWord(month, week, day, newWord, dictionaryLookup, readingMatter);
-                CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getResources().getString(R.string.new_word_notebook_already_exist));
             }
         });
         selectTimeDialog.show();

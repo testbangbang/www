@@ -30,6 +30,7 @@ import com.onyx.android.dr.event.WebviewPageChangedEvent;
 import com.onyx.android.dr.interfaces.ActionSelectListener;
 import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
+import com.onyx.android.dr.util.EventBusUtils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.conf.AppConfig;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
@@ -114,9 +115,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     @Override
     protected void onStart() {
         super.onStart();
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+        EventBusUtils.registerEventBus(this);
         ButterKnife.bind(this);
     }
 
@@ -152,7 +151,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         handler = new Handler();
         queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
-        dictPresenter = new DictFunctionPresenter(this);
+        dictPresenter = new DictFunctionPresenter(getApplicationContext(), this);
         dictPresenter.loadData(this);
         dictPresenter.loadTabMenu(Constants.ACCOUNT_TYPE_DICT_FUNCTION);
         initItemData();
@@ -164,8 +163,8 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     private void initItemData() {
         itemList = new ArrayList<>();
-        itemList.add("复制");
-        itemList.add("取消");
+        itemList.add(getString(R.string.webview_action_copy));
+        itemList.add(getString(R.string.webview_action_cancel));
         resultView.setActionList(itemList);
     }
 
@@ -246,8 +245,8 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         resultView.setActionSelectListener(new ActionSelectListener() {
             @Override
             public void onClick(String title, String selectText) {
-                if(title.equals("取消")){
-                    Toast.makeText(DictResultShowActivity.this, "取消复制", Toast.LENGTH_LONG).show();
+                if(title.equals(getString(R.string.webview_action_cancel))){
+                    Toast.makeText(DictResultShowActivity.this, R.string.webview_toast_cancel_copy, Toast.LENGTH_LONG).show();
                     return;
                 }
                 Toast.makeText(DictResultShowActivity.this, "Click Item: " + title + "。\n\nValue: " + selectText, Toast.LENGTH_LONG).show();

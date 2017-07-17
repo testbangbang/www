@@ -175,4 +175,7 @@
     <string name="new_word_activity_new_word">new word</string>
     <string name="already_add_new_word_notebook">already add new word notebook</string>
     <string name="new_word_notebook_already_exist">new word notebook already exist</string>
+    <string name="webview_action_copy">copy</string>
+    <string name="webview_action_cancel">cancel</string>
+    <string name="webview_toast_cancel_copy">cancel copy</string>
 </resources>

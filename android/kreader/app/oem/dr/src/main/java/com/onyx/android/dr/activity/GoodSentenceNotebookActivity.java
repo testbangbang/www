@@ -12,6 +12,7 @@ import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.event.EnglishGoodSentenceEvent;
 import com.onyx.android.dr.interfaces.GoodSentenceView;
 import com.onyx.android.dr.presenter.GoodSentencePresenter;
+import com.onyx.android.dr.util.EventBusUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -64,7 +65,7 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
 
     @Override
     protected void initData() {
-        goodSentencePresenter = new GoodSentencePresenter(this);
+        goodSentencePresenter = new GoodSentencePresenter(getApplicationContext(), this);
         goodSentencePresenter.getAllGoodSentenceData();
 
         initSpinnerDatas();
@@ -105,9 +106,7 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     @Override
     protected void onStart() {
         super.onStart();
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+        EventBusUtils.registerEventBus(this);
         ButterKnife.bind(this);
     }
 

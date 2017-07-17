@@ -14,6 +14,7 @@ import com.onyx.android.dr.event.EnglishNewWordEvent;
 import com.onyx.android.dr.event.MinorityLanguageNewWordEvent;
 import com.onyx.android.dr.interfaces.GoodSentenceTpyeView;
 import com.onyx.android.dr.presenter.GoodSentenceTypePresenter;
+import com.onyx.android.dr.util.EventBusUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -35,9 +36,9 @@ public class NewWordTypeActivity extends BaseActivity implements GoodSentenceTpy
     private DividerItemDecoration dividerItemDecoration;
     private GoodSentenceTypeAdapter goodSentenceTypeAdapter;
     private GoodSentenceTypePresenter goodSentenceTypePresenter;
-    private String englishUsed;
-    private String chineseUsed;
-    private String otherLanguageUsed;
+    private String englishUsed = "";
+    private String chineseUsed = "";
+    private String otherLanguageUsed = "";
 
     @Override
     protected Integer getLayoutId() {
@@ -68,11 +69,8 @@ public class NewWordTypeActivity extends BaseActivity implements GoodSentenceTpy
     }
 
     private void initNewWordData() {
-        englishUsed = "(已用156/500词)";
-        chineseUsed = "(已用156/500词)";
-        otherLanguageUsed = "(已用156/500词)";
-        goodSentenceTypePresenter = new GoodSentenceTypePresenter(this);
-        goodSentenceTypePresenter.loadNewWordData(this, englishUsed, chineseUsed, otherLanguageUsed);
+        goodSentenceTypePresenter = new GoodSentenceTypePresenter(getApplicationContext(), this);
+        goodSentenceTypePresenter.loadNewWordData(englishUsed, chineseUsed, otherLanguageUsed);
         goodSentenceTypePresenter.loadDataByType(Constants.ACCOUNT_TYPE_NEW_WORD);
     }
 
@@ -103,9 +101,7 @@ public class NewWordTypeActivity extends BaseActivity implements GoodSentenceTpy
     @Override
     protected void onStart() {
         super.onStart();
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+        EventBusUtils.registerEventBus(this);
         ButterKnife.bind(this);
     }
 

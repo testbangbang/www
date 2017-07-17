@@ -12,6 +12,7 @@ import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.event.EnglishGoodSentenceEvent;
 import com.onyx.android.dr.interfaces.NewWordView;
 import com.onyx.android.dr.presenter.NewWordPresenter;
+import com.onyx.android.dr.util.EventBusUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -64,7 +65,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
 
     @Override
     protected void initData() {
-        newWordPresenter = new NewWordPresenter(this);
+        newWordPresenter = new NewWordPresenter(getApplicationContext(), this);
         newWordPresenter.getAllNewWordData();
 
         initSpinnerDatas();
@@ -105,9 +106,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     @Override
     protected void onStart() {
         super.onStart();
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+        EventBusUtils.registerEventBus(this);
         ButterKnife.bind(this);
     }
 

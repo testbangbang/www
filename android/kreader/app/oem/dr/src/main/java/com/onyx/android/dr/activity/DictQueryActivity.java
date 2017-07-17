@@ -21,6 +21,7 @@ import com.onyx.android.dr.event.FrenchQueryEvent;
 import com.onyx.android.dr.event.JapaneseQueryEvent;
 import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
+import com.onyx.android.dr.util.EventBusUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -90,7 +91,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
 
     @Override
     protected void initData() {
-        dictPresenter = new DictFunctionPresenter(this);
+        dictPresenter = new DictFunctionPresenter(getApplicationContext(), this);
         dictPresenter.loadData(this);
         dictPresenter.loadDictType(Constants.ACCOUNT_TYPE_DICT_LANGUAGE);
         initEvent();
@@ -148,9 +149,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     @Override
     protected void onStart() {
         super.onStart();
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+        EventBusUtils.registerEventBus(this);
         ButterKnife.bind(this);
     }
 

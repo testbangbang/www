@@ -1,5 +1,7 @@
 package com.onyx.android.dr.presenter;
 
+import android.content.Context;
+
 import com.onyx.android.dr.data.NewWordData;
 import com.onyx.android.dr.data.QueryRecordData;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
@@ -16,16 +18,18 @@ public class QueryRecordPresenter {
     private final QueryRecordData queryRecordData;
     private QueryRecordView queryRecordView;
     private NewWordData newWordData;
+    private Context context;
 
-    public QueryRecordPresenter(QueryRecordView queryRecordView) {
+    public QueryRecordPresenter(Context context, QueryRecordView queryRecordView) {
         this.queryRecordView = queryRecordView;
+        this.context = context;
         queryRecordData = new QueryRecordData();
         newWordData = new NewWordData();
     }
 
     public void getAllQueryRecordData() {
         final QueryRecordQueryAll req = new QueryRecordQueryAll();
-        queryRecordData.getAllQueryRecord(req, new BaseCallback() {
+        queryRecordData.getAllQueryRecord(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 queryRecordView.setQueryRecordData(req.getList());
@@ -42,7 +46,7 @@ public class QueryRecordPresenter {
         bean.dictionaryLookup = dictionaryLookup;
         bean.readingMatter = readingMatter;
         final NewWordInsert req = new NewWordInsert(bean);
-        newWordData.insertNewWord(req, new BaseCallback() {
+        newWordData.insertNewWord(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
             }
