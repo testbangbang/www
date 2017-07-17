@@ -8,7 +8,7 @@ import com.onyx.android.sdk.im.push.PushServiceType;
 
 public class IMConfig {
 
-    private PushServiceType pushServiceType;
+    private PushServiceType pushServiceType = PushServiceType.AVCLOUDPUSH;
     private String applicationId;
     private String clientKey;
 
@@ -22,6 +22,10 @@ public class IMConfig {
     public IMConfig(String applicationId, String clientKey) {
         this.applicationId = applicationId;
         this.clientKey = clientKey;
+    }
+
+    public IMConfig(String serverUri) {
+        this.serverUri = serverUri;
     }
 
     public IMConfig(String applicationId, String clientKey, String serverUri) {

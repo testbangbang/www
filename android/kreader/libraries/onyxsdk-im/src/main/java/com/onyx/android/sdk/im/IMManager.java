@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.im;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.im.push.AVOSCloudPushService;
@@ -86,13 +87,13 @@ public class IMManager {
         }
         socketIOClient = new SocketIOClient(config);
         socketIOClient.connect();
-        socketIOClient.on(Constant.PUSH, new Emitter.Listener() {
+        socketIOClient.on(Constant.NEW_MESSAGE, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 Debug.d(getClass(), "receiver push");
                 if (args.length > 0) {
-                    JSONObject data = (JSONObject) args[0];
-                    Message message = JSONObject.parseObject(data.toJSONString(), Message.class);
+                    String data = (String) args[0];
+                    Message message = JSONObject.parseObject(data, Message.class);
                     onReceivedSocketMessage(message);
                 }
             }
@@ -103,7 +104,7 @@ public class IMManager {
         if (socketIOClient == null) {
             return;
         }
-        socketIOClient.off(Constant.PUSH, null);
+        socketIOClient.off(Constant.NEW_MESSAGE, null);
         socketIOClient.close();
         socketIOClient = null;
     }
@@ -154,5 +155,13 @@ public class IMManager {
 
     public EventBus getEventBus() {
         return eventBus;
+    }
+
+    public SocketIOClient getSocketIOClient() {
+        return socketIOClient;
+    }
+
+    public Set<String> getMessageIdSets() {
+        return messageIdSets;
     }
 }
