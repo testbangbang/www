@@ -6,8 +6,6 @@ import com.onyx.android.sdk.utils.Debug;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -18,13 +16,12 @@ import io.socket.emitter.Emitter;
  */
 
 public class SocketIOClient {
+
     private Socket socket;
     private Map<String,Emitter.Listener> listenerMap = new HashMap<>();
     private boolean isConnected = false;
     private boolean closed = false;
-    private int reconnectCount = 0;
     private IMConfig config;
-    private Timer timer = new Timer();
 
     public SocketIOClient(IMConfig c) {
         config = c;
@@ -56,6 +53,7 @@ public class SocketIOClient {
     }
 
     public SocketIOClient connect() {
+        Debug.d(getClass(), "start connect");
         closed = false;
         on(Socket.EVENT_CONNECT,onConnect);
         on(Socket.EVENT_DISCONNECT,onDisconnect);
@@ -65,10 +63,15 @@ public class SocketIOClient {
         return this;
     }
 
+    public SocketIOClient emit(String event, Object... args) {
+        getSocket().emit(event, args);
+        return this;
+    }
+
     private Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            Debug.d(getClass(), "onConnect");
+            Debug.d(getClass(), "onConnected");
             isConnected = true;
         }
     };
@@ -89,33 +92,19 @@ public class SocketIOClient {
         }
     };
 
-    private void reconnect() {
-        if (closed) {
-            return;
-        }
-        if (!config.canReconnect(reconnectCount)) {
-            return;
-        }
-        Debug.d(getClass(), "reconnect");
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (closed) {
-                    return;
-                }
-                reconnectCount++;
-                getSocket().connect();
-            }
-        }, config.getReconnectInterval());
-    }
-
     public void close() {
         closed = true;
-        timer.cancel();
         removeListeners();
         getSocket().close();
         isConnected = false;
-        reconnectCount = 0;
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 
     private void removeListeners() {

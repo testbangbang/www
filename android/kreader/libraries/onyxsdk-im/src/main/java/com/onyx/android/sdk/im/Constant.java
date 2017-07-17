@@ -7,7 +7,7 @@ package com.onyx.android.sdk.im;
 public class Constant {
 
     public final static String PUBLIC_CHANNEL = "public";
-    public final static String PUSH = "push";
+    public final static String NEW_MESSAGE = "new message";
 
     public final static String MESSAGE_ID = "msg_id";
     public final static String MESSAGE_CONTENT = "content";

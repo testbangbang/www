@@ -11,6 +11,9 @@ public class Message {
     private String id;
     private String content;
 
+    public Message() {
+    }
+
     public String getChannel() {
         return channel;
     }
