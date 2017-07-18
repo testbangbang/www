@@ -64,6 +64,7 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodRefreshScreenRegion = null;
     private static Method sMethodScreenshot = null;
     private static Method sMethodSupportRegal = null;
+    private static Method sMethodEnableRegal = null;
 
     private static Method sMethodMoveTo = null;
     private static Method sMethodSetStrokeColor = null;
@@ -363,6 +364,7 @@ public class RK32XXDevice extends BaseDevice {
         if (sMethodSupportRegal == null) {
             return false;
         }
+
         Boolean value = (Boolean)ReflectUtil.invokeMethodSafely(sMethodSupportRegal, null);
         if (value == null) {
             return false;
@@ -370,6 +372,10 @@ public class RK32XXDevice extends BaseDevice {
         return value.booleanValue();
     }
 
+    @Override
+    public void enableRegal(boolean enable) {
+        ReflectUtil.invokeMethodSafely(sMethodEnableRegal, null, enable);
+    }
 
     public void lineTo(float x, float y, UpdateMode mode) {
         int value = getUpdateMode(mode);
@@ -564,6 +570,7 @@ public class RK32XXDevice extends BaseDevice {
             sMethodSetStrokeWidth = ReflectUtil.getMethodSafely(cls, "setStrokeWidth", float.class);
             sMethodSetPainterStyle = ReflectUtil.getMethodSafely(cls, "setPainterStyle", boolean.class, Paint.Style.class, Paint.Join.class, Paint.Cap.class);
             sMethodSupportRegal = ReflectUtil.getMethodSafely(cls, "supportRegal");
+            sMethodEnableRegal = ReflectUtil.getMethodSafely(cls, "enableRegal", boolean.class);
             sMethodMoveTo = ReflectUtil.getMethodSafely(cls, "moveTo", float.class, float.class, float.class);
             sMethodLineTo = ReflectUtil.getMethodSafely(cls, "lineTo", float.class, float.class, int.class);
             sMethodQuadTo = ReflectUtil.getMethodSafely(cls, "quadTo", float.class, float.class, int.class);
