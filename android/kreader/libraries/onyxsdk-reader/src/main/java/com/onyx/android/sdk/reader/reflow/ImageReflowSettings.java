@@ -57,8 +57,8 @@ public class ImageReflowSettings {
      * high: 0.15
      */
     public double margin = 0.05;
-    /**
-     * largest: 1.5
+    /** largest: 2.0
+     * xlarge: 1.5
      * large: 1.2
      * medium: 1.0
      * small: 0.75
