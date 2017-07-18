@@ -11,5 +11,4 @@ public interface ScribbleNavigator {
 
     void goToSetting();
 
-    void switchScribbleMode();
 }

@@ -18,6 +18,7 @@ import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
 import com.onyx.edu.note.actions.scribble.DocumentFlushAction;
+import com.onyx.edu.note.actions.scribble.DrawPageAction;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -143,10 +144,10 @@ public class NoteManager {
     }
 
     public void setView(Context context, SurfaceView surfaceView) {
-        mNoteViewHelper.setView(context, surfaceView, mInputCallback);
+        mNoteViewHelper.setView(context, surfaceView, getInputCallback());
     }
 
-    protected NoteViewHelper.InputCallback inputCallback() {
+    private NoteViewHelper.InputCallback getInputCallback() {
         if (mInputCallback == null) {
             mInputCallback = new NoteViewHelper.InputCallback() {
                 @Override
@@ -172,27 +173,31 @@ public class NoteManager {
                 @Override
                 public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
                     if (!shape.supportDFB()) {
-                        sync(true, true);
+                        drawCurrentPage();
                     }
                 }
 
                 @Override
                 public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
                     if (last && !shape.supportDFB()) {
-                        sync(true, true);
+                        drawCurrentPage();
                     }
                 }
 
                 @Override
                 public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
                     if (!shape.supportDFB()) {
-                        sync(true, true);
+                        drawCurrentPage();
                     }
                 }
 
             };
         }
         return mInputCallback;
+    }
+
+    private void drawCurrentPage(){
+        new DrawPageAction().execute(this, null);
     }
 
     public void quit() {
@@ -217,6 +222,10 @@ public class NoteManager {
 
     public boolean isDrawing() {
         return mNoteViewHelper.isDrawing();
+    }
+
+    public boolean inUserErasing() {
+        return mNoteViewHelper.inUserErasing();
     }
 
     public NoteDocument getNoteDocument() {

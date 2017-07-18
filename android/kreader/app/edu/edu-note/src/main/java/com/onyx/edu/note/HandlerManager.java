@@ -1,10 +1,9 @@
 package com.onyx.edu.note;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -54,19 +53,20 @@ public class HandlerManager {
         setActiveProvider(SCRIBBLE_PROVIDER);
     }
 
-    public void setActiveProvider(final String providerName) {
-        if (getActiveProvider() != null) {
-            getActiveProvider().onDeactivate();
+    public void setActiveProvider(String providerName) {
+        if (!TextUtils.isEmpty(activeProviderName) && providerMap.get(activeProviderName) != null) {
+            providerMap.get(activeProviderName).onDeactivate();
         }
         activeProviderName = providerName;
-        getActiveProvider().setScribbleViewModel(mViewModel);
-        getActiveProvider().onActivate();
+        providerMap.get(activeProviderName).setScribbleViewModel(mViewModel);
+        providerMap.get(activeProviderName).onActivate();
     }
 
-    @Nullable
+    @NonNull
     public BaseHandler getActiveProvider() {
         if (TextUtils.isEmpty(activeProviderName)) {
-            return null;
+            resetToDefaultProvider();
+            return getActiveProvider();
         }
         return providerMap.get(activeProviderName);
     }
@@ -80,73 +80,31 @@ public class HandlerManager {
         setActiveProvider(activeProviderName.equals(SCRIBBLE_PROVIDER) ? SPAN_TEXT_PROVIDER : SCRIBBLE_PROVIDER);
     }
 
-    public List<Integer> getFunctionBarMenuFunctionIDList() {
-        if (getActiveProvider() == null) {
-            return null;
-        }
-        return getActiveProvider().getFunctionBarMenuFunctionIDList();
-    }
-
-    public List<Integer> getToolBarMenuFunctionIDList() {
-        if (getActiveProvider() == null) {
-            return null;
-        }
-        return getActiveProvider().getToolBarMenuFunctionIDList();
-    }
-
     public void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
-        if (getActiveProvider() != null) {
-            getActiveProvider().handleSubMenuFunction(subMenuID);
-        } else {
-            Log.e(TAG, "Empty activity provider.");
-        }
+        getActiveProvider().handleSubMenuFunction(subMenuID);
     }
 
     public void handleToolBarMenuFunction(@ScribbleToolBarMenuID.ScribbleToolBarMenuDef int toolBarMenuID) {
-        if (getActiveProvider() != null) {
-            getActiveProvider().handleToolBarMenuFunction(toolBarMenuID);
-        } else {
-            Log.e(TAG, "Empty activity provider.");
-        }
+        getActiveProvider().handleToolBarMenuFunction(toolBarMenuID);
     }
 
-    public void saveDocument(boolean closeAfterSave, BaseCallback callback){
-        if (getActiveProvider() != null) {
-            getActiveProvider().saveDocument(closeAfterSave, callback);
-        } else {
-            Log.e(TAG, "Empty activity provider.");
-        }
+    public void saveDocument(boolean closeAfterSave, BaseCallback callback) {
+        getActiveProvider().saveDocument(closeAfterSave, callback);
     }
 
     public void prevPage() {
-        if (getActiveProvider() != null) {
-            getActiveProvider().prevPage();
-        } else {
-            Log.e(TAG, "Empty activity provider.");
-        }
+        getActiveProvider().prevPage();
     }
 
     public void nextPage() {
-        if (getActiveProvider() != null) {
-            getActiveProvider().nextPage();
-        } else {
-            Log.e(TAG, "Empty activity provider.");
-        }
+        getActiveProvider().nextPage();
     }
 
     public void addPage() {
-        if (getActiveProvider() != null) {
-            getActiveProvider().addPage();
-        } else {
-            Log.e(TAG, "Empty activity provider.");
-        }
+        getActiveProvider().addPage();
     }
 
     public void deletePage() {
-        if (getActiveProvider() != null) {
-            getActiveProvider().deletePage();
-        } else {
-            Log.e(TAG, "Empty activity provider.");
-        }
+        getActiveProvider().deletePage();
     }
 }

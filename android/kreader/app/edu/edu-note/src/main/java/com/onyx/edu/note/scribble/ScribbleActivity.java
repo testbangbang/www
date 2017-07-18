@@ -188,11 +188,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     }
 
-    @Override
-    public void switchScribbleMode() {
-
-    }
-
     private void initRecyclerView() {
         mBinding.functionRecyclerView.setLayoutManager(new DisableScrollGridManager(this));
         mBinding.toolBarRecyclerView.setLayoutManager(new DisableScrollGridManager(this));

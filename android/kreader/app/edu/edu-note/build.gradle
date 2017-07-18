@@ -61,6 +61,7 @@ dependencies {
     compile project(':libraries:onyxsdk-base')
     compile project(':libraries:onyxsdk-scribble')
     compile project(':libraries:onyxsdk-ui')
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile "junit:junit:$rootProject.junitVersion"
