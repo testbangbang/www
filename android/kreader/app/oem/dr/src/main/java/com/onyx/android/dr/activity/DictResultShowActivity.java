@@ -6,8 +6,8 @@ import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
@@ -18,7 +18,10 @@ import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.DictFunctionGoneEvent;
+import com.onyx.android.dr.event.DictFunctionVisibleEvent;
 import com.onyx.android.dr.event.GoodExcerptEvent;
+import com.onyx.android.dr.event.NewWordQueryEvent;
 import com.onyx.android.dr.event.PlaySoundEvent;
 import com.onyx.android.dr.event.QueryRecordEvent;
 import com.onyx.android.dr.event.RefreshWebviewEvent;
@@ -31,6 +34,7 @@ import com.onyx.android.dr.interfaces.ActionSelectListener;
 import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
 import com.onyx.android.dr.util.EventBusUtils;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.conf.AppConfig;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
@@ -79,6 +83,8 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     ImageView ivVoiceOne;
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
+    @Bind(R.id.dict_result_activity_function_container)
+    LinearLayout functionContainer;
     private DictFunctionPresenter dictPresenter;
     private DictFunctionAdapter dictFunctionAdapter;
     private DictionaryManager dictionaryManager;
@@ -96,6 +102,11 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     public Handler handler;
     public Runnable runnable;
     private ArrayList<String> itemList;
+    private String copyText = "";
+    private String dictionaryLookup = "";
+    private String week = "";
+    private String month = "";
+    private String day = "";
 
     @Override
     protected Integer getLayoutId() {
@@ -154,11 +165,18 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         dictPresenter = new DictFunctionPresenter(getApplicationContext(), this);
         dictPresenter.loadData(this);
         dictPresenter.loadTabMenu(Constants.ACCOUNT_TYPE_DICT_FUNCTION);
+        getTime();
         initItemData();
         getIntentDatas();
         initSound();
         settingDictionaryFunction();
         initEvent();
+    }
+
+    private void getTime() {
+        month = TimeUtils.getCurrentMonth() + "";
+        day = TimeUtils.getCurrentDay() + "";
+        week = TimeUtils.getWeekOfMonth() + "";
     }
 
     private void initItemData() {
@@ -237,6 +255,8 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         dictTypeAdapter.setOnItemClick(new DictTypeAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                dictionaryLookup = searchResultList.get(position).getTabName();
+                EventBus.getDefault().post(new DictFunctionGoneEvent());
                 showResultToWebview(position);
             }
         });
@@ -245,11 +265,14 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         resultView.setActionSelectListener(new ActionSelectListener() {
             @Override
             public void onClick(String title, String selectText) {
-                if(title.equals(getString(R.string.webview_action_cancel))){
-                    Toast.makeText(DictResultShowActivity.this, R.string.webview_toast_cancel_copy, Toast.LENGTH_LONG).show();
-                    return;
+                if (title.equals(getString(R.string.webview_action_cancel))) {
+                    CommonNotices.showMessage(DictResultShowActivity.this, getString(R.string.webview_toast_cancel_copy));
+                    EventBus.getDefault().post(new DictFunctionGoneEvent());
+                } else {
+                    copyText = selectText;
+                    CommonNotices.showMessage(DictResultShowActivity.this, getString(R.string.webview_toast_copy_success) + "\n\nValue: " + selectText);
+                    EventBus.getDefault().post(new DictFunctionVisibleEvent());
                 }
-                Toast.makeText(DictResultShowActivity.this, "Click Item: " + title + "。\n\nValue: " + selectText, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -271,6 +294,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
                             public void run() {
                                 dictTypeAdapter.setMenuDatas(searchResultList);
                                 dictTypeRecyclerView.setAdapter(dictTypeAdapter);
+                                if (searchResultList.size() > 0){
+                                    dictionaryLookup = searchResultList.get(0).getTabName();
+                                }
                             }
                         };
                     }
@@ -440,12 +466,17 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVocabularyNotebookEvent(VocabularyNotebookEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.vocabulary_notebook));
+        dictPresenter.insertNewWord(month, week, day, copyText, dictionaryLookup, "");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNewWordQueryEvent(NewWordQueryEvent event) {
+        ActivityManager.startNewWordQueryActivity(this, copyText);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoodExcerptEvent(GoodExcerptEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.good_sentence_excerpt));
+        dictPresenter.insertGoodSentence(month, week, day, copyText, "", "");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -483,6 +514,16 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         UpdateSoundIconState();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDictFunctionVisibleEvent(DictFunctionVisibleEvent event) {
+        functionContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDictFunctionGoneEvent(DictFunctionGoneEvent event) {
+        functionContainer.setVisibility(View.GONE);
+    }
+
     private void UpdateSoundIconState() {
         switch (wordSoundList.size()) {
             case SOUND_ONE:
@@ -500,7 +541,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-        if(resultView != null) {
+        if (resultView != null) {
             resultView.dismissAction();
         }
     }

@@ -115,6 +115,14 @@
         <item name="android:theme">@style/SpinnerStyle</item>
     </style>
 
+    <style name="good_sentence_activity_spinner_second">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:dropDownVerticalOffset">55dp</item>
+        <item name="android:layout_margin">@dimen/dialog_result_spinner_margin</item>
+        <item name="android:layout_alignParentRight">true</item>
+    </style>
+
     <style name="good_sentence_activity_spinner_linearlayout">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>

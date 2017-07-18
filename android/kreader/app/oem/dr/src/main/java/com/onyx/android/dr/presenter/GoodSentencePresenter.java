@@ -24,7 +24,7 @@ public class GoodSentencePresenter {
 
     public void getAllGoodSentenceData() {
         final GoodSentenceExcerptQueryAll req = new GoodSentenceExcerptQueryAll();
-        goodSentenceData.getAllGoodSentence(req, new BaseCallback() {
+        goodSentenceData.getAllGoodSentence(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 goodSentenceView.setGoodSentenceData(req.getGoodSentenceList());

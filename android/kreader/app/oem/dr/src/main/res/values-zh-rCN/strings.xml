@@ -173,9 +173,13 @@
     <string name="minority_language_new_word_notebook">小语种生词本</string>
     <string name="new_word_activity_dictionaryLookup">查询词典</string>
     <string name="new_word_activity_new_word">生词</string>
-    <string name="already_add_new_word_notebook">收入生词本</string>
-    <string name="new_word_notebook_already_exist">生词本已存在</string>
+    <string name="already_add_new_word_notebook">收入生词本成功</string>
+    <string name="new_word_notebook_already_exist">生词已存在</string>
     <string name="webview_action_copy">复制</string>
     <string name="webview_action_cancel">取消</string>
     <string name="webview_toast_cancel_copy">取消复制</string>
+    <string name="webview_toast_copy_success">复制成功</string>
+    <string name="good_sentence_already_exist">好句已存在</string>
+    <string name="already_add_good_sentence_notebook">好句摘录成功</string>
+    <string name="baidu_baike">百度百科</string>
 </resources>

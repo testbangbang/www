@@ -2,6 +2,7 @@ package com.onyx.android.dr.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -14,6 +15,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -42,6 +45,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
+
+import static com.onyx.android.dr.common.Constants.BAIDU_BAIKE_URL;
 
 /**
  * Created by zhuzeng on 6/3/15.
@@ -666,5 +671,21 @@ public class Utils {
 
     public static int getScreenHeight(Context context) {
         return getDisplayMetrics(context).heightPixels;
+    }
+
+    public static void openBaiduBaiKe(Context context, String editQuery){
+        if (StringUtils.isNullOrEmpty(editQuery)) {
+            Toast.makeText(context, R.string.illegalInput, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        String baseUrl = Constants.WIKTIONARY_URL;
+        if(Utils.isChinese(context)){
+            baseUrl = Constants.BAIDU_BAIKE_URL;
+        }
+        Uri content_url = Uri.parse(baseUrl + editQuery);
+        intent.setData(content_url);
+        context.startActivity(intent);
     }
 }

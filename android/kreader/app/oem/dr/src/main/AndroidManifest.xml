@@ -88,6 +88,10 @@
             android:name=".activity.NewWordNotebookActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".activity.NewWordQueryActivity"
+            android:screenOrientation="portrait" />
+
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"
             android:authorities="com.onyx.content.database.ContentProvider"

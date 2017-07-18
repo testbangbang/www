@@ -1,27 +1,21 @@
 package com.onyx.android.dr.activity;
 
 import android.os.Handler;
-import android.support.v7.widget.DividerItemDecoration;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.DictSpinnerAdapter;
-import com.onyx.android.dr.adapter.QueryRecordAdapter;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.QueryRecordEntity;
-import com.onyx.android.dr.dialog.SelectAlertDialog;
 import com.onyx.android.dr.event.RefreshWebviewEvent;
+import com.onyx.android.dr.event.WebViewLoadOverEvent;
 import com.onyx.android.dr.interfaces.QueryRecordView;
 import com.onyx.android.dr.presenter.QueryRecordPresenter;
 import com.onyx.android.dr.util.EventBusUtils;
@@ -33,8 +27,6 @@ import com.onyx.android.sdk.dict.data.DictionaryQueryResult;
 import com.onyx.android.sdk.dict.request.QueryWordRequest;
 import com.onyx.android.sdk.dict.request.common.DictBaseCallback;
 import com.onyx.android.sdk.dict.request.common.DictBaseRequest;
-import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -48,33 +40,33 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class QueryRecordActivity extends BaseActivity implements QueryRecordView {
-    @Bind(R.id.query_record_activity_recyclerview)
-    PageRecyclerView queryRecordRecyclerView;
-    private DividerItemDecoration dividerItemDecoration;
-    private QueryRecordPresenter queryRecordPresenter;
-    private QueryRecordAdapter queryRecordAdapter;
-    private AutoPagedWebView resultView;
-    private TextView pageIndicator;
-    private ImageView prevPageButton;
-    private ImageView nextPageButton;
+public class NewWordQueryActivity extends BaseActivity implements QueryRecordView{
+    @Bind(R.id.new_word_query_activity_view)
+    AutoPagedWebView resultView;
+    @Bind(R.id.new_word_query_activity_button_previous)
+    ImageView prevPageButton;
+    @Bind(R.id.new_word_query_activity_page_size_indicator)
+    TextView pageIndicator;
+    @Bind(R.id.new_word_query_activity_button_next)
+    ImageView nextPageButton;
+    @Bind(R.id.new_word_query_activity_spinner)
+    Spinner resultSpinner;
+    @Bind(R.id.new_word_query_activity_confirm)
+    TextView incomeNewWordNote;
+    @Bind(R.id.new_word_query_activity_baidubaike)
+    TextView baiduBaike;
     private List<String> searchResultList = new ArrayList<String>();
     private DictionaryManager dictionaryManager;
     private QueryWordRequest queryWordRequest;
     public volatile Map<String, DictionaryQueryResult> queryResult;
     private int customFontSize = 10;
-    private SelectAlertDialog selectTimeDialog;
-    private List<QueryRecordEntity> queryRecordList;
-    private static final String TAG = QueryRecordActivity.class.getSimpleName();
-    private Spinner resultSpinner;
     private Runnable runnable;
     private Handler handler;
-    private TextView addNewWordNote;
-    private TextView exit;
     private String newWord = "";
     private String dictionaryLookup = "";
     private String week = "";
@@ -83,11 +75,12 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     private String readingMatter = "";
     private long millisecond = 2000;
     private DictSpinnerAdapter dictSpinnerAdapter;
-    private TextView baiduBaike;
+    private QueryRecordPresenter queryRecordPresenter;
+    private String editQuery = "";
 
     @Override
     protected Integer getLayoutId() {
-        return R.layout.activity_query_record;
+        return R.layout.activity_new_word_query;
     }
 
     @Override
@@ -96,35 +89,25 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
 
     @Override
     protected void initView() {
-        initRecylcerView();
-        loadDialog();
-    }
-
-    private void initRecylcerView() {
-        dividerItemDecoration =
-                new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
-        queryRecordAdapter = new QueryRecordAdapter();
-        queryRecordRecyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
-        queryRecordRecyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
     protected void initData() {
         handler = new Handler();
         queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
-        queryRecordList = new ArrayList<QueryRecordEntity>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
         queryRecordPresenter = new QueryRecordPresenter(getApplicationContext(), this);
-        queryRecordPresenter.getAllQueryRecordData();
-        dictSpinnerAdapter =  new DictSpinnerAdapter(this);
+        dictSpinnerAdapter = new DictSpinnerAdapter(this);
+        getIntentDatas();
         initEvent();
+    }
+
+    private void getIntentDatas() {
+        editQuery = getIntent().getStringExtra("wordQuery");
     }
 
     @Override
     public void setQueryRecordData(List<QueryRecordEntity> list) {
-        queryRecordAdapter.setDatas(list);
-        queryRecordRecyclerView.setAdapter(queryRecordAdapter);
-        queryRecordList = list;
     }
 
     @Override
@@ -146,35 +129,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         }
     }
 
-    private void loadDialog() {
-        RelativeLayout view = (RelativeLayout) LayoutInflater.from(this).inflate(
-                R.layout.dialog_word_query_result, null);
-        selectTimeDialog = new SelectAlertDialog(this);
-        // find id
-        prevPageButton = (ImageView) view.findViewById(R.id.dialog_result_button_previous);
-        pageIndicator = (TextView) view.findViewById(R.id.dialog_result_page_size_indicator);
-        nextPageButton = (ImageView) view.findViewById(R.id.dialog_result_button_next);
-        resultSpinner = (Spinner) view.findViewById(R.id.dialog_result_spinner);
-        resultView = (AutoPagedWebView) view.findViewById(R.id.dialog_result_view);
-        exit = (TextView) view.findViewById(R.id.select_dialog_close_cancel);
-        addNewWordNote = (TextView) view.findViewById(R.id.select_dialog_close_confirm);
-        baiduBaike = (TextView) view.findViewById(R.id.select_dialog_baidubaike);
-
-        WindowManager.LayoutParams attributes = selectTimeDialog.getWindow().getAttributes();
-        attributes.height = (int) (Utils.getScreenHeight(DRApplication.getInstance()) * 0.8);
-        attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * 1);
-        selectTimeDialog.getWindow().setAttributes(attributes);
-        selectTimeDialog.setView(view);
-    }
-
     private void initEvent() {
-        queryRecordAdapter.setOnItemClick(new QueryRecordAdapter.OnRecyclerViewItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                loadDialogData(position);
-            }
-        });
-
         resultSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -191,16 +146,11 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-    }
 
-    private void loadDialogData(int position) {
-        QueryRecordEntity queryRecordEntity = queryRecordList.get(position);
-        newWord = queryRecordEntity.word;
-        testWordDictQuery(newWord);
         resultView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
             @Override
             public void onPageChanged(int totalPage, int curPage) {
-                QueryRecordActivity.this.onPageChanged(totalPage, curPage);
+                NewWordQueryActivity.this.onPageChanged(totalPage, curPage);
             }
         });
         resultView.setUpdateDictionaryListCallback(new AutoPagedWebView.UpdateDictionaryListCallback() {
@@ -223,15 +173,8 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                 resultView.nextPage();
             }
         });
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectTimeDialog.isShowing()) {
-                    selectTimeDialog.cancel();
-                }
-            }
-        });
-        addNewWordNote.setOnClickListener(new View.OnClickListener() {
+
+        incomeNewWordNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 month = TimeUtils.getCurrentMonth() + "";
@@ -240,13 +183,6 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                 queryRecordPresenter.insertNewWord(month, week, day, newWord, dictionaryLookup, readingMatter);
             }
         });
-        baiduBaike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Utils.openBaiduBaiKe(QueryRecordActivity.this, newWord);
-            }
-        });
-        selectTimeDialog.show();
     }
 
     private void saveDictionary(String dictName) {
@@ -262,11 +198,10 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         resultView.setWebviewDefaultFontSize(density);
     }
 
-    public void testWordDictQuery(String editQuery) {
+    public void testWordDictQuery() {
         if (!StringUtils.isNullOrEmpty(editQuery)) {
             dictionaryManager = DRApplication.getDictionaryManager();
             queryWordRequest = new QueryWordRequest(editQuery);
-            reset();
             boolean bRet = dictionaryManager.sendRequest(DRApplication.getInstance(), queryWordRequest, new DictBaseCallback() {
                 @Override
                 public void done(DictBaseRequest request, Exception e) {
@@ -291,14 +226,6 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         }
     }
 
-    private void reset() {
-        resultView.setScroll(0, 0);
-        resultView.stopPlayer(0);
-        resultView.clearPreviousResult();
-        searchResultList.clear();
-        queryResult.clear();
-    }
-
     private void addSearchResult(Map<String, DictionaryQueryResult> result) {
         if (result.size() > 0) {
             for (Map.Entry<String, DictionaryQueryResult> entry : result.entrySet()) {
@@ -310,7 +237,6 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                 }
                 queryResult.put(entry.getValue().dictionary.name, entry.getValue());
             }
-            Log.i("###result.size()",  result.size() + "");
         }
     }
 
@@ -372,6 +298,21 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         resultView.refreshWebview(event);
     }
 
+    @Subscribe
+    public void onWebViewLoadOverEvent(WebViewLoadOverEvent event) {
+        testWordDictQuery();
+    }
+
+    @OnClick({R.id.new_word_query_activity_baidubaike})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.new_word_query_activity_baidubaike:
+                Utils.openBaiduBaiKe(this, editQuery);
+                break;
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);

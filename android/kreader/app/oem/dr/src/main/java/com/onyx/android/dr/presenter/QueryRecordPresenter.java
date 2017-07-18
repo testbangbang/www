@@ -2,6 +2,8 @@ package com.onyx.android.dr.presenter;
 
 import android.content.Context;
 
+import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.NewWordData;
 import com.onyx.android.dr.data.QueryRecordData;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
@@ -46,6 +48,11 @@ public class QueryRecordPresenter {
         bean.dictionaryLookup = dictionaryLookup;
         bean.readingMatter = readingMatter;
         final NewWordInsert req = new NewWordInsert(bean);
+        if (req.whetherInsert()){
+            CommonNotices.showMessage(context, context.getString(R.string.new_word_notebook_already_exist));
+        }else{
+            CommonNotices.showMessage(context, context.getString(R.string.already_add_new_word_notebook));
+        }
         newWordData.insertNewWord(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

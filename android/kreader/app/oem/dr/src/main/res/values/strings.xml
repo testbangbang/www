@@ -173,9 +173,13 @@
     <string name="minority_language_new_word_notebook">minority language new word notebook</string>
     <string name="new_word_activity_dictionaryLookup">dictionaryLookup</string>
     <string name="new_word_activity_new_word">new word</string>
-    <string name="already_add_new_word_notebook">already add new word notebook</string>
-    <string name="new_word_notebook_already_exist">new word notebook already exist</string>
+    <string name="already_add_new_word_notebook">add new word notebook success</string>
+    <string name="new_word_notebook_already_exist">new word already exist</string>
     <string name="webview_action_copy">copy</string>
     <string name="webview_action_cancel">cancel</string>
     <string name="webview_toast_cancel_copy">cancel copy</string>
+    <string name="webview_toast_copy_success">copy success</string>
+    <string name="good_sentence_already_exist">good sentence already exist</string>
+    <string name="already_add_good_sentence_notebook">add good sentence notebook success</string>
+    <string name="baidu_baike">Baidu_Baike</string>
 </resources>

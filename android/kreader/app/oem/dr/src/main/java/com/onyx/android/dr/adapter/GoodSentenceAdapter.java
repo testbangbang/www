@@ -62,7 +62,7 @@ public class GoodSentenceAdapter extends PageRecyclerView.PageAdapter<GoodSenten
         holder.month.setText(goodSentenceEntity.month);
         holder.week.setText(goodSentenceEntity.week);
         holder.day.setText(goodSentenceEntity.day);
-        holder.content.setText(goodSentenceEntity.recitation);
+        holder.content.setText(goodSentenceEntity.details);
         holder.readingMatter.setText(goodSentenceEntity.readingMatter);
         holder.pageNumber.setText(goodSentenceEntity.pageNumber);
         holder.recitation.setText(goodSentenceEntity.recitation);

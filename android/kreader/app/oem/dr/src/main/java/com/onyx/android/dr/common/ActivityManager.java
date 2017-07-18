@@ -10,6 +10,7 @@ import com.onyx.android.dr.activity.GoodSentenceTypeActivity;
 import com.onyx.android.dr.activity.LoginActivity;
 import com.onyx.android.dr.activity.MyNotesActivity;
 import com.onyx.android.dr.activity.NewWordNotebookActivity;
+import com.onyx.android.dr.activity.NewWordQueryActivity;
 import com.onyx.android.dr.activity.NewWordTypeActivity;
 import com.onyx.android.dr.activity.QueryRecordActivity;
 
@@ -76,6 +77,14 @@ public class ActivityManager {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, NewWordNotebookActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startNewWordQueryActivity(Context context, String editQuery) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("wordQuery", editQuery);
+        intent.setClass(context, NewWordQueryActivity.class);
         context.startActivity(intent);
     }
 }

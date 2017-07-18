@@ -180,7 +180,7 @@ public class AutoPagedWebView extends WebView {
      * @param actionList
      */
     public void setActionList(List<String> actionList) {
-        actionList = actionList;
+        this.actionList = actionList;
     }
 
     public void setActionSelectListener(ActionSelectListener actionSelectListener) {
@@ -238,7 +238,7 @@ public class AutoPagedWebView extends WebView {
                 "} else if (window.document.selection) {" +
                 "txt = window.document.selection.createRange().text;" +
                 "}" +
-                "JSInterface.callback(txt,title);" +
+                "OnyxDict.callback(txt,title);" +
                 "})()";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             evaluateJavascript("javascript:" + js, null);
@@ -431,13 +431,6 @@ public class AutoPagedWebView extends WebView {
             setOverScrollMode(OVER_SCROLL_NEVER);
 
             setOnTouchListener(getTouchListener());
-            setOnLongClickListener(new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    return true;
-                }
-            });
-            setLongClickable(false);
             clearHistory();
             loadUrl(DICT_WEBSIT);
 
