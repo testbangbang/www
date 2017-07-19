@@ -1,7 +1,9 @@
 package com.onyx.edu.note.data;
 
 import android.support.annotation.IntDef;
+import android.util.SparseIntArray;
 
+import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 
 import java.lang.annotation.Retention;
@@ -9,6 +11,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_BRUSH_SCRIBBLE;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_CIRCLE;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_ERASER;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_LINE;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_RECTANGLE;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_TRIANGLE;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_TRIANGLE_45;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_TRIANGLE_60;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_TRIANGLE_90;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_CALENDAR;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_EMPTY;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_ENGLISH;
@@ -106,6 +118,8 @@ public class ScribbleSubMenuID {
     }
 
     private static Map<Float, Integer> strokeMapping;
+    private static SparseIntArray shapeTypeSparseArray;
+    private static SparseIntArray bgSparseArray;
 
     // ... type definitions
     // Describes when the annotation will be discarded
@@ -141,6 +155,77 @@ public class ScribbleSubMenuID {
             strokeMapping.put(10.0f, THICKNESS_ULTRA_BOLD);
         }
         return strokeMapping;
+    }
+
+    public static SparseIntArray getShapeTypeSparseArray() {
+        if (shapeTypeSparseArray == null) {
+            shapeTypeSparseArray = new SparseIntArray();
+            shapeTypeSparseArray.put(NORMAL_PEN_STYLE, SHAPE_PENCIL_SCRIBBLE);
+            shapeTypeSparseArray.put(BRUSH_PEN_STYLE, SHAPE_BRUSH_SCRIBBLE);
+            shapeTypeSparseArray.put(TRIANGLE_STYLE, SHAPE_TRIANGLE);
+            shapeTypeSparseArray.put(LINE_STYLE, SHAPE_LINE);
+            shapeTypeSparseArray.put(CIRCLE_STYLE, SHAPE_CIRCLE);
+            shapeTypeSparseArray.put(RECT_STYLE, SHAPE_RECTANGLE);
+            shapeTypeSparseArray.put(TRIANGLE_45_STYLE, SHAPE_TRIANGLE_45);
+            shapeTypeSparseArray.put(TRIANGLE_60_STYLE, SHAPE_TRIANGLE_60);
+            shapeTypeSparseArray.put(TRIANGLE_90_STYLE, SHAPE_TRIANGLE_90);
+            shapeTypeSparseArray.put(ERASE_PARTIALLY, SHAPE_ERASER);
+        }
+        return shapeTypeSparseArray;
+    }
+
+    public static SparseIntArray getBgSparseArray() {
+        if (bgSparseArray == null) {
+            bgSparseArray = new SparseIntArray();
+            bgSparseArray.put(BG_EMPTY,  NoteBackgroundType.EMPTY);
+            bgSparseArray.put(BG_LINE,  NoteBackgroundType.LINE);
+            bgSparseArray.put(BG_GRID,  NoteBackgroundType.GRID);
+            bgSparseArray.put(BG_MUSIC,  NoteBackgroundType.MUSIC);
+            bgSparseArray.put(BG_MATS,  NoteBackgroundType.MATS);
+            bgSparseArray.put(BG_ENGLISH,  NoteBackgroundType.ENGLISH);
+            bgSparseArray.put(BG_TABLE_GRID,  NoteBackgroundType.GRID);
+            bgSparseArray.put(BG_LINE_COLUMN,  NoteBackgroundType.COLUMN);
+            bgSparseArray.put(BG_LEFT_GRID,  NoteBackgroundType.LEFT_GRID);
+            bgSparseArray.put(BG_GRID_POINT,  NoteBackgroundType.GRID_POINT);
+            bgSparseArray.put(BG_LINE_1_6,  NoteBackgroundType.LINE_1_6);
+            bgSparseArray.put(BG_LINE_2_0,  NoteBackgroundType.LINE_2_0);
+            bgSparseArray.put(BG_CALENDAR,  NoteBackgroundType.CALENDAR);
+        }
+        return bgSparseArray;
+    }
+
+    public static int menuIdFromShapeType(int shapeType) {
+        final SparseIntArray array = getShapeTypeSparseArray();
+        for (int i = 0; i < array.size(); i++) {
+            int key = array.keyAt(i);
+            int obj = array.get(key);
+            if (obj == shapeType) {
+                return key;
+            }
+        }
+        return NORMAL_PEN_STYLE;
+    }
+
+    public static int shapeTypeFromMenuID(int menuID) {
+        final SparseIntArray array = getShapeTypeSparseArray();
+        return array.get(menuID, SHAPE_PENCIL_SCRIBBLE);
+    }
+
+    public static int menuIdFromBg(int bg) {
+        final SparseIntArray array = getBgSparseArray();
+        for (int i = 0; i < array.size(); i++) {
+            int key = array.keyAt(i);
+            int obj = array.get(key);
+            if (obj == bg) {
+                return key;
+            }
+        }
+        return NoteBackgroundType.EMPTY;
+    }
+
+    public static int bgFromMenuID(int menuID) {
+        final SparseIntArray array = getBgSparseArray();
+        return array.get(menuID, BG_EMPTY);
     }
 
     public static float strokeWidthFromMenuId(final int menuId) {

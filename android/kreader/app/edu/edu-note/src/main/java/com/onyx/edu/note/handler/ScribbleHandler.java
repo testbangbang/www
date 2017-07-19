@@ -5,8 +5,9 @@ import android.util.Log;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.edu.note.NoteManager;
+import com.onyx.edu.note.actions.scribble.ClearAllFreeShapesAction;
 import com.onyx.edu.note.actions.scribble.DocumentAddNewPageAction;
 import com.onyx.edu.note.actions.scribble.DocumentDeletePageAction;
 import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
@@ -21,15 +22,7 @@ import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 
 import java.util.ArrayList;
 
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_BRUSH_SCRIBBLE;
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_CIRCLE;
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_LINE;
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_RECTANGLE;
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_TRIANGLE;
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_TRIANGLE_45;
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_TRIANGLE_60;
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_TRIANGLE_90;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_ERASER;
 
 /**
  * Created by solskjaer49 on 2017/6/23 17:49.
@@ -72,11 +65,11 @@ public class ScribbleHandler extends BaseHandler {
     public void handleSubMenuFunction(int subMenuID) {
         Log.e(TAG, "handleSubMenuFunction: " + subMenuID);
         if (ScribbleSubMenuID.isThicknessGroup(subMenuID)) {
-
+            onStrokeWidthChanged(subMenuID);
         } else if (ScribbleSubMenuID.isBackgroundGroup(subMenuID)) {
-            onBackgrounChanged(subMenuID);
+            onBackgroundChanged(subMenuID);
         } else if (ScribbleSubMenuID.isEraserGroup(subMenuID)) {
-
+            onEraserChanged(subMenuID);
         } else if (ScribbleSubMenuID.isPenColorGroup(subMenuID)) {
 
         } else if (ScribbleSubMenuID.isPenStyleGroup(subMenuID)) {
@@ -176,92 +169,44 @@ public class ScribbleHandler extends BaseHandler {
         documentSaveAction.execute(mNoteManager, callback);
     }
 
-    private void onBackgrounChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
-        int bgType = -1;
-        switch (subMenuID){
-            case ScribbleSubMenuID.Background.BG_EMPTY:
-                bgType = NoteBackgroundType.EMPTY;
-                break;
-            case ScribbleSubMenuID.Background.BG_LINE:
-                bgType = NoteBackgroundType.LINE;
-                break;
-            case ScribbleSubMenuID.Background.BG_GRID:
-                bgType = NoteBackgroundType.GRID;
-                break;
-            case ScribbleSubMenuID.Background.BG_MUSIC:
-                bgType = NoteBackgroundType.MUSIC;
-                break;
-            case ScribbleSubMenuID.Background.BG_MATS:
-                bgType = NoteBackgroundType.MATS;
-                break;
-            case ScribbleSubMenuID.Background.BG_ENGLISH:
-                bgType = NoteBackgroundType.ENGLISH;
-                break;
-            case ScribbleSubMenuID.Background.BG_TABLE_GRID:
-                bgType = NoteBackgroundType.TABLE;
-                break;
-            case ScribbleSubMenuID.Background.BG_LINE_COLUMN:
-                bgType = NoteBackgroundType.COLUMN;
-                break;
-            case ScribbleSubMenuID.Background.BG_LEFT_GRID:
-                bgType = NoteBackgroundType.LEFT_GRID;
-                break;
-            case ScribbleSubMenuID.Background.BG_GRID_POINT:
-                bgType = NoteBackgroundType.GRID_POINT;
-                break;
-            case ScribbleSubMenuID.Background.BG_LINE_1_6:
-                bgType = NoteBackgroundType.LINE_1_6;
-                break;
-            case ScribbleSubMenuID.Background.BG_LINE_2_0:
-                bgType = NoteBackgroundType.LINE_2_0;
-                break;
-            case ScribbleSubMenuID.Background.BG_CALENDAR:
-                bgType = NoteBackgroundType.CALENDAR;
-                break;
-        }
-        mNoteManager.getShapeDataInfo().setBackground(bgType);
+    private void onBackgroundChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
+        int bgType = ScribbleSubMenuID.bgFromMenuID(subMenuID);
         NoteBackgroundChangeAction changeBGAction = new NoteBackgroundChangeAction(bgType, !mNoteManager.inUserErasing());
+        changeBGAction.execute(mNoteManager, mActionDoneCallback);
     }
 
     private void onShapeChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
+        int shapeType = ScribbleSubMenuID.shapeTypeFromMenuID(subMenuID);
+        mNoteManager.getShapeDataInfo().setCurrentShapeType(shapeType);
+        mNoteManager.sync(true, ShapeFactory.createShape(shapeType).supportDFB());
+    }
+
+    private void onEraserChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
         switch (subMenuID) {
-            case ScribbleSubMenuID.PenStyle.NORMAL_PEN_STYLE:
-                mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_PENCIL_SCRIBBLE);
-                mNoteManager.sync(true, true);
-                break;
-            case ScribbleSubMenuID.PenStyle.BRUSH_PEN_STYLE:
-                mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_BRUSH_SCRIBBLE);
-                mNoteManager.sync(true, true);
-                break;
-            case ScribbleSubMenuID.PenStyle.TRIANGLE_STYLE:
-                mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_TRIANGLE);
+            case ScribbleSubMenuID.Eraser.ERASE_PARTIALLY:
+                mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_ERASER);
                 mNoteManager.sync(true, false);
                 break;
-            case ScribbleSubMenuID.PenStyle.LINE_STYLE:
-                mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_LINE);
-                mNoteManager.sync(true, false);
-                break;
-            case ScribbleSubMenuID.PenStyle.CIRCLE_STYLE:
-                mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_CIRCLE);
-                mNoteManager.sync(true, false);
-                break;
-            case ScribbleSubMenuID.PenStyle.RECT_STYLE:
-                mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_RECTANGLE);
-                mNoteManager.sync(true, false);
-                break;
-            case ScribbleSubMenuID.PenStyle.TRIANGLE_45_STYLE:
-                mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_TRIANGLE_45);
-                mNoteManager.sync(true, false);
-                break;
-            case ScribbleSubMenuID.PenStyle.TRIANGLE_60_STYLE:
-                mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_TRIANGLE_60);
-                mNoteManager.sync(true, false);
-                break;
-            case ScribbleSubMenuID.PenStyle.TRIANGLE_90_STYLE:
-                mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_TRIANGLE_90);
-                mNoteManager.sync(true, false);
+            case ScribbleSubMenuID.Eraser.ERASE_TOTALLY:
+                new ClearAllFreeShapesAction().execute(mNoteManager, mActionDoneCallback);
                 break;
         }
+    }
 
+    private void onStrokeWidthChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
+        switch (subMenuID) {
+            case ScribbleSubMenuID.Thickness.THICKNESS_ULTRA_LIGHT:
+            case ScribbleSubMenuID.Thickness.THICKNESS_LIGHT:
+            case ScribbleSubMenuID.Thickness.THICKNESS_NORMAL:
+            case ScribbleSubMenuID.Thickness.THICKNESS_BOLD:
+            case ScribbleSubMenuID.Thickness.THICKNESS_ULTRA_BOLD:
+                float value = ScribbleSubMenuID.strokeWidthFromMenuId(subMenuID);
+                if (mNoteManager.getShapeDataInfo().isInUserErasing()) {
+                    mNoteManager.getShapeDataInfo().setCurrentShapeType(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
+                }
+                mNoteManager.getShapeDataInfo().setStrokeWidth(value);
+                mNoteManager.syncWithCallback(true, true, mActionDoneCallback);
+                break;
+        }
     }
 }

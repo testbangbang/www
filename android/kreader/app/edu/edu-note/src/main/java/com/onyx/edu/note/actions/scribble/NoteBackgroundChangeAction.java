@@ -20,6 +20,7 @@ public class NoteBackgroundChangeAction extends BaseNoteAction {
 
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
+        noteManager.getShapeDataInfo().setBackground(backgroundType);
         NoteBackgroundChangeRequest bgChangeRequest = new NoteBackgroundChangeRequest(backgroundType, resume);
         bgChangeRequest.setRender(true);
         noteManager.submitRequest(bgChangeRequest, callback);

@@ -32,6 +32,10 @@ public class ScribbleFunctionItemViewModel extends BaseObservable {
     public final ObservableBoolean mIsChecked = new ObservableBoolean();
     public final ObservableBoolean mShowIndicator = new ObservableBoolean();
 
+    public int getItemID() {
+        return mItemID;
+    }
+
     private int mItemID;
     private @ScribbleFunctionMenuIDType.ScribbleMenuIDTypeDef
     int mItemMenuIDType;

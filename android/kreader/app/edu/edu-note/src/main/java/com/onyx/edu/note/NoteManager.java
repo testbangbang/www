@@ -9,16 +9,19 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
 import com.onyx.edu.note.actions.scribble.DocumentFlushAction;
 import com.onyx.edu.note.actions.scribble.DrawPageAction;
+import com.onyx.edu.note.actions.scribble.RemoveByPointListAction;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -41,6 +44,9 @@ public class NoteManager {
     private WeakReference<Context> contextWeakReference;
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
     private NoteViewHelper.InputCallback mInputCallback;
+
+    private TouchPoint mErasePoint = null;
+
 
     private NoteManager(Context context) {
         requestManager = new RequestManager(Thread.NORM_PRIORITY);
@@ -98,7 +104,7 @@ public class NoteManager {
         beforeSubmit(request);
         request.setIdentifier(identifier);
         if (contextWeakReference.get() != null) {
-            return requestManager.submitRequestToMultiThreadPool(contextWeakReference.get(),identifier,
+            return requestManager.submitRequestToMultiThreadPool(contextWeakReference.get(), identifier,
                     request, generateRunnable(request), callback);
         } else {
             Log.e(TAG, "Context has been GC");
@@ -160,14 +166,17 @@ public class NoteManager {
 
                 @Override
                 public void onBeginErasing() {
+                    NoteManager.this.onBeginErasing();
                 }
 
                 @Override
                 public void onErasing(final MotionEvent touchPoint) {
+                    NoteManager.this.onErasing(touchPoint);
                 }
 
                 @Override
                 public void onEraseTouchPointListReceived(TouchPointList pointList) {
+                    onFinishErasing(pointList);
                 }
 
                 @Override
@@ -196,7 +205,29 @@ public class NoteManager {
         return mInputCallback;
     }
 
-    private void drawCurrentPage(){
+    protected void onBeginErasing() {
+        syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                mErasePoint = new TouchPoint();
+            }
+        });
+    }
+
+    protected void onErasing(final MotionEvent touchPoint) {
+        if (mErasePoint == null) {
+            return;
+        }
+        mErasePoint.x = touchPoint.getX();
+        mErasePoint.y = touchPoint.getY();
+    }
+
+    protected void onFinishErasing(TouchPointList pointList) {
+        mErasePoint = null;
+        new RemoveByPointListAction(pointList).execute(this, null);
+    }
+
+    private void drawCurrentPage() {
         new DrawPageAction().execute(this, null);
     }
 
@@ -232,11 +263,11 @@ public class NoteManager {
         return mNoteViewHelper.getNoteDocument();
     }
 
-    public void pauseDrawing(){
+    public void pauseDrawing() {
         mNoteViewHelper.pauseDrawing();
     }
 
-    public void resumeDrawing(){
+    public void resumeDrawing() {
         mNoteViewHelper.resumeDrawing();
     }
 
