@@ -1008,9 +1008,10 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
 
+        List<PageInfo> pages = getReaderDataHolder().getVisiblePages();
         final ReaderNoteRenderRequest renderRequest = new ReaderNoteRenderRequest(
                 getReaderDataHolder().getReader().getDocumentMd5(),
-                getReaderDataHolder().getReaderViewInfo().getVisiblePages(),
+                pages,
                 getReaderDataHolder().getDisplayRect(),
                 false);
         int uniqueId = getReaderDataHolder().getLastRequestSequence();

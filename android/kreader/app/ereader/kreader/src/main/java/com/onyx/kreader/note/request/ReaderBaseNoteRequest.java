@@ -204,7 +204,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             for (PageInfo page : getVisiblePages()) {
                 updateMatrix(renderMatrix, page);
                 renderContext.update(bitmap, canvas, paint, renderMatrix);
-                final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getName(), 0);
+                final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getName(), page.getSubPage());
                 if (notePage != null) {
                     notePage.render(renderContext, null);
                     rendered = true;

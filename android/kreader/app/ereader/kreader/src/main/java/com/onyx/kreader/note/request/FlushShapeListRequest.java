@@ -36,9 +36,11 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape() && !isPause());
         ensureDocumentOpened(noteManager);
         for(Shape shape : shapeList) {
-            final ReaderNotePage readerNotePage = noteManager.getNoteDocument().ensurePageExist(getContext(), shape.getPageUniqueId(), subPageIndex);
-            readerNotePage.addShape(shape, true);
-            count = readerNotePage.getNewAddedShapeList().size();
+            final ReaderNotePage readerNotePage = noteManager.getNoteDocument().ensurePageExist(getContext(), shape.getPageUniqueId(), shape.getSubPageUniqueId());
+            if (readerNotePage != null) {
+                readerNotePage.addShape(shape, true);
+                count += readerNotePage.getNewAddedShapeList().size();
+            }
         }
 
         if (count != shapeList.size() && BuildConfig.DEBUG) {

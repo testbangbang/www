@@ -362,10 +362,12 @@ public class NoteManager {
     }
 
     public Shape createNewShape(final PageInfo pageInfo) {
+        ReaderNotePage page = getNoteDocument().ensurePageExist(null, pageInfo.getName(), pageInfo.getSubPage());
         Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().getCurrentShapeType());
         shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth);
         shape.setColor(getNoteDrawingArgs().strokeColor);
         shape.setPageUniqueId(pageInfo.getName());
+        shape.setSubPageUniqueId(page.getSubPageUniqueId());
         shape.ensureShapeUniqueId();
         currentShape = shape;
         return shape;
@@ -513,11 +515,13 @@ public class NoteManager {
     }
 
     private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
+        ReaderNotePage page = getNoteDocument().ensurePageExist(null, pageInfo.getName(), pageInfo.getSubPage());
         Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().getCurrentShapeType());
         onDownMessage(shape);
         shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth / pageInfo.getActualScale());
         shape.setColor(getNoteDrawingArgs().strokeColor);
         shape.setPageUniqueId(pageInfo.getName());
+        shape.setSubPageUniqueId(page.getSubPageUniqueId());
         shape.ensureShapeUniqueId();
         shape.setDisplayStrokeWidth(getNoteDrawingArgs().strokeWidth);
         shape.onDown(normal, screen);

@@ -24,7 +24,13 @@ public class ReaderNotePageNameMap {
     }
 
     public void add(final String pageName, int index, final String subPageUniqueId) {
-        getPageList(pageName, true).add(index, subPageUniqueId);
+        List<String> list = getPageList(pageName, true);
+        if (list.size() < index) {
+            for (int i = list.size(); i < index; i++) {
+                list.add(i, null);
+            }
+        }
+        list.add(index, subPageUniqueId);
     }
 
     public List<String> getPageList(final String pageName, boolean create) {

@@ -206,9 +206,9 @@ public class ReaderNoteDocument {
     }
 
     public ReaderNotePage createPage(final String pageName, int subPageIndex) {
-        String pageUniqueId = ShapeUtils.generateUniqueId();
-        createIndexEntry(pageName, subPageIndex, pageUniqueId);
-        ReaderNotePage readerNotePage = ensureDataEntry(pageName, pageUniqueId);
+        String subPageId = ShapeUtils.generateUniqueId();
+        createIndexEntry(pageName, subPageIndex, subPageId);
+        ReaderNotePage readerNotePage = ensureDataEntry(pageName, subPageId);
         readerNotePage.setLoaded(true);
         return readerNotePage;
     }
@@ -273,7 +273,7 @@ public class ReaderNoteDocument {
 
     public boolean loadPages(final Context context, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
-            loadPage(context, pageInfo.getName(), 0);
+            loadPage(context, pageInfo.getName(), pageInfo.getSubPage());
         }
         return true;
     }
@@ -290,6 +290,10 @@ public class ReaderNoteDocument {
         }
         notePage.loadPage(context);
         return notePage;
+    }
+
+    public ReaderNotePage ensurePageExist(final Context context, final String pageName, String subPageId) {
+        return ensureDataEntry(pageName, subPageId);
     }
 
     public ReaderNotePage ensurePageExist(final Context context, final String pageName, int subPageIndex) {

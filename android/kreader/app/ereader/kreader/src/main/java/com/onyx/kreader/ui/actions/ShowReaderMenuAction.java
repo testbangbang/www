@@ -301,6 +301,9 @@ public class ShowReaderMenuAction extends BaseAction {
                     case NOTE_IMPORT:
                         importScribbleData(readerDataHolder);
                         break;
+                    case NOTE_SIDE_NOTE:
+                        startSideNote(readerDataHolder);
+                        break;
                     case SHOW_NOTE:
                         showScribble(readerDataHolder);
                         break;
@@ -559,6 +562,20 @@ public class ShowReaderMenuAction extends BaseAction {
     private void importScribbleData(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         new ImportReaderScribbleAction(readerDataHolder).execute(readerDataHolder, null);
+    }
+
+    private void startSideNote(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        new StartSideNoteAction().execute(readerDataHolder, null);
+    }
+
+
+    private static void prevSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
+        new PreviousSideNotePageAction().execute(readerDataHolder, null);
+    }
+
+    private static void nextSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
+        new NextSideNotePageAction().execute(readerDataHolder, null);
     }
 
     private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {
@@ -820,10 +837,12 @@ public class ShowReaderMenuAction extends BaseAction {
                 toggleMenu(readerDataHolder);
                 break;
             case SCRIBBLE_PREV_PAGE:
-                prevScreen(readerDataHolder);
+//                prevScreen(readerDataHolder);
+                prevSideNoteSubPage(readerDataHolder);
                 break;
             case SCRIBBLE_NEXT_PAGE:
-                nextScreen(readerDataHolder);
+//                nextScreen(readerDataHolder);
+                nextSideNoteSubPage(readerDataHolder);
                 break;
             case SCRIBBLE_UNDO:
                 undo(readerDataHolder);
