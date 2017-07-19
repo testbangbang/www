@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/title_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/bookshelf_book_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_stroke_selector"
+            android:src="@drawable/ic_book_query" />
+
+        <ImageView
+            android:id="@+id/bookshelf_author_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_stroke_selector"
+            android:src="@drawable/ic_book_query" />
+    </LinearLayout>
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/bookshelf_groups_recycler"
+        android:layout_width="match_parent"
+        android:padding="@dimen/fragment_content_padding"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <TextView
+        android:id="@+id/enter_bookstore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_bookstore"/>
+</LinearLayout>

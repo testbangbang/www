@@ -4,7 +4,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
 apply from: file(rootProject.projectDir.absolutePath + '/versioning.gradle')
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion rootProject.ext.compatibleSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
@@ -17,7 +17,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../../proguard-rules.pro', 'proguard-rules.pro'
             signingConfig signingConfigs.release
             manifestPlaceholders = [channel_value  : releaseChannel(),
@@ -40,6 +40,10 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    packagingOptions {
+        exclude 'org/mozilla/universalchardet/CharsetListener.class'
+    }
 }
 apt {
     arguments {
@@ -52,6 +56,7 @@ repositories {
         dirs 'libs'
     }
 }
+
 dependencies {
     testCompile "junit:junit:$rootProject.junitVersion"
     androidTestCompile('com.android.support.test:runner:0.5') {
@@ -82,7 +87,11 @@ dependencies {
     }
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
     compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
-
-    compile(name: 'onyxsdk-dict-release', ext: 'aar')
+    compile(project(path: ':libraries:onyxsdk-reader')) {
+        exclude group: 'com.alibaba', module: 'fastjson'
+    }
+    compile(name: 'onyxsdk-dict-release', ext: 'aar') {
+        exclude group: 'org.mozilla.juniversalchardet', module: 'juniversalchardet'
+    }
     compile "org.jsoup:jsoup:$rootProject.jsoupVersion"
 }

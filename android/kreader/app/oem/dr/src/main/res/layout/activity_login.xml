@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/login_layout_margin_top"
         android:orientation="vertical"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <include
         android:id="@+id/identity_layout"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/login_layout_margin_top"
         android:orientation="vertical"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <include
         android:id="@+id/schoolchildren_layout"
@@ -77,6 +77,6 @@
         android:layout_marginBottom="@dimen/login_next_button_margin_bottom"
         android:layout_marginRight="@dimen/login_next_button_margin_right"
         android:text="@string/next_step"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </RelativeLayout>

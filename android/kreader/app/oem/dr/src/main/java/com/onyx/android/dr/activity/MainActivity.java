@@ -5,26 +5,37 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
 import android.util.SparseArray;
+import android.view.KeyEvent;
 import android.widget.FrameLayout;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.TabMenuAdapter;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.data.MenuData;
+import com.onyx.android.dr.data.MenuBean;
+import com.onyx.android.dr.event.AccountAvailableEvent;
+import com.onyx.android.dr.event.ApplicationEvent;
 import com.onyx.android.dr.event.ArticlePushMenuEvent;
+import com.onyx.android.dr.event.BackToBookshelfEvent;
 import com.onyx.android.dr.event.BackToMainViewEvent;
+import com.onyx.android.dr.event.BookshelfEvent;
 import com.onyx.android.dr.event.DictMenuEvent;
 import com.onyx.android.dr.event.GradedBooksEvent;
 import com.onyx.android.dr.event.ListenAndSayMenuEvent;
+import com.onyx.android.dr.event.LoginFailedEvent;
+import com.onyx.android.dr.event.MainLibraryTabEvent;
 import com.onyx.android.dr.event.MyBooksMenuEvent;
 import com.onyx.android.dr.event.NotesMenuEvent;
 import com.onyx.android.dr.event.ProfessionalMaterialsMenuEvent;
 import com.onyx.android.dr.event.RealTimeBooksMenuEvent;
 import com.onyx.android.dr.event.SchoolBasedMaterialsMenuEvent;
 import com.onyx.android.dr.event.SettingsMenuEvent;
+import com.onyx.android.dr.event.ToBookshelfV2Event;
 import com.onyx.android.dr.fragment.BaseFragment;
+import com.onyx.android.dr.fragment.BookshelfFragment;
+import com.onyx.android.dr.fragment.BookshelfV2Fragment;
 import com.onyx.android.dr.fragment.ChildViewID;
 import com.onyx.android.dr.fragment.CommonBooksFragment;
 import com.onyx.android.dr.fragment.MainViewFragment;
@@ -37,9 +48,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 
@@ -54,7 +63,7 @@ public class MainActivity extends BaseActivity implements MainView {
     private Fragment currentFragment;
     private int currentPageID = ChildViewID.BASE_VIEW;
     private SparseArray<BaseFragment> childViewList = new SparseArray<>();
-    private Map<String, Library> libraryMap = new HashMap<>();
+    private List<Library> libraryList;
 
     @Override
     protected Integer getLayoutId() {
@@ -85,20 +94,19 @@ public class MainActivity extends BaseActivity implements MainView {
     protected void initData() {
         mainPresenter = new MainPresenter(this);
         mainPresenter.loadData(this);
-        mainPresenter.loadTabMenu(Constants.ACCOUNT_TYPE_HIGH_SCHOOL);
-        mainPresenter.lookCloudLibraryList(null);
+        mainPresenter.loadTabMenu("");
+        mainPresenter.authToken();
     }
 
     @Override
-    public void setTabMenuData(List<MenuData> menuData) {
+    public void setTabMenuData(List<MenuBean> menuData) {
         tabMenuAdapter.setMenuDataList(menuData);
+        tabMenuAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void setLibraryList(List<Library> libraryList) {
-        for (Library library : libraryList) {
-            libraryMap.put(library.getName(), library);
-        }
+        this.libraryList = libraryList;
     }
 
     private String getLibraryParentId() {
@@ -126,10 +134,7 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     private void switchCommonFragment(String libraryName) {
-        Library library = libraryMap.get(libraryName);
-        switchCurrentFragment(ChildViewID.FRAGMENT_COMMON_BOOKS);
-        CommonBooksFragment fragment = (CommonBooksFragment) getPageView(ChildViewID.FRAGMENT_COMMON_BOOKS);
-        fragment.setData(library.getIdString(), libraryName, R.drawable.ic_professional_materials);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -155,6 +160,11 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onApplicationEvent(ApplicationEvent event) {
+        ActivityManager.startApplicationsActivity(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingsMenuEvent(SettingsMenuEvent event) {
         CommonNotices.showMessage(this, getString(R.string.menu_settings));
     }
@@ -167,6 +177,44 @@ public class MainActivity extends BaseActivity implements MainView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToMainViewEvent(BackToMainViewEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_MAIN_VIEW);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToBookshelfV2Event(ToBookshelfV2Event event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_BOOKSHELF_V2);
+        BookshelfV2Fragment fragment = (BookshelfV2Fragment) getPageView(ChildViewID.FRAGMENT_BOOKSHELF_V2);
+        fragment.setData(event.getTitle(), event.getArgs());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLoginFailedEvent(LoginFailedEvent event) {
+        ActivityManager.startLoginActivity(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAccountAvailableEvent(AccountAvailableEvent event) {
+        mainPresenter.lookCloudLibraryList(null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBackToBookshelfEvent(BackToBookshelfEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_BOOKSHELF);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMainLibraryTabEvent(MainLibraryTabEvent event) {
+        Library library = event.getLibrary();
+        CommonNotices.showMessage(this, event.getLibrary().getName());
+        switchCurrentFragment(ChildViewID.FRAGMENT_BOOKSHELF);
+        BookshelfFragment fragment = (BookshelfFragment) getPageView(ChildViewID.FRAGMENT_BOOKSHELF);
+        fragment.setData(library, event.getLanguages());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookshelfEvent(BookshelfEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_BOOKSHELF);
+        BookshelfFragment fragment = (BookshelfFragment) getPageView(ChildViewID.FRAGMENT_BOOKSHELF);
+        fragment.setData(event.getLanguage(), libraryList);
     }
 
     public void switchCurrentFragment(int pageID) {
@@ -203,10 +251,43 @@ public class MainActivity extends BaseActivity implements MainView {
                 case ChildViewID.FRAGMENT_COMMON_BOOKS:
                     baseFragment = new CommonBooksFragment();
                     break;
+                case ChildViewID.FRAGMENT_BOOKSHELF:
+                    baseFragment = new BookshelfFragment();
+                    break;
+                case ChildViewID.FRAGMENT_BOOKSHELF_V2:
+                    baseFragment = new BookshelfV2Fragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
         }
         return baseFragment;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mainPresenter.lookCloudLibraryList("");
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        BaseFragment currentFragment = getPageView(currentPageID);
+        if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if (currentFragment != null && currentFragment.onKeyBack()) {
+                return true;
+            }
+        }
+        if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_PAGE_UP) {
+            if (currentFragment != null && currentFragment.onKeyPageUp()) {
+                return true;
+            }
+        }
+        if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_PAGE_DOWN) {
+            if (currentFragment != null && currentFragment.onKeyPageDown()) {
+                return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 }
