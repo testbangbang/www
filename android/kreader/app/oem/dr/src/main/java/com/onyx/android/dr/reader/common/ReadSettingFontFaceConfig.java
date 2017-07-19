@@ -51,14 +51,16 @@ public class ReadSettingFontFaceConfig {
 
     public static void saveReadSettingFontFace(ReaderPresenter readerPresenter, int value) {
         //book md5 save font type
-        if(readerPresenter.getReaderViewInfo().isTextPages()) {
+        if (readerPresenter.getReaderViewInfo().isTextPages()) {
             String bookMd5 = readerPresenter.getReader().getDocumentMd5();
             PreferenceManager.setIntValue(readerPresenter.getReaderView().getViewContext(),
                     bookMd5, value);
             ReaderTextStyle readerTextStyle = readerPresenter.getReaderViewInfo().readerTextStyle;
-            String fontPath = getReadSettingFontFaceValue(value);
-            readerTextStyle.setFontFace(fontPath);
-            readerPresenter.getBookOperate().updateReaderStyle();
+            if (readerTextStyle != null) {
+                String fontPath = getReadSettingFontFaceValue(value);
+                readerTextStyle.setFontFace(fontPath);
+                readerPresenter.getBookOperate().updateReaderStyle();
+            }
         }
     }
 
@@ -69,7 +71,7 @@ public class ReadSettingFontFaceConfig {
     }
 
     public static void setDefaultReadSettingFontFace(ReaderPresenter readerPresenter) {
-        if(readerPresenter.getReaderViewInfo().isTextPages()) {
+        if (readerPresenter.getReaderViewInfo().isTextPages()) {
             int value = getReadSettingFontFace(readerPresenter);
             String fontPath = getReadSettingFontFaceValue(value);
             ReaderTextStyle readerTextStyle = readerPresenter.getReaderViewInfo().readerTextStyle;

@@ -97,12 +97,12 @@ public class ApplicationsActivity extends BaseActivity {
         contentPageView.setAdapter(new PageRecyclerView.PageAdapter<AppItemViewHolder>() {
             @Override
             public int getRowCount() {
-                return 5;
+                return getResources().getInteger(R.integer.applications_activity_row);
             }
 
             @Override
             public int getColumnCount() {
-                return 4;
+                return getResources().getInteger(R.integer.applications_activity_col);
             }
 
             @Override
