@@ -148,21 +148,27 @@ public class TimeUtils {
         return Integer.parseInt(String.valueOf(between));
     }
 
-    public static int getCurrentMonth() {
+    public static String getCurrentMonth() {
         Calendar calender = Calendar.getInstance();
         int month = calender.get(Calendar.MONTH) + 1;
-        return month;
+        return month + "";
     }
 
-    public static int getCurrentDay() {
+    public static String getCurrentDay() {
         Calendar calender = Calendar.getInstance();
         int day = calender.get(Calendar.DATE);
-        return day;
+        return day + "";
     }
 
-    public static int getWeekOfMonth() {
+    public static long getCurrentTime() {
+        long timeMillis = System.currentTimeMillis();
+        long time = timeMillis/1000;
+        return time;
+    }
+
+    public static String getWeekOfMonth() {
         Calendar c = Calendar.getInstance();
         int week = c.get(Calendar.WEEK_OF_MONTH);
-        return week;
+        return week + "";
     }
 }

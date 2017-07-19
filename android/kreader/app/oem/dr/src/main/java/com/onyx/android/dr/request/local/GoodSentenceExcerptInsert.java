@@ -32,6 +32,7 @@ public class GoodSentenceExcerptInsert extends BaseDataRequest {
             goodSentenceEntity.week = goodSentencesInfo.week;
             goodSentenceEntity.month = goodSentencesInfo.month;
             goodSentenceEntity.day = goodSentencesInfo.day;
+            goodSentenceEntity.currentTime = goodSentencesInfo.currentTime;
             goodSentenceEntity.details = goodSentencesInfo.details;
             goodSentenceEntity.readingMatter = goodSentencesInfo.readingMatter;
             goodSentenceEntity.pageNumber = goodSentencesInfo.pageNumber;

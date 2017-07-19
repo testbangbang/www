@@ -3,6 +3,8 @@ package com.onyx.android.dr.presenter;
 import android.content.Context;
 
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.bean.GoodSentenceBean;
+import com.onyx.android.dr.bean.NewWordBean;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.DictFunctionConfig;
 import com.onyx.android.dr.data.DictTypeConfig;
@@ -16,6 +18,7 @@ import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.request.local.GoodSentenceExcerptInsert;
 import com.onyx.android.dr.request.local.NewWordInsert;
 import com.onyx.android.dr.request.local.QueryRecordInsert;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 
@@ -65,15 +68,16 @@ public class DictFunctionPresenter {
         });
     }
 
-    public void insertNewWord(String month, String week, String day, String newWord, String dictionaryLookup, String readingMatter) {
+    public void insertNewWord(NewWordBean newWordBean) {
         NewWordNoteBookEntity bean = new NewWordNoteBookEntity();
-        bean.week = week;
-        bean.month = month;
-        bean.day = day;
-        bean.newWord = newWord;
-        bean.dictionaryLookup = dictionaryLookup;
-        bean.readingMatter = readingMatter;
-        NewWordInsert req = new NewWordInsert(bean);
+        bean.week = TimeUtils.getWeekOfMonth();
+        bean.month = TimeUtils.getCurrentMonth();
+        bean.day = TimeUtils.getCurrentDay();
+        bean.currentTime = TimeUtils.getCurrentTime();
+        bean.newWord = newWordBean.getNewWord();
+        bean.dictionaryLookup = newWordBean.getDictionaryLookup();
+        bean.readingMatter = newWordBean.getReadingMatter();
+        final NewWordInsert req = new NewWordInsert(bean);
         if (req.whetherInsert()){
             CommonNotices.showMessage(context, context.getString(R.string.new_word_notebook_already_exist));
         }else{
@@ -86,14 +90,15 @@ public class DictFunctionPresenter {
         });
     }
 
-    public void insertGoodSentence(String month, String week, String day, String details, String readingMatter, String pageNumber) {
+    public void insertGoodSentence(GoodSentenceBean goodSentenceBean) {
         GoodSentenceNoteEntity bean = new GoodSentenceNoteEntity();
-        bean.week = week;
-        bean.month = month;
-        bean.day = day;
-        bean.details = details;
-        bean.readingMatter = readingMatter;
-        bean.pageNumber = pageNumber;
+        bean.week = TimeUtils.getWeekOfMonth();
+        bean.month = TimeUtils.getCurrentMonth();
+        bean.day = TimeUtils.getCurrentDay();
+        bean.currentTime = TimeUtils.getCurrentTime();
+        bean.details = goodSentenceBean.getDetails();
+        bean.readingMatter = goodSentenceBean.getReadingMatter();
+        bean.pageNumber = goodSentenceBean.getPageNumber();
         GoodSentenceExcerptInsert req = new GoodSentenceExcerptInsert(bean);
         if (req.whetherInsert()){
             CommonNotices.showMessage(context, context.getString(R.string.good_sentence_already_exist));

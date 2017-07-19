@@ -35,6 +35,7 @@ public class Constants {
 
     public static final String DICT_ROOT = "/dicts";
     public static final String DICTIONARY_ROOT = "/dictionary";
+    public static final String EDITQUERY = "editQuery";
 
     public static final int ACCOUNT_TYPE_MY_TRACKS = 0;
     public static final int ACCOUNT_TYPE_MY_THINK = 1;

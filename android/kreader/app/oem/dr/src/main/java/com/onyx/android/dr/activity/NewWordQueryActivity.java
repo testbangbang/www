@@ -12,14 +12,14 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.DictSpinnerAdapter;
+import com.onyx.android.dr.bean.NewWordBean;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.QueryRecordEntity;
 import com.onyx.android.dr.event.RefreshWebviewEvent;
 import com.onyx.android.dr.event.WebViewLoadOverEvent;
 import com.onyx.android.dr.interfaces.QueryRecordView;
 import com.onyx.android.dr.presenter.QueryRecordPresenter;
-import com.onyx.android.dr.util.EventBusUtils;
-import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
@@ -39,7 +39,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -69,9 +68,6 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     private Handler handler;
     private String newWord = "";
     private String dictionaryLookup = "";
-    private String week = "";
-    private String month = "";
-    private String day = "";
     private String readingMatter = "";
     private long millisecond = 2000;
     private DictSpinnerAdapter dictSpinnerAdapter;
@@ -103,7 +99,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     }
 
     private void getIntentDatas() {
-        editQuery = getIntent().getStringExtra("wordQuery");
+        editQuery = getIntent().getStringExtra(Constants.EDITQUERY);
     }
 
     @Override
@@ -113,8 +109,6 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     @Override
     protected void onStart() {
         super.onStart();
-        EventBusUtils.registerEventBus(this);
-        ButterKnife.bind(this);
     }
 
     @Override
@@ -177,10 +171,8 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
         incomeNewWordNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                month = TimeUtils.getCurrentMonth() + "";
-                day = TimeUtils.getCurrentDay() + "";
-                week = TimeUtils.getWeekOfMonth() + "";
-                queryRecordPresenter.insertNewWord(month, week, day, newWord, dictionaryLookup, readingMatter);
+                NewWordBean bean = new NewWordBean(newWord, dictionaryLookup, readingMatter);
+                queryRecordPresenter.insertNewWord(bean);
             }
         });
     }
@@ -315,12 +307,12 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     @Override
     protected void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(runnable);
+        EventBus.getDefault().unregister(this);
     }
 }

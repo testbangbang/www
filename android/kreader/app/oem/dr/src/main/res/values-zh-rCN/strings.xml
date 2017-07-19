@@ -182,4 +182,8 @@
     <string name="good_sentence_already_exist">好句已存在</string>
     <string name="already_add_good_sentence_notebook">好句摘录成功</string>
     <string name="baidu_baike">百度百科</string>
+    <string name="dict_query_chinese_language">中文</string>
+    <string name="pinyin_query">拼音查询:</string>
+    <string name="radical_strokes">部首笔画:</string>
+    <string name="total_strokes">总笔画:</string>
 </resources>

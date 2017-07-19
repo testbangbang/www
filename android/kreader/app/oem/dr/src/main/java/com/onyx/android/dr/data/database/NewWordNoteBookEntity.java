@@ -25,4 +25,8 @@ public class NewWordNoteBookEntity extends BaseModel {
     public String dictionaryLookup;
     @Column
     public String readingMatter;
+    @Column
+    public long currentTime;
+    @Column
+    public String type;
 }

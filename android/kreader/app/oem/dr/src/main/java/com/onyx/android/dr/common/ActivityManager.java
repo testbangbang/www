@@ -33,7 +33,7 @@ public class ActivityManager {
     public static void startDictResultShowActivity(Context context, String editQuery) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("editQuery", editQuery);
+        intent.putExtra(Constants.EDITQUERY, editQuery);
         intent.setClass(context, DictResultShowActivity.class);
         context.startActivity(intent);
     }
@@ -83,7 +83,7 @@ public class ActivityManager {
     public static void startNewWordQueryActivity(Context context, String editQuery) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("wordQuery", editQuery);
+        intent.putExtra(Constants.EDITQUERY, editQuery);
         intent.setClass(context, NewWordQueryActivity.class);
         context.startActivity(intent);
     }

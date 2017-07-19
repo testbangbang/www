@@ -32,6 +32,7 @@ public class NewWordInsert extends BaseDataRequest {
             newWordEntity.week = newWordsInfo.week;
             newWordEntity.month = newWordsInfo.month;
             newWordEntity.day = newWordsInfo.day;
+            newWordEntity.currentTime = newWordsInfo.currentTime;
             newWordEntity.dictionaryLookup = newWordsInfo.dictionaryLookup;
             newWordEntity.readingMatter = newWordsInfo.readingMatter;
             newWordEntity.update();

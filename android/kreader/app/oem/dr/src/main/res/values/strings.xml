@@ -182,4 +182,8 @@
     <string name="good_sentence_already_exist">good sentence already exist</string>
     <string name="already_add_good_sentence_notebook">add good sentence notebook success</string>
     <string name="baidu_baike">Baidu_Baike</string>
+    <string name="dict_query_chinese_language">chinese</string>
+    <string name="pinyin_query">spell query:</string>
+    <string name="radical_strokes">radical strokes:</string>
+    <string name="total_strokes">total strokes:</string>
 </resources>

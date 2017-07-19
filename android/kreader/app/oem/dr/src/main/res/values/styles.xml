@@ -82,6 +82,14 @@
         <item name="android:singleLine">true</item>
     </style>
 
+    <style name="dict_query_edittext_second">
+        <item name="android:layout_width">@dimen/dict_query_edittext_width_second</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:imeOptions">actionSearch</item>
+        <item name="android:maxLines">@integer/dict_query_edittext_lines</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
     <style name="good_sentence_activity_textview">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">60dp</item>

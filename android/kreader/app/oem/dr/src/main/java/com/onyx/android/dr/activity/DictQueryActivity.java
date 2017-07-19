@@ -6,10 +6,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.adapter.DictTypeAdapter;
+import com.onyx.android.dr.adapter.LanguageQueryTypeAdapter;
 import com.onyx.android.dr.bean.DictFunctionBean;
 import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.dr.common.ActivityManager;
@@ -17,11 +18,9 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.ChineseQueryEvent;
 import com.onyx.android.dr.event.EnglishQueryEvent;
-import com.onyx.android.dr.event.FrenchQueryEvent;
 import com.onyx.android.dr.event.JapaneseQueryEvent;
 import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
-import com.onyx.android.dr.util.EventBusUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -34,7 +33,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -52,6 +50,12 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     EditText phraseQuery;
     @Bind(R.id.activity_query_example)
     EditText exampleQuery;
+    @Bind(R.id.activity_query_spell_query)
+    EditText spellQuery;
+    @Bind(R.id.activity_query_radical_strokes)
+    EditText radicalStrokesQuery;
+    @Bind(R.id.activity_query_total_strokes)
+    EditText totalStrokesQuery;
     @Bind(R.id.activity_word_query_search)
     Button wordQuerySearch;
     @Bind(R.id.activity_fuzzy_query_search)
@@ -60,10 +64,18 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     Button phraseQuerySearch;
     @Bind(R.id.activity_example_query_search)
     Button exampleQuerySearch;
+    @Bind(R.id.activity_strokes_search)
+    Button strokeSearch;
+    @Bind(R.id.activity_word_spell_search)
+    Button spellSearch;
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
+    @Bind(R.id.activity_query_chinese_linearlayout)
+    LinearLayout chineseLinearLayout;
+    @Bind(R.id.activity_query_english_linearlayout)
+    LinearLayout englishLinearLayout;
     private DividerItemDecoration dividerItemDecoration;
-    private DictTypeAdapter dictTypeAdapter;
+    private LanguageQueryTypeAdapter languageQueryTypeAdapter;
     private DictFunctionPresenter dictPresenter;
 
     @Override
@@ -85,8 +97,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         tabMenu.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         tabMenu.addItemDecoration(dividerItemDecoration);
-        dictTypeAdapter = new DictTypeAdapter();
-        tabMenu.setAdapter(dictTypeAdapter);
+        languageQueryTypeAdapter = new LanguageQueryTypeAdapter();
+        tabMenu.setAdapter(languageQueryTypeAdapter);
     }
 
     @Override
@@ -98,12 +110,17 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void setDictResultData(List<DictFunctionBean> functionData) {
     }
 
     @Override
     public void setDictTypeData(List<DictTypeBean> dictData) {
-        dictTypeAdapter.setMenuDatas(dictData);
+        languageQueryTypeAdapter.setMenuDatas(dictData);
     }
 
     public void initEvent() {
@@ -128,12 +145,15 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEnglishQueryEvent(EnglishQueryEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
+        englishLinearLayout.setVisibility(View.VISIBLE);
+        chineseLinearLayout.setVisibility(View.GONE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChineseQueryEvent(ChineseQueryEvent event) {
         CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
+        chineseLinearLayout.setVisibility(View.VISIBLE);
+        englishLinearLayout.setVisibility(View.GONE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -141,22 +161,12 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onFrenchQueryEvent(FrenchQueryEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        EventBusUtils.registerEventBus(this);
-        ButterKnife.bind(this);
-    }
-
     @OnClick({R.id.activity_word_query_search,
             R.id.activity_fuzzy_query_search,
             R.id.activity_phrase_query_search,
             R.id.image_view_back,
+            R.id.activity_strokes_search,
+            R.id.activity_word_spell_search,
             R.id.activity_example_query_search})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -174,6 +184,11 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
             case R.id.activity_example_query_search:
                 startDictResultShowActivity(exampleQuery);
                 break;
+            case R.id.activity_strokes_search:
+                break;
+            case R.id.activity_word_spell_search:
+                startDictResultShowActivity(spellQuery);
+                break;
         }
     }
 
@@ -189,11 +204,11 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     @Override
     protected void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

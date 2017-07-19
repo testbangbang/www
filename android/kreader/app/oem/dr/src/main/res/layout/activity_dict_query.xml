@@ -4,19 +4,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <include
+        layout="@layout/title_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/activity_query_english_linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <include
-            layout="@layout/title_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
         <TextView
-            android:id="@+id/activity_query_lang_show"
+            android:id="@+id/activity_query_english_show"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/query_lang_show_margin"
@@ -115,6 +116,84 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/activity_query_chinese_linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/activity_query_chinese_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/query_lang_show_margin"
+            android:text="@string/dict_query_chinese_language"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/dict_query_type"
+                android:text="@string/pinyin_query" />
+
+            <TextView style="@style/dict_query_bracket_left" />
+
+            <EditText
+                android:id="@+id/activity_query_spell_query"
+                style="@style/dict_query_edittext_second" />
+
+            <TextView style="@style/dict_query_bracket_right" />
+
+            <Button
+                android:id="@+id/activity_word_spell_search"
+                style="@style/activity_query_search" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/dict_query_type"
+                android:text="@string/radical_strokes" />
+
+            <TextView style="@style/dict_query_bracket_left" />
+
+            <EditText
+                android:id="@+id/activity_query_radical_strokes"
+                style="@style/dict_query_edittext_second" />
+
+            <TextView style="@style/dict_query_bracket_right" />
+
+            <TextView
+                android:layout_width="@dimen/wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dict_query_total_strokes_marginleft"
+                android:text="@string/total_strokes"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <TextView style="@style/dict_query_bracket_left" />
+
+            <EditText
+                android:id="@+id/activity_query_total_strokes"
+                style="@style/dict_query_edittext_second" />
+
+            <TextView style="@style/dict_query_bracket_right" />
+
+            <Button
+                android:id="@+id/activity_strokes_search"
+                style="@style/activity_query_search" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dict_query_function_margin">
@@ -123,7 +202,7 @@
             android:id="@+id/main_tab_menu"
             layout="@layout/tab_menu"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dict_query_function_height" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </LinearLayout>

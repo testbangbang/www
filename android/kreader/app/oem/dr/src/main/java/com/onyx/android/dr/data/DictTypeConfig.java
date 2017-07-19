@@ -7,7 +7,6 @@ import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.ChineseQueryEvent;
 import com.onyx.android.dr.event.EnglishQueryEvent;
-import com.onyx.android.dr.event.FrenchQueryEvent;
 import com.onyx.android.dr.event.JapaneseQueryEvent;
 
 import java.util.ArrayList;
@@ -17,11 +16,9 @@ import java.util.List;
  * Created by zhouzhiming on 17-6-28.
  */
 public class DictTypeConfig {
-
     public List<DictTypeBean> dictLanguageData = new ArrayList<>();
 
     public void loadDictInfo(Context context) {
-
         DictTypeBean dictData = new DictTypeBean(context.getResources().getString(R.string.english_query), new EnglishQueryEvent());
         dictLanguageData.add(dictData);
 
@@ -29,9 +26,6 @@ public class DictTypeConfig {
         dictLanguageData.add(dictData);
 
         dictData = new DictTypeBean(context.getResources().getString(R.string.japanese_query), new JapaneseQueryEvent());
-        dictLanguageData.add(dictData);
-
-        dictData = new DictTypeBean(context.getResources().getString(R.string.french_query), new FrenchQueryEvent());
         dictLanguageData.add(dictData);
     }
 

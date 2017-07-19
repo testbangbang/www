@@ -1,6 +1,5 @@
 package com.onyx.android.dr.activity;
 
-import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,14 +17,13 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.DictSpinnerAdapter;
 import com.onyx.android.dr.adapter.QueryRecordAdapter;
+import com.onyx.android.dr.bean.NewWordBean;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.QueryRecordEntity;
 import com.onyx.android.dr.dialog.SelectAlertDialog;
 import com.onyx.android.dr.event.RefreshWebviewEvent;
 import com.onyx.android.dr.interfaces.QueryRecordView;
 import com.onyx.android.dr.presenter.QueryRecordPresenter;
-import com.onyx.android.dr.util.EventBusUtils;
-import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
@@ -47,7 +45,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by zhouzhiming on 17-7-11.
@@ -71,15 +68,10 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     private List<QueryRecordEntity> queryRecordList;
     private static final String TAG = QueryRecordActivity.class.getSimpleName();
     private Spinner resultSpinner;
-    private Runnable runnable;
-    private Handler handler;
     private TextView addNewWordNote;
     private TextView exit;
     private String newWord = "";
     private String dictionaryLookup = "";
-    private String week = "";
-    private String month = "";
-    private String day = "";
     private String readingMatter = "";
     private long millisecond = 2000;
     private DictSpinnerAdapter dictSpinnerAdapter;
@@ -110,13 +102,12 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
 
     @Override
     protected void initData() {
-        handler = new Handler();
         queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
         queryRecordList = new ArrayList<QueryRecordEntity>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
         queryRecordPresenter = new QueryRecordPresenter(getApplicationContext(), this);
         queryRecordPresenter.getAllQueryRecordData();
-        dictSpinnerAdapter =  new DictSpinnerAdapter(this);
+        dictSpinnerAdapter = new DictSpinnerAdapter(this);
         initEvent();
     }
 
@@ -130,8 +121,6 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     @Override
     protected void onStart() {
         super.onStart();
-        EventBusUtils.registerEventBus(this);
-        ButterKnife.bind(this);
     }
 
     @Override
@@ -234,10 +223,8 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         addNewWordNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                month = TimeUtils.getCurrentMonth() + "";
-                day = TimeUtils.getCurrentDay() + "";
-                week = TimeUtils.getWeekOfMonth() + "";
-                queryRecordPresenter.insertNewWord(month, week, day, newWord, dictionaryLookup, readingMatter);
+                NewWordBean bean = new NewWordBean(newWord, dictionaryLookup, readingMatter);
+                queryRecordPresenter.insertNewWord(bean);
             }
         });
         baiduBaike.setOnClickListener(new View.OnClickListener() {
@@ -252,6 +239,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     private void saveDictionary(String dictName) {
         if (!searchResultList.contains(dictName)) {
             searchResultList.add(dictName);
+            dictSpinnerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -273,16 +261,8 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                     resultView.loadResultAsHtml(queryWordRequest.queryResult);
                     addSearchResult(queryWordRequest.queryResult);
 
-                    if (runnable == null) {
-                        runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                dictSpinnerAdapter.setDatas(searchResultList);
-                                resultSpinner.setAdapter(dictSpinnerAdapter);
-                            }
-                        };
-                    }
-                    handler.postDelayed(runnable, millisecond);
+                    dictSpinnerAdapter.setDatas(searchResultList);
+                    resultSpinner.setAdapter(dictSpinnerAdapter);
                 }
             });
             if (!bRet) {
@@ -310,7 +290,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                 }
                 queryResult.put(entry.getValue().dictionary.name, entry.getValue());
             }
-            Log.i("###result.size()",  result.size() + "");
+            Log.i("###result.size()", result.size() + "");
         }
     }
 
@@ -374,12 +354,11 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
 
     protected void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(runnable);
+        EventBus.getDefault().unregister(this);
     }
 }

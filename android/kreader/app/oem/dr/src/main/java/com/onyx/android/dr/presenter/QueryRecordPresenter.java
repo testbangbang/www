@@ -3,6 +3,7 @@ package com.onyx.android.dr.presenter;
 import android.content.Context;
 
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.bean.NewWordBean;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.NewWordData;
 import com.onyx.android.dr.data.QueryRecordData;
@@ -10,6 +11,7 @@ import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.interfaces.QueryRecordView;
 import com.onyx.android.dr.request.local.NewWordInsert;
 import com.onyx.android.dr.request.local.QueryRecordQueryAll;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 
@@ -39,14 +41,15 @@ public class QueryRecordPresenter {
         });
     }
 
-    public void insertNewWord(String month, String week, String day, String newWord, String dictionaryLookup, String readingMatter) {
+    public void insertNewWord(NewWordBean newWordBean) {
         NewWordNoteBookEntity bean = new NewWordNoteBookEntity();
-        bean.week = week;
-        bean.month = month;
-        bean.day = day;
-        bean.newWord = newWord;
-        bean.dictionaryLookup = dictionaryLookup;
-        bean.readingMatter = readingMatter;
+        bean.week = TimeUtils.getWeekOfMonth();
+        bean.month = TimeUtils.getCurrentMonth();
+        bean.day = TimeUtils.getCurrentDay();
+        bean.currentTime = TimeUtils.getCurrentTime();
+        bean.newWord = newWordBean.getNewWord();
+        bean.dictionaryLookup = newWordBean.getDictionaryLookup();
+        bean.readingMatter = newWordBean.getReadingMatter();
         final NewWordInsert req = new NewWordInsert(bean);
         if (req.whetherInsert()){
             CommonNotices.showMessage(context, context.getString(R.string.new_word_notebook_already_exist));
