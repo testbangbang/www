@@ -213,9 +213,10 @@ public class LayoutProviderUtils {
     }
 
     static private boolean canReuse(ReaderBitmapReferenceImpl cache, ReaderDrawContext context) {
+        boolean ignoreTextGamma = true;
         return (cache.isGammaIgnored() || cache.isGammaApplied(context.targetGammaCorrection)) &&
-                cache.isTextGammaApplied(context.targetTextGammaCorrection) &&
-                cache.isEmboldenApplied(context.targetEmboldenLevel);
+                cache.isEmboldenApplied(context.targetEmboldenLevel) &&
+                (ignoreTextGamma || cache.isTextGammaApplied(context.targetTextGammaCorrection));
     }
 
     static public boolean checkCache(final BitmapReferenceLruCache cache, final String key, final ReaderDrawContext context) {
