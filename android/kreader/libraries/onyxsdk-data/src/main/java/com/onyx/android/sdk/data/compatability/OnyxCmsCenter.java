@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
+
 import com.onyx.android.sdk.data.RefValue;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -322,7 +323,7 @@ public class OnyxCmsCenter {
         List<OnyxHistoryEntry> historyEntries = new ArrayList<OnyxHistoryEntry>();
         try {
             c = context.getContentResolver().query(OnyxHistoryEntry.CONTENT_URI,
-                    null, OnyxHistoryEntry.Columns.APPLICATION + "= ?" , new String[]{application}, null);
+                    null, OnyxHistoryEntry.Columns.APPLICATION + "= ?", new String[]{application}, null);
             if (c == null) {
                 Log.w(TAG, "getHistoryByApplication, query database failed");
                 return null;
