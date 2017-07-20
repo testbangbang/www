@@ -18,6 +18,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
 import com.onyx.edu.note.actions.scribble.DocumentFlushAction;
 import com.onyx.edu.note.actions.scribble.DrawPageAction;
@@ -137,6 +138,14 @@ public class NoteManager {
 
     public void setShapeDataInfo(ShapeDataInfo shapeDataInfo) {
         this.shapeDataInfo = shapeDataInfo;
+    }
+
+    public void setStrokeWidth(float strokeWidth,BaseCallback callback){
+        if (shapeDataInfo.isInUserErasing()) {
+            shapeDataInfo.setCurrentShapeType(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
+        }
+        shapeDataInfo.setStrokeWidth(strokeWidth);
+        syncWithCallback(true, true, callback);
     }
 
     //TODO:avoid direct obtain note view helper,because we plan to remove this class.

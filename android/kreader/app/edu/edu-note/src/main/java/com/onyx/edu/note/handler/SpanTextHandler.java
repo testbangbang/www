@@ -208,12 +208,13 @@ public class SpanTextHandler extends BaseHandler {
     }
 
     @Override
-    public void handleToolBarMenuFunction(int toolBarMenuID) {
+    public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
 
     }
 
     @Override
-    public void saveDocument(boolean closeAfterSave, BaseCallback callback) {
+    public void saveDocument(String uniqueID, String title, boolean closeAfterSave, BaseCallback callback) {
+
     }
 
     @Override

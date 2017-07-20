@@ -58,7 +58,6 @@ public class HandlerManager {
             providerMap.get(activeProviderName).onDeactivate();
         }
         activeProviderName = providerName;
-        providerMap.get(activeProviderName).setScribbleViewModel(mViewModel);
         providerMap.get(activeProviderName).onActivate();
     }
 
@@ -85,11 +84,13 @@ public class HandlerManager {
     }
 
     public void handleToolBarMenuFunction(@ScribbleToolBarMenuID.ScribbleToolBarMenuDef int toolBarMenuID) {
-        getActiveProvider().handleToolBarMenuFunction(toolBarMenuID);
+        getActiveProvider().handleToolBarMenuFunction(mViewModel.getCurrentDocumentUniqueID(), mViewModel.mNoteTitle.get(),
+                toolBarMenuID);
     }
 
     public void saveDocument(boolean closeAfterSave, BaseCallback callback) {
-        getActiveProvider().saveDocument(closeAfterSave, callback);
+        getActiveProvider().saveDocument(mViewModel.getCurrentDocumentUniqueID(), mViewModel.mNoteTitle.get(),
+                closeAfterSave, callback);
     }
 
     public void prevPage() {
