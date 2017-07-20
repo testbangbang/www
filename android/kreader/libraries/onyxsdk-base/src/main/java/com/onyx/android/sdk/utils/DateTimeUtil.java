@@ -19,6 +19,7 @@ public class DateTimeUtil {
     public static final SimpleDateFormat DATE_FORMAT_YYYYMMDD_HHMMSS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
     public static final SimpleDateFormat DATE_FORMAT_YYYYMMDD_HHMM = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
     public static final SimpleDateFormat DATE_FORMAT_YYYYMMDD = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    public static final SimpleDateFormat DATE_FORMAT_YYYYMMDD_HHMMSS_FOR_FILE_NAME = new SimpleDateFormat("yyyy-MM-dd HH mm ss", Locale.getDefault());
 
     /**
      * format the time according to the current locale and the user's 12-/24-hour clock preference

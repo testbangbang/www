@@ -2,6 +2,7 @@ package com.onyx.android.sdk.ui.dialog;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -16,6 +17,8 @@ public class DialogProgress extends OnyxBaseDialog {
     private TextView titleView;
     private TextView subTitleView;
     private ProgressBar progressBar;
+    private Button dismissButton;
+    private View buttonLine;
 
     private int progress;
     private int maxValue;
@@ -32,6 +35,8 @@ public class DialogProgress extends OnyxBaseDialog {
         titleView = (TextView) findViewById(R.id.title);
         subTitleView = (TextView) findViewById(R.id.sub_title);
         progressBar = (ProgressBar) findViewById(R.id.progress);
+        buttonLine = findViewById(R.id.button_line);
+        dismissButton = (Button) findViewById(R.id.dismiss_button);
 
         titleView.setVisibility(View.GONE);
         subTitleView.setVisibility(View.GONE);
@@ -57,6 +62,14 @@ public class DialogProgress extends OnyxBaseDialog {
     public void setSubTitle(String subTitle) {
         this.subTitleView.setText(subTitle);
         subTitleView.setVisibility(View.VISIBLE);
+    }
+
+    public DialogProgress enableDismissButton(CharSequence title, View.OnClickListener listener) {
+        dismissButton.setVisibility(View.VISIBLE);
+        buttonLine.setVisibility(View.VISIBLE);
+        dismissButton.setOnClickListener(listener);
+        dismissButton.setText(title);
+        return this;
     }
 
     public ProgressBar getProgressBar() {

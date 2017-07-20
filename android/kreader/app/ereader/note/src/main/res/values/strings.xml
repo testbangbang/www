@@ -59,4 +59,20 @@
     <string name="find_old_scribble">Find old scribble data, need to import?</string>
     <string name="ask_for_delete_note">Are you sure want to delete？</string>
     <string name="name_length_illegal">20 Character Only.</string>
+
+    <string name="backup_restore">Backup and Restore</string>
+    <string name="backup_now">Backup now</string>
+    <string name="empty_restore_list">No data recovery</string>
+    <string name="backup_tips">(Only the last three backup data on the server side, the local does not save)</string>
+    <string name="restoring_tips">Is resuming, do not carry out standby, shutdown, restart and other operations, so as to avoid data corruption</string>
+    <string name="backuping_tips">Is being backed up, do not carry out standby, shutdown, restart and other operations, so as to avoid data corruption</string>
+    <string name="no_finish_backup_tips">Data backup is not completed, is it confirmed?</string>
+    <string name="ask_sure_restore" formatted="false">Return to \'%s\' file, the current data will be lost, is confirmed to restore?</string>
+    <string name="backup_success">Backup Success</string>
+    <string name="backup_fail">Backup Fail</string>
+    <string name="restore_success">Restore Success</string>
+    <string name="restore_fail">Restore Fail</string>
+    <string name="backup_file_name">Backup File Name</string>
+    <string name="local_backup">Local Backup</string>
+    <string name="cloud_backup">Cloud Backup</string>
 </resources>

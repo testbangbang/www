@@ -42,7 +42,7 @@ public class NoteApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        initDataProvider(this);
+        initDataProvider();
         installExceptionHandler();
         initCompatColorImageConfig();
         if (DEBUG_MEMORY_LEAK) {
@@ -54,8 +54,8 @@ public class NoteApplication extends Application {
         return instance;
     }
 
-    private void initDataProvider(final Context context) {
-        FlowConfig.Builder builder = new FlowConfig.Builder(context);
+    public void initDataProvider() {
+        FlowConfig.Builder builder = new FlowConfig.Builder(this);
         builder.addDatabaseHolder(ShapeGeneratedDatabaseHolder.class);
         FlowManager.init(builder.build());
         NotePreference.init(this);

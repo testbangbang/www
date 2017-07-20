@@ -1,10 +1,10 @@
-package com.onyx.android.sdk.data.request.data.db;
+package com.onyx.android.sdk.scribble.request.note;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.DatabaseInfo;
-import com.onyx.android.sdk.data.request.data.BaseDataRequest;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.File;
@@ -17,7 +17,7 @@ import java.util.Map;
  * Created by ming on 2017/4/21.
  */
 
-public class BackupRestoreDBRequest extends BaseDataRequest {
+public class BackupRestoreDBRequest extends BaseNoteRequest {
 
     private Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap;
     private boolean backup = false;
@@ -28,7 +28,7 @@ public class BackupRestoreDBRequest extends BaseDataRequest {
     }
 
     @Override
-    public void execute(DataManager dataManager) throws Exception {
+    public void execute(NoteViewHelper helper) throws Exception {
         if (backupRestoreDBMap == null || backupRestoreDBMap.size() == 0) {
             return;
         }

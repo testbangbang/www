@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/backup_restore_list_item_padding">
+
+        <TextView
+            android:ellipsize="end"
+            android:minWidth="@dimen/backup_restore_list_item_min_text_width"
+            android:maxWidth="@dimen/backup_restore_list_item_min_text_width"
+            android:singleLine="true"
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/backup_restore_list_item_text_size"/>
+
+        <TextView
+            android:id="@+id/size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/backup_restore_list_item_padding"
+            android:textSize="@dimen/backup_restore_list_item_text_size"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/restore"
+            android:layout_width="@dimen/backup_restore_list_item_image_size"
+            android:layout_height="@dimen/backup_restore_list_item_image_size"
+            android:layout_marginRight="@dimen/backup_restore_list_item_padding"
+            android:background="@drawable/imagebtn_bg"
+            android:src="@drawable/local_backup_restore"/>
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="@dimen/backup_restore_list_item_padding"
+        android:layout_marginRight="@dimen/backup_restore_list_item_padding"
+        android:background="@android:color/black"/>
+</LinearLayout>
