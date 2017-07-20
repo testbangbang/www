@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="@drawable/focused_bg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/tree_recycler_item_view_padding"
+                android:paddingLeft="@dimen/tree_recycler_item_view_padding">
+
+    <ImageView
+            android:layout_marginRight="@dimen/image_view_indicator_margin_right"
+            android:layout_centerVertical="true"
+            android:id="@+id/image_view_indicator"
+            android:layout_width="@dimen/image_view_indicator_size"
+            android:layout_height="@dimen/image_view_indicator_size"
+            android:src="@drawable/ic_tree_recycler_item_view_indicator"/>
+
+    <TextView
+            android:textSize="@dimen/level_two_font_size"
+            android:layout_centerVertical="true"
+            android:id="@+id/text_view_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"/>
+
+    <TextView
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textSize="@dimen/level_two_font_size"
+            android:layout_centerVertical="true"
+            android:id="@+id/text_view_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/text_view_description"
+            android:layout_toRightOf="@id/image_view_indicator"/>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:id="@+id/split_line"
+        android:layerType="software"
+        android:background="@drawable/dash_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+</RelativeLayout>

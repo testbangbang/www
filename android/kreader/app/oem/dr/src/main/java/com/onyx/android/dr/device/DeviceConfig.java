@@ -277,6 +277,16 @@ public class DeviceConfig {
         public static final String MY_NOTES_SKETCH = "my_notes_sketch";
     }
 
+    public static class ReaderMenuInfo {
+        public static final String READER_MENU_KEY = "reader_menu_key";
+        public static final String MENU_POSTIL = "menu_postil";
+        public static final String MENU_MARK = "menu_mark";
+        public static final String MENU_WORD_QUERY = "menu_word_query";
+        public static final String MENU_GOOD_SENTENCE_EXTRACT = "menu_good_sentence_extract";
+        public static final String MENU_LISTEN_BOOKS = "menu_listen_books";
+        public static final String MENU_AFTER_READING = "menu_after_reading";
+    }
+
     private JSONObject getMenuObject(String userType) {
         try {
             if (backend != null && backend.hasKey(userType)) {
@@ -295,6 +305,15 @@ public class DeviceConfig {
     public boolean getMainMenuItem(String userType, final String menuItem) {
         boolean state = true;
         JSONObject mainMenu = getMenuObject(userType);
+        if (mainMenu != null) {
+            state = mainMenu.getBooleanValue(menuItem);
+        }
+        return state;
+    }
+
+    public boolean getReaderMenuItem(final String menuItem) {
+        boolean state = true;
+        JSONObject mainMenu = getMenuObject(ReaderMenuInfo.READER_MENU_KEY);
         if (mainMenu != null) {
             state = mainMenu.getBooleanValue(menuItem);
         }

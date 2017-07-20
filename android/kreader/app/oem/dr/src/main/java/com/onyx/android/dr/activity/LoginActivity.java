@@ -178,9 +178,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
         if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             if (step == STEP_SECOND) {
                 collectUserInfo();
-                return true;
             }
         }
-        return super.dispatchKeyEvent(event);
+        return true;
     }
 }

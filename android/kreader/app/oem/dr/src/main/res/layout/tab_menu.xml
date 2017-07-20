@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:background="@drawable/rectangle_stroke"
-    android:layout_height="wrap_content">
+    android:padding="@dimen/rectangle_stroke_width"
+    android:layout_height="match_parent">
 
     <com.onyx.android.sdk.ui.view.PageRecyclerView
         android:id="@+id/tab_menu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 </LinearLayout>

@@ -7,6 +7,8 @@ import com.onyx.android.dr.action.CloudLibraryListLoadAction;
 import com.onyx.android.dr.activity.MainView;
 import com.onyx.android.dr.data.MainData;
 import com.onyx.android.dr.data.MainTabMenuConfig;
+import com.onyx.android.dr.data.MenuBean;
+import com.onyx.android.dr.event.MainLibraryTabEvent;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.QueryArgs;
@@ -36,16 +38,24 @@ public class MainPresenter {
         mainView.setTabMenuData(mainData.loadTabMenu(userType));
     }
 
-    public void lookCloudLibraryList(String libraryParentId) {
+    public void authToken() {
         AuthTokenAction authTokenAction = new AuthTokenAction();
+        mainData.authToken(authTokenAction, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+
+            }
+        });
+    }
+
+    public void lookCloudLibraryList(final String libraryParentId) {
         final CloudLibraryListLoadAction loadAction = new CloudLibraryListLoadAction(libraryParentId);
-        mainData.lookCloudLibraryList(authTokenAction, loadAction, new BaseCallback() {
+        mainData.lookCloudLibraryList(loadAction, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 List<Library> libraryList = loadAction.getLibraryList();
-                if (libraryList != null) {
-                    mainView.setLibraryList(libraryList);
-                }
+                mainView.setTabMenuData(mainData.loadTabMenu(libraryList));
+                mainView.setLibraryList(libraryList);
             }
         });
     }

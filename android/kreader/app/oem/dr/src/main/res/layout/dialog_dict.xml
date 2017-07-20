@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/dialog_dict_margin"
+        android:layout_weight="5"
+        android:background="@drawable/dialog_background"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/dialog_dict_dict"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/textview_select_bg"
+                android:gravity="center"
+                android:text="@string/Dictionary"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_font_size" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/black" />
+
+            <TextView
+                android:id="@+id/dialog_dict_baike"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/textview_select_bg"
+                android:gravity="center"
+                android:text="@string/baike"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_font_size" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <com.onyx.android.dr.reader.view.HTMLReaderWebView
+            android:id="@+id/dict_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:background="@android:color/white"
+            android:paddingLeft="@dimen/dict_content_padding_left"
+            android:paddingRight="@dimen/dict_content_padding_right" />
+
+        <WebView
+            android:id="@+id/dict_baike_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:background="@android:color/white"
+            android:paddingLeft="@dimen/dict_content_padding_left"
+            android:paddingRight="@dimen/dict_content_padding_right"
+            android:visibility="gone" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:background="@android:color/white"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/dialog_dict_dict_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/dialog_dict_page_indicator"
+                android:background="@android:color/white"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/dialog_dict_dict_name"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"
+                    android:clickable="false"
+                    android:ellipsize="middle"
+                    android:focusable="false"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingLeft="@dimen/dict_content_padding_right"
+                    android:paddingRight="@dimen/dict_content_padding_right"
+                    android:textSize="@dimen/level_two_font_size" />
+
+                <ImageView
+                    android:id="@+id/dialog_dict_name_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:src="@drawable/ic_dict_pack_up" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/dialog_dict_page_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/white"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dict_content_padding_right"
+                android:paddingRight="@dimen/dict_content_padding_right"
+                android:text="1/10"
+                android:textSize="@dimen/level_two_font_size" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dialog_dict_dismiss"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:background="@android:color/transparent" />
+</LinearLayout>

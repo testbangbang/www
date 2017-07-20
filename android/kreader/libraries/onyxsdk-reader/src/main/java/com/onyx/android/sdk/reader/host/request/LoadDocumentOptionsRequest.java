@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.reader.host.request;
 
+import android.util.Log;
+
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
@@ -29,6 +31,7 @@ public class LoadDocumentOptionsRequest extends BaseDataRequest {
             md5 = FileUtils.computeMD5(new File(documentPath));
         }
         document = DataProviderManager.getLocalDataProvider().findMetadataByHashTag(getContext(), documentPath, md5);
+        Log.e("", "execute: ============================" + document.getExtraAttributes());
         document.setIdString(md5);
     }
 

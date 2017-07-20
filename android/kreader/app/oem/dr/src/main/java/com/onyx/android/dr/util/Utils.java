@@ -20,10 +20,8 @@ import com.onyx.android.dr.common.Constants;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.mozilla.universalchardet.UniversalDetector;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -109,35 +107,6 @@ public class Utils {
             }
         }
         return null;
-    }
-
-    public static final byte[] readContentOfGzFile(final String path, int offset, int size) {
-        FileInputStream fin = null;
-        BufferedInputStream bin = null;
-        GzipCompressorInputStream gzIn = null;
-        int limit = size * 2 + 1;
-        byte[] buffer = new byte[limit];
-        int read = size;
-        try {
-            fin = new FileInputStream(path);
-            bin = new BufferedInputStream(fin);
-            gzIn = new GzipCompressorInputStream(bin);
-            gzIn.skip(offset);
-            read = gzIn.read(buffer, 0, size);
-            if (read > limit) {
-                buffer = new byte[read + 1];
-                gzIn.read(buffer, 0, size);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        } finally {
-            FileUtils.closeQuietly(fin);
-            FileUtils.closeQuietly(bin);
-            FileUtils.closeQuietly(gzIn);
-        }
-        buffer[read] = 0;
-        return buffer;
     }
 
     public static final byte[] readContentOfFile(final String path, int offset, int size) {

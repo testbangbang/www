@@ -1,9 +1,7 @@
 package com.onyx.android.sdk.reader.host.request;
 
-import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.util.Log;
 
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDrmCertificateFactory;
@@ -15,7 +13,6 @@ import com.onyx.android.sdk.reader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
-import com.onyx.android.sdk.utils.StringUtils;
 
 /**
  * Created by zhuzeng on 10/4/15.

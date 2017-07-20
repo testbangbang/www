@@ -4,4 +4,8 @@
         <attr name="drawable" format="reference|integer" />
         <attr name="name" format="reference|string" />
     </declare-styleable>
+
+    <declare-styleable name="control">
+        <attr name="run" format="boolean" />
+    </declare-styleable>
 </resources>

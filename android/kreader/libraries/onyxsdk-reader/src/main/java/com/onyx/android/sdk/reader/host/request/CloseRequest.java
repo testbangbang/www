@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.reader.host.request;
 
+import android.util.Log;
+
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 

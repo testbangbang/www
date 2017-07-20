@@ -86,7 +86,7 @@
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="page_search" formatted="false">%d page</string>
-    <string name="Annotation">Annotation</string>
+    <string name="annotation">Annotation</string>
     <string name="Cancel">Cancel</string>
     <string name="save_annotation">Save</string>
     <string name="update">Update</string>
@@ -94,7 +94,7 @@
     <string name="sure_delete">Are you sure you want to delete this</string>
     <string name="dialog_dictionary_title">No Explanation</string>
     <string name="popup_selection_menu_page_indicator_default_value">1/1</string>
-    <string name="Copy">Copy</string>
+    <string name="copy">Copy</string>
     <string name="Highlight">Highlight</string>
     <string name="Dictionary">Dictionary</string>
     <string name="popup_selection_menu_start_tts">TTS</string>
@@ -124,6 +124,9 @@
     <string name="screen_success">Screen Success</string>
     <string name="screen_success_prompt">The screenshot has been saved to the device under the %s folder, and you can use the USB to connect to the PC.</string>
     <string name="no_chapters">This article does not contain section information</string>
+    <string name="application_list">application_list</string>
+    <string name="menu_app_npi_clear">clear test app</string>
+    <string name="enter_bookstore">enter bookstore</string>
     <string name="dict_query_bracket_left">[</string>
     <string name="dict_query_bracket_right">]</string>
     <string name="dict_query_language">english</string>
@@ -186,4 +189,6 @@
     <string name="pinyin_query">spell query:</string>
     <string name="radical_strokes">radical strokes:</string>
     <string name="total_strokes">total strokes:</string>
+    <string name="listen_books">listen books</string>
+    <string name="after_reading">after reading</string>
 </resources>

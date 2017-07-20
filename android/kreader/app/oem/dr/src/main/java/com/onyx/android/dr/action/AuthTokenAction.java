@@ -6,6 +6,9 @@ import android.util.Log;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.device.DeviceConfig;
+import com.onyx.android.dr.event.AccountAvailableEvent;
+import com.onyx.android.dr.event.HardwareErrorEvent;
+import com.onyx.android.dr.event.LoginFailedEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.manager.LeanCloudManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -24,6 +27,9 @@ import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by suicheng on 2017/5/18.
@@ -79,10 +85,10 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                     processCloudException(dataHolder.getContext(), e);
                 } else {
                     NeoAccountBase eduAccount = accountLoadRequest.getAccount();
-                    if (NeoAccountBase.isValid(eduAccount)) {
+                    if (NeoAccountBase.isValid(eduAccount) && StringUtils.isNotBlank(eduAccount.info)) {
                         sendAccountAvailableEvent(eduAccount);
                     } else {
-                        sendAccountTokenErrorEvent(dataHolder.getContext());
+                        sendLoginFailedEvent(dataHolder.getContext());
                         e = ContentException.TokenException();
                     }
                 }
@@ -92,7 +98,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void processCloudException(Context context, Throwable e) {
-        sendAccountTokenErrorEvent(context);
+        sendLoginFailedEvent(context);
     }
 
     private void sendAccountAvailableEvent(final NeoAccountBase account) {
@@ -100,25 +106,25 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), generateAccountInfoRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-//                EventBus.getDefault().post(new AccountAvailableEvent(account));
+                EventBus.getDefault().post(new AccountAvailableEvent());
             }
         });
     }
 
-    private void sendAccountTokenErrorEvent(Context context) {
+    private void sendLoginFailedEvent(Context context) {
         NeoAccountBase errorAccount = new NeoAccountBase();
         errorAccount.name = context.getString(R.string.account_un_login);
         final GenerateAccountInfoRequest generateAccountInfoRequest = new GenerateAccountInfoRequest(errorAccount);
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), generateAccountInfoRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-//                EventBus.getDefault().post(new AccountTokenErrorEvent());
+                EventBus.getDefault().post(new LoginFailedEvent());
             }
         });
     }
 
     private void sendHardwareErrorEvent() {
-//        EventBus.getDefault().post(new HardwareErrorEvent());
+        EventBus.getDefault().post(new HardwareErrorEvent());
     }
 
     public void setLocalLoadRetryCount(int retryCount) {

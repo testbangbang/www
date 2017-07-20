@@ -92,7 +92,7 @@ public class DRApplication extends MultiDexApplication {
         return cloudStore;
     }
 
-    public static DRApplication getInstance(){
+    public static DRApplication getInstance() {
         return sInstance;
     }
 
@@ -117,6 +117,10 @@ public class DRApplication extends MultiDexApplication {
         return libraryDataHolder;
     }
 
+    static public DataManager getDataManager() {
+        return getLibraryDataHolder().getDataManager();
+    }
+
     public void initDatabases(final Context context, final List<Class<? extends DatabaseHolder>> list) {
         FlowConfig.Builder builder = new FlowConfig.Builder(context);
         if (list != null) {
@@ -129,7 +133,7 @@ public class DRApplication extends MultiDexApplication {
 
     public void initDictDatas() {
         List<String> dictPaths = new ArrayList<>();
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             File path = Environment.getExternalStorageDirectory();
             dictPaths.add(path + Constants.DICT_ROOT);
             dictPaths.add(path + Constants.DICTIONARY_ROOT);
@@ -138,7 +142,7 @@ public class DRApplication extends MultiDexApplication {
         dictionaryManager = dictDatasInit.dictionaryManager;
     }
 
-    public static DictionaryManager getDictionaryManager(){
+    public static DictionaryManager getDictionaryManager() {
         return dictionaryManager;
     }
 

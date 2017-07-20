@@ -30,15 +30,16 @@
                 android:id="@+id/image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/title_bar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/menu_back"
+                android:padding="@dimen/title_bar_title_padding" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/title_bar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/menu_back"
-            android:padding="@dimen/title_bar_title_padding" />
 
         <TextView
             android:id="@+id/title_bar_right_menu"

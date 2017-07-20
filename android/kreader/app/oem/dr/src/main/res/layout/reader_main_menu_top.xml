@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/reader_main_menu_height"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3">
+
+            <ImageView
+                android:id="@+id/reader_main_menu_top_shelf"
+                style="@style/TabMenuItem"
+                android:src="@drawable/ic_shelf" />
+
+            <ImageView
+                android:id="@+id/reader_main_menu_top_book_store"
+                style="@style/TabMenuItem"
+                android:src="@drawable/cart" />
+
+            <ImageView
+                android:id="@+id/reader_main_menu_top_user"
+                style="@style/TabMenuItem"
+                android:src="@drawable/ic_user" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <ImageView
+                android:id="@+id/reader_main_menu_top_search"
+                style="@style/TabMenuItem"
+                android:src="@drawable/ic_search" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3">
+
+            <ImageView
+                android:id="@+id/reader_main_menu_top_back"
+                style="@style/TabMenuItem"
+                android:src="@drawable/ic_back" />
+
+            <ImageView
+                android:id="@+id/reader_main_menu_top_brightness"
+                style="@style/TabMenuItem"
+                android:src="@drawable/ic_brightness" />
+
+            <ImageView
+                android:id="@+id/reader_main_menu_top_more"
+                style="@style/TabMenuItem"
+                android:src="@drawable/ic_menu" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+</LinearLayout>

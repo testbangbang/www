@@ -86,7 +86,7 @@
     <string name="jump">跳转</string>
     <string name="delete">删除</string>
     <string name="edit">编辑</string>
-    <string name="Annotation">标注</string>
+    <string name="annotation">标注</string>
     <string name="Cancel">取消</string>
     <string name="save_annotation">保存</string>
     <string name="update">更新</string>
@@ -124,6 +124,9 @@
     <string name="screen_success_prompt">截图已保存至设备下%s文件夹中,可使用USB先连接PC导出。</string>
     <string name="popup_selection_menu_page_indicator_default_value">1/1</string>
     <string name="no_chapters">本文不含章节信息</string>
+    <string name="application_list">应用列表</string>
+    <string name="menu_app_npi_clear">清除测试应用</string>
+    <string name="enter_bookstore">进入书城</string>
     <string name="dict_query_language">英文</string>
     <string name="word_query">单词查询：</string>
     <string name="dim_query">模糊查询：</string>
@@ -186,4 +189,6 @@
     <string name="pinyin_query">拼音查询:</string>
     <string name="radical_strokes">部首笔画:</string>
     <string name="total_strokes">总笔画:</string>
+    <string name="listen_books">听文章</string>
+    <string name="after_reading">读后感</string>
 </resources>
