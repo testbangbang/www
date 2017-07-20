@@ -65,7 +65,7 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
         if (reader.getRendererFeatures().supportScale()) {
             this.pageInfo = LayoutProviderUtils.drawPageWithScaleToPage(pageInfo, bitmap, reader.getRenderer());
         } else {
-            ReaderBitmap originalPage = ReaderBitmapReferenceImpl.create((int)origin.width(), (int)origin.height(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
+            ReaderBitmapReferenceImpl originalPage = ReaderBitmapReferenceImpl.create((int)origin.width(), (int)origin.height(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
             this.pageInfo = LayoutProviderUtils.drawReflowablePage(pageInfo, originalPage, reader.getRenderer());
             if (this.pageInfo != null) {
                 BitmapUtils.scaleBitmap(originalPage.getBitmap(),
@@ -73,7 +73,7 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
                         bitmap.getBitmap(),
                         new Rect(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight()));
             }
-            originalPage.getBitmap().recycle();
+            originalPage.close();
         }
     }
 
