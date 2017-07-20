@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by zhouzhiming on 2017/7/6.
  */
-public class NewWordQuery extends BaseDataRequest {
+public class NewWordQueryAll extends BaseDataRequest {
     private List<NewWordNoteBookEntity> newWordList;
 
     @Override

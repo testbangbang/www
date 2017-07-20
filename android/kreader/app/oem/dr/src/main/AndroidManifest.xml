@@ -63,11 +63,40 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".activity.DictQueryActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
-        <activity android:name=".activity.DictResultShowActivity" />
+        <activity
+            android:name=".activity.DictResultShowActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".activity.MyNotesActivity" />
+        <activity
+            android:name=".activity.MyNotesActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.GoodSentenceTypeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.GoodSentenceNotebookActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.NewWordTypeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.QueryRecordActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.NewWordNotebookActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.NewWordQueryActivity"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"

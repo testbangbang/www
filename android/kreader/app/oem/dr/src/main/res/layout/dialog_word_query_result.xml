@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rectangle_stroke"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/dialog_result_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/dialog_result_button_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dict_result_previous_margin_left"
+            android:background="@drawable/imagebtn_bg"
+            android:clickable="true"
+            android:contentDescription="@string/hint"
+            android:focusable="true"
+            android:src="@drawable/dict_page_left"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/dialog_result_page_size_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/dialog_result_button_previous"
+            android:clickable="true"
+            android:text="1/1"
+            android:textColor="@android:color/primary_text_light"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <ImageView
+            android:id="@+id/dialog_result_button_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/dialog_result_page_size_indicator"
+            android:background="@drawable/imagebtn_bg"
+            android:clickable="true"
+            android:contentDescription="@string/hint"
+            android:focusable="true"
+            android:src="@drawable/dict_page_right"
+            android:visibility="visible" />
+
+        <Spinner
+            android:id="@+id/dialog_result_spinner"
+            style="@style/good_sentence_activity_spinner_second" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_result_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/dialog_result_bottom"
+        android:layout_below="@+id/dialog_result_top"
+        android:background="@drawable/rectangle_stroke">
+
+        <com.onyx.android.dr.view.AutoPagedWebView
+            android:id="@+id/dialog_result_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dialog_resutl_view_margin"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/dialog_result_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/select_dialog_baidubaike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/select_dialog_close_cancel_margin"
+            android:background="@drawable/rectangle_stroke"
+            android:gravity="center"
+            android:padding="@dimen/select_dialog_close_cancel_padding"
+            android:text="@string/baidu_baike"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <TextView
+            android:id="@+id/select_dialog_close_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/select_dialog_close_cancel_margin"
+            android:background="@drawable/rectangle_stroke"
+            android:gravity="center"
+            android:padding="@dimen/select_dialog_close_cancel_padding"
+            android:text="@string/exit"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <TextView
+            android:id="@+id/select_dialog_close_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/select_dialog_close_cancel_margin"
+            android:layout_toLeftOf="@+id/select_dialog_close_cancel"
+            android:background="@drawable/rectangle_stroke"
+            android:gravity="center"
+            android:padding="@dimen/select_dialog_close_cancel_padding"
+            android:text="@string/vocabulary_notebook"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_two_heading_font" />
+
+    </RelativeLayout>
+</RelativeLayout>
