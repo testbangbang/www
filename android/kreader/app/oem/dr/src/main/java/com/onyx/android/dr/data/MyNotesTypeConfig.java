@@ -22,34 +22,34 @@ import java.util.List;
  * Created by zhouzhiming on 2017/7/11.
  */
 public class MyNotesTypeConfig {
-    public List<MenuData> myTracksData = new ArrayList<>();
-    public List<MenuData> myThinkData = new ArrayList<>();
-    public List<MenuData> myCreationData = new ArrayList<>();
+    public List<MenuBean> myTracksData = new ArrayList<>();
+    public List<MenuBean> myThinkData = new ArrayList<>();
+    public List<MenuBean> myCreationData = new ArrayList<>();
 
     public void loadDictInfo(Context context) {
-        MenuData dictData = new MenuData(DeviceConfig.MyNotesInfo.MY_NOTES_NEW_WORD_NOTEBOOK, context.getResources().getString(R.string.new_word_notebook), R.drawable.ic_books, new NewWordNotebookEvent());
+        MenuBean dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_NEW_WORD_NOTEBOOK, context.getResources().getString(R.string.new_word_notebook), R.drawable.ic_books, new NewWordNotebookEvent());
         myTracksData.add(dictData);
-        dictData = new MenuData(DeviceConfig.MyNotesInfo.MY_NOTES_POSTIL, context.getResources().getString(R.string.postil), R.drawable.ic_books, new PostilEvent());
+        dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_POSTIL, context.getResources().getString(R.string.postil), R.drawable.ic_books, new PostilEvent());
         myThinkData.add(dictData);
-        dictData = new MenuData(DeviceConfig.MyNotesInfo.MY_NOTES_READER_RESPONSE, context.getResources().getString(R.string.reader_response), R.drawable.ic_books, new ReaderResponseEvent());
+        dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_READER_RESPONSE, context.getResources().getString(R.string.reader_response), R.drawable.ic_books, new ReaderResponseEvent());
         myCreationData.add(dictData);
 
-        dictData = new MenuData(DeviceConfig.MyNotesInfo.MY_NOTES_GOOD_SENTENCE_NOTEBOOK, context.getResources().getString(R.string.good_sentence_notebook), R.drawable.ic_books, new GoodSentenceNotebookEvent());
+        dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_GOOD_SENTENCE_NOTEBOOK, context.getResources().getString(R.string.good_sentence_notebook), R.drawable.ic_books, new GoodSentenceNotebookEvent());
         myTracksData.add(dictData);
-        dictData = new MenuData(DeviceConfig.MyNotesInfo.MY_NOTES_READ_SUMMARY, context.getResources().getString(R.string.read_summary), R.drawable.ic_books, new ReadSummaryEvent());
+        dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_READ_SUMMARY, context.getResources().getString(R.string.read_summary), R.drawable.ic_books, new ReadSummaryEvent());
         myThinkData.add(dictData);
-        dictData = new MenuData(DeviceConfig.MyNotesInfo.MY_NOTES_INFORMAL_ESSAY, context.getResources().getString(R.string.informal_essay), R.drawable.ic_books, new InfromalEssayEvent());
+        dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_INFORMAL_ESSAY, context.getResources().getString(R.string.informal_essay), R.drawable.ic_books, new InfromalEssayEvent());
         myCreationData.add(dictData);
 
-        dictData = new MenuData(DeviceConfig.MyNotesInfo.MY_NOTES_READING_RATE, context.getResources().getString(R.string.reading_rate), R.drawable.ic_books, new ReadingRateEvent());
+        dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_READING_RATE, context.getResources().getString(R.string.reading_rate), R.drawable.ic_books, new ReadingRateEvent());
         myTracksData.add(dictData);
-        dictData = new MenuData(DeviceConfig.MyNotesInfo.MY_NOTES_MEMORANDUM, context.getResources().getString(R.string.memorandum), R.drawable.ic_books, new MemorandumEvent());
+        dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_MEMORANDUM, context.getResources().getString(R.string.memorandum), R.drawable.ic_books, new MemorandumEvent());
         myThinkData.add(dictData);
-        dictData = new MenuData(DeviceConfig.MyNotesInfo.MY_NOTES_SKETCH, context.getResources().getString(R.string.sketch), R.drawable.ic_books, new SketchEvent());
+        dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_SKETCH, context.getResources().getString(R.string.sketch), R.drawable.ic_books, new SketchEvent());
         myCreationData.add(dictData);
     }
 
-    public List<MenuData> getMenuData(int userType) {
+    public List<MenuBean> getMenuData(int userType) {
         switch (userType) {
             case Constants.ACCOUNT_TYPE_MY_TRACKS:
                 return myTracksData;

@@ -117,10 +117,6 @@ public class DRApplication extends MultiDexApplication {
         return libraryDataHolder;
     }
 
-    static public DataManager getDataManager() {
-        return getLibraryDataHolder().getDataManager();
-    }
-
     public void initDatabases(final Context context, final List<Class<? extends DatabaseHolder>> list) {
         FlowConfig.Builder builder = new FlowConfig.Builder(context);
         if (list != null) {

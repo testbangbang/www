@@ -8,12 +8,7 @@ public class NewWordBean {
     private String newWord;
     private String dictionaryLookup;
     private String readingMatter;
-
-    public NewWordBean(String newWord, String dictionaryLookup, String readingMatter) {
-        this.newWord = newWord;
-        this.dictionaryLookup = dictionaryLookup;
-        this.readingMatter = readingMatter;
-    }
+    private int newWordType;
 
     public String getDictionaryLookup() {
         return dictionaryLookup;
@@ -37,5 +32,13 @@ public class NewWordBean {
 
     public void setNewWord(String newWord) {
         this.newWord = newWord;
+    }
+
+    public int getNewWordType() {
+        return newWordType;
+    }
+
+    public void setNewWordType(int newWordType) {
+        this.newWordType = newWordType;
     }
 }

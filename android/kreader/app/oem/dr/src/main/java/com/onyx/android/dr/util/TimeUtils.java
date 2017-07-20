@@ -1,5 +1,7 @@
 package com.onyx.android.dr.util;
 
+import android.support.annotation.NonNull;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -148,27 +150,40 @@ public class TimeUtils {
         return Integer.parseInt(String.valueOf(between));
     }
 
-    public static String getCurrentMonth() {
-        Calendar calender = Calendar.getInstance();
+    public static String getCurrentMonth(long timeMillis) {
+        Calendar calender = getCalendar(timeMillis);
         int month = calender.get(Calendar.MONTH) + 1;
         return month + "";
     }
 
-    public static String getCurrentDay() {
+    @NonNull
+    private static Calendar getCalendar(long timeMillis) {
+        String dateString = getTime(timeMillis);
+        Date date = null;
+        try {
+            date = DATE_FORMAT_DATE.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         Calendar calender = Calendar.getInstance();
+        calender.setTime(date);
+        return calender;
+    }
+
+    public static String getCurrentDay(long timeMillis) {
+        Calendar calender = getCalendar(timeMillis);
         int day = calender.get(Calendar.DATE);
         return day + "";
     }
 
-    public static long getCurrentTime() {
+    public static long getCurrentTimeMillis() {
         long timeMillis = System.currentTimeMillis();
-        long time = timeMillis/1000;
-        return time;
+        return timeMillis;
     }
 
-    public static String getWeekOfMonth() {
-        Calendar c = Calendar.getInstance();
-        int week = c.get(Calendar.WEEK_OF_MONTH);
+    public static String getWeekOfMonth(long timeMillis){
+        Calendar calender = getCalendar(timeMillis);
+        int week = calender.get(Calendar.WEEK_OF_MONTH);
         return week + "";
     }
 }

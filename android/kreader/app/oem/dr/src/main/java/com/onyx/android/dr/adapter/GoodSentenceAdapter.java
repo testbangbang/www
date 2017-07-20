@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.List;
@@ -59,13 +60,13 @@ public class GoodSentenceAdapter extends PageRecyclerView.PageAdapter<GoodSenten
     @Override
     public void onPageBindViewHolder(ViewHolder holder, int position) {
         GoodSentenceNoteEntity goodSentenceEntity = dataList.get(position);
-        holder.month.setText(goodSentenceEntity.month);
-        holder.week.setText(goodSentenceEntity.week);
-        holder.day.setText(goodSentenceEntity.day);
+		long currentTime = goodSentenceEntity.currentTime;
+		holder.month.setText(TimeUtils.getCurrentMonth(currentTime));
+        holder.week.setText(TimeUtils.getWeekOfMonth(currentTime));
+        holder.day.setText(TimeUtils.getCurrentDay(currentTime));
         holder.content.setText(goodSentenceEntity.details);
         holder.readingMatter.setText(goodSentenceEntity.readingMatter);
         holder.pageNumber.setText(goodSentenceEntity.pageNumber);
-        holder.recitation.setText(goodSentenceEntity.recitation);
         holder.rootView.setTag(position);
         holder.rootView.setOnClickListener(this);
     }

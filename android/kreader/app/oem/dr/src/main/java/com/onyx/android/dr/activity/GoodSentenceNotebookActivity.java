@@ -14,8 +14,6 @@ import com.onyx.android.dr.interfaces.GoodSentenceView;
 import com.onyx.android.dr.presenter.GoodSentencePresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -114,6 +112,5 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 }

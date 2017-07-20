@@ -7,15 +7,13 @@ import com.onyx.android.dr.adapter.MyThinkAdapter;
 import com.onyx.android.dr.adapter.MyTracksAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.data.MenuData;
+import com.onyx.android.dr.data.MenuBean;
 import com.onyx.android.dr.event.GoodSentenceNotebookEvent;
 import com.onyx.android.dr.event.NewWordNotebookEvent;
 import com.onyx.android.dr.interfaces.MyNotesView;
 import com.onyx.android.dr.presenter.MyNotesPresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -72,19 +70,19 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     }
 
     @Override
-    public void setMyracksData(List<MenuData> menuDatas) {
+    public void setMyracksData(List<MenuBean> menuDatas) {
         myTracksAdapter.setMenuDataList(menuDatas);
         tracksRecyclerView.setAdapter(myTracksAdapter);
     }
 
     @Override
-    public void setMyThinkData(List<MenuData> menuDatas) {
+    public void setMyThinkData(List<MenuBean> menuDatas) {
         myThinkAdapter.setMenuDataList(menuDatas);
         thinkRecyclerView.setAdapter(myThinkAdapter);
     }
 
     @Override
-    public void setMyCreationData(List<MenuData> menuDatas) {
+    public void setMyCreationData(List<MenuBean> menuDatas) {
         myCreationAdapter.setMenuDataList(menuDatas);
         creationRecyclerView.setAdapter(myCreationAdapter);
     }
@@ -115,6 +113,5 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 }

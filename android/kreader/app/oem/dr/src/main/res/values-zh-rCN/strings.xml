@@ -93,7 +93,7 @@
     <string name="ok">确认</string>
     <string name="sure_delete">是否确定删除</string>
     <string name="dialog_dictionary_title">无解释</string>
-    <string name="Copy">拷贝</string>
+    <string name="copy">拷贝</string>
     <string name="Highlight">高亮</string>
     <string name="Dictionary">字典</string>
     <string name="popup_selection_menu_start_tts">TTS</string>

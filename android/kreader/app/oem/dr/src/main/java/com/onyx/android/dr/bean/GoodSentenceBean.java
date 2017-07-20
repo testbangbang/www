@@ -8,12 +8,7 @@ public class GoodSentenceBean {
     private String details;
     private String readingMatter;
     private String pageNumber;
-
-    public GoodSentenceBean(String details, String readingMatter, String pageNumber) {
-        this.details = details;
-        this.readingMatter = readingMatter;
-        this.pageNumber = pageNumber;
-    }
+    private int goodSentenceType;
 
     public String getDetails() {
         return details;
@@ -37,5 +32,13 @@ public class GoodSentenceBean {
 
     public void setReadingMatter(String readingMatter) {
         this.readingMatter = readingMatter;
+    }
+
+    public int getGoodSentenceType() {
+        return goodSentenceType;
+    }
+
+    public void setGoodSentenceType(int goodSentenceType) {
+        this.goodSentenceType = goodSentenceType;
     }
 }

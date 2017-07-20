@@ -41,6 +41,14 @@ public class Constants {
     public static final int ACCOUNT_TYPE_MY_THINK = 1;
     public static final int ACCOUNT_TYPE_MY_CREATION = 2;
 
+    public static final int ENGLISH_NEW_WORD_NOTEBOOK = 0;
+    public static final int CHINESE_NEW_WORD_NOTEBOOK = 1;
+    public static final int MINORITY_LANGUAGE_NEW_WORD_NOTEBOOK = 2;
+
+    public static final int ENGLISH_DOOD_SENTENCE_NOTEBOOK = 0;
+    public static final int CHINESE_DOOD_SENTENCE_NOTEBOOK = 1;
+    public static final int MINORITY_LANGUAGE_DOOD_SENTENCE_NOTEBOOK = 2;
+
     public static final int ACCOUNT_TYPE_GOOD_SENTENCE = 0;
     public static final int ACCOUNT_TYPE_NEW_WORD = 1;
 

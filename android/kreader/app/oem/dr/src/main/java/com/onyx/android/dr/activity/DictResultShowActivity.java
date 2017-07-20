@@ -441,7 +441,10 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVocabularyNotebookEvent(VocabularyNotebookEvent event) {
-        NewWordBean bean = new NewWordBean(copyText, dictionaryLookup, "");
+        NewWordBean bean = new NewWordBean();
+        bean.setNewWord(copyText);
+        bean.setDictionaryLookup(dictionaryLookup);
+        bean.setReadingMatter("");
         dictPresenter.insertNewWord(bean);
     }
 
@@ -452,7 +455,10 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoodExcerptEvent(GoodExcerptEvent event) {
-        GoodSentenceBean bean = new GoodSentenceBean(copyText, "", "");
+        GoodSentenceBean bean = new GoodSentenceBean();
+        bean.setDetails(copyText);
+        bean.setReadingMatter("");
+        bean.setPageNumber("");
         dictPresenter.insertGoodSentence(bean);
     }
 
@@ -525,6 +531,5 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 }

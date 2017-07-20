@@ -34,8 +34,6 @@ import com.onyx.android.sdk.dict.request.common.DictBaseRequest;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
-
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -223,7 +221,10 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         addNewWordNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NewWordBean bean = new NewWordBean(newWord, dictionaryLookup, readingMatter);
+                NewWordBean bean = new NewWordBean();
+                bean.setNewWord(newWord);
+                bean.setDictionaryLookup(dictionaryLookup);
+                bean.setReadingMatter(readingMatter);
                 queryRecordPresenter.insertNewWord(bean);
             }
         });
@@ -359,6 +360,5 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 }

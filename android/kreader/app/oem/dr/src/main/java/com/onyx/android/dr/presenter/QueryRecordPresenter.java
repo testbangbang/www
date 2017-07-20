@@ -43,10 +43,7 @@ public class QueryRecordPresenter {
 
     public void insertNewWord(NewWordBean newWordBean) {
         NewWordNoteBookEntity bean = new NewWordNoteBookEntity();
-        bean.week = TimeUtils.getWeekOfMonth();
-        bean.month = TimeUtils.getCurrentMonth();
-        bean.day = TimeUtils.getCurrentDay();
-        bean.currentTime = TimeUtils.getCurrentTime();
+        bean.currentTime = TimeUtils.getCurrentTimeMillis();
         bean.newWord = newWordBean.getNewWord();
         bean.dictionaryLookup = newWordBean.getDictionaryLookup();
         bean.readingMatter = newWordBean.getReadingMatter();

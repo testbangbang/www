@@ -70,10 +70,7 @@ public class DictFunctionPresenter {
 
     public void insertNewWord(NewWordBean newWordBean) {
         NewWordNoteBookEntity bean = new NewWordNoteBookEntity();
-        bean.week = TimeUtils.getWeekOfMonth();
-        bean.month = TimeUtils.getCurrentMonth();
-        bean.day = TimeUtils.getCurrentDay();
-        bean.currentTime = TimeUtils.getCurrentTime();
+        bean.currentTime = TimeUtils.getCurrentTimeMillis();
         bean.newWord = newWordBean.getNewWord();
         bean.dictionaryLookup = newWordBean.getDictionaryLookup();
         bean.readingMatter = newWordBean.getReadingMatter();
@@ -92,10 +89,7 @@ public class DictFunctionPresenter {
 
     public void insertGoodSentence(GoodSentenceBean goodSentenceBean) {
         GoodSentenceNoteEntity bean = new GoodSentenceNoteEntity();
-        bean.week = TimeUtils.getWeekOfMonth();
-        bean.month = TimeUtils.getCurrentMonth();
-        bean.day = TimeUtils.getCurrentDay();
-        bean.currentTime = TimeUtils.getCurrentTime();
+        bean.currentTime = TimeUtils.getCurrentTimeMillis();
         bean.details = goodSentenceBean.getDetails();
         bean.readingMatter = goodSentenceBean.getReadingMatter();
         bean.pageNumber = goodSentenceBean.getPageNumber();

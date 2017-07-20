@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.List;
@@ -59,9 +60,10 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
     @Override
     public void onPageBindViewHolder(ViewHolder holder, int position) {
         NewWordNoteBookEntity bean = dataList.get(position);
-        holder.month.setText(bean.month);
-        holder.week.setText(bean.week);
-        holder.day.setText(bean.day);
+        long currentTime = bean.currentTime;
+        holder.month.setText(TimeUtils.getCurrentMonth(currentTime));
+        holder.week.setText(TimeUtils.getWeekOfMonth(currentTime));
+        holder.day.setText(TimeUtils.getCurrentDay(currentTime));
         holder.content.setText(bean.newWord);
         holder.readingMatter.setText(bean.readingMatter);
         holder.dictionaryLookup.setText(bean.dictionaryLookup);

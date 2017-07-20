@@ -16,8 +16,6 @@ import com.onyx.android.dr.interfaces.GoodSentenceTpyeView;
 import com.onyx.android.dr.presenter.GoodSentenceTypePresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -109,6 +107,5 @@ public class NewWordTypeActivity extends BaseActivity implements GoodSentenceTpy
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 }

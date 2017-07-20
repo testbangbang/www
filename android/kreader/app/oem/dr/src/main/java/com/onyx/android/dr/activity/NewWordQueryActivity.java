@@ -1,6 +1,5 @@
 package com.onyx.android.dr.activity;
 
-import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
@@ -29,7 +28,6 @@ import com.onyx.android.sdk.dict.request.common.DictBaseCallback;
 import com.onyx.android.sdk.dict.request.common.DictBaseRequest;
 import com.onyx.android.sdk.utils.StringUtils;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -44,7 +42,7 @@ import butterknife.OnClick;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class NewWordQueryActivity extends BaseActivity implements QueryRecordView{
+public class NewWordQueryActivity extends BaseActivity implements QueryRecordView {
     @Bind(R.id.new_word_query_activity_view)
     AutoPagedWebView resultView;
     @Bind(R.id.new_word_query_activity_button_previous)
@@ -64,8 +62,6 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     private QueryWordRequest queryWordRequest;
     public volatile Map<String, DictionaryQueryResult> queryResult;
     private int customFontSize = 10;
-    private Runnable runnable;
-    private Handler handler;
     private String newWord = "";
     private String dictionaryLookup = "";
     private String readingMatter = "";
@@ -89,7 +85,6 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
 
     @Override
     protected void initData() {
-        handler = new Handler();
         queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
         queryRecordPresenter = new QueryRecordPresenter(getApplicationContext(), this);
@@ -171,7 +166,10 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
         incomeNewWordNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NewWordBean bean = new NewWordBean(newWord, dictionaryLookup, readingMatter);
+                NewWordBean bean = new NewWordBean();
+                bean.setNewWord(newWord);
+                bean.setDictionaryLookup(dictionaryLookup);
+                bean.setReadingMatter(readingMatter);
                 queryRecordPresenter.insertNewWord(bean);
             }
         });
@@ -199,17 +197,9 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
                 public void done(DictBaseRequest request, Exception e) {
                     resultView.loadResultAsHtml(queryWordRequest.queryResult);
                     addSearchResult(queryWordRequest.queryResult);
+                    dictSpinnerAdapter.setDatas(searchResultList);
+                    resultSpinner.setAdapter(dictSpinnerAdapter);
 
-                    if (runnable == null) {
-                        runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                dictSpinnerAdapter.setDatas(searchResultList);
-                                resultSpinner.setAdapter(dictSpinnerAdapter);
-                            }
-                        };
-                    }
-                    handler.postDelayed(runnable, millisecond);
                 }
             });
             if (!bRet) {
@@ -312,7 +302,5 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(runnable);
-        EventBus.getDefault().unregister(this);
     }
 }
