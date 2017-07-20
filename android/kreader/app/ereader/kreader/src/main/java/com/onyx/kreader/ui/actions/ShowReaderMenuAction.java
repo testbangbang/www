@@ -571,11 +571,29 @@ public class ShowReaderMenuAction extends BaseAction {
 
 
     private static void prevSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
-        new PreviousSideNotePageAction().execute(readerDataHolder, null);
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
+        actionChain.addAction(new PreviousSideNotePageAction());
+        actionChain.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                resumeDrawing(readerDataHolder);
+            }
+        });
     }
 
     private static void nextSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
-        new NextSideNotePageAction().execute(readerDataHolder, null);
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
+        actionChain.addAction(new NextSideNotePageAction());
+        actionChain.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                resumeDrawing(readerDataHolder);
+            }
+        });
     }
 
     private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {
