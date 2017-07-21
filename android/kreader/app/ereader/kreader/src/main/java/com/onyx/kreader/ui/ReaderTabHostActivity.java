@@ -42,6 +42,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.ui.dialog.DialogTabHostMenu;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,6 +74,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     // 0: left, 1: right
     private ReaderTabManager.ReaderTab[] sideReadingTabs = new ReaderTabManager.ReaderTab[2];
 
+    private boolean isDoubleOpen = false;
+    private ReaderTabManager.ReaderTab doubleOpenedTab = null;
+
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
     public static void setTabWidgetVisible(boolean visible) {
@@ -88,6 +92,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         acquireStartupWakeLock();
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_reader_host);
         initComponents();
         restoreReaderTabState();
@@ -175,14 +180,42 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tabManager.getOpenedTabs().size() < 2) {
+                if (isSideReading) {
+                    quitSideReadingMode();
                     return;
                 }
-                if (!isSideReading) {
-                    startSideReadingMode();
-                } else {
-                    quitSideReadingMode();
-                }
+
+                DialogTabHostMenu dlg = new DialogTabHostMenu(ReaderTabHostActivity.this, tabManager,
+                        new DialogTabHostMenu.Callback() {
+                            @Override
+                            public void onDoubleOpen(ReaderTabManager.ReaderTab tab) {
+                                ReaderTabManager.ReaderTab freeTab = getFreeReaderTab();
+                                openDocWithTab(freeTab, tabManager.getOpenedTabs().get(tab));
+                                startSideReadingMode(tab, freeTab);
+
+                                isDoubleOpen = true;
+                                doubleOpenedTab = freeTab;
+                            }
+
+                            @Override
+                            public void onLinkedOpen(ReaderTabManager.ReaderTab tab) {
+
+                            }
+
+                            @Override
+                            public void onSideOpen(ReaderTabManager.ReaderTab left, ReaderTabManager.ReaderTab right) {
+                                startSideReadingMode(left, right);
+                            }
+
+                            @Override
+                            public void onClosing(List<ReaderTabManager.ReaderTab> list) {
+                                for (ReaderTabManager.ReaderTab tab : list) {
+                                    closeReaderTab(tab);
+                                }
+                            }
+                        });
+                bringSelfToFront();
+                dlg.show();
             }
         });
         btnSwitch = (ImageView) findViewById(R.id.btn_switch);
@@ -254,21 +287,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         sideReadingTabs[1] = tab;
     }
 
-    private void startSideReadingMode() {
-        if (tabManager.getOpenedTabs().size() < 2) {
-            return;
-        }
-
+    private void startSideReadingMode(ReaderTabManager.ReaderTab left, ReaderTabManager.ReaderTab right) {
         isSideReading = true;
-        int i = 0;
-        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            if (i == 1) {
-                setSideReadingLeft(entry.getKey());
-            } else if (i == 0) {
-                setSideReadingRight(entry.getKey());
-            }
-            i++;
-        }
+        setSideReadingLeft(left);
+        setSideReadingRight(right);
 
         rebuildTabWidget();
 
@@ -281,6 +303,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void quitSideReadingMode() {
         isSideReading = false;
+
+        if (isDoubleOpen) {
+            closeTabActivity(doubleOpenedTab);
+            tabManager.removeOpenedTab(doubleOpenedTab);
+            doubleOpenedTab = null;
+            isDoubleOpen = false;
+        }
+
         rebuildTabWidget();
 
         updateReaderTabWindowHeight(getSideReadingLeft());

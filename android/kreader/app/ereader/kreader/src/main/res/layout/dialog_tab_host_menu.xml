@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="450dp"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:padding="10dp"
+    android:orientation="vertical" >
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/recycler_view_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_double_open"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="双开" />
+
+        <Button
+            android:id="@+id/button_double_link"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="联动"/>
+
+        <Button
+            android:id="@+id/button_side_open"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="并列"/>
+
+        <Button
+            android:id="@+id/button_close"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="关闭"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
