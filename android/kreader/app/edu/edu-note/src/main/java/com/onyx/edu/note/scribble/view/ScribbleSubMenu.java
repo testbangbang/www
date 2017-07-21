@@ -8,15 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.onyx.android.sdk.data.GAdapterUtil;
-import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.edu.note.NoteAppConfig;
+import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.R;
+import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
-import com.onyx.edu.note.data.ScribbleMainMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
 import com.onyx.edu.note.databinding.ScribbleSubMenuBinding;
@@ -52,7 +51,7 @@ public class ScribbleSubMenu extends RelativeLayout {
     private ScribbleSubMenuBinding mBinding;
     private ScribbleFunctionAdapter mAdapter;
     private
-    @ScribbleMainMenuID.ScribbleMainMenuDef
+    @ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef
     int currentCategory;
 
     public void setCurShapeDataInfo(ShapeDataInfo curShapeDataInfo) {
@@ -60,10 +59,11 @@ public class ScribbleSubMenu extends RelativeLayout {
     }
 
     private void initRecyclerView() {
-        PageRecyclerView resultRecyclerView = mBinding.subMenuRecyclerView;
-        resultRecyclerView.setLayoutManager(new DisableScrollGridManager(getContext()));
+        PageRecyclerView subMenuRecyclerView = mBinding.subMenuRecyclerView;
+        subMenuRecyclerView.setLayoutManager(new DisableScrollGridManager(getContext()));
+        subMenuRecyclerView.setHasFixedSize(true);
         buildFunctionAdapter();
-        resultRecyclerView.setAdapter(mAdapter);
+        subMenuRecyclerView.setAdapter(mAdapter);
     }
 
     public ScribbleSubMenu(Context context, ShapeDataInfo shapeDataInfo, RelativeLayout parentLayout, Callback callback, int positionID) {
@@ -91,20 +91,21 @@ public class ScribbleSubMenu extends RelativeLayout {
     }
 
     public
-    @ScribbleMainMenuID.ScribbleMainMenuDef
+    @ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef
     int getCurrentCategory() {
         return currentCategory;
     }
 
-    public void show(final @ScribbleMainMenuID.ScribbleMainMenuDef
+    public void show(final @ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef
                              int category, final boolean isLineLayoutMode) {
         currentCategory = category;
         mAdapter.setRawData(ScribbleFunctionItemUtils.getSubMenuIDList(currentCategory), getContext());
+        updateIndicator(currentCategory);
         reConfigMenuHeight();
         setVisibility(VISIBLE);
     }
 
-    private void reConfigMenuHeight(){
+    private void reConfigMenuHeight() {
         int height = (int) getContext().getResources().getDimension(R.dimen.onyx_sub_note_menu_height);
         RelativeLayout.LayoutParams layoutParams = (LayoutParams) mBinding.subMenuRecyclerView.getLayoutParams();
         layoutParams.height = height * mAdapter.getRowCount();
@@ -129,12 +130,6 @@ public class ScribbleSubMenu extends RelativeLayout {
         return getVisibility() == VISIBLE;
     }
 
-    private static
-    @ScribbleSubMenuID.ScribbleSubMenuIDDef
-    int getMenuUniqueId(GObject menu) {
-        return ScribbleSubMenuID.translate(menu.getInt(GAdapterUtil.TAG_UNIQUE_ID));
-    }
-
     public void rePositionAfterNewConfiguration(boolean isShowStatusBar) {
         setLayoutParams(setMenuPosition(isShowStatusBar));
     }
@@ -150,6 +145,26 @@ public class ScribbleSubMenu extends RelativeLayout {
         p.addRule(RelativeLayout.BELOW, R.id.tool_bar);
         p.addRule(RelativeLayout.CENTER_HORIZONTAL);
         return p;
+    }
+
+    private void updateIndicator(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int mainMenuID) {
+        NoteManager manager = NoteManager.sharedInstance(getContext().getApplicationContext());
+        int targetID = Integer.MIN_VALUE;
+        switch (mainMenuID) {
+            case ScribbleFunctionBarMenuID.ERASER:
+            case ScribbleFunctionBarMenuID.PEN_STYLE:
+                targetID = ScribbleSubMenuID.menuIdFromShapeType(manager.getShapeDataInfo().getCurrentShapeType());
+                break;
+            case ScribbleFunctionBarMenuID.BG:
+                targetID = ScribbleSubMenuID.menuIdFromBg(manager.getShapeDataInfo().getBackground());
+                break;
+            case ScribbleFunctionBarMenuID.PEN_WIDTH:
+                targetID = ScribbleSubMenuID.menuIdFromStrokeWidth(manager.getShapeDataInfo().getStrokeWidth());
+                break;
+        }
+        for (ScribbleFunctionItemViewModel itemViewModel : mAdapter.getItemVMList()) {
+            itemViewModel.mIsChecked.set(itemViewModel.getItemID() == targetID);
+        }
     }
 
     private void buildFunctionAdapter() {

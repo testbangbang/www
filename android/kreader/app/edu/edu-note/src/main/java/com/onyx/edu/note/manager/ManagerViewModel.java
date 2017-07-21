@@ -12,7 +12,7 @@ import android.text.TextUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.request.note.NoteLibraryLoadRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.note.NoteLibraryLoadRequest;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.edu.note.actions.manager.CreateLibraryAction;

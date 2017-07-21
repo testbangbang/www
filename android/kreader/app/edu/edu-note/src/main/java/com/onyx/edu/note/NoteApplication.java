@@ -19,14 +19,14 @@ import com.squareup.leakcanary.LeakCanary;
  */
 
 public class NoteApplication extends Application {
-    private static NoteManager noteManager;
-    private static NoteApplication instance;
+    private static NoteManager sNoteManager;
+    private static NoteApplication sInstance;
 
     public static NoteManager getNoteManager() {
-        if (noteManager == null) {
-            noteManager = NoteManager.sharedInstance(instance);
+        if (sNoteManager == null) {
+            sNoteManager = NoteManager.sharedInstance(sInstance);
         }
-        return noteManager;
+        return sNoteManager;
     }
 
     public static void initWithAppConfig(final Activity activity) {
@@ -43,14 +43,14 @@ public class NoteApplication extends Application {
         }
         LeakCanary.install(this);
         // Normal app init code...
-        instance = this;
+        sInstance = this;
         initDataProvider(this);
         installExceptionHandler();
         initCompatColorImageConfig();
     }
 
     public static NoteApplication getInstance() {
-        return instance;
+        return sInstance;
     }
 
     private void initDataProvider(final Context context) {

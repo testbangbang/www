@@ -1,0 +1,27 @@
+package com.onyx.android.sdk.scribble.asyncrequest.shape;
+
+import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.data.ShapeManagerOptions;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+
+/**
+ * Created by zhuzeng on 4/18/16.
+ * generate path list from add all points and stroke width.
+ * also add to pending list which will be used later.
+ */
+public class ShapeAddRequest extends AsyncBaseNoteRequest {
+
+    private String documentMd5;
+    private int initDisplayPage;
+    private ShapeManagerOptions shapeManagerOptions;
+
+    public ShapeAddRequest(final String md5, int page, final ShapeManagerOptions option) {
+        documentMd5 = md5;
+        initDisplayPage = page;
+        shapeManagerOptions = option;
+    }
+
+    public void execute(final NoteViewHelper parent) throws Exception {
+
+    }
+}

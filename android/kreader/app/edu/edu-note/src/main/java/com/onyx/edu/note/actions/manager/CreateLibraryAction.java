@@ -1,7 +1,7 @@
 package com.onyx.edu.note.actions.manager;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.scribble.request.note.NoteLibraryCreateRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.note.NoteLibraryCreateRequest;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.actions.BaseNoteAction;
 

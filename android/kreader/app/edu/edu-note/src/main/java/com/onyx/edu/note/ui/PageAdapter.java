@@ -18,7 +18,7 @@ import java.util.List;
 public abstract class PageAdapter<VH extends RecyclerView.ViewHolder, T, VM extends BaseObservable>
         extends PageRecyclerView.PageAdapter<VH> {
 
-    protected List<VM> getItemVMList() {
+    public List<VM> getItemVMList() {
         return itemVMList;
     }
 

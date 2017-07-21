@@ -1,13 +1,15 @@
 package com.onyx.edu.note;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
+import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.handler.BaseHandler;
 import com.onyx.edu.note.handler.ScribbleHandler;
 import com.onyx.edu.note.handler.SpanTextHandler;
@@ -51,19 +53,20 @@ public class HandlerManager {
         setActiveProvider(SCRIBBLE_PROVIDER);
     }
 
-    public void setActiveProvider(final String providerName) {
-        if (getActiveProvider() != null) {
-            getActiveProvider().onDeactivate();
+    public void setActiveProvider(String providerName) {
+        if (!TextUtils.isEmpty(activeProviderName) && providerMap.get(activeProviderName) != null) {
+            providerMap.get(activeProviderName).onDeactivate();
         }
         activeProviderName = providerName;
-        getActiveProvider().onActivate();
-        mViewModel.setMainMenuIDList(getMainMenuFunctionIDList());
+        providerMap.get(activeProviderName).setScribbleViewModel(mViewModel);
+        providerMap.get(activeProviderName).onActivate();
     }
 
-    @Nullable
+    @NonNull
     public BaseHandler getActiveProvider() {
         if (TextUtils.isEmpty(activeProviderName)) {
-            return null;
+            resetToDefaultProvider();
+            return getActiveProvider();
         }
         return providerMap.get(activeProviderName);
     }
@@ -77,14 +80,31 @@ public class HandlerManager {
         setActiveProvider(activeProviderName.equals(SCRIBBLE_PROVIDER) ? SPAN_TEXT_PROVIDER : SCRIBBLE_PROVIDER);
     }
 
-    public List<Integer> getMainMenuFunctionIDList() {
-        if (getActiveProvider() == null) {
-            return null;
-        }
-        return getActiveProvider().getMainMenuFunctionIDList();
+    public void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
+        getActiveProvider().handleSubMenuFunction(subMenuID);
     }
 
-    public void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
-       getActiveProvider().handleSubMenuFunction(subMenuID);
+    public void handleToolBarMenuFunction(@ScribbleToolBarMenuID.ScribbleToolBarMenuDef int toolBarMenuID) {
+        getActiveProvider().handleToolBarMenuFunction(toolBarMenuID);
+    }
+
+    public void saveDocument(boolean closeAfterSave, BaseCallback callback) {
+        getActiveProvider().saveDocument(closeAfterSave, callback);
+    }
+
+    public void prevPage() {
+        getActiveProvider().prevPage();
+    }
+
+    public void nextPage() {
+        getActiveProvider().nextPage();
+    }
+
+    public void addPage() {
+        getActiveProvider().addPage();
+    }
+
+    public void deletePage() {
+        getActiveProvider().deletePage();
     }
 }

@@ -9,22 +9,16 @@ import android.databinding.ObservableList;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.note.NoteDocumentOpenRequest;
 import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
-import com.onyx.android.sdk.scribble.request.note.NoteDocumentOpenRequest;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.edu.note.NoteManager;
-import com.onyx.edu.note.actions.scribble.DocumentAddNewPageAction;
 import com.onyx.edu.note.actions.scribble.DocumentCreateAction;
-import com.onyx.edu.note.actions.scribble.DocumentDeletePageAction;
 import com.onyx.edu.note.actions.scribble.DocumentEditAction;
-import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
-import com.onyx.edu.note.actions.scribble.GotoNextPageAction;
-import com.onyx.edu.note.actions.scribble.GotoPrevPageAction;
-import com.onyx.edu.note.actions.scribble.RedoAction;
-import com.onyx.edu.note.actions.scribble.UndoAction;
 import com.onyx.edu.note.data.ScribbleAction;
+import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 
 import java.util.Date;
 import java.util.List;
@@ -36,13 +30,11 @@ import java.util.List;
 public class ScribbleViewModel extends BaseObservable {
     private static final String TAG = ScribbleViewModel.class.getSimpleName();
 
-    // To avoid leaks, this must be an Application Context.
-    private Context mContext;
-
     // These observable fields will update Views automatically
     public final ObservableInt mCurrentPage = new ObservableInt();
     public final ObservableInt mTotalPage = new ObservableInt();
-    public final ObservableList<Integer> mMainMenuIDList = new ObservableArrayList<>();
+    public final ObservableList<Integer> mFunctionBarMenuIDList = new ObservableArrayList<>();
+    public final ObservableList<Integer> mToolBarMenuIDList = new ObservableArrayList<>();
     private final ObservableField<NoteModel> mCurrentNoteModel = new ObservableField<>();
     private final ObservableField<ShapeDataInfo> mShapeDataInfo = new ObservableField<>();
     public final ObservableField<String> mNoteTitle = new ObservableField<>();
@@ -53,12 +45,16 @@ public class ScribbleViewModel extends BaseObservable {
 
     private ScribbleNavigator mNavigator;
     private NoteManager mNoteManager;
+
+    public String getCurrentDocumentUniqueID() {
+        return mCurrentDocumentUniqueID;
+    }
+
     private String mCurrentDocumentUniqueID;
 
     ScribbleViewModel(Context context) {
         // Force use of Application Context.
-        this.mContext = context.getApplicationContext();
-        mNoteManager = NoteManager.sharedInstance(mContext);
+        mNoteManager = NoteManager.sharedInstance(context.getApplicationContext());
     }
 
     void start(String uniqueID, String parentID, @ScribbleAction.ScribbleActionDef int action, final BaseCallback callback) {
@@ -88,103 +84,31 @@ public class ScribbleViewModel extends BaseObservable {
         }
     }
 
+    //Todo:temp use navigator communicate with handler manager.
+
     public void onPrevPage() {
-        mNoteManager.syncWithCallback(true, true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                GotoPrevPageAction prevPageAction = new GotoPrevPageAction();
-                prevPageAction.execute(mNoteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, e);
-                    }
-                });
-            }
-        });
+        mNavigator.onFunctionBarMenuFunctionItem(ScribbleFunctionBarMenuID.PREV_PAGE);
     }
 
     public void onNextPage() {
-        mNoteManager.syncWithCallback(true, true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                GotoNextPageAction nextPageAction = new GotoNextPageAction();
-                nextPageAction.execute(mNoteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, e);
-                    }
-                });
-            }
-        });
+        mNavigator.onFunctionBarMenuFunctionItem(ScribbleFunctionBarMenuID.NEXT_PAGE);
     }
 
     public void addPage() {
-        mNoteManager.syncWithCallback(true, true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                DocumentAddNewPageAction addNewPageAction = new DocumentAddNewPageAction();
-                addNewPageAction.execute(mNoteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, e);
-                    }
-                });
-            }
-        });
+        mNavigator.onFunctionBarMenuFunctionItem(ScribbleFunctionBarMenuID.ADD_PAGE);
     }
 
     public void deletePage() {
-        mNoteManager.syncWithCallback(true, true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                DocumentDeletePageAction deletePageAction = new DocumentDeletePageAction();
-                deletePageAction.execute(mNoteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, e);
-                    }
-                });
-            }
-        });
+        mNavigator.onFunctionBarMenuFunctionItem(ScribbleFunctionBarMenuID.DELETE_PAGE);
     }
 
-    public void reDo() {
-        mNoteManager.syncWithCallback(false, true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                RedoAction reDoAction = new RedoAction();
-                reDoAction.execute(mNoteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, e);
-                    }
-                });
-            }
-        });
-    }
-
-    public void unDo() {
-        mNoteManager.syncWithCallback(false, true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                UndoAction unDoAction = new UndoAction();
-                unDoAction.execute(mNoteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, e);
-                    }
-                });
-            }
-        });
-    }
-
-    private void onRequestFinished(BaseNoteRequest request, Throwable throwable) {
+    public void onRequestFinished(AsyncBaseNoteRequest request, Throwable throwable) {
         if (!request.isAbort() && throwable == null) {
             updateInfo(request);
         }
     }
 
-    private void updateInfo(BaseNoteRequest request) {
+    private void updateInfo(AsyncBaseNoteRequest request) {
         mNoteManager.setShapeDataInfo(request.getShapeDataInfo());
         mShapeDataInfo.set(mNoteManager.getShapeDataInfo());
         mCurrentPage.set(mShapeDataInfo.get().getHumanReadableCurPageIndex());
@@ -200,18 +124,13 @@ public class ScribbleViewModel extends BaseObservable {
         mNoteTitle.set(title);
     }
 
-    public void onSaveDocument(boolean closeAfterSave) {
-        onSaveDocument(closeAfterSave, null);
+    public void setFunctionBarMenuIDList(List<Integer> functionBarMenuIDList) {
+        mFunctionBarMenuIDList.clear();
+        mFunctionBarMenuIDList.addAll(functionBarMenuIDList);
     }
 
-    void onSaveDocument(boolean closeAfterSave, BaseCallback callback) {
-        DocumentSaveAction documentSaveAction = new DocumentSaveAction(mCurrentDocumentUniqueID,
-                mNoteTitle.get(), closeAfterSave);
-        documentSaveAction.execute(mNoteManager, callback);
-    }
-
-    public void setMainMenuIDList(List<Integer> mainMenuIDList) {
-        mMainMenuIDList.clear();
-        mMainMenuIDList.addAll(mainMenuIDList);
+    public void setToolBarMenuIDList(List<Integer> toolBarMenuIDList) {
+        mToolBarMenuIDList.clear();
+        mToolBarMenuIDList.addAll(toolBarMenuIDList);
     }
 }
