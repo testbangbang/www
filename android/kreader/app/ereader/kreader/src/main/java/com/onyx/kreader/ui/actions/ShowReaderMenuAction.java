@@ -566,9 +566,13 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void startSideNote(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        new StartSideNoteAction().execute(readerDataHolder, null);
+        new StartSideNoteAction().execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                startNoteDrawing(readerDataHolder, readerActivity, false);
+            }
+        });
     }
-
 
     private static void prevSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
