@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.WindowManager;
 
 import com.onyx.android.sdk.utils.Debug;
@@ -28,6 +29,7 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_ENABLE_DEBUG_LOG = "com.onyx.kreader.action.ENABLE_DEBUG_LOG";
     public static final String ACTION_DISABLE_DEBUG_LOG = "com.onyx.kreader.action.DISABLE_DEBUG_LOG";
 
+    public static final String TAG_WINDOW_GRAVITY = "com.onyx.kreader.WINDOW_GRAVITY";
     public static final String TAG_WINDOW_WIDTH = "com.onyx.kreader.WINDOW_WIDTH";
     public static final String TAG_WINDOW_HEIGHT = "com.onyx.kreader.WINDOW_HEIGHT";
     public static final String TAG_DOCUMENT_PATH = "com.onyx.kreader.DOCUMENT_PATH";
@@ -52,9 +54,10 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         sendBroadcast(context, intent);
     }
 
-    public static void sendResizeReaderWindowIntent(Context context, Class clazz, int width, int height) {
+    public static void sendResizeReaderWindowIntent(Context context, Class clazz, int gravity, int width, int height) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_RESIZE_WINDOW);
+        intent.putExtra(TAG_WINDOW_GRAVITY, gravity);
         intent.putExtra(TAG_WINDOW_WIDTH, width);
         intent.putExtra(TAG_WINDOW_HEIGHT, height);
         sendBroadcast(context, intent);
@@ -104,6 +107,7 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
             eventBus.post(new MoveTaskToBackEvent());
         } else if (intent.getAction().equals(ACTION_RESIZE_WINDOW)) {
             eventBus.post(new ResizeReaderWindowEvent(
+                    intent.getIntExtra(TAG_WINDOW_GRAVITY, Gravity.BOTTOM),
                     intent.getIntExtra(TAG_WINDOW_WIDTH, WindowManager.LayoutParams.MATCH_PARENT),
                     intent.getIntExtra(TAG_WINDOW_HEIGHT, WindowManager.LayoutParams.MATCH_PARENT)));
         } else if (intent.getAction().equals(ACTION_DOCUMENT_ACTIVATED)) {

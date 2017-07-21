@@ -15,9 +15,18 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/layout_menu"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/btn_menu"
+                    android:padding="5dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_settings"
+                    android:layout_width="@dimen/activity_multiple_reader_tab_height"
+                    android:layout_height="@dimen/activity_multiple_reader_tab_height" />
 
                 <ImageView
                     android:id="@+id/btn_switch"

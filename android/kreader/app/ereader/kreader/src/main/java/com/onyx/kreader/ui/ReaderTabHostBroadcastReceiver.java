@@ -14,6 +14,7 @@ import com.onyx.android.sdk.utils.ViewDocumentUtils;
  */
 
 public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
+    public static final String ACTION_TAB_BRING_TO_FRONT = "com.onyx.kreader.action.TAB_BRING_TO_FRONT";
     public static final String ACTION_TAB_BACK_PRESSED = "com.onyx.kreader.action.TAB_BACK_PRESSED";
     public static final String ACTION_CHANGE_SCREEN_ORIENTATION = "com.onyx.kreader.action.CHANGE_SCREEN_ORIENTATION";
     public static final String ACTION_ENTER_FULL_SCREEN = "com.onyx.kreader.action.ENTER_FULL_SCREEN";
@@ -25,6 +26,7 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
     public static final String TAG_DOCUMENT_PATH = "com.onyx.kreader.action.DOCUMENT_PATH";
 
     public static abstract class Callback {
+        public abstract void onTabBringToFront(String path);
         public abstract void onTabBackPressed();
         public abstract void onChangeOrientation(int orientation);
         public abstract void onEnterFullScreen();
@@ -39,6 +41,13 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
 
     public static void setCallback(Callback callback) {
         ReaderTabHostBroadcastReceiver.callback = callback;
+    }
+
+    public static void sendTabBringToFrontIntent(Context context, String path) {
+        Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ACTION_TAB_BRING_TO_FRONT);
+        intent.putExtra(TAG_DOCUMENT_PATH, path);
+        context.sendBroadcast(intent);
     }
 
     public static void sendTabBackPressedIntent(Context context) {
@@ -82,7 +91,11 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Debug.d(getClass(), "onReceive: " + intent);
-        if (intent.getAction().equals(ACTION_TAB_BACK_PRESSED)) {
+        if (intent.getAction().equals(ACTION_TAB_BRING_TO_FRONT)) {
+            if (callback != null) {
+                callback.onTabBringToFront(intent.getStringExtra(TAG_DOCUMENT_PATH));
+            }
+        } else if (intent.getAction().equals(ACTION_TAB_BACK_PRESSED)) {
             if (callback != null) {
                 callback.onTabBackPressed();
             } else {

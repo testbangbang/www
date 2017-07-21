@@ -216,6 +216,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getReaderDataHolder().getDocumentPath());
         return processKeyDown(keyCode, event);
     }
 
@@ -256,7 +257,8 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private void initWindow() {
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
-        layoutParams.gravity = Gravity.BOTTOM;
+        layoutParams.gravity = getIntent().getIntExtra(ReaderBroadcastReceiver.TAG_WINDOW_GRAVITY, Gravity.BOTTOM);
+        layoutParams.width = getIntent().getIntExtra(ReaderBroadcastReceiver.TAG_WINDOW_WIDTH, WindowManager.LayoutParams.MATCH_PARENT);
         layoutParams.height = getIntent().getIntExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, WindowManager.LayoutParams.MATCH_PARENT);
         layoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         getWindow().setAttributes(layoutParams);
@@ -381,6 +383,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         surfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
+                ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(ReaderActivity.this, getReaderDataHolder().getDocumentPath());
+
                 getHandlerManager().setTouchStartEvent(event);
                 scaleDetector.onTouchEvent(event);
                 gestureDetector.onTouchEvent(event);
@@ -898,6 +902,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void onResizeReaderWindow(final ResizeReaderWindowEvent event) {
         Debug.d(getClass(), "onResizeReaderWindow: " + event.width + ", " + event.height);
         getWindow().setLayout(event.width, event.height);
+        getWindow().setGravity(event.gravity);
     }
 
     private void prepareGCUpdateInterval() {
