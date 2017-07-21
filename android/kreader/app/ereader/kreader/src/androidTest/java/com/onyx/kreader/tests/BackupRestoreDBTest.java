@@ -7,7 +7,7 @@ import com.onyx.android.sdk.data.DatabaseInfo;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.db.OnyxStatisticsDatabase;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
-import com.onyx.android.sdk.data.request.data.db.BackupRestoreDBRequest;
+import com.onyx.android.sdk.data.request.data.db.TransferDBRequest;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -33,19 +33,16 @@ public class BackupRestoreDBTest extends ActivityInstrumentationTestCase2<Reader
     private static final String test = "ashjbfhjasbfhjsabfjhbsajfbsafa";
 
     public void testBackupDB() {
-        String dbPath = getActivity().getDatabasePath(OnyxStatisticsDatabase.NAME).getPath()+ ".db";
-        FileUtils.deleteFile(dbPath);
+        String currentDBPath = getActivity().getDatabasePath(OnyxStatisticsDatabase.NAME).getPath()+ ".db";
+        FileUtils.deleteFile(currentDBPath);
         initDatabase();
         StatisticsUtils.deleteStatisticsList(getActivity());
         OnyxStatisticsModel statisticsModel = new OnyxStatisticsModel();
         statisticsModel.setNote(test);
         statisticsModel.save();
         final String backupDBPath = "mnt/sdcard/" + OnyxStatisticsDatabase.NAME + ".db";
-        DatabaseInfo currentDB = DatabaseInfo.create(OnyxStatisticsDatabase.NAME, OnyxStatisticsDatabase.VERSION, dbPath);
-        DatabaseInfo newDB = DatabaseInfo.create(backupDBPath);
-
         ReaderDataHolder readerDataHolder = new ReaderDataHolder(getActivity());
-        BackupRestoreDBRequest restoreDBRequest = new BackupRestoreDBRequest(currentDB, newDB, true);
+        TransferDBRequest restoreDBRequest = new TransferDBRequest(currentDBPath, backupDBPath, false, false, null);
         try {
             restoreDBRequest.execute(readerDataHolder.getDataManager());
             SQLiteDatabase database = SQLiteDatabase.openDatabase(backupDBPath, null,SQLiteDatabase.OPEN_READWRITE);
@@ -59,17 +56,15 @@ public class BackupRestoreDBTest extends ActivityInstrumentationTestCase2<Reader
     }
 
     public void testRestoreDB() {
-        String dbPath = getActivity().getDatabasePath(OnyxStatisticsDatabase.NAME).getPath() + ".db";
+        String currentDBPath = getActivity().getDatabasePath(OnyxStatisticsDatabase.NAME).getPath() + ".db";
         StatisticsUtils.deleteStatisticsList(getActivity());
         List<OnyxStatisticsModel> onyxStatisticsModels =  (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListByNote(getActivity(), test);
         assertTrue(onyxStatisticsModels.size() == 0);
 
         String backupFilePath = "mnt/sdcard/" + OnyxStatisticsDatabase.NAME + ".db";
         ReaderDataHolder readerDataHolder = new ReaderDataHolder(getActivity());
-        DatabaseInfo currentDB = DatabaseInfo.create(OnyxStatisticsDatabase.NAME, OnyxStatisticsDatabase.VERSION, dbPath);
-        DatabaseInfo newDB = DatabaseInfo.create(backupFilePath);
 
-        BackupRestoreDBRequest restoreDBRequest = new BackupRestoreDBRequest(currentDB, newDB, false);
+        TransferDBRequest restoreDBRequest = new TransferDBRequest(backupFilePath, currentDBPath, true, true, ReaderNoteGeneratedDatabaseHolder.class);
         try {
             restoreDBRequest.execute(readerDataHolder.getDataManager());
             initDatabase();
@@ -78,7 +73,7 @@ public class BackupRestoreDBTest extends ActivityInstrumentationTestCase2<Reader
             assertTrue(statisticsModels.get(0).getNote().equals(test));
 
             // test has comment field
-            SQLiteDatabase database = SQLiteDatabase.openDatabase(dbPath, null,SQLiteDatabase.OPEN_READWRITE);
+            SQLiteDatabase database = SQLiteDatabase.openDatabase(currentDBPath, null,SQLiteDatabase.OPEN_READWRITE);
             database.execSQL("INSERT INTO OnyxStatisticsModel (comment) VALUES ('test');");
             database.close();
         } catch (Exception e) {

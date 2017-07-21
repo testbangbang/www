@@ -12,10 +12,11 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DatabaseInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.ShapeDatabase;
-import com.onyx.android.sdk.scribble.request.note.BackupRestoreDBRequest;
+import com.onyx.android.sdk.scribble.request.note.TransferDBRequest;
 import com.onyx.android.sdk.ui.dialog.DialogProgress;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
 import java.util.HashMap;
@@ -68,16 +69,11 @@ public class RestoreDataAction<T extends Activity> extends BaseNoteAction<T> {
     }
 
     private void restore(final Activity activity, final BaseCallback callback){
-        Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap = new HashMap<>();
-        DatabaseInfo currentDB = DatabaseInfo.create(ShapeDatabase.NAME, ShapeDatabase.VERSION, activity.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db");
-        DatabaseInfo newDB = DatabaseInfo.create(restorePath);
-        BackupRestoreDBRequest request = new BackupRestoreDBRequest(currentDB, newDB, false);
+        String currentDBPath = activity.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db";
+        TransferDBRequest request = new TransferDBRequest(restorePath, currentDBPath, true, true, ShapeGeneratedDatabaseHolder.class);
         getNoteViewHelper().submit(activity, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e == null) {
-                    initDatabase();
-                }
                 BaseCallback.invoke(callback, request, e);
             }
         });
@@ -85,10 +81,5 @@ public class RestoreDataAction<T extends Activity> extends BaseNoteAction<T> {
 
     private NoteViewHelper getNoteViewHelper() {
         return NoteApplication.getInstance().getNoteViewHelper();
-    }
-
-    private void initDatabase() {
-        FlowManager.destroy();
-        NoteApplication.getInstance().initDataProvider();
     }
 }

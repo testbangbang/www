@@ -12,7 +12,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DatabaseInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.ShapeDatabase;
-import com.onyx.android.sdk.scribble.request.note.BackupRestoreDBRequest;
+import com.onyx.android.sdk.scribble.request.note.TransferDBRequest;
 import com.onyx.android.sdk.ui.dialog.DialogProgress;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.DateTimeUtil;
@@ -80,9 +80,8 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
         final String backupDBPath = BACKUP_LOCAL_SAVE_PATH + fileName + ".db";
         FileUtils.deleteFile(backupDBPath);
         FileUtils.ensureFileExists(backupDBPath);
-        DatabaseInfo currentDB = DatabaseInfo.create(ShapeDatabase.NAME, ShapeDatabase.VERSION, activity.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db");
-        DatabaseInfo newDB = DatabaseInfo.create(backupDBPath);
-        BackupRestoreDBRequest request = new BackupRestoreDBRequest(currentDB, newDB, true);
+        String currentDBPath = activity.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db";
+        TransferDBRequest request = new TransferDBRequest(currentDBPath, backupDBPath, false, false, null);
         getNoteViewHelper().submit(activity, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

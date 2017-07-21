@@ -27,7 +27,7 @@ import com.onyx.android.sdk.data.DatabaseInfo;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
-import com.onyx.android.sdk.data.request.data.db.BackupRestoreDBRequest;
+import com.onyx.android.sdk.data.request.data.db.TransferDBRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.qrcode.QrCodeActivity;
 import com.onyx.android.sdk.qrcode.event.QrCodeEvent;
@@ -53,11 +53,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -423,10 +421,8 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
     }
 
     private void exportDbFileToSdCard(String exportFilePath) {
-        DatabaseInfo currentDB = DatabaseInfo.create(ContentDatabase.NAME, ContentDatabase.VERSION,
-                getContentDatabaseFile().getAbsolutePath());
-        DatabaseInfo newDB = DatabaseInfo.create(exportFilePath);
-        BackupRestoreDBRequest restoreDBRequest = new BackupRestoreDBRequest(currentDB, newDB, true);
+        String currentDBPath = getContentDatabaseFile().getAbsolutePath();
+        TransferDBRequest restoreDBRequest = new TransferDBRequest(currentDBPath, exportFilePath, false, false, null);
         getDataManager().submit(this, restoreDBRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
