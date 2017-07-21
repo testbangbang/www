@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.manager.BackupDataAction;
+import com.onyx.android.note.actions.manager.LoadLocalBackupFileAction;
 import com.onyx.android.note.actions.manager.RestoreDataAction;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -23,12 +24,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static com.onyx.android.note.actions.manager.BackupDataAction.BACKUP_CLOUD_SAVE_PATH;
-import static com.onyx.android.note.actions.manager.BackupDataAction.BACKUP_LOCAL_SAVE_PATH;
 
 /**
  * Created by ming on 2017/7/18.
@@ -40,14 +37,18 @@ public class BackupRestoreActivity extends AppCompatActivity{
 
     private RecyclerView restoreList;
     private View emptyText;
-    private List<FileInfo> backupFiles = new ArrayList<>();
+    private List<FileInfo> localFiles = new ArrayList<>();
+    private List<FileInfo> cloudFiles = new ArrayList<>();
+
+    private List<FileInfo> mergeFiles = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_backup_restore);
         initView();
-        loadBackupFiles();
+        loadLocalBackupFiles();
+        loadCloudBackupFiles();
     }
 
     private void initView() {
@@ -85,12 +86,11 @@ public class BackupRestoreActivity extends AppCompatActivity{
             @Override
             public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
                 CommonViewHolder viewHolder = (CommonViewHolder) holder;
-                final FileInfo fileInfo = backupFiles.get(position);
+                final FileInfo fileInfo = mergeFiles.get(position);
                 File file = new File(fileInfo.getPath());
                 viewHolder.setText(R.id.name, FileUtils.getBaseName(fileInfo.getName()));
                 viewHolder.setText(R.id.size, FileUtils.getFileSize(file.length()));
-                String parentFolder = FileUtils.getBaseName(new File(fileInfo.getPath()).getParentFile().getName());
-                viewHolder.setImageResource(R.id.restore, isLocalBackupFile(parentFolder) ? R.drawable.local_backup_restore : R.drawable.cloud_backup_restore);
+                viewHolder.setImageResource(R.id.restore, fileInfo.isLocal() ? R.drawable.local_backup_restore : R.drawable.cloud_backup_restore);
                 viewHolder.getView(R.id.restore).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -101,21 +101,21 @@ public class BackupRestoreActivity extends AppCompatActivity{
 
             @Override
             public int getItemCount() {
-                return Math.min(backupFiles.size(), SHOW_BACKUP_FILE_COUNT);
+                return Math.min(mergeFiles.size(), SHOW_BACKUP_FILE_COUNT);
             }
         });
     }
 
-    private boolean isLocalBackupFile(String parentFolder) {
-        return parentFolder.startsWith(BackupDataAction.LOCAL_FOLDER);
-    }
-
     private void backup(boolean cloudBackup) {
+        if (cloudBackup) {
+            Toast.makeText(this, "This feature is not yet available", Toast.LENGTH_SHORT).show();
+            return;
+        }
         new BackupDataAction<BackupRestoreActivity>(cloudBackup).execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 Toast.makeText(BackupRestoreActivity.this, e == null ? R.string.backup_success : R.string.backup_fail, Toast.LENGTH_SHORT).show();
-                loadBackupFiles();
+                loadLocalBackupFiles();
             }
         });
     }
@@ -129,15 +129,33 @@ public class BackupRestoreActivity extends AppCompatActivity{
         });
     }
 
-    public void loadBackupFiles() {
-        backupFiles.clear();
-        Set<String> filter = new HashSet<>();
-        filter.add("db");
-        List<String> fileList = new ArrayList<>();
-        FileUtils.collectFiles(BACKUP_LOCAL_SAVE_PATH, filter, false, fileList);
-        FileUtils.collectFiles(BACKUP_CLOUD_SAVE_PATH, filter, false, fileList);
-        for (String s : fileList) {
-            backupFiles.add(FileInfo.create(s, new File(s).lastModified(), s));
+    public void loadLocalBackupFiles() {
+        final LoadLocalBackupFileAction fileAction = new LoadLocalBackupFileAction<>();
+        fileAction.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                localFiles.clear();
+                localFiles.addAll(fileAction.getBackupFiles());
+                mergeFiles();
+            }
+        });
+    }
+
+    private void loadCloudBackupFiles() {
+        cloudFiles.clear();
+        mergeFiles();
+    }
+
+    private void mergeFiles() {
+        mergeFiles.clear();
+        mergeFiles.addAll(localFiles);
+        mergeFiles.addAll(cloudFiles);
+        sortFileList(mergeFiles);
+    }
+
+    private void sortFileList(List<FileInfo> backupFiles) {
+        if (backupFiles == null) {
+            return;
         }
         Collections.sort(backupFiles, new Comparator<FileInfo>() {
             @Override
@@ -149,8 +167,9 @@ public class BackupRestoreActivity extends AppCompatActivity{
                 }
             }
         });
-        emptyText.setVisibility(backupFiles.size() == 0 ? View.VISIBLE : View.GONE);
+        emptyText.setVisibility(mergeFiles.size() == 0 ? View.VISIBLE : View.GONE);
         restoreList.getAdapter().notifyDataSetChanged();
     }
+
 
 }

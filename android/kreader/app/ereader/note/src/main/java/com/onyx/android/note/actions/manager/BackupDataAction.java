@@ -19,13 +19,7 @@ import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by ming on 2017/7/18.
@@ -33,10 +27,8 @@ import java.util.Set;
 
 public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
 
-    public final static String LOCAL_FOLDER = "local";
-    public final static String CLOUD_FOLDER = "cloud";
-    public final static String BACKUP_LOCAL_SAVE_PATH = "mnt/sdcard/note/backup/" + LOCAL_FOLDER + "/";
-    public final static String BACKUP_CLOUD_SAVE_PATH = "mnt/sdcard/note/backup/" + CLOUD_FOLDER + "/";
+    public final static String BACKUP_LOCAL_SAVE_PATH = "mnt/sdcard/note/backup/local/";
+
     private DialogProgress dialogProgress;
     private boolean cloudBackup = false;
 
@@ -85,7 +77,7 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
     }
 
     private void backup(final Activity activity, final String fileName, final BaseCallback callback) {
-        final String backupDBPath = (cloudBackup ? BACKUP_CLOUD_SAVE_PATH : BACKUP_LOCAL_SAVE_PATH) + fileName + ".db";
+        final String backupDBPath = BACKUP_LOCAL_SAVE_PATH + fileName + ".db";
         FileUtils.deleteFile(backupDBPath);
         FileUtils.ensureFileExists(backupDBPath);
         DatabaseInfo currentDB = DatabaseInfo.create(ShapeDatabase.NAME, ShapeDatabase.VERSION, activity.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db");
