@@ -618,6 +618,9 @@ public class ReaderDataHolder {
 
     public void setSideNoting(boolean sideNoting) {
         this.sideNoting = sideNoting;
+        if (!sideNoting) {
+            sideNotePage = 0;
+        }
     }
 
     public void previousSideNotePage() {
