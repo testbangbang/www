@@ -25,7 +25,7 @@ public class StartNoteRequest extends ReaderBaseNoteRequest {
 
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
-        setVisiblePages(getVisiblePages());
+        noteManager.setVisiblePages(getVisiblePages());
         noteManager.startRawEventProcessor();
         noteManager.enableRawEventProcessor(true);
         noteManager.setCurrentShapeType(noteManager.getNoteDocument().getCurrentShapeType());
