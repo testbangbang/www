@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_reader_host"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,16 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:id="@+id/layout_menu"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:background="@android:color/white">
 
                 <ImageView
@@ -47,7 +48,8 @@
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_below="@id/layout_menu">
 
                 <View
                     android:id="@+id/view_blank_tab_content"
@@ -55,7 +57,16 @@
                     android:layout_height="match_parent" />
 
             </FrameLayout>
-        </LinearLayout>
+
+            <com.onyx.android.sdk.ui.view.DashedLine
+                android:id="@+id/dash_line_splitter"
+                app:dashLine_orientation="vertical"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:layout_below="@id/layout_menu"
+                android:layout_centerHorizontal="true"
+                android:visibility="invisible" />
+        </RelativeLayout>
     </TabHost>
 
 </RelativeLayout>

@@ -299,6 +299,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         bringReaderTabToFront(getSideReadingLeft());
         bringReaderTabToFront(getSideReadingRight());
 
+        findViewById(R.id.dash_line_splitter).setVisibility(View.VISIBLE);
     }
 
     private void quitSideReadingMode() {
@@ -310,6 +311,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             doubleOpenedTab = null;
             isDoubleOpen = false;
         }
+
+        findViewById(R.id.dash_line_splitter).setVisibility(View.INVISIBLE);
 
         rebuildTabWidget();
 
@@ -949,13 +952,13 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             ReaderBroadcastReceiver.sendResizeReaderWindowIntent(this,
                     tabManager.getTabReceiver(tab),
                     Gravity.BOTTOM | Gravity.LEFT,
-                    getTabContentWidth() / 2,
+                    getTabContentWidth() / 2 - 2,
                     tabContentHeight);
         } else {
             ReaderBroadcastReceiver.sendResizeReaderWindowIntent(this,
                     tabManager.getTabReceiver(tab),
                     Gravity.BOTTOM | Gravity.RIGHT,
-                    getTabContentWidth() / 2,
+                    getTabContentWidth() / 2 - 2,
                     tabContentHeight);
         }
     }
