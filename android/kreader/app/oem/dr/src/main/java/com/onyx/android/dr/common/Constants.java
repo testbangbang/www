@@ -54,4 +54,7 @@ public class Constants {
 
     public static final String BAIDU_BAIKE_URL = "https://wapbaike.baidu.com/item/";
     public static final String WIKTIONARY_URL = "https://en.wiktionary.org/wiki/";
+
+    public static final String MY_NOTES_FOLDER = "/my_notes_html";
+    public static final String NEW_WORD_HTML = MY_NOTES_FOLDER + "/new_word.html";
 }

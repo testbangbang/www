@@ -3,7 +3,8 @@ package com.onyx.android.dr.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -12,6 +13,7 @@ import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -20,9 +22,10 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.ViewHolder> implements View.OnClickListener {
+public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.ViewHolder> {
     private List<NewWordNoteBookEntity> dataList;
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
+    public static HashMap<Integer, Boolean> isSelected;
 
     public interface OnRecyclerViewItemClickListener {
         void onItemClick(View view, int position);
@@ -32,8 +35,26 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
         this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
     }
 
-    public void setDataList(List<NewWordNoteBookEntity> dataList) {
+    public void setDataList(List<NewWordNoteBookEntity> dataList, HashMap<Integer, Boolean> isSelected) {
         this.dataList = dataList;
+        this.isSelected = isSelected;
+        initHashMapDate();
+    }
+
+    private void initHashMapDate() {
+        if (dataList != null && dataList.size() > 0) {
+            for (int i = 0; i < dataList.size(); i++) {
+                getIsSelected().put(i, false);
+            }
+        }
+    }
+
+    public static HashMap<Integer, Boolean> getIsSelected() {
+        return isSelected;
+    }
+
+    public static void setIsSelected(HashMap<Integer, Boolean> isSelected) {
+        NewWordAdapter.isSelected = isSelected;
     }
 
     @Override
@@ -58,7 +79,7 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
     }
 
     @Override
-    public void onPageBindViewHolder(ViewHolder holder, int position) {
+    public void onPageBindViewHolder(final ViewHolder holder, final int position) {
         NewWordNoteBookEntity bean = dataList.get(position);
         long currentTime = bean.currentTime;
         holder.month.setText(TimeUtils.getCurrentMonth(currentTime));
@@ -68,23 +89,26 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
         holder.readingMatter.setText(bean.readingMatter);
         holder.dictionaryLookup.setText(bean.dictionaryLookup);
         holder.rootView.setTag(position);
-        holder.rootView.setOnClickListener(this);
-    }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getTag() == null) {
-            return;
-        }
-        int position = (int) v.getTag();
-        if (onRecyclerViewItemClickListener != null) {
-            onRecyclerViewItemClickListener.onItemClick(v, position);
-        }
+        holder.itemLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isSelected.get(position)) {
+                    isSelected.put(position, false);
+                    setIsSelected(isSelected);
+                } else {
+                    isSelected.put(position, true);
+                    setIsSelected(isSelected);
+                }
+                notifyItemChanged(position);
+            }
+        });
+        holder.checkBox.setChecked(getIsSelected().get(position));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.new_word_item_check)
-        ImageView checkImageView;
+        CheckBox checkBox;
         @Bind(R.id.new_word_item_month)
         TextView month;
         @Bind(R.id.new_word_item_week)
@@ -97,6 +121,8 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
         TextView readingMatter;
         @Bind(R.id.new_word_item_dictionaryLookup)
         TextView dictionaryLookup;
+        @Bind(R.id.item_new_word_linearlayout)
+        LinearLayout itemLinearLayout;
         View rootView;
 
         ViewHolder(View view) {
