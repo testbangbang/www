@@ -15,11 +15,16 @@ import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.edu.note.NoteManager;
+import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
 import com.onyx.edu.note.actions.scribble.NotePageShapeAction;
 import com.onyx.edu.note.actions.scribble.SpannableAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
+import com.onyx.edu.note.data.ScribbleMode;
+import com.onyx.edu.note.data.ScribbleToolBarMenuID;
+import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 
 import org.apache.commons.collections4.MapUtils;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -191,15 +196,21 @@ public class SpanTextHandler extends BaseHandler {
     @Override
     public void buildFunctionBarMenuFunctionList() {
         mFunctionBarMenuFunctionIDList = new ArrayList<>();
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.KEYBOARD);
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.ENTER);
+        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
+        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.BG);
         mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.DELETE);
         mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.SPACE);
+        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.ENTER);
+        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.KEYBOARD);
     }
 
     @Override
     protected void buildToolBarMenuFunctionList() {
-
+        mToolBarMenuFunctionIDList = new ArrayList<>();
+        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.SWITCH_SCRIBBLE_MODE);
+        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.UNDO);
+        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.SAVE);
+        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.REDO);
     }
 
     @Override
@@ -209,12 +220,23 @@ public class SpanTextHandler extends BaseHandler {
 
     @Override
     public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
-
+        switch (toolBarMenuID) {
+            case ScribbleToolBarMenuID.SWITCH_SCRIBBLE_MODE:
+                EventBus.getDefault().post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
+                break;
+            case ScribbleToolBarMenuID.SAVE:
+                saveDocument(uniqueID, title, false, null);
+                break;
+            case ScribbleToolBarMenuID.SETTING:
+                break;
+        }
     }
 
     @Override
     public void saveDocument(String uniqueID, String title, boolean closeAfterSave, BaseCallback callback) {
-
+        DocumentSaveAction documentSaveAction = new DocumentSaveAction(uniqueID,
+                title, closeAfterSave);
+        documentSaveAction.execute(mNoteManager, callback);
     }
 
     @Override

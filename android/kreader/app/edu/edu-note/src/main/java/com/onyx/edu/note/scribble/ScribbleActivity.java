@@ -24,9 +24,11 @@ import com.onyx.edu.note.R;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
+import com.onyx.edu.note.data.ScribbleMode;
 import com.onyx.edu.note.databinding.ActivityScribbleBinding;
 import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
 import com.onyx.edu.note.receiver.DeviceReceiver;
+import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
 import com.onyx.edu.note.scribble.view.ScribbleSubMenu;
 import com.onyx.edu.note.ui.PageAdapter;
@@ -53,12 +55,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_scribble);
-
-
-        //TODO:temp disable edit text.
-        mBinding.spanTextView.setVisibility(View.GONE);
-
-
         initSupportActionBarWithCustomBackFunction();
         mNoteManager = NoteManager.sharedInstance(this);
         mViewModel = new ScribbleViewModel(this);
@@ -257,6 +253,13 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     @Subscribe
+    public void switchScribbleMode(ChangeScribbleModeEvent event) {
+        mHandlerManager.changeScribbleMode(event.getTargetScribbleMode());
+        mBinding.spanTextView.setVisibility(event.getTargetScribbleMode() ==
+                ScribbleMode.MODE_SPAN_SCRIBBLE ? View.VISIBLE : View.GONE);
+    }
+
+    @Subscribe
     public void showCustomLineWidthDialog(CustomWidthEvent event) {
         final DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(ScribbleActivity.this,
                 (int) mNoteManager.getShapeDataInfo().getStrokeWidth(),
@@ -302,7 +305,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
         @Override
         public int getColumnCount() {
-            return mMenuType == ScribbleFunctionMenuIDType.FUNCTION_BAR_MENU ? 4 : 6;
+            return 6;
         }
 
         @Override

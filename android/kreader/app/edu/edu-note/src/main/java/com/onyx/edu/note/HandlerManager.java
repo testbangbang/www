@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
+import com.onyx.edu.note.data.ScribbleMode;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.handler.BaseHandler;
@@ -27,18 +28,16 @@ public class HandlerManager {
 
 
     private String activeProviderName;
-    private Context mContext;
     private Map<String, BaseHandler> providerMap = new HashMap<>();
     private ScribbleViewModel mViewModel;
 
     public HandlerManager(Context context, ScribbleViewModel viewModel) {
-        mContext = context;
         mViewModel = viewModel;
-        initProviderMap();
+        initProviderMap(context);
     }
 
-    private void initProviderMap() {
-        NoteManager manager = NoteManager.sharedInstance(mContext);
+    private void initProviderMap(Context context) {
+        NoteManager manager = NoteManager.sharedInstance(context);
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(manager));
         providerMap.put(SPAN_TEXT_PROVIDER, new SpanTextHandler(manager, new SpanTextHandler.Callback() {
             @Override
@@ -75,8 +74,24 @@ public class HandlerManager {
     }
 
     //TODO:temp solution for 2 handler only situation.
-    public void switchProvider() {
-        setActiveProvider(activeProviderName.equals(SCRIBBLE_PROVIDER) ? SPAN_TEXT_PROVIDER : SCRIBBLE_PROVIDER);
+    private void switchProvider(String targetProviderName) {
+        if (!(TextUtils.isEmpty(targetProviderName) ||
+                activeProviderName.equalsIgnoreCase(targetProviderName))) {
+            setActiveProvider(targetProviderName);
+        }
+    }
+
+    public void changeScribbleMode(@ScribbleMode.ScribbleModeDef int targetMode) {
+        String targetProviderName = null;
+        switch (targetMode) {
+            case ScribbleMode.MODE_NORMAL_SCRIBBLE:
+                targetProviderName = SCRIBBLE_PROVIDER;
+                break;
+            case ScribbleMode.MODE_SPAN_SCRIBBLE:
+                targetProviderName = SPAN_TEXT_PROVIDER;
+                break;
+        }
+        switchProvider(targetProviderName);
     }
 
     public void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {

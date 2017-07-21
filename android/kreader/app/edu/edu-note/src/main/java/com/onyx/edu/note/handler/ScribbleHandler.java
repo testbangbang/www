@@ -17,8 +17,10 @@ import com.onyx.edu.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.edu.note.actions.scribble.RedoAction;
 import com.onyx.edu.note.actions.scribble.UndoAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
+import com.onyx.edu.note.data.ScribbleMode;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
+import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
 
@@ -85,6 +87,7 @@ public class ScribbleHandler extends BaseHandler {
     public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_SCRIBBLE_MODE:
+                EventBus.getDefault().post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SPAN_SCRIBBLE));
                 break;
             case ScribbleToolBarMenuID.EXPORT:
                 break;

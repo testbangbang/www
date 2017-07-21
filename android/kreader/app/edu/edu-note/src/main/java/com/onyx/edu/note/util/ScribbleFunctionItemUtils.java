@@ -142,6 +142,11 @@ public class ScribbleFunctionItemUtils {
         sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.BG, R.drawable.ic_template);
         sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.ERASER, R.drawable.ic_eraser);
         sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.PEN_WIDTH, R.drawable.ic_width);
+        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.DELETE, R.drawable.ic_delet_big);
+        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.SPACE, R.drawable.ic_space);
+        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.ENTER, R.drawable.ic_enter);
+        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.KEYBOARD, R.drawable.ic_keyboard);
+        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.COLOR, R.drawable.ic_color);
     }
 
     private static void buildSubMenuIDIconSparseArray() {
