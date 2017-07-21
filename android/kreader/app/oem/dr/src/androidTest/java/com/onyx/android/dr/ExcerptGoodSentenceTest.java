@@ -6,6 +6,7 @@ import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.request.local.GoodSentenceExcerptDelete;
 import com.onyx.android.dr.request.local.GoodSentenceExcerptInsert;
 import com.onyx.android.dr.request.local.GoodSentenceExcerptQueryAll;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
@@ -18,13 +19,9 @@ import java.util.concurrent.CountDownLatch;
  */
 
 public class ExcerptGoodSentenceTest extends ApplicationTestCase<DRApplication> {
-    private String month = "November";
-    private String week = "three weeks";
-    private String day = "thirty day";
     private String details = "It is a beautiful dog.";
     private String readingMatter = "an English-Chinese dictionary";
     private String pageNumber = "fifth page";
-    private String recitation = "yes";
 
     public ExcerptGoodSentenceTest() {
         super(DRApplication.class);
@@ -32,13 +29,10 @@ public class ExcerptGoodSentenceTest extends ApplicationTestCase<DRApplication> 
 
     public GoodSentenceNoteEntity addGoodSentence() {
         GoodSentenceNoteEntity goodSentence = new GoodSentenceNoteEntity();
-        goodSentence.month = month;
-        goodSentence.week = week;
-        goodSentence.day = day;
+        goodSentence.currentTime = TimeUtils.getCurrentTimeMillis();
         goodSentence.details = details;
         goodSentence.readingMatter = readingMatter;
         goodSentence.pageNumber = pageNumber;
-        goodSentence.recitation = recitation;
         return goodSentence;
     }
 
@@ -89,13 +83,9 @@ public class ExcerptGoodSentenceTest extends ApplicationTestCase<DRApplication> 
         assertTrue(goodSentenceList.size() > 0);
         for (int i = 0; i < goodSentenceList.size(); i++) {
             GoodSentenceNoteEntity goodSentenceNoteEntity = goodSentenceList.get(i);
-            assertEquals(month, goodSentenceNoteEntity.month);
-            assertEquals(week, goodSentenceNoteEntity.week);
-            assertEquals(day, goodSentenceNoteEntity.day);
             assertEquals(details, goodSentenceNoteEntity.details);
             assertEquals(readingMatter, goodSentenceNoteEntity.readingMatter);
             assertEquals(pageNumber, goodSentenceNoteEntity.pageNumber);
-            assertEquals(recitation, goodSentenceNoteEntity.recitation);
         }
     }
 }

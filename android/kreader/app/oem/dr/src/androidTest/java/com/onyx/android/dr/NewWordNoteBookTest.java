@@ -6,6 +6,7 @@ import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.request.local.NewWordDelete;
 import com.onyx.android.dr.request.local.NewWordInsert;
 import com.onyx.android.dr.request.local.NewWordQueryAll;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
@@ -18,9 +19,6 @@ import java.util.concurrent.CountDownLatch;
  */
 
 public class NewWordNoteBookTest extends ApplicationTestCase<DRApplication> {
-    private String month = "November";
-    private String week = "three weeks";
-    private String day = "thirty day";
     private String newWord = "book";
     private String dictionaryLookup = "an English-Chinese dictionary";
     private String readingMatter = "princekin";
@@ -31,9 +29,7 @@ public class NewWordNoteBookTest extends ApplicationTestCase<DRApplication> {
 
     public NewWordNoteBookEntity addNewWord() {
         NewWordNoteBookEntity newWordEntity = new NewWordNoteBookEntity();
-        newWordEntity.month = month;
-        newWordEntity.week = week;
-        newWordEntity.day = day;
+        newWordEntity.currentTime = TimeUtils.getCurrentTimeMillis();
         newWordEntity.newWord = newWord;
         newWordEntity.readingMatter = readingMatter;
         newWordEntity.dictionaryLookup = dictionaryLookup;
@@ -87,9 +83,6 @@ public class NewWordNoteBookTest extends ApplicationTestCase<DRApplication> {
         assertTrue(newWordList.size() > 0);
         for (int i = 0; i < newWordList.size(); i++) {
             NewWordNoteBookEntity newWordNoteBookEntity = newWordList.get(i);
-            assertEquals(month, newWordNoteBookEntity.month);
-            assertEquals(week, newWordNoteBookEntity.week);
-            assertEquals(day, newWordNoteBookEntity.day);
             assertEquals(newWord, newWordNoteBookEntity.newWord);
             assertEquals(readingMatter, newWordNoteBookEntity.readingMatter);
             assertEquals(dictionaryLookup, newWordNoteBookEntity.dictionaryLookup);
