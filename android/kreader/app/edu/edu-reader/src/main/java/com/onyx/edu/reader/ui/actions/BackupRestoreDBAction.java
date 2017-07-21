@@ -15,18 +15,20 @@ import java.util.Map;
 
 public class BackupRestoreDBAction extends BaseAction {
 
-    private Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap;
+    private DatabaseInfo currentDB;
+    private DatabaseInfo newDB;
     private boolean backup = false;
 
-    public BackupRestoreDBAction(Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap, boolean backup) {
-        this.backupRestoreDBMap = backupRestoreDBMap;
+    public BackupRestoreDBAction(DatabaseInfo currentDB, DatabaseInfo newDB, boolean backup) {
+        this.currentDB = currentDB;
+        this.newDB = newDB;
         this.backup = backup;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
         showLoadingDialog(readerDataHolder, R.string.loading);
-        BackupRestoreDBRequest backupRestoreDBRequest = new BackupRestoreDBRequest(backupRestoreDBMap, backup);
+        BackupRestoreDBRequest backupRestoreDBRequest = new BackupRestoreDBRequest(currentDB, newDB, backup);
         readerDataHolder.getDataManager().submit(readerDataHolder.getContext(), backupRestoreDBRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

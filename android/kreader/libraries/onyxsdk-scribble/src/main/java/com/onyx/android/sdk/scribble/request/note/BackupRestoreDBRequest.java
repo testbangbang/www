@@ -19,30 +19,28 @@ import java.util.Map;
 
 public class BackupRestoreDBRequest extends BaseNoteRequest {
 
-    private Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap;
+    private DatabaseInfo currentDB;
+    private DatabaseInfo newDB;
     private boolean backup = false;
 
-    public BackupRestoreDBRequest(Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap, boolean backup) {
-        this.backupRestoreDBMap = backupRestoreDBMap;
+    public BackupRestoreDBRequest(DatabaseInfo currentDB, DatabaseInfo newDB, boolean backup) {
+        this.currentDB = currentDB;
+        this.newDB = newDB;
         this.backup = backup;
     }
 
     @Override
     public void execute(NoteViewHelper helper) throws Exception {
-        if (backupRestoreDBMap == null || backupRestoreDBMap.size() == 0) {
+        if (currentDB == null || newDB == null) {
             return;
         }
-        for (Map.Entry<DatabaseInfo, DatabaseInfo> entry : backupRestoreDBMap.entrySet()) {
-            DatabaseInfo currentDB = entry.getKey();
-            DatabaseInfo newDB = entry.getValue();
-            if (!backup && !canRestoreDB(newDB.getDbPath(), currentDB.getVersion())) {
-                continue;
-            }
-            if (backup) {
-                FileUtils.transferFile(currentDB.getDbPath(), newDB.getDbPath());
-            }else {
-                FileUtils.transferFile(newDB.getDbPath(), currentDB.getDbPath());
-            }
+        if (!backup && !canRestoreDB(newDB.getDbPath(), currentDB.getVersion())) {
+            return;
+        }
+        if (backup) {
+            FileUtils.transferFile(currentDB.getDbPath(), newDB.getDbPath());
+        }else {
+            FileUtils.transferFile(newDB.getDbPath(), currentDB.getDbPath());
         }
     }
 

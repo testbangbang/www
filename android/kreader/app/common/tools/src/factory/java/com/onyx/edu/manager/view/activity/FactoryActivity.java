@@ -423,10 +423,10 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
     }
 
     private void exportDbFileToSdCard(String exportFilePath) {
-        Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap = new HashMap<>();
-        backupRestoreDBMap.put(DatabaseInfo.create(ContentDatabase.NAME, ContentDatabase.VERSION,
-                getContentDatabaseFile().getAbsolutePath()), DatabaseInfo.create(exportFilePath));
-        BackupRestoreDBRequest restoreDBRequest = new BackupRestoreDBRequest(backupRestoreDBMap, true);
+        DatabaseInfo currentDB = DatabaseInfo.create(ContentDatabase.NAME, ContentDatabase.VERSION,
+                getContentDatabaseFile().getAbsolutePath());
+        DatabaseInfo newDB = DatabaseInfo.create(exportFilePath);
+        BackupRestoreDBRequest restoreDBRequest = new BackupRestoreDBRequest(currentDB, newDB, true);
         getDataManager().submit(this, restoreDBRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

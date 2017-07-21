@@ -85,13 +85,12 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
     }
 
     private void backup(final Activity activity, final String fileName, final BaseCallback callback) {
-        Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap = new HashMap<>();
         final String backupDBPath = (cloudBackup ? BACKUP_CLOUD_SAVE_PATH : BACKUP_LOCAL_SAVE_PATH) + fileName + ".db";
         FileUtils.deleteFile(backupDBPath);
         FileUtils.ensureFileExists(backupDBPath);
-        backupRestoreDBMap.put(DatabaseInfo.create(ShapeDatabase.NAME, ShapeDatabase.VERSION, activity.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db"),
-                DatabaseInfo.create(backupDBPath));
-        BackupRestoreDBRequest request = new BackupRestoreDBRequest(backupRestoreDBMap, true);
+        DatabaseInfo currentDB = DatabaseInfo.create(ShapeDatabase.NAME, ShapeDatabase.VERSION, activity.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db");
+        DatabaseInfo newDB = DatabaseInfo.create(backupDBPath);
+        BackupRestoreDBRequest request = new BackupRestoreDBRequest(currentDB, newDB, true);
         getNoteViewHelper().submit(activity, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

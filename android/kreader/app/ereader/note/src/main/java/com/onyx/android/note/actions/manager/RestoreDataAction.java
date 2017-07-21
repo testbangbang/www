@@ -69,9 +69,9 @@ public class RestoreDataAction<T extends Activity> extends BaseNoteAction<T> {
 
     private void restore(final Activity activity, final BaseCallback callback){
         Map<DatabaseInfo, DatabaseInfo> backupRestoreDBMap = new HashMap<>();
-        backupRestoreDBMap.put(DatabaseInfo.create(ShapeDatabase.NAME, ShapeDatabase.VERSION, activity.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db"),
-                DatabaseInfo.create(restorePath));
-        BackupRestoreDBRequest request = new BackupRestoreDBRequest(backupRestoreDBMap, false);
+        DatabaseInfo currentDB = DatabaseInfo.create(ShapeDatabase.NAME, ShapeDatabase.VERSION, activity.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db");
+        DatabaseInfo newDB = DatabaseInfo.create(restorePath);
+        BackupRestoreDBRequest request = new BackupRestoreDBRequest(currentDB, newDB, false);
         getNoteViewHelper().submit(activity, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
