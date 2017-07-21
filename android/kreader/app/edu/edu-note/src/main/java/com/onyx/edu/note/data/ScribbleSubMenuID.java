@@ -243,7 +243,7 @@ public class ScribbleSubMenuID {
         if (map.containsKey(width)) {
             return map.get(width);
         }
-        return THICKNESS_ULTRA_LIGHT;
+        return THICKNESS_CUSTOM_BOLD;
     }
 
     public static boolean isThicknessGroup(@ScribbleSubMenuIDDef int menuID) {

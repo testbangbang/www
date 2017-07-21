@@ -1,8 +1,10 @@
 package com.onyx.edu.note.scribble;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.edu.note.HandlerManager;
@@ -24,9 +27,13 @@ import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
 import com.onyx.edu.note.databinding.ActivityScribbleBinding;
 import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
 import com.onyx.edu.note.receiver.DeviceReceiver;
+import com.onyx.edu.note.scribble.event.CustomWidthEvent;
 import com.onyx.edu.note.scribble.view.ScribbleSubMenu;
 import com.onyx.edu.note.ui.PageAdapter;
 import com.onyx.edu.note.util.Constant;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -66,6 +73,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     @Override
     protected void onStart() {
         super.onStart();
+        EventBus.getDefault().register(this);
         deviceReceiver.registerReceiver(this);
     }
 
@@ -87,6 +95,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     @Override
     protected void onStop() {
         deviceReceiver.unregisterReceiver(this);
+        EventBus.getDefault().unregister(this);
         mNoteManager.quit();
         super.onStop();
     }
@@ -98,7 +107,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     private void buildSubMenu() {
-        mSubMenu = new ScribbleSubMenu(this, mNoteManager.getShapeDataInfo(),
+        mSubMenu = new ScribbleSubMenu(this,
                 mBinding.mainLayout, new ScribbleSubMenu.Callback() {
             @Override
             public void onLayoutStateChanged() {
@@ -168,6 +177,11 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     @Override
     public void onBackPressed() {
+        //TODO:need back key to dismiss sub menu first or direct exit even sub menu showing?
+        if (mSubMenu.isShow()){
+            mSubMenu.dismiss(true);
+            return;
+        }
         mNoteManager.syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -181,11 +195,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 });
             }
         });
-    }
-
-    @Override
-    public void goToSetting() {
-
     }
 
     private void initRecyclerView() {
@@ -233,8 +242,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     @Override
     public void onSubMenuFunctionItem(int subMenuID) {
         Log.e(TAG, "onSubMenuFunctionItem: " + subMenuID);
+        mSubMenu.dismiss(false);
         mHandlerManager.handleSubMenuFunction(subMenuID);
-        mSubMenu.dismiss();
     }
 
     @Override
@@ -245,6 +254,25 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     private void showSubMenu(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int mainMenuID) {
         mSubMenu.show(mainMenuID, false);
+    }
+
+    @Subscribe
+    public void showCustomLineWidthDialog(CustomWidthEvent event) {
+        final DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(ScribbleActivity.this,
+                (int) mNoteManager.getShapeDataInfo().getStrokeWidth(),
+                20, Color.BLACK, event.getDoneCallBack());
+        customLineWidth.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                mNoteManager.sync(true, true);
+            }
+        });
+        mNoteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                customLineWidth.show();
+            }
+        });
     }
 
     public static class ScribbleFunctionAdapter extends PageAdapter<ScribbleFunctionItemViewHolder, Integer, ScribbleFunctionItemViewModel> {

@@ -19,6 +19,11 @@ import com.onyx.edu.note.actions.scribble.DocumentCreateAction;
 import com.onyx.edu.note.actions.scribble.DocumentEditAction;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
+import com.onyx.edu.note.scribble.event.HandlerActivateEvent;
+import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Date;
 import java.util.List;
@@ -55,6 +60,7 @@ public class ScribbleViewModel extends BaseObservable {
     ScribbleViewModel(Context context) {
         // Force use of Application Context.
         mNoteManager = NoteManager.sharedInstance(context.getApplicationContext());
+        EventBus.getDefault().register(this);
     }
 
     void start(String uniqueID, String parentID, @ScribbleAction.ScribbleActionDef int action, final BaseCallback callback) {
@@ -102,12 +108,6 @@ public class ScribbleViewModel extends BaseObservable {
         mNavigator.onFunctionBarMenuFunctionItem(ScribbleFunctionBarMenuID.DELETE_PAGE);
     }
 
-    public void onRequestFinished(AsyncBaseNoteRequest request, Throwable throwable) {
-        if (!request.isAbort() && throwable == null) {
-            updateInfo(request);
-        }
-    }
-
     private void updateInfo(AsyncBaseNoteRequest request) {
         mNoteManager.setShapeDataInfo(request.getShapeDataInfo());
         mShapeDataInfo.set(mNoteManager.getShapeDataInfo());
@@ -117,6 +117,7 @@ public class ScribbleViewModel extends BaseObservable {
 
     void onActivityDestroyed() {
         // Clear references to avoid potential memory leaks.
+        EventBus.getDefault().unregister(this);
         mNavigator = null;
     }
 
@@ -124,13 +125,27 @@ public class ScribbleViewModel extends BaseObservable {
         mNoteTitle.set(title);
     }
 
-    public void setFunctionBarMenuIDList(List<Integer> functionBarMenuIDList) {
+    private void setFunctionBarMenuIDList(List<Integer> functionBarMenuIDList) {
         mFunctionBarMenuIDList.clear();
         mFunctionBarMenuIDList.addAll(functionBarMenuIDList);
     }
 
-    public void setToolBarMenuIDList(List<Integer> toolBarMenuIDList) {
+    private void setToolBarMenuIDList(List<Integer> toolBarMenuIDList) {
         mToolBarMenuIDList.clear();
         mToolBarMenuIDList.addAll(toolBarMenuIDList);
     }
+
+    @Subscribe
+    public void onRequestFinished(RequestInfoUpdateEvent event) {
+        if (!event.getRequest().isAbort() && event.getThrowable() == null) {
+            updateInfo(event.getRequest());
+        }
+    }
+
+    @Subscribe
+    public void onHandlerActivate(HandlerActivateEvent activateEvent) {
+        setFunctionBarMenuIDList(activateEvent.getFunctionBarMenuFunctionIDList());
+        setToolBarMenuIDList(activateEvent.getToolBarMenuFunctionIDList());
+    }
+
 }

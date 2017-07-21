@@ -8,7 +8,4 @@ import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 
 public interface ScribbleNavigator {
     void onFunctionBarMenuFunctionItem(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int functionBarMenuID);
-
-    void goToSetting();
-
 }

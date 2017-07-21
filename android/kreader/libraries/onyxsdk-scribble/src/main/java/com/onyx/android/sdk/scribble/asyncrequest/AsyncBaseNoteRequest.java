@@ -171,37 +171,6 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         }
     }
 
-    @Deprecated
-    public void afterExecute(final NoteViewHelper helper) {
-        if (getException() != null) {
-            getException().printStackTrace();
-        }
-        benchmarkEnd();
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (isRender()) {
-                    synchronized (helper) {
-                        helper.copyBitmap();
-                    }
-                }
-                helper.enableScreenPost(true);
-                if (getCallback() != null) {
-                    getCallback().done(AsyncBaseNoteRequest.this, getException());
-                }
-                if (isResumeInputProcessor()) {
-                    helper.resumeDrawing();
-                }
-                helper.getRequestManager().releaseWakeLock();
-            }};
-
-        if (isRunInBackground()) {
-            helper.getRequestManager().getLooperHandler().post(runnable);
-        } else {
-            runnable.run();
-        }
-    }
-
     public final ShapeDataInfo getShapeDataInfo() {
         if (shapeDataInfo == null) {
             shapeDataInfo = new ShapeDataInfo();

@@ -22,7 +22,6 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
-import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
@@ -138,39 +137,6 @@ public class BaseNoteRequest extends BaseRequest {
     public void execute(final NoteViewHelper helper) throws Exception {
     }
 
-    /**
-     * drawToView Instantly when finish request,reused isRender Flag
-     * @param helper
-     */
-    public void postExecute(final NoteViewHelper helper){
-        if (getException() != null) {
-            getException().printStackTrace();
-        }
-        if (isRender()) {
-            NoteViewUtil.drawPage(helper.getView(), helper.getRenderBitmap(), helper.getDirtyStash());
-        }
-        benchmarkEnd();
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                helper.enableScreenPost(true);
-                if (getCallback() != null) {
-                    getCallback().done(BaseNoteRequest.this, getException());
-                }
-                if (isResumeInputProcessor()) {
-                    helper.resumeDrawing();
-                }
-                helper.getRequestManager().releaseWakeLock();
-            }};
-
-        if (isRunInBackground()) {
-            helper.getRequestManager().getLooperHandler().post(runnable);
-        } else {
-            runnable.run();
-        }
-    }
-
-    @Deprecated
     public void afterExecute(final NoteViewHelper helper) {
         if (getException() != null) {
             getException().printStackTrace();

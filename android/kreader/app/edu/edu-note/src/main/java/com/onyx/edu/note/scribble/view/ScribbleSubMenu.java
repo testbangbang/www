@@ -8,10 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.edu.note.NoteAppConfig;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.R;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
@@ -46,17 +44,8 @@ public class ScribbleSubMenu extends RelativeLayout {
 
     private final Callback mCallback;
     private int mPositionID;
-    private ShapeDataInfo curShapeDataInfo;
-    private NoteAppConfig config;
     private ScribbleSubMenuBinding mBinding;
     private ScribbleFunctionAdapter mAdapter;
-    private
-    @ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef
-    int currentCategory;
-
-    public void setCurShapeDataInfo(ShapeDataInfo curShapeDataInfo) {
-        this.curShapeDataInfo = curShapeDataInfo;
-    }
 
     private void initRecyclerView() {
         PageRecyclerView subMenuRecyclerView = mBinding.subMenuRecyclerView;
@@ -66,17 +55,16 @@ public class ScribbleSubMenu extends RelativeLayout {
         subMenuRecyclerView.setAdapter(mAdapter);
     }
 
-    public ScribbleSubMenu(Context context, ShapeDataInfo shapeDataInfo, RelativeLayout parentLayout, Callback callback, int positionID) {
-        this(context, shapeDataInfo, parentLayout, callback, positionID, true);
+    public ScribbleSubMenu(Context context, RelativeLayout parentLayout, Callback callback, int positionID) {
+        this(context, parentLayout, callback, positionID, true);
     }
 
-    public ScribbleSubMenu(Context context, ShapeDataInfo shapeDataInfo, RelativeLayout parentLayout, Callback callback, int positionID, boolean isShowInfoBar) {
+    public ScribbleSubMenu(Context context, RelativeLayout parentLayout, Callback callback,
+                           int positionID, boolean isShowInfoBar) {
         super(context);
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(context),
                 R.layout.scribble_sub_menu, this, true);
         setBackgroundColor(Color.TRANSPARENT);
-        curShapeDataInfo = shapeDataInfo;
-        config = NoteAppConfig.sharedInstance(context);
         mBinding.dismissZone.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,17 +78,10 @@ public class ScribbleSubMenu extends RelativeLayout {
         setVisibility(View.GONE);
     }
 
-    public
-    @ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef
-    int getCurrentCategory() {
-        return currentCategory;
-    }
-
     public void show(final @ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef
                              int category, final boolean isLineLayoutMode) {
-        currentCategory = category;
-        mAdapter.setRawData(ScribbleFunctionItemUtils.getSubMenuIDList(currentCategory), getContext());
-        updateIndicator(currentCategory);
+        mAdapter.setRawData(ScribbleFunctionItemUtils.getSubMenuIDList(category), getContext());
+        updateIndicator(category);
         reConfigMenuHeight();
         setVisibility(VISIBLE);
     }
@@ -112,14 +93,10 @@ public class ScribbleSubMenu extends RelativeLayout {
         mBinding.subMenuRecyclerView.setLayoutParams(layoutParams);
     }
 
-    public void dismiss() {
-        dismiss(true);
-    }
-
     /**
      * @param isCancel if no submenu item was previous selected -> true,otherwise false.
      */
-    private void dismiss(boolean isCancel) {
+    public void dismiss(boolean isCancel) {
         if (mCallback != null && isCancel) {
             mCallback.onCancel();
         }
@@ -171,7 +148,8 @@ public class ScribbleSubMenu extends RelativeLayout {
         mAdapter = new ScribbleFunctionAdapter(getContext(), mBinding);
     }
 
-    public static class ScribbleFunctionAdapter extends PageAdapter<ScribbleFunctionItemViewHolder, Integer, ScribbleFunctionItemViewModel> {
+    public static class ScribbleFunctionAdapter extends PageAdapter<ScribbleFunctionItemViewHolder,
+            Integer, ScribbleFunctionItemViewModel> {
         private ScribbleItemNavigator mItemNavigator;
         private LayoutInflater mLayoutInflater;
         private WeakReference<Context> mContextWeakReference;

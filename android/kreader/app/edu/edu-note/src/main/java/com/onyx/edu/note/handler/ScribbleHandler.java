@@ -4,8 +4,8 @@ import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.actions.scribble.ClearAllFreeShapesAction;
 import com.onyx.edu.note.actions.scribble.DocumentAddNewPageAction;
@@ -19,6 +19,10 @@ import com.onyx.edu.note.actions.scribble.UndoAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
+import com.onyx.edu.note.scribble.event.CustomWidthEvent;
+import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -33,7 +37,7 @@ public class ScribbleHandler extends BaseHandler {
     private BaseCallback mActionDoneCallback = new BaseCallback() {
         @Override
         public void done(BaseRequest request, Throwable e) {
-            mScribbleViewModel.onRequestFinished((AsyncBaseNoteRequest) request, e);
+            EventBus.getDefault().post(new RequestInfoUpdateEvent(request,e));
         }
     };
 
@@ -78,7 +82,7 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     @Override
-    public void handleToolBarMenuFunction(int toolBarMenuID) {
+    public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_SCRIBBLE_MODE:
                 break;
@@ -91,7 +95,7 @@ public class ScribbleHandler extends BaseHandler {
                 reDo();
                 break;
             case ScribbleToolBarMenuID.SAVE:
-                saveDocument(false, null);
+                saveDocument(uniqueID, title, false, null);
                 break;
             case ScribbleToolBarMenuID.SETTING:
                 break;
@@ -163,9 +167,9 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     @Override
-    public void saveDocument(boolean closeAfterSave, BaseCallback callback) {
-        DocumentSaveAction documentSaveAction = new DocumentSaveAction(mScribbleViewModel.getCurrentDocumentUniqueID(),
-                mScribbleViewModel.mNoteTitle.get(), closeAfterSave);
+    public void saveDocument(String uniqueID, String title, boolean closeAfterSave, BaseCallback callback) {
+        DocumentSaveAction documentSaveAction = new DocumentSaveAction(uniqueID,
+                title, closeAfterSave);
         documentSaveAction.execute(mNoteManager, callback);
     }
 
@@ -200,13 +204,18 @@ public class ScribbleHandler extends BaseHandler {
             case ScribbleSubMenuID.Thickness.THICKNESS_NORMAL:
             case ScribbleSubMenuID.Thickness.THICKNESS_BOLD:
             case ScribbleSubMenuID.Thickness.THICKNESS_ULTRA_BOLD:
-                float value = ScribbleSubMenuID.strokeWidthFromMenuId(subMenuID);
-                if (mNoteManager.getShapeDataInfo().isInUserErasing()) {
-                    mNoteManager.getShapeDataInfo().setCurrentShapeType(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
-                }
-                mNoteManager.getShapeDataInfo().setStrokeWidth(value);
-                mNoteManager.syncWithCallback(true, true, mActionDoneCallback);
+                mNoteManager.setStrokeWidth(ScribbleSubMenuID.strokeWidthFromMenuId(subMenuID),mActionDoneCallback);
+                break;
+            case ScribbleSubMenuID.Thickness.THICKNESS_CUSTOM_BOLD:
+                CustomWidthEvent event = new CustomWidthEvent(new DialogCustomLineWidth.Callback() {
+                    @Override
+                    public void done(int lineWidth) {
+                        mNoteManager.setStrokeWidth(lineWidth, mActionDoneCallback);
+                    }
+                });
+                EventBus.getDefault().post(event);
                 break;
         }
     }
+
 }
