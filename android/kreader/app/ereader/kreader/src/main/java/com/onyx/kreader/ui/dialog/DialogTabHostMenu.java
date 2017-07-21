@@ -111,6 +111,7 @@ public class DialogTabHostMenu extends DialogBase {
     @OnClick(R.id.button_double_open)
     void onButtonDoubleOpenClicked() {
         if (callback != null) {
+            DialogTabHostMenu.this.dismiss();
             callback.onDoubleOpen(selectedTabs.get(0));
         }
     }
@@ -118,6 +119,7 @@ public class DialogTabHostMenu extends DialogBase {
     @OnClick(R.id.button_double_link)
     void onButtonDoubleLinkClicked() {
         if (callback != null) {
+            DialogTabHostMenu.this.dismiss();
             callback.onLinkedOpen(selectedTabs.get(0));
         }
     }
@@ -125,6 +127,7 @@ public class DialogTabHostMenu extends DialogBase {
     @OnClick(R.id.button_side_open)
     void onButtonSideOpenClicked() {
         if (callback != null) {
+            DialogTabHostMenu.this.dismiss();
             callback.onSideOpen(selectedTabs.get(0), selectedTabs.get(1));
         }
     }
@@ -132,6 +135,7 @@ public class DialogTabHostMenu extends DialogBase {
     @OnClick(R.id.button_close)
     void onButtonCloseClicked() {
         if (callback != null) {
+            DialogTabHostMenu.this.dismiss();
             callback.onClosing(selectedTabs);
         }
     }
