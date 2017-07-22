@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/imagebtn_bg"
+    android:background="@drawable/image_btn_bg"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
     android:paddingTop="@dimen/dialog_table_of_content_list_item_padding_top">
@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:layout_toLeftOf="@+id/delete_layout"
-            android:background="@drawable/imagebtn_bg"
+            android:background="@drawable/image_btn_bg"
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="5dp">
@@ -115,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:background="@drawable/imagebtn_bg"
+            android:background="@drawable/image_btn_bg"
             android:gravity="center"
             android:orientation="horizontal"
             android:padding="5dp">

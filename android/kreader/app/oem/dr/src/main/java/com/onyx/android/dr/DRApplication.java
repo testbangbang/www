@@ -11,6 +11,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.manager.LeanCloudManager;
+import com.onyx.android.dr.reader.data.SingletonSharedPreference;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.DictPreference;
 import com.onyx.android.sdk.data.CloudStore;
@@ -61,6 +62,7 @@ public class DRApplication extends MultiDexApplication {
             initLeanCloud();
             initFrescoLoader();
             initDatabases(this, databaseHolderList());
+            SingletonSharedPreference.init(this);
             initDictDatas();
         } catch (Exception e) {
             e.printStackTrace();

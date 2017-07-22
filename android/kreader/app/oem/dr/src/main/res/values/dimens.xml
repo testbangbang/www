@@ -146,4 +146,19 @@
     <dimen name="dict_result_function_height">80dp</dimen>
     <dimen name="activity_query_search_margin_left">30dp</dimen>
     <dimen name="item_dict_query_padding">10dp</dimen>
+    <dimen name="reader_page_indicator_padding">10dp</dimen>
+    <dimen name="dialog_quick_preview_padding">10dp</dimen>
+    <dimen name="dialog_quick_preview_seek_bar_height">20dp</dimen>
+    <dimen name="dialog_quick_preview_list_item_shadow_height">4dp</dimen>
+    <dimen name="reader_menu_bottom_dialog_margin_top">40dp</dimen>
+    <dimen name="dialog_quick_preview_padding_left">8dp</dimen>
+    <dimen name="dialog_quick_preview_padding_top">5dp</dimen>
+    <dimen name="dialog_quick_preview_item_container_padding">3dp</dimen>
+    <dimen name="dialog_quick_preview_text_padding">5dp</dimen>
+    <dimen name="dialog_quick_preview_btn_page_padding_top">10dp</dimen>
+    <dimen name="dialog_quick_preview_close_view_margin">5dp</dimen>
+    <dimen name="dialog_quick_preview_seek_text_padding">10dp</dimen>
+    <dimen name="dialog_quick_preview_seek_bar_margin">5dp</dimen>
+    <dimen name="grid_view_preview_margin_bottom">5dp</dimen>
+    <dimen name="grid_view_preview_margin_top">100dp</dimen>
 </resources>

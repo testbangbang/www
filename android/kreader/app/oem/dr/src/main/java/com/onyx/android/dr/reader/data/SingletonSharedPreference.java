@@ -198,6 +198,18 @@ public class SingletonSharedPreference {
         return getPrefs().getBoolean(MULTIPLE_TAB_VISIBILITY, true);
     }
 
+    public static boolean isEnableRegal(Context context) {
+        return getBooleanByStringID(context, R.string.settings_regal_mode_key, true);
+    }
+
+    public static void setQuickViewGridType(Context context, int value) {
+        setIntValue(QUICK_VIEW_GRID_TYPE, value);
+    }
+
+    public static int getQuickViewGridType(Context context, int defaultValue) {
+        return getPrefs().getInt(QUICK_VIEW_GRID_TYPE, defaultValue);
+    }
+
     public static AnnotationHighlightStyle getAnnotationHighlightStyle(Context context) {
         String value = getPrefs().getString(context.getString(R.string.settings_annotation_highlight_style_key), null);
         if (value != null) {

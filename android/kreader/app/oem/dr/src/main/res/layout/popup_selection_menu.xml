@@ -45,7 +45,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dialog_dict_top_layout_margin"
                 android:layout_toLeftOf="@+id/pronounce_1"
-                android:background="@drawable/imagebtn_bg"
+                android:background="@drawable/image_btn_bg"
                 android:padding="5dp"
                 android:src="@drawable/ic_dialog_reader_dic_i_search" />
 
@@ -56,7 +56,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dialog_dict_top_layout_margin"
                 android:layout_toLeftOf="@+id/pronounce_2"
-                android:background="@drawable/imagebtn_bg"
+                android:background="@drawable/image_btn_bg"
                 android:padding="5dp"
                 android:src="@drawable/pronounce_1_imageview_bg" />
 
@@ -67,7 +67,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dialog_dict_top_layout_margin"
                 android:layout_toLeftOf="@+id/dict_name"
-                android:background="@drawable/imagebtn_bg"
+                android:background="@drawable/image_btn_bg"
                 android:padding="5dp"
                 android:src="@drawable/pronounce_2_imageview_bg" />
 
@@ -104,7 +104,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/imagebtn_bg"
+                android:background="@drawable/image_btn_bg"
                 android:src="@drawable/ic_close" />
 
         </RelativeLayout>
@@ -145,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/page_indicator"
-                android:background="@drawable/imagebtn_bg"
+                android:background="@drawable/image_btn_bg"
                 android:contentDescription=""
                 android:focusable="false"
                 android:focusableInTouchMode="false"
@@ -174,7 +174,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/imagebtn_bg"
+                android:background="@drawable/image_btn_bg"
                 android:contentDescription=""
                 android:focusable="false"
                 android:focusableInTouchMode="false"

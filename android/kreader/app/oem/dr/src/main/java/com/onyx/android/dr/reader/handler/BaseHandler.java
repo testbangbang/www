@@ -271,7 +271,7 @@ public class BaseHandler {
         } else if (action.equals(TouchAction.PREV_PAGE)) {
             readerPresenter.prevScreen();
         } else if (action.equals(TouchAction.SHOW_MENU)) {
-            ReaderDialogManage.onShowMainMenu(readerPresenter);
+            ReaderDialogManage.onShowMainMenu(readerPresenter, false);
         } else if (action.equals(TouchAction.INCREASE_BRIGHTNESS)) {
             //increaseBrightness(readerDataHolder);
         } else if (action.equals(TouchAction.DECREASE_BRIGHTNESS)) {

@@ -14,13 +14,15 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.event.ToBookshelfV2Event;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.provider.CloudDataProvider;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -76,17 +78,27 @@ public class BookshelfGroupAdapter extends PageRecyclerView.PageAdapter<Bookshel
     @Override
     public void onPageBindViewHolder(BookshelfGroupAdapter.GroupItemViewHolder holder, int position) {
         QueryArgs queryArgs = groups.get(position);
-        CloudDataProvider localDataProvider = new CloudDataProvider(DRApplication.getCloudStore().getCloudConf());
-        QueryResult<Metadata> queryResult = localDataProvider.findMetadataResultByQueryArgs(context, queryArgs);
         holder.groupName.setText(queryArgs.query);
-        Map<String, CloseableReference<Bitmap>> bitmaps = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(context, DRApplication.getCloudStore().getCloudManager(), queryResult.list);
-        BookListAdapter listAdapter = new BookListAdapter(context, getDataHolder());
+        final BookListAdapter listAdapter = new BookListAdapter(context, getDataHolder());
         holder.pageRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         holder.pageRecycler.addItemDecoration(dividerItemDecoration);
         holder.pageRecycler.setAdapter(listAdapter);
-        listAdapter.updateContentView(getLibraryDataModel(queryResult, bitmaps));
+        final CloudContentListRequest listRequest = new CloudContentListRequest(queryArgs);
+        DRApplication.getCloudStore().submitRequestToSingle(context, listRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                QueryResult<Metadata> result = listRequest.getProductResult();
+                if (result != null && result.list != null) {
+                    Map<String, CloseableReference<Bitmap>> bitmaps = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(context, DRApplication.getCloudStore().getCloudManager(), result.list);
+                    listAdapter.updateContentView(getLibraryDataModel(result, bitmaps));
+                }
+            }
+        });
         holder.nextButton.setOnClickListener(this);
         holder.nextButton.setTag(position);
     }

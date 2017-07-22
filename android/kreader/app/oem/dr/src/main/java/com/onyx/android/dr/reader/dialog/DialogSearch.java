@@ -29,13 +29,13 @@ import com.onyx.android.dr.reader.common.ReadPageInfo;
 import com.onyx.android.dr.reader.event.GetSearchHistoryEvent;
 import com.onyx.android.dr.reader.event.GotoPositionActionResultEvent;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
-import com.onyx.android.dr.reader.view.OnyxCustomEditText;
 import com.onyx.android.dr.reader.view.PageRecyclerView;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
+import com.onyx.android.sdk.ui.view.OnyxCustomEditText;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;

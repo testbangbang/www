@@ -6,16 +6,17 @@ import com.onyx.android.dr.reader.presenter.ReaderPresenter;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.List;
+
 /**
  * Created by huxiaomao on 17/5/8.
  */
 
 public class ReaderDialogManage {
-
-    public static void onShowMainMenu(ReaderPresenter readerPresenter) {
+    public static void onShowMainMenu(ReaderPresenter readerPresenter,boolean isWord) {
         EventBus.getDefault().post(new DisplayStatusBarEvent(false));
         ReaderBottomDialog readerMainMenuDialog = new ReaderBottomDialog(readerPresenter,
-                readerPresenter.getReaderView().getViewContext(), -1, null);
+                readerPresenter.getReaderView().getViewContext(), -1, null, isWord);
         readerMainMenuDialog.show();
     }
 
