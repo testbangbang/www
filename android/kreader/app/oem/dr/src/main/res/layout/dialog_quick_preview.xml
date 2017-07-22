@@ -52,7 +52,6 @@
                     android:text="@string/next_page"
                     android:textSize="@dimen/level_one_heading_font" />
             </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
