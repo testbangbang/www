@@ -169,6 +169,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodStopTpd;
     private static Method sMethodStartTpd;
     private static Method sMethodEnableTpd;
+    private static Method sMethodHasWifi;
 
     private IMX6Device() {
     }
@@ -590,7 +591,9 @@ public class IMX6Device extends BaseDevice {
             sMethodLed = ReflectUtil.getMethodSafely(deviceControllerClass, "led", boolean.class);
             sMethodSetLedColor = ReflectUtil.getMethodSafely(deviceControllerClass, "setLedColor", String.class, int.class);
 
+
             sMethodEnableTpd = ReflectUtil.getMethodSafely(cls, "enableOnyxTpd", int.class);
+            sMethodHasWifi = ReflectUtil.getMethodSafely(deviceControllerClass, "hasWifi");
             // signature of "public void setUpdatePolicy(int updatePolicy, int guInterval)"
             sMethodSetUpdatePolicy = ReflectUtil.getMethodSafely(cls, "setUpdatePolicy", int.class, int.class);
             // signature of "public void postInvalidate(int updateMode)"
@@ -993,5 +996,16 @@ public class IMX6Device extends BaseDevice {
     public void gotoSleep(final Context context) {
         long value = System.currentTimeMillis();
         ReflectUtil.invokeMethodSafely(sMethodGotoSleep, context, value);
+    }
+
+    @Override
+    public boolean hasWifi(Context context)
+    {
+        Boolean has = (Boolean)this.invokeDeviceControllerMethod(context,  sMethodHasWifi);
+        if (has == null) {
+            return false;
+        }
+
+        return has.booleanValue();
     }
 }
