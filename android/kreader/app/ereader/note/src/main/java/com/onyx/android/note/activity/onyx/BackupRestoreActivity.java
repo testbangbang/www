@@ -114,7 +114,8 @@ public class BackupRestoreActivity extends AppCompatActivity{
         new BackupDataAction<BackupRestoreActivity>(cloudBackup).execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                Toast.makeText(BackupRestoreActivity.this, e == null ? R.string.backup_success : R.string.backup_fail, Toast.LENGTH_SHORT).show();
+                String message = e == null ? getString(R.string.backup_success) : e.getMessage();
+                Toast.makeText(BackupRestoreActivity.this, message, Toast.LENGTH_SHORT).show();
                 loadLocalBackupFiles();
             }
         });

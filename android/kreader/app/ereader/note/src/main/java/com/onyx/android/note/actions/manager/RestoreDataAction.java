@@ -16,6 +16,7 @@ import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeDatabase;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.NoteRequestChain;
+import com.onyx.android.sdk.scribble.request.note.CheckNoteModelHasDataRequest;
 import com.onyx.android.sdk.scribble.request.note.TransferDBRequest;
 import com.onyx.android.sdk.ui.dialog.DialogProgress;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
@@ -79,8 +80,8 @@ public class RestoreDataAction<T extends Activity> extends BaseNoteAction<T> {
         requestChain.addRequest(restoreRequest(context), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null || !checkDBIntegrity(context)) {
-                    restoreDBAfterFailed(context, e, callback);
+                if (e != null) {
+                    checkDBIntegrity(context, e, callback);
                 }else {
                     BaseCallback.invoke(callback, request, e);
                 }
@@ -120,16 +121,23 @@ public class RestoreDataAction<T extends Activity> extends BaseNoteAction<T> {
         });
     }
 
-    private boolean checkDBIntegrity(final Context context) {
-        return checkDBVersion(context) && checkDBData(context);
+    private void checkDBIntegrity(final Context context, final Throwable failRetoreException, final BaseCallback callback) {
+        final CheckNoteModelHasDataRequest hasDataRequest = new CheckNoteModelHasDataRequest();
+        getNoteViewHelper().submit(context, hasDataRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (!hasDataRequest.hasData() || !checkDBVersion(context)) {
+                    restoreDBAfterFailed(context, failRetoreException, callback);
+                }else {
+                    BaseCallback.invoke(callback, request, null);
+                }
+
+            }
+        });
     }
 
     private boolean checkDBVersion(final Context context) {
         int restoreDBVersion = DatabaseUtils.getDBVersion(getCurrentDBPath(context));
         return restoreDBVersion <= ShapeDatabase.VERSION;
-    }
-
-    private boolean checkDBData(final Context context) {
-        return NoteDataProvider.hasData();
     }
 }

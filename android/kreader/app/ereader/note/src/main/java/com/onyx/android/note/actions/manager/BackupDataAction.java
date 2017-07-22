@@ -1,6 +1,7 @@
 package com.onyx.android.note.actions.manager;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.ShapeDatabase;
+import com.onyx.android.sdk.scribble.request.note.CheckNoteModelHasDataRequest;
 import com.onyx.android.sdk.scribble.request.note.TransferDBRequest;
 import com.onyx.android.sdk.ui.dialog.DialogProgress;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
@@ -42,25 +44,32 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
 
     @Override
     public void execute(T activity, BaseCallback callback) {
-        if (!checkDBHasData()) {
-            Toast.makeText(activity, activity.getString(R.string.has_no_data), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        showTitleDialog(activity, callback);
+        checkDBHasData(activity, callback);
     }
 
-    private boolean checkDBHasData() {
-        return NoteDataProvider.hasData();
+    private void checkDBHasData(final Context context, final BaseCallback callback) {
+        final CheckNoteModelHasDataRequest hasDataRequest = new CheckNoteModelHasDataRequest();
+        getNoteViewHelper().submit(context, hasDataRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (!hasDataRequest.hasData()) {
+                    BaseCallback.invoke(callback, request, new Throwable(context.getString(R.string.has_no_data)));
+                }else {
+                    showTitleDialog(context, callback);
+                }
+
+            }
+        });
     }
 
-    private void showTitleDialog(final Activity activity, final BaseCallback callback) {
+    private void showTitleDialog(final Context context, final BaseCallback callback) {
         final String title = DateTimeUtil.formatDate(new Date(), DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMMSS_FOR_FILE_NAME);
-        OnyxCustomDialog.getInputDialog(activity, activity.getString(R.string.backup_file_name), new DialogInterface.OnClickListener() {
+        OnyxCustomDialog.getInputDialog(context, context.getString(R.string.backup_file_name), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 OnyxCustomDialog customDialog = (OnyxCustomDialog)dialog;
                 String input = customDialog.getInputValue().toString();
-                backup(activity, StringUtils.isNullOrEmpty(input) ? title : input, callback);
+                backup(context, StringUtils.isNullOrEmpty(input) ? title : input, callback);
             }
         }).setInputHintText(title).show();
     }
@@ -88,13 +97,13 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
                 null).show();
     }
 
-    private void backup(final Activity activity, final String fileName, final BaseCallback callback) {
+    private void backup(final Context context, final String fileName, final BaseCallback callback) {
         final String backupDBPath = BACKUP_LOCAL_SAVE_PATH + fileName + ".db";
         FileUtils.deleteFile(backupDBPath);
         FileUtils.ensureFileExists(backupDBPath);
-        String currentDBPath = activity.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db";
+        String currentDBPath = context.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db";
         TransferDBRequest request = new TransferDBRequest(currentDBPath, backupDBPath, false, false, null);
-        getNoteViewHelper().submit(activity, request, new BaseCallback() {
+        getNoteViewHelper().submit(context, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (cloudBackup) {
