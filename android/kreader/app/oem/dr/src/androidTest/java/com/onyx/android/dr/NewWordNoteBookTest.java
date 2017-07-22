@@ -5,7 +5,7 @@ import android.test.ApplicationTestCase;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.request.local.NewWordDelete;
 import com.onyx.android.dr.request.local.NewWordInsert;
-import com.onyx.android.dr.request.local.NewWordQuery;
+import com.onyx.android.dr.request.local.NewWordQueryAll;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
@@ -56,7 +56,7 @@ public class NewWordNoteBookTest extends ApplicationTestCase<DRApplication> {
 
     public void testNewWordQuery() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final NewWordQuery queryNewWord = new NewWordQuery();
+        final NewWordQueryAll queryNewWord = new NewWordQueryAll();
         new DataManager().submit(DRApplication.getInstance(), queryNewWord, new BaseCallback() {
             @Override
             public void done(BaseRequest baseRequest, Throwable throwable) {

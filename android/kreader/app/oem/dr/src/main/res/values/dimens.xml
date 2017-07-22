@@ -133,10 +133,10 @@
     <dimen name="dict_query_search_margin_left">100dp</dimen>
     <dimen name="dict_query_search_margin_top">20dp</dimen>
     <dimen name="dict_query_search_padding">20dp</dimen>
-    <dimen name="dict_query_function_height">40dp</dimen>
+    <dimen name="dict_query_function_height">60dp</dimen>
     <dimen name="dict_query_function_margin">20dp</dimen>
-    <dimen name="dict_type_query_width">150dp</dimen>
-    <dimen name="dict_type_query_margin_left">100dp</dimen>
+    <dimen name="dict_type_query_width">120dp</dimen>
+    <dimen name="dict_type_query_margin_left">80dp</dimen>
     <dimen name="dict_result_dict_type_height">80dp</dimen>
     <dimen name="dict_result_dict_type_margin">20dp</dimen>
     <dimen name="dict_result_sound_height">40dp</dimen>
@@ -146,6 +146,7 @@
     <dimen name="dict_result_function_height">80dp</dimen>
     <dimen name="activity_query_search_margin_left">30dp</dimen>
     <dimen name="item_dict_query_padding">10dp</dimen>
+<<<<<<< HEAD
     <dimen name="reader_page_indicator_padding">10dp</dimen>
     <dimen name="dialog_quick_preview_padding">10dp</dimen>
     <dimen name="dialog_quick_preview_seek_bar_height">20dp</dimen>
@@ -161,4 +162,16 @@
     <dimen name="dialog_quick_preview_seek_bar_margin">5dp</dimen>
     <dimen name="grid_view_preview_margin_bottom">5dp</dimen>
     <dimen name="grid_view_preview_margin_top">100dp</dimen>
+=======
+    <dimen name="tab_good_sentence_type">30dp</dimen>
+    <dimen name="tab_good_sentence_type_height">80dp</dimen>
+    <dimen name="tab_good_sentence_type_margin_left">30dp</dimen>
+    <dimen name="dialog_result_spinner_margin">20dp</dimen>
+    <dimen name="select_dialog_close_cancel_margin">20dp</dimen>
+    <dimen name="select_dialog_close_cancel_padding">20dp</dimen>
+    <dimen name="dialog_resutl_view_margin">20dp</dimen>
+    <dimen name="dialog_result_bottom">20dp</dimen>
+    <dimen name="dict_query_total_strokes_marginleft">20dp</dimen>
+    <dimen name="dict_query_edittext_width_second">120dp</dimen>
+>>>>>>> 4f3a725870de9ecdadb38c934c7f12ffdb25d381
 </resources>

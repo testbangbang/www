@@ -88,11 +88,12 @@
         android:focusable="true" />
 
     <LinearLayout
+        android:id="@+id/dict_result_activity_function_container"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="wrap_content">
 
         <include
-            android:id="@+id/main_tab_menu"
             layout="@layout/tab_menu"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dict_result_function_height" />

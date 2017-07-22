@@ -33,6 +33,12 @@
     <integer name="dict_tab_menu_column">3</integer>
     <integer name="dict_query_edittext_lines">1</integer>
     <integer name="my_notes_column">3</integer>
+    <integer name="good_sentence_tab_column">1</integer>
+    <integer name="good_sentence_tab_row">3</integer>
+    <integer name="good_sentence_notebook_row">20</integer>
+    <integer name="query_recor_row">20</integer>
+    <integer name="query_record_column">1</integer>
+    <integer name="dict_spinner_tab_row">16</integer>
     <integer name="applications_activity_row">5</integer>
     <integer name="applications_activity_col">4</integer>
     <integer name="quick_preview_bitmap_default_width">300</integer>

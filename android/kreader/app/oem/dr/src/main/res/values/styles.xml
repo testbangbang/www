@@ -183,6 +183,64 @@
         <item name="android:singleLine">true</item>
     </style>
 
+    <style name="dict_query_edittext_second">
+        <item name="android:layout_width">@dimen/dict_query_edittext_width_second</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:imeOptions">actionSearch</item>
+        <item name="android:maxLines">@integer/dict_query_edittext_lines</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="good_sentence_activity_textview">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:background">@android:color/black</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+    </style>
+
+    <style name="good_sentence_item_textview">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+    </style>
+
+    <style name="good_sentence_item_view">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:background">@android:color/black</item>
+    </style>
+
+    <style name="good_sentence_activity_spinner">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:dropDownVerticalOffset">55dp</item>
+        <item name="android:spinnerMode">dropdown</item>
+        <item name="android:gravity">center</item>
+        <item name="android:theme">@style/SpinnerStyle</item>
+    </style>
+
+    <style name="good_sentence_activity_spinner_second">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:dropDownVerticalOffset">55dp</item>
+        <item name="android:layout_margin">@dimen/dialog_result_spinner_margin</item>
+        <item name="android:layout_alignParentRight">true</item>
+    </style>
+
+    <style name="good_sentence_activity_spinner_linearlayout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">1dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@android:color/black</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
     <style name="dict_tab_voice">
         <item name="android:gravity">center</item>
         <item name="android:layout_marginRight">1dp</item>
@@ -194,5 +252,16 @@
     <style name="android_dialog_no_title" parent="android:Theme.NoTitleBar">
         <item name="android:windowBackground">@drawable/square_bg</item>
         <item name="android:textColor">@color/background_device_default_dark</item>
+    </style>
+
+    <style name="SpinnerStyle">
+        <item name="colorAccent">#888888</item>
+        <item name="colorControlNormal">#ddffffff</item>
+    </style>
+
+    <style name="firstViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@android:color/black</item>
     </style>
 </resources>

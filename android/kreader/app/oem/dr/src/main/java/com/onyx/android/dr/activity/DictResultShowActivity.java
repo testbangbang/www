@@ -5,17 +5,24 @@ import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.DictFunctionAdapter;
 import com.onyx.android.dr.adapter.DictTypeAdapter;
+import com.onyx.android.dr.bean.DictFunctionBean;
+import com.onyx.android.dr.bean.DictTypeBean;
+import com.onyx.android.dr.bean.GoodSentenceBean;
+import com.onyx.android.dr.bean.NewWordBean;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.data.DictFunctionData;
-import com.onyx.android.dr.data.DictTypeData;
+import com.onyx.android.dr.event.DictFunctionGoneEvent;
+import com.onyx.android.dr.event.DictFunctionVisibleEvent;
 import com.onyx.android.dr.event.GoodExcerptEvent;
+import com.onyx.android.dr.event.NewWordQueryEvent;
 import com.onyx.android.dr.event.PlaySoundEvent;
 import com.onyx.android.dr.event.QueryRecordEvent;
 import com.onyx.android.dr.event.RefreshWebviewEvent;
@@ -24,6 +31,7 @@ import com.onyx.android.dr.event.UpdateSoundIconEvent;
 import com.onyx.android.dr.event.VocabularyNotebookEvent;
 import com.onyx.android.dr.event.WebViewLoadOverEvent;
 import com.onyx.android.dr.event.WebviewPageChangedEvent;
+import com.onyx.android.dr.interfaces.ActionSelectListener;
 import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
 import com.onyx.android.dr.view.AutoPagedWebView;
@@ -48,13 +56,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * Created by zhouzhiming on 17-6-26.
  */
-
 public class DictResultShowActivity extends BaseActivity implements DictResultShowView, View.OnClickListener {
     @Bind(R.id.activity_dict_result_type)
     PageRecyclerView dictTypeRecyclerView;
@@ -74,6 +80,8 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     ImageView ivVoiceOne;
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
+    @Bind(R.id.dict_result_activity_function_container)
+    LinearLayout functionContainer;
     private DictFunctionPresenter dictPresenter;
     private DictFunctionAdapter dictFunctionAdapter;
     private DictionaryManager dictionaryManager;
@@ -82,12 +90,15 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     private DictTypeAdapter dictTypeAdapter;
     private DividerItemDecoration dividerItemDecoration;
     private int customFontSize = 10;
-    private List<DictTypeData> searchResultList = new ArrayList<DictTypeData>();
+    private List<DictTypeBean> searchResultList = new ArrayList<DictTypeBean>();
     private List<String> wordSoundList = new ArrayList<>();
     private String editQuery = "";
     private static final int SOUND_ONE = 1;
     private static final int SOUND_TWO = 2;
     public volatile Map<String, DictionaryQueryResult> queryResult;
+    private ArrayList<String> itemList;
+    private String copyText = "";
+    private String dictionaryLookup = "";
 
     @Override
     protected Integer getLayoutId() {
@@ -96,10 +107,6 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Override
     protected void initConfig() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-        ButterKnife.bind(this);
     }
 
     @Override
@@ -144,27 +151,44 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     protected void initData() {
         queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
-        dictPresenter = new DictFunctionPresenter(this);
+        dictPresenter = new DictFunctionPresenter(getApplicationContext(), this);
         dictPresenter.loadData(this);
         dictPresenter.loadTabMenu(Constants.ACCOUNT_TYPE_DICT_FUNCTION);
+        initItemData();
         getIntentDatas();
         initSound();
         settingDictionaryFunction();
         initEvent();
     }
 
+    private void initItemData() {
+        itemList = new ArrayList<>();
+        itemList.add(getString(R.string.webview_action_copy));
+        itemList.add(getString(R.string.webview_action_cancel));
+        resultView.setActionList(itemList);
+    }
+
     @Override
-    public void setDictResultData(List<DictFunctionData> functionData) {
+    public void setDictResultData(List<DictFunctionBean> functionData) {
         dictFunctionAdapter.setMenuDatas(functionData);
     }
 
     @Override
-    public void setDictTypeData(List<DictTypeData> dictData) {
+    public void setDictTypeData(List<DictTypeBean> dictData) {
         dictTypeAdapter.setMenuDatas(dictData);
     }
 
     private void getIntentDatas() {
-        editQuery = getIntent().getStringExtra("editQuery");
+        editQuery = getIntent().getStringExtra(Constants.EDITQUERY);
+        insertQueryRecord();
+    }
+
+    private void insertQueryRecord() {
+        if (!StringUtils.isNullOrEmpty(editQuery)) {
+            long timeMillis = System.currentTimeMillis();
+            timeMillis = timeMillis / 1000;
+            dictPresenter.insertQueryRecord(editQuery, timeMillis);
+        }
     }
 
     private void initSound() {
@@ -213,13 +237,29 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         dictTypeAdapter.setOnItemClick(new DictTypeAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                dictionaryLookup = searchResultList.get(position).getTabName();
+                EventBus.getDefault().post(new DictFunctionGoneEvent());
                 showResultToWebview(position);
+            }
+        });
+
+        //增加点击回调
+        resultView.setActionSelectListener(new ActionSelectListener() {
+            @Override
+            public void onClick(String title, String selectText) {
+                if (title.equals(getString(R.string.webview_action_cancel))) {
+                    CommonNotices.showMessage(DictResultShowActivity.this, getString(R.string.webview_toast_cancel_copy));
+                    EventBus.getDefault().post(new DictFunctionGoneEvent());
+                } else {
+                    copyText = selectText;
+                    CommonNotices.showMessage(DictResultShowActivity.this, getString(R.string.webview_toast_copy_success) + "\n\nValue: " + selectText);
+                    EventBus.getDefault().post(new DictFunctionVisibleEvent());
+                }
             }
         });
     }
 
     public void testWordDictQuery() {
-        reset();
         if (!StringUtils.isNullOrEmpty(editQuery)) {
             dictionaryManager = DRApplication.getDictionaryManager();
             queryWordRequest = new QueryWordRequest(editQuery);
@@ -232,6 +272,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
                     dictTypeAdapter.setMenuDatas(searchResultList);
                     dictTypeRecyclerView.setAdapter(dictTypeAdapter);
+                    if (searchResultList.size() > 0) {
+                        dictionaryLookup = searchResultList.get(0).getTabName();
+                    }
                 }
             });
             if (!bRet) {
@@ -263,7 +306,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         resultView.setScroll(0, 0);
         resultView.stopPlayer(0);
         //get dictionary result
-        DictTypeData dictTypeData = searchResultList.get(position);
+        DictTypeBean dictTypeData = searchResultList.get(position);
         String dictName = dictTypeData.getTabName();
         DictionaryQueryResult dictionaryQueryResult = queryResult.get(dictName);
         if (dictionaryQueryResult == null) {
@@ -291,9 +334,10 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     }
 
     private void saveDictionary(String dictName) {
-        DictTypeData dictTypeData = new DictTypeData(dictName);
+        DictTypeBean dictTypeData = new DictTypeBean(dictName);
         if (!searchResultList.contains(dictTypeData)) {
             searchResultList.add(dictTypeData);
+            dictTypeAdapter.notifyDataSetChanged();
         }
     }
 
@@ -397,17 +441,30 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVocabularyNotebookEvent(VocabularyNotebookEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.vocabulary_notebook));
+        NewWordBean bean = new NewWordBean();
+        bean.setNewWord(copyText);
+        bean.setDictionaryLookup(dictionaryLookup);
+        bean.setReadingMatter("");
+        dictPresenter.insertNewWord(bean);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNewWordQueryEvent(NewWordQueryEvent event) {
+        ActivityManager.startNewWordQueryActivity(this, copyText);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoodExcerptEvent(GoodExcerptEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.good_sentence_excerpt));
+        GoodSentenceBean bean = new GoodSentenceBean();
+        bean.setDetails(copyText);
+        bean.setReadingMatter("");
+        bean.setPageNumber("");
+        dictPresenter.insertGoodSentence(bean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onQueryRecordEvent(QueryRecordEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.query_record));
+        ActivityManager.startQueryRecordActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -440,6 +497,16 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         UpdateSoundIconState();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDictFunctionVisibleEvent(DictFunctionVisibleEvent event) {
+        functionContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDictFunctionGoneEvent(DictFunctionGoneEvent event) {
+        functionContainer.setVisibility(View.GONE);
+    }
+
     private void UpdateSoundIconState() {
         switch (wordSoundList.size()) {
             case SOUND_ONE:
@@ -456,7 +523,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     @Override
     protected void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
+        if (resultView != null) {
+            resultView.dismissAction();
+        }
     }
 
     @Override

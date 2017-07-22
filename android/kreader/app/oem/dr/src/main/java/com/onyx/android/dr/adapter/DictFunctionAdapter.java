@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.data.DictFunctionData;
+import com.onyx.android.dr.bean.DictFunctionBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -23,9 +23,9 @@ import butterknife.ButterKnife;
  */
 
 public class DictFunctionAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
-    private List<DictFunctionData> menuDatas;
+    private List<DictFunctionBean> menuDatas;
 
-    public void setMenuDatas(List<DictFunctionData> menuDatas) {
+    public void setMenuDatas(List<DictFunctionBean> menuDatas) {
         this.menuDatas = menuDatas;
     }
 
@@ -53,7 +53,7 @@ public class DictFunctionAdapter extends PageRecyclerView.PageAdapter implements
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
-        DictFunctionData menuData = menuDatas.get(position);
+        DictFunctionBean menuData = menuDatas.get(position);
         viewHolder.tabMenuIcon.setImageResource(menuData.getImageResources());
         viewHolder.tabMenuTitle.setText(menuData.getTabName());
         viewHolder.rootView.setTag(position);

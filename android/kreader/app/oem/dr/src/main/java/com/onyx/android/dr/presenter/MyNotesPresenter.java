@@ -11,9 +11,11 @@ import com.onyx.android.dr.interfaces.MyNotesView;
 public class MyNotesPresenter {
     private final MyNotesTypeConfig myNotesTypeConfig;
     private MyNotesView myNotesView;
+    private Context context;
 
-    public MyNotesPresenter(MyNotesView myNotesView) {
+    public MyNotesPresenter(Context context, MyNotesView myNotesView) {
         this.myNotesView = myNotesView;
+        this.context = context;
         myNotesTypeConfig = new MyNotesTypeConfig();
     }
 

@@ -1,20 +1,20 @@
-package com.onyx.android.dr.data;
+package com.onyx.android.dr.bean;
 
 /**
  * Created by zhouzhiming on 17-6-28.
  */
 
-public class DictFunctionData {
+public class DictFunctionBean {
     private String tabName;
     private int imageResources;
     private Object eventBean;
 
-    public DictFunctionData(String tabName, Object eventBean) {
+    public DictFunctionBean(String tabName, Object eventBean) {
         this.tabName = tabName;
         this.eventBean = eventBean;
     }
 
-    public DictFunctionData(String tabName, int imageResources, Object eventBean) {
+    public DictFunctionBean(String tabName, int imageResources, Object eventBean) {
         this.tabName = tabName;
         this.imageResources = imageResources;
         this.eventBean = eventBean;

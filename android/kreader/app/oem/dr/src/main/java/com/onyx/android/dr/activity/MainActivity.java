@@ -145,13 +145,13 @@ public class MainActivity extends BaseActivity implements MainView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDictMenuEvent(DictMenuEvent event) {
         CommonNotices.showMessage(this, getString(R.string.menu_dict));
-        DictQueryActivity.startDictQueryActivity(this);
+        ActivityManager.startDictQueryActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNotesMenuEvent(NotesMenuEvent event) {
         CommonNotices.showMessage(this, getString(R.string.menu_notes));
-        MyNotesActivity.startMyNotesActivity(this);
+        ActivityManager.startMyNotesActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -5,9 +5,8 @@ import android.os.Environment;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
-import com.onyx.android.dr.common.Constants;
-
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.manager.LeanCloudManager;
@@ -120,10 +119,6 @@ public class DRApplication extends MultiDexApplication {
         return libraryDataHolder;
     }
 
-    static public DataManager getDataManager() {
-        return getLibraryDataHolder().getDataManager();
-    }
-
     public void initDatabases(final Context context, final List<Class<? extends DatabaseHolder>> list) {
         FlowConfig.Builder builder = new FlowConfig.Builder(context);
         if (list != null) {
@@ -151,5 +146,9 @@ public class DRApplication extends MultiDexApplication {
 
     public int getCustomFontSize() {
         return DictPreference.getCustomTextSize(this);
+    }
+
+    public static DataManager getDataManager() {
+        return getLibraryDataHolder().getDataManager();
     }
 }

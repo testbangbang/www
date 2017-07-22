@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.data.DictTypeData;
+import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.List;
@@ -18,9 +18,8 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-6-28.
  */
-
 public class DictTypeAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
-    private List<DictTypeData> dictDatas;
+    private List<DictTypeBean> dictDatas;
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
 
     public interface OnRecyclerViewItemClickListener {
@@ -31,7 +30,7 @@ public class DictTypeAdapter extends PageRecyclerView.PageAdapter implements Vie
         this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
     }
 
-    public void setMenuDatas(List<DictTypeData> dictDatas) {
+    public void setMenuDatas(List<DictTypeBean> dictDatas) {
         this.dictDatas = dictDatas;
     }
 
@@ -59,7 +58,7 @@ public class DictTypeAdapter extends PageRecyclerView.PageAdapter implements Vie
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
-        DictTypeData dictData = dictDatas.get(position);
+        DictTypeBean dictData = dictDatas.get(position);
         viewHolder.tabMenuTitle.setText(dictData.getTabName());
         viewHolder.rootView.setTag(position);
         viewHolder.rootView.setOnClickListener(this);

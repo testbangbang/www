@@ -5,7 +5,7 @@ import android.test.ApplicationTestCase;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.request.local.GoodSentenceExcerptDelete;
 import com.onyx.android.dr.request.local.GoodSentenceExcerptInsert;
-import com.onyx.android.dr.request.local.GoodSentenceExcerptQuery;
+import com.onyx.android.dr.request.local.GoodSentenceExcerptQueryAll;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
@@ -58,7 +58,7 @@ public class ExcerptGoodSentenceTest extends ApplicationTestCase<DRApplication> 
 
     public void testGoodSentenceQuery() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final GoodSentenceExcerptQuery queryGoodSentence = new GoodSentenceExcerptQuery();
+        final GoodSentenceExcerptQueryAll queryGoodSentence = new GoodSentenceExcerptQueryAll();
         new DataManager().submit(DRApplication.getInstance(), queryGoodSentence, new BaseCallback() {
             @Override
             public void done(BaseRequest baseRequest, Throwable throwable) {

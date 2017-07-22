@@ -27,4 +27,8 @@ public class GoodSentenceNoteEntity extends BaseModel {
     public String pageNumber;
     @Column
     public String recitation;
+    @Column
+    public long currentTime;
+    @Column
+    public String type;
 }

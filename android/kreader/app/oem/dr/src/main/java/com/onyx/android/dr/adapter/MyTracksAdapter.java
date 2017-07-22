@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.data.MenuData;
+import com.onyx.android.dr.data.MenuBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -22,9 +22,9 @@ import butterknife.ButterKnife;
  * Created by zhouzhiming on 17-7-11.
  */
 public class MyTracksAdapter extends PageRecyclerView.PageAdapter<MyTracksAdapter.ViewHolder> implements View.OnClickListener {
-    private List<MenuData> menuDataList;
+    private List<MenuBean> menuDataList;
 
-    public void setMenuDataList(List<MenuData> menuDataList) {
+    public void setMenuDataList(List<MenuBean> menuDataList) {
         this.menuDataList = menuDataList;
     }
 
@@ -51,7 +51,7 @@ public class MyTracksAdapter extends PageRecyclerView.PageAdapter<MyTracksAdapte
 
     @Override
     public void onPageBindViewHolder(ViewHolder holder, int position) {
-        MenuData menuData = menuDataList.get(position);
+        MenuBean menuData = menuDataList.get(position);
         holder.tabMenuIcon.setImageResource(menuData.getImageResources());
         holder.tabMenuTitle.setText(menuData.getTabName());
         holder.rootView.setTag(position);
