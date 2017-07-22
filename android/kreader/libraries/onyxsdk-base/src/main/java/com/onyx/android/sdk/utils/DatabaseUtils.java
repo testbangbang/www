@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class DatabaseUtils {
 
-    public static int getDatabase(String databasePath) {
+    public static int getDBVersion(String databasePath) {
         SQLiteDatabase database = SQLiteDatabase.openDatabase(databasePath, null,SQLiteDatabase.OPEN_READONLY);
         int version = database.getVersion();
         database.close();
@@ -16,8 +16,9 @@ public class DatabaseUtils {
     }
 
     public static boolean canRestoreDB(final String src, final String dst) {
-        int srcDBVersion = DatabaseUtils.getDatabase(src);
-        int dstDBVersion = DatabaseUtils.getDatabase(dst);
+        int srcDBVersion = DatabaseUtils.getDBVersion(src);
+        int dstDBVersion = DatabaseUtils.getDBVersion(dst);
         return dstDBVersion >= srcDBVersion;
     }
+
 }

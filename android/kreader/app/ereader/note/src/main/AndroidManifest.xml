@@ -56,6 +56,6 @@
             android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".activity.onyx.SettingActivity"/>
         <activity android:name=".activity.onyx.BackupRestoreActivity"/>
+        <activity android:name=".test.NoteTestActivity"/>
     </application>
-
 </manifest>

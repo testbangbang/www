@@ -29,6 +29,9 @@ public class ShapeDataProvider {
         public abstract void finished();
     }
 
+    public static void clear() {
+        new Delete().from(ShapeModel.class).execute();
+    }
 
     public static List<ShapeModel> loadShapeList(final Context context,
                                                  final String documentUniqueId,
@@ -42,6 +45,10 @@ public class ShapeDataProvider {
 
         List<ShapeModel> list = where.queryList();
         return list;
+    }
+
+    public static List<ShapeModel> loadShapeList(final Context context) {
+        return new Select().from(ShapeModel.class).queryList();
     }
 
     public static void saveShapeList(final Context context,
