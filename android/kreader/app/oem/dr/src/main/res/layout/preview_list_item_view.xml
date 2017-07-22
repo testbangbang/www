@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/image_btn_bg"
+    android:paddingBottom="@dimen/dialog_quick_preview_padding_top"
+    android:paddingLeft="@dimen/dialog_quick_preview_padding_left"
+    android:paddingRight="@dimen/dialog_quick_preview_padding_left"
+    android:paddingTop="@dimen/dialog_quick_preview_padding_top">
+
+    <RelativeLayout
+        android:id="@+id/item_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_shadow"
+        android:layout_toLeftOf="@+id/right_shadow"
+        android:background="@drawable/preview_item_view_bg"
+        android:padding="@dimen/dialog_quick_preview_item_container_padding">
+
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/text_view_page"
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true" />
+
+        <TextView
+            android:id="@+id/text_view_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:padding="@dimen/dialog_quick_preview_text_padding"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/btn_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@android:color/black"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dialog_quick_preview_btn_page_padding_top"
+            android:paddingRight="@dimen/dialog_quick_preview_btn_page_padding_top"
+            android:text="1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/level_two_font_size" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/right_shadow"
+        android:layout_width="@dimen/dialog_quick_preview_list_item_shadow_height"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/library_book_cover_shadow" />
+
+    <ImageView
+        android:id="@+id/bottom_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_quick_preview_list_item_shadow_height"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/library_book_cover_shadow" />
+
+    <ImageView
+        android:id="@+id/close_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/dialog_quick_preview_close_view_margin"
+        android:background="@drawable/image_btn_bg"
+        android:src="@drawable/ic_dialog_close"
+        android:visibility="gone" />
+</RelativeLayout>

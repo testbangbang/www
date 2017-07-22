@@ -53,7 +53,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:layout_marginRight="@dimen/reader_page_info_menu_back_margin_right"
-            android:background="@drawable/imagebtn_bg"
+            android:background="@drawable/image_btn_bg"
             android:src="@drawable/ic_reader_back" />
     </RelativeLayout>
 
@@ -69,7 +69,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:background="@drawable/imagebtn_bg"
+            android:background="@drawable/image_btn_bg"
             android:gravity="center"
             android:maxLines="1"
             android:text="@string/prev_chapter"
@@ -88,15 +88,15 @@
             android:maxHeight="@dimen/menu_seek_bar_height"
             android:minHeight="@dimen/menu_seek_bar_height"
             android:padding="@dimen/reader_page_info_menu_reading_process_padding"
-            android:progressDrawable="@drawable/seekbar_progress"
-            android:thumb="@drawable/seekbar_thumb" />
+            android:progressDrawable="@drawable/seek_bar_progress"
+            android:thumb="@drawable/seek_bar_thumb" />
 
         <TextView
             android:id="@+id/reader_page_info_menu_next_chapter"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:background="@drawable/imagebtn_bg"
+            android:background="@drawable/image_btn_bg"
             android:gravity="center"
             android:maxLines="1"
             android:text="@string/next_chapter"

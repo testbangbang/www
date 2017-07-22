@@ -114,7 +114,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
                     android:layout_toLeftOf="@+id/page_indicator"
-                    android:background="@drawable/imagebtn_bg"
+                    android:background="@drawable/image_btn_bg"
                     android:padding="5dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_dialog_reader_arrow_left_black" />
@@ -135,7 +135,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@+id/page_indicator"
-                    android:background="@drawable/imagebtn_bg"
+                    android:background="@drawable/image_btn_bg"
                     android:padding="5dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_dialog_reader_arrow_right_black" />
@@ -222,7 +222,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@drawable/imagebtn_bg"
+                android:background="@drawable/image_btn_bg"
                 android:src="@drawable/ic_dialog_close" />
         </LinearLayout>
 

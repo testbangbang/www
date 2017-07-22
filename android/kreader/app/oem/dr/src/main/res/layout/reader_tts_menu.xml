@@ -50,8 +50,8 @@
                     android:maxHeight="@dimen/menu_seek_bar_height"
                     android:minHeight="@dimen/menu_seek_bar_height"
                     android:padding="@dimen/reader_page_info_menu_reading_process_padding"
-                    android:progressDrawable="@drawable/seekbar_progress"
-                    android:thumb="@drawable/seekbar_thumb" />
+                    android:progressDrawable="@drawable/seek_bar_progress"
+                    android:thumb="@drawable/seek_bar_thumb" />
             </LinearLayout>
 
             <LinearLayout
@@ -77,8 +77,8 @@
                     android:maxHeight="@dimen/menu_seek_bar_height"
                     android:minHeight="@dimen/menu_seek_bar_height"
                     android:padding="@dimen/reader_page_info_menu_reading_process_padding"
-                    android:progressDrawable="@drawable/seekbar_progress"
-                    android:thumb="@drawable/seekbar_thumb" />
+                    android:progressDrawable="@drawable/seek_bar_progress"
+                    android:thumb="@drawable/seek_bar_thumb" />
 
             </LinearLayout>
         </LinearLayout>
@@ -91,7 +91,7 @@
             android:layout_centerInParent="true"
             android:layout_marginLeft="@dimen/reader_tts_menu_play_margin_right"
             android:layout_marginRight="@dimen/reader_tts_menu_play_margin_right"
-            android:background="@drawable/imagebtn_bg"
+            android:background="@drawable/image_btn_bg"
             android:src="@drawable/ic_reader_play" />
     </RelativeLayout>
 
@@ -109,6 +109,6 @@
         android:gravity="center"
         android:padding="@dimen/tts_setting_voice_quit_reading_padding"
         android:text="@string/tts_setting_voice_quit_reading"
-        android:background="@drawable/imagebtn_bg"
+        android:background="@drawable/image_btn_bg"
         android:textColor="@android:color/black"/>
 </LinearLayout>

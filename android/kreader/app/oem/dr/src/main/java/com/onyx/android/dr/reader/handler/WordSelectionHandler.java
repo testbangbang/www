@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import com.onyx.android.dr.reader.action.SelectWordAction;
 import com.onyx.android.dr.reader.action.ShowTextSelectionMenuAction;
 import com.onyx.android.dr.reader.dialog.DialogAnnotation;
+import com.onyx.android.dr.reader.dialog.ReaderDialogManage;
 import com.onyx.android.dr.reader.highlight.HighlightCursor;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -107,8 +108,7 @@ public class WordSelectionHandler extends BaseHandler {
         if (getReaderPresenter().getReaderUserDataInfo().hasHighlightResult()) {
             String text = getReaderPresenter().getReaderUserDataInfo().getHighlightResult().getText();
             if (!StringUtils.isNullOrEmpty(text)) {
-                boolean isWord = isWord(text);
-                showSelectionMenu(isWord);
+                ReaderDialogManage.onShowMainMenu(getReaderPresenter(), true);
             }
         }
         updateHighLightRect();
@@ -301,7 +301,7 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     private void clearWordSelection() {
-        ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(getReaderPresenter(),true);
+        ShowTextSelectionMenuAction.hideTextSelectionPopupWindow(getReaderPresenter(), true);
         getReaderPresenter().getBookOperate().redrawPage();
         getReaderPresenter().getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
         getReaderPresenter().getReaderSelectionManager().clear();

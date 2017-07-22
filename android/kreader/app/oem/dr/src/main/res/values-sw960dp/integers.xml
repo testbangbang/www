@@ -25,4 +25,6 @@
     <integer name="dict_spinner_tab_row">16</integer>
     <integer name="applications_activity_row">5</integer>
     <integer name="applications_activity_col">4</integer>
+    <integer name="quick_preview_bitmap_default_width">300</integer>
+    <integer name="quick_preview_bitmap_default_height">400</integer>
 </resources>

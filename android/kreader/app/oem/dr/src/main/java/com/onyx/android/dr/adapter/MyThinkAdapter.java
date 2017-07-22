@@ -54,6 +54,9 @@ public class MyThinkAdapter extends PageRecyclerView.PageAdapter<MyThinkAdapter.
         MenuBean menuData = menuDataList.get(position);
         holder.tabMenuIcon.setImageResource(menuData.getImageResources());
         holder.tabMenuTitle.setText(menuData.getTabName());
+        MenuBean MenuBean = menuDataList.get(position);
+        holder.tabMenuIcon.setImageResource(MenuBean.getImageResources());
+        holder.tabMenuTitle.setText(MenuBean.getTabName());
         holder.rootView.setTag(position);
         holder.rootView.setOnClickListener(this);
     }

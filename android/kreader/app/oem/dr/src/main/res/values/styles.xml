@@ -39,7 +39,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:background">@drawable/image_btn_bg</item>
         <item name="android:scaleType">center</item>
         <item name="android:clickable">true</item>
     </style>
@@ -126,7 +126,7 @@
 
     <style name="search_button">
         <item name="android:padding">5dp</item>
-        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:background">@drawable/image_btn_bg</item>
         <item name="android:layout_margin">@dimen/search_button_margin</item>
     </style>
 
@@ -258,6 +258,11 @@
         <item name="android:layout_marginTop">1dp</item>
         <item name="android:layout_marginBottom">1dp</item>
         <item name="android:layout_centerInParent">true</item>
+    </style>
+
+    <style name="android_dialog_no_title" parent="android:Theme.NoTitleBar">
+        <item name="android:windowBackground">@drawable/square_bg</item>
+        <item name="android:textColor">@color/background_device_default_dark</item>
     </style>
 
     <style name="SpinnerStyle">

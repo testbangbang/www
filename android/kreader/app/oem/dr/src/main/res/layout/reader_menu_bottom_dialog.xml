@@ -2,7 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/reader_menu_bottom_dialog_margin_top"
     android:orientation="vertical">
+
+    <include layout="@layout/title_bar" />
 
     <View
         android:id="@+id/dismiss_zone"
@@ -15,4 +18,11 @@
         layout="@layout/tab_menu"
         android:layout_width="match_parent"
         android:layout_height="@dimen/main_menu_tab_height" />
+
+    <include
+        android:id="@+id/reader_tts_menu_id"
+        layout="@layout/reader_tts_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 </LinearLayout>
