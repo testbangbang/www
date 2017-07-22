@@ -94,7 +94,6 @@ public class MainActivity extends BaseActivity implements MainView {
     protected void initData() {
         mainPresenter = new MainPresenter(this);
         mainPresenter.loadData(this);
-        mainPresenter.loadTabMenu("");
         mainPresenter.authToken();
     }
 
@@ -188,7 +187,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoginFailedEvent(LoginFailedEvent event) {
-        ActivityManager.startLoginActivity(this);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
