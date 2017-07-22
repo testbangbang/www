@@ -72,4 +72,5 @@
     <string name="backup_file_name">备份文件名称</string>
     <string name="local_backup">本地备份</string>
     <string name="cloud_backup">云备份</string>
+    <string name="has_no_data">本地没有数据,无法备份</string>
 </resources>

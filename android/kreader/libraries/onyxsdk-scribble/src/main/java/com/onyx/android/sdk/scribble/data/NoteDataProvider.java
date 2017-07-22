@@ -108,6 +108,10 @@ public class NoteDataProvider {
         return new Select().from(NoteModel.class).queryList();
     }
 
+    public static boolean hasData() {
+        return new Select().from(NoteModel.class).hasData();
+    }
+
     public static void saveNote(final Context context, final NoteModel model) {
         if (model == null) {
             return;

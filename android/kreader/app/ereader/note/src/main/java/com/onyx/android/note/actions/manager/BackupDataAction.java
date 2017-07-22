@@ -3,6 +3,7 @@ package com.onyx.android.note.actions.manager;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.view.View;
+import android.widget.Toast;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
@@ -11,6 +12,8 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DatabaseInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.data.NoteDataProvider;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.ShapeDatabase;
 import com.onyx.android.sdk.scribble.request.note.TransferDBRequest;
 import com.onyx.android.sdk.ui.dialog.DialogProgress;
@@ -20,6 +23,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by ming on 2017/7/18.
@@ -38,7 +42,15 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
 
     @Override
     public void execute(T activity, BaseCallback callback) {
+        if (!checkDBHasData()) {
+            Toast.makeText(activity, activity.getString(R.string.has_no_data), Toast.LENGTH_SHORT).show();
+            return;
+        }
         showTitleDialog(activity, callback);
+    }
+
+    private boolean checkDBHasData() {
+        return NoteDataProvider.hasData();
     }
 
     private void showTitleDialog(final Activity activity, final BaseCallback callback) {

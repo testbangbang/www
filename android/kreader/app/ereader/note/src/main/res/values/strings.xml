@@ -75,4 +75,5 @@
     <string name="backup_file_name">Backup File Name</string>
     <string name="local_backup">Local Backup</string>
     <string name="cloud_backup">Cloud Backup</string>
+    <string name="has_no_data">There is no data in the database that can not be backed up</string>
 </resources>
