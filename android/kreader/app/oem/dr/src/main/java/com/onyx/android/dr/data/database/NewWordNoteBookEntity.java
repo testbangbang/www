@@ -14,12 +14,6 @@ public class NewWordNoteBookEntity extends BaseModel {
     @PrimaryKey(autoincrement = true)
     public long id;
     @Column
-    public String week;
-    @Column
-    public String month;
-    @Column
-    public String day;
-    @Column
     public String newWord;
     @Column
     public String dictionaryLookup;
@@ -28,5 +22,5 @@ public class NewWordNoteBookEntity extends BaseModel {
     @Column
     public long currentTime;
     @Column
-    public String type;
+    public String newWordType;
 }

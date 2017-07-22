@@ -199,4 +199,7 @@
     <string name="last_chapter">Is already the last chapter</string>
     <string name="prev_page">Prev</string>
     <string name="next_page">Next</string>
+    <string name="new_word_delete">delete</string>
+    <string name="export">export</string>
+    <string name="new_word_notebook_html">new word notebook form</string>
 </resources>

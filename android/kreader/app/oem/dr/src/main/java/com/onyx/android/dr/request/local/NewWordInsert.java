@@ -29,9 +29,6 @@ public class NewWordInsert extends BaseDataRequest {
         if (!whetherInsert()) {
             newWordsInfo.insert();
         } else {
-            newWordEntity.week = newWordsInfo.week;
-            newWordEntity.month = newWordsInfo.month;
-            newWordEntity.day = newWordsInfo.day;
             newWordEntity.currentTime = newWordsInfo.currentTime;
             newWordEntity.dictionaryLookup = newWordsInfo.dictionaryLookup;
             newWordEntity.readingMatter = newWordsInfo.readingMatter;
