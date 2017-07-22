@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.data.ReaderMenuBean;
+import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.reader.adapter.ReaderTabMenuAdapter;
 import com.onyx.android.dr.reader.common.ReadSettingTtsConfig;
 import com.onyx.android.dr.reader.common.ReaderTabMenuConfig;
@@ -124,16 +125,24 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     }
 
     private void initDefaultView() {
-        if (!isWorld) {
-            defaultMenuData.get(0).setEnable(false);
-            defaultMenuData.get(2).setEnable(false);
-            defaultMenuData.get(3).setEnable(false);
+        if (!isWorld && defaultMenuData != null) {
+            for (ReaderMenuBean menu : defaultMenuData) {
+                if (isHide(menu)) {
+                    menu.setEnable(false);
+                }
+            }
         }
         readerTabMenuAdapter.setMenuDataList(defaultMenuData);
         readerTabMenuAdapter.notifyDataSetChanged();
 
         ReaderMainMenuItemEvent.bindReaderDefaultMenuItemEvent();
         initTtsMenuItemClickEvent();
+    }
+
+    private boolean isHide(ReaderMenuBean menu) {
+        return menu.getTabKey().equals(DeviceConfig.ReaderMenuInfo.MENU_POSTIL) ||
+                menu.getTabKey().equals(DeviceConfig.ReaderMenuInfo.MENU_MARK) ||
+                menu.getTabKey().equals(DeviceConfig.ReaderMenuInfo.MENU_WORD_QUERY);
     }
 
     private void initCustomizeView() {
