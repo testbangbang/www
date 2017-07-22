@@ -548,4 +548,10 @@ public class FileUtils {
         src.close();
         dst.close();
     }
+
+    public static boolean compareFileMd5(final String file1, final String file2) throws IOException, NoSuchAlgorithmException {
+        String file1Md5 = FileUtils.computeFullMD5Checksum(new File(file1));
+        String file2Md5 = FileUtils.computeFullMD5Checksum(new File(file2));
+        return file1Md5.equals(file2Md5);
+    }
 }

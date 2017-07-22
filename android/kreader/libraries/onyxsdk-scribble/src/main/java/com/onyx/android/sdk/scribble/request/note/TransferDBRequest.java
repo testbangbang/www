@@ -9,6 +9,7 @@ import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
+
 /**
  * Created by ming on 2017/4/21.
  */
@@ -38,6 +39,9 @@ public class TransferDBRequest extends BaseNoteRequest {
             throw new Exception("Can not restore high version database");
         }
         FileUtils.transferFile(src, dst);
+        if (!FileUtils.compareFileMd5(src, dst)) {
+            throw new Exception("Md5 is not the same");
+        }
         if (restartDB) {
             restartDB();
         }
