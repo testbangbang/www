@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
@@ -377,5 +378,25 @@ public class DeviceUtils {
     static public void turnOffSystemPMSettings(Context context) {
         android.provider.Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, NEVER_SLEEP);
         android.provider.Settings.System.putInt(context.getContentResolver(), "auto_poweroff_timeout", NEVER_SLEEP);
+    }
+
+    public static String getPackageName(Context context) {
+        return context.getPackageName();
+    }
+
+    public static String getPackageVersionName(Context context) throws PackageManager.NameNotFoundException {
+        return context.getPackageManager().getPackageInfo(
+                getPackageName(context), 0).versionName;
+    }
+
+    public static int getPackageVersionCode(Context context) throws PackageManager.NameNotFoundException {
+        return context.getPackageManager().getPackageInfo(
+                getPackageName(context), 0).versionCode;
+    }
+
+    public static String getApplicationName(Context context) throws PackageManager.NameNotFoundException {
+        PackageManager packageManager = context.getPackageManager();
+        ApplicationInfo applicationInfo = packageManager.getApplicationInfo(getPackageName(context), 0);
+        return packageManager.getApplicationLabel(applicationInfo).toString();
     }
 }

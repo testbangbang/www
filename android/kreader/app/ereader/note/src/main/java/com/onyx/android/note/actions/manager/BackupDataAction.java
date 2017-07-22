@@ -4,20 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
-import android.widget.Toast;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.BaseNoteAction;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.DatabaseInfo;
+import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.request.cloud.UploadBackupFileRequest;
+import com.onyx.android.sdk.data.request.data.db.TransferDBRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.NoteDataProvider;
-import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.ShapeDatabase;
 import com.onyx.android.sdk.scribble.request.note.CheckNoteModelHasDataRequest;
-import com.onyx.android.sdk.scribble.request.note.TransferDBRequest;
 import com.onyx.android.sdk.ui.dialog.DialogProgress;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.DateTimeUtil;
@@ -25,7 +24,6 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by ming on 2017/7/18.
@@ -74,19 +72,19 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
         }).setInputHintText(title).show();
     }
 
-    private void initDialogProgress(final Activity activity) {
-        dialogProgress = new DialogProgress(activity, 0, 100);
-        dialogProgress.enableDismissButton(activity.getString(R.string.cancel), new View.OnClickListener() {
+    private void showDialogProgress(final Context context) {
+        dialogProgress = new DialogProgress(context, 0, 100);
+        dialogProgress.enableDismissButton(context.getString(R.string.cancel), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showConfirmDialog(activity);
+                dialogProgress.dismiss();
             }
-        }).setTitle(activity.getString(R.string.backuping_tips));
+        }).setTitle(context.getString(R.string.uploading)).show();
     }
 
-    private void showConfirmDialog(final Activity activity) {
-        OnyxCustomDialog.getConfirmDialog(activity,
-                activity.getString(R.string.no_finish_backup_tips),
+    private void showConfirmDialog(final Context context) {
+        OnyxCustomDialog.getConfirmDialog(context,
+                context.getString(R.string.no_finish_backup_tips),
                 true,
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -98,16 +96,16 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
     }
 
     private void backup(final Context context, final String fileName, final BaseCallback callback) {
-        final String backupDBPath = BACKUP_LOCAL_SAVE_PATH + fileName + ".db";
+        final String backupDBPath = getBackupDBPath(fileName);
         FileUtils.deleteFile(backupDBPath);
         FileUtils.ensureFileExists(backupDBPath);
         String currentDBPath = context.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db";
         TransferDBRequest request = new TransferDBRequest(currentDBPath, backupDBPath, false, false, null);
-        getNoteViewHelper().submit(context, request, new BaseCallback() {
+        getDataManager().submit(context, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (cloudBackup) {
-                    upload(callback, request, e);
+                if (cloudBackup && e == null) {
+                    upload(context, callback, backupDBPath);
                 }else {
                     BaseCallback.invoke(callback, request, e);
                 }
@@ -115,11 +113,40 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
         });
     }
 
+    private String getBackupDBPath(final String fileName) {
+        return BACKUP_LOCAL_SAVE_PATH + fileName + ".db";
+    }
+
     private NoteViewHelper getNoteViewHelper() {
         return NoteApplication.getInstance().getNoteViewHelper();
     }
 
-    private void upload(final BaseCallback callback, BaseRequest request, Throwable e) {
-        BaseCallback.invoke(callback, request, e);
+    private CloudManager getCloudManager() {
+        return NoteApplication.getInstance().getCloudManager();
+    }
+
+    private void upload(final Context context,
+                        final BaseCallback callback,
+                        final String filePath) {
+        showDialogProgress(context);
+        UploadBackupFileRequest uploadBackupFileRequest = new UploadBackupFileRequest(filePath);
+        getCloudManager().submitRequest(context, uploadBackupFileRequest, new BaseCallback() {
+
+            @Override
+            public void progress(BaseRequest request, ProgressInfo info) {
+                dialogProgress.setProgress((int) info.progress);
+            }
+
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                dialogProgress.dismiss();
+                FileUtils.deleteFile(filePath);
+                BaseCallback.invoke(callback, request, e);
+            }
+        });
+    }
+
+    private DataManager getDataManager() {
+        return NoteApplication.getInstance().getDataManager();
     }
 }

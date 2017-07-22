@@ -18,6 +18,14 @@ public class FileInfo {
         this.path = path;
     }
 
+    public FileInfo(String name, Long size, Long lastModified, String path, boolean local) {
+        this.name = name;
+        this.size = size;
+        this.lastModified = lastModified;
+        this.path = path;
+        this.local = local;
+    }
+
     public String getName() {
         return name;
     }
@@ -60,5 +68,9 @@ public class FileInfo {
 
     public static FileInfo create(String name, Long lastModified, String path) {
         return new FileInfo(name, lastModified, path);
+    }
+
+    public static FileInfo create(String name, Long size, Long lastModified, String path, boolean local) {
+        return new FileInfo(name, size, lastModified, path, local);
     }
 }

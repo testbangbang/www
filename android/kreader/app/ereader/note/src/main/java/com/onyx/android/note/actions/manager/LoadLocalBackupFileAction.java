@@ -38,7 +38,8 @@ public class LoadLocalBackupFileAction<T extends Activity> extends BaseNoteActio
             @Override
             public void done(BaseRequest request, Throwable e) {
                 for (String s : fileList) {
-                    backupFiles.add(FileInfo.create(s, new File(s).lastModified(), s));
+                    File file = new File(s);
+                    backupFiles.add(FileInfo.create(s, file.length(), file.lastModified(), s, true));
                 }
                 BaseCallback.invoke(callback, request, e);
             }

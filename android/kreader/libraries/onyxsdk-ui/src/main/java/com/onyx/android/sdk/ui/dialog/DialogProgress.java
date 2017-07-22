@@ -54,9 +54,10 @@ public class DialogProgress extends OnyxBaseDialog {
         progressBar.setMax(maxValue);
     }
 
-    public void setTitle(String title) {
+    public DialogProgress setTitle(String title) {
         this.titleView.setText(title);
         titleView.setVisibility(View.VISIBLE);
+        return this;
     }
 
     public void setSubTitle(String subTitle) {

@@ -1,19 +1,17 @@
 package com.onyx.android.note.tests;
 
-import android.app.Application;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.ApplicationTestCase;
 import android.util.Log;
 
 import com.onyx.android.note.test.NoteTestActivity;
+import com.onyx.android.sdk.data.request.data.db.TransferDBRequest;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeDatabase;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
-import com.onyx.android.sdk.scribble.request.note.TransferDBRequest;
 import com.onyx.android.sdk.utils.DatabaseUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.TestUtils;
