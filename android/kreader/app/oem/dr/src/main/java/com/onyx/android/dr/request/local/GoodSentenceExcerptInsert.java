@@ -29,9 +29,6 @@ public class GoodSentenceExcerptInsert extends BaseDataRequest {
         if (!whetherInsert()) {
             goodSentencesInfo.insert();
         } else {
-            goodSentenceEntity.week = goodSentencesInfo.week;
-            goodSentenceEntity.month = goodSentencesInfo.month;
-            goodSentenceEntity.day = goodSentencesInfo.day;
             goodSentenceEntity.currentTime = goodSentencesInfo.currentTime;
             goodSentenceEntity.details = goodSentencesInfo.details;
             goodSentenceEntity.readingMatter = goodSentencesInfo.readingMatter;

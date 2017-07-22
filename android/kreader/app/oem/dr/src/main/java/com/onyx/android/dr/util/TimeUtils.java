@@ -181,7 +181,7 @@ public class TimeUtils {
         return timeMillis;
     }
 
-    public static String getWeekOfMonth(long timeMillis){
+    public static String getWeekOfMonth(long timeMillis) {
         Calendar calender = getCalendar(timeMillis);
         int week = calender.get(Calendar.WEEK_OF_MONTH);
         return week + "";

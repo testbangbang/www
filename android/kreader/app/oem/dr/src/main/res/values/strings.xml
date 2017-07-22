@@ -191,4 +191,7 @@
     <string name="total_strokes">total strokes:</string>
     <string name="listen_books">listen books</string>
     <string name="after_reading">after reading</string>
+    <string name="new_word_delete">delete</string>
+    <string name="export">export</string>
+    <string name="new_word_notebook_html">new word notebook form</string>
 </resources>

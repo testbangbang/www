@@ -191,4 +191,7 @@
     <string name="total_strokes">总笔画:</string>
     <string name="listen_books">听文章</string>
     <string name="after_reading">读后感</string>
+    <string name="new_word_delete">删除</string>
+    <string name="export">导出</string>
+    <string name="new_word_notebook_html">生词本报表</string>
 </resources>
