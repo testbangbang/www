@@ -7,7 +7,7 @@ import com.onyx.android.sdk.data.DatabaseInfo;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.db.OnyxStatisticsDatabase;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
-import com.onyx.android.sdk.data.request.data.db.BackupRestoreDBRequest;
+import com.onyx.android.sdk.data.request.data.db.TransferDBRequest;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 
@@ -38,7 +38,7 @@ public class BackupRestoreDBTest extends ActivityInstrumentationTestCase2<Reader
                 DatabaseInfo.create(backupDBPath));
 
         ReaderDataHolder readerDataHolder = new ReaderDataHolder(getActivity());
-        BackupRestoreDBRequest restoreDBRequest = new BackupRestoreDBRequest(backupRestoreDBMap, true);
+        TransferDBRequest restoreDBRequest = new TransferDBRequest(backupRestoreDBMap, true);
         try {
             restoreDBRequest.execute(readerDataHolder.getDataManager());
             SQLiteDatabase database = SQLiteDatabase.openDatabase(backupDBPath, null,SQLiteDatabase.OPEN_READWRITE);
@@ -59,7 +59,7 @@ public class BackupRestoreDBTest extends ActivityInstrumentationTestCase2<Reader
         backupRestoreDBMap.put(DatabaseInfo.create(OnyxStatisticsDatabase.NAME, OnyxStatisticsDatabase.VERSION, getActivity().getDatabasePath(OnyxStatisticsDatabase.NAME).getPath() + ".db"),
                 DatabaseInfo.create("mnt/sdcard/" + OnyxStatisticsDatabase.NAME + ".db"));
         ReaderDataHolder readerDataHolder = new ReaderDataHolder(getActivity());
-        BackupRestoreDBRequest restoreDBRequest = new BackupRestoreDBRequest(backupRestoreDBMap, false);
+        TransferDBRequest restoreDBRequest = new TransferDBRequest(backupRestoreDBMap, false);
         try {
             restoreDBRequest.execute(readerDataHolder.getDataManager());
             List<OnyxStatisticsModel> statisticsModels =  (List<OnyxStatisticsModel>) StatisticsUtils.loadStatisticsListByNote(getActivity(), test);

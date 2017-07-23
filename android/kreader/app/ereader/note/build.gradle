@@ -13,6 +13,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode gitVersionCode(projectDir)
         versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -56,9 +57,11 @@ android {
 dependencies {
     compile project(':libraries:onyxsdk-base')
     compile project(':libraries:onyxsdk-scribble')
+    compile project(':libraries:onyxsdk-data')
     compile project(':libraries:onyxsdk-ui')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile "junit:junit:$rootProject.junitVersion"
+    compile "com.android.support:multidex:$multidexVersion"
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
 }

@@ -1,0 +1,101 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout
+        android:background="@drawable/imagebtn_bg"
+        android:padding="@dimen/global_activities_back_function_layout_padding"
+        android:id="@+id/top_layout"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            style="@style/global_activities_back_btn_image" />
+
+        <ImageView
+            android:layout_toRightOf="@+id/back_icon"
+            style="@style/global_activities_back_btn_category_image"
+            android:src="@drawable/app_logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            style="@style/global_activities_back_btn_category_tittle"
+            android:ellipsize="middle"
+            android:maxEms="10"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:text="@string/backup_restore" />
+    </LinearLayout>
+
+    <View
+        android:background="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/restore_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:gravity="center"
+        android:textSize="@dimen/settings_title_text_size"
+        android:text="@string/empty_restore_list"
+        android:id="@+id/empty_text"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"/>
+
+    <View
+        android:layout_marginTop="@dimen/backup_restore_text_margin_top"
+        android:background="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/local_backup"
+            android:padding="@dimen/backup_restore_text_padding"
+            android:text="@string/local_backup"
+            android:gravity="center"
+            android:textSize="@dimen/settings_title_text_size"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:background="@android:color/black"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/cloud_backup"
+            android:padding="@dimen/backup_restore_text_padding"
+            android:text="@string/cloud_backup"
+            android:gravity="center"
+            android:textSize="@dimen/settings_title_text_size"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <View
+        android:background="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+    <TextView
+        android:visibility="gone"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_marginTop="6dp"
+        android:text="@string/backup_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

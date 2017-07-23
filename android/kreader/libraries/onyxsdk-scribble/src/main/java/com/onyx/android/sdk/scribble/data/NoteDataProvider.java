@@ -32,6 +32,10 @@ public class NoteDataProvider {
        return load(uniqueId);
     }
 
+    public static void clear() {
+        new Delete().from(NoteModel.class).execute();
+    }
+
     public static NoteModel load(final String uniqueId) {
         Select select = new Select();
         Where where = select.from(NoteModel.class).where(NoteModel_Table.uniqueId.eq(uniqueId));
@@ -98,6 +102,14 @@ public class NoteDataProvider {
         condition = NoteModel_Table.type.eq(NoteModel.TYPE_LIBRARY);
         Where<NoteModel> where = select.from(NoteModel.class).where(condition);
         return where.queryList();
+    }
+
+    public static List<NoteModel> loadAllNoteList() {
+        return new Select().from(NoteModel.class).queryList();
+    }
+
+    public static boolean hasData() {
+        return new Select().from(NoteModel.class).hasData();
     }
 
     public static void saveNote(final Context context, final NoteModel model) {

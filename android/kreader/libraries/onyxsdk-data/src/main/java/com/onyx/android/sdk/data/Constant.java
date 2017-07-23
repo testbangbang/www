@@ -42,6 +42,10 @@ public class Constant {
     static public final String FILE_TAG = "file";
     static public final String MD5_TAG = "md5";
     static public final String DOCID_TAG = "docId";
+    static public final String NAME_TAG = "name";
+    static public final String PACKAGE_TAG = "package";
+    static public final String VERSION_TAG = "version";
+    static public final String MAC_TAG = "deviceMAC";
     static public final String READER_DATA_FOLDER = "OnyxReader";
 
     public static final String COVER_TYPE_SMALL = "small";
@@ -58,5 +62,7 @@ public class Constant {
     public static final String PLATFORM_WECHAT = "wechat";
 
     public static final String HEADER_AUTHORIZATION = "authorization";
+
+    public static final String CLOUD_BACKUP_FILE_SAVE_FOLDER = "cloud_backup";
 
 }

@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.utils;
 
 import android.content.Context;
+import android.view.View;
 
 import com.onyx.android.sdk.data.db.OnyxStatisticsDatabase;
 import com.onyx.android.sdk.data.model.Book;
@@ -74,6 +75,18 @@ public class StatisticsUtils {
     public static void deleteStatisticsListByNote(final Context context,
                                                     final String note) {
         List<OnyxStatisticsModel> list = (List<OnyxStatisticsModel>) loadStatisticsListByNote(context, note);
+        final DatabaseWrapper database = FlowManager.getDatabase(OnyxStatisticsDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for(OnyxStatisticsModel statisticsData : list) {
+            statisticsData.delete();
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
+    public static void deleteStatisticsList(final Context context) {
+        Select select = new Select();
+        List<OnyxStatisticsModel> list = select.from(OnyxStatisticsModel.class).queryList();
         final DatabaseWrapper database = FlowManager.getDatabase(OnyxStatisticsDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
         for(OnyxStatisticsModel statisticsData : list) {
