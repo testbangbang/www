@@ -15,6 +15,7 @@ public class CheckNoteModelHasDataRequest extends BaseNoteRequest {
     @Override
     public void execute(NoteViewHelper helper) throws Exception {
         hasData = NoteDataProvider.hasData();
+        // todo. read data if possible
     }
 
     public boolean hasData() {

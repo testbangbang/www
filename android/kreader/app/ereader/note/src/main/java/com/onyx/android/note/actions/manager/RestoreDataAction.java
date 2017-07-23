@@ -3,6 +3,7 @@ package com.onyx.android.note.actions.manager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
@@ -15,8 +16,6 @@ import com.onyx.android.sdk.data.request.data.db.DataRequestChain;
 import com.onyx.android.sdk.data.request.data.db.TransferDBRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.ShapeDatabase;
-import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
-import com.onyx.android.sdk.scribble.request.NoteRequestChain;
 import com.onyx.android.sdk.scribble.request.note.CheckNoteModelHasDataRequest;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.DatabaseUtils;
@@ -32,6 +31,7 @@ import java.io.File;
 public class RestoreDataAction<T extends Activity> extends BaseNoteAction<T> {
 
     private final static String TEMP_SHAPE_DATABASE_FILE_NMAE = "shape_temp";
+    private final static String TAG = RestoreDataAction.class.getSimpleName();
 
     private String restorePath;
 
@@ -68,7 +68,7 @@ public class RestoreDataAction<T extends Activity> extends BaseNoteAction<T> {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
-                    checkDBIntegrity(context, e, callback);
+                    checkDBSanity(context, e, callback);
                 }else {
                     BaseCallback.invoke(callback, request, e);
                 }
@@ -98,23 +98,27 @@ public class RestoreDataAction<T extends Activity> extends BaseNoteAction<T> {
         return new TransferDBRequest(getCurrentDBPath(context), getTempBackupDBPath(context), false, false, null);
     }
 
-    private void restoreDBAfterFailed(final Context context, final Throwable failRetoreException, final BaseCallback callback) {
+    private void rollbackOnFailed(final Context context, final Throwable restoreException, final BaseCallback callback) {
         TransferDBRequest dbRequest = new TransferDBRequest(getTempBackupDBPath(context), getCurrentDBPath(context), false, false, null);
         getDataManager().submit(context, dbRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                BaseCallback.invoke(callback, request, failRetoreException);
+                if (e != null) {
+                    Log.e(TAG, "Fatal error rollback failed!");
+                    e.printStackTrace();
+                }
+                BaseCallback.invoke(callback, request, restoreException);
             }
         });
     }
 
-    private void checkDBIntegrity(final Context context, final Throwable failRetoreException, final BaseCallback callback) {
+    private void checkDBSanity(final Context context, final Throwable restoreException, final BaseCallback callback) {
         final CheckNoteModelHasDataRequest hasDataRequest = new CheckNoteModelHasDataRequest();
         getNoteViewHelper().submit(context, hasDataRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (!hasDataRequest.hasData() || !checkDBVersion(context)) {
-                    restoreDBAfterFailed(context, failRetoreException, callback);
+                    rollbackOnFailed(context, restoreException, callback);
                 }else {
                     BaseCallback.invoke(callback, request, null);
                 }
