@@ -27,9 +27,11 @@ import retrofit2.Response;
 public class UploadBackupFileRequest extends BaseCloudRequest {
 
     private String backupFilePath;
+    private boolean cleanup = true;
 
-    public UploadBackupFileRequest(String backupFilePath) {
+    public UploadBackupFileRequest(String backupFilePath, boolean c) {
         this.backupFilePath = backupFilePath;
+        cleanup = c;
     }
 
     @Override
@@ -75,6 +77,10 @@ public class UploadBackupFileRequest extends BaseCloudRequest {
 
         if (responseCall != null && !responseCall.isSuccessful()) {
             throw new Exception(responseCall.message());
+        }
+
+        if (cleanup) {
+            FileUtils.deleteFile(backupFilePath);
         }
     }
 }

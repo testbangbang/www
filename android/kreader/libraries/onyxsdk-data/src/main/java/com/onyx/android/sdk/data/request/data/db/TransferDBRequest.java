@@ -39,6 +39,7 @@ public class TransferDBRequest extends BaseDataRequest {
         if (checkVersion && !DatabaseUtils.canRestoreDB(src, dst)) {
             throw new Exception("Can not restore high version database");
         }
+        beforeTransfer();
         FileUtils.transferFile(src, dst);
         if (!FileUtils.compareFileMd5(src, dst)) {
             throw new Exception("Md5 is not the same");
@@ -46,6 +47,11 @@ public class TransferDBRequest extends BaseDataRequest {
         if (restartDB) {
             restartDB();
         }
+    }
+
+    private void beforeTransfer() {
+        FileUtils.deleteFile(dst);
+        FileUtils.ensureFileExists(dst);
     }
 
     private void restartDB() {

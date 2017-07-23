@@ -97,8 +97,6 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
 
     private void backup(final Context context, final String fileName, final BaseCallback callback) {
         final String backupDBPath = getBackupDBPath(fileName);
-        FileUtils.deleteFile(backupDBPath);
-        FileUtils.ensureFileExists(backupDBPath);
         String currentDBPath = context.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db";
         TransferDBRequest request = new TransferDBRequest(currentDBPath, backupDBPath, false, false, null);
         getDataManager().submit(context, request, new BaseCallback() {
@@ -129,7 +127,7 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
                         final BaseCallback callback,
                         final String filePath) {
         showDialogProgress(context);
-        UploadBackupFileRequest uploadBackupFileRequest = new UploadBackupFileRequest(filePath);
+        UploadBackupFileRequest uploadBackupFileRequest = new UploadBackupFileRequest(filePath, true);
         getCloudManager().submitRequest(context, uploadBackupFileRequest, new BaseCallback() {
 
             @Override
@@ -140,7 +138,6 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dialogProgress.dismiss();
-                FileUtils.deleteFile(filePath);
                 BaseCallback.invoke(callback, request, e);
             }
         });
