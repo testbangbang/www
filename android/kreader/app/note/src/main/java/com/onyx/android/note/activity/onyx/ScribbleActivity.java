@@ -307,6 +307,19 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     case KeyEvent.KEYCODE_ENTER:
                         onCloseKeyBoard();
                         return false;
+                    case KeyEvent.KEYCODE_1:
+                    case KeyEvent.KEYCODE_2:
+                    case KeyEvent.KEYCODE_3:
+                    case KeyEvent.KEYCODE_4:
+                    case KeyEvent.KEYCODE_5:
+                    case KeyEvent.KEYCODE_6:
+                    case KeyEvent.KEYCODE_7:
+                    case KeyEvent.KEYCODE_8:
+                    case KeyEvent.KEYCODE_9:
+                    case KeyEvent.KEYCODE_0:
+                        char displayLabel = keyEvent.getDisplayLabel();
+                        buildTextShape(String.valueOf(displayLabel));
+                        return true;
                 }
                 return false;
             }
@@ -328,12 +341,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         spanTextView.setInputConnectionListener(new LinedEditText.InputConnectionListener() {
             @Override
             public void commitText(CharSequence text, int newCursorPosition) {
-                if (isBuildingSpan()) {
-                    return;
-                }
-                int width = (int) spanTextView.getPaint().measureText(text.toString());
-                setKeyboardInput(true);
-                spanTextHandler.buildTextShape(text.toString(), width, getSpanTextFontHeight());
+                buildTextShape(text.toString());
             }
         });
 
@@ -344,6 +352,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 switchScribbleMode(isLineLayoutMode());
             }
         });
+    }
+
+    private void buildTextShape(String text) {
+        if (isBuildingSpan()) {
+            return;
+        }
+        setKeyboardInput(true);
+        int width = (int) spanTextView.getPaint().measureText(text);
+        spanTextHandler.buildTextShape(text, width, getSpanTextFontHeight());
     }
 
     private void updateLineLayoutArgs() {
