@@ -12,5 +12,5 @@
     <integer name="dialog_navigation_setting_sub_screen_columns">7</integer>
     <integer name="dialog_navigation_setting_landscape_sub_screen_rows">1</integer>
     <integer name="dialog_navigation_setting_landscape_sub_screen_columns">7</integer>
-    <integer name="statistics_recently_book_count">3</integer>
+    <integer name="statistics_recently_book_count">6</integer>
 </resources>
