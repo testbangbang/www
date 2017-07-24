@@ -9,6 +9,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.FileInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.note.CollectFilesRequest;
+import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class LoadLocalBackupFileAction<T extends Activity> extends BaseNoteActio
             public void done(BaseRequest request, Throwable e) {
                 for (String s : fileList) {
                     File file = new File(s);
-                    backupFiles.add(FileInfo.create(s, file.length(), file.lastModified(), s, true));
+                    backupFiles.add(FileInfo.create(FileUtils.getBaseName(s), file.length(), file.lastModified(), s, true));
                 }
                 BaseCallback.invoke(callback, request, e);
             }

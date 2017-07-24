@@ -50,13 +50,10 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"/>
 
-    <View
-        android:layout_marginTop="@dimen/backup_restore_text_margin_top"
-        android:background="@android:color/black"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"/>
 
     <LinearLayout
+        android:layout_margin="20dp"
+        android:background="@drawable/square_bg"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -86,10 +83,6 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <View
-        android:background="@android:color/black"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"/>
     <TextView
         android:visibility="gone"
         android:textSize="20sp"

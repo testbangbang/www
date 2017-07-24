@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data;
 
+import com.onyx.android.sdk.utils.FileUtils;
+
 /**
  * Created by ming on 2017/7/20.
  */
@@ -28,6 +30,10 @@ public class FileInfo {
 
     public String getName() {
         return name;
+    }
+
+    public String getBaseName() {
+        return name == null ? null : FileUtils.getBaseName(name);
     }
 
     public void setName(String name) {
