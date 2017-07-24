@@ -44,6 +44,8 @@
 
         <activity android:name=".view.activity.AccountInfoActivity" />
 
+        <activity android:name=".view.activity.DeviceBindingActivity" />
+
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxSystemContentProvider_Provider"
             android:authorities="com.onyx.system.database.ContentProvider"

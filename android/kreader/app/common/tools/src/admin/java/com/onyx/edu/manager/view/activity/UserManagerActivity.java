@@ -22,18 +22,22 @@ import com.afollestad.materialdialogs.Theme;
 import com.jiang.android.lib.adapter.expand.StickyRecyclerHeadersDecoration;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.common.ContentException;
 import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.model.v2.AccountCommon;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
+import com.onyx.android.sdk.data.model.v2.GroupUserInfo;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountUnBindByDeviceRequest;
-import com.onyx.android.sdk.data.request.cloud.v2.CloudGroupListRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudGroupRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudGroupUserListRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudUserInfoByMacRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.qrcode.utils.ScreenUtils;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
+import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -42,11 +46,17 @@ import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.adapter.ContactAdapter;
 import com.onyx.edu.manager.adapter.GroupSelectAdapter;
 import com.onyx.edu.manager.adapter.ItemClickListener;
+import com.onyx.edu.manager.event.DataRefreshEvent;
+import com.onyx.edu.manager.manager.ContentManager;
 import com.onyx.edu.manager.model.ContactEntity;
 import com.onyx.edu.manager.pinyin.CharacterParser;
 import com.onyx.edu.manager.pinyin.PinyinComparator;
 import com.onyx.edu.manager.view.ui.DividerDecoration;
 import com.onyx.edu.manager.view.ui.SideBar;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,6 +74,8 @@ public class UserManagerActivity extends AppCompatActivity {
     LinearLayout parentGroupLayout;
     @Bind(R.id.child_group)
     RecyclerView childGroupLayout;
+    @Bind(R.id.root_group)
+    TextView rootGroupTv;
 
     @Bind(R.id.contact_recycler)
     RecyclerView contactRecyclerView;
@@ -81,14 +93,18 @@ public class UserManagerActivity extends AppCompatActivity {
     private PinyinComparator pinyinComparator = new PinyinComparator();
 
     private GroupSelectAdapter groupAdapter;
+    private CloudGroup rootGroup;
     private CloudGroup childGroup;
     private List<CloudGroup> parentGroupList = new ArrayList<>();
+
+    private GroupUserInfo groupUserInfoSelected;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_manager);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
 
         initView();
         initData();
@@ -157,7 +173,21 @@ public class UserManagerActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        loadGroupAndUserList(null);
+        loadInitData();
+    }
+
+    private void loadInitData() {
+        loadGroupAndUserList(getLastCloudGroup(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (childGroup != null) {
+                    rootGroup = childGroup;
+                    if (StringUtils.isNotBlank(rootGroup.name)) {
+                        rootGroupTv.setText(rootGroup.name);
+                    }
+                }
+            }
+        });
     }
 
     private void initChildGroupPageView() {
@@ -196,18 +226,21 @@ public class UserManagerActivity extends AppCompatActivity {
     private void loadGroupAndUserList(CloudGroup group, final BaseCallback baseCallback) {
         final String groupId = group != null ? group._id : null;
         CloudRequestChain requestChain = new CloudRequestChain();
-        addCloudGroupListRequest(requestChain, groupId);
+        addCloudGroupListRequest(requestChain, groupId, baseCallback);
         addCloudGroupUserListRequest(requestChain, groupId, baseCallback);
         requestChain.setAbortException(false);
         requestChain.execute(this, AdminApplication.getCloudManager());
     }
 
-    private void addCloudGroupListRequest(CloudRequestChain requestChain, String groupId) {
-        final CloudGroupListRequest groupListRequest = new CloudGroupListRequest(String.valueOf(groupId));
+    private void addCloudGroupListRequest(CloudRequestChain requestChain, final String groupId, final BaseCallback baseCallback) {
+        final CloudGroupRequest groupListRequest = new CloudGroupRequest(String.valueOf(groupId));
         requestChain.addRequest(groupListRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 groupAdapter.setGroupContainer(childGroup = groupListRequest.getChildGroup());
+                if (StringUtils.isNullOrEmpty(groupId)) {
+                    BaseCallback.invoke(baseCallback, request, e);
+                }
             }
         });
     }
@@ -313,6 +346,13 @@ public class UserManagerActivity extends AppCompatActivity {
         loadGroupAndUserList(parentGroupList.get(index), null);
     }
 
+    private CloudGroup getLastCloudGroup() {
+        if (CollectionUtils.isNullOrEmpty(parentGroupList)) {
+            return rootGroup;
+        }
+        return parentGroupList.get(parentGroupList.size() - 1);
+    }
+
     private void initSideBarView() {
         contactSidebar.setTextView(contactTextDialog);
         contactSidebar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
@@ -356,6 +396,17 @@ public class UserManagerActivity extends AppCompatActivity {
                 headersDecor.invalidateHeaders();
             }
         });
+        contactAdapter.setItemClickListener(new ItemClickListener() {
+            @Override
+            public void onClick(int position, View view) {
+                startUserDeviceBindActivity(contactAdapter.getItem(position));
+            }
+
+            @Override
+            public void onLongClick(int position, View view) {
+
+            }
+        });
         contactAdapter.setItemUnbundledClickListener(new ItemClickListener() {
             @Override
             public void onClick(int position, View view) {
@@ -366,6 +417,21 @@ public class UserManagerActivity extends AppCompatActivity {
             public void onLongClick(int position, View view) {
             }
         });
+    }
+
+    private void startUserDeviceBindActivity(final ContactEntity entity) {
+        GroupUserInfo groupUserInfo = new GroupUserInfo();
+        groupUserInfo.user = entity.accountInfo;
+        groupUserInfo.groups.add(getLastCloudGroup());
+        groupUserInfo.device = new DeviceBind();
+        if (groupUserInfo.user != null && !CollectionUtils.isNullOrEmpty(groupUserInfo.user.devices)) {
+            groupUserInfo.device.mac = groupUserInfo.user.getFirstDevice().macAddress;
+            groupUserInfo.device.model = groupUserInfo.user.getFirstDevice().model;
+        }
+        groupUserInfoSelected = groupUserInfo;
+        Intent intent = new Intent(this, DeviceBindingActivity.class);
+        intent.putExtra(ContentManager.KEY_GROUP_USER_INFO, JSONObjectParseUtils.toJson(groupUserInfo));
+        ActivityUtil.startActivitySafely(this, intent);
     }
 
     private void showDeviceUnbundledDialog(final ContactEntity entity) {
@@ -426,12 +492,67 @@ public class UserManagerActivity extends AppCompatActivity {
         parentGroupList.clear();
         contactEntityList.clear();
         contactRecyclerView.getAdapter().notifyDataSetChanged();
-        loadGroupAndUserList(null, null);
+        loadInitData();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDataRefreshEvent(DataRefreshEvent event) {
+        fetchUserInfoFromCloud();
+    }
+
+    private void fetchUserInfoFromCloud() {
+        if (groupUserInfoSelected == null || groupUserInfoSelected.device == null ||
+                StringUtils.isNullOrEmpty(groupUserInfoSelected.device.mac)) {
+            return;
+        }
+        final DeviceBind deviceBind = groupUserInfoSelected.device;
+        final CloudUserInfoByMacRequest userInfoByMacRequest = new CloudUserInfoByMacRequest(deviceBind.mac);
+        AdminApplication.getCloudManager().submitRequest(this, userInfoByMacRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (processFetchUserInfoException(e)) {
+                    return;
+                }
+                GroupUserInfo groupUserInfo = userInfoByMacRequest.getGroupUserInfo();
+                if (groupUserInfo != null && groupUserInfoSelected.user._id.equals(groupUserInfo.user._id)) {
+                    groupUserInfoSelected.user = groupUserInfo.user;
+                    groupUserInfoSelected.device = groupUserInfo.device;
+                    groupUserInfoSelected.groups = groupUserInfo.groups;
+                    contactAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
+    private boolean processFetchUserInfoException(Throwable e) {
+        if (e == null) {
+            return false;
+        }
+        if (ContentException.isCloudException(e) && ((ContentException.CloudException) e).isCloudNotFound()) {
+            if (groupUserInfoSelected.user != null) {
+                groupUserInfoSelected.user.devices.clear();
+                contactAdapter.notifyDataSetChanged();
+            }
+            return true;
+        }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (CollectionUtils.isNullOrEmpty(parentGroupList)) {
+            super.onBackPressed();
+            return;
+        }
+        parentGroupLayout.removeViewAt(parentGroupLayout.getChildCount() - 1);
+        parentGroupList.remove(parentGroupList.size() - 1);
+        loadGroupAndUserList(getLastCloudGroup(), null);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         ButterKnife.unbind(this);
     }
 }

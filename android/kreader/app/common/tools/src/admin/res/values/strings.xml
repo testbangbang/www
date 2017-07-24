@@ -21,6 +21,7 @@
 
     <string name="back">Back</string>
     <string name="exit">Exit</string>
+    <string name="update">Update</string>
 
     <string name="btn_admin_bind">Administrator phone binding</string>
     <string name="fields_following_required">*The following are required</string>
@@ -52,6 +53,7 @@
     <string name="user_add_new">Add a new user</string>
     <string name="user_device_bind">Bind the user</string>
     <string name="user_device_un_bind">User unbundled</string>
+    <string name="user_device_unbind_confirm_content">Do you want to bind this user?</string>
     <string name="device_bind">Bind</string>
     <string name="device_bind_fail">Device binding failed</string>
     <string name="device_bind_success">Device binding is successful</string>
@@ -74,5 +76,21 @@
     <string name="preparing">Preparing now&#8230;</string>
     <string name="count_down_timer_desc_format">Can apply again After %d seconds</string>
     <string name="account_is_invalid">Account is abnormal, please re-login</string>
+    <string name="account_login_tip">Login using the assigned administrator account</string>
+    <string name="account_logout_confirm_content">Do you want to exit your current account?</string>
+    <string name="app_update_change_log_empty_content">Update Content: not written</string>
+    <string name="app_update_new_version_detect">New version detected</string>
+    <string name="downloading">Downloading&#8230;</string>
+    <string name="download_failed">The download failed</string>
+    <string name="install_failed">There is a problem with the installation</string>
 
+    <string name="applying">Is applying&#8230;</string>
+    <string name="do_apply">Do Apply</string>
+    <string name="repeat_apply_warning">Cannot apply repeat in the short term</string>
+    <string name="phone_verify_content">The phone number is:%s，please initiate a mobile verification application first</string>
+    <string name="phone_verify_input_hint">Enter the received code</string>
+    <string name="verify">Verify</string>
+    <string name="verify_code_error">Verification code is incorrect and can not pass</string>
+    <string name="waiting_for_verify_code">Wait for the phone operator to send the SMS verification code</string>
+    <string name="phone_verify_apply_error">SMS verification application failed, re-initiated application</string>
 </resources>

@@ -202,6 +202,9 @@ public class QrCodeActivity extends AppCompatActivity implements Callback, OnCli
         if (null != mInactivityTimer) {
             mInactivityTimer.shutdown();
         }
+        if (null != mQrCodeFinderView) {
+            mQrCodeFinderView.stopAnimator();
+        }
         super.onDestroy();
     }
 

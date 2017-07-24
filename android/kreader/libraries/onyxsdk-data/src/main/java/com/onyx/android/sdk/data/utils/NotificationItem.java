@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.utils;
 
 import android.app.PendingIntent;
+import android.graphics.Bitmap;
 import android.support.v4.app.NotificationCompat;
 
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
@@ -19,6 +20,7 @@ public class NotificationItem extends BaseNotificationItem {
     public static class NotificationBean {
         public int id;
         public int icon;
+        public Bitmap largeIcon;
         public String title;
         public String desc = "download";
         public PendingIntent pendingIntent;
@@ -35,6 +37,7 @@ public class NotificationItem extends BaseNotificationItem {
                 .setContentTitle(getTitle())
                 .setContentText(bean.desc)
                 .setSmallIcon(bean.icon)
+                .setLargeIcon(bean.largeIcon)
                 .setAutoCancel(true);
 
         pendingIntent = bean.pendingIntent;

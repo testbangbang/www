@@ -118,6 +118,12 @@ public final class QrCodeFinderView extends RelativeLayout {
         }
     }
 
+    public void stopAnimator() {
+        if (laserValueAnimator != null) {
+            laserValueAnimator.cancel();
+        }
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
         if (isInEditMode()) {
@@ -200,6 +206,9 @@ public final class QrCodeFinderView extends RelativeLayout {
     }
 
     private void drawLaser(Canvas canvas, Rect rect) {
+        if (laserValueAnimator == null) {
+            return;
+        }
         mPaint.setColor(mLaserColor);
         float laserPercent = (Float) laserValueAnimator.getAnimatedValue();
         int pos = (int) (rect.height() * laserPercent + rect.top - mLaserWidth);
