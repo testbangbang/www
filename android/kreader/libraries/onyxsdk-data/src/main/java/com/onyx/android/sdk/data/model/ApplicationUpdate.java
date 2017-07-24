@@ -1,8 +1,12 @@
 package com.onyx.android.sdk.data.model;
 
+import android.content.Context;
+import android.os.Build;
+
 import com.onyx.android.sdk.data.converter.MapListStringConverter;
 import com.onyx.android.sdk.data.db.OnyxCloudDatabase;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.PackageUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
@@ -60,5 +64,17 @@ public class ApplicationUpdate extends BaseData {
             changeLogList = new ArrayList<>();
         }
         return changeLogList;
+    }
+
+    public static ApplicationUpdate create(Context context) {
+        ApplicationUpdate appUpdate = new ApplicationUpdate();
+        appUpdate.versionCode = PackageUtils.getAppVersionCode(context);
+        appUpdate.versionName = PackageUtils.getAppVersionName(context);
+        appUpdate.packageName = context.getPackageName();
+        appUpdate.platform = PackageUtils.getAppPlatform(context);
+        appUpdate.channel = PackageUtils.getAppChannel(context);
+        appUpdate.type = PackageUtils.getAppType(context);
+        appUpdate.model = Build.MODEL;
+        return appUpdate;
     }
 }

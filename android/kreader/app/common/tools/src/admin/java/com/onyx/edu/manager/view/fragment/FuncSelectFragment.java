@@ -23,10 +23,12 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.PackageUtils;
+import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.adapter.FuncSelectAdapter;
 import com.onyx.edu.manager.adapter.ItemClickListener;
-import com.onyx.edu.manager.manager.AppUpdateManager;
+import com.onyx.android.sdk.data.manager.AppUpdateManager;
+import com.onyx.android.sdk.data.manager.AppUpdateManager.AppUpdateConfig;
 import com.onyx.edu.manager.manager.ContentManager;
 import com.onyx.edu.manager.model.FuncItemEntity;
 import com.onyx.edu.manager.view.activity.AccountInfoActivity;
@@ -129,22 +131,24 @@ public class FuncSelectFragment extends Fragment {
         if (hasAppUpdateCheck()) {
             return;
         }
-        AppUpdateManager.checkUpdate(getContext().getApplicationContext(), false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-                ApplicationUpdate updateInfo = ((ApplicationUpdateRequest) request).getApplicationUpdate();
-                if (updateInfo == null) {
-                    return;
-                }
-                showUpdateInfoDialog(updateInfo);
-            }
-        });
+        final AppUpdateConfig config = AppUpdateConfig.create(R.mipmap.ic_launcher, false);
+        AppUpdateManager.checkUpdate(getContext().getApplicationContext(), AdminApplication.getUpdateCheckManager(),
+                config, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (e != null) {
+                            return;
+                        }
+                        ApplicationUpdate updateInfo = ((ApplicationUpdateRequest) request).getApplicationUpdate();
+                        if (updateInfo == null) {
+                            return;
+                        }
+                        showUpdateInfoDialog(config, updateInfo);
+                    }
+                });
     }
 
-    private void showUpdateInfoDialog(final ApplicationUpdate updateInfo) {
+    private void showUpdateInfoDialog(final AppUpdateConfig config, final ApplicationUpdate updateInfo) {
         setAppUpdateCheck(true);
         List<String> changeLogList = updateInfo.getChangeLogList();
         if (CollectionUtils.isNullOrEmpty(changeLogList)) {
@@ -154,7 +158,7 @@ public class FuncSelectFragment extends Fragment {
                 new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        startDownload(updateInfo);
+                        startDownload(config, updateInfo);
                     }
                 });
         builder.items(changeLogList)
@@ -171,24 +175,25 @@ public class FuncSelectFragment extends Fragment {
         ContentManager.setAppUpdateCheckTime(getContext(), new Date());
     }
 
-    private void startDownload(final ApplicationUpdate updateInfo) {
+    private void startDownload(final AppUpdateConfig config, final ApplicationUpdate updateInfo) {
         final MaterialDialog dialog = DialogHolder.showDownloadingDialog(getContext(), getString(R.string.downloading));
-        boolean result = AppUpdateManager.checkUpdatedFileDownload(getContext().getApplicationContext(), updateInfo, new BaseCallback() {
-            @Override
-            public void progress(BaseRequest request, ProgressInfo info) {
-                setDialogProgress(dialog, info);
-            }
+        boolean result = AppUpdateManager.checkUpdatedFileDownload(getContext().getApplicationContext(), config,
+                updateInfo, new BaseCallback() {
+                    @Override
+                    public void progress(BaseRequest request, ProgressInfo info) {
+                        setDialogProgress(dialog, info);
+                    }
 
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                dismissDialog(dialog);
-                if (e != null) {
-                    ToastUtils.showToast(getContext().getApplicationContext(), R.string.download_failed);
-                    return;
-                }
-                startInstall(updateInfo);
-            }
-        });
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        dismissDialog(dialog);
+                        if (e != null) {
+                            ToastUtils.showToast(getContext().getApplicationContext(), R.string.download_failed);
+                            return;
+                        }
+                        startInstall(updateInfo);
+                    }
+                });
         if (!result) {
             dismissDialog(dialog);
         }
