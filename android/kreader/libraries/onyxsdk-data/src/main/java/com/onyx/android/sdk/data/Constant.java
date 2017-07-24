@@ -45,7 +45,10 @@ public class Constant {
     static public final String NAME_TAG = "name";
     static public final String PACKAGE_TAG = "package";
     static public final String VERSION_TAG = "version";
-    static public final String MAC_TAG = "deviceMAC";
+    static public final String DEVICE_MAC_TAG = "deviceMAC";
+    static public final String PHONE_TAG = "phone";
+    static public final String MAC_TAG = "mac";
+    static public final String INSTALLATIONId_TAG = "installationId";
     static public final String READER_DATA_FOLDER = "OnyxReader";
 
     public static final String COVER_TYPE_SMALL = "small";

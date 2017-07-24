@@ -1,6 +1,7 @@
 package com.onyx.edu.manager.view.activity;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,16 +9,24 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.request.cloud.ApplicationUpdateRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.AdministratorIndexServiceRequest;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
+import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.PackageUtils;
 import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.event.LoginSuccessEvent;
+import com.onyx.edu.manager.manager.AppUpdateManager;
 import com.onyx.edu.manager.manager.ContentManager;
 import com.onyx.edu.manager.utils.DoubleClickExitHelper;
 import com.onyx.edu.manager.view.dialog.DialogHolder;
@@ -28,6 +37,12 @@ import com.onyx.edu.manager.view.fragment.LoginFragment;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 

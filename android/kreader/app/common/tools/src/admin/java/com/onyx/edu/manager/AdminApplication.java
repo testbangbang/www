@@ -7,18 +7,21 @@ import android.support.multidex.MultiDexApplication;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.edu.manager.manager.ContentManager;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.squareup.leakcanary.LeakCanary;
 
 /**
  * Created by suicheng on 2017/6/16.
  */
 public class AdminApplication extends MultiDexApplication {
 
+    private static CloudManager updateCheckManager;
     private static CloudManager cloudManager;
     private static AdminApplication sInstance;
 
@@ -31,9 +34,11 @@ public class AdminApplication extends MultiDexApplication {
 
     private void initConfig() {
         try {
+            LeakCanary.install(this);
             initDatabase(this);
             ContentManager.init(this);
-        }catch (Exception e){
+            OnyxDownloadManager.init(this);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -57,6 +62,13 @@ public class AdminApplication extends MultiDexApplication {
             cloudManager = CloudStore.createCloudManager(cloudConf);
         }
         return cloudManager;
+    }
+
+    public static CloudManager getUpdateCheckManager() {
+        if (updateCheckManager == null) {
+            updateCheckManager = new CloudManager();
+        }
+        return updateCheckManager;
     }
 
     public static void updateCloudManagerToken(String newToken) {

@@ -74,6 +74,7 @@ public class NeoAccountBase extends BaseData {
         return getCreatedAt().getTime() + getTokenExpiresIn() < new Date().getTime();
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public long getTokenExpiresIn() {
         return tokenExpiresIn * 1000;
     }
@@ -92,6 +93,7 @@ public class NeoAccountBase extends BaseData {
             AccountCommon common = JSONObjectParseUtils.parseObject(account.info, AccountCommon.class);
             if (common != null) {
                 account.name = common.name;
+                account.orgName = common.organization;
                 if (StringUtils.isNotBlank(common.phone)) {
                     account.phone = common.phone;
                 }

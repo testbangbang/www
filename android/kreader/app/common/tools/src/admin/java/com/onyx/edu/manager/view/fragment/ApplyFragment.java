@@ -1,7 +1,10 @@
 package com.onyx.edu.manager.view.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,16 +13,21 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.AdminApplyModel;
+import com.onyx.android.sdk.data.model.v2.VerifyResult;
 import com.onyx.android.sdk.data.request.cloud.v2.AdministratorApplyRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.PhoneVerifyRequest;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
+import com.onyx.edu.manager.view.dialog.DialogHolder;
 import com.onyx.edu.manager.view.ui.CountDownTimerButton;
 
 import butterknife.Bind;
@@ -40,6 +48,9 @@ public class ApplyFragment extends Fragment {
 
     @Bind(R.id.button_apply)
     CountDownTimerButton applyButton;
+
+    private VerifyResult phoneVerifyResult;
+    private boolean hasApplyPhoneVerified = false;
 
     public static ApplyFragment newInstance() {
         return new ApplyFragment();
@@ -90,7 +101,78 @@ public class ApplyFragment extends Fragment {
             ToastUtils.showToast(getContext().getApplicationContext(), R.string.required_fields_is_empty);
             return;
         }
-        startApplyAdmin();
+        showPhoneVerifyDialog();
+    }
+
+    private void showPhoneVerifyDialog() {
+        DialogHolder.getDialogBaseBuilder(getContext(), null, null)
+                .canceledOnTouchOutside(false)
+                .autoDismiss(false)
+                .positiveText(R.string.verify)
+                .content(String.format(getString(R.string.phone_verify_content), getEditText(etPhone)))
+                .inputType(InputType.TYPE_CLASS_NUMBER)
+                .input(getString(R.string.phone_verify_input_hint), null, false, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                        if (phoneVerifyResult == null || !StringUtils.getBlankStr(phoneVerifyResult.code).equals(input.toString())) {
+                            ToastUtils.showToast(getContext().getApplicationContext(), R.string.verify_code_error);
+                            return;
+                        }
+                        dialog.dismiss();
+                        startApplyAdmin();
+                    }
+                })
+                .keyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                            return true;
+                        }
+                        return false;
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .neutralText(R.string.do_apply)
+                .neutralColorRes(R.color.colorAccent)
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (isHasApplyPhoneVerified()) {
+                            ToastUtils.showToast(getContext().getApplicationContext(), R.string.repeat_apply_warning);
+                            return;
+                        }
+                        applyPhoneVerify();
+                    }
+                }).show();
+    }
+
+    private void setHasApplyPhoneVerified(boolean has) {
+        this.hasApplyPhoneVerified = has;
+    }
+
+    private boolean isHasApplyPhoneVerified() {
+        return hasApplyPhoneVerified;
+    }
+
+    private void applyPhoneVerify() {
+        setHasApplyPhoneVerified(true);
+        final PhoneVerifyRequest verifyRequest = new PhoneVerifyRequest(getEditText(etPhone));
+        AdminApplication.getCloudManager().submitRequest(getContext(), verifyRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                setHasApplyPhoneVerified(false);
+                ToastUtils.showToast(getContext().getApplicationContext(), R.string.waiting_for_verify_code);
+                phoneVerifyResult = verifyRequest.getVerifyResult();
+                if (e != null || (phoneVerifyResult == null || StringUtils.isNullOrEmpty(phoneVerifyResult.code))) {
+                    ToastUtils.showToast(getContext().getApplicationContext(), R.string.phone_verify_apply_error);
+                }
+            }
+        });
     }
 
     private AdminApplyModel createAdminApplyModel() {
@@ -107,11 +189,12 @@ public class ApplyFragment extends Fragment {
             ToastUtils.showToast(getContext().getApplicationContext(), R.string.network_is_not_connected);
             return;
         }
-        AdminApplyModel applyModel = createAdminApplyModel();
-        final AdministratorApplyRequest applyRequest = new AdministratorApplyRequest(applyModel);
+        final MaterialDialog dialog = DialogHolder.showProgressDialog(getContext(), getString(R.string.applying));
+        final AdministratorApplyRequest applyRequest = new AdministratorApplyRequest(createAdminApplyModel());
         AdminApplication.getCloudManager().submitRequest(getContext(), applyRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                dialog.dismiss();
                 if (e != null || !applyRequest.isApplySuccess()) {
                     ToastUtils.showToast(request.getContext().getApplicationContext(), R.string.apply_bind_fail);
                     return;

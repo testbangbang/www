@@ -69,4 +69,7 @@ dependencies {
     compile "com.afollestad.material-dialogs:commons:$rootProject.phone_materialDialogsCommonVersion"
     compile "com.github.jiang111:IndexRecyclerView:v1.1"
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
+
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
 }

@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -35,8 +34,6 @@ import com.onyx.edu.manager.view.fragment.GroupListFragment;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 
@@ -134,15 +131,9 @@ public class QrScannerActivity extends AppCompatActivity {
     }
 
     private void processUnboundUserInfo(final DeviceBind deviceBind) {
-        if (groupSelected != null) {
-            GroupUserInfo groupUserInfo = new GroupUserInfo();
-            groupUserInfo.groups = new ArrayList<>();
-            groupUserInfo.groups.add(groupSelected);
-            groupUserInfo.device = deviceBind;
-            showFragment(DeviceUserInfoFragment.newInstance(groupUserInfo));
-        } else {
-            showFragment(GroupListFragment.newInstance());
-        }
+        GroupUserInfo groupUserInfo = new GroupUserInfo();
+        groupUserInfo.device = deviceBind;
+        showFragment(DeviceUserInfoFragment.newInstance(groupUserInfo));
     }
 
     @Override

@@ -66,7 +66,7 @@ public class UploadBackupFileRequest extends BaseCloudRequest {
         MultipartBody.Part nameBody = MultipartBody.Part.createFormData(Constant.NAME_TAG, name);
         MultipartBody.Part packageBody = MultipartBody.Part.createFormData(Constant.PACKAGE_TAG, packageName);
         MultipartBody.Part versionBody = MultipartBody.Part.createFormData(Constant.VERSION_TAG, version);
-        MultipartBody.Part macBody = MultipartBody.Part.createFormData(Constant.MAC_TAG, mac);
+        MultipartBody.Part macBody = MultipartBody.Part.createFormData(Constant.DEVICE_MAC_TAG, mac);
 
         Response<JsonRespone> responseCall = executeCall(ServiceFactory.getBackupService(parent.getCloudConf().getApiBase()).uploadBackupFile(fileBody,
                 nameBody,

@@ -2,8 +2,10 @@ package com.onyx.edu.manager.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.AccountCommon;
@@ -31,6 +35,7 @@ import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.event.DeviceUserInfoSwitchEvent;
 import com.onyx.edu.manager.manager.ContentManager;
+import com.onyx.edu.manager.view.dialog.DialogHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -49,6 +54,8 @@ public class DeviceBindCommitFragment extends Fragment {
     LinearLayout userInfoLayout;
     @Bind(R.id.btn_unbind)
     Button unbindBtn;
+    @Bind(R.id.btn_bind)
+    Button bindBtn;
 
     private EditText usernameEdit;
     private EditText phoneTvEdit;
@@ -82,6 +89,20 @@ public class DeviceBindCommitFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        onBackClick();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
         initData();
     }
 
@@ -100,8 +121,9 @@ public class DeviceBindCommitFragment extends Fragment {
 
     private void initData() {
         updateUserInfo();
+        updateBindButton();
         updateUnBindButton();
-        updateMacAddressView(getDeviceBind().mac);
+        updateMacAddressView(getDeviceBind());
     }
 
     private String getUsername() {
@@ -127,9 +149,16 @@ public class DeviceBindCommitFragment extends Fragment {
     }
 
     private void updateUnBindButton() {
-        if (fromGroupSelect || getNeoAccount() == null) {
+        if (getDeviceBind() == null || StringUtils.isNullOrEmpty(getDeviceBind().mac) || fromGroupSelect) {
             unbindBtn.setClickable(false);
             unbindBtn.setBackgroundResource(R.drawable.button_disable_background);
+        }
+    }
+
+    private void updateBindButton() {
+        if (getDeviceBind() == null || StringUtils.isNullOrEmpty(getDeviceBind().mac)) {
+            bindBtn.setClickable(false);
+            bindBtn.setBackgroundResource(R.drawable.button_disable_background);
         }
     }
 
@@ -155,8 +184,11 @@ public class DeviceBindCommitFragment extends Fragment {
         return view;
     }
 
-    private void updateMacAddressView(String mac) {
-        macAddressTv.setText(String.format(getString(R.string.mac_address_format), macAddress = mac));
+    private void updateMacAddressView(final DeviceBind deviceBind) {
+        if (deviceBind == null || StringUtils.isNullOrEmpty(deviceBind.mac)) {
+            return;
+        }
+        macAddressTv.setText(String.format(getString(R.string.mac_address_format), macAddress = deviceBind.mac));
     }
 
     private TextView getMacAddressTv(View parentView, int parentId) {
@@ -193,7 +225,7 @@ public class DeviceBindCommitFragment extends Fragment {
 
     @OnClick(R.id.btn_unbind)
     public void onDeviceUnbindClick() {
-        startAccountUnbindByDevice();
+        showAccountUnbindDialog();
     }
 
     private void startAccountCreateByDevice(List<CloudGroup> groupList, DeviceBind deviceBind) {
@@ -224,6 +256,16 @@ public class DeviceBindCommitFragment extends Fragment {
                 processBindSuccess();
             }
         });
+    }
+
+    private void showAccountUnbindDialog() {
+        DialogHolder.showAlertDialog(getContext(), null, getString(R.string.user_device_unbind_confirm_content),
+                new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        startAccountUnbindByDevice();
+                    }
+                });
     }
 
     private void startAccountUnbindByDevice() {
