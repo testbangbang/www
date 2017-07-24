@@ -36,6 +36,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.utils.TreeObserverUtils;
@@ -216,7 +217,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getReaderDataHolder().getDocumentPath());
+        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
         return processKeyDown(keyCode, event);
     }
 
@@ -383,7 +384,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         surfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(ReaderActivity.this, getReaderDataHolder().getDocumentPath());
+                ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(ReaderActivity.this, ReaderActivity.this.getClass());
 
                 getHandlerManager().setTouchStartEvent(event);
                 scaleDetector.onTouchEvent(event);

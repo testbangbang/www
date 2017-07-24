@@ -24,9 +24,10 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
 
     public static final String TAG_SCREEN_ORIENTATION = "com.onyx.kreader.action.SCREEN_ORIENTATION";
     public static final String TAG_DOCUMENT_PATH = "com.onyx.kreader.action.DOCUMENT_PATH";
+    public static final String TAG_TAB_ACTIVITY = "com.onyx.kreader.action.TAB_ACTIVITY";
 
     public static abstract class Callback {
-        public abstract void onTabBringToFront(String path);
+        public abstract void onTabBringToFront(String tabActivity);
         public abstract void onTabBackPressed();
         public abstract void onChangeOrientation(int orientation);
         public abstract void onEnterFullScreen();
@@ -43,10 +44,10 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         ReaderTabHostBroadcastReceiver.callback = callback;
     }
 
-    public static void sendTabBringToFrontIntent(Context context, String path) {
+    public static void sendTabBringToFrontIntent(Context context, Class tabActivity) {
         Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
         intent.setAction(ACTION_TAB_BRING_TO_FRONT);
-        intent.putExtra(TAG_DOCUMENT_PATH, path);
+        intent.putExtra(TAG_TAB_ACTIVITY, tabActivity.getCanonicalName());
         context.sendBroadcast(intent);
     }
 
@@ -93,7 +94,7 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         Debug.d(getClass(), "onReceive: " + intent);
         if (intent.getAction().equals(ACTION_TAB_BRING_TO_FRONT)) {
             if (callback != null) {
-                callback.onTabBringToFront(intent.getStringExtra(TAG_DOCUMENT_PATH));
+                callback.onTabBringToFront(intent.getStringExtra(TAG_TAB_ACTIVITY));
             }
         } else if (intent.getAction().equals(ACTION_TAB_BACK_PRESSED)) {
             if (callback != null) {

@@ -387,10 +387,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void initReceiver() {
         ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
             @Override
-            public void onTabBringToFront(String path) {
-                ReaderTabManager.ReaderTab tab = tabManager.findOpenedTabByPath(path);
-                if (tab != null) {
-                    bringReaderTabToFront(tab);
+            public void onTabBringToFront(String tabActivity) {
+                for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
+                    if (tabActivity.compareTo(tabManager.getTabActivity(entry.getKey()).getCanonicalName()) == 0) {
+                        bringReaderTabToFront(entry.getKey());
+                        return;
+                    }
                 }
             }
 
