@@ -64,5 +64,6 @@ public class Constant {
     public static final String HEADER_AUTHORIZATION = "authorization";
 
     public static final String CLOUD_BACKUP_FILE_SAVE_FOLDER = "cloud_backup";
+    public static final String CLOUD_BACKUP_TEMP_FILE_FOLDER = "cloud_backup_temp";
 
 }

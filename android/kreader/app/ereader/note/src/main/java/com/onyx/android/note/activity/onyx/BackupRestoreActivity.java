@@ -1,21 +1,25 @@
 package com.onyx.android.note.activity.onyx;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
+import com.onyx.android.note.actions.common.WifiConnectAction;
 import com.onyx.android.note.actions.manager.BackupDataAction;
 import com.onyx.android.note.actions.manager.DownloadFileAction;
 import com.onyx.android.note.actions.manager.GetBackupDataAction;
@@ -28,16 +32,13 @@ import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.FileInfo;
 import com.onyx.android.sdk.data.model.CloudBackupData;
 import com.onyx.android.sdk.data.model.CloudBackupFile;
-import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.utils.DateTimeUtil;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -57,16 +58,17 @@ public class BackupRestoreActivity extends AppCompatActivity{
     private View emptyText;
     private List<FileInfo> localFiles = new ArrayList<>();
     private List<FileInfo> cloudFiles = new ArrayList<>();
-
     private List<FileInfo> mergeFiles = new ArrayList<>();
+    private BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_backup_restore);
         initView();
+        registerReceiver();
+        checkWifi();
         loadLocalBackupFiles();
-        loadCloudBackupFiles();
     }
 
     private void initView() {
@@ -87,7 +89,7 @@ public class BackupRestoreActivity extends AppCompatActivity{
         findViewById(R.id.cloud_backup).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                backup(true);
+                prepareWifiConnectForCloudBackup();
             }
         });
         initBackupFileList();
@@ -130,9 +132,6 @@ public class BackupRestoreActivity extends AppCompatActivity{
     }
 
     private void backup(final boolean cloudBackup) {
-        if (cloudBackup && !checkNetworkConnect()) {
-            return;
-        }
         new BackupDataAction<BackupRestoreActivity>(cloudBackup).execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -146,17 +145,17 @@ public class BackupRestoreActivity extends AppCompatActivity{
         });
     }
 
-    private boolean checkNetworkConnect() {
+    private void prepareWifiConnectForCloudBackup() {
         if (Device.currentDevice().hasWifi(this) && !NetworkUtil.isWiFiConnected(this)) {
-            OnyxCustomDialog.getConfirmDialog(this, getString(R.string.wifi_dialog_content), new DialogInterface.OnClickListener() {
+            new WifiConnectAction<>(6000, 1000, getString(R.string.wifi_connecting), true).execute(this, new BaseCallback() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    NetworkUtil.enableWiFi(BackupRestoreActivity.this, true);
+                public void done(BaseRequest request, Throwable e) {
+                    backup(true);
                 }
-            }, null).show();
-            return false;
+            });
+        }else {
+            backup(true);
         }
-        return true;
     }
 
     private void restore(String filePath) {
@@ -255,5 +254,47 @@ public class BackupRestoreActivity extends AppCompatActivity{
         restoreList.getAdapter().notifyDataSetChanged();
     }
 
+    private void registerReceiver() {
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
+                    ConnectivityManager manager = (ConnectivityManager) context.getApplicationContext()
+                            .getSystemService(Context.CONNECTIVITY_SERVICE);
 
+                    NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
+                    if (activeNetwork != null && activeNetwork.isConnected()) {
+                        loadCloudBackupFiles();
+                    }
+                }
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(broadcastReceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unRegisterReceiver();
+    }
+
+    private void unRegisterReceiver() {
+        if (broadcastReceiver != null) {
+            unregisterReceiver(broadcastReceiver);
+            broadcastReceiver = null;
+        }
+    }
+
+    private void checkWifi() {
+        if (Device.currentDevice().hasWifi(this) && !NetworkUtil.isWiFiConnected(BackupRestoreActivity.this.getApplicationContext())) {
+            OnyxCustomDialog.getConfirmDialog(this, getString(R.string.wifi_dialog_content), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    NetworkUtil.enableWiFi(BackupRestoreActivity.this.getApplicationContext(), true);
+                }
+            }, null).show();
+        }
+    }
 }

@@ -71,7 +71,7 @@ public class BackupRestoreNoteDBTest extends ActivityInstrumentationTestCase2<No
         final String backupDBPath = getbackupDBPath();
         String currentDBPath = getCurrentDBPath();
 
-        TransferDBRequest restoreDBRequest = new TransferDBRequest(currentDBPath, backupDBPath, false, false, null);
+        TransferDBRequest restoreDBRequest = new TransferDBRequest(currentDBPath, backupDBPath, false, false, ShapeDatabase.class, null);
         try {
             restoreDBRequest.execute(null);
             SQLiteDatabase database = SQLiteDatabase.openDatabase(backupDBPath, null,SQLiteDatabase.OPEN_READWRITE);
@@ -113,7 +113,7 @@ public class BackupRestoreNoteDBTest extends ActivityInstrumentationTestCase2<No
 
         String backupFilePath = getbackupDBPath();
 
-        TransferDBRequest restoreDBRequest = new TransferDBRequest(backupFilePath, currentDBPath, true, true, ShapeGeneratedDatabaseHolder.class);
+        TransferDBRequest restoreDBRequest = new TransferDBRequest(backupFilePath, currentDBPath, true, true, ShapeDatabase.class, ShapeGeneratedDatabaseHolder.class);
         try {
             restoreDBRequest.execute(null);
             TestUtils.sleep(2000);
