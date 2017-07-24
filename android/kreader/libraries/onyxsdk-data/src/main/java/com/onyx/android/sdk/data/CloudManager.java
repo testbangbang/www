@@ -154,4 +154,8 @@ public class CloudManager {
     public void setToken(String token) {
         this.token = token;
     }
+
+    public RequestManager getRequestManager() {
+        return requestManager;
+    }
 }
