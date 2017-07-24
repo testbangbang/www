@@ -12,14 +12,14 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.event.DataRefreshEvent;
 import com.onyx.edu.manager.manager.ContentManager;
-import com.onyx.edu.manager.view.fragment.DeviceBindCommitFragment;
+import com.onyx.edu.manager.view.fragment.DeviceBindingCommitFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by suicheng on 2017/7/17.
  */
-public class DeviceBindActivity extends AppCompatActivity {
+public class DeviceBindingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class DeviceBindActivity extends AppCompatActivity {
     private void postOnCreated() {
         GroupUserInfo groupUserInfo = JSONObjectParseUtils.parseObject(getIntent().getStringExtra(ContentManager.KEY_GROUP_USER_INFO),
                 GroupUserInfo.class);
-        showFragment(DeviceBindCommitFragment.newInstance(groupUserInfo, false));
+        showFragment(DeviceBindingCommitFragment.newInstance(groupUserInfo, false));
     }
 
     private void showFragment(Fragment fragment) {

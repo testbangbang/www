@@ -48,7 +48,7 @@ import butterknife.OnClick;
 /**
  * Created by suicheng on 2017/7/7.
  */
-public class DeviceBindCommitFragment extends Fragment {
+public class DeviceBindingCommitFragment extends Fragment {
 
     @Bind(R.id.layout_user_info)
     LinearLayout userInfoLayout;
@@ -72,7 +72,7 @@ public class DeviceBindCommitFragment extends Fragment {
             bundle.putString(ContentManager.KEY_GROUP_USER_INFO, JSONObjectParseUtils.toJson(groupUserInfo));
         }
         bundle.putBoolean(ContentManager.KEY_GROUP_USER_INFO_FROM, fromGroupSelect);
-        Fragment fragment = new DeviceBindCommitFragment();
+        Fragment fragment = new DeviceBindingCommitFragment();
         fragment.setArguments(bundle);
         return fragment;
     }

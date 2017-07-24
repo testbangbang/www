@@ -27,7 +27,7 @@ import com.onyx.edu.manager.event.DeviceUserInfoSwitchEvent;
 import com.onyx.edu.manager.event.GroupReSelectEvent;
 import com.onyx.edu.manager.event.GroupSelectEvent;
 import com.onyx.edu.manager.view.dialog.DialogHolder;
-import com.onyx.edu.manager.view.fragment.DeviceBindCommitFragment;
+import com.onyx.edu.manager.view.fragment.DeviceBindingCommitFragment;
 import com.onyx.edu.manager.view.fragment.DeviceUserInfoFragment;
 import com.onyx.edu.manager.view.fragment.GroupListFragment;
 
@@ -127,7 +127,7 @@ public class QrScannerActivity extends AppCompatActivity {
     }
 
     private void processBoundUserInfo(GroupUserInfo groupUserInfo) {
-        showFragment(DeviceBindCommitFragment.newInstance(groupUserInfo, false));
+        showFragment(DeviceBindingCommitFragment.newInstance(groupUserInfo, false));
     }
 
     private void processUnboundUserInfo(final DeviceBind deviceBind) {
@@ -157,7 +157,7 @@ public class QrScannerActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeviceBindCommitEvent(DeviceBindCommitEvent event) {
         event.groupUserInfo.device = scannedDeviceBind;
-        showFragment(DeviceBindCommitFragment.newInstance(event.groupUserInfo, true));
+        showFragment(DeviceBindingCommitFragment.newInstance(event.groupUserInfo, true));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

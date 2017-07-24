@@ -429,7 +429,7 @@ public class UserManagerActivity extends AppCompatActivity {
             groupUserInfo.device.model = groupUserInfo.user.getFirstDevice().model;
         }
         groupUserInfoSelected = groupUserInfo;
-        Intent intent = new Intent(this, DeviceBindActivity.class);
+        Intent intent = new Intent(this, DeviceBindingActivity.class);
         intent.putExtra(ContentManager.KEY_GROUP_USER_INFO, JSONObjectParseUtils.toJson(groupUserInfo));
         ActivityUtil.startActivitySafely(this, intent);
     }
