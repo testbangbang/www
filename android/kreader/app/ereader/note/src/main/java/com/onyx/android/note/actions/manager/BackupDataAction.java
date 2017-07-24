@@ -98,7 +98,7 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
     private void backup(final Context context, final String fileName, final BaseCallback callback) {
         final String backupDBPath = getBackupDBPath(fileName);
         String currentDBPath = context.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db";
-        TransferDBRequest request = new TransferDBRequest(currentDBPath, backupDBPath, false, false, null);
+        TransferDBRequest request = new TransferDBRequest(currentDBPath, backupDBPath, false, false, ShapeDatabase.class, null);
         getDataManager().submit(context, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
