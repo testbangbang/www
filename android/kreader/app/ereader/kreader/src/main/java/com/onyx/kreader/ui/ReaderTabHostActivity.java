@@ -516,7 +516,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             openDocWithTab(pathToContinueOpenAfterRotation);
             pathToContinueOpenAfterRotation = null;
         } else if (tabManager.getOpenedTabs().size() > 0) {
-            bringReaderTabToFront(getCurrentTabInHost());
+            if (isSideReading) {
+                bringReaderTabToFront(getSideReadingLeft());
+                bringReaderTabToFront(getSideReadingRight());
+            } else {
+                bringReaderTabToFront(getCurrentTabInHost());
+            }
         }
     }
 
@@ -805,6 +810,15 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         intent.putExtras(getIntent());
         final int tabContentHeight = getTabContentHeight();
         intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
+        if (isSideReading) {
+            if (isSideReadingLeft(tab)) {
+                intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_GRAVITY, Gravity.BOTTOM | Gravity.LEFT);
+            } else {
+                intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_GRAVITY, Gravity.BOTTOM | Gravity.RIGHT);
+            }
+            intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_WIDTH, getTabContentWidth() / 2 - 2);
+        }
+
         if (enableDebugLog != null) {
             intent.putExtra(ReaderBroadcastReceiver.TAG_ENABLE_DEBUG, enableDebugLog.get());
         }
