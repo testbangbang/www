@@ -47,6 +47,10 @@ public class CloudContentListRequest extends BaseCloudRequest {
         this.saveToLocal = saveToLocal;
     }
 
+    public QueryArgs getQueryArgs() {
+        return queryArgs;
+    }
+
     public QueryResult<Metadata> getProductResult() {
         return queryResult;
     }
