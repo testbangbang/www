@@ -2,11 +2,13 @@ package com.onyx.kreader.ui;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -214,8 +216,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                                 }
                             }
                         });
-                bringSelfToFront();
-                dlg.show();
+                showDialog(dlg);
             }
         });
         btnSwitch = (ImageView) findViewById(R.id.btn_switch);
@@ -296,10 +297,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
         updateReaderTabWindowHeight(getSideReadingLeft());
         updateReaderTabWindowHeight(getSideReadingRight());
-        bringReaderTabToFront(getSideReadingLeft());
-        bringReaderTabToFront(getSideReadingRight());
+
+        reopenReaderTab(getSideReadingLeft());
+        reopenReaderTab(getSideReadingRight());
 
         findViewById(R.id.dash_line_splitter).setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_switch).setVisibility(View.GONE);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
@@ -315,6 +318,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
 
         findViewById(R.id.dash_line_splitter).setVisibility(View.INVISIBLE);
+        findViewById(R.id.btn_switch).setVisibility(View.VISIBLE);
 
         rebuildTabWidget();
 
@@ -336,8 +340,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                         onBackPressed();
                     }
                 }, null);
-        bringSelfToFront();
-        dlg.show();
+        showDialog(dlg);
         return true;
     }
 
@@ -1044,5 +1047,20 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 }
             }
         }
+    }
+
+    private void showDialog(Dialog dlg) {
+        tabHost.setBackgroundColor(Color.TRANSPARENT);
+        dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                tabHost.setBackgroundColor(Color.WHITE);
+                if (getCurrentTabInHost() != null) {
+                    bringReaderTabToFront(getCurrentTabInHost());
+                }
+            }
+        });
+        bringSelfToFront();
+        dlg.show();
     }
 }
