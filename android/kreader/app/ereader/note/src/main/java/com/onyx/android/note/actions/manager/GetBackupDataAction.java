@@ -31,7 +31,7 @@ public class GetBackupDataAction <T extends Activity> extends BaseNoteAction<T> 
     }
 
     private CloudManager getCloudManager() {
-        return NoteApplication.getInstance().getCloudManager();
+        return NoteApplication.getInstance().getCloudManager().useBackupCloudConf();
     }
 
     public CloudBackupData getCloudBackupData() {

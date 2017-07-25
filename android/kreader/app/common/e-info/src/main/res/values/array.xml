@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="default_user_avatar_array">
+        <item>@drawable/user_boy</item>
+        <item>@drawable/user_boy_glass</item>
+        <item>@drawable/user_boy_hat</item>
+        <item>@drawable/user_girl</item>
+        <item>@drawable/user_girl_glass</item>
+        <item>@drawable/user_girl_short_hair</item>
+        <item>@drawable/avatar_add</item>
+    </string-array>
+
+</resources>

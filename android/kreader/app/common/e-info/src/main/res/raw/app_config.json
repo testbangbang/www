@@ -1,0 +1,7 @@
+{
+  "home_layout": "activity_home_for_display",
+  "home_pic_display_file_path": "",
+  "home_video_display_file_path": "",
+  "teaching_material_document_display_file_path" : "/mnt/sdcard/edu/books.pdf",
+  "teaching_auxiliary_document_display_file_path" : "/mnt/sdcard/edu/reading.pdf"
+}

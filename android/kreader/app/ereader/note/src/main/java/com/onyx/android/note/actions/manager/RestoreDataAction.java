@@ -78,7 +78,9 @@ public class RestoreDataAction<T extends Activity> extends BaseNoteAction<T> {
     }
 
     private BaseDataRequest restoreRequest(final Context context){
-        return new TransferDBRequest(restorePath, getCurrentDBPath(context), true, true, ShapeGeneratedDatabaseHolder.class);
+        TransferDBRequest dbRequest =  new TransferDBRequest(restorePath, getCurrentDBPath(context), true, true, ShapeDatabase.class, ShapeGeneratedDatabaseHolder.class);
+        dbRequest.setContext(context);
+        return dbRequest;
     }
 
     private NoteViewHelper getNoteViewHelper() {
@@ -95,11 +97,11 @@ public class RestoreDataAction<T extends Activity> extends BaseNoteAction<T> {
     }
 
     private BaseDataRequest backupTempDBBeforeRestore(final Context context) {
-        return new TransferDBRequest(getCurrentDBPath(context), getTempBackupDBPath(context), false, false, null);
+        return new TransferDBRequest(getCurrentDBPath(context), getTempBackupDBPath(context), false, false, ShapeDatabase.class, null);
     }
 
     private void rollbackOnFailed(final Context context, final Throwable restoreException, final BaseCallback callback) {
-        TransferDBRequest dbRequest = new TransferDBRequest(getTempBackupDBPath(context), getCurrentDBPath(context), false, false, null);
+        TransferDBRequest dbRequest = new TransferDBRequest(getTempBackupDBPath(context), getCurrentDBPath(context), false, false, ShapeDatabase.class, null);
         getDataManager().submit(context, dbRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

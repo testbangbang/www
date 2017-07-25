@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.manager.CacheManager;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -19,6 +20,7 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -325,6 +327,27 @@ public class DataManagerHelper {
         for (Metadata metadata : queryResult.list) {
             dataProvider.saveMetadata(context, metadata);
             saveCloudCollection(context, dataProvider, queryArgs.libraryUniqueId, metadata.getAssociationId());
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
+    public static List<Library> fetchLibraryLibraryList(Context context, DataProviderBase dataProvider, QueryArgs queryArgs) {
+        List<Library> libraryList = dataProvider.loadAllLibrary(queryArgs.libraryUniqueId, queryArgs);
+        if (!FetchPolicy.isDataFromMemDb(queryArgs.fetchPolicy, NetworkUtil.isWiFiConnected(context))) {
+            DataManagerHelper.saveLibraryListToLocal(dataProvider, queryArgs, libraryList);
+        }
+        return libraryList;
+    }
+
+    public static void saveLibraryListToLocal(DataProviderBase dataProvider, QueryArgs queryArgs, List<Library> libraryList) {
+        if (CollectionUtils.isNullOrEmpty(libraryList)) {
+            return;
+        }
+        final DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for (Library library : libraryList) {
+            dataProvider.addLibrary(library);
         }
         database.setTransactionSuccessful();
         database.endTransaction();

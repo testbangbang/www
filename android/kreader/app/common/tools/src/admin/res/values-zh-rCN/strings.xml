@@ -20,6 +20,7 @@
 
     <string name="back">返回</string>
     <string name="exit">退出</string>
+    <string name="update">更新</string>
 
     <string name="btn_admin_bind">管理员手机绑定</string>
     <string name="fields_following_required">*以下均为必填项</string>
@@ -51,6 +52,7 @@
     <string name="user_add_new">添加新用户</string>
     <string name="user_device_bind">绑定用户</string>
     <string name="user_device_un_bind">解绑用户</string>
+    <string name="user_device_unbind_confirm_content">确定解绑此用户吗？</string>
     <string name="device_bind_fail">设备绑定失败</string>
     <string name="device_bind_success">设备绑定成功</string>
     <string name="device_bind_info_edit_title">信息填写</string>
@@ -74,4 +76,21 @@
     <string name="count_down_timer_desc_format">%ds后可再次申请</string>
 
     <string name="account_is_invalid">账号异常，请重新登录</string>
+    <string name="account_login_tip">使用分配的管理员账号登录</string>
+    <string name="account_logout_confirm_content">要退出当前账号？</string>
+    <string name="app_update_change_log_empty_content">更新内容:未写</string>
+    <string name="app_update_new_version_detect">检测到新版本</string>
+    <string name="downloading">正在下载中&#8230;</string>
+    <string name="download_failed">下载失败了</string>
+    <string name="install_failed">安装出了问题</string>
+
+    <string name="applying">正在申请中&#8230;</string>
+    <string name="do_apply">发起申请</string>
+    <string name="repeat_apply_warning">不能短期内重复申请</string>
+    <string name="phone_verify_content">您输入的手机号为:%s，请先发起手机验证申请</string>
+    <string name="phone_verify_input_hint">输入收到的验证码</string>
+    <string name="verify">验证</string>
+    <string name="verify_code_error">验证码不对，无法通过</string>
+    <string name="waiting_for_verify_code">稍等手机运营商发送短信验证码</string>
+    <string name="phone_verify_apply_error">短信验证申请失败，重新发起申请</string>
 </resources>

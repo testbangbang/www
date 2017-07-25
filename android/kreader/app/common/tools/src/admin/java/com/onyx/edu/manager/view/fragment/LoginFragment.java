@@ -1,6 +1,7 @@
 package com.onyx.edu.manager.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
@@ -21,6 +23,7 @@ import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.event.LoginSuccessEvent;
 import com.onyx.edu.manager.manager.ContentManager;
+import com.onyx.edu.manager.view.dialog.DialogHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -40,6 +43,12 @@ public class LoginFragment extends Fragment {
 
     public static LoginFragment newInstance() {
         return new LoginFragment();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ToastUtils.showToast(getContext().getApplicationContext(), R.string.account_login_tip);
     }
 
     @Override
@@ -79,10 +88,12 @@ public class LoginFragment extends Fragment {
             ToastUtils.showToast(getContext().getApplicationContext(), R.string.password_empty_tip);
             return;
         }
+        final MaterialDialog dialog = DialogHolder.showProgressDialog(getContext(), getString(R.string.login));
         final LoginByAdminRequest loginRequest = new LoginByAdminRequest(BaseAuthAccount.create(username, password));
         AdminApplication.getCloudManager().submitRequest(getContext(), loginRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                dialog.dismiss();
                 NeoAccountBase account;
                 if (e != null || (account = loginRequest.getNeoAccount()) == null) {
                     ToastUtils.showToast(request.getContext().getApplicationContext(), R.string.administrator_login_fail);

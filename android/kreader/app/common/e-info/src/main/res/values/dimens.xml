@@ -1,0 +1,40 @@
+<resources>
+    <dimen name="home_item_divider">8dp</dimen>
+    <dimen name="home_layout_padding">8dp</dimen>
+    <dimen name="home_normal_item_category_image_size">52dp</dimen>
+    <dimen name="home_normal_item_category_text_size">16sp</dimen>
+    <dimen name="home_normal_item_category_margin">13dp</dimen>
+
+    <dimen name="home_item_background_normal_stroke_width">2dp</dimen>
+    <dimen name="home_item_background_select_stroke_width">3dp</dimen>
+    <dimen name="home_main_item_category_title_text_size">37sp</dimen>
+
+    <dimen name="application_item_image_size">108dp</dimen>
+    <dimen name="application_item_text_size">24sp</dimen>
+
+    <dimen name="library_item_get_widget_margin_top">-1dp</dimen>
+    <dimen name="library_item_get_widget_width">26dp</dimen>
+    <dimen name="library_item_get_widget_height">20dp</dimen>
+    <dimen name="library_item_progress_height">7dp</dimen>
+    <dimen name="library_item_progress_margin_top">3dp</dimen>
+    <dimen name="library_item_progress_padding_left_right">3dp</dimen>
+
+    <dimen name="tab_item_text_size">32sp</dimen>
+    <dimen name="tab_item_text_padding_right">8dp</dimen>
+    <dimen name="tab_item_text_padding_bottom">8dp</dimen>
+    <dimen name="book_item_text_size">26sp</dimen>
+    <dimen name="book_item_text_margin_right">19dp</dimen>
+    <dimen name="book_item_cover_image_width">232dp</dimen>
+    <dimen name="book_item_cover_image_height">310dp</dimen>
+    <dimen name="book_item_get_image_width">55dp</dimen>
+    <dimen name="book_item_get_image_height">32dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="tab_layout_tab_max_width">240dp</dimen>
+    <dimen name="tab_layout_tab_text_max_width">180dp</dimen>
+    <dimen name="tab_layout_tab_text_margin">40dp</dimen>
+    <dimen name="tab_layout_tab_image_margin">42dp</dimen>
+
+</resources>

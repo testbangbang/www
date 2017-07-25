@@ -9,10 +9,12 @@ import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.manager.CacheManager;
+import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
+import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,6 +27,7 @@ import java.util.Map;
 public class CloudContentRefreshRequest extends BaseCloudRequest {
 
     private QueryArgs queryArgs;
+    private QueryResult<Library> libraryResult;
     private QueryResult<Metadata> queryResult;
     private Map<String, CloseableReference<Bitmap>> thumbnailBitmap = new HashMap<>();
 
@@ -36,9 +39,14 @@ public class CloudContentRefreshRequest extends BaseCloudRequest {
         return queryResult;
     }
 
+    public QueryResult<Library> getLibraryResult() {
+        return libraryResult;
+    }
+
     @Override
     public void execute(CloudManager cloudManager) throws Exception {
         checkQueryCloudPolicy(queryArgs);
+        libraryResult = loadLibraryQueryResult(cloudManager);
         queryResult = DataManagerHelper.cloudMetadataFromDataProvider(getContext(),
                 cloudManager.getCloudDataProvider(), queryArgs);
         if (queryResult == null || queryResult.hasException()) {
@@ -60,6 +68,14 @@ public class CloudContentRefreshRequest extends BaseCloudRequest {
         if (!FetchPolicy.isCloudOnlyPolicy(queryArgs.fetchPolicy)) {
             queryArgs.useCloudOnlyPolicy();
         }
+    }
+
+    private QueryResult<Library> loadLibraryQueryResult(CloudManager parent) {
+        QueryResult<Library> queryResult = new QueryResult<>();
+        queryResult.list = DataManagerHelper.fetchLibraryLibraryList(getContext(), parent.getCloudDataProvider(),
+                queryArgs);
+        queryResult.count = CollectionUtils.getSize(queryResult.list);
+        return queryResult;
     }
 
     private void deleteCollectionSetByLibraryId(Context context, DataProviderBase dataProvider, String libraryId) {

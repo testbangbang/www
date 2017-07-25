@@ -2,13 +2,16 @@ package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.*;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Condition;
@@ -60,7 +63,9 @@ public class LocalDataProvider implements DataProviderBase {
             if (StringUtils.isNullOrEmpty(hashTag)) {
                 hashTag = FileUtils.computeMD5(new File(path));
             }
-            metadata = new Select().from(Metadata.class).where(Metadata_Table.hashTag.eq(hashTag)).querySingle();
+            metadata = new Select().from(Metadata.class).where()
+                    .or(Metadata_Table.hashTag.eq(hashTag))
+                    .or(Metadata_Table.nativeAbsolutePath.eq(path)).querySingle();
         } catch (Exception e) {
         } finally {
             return MetadataUtils.ensureObject(metadata);
@@ -178,6 +183,14 @@ public class LocalDataProvider implements DataProviderBase {
     @Override
     public Library loadLibrary(String uniqueId) {
         return new Select().from(Library.class).where(Library_Table.idString.eq(uniqueId)).querySingle();
+    }
+
+    @Override
+    public QueryResult<Library> fetchAllLibrary(String paretId, QueryArgs queryArgs) {
+        QueryResult<Library> result = new QueryResult<>();
+        result.list = loadAllLibrary(queryArgs.libraryUniqueId, queryArgs);
+        result.count = CollectionUtils.getSize(result.list);
+        return result;
     }
 
     @Override

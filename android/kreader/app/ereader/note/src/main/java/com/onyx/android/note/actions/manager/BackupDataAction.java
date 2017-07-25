@@ -3,6 +3,7 @@ package com.onyx.android.note.actions.manager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Environment;
 import android.view.View;
 
 import com.onyx.android.note.NoteApplication;
@@ -11,6 +12,7 @@ import com.onyx.android.note.actions.BaseNoteAction;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.cloud.UploadBackupFileRequest;
 import com.onyx.android.sdk.data.request.data.db.TransferDBRequest;
@@ -31,13 +33,15 @@ import java.util.Date;
 
 public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
 
-    public final static String BACKUP_LOCAL_SAVE_PATH = "mnt/sdcard/note/backup/local/";
+    public final static String BACKUP_LOCAL_SAVE_PATH = Environment.getExternalStorageDirectory().getPath() + "/note/backup/local/";
 
     private DialogProgress dialogProgress;
     private boolean cloudBackup = false;
+    private String fileName;
 
-    public BackupDataAction(boolean cloudBackup) {
+    public BackupDataAction(boolean cloudBackup, String fileName) {
         this.cloudBackup = cloudBackup;
+        this.fileName = fileName;
     }
 
     @Override
@@ -61,15 +65,14 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
     }
 
     private void showTitleDialog(final Context context, final BaseCallback callback) {
-        final String title = DateTimeUtil.formatDate(new Date(), DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMMSS_FOR_FILE_NAME);
         OnyxCustomDialog.getInputDialog(context, context.getString(R.string.backup_file_name), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 OnyxCustomDialog customDialog = (OnyxCustomDialog)dialog;
                 String input = customDialog.getInputValue().toString();
-                backup(context, StringUtils.isNullOrEmpty(input) ? title : input, callback);
+                backup(context, StringUtils.isNullOrEmpty(input) ? fileName : input, callback);
             }
-        }).setInputHintText(title).show();
+        }).setInputHintText(fileName).show();
     }
 
     private void showDialogProgress(final Context context) {
@@ -96,14 +99,14 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
     }
 
     private void backup(final Context context, final String fileName, final BaseCallback callback) {
-        final String backupDBPath = getBackupDBPath(fileName);
+        final String backupDBPath = getBackupDBPath(context, fileName, cloudBackup);
         String currentDBPath = context.getDatabasePath(ShapeDatabase.NAME).getPath() + ".db";
-        TransferDBRequest request = new TransferDBRequest(currentDBPath, backupDBPath, false, false, null);
+        TransferDBRequest request = new TransferDBRequest(currentDBPath, backupDBPath, false, false, ShapeDatabase.class, null);
         getDataManager().submit(context, request, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (cloudBackup && e == null) {
-                    upload(context, callback, backupDBPath);
+                    upload(context, callback, backupDBPath, fileName);
                 }else {
                     BaseCallback.invoke(callback, request, e);
                 }
@@ -111,8 +114,12 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
         });
     }
 
-    private String getBackupDBPath(final String fileName) {
-        return BACKUP_LOCAL_SAVE_PATH + fileName + ".db";
+    private String getBackupDBPath(Context context, final String fileName, boolean cloudBackup) {
+        if (cloudBackup) {
+            return context.getDir(Constant.CLOUD_BACKUP_TEMP_FILE_FOLDER, Context.MODE_PRIVATE).getAbsolutePath() + "/" + fileName + ".db";
+        }else {
+            return BACKUP_LOCAL_SAVE_PATH + fileName + ".db";
+        }
     }
 
     private NoteViewHelper getNoteViewHelper() {
@@ -120,12 +127,13 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
     }
 
     private CloudManager getCloudManager() {
-        return NoteApplication.getInstance().getCloudManager();
+        return NoteApplication.getInstance().getCloudManager().useBackupCloudConf();
     }
 
     private void upload(final Context context,
                         final BaseCallback callback,
-                        final String filePath) {
+                        final String filePath,
+                        final String fileName) {
         showDialogProgress(context);
         UploadBackupFileRequest uploadBackupFileRequest = new UploadBackupFileRequest(filePath, true);
         getCloudManager().submitRequest(context, uploadBackupFileRequest, new BaseCallback() {

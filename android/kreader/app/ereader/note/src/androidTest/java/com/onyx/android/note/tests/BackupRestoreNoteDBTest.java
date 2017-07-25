@@ -40,14 +40,11 @@ public class BackupRestoreNoteDBTest extends ActivityInstrumentationTestCase2<No
 
     public void testRestoreNoteDB() {
         initDatabase();
-        final String docId = UUID.randomUUID().toString();
-        final String shapeUniqueId = UUID.randomUUID().toString();
         restoreDB(docId, shapeUniqueId);
     }
 
     public void testRestoreLowVersionNoteDB() {
         initDatabase();
-        TestUtils.sleep(3000);
         downgradeBackupDB();
         restoreDB(docId, shapeUniqueId);
     }
@@ -55,6 +52,16 @@ public class BackupRestoreNoteDBTest extends ActivityInstrumentationTestCase2<No
     public void testBackupNoteDB() {
         initDatabase();
         backupDB(docId, shapeUniqueId);
+    }
+
+    public void testBackupRestoreNoteDB() {
+        initDatabase();
+        backupDB(docId, shapeUniqueId);
+        // test normal restore
+        restoreDB(docId, shapeUniqueId);
+        // test restore low version db
+        downgradeBackupDB();
+        restoreDB(docId, shapeUniqueId);
     }
 
     public void backupDB(final String docId, final String shapeUniqueId) {
@@ -71,7 +78,7 @@ public class BackupRestoreNoteDBTest extends ActivityInstrumentationTestCase2<No
         final String backupDBPath = getbackupDBPath();
         String currentDBPath = getCurrentDBPath();
 
-        TransferDBRequest restoreDBRequest = new TransferDBRequest(currentDBPath, backupDBPath, false, false, null);
+        TransferDBRequest restoreDBRequest = new TransferDBRequest(currentDBPath, backupDBPath, false, false, ShapeDatabase.class, null);
         try {
             restoreDBRequest.execute(null);
             SQLiteDatabase database = SQLiteDatabase.openDatabase(backupDBPath, null,SQLiteDatabase.OPEN_READWRITE);
@@ -113,10 +120,10 @@ public class BackupRestoreNoteDBTest extends ActivityInstrumentationTestCase2<No
 
         String backupFilePath = getbackupDBPath();
 
-        TransferDBRequest restoreDBRequest = new TransferDBRequest(backupFilePath, currentDBPath, true, true, ShapeGeneratedDatabaseHolder.class);
+        TransferDBRequest restoreDBRequest = new TransferDBRequest(backupFilePath, currentDBPath, true, true, ShapeDatabase.class, ShapeGeneratedDatabaseHolder.class);
+        restoreDBRequest.setContext(getActivity());
         try {
             restoreDBRequest.execute(null);
-            TestUtils.sleep(2000);
             shapeModels = ShapeDataProvider.loadShapeList(getActivity());
             assertTrue(shapeModels.size() == 1);
             assertTrue(shapeModels.get(0).getShapeUniqueId().equals(shapeUniqueId));
@@ -132,6 +139,7 @@ public class BackupRestoreNoteDBTest extends ActivityInstrumentationTestCase2<No
             database.close();
         } catch (Exception e) {
             e.printStackTrace();
+            assertTrue(false);
         }
     }
 
