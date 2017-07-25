@@ -72,7 +72,8 @@ public class TransferDBRequest extends BaseDataRequest {
         if (databaseHolderClass == null) {
             return;
         }
-        FlowConfig.Builder builder = new FlowConfig.Builder(getContext());
+        FlowManager.destroy();
+        FlowConfig.Builder builder = new FlowConfig.Builder(getContext().getApplicationContext());
         builder.openDatabasesOnInit(true);
         builder.addDatabaseHolder(databaseHolderClass);
         FlowManager.init(builder.build());
