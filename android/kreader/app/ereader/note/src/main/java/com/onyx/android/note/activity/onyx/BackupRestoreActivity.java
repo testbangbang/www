@@ -21,6 +21,7 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.WifiConnectAction;
 import com.onyx.android.note.actions.manager.BackupDataAction;
+import com.onyx.android.note.actions.manager.BackupFileNameAction;
 import com.onyx.android.note.actions.manager.DownloadFileAction;
 import com.onyx.android.note.actions.manager.GetBackupDataAction;
 import com.onyx.android.note.actions.manager.LoadLocalBackupFileAction;
@@ -84,7 +85,7 @@ public class BackupRestoreActivity extends AppCompatActivity{
         findViewById(R.id.local_backup).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                backup(false);
+                prepareBackupFileName(false);
             }
         });
         findViewById(R.id.cloud_backup).setOnClickListener(new View.OnClickListener() {
@@ -133,8 +134,8 @@ public class BackupRestoreActivity extends AppCompatActivity{
         });
     }
 
-    private void backup(final boolean cloudBackup) {
-        new BackupDataAction<BackupRestoreActivity>(cloudBackup, generateBackupFileName(cloudBackup)).execute(this, new BaseCallback() {
+    private void backup(final String fileName, final boolean cloudBackup) {
+        new BackupDataAction<BackupRestoreActivity>(cloudBackup, fileName).execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 String message = e == null ? getString(R.string.backup_success) : e.getMessage();
@@ -152,11 +153,11 @@ public class BackupRestoreActivity extends AppCompatActivity{
             new WifiConnectAction<>(6000, 1000, getString(R.string.wifi_connecting), true).execute(this, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
-                    backup(true);
+                    prepareBackupFileName(true);
                 }
             });
         }else {
-            backup(true);
+            prepareBackupFileName(true);
         }
     }
 
@@ -300,31 +301,13 @@ public class BackupRestoreActivity extends AppCompatActivity{
         }
     }
 
-    private String generateBackupFileName(boolean cloudBackup) {
-        int size = cloudBackup ? cloudFiles.size() : localFiles.size();
-        size++;
-        List<FileInfo> files = cloudBackup ? cloudFiles : localFiles;
-        String filePrefix = cloudBackup ? getString(R.string.cloud_note) : getString(R.string.note);
-        String fileName = filePrefix;
-        for (int i = 0; i < size; i++) {
-            String name = filePrefix;
-            if (i > 0) {
-                name += i;
+    private void prepareBackupFileName(final boolean cloudBackup) {
+        final BackupFileNameAction action = new BackupFileNameAction(cloudFiles, localFiles, cloudBackup);
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                backup(action.getFileName(), cloudBackup);
             }
-            if (!findFileNameFromList(name, files)) {
-                fileName = name;
-                break;
-            }
-        }
-        return fileName;
-    }
-
-    private boolean findFileNameFromList(final String fileName, List<FileInfo> files) {
-        for (FileInfo file : files) {
-            if (file.getBaseName().equals(fileName)) {
-                return true;
-            }
-        }
-        return false;
+        });
     }
 }
