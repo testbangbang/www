@@ -32,7 +32,7 @@ public class BackupFileNameAction <T extends Activity> extends BaseNoteAction<T>
     }
 
     @Override
-    public void execute(T activity, BaseCallback callback) {
+    public void execute(T activity, final BaseCallback callback) {
         List<FileInfo> files = cloudBackup ? cloudFiles : localFiles;
         String filePrefix = cloudBackup ? activity.getString(R.string.cloud_note) : activity.getString(R.string.note);
         List<String> fileNames = new ArrayList<>();
@@ -44,6 +44,7 @@ public class BackupFileNameAction <T extends Activity> extends BaseNoteAction<T>
             @Override
             public void done(BaseRequest request, Throwable e) {
                 fileName = nameRequest.getFileName();
+                BaseCallback.invoke(callback, request, e);
             }
         });
     }
