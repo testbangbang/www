@@ -519,12 +519,13 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             openDocWithTab(pathToContinueOpenAfterRotation);
             pathToContinueOpenAfterRotation = null;
         } else if (tabManager.getOpenedTabs().size() > 0) {
+            ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
             if (isSideReading) {
                 bringReaderTabToFront(getSideReadingLeft());
                 bringReaderTabToFront(getSideReadingRight());
-            } else {
-                bringReaderTabToFront(getCurrentTabInHost());
             }
+
+            bringReaderTabToFront(currentTab);
         }
     }
 
