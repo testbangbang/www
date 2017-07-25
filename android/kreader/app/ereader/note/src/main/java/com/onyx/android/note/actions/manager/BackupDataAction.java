@@ -127,7 +127,7 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
     }
 
     private CloudManager getCloudManager() {
-        return NoteApplication.getInstance().getCloudManager();
+        return NoteApplication.getInstance().getCloudManager().useBackupCloudConf();
     }
 
     private void upload(final Context context,

@@ -24,6 +24,9 @@ public class Constant {
     public static final String ONYX_HOST_BASE = "http://oa.o-in.me:9058";
     public static final String ONYX_API_BASE = "http://oa.o-in.me:9058/api/";
 
+    public static final String ONYX_BACKUP_HOST_BASE = "http://47.90.54.36:8001";
+    public static final String ONYX_BACKUP_API_BASE = "http://47.90.54.36:8001/api/";
+
     public static final String CLOUD_MAIN_INDEX_SERVER_HOST = "http://119.23.143.188/";
     public static final String CLOUD_MAIN_INDEX_SERVER_API = "http://119.23.143.188/api/";
 

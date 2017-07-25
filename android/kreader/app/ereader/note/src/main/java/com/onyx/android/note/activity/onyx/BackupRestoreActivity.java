@@ -176,7 +176,7 @@ public class BackupRestoreActivity extends AppCompatActivity{
 
     private void download(final String filePath, final String fileName) {
         final String savePath = getDir(Constant.CLOUD_BACKUP_FILE_SAVE_FOLDER, Context.MODE_PRIVATE).getAbsolutePath() + "/" + fileName;
-        String fileUrl = getCloudManager().getCloudConf().getHostBase() + "/" + filePath;
+        String fileUrl = Constant.ONYX_BACKUP_HOST_BASE + "/" + filePath;
         new DownloadFileAction<>(fileUrl, savePath).execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
