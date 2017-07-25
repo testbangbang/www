@@ -55,7 +55,7 @@ public class TabMenuAdapter extends PageRecyclerView.PageAdapter<TabMenuAdapter.
     @Override
     public void onPageBindViewHolder(ViewHolder holder, int position) {
         MenuBean menuData = menuDataList.get(position);
-        setImage(menuData,holder.tabMenuIcon);
+        setImage(menuData, holder.tabMenuIcon);
         holder.tabMenuTitle.setText(menuData.getTabName());
         holder.rootView.setTag(position);
         holder.rootView.setOnClickListener(this);
@@ -64,9 +64,9 @@ public class TabMenuAdapter extends PageRecyclerView.PageAdapter<TabMenuAdapter.
     private void setImage(MenuBean menuData, ImageView tabMenuIcon) {
         if (menuData.getImageResources() != 0) {
             tabMenuIcon.setImageResource(menuData.getImageResources());
-        }else if (StringUtils.isNotBlank(menuData.getImageUrl())){
+        } else if (StringUtils.isNotBlank(menuData.getImageUrl())) {
             Glide.with(DRApplication.getInstance()).load(menuData.getImageUrl()).into(tabMenuIcon);
-        }else {
+        } else {
             tabMenuIcon.setImageResource(R.drawable.ic_books);
         }
     }

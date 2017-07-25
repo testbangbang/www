@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_grid_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:padding="@dimen/dialog_quick_preview_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/prev_page"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dialog_quick_preview_seek_text_padding"
+                    android:text="@string/prev_page"
+                    android:textSize="@dimen/level_one_heading_font" />
+
+                <SeekBar
+                    android:id="@+id/seek_bar_page"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dialog_quick_preview_seek_bar_height"
+                    android:layout_marginTop="@dimen/dialog_quick_preview_seek_bar_margin"
+                    android:layout_weight="1"
+                    android:background="@drawable/focused_bg"
+                    android:max="20"
+                    android:progressDrawable="@drawable/seek_bar_progress"
+                    android:thumb="@drawable/seek_bar_thumb" />
+
+                <TextView
+                    android:id="@+id/next_page"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dialog_quick_preview_seek_text_padding"
+                    android:text="@string/next_page"
+                    android:textSize="@dimen/level_one_heading_font" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/square_bg"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image_view_one_grids"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/quick_view_item_bg"
+                android:focusable="true"
+                android:src="@drawable/ic_dialog_reader_page_one_black_focused" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/black" />
+
+            <ImageView
+                android:id="@+id/image_view_four_grids"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/quick_view_item_bg"
+                android:focusable="true"
+                android:src="@drawable/ic_dialog_reader_page_four_white_focused" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/black" />
+
+            <ImageView
+                android:id="@+id/image_view_nine_grids"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/quick_view_item_bg"
+                android:focusable="true"
+                android:src="@drawable/ic_dialog_reader_page_nine_white_focused" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_divider"
+        style="@style/single_line_X_axis_View"
+        android:layout_height="@dimen/dialog_reader_menu_top_divider_height"
+        android:layout_above="@id/layout_grid_indicator" />
+
+    <LinearLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+        <include layout="@layout/title_bar" />
+    </LinearLayout>
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/grid_view_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_grid_indicator"
+        android:layout_marginBottom="@dimen/grid_view_preview_margin_bottom"
+        android:layout_marginTop="@dimen/grid_view_preview_margin_top"
+        android:focusable="false" />
+
+</RelativeLayout>

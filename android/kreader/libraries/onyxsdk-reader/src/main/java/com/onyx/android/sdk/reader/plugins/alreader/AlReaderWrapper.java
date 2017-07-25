@@ -271,6 +271,8 @@ public class AlReaderWrapper {
         AlBitmap bmp = EngBitmap.createBookBitmap(bitmap);
         engineOptions.externalBitmap = bmp;
         bookEng.getPageBitmap(EngBookMyType.TAL_PAGE_INDEX.CURR, width, height);
+        engineOptions.externalBitmap.release();
+        engineOptions.externalBitmap = null;
         benchmark.report("getPageBitmap");
 
         resetScreenState();

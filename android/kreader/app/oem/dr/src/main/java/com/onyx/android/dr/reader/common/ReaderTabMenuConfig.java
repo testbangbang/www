@@ -23,13 +23,13 @@ public class ReaderTabMenuConfig {
     private static List<ReaderMenuBean> defaultReaderMenus = new ArrayList<>();
 
     static {
-        ReaderMenuBean readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_POSTIL, DRApplication.getInstance().getString(R.string.postil), R.drawable.ic_annotation, new ReaderPostilMenuEvent());
+        ReaderMenuBean readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_POSTIL, DRApplication.getInstance().getString(R.string.postil), R.drawable.ic_postil, new ReaderPostilMenuEvent());
         defaultReaderMenus.add(readerMenuBean);
 
-        readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_MARK, DRApplication.getInstance().getString(R.string.annotation), R.drawable.ic_annotation, new ReaderAnnotationMenuEvent());
+        readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_MARK, DRApplication.getInstance().getString(R.string.annotation), R.drawable.ic_postil, new ReaderAnnotationMenuEvent());
         defaultReaderMenus.add(readerMenuBean);
 
-        readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_WORD_QUERY, DRApplication.getInstance().getString(R.string.word_query), R.drawable.ic_word_query, new ReaderWordQueryMenuEvent());
+        readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_WORD_QUERY, DRApplication.getInstance().getString(R.string.new_word_query), R.drawable.ic_word_query, new ReaderWordQueryMenuEvent());
         defaultReaderMenus.add(readerMenuBean);
 
         readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_GOOD_SENTENCE_EXTRACT, DRApplication.getInstance().getString(R.string.good_sentence_excerpt), R.drawable.ic_good_sentence, new ReaderGoodSentenceMenuEvent());

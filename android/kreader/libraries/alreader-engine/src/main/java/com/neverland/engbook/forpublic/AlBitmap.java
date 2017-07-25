@@ -17,4 +17,10 @@ public class AlBitmap {
 
 	public Bitmap				bmp = null;
 	public Canvas				canvas = null;
+
+	public void release() {
+		if (canvas != null) {
+			canvas.setBitmap(null);
+		}
+	}
 }

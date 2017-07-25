@@ -191,6 +191,14 @@
     <string name="total_strokes">total strokes:</string>
     <string name="listen_books">listen books</string>
     <string name="after_reading">after reading</string>
+    <string name="settings_regal_mode_key">regal mode</string>
+    <string name="dialog_quick_view_enter_page_number">Please enter page number</string>
+    <string name="dialog_quick_view_enter_page_number_out_of_range_error">Page number out of range error</string>
+    <string name="dialog_quick_view_enter_page_number_empty_error">Page number empty error</string>
+    <string name="first_chapter">Is already the first chapter</string>
+    <string name="last_chapter">Is already the last chapter</string>
+    <string name="prev_page">Prev</string>
+    <string name="next_page">Next</string>
     <string name="new_word_delete">delete</string>
     <string name="export">export</string>
     <string name="new_word_notebook_html">new word notebook form</string>

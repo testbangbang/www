@@ -191,6 +191,12 @@
     <string name="total_strokes">总笔画:</string>
     <string name="listen_books">听文章</string>
     <string name="after_reading">读后感</string>
+    <string name="dialog_quick_view_enter_page_number">请输入页码</string>
+    <string name="dialog_quick_view_enter_page_number_out_of_range_error">此页码超出范围</string>
+    <string name="dialog_quick_view_enter_page_number_empty_error">跳转页码不可为空</string>
+    <string name="last_chapter">已是尾章</string>
+    <string name="prev_page">上一页</string>
+    <string name="next_page">下一页</string>
     <string name="new_word_delete">删除</string>
     <string name="export">导出</string>
     <string name="new_word_notebook_html">生词本报表</string>

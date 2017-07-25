@@ -11,11 +11,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MotionEventCompat;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -23,11 +21,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.reader.action.ShowQuickPreviewAction;
 import com.onyx.android.dr.reader.base.ReaderView;
 import com.onyx.android.dr.reader.common.ReadPageInfo;
 import com.onyx.android.dr.reader.common.ReaderConstants;
@@ -48,6 +46,7 @@ import com.onyx.android.dr.reader.event.ReaderMainMenuTopSearchEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopShelfEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopUserEvent;
 import com.onyx.android.dr.reader.event.ReaderMenuMorePressEvent;
+import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.reader.event.ScreenshotsSucceedEvent;
 import com.onyx.android.dr.reader.handler.HandlerManger;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
@@ -92,6 +91,7 @@ public class ReaderActivity extends Activity implements ReaderView {
     private float mSecondaryLastY = -1;
     private CustomDialog dialog;
     private CustomFileObserver fileObserver;
+    private TextView bookName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,7 +99,18 @@ public class ReaderActivity extends Activity implements ReaderView {
         setContentView(R.layout.activity_reader);
         initThirdLibrary();
         initView();
+        initListener();
         initData();
+    }
+
+    private void initListener() {
+        readProgress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerPresenter.getPageInformation().setCurrentPage(ReadPageInfo.getCurrentPage(readerPresenter));
+                new ShowQuickPreviewAction(readerPresenter).execute(readerPresenter, null);
+            }
+        });
     }
 
     private boolean getBookInfo() {
@@ -136,6 +147,7 @@ public class ReaderActivity extends Activity implements ReaderView {
         progressLoading.setVisibility(View.VISIBLE);
         getReaderPresenter().openDocument();
         getReaderPresenter().setFluent(isFluent);
+        bookName.setText(getReaderPresenter().getBookInfo().getBookName());
     }
 
     private void clearCanvas(SurfaceHolder holder) {
@@ -156,6 +168,7 @@ public class ReaderActivity extends Activity implements ReaderView {
 
     private void initView() {
         readProgress = (TextView) findViewById(R.id.text_view_progress);
+        bookName = (TextView) findViewById(R.id.text_view_book_name);
         progressLoading = (BookProgressbar) findViewById(R.id.progress_bar);
         initSurfaceView();
         EventBus.getDefault().post(new DisplayStatusBarEvent(true));
@@ -338,6 +351,12 @@ public class ReaderActivity extends Activity implements ReaderView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDisplayStatusBarEvent(DisplayStatusBarEvent event) {
         DeviceUtils.setFullScreenOnResume(this, event.isDisplay());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRedrawPageEvent(RedrawPageEvent event) {
+        readerPresenter.getBookOperate().redrawPage();
+        readerPresenter.gotoPage(event.getPage());
     }
 
     @Override
