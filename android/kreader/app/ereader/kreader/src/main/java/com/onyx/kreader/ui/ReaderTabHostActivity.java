@@ -300,6 +300,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         bringReaderTabToFront(getSideReadingRight());
 
         findViewById(R.id.dash_line_splitter).setVisibility(View.VISIBLE);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     private void quitSideReadingMode() {
@@ -496,7 +498,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void onScreenOrientationChanged() {
         Debug.d(TAG, "onScreenOrientationChanged");
-        if (isSideReading) {
+        int current = DeviceUtils.getScreenOrientation(this);
+        if (isSideReading && (current == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ||
+                current == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT)) {
             quitSideReadingMode();
         }
 
