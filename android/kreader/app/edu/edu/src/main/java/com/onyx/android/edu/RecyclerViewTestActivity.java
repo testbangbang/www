@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.onyx.android.edu.base.BaseActivity;
+import com.onyx.android.sdk.ui.view.AdaptiveHeightPageAdapter;
+import com.onyx.android.sdk.ui.view.AdaptiveWidthPageAdapter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -25,8 +27,10 @@ public class RecyclerViewTestActivity extends BaseActivity {
 
     private static final String TAG = RecyclerViewTestActivity.class.getSimpleName();
 
-    @Bind(R.id.page_recycler_view)
-    PageRecyclerView pageRecyclerView;
+    @Bind(R.id.wrap_width_page)
+    PageRecyclerView wrapWidthPage;
+    @Bind(R.id.wrap_height_page)
+    PageRecyclerView wrapHeightPage;
     @Bind(R.id.test_button)
     Button testButton;
 
@@ -37,20 +41,26 @@ public class RecyclerViewTestActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        initWrapWidthPage();
+        initWrapHeightPage();
+    }
+
+    private void initWrapWidthPage() {
         final List<Integer> datas = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             datas.add(i);
         }
-        pageRecyclerView.setLayoutManager(new DisableScrollGridManager(this));
-        PageRecyclerView.PageAdapter adapter = new PageRecyclerView.PageAdapter() {
+
+        wrapWidthPage.setLayoutManager(new DisableScrollGridManager(this));
+        PageRecyclerView.PageAdapter adapter = new AdaptiveWidthPageAdapter() {
             @Override
             public int getRowCount() {
-                return 3;
+                return 1;
             }
 
             @Override
             public int getColumnCount() {
-                return 4;
+                return 6;
             }
 
             @Override
@@ -66,27 +76,45 @@ public class RecyclerViewTestActivity extends BaseActivity {
             @Override
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
                 ((ExerciseViewHolder) holder).title.setText(position + "");
-
-                if (pageRecyclerView.getCurrentFocusedPosition() == position) {
-                    ((ExerciseViewHolder) holder).title.setTextColor(getResources().getColor(R.color.white));
-                } else {
-                    ((ExerciseViewHolder) holder).title.setTextColor(getResources().getColor(R.color.black));
-                }
             }
         };
+        wrapWidthPage.setAdapter(adapter);
+    }
 
-        testButton.setOnClickListener(new View.OnClickListener() {
+    private void initWrapHeightPage() {
+        final List<Integer> datas = new ArrayList<>();
+        for (int i = 0; i < 23; i++) {
+            datas.add(i);
+        }
+
+        wrapHeightPage.setLayoutManager(new DisableScrollGridManager(this));
+        PageRecyclerView.PageAdapter adapter = new AdaptiveHeightPageAdapter() {
             @Override
-            public void onClick(View v) {
-                datas.clear();
-                for (int i = 0; i < 20; i++) {
-                    datas.add(i);
-                }
-                pageRecyclerView.notifyDataSetChanged();
+            public int getRowCount() {
+                return 10;
             }
-        });
-        pageRecyclerView.setAdapter(adapter);
 
+            @Override
+            public int getColumnCount() {
+                return 1;
+            }
+
+            @Override
+            public int getDataCount() {
+                return datas.size();
+            }
+
+            @Override
+            public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
+                return new ExerciseViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycler_warp_heigh_test, parent, false));
+            }
+
+            @Override
+            public void onPageBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+                ((ExerciseViewHolder) holder).title.setText(position + "");
+            }
+        };
+        wrapHeightPage.setAdapter(adapter);
     }
 
     @Override

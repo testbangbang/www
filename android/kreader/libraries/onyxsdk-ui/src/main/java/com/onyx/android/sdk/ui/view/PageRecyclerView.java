@@ -422,22 +422,33 @@ public class PageRecyclerView extends RecyclerView {
                     view.setVisibility(INVISIBLE);
                 }
 
-                int paddingBottom = pageRecyclerView.getOriginPaddingBottom();
-                int paddingTop = pageRecyclerView.getPaddingTop();
-                int parentHeight = pageRecyclerView.getMeasuredHeight() - paddingBottom - paddingTop - getRowCount() * pageRecyclerView.getItemDecorationHeight();
-                double itemHeight =  ((double)parentHeight) / getRowCount();
-                if (itemHeight > 0){
-                    int actualHeight = (int)Math.floor(itemHeight);
-                    int offset = parentHeight - actualHeight * getRowCount();
-                    view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, actualHeight));
-                    setOffsetPaddingBottom(offset);
-                }
+                adjustParentViewLayout(holder);
             }
         }
 
-        private void setOffsetPaddingBottom(int offset) {
+        protected void adjustParentViewLayout(final VH holder) {
+            final int paddingBottom = pageRecyclerView.getOriginPaddingBottom();
+            final int paddingTop = pageRecyclerView.getPaddingTop();
+            int parentHeight = pageRecyclerView.getMeasuredHeight() - paddingBottom - paddingTop - getRowCount() * pageRecyclerView.getItemDecorationHeight();
+            double itemHeight =  ((double)parentHeight) / getRowCount();
+            if (itemHeight > 0) {
+                int actualHeight = (int)Math.floor(itemHeight);
+                int deviation = parentHeight - actualHeight * getRowCount();
+                holder.itemView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, actualHeight));
+                setParentHeightDeviation(deviation);
+            }
+        }
+
+        /**
+         * For a fixed height layout, when the division of a single item when the height of the time,
+         * will lead to a certain error occurs, this function is to fill the error
+         *
+         * @param deviation deviation
+         * @return
+         */
+        private void setParentHeightDeviation(int deviation) {
             int bottom = pageRecyclerView.getPaddingBottom();
-            int offsetBottom = pageRecyclerView.getOriginPaddingBottom() + offset;
+            int offsetBottom = pageRecyclerView.getOriginPaddingBottom() + deviation;
             if (offsetBottom != bottom) {
                 pageRecyclerView.setOffsetPaddingBottom(offsetBottom);
             }
