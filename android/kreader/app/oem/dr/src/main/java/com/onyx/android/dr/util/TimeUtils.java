@@ -14,6 +14,7 @@ import java.util.Date;
 
 public class TimeUtils {
     public static final String DATA_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String HOUR_AND_MINUTE = "yyyy-MM-dd HH:mm";
     public static final String DATA_FORMAT = "yyyy-MM-dd";
     private static final int MILLISECOND = 1000;
     private static final int MINUTE_STEP = 60;
@@ -70,6 +71,23 @@ public class TimeUtils {
             exception.printStackTrace();
         }
         return 0;
+    }
+
+    public static boolean compareTime(String DATE1, String DATE2) {
+        String date = getDate(getCurrentTimeMillis());
+        DateFormat df = new SimpleDateFormat(HOUR_AND_MINUTE);
+        try {
+            Date dt1 = df.parse(date + " " + DATE1);
+            Date dt2 = df.parse(date + " " + DATE2);
+            if (dt1.getTime() < dt2.getTime()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return false;
     }
 
     public static int daysBetween(String date1, String date2) {

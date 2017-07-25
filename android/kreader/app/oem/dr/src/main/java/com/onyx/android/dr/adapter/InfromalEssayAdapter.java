@@ -6,12 +6,11 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.dr.data.database.InfromalEssayEntity;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -23,21 +22,12 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.ViewHolder> {
-    private List<NewWordNoteBookEntity> dataList;
-    private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
+public class InfromalEssayAdapter extends PageRecyclerView.PageAdapter<InfromalEssayAdapter.ViewHolder> {
+    private List<InfromalEssayEntity> dataList;
     private List<Boolean> listCheck;
     private OnItemClickListener onItemClickListener;
 
-    public interface OnRecyclerViewItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-    public void setOnItemClick(OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
-        this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
-    }
-
-    public void setDataList(List<NewWordNoteBookEntity> dataList, List<Boolean> listCheck) {
+    public void setDataList(List<InfromalEssayEntity> dataList, List<Boolean> listCheck) {
         this.dataList = dataList;
         this.listCheck = listCheck;
     }
@@ -59,20 +49,18 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
 
     @Override
     public ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_new_word, null);
+        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_infromal_essay, null);
         return new ViewHolder(inflate);
     }
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        NewWordNoteBookEntity bean = dataList.get(position);
+        InfromalEssayEntity bean = dataList.get(position);
         long currentTime = bean.currentTime;
-        holder.month.setText(TimeUtils.getCurrentMonth(currentTime));
-        holder.week.setText(TimeUtils.getWeekOfMonth(currentTime));
-        holder.day.setText(TimeUtils.getCurrentDay(currentTime));
-        holder.content.setText(bean.newWord);
-        holder.readingMatter.setText(bean.readingMatter);
-        holder.dictionaryLookup.setText(bean.dictionaryLookup);
+        holder.content.setText(bean.content);
+        holder.time.setText(TimeUtils.getDate(currentTime));
+        holder.title.setText(bean.title);
+        holder.wordNumber.setText(bean.wordNumber);
 
         holder.checkBox.setChecked(listCheck.get(position));
         holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -109,22 +97,16 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.new_word_item_check)
+        @Bind(R.id.infromal_essay_item_check)
         CheckBox checkBox;
-        @Bind(R.id.new_word_item_month)
-        TextView month;
-        @Bind(R.id.new_word_item_week)
-        TextView week;
-        @Bind(R.id.new_word_item_day)
-        TextView day;
-        @Bind(R.id.new_word_item_content)
+        @Bind(R.id.infromal_essay_item_content)
         TextView content;
-        @Bind(R.id.new_word_item_reading_matter)
-        TextView readingMatter;
-        @Bind(R.id.new_word_item_dictionaryLookup)
-        TextView dictionaryLookup;
-        @Bind(R.id.item_new_word_linearlayout)
-        LinearLayout itemLinearLayout;
+        @Bind(R.id.infromal_essay_item_time)
+        TextView time;
+        @Bind(R.id.infromal_essay_item_title)
+        TextView title;
+        @Bind(R.id.infromal_essay_item_word_number)
+        TextView wordNumber;
         View rootView;
 
         ViewHolder(View view) {

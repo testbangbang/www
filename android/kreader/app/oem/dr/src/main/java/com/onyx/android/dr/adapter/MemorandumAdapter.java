@@ -6,12 +6,11 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -23,21 +22,12 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.ViewHolder> {
-    private List<NewWordNoteBookEntity> dataList;
-    private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
+public class MemorandumAdapter extends PageRecyclerView.PageAdapter<MemorandumAdapter.ViewHolder> {
+    private List<MemorandumEntity> dataList;
     private List<Boolean> listCheck;
     private OnItemClickListener onItemClickListener;
 
-    public interface OnRecyclerViewItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-    public void setOnItemClick(OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
-        this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
-    }
-
-    public void setDataList(List<NewWordNoteBookEntity> dataList, List<Boolean> listCheck) {
+    public void setDataList(List<MemorandumEntity> dataList, List<Boolean> listCheck) {
         this.dataList = dataList;
         this.listCheck = listCheck;
     }
@@ -59,20 +49,17 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
 
     @Override
     public ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_new_word, null);
+        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_memorandum, null);
         return new ViewHolder(inflate);
     }
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        NewWordNoteBookEntity bean = dataList.get(position);
+        MemorandumEntity bean = dataList.get(position);
         long currentTime = bean.currentTime;
-        holder.month.setText(TimeUtils.getCurrentMonth(currentTime));
-        holder.week.setText(TimeUtils.getWeekOfMonth(currentTime));
-        holder.day.setText(TimeUtils.getCurrentDay(currentTime));
-        holder.content.setText(bean.newWord);
-        holder.readingMatter.setText(bean.readingMatter);
-        holder.dictionaryLookup.setText(bean.dictionaryLookup);
+        holder.matter.setText(bean.matter);
+        holder.time.setText(TimeUtils.getDate(currentTime));
+        holder.timeQuantum.setText(bean.timeQuantum);
 
         holder.checkBox.setChecked(listCheck.get(position));
         holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -109,22 +96,14 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.new_word_item_check)
+        @Bind(R.id.memorandum_item_check)
         CheckBox checkBox;
-        @Bind(R.id.new_word_item_month)
-        TextView month;
-        @Bind(R.id.new_word_item_week)
-        TextView week;
-        @Bind(R.id.new_word_item_day)
-        TextView day;
-        @Bind(R.id.new_word_item_content)
-        TextView content;
-        @Bind(R.id.new_word_item_reading_matter)
-        TextView readingMatter;
-        @Bind(R.id.new_word_item_dictionaryLookup)
-        TextView dictionaryLookup;
-        @Bind(R.id.item_new_word_linearlayout)
-        LinearLayout itemLinearLayout;
+        @Bind(R.id.memorandum_item_matter)
+        TextView matter;
+        @Bind(R.id.memorandum_item_time_time)
+        TextView time;
+        @Bind(R.id.memorandum_item_time_quantum)
+        TextView timeQuantum;
         View rootView;
 
         ViewHolder(View view) {

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:id="@+id/memorandum_activity_buttom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/memorandum_activity_delete"
+            style="@style/new_word_notebook_textview_style"
+            android:layout_alignParentRight="true"
+            android:text="@string/new_word_delete" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_new"
+            style="@style/new_word_notebook_textview_style"
+            android:layout_toLeftOf="@+id/memorandum_activity_delete"
+            android:text="@string/infromal_essay_activity_new" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/memorandum_activity_buttom"
+        android:layout_below="@id/title_bar"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_weight="1"
+                android:text="@string/good_sentence_activity_check_all" />
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="2"
+                android:text="@string/memorandum_activity_time" />
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="2"
+                android:text="@string/memorandum_activity_time_quantum" />
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="4"
+                android:text="@string/memorandum_activity_matter" />
+        </LinearLayout>
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/memorandum_activity_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</RelativeLayout>

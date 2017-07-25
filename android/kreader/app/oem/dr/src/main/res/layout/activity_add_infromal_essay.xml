@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/title_margin_left"
+            android:text="@string/title"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <EditText
+            android:id="@+id/add_infromal_essay_activity_title"
+            style="@style/dict_query_edittext_second"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/title"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <TextView
+            android:id="@+id/add_infromal_essay_activity_file"
+            style="@style/new_word_notebook_textview_style"
+            android:layout_alignParentRight="true"
+            android:text="@string/add_infromal_essay_activity_file" />
+
+    </RelativeLayout>
+
+    <View style="@style/firstViewStyle" />
+
+    <com.onyx.android.dr.view.DefaultEditText
+        android:id="@+id/add_infromal_essay_activity_content"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/add_infromal_essay_activity_content_height"
+        android:layout_margin="@dimen/add_infromal_essay_activity_content_margin"
+        android:background="@drawable/weixuanzhong_btn"
+        android:enabled="true"
+        android:gravity="top"
+        android:hint="@string/input_infromal_essay"
+        android:padding="@dimen/add_infromal_essay_activity_content_padding"
+        android:inputType="textMultiLine"
+        android:maxLines="6"
+        android:minLines="4"
+        android:scrollbars="vertical"
+        android:textSize="@dimen/level_two_heading_font"/>
+
+</LinearLayout>

@@ -7,14 +7,7 @@
 
     <CheckBox
         android:id="@+id/new_word_item_check"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:drawablePadding="5dp"
-        android:layout_weight="1"
-        android:padding="5dp"
-        android:gravity="center"
-        android:button="@null"
-        android:drawableLeft="@drawable/check_box_style"/>
+        style="@style/checkbox_style"/>
 
     <View style="@style/good_sentence_item_view" />
 

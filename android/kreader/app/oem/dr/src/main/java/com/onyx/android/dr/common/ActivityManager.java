@@ -3,17 +3,21 @@ package com.onyx.android.dr.common;
 import android.content.Context;
 import android.content.Intent;
 
+import com.onyx.android.dr.activity.AddInfromalEssayActivity;
+import com.onyx.android.dr.activity.AddMemorandumActivity;
+import com.onyx.android.dr.activity.ApplicationsActivity;
 import com.onyx.android.dr.activity.DictQueryActivity;
 import com.onyx.android.dr.activity.DictResultShowActivity;
 import com.onyx.android.dr.activity.GoodSentenceNotebookActivity;
 import com.onyx.android.dr.activity.GoodSentenceTypeActivity;
+import com.onyx.android.dr.activity.InfromalEssayActivity;
 import com.onyx.android.dr.activity.LoginActivity;
+import com.onyx.android.dr.activity.MemorandumActivity;
 import com.onyx.android.dr.activity.MyNotesActivity;
 import com.onyx.android.dr.activity.NewWordNotebookActivity;
 import com.onyx.android.dr.activity.NewWordQueryActivity;
 import com.onyx.android.dr.activity.NewWordTypeActivity;
 import com.onyx.android.dr.activity.QueryRecordActivity;
-import com.onyx.android.dr.activity.ApplicationsActivity;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -23,7 +27,7 @@ import com.onyx.android.sdk.data.model.Metadata;
  */
 
 public class ActivityManager {
-    public static void startLoginActivity(Context context){
+    public static void startLoginActivity(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);
     }
@@ -34,6 +38,7 @@ public class ActivityManager {
         intent.setClass(context, DictQueryActivity.class);
         context.startActivity(intent);
     }
+
     public static void startDictResultShowActivity(Context context, String editQuery) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -92,7 +97,35 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void openBook(Context context, Metadata metadata,String localPath){
+    public static void startInfromalEssayActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, InfromalEssayActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startAddInfromalEssayActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, AddInfromalEssayActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startMemorandumActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, MemorandumActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startAddMemorandumActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, AddMemorandumActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void openBook(Context context, Metadata metadata, String localPath) {
         OpenBookParam openBookParam = new OpenBookParam();
         openBookParam.setBookName(metadata.getName());
         openBookParam.setLocalPath(localPath);

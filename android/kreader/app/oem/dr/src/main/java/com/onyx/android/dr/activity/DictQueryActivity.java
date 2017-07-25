@@ -170,6 +170,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         switch (view.getId()) {
             case R.id.image_view_back:
                 finish();
+                break;
             case R.id.activity_word_query_search:
                 startDictResultShowActivity(wordQuery);
                 break;

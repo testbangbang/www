@@ -9,20 +9,14 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.NewWordAdapter;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
-import com.onyx.android.dr.event.EnglishGoodSentenceEvent;
 import com.onyx.android.dr.interfaces.NewWordView;
 import com.onyx.android.dr.presenter.NewWordPresenter;
 import com.onyx.android.dr.util.ExportToHtmlUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -48,7 +42,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     private NewWordAdapter newWordAdapter;
     private NewWordPresenter newWordPresenter;
     private List<NewWordNoteBookEntity> newWordList;
-    private HashMap<Integer, Boolean> isSelectedMap;
+    private ArrayList<Boolean> listCheck;
 
     @Override
     protected Integer getLayoutId() {
@@ -77,8 +71,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         newWordPresenter = new NewWordPresenter(getApplicationContext(), this);
         newWordPresenter.getAllNewWordData();
         newWordList = new ArrayList<NewWordNoteBookEntity>();
-        isSelectedMap = new HashMap<Integer, Boolean>();
-
+        listCheck = new ArrayList<>();
         initSpinnerDatas();
         initEvent();
     }
@@ -102,17 +95,29 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
 
     @Override
     public void setNewWordData(List<NewWordNoteBookEntity> dataList) {
+        if (dataList == null || dataList.size() <= 0) {
+            return;
+        }
         newWordList = dataList;
-        newWordAdapter.setDataList(newWordList, isSelectedMap);
+        for (int i = 0; i < newWordList.size(); i++) {
+            listCheck.add(false);
+        }
+        newWordAdapter.setDataList(newWordList, listCheck);
         goodSentenceRecyclerView.setAdapter(newWordAdapter);
     }
 
     public void initEvent() {
-    }
+        newWordAdapter.setOnItemListener(new NewWordAdapter.OnItemClickListener() {
+            @Override
+            public void setOnItemClick(int position, boolean isCheck) {
+                listCheck.set(position, isCheck);
+            }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEnglishGoodSentenceEvent(EnglishGoodSentenceEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
+            @Override
+            public void setOnItemCheckedChanged(int position, boolean isCheck) {
+                listCheck.set(position, isCheck);
+            }
+        });
     }
 
     @OnClick({R.id.new_word_activity_delete,
@@ -122,6 +127,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         switch (view.getId()) {
             case R.id.image_view_back:
                 finish();
+                break;
             case R.id.new_word_activity_delete:
                 remoteAdapterDatas();
                 break;
@@ -132,13 +138,16 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     }
 
     public void remoteAdapterDatas() {
-        isSelectedMap = newWordAdapter.getIsSelected();
-        for (int i = 0; i < isSelectedMap.size(); i++) {
-            if (isSelectedMap.get(i).equals(true)) {
+        int length = listCheck.size();
+        for (int i = length - 1; i >= 0; i--) {
+            if (listCheck.get(i)) {
+                //delete basedata data
+                NewWordNoteBookEntity newWordNoteBookEntity = newWordList.get(i);
+                newWordPresenter.deleteNewWord(newWordNoteBookEntity.currentTime);
                 newWordList.remove(i);
-                isSelectedMap.put(i, false);
-                isSelectedMap.remove(isSelectedMap.size() - 1);
+                listCheck.remove(i);
                 newWordAdapter.notifyItemRemoved(i);
+                newWordAdapter.notifyItemRangeChanged(0, newWordList.size());
             }
         }
     }
@@ -162,8 +171,5 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (NewWordAdapter.isSelected != null) {
-            NewWordAdapter.isSelected.clear();
-        }
     }
 }

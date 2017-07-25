@@ -1,7 +1,7 @@
 package com.onyx.android.dr.request.local;
 
-import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
-import com.onyx.android.dr.data.database.NewWordNoteBookEntity_Table;
+import com.onyx.android.dr.data.database.MemorandumEntity;
+import com.onyx.android.dr.data.database.MemorandumEntity_Table;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Delete;
@@ -9,14 +9,14 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 /**
  * Created by zhouzhiming on 2017/7/5.
  */
-public class NewWordDelete extends BaseDataRequest {
+public class MemorandumDelete extends BaseDataRequest {
     private boolean deletePart = false;
     private long currentTime;
 
-    public NewWordDelete() {
+    public MemorandumDelete() {
     }
 
-    public NewWordDelete(long time, boolean deletePart) {
+    public MemorandumDelete(long time, boolean deletePart) {
         this.currentTime = time;
         this.deletePart = deletePart;
     }
@@ -26,15 +26,15 @@ public class NewWordDelete extends BaseDataRequest {
         if (deletePart){
             deleteByTime(currentTime);
         }else{
-            clearAllNewWord();
+            clearAllData();
         }
     }
 
-    private void clearAllNewWord() {
-        new Delete().from(NewWordNoteBookEntity.class).queryList();
+    private void clearAllData() {
+        new Delete().from(MemorandumEntity.class).queryList();
     }
 
     private void deleteByTime(long time) {
-        new Delete().from(NewWordNoteBookEntity.class).where(NewWordNoteBookEntity_Table.currentTime.eq(time)).execute();
+        new Delete().from(MemorandumEntity.class).where(MemorandumEntity_Table.currentTime.eq(time)).execute();
     }
 }

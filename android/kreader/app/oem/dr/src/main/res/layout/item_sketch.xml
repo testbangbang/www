@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_infromal_essay_linearlayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/item_sketch_picture"
+        android:layout_width="@dimen/item_sketch_photo_width"
+        android:layout_height="@dimen/item_sketch_photo_height"
+        android:background="@drawable/book_cover" />
+
+    <TextView
+        android:id="@+id/item_sketch_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="2017/08/12  12:20"
+        android:textSize="@dimen/level_three_font_size" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/item_sketch_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="标题"
+            android:textSize="@dimen/level_one_font_size" />
+
+        <CheckBox
+            android:id="@+id/item_sketch_title_checkbox"
+            style="@style/checkbox_style" />
+
+    </LinearLayout>
+</LinearLayout>

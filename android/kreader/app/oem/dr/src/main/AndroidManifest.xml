@@ -61,6 +61,7 @@
         <activity
             android:name=".activity.ApplicationsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name=".activity.DictQueryActivity"
             android:screenOrientation="portrait"
@@ -68,7 +69,8 @@
 
         <activity
             android:name=".activity.DictResultShowActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
             android:name=".activity.MyNotesActivity"
@@ -96,6 +98,22 @@
 
         <activity
             android:name=".activity.NewWordQueryActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.InfromalEssayActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.AddInfromalEssayActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.MemorandumActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.AddMemorandumActivity"
             android:screenOrientation="portrait" />
 
         <provider

@@ -6,12 +6,12 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.dr.data.database.InfromalEssayEntity;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -21,35 +21,26 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by zhouzhiming on 17-7-11.
+ * Created by zhouzhiming on 2017/7/24.
  */
-public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.ViewHolder> {
-    private List<NewWordNoteBookEntity> dataList;
-    private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
+public class SketchAdapter extends PageRecyclerView.PageAdapter<SketchAdapter.ViewHolder> {
+    private List<InfromalEssayEntity> dataList;
     private List<Boolean> listCheck;
     private OnItemClickListener onItemClickListener;
 
-    public interface OnRecyclerViewItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-    public void setOnItemClick(OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
-        this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
-    }
-
-    public void setDataList(List<NewWordNoteBookEntity> dataList, List<Boolean> listCheck) {
+    public void setDataList(List<InfromalEssayEntity> dataList, List<Boolean> listCheck) {
         this.dataList = dataList;
         this.listCheck = listCheck;
     }
 
     @Override
     public int getRowCount() {
-        return DRApplication.getInstance().getResources().getInteger(R.integer.good_sentence_notebook_row);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.sketch_tab_row);
     }
 
     @Override
     public int getColumnCount() {
-        return DRApplication.getInstance().getResources().getInteger(R.integer.good_sentence_tab_column);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.sketch_tab_column);
     }
 
     @Override
@@ -59,20 +50,16 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
 
     @Override
     public ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_new_word, null);
+        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_infromal_essay, null);
         return new ViewHolder(inflate);
     }
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        NewWordNoteBookEntity bean = dataList.get(position);
+        InfromalEssayEntity bean = dataList.get(position);
         long currentTime = bean.currentTime;
-        holder.month.setText(TimeUtils.getCurrentMonth(currentTime));
-        holder.week.setText(TimeUtils.getWeekOfMonth(currentTime));
-        holder.day.setText(TimeUtils.getCurrentDay(currentTime));
-        holder.content.setText(bean.newWord);
-        holder.readingMatter.setText(bean.readingMatter);
-        holder.dictionaryLookup.setText(bean.dictionaryLookup);
+        holder.time.setText(TimeUtils.getDate(currentTime));
+        holder.title.setText(bean.title);
 
         holder.checkBox.setChecked(listCheck.get(position));
         holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -109,22 +96,14 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.new_word_item_check)
+        @Bind(R.id.item_sketch_title_checkbox)
         CheckBox checkBox;
-        @Bind(R.id.new_word_item_month)
-        TextView month;
-        @Bind(R.id.new_word_item_week)
-        TextView week;
-        @Bind(R.id.new_word_item_day)
-        TextView day;
-        @Bind(R.id.new_word_item_content)
-        TextView content;
-        @Bind(R.id.new_word_item_reading_matter)
-        TextView readingMatter;
-        @Bind(R.id.new_word_item_dictionaryLookup)
-        TextView dictionaryLookup;
-        @Bind(R.id.item_new_word_linearlayout)
-        LinearLayout itemLinearLayout;
+        @Bind(R.id.item_sketch_picture)
+        ImageView picture;
+        @Bind(R.id.item_sketch_time)
+        TextView time;
+        @Bind(R.id.item_sketch_title)
+        TextView title;
         View rootView;
 
         ViewHolder(View view) {
