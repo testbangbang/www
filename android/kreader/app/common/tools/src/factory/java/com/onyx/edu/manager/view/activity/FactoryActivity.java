@@ -422,7 +422,7 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
 
     private void exportDbFileToSdCard(String exportFilePath) {
         String currentDBPath = getContentDatabaseFile().getAbsolutePath();
-        TransferDBRequest restoreDBRequest = new TransferDBRequest(currentDBPath, exportFilePath, false, false, null);
+        TransferDBRequest restoreDBRequest = new TransferDBRequest(currentDBPath, exportFilePath, false, false, null, null);
         getDataManager().submit(this, restoreDBRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
