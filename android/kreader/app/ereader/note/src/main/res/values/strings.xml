@@ -79,4 +79,6 @@
     <string name="downloading">downloading....</string>
     <string name="uploading">uploading....</string>
     <string name="wifi_connecting">Wifi Connecting....</string>
+    <string name="note">Note</string>
+    <string name="cloud_note">Cloud Note</string>
 </resources>

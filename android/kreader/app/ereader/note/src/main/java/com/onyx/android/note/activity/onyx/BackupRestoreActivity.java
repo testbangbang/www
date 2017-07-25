@@ -42,6 +42,7 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 
@@ -109,6 +110,7 @@ public class BackupRestoreActivity extends AppCompatActivity{
                 final FileInfo fileInfo = mergeFiles.get(position);
                 viewHolder.setText(R.id.name, FileUtils.getBaseName(fileInfo.getName()));
                 viewHolder.setText(R.id.size, FileUtils.getFileSize(fileInfo.getSize()));
+                viewHolder.setText(R.id.time, DateTimeUtil.formatDate(new Date(fileInfo.getLastModified()), DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMMSS));
                 viewHolder.setImageResource(R.id.restore, fileInfo.isLocal() ? R.drawable.local_backup_restore : R.drawable.cloud_backup_restore);
                 viewHolder.getView(R.id.restore).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -132,7 +134,7 @@ public class BackupRestoreActivity extends AppCompatActivity{
     }
 
     private void backup(final boolean cloudBackup) {
-        new BackupDataAction<BackupRestoreActivity>(cloudBackup).execute(this, new BaseCallback() {
+        new BackupDataAction<BackupRestoreActivity>(cloudBackup, generateBackupFileName(cloudBackup)).execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 String message = e == null ? getString(R.string.backup_success) : e.getMessage();
@@ -296,5 +298,33 @@ public class BackupRestoreActivity extends AppCompatActivity{
                 }
             }, null).show();
         }
+    }
+
+    private String generateBackupFileName(boolean cloudBackup) {
+        int size = cloudBackup ? cloudFiles.size() : localFiles.size();
+        size++;
+        List<FileInfo> files = cloudBackup ? cloudFiles : localFiles;
+        String filePrefix = cloudBackup ? getString(R.string.cloud_note) : getString(R.string.note);
+        String fileName = filePrefix;
+        for (int i = 0; i < size; i++) {
+            String name = filePrefix;
+            if (i > 0) {
+                name += i;
+            }
+            if (!findFileNameFromList(name, files)) {
+                fileName = name;
+                break;
+            }
+        }
+        return fileName;
+    }
+
+    private boolean findFileNameFromList(final String fileName, List<FileInfo> files) {
+        for (FileInfo file : files) {
+            if (file.getBaseName().equals(fileName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

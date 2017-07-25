@@ -37,9 +37,11 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
 
     private DialogProgress dialogProgress;
     private boolean cloudBackup = false;
+    private String fileName;
 
-    public BackupDataAction(boolean cloudBackup) {
+    public BackupDataAction(boolean cloudBackup, String fileName) {
         this.cloudBackup = cloudBackup;
+        this.fileName = fileName;
     }
 
     @Override
@@ -63,15 +65,14 @@ public class BackupDataAction<T extends Activity> extends BaseNoteAction<T> {
     }
 
     private void showTitleDialog(final Context context, final BaseCallback callback) {
-        final String title = DateTimeUtil.formatDate(new Date(), DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMMSS_FOR_FILE_NAME);
         OnyxCustomDialog.getInputDialog(context, context.getString(R.string.backup_file_name), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 OnyxCustomDialog customDialog = (OnyxCustomDialog)dialog;
                 String input = customDialog.getInputValue().toString();
-                backup(context, StringUtils.isNullOrEmpty(input) ? title : input, callback);
+                backup(context, StringUtils.isNullOrEmpty(input) ? fileName : input, callback);
             }
-        }).setInputHintText(title).show();
+        }).setInputHintText(fileName).show();
     }
 
     private void showDialogProgress(final Context context) {
