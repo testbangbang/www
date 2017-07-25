@@ -22,6 +22,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
@@ -64,7 +65,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private ReaderTabManager tabManager = ReaderTabManager.create();
     private TabHost tabHost;
     private TabWidget tabWidget;
-    private LinearLayout layoutMenu;
+    private RelativeLayout layoutMenu;
     private ImageView btnMenu;
     private ImageView btnSwitch;
     private String pathToContinueOpenAfterRotation;
@@ -177,7 +178,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private void initTabHost() {
         tabWidget = (TabWidget) findViewById(android.R.id.tabs);
 
-        layoutMenu = (LinearLayout) findViewById(R.id.layout_menu);
+        layoutMenu = (RelativeLayout) findViewById(R.id.layout_menu);
         btnMenu = (ImageView) findViewById(R.id.btn_menu);
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -306,7 +307,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         findViewById(R.id.dash_line_splitter).setVisibility(View.VISIBLE);
         findViewById(R.id.btn_switch).setVisibility(View.GONE);
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
     }
 
     private void quitSideReadingMode() {
