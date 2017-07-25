@@ -289,6 +289,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void startSideReadingMode(ReaderTabManager.ReaderTab left, ReaderTabManager.ReaderTab right) {
+        saveReaderTabState();
+
         isSideReading = true;
         setSideReadingLeft(left);
         setSideReadingRight(right);
@@ -996,6 +998,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void saveReaderTabState() {
         Debug.d(TAG, "saveReaderTabState");
+        if (isSideReading) {
+            return;
+        }
         SingletonSharedPreference.setMultipleTabState(tabManager.toJson());
         SingletonSharedPreference.setMultipleTabVisibility(tabWidgetVisible.get());
     }
