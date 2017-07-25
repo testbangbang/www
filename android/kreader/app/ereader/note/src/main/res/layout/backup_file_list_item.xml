@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:gravity="center_vertical"
               android:orientation="vertical">
 
@@ -52,12 +53,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/restore"
-                android:layout_width="@dimen/backup_restore_list_item_image_size"
-                android:layout_height="@dimen/backup_restore_list_item_image_size"
+            <com.onyx.android.sdk.ui.view.CustomIconView
                 android:background="@drawable/imagebtn_bg"
-                android:src="@drawable/local_backup_restore"/>
+                android:id="@+id/restore"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:src="@drawable/local_backup_restore"
+                app:iconDrawingSize="@dimen/global_activities_function_icon_size"
+                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable"/>
+
         </LinearLayout>
 
     </LinearLayout>
