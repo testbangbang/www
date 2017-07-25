@@ -219,9 +219,6 @@ public class ScribbleFunctionItemUtils {
         return sSubMenuItemIDIconSparseArray.get(subMenuID);
     }
 
-    private static void checkSparseArray() {
-    }
-
     public static List<Integer> getSubMenuIDList(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int functionBarMenuID) {
         if (sFunctionBarMenuContainSubMenuIDListSparseArray == null) {
             buildFunctionBarMenuSubMenuIDListSparseArray();

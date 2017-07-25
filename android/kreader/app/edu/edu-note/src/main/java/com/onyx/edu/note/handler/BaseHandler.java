@@ -4,6 +4,7 @@ import android.support.annotation.CallSuper;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.edu.note.NoteManager;
+import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.scribble.event.HandlerActivateEvent;
@@ -44,6 +45,8 @@ public abstract class BaseHandler {
     protected abstract void buildFunctionBarMenuFunctionList();
 
     protected abstract void buildToolBarMenuFunctionList();
+
+    public abstract void handleFunctionBarMenuFunction(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int functionBarMenuID);
 
     public abstract void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID);
 
