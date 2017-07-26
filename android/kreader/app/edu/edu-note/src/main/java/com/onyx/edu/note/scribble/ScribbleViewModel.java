@@ -43,6 +43,8 @@ public class ScribbleViewModel extends BaseObservable {
     private final ObservableField<NoteModel> mCurrentNoteModel = new ObservableField<>();
     private final ObservableField<ShapeDataInfo> mShapeDataInfo = new ObservableField<>();
     public final ObservableField<String> mNoteTitle = new ObservableField<>();
+    private boolean mIsKeyboardInput = false;
+    private boolean mIsBuildingSpan = false;
 
     void setNavigator(ScribbleNavigator mScribbleNavigator) {
         this.mNavigator = mScribbleNavigator;
@@ -88,6 +90,22 @@ public class ScribbleViewModel extends BaseObservable {
                 editAction.execute(mNoteManager, baseCallback);
                 break;
         }
+    }
+
+    public boolean isKeyboardInput() {
+        return mIsKeyboardInput;
+    }
+
+    public void setKeyboardInput(boolean isKeyboardInput) {
+        mIsKeyboardInput = isKeyboardInput;
+    }
+
+    public boolean isBuildingSpan() {
+        return mIsBuildingSpan;
+    }
+
+    public void setBuildingSpan(boolean isBuildingSpan) {
+        mIsBuildingSpan = isBuildingSpan;
     }
 
     //Todo:temp use navigator communicate with handler manager.

@@ -7,6 +7,7 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -14,22 +15,34 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.edu.note.HandlerManager;
+import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.R;
+import com.onyx.edu.note.actions.scribble.DocumentFlushAction;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
+import com.onyx.edu.note.data.ScribbleMode;
 import com.onyx.edu.note.databinding.ActivityScribbleBinding;
 import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
 import com.onyx.edu.note.receiver.DeviceReceiver;
+import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
+import com.onyx.edu.note.scribble.event.ShowInputKeyBoardEvent;
+import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
+import com.onyx.edu.note.scribble.event.SpanFinishedEvent;
 import com.onyx.edu.note.scribble.view.ScribbleSubMenu;
 import com.onyx.edu.note.ui.PageAdapter;
+import com.onyx.edu.note.ui.view.LinedEditText;
 import com.onyx.edu.note.util.Constant;
 
 import org.greenrobot.eventbus.EventBus;
@@ -53,12 +66,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_scribble);
-
-
-        //TODO:temp disable edit text.
-        mBinding.spanTextView.setVisibility(View.GONE);
-
-
         initSupportActionBarWithCustomBackFunction();
         mNoteManager = NoteManager.sharedInstance(this);
         mViewModel = new ScribbleViewModel(this);
@@ -66,6 +73,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         // Link View and ViewModel
         mBinding.setViewModel(mViewModel);
         initRecyclerView();
+        initSpanTextView();
         buildSubMenu();
         mHandlerManager = new HandlerManager(this, mViewModel);
     }
@@ -178,10 +186,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     @Override
     public void onBackPressed() {
         //TODO:need back key to dismiss sub menu first or direct exit even sub menu showing?
-        if (mSubMenu.isShow()){
-            mSubMenu.dismiss(true);
-            return;
-        }
+        hideSubMenu();
         mNoteManager.syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -195,6 +200,65 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 });
             }
         });
+    }
+
+    private void initSpanTextView() {
+        mBinding.spanTextView.setInputConnectionListener(new LinedEditText.InputConnectionListener() {
+            @Override
+            public void commitText(CharSequence text, int newCursorPosition) {
+                buildTextShapeImpl(text.toString());
+            }
+        });
+        mBinding.spanTextView.setOnKeyPreImeListener(new LinedEditText.OnKeyPreImeListener() {
+            @Override
+            public void onKeyPreIme(int keyCode, KeyEvent event) {
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_BACK:
+                        if (mViewModel.isKeyboardInput()) {
+                            onCloseKeyBoard();
+                        }
+                        break;
+                }
+            }
+        });
+        mBinding.spanTextView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_DEL:
+                            mViewModel.setKeyboardInput(true);
+                            mNoteManager.deleteSpan(false);
+                            return true;
+                        case KeyEvent.KEYCODE_ENTER:
+                            onCloseKeyBoard();
+                            return false;
+                        case KeyEvent.KEYCODE_1:
+                        case KeyEvent.KEYCODE_2:
+                        case KeyEvent.KEYCODE_3:
+                        case KeyEvent.KEYCODE_4:
+                        case KeyEvent.KEYCODE_5:
+                        case KeyEvent.KEYCODE_6:
+                        case KeyEvent.KEYCODE_7:
+                        case KeyEvent.KEYCODE_8:
+                        case KeyEvent.KEYCODE_9:
+                        case KeyEvent.KEYCODE_0:
+                            char displayLabel = event.getDisplayLabel();
+                            buildTextShapeImpl(String.valueOf(displayLabel));
+                            return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    private void buildTextShapeImpl(String text) {
+        if (mViewModel.isBuildingSpan()) {
+            return;
+        }
+        mViewModel.setKeyboardInput(true);
+        mNoteManager.buildTextShape(text, mBinding.spanTextView);
     }
 
     private void initRecyclerView() {
@@ -212,31 +276,62 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         mToolBarAdapter = new ScribbleFunctionAdapter(this, ScribbleFunctionMenuIDType.TOOL_BAR_MENU);
     }
 
+    private void afterDrawLineLayoutShapes(final List<Shape> lineLayoutShapes) {
+        if (mNoteManager.checkShapesOutOfRange(lineLayoutShapes)) {
+            lineLayoutShapes.clear();
+            showOutOfRangeTips();
+            mNoteManager.syncWithCallback(true, !mViewModel.isKeyboardInput(), new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    loadLineLayoutShapes();
+                }
+            });
+            mViewModel.setBuildingSpan(false);
+            return;
+        }
+
+        mNoteManager.updateLineLayoutCursor(mBinding.spanTextView);
+        final DocumentFlushAction action = new DocumentFlushAction(lineLayoutShapes,
+                true,
+                !mViewModel.isKeyboardInput(),
+                mNoteManager.getShapeDataInfo().getDrawingArgs());
+        action.execute(mNoteManager, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                mViewModel.setBuildingSpan(false);
+            }
+        });
+    }
+
+    private void showOutOfRangeTips() {
+        ToastUtils.showToast(NoteApplication.getInstance(), "Out Of Range");
+    }
+
+    private void loadLineLayoutShapes() {
+        if (mNoteManager.isLineLayoutMode()) {
+            mNoteManager.loadPageShapes();
+        }
+    }
+
+    private void onCloseKeyBoard() {
+        mViewModel.setKeyboardInput(false);
+        mNoteManager.sync(false, true);
+    }
+
+    private void showSubMenu(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int mainMenuID) {
+        mSubMenu.show(mainMenuID, mNoteManager.isLineLayoutMode());
+    }
+
+    private void hideSubMenu() {
+        if (mSubMenu != null && mSubMenu.isShow()) {
+            mSubMenu.dismiss(true);
+        }
+    }
+
     @Override
     public void onFunctionBarMenuFunctionItem(final int mainMenuID) {
         Log.e(TAG, "onFunctionBarMenuFunctionItem: " + mainMenuID);
-        switch (mainMenuID) {
-            case ScribbleFunctionBarMenuID.ADD_PAGE:
-                mHandlerManager.addPage();
-                break;
-            case ScribbleFunctionBarMenuID.DELETE_PAGE:
-                mHandlerManager.deletePage();
-                break;
-            case ScribbleFunctionBarMenuID.NEXT_PAGE:
-                mHandlerManager.nextPage();
-                break;
-            case ScribbleFunctionBarMenuID.PREV_PAGE:
-                mHandlerManager.prevPage();
-                break;
-            default:
-                mNoteManager.syncWithCallback(true, false, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        showSubMenu(mainMenuID);
-                    }
-                });
-                break;
-        }
+        mHandlerManager.handleFunctionBarMenuFunction(mainMenuID);
     }
 
     @Override
@@ -252,8 +347,64 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         mHandlerManager.handleToolBarMenuFunction(toolBarMenuID);
     }
 
-    private void showSubMenu(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int mainMenuID) {
-        mSubMenu.show(mainMenuID, false);
+    @Subscribe
+    public void onSpanFinished(final SpanFinishedEvent event){
+        if (event.getBuilder() == null) {
+            return;
+        }
+        mViewModel.setBuildingSpan(true);
+        mBinding.spanTextView.setText(event.getBuilder());
+        mBinding.spanTextView.setSelection(event.getBuilder().length());
+        mBinding.spanTextView.requestFocus();
+        if (event.getLastShapeSpan() != null) {
+            event.getLastShapeSpan().setCallback(new ShapeSpan.Callback() {
+                @Override
+                public void onFinishDrawShapes(List<Shape> shapes) {
+                    afterDrawLineLayoutShapes(event.getSpanShapeList());
+                }
+            });
+        }else {
+            afterDrawLineLayoutShapes(event.getSpanShapeList());
+        }
+    }
+
+    @Subscribe
+    public void showSubMenu(final ShowSubMenuEvent event){
+        mNoteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                showSubMenu(event.getFunctionBarMenuID());
+            }
+        });
+    }
+
+    @Subscribe
+    public void showInputKeyboard(ShowInputKeyBoardEvent event){
+
+    }
+
+    @Subscribe
+    public void switchScribbleMode(final ChangeScribbleModeEvent event) {
+        hideSubMenu();
+        mHandlerManager.changeScribbleMode(event.getTargetScribbleMode());
+        mNoteManager.clearPageUndoRedo(ScribbleActivity.this);
+        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                mBinding.spanTextView.setVisibility(event.getTargetScribbleMode() ==
+                        ScribbleMode.MODE_SPAN_SCRIBBLE ? View.VISIBLE : View.GONE);
+                InputMethodUtils.hideInputKeyboard(ScribbleActivity.this);
+                mNoteManager.setCurrentScribbleMode(event.getTargetScribbleMode());
+                if (mNoteManager.isLineLayoutMode()) {
+                    mBinding.spanTextView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mNoteManager.updateLineLayoutArgs(mBinding.spanTextView);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Subscribe
@@ -302,7 +453,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
         @Override
         public int getColumnCount() {
-            return mMenuType == ScribbleFunctionMenuIDType.FUNCTION_BAR_MENU ? 4 : 6;
+            return 6;
         }
 
         @Override

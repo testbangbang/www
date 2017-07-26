@@ -31,7 +31,6 @@ public class LinedEditText extends AppCompatEditText {
     private Paint mPaint;
     private InputConnectionListener inputConnectionListener;
     private OnKeyPreImeListener onKeyPreImeListener;
-    private boolean showLineBackground = true;
 
     // we need this constructor for LayoutInflater
     public LinedEditText(Context context, AttributeSet attrs) {
@@ -60,28 +59,6 @@ public class LinedEditText extends AppCompatEditText {
         super.onDraw(canvas);
     }
 
-    private void drawLine(Canvas canvas) {
-        if (!showLineBackground) {
-            return;
-        }
-        int height = getHeight();
-        int line_height = getLineHeight();
-        int count = height / line_height;
-
-        if (getLineCount() > count) {
-            count = getLineCount();
-        }
-
-        Rect r = mRect;
-        Paint paint = mPaint;
-        int baseline = getLineBounds(0, r);
-        baseline = r.bottom;
-        for (int i = 0; i < count; i++) {
-            canvas.drawLine(r.left, baseline + 1, r.right, baseline + 1, paint);
-            baseline += getLineHeight();
-        }
-    }
-
     @Override
     public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
         outAttrs.actionLabel = null;
@@ -101,11 +78,6 @@ public class LinedEditText extends AppCompatEditText {
     @Override
     public boolean onCheckIsTextEditor() {
         return true;
-    }
-
-    public void setShowLineBackground(boolean showLineBackground) {
-        this.showLineBackground = showLineBackground;
-        invalidate();
     }
 
     public void setOnKeyPreImeListener(OnKeyPreImeListener onKeyPreImeListener) {

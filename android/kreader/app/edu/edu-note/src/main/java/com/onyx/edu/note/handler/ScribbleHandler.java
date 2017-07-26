@@ -17,10 +17,13 @@ import com.onyx.edu.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.edu.note.actions.scribble.RedoAction;
 import com.onyx.edu.note.actions.scribble.UndoAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
+import com.onyx.edu.note.data.ScribbleMode;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
+import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
+import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -37,7 +40,7 @@ public class ScribbleHandler extends BaseHandler {
     private BaseCallback mActionDoneCallback = new BaseCallback() {
         @Override
         public void done(BaseRequest request, Throwable e) {
-            EventBus.getDefault().post(new RequestInfoUpdateEvent(request,e));
+            EventBus.getDefault().post(new RequestInfoUpdateEvent(request, e));
         }
     };
 
@@ -66,6 +69,27 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     @Override
+    public void handleFunctionBarMenuFunction(int functionBarMenuID) {
+        switch (functionBarMenuID) {
+            case ScribbleFunctionBarMenuID.ADD_PAGE:
+                addPage();
+                break;
+            case ScribbleFunctionBarMenuID.DELETE_PAGE:
+                deletePage();
+                break;
+            case ScribbleFunctionBarMenuID.NEXT_PAGE:
+                nextPage();
+                break;
+            case ScribbleFunctionBarMenuID.PREV_PAGE:
+                prevPage();
+                break;
+            default:
+                EventBus.getDefault().post(new ShowSubMenuEvent(functionBarMenuID));
+                break;
+        }
+    }
+
+    @Override
     public void handleSubMenuFunction(int subMenuID) {
         Log.e(TAG, "handleSubMenuFunction: " + subMenuID);
         if (ScribbleSubMenuID.isThicknessGroup(subMenuID)) {
@@ -74,10 +98,10 @@ public class ScribbleHandler extends BaseHandler {
             onBackgroundChanged(subMenuID);
         } else if (ScribbleSubMenuID.isEraserGroup(subMenuID)) {
             onEraserChanged(subMenuID);
-        } else if (ScribbleSubMenuID.isPenColorGroup(subMenuID)) {
-
         } else if (ScribbleSubMenuID.isPenStyleGroup(subMenuID)) {
             onShapeChanged(subMenuID);
+        } else if (ScribbleSubMenuID.isPenColorGroup(subMenuID)) {
+
         }
     }
 
@@ -85,6 +109,7 @@ public class ScribbleHandler extends BaseHandler {
     public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_SCRIBBLE_MODE:
+                EventBus.getDefault().post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SPAN_SCRIBBLE));
                 break;
             case ScribbleToolBarMenuID.EXPORT:
                 break;
@@ -204,7 +229,7 @@ public class ScribbleHandler extends BaseHandler {
             case ScribbleSubMenuID.Thickness.THICKNESS_NORMAL:
             case ScribbleSubMenuID.Thickness.THICKNESS_BOLD:
             case ScribbleSubMenuID.Thickness.THICKNESS_ULTRA_BOLD:
-                mNoteManager.setStrokeWidth(ScribbleSubMenuID.strokeWidthFromMenuId(subMenuID),mActionDoneCallback);
+                mNoteManager.setStrokeWidth(ScribbleSubMenuID.strokeWidthFromMenuId(subMenuID), mActionDoneCallback);
                 break;
             case ScribbleSubMenuID.Thickness.THICKNESS_CUSTOM_BOLD:
                 CustomWidthEvent event = new CustomWidthEvent(new DialogCustomLineWidth.Callback() {

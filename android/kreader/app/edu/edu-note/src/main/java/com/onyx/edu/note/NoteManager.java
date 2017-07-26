@@ -3,6 +3,10 @@ package com.onyx.edu.note;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Layout;
+import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -13,19 +17,36 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.note.NotePageShapesRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.shape.SpannableRequest;
+import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.note.actions.scribble.DocumentFlushAction;
 import com.onyx.edu.note.actions.scribble.DrawPageAction;
+import com.onyx.edu.note.actions.scribble.NotePageShapeAction;
+import com.onyx.edu.note.actions.scribble.RemoveByGroupIdAction;
 import com.onyx.edu.note.actions.scribble.RemoveByPointListAction;
+import com.onyx.edu.note.actions.scribble.SpannableAction;
+import com.onyx.edu.note.data.ScribbleMode;
+import com.onyx.edu.note.scribble.event.SpanFinishedEvent;
+import com.onyx.edu.note.ui.view.LinedEditText;
+
+import org.apache.commons.collections4.MapUtils;
+import org.greenrobot.eventbus.EventBus;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by solskjaer49 on 2017/2/11 18:44.
@@ -48,6 +69,31 @@ public class NoteManager {
 
     private TouchPoint mErasePoint = null;
 
+    //TODO:Span Function Relative
+    // use ascII code to define WHITESPACE.
+    private static final String SPACE_TEXT = Character.toString((char) 32);
+    private static final int SPAN_TIME_OUT = 1000;
+    private static final int SPACE_WIDTH = 40;
+    private Handler mSpanTextHandler;
+    private Map<String, List<Shape>> mSubPageSpanTextShapeMap;
+    private Runnable mSpanRunnable;
+    private long lastUpTime = -1;
+    private int mSpanTextFontHeight = 0;
+
+    private @ScribbleMode.ScribbleModeDef
+    int mCurrentScribbleMode = ScribbleMode.MODE_NORMAL_SCRIBBLE;
+
+    public int getCurrentScribbleMode() {
+        return mCurrentScribbleMode;
+    }
+
+    public void setCurrentScribbleMode(int currentScribbleMode) {
+        mCurrentScribbleMode = currentScribbleMode;
+        setLineLayoutMode(mCurrentScribbleMode == ScribbleMode.MODE_SPAN_SCRIBBLE);
+        if (isLineLayoutMode()) {
+            openSpanTextFunc();
+        }
+    }
 
     private NoteManager(Context context) {
         requestManager = new RequestManager(Thread.NORM_PRIORITY);
@@ -55,6 +101,7 @@ public class NoteManager {
             mNoteViewHelper = new NoteViewHelper();
         }
         contextWeakReference = new WeakReference<>(context.getApplicationContext());
+        mSpanTextHandler = new Handler(Looper.getMainLooper());
     }
 
     static public NoteManager sharedInstance(Context context) {
@@ -140,12 +187,211 @@ public class NoteManager {
         this.shapeDataInfo = shapeDataInfo;
     }
 
-    public void setStrokeWidth(float strokeWidth,BaseCallback callback){
+    public void setStrokeWidth(float strokeWidth, BaseCallback callback) {
         if (shapeDataInfo.isInUserErasing()) {
             shapeDataInfo.setCurrentShapeType(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
         }
         shapeDataInfo.setStrokeWidth(strokeWidth);
         syncWithCallback(true, true, callback);
+    }
+
+    public void deleteSpan(boolean resume) {
+        String groupId = getLastGroupId();
+        if (StringUtils.isNullOrEmpty(groupId)) {
+            sync(false, resume);
+            return;
+        }
+        RemoveByGroupIdAction removeByGroupIdAction = new
+                RemoveByGroupIdAction(groupId, resume);
+        removeByGroupIdAction.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                loadPageShapes();
+            }
+        });
+    }
+
+    public void updateLineLayoutArgs(LinedEditText spanTextView) {
+        int height = spanTextView.getHeight();
+        int lineHeight = spanTextView.getLineHeight();
+        int lineCount = spanTextView.getLineCount();
+        int count = height / lineHeight;
+        if (lineCount <= count) {
+            lineCount = count;
+        }
+        Rect r = new Rect();
+        spanTextView.getLineBounds(0, r);
+        int baseLine = r.bottom;
+        LineLayoutArgs args = LineLayoutArgs.create(baseLine, lineCount, lineHeight);
+        mNoteViewHelper.setLineLayoutArgs(args);
+        mSpanTextFontHeight = calculateSpanTextFontHeight(spanTextView);
+    }
+
+    private int calculateSpanTextFontHeight(LinedEditText spanTextView) {
+        float bottom = spanTextView.getPaint().getFontMetrics().bottom;
+        float top = spanTextView.getPaint().getFontMetrics().top;
+        return (int) Math.ceil(bottom - top - 2 * ShapeSpan.SHAPE_SPAN_MARGIN);
+    }
+
+    public void updateLineLayoutCursor(LinedEditText spanTextView) {
+        int pos = spanTextView.getSelectionStart();
+        Layout layout = spanTextView.getLayout();
+        int line = layout.getLineForOffset(pos);
+        int x = (int) layout.getPrimaryHorizontal(pos);
+        LineLayoutArgs args = mNoteViewHelper.getLineLayoutArgs();
+        int top = args.getLineTop(line);
+        int bottom = args.getLineBottom(line);
+        mNoteViewHelper.updateCursorShape(x, top + 1, x, bottom);
+    }
+
+    public boolean checkShapesOutOfRange(List<Shape> shapes) {
+        if (shapes == null || shapes.size() == 0) {
+            return false;
+        }
+        for (Shape shape : shapes) {
+            TouchPointList pointList = shape.getPoints();
+            if (!mNoteViewHelper.checkTouchPointList(pointList)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void openSpanTextFunc() {
+        if (mSubPageSpanTextShapeMap == null) {
+            loadPageShapes();
+        }
+    }
+
+    public void loadPageShapes() {
+        new NotePageShapeAction().execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                List<Shape> subPageAllShapeList = ((NotePageShapesRequest) request).getPageShapes();
+                mSubPageSpanTextShapeMap = ShapeFactory.getSubPageSpanShapeList(subPageAllShapeList);
+                spanShape(mSubPageSpanTextShapeMap, null);
+            }
+        });
+    }
+
+    public void buildSpan() {
+        long curTime = System.currentTimeMillis();
+        if (lastUpTime != -1 && (curTime - lastUpTime <= SPAN_TIME_OUT) && (mSpanRunnable != null)) {
+            removeSpanRunnable();
+        }
+        lastUpTime = curTime;
+        mSpanRunnable = buildSpanRunnable();
+        mSpanTextHandler.postDelayed(mSpanRunnable, SPAN_TIME_OUT);
+    }
+
+    public void removeSpanRunnable() {
+        if (mSpanTextHandler != null && mSpanRunnable != null) {
+            mSpanTextHandler.removeCallbacks(mSpanRunnable);
+        }
+    }
+
+    private Runnable buildSpanRunnable() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                buildSpanImpl();
+            }
+        };
+    }
+
+    private void buildSpanImpl() {
+        if (isDrawing()) {
+            return;
+        }
+        final List<Shape> newAddShapeList = detachStash();
+        String groupId = ShapeUtils.generateUniqueId();
+        for (Shape shape : newAddShapeList) {
+            shape.setGroupId(groupId);
+        }
+        spanShape(mSubPageSpanTextShapeMap, newAddShapeList);
+    }
+
+    private void spanShape(final Map<String, List<Shape>> subPageSpanTextShapeMap, final List<Shape> newAddShapeList) {
+        new SpannableAction(subPageSpanTextShapeMap, newAddShapeList).execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                SpannableRequest req = (SpannableRequest) request;
+                final SpannableStringBuilder builder = req.getSpannableStringBuilder();
+                if (newAddShapeList != null && newAddShapeList.size() > 0) {
+                    subPageSpanTextShapeMap.put(newAddShapeList.get(0).getGroupId(), newAddShapeList);
+                }
+                EventBus.getDefault().post(new SpanFinishedEvent(builder, newAddShapeList, req.getLastShapeSpan()));
+            }
+        });
+    }
+
+    public void spanTextClear() {
+        if (mSubPageSpanTextShapeMap != null) {
+            mSubPageSpanTextShapeMap.clear();
+            mSubPageSpanTextShapeMap = null;
+        }
+        if (mSpanRunnable != null) {
+            mSpanTextHandler.removeCallbacks(mSpanRunnable);
+        }
+    }
+
+    private String getLastGroupId() {
+        String groupId = null;
+        if (MapUtils.isEmpty(mSubPageSpanTextShapeMap)) {
+            return null;
+        }
+        for (String s : mSubPageSpanTextShapeMap.keySet()) {
+            groupId = s;
+        }
+        return groupId;
+    }
+
+    public void buildTextShape(String text, LinedEditText spanTextView) {
+        int width = (int) spanTextView.getPaint().measureText(text);
+        buildTextShape(text, width, mSpanTextFontHeight);
+    }
+
+    private void buildTextShape(String text, int width, int height) {
+        Shape spaceShape = createTextShape(text);
+        addShapePoints(spaceShape, width, height);
+
+        List<Shape> newAddShapeList = new ArrayList<>();
+        newAddShapeList.add(spaceShape);
+        spanShape(mSubPageSpanTextShapeMap, newAddShapeList);
+    }
+
+    public void buildSpaceShape(final int width, int height) {
+        Shape spaceShape = createTextShape(SPACE_TEXT);
+        addShapePoints(spaceShape, width, height);
+
+        List<Shape> newAddShapeList = new ArrayList<>();
+        newAddShapeList.add(spaceShape);
+        spanShape(mSubPageSpanTextShapeMap, newAddShapeList);
+    }
+
+    public void buildSpaceShape() {
+        buildSpaceShape(SPACE_WIDTH, mSpanTextFontHeight);
+    }
+
+    private Shape createTextShape(String text) {
+        Shape shape = ShapeFactory.createShape(ShapeFactory.SHAPE_TEXT);
+        shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
+        shape.setColor(getNoteDocument().getStrokeColor());
+        shape.setLayoutType(ShapeFactory.POSITION_LINE_LAYOUT);
+        shape.setGroupId(ShapeUtils.generateUniqueId());
+        shape.getShapeExtraAttributes().setTextContent(text);
+        return shape;
+    }
+
+    private void addShapePoints(final Shape shape, final int width, final int height) {
+        TouchPointList touchPointList = new TouchPointList();
+        TouchPoint downPoint = new TouchPoint();
+        downPoint.offset(0, 0);
+        TouchPoint currentPoint = new TouchPoint();
+        currentPoint.offset(width, height);
+        touchPointList.add(downPoint);
+        touchPointList.add(currentPoint);
+        shape.addPoints(touchPointList);
     }
 
     //TODO:avoid direct obtain note view helper,because we plan to remove this class.
@@ -167,10 +413,14 @@ public class NoteManager {
             mInputCallback = new NoteViewHelper.InputCallback() {
                 @Override
                 public void onBeginRawData() {
+                    removeSpanRunnable();
                 }
 
                 @Override
                 public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+                    if (isLineLayoutMode()) {
+                        buildSpan();
+                    }
                 }
 
                 @Override
@@ -207,8 +457,10 @@ public class NoteManager {
                     if (!shape.supportDFB()) {
                         drawCurrentPage();
                     }
+                    if (isLineLayoutMode()) {
+                        buildSpan();
+                    }
                 }
-
             };
         }
         return mInputCallback;
@@ -242,6 +494,10 @@ public class NoteManager {
 
     public void quit() {
         mNoteViewHelper.quit();
+    }
+
+    public void setLineLayoutMode(boolean isLineLayoutMode) {
+        mNoteViewHelper.setLineLayoutMode(isLineLayoutMode);
     }
 
     public boolean isLineLayoutMode() {
@@ -290,5 +546,9 @@ public class NoteManager {
 
     public List<Shape> getDirtyShape() {
         return mNoteViewHelper.getDirtyStash();
+    }
+
+    public void clearPageUndoRedo(Context context) {
+        mNoteViewHelper.clearPageUndoRedo(context);
     }
 }
