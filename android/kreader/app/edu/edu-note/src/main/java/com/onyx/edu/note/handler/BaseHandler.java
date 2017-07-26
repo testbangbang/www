@@ -1,6 +1,7 @@
 package com.onyx.edu.note.handler;
 
 import android.support.annotation.CallSuper;
+import android.util.SparseArray;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.edu.note.NoteManager;
@@ -24,6 +25,7 @@ public abstract class BaseHandler {
 
     List<Integer> mFunctionBarMenuFunctionIDList = new ArrayList<>();
     List<Integer> mToolBarMenuFunctionIDList = new ArrayList<>();
+    SparseArray<List<Integer>> mFunctionBarMenuSubMenuIDListSparseArray = new SparseArray<>();
 
     public BaseHandler(NoteManager mNoteManager) {
         this.mNoteManager = mNoteManager;
@@ -33,7 +35,8 @@ public abstract class BaseHandler {
     public void onActivate() {
         buildFunctionBarMenuFunctionList();
         buildToolBarMenuFunctionList();
-        EventBus.getDefault().post(new HandlerActivateEvent(mFunctionBarMenuFunctionIDList, mToolBarMenuFunctionIDList));
+        buildFunctionBarMenuSubMenuIDListSparseArray();
+        EventBus.getDefault().post(new HandlerActivateEvent(mFunctionBarMenuFunctionIDList, mToolBarMenuFunctionIDList, mFunctionBarMenuSubMenuIDListSparseArray));
     }
 
     public void onDeactivate() {
@@ -45,6 +48,8 @@ public abstract class BaseHandler {
     protected abstract void buildFunctionBarMenuFunctionList();
 
     protected abstract void buildToolBarMenuFunctionList();
+
+    protected abstract void buildFunctionBarMenuSubMenuIDListSparseArray();
 
     public abstract void handleFunctionBarMenuFunction(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int functionBarMenuID);
 

@@ -1,6 +1,7 @@
 package com.onyx.edu.note.handler;
 
 import android.util.Log;
+import android.util.SparseArray;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -27,6 +28,19 @@ import com.onyx.edu.note.scribble.event.SpanLineBreakerEvent;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_EMPTY;
+import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_LINE;
+import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.BRUSH_PEN_STYLE;
+import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.CIRCLE_STYLE;
+import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.LINE_STYLE;
+import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.NORMAL_PEN_STYLE;
+import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.RECT_STYLE;
+import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.TRIANGLE_45_STYLE;
+import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.TRIANGLE_60_STYLE;
+import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.TRIANGLE_90_STYLE;
+import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.TRIANGLE_STYLE;
 
 /**
  * Created by solskjaer49 on 2017/5/27 12:33.
@@ -80,10 +94,17 @@ public class SpanTextHandler extends BaseHandler {
     @Override
     protected void buildToolBarMenuFunctionList() {
         mToolBarMenuFunctionIDList = new ArrayList<>();
-        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.SWITCH_SCRIBBLE_MODE);
+        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.SWITCH_TO_NORMAL_SCRIBBLE_MODE);
         mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.UNDO);
         mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.SAVE);
         mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.REDO);
+    }
+
+    @Override
+    protected void buildFunctionBarMenuSubMenuIDListSparseArray() {
+        mFunctionBarMenuSubMenuIDListSparseArray = new SparseArray<>();
+        mFunctionBarMenuSubMenuIDListSparseArray.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
+        mFunctionBarMenuSubMenuIDListSparseArray.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
     }
 
     @Override
@@ -133,7 +154,7 @@ public class SpanTextHandler extends BaseHandler {
     @Override
     public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
-            case ScribbleToolBarMenuID.SWITCH_SCRIBBLE_MODE:
+            case ScribbleToolBarMenuID.SWITCH_TO_NORMAL_SCRIBBLE_MODE:
                 EventBus.getDefault().post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
                 break;
             case ScribbleToolBarMenuID.SAVE:
@@ -199,6 +220,27 @@ public class SpanTextHandler extends BaseHandler {
                 deletePageAction.execute(mNoteManager, new SpanBaseCallBack(true));
             }
         });
+    }
+
+    private List<Integer> buildSubMenuPenStyleIDList() {
+        List<Integer> resultList = new ArrayList<>();
+        resultList.add(NORMAL_PEN_STYLE);
+        resultList.add(BRUSH_PEN_STYLE);
+        resultList.add(LINE_STYLE);
+        resultList.add(TRIANGLE_STYLE);
+        resultList.add(CIRCLE_STYLE);
+        resultList.add(RECT_STYLE);
+        resultList.add(TRIANGLE_45_STYLE);
+        resultList.add(TRIANGLE_60_STYLE);
+        resultList.add(TRIANGLE_90_STYLE);
+        return resultList;
+    }
+
+    private  List<Integer> buildSubMenuBGIDList() {
+        List<Integer> resultList = new ArrayList<>();
+        resultList.add(BG_EMPTY);
+        resultList.add(BG_LINE);
+        return resultList;
     }
 
     private void reDo() {

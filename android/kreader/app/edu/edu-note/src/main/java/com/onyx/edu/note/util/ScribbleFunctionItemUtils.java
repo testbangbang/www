@@ -1,16 +1,12 @@
 package com.onyx.edu.note.util;
 
 import android.support.annotation.IdRes;
-import android.util.SparseArray;
 import android.util.SparseIntArray;
 
 import com.onyx.edu.note.R;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_CALENDAR;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_EMPTY;
@@ -53,57 +49,6 @@ public class ScribbleFunctionItemUtils {
     private static SparseIntArray sFunctionBarMenuItemIDIconSparseArray;
     private static SparseIntArray sSubMenuItemIDIconSparseArray;
     private static SparseIntArray sToolBarMenuItemIDIconSparseArray;
-    private static SparseArray<List<Integer>> sFunctionBarMenuContainSubMenuIDListSparseArray;
-
-    private static List<Integer> buildSubMenuThicknessIDList() {
-        List<Integer> resultList = new ArrayList<>();
-        resultList.add(THICKNESS_ULTRA_LIGHT);
-        resultList.add(THICKNESS_LIGHT);
-        resultList.add(THICKNESS_NORMAL);
-        resultList.add(THICKNESS_BOLD);
-        resultList.add(THICKNESS_CUSTOM_BOLD);
-        return resultList;
-    }
-
-    private static List<Integer> buildSubMenuBGIDList() {
-        List<Integer> resultList = new ArrayList<>();
-        resultList.add(BG_EMPTY);
-        resultList.add(BG_LINE);
-        resultList.add(BG_LEFT_GRID);
-        resultList.add(BG_GRID_5_5);
-        resultList.add(BG_GRID);
-        resultList.add(BG_MATS);
-        resultList.add(BG_MUSIC);
-        resultList.add(BG_ENGLISH);
-        resultList.add(BG_LINE_1_6);
-        resultList.add(BG_LINE_2_0);
-        resultList.add(BG_LINE_COLUMN);
-        resultList.add(BG_TABLE_GRID);
-        resultList.add(BG_CALENDAR);
-        resultList.add(BG_GRID_POINT);
-        return resultList;
-    }
-
-    private static List<Integer> buildSubMenuEraserIDList() {
-        List<Integer> resultList = new ArrayList<>();
-        resultList.add(ERASE_PARTIALLY);
-        resultList.add(ERASE_TOTALLY);
-        return resultList;
-    }
-
-    private static List<Integer> buildSubMenuPenStyleIDList() {
-        List<Integer> resultList = new ArrayList<>();
-        resultList.add(NORMAL_PEN_STYLE);
-        resultList.add(BRUSH_PEN_STYLE);
-        resultList.add(LINE_STYLE);
-        resultList.add(TRIANGLE_STYLE);
-        resultList.add(CIRCLE_STYLE);
-        resultList.add(RECT_STYLE);
-        resultList.add(TRIANGLE_45_STYLE);
-        resultList.add(TRIANGLE_60_STYLE);
-        resultList.add(TRIANGLE_90_STYLE);
-        return resultList;
-    }
 
     //TODO:temp build here.if custom needed can be add config in json.
     private static void buildIDIconSparseArray() {
@@ -120,20 +65,13 @@ public class ScribbleFunctionItemUtils {
 
     private static void buildToolBarMenuIDIconSparseArray() {
         sToolBarMenuItemIDIconSparseArray = new SparseIntArray();
-        sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.SWITCH_SCRIBBLE_MODE, R.drawable.ic_vector);
+        sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE, R.drawable.ic_vector);
+        sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.SWITCH_TO_NORMAL_SCRIBBLE_MODE, R.drawable.ic_note);
         sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.UNDO, R.drawable.ic_undo);
         sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.SAVE, R.drawable.ic_save);
         sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.REDO, R.drawable.ic_redo);
         sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.SETTING, R.drawable.ic_setting);
         sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.EXPORT, R.drawable.ic_export);
-    }
-
-    private static void buildFunctionBarMenuSubMenuIDListSparseArray() {
-        sFunctionBarMenuContainSubMenuIDListSparseArray = new SparseArray<>();
-        sFunctionBarMenuContainSubMenuIDListSparseArray.put(ScribbleFunctionBarMenuID.PEN_WIDTH, buildSubMenuThicknessIDList());
-        sFunctionBarMenuContainSubMenuIDListSparseArray.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
-        sFunctionBarMenuContainSubMenuIDListSparseArray.put(ScribbleFunctionBarMenuID.ERASER, buildSubMenuEraserIDList());
-        sFunctionBarMenuContainSubMenuIDListSparseArray.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
     }
 
     private static void buildFunctionMenuIDIconSparseArray() {
@@ -218,12 +156,4 @@ public class ScribbleFunctionItemUtils {
         buildIDIconSparseArray();
         return sSubMenuItemIDIconSparseArray.get(subMenuID);
     }
-
-    public static List<Integer> getSubMenuIDList(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int functionBarMenuID) {
-        if (sFunctionBarMenuContainSubMenuIDListSparseArray == null) {
-            buildFunctionBarMenuSubMenuIDListSparseArray();
-        }
-        return sFunctionBarMenuContainSubMenuIDListSparseArray.get(functionBarMenuID);
-    }
-
 }

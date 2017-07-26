@@ -21,7 +21,6 @@ import com.onyx.edu.note.scribble.ScribbleFunctionItemViewHolder;
 import com.onyx.edu.note.scribble.ScribbleFunctionItemViewModel;
 import com.onyx.edu.note.scribble.ScribbleItemNavigator;
 import com.onyx.edu.note.ui.PageAdapter;
-import com.onyx.edu.note.util.ScribbleFunctionItemUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -79,9 +78,9 @@ public class ScribbleSubMenu extends RelativeLayout {
     }
 
     public void show(final @ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef
-                             int category, final boolean isLineLayoutMode) {
-        mAdapter.setRawData(ScribbleFunctionItemUtils.getSubMenuIDList(category), getContext());
-        updateIndicator(category);
+                             int category, List<Integer> dataList,final boolean isLineLayoutMode) {
+        mAdapter.setRawData(dataList, getContext());
+        updateIndicator(category,isLineLayoutMode);
         reConfigMenuHeight();
         setVisibility(VISIBLE);
     }
@@ -124,7 +123,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         return p;
     }
 
-    private void updateIndicator(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int mainMenuID) {
+    private void updateIndicator(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int mainMenuID,boolean isLineLayoutMode) {
         NoteManager manager = NoteManager.sharedInstance(getContext().getApplicationContext());
         int targetID = Integer.MIN_VALUE;
         switch (mainMenuID) {
@@ -133,7 +132,8 @@ public class ScribbleSubMenu extends RelativeLayout {
                 targetID = ScribbleSubMenuID.menuIdFromShapeType(manager.getShapeDataInfo().getCurrentShapeType());
                 break;
             case ScribbleFunctionBarMenuID.BG:
-                targetID = ScribbleSubMenuID.menuIdFromBg(manager.getShapeDataInfo().getBackground());
+                targetID = ScribbleSubMenuID.menuIdFromBg(isLineLayoutMode ?
+                        manager.getShapeDataInfo().getLineLayoutBackground() : manager.getShapeDataInfo().getBackground());
                 break;
             case ScribbleFunctionBarMenuID.PEN_WIDTH:
                 targetID = ScribbleSubMenuID.menuIdFromStrokeWidth(manager.getShapeDataInfo().getStrokeWidth());

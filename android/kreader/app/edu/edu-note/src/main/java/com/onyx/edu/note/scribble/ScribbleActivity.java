@@ -316,7 +316,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     private void showSubMenu(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int mainMenuID) {
-        mSubMenu.show(mainMenuID, mNoteManager.isLineLayoutMode());
+        mSubMenu.show(mainMenuID, mViewModel.getSubMenuIDList(mainMenuID), mNoteManager.isLineLayoutMode());
     }
 
     private void hideSubMenu() {

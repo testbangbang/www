@@ -331,7 +331,6 @@ public class NoteManager {
         if (mSpanRunnable != null) {
             mSpanTextHandler.removeCallbacks(mSpanRunnable);
         }
-        sync(true,true);
     }
 
     private String getLastGroupId() {
@@ -379,7 +378,7 @@ public class NoteManager {
         int line = layout.getLineForOffset(pos);
         if (line == (mNoteViewHelper.getLineLayoutArgs().getLineCount() - 1)) {
             EventBus.getDefault().post(new SpanTextShowOutOfRangeEvent());
-            syncWithCallback(true,true, null);
+            sync(true,true);
             return;
         }
         int width = spanTextView.getMeasuredWidth();
