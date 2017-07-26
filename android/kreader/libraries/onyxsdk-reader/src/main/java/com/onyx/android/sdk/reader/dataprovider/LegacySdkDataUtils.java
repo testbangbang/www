@@ -3,15 +3,19 @@ package com.onyx.android.sdk.reader.dataprovider;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.compatability.OnyxBookProgress;
 import com.onyx.android.sdk.data.compatability.OnyxCmsCenter;
+import com.onyx.android.sdk.data.compatability.OnyxHistoryEntry;
+import com.onyx.android.sdk.data.compatability.OnyxHistoryEntryHelper;
 import com.onyx.android.sdk.data.compatability.OnyxMetadata;
 import com.onyx.android.sdk.data.compatability.OnyxSysCenter;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by joy on 7/22/16.
@@ -128,11 +132,19 @@ public class LegacySdkDataUtils {
         return data;
     }
 
-
     private static void initDataWithDocumentMetadata(final OnyxMetadata metadata, final ReaderDocumentMetadata documentMetadata) {
         metadata.setTitle(documentMetadata.getTitle());
         metadata.setDescription(documentMetadata.getDescription());
         metadata.setAuthors(new ArrayList<>(documentMetadata.getAuthors()));
         metadata.setPublisher(documentMetadata.getPublisher());
+    }
+
+    public static void recordStartReading(Context context, String documentPath) {
+        OnyxMetadata data = getMetadataByPath(documentPath);
+        OnyxHistoryEntryHelper.recordStartReading(context, data.getMD5(), data.getProgress());
+    }
+
+    public static void recordFinishReading(Context context, int currentPage, int totalPage) {
+        OnyxHistoryEntryHelper.recordFinishReading(context, new OnyxBookProgress(currentPage+1, totalPage));
     }
 }
