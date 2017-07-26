@@ -62,6 +62,7 @@
     <string name="device_unbind_fail">Unbind failed</string>
     <string name="device_unbind_success">Unbind success</string>
 
+    <string name="group_has_no_selection">Select at least one group</string>
     <string name="group_has_no_users">There are no users in this group</string>
     <string name="operation_not_support">Not yet supported</string>
     <string name="user_search_edit_hint">Search for users, blank search all</string>
