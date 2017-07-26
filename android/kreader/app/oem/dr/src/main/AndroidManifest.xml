@@ -101,11 +101,11 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.InfromalEssayActivity"
+            android:name=".activity.InformalEssayActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.AddInfromalEssayActivity"
+            android:name=".activity.AddInformalEssayActivity"
             android:screenOrientation="portrait" />
 
         <activity

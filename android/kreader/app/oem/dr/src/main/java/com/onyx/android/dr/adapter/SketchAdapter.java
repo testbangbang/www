@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.data.database.InfromalEssayEntity;
+import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -24,11 +24,11 @@ import butterknife.ButterKnife;
  * Created by zhouzhiming on 2017/7/24.
  */
 public class SketchAdapter extends PageRecyclerView.PageAdapter<SketchAdapter.ViewHolder> {
-    private List<InfromalEssayEntity> dataList;
+    private List<InformalEssayEntity> dataList;
     private List<Boolean> listCheck;
     private OnItemClickListener onItemClickListener;
 
-    public void setDataList(List<InfromalEssayEntity> dataList, List<Boolean> listCheck) {
+    public void setDataList(List<InformalEssayEntity> dataList, List<Boolean> listCheck) {
         this.dataList = dataList;
         this.listCheck = listCheck;
     }
@@ -56,7 +56,7 @@ public class SketchAdapter extends PageRecyclerView.PageAdapter<SketchAdapter.Vi
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        InfromalEssayEntity bean = dataList.get(position);
+        InformalEssayEntity bean = dataList.get(position);
         long currentTime = bean.currentTime;
         holder.time.setText(TimeUtils.getDate(currentTime));
         holder.title.setText(bean.title);

@@ -52,6 +52,7 @@ public class DictFunctionPresenter {
     public void loadTabMenu(int userType) {
         dictView.setDictResultData(functionConfig.getDictData(userType));
     }
+
     public void loadDictType(int userType) {
         dictView.setDictTypeData(dictTypeConfig.getDictTypeData(userType));
     }

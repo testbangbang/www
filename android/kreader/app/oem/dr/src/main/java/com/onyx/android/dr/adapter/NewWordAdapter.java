@@ -67,9 +67,7 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
         NewWordNoteBookEntity bean = dataList.get(position);
         long currentTime = bean.currentTime;
-        holder.month.setText(TimeUtils.getCurrentMonth(currentTime));
-        holder.week.setText(TimeUtils.getWeekOfMonth(currentTime));
-        holder.day.setText(TimeUtils.getCurrentDay(currentTime));
+        holder.time.setText(TimeUtils.getDate(currentTime));
         holder.content.setText(bean.newWord);
         holder.readingMatter.setText(bean.readingMatter);
         holder.dictionaryLookup.setText(bean.dictionaryLookup);
@@ -111,12 +109,8 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.new_word_item_check)
         CheckBox checkBox;
-        @Bind(R.id.new_word_item_month)
-        TextView month;
-        @Bind(R.id.new_word_item_week)
-        TextView week;
-        @Bind(R.id.new_word_item_day)
-        TextView day;
+        @Bind(R.id.new_word_item_time)
+        TextView time;
         @Bind(R.id.new_word_item_content)
         TextView content;
         @Bind(R.id.new_word_item_reading_matter)

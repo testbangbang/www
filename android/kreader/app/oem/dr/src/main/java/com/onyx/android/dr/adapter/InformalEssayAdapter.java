@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.data.database.InfromalEssayEntity;
+import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -22,12 +22,12 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class InfromalEssayAdapter extends PageRecyclerView.PageAdapter<InfromalEssayAdapter.ViewHolder> {
-    private List<InfromalEssayEntity> dataList;
+public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalEssayAdapter.ViewHolder> {
+    private List<InformalEssayEntity> dataList;
     private List<Boolean> listCheck;
     private OnItemClickListener onItemClickListener;
 
-    public void setDataList(List<InfromalEssayEntity> dataList, List<Boolean> listCheck) {
+    public void setDataList(List<InformalEssayEntity> dataList, List<Boolean> listCheck) {
         this.dataList = dataList;
         this.listCheck = listCheck;
     }
@@ -55,7 +55,7 @@ public class InfromalEssayAdapter extends PageRecyclerView.PageAdapter<InfromalE
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        InfromalEssayEntity bean = dataList.get(position);
+        InformalEssayEntity bean = dataList.get(position);
         long currentTime = bean.currentTime;
         holder.content.setText(bean.content);
         holder.time.setText(TimeUtils.getDate(currentTime));

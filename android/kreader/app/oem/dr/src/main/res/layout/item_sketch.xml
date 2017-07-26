@@ -15,8 +15,7 @@
         android:id="@+id/item_sketch_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="2017/08/12  12:20"
+        android:layout_marginTop="@dimen/item_sketch_time_margin_top"
         android:textSize="@dimen/level_three_font_size" />
 
     <LinearLayout
@@ -28,9 +27,9 @@
             android:id="@+id/item_sketch_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="标题"
-            android:textSize="@dimen/level_one_font_size" />
+            android:layout_marginTop="@dimen/item_sketch_title_margin_top"
+            android:text="@string/item_sketch_title"
+            android:textSize="@dimen/level_two_heading_font" />
 
         <CheckBox
             android:id="@+id/item_sketch_title_checkbox"

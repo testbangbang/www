@@ -106,17 +106,11 @@ public class DefaultEditText extends EditText {
         isShow = false;
     }
 
-    /**
-     * 将光标移到最后
-     */
     public void moveCursorToLast() {
         String str = getText().toString() + "";
         setSelection(str.length());
     }
 
-    /**
-     * 展示键盘
-     */
     public void showKeyBoard(final Dialog dialog) {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }

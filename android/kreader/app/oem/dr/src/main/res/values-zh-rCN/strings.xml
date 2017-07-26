@@ -235,4 +235,5 @@
     <string name="end_time_more_than_start_time">结束时间大于开始时间</string>
     <string name="select_start_time">选择开始时间</string>
     <string name="select_end_time">选择结束时间</string>
+    <string name="item_sketch_title">标题</string>
 </resources>

@@ -4,7 +4,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.data.database.InfromalEssayEntity;
+import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 
 import java.io.File;
@@ -91,7 +91,7 @@ public class ExportToHtmlUtils {
         }
     }
 
-    public static void exportInfromalEssayToHtml(List<String> htmlTitle, String title, List<InfromalEssayEntity> dataList) {
+    public static void exportInfromalEssayToHtml(List<String> htmlTitle, String title, List<InformalEssayEntity> dataList) {
         StringBuilder sb = getTitleStringBuilder(title);
         sb.append("<table border=\"1\"><tr>");
         for (int i = 0; i < htmlTitle.size(); i++) {
@@ -102,7 +102,7 @@ public class ExportToHtmlUtils {
         sb.append("</tr>");
         for (int i = 0; i < dataList.size(); i++) {
             sb.append("<tr>");
-            InfromalEssayEntity bean = dataList.get(i);
+            InformalEssayEntity bean = dataList.get(i);
             long currentTime = bean.currentTime;
             sb.append("<th>");
             sb.append(TimeUtils.getDate(currentTime));

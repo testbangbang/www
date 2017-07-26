@@ -146,10 +146,11 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         exit = (TextView) view.findViewById(R.id.select_dialog_close_cancel);
         addNewWordNote = (TextView) view.findViewById(R.id.select_dialog_close_confirm);
         baiduBaike = (TextView) view.findViewById(R.id.select_dialog_baidubaike);
-
         WindowManager.LayoutParams attributes = selectTimeDialog.getWindow().getAttributes();
-        attributes.height = (int) (Utils.getScreenHeight(DRApplication.getInstance()) * 0.8);
-        attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * 1);
+        Float heightProportion = Float.valueOf(getString(R.string.query_record_activity_dialog_height));
+        Float widthProportion = Float.valueOf(getString(R.string.query_record_activity_dialog_width));
+        attributes.height = (int) (Utils.getScreenHeight(DRApplication.getInstance()) * heightProportion);
+        attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * widthProportion);
         selectTimeDialog.getWindow().setAttributes(attributes);
         selectTimeDialog.setView(view);
     }

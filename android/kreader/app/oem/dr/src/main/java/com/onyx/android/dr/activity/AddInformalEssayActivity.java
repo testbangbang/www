@@ -5,15 +5,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.bean.InfromalEssayBean;
+import com.onyx.android.dr.bean.InformalEssayBean;
 import com.onyx.android.dr.common.CommonNotices;
-import com.onyx.android.dr.data.database.InfromalEssayEntity;
-import com.onyx.android.dr.interfaces.InfromalEssayView;
-import com.onyx.android.dr.presenter.InfromalEssayPresenter;
+import com.onyx.android.dr.data.database.InformalEssayEntity;
+import com.onyx.android.dr.interfaces.InformalEssayView;
+import com.onyx.android.dr.presenter.InformalEssayPresenter;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.DefaultEditText;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -22,7 +23,7 @@ import butterknife.OnClick;
 /**
  * Created by zhouzhiming on 2017/7/21.
  */
-public class AddInfromalEssayActivity extends BaseActivity implements InfromalEssayView {
+public class AddInformalEssayActivity extends BaseActivity implements InformalEssayView {
     @Bind(R.id.add_infromal_essay_activity_title)
     EditText titleEditText;
     @Bind(R.id.add_infromal_essay_activity_file)
@@ -31,7 +32,7 @@ public class AddInfromalEssayActivity extends BaseActivity implements InfromalEs
     TextView rightMenu;
     @Bind(R.id.add_infromal_essay_activity_content)
     DefaultEditText contentEditText;
-    private InfromalEssayPresenter infromalEssayPresenter;
+    private InformalEssayPresenter infromalEssayPresenter;
 
     @Override
     protected Integer getLayoutId() {
@@ -48,7 +49,7 @@ public class AddInfromalEssayActivity extends BaseActivity implements InfromalEs
 
     @Override
     protected void initData() {
-        infromalEssayPresenter = new InfromalEssayPresenter(getApplicationContext(), this);
+        infromalEssayPresenter = new InformalEssayPresenter(getApplicationContext(), this);
         setTitleData();
     }
 
@@ -59,7 +60,11 @@ public class AddInfromalEssayActivity extends BaseActivity implements InfromalEs
     }
 
     @Override
-    public void setInfromalEssayData(List<InfromalEssayEntity> dataList) {
+    public void setInformalEssayData(List<InformalEssayEntity> dataList, ArrayList<Boolean>listCheck) {
+    }
+
+    @Override
+    public void setHtmlTitleData(ArrayList<String> dataList) {
     }
 
     @OnClick({R.id.add_infromal_essay_activity_file,
@@ -89,11 +94,11 @@ public class AddInfromalEssayActivity extends BaseActivity implements InfromalEs
             CommonNotices.showMessage(this, getString(R.string.input_infromal_essay_content));
             return;
         }
-        InfromalEssayBean bean = new InfromalEssayBean();
+        InformalEssayBean bean = new InformalEssayBean();
         bean.setTitle(title);
         bean.setContent(content);
         bean.setWordNumber(Utils.getStringLength(content));
-        infromalEssayPresenter.insertInfromalEssay(bean);
+        infromalEssayPresenter.insertInformalEssay(bean);
         finish();
     }
 

@@ -3,14 +3,14 @@ package com.onyx.android.dr.common;
 import android.content.Context;
 import android.content.Intent;
 
-import com.onyx.android.dr.activity.AddInfromalEssayActivity;
+import com.onyx.android.dr.activity.AddInformalEssayActivity;
 import com.onyx.android.dr.activity.AddMemorandumActivity;
 import com.onyx.android.dr.activity.ApplicationsActivity;
 import com.onyx.android.dr.activity.DictQueryActivity;
 import com.onyx.android.dr.activity.DictResultShowActivity;
 import com.onyx.android.dr.activity.GoodSentenceNotebookActivity;
 import com.onyx.android.dr.activity.GoodSentenceTypeActivity;
-import com.onyx.android.dr.activity.InfromalEssayActivity;
+import com.onyx.android.dr.activity.InformalEssayActivity;
 import com.onyx.android.dr.activity.LoginActivity;
 import com.onyx.android.dr.activity.MemorandumActivity;
 import com.onyx.android.dr.activity.MyNotesActivity;
@@ -100,14 +100,14 @@ public class ActivityManager {
     public static void startInfromalEssayActivity(Context context) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClass(context, InfromalEssayActivity.class);
+        intent.setClass(context, InformalEssayActivity.class);
         context.startActivity(intent);
     }
 
     public static void startAddInfromalEssayActivity(Context context) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClass(context, AddInfromalEssayActivity.class);
+        intent.setClass(context, AddInformalEssayActivity.class);
         context.startActivity(intent);
     }
 

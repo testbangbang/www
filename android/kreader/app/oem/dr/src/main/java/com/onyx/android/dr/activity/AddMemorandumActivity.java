@@ -12,13 +12,11 @@ import com.onyx.android.dr.adapter.HourAdapter;
 import com.onyx.android.dr.adapter.MinuteAdapter;
 import com.onyx.android.dr.bean.MemorandumBean;
 import com.onyx.android.dr.common.CommonNotices;
-import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.dialog.SelectAlertDialog;
 import com.onyx.android.dr.event.HourEvent;
 import com.onyx.android.dr.event.MinuteEvent;
-import com.onyx.android.dr.interfaces.MemorandumView;
-import com.onyx.android.dr.presenter.MemorandumPresenter;
+import com.onyx.android.dr.interfaces.AddMemorandumView;
+import com.onyx.android.dr.presenter.AddMemorandumPresenter;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.DefaultEditText;
@@ -38,7 +36,7 @@ import butterknife.OnClick;
 /**
  * Created by zhouzhiming on 2017/7/21.
  */
-public class AddMemorandumActivity extends BaseActivity implements MemorandumView {
+public class AddMemorandumActivity extends BaseActivity implements AddMemorandumView {
     @Bind(R.id.add_memorandum_activity_start_time)
     TextView startTime;
     @Bind(R.id.add_memorandum_activity_end_time)
@@ -47,14 +45,12 @@ public class AddMemorandumActivity extends BaseActivity implements MemorandumVie
     TextView rightMenu;
     @Bind(R.id.add_memorandum_activity_content)
     DefaultEditText contentEditText;
-    private MemorandumPresenter memorandumPresenter;
+    private AddMemorandumPresenter addMemorandumPresenter;
     private SelectAlertDialog selectTimeDialog;
     private TextView hour;
     private TextView minute;
     private PageRecyclerView hourRecyclerView;
     private PageRecyclerView minuteRecyclerView;
-    private List<String> hourList;
-    private ArrayList<String> minuteList;
     private MinuteAdapter minuteAdapter;
     private HourAdapter hourAdapter;
     private TextView cancel;
@@ -64,6 +60,8 @@ public class AddMemorandumActivity extends BaseActivity implements MemorandumVie
     private String startTimeString = "";
     private String endTimeString = "";
     private boolean startOrEnd;
+    private List<String> hourList;
+    private List<String> minuteList;
 
     @Override
     protected Integer getLayoutId() {
@@ -81,13 +79,14 @@ public class AddMemorandumActivity extends BaseActivity implements MemorandumVie
 
     @Override
     protected void initData() {
-        memorandumPresenter = new MemorandumPresenter(getApplicationContext(), this);
         hourList = new ArrayList<String>();
         minuteList = new ArrayList<String>();
-        hourAdapter = new HourAdapter();
         minuteAdapter = new MinuteAdapter();
+        hourAdapter = new HourAdapter();
+        addMemorandumPresenter = new AddMemorandumPresenter(getApplicationContext(), this);
+        addMemorandumPresenter.getHourDatas();
+        addMemorandumPresenter.getMinuteDatas();
         setTitleData();
-        loadHourAndMinuteDatas();
         initEvent();
     }
 
@@ -97,17 +96,18 @@ public class AddMemorandumActivity extends BaseActivity implements MemorandumVie
         rightMenu.setTextSize(getResources().getDimension(R.dimen.level_two_font_size));
     }
 
-    private void loadHourAndMinuteDatas() {
-        for (int i = 1; i <= Constants.HOUR; i++) {
-            hourList.add(String.valueOf(i));
-        }
-        for (int i = 1; i <= Constants.MINUTE; i++) {
-            minuteList.add(String.valueOf(i));
-        }
+    @Override
+    public void setHourData(List<String> dataList) {
+        hourList = dataList;
+        hourAdapter.setDatas(hourList);
+        hourRecyclerView.setAdapter(hourAdapter);
     }
 
     @Override
-    public void setMemorandumData(List<MemorandumEntity> dataList) {
+    public void setMinuteData(List<String> dataList) {
+        minuteList = dataList;
+        minuteAdapter.setDatas(minuteList);
+        minuteRecyclerView.setAdapter(minuteAdapter);
     }
 
     private void loadDialog() {
@@ -121,10 +121,11 @@ public class AddMemorandumActivity extends BaseActivity implements MemorandumVie
         confirm = (TextView) view.findViewById(R.id.time_selector_dialog_confirm);
         hourRecyclerView = (PageRecyclerView) view.findViewById(R.id.date_selector_dialog_hour_recyclerview);
         minuteRecyclerView = (PageRecyclerView) view.findViewById(R.id.time_selector_dialog_minute_recyclerview);
-
         WindowManager.LayoutParams attributes = selectTimeDialog.getWindow().getAttributes();
-        attributes.height = (int) (Utils.getScreenHeight(DRApplication.getInstance()) * 0.3);
-        attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * 0.8);
+        Float heightProportion = Float.valueOf(getString(R.string.add_memorandum_activity_dialog_height));
+        Float widthProportion = Float.valueOf(getString(R.string.add_memorandum_activity_dialog_width));
+        attributes.height = (int) (Utils.getScreenHeight(DRApplication.getInstance()) * heightProportion);
+        attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * widthProportion);
         selectTimeDialog.getWindow().setAttributes(attributes);
         selectTimeDialog.setView(view);
     }
@@ -156,13 +157,7 @@ public class AddMemorandumActivity extends BaseActivity implements MemorandumVie
     }
 
     private void loadDialogData() {
-        hourAdapter.setDatas(hourList);
-        minuteAdapter.setDatas(minuteList);
-        hourRecyclerView.setAdapter(hourAdapter);
-        minuteRecyclerView.setAdapter(minuteAdapter);
-
         hourAdapter.setOnItemClick(new HourAdapter.OnRecyclerViewItemClickListener() {
-
             @Override
             public void onItemClick(View view, int position) {
                 hourString = hourList.get(position);
@@ -170,7 +165,6 @@ public class AddMemorandumActivity extends BaseActivity implements MemorandumVie
             }
         });
         minuteAdapter.setOnItemClick(new MinuteAdapter.OnRecyclerViewItemClickListener() {
-
             @Override
             public void onItemClick(View view, int position) {
                 minuteString = minuteList.get(position);
@@ -212,7 +206,7 @@ public class AddMemorandumActivity extends BaseActivity implements MemorandumVie
         String timeQuantum = Utils.getTimeQuantum(startTimeString, endTimeString);
         bean.setTimeQuantum(timeQuantum);
         bean.setMatter(content);
-        memorandumPresenter.insertMemorandum(bean);
+        addMemorandumPresenter.insertMemorandum(bean);
         finish();
     }
 
@@ -287,4 +281,5 @@ public class AddMemorandumActivity extends BaseActivity implements MemorandumVie
     protected void onDestroy() {
         super.onDestroy();
     }
+
 }

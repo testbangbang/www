@@ -1,8 +1,6 @@
 package com.onyx.android.dr.request.local;
 
-import android.util.Log;
-
-import com.onyx.android.dr.data.database.InfromalEssayEntity;
+import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -12,12 +10,12 @@ import java.util.List;
 /**
  * Created by zhouzhiming on 2017/7/6.
  */
-public class InfromalEssayInsert extends BaseDataRequest {
-    private InfromalEssayEntity infromalEssayInfo;
+public class InformalEssayInsert extends BaseDataRequest {
+    private InformalEssayEntity infromalEssayInfo;
     private boolean weatherInsert = true;
-    private InfromalEssayEntity infromalEssayEntity;
+    private InformalEssayEntity infromalEssayEntity;
 
-    public InfromalEssayInsert(InfromalEssayEntity infromalEssayEntity) {
+    public InformalEssayInsert(InformalEssayEntity infromalEssayEntity) {
         this.infromalEssayInfo = infromalEssayEntity;
     }
 
@@ -39,7 +37,7 @@ public class InfromalEssayInsert extends BaseDataRequest {
     }
 
     public boolean whetherInsert() {
-        List<InfromalEssayEntity> dataList = queryInfromalEssayList();
+        List<InformalEssayEntity> dataList = queryInfromalEssayList();
         if (dataList != null && dataList.size() > 0) {
             for (int i = 0; i < dataList.size(); i++) {
                 infromalEssayEntity = dataList.get(i);
@@ -57,8 +55,8 @@ public class InfromalEssayInsert extends BaseDataRequest {
         return true;
     }
 
-    public List<InfromalEssayEntity> queryInfromalEssayList() {
-        List<InfromalEssayEntity> infromalEssayList = new Select().from(InfromalEssayEntity.class).queryList();
+    public List<InformalEssayEntity> queryInfromalEssayList() {
+        List<InformalEssayEntity> infromalEssayList = new Select().from(InformalEssayEntity.class).queryList();
         return infromalEssayList;
     }
 }

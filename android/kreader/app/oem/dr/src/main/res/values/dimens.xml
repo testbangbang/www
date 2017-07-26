@@ -179,4 +179,7 @@
     <dimen name="item_sketch_photo_height">300dp</dimen>
     <dimen name="dialog_time_selector_margin_left">5dp</dimen>
     <dimen name="add_memorandum_activity_width">130dp</dimen>
+    <dimen name="item_sketch_time_margin_top">5dp</dimen>
+    <dimen name="item_sketch_title_margin_top">5dp</dimen>
+    <dimen name="title_interval_margin_left">1dp</dimen>
 </resources>

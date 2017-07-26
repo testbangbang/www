@@ -2,8 +2,6 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -12,7 +10,6 @@ import com.onyx.android.dr.adapter.NewWordAdapter;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.interfaces.NewWordView;
 import com.onyx.android.dr.presenter.NewWordPresenter;
-import com.onyx.android.dr.util.ExportToHtmlUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -28,12 +25,6 @@ import butterknife.OnClick;
 public class NewWordNotebookActivity extends BaseActivity implements NewWordView {
     @Bind(R.id.new_word_activity_recyclerview)
     PageRecyclerView goodSentenceRecyclerView;
-    @Bind(R.id.new_word_activity_month_spinner)
-    Spinner monthSpinner;
-    @Bind(R.id.new_word_activity_week_spinner)
-    Spinner weekSpinner;
-    @Bind(R.id.new_word_activity_day_spinner)
-    Spinner daySpinner;
     @Bind(R.id.new_word_activity_delete)
     TextView delete;
     @Bind(R.id.new_word_activity_export)
@@ -72,36 +63,16 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         newWordPresenter.getAllNewWordData();
         newWordList = new ArrayList<NewWordNoteBookEntity>();
         listCheck = new ArrayList<>();
-        initSpinnerDatas();
         initEvent();
     }
 
-    private void initSpinnerDatas() {
-        String[] monthDatas = getResources().getStringArray(R.array.month);
-        ArrayAdapter<String> monthAdapter = new ArrayAdapter<String>(this, R.layout.item_spinner_unexpanded_pattern, monthDatas);
-        monthAdapter.setDropDownViewResource(R.layout.item_spinner_expanded_pattern);
-        monthSpinner.setAdapter(monthAdapter);
-
-        String[] weekDatas = getResources().getStringArray(R.array.week);
-        ArrayAdapter<String> weekAdapter = new ArrayAdapter<String>(this, R.layout.item_spinner_unexpanded_pattern, weekDatas);
-        weekAdapter.setDropDownViewResource(R.layout.item_spinner_expanded_pattern);
-        weekSpinner.setAdapter(weekAdapter);
-
-        String[] dayDatas = getResources().getStringArray(R.array.day);
-        ArrayAdapter<String> dayAdapter = new ArrayAdapter<String>(this, R.layout.item_spinner_unexpanded_pattern, dayDatas);
-        dayAdapter.setDropDownViewResource(R.layout.item_spinner_expanded_pattern);
-        daySpinner.setAdapter(dayAdapter);
-    }
-
     @Override
-    public void setNewWordData(List<NewWordNoteBookEntity> dataList) {
+    public void setNewWordData(List<NewWordNoteBookEntity> dataList, ArrayList<Boolean> checkList) {
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
         newWordList = dataList;
-        for (int i = 0; i < newWordList.size(); i++) {
-            listCheck.add(false);
-        }
+        listCheck = checkList;
         newWordAdapter.setDataList(newWordList, listCheck);
         goodSentenceRecyclerView.setAdapter(newWordAdapter);
     }
@@ -129,38 +100,17 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
                 finish();
                 break;
             case R.id.new_word_activity_delete:
-                remoteAdapterDatas();
+                newWordPresenter.remoteAdapterDatas(listCheck, newWordAdapter);
                 break;
             case R.id.new_word_activity_export:
-                exportData();
+                newWordPresenter.getHtmlTitle();
                 break;
         }
     }
 
-    public void remoteAdapterDatas() {
-        int length = listCheck.size();
-        for (int i = length - 1; i >= 0; i--) {
-            if (listCheck.get(i)) {
-                //delete basedata data
-                NewWordNoteBookEntity newWordNoteBookEntity = newWordList.get(i);
-                newWordPresenter.deleteNewWord(newWordNoteBookEntity.currentTime);
-                newWordList.remove(i);
-                listCheck.remove(i);
-                newWordAdapter.notifyItemRemoved(i);
-                newWordAdapter.notifyItemRangeChanged(0, newWordList.size());
-            }
-        }
-    }
-
-    public void exportData() {
-        ArrayList<String> newWordTitle = new ArrayList<String>();
-        newWordTitle.add(getString(R.string.good_sentence_activity_month));
-        newWordTitle.add(getString(R.string.good_sentence_activity_week));
-        newWordTitle.add(getString(R.string.good_sentence_activity_day));
-        newWordTitle.add(getString(R.string.new_word_activity_new_word));
-        newWordTitle.add(getString(R.string.new_word_activity_dictionaryLookup));
-        newWordTitle.add(getString(R.string.good_sentence_activity_involved_reading_matter));
-        ExportToHtmlUtils.exportNewWordToHtml(newWordTitle, getString(R.string.new_word_notebook_html), newWordList);
+    @Override
+    public void setHtmlTitleData(ArrayList<String> dataList) {
+        newWordPresenter.exportDataToHtml(this, dataList, newWordList);
     }
 
     @Override

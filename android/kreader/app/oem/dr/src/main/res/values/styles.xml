@@ -191,6 +191,21 @@
         <item name="android:singleLine">true</item>
     </style>
 
+    <style name="defaultEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/add_infromal_essay_activity_content_height</item>
+        <item name="android:layout_margin">@dimen/add_infromal_essay_activity_content_margin</item>
+        <item name="android:background">@drawable/weixuanzhong_btn</item>
+        <item name="android:enabled">true</item>
+        <item name="android:gravity">top</item>
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:maxLines">6</item>
+        <item name="android:minLines">4</item>
+        <item name="android:padding">@dimen/add_infromal_essay_activity_content_padding</item>
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+    </style>
+
     <style name="good_sentence_activity_textview">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">60dp</item>

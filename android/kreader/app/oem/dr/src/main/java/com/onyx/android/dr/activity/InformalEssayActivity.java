@@ -6,12 +6,11 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.adapter.InfromalEssayAdapter;
+import com.onyx.android.dr.adapter.InformalEssayAdapter;
 import com.onyx.android.dr.common.ActivityManager;
-import com.onyx.android.dr.data.database.InfromalEssayEntity;
-import com.onyx.android.dr.interfaces.InfromalEssayView;
-import com.onyx.android.dr.presenter.InfromalEssayPresenter;
-import com.onyx.android.dr.util.ExportToHtmlUtils;
+import com.onyx.android.dr.data.database.InformalEssayEntity;
+import com.onyx.android.dr.interfaces.InformalEssayView;
+import com.onyx.android.dr.presenter.InformalEssayPresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -24,21 +23,21 @@ import butterknife.OnClick;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class InfromalEssayActivity extends BaseActivity implements InfromalEssayView {
+public class InformalEssayActivity extends BaseActivity implements InformalEssayView {
     @Bind(R.id.infromal_essay_activity_recyclerview)
     PageRecyclerView recyclerView;
     @Bind(R.id.infromal_essay_activity_share)
-    TextView shareInfromalEssay;
+    TextView shareInformalEssay;
     @Bind(R.id.infromal_essay_activity_export)
-    TextView exportInfromalEssay;
+    TextView exportInformalEssay;
     @Bind(R.id.infromal_essay_activity_delete)
-    TextView deleteInfromalEssay;
+    TextView deleteInformalEssay;
     @Bind(R.id.infromal_essay_activity_new)
-    TextView newInfromalEssay;
+    TextView newInformalEssay;
     private DividerItemDecoration dividerItemDecoration;
-    private InfromalEssayAdapter infromalEssayAdapter;
-    private InfromalEssayPresenter infromalEssayPresenter;
-    private List<InfromalEssayEntity> infromalEssayList;
+    private InformalEssayAdapter infromalEssayAdapter;
+    private InformalEssayPresenter infromalEssayPresenter;
+    private List<InformalEssayEntity> infromalEssayList;
     private ArrayList<Boolean> listCheck;
 
     @Override
@@ -58,14 +57,14 @@ public class InfromalEssayActivity extends BaseActivity implements InfromalEssay
     private void initRecylcerView() {
         dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
-        infromalEssayAdapter = new InfromalEssayAdapter();
+        infromalEssayAdapter = new InformalEssayAdapter();
         recyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
     protected void initData() {
-        infromalEssayList = new ArrayList<InfromalEssayEntity>();
+        infromalEssayList = new ArrayList<InformalEssayEntity>();
         listCheck = new ArrayList<>();
         initEvent();
     }
@@ -73,25 +72,23 @@ public class InfromalEssayActivity extends BaseActivity implements InfromalEssay
     @Override
     protected void onResume() {
         super.onResume();
-        infromalEssayPresenter = new InfromalEssayPresenter(getApplicationContext(), this);
-        infromalEssayPresenter.getAllInfromalEssayData();
+        infromalEssayPresenter = new InformalEssayPresenter(getApplicationContext(), this);
+        infromalEssayPresenter.getAllInformalEssayData();
     }
 
     @Override
-    public void setInfromalEssayData(List<InfromalEssayEntity> dataList) {
+    public void setInformalEssayData(List<InformalEssayEntity> dataList, ArrayList<Boolean> checkList) {
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
         infromalEssayList = dataList;
-        for (int i = 0; i < infromalEssayList.size(); i++) {
-            listCheck.add(false);
-        }
+        listCheck = checkList;
         infromalEssayAdapter.setDataList(infromalEssayList, listCheck);
         recyclerView.setAdapter(infromalEssayAdapter);
     }
 
     public void initEvent() {
-        infromalEssayAdapter.setOnItemListener(new InfromalEssayAdapter.OnItemClickListener() {
+        infromalEssayAdapter.setOnItemListener(new InformalEssayAdapter.OnItemClickListener() {
             @Override
             public void setOnItemClick(int position, boolean isCheck) {
                 listCheck.set(position, isCheck);
@@ -115,10 +112,10 @@ public class InfromalEssayActivity extends BaseActivity implements InfromalEssay
                 finish();
                 break;
             case R.id.infromal_essay_activity_delete:
-                remoteAdapterDatas();
+                infromalEssayPresenter.remoteAdapterDatas(listCheck, infromalEssayAdapter);
                 break;
             case R.id.infromal_essay_activity_export:
-                exportData();
+                infromalEssayPresenter.getHtmlTitle();
                 break;
             case R.id.infromal_essay_activity_new:
                 ActivityManager.startAddInfromalEssayActivity(this);
@@ -126,28 +123,9 @@ public class InfromalEssayActivity extends BaseActivity implements InfromalEssay
         }
     }
 
-    public void remoteAdapterDatas() {
-        int length = listCheck.size();
-        for (int i = length - 1; i >= 0; i--) {
-            if (listCheck.get(i)) {
-                //delete basedata data
-                InfromalEssayEntity bean = infromalEssayList.get(i);
-                infromalEssayPresenter.deleteNewWord(bean.currentTime);
-                infromalEssayList.remove(i);
-                listCheck.remove(i);
-                infromalEssayAdapter.notifyItemRemoved(i);
-                infromalEssayAdapter.notifyItemRangeChanged(0, infromalEssayList.size());
-            }
-        }
-    }
-
-    public void exportData() {
-        ArrayList<String> htmlTitle = new ArrayList<String>();
-        htmlTitle.add(getString(R.string.infromal_essay_activity_time));
-        htmlTitle.add(getString(R.string.infromal_essay_activity_title));
-        htmlTitle.add(getString(R.string.infromal_essay_activity_word_number));
-        htmlTitle.add(getString(R.string.infromal_essay_activity_content));
-        ExportToHtmlUtils.exportInfromalEssayToHtml(htmlTitle, getString(R.string.infromal_essay_html), infromalEssayList);
+    @Override
+    public void setHtmlTitleData(ArrayList<String> dataList) {
+        infromalEssayPresenter.exportDataToHtml(this, dataList, infromalEssayList);
     }
 
     @Override

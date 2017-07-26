@@ -237,4 +237,9 @@
     <string name="end_time_more_than_start_time">end time more than start time</string>
     <string name="select_start_time">select start time</string>
     <string name="select_end_time">select end time</string>
+    <string name="item_sketch_title">title</string>
+    <string name="add_memorandum_activity_dialog_height" format="float" type="dimen">0.3</string>
+    <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
+    <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
+    <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
 </resources>

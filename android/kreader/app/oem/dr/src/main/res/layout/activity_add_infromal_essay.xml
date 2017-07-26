@@ -41,18 +41,7 @@
 
     <com.onyx.android.dr.view.DefaultEditText
         android:id="@+id/add_infromal_essay_activity_content"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/add_infromal_essay_activity_content_height"
-        android:layout_margin="@dimen/add_infromal_essay_activity_content_margin"
-        android:background="@drawable/weixuanzhong_btn"
-        android:enabled="true"
-        android:gravity="top"
-        android:hint="@string/input_infromal_essay"
-        android:padding="@dimen/add_infromal_essay_activity_content_padding"
-        android:inputType="textMultiLine"
-        android:maxLines="6"
-        android:minLines="4"
-        android:scrollbars="vertical"
-        android:textSize="@dimen/level_two_heading_font"/>
+        style="@style/defaultEditText"
+        android:hint="@string/input_infromal_essay" />
 
 </LinearLayout>

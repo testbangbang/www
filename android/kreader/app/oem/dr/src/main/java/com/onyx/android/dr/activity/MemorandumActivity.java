@@ -73,14 +73,12 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
     }
 
     @Override
-    public void setMemorandumData(List<MemorandumEntity> dataList) {
+    public void setMemorandumData(List<MemorandumEntity> dataList, ArrayList<Boolean> checkList) {
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
         memorandumList = dataList;
-        for (int i = 0; i < memorandumList.size(); i++) {
-            listCheck.add(false);
-        }
+        listCheck = checkList;
         memorandumAdapter.setDataList(memorandumList, listCheck);
         recyclerView.setAdapter(memorandumAdapter);
     }
@@ -108,26 +106,11 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
                 finish();
                 break;
             case R.id.memorandum_activity_delete:
-                remoteAdapterDatas();
+                memorandumPresenter.remoteAdapterDatas(listCheck, memorandumAdapter);
                 break;
             case R.id.memorandum_activity_new:
                 ActivityManager.startAddMemorandumActivity(this);
                 break;
-        }
-    }
-
-    public void remoteAdapterDatas() {
-        int length = listCheck.size();
-        for (int i = length - 1; i >= 0; i--) {
-            if (listCheck.get(i)) {
-                //delete basedata data
-                MemorandumEntity bean = memorandumList.get(i);
-                memorandumPresenter.deleteMemorandum(bean.currentTime);
-                memorandumList.remove(i);
-                listCheck.remove(i);
-                memorandumAdapter.notifyItemRemoved(i);
-                memorandumAdapter.notifyItemRangeChanged(0, memorandumList.size());
-            }
         }
     }
 
