@@ -99,15 +99,6 @@ public class DeviceUserInfoFragment extends Fragment {
     public static Fragment newInstance(GroupUserInfo groupUserInfo) {
         Bundle bundle = new Bundle();
         if (groupUserInfo != null) {
-            groupUserInfo.groups.clear();
-            CloudGroup lastGroup = getLastCloudGroup();
-            if (lastGroup == null) {
-                if (rootGroup != null) {
-                    groupUserInfo.groups.add(rootGroup);
-                }
-            } else {
-                groupUserInfo.groups.add(lastGroup);
-            }
             bundle.putString(ContentManager.KEY_GROUP_USER_INFO, JSONObjectParseUtils.toJson(groupUserInfo));
         }
         Fragment fragment = new DeviceUserInfoFragment();
@@ -432,9 +423,23 @@ public class DeviceUserInfoFragment extends Fragment {
                 .replaceAll("\b", "");
     }
 
+    private CloudGroup getWillAddToGroup() {
+        CloudGroup lastGroup = getLastCloudGroup();
+        if (lastGroup != null) {
+            return lastGroup;
+        }
+        return rootGroup;
+    }
+
     private void startCommitDeviceBind(NeoAccountBase accountBase) {
+        CloudGroup willAddGroup = getWillAddToGroup();
+        if (willAddGroup == null) {
+            ToastUtils.showToast(getContext().getApplicationContext(), R.string.group_has_no_selection);
+            return;
+        }
         GroupUserInfo groupUserInfo = getGroupUserInfo();
         groupUserInfo.user = accountBase;
+        groupUserInfo.groups.add(willAddGroup);
         DeviceBindCommitEvent bindCommitEvent = new DeviceBindCommitEvent(groupUserInfo);
         EventBus.getDefault().post(bindCommitEvent);
     }
