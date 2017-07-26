@@ -40,6 +40,8 @@ import com.onyx.edu.note.scribble.event.CustomWidthEvent;
 import com.onyx.edu.note.scribble.event.ShowInputKeyBoardEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
 import com.onyx.edu.note.scribble.event.SpanFinishedEvent;
+import com.onyx.edu.note.scribble.event.SpanLineBreakerEvent;
+import com.onyx.edu.note.scribble.event.SpanTextShowOutOfRangeEvent;
 import com.onyx.edu.note.scribble.view.ScribbleSubMenu;
 import com.onyx.edu.note.ui.PageAdapter;
 import com.onyx.edu.note.ui.view.LinedEditText;
@@ -142,8 +144,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         BaseCallback callback = new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-//                InputMethodUtils.hideInputKeyboard(ScribbleActivity.this);
-                mNoteManager.sync(true, true);
+                mHandlerManager.changeScribbleMode(ScribbleMode.MODE_NORMAL_SCRIBBLE);
             }
         };
         mViewModel.start(uniqueID, parentID, scribbleAction, callback);
@@ -303,10 +304,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         });
     }
 
-    private void showOutOfRangeTips() {
-        ToastUtils.showToast(NoteApplication.getInstance(), "Out Of Range");
-    }
-
     private void loadLineLayoutShapes() {
         if (mNoteManager.isLineLayoutMode()) {
             mNoteManager.loadPageShapes();
@@ -347,6 +344,23 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         mHandlerManager.handleToolBarMenuFunction(toolBarMenuID);
     }
 
+    private void showOutOfRangeTips() {
+        ToastUtils.showToast(NoteApplication.getInstance(), "Out Of Range");
+    }
+
+    @Subscribe
+    public void onBuildLinerBreaker(SpanLineBreakerEvent event){
+        if (mViewModel.isBuildingSpan()){
+            return;
+        }
+        mNoteManager.buildLineBreakShape(mBinding.spanTextView);
+    }
+
+    @Subscribe
+    public void onShowOutOfRangeEvent(SpanTextShowOutOfRangeEvent event){
+        showOutOfRangeTips();
+    }
+
     @Subscribe
     public void onSpanFinished(final SpanFinishedEvent event){
         if (event.getBuilder() == null) {
@@ -380,31 +394,42 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     @Subscribe
     public void showInputKeyboard(ShowInputKeyBoardEvent event){
-
-    }
-
-    @Subscribe
-    public void switchScribbleMode(final ChangeScribbleModeEvent event) {
-        hideSubMenu();
-        mHandlerManager.changeScribbleMode(event.getTargetScribbleMode());
-        mNoteManager.clearPageUndoRedo(ScribbleActivity.this);
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        mViewModel.setKeyboardInput(true);
+        mNoteManager.syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                mBinding.spanTextView.setVisibility(event.getTargetScribbleMode() ==
-                        ScribbleMode.MODE_SPAN_SCRIBBLE ? View.VISIBLE : View.GONE);
-                InputMethodUtils.hideInputKeyboard(ScribbleActivity.this);
-                mNoteManager.setCurrentScribbleMode(event.getTargetScribbleMode());
-                if (mNoteManager.isLineLayoutMode()) {
-                    mBinding.spanTextView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mNoteManager.updateLineLayoutArgs(mBinding.spanTextView);
-                        }
-                    });
-                }
+                mBinding.spanTextView.requestFocus();
+                InputMethodUtils.showForcedInputKeyboard(ScribbleActivity.this, getCurrentFocus());
             }
         });
+    }
+
+    /**
+     * When Changing Scribble Mode:
+     * 1.change view visibility.
+     * 2.update NoteManager Scribble Mode and clean undo/redo history.
+     * 3.update LineLayoutArgs after mode change.
+     * 4.hide all ime.
+     * 5.finally change handler,different initial will place in handler activate.
+     * @param event
+     */
+    @Subscribe
+    public void switchScribbleMode(ChangeScribbleModeEvent event) {
+        hideSubMenu();
+        mBinding.spanTextView.setVisibility(event.getTargetScribbleMode() ==
+                ScribbleMode.MODE_SPAN_SCRIBBLE ? View.VISIBLE : View.GONE);
+        mNoteManager.setCurrentScribbleMode(event.getTargetScribbleMode());
+        mNoteManager.clearPageUndoRedo(ScribbleActivity.this);
+        if (mNoteManager.isLineLayoutMode()) {
+            mBinding.spanTextView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mNoteManager.updateLineLayoutArgs(mBinding.spanTextView);
+                }
+            });
+        }
+        InputMethodUtils.hideInputKeyboard(ScribbleActivity.this);
+        mHandlerManager.changeScribbleMode(event.getTargetScribbleMode());
     }
 
     @Subscribe

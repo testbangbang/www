@@ -49,6 +49,12 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     @Override
+    public void onActivate() {
+        super.onActivate();
+        mNoteManager.sync(true, true);
+    }
+
+    @Override
     public void buildFunctionBarMenuFunctionList() {
         mFunctionBarMenuFunctionIDList = new ArrayList<>();
         mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);

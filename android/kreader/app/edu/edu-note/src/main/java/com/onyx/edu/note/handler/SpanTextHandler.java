@@ -22,6 +22,7 @@ import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
 import com.onyx.edu.note.scribble.event.ShowInputKeyBoardEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
+import com.onyx.edu.note.scribble.event.SpanLineBreakerEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -55,8 +56,14 @@ public class SpanTextHandler extends BaseHandler {
     }
 
     @Override
+    public void onActivate() {
+        super.onActivate();
+        mNoteManager.openSpanTextFunc();
+    }
+
+    @Override
     public void onDeactivate() {
-        mNoteManager.spanTextClear();
+        mNoteManager.exitSpanTextFunc();
     }
 
     @Override
@@ -90,6 +97,7 @@ public class SpanTextHandler extends BaseHandler {
                 mNoteManager.buildSpaceShape();
                 break;
             case ScribbleFunctionBarMenuID.ENTER:
+                EventBus.getDefault().post(new SpanLineBreakerEvent());
                 break;
             case ScribbleFunctionBarMenuID.KEYBOARD:
                 EventBus.getDefault().post(new ShowInputKeyBoardEvent());
@@ -110,15 +118,6 @@ public class SpanTextHandler extends BaseHandler {
                 EventBus.getDefault().post(new ShowSubMenuEvent(functionBarMenuID));
                 break;
         }
-    }
-
-    private void onEnter() {
-    }
-
-    private void onDelete(boolean resume) {
-    }
-
-    private void onSpace() {
     }
 
     @Override

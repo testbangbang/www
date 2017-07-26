@@ -36,7 +36,6 @@ public class HandlerManager {
         NoteManager manager = NoteManager.sharedInstance(context);
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(manager));
         providerMap.put(SPAN_TEXT_PROVIDER, new SpanTextHandler(manager));
-        resetToDefaultProvider();
     }
 
     public void resetToDefaultProvider() {
