@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_infromal_essay_linearlayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/item_sketch_picture"
+        android:layout_width="@dimen/item_sketch_photo_width"
+        android:layout_height="@dimen/item_sketch_photo_height"
+        android:background="@drawable/book_cover" />
+
+    <TextView
+        android:id="@+id/item_sketch_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/item_sketch_time_margin_top"
+        android:textSize="@dimen/level_three_font_size" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/item_sketch_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_sketch_title_margin_top"
+            android:text="@string/item_sketch_title"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <CheckBox
+            android:id="@+id/item_sketch_title_checkbox"
+            style="@style/checkbox_style" />
+
+    </LinearLayout>
+</LinearLayout>

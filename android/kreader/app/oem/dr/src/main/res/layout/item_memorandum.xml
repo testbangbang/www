@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_infromal_essay_linearlayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/memorandum_item_check"
+        style="@style/checkbox_style" />
+
+    <View style="@style/good_sentence_item_view" />
+
+    <TextView
+        android:id="@+id/memorandum_item_time_time"
+        style="@style/good_sentence_item_textview"
+        android:layout_marginLeft="@dimen/title_interval_margin_left"
+        android:layout_weight="2"
+        android:text="@string/memorandum_activity_time" />
+
+    <View style="@style/good_sentence_item_view" />
+
+    <TextView
+        android:id="@+id/memorandum_item_time_quantum"
+        style="@style/good_sentence_item_textview"
+        android:layout_marginLeft="@dimen/title_interval_margin_left"
+        android:layout_weight="2"
+        android:text="@string/memorandum_activity_time_quantum" />
+
+    <View style="@style/good_sentence_item_view" />
+
+    <TextView
+        android:id="@+id/memorandum_item_matter"
+        style="@style/good_sentence_item_textview"
+        android:layout_marginLeft="@dimen/title_interval_margin_left"
+        android:layout_weight="4"
+        android:text="@string/memorandum_activity_matter" />
+
+</LinearLayout>

@@ -57,4 +57,7 @@ public class Constants {
 
     public static final String MY_NOTES_FOLDER = "/my_notes_html";
     public static final String NEW_WORD_HTML = MY_NOTES_FOLDER + "/new_word.html";
+
+    public static final int HOUR = 24;
+    public static final int MINUTE = 60;
 }

@@ -39,7 +39,7 @@
     <TextView
         android:id="@+id/good_sentence_item_content"
         style="@style/good_sentence_item_textview"
-        android:layout_marginLeft="1dp"
+        android:layout_marginLeft="@dimen/title_interval_margin_left"
         android:layout_weight="4"
         android:text="@string/good_sentence_activity_good_sentence" />
 
@@ -48,7 +48,7 @@
     <TextView
         android:id="@+id/good_sentence_item_reading_matter"
         style="@style/good_sentence_item_textview"
-        android:layout_marginLeft="1dp"
+        android:layout_marginLeft="@dimen/title_interval_margin_left"
         android:layout_weight="2"
         android:text="@string/good_sentence_activity_involved_reading_matter" />
 
@@ -57,14 +57,14 @@
     <TextView
         android:id="@+id/good_sentence_item_page_number"
         style="@style/good_sentence_item_textview"
-        android:layout_marginLeft="1dp"
+        android:layout_marginLeft="@dimen/title_interval_margin_left"
         android:layout_weight="2"
         android:text="@string/good_sentence_activity_page_number" />
 
     <TextView
         android:id="@+id/good_sentence_item_recitation"
         style="@style/good_sentence_item_textview"
-        android:layout_marginLeft="1dp"
+        android:layout_marginLeft="@dimen/title_interval_margin_left"
         android:layout_weight="2"
         android:visibility="gone"
         android:text="@string/good_sentence_activity_recitation" />

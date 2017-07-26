@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,7 +15,6 @@ import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -25,7 +26,8 @@ import butterknife.ButterKnife;
 public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.ViewHolder> {
     private List<NewWordNoteBookEntity> dataList;
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
-    public static HashMap<Integer, Boolean> isSelected;
+    private List<Boolean> listCheck;
+    private OnItemClickListener onItemClickListener;
 
     public interface OnRecyclerViewItemClickListener {
         void onItemClick(View view, int position);
@@ -35,26 +37,9 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
         this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
     }
 
-    public void setDataList(List<NewWordNoteBookEntity> dataList, HashMap<Integer, Boolean> isSelected) {
+    public void setDataList(List<NewWordNoteBookEntity> dataList, List<Boolean> listCheck) {
         this.dataList = dataList;
-        this.isSelected = isSelected;
-        initHashMapDate();
-    }
-
-    private void initHashMapDate() {
-        if (dataList != null && dataList.size() > 0) {
-            for (int i = 0; i < dataList.size(); i++) {
-                getIsSelected().put(i, false);
-            }
-        }
-    }
-
-    public static HashMap<Integer, Boolean> getIsSelected() {
-        return isSelected;
-    }
-
-    public static void setIsSelected(HashMap<Integer, Boolean> isSelected) {
-        NewWordAdapter.isSelected = isSelected;
+        this.listCheck = listCheck;
     }
 
     @Override
@@ -82,39 +67,50 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
         NewWordNoteBookEntity bean = dataList.get(position);
         long currentTime = bean.currentTime;
-        holder.month.setText(TimeUtils.getCurrentMonth(currentTime));
-        holder.week.setText(TimeUtils.getWeekOfMonth(currentTime));
-        holder.day.setText(TimeUtils.getCurrentDay(currentTime));
+        holder.time.setText(TimeUtils.getDate(currentTime));
         holder.content.setText(bean.newWord);
         holder.readingMatter.setText(bean.readingMatter);
         holder.dictionaryLookup.setText(bean.dictionaryLookup);
-        holder.rootView.setTag(position);
 
-        holder.itemLinearLayout.setOnClickListener(new View.OnClickListener() {
+        holder.checkBox.setChecked(listCheck.get(position));
+        holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if (isSelected.get(position)) {
-                    isSelected.put(position, false);
-                    setIsSelected(isSelected);
-                } else {
-                    isSelected.put(position, true);
-                    setIsSelected(isSelected);
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.setOnItemCheckedChanged(position, b);
                 }
-                notifyItemChanged(position);
             }
         });
-        holder.checkBox.setChecked(getIsSelected().get(position));
+        holder.rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onItemClickListener != null) {
+                    if (holder.checkBox.isChecked()) {
+                        holder.checkBox.setChecked(false);
+                        onItemClickListener.setOnItemClick(position, false);
+                    } else {
+                        holder.checkBox.setChecked(true);
+                        onItemClickListener.setOnItemClick(position, true);
+                    }
+                }
+            }
+        });
+    }
+
+    public interface OnItemClickListener {
+        void setOnItemClick(int position, boolean isCheck);
+        void setOnItemCheckedChanged(int position, boolean isCheck);
+    }
+
+    public void setOnItemListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.new_word_item_check)
         CheckBox checkBox;
-        @Bind(R.id.new_word_item_month)
-        TextView month;
-        @Bind(R.id.new_word_item_week)
-        TextView week;
-        @Bind(R.id.new_word_item_day)
-        TextView day;
+        @Bind(R.id.new_word_item_time)
+        TextView time;
         @Bind(R.id.new_word_item_content)
         TextView content;
         @Bind(R.id.new_word_item_reading_matter)

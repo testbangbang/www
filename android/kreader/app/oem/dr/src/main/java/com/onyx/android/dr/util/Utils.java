@@ -44,8 +44,6 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 
-import static com.onyx.android.dr.common.Constants.BAIDU_BAIKE_URL;
-
 /**
  * Created by zhuzeng on 6/3/15.
  */
@@ -656,5 +654,40 @@ public class Utils {
         Uri content_url = Uri.parse(baseUrl + editQuery);
         intent.setData(content_url);
         context.startActivity(intent);
+    }
+
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    public static String getStringLength(String content) {
+        return content.length() + "";
+    }
+
+    public static String getTimeAndMinute(String hour, String minute) {
+        return hour + ":" + minute;
+    }
+
+    public static String getTimeAndMinuteSecond(String hour, String minute) {
+        String content = "";
+        if (Integer.valueOf(hour) < 10 && Integer.valueOf(minute) < 10) {
+            content = "0" + hour + ":0" + minute;
+            return content;
+        }else if (Integer.valueOf(hour) < 10 && Integer.valueOf(minute) >= 10) {
+            content = "0" + hour + ":" + minute;
+            return content;
+        } else if (Integer.valueOf(hour) >= 10 && Integer.valueOf(minute) < 10) {
+            content = hour + ":0" + minute;
+            return content;
+        } else if (Integer.valueOf(hour) >= 10 && Integer.valueOf(minute) >= 10) {
+            content = hour + ":" + minute;
+            return content;
+        }
+        return content;
+    }
+
+    public static String getTimeQuantum(String hour, String minute) {
+        return hour + "-" + minute;
     }
 }

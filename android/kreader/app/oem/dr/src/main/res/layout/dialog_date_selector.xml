@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout style="@style/dialog_time_selector_linearlayout">
+
+        <TextView
+            android:id="@+id/date_selector_dialog_year"
+            style="@style/dialog_time_selector_textview_style"
+            android:text="@string/time_selector_dialog_year" />
+
+        <View style="@style/firstViewStyle" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/date_selector_dialog_year_recyclerview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/dialog_time_selector_linearlayout"
+        android:layout_marginLeft="@dimen/dialog_time_selector_margin_left">
+
+        <TextView
+            android:id="@+id/date_selector_dialog_month"
+            style="@style/dialog_time_selector_textview_style"
+            android:text="@string/good_sentence_activity_month" />
+
+        <View style="@style/firstViewStyle" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/date_selector_dialog_month_recyclerview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/dialog_time_selector_linearlayout"
+        android:layout_marginLeft="@dimen/dialog_time_selector_margin_left">
+
+        <TextView
+            android:id="@+id/date_selector_dialog_day"
+            style="@style/dialog_time_selector_textview_style"
+            android:text="@string/good_sentence_activity_day" />
+
+        <View style="@style/firstViewStyle" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/date_selector_dialog_day_recyclerview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>
