@@ -61,6 +61,7 @@
     <string name="device_unbind_fail">解绑失败</string>
     <string name="device_unbind_success">解绑成功</string>
 
+    <string name="group_has_no_selection">至少选择一个组</string>
     <string name="group_has_no_users">该组里无用户</string>
     <string name="operation_not_support">暂未支持</string>
     <string name="user_search_edit_hint">搜索用户,空白搜索全部</string>
