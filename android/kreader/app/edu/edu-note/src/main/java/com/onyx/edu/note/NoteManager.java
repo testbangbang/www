@@ -38,6 +38,7 @@ import com.onyx.edu.note.actions.scribble.RemoveByPointListAction;
 import com.onyx.edu.note.actions.scribble.SpannableAction;
 import com.onyx.edu.note.data.ScribbleMode;
 import com.onyx.edu.note.scribble.event.SpanFinishedEvent;
+import com.onyx.edu.note.scribble.event.SpanTextShowOutOfRangeEvent;
 import com.onyx.edu.note.ui.view.LinedEditText;
 
 import org.apache.commons.collections4.MapUtils;
@@ -90,9 +91,6 @@ public class NoteManager {
     public void setCurrentScribbleMode(int currentScribbleMode) {
         mCurrentScribbleMode = currentScribbleMode;
         setLineLayoutMode(mCurrentScribbleMode == ScribbleMode.MODE_SPAN_SCRIBBLE);
-        if (isLineLayoutMode()) {
-            openSpanTextFunc();
-        }
     }
 
     private NoteManager(Context context) {
@@ -325,7 +323,7 @@ public class NoteManager {
         });
     }
 
-    public void spanTextClear() {
+    public void exitSpanTextFunc() {
         if (mSubPageSpanTextShapeMap != null) {
             mSubPageSpanTextShapeMap.clear();
             mSubPageSpanTextShapeMap = null;
@@ -371,6 +369,23 @@ public class NoteManager {
 
     public void buildSpaceShape() {
         buildSpaceShape(SPACE_WIDTH, mSpanTextFontHeight);
+    }
+
+    public void buildLineBreakShape(LinedEditText spanTextView){
+        float spaceWidth = (int) spanTextView.getPaint().measureText(SPACE_TEXT);
+        int pos = spanTextView.getSelectionStart();
+        Layout layout = spanTextView.getLayout();
+        int line = layout.getLineForOffset(pos);
+        if (line == (mNoteViewHelper.getLineLayoutArgs().getLineCount() - 1)) {
+            EventBus.getDefault().post(new SpanTextShowOutOfRangeEvent());
+            sync(true,true);
+            return;
+        }
+        int width = spanTextView.getMeasuredWidth();
+        float x = layout.getPrimaryHorizontal(pos) - spaceWidth;
+        x = x >= width ? 0 : x;
+        buildSpaceShape((int) Math.ceil(spanTextView.getMeasuredWidth() - x) - 2 * ShapeSpan.SHAPE_SPAN_MARGIN,
+                mSpanTextFontHeight);
     }
 
     private Shape createTextShape(String text) {

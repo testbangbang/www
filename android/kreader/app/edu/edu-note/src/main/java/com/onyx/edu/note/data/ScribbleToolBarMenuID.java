@@ -14,17 +14,18 @@ public class ScribbleToolBarMenuID {
     // Describes when the annotation will be discarded
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
-    @IntDef({SWITCH_SCRIBBLE_MODE, REDO, UNDO, SAVE, SETTING, EXPORT})
+    @IntDef({SWITCH_TO_NORMAL_SCRIBBLE_MODE, SWITCH_TO_SPAN_SCRIBBLE_MODE, REDO, UNDO, SAVE, SETTING, EXPORT})
     // Create an interface for validating int types
     public @interface ScribbleToolBarMenuDef {
     }
 
-    public static final int SWITCH_SCRIBBLE_MODE = 0;
-    public static final int UNDO = 1;
-    public static final int REDO = 2;
-    public static final int SAVE = 3;
-    public static final int SETTING = 4;
-    public static final int EXPORT = 5;
+    public static final int SWITCH_TO_NORMAL_SCRIBBLE_MODE = 0;
+    public static final int SWITCH_TO_SPAN_SCRIBBLE_MODE = 1;
+    public static final int UNDO = 2;
+    public static final int REDO = 3;
+    public static final int SAVE = 4;
+    public static final int SETTING = 5;
+    public static final int EXPORT = 6;
 
 
     public

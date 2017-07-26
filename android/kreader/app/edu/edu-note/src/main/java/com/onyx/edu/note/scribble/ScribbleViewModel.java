@@ -6,6 +6,7 @@ import android.databinding.ObservableArrayList;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.databinding.ObservableList;
+import android.util.SparseArray;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -43,6 +44,7 @@ public class ScribbleViewModel extends BaseObservable {
     private final ObservableField<NoteModel> mCurrentNoteModel = new ObservableField<>();
     private final ObservableField<ShapeDataInfo> mShapeDataInfo = new ObservableField<>();
     public final ObservableField<String> mNoteTitle = new ObservableField<>();
+    private SparseArray<List<Integer>> mFunctionBarMenuSubMenuIDListSparseArray = new SparseArray<>();
     private boolean mIsKeyboardInput = false;
     private boolean mIsBuildingSpan = false;
 
@@ -143,6 +145,10 @@ public class ScribbleViewModel extends BaseObservable {
         mNoteTitle.set(title);
     }
 
+    List<Integer> getSubMenuIDList(int mainMenuID) {
+        return mFunctionBarMenuSubMenuIDListSparseArray.get(mainMenuID);
+    }
+
     private void setFunctionBarMenuIDList(List<Integer> functionBarMenuIDList) {
         mFunctionBarMenuIDList.clear();
         mFunctionBarMenuIDList.addAll(functionBarMenuIDList);
@@ -164,6 +170,7 @@ public class ScribbleViewModel extends BaseObservable {
     public void onHandlerActivate(HandlerActivateEvent activateEvent) {
         setFunctionBarMenuIDList(activateEvent.getFunctionBarMenuFunctionIDList());
         setToolBarMenuIDList(activateEvent.getToolBarMenuFunctionIDList());
+        mFunctionBarMenuSubMenuIDListSparseArray = activateEvent.getFunctionBarMenuSubMenuIDListSparseArray();
     }
 
 }

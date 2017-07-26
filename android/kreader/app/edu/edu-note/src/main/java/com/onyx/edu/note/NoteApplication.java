@@ -14,6 +14,8 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 import com.squareup.leakcanary.LeakCanary;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by solskjaer49 on 2017/5/17 17:06.
  */
@@ -47,6 +49,7 @@ public class NoteApplication extends Application {
         initDataProvider(this);
         installExceptionHandler();
         initCompatColorImageConfig();
+        initEventBusIndex();
     }
 
     public static NoteApplication getInstance() {
@@ -74,5 +77,9 @@ public class NoteApplication extends Application {
 
     private void initCompatColorImageConfig() {
         AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
+    }
+
+    private void initEventBusIndex(){
+        EventBus.builder().addIndex(new OnyxEventBusIndex()).installDefaultEventBus();
     }
 }

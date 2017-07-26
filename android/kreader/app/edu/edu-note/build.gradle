@@ -13,7 +13,11 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode gitVersionCode(projectDir)
         versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
-
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ eventBusIndex : 'com.onyx.edu.note.OnyxEventBusIndex' ]
+            }
+        }
     }
     buildTypes {
         release {
@@ -71,6 +75,7 @@ dependencies {
     androidTestCompile ('com.android.support.test:rules:0.5') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+    annotationProcessor  'org.greenrobot:eventbus-annotation-processor:3.0.1'
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
 }
