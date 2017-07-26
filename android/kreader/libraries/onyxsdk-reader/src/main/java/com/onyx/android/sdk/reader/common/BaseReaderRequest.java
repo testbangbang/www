@@ -182,6 +182,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
                 int totalPage = reader.getNavigator().getTotalPage();
                 LegacySdkDataUtils.updateProgress(getContext(), reader.getDocumentPath(),
                         currentPage, totalPage);
+                LegacySdkDataUtils.recordFinishReading(getContext(), currentPage, totalPage);
             }
         } catch (Throwable tr) {
             Log.w(TAG, this.getClass().toString());
