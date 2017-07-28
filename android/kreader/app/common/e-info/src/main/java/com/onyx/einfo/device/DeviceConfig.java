@@ -54,6 +54,9 @@ public class DeviceConfig {
     static public final String DEVICE_QR_CODE_SHOW_CONFIG = "qr_code_show_config";
     static public final String DEVICE_INFO_SHOW_CONFIG = "info_show_config";
 
+    static public final String HOME_ACTIVITY_PKG_NAME = "home_activity_pkg";
+    static public final String HOME_ACTIVITY_CLS_NAME = "home_activity_cls";
+
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
             globalInstance = new DeviceConfig(context);
@@ -225,5 +228,19 @@ public class DeviceConfig {
             return null;
         }
         return JSONObjectParseUtils.parseObject(backend.getString(DEVICE_INFO_SHOW_CONFIG), DeviceInfoShowConfig.class);
+    }
+
+    public final String getHomeActivityPackageName() {
+        if (backend.hasKey(HOME_ACTIVITY_PKG_NAME)) {
+            return backend.getString(HOME_ACTIVITY_PKG_NAME);
+        }
+        return null;
+    }
+
+    public final String getHomeActivityClassName() {
+        if (backend.hasKey(HOME_ACTIVITY_CLS_NAME)) {
+            return backend.getString(HOME_ACTIVITY_CLS_NAME);
+        }
+        return null;
     }
 }
