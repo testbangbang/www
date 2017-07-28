@@ -153,6 +153,10 @@ public class BackupRestoreActivity extends AppCompatActivity{
             new WifiConnectAction<>(6000, 1000, getString(R.string.wifi_connecting), true).execute(this, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
+                    if (e != null) {
+                        Toast.makeText(BackupRestoreActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     prepareBackupFileName(true);
                 }
             });
@@ -295,6 +299,7 @@ public class BackupRestoreActivity extends AppCompatActivity{
             OnyxCustomDialog.getConfirmDialog(this, getString(R.string.wifi_dialog_content), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    Device.currentDevice().enableWifiDetect(BackupRestoreActivity.this, true);
                     NetworkUtil.enableWiFi(BackupRestoreActivity.this.getApplicationContext(), true);
                 }
             }, null).show();

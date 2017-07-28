@@ -7,9 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
-import android.text.InputType;
 import android.util.Log;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -29,6 +27,7 @@ import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
+import com.onyx.android.sdk.ui.data.ReaderMenuViewData;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
@@ -60,6 +59,12 @@ import com.onyx.edu.reader.note.actions.LockFormShapesAction;
 import com.onyx.edu.reader.note.actions.UndoAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.ui.ReaderActivity;
+import com.onyx.edu.reader.ui.actions.form.BaseMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormExamMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormExerciseMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormInteractiveMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormVoteMenuAction;
 import com.onyx.edu.reader.ui.data.ReaderCropArgs;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
@@ -808,16 +813,34 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
-    public static void showFormMenu(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean showNoteMenu) {
-        readerActivity.getExtraView().removeAllViews();
-        final ShowFormMenuActon formMenuActon = new ShowFormMenuActon(disableMenus,
-                readerActivity.getExtraView(),
-                showNoteMenu,
-                getScribbleActionCallback(readerDataHolder));
+    public static void showFormMenu(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, final boolean showScribbleMenu) {
         ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
+        ReaderMenuViewData readerMenuViewData = ReaderMenuViewData.create(disableMenus, showScribbleMenu, readerActivity.getExtraView());
         if (noteDataInfo != null) {
             int currentShapeType = noteDataInfo.getCurrentShapeType();
-            formMenuActon.setSelectShapeAction(createShapeAction(currentShapeType));
+            readerMenuViewData.setSelectShapeAction(createShapeAction(currentShapeType));
+        }
+        ShowScribbleMenuAction.ActionCallback actionCallback = getScribbleActionCallback(readerDataHolder);
+        BaseMenuAction formMenuActon;
+        switch (readerActivity.getHandlerManager().getActiveProviderName()) {
+            case HandlerManager.FORM_PROVIDER:
+                formMenuActon = new ShowFormMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_VOTE_PROVIDER:
+                formMenuActon = new ShowFormVoteMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_INTERACTIVE_PROVIDER:
+                formMenuActon = new ShowFormInteractiveMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_EXAM_PROVIDER:
+                formMenuActon = new ShowFormExamMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_EXERCISE_PROVIDER:
+                formMenuActon = new ShowFormExerciseMenuAction(readerMenuViewData, actionCallback);
+                break;
+            default:
+                formMenuActon = new ShowFormMenuAction(readerMenuViewData, actionCallback);
+                break;
         }
         formMenuActon.execute(readerDataHolder, null);
     }

@@ -190,8 +190,7 @@ public class ReaderDataHolder {
     }
 
     public boolean inNoteWritingProvider() {
-        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER) ||
-                getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_SCRIBBLE_PROVIDER);
+        return getHandlerManager().getActiveProvider().isEnableNoteDrawing();
     }
 
     public boolean inScribbleProvider() {
@@ -199,8 +198,7 @@ public class ReaderDataHolder {
     }
 
     public boolean inFormProvider() {
-        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_PROVIDER) ||
-                getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_SCRIBBLE_PROVIDER);
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_PROVIDER);
     }
 
     public boolean inReadingProvider() {
