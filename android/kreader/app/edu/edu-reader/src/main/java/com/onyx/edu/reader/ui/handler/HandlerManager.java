@@ -29,7 +29,7 @@ import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.ui.handler.form.FormExamHandler;
 import com.onyx.edu.reader.ui.handler.form.FormExerciseHandler;
-import com.onyx.edu.reader.ui.handler.form.FormFieldHandler;
+import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.handler.form.FormInteractiveHandler;
 import com.onyx.edu.reader.ui.handler.form.FormVoteHandler;
 
@@ -53,7 +53,7 @@ public class HandlerManager {
     public static final String ERASER_PROVIDER = "eraser";
     public static final String TTS_PROVIDER = "tts";
     public static final String SLIDESHOW_PROVIDER = "slideshow";
-    public static final String FORM_PROVIDER = "common_form";
+    public static final String FORM_PROVIDER = "form";
     public static final String FORM_VOTE_PROVIDER = "form_vote";
     public static final String FORM_INTERACTIVE_PROVIDER = "form_interactive";
     public static final String FORM_EXAM_PROVIDER = "form_exam";
@@ -84,7 +84,7 @@ public class HandlerManager {
         providerMap.put(ERASER_PROVIDER, new ScribbleHandler(this));
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
         providerMap.put(SLIDESHOW_PROVIDER, new SlideshowHandler(this));
-        providerMap.put(FORM_PROVIDER, new FormFieldHandler(this));
+        providerMap.put(FORM_PROVIDER, new FormBaseHandler(this));
         providerMap.put(FORM_VOTE_PROVIDER, new FormVoteHandler(this));
         providerMap.put(FORM_INTERACTIVE_PROVIDER, new FormInteractiveHandler(this));
         providerMap.put(FORM_EXAM_PROVIDER, new FormExamHandler(this));

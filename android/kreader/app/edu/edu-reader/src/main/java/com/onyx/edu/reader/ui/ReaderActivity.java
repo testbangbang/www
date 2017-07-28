@@ -118,7 +118,7 @@ import com.onyx.edu.reader.ui.events.UpdateTabWidgetVisibilityEvent;
 import com.onyx.edu.reader.ui.gesture.MyOnGestureListener;
 import com.onyx.edu.reader.ui.gesture.MyScaleGestureListener;
 import com.onyx.edu.reader.ui.handler.BaseHandler;
-import com.onyx.edu.reader.ui.handler.form.FormFieldHandler;
+import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.SlideshowHandler;
 import com.onyx.edu.reader.ui.receiver.NetworkConnectChangedReceiver;
@@ -1145,7 +1145,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         boolean startNoteDrawing = getReaderDataHolder().hasScribbleFormField();
-        getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
+        getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormBaseHandler.createInitialState(formFieldControls));
         ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
     }
 

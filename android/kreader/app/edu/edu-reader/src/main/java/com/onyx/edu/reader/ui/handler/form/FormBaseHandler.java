@@ -43,11 +43,11 @@ import java.util.List;
  * Created by ming on 2017/6/5.
  */
 
-public class FormFieldHandler extends ReadingHandler {
+public class FormBaseHandler extends ReadingHandler {
 
     public List<View> formFieldControls;
 
-    public FormFieldHandler(HandlerManager parent) {
+    public FormBaseHandler(HandlerManager parent) {
         super(parent);
     }
 
@@ -315,8 +315,7 @@ public class FormFieldHandler extends ReadingHandler {
     @Override
     public boolean onTouchEvent(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (!isEnableNoteDrawing()) {
-            return true
-                    ;
+            return true;
         }
         if (e.getPointerCount() > 1) {
             return false;
