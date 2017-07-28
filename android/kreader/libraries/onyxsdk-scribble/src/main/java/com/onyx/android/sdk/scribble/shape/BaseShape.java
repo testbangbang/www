@@ -42,6 +42,8 @@ public class BaseShape implements Shape {
     private boolean lock;
     private boolean review;
 
+    private float scale = 1.0f;
+
     /**
      * rectangle, circle, etc.
      * @return
@@ -123,11 +125,21 @@ public class BaseShape implements Shape {
         this.displayStrokeWidth = displayStrokeWidth;
     }
 
+    @Override
+    public void setScale(float targetScaleValue) {
+        scale = targetScaleValue;
+    }
+
+    @Override
+    public float getScale() {
+        return scale;
+    }
+
     public float getDisplayScale(final RenderContext renderContext) {
         if (renderContext == null || renderContext.matrix == null) {
-            return 1.0f;
+            return scale;
         }
-        return renderContext.displayScale;
+        return scale * renderContext.displayScale;
     }
 
     public boolean supportDFB() {
