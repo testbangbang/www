@@ -118,7 +118,7 @@ import com.onyx.edu.reader.ui.events.UpdateTabWidgetVisibilityEvent;
 import com.onyx.edu.reader.ui.gesture.MyOnGestureListener;
 import com.onyx.edu.reader.ui.gesture.MyScaleGestureListener;
 import com.onyx.edu.reader.ui.handler.BaseHandler;
-import com.onyx.edu.reader.ui.handler.FormFieldHandler;
+import com.onyx.edu.reader.ui.handler.form.FormFieldHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.SlideshowHandler;
 import com.onyx.edu.reader.ui.receiver.NetworkConnectChangedReceiver;
@@ -1144,29 +1144,10 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!getReaderDataHolder().useCustomFormMode()) {
             return;
         }
-        boolean startNoteDrawing = hasScribbleFormField();
-        if (!startNoteDrawing || getReaderDataHolder().hasDialogShowing()) {
-            getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
-        }else {
-            getHandlerManager().setActiveProvider(HandlerManager.FORM_SCRIBBLE_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
-        }
-
+        boolean startNoteDrawing = getReaderDataHolder().hasScribbleFormField();
+        getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
         ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
     }
-
-    private boolean hasScribbleFormField() {
-        if (formFieldControls == null) {
-            return false;
-        }
-        for (View formFieldControl : formFieldControls) {
-            ReaderFormField field = (ReaderFormField) formFieldControl.getTag();
-            if (field instanceof ReaderFormScribble) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     private boolean isFormScribble(View view) {
         return view.getTag() instanceof ReaderFormScribble;
