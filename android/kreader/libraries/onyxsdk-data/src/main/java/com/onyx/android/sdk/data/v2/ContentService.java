@@ -7,6 +7,7 @@ import com.onyx.android.sdk.data.model.v2.AdminApplyModel;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.Course;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
+import com.onyx.android.sdk.data.model.v2.GroupContainer;
 import com.onyx.android.sdk.data.model.v2.GroupUserInfo;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
@@ -80,6 +81,9 @@ public interface ContentService {
     // get groupList user belongTo
     @GET("groups/me")
     Call<List<CloudGroup>> getMyGroupList();
+
+    @GET("groups/myGroupsWithLibrary")
+    Call<List<GroupContainer>> getMyGroupContainerList();
 
     @POST("adusers")
     Call<ResponseBody> applyAdminRequest(@Body final AdminApplyModel applyModel);
