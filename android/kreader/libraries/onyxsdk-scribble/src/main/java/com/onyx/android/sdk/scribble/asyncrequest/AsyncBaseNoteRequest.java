@@ -147,8 +147,9 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         if (getException() != null) {
             getException().printStackTrace();
         }
-        helper.enableScreenPost(true);
+
         if (isRender()) {
+            helper.enableScreenPost(true);
             NoteViewUtil.drawPage(helper.getView(), helper.getRenderBitmap(), helper.getDirtyStash());
         }
         benchmarkEnd();
