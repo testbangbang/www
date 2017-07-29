@@ -1,0 +1,88 @@
+<resources>
+    <string name="paste">粘貼</string>
+    <string name="copy">拷貝</string>
+    <string name="cut">剪切</string>
+    <string name="delete">刪除</string>
+    <string name="dialog_reader_menu_back">退出</string>
+    <string name="font_face">字體</string>
+    <string name="text_style">間距樣式</string>
+    <string name="reader_layer_menu_zoom">縮放選項</string>
+    <string name="reader_layer_menu_font_reflow">掃描重排</string>
+    <string name="reader_layer_menu_zoom_in">放大</string>
+    <string name="reader_layer_menu_zoom_out">縮小</string>
+    <string name="reader_layer_menu_zoom_to_page">適合頁面</string>
+    <string name="reader_layer_menu_zoom_to_width">適合寬度</string>
+    <string name="reader_layer_menu_zoom_by_crop_page">裁剪頁面</string>
+    <string name="reader_layer_menu_zoom_by_crop_width">裁剪寬度</string>
+    <string name="reader_layer_menu_zoom_by_rect">手動選擇</string>
+    <string name="reader_layer_menu_navigation">瀏覽</string>
+    <string name="reader_layer_menu_navigation_comic_mode">漫畫模式</string>
+    <string name="reader_layer_menu_navigation_article_mode">論文模式</string>
+    <string name="reader_layer_menu_navigation_reset">重置</string>
+    <string name="reader_layer_menu_navigation_more_settings">更多設定</string>
+    <string name="reader_layer_menu_notes">筆記</string>
+    <string name="reader_layer_menu_directory_toc">目錄</string>
+    <string name="reader_layer_menu_directory_bookmark">書簽</string>
+    <string name="reader_layer_menu_directory_note">標註</string>
+    <string name="reader_layer_menu_directory_scribble">手寫</string>
+    <string name="reader_layer_menu_directory_export">導出</string>
+    <string name="reader_layer_menu_directory_import">導入</string>
+    <string name="reader_layer_menu_show_annotation">標註</string>
+    <string name="reader_layer_menu_show_scribble">顯示</string>
+    <string name="reader_layer_menu_hide_scribble">隱藏</string>
+    <string name="reader_layer_menu_rotation">旋轉</string>
+    <string name="reader_layer_menu_rotation_rotate90">旋轉90度</string>
+    <string name="reader_layer_menu_rotation_rotate0">旋轉0度</string>
+    <string name="reader_layer_menu_rotation_rotate270">旋轉270度</string>
+    <string name="reader_layer_menu_rotation_rotate180">旋轉180度</string>
+    <string name="reader_layer_menu_more">更多設定</string>
+    <string name="reader_layer_menu_tts">TTS</string>
+    <string name="reader_layer_menu_front_light">前光</string>
+    <string name="reader_layer_menu_refresh">頁面刷新</string>
+    <string name="reader_layer_menu_settings">應用設置</string>
+    <string name="reader_layer_menu_font_style_font_indent">縮進</string>
+    <string name="reader_layer_menu_font_style_font_line_spacing">行間距</string>
+    <string name="reader_layer_menu_font_style_page_margins">頁邊距</string>
+    <string name="brightness">亮度</string>
+    <string name="always">每頁</string>
+    <string name="every_3_pages">每3頁</string>
+    <string name="every_5_pages">每5頁</string>
+    <string name="every_7_pages">每7頁</string>
+    <string name="every_9_pages">每9頁</string>
+    <string name="never">不全刷</string>
+    <string name="ok">確認</string>
+    <string name="cancel">取消</string>
+    <string name="gamma_correction">對比度</string>
+    <string name="manual_crop">選切模式</string>
+    <string name="outOfRangRerror">超出區域</string>
+    <string name="illegalInput">無效輸入</string>
+    <string name="save">保存</string>
+    <string name="custom_line_width">自定義線寬</string>
+    <string name="line_width_preview">線寬預覽</string>
+    <string name="current_value">當前線寬:</string>
+    <string name="custom_value">自定義值</string>
+    <string name="reader_layer_menu_slideshow">自動翻頁</string>
+
+    <string name="wifi_dialog_title">WiFi連接</string>
+    <string name="wifi_dialog_content">無網絡連接，是否打開WiFi？</string>
+
+    <string name="importing">正在導入舊手寫板數據...</string>
+    <string name="import_success">導入成功！</string>
+    <string name="no_old_scribble_data">沒有找到舊手寫數據</string>
+    <string name="import_fail">導入失敗</string>
+    <string name="import_success_info" formatted="false">總共導入%d條數據</string>
+
+    <string name="expand">展開</string>
+    <string name="collapse">收縮</string>
+    <string name="jump">跳轉</string>
+    
+    <string name="filter">篩選</string>
+    <string name="order_asc">升序</string>
+    <string name="order_desc">降序</string>
+
+    <string name="chinese_font_face">中文字體</string>
+    <string name="english_font_face">英文字體</string>
+
+    <string name="cold_light">冷光</string>
+    <string name="warm_light">暖光</string>
+</resources>
