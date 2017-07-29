@@ -33,9 +33,11 @@ public class Constants {
     public static final int ACCOUNT_TYPE_DICT_FUNCTION = 3;
     public static final int ACCOUNT_TYPE_DICT_LANGUAGE = 5;
 
-    public static final String DICT_ROOT = "/dicts";
-    public static final String DICTIONARY_ROOT = "/dictionary";
+    public static final String CHINESE_DICTIONARY = "/dicts/Chinese_dictionary";
+    public static final String ENGLISH_DICTIONARY = "/dicts/English_dictionary";
+    public static final String JAPANESE_DICTIONARY = "/dicts/Japanese_dictionary";
     public static final String EDITQUERY = "editQuery";
+    public static final String DICTTYPE = "dictType";
 
     public static final int ACCOUNT_TYPE_MY_TRACKS = 0;
     public static final int ACCOUNT_TYPE_MY_THINK = 1;
@@ -43,17 +45,16 @@ public class Constants {
 
     public static final int ENGLISH_NEW_WORD_NOTEBOOK = 0;
     public static final int CHINESE_NEW_WORD_NOTEBOOK = 1;
-    public static final int MINORITY_LANGUAGE_NEW_WORD_NOTEBOOK = 2;
-
-    public static final int ENGLISH_DOOD_SENTENCE_NOTEBOOK = 0;
-    public static final int CHINESE_DOOD_SENTENCE_NOTEBOOK = 1;
-    public static final int MINORITY_LANGUAGE_DOOD_SENTENCE_NOTEBOOK = 2;
+    public static final int JAPANESE_NEW_WORD_NOTEBOOK = 2;
 
     public static final int ACCOUNT_TYPE_GOOD_SENTENCE = 0;
     public static final int ACCOUNT_TYPE_NEW_WORD = 1;
 
     public static final String BAIDU_BAIKE_URL = "https://wapbaike.baidu.com/item/";
     public static final String WIKTIONARY_URL = "https://en.wiktionary.org/wiki/";
+
+    public static final String SCRIBBLE_ACTIVITY_PACKAGE_NAME = "com.onyx.android.note";
+    public static final String SCRIBBLE_ACTIVITY_FULL_PATH = "com.onyx.android.note.activity.onyx.ScribbleActivity";
 
     public static final String MY_NOTES_FOLDER = "/my_notes_html";
     public static final String NEW_WORD_HTML = MY_NOTES_FOLDER + "/new_word.html";

@@ -8,7 +8,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.request.local.NewWordDelete;
 import com.onyx.android.dr.request.local.NewWordExport;
 import com.onyx.android.dr.request.local.NewWordInsert;
-import com.onyx.android.dr.request.local.NewWordQueryAll;
+import com.onyx.android.dr.request.local.NewWordQueryByType;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
@@ -26,7 +26,7 @@ public class NewWordData {
         dataManager.submit(context, req, callBack);
     }
 
-    public void getAllNewWord(Context context, NewWordQueryAll req, BaseCallback baseCallback) {
+    public void getAllNewWordByType(Context context, NewWordQueryByType req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
     }
 
@@ -38,14 +38,12 @@ public class NewWordData {
         submitRequest(context, req, baseCallback);
     }
 
-    public void exportInformalEssay(Context context, NewWordExport req, BaseCallback baseCallback) {
+    public void exportNewWord(Context context, NewWordExport req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
     }
 
     public ArrayList<String> setHtmlTitle(Context context) {
-        newWordTitle.add(context.getString(R.string.good_sentence_activity_month));
-        newWordTitle.add(context.getString(R.string.good_sentence_activity_week));
-        newWordTitle.add(context.getString(R.string.good_sentence_activity_day));
+        newWordTitle.add(context.getString(R.string.memorandum_activity_time));
         newWordTitle.add(context.getString(R.string.new_word_activity_new_word));
         newWordTitle.add(context.getString(R.string.new_word_activity_dictionaryLookup));
         newWordTitle.add(context.getString(R.string.good_sentence_activity_involved_reading_matter));

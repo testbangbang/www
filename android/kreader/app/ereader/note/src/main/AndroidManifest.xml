@@ -18,15 +18,21 @@
         android:supportsRtl="true"
         android:theme="@style/OnyxAppCompat">
 
-        <meta-data android:name="channel" android:value="${channel_value}"/>
-        <meta-data android:name="type" android:value="${type_value}"/>
-        <meta-data android:name="platform" android:value="${platform_value}" />
+        <meta-data
+            android:name="channel"
+            android:value="${channel_value}" />
+        <meta-data
+            android:name="type"
+            android:value="${type_value}" />
+        <meta-data
+            android:name="platform"
+            android:value="${platform_value}" />
 
         <activity android:name=".activity.mx.ManagerActivity" />
-        <activity android:name=".activity.mx.ScribbleActivity"
-            android:windowSoftInputMode="adjustNothing"/>
         <activity
-            android:name=".activity.StartupActivity">
+            android:name=".activity.mx.ScribbleActivity"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".activity.StartupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,8 +43,9 @@
 
         <activity
             android:name=".activity.onyx.ScribbleActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:screenOrientation="portrait">
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -51,10 +58,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.onyx.SpanScribbleActivity"
+        <activity
+            android:name=".activity.onyx.SpanScribbleActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustNothing"/>
-        <activity android:name=".activity.onyx.SettingActivity"/>
+            android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".activity.onyx.SettingActivity" />
     </application>
 
 </manifest>

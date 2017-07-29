@@ -22,5 +22,5 @@ public class NewWordNoteBookEntity extends BaseModel {
     @Column
     public long currentTime;
     @Column
-    public String newWordType;
+    public int newWordType;
 }

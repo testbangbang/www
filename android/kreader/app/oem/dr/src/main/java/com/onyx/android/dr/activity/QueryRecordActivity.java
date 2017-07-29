@@ -34,6 +34,7 @@ import com.onyx.android.sdk.dict.request.common.DictBaseRequest;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -74,6 +75,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     private long millisecond = 2000;
     private DictSpinnerAdapter dictSpinnerAdapter;
     private TextView baiduBaike;
+    private List<String> pathList;
 
     @Override
     protected Integer getLayoutId() {
@@ -106,7 +108,14 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         queryRecordPresenter = new QueryRecordPresenter(getApplicationContext(), this);
         queryRecordPresenter.getAllQueryRecordData();
         dictSpinnerAdapter = new DictSpinnerAdapter(this);
+        loadDictionary();
         initEvent();
+    }
+
+    private void loadDictionary() {
+        dictionaryManager = DRApplication.getInstance().getDictionaryManager();
+        dictionaryManager.newProviderMap.clear();
+        pathList = Utils.getAllDictPathList();
     }
 
     @Override
@@ -162,7 +171,6 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                 loadDialogData(position);
             }
         });
-
         resultSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -174,7 +182,6 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                     }
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
@@ -185,6 +192,13 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         QueryRecordEntity queryRecordEntity = queryRecordList.get(position);
         newWord = queryRecordEntity.word;
         testWordDictQuery(newWord);
+        resultView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return true;
+            }
+        });
+        resultView.setLongClickable(false);
         resultView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
             @Override
             public void onPageChanged(int totalPage, int curPage) {
@@ -254,10 +268,9 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
 
     public void testWordDictQuery(String editQuery) {
         if (!StringUtils.isNullOrEmpty(editQuery)) {
-            dictionaryManager = DRApplication.getDictionaryManager();
             queryWordRequest = new QueryWordRequest(editQuery);
             reset();
-            boolean bRet = dictionaryManager.sendRequest(DRApplication.getInstance(), queryWordRequest, new DictBaseCallback() {
+            boolean bRet = dictionaryManager.sendRequest(DRApplication.getInstance(), queryWordRequest, pathList, new DictBaseCallback() {
                 @Override
                 public void done(DictBaseRequest request, Exception e) {
                     resultView.loadResultAsHtml(queryWordRequest.queryResult);

@@ -7,7 +7,6 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.GoodSentenceTypeAdapter;
 import com.onyx.android.dr.bean.GoodSentenceTypeBean;
 import com.onyx.android.dr.common.ActivityManager;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.ChineseGoodSentenceEvent;
 import com.onyx.android.dr.event.EnglishGoodSentenceEvent;
@@ -16,6 +15,7 @@ import com.onyx.android.dr.interfaces.GoodSentenceTpyeView;
 import com.onyx.android.dr.presenter.GoodSentenceTypePresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -81,17 +81,17 @@ public class GoodSentenceTypeActivity extends BaseActivity implements GoodSenten
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEnglishGoodSentenceEvent(EnglishGoodSentenceEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
+        ActivityManager.startGoodSentenceNotebookActivity(this, Constants.ENGLISH_NEW_WORD_NOTEBOOK);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChineseGoodSentenceEvent(ChineseGoodSentenceEvent event) {
-        ActivityManager.startGoodSentenceNotebookActivity(this);
+        ActivityManager.startGoodSentenceNotebookActivity(this, Constants.CHINESE_NEW_WORD_NOTEBOOK);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMinorityLanguageGoodSentenceEvent(MinorityLanguageGoodSentenceEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
+        ActivityManager.startGoodSentenceNotebookActivity(this, Constants.JAPANESE_NEW_WORD_NOTEBOOK);
     }
 
     @Override

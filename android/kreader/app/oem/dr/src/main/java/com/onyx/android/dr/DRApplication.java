@@ -1,12 +1,10 @@
 package com.onyx.android.dr;
 
 import android.content.Context;
-import android.os.Environment;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.manager.LeanCloudManager;
@@ -25,9 +23,10 @@ import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.onyx.android.dr.util.Utils.getAllFolderPathList;
 
 /**
  * Created by hehai on 17-6-26.
@@ -37,7 +36,7 @@ public class DRApplication extends MultiDexApplication {
     private static DRApplication sInstance;
     private static CloudStore cloudStore;
     private static LibraryDataHolder libraryDataHolder;
-    private static DictionaryManager dictionaryManager;
+    private DictionaryManager dictionaryManager;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -130,17 +129,12 @@ public class DRApplication extends MultiDexApplication {
     }
 
     public void initDictDatas() {
-        List<String> dictPaths = new ArrayList<>();
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            File path = Environment.getExternalStorageDirectory();
-            dictPaths.add(path + Constants.DICT_ROOT);
-            dictPaths.add(path + Constants.DICTIONARY_ROOT);
-        }
-        DictDatasInit dictDatasInit = new DictDatasInit(DRApplication.getInstance(), dictPaths);
+        List<String> allFolderPathList = getAllFolderPathList();
+        DictDatasInit dictDatasInit = new DictDatasInit(DRApplication.getInstance(), allFolderPathList);
         dictionaryManager = dictDatasInit.dictionaryManager;
-    }
+}
 
-    public static DictionaryManager getDictionaryManager() {
+    public DictionaryManager getDictionaryManager() {
         return dictionaryManager;
     }
 

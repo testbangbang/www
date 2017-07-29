@@ -8,9 +8,9 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 /**
  * Created by zhouzhiming on 2017/7/5.
  */
-public class GoodSentenceExcerptDelete extends BaseDataRequest {
+public class GoodSentenceDelete extends BaseDataRequest {
 
-    public GoodSentenceExcerptDelete() {
+    public GoodSentenceDelete() {
     }
 
     @Override

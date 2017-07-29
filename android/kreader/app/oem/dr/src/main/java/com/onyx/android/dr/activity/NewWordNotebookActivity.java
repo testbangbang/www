@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.NewWordAdapter;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.interfaces.NewWordView;
 import com.onyx.android.dr.presenter.NewWordPresenter;
@@ -34,6 +35,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     private NewWordPresenter newWordPresenter;
     private List<NewWordNoteBookEntity> newWordList;
     private ArrayList<Boolean> listCheck;
+    private int dictType;
 
     @Override
     protected Integer getLayoutId() {
@@ -59,11 +61,16 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
 
     @Override
     protected void initData() {
-        newWordPresenter = new NewWordPresenter(getApplicationContext(), this);
-        newWordPresenter.getAllNewWordData();
         newWordList = new ArrayList<NewWordNoteBookEntity>();
         listCheck = new ArrayList<>();
+        loadNewWordDatas();
         initEvent();
+    }
+
+    private void loadNewWordDatas() {
+        dictType = getIntent().getIntExtra(Constants.DICTTYPE, -1);
+        newWordPresenter = new NewWordPresenter(getApplicationContext(), this);
+        newWordPresenter.getAllNewWordByType(dictType);
     }
 
     @Override
@@ -83,7 +90,6 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
             public void setOnItemClick(int position, boolean isCheck) {
                 listCheck.set(position, isCheck);
             }
-
             @Override
             public void setOnItemCheckedChanged(int position, boolean isCheck) {
                 listCheck.set(position, isCheck);

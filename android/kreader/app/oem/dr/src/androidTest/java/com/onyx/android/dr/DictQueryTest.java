@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.sdk.dict.DictDatasInit;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
 import com.onyx.android.sdk.dict.data.DictionaryQueryResult;
@@ -11,6 +12,7 @@ import com.onyx.android.sdk.dict.data.bean.DictionaryInfo;
 import com.onyx.android.sdk.dict.request.QueryWordRequest;
 import com.onyx.android.sdk.dict.request.common.DictBaseCallback;
 import com.onyx.android.sdk.dict.request.common.DictBaseRequest;
+import com.onyx.android.sdk.dict.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,17 +20,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import static com.onyx.android.dr.common.Constants.DICTIONARY_ROOT;
-import static com.onyx.android.dr.common.Constants.DICT_ROOT;
-
 /**
  * Created by zhouzhiming on 17-6-26.
  */
-
 public class DictQueryTest extends ApplicationTestCase<DRApplication> {
     private StringBuffer buffer = new StringBuffer();
     private QueryWordRequest queryWordRequest;
     private static final String TAG = DictQueryTest.class.getSimpleName();
+    private List<String> stringList;
+    private final String word = "book";
 
     public DictQueryTest() {
         super(DRApplication.class);
@@ -39,8 +39,9 @@ public class DictQueryTest extends ApplicationTestCase<DRApplication> {
         List<String> dictPaths = new ArrayList<>();
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             File path = Environment.getExternalStorageDirectory();
-            dictPaths.add(path + DICT_ROOT);
-            dictPaths.add(path + DICTIONARY_ROOT);
+            dictPaths.add(path + Constants.ENGLISH_DICTIONARY);
+            dictPaths.add(path + Constants.CHINESE_DICTIONARY);
+            dictPaths.add(path + Constants.JAPANESE_DICTIONARY);
         }
         DictDatasInit dictDatasInit = new DictDatasInit(DRApplication.getInstance().getApplicationContext(), dictPaths);
         DictionaryManager dictionaryManager = dictDatasInit.getDictionaryManager();
@@ -50,9 +51,9 @@ public class DictQueryTest extends ApplicationTestCase<DRApplication> {
     public void testWordDictQuery() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         DictionaryManager dictionaryManager = addDictPaths();
-        final String word = "book";
         queryWordRequest = new QueryWordRequest(word);
-        dictionaryManager.sendRequest(DRApplication.getInstance().getApplicationContext(), queryWordRequest, new DictBaseCallback() {
+        stringList = Utils.loadLocalDict(Constants.ENGLISH_DICTIONARY);
+        dictionaryManager.sendRequest(DRApplication.getInstance().getApplicationContext(), queryWordRequest, stringList, new DictBaseCallback() {
             @Override
             public void done(DictBaseRequest request, Exception e) {
                 assertNull(e);
@@ -67,9 +68,9 @@ public class DictQueryTest extends ApplicationTestCase<DRApplication> {
     public void testFuzzyDictQuery() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         DictionaryManager dictionaryManager = addDictPaths();
-        final String word = "book";
         queryWordRequest = new QueryWordRequest(word);
-        dictionaryManager.sendRequest(DRApplication.getInstance().getApplicationContext(), queryWordRequest, new DictBaseCallback() {
+        stringList = Utils.loadLocalDict(Constants.ENGLISH_DICTIONARY);
+        dictionaryManager.sendRequest(DRApplication.getInstance().getApplicationContext(), queryWordRequest, stringList, new DictBaseCallback() {
             @Override
             public void done(DictBaseRequest request, Exception e) {
                 assertNull(e);
@@ -84,9 +85,9 @@ public class DictQueryTest extends ApplicationTestCase<DRApplication> {
     public void testPhraseDictQuery() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         DictionaryManager dictionaryManager = addDictPaths();
-        final String word = "book";
         queryWordRequest = new QueryWordRequest(word);
-        dictionaryManager.sendRequest(DRApplication.getInstance().getApplicationContext(), queryWordRequest, new DictBaseCallback() {
+        stringList = Utils.loadLocalDict(Constants.ENGLISH_DICTIONARY);
+        dictionaryManager.sendRequest(DRApplication.getInstance().getApplicationContext(), queryWordRequest, stringList, new DictBaseCallback() {
             @Override
             public void done(DictBaseRequest request, Exception e) {
                 assertNull(e);
@@ -101,9 +102,9 @@ public class DictQueryTest extends ApplicationTestCase<DRApplication> {
     public void testExampleDictQuery() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         DictionaryManager dictionaryManager = addDictPaths();
-        final String word = "book";
         queryWordRequest = new QueryWordRequest(word);
-        dictionaryManager.sendRequest(DRApplication.getInstance().getApplicationContext(), queryWordRequest, new DictBaseCallback() {
+        stringList = Utils.loadLocalDict(Constants.ENGLISH_DICTIONARY);
+        dictionaryManager.sendRequest(DRApplication.getInstance().getApplicationContext(), queryWordRequest, stringList, new DictBaseCallback() {
             @Override
             public void done(DictBaseRequest request, Exception e) {
                 assertNull(e);

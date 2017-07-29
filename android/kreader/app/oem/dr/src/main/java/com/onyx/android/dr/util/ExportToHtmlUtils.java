@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 
@@ -115,6 +116,49 @@ public class ExportToHtmlUtils {
             sb.append("</th>");
             sb.append("<th>");
             sb.append(bean.content);
+            sb.append("</th>");
+            sb.append("</tr>");
+        }
+        sb.append("</table>");
+
+        PrintStream printStream = null;
+        try {
+            String fileName = Environment.getExternalStorageDirectory() + Constants.NEW_WORD_HTML;
+            File file = new File(fileName);
+            if (!file.getParentFile().exists()){
+                file.getParentFile().mkdirs();
+            }
+            printStream = new PrintStream(new FileOutputStream(file));
+            printStream.println(sb.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void exportGoodSentenceToHtml(List<String> htmlTitle, String title, List<GoodSentenceNoteEntity> dataList) {
+        StringBuilder sb = getTitleStringBuilder(title);
+        sb.append("<table border=\"1\"><tr>");
+        for (int i = 0; i < htmlTitle.size(); i++) {
+            sb.append("<th>");
+            sb.append(htmlTitle.get(i));
+            sb.append("</th>");
+        }
+        sb.append("</tr>");
+        for (int i = 0; i < dataList.size(); i++) {
+            sb.append("<tr>");
+            GoodSentenceNoteEntity bean = dataList.get(i);
+            long currentTime = bean.currentTime;
+            sb.append("<th>");
+            sb.append(TimeUtils.getDate(currentTime));
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.details);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.readingMatter);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.pageNumber);
             sb.append("</th>");
             sb.append("</tr>");
         }

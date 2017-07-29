@@ -44,6 +44,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -53,9 +55,8 @@ import java.util.regex.Pattern;
  * Created by zhuzeng on 11/4/15.
  */
 public class AutoPagedWebView extends WebView {
-    public static final String WEBSIT_DIR = "/mnt/sdcard/dicts/.onyxdict/";
     public static final String HTML_FILE = "onyxdict.html";
-    public static final String DICT_WEBSIT = "file://" + WEBSIT_DIR + HTML_FILE;
+    public static final String DICT_WEBSIT = "file://" + Utils.WEBSIT_DIR + HTML_FILE;
     public static final String ONYX_DICT = "OnyxDict";
     //js function
     private static final String JS_SETKEYWORDEXPLAIN = "jsSetKeywordExplain";
@@ -88,10 +89,12 @@ public class AutoPagedWebView extends WebView {
 
     private String headwordSoundPath = null;
     private List<Set<DictionaryQueryResult>> resultList = new ArrayList<Set<DictionaryQueryResult>>();
+    private List<String> pathList = new ArrayList<String>();
     private Context mContext = null;
 
-    public void playSound(PlaySoundEvent event) {
+    public void playSound(PlaySoundEvent event, List<String> pathList) {
         String soundPath = checkSoundFile((String) event.obj);
+        this.pathList = pathList;
         if (soundPath != null) {
             playSound(soundPath);
         }
@@ -845,14 +848,15 @@ public class AutoPagedWebView extends WebView {
         } else {
             return null;
         }
-        speexConversionSound(soundPath);
+        speexConversionSound(soundPath, pathList);
         return null;
     }
 
-    private void speexConversionSound(String soundPath) {
+    private void speexConversionSound(String soundPath, List<String> pathList) {
         final SpeexConversionRequest speexConversionRequest = new SpeexConversionRequest(soundPath);
-        DictionaryManager manager = new DictionaryManager();
-        manager.sendRequest(getContext(), speexConversionRequest, new DictBaseCallback() {
+        DictionaryManager dictionaryManager = DRApplication.getInstance().getDictionaryManager();
+        dictionaryManager.newProviderMap.clear();
+        dictionaryManager.sendRequest(getContext(), speexConversionRequest, pathList, new DictBaseCallback() {
             @Override
             public void done(DictBaseRequest request, Exception e) {
                 playSound(speexConversionRequest.getDestPath());

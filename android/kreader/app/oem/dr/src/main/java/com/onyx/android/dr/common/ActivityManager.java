@@ -1,8 +1,10 @@
 package com.onyx.android.dr.common;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
+import com.onyx.android.dr.R;
 import com.onyx.android.dr.activity.AddInformalEssayActivity;
 import com.onyx.android.dr.activity.AddMemorandumActivity;
 import com.onyx.android.dr.activity.ApplicationsActivity;
@@ -39,10 +41,11 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startDictResultShowActivity(Context context, String editQuery) {
+    public static void startDictResultShowActivity(Context context, String editQuery, int dictType) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constants.EDITQUERY, editQuery);
+        intent.putExtra(Constants.DICTTYPE, dictType);
         intent.setClass(context, DictResultShowActivity.class);
         context.startActivity(intent);
     }
@@ -61,9 +64,10 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startGoodSentenceNotebookActivity(Context context) {
+    public static void startGoodSentenceNotebookActivity(Context context, int dictType) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.DICTTYPE, dictType);
         intent.setClass(context, GoodSentenceNotebookActivity.class);
         context.startActivity(intent);
     }
@@ -82,9 +86,10 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startNewWordNotebookActivity(Context context) {
+    public static void startNewWordNotebookActivity(Context context, int dictType) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.DICTTYPE, dictType);
         intent.setClass(context, NewWordNotebookActivity.class);
         context.startActivity(intent);
     }
@@ -123,6 +128,25 @@ public class ActivityManager {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, AddMemorandumActivity.class);
         context.startActivity(intent);
+    }
+
+    public static void startScribbleActivity(Context context) {
+        try {
+            Intent intent = context.getPackageManager().getLaunchIntentForPackage(
+                    Constants.SCRIBBLE_ACTIVITY_PACKAGE_NAME);
+            if (intent != null) {
+                ComponentName componentName = new ComponentName(Constants.SCRIBBLE_ACTIVITY_PACKAGE_NAME,
+                        Constants.SCRIBBLE_ACTIVITY_FULL_PATH);
+                intent.setAction(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                intent.setComponent(componentName);
+                context.startActivity(intent);
+            } else {
+                CommonNotices.showMessage(context, context.getString(R.string.do_not_install_note_apk));
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     public static void openBook(Context context, Metadata metadata, String localPath) {
