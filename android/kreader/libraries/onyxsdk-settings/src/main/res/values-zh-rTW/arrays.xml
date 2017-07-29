@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string-array name="wifi_status">
+        <item />
+        <item>"正在掃描…"</item>
+        <item>"正在連接…"</item>
+        <item>"正在進行身份驗證…"</item>
+        <item>"正在獲取 IP 地址…"</item>
+        <item>"已連接"</item>
+        <item>"已暫停"</item>
+        <item>"正在斷開連接…"</item>
+        <item>"已斷開連接"</item>
+        <item>"失敗"</item>
+    </string-array>
+
+    <string-array name="wifi_status_with_ssid">
+        <item />
+        <item>"正在掃描…"</item>
+        <item>"正在連接到 <xliff:g id="NETWORK_NAME">%1$s</xliff:g>…"</item>
+        <item>"正在通過 <xliff:g id="NETWORK_NAME">%1$s</xliff:g> 進行身份驗證…"</item>
+        <item>"正在從 <xliff:g id="NETWORK_NAME">%1$s</xliff:g> 獲取 IP 地址…"</item>
+        <item>"已連接到 <xliff:g id="NETWORK_NAME">%1$s</xliff:g>"</item>
+        <item>"已暫停"</item>
+        <item>"正在斷開與 <xliff:g id="NETWORK_NAME">%1$s</xliff:g> 的連接…"</item>
+        <item>"已斷開連接"</item>
+        <item>"失敗"</item>
+    </string-array>
+
+    <string-array name="wifi_signal">
+        <item>"弱"</item>
+        <item>"壹般"</item>
+        <item>"較強"</item>
+        <item>"強"</item>
+    </string-array>
+
+    <string-array name="homepage_preference">
+        <item>顯示最近閱讀書籍</item>
+        <item>顯示最近添加書籍</item>
+    </string-array>
+
+    <string-array name="long_press_feature_summary">
+        <item>"開關前照光"</item>
+        <item>"全屏切換"</item>
+    </string-array>
+
+</resources>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="setting_network">網絡連接</string>
+    <string name="setting_sound">聲音</string>
+    <string name="setting_storage">存儲</string>
+    <string name="setting_lang_input">語言和輸入法</string>
+    <string name="setting_date_time">日期與時間</string>
+    <string name="setting_security">安全隱私</string>
+    <string name="setting_error_report">錯誤收集</string>
+    <string name="setting_user_setting">用戶設置</string>
+    <string name="setting_application">應用管理</string>
+    <string name="setting_bluetooth">藍牙</string>
+    <string name="setting_vpn">VPN</string>
+    <string name="touch_sound">觸摸提示音</string>
+    <string name="notification_sound">提示音</string>
+
+    <!-- NETWORK setting -->
+    <string name="wifi_network">Wi-fi 網絡</string>
+    <string name="wifi_security_none">無</string>
+    <string name="wifi_remembered">已保存</string>
+    <string name="wifi_secured_first_item">"通過<xliff:g id="WIFI_SECURITY_SHORT">%1$s</xliff:g>進行保護"</string>
+    <string name="wifi_secured_second_item">"，通過<xliff:g id="WIFI_SECURITY_SHORT">%1$s</xliff:g>進行保護"</string>
+    <string name="wifi_wps_available_first_item">受保護的網絡可用</string>
+    <string name="wifi_wps_available_second_item">" （受保護的網絡可用）"</string>
+    <string name="wifi_password">密碼</string>
+    <string name="wifi_show_password">顯示密碼</string>
+    <string name="wifi_show_advanced">顯示高級選項</string>
+    <string name="wifi_signal">信號強度</string>
+    <string name="wifi_security">安全性</string>
+    <string name="wifi_speed">連接速度</string>
+    <string name="wifi_ip_address">IP 地址</string>
+    <string name="wifi_status">狀態消息</string>
+    <string name="Wireless_lan">無線局域網</string>
+    <string name="open_wifi">要查看可用網絡，請打開Wi-Fi</string>
+    <string name="current_available_wifi_count">當前可用Wi-Fi網絡: %1$d </string>
+    <string name="wifi_disabled_password_failure">身份驗證出現問題</string>
+    <string name="wifi_disabled_generic">已停用</string>
+    <string name="wifi_disabled_network_failure">已停用狀況不佳的互聯網連接</string>
+    <string name="wifi_forget">不保存</string>
+    <string name="wifi_connect">連接</string>
+    <string name="wifi_connected">已連接</string>
+    <string name="closed">關閉</string>
+    <string name="wifi_rescan">重新掃描</string>
+    <string name="select_nearby_available_wireless">選取附近可用無線局域網</string>
+    <string name="wifi_band">頻率</string>
+    <string name="wifi_rational">請求權限以讀取Wifi熱點列表</string>
+    <string name="no_wifi_permission">權限請求已被拒絕,正在退出.</string>
+
+
+    <!--Temporarily fix unit.-->
+    <string name="space_in_use">已使用: %1$s GB</string>
+    <string name="free_space">可用空間: %1$s GB</string>
+    <string name="total_space">總容量: %1$s GB</string>
+
+    <!-- Language input method setting -->
+    <string name="language">語言</string>
+    <string name="keyboard_and_input">鍵盤和輸入法</string>
+    <string name="default_ime_tittle">默認</string>
+    <string name="voice">語音</string>
+    <string name="tts_settings_title">文字轉語音 (TTS) 輸出</string>
+
+    <!--Date Time Config-->
+    <string name="current_time">當前時間</string>
+    <string name="date_time_auto">自動確定日期和時間</string>
+    <string name="date_time_24hour">使用 24 小時格式</string>
+    <string name="date_time_set_timezone">選擇時區</string>
+    <string name="date_time_set_date">設置日期</string>
+    <string name="date_time_set_time">設置時間</string>
+    <string name="date_time_set_format">格式設置</string>
+
+    <!--Power Setting-->
+    <string name="setting_power">電源管理</string>
+    <string name="wake_up_summary">系統喚醒時打開前照光</string>
+    <string name="wake_up_title">喚醒</string>
+    <string name="auto_sleep">休眠</string>
+    <string name="power_off_timeout">關機延遲</string>
+    <string name="wifi_sleep_timeout">網絡閑置超時</string>
+    <plurals name="minute">
+        <item quantity="other">%1$d 分鐘</item>
+    </plurals>
+    <plurals name="hour">
+        <item quantity="other">%1$d 小時</item>
+    </plurals>
+    <plurals name="day">
+        <item quantity="other">%1$d 天</item>
+    </plurals>
+    <string name="never_sleep">永不</string>
+    <string name="sleep_summary">無操作 %1$s 後</string>
+    <string name="wifi_timeout_summary">在閱讀時自動關閉Wifi</string>
+    <string name="power_off_timeout_summary">調整自動關機的延遲時間</string>
+    <string name="power_usage">電池使用情況</string>
+
+    <!--Application Manager-->
+    <string name="usb_debug_mode_title">USB 調試模式</string>
+    <string name="application_management_title">應用管理</string>
+    <string name="drm_setting_title">DRM 設置</string>
+    <string name="unknown_resource_title">未知來源</string>
+    <string name="calibration_title">校準</string>
+    <string name="key_binding_title">按鍵映射</string>
+    <string name="dpad_center_long_press_title">確認鍵長按功能</string>
+
+    <string name="usb_debug_mode_summary">連接 USB 後啟用調試模式</string>
+    <string name="unknown_resource_summary">允許安裝不是從電子市場獲取的應用程序</string>
+    <string name="adb_warning_title">"是否允許 USB 調試？"</string>
+    <string name="adb_warning_msg">"USB 調試僅適用於開發工作。該功能可用於在您的計算機和設備之間復制數據、在您的設備上安裝應用程序而不發送通知以及讀取日誌數據。"</string>
+    <string name="install_all_warning">"您的設備和個人數據更容易受到從未知來源獲取的應用程序的攻擊。對於因使用這些應用程序而造成的設備損壞或數據丟失，您同意自行承擔全部責任。"</string>
+
+    <!--Security Setting-->
+    <string name="data_backup_title">數據備份</string>
+    <string name="factory_reset_title">恢復出廠</string>
+
+    <!--User Setting-->
+    <string name="startup_options">開機選項</string>
+    <string name="settings_set_startup_options_explanation">設備啟動後，會自動打開最後閱讀文件</string>
+    <string name="settings_set_startup_options">打開最後閱讀文件</string>
+    <string name="book_scan_options">掃描選項</string>
+    <string name="enable">已啟用</string>
+    <string name="disable">未啟用</string>
+    <string name="setting_set_scan_on_storage_options">限定內置存儲只掃描 \"Books\"/\"書籍\" 文件夾</string>
+    <string name="setting_set_scan_on_SDCard_options">限定SD卡只掃描 \"Books\"/\"書籍\" 文件夾</string>
+    <string name="setting_set_auto_scan_on_SDCard_mount_options">插入SD卡後自動掃描書庫</string>
+    <string name="setting_set_auto_scan_on_pc_connect_options">與PC斷開連接後自動掃描書庫</string>
+    <string name="settings_homepage_option">主頁選項</string>
+    <string name="homepage_preference">主頁設定</string>
+    <string name="settings_Library_option">書庫選項</string>
+    <string name="show_tittle_instead_of_book_name_option">在書庫中,顯示書的標題以代替文件名.</string>
+
+    <!--OTA Setting-->
+    <string name="setting_ota">固件更新</string>
+    <string name="ota_from_cloud">從網絡檢查升級包</string>
+    <string name="ota_from_local">從本地檢查升級包</string>
+    <string name="ota_auto_update">自動升級</string>
+    <string name="ota_auto_summary">自動檢查升級</string>
+    <string name="model_number_title">設備型號 : </string>
+    <string name="firmware_number_title">版本號 : </string>
+    <string name="find_package_from_local">在本地存儲中發現升級包，確定升級?</string>
+    <string name="title_update">OTA 升級</string>
+    <string name="no_update">沒有升級包.</string>
+
+</resources>
