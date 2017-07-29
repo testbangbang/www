@@ -12,16 +12,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.onyx.android.sdk.data.model.v2.CloudGroup;
+import com.onyx.android.sdk.data.model.v2.GroupContainer;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.einfo.R;
 import com.onyx.einfo.InfoApp;
 import com.onyx.einfo.action.ActionChain;
 import com.onyx.einfo.action.AuthTokenAction;
-import com.onyx.einfo.action.CloudGroupListLoadAction;
-import com.onyx.einfo.action.CloudLibraryListLoadAction;
+import com.onyx.einfo.action.CloudGroupContainerListLoadAction;
 import com.onyx.einfo.adapter.ViewPagerAdapter;
 import com.onyx.einfo.custom.NoSwipePager;
 import com.onyx.einfo.events.BookLibraryEvent;
@@ -95,37 +93,31 @@ public class MainActivity extends BaseActivity {
 
     private void loadData() {
         final AuthTokenAction authTokenAction = new AuthTokenAction();
-        final CloudGroupListLoadAction groupLoadAction = new CloudGroupListLoadAction();
+        final CloudGroupContainerListLoadAction groupLoadAction = new CloudGroupContainerListLoadAction();
         final ActionChain actionChain = new ActionChain();
         actionChain.addAction(authTokenAction);
         actionChain.addAction(groupLoadAction);
         actionChain.execute(InfoApp.getLibraryDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                CloudGroup group = groupLoadAction.getFirstCloudGroup();
-                String libraryId = group == null ? null : group.library;
-                loadGroupLibraryList(actionChain, libraryId);
+                if (e != null || CollectionUtils.isNullOrEmpty(groupLoadAction.getContainerList())) {
+                    ToastUtils.showToast(getApplicationContext(), R.string.online_group_load_error);
+                    return;
+                }
+                loadGroupLibraryList(groupLoadAction.getContainerList());
             }
         });
     }
 
-    private void loadGroupLibraryList(ActionChain actionChain, String groupLibrary) {
-        if (StringUtils.isNullOrEmpty(groupLibrary)) {
-            ToastUtils.showToast(getApplicationContext(), R.string.online_library_id_error);
-            return;
-        }
-        final CloudLibraryListLoadAction loadAction = new CloudLibraryListLoadAction(groupLibrary);
-        actionChain.addAction(loadAction);
-        actionChain.execute(InfoApp.getLibraryDataHolder(), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-                final List<Library> list = loadAction.getLibraryList();
-                notifyDataChanged(list);
+    private void loadGroupLibraryList(List<GroupContainer> groupContainerList) {
+        List<Library> libraryList = new ArrayList<>();
+        for (GroupContainer groupContainer : groupContainerList) {
+            if(CollectionUtils.isNullOrEmpty(groupContainer.libraryList)) {
+                continue;
             }
-        });
+            libraryList.addAll(groupContainer.libraryList);
+        }
+        notifyDataChanged(libraryList);
     }
 
     private void notifyDataChanged(List<Library> list) {
