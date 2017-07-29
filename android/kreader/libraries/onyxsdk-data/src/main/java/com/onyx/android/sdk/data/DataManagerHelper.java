@@ -44,7 +44,9 @@ public class DataManagerHelper {
     }
 
     public static List<Library> loadLibraryList(DataManager dataManager, List<Library> list, String parentId) {
-        List<Library> tmpList = dataManager.getRemoteContentProvider().loadAllLibrary(parentId, null);
+        QueryArgs args = new QueryArgs();
+        args.libraryUniqueId = parentId;
+        List<Library> tmpList = dataManager.getRemoteContentProvider().loadAllLibrary(parentId, args);
         if (tmpList.size() > 0) {
             list.addAll(tmpList);
         }
@@ -136,7 +138,8 @@ public class DataManagerHelper {
             list = dataManager.getCacheManager().getLibraryLruCache(queryKey);
         }
         if (list == null) {
-            list = dataManager.getRemoteContentProvider().loadAllLibrary(libraryUniqueId, null);
+            list = new ArrayList<>();
+            loadLibraryList(dataManager, list, libraryUniqueId);
             if (!CollectionUtils.isNullOrEmpty(list)) {
                 dataManager.getCacheManager().addToLibraryCache(queryKey, list);
             }
@@ -335,12 +338,12 @@ public class DataManagerHelper {
     public static List<Library> fetchLibraryLibraryList(Context context, DataProviderBase dataProvider, QueryArgs queryArgs) {
         List<Library> libraryList = dataProvider.loadAllLibrary(queryArgs.libraryUniqueId, queryArgs);
         if (!FetchPolicy.isDataFromMemDb(queryArgs.fetchPolicy, NetworkUtil.isWiFiConnected(context))) {
-            DataManagerHelper.saveLibraryListToLocal(dataProvider, queryArgs, libraryList);
+            DataManagerHelper.saveLibraryListToLocal(dataProvider, libraryList);
         }
         return libraryList;
     }
 
-    public static void saveLibraryListToLocal(DataProviderBase dataProvider, QueryArgs queryArgs, List<Library> libraryList) {
+    public static void saveLibraryListToLocal(DataProviderBase dataProvider, List<Library> libraryList) {
         if (CollectionUtils.isNullOrEmpty(libraryList)) {
             return;
         }
