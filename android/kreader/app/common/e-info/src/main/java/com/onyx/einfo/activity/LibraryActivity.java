@@ -25,7 +25,7 @@ import com.onyx.einfo.action.MetadataLoadAction;
 import com.onyx.einfo.action.LibraryMoveToAction;
 import com.onyx.einfo.action.ConfigSortAction;
 import com.onyx.einfo.events.LoadFinishEvent;
-import com.onyx.einfo.utils.StudentPreferenceManager;
+import com.onyx.einfo.manager.ConfigPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.BookFilter;
@@ -358,11 +358,11 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private void loadQueryArgsConf() {
-        String sortBy = StudentPreferenceManager.getStringValue(LibraryActivity.this,
+        String sortBy = ConfigPreferenceManager.getStringValue(LibraryActivity.this,
                 R.string.library_activity_sort_by_key, SortBy.Name.toString());
-        String filterBy = StudentPreferenceManager.getStringValue(LibraryActivity.this,
+        String filterBy = ConfigPreferenceManager.getStringValue(LibraryActivity.this,
                 R.string.library_activity_book_filter_key, BookFilter.ALL.toString());
-        SortOrder sortOrder = SortOrder.values()[StudentPreferenceManager.getIntValue(LibraryActivity.this,
+        SortOrder sortOrder = SortOrder.values()[ConfigPreferenceManager.getIntValue(LibraryActivity.this,
                 R.string.library_activity_asc_order_key, 0)];
         dataHolder.getLibraryViewInfo().updateSortBy(SortBy.valueOf(sortBy), sortOrder);
         dataHolder.getLibraryViewInfo().updateFilterBy(BookFilter.valueOf(filterBy), sortOrder);

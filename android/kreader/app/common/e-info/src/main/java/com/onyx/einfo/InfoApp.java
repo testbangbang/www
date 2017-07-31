@@ -10,8 +10,8 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.events.DataRefreshEvent;
 import com.onyx.einfo.holder.LibraryDataHolder;
+import com.onyx.einfo.manager.ConfigPreferenceManager;
 import com.onyx.einfo.manager.LeanCloudManager;
-import com.onyx.einfo.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
@@ -81,7 +81,7 @@ public class InfoApp extends MultiDexApplication {
     private void initConfig() {
         try {
             sInstance = this;
-            StudentPreferenceManager.init(this);
+            ConfigPreferenceManager.init(this);
             initCloudStore();
             initDeviceConfig();
             initEventListener();

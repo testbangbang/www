@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.ImageView;
 
 import com.onyx.einfo.R;
-import com.onyx.einfo.model.StudentAccount;
+import com.onyx.einfo.model.AccountInfo;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -29,7 +29,7 @@ public class AvatarUtils {
         String path = avatarPath;
         if (StringUtils.isNullOrEmpty(path)) {
             path = loadDefaultAvatarArray(context)[0];
-            StudentAccount.saveAvatarPath(context, path);
+            AccountInfo.saveAvatarPath(context, path);
         }
 
         if (path.startsWith("res/drawable") || path.startsWith("res/mipmap")) {
@@ -40,7 +40,7 @@ public class AvatarUtils {
     }
 
     public static String getSpecifyArrayAvatarPath(Context context, int avatarArrayRes) {
-        String avatarPath = StudentAccount.loadAvatarPath(context);
+        String avatarPath = AccountInfo.loadAvatarPath(context);
         if (!AppCompatUtils.isColorDevice(context)) {
             return avatarPath;
         }
