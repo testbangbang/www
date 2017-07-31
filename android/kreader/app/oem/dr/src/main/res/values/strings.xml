@@ -244,4 +244,7 @@
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
     <string name="do_not_install_note_apk">do not install note apk</string>
     <string name="dict_query_japanese_language">Japanese</string>
+    <string name="article_repeat_after">article repeat after</string>
+    <string name="speech_recording">speech recording</string>
+    <string name="pronounce_evaluation">pronounce evaluation</string>
 </resources>

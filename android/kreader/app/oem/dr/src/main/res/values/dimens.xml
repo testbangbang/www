@@ -182,4 +182,5 @@
     <dimen name="item_sketch_time_margin_top">5dp</dimen>
     <dimen name="item_sketch_title_margin_top">5dp</dimen>
     <dimen name="title_interval_margin_left">1dp</dimen>
+    <dimen name="hear_and_speak_activity_view_margin_top">30dp</dimen>
 </resources>
