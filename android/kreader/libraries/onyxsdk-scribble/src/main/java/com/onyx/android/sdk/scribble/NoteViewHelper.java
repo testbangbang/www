@@ -81,6 +81,14 @@ public class NoteViewHelper {
         // caller should do hit test in current page, remove shapes hit-tested.
         public abstract void onEraseTouchPointListReceived(final TouchPointList pointList);
 
+        // caller should render the page here.
+        public abstract void onBeginShapeSelect();
+
+        // caller should draw shape select indicator
+        public abstract void onShapeSelecting(final MotionEvent motionEvent);
+
+        // caller should do hit test in current page, shapes select hit-tested.
+        public abstract void onShapeSelectTouchPointListReceived(final TouchPointList pointList);
     }
 
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
@@ -94,6 +102,7 @@ public class NoteViewHelper {
     private List<Shape> dirtyStash = new ArrayList<>();
     private InputCallback callback;
     private TouchPointList erasePoints;
+    private TouchPointList shapeSelectPoints;
     private DeviceConfig deviceConfig;
     private MappingConfig mappingConfig;
     private LineLayoutArgs lineLayoutArgs;
@@ -608,6 +617,34 @@ public class NoteViewHelper {
         shortcutErasing = false;
     }
 
+    private void onBeginShapeSelecting() {
+        shapeSelectPoints = new TouchPointList();
+        if (callback != null) {
+            callback.onBeginShapeSelect();
+        }
+    }
+
+    private boolean onShapeSelecting(final MotionEvent motionEvent) {
+        if (callback != null) {
+            callback.onShapeSelecting(motionEvent);
+        }
+        if (shapeSelectPoints != null) {
+            int n = motionEvent.getHistorySize();
+            for(int i = 0; i < n; ++i) {
+                shapeSelectPoints.add(fromHistorical(motionEvent, i));
+            }
+            shapeSelectPoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(), motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
+        }
+        return true;
+    }
+
+    private void onFinishShapeSelecting() {
+        if (callback != null) {
+            Log.d(TAG, "shapeSelectPoints.size():" + shapeSelectPoints.size());
+            callback.onShapeSelectTouchPointListReceived(shapeSelectPoints);
+        }
+    }
+
     public List<Shape> getDirtyStash() {
         return dirtyStash;
     }
@@ -635,11 +672,23 @@ public class NoteViewHelper {
         int type = getCurrentShapeType();
         if (ShapeFactory.isDFBShape(type)) {
             setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
-        } else if (type == ShapeFactory.SHAPE_ERASER) {
-            setPenState(NoteDrawingArgs.PenState.PEN_USER_ERASING);
-        } else {
-            setPenState(NoteDrawingArgs.PenState.PEN_CANVAS_DRAWING);
+            return;
         }
+        switch (type) {
+            case ShapeFactory.SHAPE_ERASER:
+                setPenState(NoteDrawingArgs.PenState.PEN_USER_ERASING);
+                break;
+            case ShapeFactory.SHAPE_SELECTOR:
+                setPenState(NoteDrawingArgs.PenState.PEN_SHAPE_SELECTING);
+                break;
+            default:
+                setPenState(NoteDrawingArgs.PenState.PEN_CANVAS_DRAWING);
+                break;
+        }
+    }
+
+    public boolean inShapeSelecting(){
+        return getPenState() == NoteDrawingArgs.PenState.PEN_SHAPE_SELECTING;
     }
 
     public boolean inErasing() {
@@ -701,6 +750,9 @@ public class NoteViewHelper {
             }
             return forwardErasing(motionEvent);
         }
+        if (inShapeSelecting()){
+            return forwardShapeSelecting(motionEvent);
+        }
         if (!(useRawInput() && renderByFramework())) {
             return forwardDrawing(motionEvent);
         }
@@ -714,6 +766,17 @@ public class NoteViewHelper {
             onDrawingTouchMove(motionEvent);
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             onDrawingTouchUp(motionEvent);
+        }
+        return true;
+    }
+
+    private boolean forwardShapeSelecting(final MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            onBeginShapeSelecting();
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            onShapeSelecting(motionEvent);
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            onFinishShapeSelecting();
         }
         return true;
     }

@@ -85,6 +85,10 @@ public class NoteManager {
     private @ScribbleMode.ScribbleModeDef
     int mCurrentScribbleMode = ScribbleMode.MODE_NORMAL_SCRIBBLE;
 
+    //TODO:Shape Selecting Relative
+    private TouchPoint mShapeSelectPoint = null;
+
+
     public int getCurrentScribbleMode() {
         return mCurrentScribbleMode;
     }
@@ -478,6 +482,22 @@ public class NoteManager {
                         buildSpan();
                     }
                 }
+
+                @Override
+                public void onBeginShapeSelect() {
+                    onBeginShapeSelecting();
+                }
+
+                @Override
+                public void onShapeSelecting(MotionEvent motionEvent) {
+                    NoteManager.this.onShapeSelecting(motionEvent);
+                }
+
+                @Override
+                public void onShapeSelectTouchPointListReceived(TouchPointList pointList) {
+                    NoteManager.this.onFinishShapeSelecting(pointList);
+                }
+
             };
         }
         return mInputCallback;
@@ -503,6 +523,27 @@ public class NoteManager {
     protected void onFinishErasing(TouchPointList pointList) {
         mErasePoint = null;
         new RemoveByPointListAction(pointList).execute(this, null);
+    }
+
+    protected void onBeginShapeSelecting() {
+        syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                mShapeSelectPoint = new TouchPoint();
+            }
+        });
+    }
+
+    protected void onShapeSelecting(final MotionEvent touchPoint) {
+        if (mShapeSelectPoint == null) {
+            return;
+        }
+        mShapeSelectPoint.x = touchPoint.getX();
+        mShapeSelectPoint.y = touchPoint.getY();
+    }
+
+    protected void onFinishShapeSelecting(TouchPointList pointList) {
+        mShapeSelectPoint = null;
     }
 
     private void drawCurrentPage() {
