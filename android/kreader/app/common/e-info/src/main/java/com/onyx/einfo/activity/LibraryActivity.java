@@ -10,13 +10,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.einfo.InfoApp;
+import com.onyx.einfo.action.ActionChain;
+import com.onyx.einfo.action.FileSystemScanAction;
 import com.onyx.einfo.action.LibraryChoiceAction;
 import com.onyx.einfo.action.LibraryDeleteAction;
 import com.onyx.einfo.action.LibraryGotoPageAction;
 import com.onyx.einfo.action.LibraryRemoveFromAction;
 import com.onyx.einfo.adapter.LibraryAdapter;
 import com.onyx.einfo.custom.PageIndicator;
+import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.holder.LibraryDataHolder;
 import com.onyx.einfo.R;
 import com.onyx.einfo.action.LibraryBuildAction;
@@ -25,7 +29,7 @@ import com.onyx.einfo.action.MetadataLoadAction;
 import com.onyx.einfo.action.LibraryMoveToAction;
 import com.onyx.einfo.action.ConfigSortAction;
 import com.onyx.einfo.events.LoadFinishEvent;
-import com.onyx.einfo.utils.StudentPreferenceManager;
+import com.onyx.einfo.manager.ConfigPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.BookFilter;
@@ -62,6 +66,7 @@ import butterknife.Bind;
  */
 
 public class LibraryActivity extends BaseActivity {
+    static private boolean hasMetadataScanned = false;
 
     @Bind(R.id.content_pageView)
     SinglePageRecyclerView contentPageView;
@@ -208,15 +213,53 @@ public class LibraryActivity extends BaseActivity {
         pageIndicator.updateCurrentPage(totalCount);
     }
 
-    private ConditionGroup filterCloudDirCondition() {
-        return ConditionGroup.clause()
-                .and(QueryBuilder.matchLike(Metadata_Table.nativeAbsolutePath,
-                        EnvironmentUtil.getExternalStorageDirectory().getAbsolutePath() + "/Books/"));
+    private ConditionGroup getExcludeDirCondition() {
+        List<String> list = DeviceConfig.sharedInstance(this).getBookExcludeDirectories();
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            return null;
+        }
+        ConditionGroup group = ConditionGroup.clause();
+        for (String name : list) {
+            group.and(QueryBuilder.matchNotLike(Metadata_Table.nativeAbsolutePath,
+                    EnvironmentUtil.getExternalStorageDirectory().getAbsolutePath() + File.separator + name));
+        }
+        return group;
+    }
+
+    private boolean isHasMetadataScanned() {
+        return hasMetadataScanned;
+    }
+
+    private void setHasMetadataScanned(boolean hasScanned) {
+        hasMetadataScanned = hasScanned;
     }
 
     @Override
     protected void initData() {
+        if (!isHasMetadataScanned()) {
+            processFileSystemScan();
+            return;
+        }
         loadData();
+    }
+
+    private void processFileSystemScan() {
+        final DialogLoading dialogLoading = new DialogLoading(this, R.string.loading, false);
+        dialogLoading.show();
+        ActionChain actionChain = new ActionChain();
+        actionChain.addAction(new FileSystemScanAction(FileSystemScanAction.MMC_STORAGE_ID, true));
+        String sdcardCid = EnvironmentUtil.getRemovableSDCardCid();
+        if (StringUtils.isNotBlank(sdcardCid)) {
+            actionChain.addAction(new FileSystemScanAction(sdcardCid, false));
+        }
+        actionChain.execute(InfoApp.getLibraryDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                dialogLoading.dismiss();
+                setHasMetadataScanned(true);
+                loadData();
+            }
+        });
     }
 
     @Override
@@ -327,7 +370,7 @@ public class LibraryActivity extends BaseActivity {
 
     private QueryArgs libraryBuildQueryArgs() {
         QueryArgs args = dataHolder.getLibraryViewInfo().libraryQuery();
-        QueryBuilder.andWith(args.conditionGroup, filterCloudDirCondition());
+        QueryBuilder.andWith(args.conditionGroup, getExcludeDirCondition());
         return args;
     }
 
@@ -358,11 +401,11 @@ public class LibraryActivity extends BaseActivity {
     }
 
     private void loadQueryArgsConf() {
-        String sortBy = StudentPreferenceManager.getStringValue(LibraryActivity.this,
+        String sortBy = ConfigPreferenceManager.getStringValue(LibraryActivity.this,
                 R.string.library_activity_sort_by_key, SortBy.Name.toString());
-        String filterBy = StudentPreferenceManager.getStringValue(LibraryActivity.this,
+        String filterBy = ConfigPreferenceManager.getStringValue(LibraryActivity.this,
                 R.string.library_activity_book_filter_key, BookFilter.ALL.toString());
-        SortOrder sortOrder = SortOrder.values()[StudentPreferenceManager.getIntValue(LibraryActivity.this,
+        SortOrder sortOrder = SortOrder.values()[ConfigPreferenceManager.getIntValue(LibraryActivity.this,
                 R.string.library_activity_asc_order_key, 0)];
         dataHolder.getLibraryViewInfo().updateSortBy(SortBy.valueOf(sortBy), sortOrder);
         dataHolder.getLibraryViewInfo().updateFilterBy(BookFilter.valueOf(filterBy), sortOrder);
