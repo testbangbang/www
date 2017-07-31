@@ -37,6 +37,7 @@ import com.onyx.edu.note.actions.scribble.RemoveByGroupIdAction;
 import com.onyx.edu.note.actions.scribble.RemoveByPointListAction;
 import com.onyx.edu.note.actions.scribble.SpannableAction;
 import com.onyx.edu.note.data.ScribbleMode;
+import com.onyx.edu.note.scribble.event.RawDataReceivedEvent;
 import com.onyx.edu.note.scribble.event.SpanFinishedEvent;
 import com.onyx.edu.note.scribble.event.SpanTextShowOutOfRangeEvent;
 import com.onyx.edu.note.ui.view.LinedEditText;
@@ -137,7 +138,7 @@ public class NoteManager {
     public boolean submitRequest(final AsyncBaseNoteRequest request, final BaseCallback callback) {
         beforeSubmit(request);
         if (contextWeakReference.get() != null) {
-            return requestManager.submitRequestToMultiThreadPool(contextWeakReference.get(),
+            return requestManager.submitRequest(contextWeakReference.get(),
                     request, generateRunnable(request), callback);
         } else {
             Log.e(TAG, "Context has been GC");
@@ -436,6 +437,7 @@ public class NoteManager {
                     if (isLineLayoutMode()) {
                         buildSpan();
                     }
+                    EventBus.getDefault().post(new RawDataReceivedEvent());
                 }
 
                 @Override

@@ -15,12 +15,14 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.shape.RenderInBackgroundRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.edu.note.HandlerManager;
@@ -37,6 +39,7 @@ import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
 import com.onyx.edu.note.receiver.DeviceReceiver;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
+import com.onyx.edu.note.scribble.event.RawDataReceivedEvent;
 import com.onyx.edu.note.scribble.event.ShowInputKeyBoardEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
 import com.onyx.edu.note.scribble.event.SpanFinishedEvent;
@@ -346,6 +349,16 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     private void showOutOfRangeTips() {
         ToastUtils.showToast(NoteApplication.getInstance(), "Out Of Range");
+    }
+
+    @Subscribe
+    public void onRawDataReceived(RawDataReceivedEvent event) {
+        final List<Shape> shapes = mNoteManager.detachStash();
+        if (CollectionUtils.isNullOrEmpty(shapes)) {
+            return;
+        }
+        RenderInBackgroundRequest request = new RenderInBackgroundRequest(shapes);
+        mNoteManager.submitRequest(request, null);
     }
 
     @Subscribe

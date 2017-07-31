@@ -28,11 +28,13 @@ public class ScribbleHandler extends BaseHandler {
     public void onActivate(final ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
         final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
+        setEnableNoteDrawing(true);
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
         StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, true);
         stopNoteActionChain.execute(readerDataHolder, null);
+        setEnableNoteDrawing(false);
     }
 
     @Override

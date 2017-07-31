@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">應用市場</string>
+    <string name="get_empty_download_link">無法取得下載鏈接</string>
+    <string name="get_empty_content">沒有取得內容</string>
+    <string name="download_success">下載成功</string>
+    <string name="download_fail">下載失敗</string>
+    <string name="downloading">下載中&#8230;</string>
+    <string name="total">總計：%d</string>
+    <string name="download">下載</string>
+    <string name="install">安裝</string>
+    <string name="updated">已是最新</string>
+    <string name="search_hint">搜索(空白字符搜索全部)</string>
+    <string name="no_category_found">查不到分類</string>
+    <string name="all">全部</string>
+</resources>

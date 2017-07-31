@@ -58,7 +58,7 @@ public abstract class BaseHandler {
     private boolean pinchZooming = false;
     private boolean scrolling = false;
     private boolean disablePinchZoom = true;
-
+    private boolean enableNoteDrawing = false;
 
     public boolean isSingleTapUp() {
         return singleTapUp;
@@ -78,6 +78,7 @@ public abstract class BaseHandler {
 
     public BaseHandler(HandlerManager parent){
         this.parent = parent;
+        setEnableNoteDrawing(false);
     }
 
     public HandlerManager getParent() {
@@ -401,5 +402,13 @@ public abstract class BaseHandler {
             return;
         }
         readerDataHolder.getEventBus().post(new QuitEvent());
+    }
+
+    public boolean isEnableNoteDrawing() {
+        return enableNoteDrawing;
+    }
+
+    public void setEnableNoteDrawing(boolean enableNoteDrawing) {
+        this.enableNoteDrawing = enableNoteDrawing;
     }
 }

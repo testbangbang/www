@@ -27,6 +27,11 @@ import com.onyx.edu.reader.ui.actions.ToggleBookmarkAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.edu.reader.device.DeviceConfig;
+import com.onyx.edu.reader.ui.handler.form.FormExamHandler;
+import com.onyx.edu.reader.ui.handler.form.FormExerciseHandler;
+import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
+import com.onyx.edu.reader.ui.handler.form.FormInteractiveHandler;
+import com.onyx.edu.reader.ui.handler.form.FormVoteHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +54,10 @@ public class HandlerManager {
     public static final String TTS_PROVIDER = "tts";
     public static final String SLIDESHOW_PROVIDER = "slideshow";
     public static final String FORM_PROVIDER = "form";
-    public static final String FORM_SCRIBBLE_PROVIDER = "form_scribble";
+    public static final String FORM_VOTE_PROVIDER = "form_vote";
+    public static final String FORM_INTERACTIVE_PROVIDER = "form_interactive";
+    public static final String FORM_EXAM_PROVIDER = "form_exam";
+    public static final String FORM_EXERCISE_PROVIDER = "form_exercise";
 
     private static final int TOUCH_HORIZONTAL_PART = 3;
     private static final int TOUCH_VERTICAL_PART = 2;
@@ -76,8 +84,11 @@ public class HandlerManager {
         providerMap.put(ERASER_PROVIDER, new ScribbleHandler(this));
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
         providerMap.put(SLIDESHOW_PROVIDER, new SlideshowHandler(this));
-        providerMap.put(FORM_PROVIDER, new FormFieldHandler(this));
-        providerMap.put(FORM_SCRIBBLE_PROVIDER, new FormScribbleHandler(this));
+        providerMap.put(FORM_PROVIDER, new FormBaseHandler(this));
+        providerMap.put(FORM_VOTE_PROVIDER, new FormVoteHandler(this));
+        providerMap.put(FORM_INTERACTIVE_PROVIDER, new FormInteractiveHandler(this));
+        providerMap.put(FORM_EXAM_PROVIDER, new FormExamHandler(this));
+        providerMap.put(FORM_EXERCISE_PROVIDER, new FormExerciseHandler(this));
         activeProviderName = READING_PROVIDER;
         enable.set(true);
         enableTouch.set(true);
@@ -182,9 +193,6 @@ public class HandlerManager {
 
     private String getDefaultProvider() {
         if (readerDataHolder.useCustomFormMode()) {
-            if (readerDataHolder.hasScribbleFormField()) {
-                return FORM_SCRIBBLE_PROVIDER;
-            }
             return FORM_PROVIDER;
         }
         return READING_PROVIDER;
