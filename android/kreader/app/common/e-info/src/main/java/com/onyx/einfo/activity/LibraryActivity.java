@@ -10,13 +10,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.einfo.InfoApp;
+import com.onyx.einfo.action.ActionChain;
+import com.onyx.einfo.action.FileSystemScanAction;
 import com.onyx.einfo.action.LibraryChoiceAction;
 import com.onyx.einfo.action.LibraryDeleteAction;
 import com.onyx.einfo.action.LibraryGotoPageAction;
 import com.onyx.einfo.action.LibraryRemoveFromAction;
 import com.onyx.einfo.adapter.LibraryAdapter;
 import com.onyx.einfo.custom.PageIndicator;
+import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.holder.LibraryDataHolder;
 import com.onyx.einfo.R;
 import com.onyx.einfo.action.LibraryBuildAction;
@@ -62,6 +66,7 @@ import butterknife.Bind;
  */
 
 public class LibraryActivity extends BaseActivity {
+    static private boolean hasMetadataScanned = false;
 
     @Bind(R.id.content_pageView)
     SinglePageRecyclerView contentPageView;
@@ -208,15 +213,53 @@ public class LibraryActivity extends BaseActivity {
         pageIndicator.updateCurrentPage(totalCount);
     }
 
-    private ConditionGroup filterCloudDirCondition() {
-        return ConditionGroup.clause()
-                .and(QueryBuilder.matchLike(Metadata_Table.nativeAbsolutePath,
-                        EnvironmentUtil.getExternalStorageDirectory().getAbsolutePath() + "/Books/"));
+    private ConditionGroup getExcludeDirCondition() {
+        List<String> list = DeviceConfig.sharedInstance(this).getBookExcludeDirectories();
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            return null;
+        }
+        ConditionGroup group = ConditionGroup.clause();
+        for (String name : list) {
+            group.and(QueryBuilder.matchNotLike(Metadata_Table.nativeAbsolutePath,
+                    EnvironmentUtil.getExternalStorageDirectory().getAbsolutePath() + File.separator + name));
+        }
+        return group;
+    }
+
+    private boolean isHasMetadataScanned() {
+        return hasMetadataScanned;
+    }
+
+    private void setHasMetadataScanned(boolean hasScanned) {
+        hasMetadataScanned = hasScanned;
     }
 
     @Override
     protected void initData() {
+        if (!isHasMetadataScanned()) {
+            processFileSystemScan();
+            return;
+        }
         loadData();
+    }
+
+    private void processFileSystemScan() {
+        final DialogLoading dialogLoading = new DialogLoading(this, R.string.loading, false);
+        dialogLoading.show();
+        ActionChain actionChain = new ActionChain();
+        actionChain.addAction(new FileSystemScanAction(FileSystemScanAction.MMC_STORAGE_ID, true));
+        String sdcardCid = EnvironmentUtil.getRemovableSDCardCid();
+        if (StringUtils.isNotBlank(sdcardCid)) {
+            actionChain.addAction(new FileSystemScanAction(sdcardCid, false));
+        }
+        actionChain.execute(InfoApp.getLibraryDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                dialogLoading.dismiss();
+                setHasMetadataScanned(true);
+                loadData();
+            }
+        });
     }
 
     @Override
@@ -327,7 +370,7 @@ public class LibraryActivity extends BaseActivity {
 
     private QueryArgs libraryBuildQueryArgs() {
         QueryArgs args = dataHolder.getLibraryViewInfo().libraryQuery();
-        QueryBuilder.andWith(args.conditionGroup, filterCloudDirCondition());
+        QueryBuilder.andWith(args.conditionGroup, getExcludeDirCondition());
         return args;
     }
 

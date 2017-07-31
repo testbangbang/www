@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.raizlabs.android.dbflow.sql.language.BaseCondition;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
@@ -266,6 +267,51 @@ public class QueryBuilder {
         if (parent != null && child != null) {
             parent.and(child);
         }
+    }
+
+    public static SQLCondition matchNotLike(final Property<String> property, final String value) {
+        if (property == null || StringUtils.isNullOrEmpty(value)) {
+            return null;
+        }
+        return new SQLCondition() {
+            private String separator;
+            @Override
+            public void appendConditionToQuery(com.raizlabs.android.dbflow.sql.QueryBuilder queryBuilder) {
+                queryBuilder.append(columnName()).append(operation());
+                queryBuilder.append(BaseCondition.convertValueToString(value(), true));
+            }
+
+            @Override
+            public String columnName() {
+                return property.getNameAlias().name();
+            }
+
+            @Override
+            public String separator() {
+                return separator;
+            }
+
+            @Override
+            public SQLCondition separator(String separator) {
+                this.separator = separator;
+                return this;
+            }
+
+            @Override
+            public boolean hasSeparator() {
+                return StringUtils.isNotBlank(separator);
+            }
+
+            @Override
+            public String operation() {
+                return String.format(" %1s ", "NOT " + Condition.Operation.LIKE);
+            }
+
+            @Override
+            public Object value() {
+                return "%" + value + "%";
+            }
+        };
     }
 
     public static Condition matchLike(final Property<String> property, String match) {

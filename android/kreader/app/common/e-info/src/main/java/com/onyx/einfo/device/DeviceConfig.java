@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.einfo.BuildConfig;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.data.model.common.DeviceInfoShowConfig;
@@ -13,6 +14,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -56,6 +58,8 @@ public class DeviceConfig {
 
     static public final String HOME_ACTIVITY_PKG_NAME = "home_activity_pkg";
     static public final String HOME_ACTIVITY_CLS_NAME = "home_activity_cls";
+
+    static public final String BOOKS_EXCLUDE_DIR_TAG = "books_exclude_dir";
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -240,6 +244,13 @@ public class DeviceConfig {
     public final String getHomeActivityClassName() {
         if (backend.hasKey(HOME_ACTIVITY_CLS_NAME)) {
             return backend.getString(HOME_ACTIVITY_CLS_NAME);
+        }
+        return null;
+    }
+
+    public List<String> getBookExcludeDirectories() {
+        if (backend.hasKey(BOOKS_EXCLUDE_DIR_TAG)) {
+            return backend.getList(BOOKS_EXCLUDE_DIR_TAG);
         }
         return null;
     }
