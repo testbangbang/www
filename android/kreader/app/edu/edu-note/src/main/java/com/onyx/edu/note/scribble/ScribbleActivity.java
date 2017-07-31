@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -15,21 +16,23 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.shape.RenderInBackgroundRequest;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.edu.note.HandlerManager;
 import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.NoteManager;
 import com.onyx.edu.note.R;
+import com.onyx.edu.note.actions.common.CheckNoteNameLegalityAction;
+import com.onyx.edu.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.edu.note.actions.scribble.DocumentFlushAction;
+import com.onyx.edu.note.actions.scribble.RenderInBackgroundAction;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
@@ -47,6 +50,7 @@ import com.onyx.edu.note.scribble.event.SpanLineBreakerEvent;
 import com.onyx.edu.note.scribble.event.SpanTextShowOutOfRangeEvent;
 import com.onyx.edu.note.scribble.view.ScribbleSubMenu;
 import com.onyx.edu.note.ui.PageAdapter;
+import com.onyx.edu.note.ui.dialog.DialogNoteNameInput;
 import com.onyx.edu.note.ui.view.LinedEditText;
 import com.onyx.edu.note.util.Constant;
 
@@ -66,6 +70,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     NoteManager mNoteManager;
     HandlerManager mHandlerManager;
     ScribbleSubMenu mSubMenu;
+    private @ScribbleAction.ScribbleActionDef int mScribbleAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,9 +140,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     private void handleIntent(Intent intent) {
-        @ScribbleAction.ScribbleActionDef int scribbleAction =
+        mScribbleAction =
                 intent.getIntExtra(Constant.SCRIBBLE_ACTION_TAG, ScribbleAction.INVALID);
-        if (!ScribbleAction.isValidAction(scribbleAction)) {
+        if (!ScribbleAction.isValidAction(mScribbleAction)) {
             //TODO:direct call finish here.because we don't want incorrect illegal call.
             finish();
             return;
@@ -150,7 +155,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 mHandlerManager.changeScribbleMode(ScribbleMode.MODE_NORMAL_SCRIBBLE);
             }
         };
-        mViewModel.start(uniqueID, parentID, scribbleAction, callback);
+        mViewModel.start(uniqueID, parentID, mScribbleAction, callback);
     }
 
     private void addSurfaceViewCallback() {
@@ -187,10 +192,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         return surfaceCallback;
     }
 
-    @Override
-    public void onBackPressed() {
-        //TODO:need back key to dismiss sub menu first or direct exit even sub menu showing?
-        hideSubMenu();
+    private void onDocumentClose() {
         mNoteManager.syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -202,6 +204,76 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                         }
                     }
                 });
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        //TODO:need back key to dismiss sub menu first or direct exit even sub menu showing?
+        hideSubMenu();
+        if (mScribbleAction == ScribbleAction.CREATE){
+            saveNewNoteDocument();
+        }else {
+            onDocumentClose();
+        }
+    }
+
+    private void saveNewNoteDocument() {
+        final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
+        Bundle bundle = new Bundle();
+        bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.save_note));
+        bundle.putString(DialogNoteNameInput.ARGS_HINT, mViewModel.mNoteTitle.get());
+        bundle.putBoolean(DialogNoteNameInput.ARGS_ENABLE_NEUTRAL_OPTION, true);
+        dialogNoteNameInput.setArguments(bundle);
+        dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
+            @Override
+            public boolean onConfirmAction(final String input) {
+                final CheckNoteNameLegalityAction action = new
+                        CheckNoteNameLegalityAction(input, mViewModel.getParentUniqueID(),
+                        NoteModel.TYPE_DOCUMENT, true, true);
+                action.execute(mNoteManager, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (action.isLegal()) {
+                            mViewModel.mNoteTitle.set(input);
+                            onDocumentClose();
+                        } else {
+//                            showNoteNameIllegal();
+                        }
+                    }
+                });
+                return true;
+            }
+
+            @Override
+            public void onCancelAction() {
+                dialogNoteNameInput.dismiss();
+                Handler handler = new Handler(getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mNoteManager.sync(true, !mNoteManager.inUserErasing());
+                    }
+                }, 500);
+            }
+
+            @Override
+            public void onDiscardAction() {
+                dialogNoteNameInput.dismiss();
+                final DocumentDiscardAction discardAction = new DocumentDiscardAction(null);
+                discardAction.execute(mNoteManager, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        ScribbleActivity.super.onBackPressed();
+                    }
+                });
+            }
+        });
+        mNoteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                dialogNoteNameInput.show(getFragmentManager());
             }
         });
     }
@@ -353,12 +425,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     @Subscribe
     public void onRawDataReceived(RawDataReceivedEvent event) {
-        final List<Shape> shapes = mNoteManager.detachStash();
-        if (CollectionUtils.isNullOrEmpty(shapes)) {
-            return;
-        }
-        RenderInBackgroundRequest request = new RenderInBackgroundRequest(shapes);
-        mNoteManager.submitRequest(request, null);
+        new RenderInBackgroundAction().execute(mNoteManager, null);
     }
 
     @Subscribe
