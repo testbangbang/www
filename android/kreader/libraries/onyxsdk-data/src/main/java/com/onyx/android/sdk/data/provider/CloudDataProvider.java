@@ -328,7 +328,7 @@ public class CloudDataProvider implements DataProviderBase {
 
     @Override
     public void clearLibrary() {
-
+        Delete.table(CloudLibrary.class);
     }
 
     @Override

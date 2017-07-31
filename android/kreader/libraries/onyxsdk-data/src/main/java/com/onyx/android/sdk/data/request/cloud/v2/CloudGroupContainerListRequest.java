@@ -13,6 +13,7 @@ import com.onyx.android.sdk.data.utils.RetrofitUtils;
 import com.onyx.android.sdk.data.utils.StoreUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,7 @@ public class CloudGroupContainerListRequest extends BaseCloudRequest {
         Response<List<GroupContainer>> response = RetrofitUtils.executeCall(ServiceFactory.getContentService(
                 parent.getCloudConf().getApiBase()).getMyGroupContainerList());
         if (response.isSuccessful()) {
+            clearAllGroupLibrary(parent);
             list = response.body();
             if (!CollectionUtils.isNullOrEmpty(list)) {
                 saveLibraryListToLocal(parent, list);
@@ -102,7 +104,6 @@ public class CloudGroupContainerListRequest extends BaseCloudRequest {
             return;
         }
         for (GroupContainer groupContainer : containerList) {
-            deleteGroupLibraryList(parent, groupContainer.group);
             if (CollectionUtils.isNullOrEmpty(groupContainer.libraryList)) {
                 continue;
             }
@@ -110,11 +111,9 @@ public class CloudGroupContainerListRequest extends BaseCloudRequest {
         }
     }
 
-    private void deleteGroupLibraryList(CloudManager parent, CloudGroup group) {
-        QueryArgs args = new QueryArgs();
-        args.libraryUniqueId = group.library;
-        args.fetchPolicy = FetchPolicy.MEM_DB_ONLY;
-        DataManagerHelper.deleteLibraryWithRecursive(parent.getCloudDataProvider(), args, true);
+    private void clearAllGroupLibrary(CloudManager parent) {
+        Delete.table(CloudGroup.class);
+        DataManagerHelper.clearLibrary(parent.getCloudDataProvider());
     }
 
     private List<Library> getCloudLibrary(List<Library> loadedLibraryList) {

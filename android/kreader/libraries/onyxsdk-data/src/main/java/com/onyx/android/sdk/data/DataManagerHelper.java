@@ -389,4 +389,8 @@ public class DataManagerHelper {
         database.setTransactionSuccessful();
         database.endTransaction();
     }
+
+    public static void clearLibrary(DataProviderBase dataProvider) {
+        dataProvider.clearLibrary();
+    }
 }
