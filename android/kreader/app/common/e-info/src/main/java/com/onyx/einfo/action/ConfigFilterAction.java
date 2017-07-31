@@ -6,7 +6,7 @@ import android.content.Context;
 
 import com.onyx.einfo.holder.LibraryDataHolder;
 import com.onyx.einfo.R;
-import com.onyx.einfo.utils.StudentPreferenceManager;
+import com.onyx.einfo.manager.ConfigPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.BookFilter;
@@ -73,9 +73,9 @@ public class ConfigFilterAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void saveFilterByQueryArgs(LibraryDataHolder dataHolder, String filterBy, SortOrder sortOrder) {
-        StudentPreferenceManager.setStringValue(dataHolder.getContext(),
+        ConfigPreferenceManager.setStringValue(dataHolder.getContext(),
                 R.string.library_activity_book_filter_key, getFilterMap(dataHolder.getContext()).get(filterBy).toString());
-        StudentPreferenceManager.setIntValue(dataHolder.getContext(),
+        ConfigPreferenceManager.setIntValue(dataHolder.getContext(),
                 R.string.library_activity_asc_order_key, sortOrder.ordinal());
     }
 

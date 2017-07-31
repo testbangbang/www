@@ -2,49 +2,30 @@ package com.onyx.einfo;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.onyx.einfo.action.FileSystemScanAction;
 import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.events.DataRefreshEvent;
 import com.onyx.einfo.holder.LibraryDataHolder;
+import com.onyx.einfo.manager.ConfigPreferenceManager;
 import com.onyx.einfo.manager.LeanCloudManager;
-import com.onyx.einfo.utils.StudentPreferenceManager;
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.SortBy;
-import com.onyx.android.sdk.data.SortOrder;
-import com.onyx.android.sdk.data.model.Metadata_Table;
-import com.onyx.android.sdk.data.request.data.db.FilesAddToMetadataRequest;
-import com.onyx.android.sdk.data.request.data.db.FilesDiffFromMetadataRequest;
-import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
-import com.onyx.android.sdk.data.request.data.db.FilesRemoveFromMetadataRequest;
-import com.onyx.android.sdk.data.request.data.fs.FileSystemScanRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
-import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
-import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.sdk.utils.TestUtils;
-import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by zhuzeng on 14/11/2016.
@@ -81,124 +62,18 @@ public class InfoApp extends MultiDexApplication {
     private void initConfig() {
         try {
             sInstance = this;
-            StudentPreferenceManager.init(this);
+            ConfigPreferenceManager.init(this);
             initCloudStore();
             initDeviceConfig();
             initEventListener();
             initFrescoLoader();
             initLeanCloud();
             initSystemInBackground();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startFileSystemScan();
-                }
-            }, 4000);
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 e.printStackTrace();
             }
         }
-    }
-
-    private List<String> getBookDirList(boolean isFlash) {
-        List<String> dirList = new ArrayList<>();
-        if (isFlash) {
-            dirList.add(EnvironmentUtil.getExternalStorageDirectory().getAbsolutePath());
-        } else {
-            dirList.add(EnvironmentUtil.getRemovableSDCardDirectory().getAbsolutePath());
-        }
-        return dirList;
-    }
-
-    private void startFileSystemScan() {
-        startFileSystemScan(MMC_STORAGE_ID, getBookDirList(true));
-        if (StringUtils.isNullOrEmpty(getSdcardCid())) {
-            return;
-        }
-        startFileSystemScan(getSdcardCid(), getBookDirList(false));
-    }
-
-    private void startFileSystemScan(final String storageId, List<String> bookDirList) {
-        final FileSystemScanRequest fileSystemScanRequest = new FileSystemScanRequest(storageId, bookDirList, true);
-        fileSystemScanRequest.setExtensionFilterSet(TestUtils.defaultContentTypes());
-        getDataManager().submit(getApplicationContext(), fileSystemScanRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    e.printStackTrace();
-                    return;
-                }
-                HashSet<String> hashSet = fileSystemScanRequest.getResult();
-                String tmp = storageId;
-                if (tmp.equals(MMC_STORAGE_ID)) {
-                    tmp = null;
-                }
-                startMetadataPathScan(tmp, hashSet);
-            }
-        });
-    }
-
-    private void startMetadataPathScan(final String storageId, final HashSet<String> filePathSet) {
-        QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.CreationTime, SortOrder.Desc);
-        queryArgs.propertyList.add(Metadata_Table.nativeAbsolutePath);
-        Condition condition;
-        if (StringUtils.isNullOrEmpty(storageId)) {
-            condition = Metadata_Table.storageId.isNull();
-        } else {
-            condition = Metadata_Table.storageId.eq(storageId);
-        }
-        queryArgs.conditionGroup.and(condition);
-        final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
-        getDataManager().submit(getApplicationContext(), metadataRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    e.printStackTrace();
-                    return;
-                }
-                processMetaSnapshot(storageId, filePathSet, metadataRequest.getPathList());
-            }
-        });
-    }
-
-    private void processMetaSnapshot(final String storageId, HashSet<String> fileList, HashSet<String> snapshotList) {
-        final FilesDiffFromMetadataRequest filesFromMetadataRequest = new FilesDiffFromMetadataRequest(
-                fileList, snapshotList);
-        getDataManager().submit(getApplicationContext(), filesFromMetadataRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    e.printStackTrace();
-                    return;
-                }
-                HashSet<String> addedSet = filesFromMetadataRequest.getDiffSet();
-                if (CollectionUtils.isNullOrEmpty(addedSet)) {
-                    return;
-                }
-                addFilesToMetaData(storageId, addedSet);
-            }
-        });
-    }
-
-    private void addFilesToMetaData(String storageId, Set<String> addedSet) {
-        FilesAddToMetadataRequest addRequest = new FilesAddToMetadataRequest(storageId, addedSet);
-        getDataManager().submitToMulti(getApplicationContext(), addRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                getDataManager().getCacheManager().clearMetadataCache();
-            }
-        });
-    }
-
-    private void removeFilesFromMetadata(Set<String> removedSet) {
-        FilesRemoveFromMetadataRequest removeRequest = new FilesRemoveFromMetadataRequest(removedSet);
-        getDataManager().submitToMulti(getApplicationContext(), removeRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                getDataManager().getCacheManager().clearMetadataCache();
-            }
-        });
     }
 
     private void initSystemInBackground() {
@@ -220,7 +95,8 @@ public class InfoApp extends MultiDexApplication {
                     if (StringUtils.isNullOrEmpty(sdcardCid)) {
                         return;
                     }
-                    startFileSystemScan(sdcardCid, getBookDirList(false));
+                    FileSystemScanAction systemScanAction = new FileSystemScanAction(sdcardCid, false);
+                    systemScanAction.execute(getLibraryDataHolder(), null);
                 }
             }
 
@@ -305,9 +181,5 @@ public class InfoApp extends MultiDexApplication {
             libraryDataHolder.setCloudManager(getCloudStore().getCloudManager());
         }
         return libraryDataHolder;
-    }
-
-    public String getSdcardCid() {
-        return EnvironmentUtil.getRemovableSDCardCid();
     }
 }
