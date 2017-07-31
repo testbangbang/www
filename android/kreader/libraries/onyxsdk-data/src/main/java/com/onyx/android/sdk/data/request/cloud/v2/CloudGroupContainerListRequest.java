@@ -102,11 +102,19 @@ public class CloudGroupContainerListRequest extends BaseCloudRequest {
             return;
         }
         for (GroupContainer groupContainer : containerList) {
+            deleteGroupLibraryList(parent, groupContainer.group);
             if (CollectionUtils.isNullOrEmpty(groupContainer.libraryList)) {
                 continue;
             }
             DataManagerHelper.saveLibraryListToLocal(parent.getCloudDataProvider(), getCloudLibrary(groupContainer.libraryList));
         }
+    }
+
+    private void deleteGroupLibraryList(CloudManager parent, CloudGroup group) {
+        QueryArgs args = new QueryArgs();
+        args.libraryUniqueId = group.library;
+        args.fetchPolicy = FetchPolicy.MEM_DB_ONLY;
+        DataManagerHelper.deleteLibraryWithRecursive(parent.getCloudDataProvider(), args, true);
     }
 
     private List<Library> getCloudLibrary(List<Library> loadedLibraryList) {

@@ -323,7 +323,7 @@ public class CloudDataProvider implements DataProviderBase {
 
     @Override
     public void deleteLibrary(Library library) {
-
+        library.delete();
     }
 
     @Override
