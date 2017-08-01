@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.ReaderTabManager;
 
@@ -73,7 +74,7 @@ public class DialogTabHostMenu extends DialogBase {
 
         public void bindView(ReaderTabManager.ReaderTab tab, String path) {
             currentTab = tab;
-            textView.setText(path);
+            textView.setText(FileUtils.getFileName(path));
         }
     }
 
