@@ -8,7 +8,7 @@ import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.interfaces.NewWordView;
 import com.onyx.android.dr.request.local.NewWordDelete;
 import com.onyx.android.dr.request.local.NewWordExport;
-import com.onyx.android.dr.request.local.NewWordQueryAll;
+import com.onyx.android.dr.request.local.NewWordQueryByType;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 
@@ -30,9 +30,9 @@ public class NewWordPresenter {
         newWordData = new NewWordData();
     }
 
-    public void getAllNewWordData() {
-        final NewWordQueryAll req = new NewWordQueryAll();
-        newWordData.getAllNewWord(context, req, new BaseCallback() {
+    public void getAllNewWordByType(int type) {
+        final NewWordQueryByType req = new NewWordQueryByType(type);
+        newWordData.getAllNewWordByType(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 allData = req.getNewWordList();
@@ -72,7 +72,7 @@ public class NewWordPresenter {
 
     public void exportDataToHtml(Context context, ArrayList<String> dataList, List<NewWordNoteBookEntity> list) {
         final NewWordExport req = new NewWordExport(context, dataList, list);
-        newWordData.exportInformalEssay(context, req, new BaseCallback() {
+        newWordData.exportNewWord(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
             }

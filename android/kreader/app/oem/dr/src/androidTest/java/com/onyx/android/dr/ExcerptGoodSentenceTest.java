@@ -3,9 +3,9 @@ package com.onyx.android.dr;
 import android.test.ApplicationTestCase;
 
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
-import com.onyx.android.dr.request.local.GoodSentenceExcerptDelete;
-import com.onyx.android.dr.request.local.GoodSentenceExcerptInsert;
-import com.onyx.android.dr.request.local.GoodSentenceExcerptQueryAll;
+import com.onyx.android.dr.request.local.GoodSentenceDelete;
+import com.onyx.android.dr.request.local.GoodSentenceInsert;
+import com.onyx.android.dr.request.local.GoodSentenceQueryAll;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -39,7 +39,7 @@ public class ExcerptGoodSentenceTest extends ApplicationTestCase<DRApplication> 
     public void testGoodSentenceInsert() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         GoodSentenceNoteEntity goodSentence = addGoodSentence();
-        GoodSentenceExcerptInsert insertGoodSentence = new GoodSentenceExcerptInsert(goodSentence);
+        GoodSentenceInsert insertGoodSentence = new GoodSentenceInsert(goodSentence);
         new DataManager().submit(DRApplication.getInstance(), insertGoodSentence, new BaseCallback() {
             @Override
             public void done(BaseRequest baseRequest, Throwable throwable) {
@@ -52,7 +52,7 @@ public class ExcerptGoodSentenceTest extends ApplicationTestCase<DRApplication> 
 
     public void testGoodSentenceQuery() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final GoodSentenceExcerptQueryAll queryGoodSentence = new GoodSentenceExcerptQueryAll();
+        final GoodSentenceQueryAll queryGoodSentence = new GoodSentenceQueryAll();
         new DataManager().submit(DRApplication.getInstance(), queryGoodSentence, new BaseCallback() {
             @Override
             public void done(BaseRequest baseRequest, Throwable throwable) {
@@ -67,7 +67,7 @@ public class ExcerptGoodSentenceTest extends ApplicationTestCase<DRApplication> 
 
     public void testGoodSentenceDelete() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        GoodSentenceExcerptDelete goodSentenceDelete = new GoodSentenceExcerptDelete();
+        GoodSentenceDelete goodSentenceDelete = new GoodSentenceDelete();
         new DataManager().submit(DRApplication.getInstance(), goodSentenceDelete, new BaseCallback() {
             @Override
             public void done(BaseRequest baseRequest, Throwable throwable) {

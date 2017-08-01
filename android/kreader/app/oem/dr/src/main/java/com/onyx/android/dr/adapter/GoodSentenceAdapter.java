@@ -3,7 +3,8 @@ package com.onyx.android.dr.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -20,20 +21,14 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class GoodSentenceAdapter extends PageRecyclerView.PageAdapter<GoodSentenceAdapter.ViewHolder> implements View.OnClickListener {
+public class GoodSentenceAdapter extends PageRecyclerView.PageAdapter<GoodSentenceAdapter.ViewHolder> {
     private List<GoodSentenceNoteEntity> dataList;
-    private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
+    private OnItemClickListener onItemClickListener;
+    private List<Boolean> listCheck;
 
-    public interface OnRecyclerViewItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-    public void setOnItemClick(OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
-        this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
-    }
-
-    public void setDataList(List<GoodSentenceNoteEntity> dataList) {
+    public void setDataList(List<GoodSentenceNoteEntity> dataList, List<Boolean> listCheck) {
         this.dataList = dataList;
+        this.listCheck = listCheck;
     }
 
     @Override
@@ -58,39 +53,52 @@ public class GoodSentenceAdapter extends PageRecyclerView.PageAdapter<GoodSenten
     }
 
     @Override
-    public void onPageBindViewHolder(ViewHolder holder, int position) {
+    public void onPageBindViewHolder(final ViewHolder holder, final int position) {
         GoodSentenceNoteEntity goodSentenceEntity = dataList.get(position);
 		long currentTime = goodSentenceEntity.currentTime;
-		holder.month.setText(TimeUtils.getCurrentMonth(currentTime));
-        holder.week.setText(TimeUtils.getWeekOfMonth(currentTime));
-        holder.day.setText(TimeUtils.getCurrentDay(currentTime));
+        holder.time.setText(TimeUtils.getDate(currentTime));
         holder.content.setText(goodSentenceEntity.details);
         holder.readingMatter.setText(goodSentenceEntity.readingMatter);
         holder.pageNumber.setText(goodSentenceEntity.pageNumber);
-        holder.rootView.setTag(position);
-        holder.rootView.setOnClickListener(this);
+        holder.checkBox.setChecked(listCheck.get(position));
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.setOnItemCheckedChanged(position, b);
+                }
+            }
+        });
+        holder.rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onItemClickListener != null) {
+                    if (holder.checkBox.isChecked()) {
+                        holder.checkBox.setChecked(false);
+                        onItemClickListener.setOnItemClick(position, false);
+                    } else {
+                        holder.checkBox.setChecked(true);
+                        onItemClickListener.setOnItemClick(position, true);
+                    }
+                }
+            }
+        });
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getTag() == null) {
-            return;
-        }
-        int position = (int) v.getTag();
-        if (onRecyclerViewItemClickListener != null) {
-            onRecyclerViewItemClickListener.onItemClick(v, position);
-        }
+    public interface OnItemClickListener {
+        void setOnItemClick(int position, boolean isCheck);
+        void setOnItemCheckedChanged(int position, boolean isCheck);
+    }
+
+    public void setOnItemListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.good_sentence_item_check)
-        ImageView checkImageView;
-        @Bind(R.id.good_sentence_item_month)
-        TextView month;
-        @Bind(R.id.good_sentence_item_week)
-        TextView week;
-        @Bind(R.id.good_sentence_item_day)
-        TextView day;
+        CheckBox checkBox;
+        @Bind(R.id.good_sentence_item_time)
+        TextView time;
         @Bind(R.id.good_sentence_item_content)
         TextView content;
         @Bind(R.id.good_sentence_item_reading_matter)

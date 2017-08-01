@@ -1,25 +1,24 @@
 package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.view.View;
+import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.GoodSentenceAdapter;
-import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
-import com.onyx.android.dr.event.EnglishGoodSentenceEvent;
 import com.onyx.android.dr.interfaces.GoodSentenceView;
 import com.onyx.android.dr.presenter.GoodSentencePresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
  * Created by zhouzhiming on 17-7-11.
@@ -27,15 +26,16 @@ import butterknife.Bind;
 public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSentenceView {
     @Bind(R.id.good_sentence_activity_recyclerview)
     PageRecyclerView goodSentenceRecyclerView;
-    @Bind(R.id.good_sentence_activity_month_spinner)
-    Spinner monthSpinner;
-    @Bind(R.id.good_sentence_activity_week_spinner)
-    Spinner weekSpinner;
-    @Bind(R.id.good_sentence_activity_day_spinner)
-    Spinner daySpinner;
+    @Bind(R.id.good_sentence_activity_export)
+    TextView delete;
+    @Bind(R.id.good_sentence_activity_delete)
+    TextView export;
     private DividerItemDecoration dividerItemDecoration;
     private GoodSentenceAdapter goodSentenceAdapter;
     private GoodSentencePresenter goodSentencePresenter;
+    private int dictType;
+    private List<GoodSentenceNoteEntity> newWordList;
+    private ArrayList<Boolean> listCheck;
 
     @Override
     protected Integer getLayoutId() {
@@ -61,42 +61,62 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
 
     @Override
     protected void initData() {
-        goodSentencePresenter = new GoodSentencePresenter(getApplicationContext(), this);
-        goodSentencePresenter.getAllGoodSentenceData();
-
-        initSpinnerDatas();
+        newWordList = new ArrayList<GoodSentenceNoteEntity>();
+        listCheck = new ArrayList<>();
+        loadData();
         initEvent();
     }
 
-    private void initSpinnerDatas() {
-        String[] monthDatas = getResources().getStringArray(R.array.month);
-        ArrayAdapter<String> monthAdapter=new ArrayAdapter<String>(this, R.layout.item_spinner_unexpanded_pattern, monthDatas);
-        monthAdapter.setDropDownViewResource(R.layout.item_spinner_expanded_pattern);
-        monthSpinner .setAdapter(monthAdapter);
-
-        String[] weekDatas = getResources().getStringArray(R.array.week);
-        ArrayAdapter<String> weekAdapter=new ArrayAdapter<String>(this,  R.layout.item_spinner_unexpanded_pattern, weekDatas);
-        weekAdapter.setDropDownViewResource(R.layout.item_spinner_expanded_pattern);
-        weekSpinner .setAdapter(weekAdapter);
-
-        String[] dayDatas = getResources().getStringArray(R.array.day);
-        ArrayAdapter<String> dayAdapter=new ArrayAdapter<String>(this,  R.layout.item_spinner_unexpanded_pattern, dayDatas);
-        dayAdapter.setDropDownViewResource(R.layout.item_spinner_expanded_pattern);
-        daySpinner .setAdapter(dayAdapter);
+    private void loadData() {
+        dictType = getIntent().getIntExtra(Constants.DICTTYPE, -1);
+        goodSentencePresenter = new GoodSentencePresenter(getApplicationContext(), this);
+        goodSentencePresenter.getGoodSentenceByType(dictType);
     }
 
     @Override
-    public void setGoodSentenceData(List<GoodSentenceNoteEntity> goodSentenceList) {
-        goodSentenceAdapter.setDataList(goodSentenceList);
+    public void setGoodSentenceData(List<GoodSentenceNoteEntity> dataList, ArrayList<Boolean> checkList) {
+        if (dataList == null || dataList.size() <= 0) {
+            return;
+        }
+        newWordList = dataList;
+        listCheck = checkList;
+        goodSentenceAdapter.setDataList(newWordList, listCheck);
         goodSentenceRecyclerView.setAdapter(goodSentenceAdapter);
     }
 
     public void initEvent() {
+        goodSentenceAdapter.setOnItemListener(new GoodSentenceAdapter.OnItemClickListener() {
+            @Override
+            public void setOnItemClick(int position, boolean isCheck) {
+                listCheck.set(position, isCheck);
+            }
+            @Override
+            public void setOnItemCheckedChanged(int position, boolean isCheck) {
+                listCheck.set(position, isCheck);
+            }
+        });
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEnglishGoodSentenceEvent(EnglishGoodSentenceEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
+    @OnClick({R.id.good_sentence_activity_delete,
+            R.id.image_view_back,
+            R.id.good_sentence_activity_export})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.image_view_back:
+                finish();
+                break;
+            case R.id.good_sentence_activity_delete:
+                goodSentencePresenter.remoteAdapterDatas(listCheck, goodSentenceAdapter);
+                break;
+            case R.id.good_sentence_activity_export:
+                goodSentencePresenter.getHtmlTitle();
+                break;
+        }
+    }
+
+    @Override
+    public void setHtmlTitleData(ArrayList<String> dataList) {
+        goodSentencePresenter.exportDataToHtml(this, dataList, newWordList);
     }
 
     @Override

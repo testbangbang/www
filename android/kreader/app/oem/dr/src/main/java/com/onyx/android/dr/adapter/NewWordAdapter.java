@@ -25,17 +25,8 @@ import butterknife.ButterKnife;
  */
 public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.ViewHolder> {
     private List<NewWordNoteBookEntity> dataList;
-    private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
     private List<Boolean> listCheck;
     private OnItemClickListener onItemClickListener;
-
-    public interface OnRecyclerViewItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-    public void setOnItemClick(OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
-        this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
-    }
 
     public void setDataList(List<NewWordNoteBookEntity> dataList, List<Boolean> listCheck) {
         this.dataList = dataList;
@@ -71,7 +62,6 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
         holder.content.setText(bean.newWord);
         holder.readingMatter.setText(bean.readingMatter);
         holder.dictionaryLookup.setText(bean.dictionaryLookup);
-
         holder.checkBox.setChecked(listCheck.get(position));
         holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
