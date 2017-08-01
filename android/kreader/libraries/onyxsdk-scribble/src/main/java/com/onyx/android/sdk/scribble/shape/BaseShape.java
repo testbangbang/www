@@ -42,6 +42,7 @@ public class BaseShape implements Shape {
     private boolean lock;
     private boolean review;
 
+    private boolean selected = false;
     private float scale = 1.0f;
 
     /**
@@ -133,6 +134,16 @@ public class BaseShape implements Shape {
     @Override
     public float getScale() {
         return scale;
+    }
+
+    @Override
+    public void setSelected(boolean isSelected) {
+        selected = isSelected;
+    }
+
+    @Override
+    public boolean isSelected() {
+        return selected;
     }
 
     public float getDisplayScale(final RenderContext renderContext) {

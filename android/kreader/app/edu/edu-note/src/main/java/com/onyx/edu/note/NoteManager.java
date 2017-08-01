@@ -18,6 +18,7 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.note.NotePageShapesRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
@@ -35,6 +36,7 @@ import com.onyx.edu.note.actions.scribble.DrawPageAction;
 import com.onyx.edu.note.actions.scribble.NotePageShapeAction;
 import com.onyx.edu.note.actions.scribble.RemoveByGroupIdAction;
 import com.onyx.edu.note.actions.scribble.RemoveByPointListAction;
+import com.onyx.edu.note.actions.scribble.SelectShapeByPointListAction;
 import com.onyx.edu.note.actions.scribble.SpannableAction;
 import com.onyx.edu.note.data.ScribbleMode;
 import com.onyx.edu.note.scribble.event.RawDataReceivedEvent;
@@ -544,6 +546,15 @@ public class NoteManager {
 
     protected void onFinishShapeSelecting(TouchPointList pointList) {
         mShapeSelectPoint = null;
+        new SelectShapeByPointListAction(pointList).execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                SelectShapeByPointListRequest req = (SelectShapeByPointListRequest) request;
+                for (Shape shape:req.getSelectResultList()){
+                    Log.e(TAG, "shape:" + shape);
+                }
+            }
+        });
     }
 
     private void drawCurrentPage() {

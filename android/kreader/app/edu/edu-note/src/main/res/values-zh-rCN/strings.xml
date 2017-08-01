@@ -9,4 +9,5 @@
     <string name="create_folder_failed">文件夹创建失败.</string>
     <string name="remove_failed">删除失败.</string>
     <string name="name_length_illegal">文件名不多于20个字符.</string>
+    <string name="discard">丢弃</string>
 </resources>

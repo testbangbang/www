@@ -151,4 +151,8 @@ public interface Shape {
     void setScale(float targetScaleValue);
 
     float getScale();
+
+    void setSelected(boolean isSelected);
+
+    boolean isSelected();
 }

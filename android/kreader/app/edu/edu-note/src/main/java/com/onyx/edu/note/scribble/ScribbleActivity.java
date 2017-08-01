@@ -53,6 +53,7 @@ import com.onyx.edu.note.ui.PageAdapter;
 import com.onyx.edu.note.ui.dialog.DialogNoteNameInput;
 import com.onyx.edu.note.ui.view.LinedEditText;
 import com.onyx.edu.note.util.Constant;
+import com.onyx.edu.note.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -239,7 +240,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                             mViewModel.mNoteTitle.set(input);
                             onDocumentClose();
                         } else {
-//                            showNoteNameIllegal();
+                            Utils.showNoteNameIllegal(ScribbleActivity.this, getFragmentManager(), true);
                         }
                     }
                 });

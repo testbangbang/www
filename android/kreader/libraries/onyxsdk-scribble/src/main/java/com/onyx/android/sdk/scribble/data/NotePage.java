@@ -1,14 +1,20 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
-import android.util.Log;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.support.annotation.Nullable;
 
-import com.onyx.android.sdk.scribble.shape.*;
+import com.onyx.android.sdk.scribble.shape.BaseShape;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -167,11 +173,55 @@ public class NotePage {
         }
 
         for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
-            hitTestShape(entry, touchPointList, radius);
+            hitTestAndRemoveShape(entry, touchPointList, radius);
         }
     }
 
-    private void hitTestShape(Map.Entry<String, Shape> entry, final TouchPointList touchPointList, final float radius) {
+    @Nullable
+    public List<Shape> selectShapeByTouchPointList(TouchPointList touchPointList, float radius) {
+        if (touchPointList == null) {
+            return null;
+        }
+        Map<String, Shape> hitShapes = new HashMap<>();
+        for (Shape shape : shapeList) {
+            if (!shape.isFreePosition()) {
+                continue;
+            }
+            for (TouchPoint touchPoint : touchPointList.getPoints()) {
+                if (shape.fastHitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                    hitShapes.put(shape.getShapeUniqueId(), shape);
+                    break;
+                }
+            }
+        }
+        HashSet<Shape> shapeHashSet = new HashSet<>();
+        List<Shape>resultList = new ArrayList<>();
+        for (Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
+            shapeHashSet.addAll(hitTestAndSelectShape(entry, touchPointList, radius));
+        }
+        resultList.addAll(shapeHashSet);
+        for (Shape shape : shapeList) {
+            if (resultList.contains(shape)) {
+                shape.setSelected(true);
+            } else {
+                shape.setSelected(false);
+            }
+        }
+        return resultList;
+    }
+
+    private List<Shape> hitTestAndSelectShape(Map.Entry<String, Shape> entry,
+                                              TouchPointList touchPointList, float radius) {
+        List<Shape> resultList = new ArrayList<>();
+        for (TouchPoint touchPoint : touchPointList.getPoints()) {
+            if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                resultList.add(entry.getValue());
+            }
+        }
+        return resultList;
+    }
+
+    private void hitTestAndRemoveShape(Map.Entry<String, Shape> entry, final TouchPointList touchPointList, final float radius) {
         for(TouchPoint touchPoint : touchPointList.getPoints()) {
             if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
                 removeShape(entry.getValue(), true);
@@ -213,11 +263,30 @@ public class NotePage {
         if (shapeList == null) {
             return;
         }
-        for(Shape shape : shapeList) {
+        List<RectF> selectShapeRectList = new ArrayList<>();
+        for (Shape shape : shapeList) {
             shape.render(renderContext);
+            if (shape.isSelected()) {
+                RectF selectRect = new RectF();
+                ((BaseShape) shape).getOriginDisplayPath().computeBounds(selectRect, true);
+                selectShapeRectList.add(selectRect);
+            }
             if (callback != null && callback.isRenderAbort()) {
                 break;
             }
+        }
+        renderSelectRect(selectShapeRectList, renderContext);
+    }
+
+    private void renderSelectRect(List<RectF> selectShapeRectList, RenderContext renderContext) {
+        if (selectShapeRectList.size() > 0) {
+            RectF resultSelectRectF = new RectF();
+            for (RectF targetRect : selectShapeRectList) {
+                resultSelectRectF.union(targetRect);
+            }
+            Paint boundingPaint = new Paint(Color.BLACK);
+            boundingPaint.setStyle(Paint.Style.STROKE);
+            renderContext.canvas.drawRect(resultSelectRectF, boundingPaint);
         }
     }
 
