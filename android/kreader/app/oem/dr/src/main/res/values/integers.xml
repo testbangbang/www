@@ -43,4 +43,8 @@
     <integer name="applications_activity_col">4</integer>
     <integer name="quick_preview_bitmap_default_width">300</integer>
     <integer name="quick_preview_bitmap_default_height">400</integer>
+    <integer name="interest_row">4</integer>
+    <integer name="interest_col">3</integer>
+    <integer name="address_popup_list_row">10</integer>
+    <integer name="address_popup_list_col">1</integer>
 </resources>

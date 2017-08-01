@@ -24,6 +24,7 @@ import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -122,7 +123,7 @@ public class BookshelfGroupAdapter extends PageRecyclerView.PageAdapter<Bookshel
         @Bind(R.id.next_button)
         ImageView nextButton;
         @Bind(R.id.page_recycler)
-        PageRecyclerView pageRecycler;
+        SinglePageRecyclerView pageRecycler;
 
         GroupItemViewHolder(View view) {
             super(view);

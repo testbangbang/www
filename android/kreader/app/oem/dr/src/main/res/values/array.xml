@@ -66,4 +66,63 @@
         <item>30日</item>
         <item>31日</item>
     </string-array>
+
+    <string-array name="EnglishPublishers">
+        <item>@string/people_education_Press</item>
+        <item>@string/Beijing_Normal_University_Press</item>
+        <item>@string/Shanghai_Education_Press</item>
+        <item>@string/Shanghai_Foreign_Language_Education_Press</item>
+        <item>@string/Foreign_Language_Teaching_and_Researching_Press</item>
+        <item>@string/Jiangsu_Education_Press</item>
+        <item>@string/Translated_Lin</item>
+        <item>@string/Other_domestic_publishers</item>
+        <item>@string/Foreign_textbooks</item>
+    </string-array>
+
+    <string-array name="ChinesePublishers">
+        <item>@string/people_education_Press</item>
+        <item>@string/Language_Press</item>
+        <item>@string/Beijing_Normal_University_Press</item>
+        <item>@string/Shanghai_Education_Press</item>
+        <item>@string/Hebei_Education_Press</item>
+        <item>@string/Hubei_Education_Press</item>
+        <item>@string/Hunan_Education_Press</item>
+        <item>@string/Jiangsu_Education_Press</item>
+        <item>@string/Shandong_Education_Press</item>
+        <item>@string/Zhejiang_Education_Press</item>
+        <item>@string/Other_domestic_publishers</item>
+    </string-array>
+
+    <string-array name="GradeList">
+        <item>@string/first_grade</item>
+        <item>@string/second_grade</item>
+        <item>@string/third_grade</item>
+        <item>@string/fourth_grade</item>
+        <item>@string/fifth_grade</item>
+        <item>@string/sixth_grade</item>
+        <item>@string/seventh_grade</item>
+        <item>@string/eighth_grade</item>
+        <item>@string/ninth_grade</item>
+        <item>@string/high_school_first_grade</item>
+        <item>@string/high_school_sophomore_year</item>
+        <item>@string/high_school_third_grade</item>
+        <item>@string/secondary_school_sophomore</item>
+        <item>@string/secondary_school_second_grade</item>
+        <item>@string/secondary_school_third_grade</item>
+    </string-array>
+
+    <string-array name="Interest">
+        <item>@string/english</item>
+        <item>@string/military</item>
+        <item>@string/celebrity_biography</item>
+        <item>@string/science</item>
+        <item>@string/art</item>
+        <item>@string/philosophy_sociology</item>
+        <item>@string/politics</item>
+        <item>@string/tourism</item>
+        <item>@string/business_finance</item>
+        <item>@string/education</item>
+        <item>@string/ancient_books</item>
+        <item>@string/novels</item>
+    </string-array>
 </resources>

@@ -11,14 +11,14 @@ import com.onyx.android.dr.event.HardwareErrorEvent;
 import com.onyx.android.dr.event.LoginFailedEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.manager.LeanCloudManager;
+import com.onyx.android.dr.request.cloud.LoginByAdminRequest;
+import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.common.ContentException;
-import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
-import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
@@ -26,6 +26,7 @@ import com.onyx.android.sdk.data.request.cloud.v2.CloudIndexServiceRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -76,16 +77,28 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void addLoginRequest(final LibraryDataHolder dataHolder, final CloudRequestChain requestChain, final BaseCallback baseCallback) {
-        final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
-        accountLoadRequest.setLocalLoadRetryCount(localLoadRetryCount);
+        String account = DRPreferenceManager.getUserAccount(dataHolder.getContext(), "");
+        String password = DRPreferenceManager.getUserPassword(dataHolder.getContext(), "");
+        if (StringUtils.isNullOrEmpty(account) && StringUtils.isNullOrEmpty(password)) {
+            EventBus.getDefault().post(new LoginFailedEvent());
+        }
+
+        if (!NetworkUtil.isWiFiConnected(dataHolder.getContext())) {
+            Device.currentDevice().enableWifiDetect(dataHolder.getContext());
+            NetworkUtil.enableWiFi(dataHolder.getContext(), true);
+            return;
+        }
+        BaseAuthAccount baseAuthAccount = BaseAuthAccount.create(account, password);
+        final LoginByAdminRequest accountLoadRequest = new LoginByAdminRequest(baseAuthAccount);
         requestChain.addRequest(accountLoadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     processCloudException(dataHolder.getContext(), e);
                 } else {
-                    NeoAccountBase eduAccount = accountLoadRequest.getAccount();
+                    NeoAccountBase eduAccount = accountLoadRequest.getNeoAccount();
                     if (NeoAccountBase.isValid(eduAccount) && StringUtils.isNotBlank(eduAccount.info)) {
+                        DRPreferenceManager.saveUserType(dataHolder.getContext(), eduAccount.groups.get(0));
                         sendAccountAvailableEvent(eduAccount);
                     } else {
                         sendLoginFailedEvent(dataHolder.getContext());

@@ -20,9 +20,9 @@ public class Constants {
     public static final String LIBRARY_PARENT_ID = "library_parent_Id";
     public static final String IMPORT_CONTENT_IN_FIRST_BOOT_TAG = "metadata_import_in_first_boot";
 
-    public static final String ACCOUNT_TYPE_HIGH_SCHOOL = "account_type_high_school";
-    public static final String ACCOUNT_TYPE_UNIVERSITY = "account_type_university";
-    public static final String ACCOUNT_TYPE_TEACHER = "account_type_teacher";
+    public static final String ACCOUNT_TYPE_HIGH_SCHOOL = "中小学生";
+    public static final String ACCOUNT_TYPE_UNIVERSITY = "大学生";
+    public static final String ACCOUNT_TYPE_TEACHER = "老师";
 
     public static final String GRADED_BOOKS = "分级读物";
     public static final String REAL_TIME_BOOKS_LIBRARY_NAME = "时文篇章";
@@ -57,4 +57,11 @@ public class Constants {
 
     public static final String MY_NOTES_FOLDER = "/my_notes_html";
     public static final String NEW_WORD_HTML = MY_NOTES_FOLDER + "/new_word.html";
+
+    public static final String ACCOUNT = "account";
+    public static final String PASSWORD = "password";
+
+    public static final String APP_DATABASE_DIRECTORY = "/data/data/com.onyx.android.dr/databases/";
+    public static final String EMPTY_STRING = "";
+    public static final String USER_TYPE = "user_type";
 }

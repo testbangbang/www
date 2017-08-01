@@ -14,7 +14,22 @@
             android:text="@string/username" />
 
         <EditText
-            android:id="@+id/username"
+            android:id="@+id/identity_username"
+            style="@style/UserInfoEditTextStyle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/edit_text_margin_top">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/password" />
+
+        <EditText
+            android:id="@+id/sign_up_password"
             style="@style/UserInfoEditTextStyle" />
     </LinearLayout>
 
@@ -48,30 +63,36 @@
 
         <LinearLayout
             android:layout_width="@dimen/user_info_edit_text_width"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <EditText
+                android:id="@+id/spinner_province"
                 style="@style/UserInfoEditTextStyle"
                 android:layout_width="0dp"
+                android:layout_marginRight="@dimen/user_info_edit_text_margin_right"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:hint="@string/province" />
+                android:textSize="@dimen/level_three_font_size" />
 
             <EditText
+                android:id="@+id/spinner_city"
                 style="@style/UserInfoEditTextStyle"
                 android:layout_width="0dp"
                 android:layout_marginLeft="@dimen/user_info_edit_text_margin_right"
                 android:layout_marginRight="@dimen/user_info_edit_text_margin_right"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:hint="@string/district" />
+                android:textSize="@dimen/level_three_font_size" />
 
             <EditText
+                android:id="@+id/spinner_county"
                 style="@style/UserInfoEditTextStyle"
                 android:layout_width="0dp"
+                android:layout_marginLeft="@dimen/user_info_edit_text_margin_right"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:hint="@string/county" />
+                android:textSize="@dimen/level_three_font_size" />
         </LinearLayout>
     </LinearLayout>
 
@@ -87,9 +108,27 @@
             android:text="@string/email" />
 
         <EditText
-            android:id="@+id/email"
+            android:id="@+id/identity_email"
             style="@style/UserInfoEditTextStyle"
-            android:gravity="end"
             android:hint="\@" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/edit_text_margin_top">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/phone" />
+
+        <EditText
+            android:id="@+id/identity_phone"
+            style="@style/UserInfoEditTextStyle"
+            android:digits="1234567890"
+            android:inputType="phone|number"
+            android:maxLength="11"
+            android:maxLines="1" />
     </LinearLayout>
 </LinearLayout>

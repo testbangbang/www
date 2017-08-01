@@ -3,6 +3,7 @@ package com.onyx.android.dr.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.DividerItemDecoration;
 import android.util.SparseArray;
 import android.view.KeyEvent;
@@ -94,6 +95,7 @@ public class MainActivity extends BaseActivity implements MainView {
     protected void initData() {
         mainPresenter = new MainPresenter(this);
         mainPresenter.loadData(this);
+        mainPresenter.loadTabMenu(DRPreferenceManager.getUserType(this, Constants.ACCOUNT_TYPE_HIGH_SCHOOL));
         mainPresenter.authToken();
     }
 
@@ -187,12 +189,12 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoginFailedEvent(LoginFailedEvent event) {
-
+        ActivityManager.startLoginActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountAvailableEvent(AccountAvailableEvent event) {
-        mainPresenter.lookCloudLibraryList(null);
+        mainPresenter.getMyGroup();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -266,7 +268,6 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     protected void onResume() {
         super.onResume();
-        mainPresenter.lookCloudLibraryList("");
     }
 
     @Override

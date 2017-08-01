@@ -30,7 +30,8 @@
 
         <EditText
             android:id="@+id/editText_password"
-            style="@style/UserInfoEditTextStyle" />
+            style="@style/UserInfoEditTextStyle"
+            android:inputType="textPassword"/>
     </LinearLayout>
 
     <LinearLayout

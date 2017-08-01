@@ -40,8 +40,8 @@
     <dimen name="login_layout_title_margin_top">30dp</dimen>
     <dimen name="user_info_edit_text_width">300dp</dimen>
     <dimen name="user_info_text_view_width">280dp</dimen>
-    <dimen name="login_next_button_margin_bottom">400dp</dimen>
-    <dimen name="login_next_button_margin_right">200dp</dimen>
+    <dimen name="login_next_button_margin_bottom">350dp</dimen>
+    <dimen name="login_next_button_margin_right">150dp</dimen>
     <dimen name="user_info_edit_text_margin_right">10dp</dimen>
     <dimen name="reader_bookmark_lineto_y">20dp</dimen>
     <dimen name="reader_bookmark_lineto_x">120dp</dimen>
@@ -171,4 +171,8 @@
     <dimen name="dialog_result_bottom">20dp</dimen>
     <dimen name="dict_query_total_strokes_marginleft">20dp</dimen>
     <dimen name="dict_query_edittext_width_second">120dp</dimen>
+    <dimen name="interest_recycler_height">300dp</dimen>
+    <dimen name="interest_recycler_margin_left">80dp</dimen>
+    <dimen name="interest_check_box_width">150dp</dimen>
+    <dimen name="interest_check_box_padding">10dp</dimen>
 </resources>
