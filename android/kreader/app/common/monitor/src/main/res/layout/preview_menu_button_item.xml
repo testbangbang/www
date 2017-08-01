@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_item"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:clickable="true"
+    android:gravity="center"
+    android:paddingTop="@dimen/dialog_reader_menu_text_view_padding"
+    android:paddingBottom="@dimen/dialog_reader_menu_text_view_padding"
+    android:background="@drawable/imagebtn_bg">
+
+    <ImageView
+        android:id="@+id/imageview_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:contentDescription=""
+        android:scaleType="fitCenter"/>
+</com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
