@@ -1091,6 +1091,11 @@ public class ShowReaderMenuAction extends BaseAction {
             }
 
             @Override
+            public boolean isSupportingSideNote() {
+                return isLandscapeViewport(readerDataHolder);
+            }
+
+            @Override
             public List<String> getFontFaces() {
                 return fontFaces;
             }
@@ -1102,6 +1107,9 @@ public class ShowReaderMenuAction extends BaseAction {
         };
     }
 
+    private static boolean isLandscapeViewport(final ReaderDataHolder readerDataHolder) {
+        return readerDataHolder.getDisplayWidth() > readerDataHolder.getDisplayHeight();
+    }
 
     public static Map<Float, ReaderMenuAction> getStrokeMapping() {
         if (strokeMapping == null) {

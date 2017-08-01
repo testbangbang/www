@@ -1246,6 +1246,11 @@ public class ShowReaderMenuAction extends BaseAction {
             }
 
             @Override
+            public boolean isSupportingSideNote() {
+                return false;
+            }
+
+            @Override
             public List<String> getFontFaces() {
                 return fontFaces;
             }
