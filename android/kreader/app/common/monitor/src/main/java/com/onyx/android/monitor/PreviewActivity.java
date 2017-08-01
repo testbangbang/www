@@ -5,13 +5,16 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.onyx.android.monitor.databinding.ActivityPreviewBinding;
+import com.onyx.android.monitor.event.MenuKeyEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class PreviewActivity extends Activity {
     static final String TAG = PreviewActivity.class.getSimpleName();
-    static final boolean useA2 = true;
     ActivityPreviewBinding binding;
 
     @Override
@@ -23,21 +26,11 @@ public class PreviewActivity extends Activity {
                     .replace(binding.container.getId(), PreviewFragment.newInstance())
                     .commit();
         }
-        if (useA2){
-            Log.e(TAG,"Toggle to A2.");
-            Intent changeToA2Intent = new Intent(Constant.A2_ACTION);
-            sendBroadcast(changeToA2Intent);
-        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (useA2){
-            Log.e(TAG,"Restore A2 to Normal.");
-            Intent restoreNormalUpdateIntent = new Intent(Constant.A2_ACTION);
-            sendBroadcast(restoreNormalUpdateIntent);
-        }
     }
 
     @Override
@@ -52,5 +45,14 @@ public class PreviewActivity extends Activity {
                             | View.SYSTEM_UI_FLAG_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (KeyEvent.KEYCODE_MENU == keyCode) {
+            EventBus.getDefault().post(new MenuKeyEvent());
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

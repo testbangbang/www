@@ -3,6 +3,7 @@
     <string name="picture">Picture</string>
     <string name="description_info">Info</string>
     <string name="request_permission">This sample needs camera permission.</string>
+    <string name="connect_error">Display connection failed. Please check the HDMI cable!</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
     <string name="intro_message">
         <![CDATA[
@@ -10,4 +11,6 @@
         ]]>
     </string>
     <string name="exit_confirm">Exit Share?</string>
+    <string name="refresh_time">Refresh time</string>
+    <string name="contrast_value">Contrast value</string>
 </resources>
