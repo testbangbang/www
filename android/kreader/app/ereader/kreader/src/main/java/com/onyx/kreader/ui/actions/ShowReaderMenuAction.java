@@ -46,9 +46,11 @@ import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
 import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
 import com.onyx.android.sdk.reader.host.request.ScaleToWidthContentRequest;
 import com.onyx.android.sdk.reader.host.request.ScaleToWidthRequest;
+import com.onyx.kreader.note.actions.AddNoteSubPageAction;
 import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.ClearPageAction;
+import com.onyx.kreader.note.actions.DeleteNoteSubPageAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RedoAction;
 import com.onyx.kreader.note.actions.RestoreShapeAction;
@@ -600,6 +602,47 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
+    private static void addSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
+        new AddNoteSubPageAction(readerDataHolder.getCurrentPageName(),
+                readerDataHolder.getSideNotePage() + 1).execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                nextSideNoteSubPage(readerDataHolder);
+            }
+        });
+    }
+
+    private static void deleteSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
+        new DeleteNoteSubPageAction(readerDataHolder.getCurrentPageName(),
+                readerDataHolder.getSideNotePage()).execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                int sideNotePage = Math.min(readerDataHolder.getCurrentPage(),
+                        readerDataHolder.getSideNotePageCount() - 1);
+                if (sideNotePage >= 0) {
+                    readerDataHolder.setSideNotePage(sideNotePage);
+                    readerDataHolder.redrawPage();
+                    return;
+                }
+
+                new AddNoteSubPageAction(readerDataHolder.getCurrentPageName(),
+                        0).execute(readerDataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        readerDataHolder.setSideNotePage(0);
+                        readerDataHolder.redrawPage();
+                    }
+                });
+            }
+        });
+    }
+
     private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {
         OnyxDictionaryInfo info = LegacySdkDataUtils.getDictionary(readerDataHolder.getContext());
         if (info == null) {
@@ -858,13 +901,23 @@ public class ShowReaderMenuAction extends BaseAction {
             case SCRIBBLE_MAXIMIZE:
                 toggleMenu(readerDataHolder);
                 break;
-            case SCRIBBLE_PREV_PAGE:
-//                prevScreen(readerDataHolder);
+            case SCRIBBLE_DOC_PREV_PAGE:
+                prevScreen(readerDataHolder);
+                break;
+            case SCRIBBLE_DOC_NEXT_PAGE:
+                nextScreen(readerDataHolder);
+                break;
+            case SCRIBBLE_SIDE_NOTE_PREV_PAGE:
                 prevSideNoteSubPage(readerDataHolder);
                 break;
-            case SCRIBBLE_NEXT_PAGE:
-//                nextScreen(readerDataHolder);
+            case SCRIBBLE_SIDE_NOTE_NEXT_PAGE:
                 nextSideNoteSubPage(readerDataHolder);
+                break;
+            case SCRIBBLE_SIDE_NOTE_ADD_PAGE:
+                addSideNoteSubPage(readerDataHolder);
+                break;
+            case SCRIBBLE_SIDE_NOTE_DELETE_PAGE:
+                deleteSideNoteSubPage(readerDataHolder);
                 break;
             case SCRIBBLE_UNDO:
                 undo(readerDataHolder);

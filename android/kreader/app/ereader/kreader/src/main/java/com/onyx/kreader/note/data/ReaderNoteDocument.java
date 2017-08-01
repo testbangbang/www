@@ -213,6 +213,14 @@ public class ReaderNoteDocument {
         return readerNotePage;
     }
 
+    public ReaderNotePage addPage(final String pageName, int subPageIndex) {
+        String subPageId = ShapeUtils.generateUniqueId();
+        addIndexEntry(pageName, subPageIndex, subPageId);
+        ReaderNotePage readerNotePage = ensureDataEntry(pageName, subPageId);
+        readerNotePage.setLoaded(true);
+        return readerNotePage;
+    }
+
     public String clearPage(final Context context, final String pageName, final int subPageIndex) {
         final List<String> list = getPageIndex().getPageList(pageName, false);
         if (CollectionUtils.isEmpty(list)) {
@@ -249,6 +257,10 @@ public class ReaderNoteDocument {
     }
 
     private void createIndexEntry(final String pageName, int index, final String pageUniqueId) {
+        getPageIndex().set(pageName, index, pageUniqueId);
+    }
+
+    private void addIndexEntry(final String pageName, int index, final String pageUniqueId) {
         getPageIndex().add(pageName, index, pageUniqueId);
     }
 

@@ -82,6 +82,7 @@ public class ReaderDataHolder {
 
     private boolean sideNoting = false;
     private int sideNotePage = 0;
+    private int sideNotePageCount = 1;
 
     /**
      * can be either Dialog or DialogFragment, so we store it as basic Object
@@ -623,6 +624,19 @@ public class ReaderDataHolder {
         }
     }
 
+    public int getSideNotePage() {
+        return sideNotePage;
+    }
+
+    public void setSideNotePage(int sideNotePage) {
+        this.sideNotePage = sideNotePage;
+    }
+
+    public int getSideNotePageCount() {
+        int count = noteManager.getNoteDocument().getSubPageCount(getCurrentPageName()) - 1;
+        return count <= 0 ? 1 : count;
+    }
+
     public void previousSideNotePage() {
         if (sideNotePage > 0) {
             sideNotePage--;
@@ -630,7 +644,7 @@ public class ReaderDataHolder {
     }
 
     public void nextSideNotePage() {
-        if (sideNotePage < 2) {
+        if (sideNotePage < getSideNotePageCount()) {
             sideNotePage++;
         }
     }

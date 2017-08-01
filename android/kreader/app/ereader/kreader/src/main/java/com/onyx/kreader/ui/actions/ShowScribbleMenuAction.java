@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -28,6 +29,7 @@ import com.onyx.kreader.note.actions.RestoreShapeAction;
 import com.onyx.kreader.note.request.PauseDrawingRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
+import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.events.UpdateScribbleMenuEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
@@ -123,17 +125,38 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         final ReaderMenuAction[] expandedActions = {ReaderMenuAction.SCRIBBLE_WIDTH, ReaderMenuAction.SCRIBBLE_SHAPE, ReaderMenuAction.SCRIBBLE_ERASER};
 
+        if (readerDataHolder.isSideNoting()) {
+            addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_left, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_DOC_PREV_PAGE);
+            addPageTextViewHolder(toolbar, readerDataHolder.getContext(), 20.0f, getDocPositionText(), ReaderMenuAction.SCRIBBLE_DOC_POSITION);
+            addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_right, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_DOC_NEXT_PAGE);
+
+            toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
+        }
+
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_SHAPE);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_eraser, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_ERASER);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_width, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_WIDTH);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_color, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_COLOR);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_drag_forbid, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_DRAG);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_unfold, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_MINIMIZE);
+
+        if (readerDataHolder.isSideNoting()) {
+            addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_add, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_SIDE_NOTE_ADD_PAGE);
+            addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_delete, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_SIDE_NOTE_DELETE_PAGE);
+        } else {
+            addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_drag_forbid, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_DRAG);
+            addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_unfold, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_MINIMIZE);
+        }
 
         toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
 
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_left, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_PREV_PAGE);
-        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_right, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_NEXT_PAGE);
+        if (readerDataHolder.isSideNoting()) {
+            addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_left, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_SIDE_NOTE_PREV_PAGE);
+            addPageTextViewHolder(toolbar, readerDataHolder.getContext(), 20.0f, getSideNotePositionText(), ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION);
+            addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_right, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_SIDE_NOTE_NEXT_PAGE);
+        } else {
+            addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_left, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_DOC_PREV_PAGE);
+            addPageTextViewHolder(toolbar, readerDataHolder.getContext(), 20.0f, getDocPositionText(), ReaderMenuAction.SCRIBBLE_DOC_POSITION);
+            addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_page_arrow_right, R.drawable.ic_triangle, R.layout.scribble_bottom_menu_item_view, ReaderMenuAction.SCRIBBLE_DOC_NEXT_PAGE);
+        }
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -234,6 +257,23 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         ImageView imageView = OnyxToolbar.Builder.createImageView(context, imageResId);
         CommonViewHolder viewHolder = new CommonViewHolder(imageView);
         imageView.setTag(action);
+        toolbar.addViewHolder(viewHolder);
+        scribbleViewHolderMap.put(action, viewHolder);
+    }
+
+    private void addPageTextViewHolder(OnyxToolbar toolbar, Context context, float textSize, String text, final ReaderMenuAction action) {
+        if (disableMenuActions.contains(action)) {
+            return;
+        }
+        TextView textView = new TextView(context);
+        textView.setText(text);
+        textView.setTextColor(Color.BLACK);
+        textView.setTextSize(textSize);
+
+        OnyxToolbar.Builder.setLayoutParams(context, textView, 0, 0);
+        textView.setPadding(0, 0, 0, 0);
+        CommonViewHolder viewHolder = new CommonViewHolder(textView);
+        textView.setTag(action);
         toolbar.addViewHolder(viewHolder);
         scribbleViewHolderMap.put(action, viewHolder);
     }
@@ -510,6 +550,12 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         postMenuChangedEvent(readerDataHolder);
     }
 
+    @Subscribe
+    public void onRequestFinished(final RequestFinishEvent event) {
+        updateDocPositionTextView();
+        updateSideNotePositionTextView();
+    }
+
     private void changeToolBarVisibility(boolean packUp) {
         topToolbar.setVisibility(packUp ? View.GONE : View.VISIBLE);
         bottomToolbar.setVisibility(packUp ? View.GONE : View.VISIBLE);
@@ -552,5 +598,27 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     public void setSelectWidthAction(ReaderMenuAction selectWidthAction) {
         this.selectWidthAction = selectWidthAction;
+    }
+
+    private String getDocPositionText() {
+        return (readerDataHolder.getCurrentPage() + 1) + "/" + readerDataHolder.getPageCount();
+    }
+
+    private void updateDocPositionTextView() {
+        String positionText = getDocPositionText();
+        CommonViewHolder holder = scribbleViewHolderMap.get(ReaderMenuAction.SCRIBBLE_DOC_POSITION);
+        TextView tv = (TextView)holder.getItemView();
+        tv.setText(positionText);
+    }
+
+    private String getSideNotePositionText() {
+        return (readerDataHolder.getSideNotePage() + 1) + "/" + readerDataHolder.getSideNotePageCount();
+    }
+
+    private void updateSideNotePositionTextView() {
+        String positionText = getSideNotePositionText();
+        CommonViewHolder holder = scribbleViewHolderMap.get(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION);
+        TextView tv = (TextView)holder.getItemView();
+        tv.setText(positionText);
     }
 }
