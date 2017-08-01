@@ -9,11 +9,15 @@ import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.MenuBean;
 import com.onyx.android.dr.event.GoodSentenceNotebookEvent;
+import com.onyx.android.dr.event.InfromalEssayEvent;
+import com.onyx.android.dr.event.MemorandumEvent;
 import com.onyx.android.dr.event.NewWordNotebookEvent;
+import com.onyx.android.dr.event.SketchEvent;
 import com.onyx.android.dr.interfaces.MyNotesView;
 import com.onyx.android.dr.presenter.MyNotesPresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -98,6 +102,21 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoodSentenceNoteEntity(GoodSentenceNotebookEvent event) {
         ActivityManager.startGoodSentenceTypeActivity(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onInfromalEssayEvent(InfromalEssayEvent event) {
+        ActivityManager.startInfromalEssayActivity(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMemorandumEvent(MemorandumEvent event) {
+        ActivityManager.startMemorandumActivity(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSketchEvent(SketchEvent event) {
+        ActivityManager.startScribbleActivity(this);
     }
 
     @Override

@@ -2,11 +2,18 @@ package com.onyx.android.dr.presenter;
 
 import android.content.Context;
 
+import com.onyx.android.dr.adapter.GoodSentenceAdapter;
 import com.onyx.android.dr.data.GoodSentenceData;
+import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.interfaces.GoodSentenceView;
-import com.onyx.android.dr.request.local.GoodSentenceExcerptQueryAll;
+import com.onyx.android.dr.request.local.GoodSentenceDeleteByTime;
+import com.onyx.android.dr.request.local.GoodSentenceExport;
+import com.onyx.android.dr.request.local.GoodSentenceQueryByType;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhouzhiming on 2017/7/12.
@@ -15,6 +22,7 @@ public class GoodSentencePresenter {
     private final GoodSentenceData goodSentenceData;
     private GoodSentenceView goodSentenceView;
     private Context context;
+    public List<GoodSentenceNoteEntity> allData;
 
     public GoodSentencePresenter(Context context, GoodSentenceView goodSentenceView) {
         this.goodSentenceView = goodSentenceView;
@@ -22,12 +30,51 @@ public class GoodSentencePresenter {
         goodSentenceData = new GoodSentenceData();
     }
 
-    public void getAllGoodSentenceData() {
-        final GoodSentenceExcerptQueryAll req = new GoodSentenceExcerptQueryAll();
-        goodSentenceData.getAllGoodSentence(context, req, new BaseCallback() {
+    public void getGoodSentenceByType(int type) {
+        final GoodSentenceQueryByType req = new GoodSentenceQueryByType(type);
+        goodSentenceData.getGoodSentenceByType(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                goodSentenceView.setGoodSentenceData(req.getGoodSentenceList());
+                allData = req.getGoodSentenceList();
+                ArrayList<Boolean> checkList = req.getCheckList();
+                goodSentenceView.setGoodSentenceData(allData, checkList);
+            }
+        });
+    }
+
+    public void deleteGoodSentence(long time) {
+        final GoodSentenceDeleteByTime req = new GoodSentenceDeleteByTime(time);
+        goodSentenceData.deleteGoodSentence(context, req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+            }
+        });
+    }
+
+    public void remoteAdapterDatas(ArrayList<Boolean> listCheck, GoodSentenceAdapter adapter) {
+        int length = listCheck.size();
+        for (int i = length - 1; i >= 0; i--) {
+            if (listCheck.get(i)) {
+                //delete basedata data
+                GoodSentenceNoteEntity bean = allData.get(i);
+                deleteGoodSentence(bean.currentTime);
+                allData.remove(i);
+                listCheck.remove(i);
+                adapter.notifyItemRemoved(i);
+                adapter.notifyItemRangeChanged(0, allData.size());
+            }
+        }
+    }
+
+    public void getHtmlTitle() {
+        goodSentenceData.setHtmlTitle(context);
+    }
+
+    public void exportDataToHtml(Context context, ArrayList<String> dataList, List<GoodSentenceNoteEntity> list) {
+        final GoodSentenceExport req = new GoodSentenceExport(context, dataList, list);
+        goodSentenceData.exportGoodSentence(context, req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
             }
         });
     }

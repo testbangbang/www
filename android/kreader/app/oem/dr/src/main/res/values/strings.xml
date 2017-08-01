@@ -250,4 +250,49 @@
     <string name="school_is_required">school is required</string>
     <string name="class_is_required">class is required</string>
     <string name="sign_up_succeed">sign up succeed</string>
+    <string name="infromal_essay_activity_share">share</string>
+    <string name="infromal_essay_activity_new">new</string>
+    <string name="infromal_essay_activity_time">time</string>
+    <string name="infromal_essay_activity_title">title</string>
+    <string name="infromal_essay_activity_word_number">word number</string>
+    <string name="infromal_essay_activity_content">content</string>
+    <string name="infromal_essay_html">infromal essay form</string>
+    <string name="title">title: </string>
+    <string name="input_infromal_essay">input infromal essay</string>
+    <string name="add_infromal_essay_success">add infromal essay success</string>
+    <string name="infromal_essay_already_add">infromal essay already add</string>
+    <string name="input_title">input title</string>
+    <string name="input_infromal_essay_content">input infromal essay content</string>
+    <string name="add_infromal_essay_activity_file">call corrent file</string>
+    <string name="save_button">save</string>
+    <string name="sketch_activity_check_all">check all</string>
+    <string name="memorandum_activity_time">time</string>
+    <string name="memorandum_activity_time_quantum">time quantum</string>
+    <string name="memorandum_activity_matter">matter</string>
+    <string name="memorandum_already_add">memorandum already add</string>
+    <string name="add_memorandum_success">add memorandum success</string>
+    <string name="input_memorandum">input memorandum</string>
+    <string name="time_selector_dialog_year">year</string>
+    <string name="time_selector_dialog_hour">hour</string>
+    <string name="time_selector_dialog_minute">minute</string>
+    <string name="add_memorandum_activity_start_time">start time</string>
+    <string name="add_memorandum_activity_end_time">end time</string>
+    <string name="time_selector_dialog_cancel">cancel</string>
+    <string name="time_selector_dialog_confirm">confirm</string>
+    <string name="select_hour">select hour</string>
+    <string name="select_minute">select minute</string>
+    <string name="start_time_less_than_end_time">start time less than end time</string>
+    <string name="end_time_more_than_start_time">end time more than start time</string>
+    <string name="select_start_time">select start time</string>
+    <string name="select_end_time">select end time</string>
+    <string name="item_sketch_title">title</string>
+    <string name="add_memorandum_activity_dialog_height" format="float" type="dimen">0.3</string>
+    <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
+    <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
+    <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
+    <string name="do_not_install_note_apk">do not install note apk</string>
+    <string name="dict_query_japanese_language">Japanese</string>
+    <string name="article_repeat_after">article repeat after</string>
+    <string name="speech_recording">speech recording</string>
+    <string name="pronounce_evaluation">pronounce evaluation</string>
 </resources>

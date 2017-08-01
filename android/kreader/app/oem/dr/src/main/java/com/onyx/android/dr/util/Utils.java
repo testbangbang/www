@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -35,6 +37,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +47,8 @@ import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 
-import static com.onyx.android.dr.common.Constants.BAIDU_BAIKE_URL;
+import static com.onyx.android.sdk.dict.utils.Utils.getDictionaryFileList;
+import static com.onyx.android.sdk.dict.utils.Utils.loadLocalDict;
 
 /**
  * Created by zhuzeng on 6/3/15.
@@ -642,7 +646,7 @@ public class Utils {
         return getDisplayMetrics(context).heightPixels;
     }
 
-    public static void openBaiduBaiKe(Context context, String editQuery){
+    public static void openBaiduBaiKe(Context context, String editQuery) {
         if (StringUtils.isNullOrEmpty(editQuery)) {
             Toast.makeText(context, R.string.illegalInput, Toast.LENGTH_SHORT).show();
             return;
@@ -650,11 +654,104 @@ public class Utils {
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
         String baseUrl = Constants.WIKTIONARY_URL;
-        if(Utils.isChinese(context)){
+        if (Utils.isChinese(context)) {
             baseUrl = Constants.BAIDU_BAIKE_URL;
         }
         Uri content_url = Uri.parse(baseUrl + editQuery);
         intent.setData(content_url);
         context.startActivity(intent);
+    }
+
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    public static String getStringLength(String content) {
+        return content.length() + "";
+    }
+
+    public static String getTimeAndMinute(String hour, String minute) {
+        return hour + ":" + minute;
+    }
+
+    public static String getTimeAndMinuteSecond(String hour, String minute) {
+        String content = "";
+        if (Integer.valueOf(hour) < 10 && Integer.valueOf(minute) < 10) {
+            content = "0" + hour + ":0" + minute;
+            return content;
+        } else if (Integer.valueOf(hour) < 10 && Integer.valueOf(minute) >= 10) {
+            content = "0" + hour + ":" + minute;
+            return content;
+        } else if (Integer.valueOf(hour) >= 10 && Integer.valueOf(minute) < 10) {
+            content = hour + ":0" + minute;
+            return content;
+        } else if (Integer.valueOf(hour) >= 10 && Integer.valueOf(minute) >= 10) {
+            content = hour + ":" + minute;
+            return content;
+        }
+        return content;
+    }
+
+    public static String getTimeQuantum(String hour, String minute) {
+        return hour + "-" + minute;
+    }
+
+    public static List<DictTypeBean> getDictName(String catalogue) {
+        List<File> files = getDictionaryFileList(catalogue);
+        List<DictTypeBean> list = new ArrayList<DictTypeBean>();
+        for (File subFile : files) {
+            if (subFile.isHidden()) {
+                continue;
+            }
+            if (subFile.isDirectory()) {
+                String dictPath = subFile.getPath();
+                File path = Environment.getExternalStorageDirectory();
+                String dictName = dictPath.substring((path + catalogue).length() + 1);
+                DictTypeBean dictTypeData = new DictTypeBean(dictName);
+                if (!list.contains(dictTypeData)) {
+                    list.add(dictTypeData);
+                }
+            }
+        }
+        return list;
+    }
+
+    public static List<String> loadItemData(Context context) {
+        List<String> itemList = new ArrayList<>();
+        itemList.add(context.getString(R.string.webview_action_copy));
+        itemList.add(context.getString(R.string.webview_action_cancel));
+        return itemList;
+    }
+
+    public static List<String> getPathList(int dictType) {
+        List<String> pathList = new ArrayList<>();
+        if (dictType == Constants.ENGLISH_NEW_WORD_NOTEBOOK) {
+            pathList = loadLocalDict(Constants.ENGLISH_DICTIONARY);
+        } else if (dictType == Constants.CHINESE_NEW_WORD_NOTEBOOK) {
+            pathList = loadLocalDict(Constants.CHINESE_DICTIONARY);
+        } else if (dictType == Constants.JAPANESE_NEW_WORD_NOTEBOOK) {
+            pathList = loadLocalDict(Constants.JAPANESE_DICTIONARY);
+        }
+        return pathList;
+    }
+
+    public static List<String> getAllDictPathList() {
+        List<String> pathList = new ArrayList<>();
+        pathList.addAll(loadLocalDict(Constants.CHINESE_DICTIONARY));
+        pathList.addAll(loadLocalDict(Constants.ENGLISH_DICTIONARY));
+        pathList.addAll(loadLocalDict(Constants.JAPANESE_DICTIONARY));
+        return pathList;
+    }
+
+    public static List<String> getAllFolderPathList() {
+        List<String> dictPaths = new ArrayList<>();
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            File path = Environment.getExternalStorageDirectory();
+            dictPaths.add(path + Constants.CHINESE_DICTIONARY);
+            dictPaths.add(path + Constants.ENGLISH_DICTIONARY);
+            dictPaths.add(path + Constants.JAPANESE_DICTIONARY);
+        }
+        return dictPaths;
     }
 }

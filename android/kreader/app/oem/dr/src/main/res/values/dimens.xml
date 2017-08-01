@@ -175,4 +175,16 @@
     <dimen name="interest_recycler_margin_left">80dp</dimen>
     <dimen name="interest_check_box_width">150dp</dimen>
     <dimen name="interest_check_box_padding">10dp</dimen>
+    <dimen name="title_margin_left">20dp</dimen>
+    <dimen name="add_infromal_essay_activity_content_margin">20dp</dimen>
+    <dimen name="add_infromal_essay_activity_content_padding">10dp</dimen>
+    <dimen name="add_infromal_essay_activity_content_height">300dp</dimen>
+    <dimen name="item_sketch_photo_width">150dp</dimen>
+    <dimen name="item_sketch_photo_height">300dp</dimen>
+    <dimen name="dialog_time_selector_margin_left">5dp</dimen>
+    <dimen name="add_memorandum_activity_width">130dp</dimen>
+    <dimen name="item_sketch_time_margin_top">5dp</dimen>
+    <dimen name="item_sketch_title_margin_top">5dp</dimen>
+    <dimen name="title_interval_margin_left">1dp</dimen>
+    <dimen name="hear_and_speak_activity_view_margin_top">30dp</dimen>
 </resources>

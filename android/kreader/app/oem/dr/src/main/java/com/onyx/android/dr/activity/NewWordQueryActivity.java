@@ -19,6 +19,7 @@ import com.onyx.android.dr.event.RefreshWebviewEvent;
 import com.onyx.android.dr.event.WebViewLoadOverEvent;
 import com.onyx.android.dr.interfaces.QueryRecordView;
 import com.onyx.android.dr.presenter.QueryRecordPresenter;
+import com.onyx.android.dr.util.DictPreference;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
@@ -69,6 +70,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     private DictSpinnerAdapter dictSpinnerAdapter;
     private QueryRecordPresenter queryRecordPresenter;
     private String editQuery = "";
+    private List<String> pathList;
 
     @Override
     protected Integer getLayoutId() {
@@ -95,6 +97,16 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
 
     private void getIntentDatas() {
         editQuery = getIntent().getStringExtra(Constants.EDITQUERY);
+        loadDictionary();
+    }
+
+    private void loadDictionary() {
+        DictPreference.init(this);
+        pathList = new ArrayList<>();
+        int dictType = DictPreference.getIntValue(this, Constants.DICTTYPE, Constants.ENGLISH_NEW_WORD_NOTEBOOK);
+        dictionaryManager = DRApplication.getInstance().getDictionaryManager();
+        dictionaryManager.newProviderMap.clear();
+        pathList = Utils.getPathList(dictType);
     }
 
     @Override
@@ -130,12 +142,10 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
                     }
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
         resultView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
             @Override
             public void onPageChanged(int totalPage, int curPage) {
@@ -148,6 +158,13 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
                 saveDictionary(dictName);
             }
         });
+        resultView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return true;
+            }
+        });
+        resultView.setLongClickable(false);
         resultView.setTextZoom(customFontSize);
         setWebviewDefaultFontSize();
         prevPageButton.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +179,6 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
                 resultView.nextPage();
             }
         });
-
         incomeNewWordNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,9 +206,9 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
 
     public void testWordDictQuery() {
         if (!StringUtils.isNullOrEmpty(editQuery)) {
-            dictionaryManager = DRApplication.getDictionaryManager();
+            dictionaryManager = DRApplication.getInstance().getDictionaryManager();
             queryWordRequest = new QueryWordRequest(editQuery);
-            boolean bRet = dictionaryManager.sendRequest(DRApplication.getInstance(), queryWordRequest, new DictBaseCallback() {
+            boolean bRet = dictionaryManager.sendRequest(DRApplication.getInstance(), queryWordRequest, pathList, new DictBaseCallback() {
                 @Override
                 public void done(DictBaseRequest request, Exception e) {
                     resultView.loadResultAsHtml(queryWordRequest.queryResult);

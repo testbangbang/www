@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_infromal_essay_linearlayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/infromal_essay_item_check"
+        style="@style/checkbox_style" />
+
+    <View style="@style/good_sentence_item_view" />
+
+    <TextView
+        android:id="@+id/infromal_essay_item_time"
+        style="@style/good_sentence_item_textview"
+        android:layout_marginLeft="@dimen/title_interval_margin_left"
+        android:layout_weight="2"
+        android:text="@string/infromal_essay_activity_time" />
+
+    <View style="@style/good_sentence_item_view" />
+
+    <TextView
+        android:id="@+id/infromal_essay_item_title"
+        style="@style/good_sentence_item_textview"
+        android:layout_marginLeft="@dimen/title_interval_margin_left"
+        android:layout_weight="2"
+        android:text="@string/infromal_essay_activity_title" />
+
+    <View style="@style/good_sentence_item_view" />
+
+    <TextView
+        android:id="@+id/infromal_essay_item_word_number"
+        style="@style/good_sentence_item_textview"
+        android:layout_marginLeft="1dp"
+        android:layout_weight="2"
+        android:text="@string/infromal_essay_activity_word_number" />
+
+    <View style="@style/good_sentence_item_view" />
+
+    <TextView
+        android:id="@+id/infromal_essay_item_content"
+        style="@style/good_sentence_item_textview"
+        android:layout_marginLeft="@dimen/title_interval_margin_left"
+        android:layout_weight="4"
+        android:text="@string/infromal_essay_activity_content" />
+
+</LinearLayout>

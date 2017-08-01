@@ -41,6 +41,10 @@
     <integer name="dict_spinner_tab_row">16</integer>
     <integer name="applications_activity_row">5</integer>
     <integer name="applications_activity_col">4</integer>
+    <integer name="sketch_tab_column">4</integer>
+    <integer name="sketch_tab_row">3</integer>
+    <integer name="hour_tab_column">1</integer>
+    <integer name="hour_tab_row">4</integer>
     <integer name="quick_preview_bitmap_default_width">300</integer>
     <integer name="quick_preview_bitmap_default_height">400</integer>
     <integer name="interest_row">4</integer>

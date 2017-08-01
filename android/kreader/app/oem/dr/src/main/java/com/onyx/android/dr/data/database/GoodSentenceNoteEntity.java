@@ -22,5 +22,5 @@ public class GoodSentenceNoteEntity extends BaseModel {
     @Column
     public long currentTime;
     @Column
-    public String goodSentenceType;
+    public int goodSentenceType;
 }

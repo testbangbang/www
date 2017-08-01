@@ -32,6 +32,7 @@ public class NewWordInsert extends BaseDataRequest {
             newWordEntity.currentTime = newWordsInfo.currentTime;
             newWordEntity.dictionaryLookup = newWordsInfo.dictionaryLookup;
             newWordEntity.readingMatter = newWordsInfo.readingMatter;
+            newWordEntity.newWordType = newWordsInfo.newWordType;
             newWordEntity.update();
         }
     }

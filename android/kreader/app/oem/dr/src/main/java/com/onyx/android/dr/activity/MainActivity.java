@@ -73,7 +73,6 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected void initConfig() {
-
     }
 
     @Override
@@ -157,7 +156,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onListenAndSayMenuEvent(ListenAndSayMenuEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_listen_and_say));
+        ActivityManager.startHearAndSpeakActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

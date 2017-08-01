@@ -248,4 +248,49 @@
     <string name="school_is_required">学校为必填项</string>
     <string name="class_is_required">班级为必填项</string>
     <string name="sign_up_succeed">注册成功</string>
+    <string name="infromal_essay_activity_share">分享</string>
+    <string name="infromal_essay_activity_new">新建</string>
+    <string name="infromal_essay_activity_time">撰写时间</string>
+    <string name="infromal_essay_activity_title">随笔标题</string>
+    <string name="infromal_essay_activity_word_number">随笔字数</string>
+    <string name="infromal_essay_activity_content">随笔内容</string>
+    <string name="infromal_essay_html">随笔报表</string>
+    <string name="title">标题: </string>
+    <string name="input_infromal_essay">输入随笔内容</string>
+    <string name="add_infromal_essay_success">随笔添加成功</string>
+    <string name="infromal_essay_already_add">随笔已经添加</string>
+    <string name="input_title">输入标题</string>
+    <string name="input_infromal_essay_content">输入随笔内容</string>
+    <string name="add_infromal_essay_activity_file">调用修改文件</string>
+    <string name="save_button">保存</string>
+    <string name="sketch_activity_check_all">全选</string>
+    <string name="memorandum_activity_time">日期</string>
+    <string name="memorandum_activity_time_quantum">时段</string>
+    <string name="memorandum_activity_matter">事项</string>
+    <string name="memorandum_already_add">备忘录已经添加</string>
+    <string name="add_memorandum_success">添加备忘录成功</string>
+    <string name="input_memorandum">输入事项</string>
+    <string name="time_selector_dialog_year">年</string>
+    <string name="time_selector_dialog_hour">时</string>
+    <string name="time_selector_dialog_minute">分</string>
+    <string name="add_memorandum_activity_start_time">开始时间</string>
+    <string name="add_memorandum_activity_end_time">结束时间</string>
+    <string name="time_selector_dialog_cancel">取消</string>
+    <string name="time_selector_dialog_confirm">确定</string>
+    <string name="select_hour">选择几时</string>
+    <string name="select_minute">选择几分</string>
+    <string name="start_time_less_than_end_time">开始时间小于结束时间</string>
+    <string name="end_time_more_than_start_time">结束时间大于开始时间</string>
+    <string name="select_start_time">选择开始时间</string>
+    <string name="select_end_time">选择结束时间</string>
+    <string name="item_sketch_title">标题</string>
+    <string name="do_not_install_note_apk">没有安装笔记App</string>
+    <string name="dict_query_japanese_language">日文</string>
+    <string name="add_memorandum_activity_dialog_height" format="float" type="dimen">0.3</string>
+    <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
+    <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
+    <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
+    <string name="article_repeat_after">文章跟读</string>
+    <string name="speech_recording">演讲录音</string>
+    <string name="pronounce_evaluation">发音测评</string>
 </resources>

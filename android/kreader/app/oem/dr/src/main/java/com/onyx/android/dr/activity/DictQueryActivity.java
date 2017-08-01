@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.adapter.DictTypeAdapter;
 import com.onyx.android.dr.adapter.LanguageQueryTypeAdapter;
 import com.onyx.android.dr.bean.DictFunctionBean;
 import com.onyx.android.dr.bean.DictTypeBean;
@@ -25,6 +26,7 @@ import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -50,6 +52,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     EditText exampleQuery;
     @Bind(R.id.activity_query_spell_query)
     EditText spellQuery;
+    @Bind(R.id.activity_query_japanese_query)
+    EditText japaneseQuery;
     @Bind(R.id.activity_query_radical_strokes)
     EditText radicalStrokesQuery;
     @Bind(R.id.activity_query_total_strokes)
@@ -66,15 +70,26 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     Button strokeSearch;
     @Bind(R.id.activity_word_spell_search)
     Button spellSearch;
+    @Bind(R.id.activity_word_japanese_search)
+    Button japaneseSearch;
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.activity_query_chinese_linearlayout)
     LinearLayout chineseLinearLayout;
     @Bind(R.id.activity_query_english_linearlayout)
     LinearLayout englishLinearLayout;
+    @Bind(R.id.activity_query_japanese_container)
+    LinearLayout japaneseLinearLayout;
+    @Bind(R.id.activity_query_dict_view)
+    PageRecyclerView dictTypeRecyclerView;
     private DividerItemDecoration dividerItemDecoration;
     private LanguageQueryTypeAdapter languageQueryTypeAdapter;
     private DictFunctionPresenter dictPresenter;
+    private DictTypeAdapter dictTypeAdapter;
+    private List<DictTypeBean> englishDictName;
+    private List<DictTypeBean> chineseDictName;
+    private List<DictTypeBean> japaneseDictName;
+    private int dictType = Constants.ENGLISH_NEW_WORD_NOTEBOOK;
 
     @Override
     protected Integer getLayoutId() {
@@ -97,6 +112,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         tabMenu.addItemDecoration(dividerItemDecoration);
         languageQueryTypeAdapter = new LanguageQueryTypeAdapter();
         tabMenu.setAdapter(languageQueryTypeAdapter);
+        dictTypeRecyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
     }
 
     @Override
@@ -104,7 +120,18 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         dictPresenter = new DictFunctionPresenter(getApplicationContext(), this);
         dictPresenter.loadData(this);
         dictPresenter.loadDictType(Constants.ACCOUNT_TYPE_DICT_LANGUAGE);
+        loadDictData();
         initEvent();
+    }
+
+    private void loadDictData() {
+        dictTypeRecyclerView.addItemDecoration(dividerItemDecoration);
+        dictTypeAdapter = new DictTypeAdapter();
+        englishDictName = Utils.getDictName(Constants.ENGLISH_DICTIONARY);
+        chineseDictName = Utils.getDictName(Constants.CHINESE_DICTIONARY);
+        japaneseDictName = Utils.getDictName(Constants.JAPANESE_DICTIONARY);
+        dictTypeAdapter.setMenuDatas(englishDictName);
+        dictTypeRecyclerView.setAdapter(dictTypeAdapter);
     }
 
     @Override
@@ -126,6 +153,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         startSoftKeyboardSearch(fuzzyQuery);
         startSoftKeyboardSearch(phraseQuery);
         startSoftKeyboardSearch(exampleQuery);
+        startSoftKeyboardSearch(spellQuery);
+        startSoftKeyboardSearch(japaneseQuery);
     }
 
     private void startSoftKeyboardSearch(final EditText editText) {
@@ -145,18 +174,30 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     public void onEnglishQueryEvent(EnglishQueryEvent event) {
         englishLinearLayout.setVisibility(View.VISIBLE);
         chineseLinearLayout.setVisibility(View.GONE);
+        japaneseLinearLayout.setVisibility(View.GONE);
+        dictTypeAdapter.setMenuDatas(englishDictName);
+        dictTypeAdapter.notifyDataSetChanged();
+        dictType = Constants.ENGLISH_NEW_WORD_NOTEBOOK;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChineseQueryEvent(ChineseQueryEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
         chineseLinearLayout.setVisibility(View.VISIBLE);
         englishLinearLayout.setVisibility(View.GONE);
+        japaneseLinearLayout.setVisibility(View.GONE);
+        dictTypeAdapter.setMenuDatas(chineseDictName);
+        dictTypeAdapter.notifyDataSetChanged();
+        dictType = Constants.CHINESE_NEW_WORD_NOTEBOOK;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onJapaneseQueryEvent(JapaneseQueryEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_graded_books));
+        japaneseLinearLayout.setVisibility(View.VISIBLE);
+        englishLinearLayout.setVisibility(View.GONE);
+        chineseLinearLayout.setVisibility(View.GONE);
+        dictTypeAdapter.setMenuDatas(japaneseDictName);
+        dictTypeAdapter.notifyDataSetChanged();
+        dictType = Constants.JAPANESE_NEW_WORD_NOTEBOOK;
     }
 
     @OnClick({R.id.activity_word_query_search,
@@ -170,6 +211,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         switch (view.getId()) {
             case R.id.image_view_back:
                 finish();
+                break;
             case R.id.activity_word_query_search:
                 startDictResultShowActivity(wordQuery);
                 break;
@@ -192,8 +234,9 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
 
     public void startDictResultShowActivity(EditText editText) {
         String editQueryString = editText.getText().toString();
+        editQueryString = Utils.trim(editQueryString);
         if (!StringUtils.isNullOrEmpty(editQueryString)) {
-            ActivityManager.startDictResultShowActivity(this, editQueryString);
+            ActivityManager.startDictResultShowActivity(this, editQueryString, dictType);
         } else {
             CommonNotices.showMessage(this, getString(R.string.illegalInput));
         }

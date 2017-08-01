@@ -10,12 +10,12 @@ import java.util.List;
 /**
  * Created by zhouzhiming on 2017/7/5.
  */
-public class GoodSentenceExcerptInsert extends BaseDataRequest {
+public class GoodSentenceInsert extends BaseDataRequest {
     private GoodSentenceNoteEntity goodSentencesInfo;
     private GoodSentenceNoteEntity goodSentenceEntity;
     private boolean weatherInsert = true;
 
-    public GoodSentenceExcerptInsert(GoodSentenceNoteEntity goodSentenceNoteEntity) {
+    public GoodSentenceInsert(GoodSentenceNoteEntity goodSentenceNoteEntity) {
         this.goodSentencesInfo = goodSentenceNoteEntity;
     }
 
@@ -33,6 +33,7 @@ public class GoodSentenceExcerptInsert extends BaseDataRequest {
             goodSentenceEntity.details = goodSentencesInfo.details;
             goodSentenceEntity.readingMatter = goodSentencesInfo.readingMatter;
             goodSentenceEntity.pageNumber = goodSentencesInfo.pageNumber;
+            goodSentenceEntity.goodSentenceType = goodSentencesInfo.goodSentenceType;
             goodSentenceEntity.update();
         }
     }

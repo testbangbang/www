@@ -15,7 +15,7 @@ import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.data.database.QueryRecordEntity;
 import com.onyx.android.dr.interfaces.DictResultShowView;
-import com.onyx.android.dr.request.local.GoodSentenceExcerptInsert;
+import com.onyx.android.dr.request.local.GoodSentenceInsert;
 import com.onyx.android.dr.request.local.NewWordInsert;
 import com.onyx.android.dr.request.local.QueryRecordInsert;
 import com.onyx.android.dr.util.TimeUtils;
@@ -52,6 +52,7 @@ public class DictFunctionPresenter {
     public void loadTabMenu(int userType) {
         dictView.setDictResultData(functionConfig.getDictData(userType));
     }
+
     public void loadDictType(int userType) {
         dictView.setDictTypeData(dictTypeConfig.getDictTypeData(userType));
     }
@@ -74,6 +75,7 @@ public class DictFunctionPresenter {
         bean.newWord = newWordBean.getNewWord();
         bean.dictionaryLookup = newWordBean.getDictionaryLookup();
         bean.readingMatter = newWordBean.getReadingMatter();
+        bean.newWordType = newWordBean.getNewWordType();
         final NewWordInsert req = new NewWordInsert(bean);
         if (req.whetherInsert()){
             CommonNotices.showMessage(context, context.getString(R.string.new_word_notebook_already_exist));
@@ -93,7 +95,8 @@ public class DictFunctionPresenter {
         bean.details = goodSentenceBean.getDetails();
         bean.readingMatter = goodSentenceBean.getReadingMatter();
         bean.pageNumber = goodSentenceBean.getPageNumber();
-        GoodSentenceExcerptInsert req = new GoodSentenceExcerptInsert(bean);
+        bean.goodSentenceType = goodSentenceBean.getGoodSentenceType();
+        GoodSentenceInsert req = new GoodSentenceInsert(bean);
         if (req.whetherInsert()){
             CommonNotices.showMessage(context, context.getString(R.string.good_sentence_already_exist));
         }else{

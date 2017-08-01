@@ -46,26 +46,11 @@
                 android:layout_weight="1"
                 android:text="@string/good_sentence_activity_check_all" />
 
-            <LinearLayout style="@style/good_sentence_activity_spinner_linearlayout">
-
-                <Spinner
-                    android:id="@+id/new_word_activity_month_spinner"
-                    style="@style/good_sentence_activity_spinner" />
-            </LinearLayout>
-
-            <LinearLayout style="@style/good_sentence_activity_spinner_linearlayout">
-
-                <Spinner
-                    android:id="@+id/new_word_activity_week_spinner"
-                    style="@style/good_sentence_activity_spinner" />
-            </LinearLayout>
-
-            <LinearLayout style="@style/good_sentence_activity_spinner_linearlayout">
-
-                <Spinner
-                    android:id="@+id/new_word_activity_day_spinner"
-                    style="@style/good_sentence_activity_spinner" />
-            </LinearLayout>
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="2"
+                android:text="@string/memorandum_activity_time" />
 
             <TextView
                 style="@style/good_sentence_activity_textview"
