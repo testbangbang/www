@@ -46,18 +46,35 @@ public class DataManagerHelper {
     public static List<Library> loadLibraryList(DataManager dataManager, List<Library> list, String parentId) {
         QueryArgs args = new QueryArgs();
         args.libraryUniqueId = parentId;
-        List<Library> tmpList = dataManager.getRemoteContentProvider().loadAllLibrary(parentId, args);
-        if (tmpList.size() > 0) {
+        return loadLibraryList(dataManager.getRemoteContentProvider(), list, args);
+    }
+
+    public static List<Library> loadLibraryList(DataProviderBase dataProvider, List<Library> list, QueryArgs args) {
+        List<Library> tmpList = dataProvider.loadAllLibrary(args.libraryUniqueId, args);
+        if (!CollectionUtils.isNullOrEmpty(tmpList)) {
             list.addAll(tmpList);
         }
         return tmpList;
     }
 
-    public static void loadLibraryRecursive(DataManager dataManager, List<Library> list, String targetId) {
-        List<Library> tmpList = loadLibraryList(dataManager, list, targetId);
-        for (Library library : tmpList) {
-            loadLibraryRecursive(dataManager, list, library.getIdString());
+    public static void loadLibraryRecursive(DataProviderBase dataProvider, List<Library> list, QueryArgs args) {
+        List<Library> tmpList = loadLibraryList(dataProvider, list, args);
+        if (CollectionUtils.isNullOrEmpty(tmpList)) {
+            return;
         }
+        for (Library library : tmpList) {
+            QueryArgs newArgs = new QueryArgs();
+            newArgs.libraryUniqueId = library.getIdString();
+            newArgs.fetchPolicy = args.fetchPolicy;
+            loadLibraryRecursive(dataProvider, list, newArgs);
+        }
+    }
+
+    public static void loadLibraryRecursive(DataManager dataManager, List<Library> list, String targetId) {
+        QueryArgs args = new QueryArgs();
+        args.libraryUniqueId = targetId;
+        args.fetchPolicy = FetchPolicy.MEM_DB_ONLY;
+        loadLibraryRecursive(dataManager.getRemoteContentProvider(), list, args);
     }
 
     public static Thumbnail loadThumbnail(Context context, String path, String associationId, OnyxThumbnail.ThumbnailKind kind) {
@@ -354,5 +371,26 @@ public class DataManagerHelper {
         }
         database.setTransactionSuccessful();
         database.endTransaction();
+    }
+
+    public static void deleteLibraryWithRecursive(DataProviderBase dataProviderBase, QueryArgs queryArgs,
+                                                  boolean recursive) {
+        List<Library> totalLibraryList = new ArrayList<>();
+        final DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        if(recursive) {
+            loadLibraryRecursive(dataProviderBase, totalLibraryList, queryArgs);
+        }else{
+            loadLibraryList(dataProviderBase, totalLibraryList, queryArgs);
+        }
+        for (Library library : totalLibraryList) {
+            dataProviderBase.deleteLibrary(library);
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
+    public static void clearLibrary(DataProviderBase dataProvider) {
+        dataProvider.clearLibrary();
     }
 }

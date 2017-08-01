@@ -16,9 +16,9 @@ import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.events.AccountAvailableEvent;
 import com.onyx.einfo.events.AccountTokenErrorEvent;
 import com.onyx.einfo.model.AppConfig;
-import com.onyx.einfo.model.StudentAccount;
+import com.onyx.einfo.model.AccountInfo;
 import com.onyx.einfo.utils.ResourceUtils;
-import com.onyx.einfo.utils.StudentPreferenceManager;
+import com.onyx.einfo.manager.ConfigPreferenceManager;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -55,10 +55,10 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void cloudContentImportFirstBoot() {
-        if (isCheckOnBootComplete() || StudentPreferenceManager.hasImportContent(this)) {
+        if (isCheckOnBootComplete() || ConfigPreferenceManager.hasImportContent(this)) {
             return;
         }
-        StudentPreferenceManager.setImportContent(this, true);
+        ConfigPreferenceManager.setImportContent(this, true);
         String jsonFilePath = DeviceConfig.sharedInstance(this).getCloudContentImportJsonFilePath();
         if (StringUtils.isNullOrEmpty(jsonFilePath)) {
             return;
@@ -198,11 +198,11 @@ public class HomeActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountAvailableEvent(AccountAvailableEvent event) {
-        StudentAccount.sendUserInfoSettingIntent(HomeActivity.this, event.getAccount());
+        AccountInfo.sendUserInfoSettingIntent(HomeActivity.this, event.getAccount());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountTokenErrorEvent(AccountTokenErrorEvent errorEvent) {
-        StudentAccount.sendUserInfoSettingIntent(HomeActivity.this, getString(R.string.account_un_login));
+        AccountInfo.sendUserInfoSettingIntent(HomeActivity.this, getString(R.string.account_un_login));
     }
 }

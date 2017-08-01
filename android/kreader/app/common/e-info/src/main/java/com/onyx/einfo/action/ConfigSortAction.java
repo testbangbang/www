@@ -6,7 +6,7 @@ import android.content.Context;
 
 import com.onyx.einfo.holder.LibraryDataHolder;
 import com.onyx.einfo.R;
-import com.onyx.einfo.utils.StudentPreferenceManager;
+import com.onyx.einfo.manager.ConfigPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.LibraryDataModel;
@@ -73,9 +73,9 @@ public class ConfigSortAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void saveSortByQueryArgs(LibraryDataHolder dataHolder, String sortBy, SortOrder sortOrder) {
-        StudentPreferenceManager.setStringValue(dataHolder.getContext(),
+        ConfigPreferenceManager.setStringValue(dataHolder.getContext(),
                 R.string.library_activity_sort_by_key, getSortByMap(dataHolder.getContext()).get(sortBy).toString());
-        StudentPreferenceManager.setIntValue(dataHolder.getContext(),
+        ConfigPreferenceManager.setIntValue(dataHolder.getContext(),
                 R.string.library_activity_asc_order_key, sortOrder.ordinal());
     }
 

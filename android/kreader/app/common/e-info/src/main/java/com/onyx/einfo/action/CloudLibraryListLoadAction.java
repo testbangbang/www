@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.onyx.einfo.R;
 import com.onyx.einfo.holder.LibraryDataHolder;
-import com.onyx.einfo.utils.StudentPreferenceManager;
+import com.onyx.einfo.manager.ConfigPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
@@ -31,6 +31,10 @@ public class CloudLibraryListLoadAction extends BaseAction<LibraryDataHolder> {
         this.parentId = parentId;
     }
 
+    public String getParentId() {
+        return parentId;
+    }
+
     @Override
     public void execute(final LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
         CloudManager cloudManager = dataHolder.getCloudManager();
@@ -38,22 +42,15 @@ public class CloudLibraryListLoadAction extends BaseAction<LibraryDataHolder> {
         cloudManager.submitRequest(dataHolder.getContext(), loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    ToastUtils.showToast(dataHolder.getContext(), R.string.online_library_load_error);
-                    return;
+                if (e == null) {
+                    libraryList = loadRequest.getLibraryList();
+                } else {
+                    ToastUtils.showToast(dataHolder.getContext().getApplicationContext(),
+                            R.string.online_library_load_error);
                 }
-                libraryList = loadRequest.getLibraryList();
-                saveLibraryParentId(dataHolder.getContext(), libraryList);
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
-    }
-
-    private void saveLibraryParentId(Context context, List<Library> libraryList) {
-        if (CollectionUtils.isNullOrEmpty(libraryList)) {
-            return;
-        }
-        StudentPreferenceManager.saveLibraryParentId(context, libraryList.get(0).getParentUniqueId());
     }
 
     public List<Library> getLibraryList() {
