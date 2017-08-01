@@ -60,6 +60,7 @@ import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
 import com.onyx.kreader.ui.actions.ForwardAction;
+import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.OpenDocumentAction;
 import com.onyx.kreader.ui.actions.SaveDocumentOptionsAction;
 import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
@@ -77,6 +78,7 @@ import com.onyx.kreader.ui.events.ConfirmCloseDialogEvent;
 import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
+import com.onyx.kreader.ui.events.GotoPageLinkEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
 import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
 import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
@@ -616,6 +618,11 @@ public class ReaderActivity extends OnyxBaseActivity {
             buttonShowTabWidget.setVisibility(View.GONE);
         }
         getReaderDataHolder().getEventBus().post(new UpdateScribbleMenuEvent());
+    }
+
+    @Subscribe
+    public void onGotoPageLink(final GotoPageLinkEvent event) {
+        new GotoPositionAction(event.link).execute(getReaderDataHolder());
     }
 
     private PinchZoomingPopupMenu getPinchZoomPopupMenu() {

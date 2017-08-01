@@ -34,6 +34,7 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         public abstract void onQuitFullScreen();
         public abstract void onUpdateTabWidgetVisibility(boolean visible);
         public abstract void onOpenDocumentFailed(String path);
+        public abstract void onGotoPageLink(String link);
         public abstract void onEnableDebugLog();
         public abstract void onDisableDebugLog();
     }
@@ -89,6 +90,13 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         context.sendBroadcast(intent);
     }
 
+    public static void sendGotoPageLinkIntent(Context context, String link) {
+        Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ReaderBroadcastReceiver.ACTION_GOTO_PAGE_LINK);
+        intent.putExtra(ReaderBroadcastReceiver.TAG_PAGE_LINK, link);
+        context.sendBroadcast(intent);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Debug.d(getClass(), "onReceive: " + intent);
@@ -127,6 +135,10 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         } else if (intent.getAction().equals(ACTION_OPEN_DOCUMENT_FAILED)) {
             if (callback != null) {
                 callback.onOpenDocumentFailed(intent.getStringExtra(TAG_DOCUMENT_PATH));
+            }
+        } else if (intent.getAction().equals(ReaderBroadcastReceiver.ACTION_GOTO_PAGE_LINK)) {
+            if (callback != null) {
+                callback.onGotoPageLink(intent.getStringExtra(ReaderBroadcastReceiver.TAG_PAGE_LINK));
             }
         } else if (intent.getAction().equals(ViewDocumentUtils.ACTION_ENABLE_READER_DEBUG_LOG)) {
             ReaderTabHostActivity.setEnableDebugLog(true);

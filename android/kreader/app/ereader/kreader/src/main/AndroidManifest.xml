@@ -153,6 +153,7 @@
                 <action android:name="com.onyx.kreader.action.CHANGE_SCREEN_ORIENTATION" />
                 <action android:name="com.onyx.kreader.action.ENTER_FULL_SCREEN" />
                 <action android:name="com.onyx.kreader.action.QUIT_FULL_SCREEN" />
+                <action android:name="com.onyx.kreader.action.GOTO_PAGE_LINK" />
                 <action android:name="com.onyx.android.sdk.action_enable_reader_debug_log" />
                 <action android:name="com.onyx.android.sdk.action_disable_reader_debug_log" />
             </intent-filter>
@@ -172,6 +173,7 @@
                 <action android:name="com.onyx.kreader.action.CLOSE_READER" />
                 <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
                 <action android:name="com.onyx.kreader.action.DOCUMENT_ACTIVATED" />
+                <action android:name="com.onyx.kreader.action.GOTO_PAGE_LINK" />
                 <action android:name="com.onyx.kreader.action.ENABLE_DEBUG_LOG" />
                 <action android:name="com.onyx.kreader.action.DISABLE_DEBUG_LOG" />
             </intent-filter>
@@ -191,6 +193,7 @@
                 <action android:name="com.onyx.kreader.action.CLOSE_READER" />
                 <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
                 <action android:name="com.onyx.kreader.action.DOCUMENT_ACTIVATED" />
+                <action android:name="com.onyx.kreader.action.GOTO_PAGE_LINK" />
                 <action android:name="com.onyx.kreader.action.ENABLE_DEBUG_LOG" />
                 <action android:name="com.onyx.kreader.action.DISABLE_DEBUG_LOG" />
             </intent-filter>
@@ -210,6 +213,7 @@
                 <action android:name="com.onyx.kreader.action.CLOSE_READER" />
                 <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
                 <action android:name="com.onyx.kreader.action.DOCUMENT_ACTIVATED" />
+                <action android:name="com.onyx.kreader.action.GOTO_PAGE_LINK" />
                 <action android:name="com.onyx.kreader.action.ENABLE_DEBUG_LOG" />
                 <action android:name="com.onyx.kreader.action.DISABLE_DEBUG_LOG" />
             </intent-filter>
@@ -229,6 +233,7 @@
                 <action android:name="com.onyx.kreader.action.CLOSE_READER" />
                 <action android:name="com.onyx.kreader.action.RESIZE_WINDOW" />
                 <action android:name="com.onyx.kreader.action.DOCUMENT_ACTIVATED" />
+                <action android:name="com.onyx.kreader.action.GOTO_PAGE_LINK" />
                 <action android:name="com.onyx.kreader.action.ENABLE_DEBUG_LOG" />
                 <action android:name="com.onyx.kreader.action.DISABLE_DEBUG_LOG" />
             </intent-filter>

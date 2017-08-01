@@ -78,6 +78,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private ReaderTabManager.ReaderTab[] sideReadingTabs = new ReaderTabManager.ReaderTab[2];
 
     private boolean isDoubleOpen = false;
+    private boolean isDoubleLinked = false;
     private ReaderTabManager.ReaderTab doubleOpenedTab = null;
 
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
@@ -202,7 +203,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
                             @Override
                             public void onLinkedOpen(ReaderTabManager.ReaderTab tab) {
+                                onDoubleOpen(tab);
 
+                                isDoubleLinked = true;
                             }
 
                             @Override
@@ -318,6 +321,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             tabManager.removeOpenedTab(doubleOpenedTab);
             doubleOpenedTab = null;
             isDoubleOpen = false;
+            isDoubleLinked = false;
         }
 
         findViewById(R.id.dash_line_splitter).setVisibility(View.INVISIBLE);
@@ -386,6 +390,23 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return true;
     }
 
+    private boolean gotoPageLink(final String link) {
+        ReaderTabManager.ReaderTab tab = getCurrentTabInHost();
+        if (tab == null) {
+            return false;
+        }
+
+        if (!isDoubleLinked) {
+            ReaderBroadcastReceiver.sendGotoPageLinkIntent(this, tabManager.getTabReceiver(tab), link);
+            return true;
+        }
+
+        ReaderTabManager.ReaderTab dst = tab == getSideReadingLeft() ?
+                getSideReadingRight() : getSideReadingLeft();
+        ReaderBroadcastReceiver.sendGotoPageLinkIntent(this, tabManager.getTabReceiver(dst), link);
+        return true;
+    }
+
     private void updateTabLayoutState(boolean show) {
         isManualShowTab = show;
         tabWidget.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
@@ -440,6 +461,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             @Override
             public void onOpenDocumentFailed(String path) {
                 closeTabIfOpenFileFailed(path);
+            }
+
+            @Override
+            public void onGotoPageLink(String link) {
+                gotoPageLink(link);
             }
 
             @Override
