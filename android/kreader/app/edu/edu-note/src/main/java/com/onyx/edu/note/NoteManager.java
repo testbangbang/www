@@ -17,6 +17,17 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BeginShapeSelectEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchDownEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchMoveEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchUpEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.note.NotePageShapesRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.SpannableRequest;
@@ -46,6 +57,7 @@ import com.onyx.edu.note.ui.view.LinedEditText;
 
 import org.apache.commons.collections4.MapUtils;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -416,6 +428,82 @@ public class NoteManager {
         shape.addPoints(touchPointList);
     }
 
+    @Subscribe
+    public void onBeginRawDataEvent(BeginRawDataEvent event) {
+        Log.e(TAG, "onBeginRawDataEvent");
+        removeSpanRunnable();
+    }
+
+    @Subscribe
+    public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent event) {
+        Log.e(TAG, "onRawTouchPointListReceivedEvent");
+        if (isLineLayoutMode()) {
+            buildSpan();
+        }
+        EventBus.getDefault().post(new RawDataReceivedEvent());
+    }
+
+    @Subscribe
+    public void onBeginErasingEvent(BeginErasingEvent event) {
+        Log.e(TAG, "onBeginErasingEvent");
+        onBeginErasing();
+    }
+
+    @Subscribe
+    public void onErasingEvent(ErasingEvent event){
+        Log.e(TAG, "onErasingEvent: " );
+        onErasing(event.getMotionEvent());
+    }
+
+    @Subscribe
+    public void onEraseTouchPointListReceivedEvent(EraseTouchPointListReceivedEvent event){
+        Log.e(TAG, "onEraseTouchPointListReceivedEvent: ");
+        onFinishErasing(event.getTouchPointList());
+    }
+
+    @Subscribe
+    public void onDrawingTouchDownEvent(DrawingTouchDownEvent event) {
+        Log.e(TAG, "onDrawingTouchDownEvent: ");
+        if (!event.getShape().supportDFB()) {
+            drawCurrentPage();
+        }
+    }
+
+    @Subscribe
+    public void onDrawingTouchMoveEvent(DrawingTouchMoveEvent event){
+        Log.e(TAG, "onDrawingTouchMoveEvent: ");
+        if (event.isLast() && !event.getShape().supportDFB()) {
+            drawCurrentPage();
+        }
+    }
+
+    @Subscribe
+    public void onDrawingTouchUpEvent(DrawingTouchUpEvent event){
+        Log.e(TAG, "onDrawingTouchUpEvent: ");
+        if (!event.getShape().supportDFB()) {
+            drawCurrentPage();
+        }
+        if (isLineLayoutMode()) {
+            buildSpan();
+        }
+    }
+
+    @Subscribe
+    public void onBeginShapeSelectEvent(BeginShapeSelectEvent event){
+        Log.e(TAG, "onBeginShapeSelectEvent: ");
+        onBeginShapeSelecting();
+    }
+
+    @Subscribe
+    public void onShapeSelectingEvent(ShapeSelectingEvent event){
+        Log.e(TAG, "onShapeSelectingEvent: " );
+        onShapeSelecting(event.getMotionEvent());
+    }
+
+    @Subscribe
+    public void onShapeSelectTouchPointListReceived(ShapeSelectTouchPointListReceivedEvent event){
+        onFinishShapeSelecting(event.getTouchPointList());
+    }
     //TODO:avoid direct obtain note view helper,because we plan to remove this class.
 
     public void reset(View view) {
@@ -427,7 +515,8 @@ public class NoteManager {
     }
 
     public void setView(Context context, SurfaceView surfaceView) {
-        mNoteViewHelper.setView(context, surfaceView, getInputCallback());
+        EventBus.getDefault().register(this);
+        mNoteViewHelper.setView(context, surfaceView, null);
     }
 
     private NoteViewHelper.InputCallback getInputCallback() {
@@ -562,6 +651,7 @@ public class NoteManager {
     }
 
     public void quit() {
+        EventBus.getDefault().unregister(this);
         mNoteViewHelper.quit();
     }
 
