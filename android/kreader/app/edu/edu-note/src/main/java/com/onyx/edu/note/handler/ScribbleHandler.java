@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_ERASER;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_SELECTOR;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_CALENDAR;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_EMPTY;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_ENGLISH;
@@ -93,6 +94,7 @@ public class ScribbleHandler extends BaseHandler {
         mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.BG);
         mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.ERASER);
         mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.PEN_WIDTH);
+        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.SHAPE_SELECT);
     }
 
     @Override
@@ -129,6 +131,9 @@ public class ScribbleHandler extends BaseHandler {
                 break;
             case ScribbleFunctionBarMenuID.PREV_PAGE:
                 prevPage();
+                break;
+            case ScribbleFunctionBarMenuID.SHAPE_SELECT:
+                onSetShapeSelectModeChanged();
                 break;
             default:
                 EventBus.getDefault().post(new ShowSubMenuEvent(functionBarMenuID));
@@ -305,6 +310,12 @@ public class ScribbleHandler extends BaseHandler {
         int shapeType = ScribbleSubMenuID.shapeTypeFromMenuID(subMenuID);
         mNoteManager.getShapeDataInfo().setCurrentShapeType(shapeType);
         mNoteManager.sync(true, ShapeFactory.createShape(shapeType).supportDFB());
+    }
+
+    private void onSetShapeSelectModeChanged(){
+        Log.e(TAG, "onSetShapeSelectModeChanged: ");
+        mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_SELECTOR);
+        mNoteManager.sync(true, false);
     }
 
     private void onEraserChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {

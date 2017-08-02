@@ -3,6 +3,7 @@ package com.onyx.android.sdk.scribble.data;
 import android.content.Context;
 
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -284,6 +285,11 @@ public class NoteDocument {
     public void removeShapesByTouchPointList(final Context context, final TouchPointList touchPointList, final float scale) {
         final NotePage notePage = getCurrentPage(context);
         notePage.removeShapesByTouchPointList(touchPointList, noteDrawingArgs.eraserRadius * scale);
+    }
+
+    public List<Shape> selectShapesByTouchPointList(Context context, TouchPointList touchPointList, float scale) {
+        final NotePage notePage = getCurrentPage(context);
+        return notePage.selectShapeByTouchPointList(touchPointList, noteDrawingArgs.eraserRadius * scale);
     }
 
     public void removeShapesByGroupId(final Context context, final String groupId) {

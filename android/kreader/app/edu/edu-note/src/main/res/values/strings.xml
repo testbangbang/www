@@ -30,6 +30,7 @@
     <string name="export">Export</string>
     <string name="import_scribble">Import</string>
     <string name="remove_failed">Remove Failed.</string>
+    <string name="name_length_illegal">20 Character Only.</string>
 
 
 </resources>
