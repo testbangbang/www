@@ -1013,7 +1013,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private static void eraseWholePage(final ReaderDataHolder readerDataHolder) {
-        final ClearPageAction clearPageAction = new ClearPageAction(readerDataHolder.getFirstPageInfo());
+        final ClearPageAction clearPageAction = new ClearPageAction(readerDataHolder.getVisiblePages());
         clearPageAction.execute(readerDataHolder, null);
     }
 
