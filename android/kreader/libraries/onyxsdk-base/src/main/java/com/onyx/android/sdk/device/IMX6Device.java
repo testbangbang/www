@@ -2,6 +2,7 @@ package com.onyx.android.sdk.device;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
@@ -506,11 +507,37 @@ public class IMX6Device extends BaseDevice {
     }
 
     public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
+        setScreenHandWritingRegionLimit(view, new int[] { left, top, right, bottom });
+    }
+
+    @Override
+    public void setScreenHandWritingRegionLimit(View view, int[] array) {
         try {
-            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionLimit, view, left, top, right, bottom);
+            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionLimit, view, array);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void setScreenHandWritingRegionLimit(View view, Rect[] regions) {
+        int array[] = new int[regions.length * 4];
+        for (int i = 0; i < regions.length; i++) {
+            Rect region = regions[i];
+            float[] leftTop = new float[] { region.left, region.top };
+            float[] rightBottom = new float[] { region.right, region.bottom };
+
+            int left = Math.min(region.left, region.right);
+            int top = Math.min(region.top, region.bottom);
+            int right = Math.max(region.left, region.right);
+            int bottom = Math.max(region.top, region.bottom);
+
+            array[4 * i] = left;
+            array[4 * i + 1] = top;
+            array[4 * i + 2] = right;
+            array[4 * i + 3] = bottom;
+        }
+        setScreenHandWritingRegionLimit(view, array);
     }
 
     public void applyGammaCorrection(boolean apply, int value) {
@@ -616,7 +643,7 @@ public class IMX6Device extends BaseDevice {
             sMethodGetTouchHeight = ReflectUtil.getMethodSafely(cls, "getTouchHeight");
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
-            sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", int.class, int.class, int.class, int.class);
+            sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", int[].class);
             sMethodApplyGammaCorrection = ReflectUtil.getMethodSafely(cls, "applyGammaCorrection", boolean.class, int.class);
 
             sMethodStartStroke = ReflectUtil.getMethodSafely(cls, "startStroke", float.class, float.class, float.class, float.class, float.class, float.class);

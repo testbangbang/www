@@ -4,6 +4,7 @@
 package com.onyx.android.sdk.api.device.epd;
 
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.View;
 import com.onyx.android.sdk.device.Device;
 
@@ -147,6 +148,14 @@ public abstract class EpdController
 
     public static void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
         Device.currentDevice().setScreenHandWritingRegionLimit(view, left, top, right, bottom);
+    }
+
+    public static void setScreenHandWritingRegionLimit(View view, int[] array) {
+        Device.currentDevice().setScreenHandWritingRegionLimit(view, array);
+    }
+
+    public static void setScreenHandWritingRegionLimit(View view, Rect[] regions) {
+        Device.currentDevice().setScreenHandWritingRegionLimit(view, regions);
     }
 
     public static float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
