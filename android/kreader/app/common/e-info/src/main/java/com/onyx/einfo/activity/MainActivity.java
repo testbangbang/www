@@ -7,6 +7,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -61,6 +63,7 @@ public class MainActivity extends BaseActivity {
 
     private List<TabLibrary> pageTabList = new ArrayList<>();
     private List<TabLibrary> tabLibraryList = new ArrayList<>();
+    private List<GroupContainer> groupContainerList = new ArrayList<>();
 
     private boolean isColorDevice = false;
 
@@ -76,6 +79,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        initToolBar();
         initTableView();
         initViewPager();
     }
@@ -104,27 +108,25 @@ public class MainActivity extends BaseActivity {
                     ToastUtils.showToast(getApplicationContext(), R.string.online_group_load_error);
                     return;
                 }
-                loadGroupLibraryList(groupLoadAction.getContainerList());
+                loadGroupLibraryList(groupContainerList = groupLoadAction.getContainerList());
+                invalidateOptionsMenu();
             }
         });
     }
 
     private void loadGroupLibraryList(List<GroupContainer> groupContainerList) {
         List<Library> libraryList = new ArrayList<>();
-        for (GroupContainer groupContainer : groupContainerList) {
-            if(CollectionUtils.isNullOrEmpty(groupContainer.libraryList)) {
-                continue;
-            }
-            libraryList.addAll(groupContainer.libraryList);
+        if (!CollectionUtils.isNullOrEmpty(groupContainerList)) {
+            libraryList = groupContainerList.get(0).libraryList;
         }
         notifyDataChanged(libraryList);
     }
 
     private void notifyDataChanged(List<Library> list) {
+        notifyTabLayoutChange(list);
         if (CollectionUtils.isNullOrEmpty(list)) {
             return;
         }
-        notifyTabLayoutChange(list);
         for (Library library : list) {
             EventBus.getDefault().postSticky(new BookLibraryEvent(library));
         }
@@ -140,12 +142,11 @@ public class MainActivity extends BaseActivity {
     }
 
     private void notifyTabLayoutChange(List<Library> list) {
-        if (CollectionUtils.isNullOrEmpty(list)) {
-            return;
-        }
         tabLibraryList.clear();
-        for (Library library : list) {
-            tabLibraryList.add(new TabLibrary(library));
+        if (!CollectionUtils.isNullOrEmpty(list)) {
+            for (Library library : list) {
+                tabLibraryList.add(new TabLibrary(library));
+            }
         }
         tabLibraryList.addAll(getExtraCustomTabLibrary());
         addTabList(contentTabLayout, tabLibraryList);
@@ -210,11 +211,18 @@ public class MainActivity extends BaseActivity {
     }
 
     private void addTabList(TabLayout tabLayout, List<TabLibrary> tabLibraryList) {
+        int position = 0;
+        notifyTabLayoutChange(tabLayout, tabLibraryList);
+        selectTab(tabLayout, position);
+        switchToNewTab(position);
+        notifyPageViewChange(tabLibraryList, position);
+    }
+
+    private void notifyTabLayoutChange(TabLayout tabLayout, List<TabLibrary> tabLibraryList) {
+        tabLayout.removeAllTabs();
         if (CollectionUtils.isNullOrEmpty(tabLibraryList)) {
             return;
         }
-        int selectedPosition = contentTabLayout.getSelectedTabPosition();
-        tabLayout.removeAllTabs();
         for (TabLibrary tabLibrary : tabLibraryList) {
             TabLayout.Tab tab = tabLayout.newTab().setCustomView(R.layout.tab_item_layout);
             final ImageView imageView = (ImageView) tab.getCustomView().findViewById(R.id.action_image);
@@ -227,16 +235,20 @@ public class MainActivity extends BaseActivity {
             }
             tabLayout.addTab(tab);
         }
-        int position = selectedPosition <= 0 ? 0 : (selectedPosition >= tabLayout.getTabCount() ? 0 : selectedPosition);
-        selectTab(tabLayout, position);
-        switchToNewTab(position);
-        notifyPageViewChange(tabLibraryList);
     }
 
-    private void notifyPageViewChange(List<TabLibrary> tabLibraryList) {
+    private void notifyPageViewChange(List<TabLibrary> tabLibraryList, int selectedPosition) {
+        if (tabLibraryList == null) {
+            tabLibraryList = new ArrayList<>();
+        }
+        pagerView.setCurrentItem(selectedPosition, false);
         pageTabList.clear();
         pageTabList.addAll(tabLibraryList);
-        pagerView.getAdapter().notifyDataSetChanged();
+        pagerView.setAdapter(new ViewPagerAdapter(pageTabList, getSupportFragmentManager()));
+    }
+
+    private void initToolBar() {
+        initSupportActionBarWithCustomBackFunction();
     }
 
     private void initTableView() {
@@ -307,6 +319,26 @@ public class MainActivity extends BaseActivity {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (CollectionUtils.isNullOrEmpty(groupContainerList)) {
+            return super.onCreateOptionsMenu(menu);
+        }
+        for (int i = 0; i < groupContainerList.size(); i++) {
+            menu.add(0, i, Menu.NONE, groupContainerList.get(i).group.name);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (CollectionUtils.isNullOrEmpty(groupContainerList)) {
+            return super.onOptionsItemSelected(item);
+        }
+        notifyDataChanged(groupContainerList.get(item.getItemId()).libraryList);
+        return true;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

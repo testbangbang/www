@@ -2,7 +2,7 @@ package com.onyx.einfo.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -17,7 +17,7 @@ import java.util.List;
  * Created by suicheng on 2017/7/20.
  */
 
-public class ViewPagerAdapter extends FragmentPagerAdapter {
+public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     private List<TabLibrary> pageTabList;
 
