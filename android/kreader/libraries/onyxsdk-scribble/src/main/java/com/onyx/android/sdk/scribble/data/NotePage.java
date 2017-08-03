@@ -1,8 +1,6 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 
@@ -263,30 +261,31 @@ public class NotePage {
         if (shapeList == null) {
             return;
         }
-        List<RectF> selectShapeRectList = new ArrayList<>();
         for (Shape shape : shapeList) {
             shape.render(renderContext);
+            if (callback != null && callback.isRenderAbort()) {
+                break;
+            }
+        }
+    }
+
+    public RectF getSelectedRect() {
+        List<RectF> selectShapeRectList = new ArrayList<>();
+        for (Shape shape : shapeList) {
             if (shape.isSelected()) {
                 RectF selectRect = new RectF();
                 ((BaseShape) shape).getOriginDisplayPath().computeBounds(selectRect, true);
                 selectShapeRectList.add(selectRect);
             }
-            if (callback != null && callback.isRenderAbort()) {
-                break;
-            }
         }
-        renderSelectRect(selectShapeRectList, renderContext);
-    }
-
-    private void renderSelectRect(List<RectF> selectShapeRectList, RenderContext renderContext) {
-        if (selectShapeRectList.size() > 0) {
+        if (selectShapeRectList.size() == 0) {
+            return new RectF();
+        } else {
             RectF resultSelectRectF = new RectF();
             for (RectF targetRect : selectShapeRectList) {
                 resultSelectRectF.union(targetRect);
             }
-            Paint boundingPaint = new Paint(Color.BLACK);
-            boundingPaint.setStyle(Paint.Style.STROKE);
-            renderContext.canvas.drawRect(resultSelectRectF, boundingPaint);
+            return resultSelectRectF;
         }
     }
 

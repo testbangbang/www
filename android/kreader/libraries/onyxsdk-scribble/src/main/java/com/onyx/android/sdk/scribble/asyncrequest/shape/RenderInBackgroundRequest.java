@@ -2,10 +2,9 @@ package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
 import android.util.Log;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
-import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
 import java.util.ArrayList;
@@ -30,7 +29,8 @@ public class RenderInBackgroundRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(false);
     }
 
-    public void execute(final NoteViewHelper helper) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper helper) throws Exception {
         if (!helper.getNoteDocument().isOpen()) {
             return;
         }

@@ -1,9 +1,9 @@
 package com.onyx.android.sdk.scribble.asyncrequest.note;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.utils.StringUtils;
 
 /**
@@ -18,7 +18,8 @@ public class NoteDocumentRemoveRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(false);
     }
 
-    public void execute(final NoteViewHelper parent) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper parent) throws Exception {
         String uniqueId = parent.getNoteDocument().getDocumentUniqueId();
         if (StringUtils.isNotBlank(documentUniqueId)) {
             uniqueId = documentUniqueId;

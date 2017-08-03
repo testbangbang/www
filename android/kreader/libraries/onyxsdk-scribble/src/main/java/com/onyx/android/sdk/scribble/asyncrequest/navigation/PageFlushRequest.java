@@ -2,9 +2,9 @@ package com.onyx.android.sdk.scribble.asyncrequest.navigation;
 
 import android.util.Log;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class PageFlushRequest extends AsyncBaseNoteRequest {
         syncDrawingArgs(args);
     }
 
-    public void execute(final NoteViewHelper helper) throws Exception {
+    public void execute(final AsyncNoteViewHelper helper) throws Exception {
         if (!helper.getNoteDocument().isOpen()) {
             return;
         }
@@ -41,7 +41,7 @@ public class PageFlushRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(helper.useDFBForCurrentState() && isResumeInputProcessor());
     }
 
-    private void saveDocument(final NoteViewHelper helper) {
+    private void saveDocument(final AsyncNoteViewHelper helper) {
         if (!save) {
             return;
         }

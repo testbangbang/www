@@ -3,6 +3,7 @@ package com.onyx.edu.note;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Layout;
@@ -17,6 +18,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginShapeSelectEvent;
@@ -71,12 +73,7 @@ import java.util.Map;
 public class NoteManager {
     private static final String TAG = NoteManager.class.getSimpleName();
 
-    public RequestManager getRequestManager() {
-        return requestManager;
-    }
-
-    private RequestManager requestManager;
-    private NoteViewHelper mNoteViewHelper;
+    private AsyncNoteViewHelper mNoteViewHelper;
     private static NoteManager instance;
     //TODO:use WeakReference here avoid context leak in static class as AndroidStudio lint check.
     private WeakReference<Context> contextWeakReference;
@@ -113,9 +110,8 @@ public class NoteManager {
     }
 
     private NoteManager(Context context) {
-        requestManager = new RequestManager(Thread.NORM_PRIORITY);
         if (mNoteViewHelper == null) {
-            mNoteViewHelper = new NoteViewHelper();
+            mNoteViewHelper = new AsyncNoteViewHelper();
         }
         contextWeakReference = new WeakReference<>(context.getApplicationContext());
         mSpanTextHandler = new Handler(Looper.getMainLooper());
@@ -139,8 +135,8 @@ public class NoteManager {
                     request.setException(tr);
                 } finally {
                     request.postExecute(mNoteViewHelper);
-                    requestManager.dumpWakelocks();
-                    requestManager.removeRequest(request);
+                    getRequestManager().dumpWakelocks();
+                    getRequestManager().removeRequest(request);
                 }
             }
         };
@@ -156,7 +152,7 @@ public class NoteManager {
     public boolean submitRequest(final AsyncBaseNoteRequest request, final BaseCallback callback) {
         beforeSubmit(request);
         if (contextWeakReference.get() != null) {
-            return requestManager.submitRequest(contextWeakReference.get(),
+            return mNoteViewHelper.getRequestManager().submitRequest(contextWeakReference.get(),
                     request, generateRunnable(request), callback);
         } else {
             Log.e(TAG, "Context has been GC");
@@ -169,7 +165,7 @@ public class NoteManager {
         beforeSubmit(request);
         request.setIdentifier(identifier);
         if (contextWeakReference.get() != null) {
-            return requestManager.submitRequestToMultiThreadPool(contextWeakReference.get(), identifier,
+            return mNoteViewHelper.getRequestManager().submitRequestToMultiThreadPool(contextWeakReference.get(), identifier,
                     request, generateRunnable(request), callback);
         } else {
             Log.e(TAG, "Context has been GC");
@@ -390,14 +386,14 @@ public class NoteManager {
         buildSpaceShape(SPACE_WIDTH, mSpanTextFontHeight);
     }
 
-    public void buildLineBreakShape(LinedEditText spanTextView){
+    public void buildLineBreakShape(LinedEditText spanTextView) {
         float spaceWidth = (int) spanTextView.getPaint().measureText(SPACE_TEXT);
         int pos = spanTextView.getSelectionStart();
         Layout layout = spanTextView.getLayout();
         int line = layout.getLineForOffset(pos);
         if (line == (mNoteViewHelper.getLineLayoutArgs().getLineCount() - 1)) {
             EventBus.getDefault().post(new SpanTextShowOutOfRangeEvent());
-            sync(true,true);
+            sync(true, true);
             return;
         }
         int width = spanTextView.getMeasuredWidth();
@@ -450,13 +446,13 @@ public class NoteManager {
     }
 
     @Subscribe
-    public void onErasingEvent(ErasingEvent event){
-        Log.e(TAG, "onErasingEvent: " );
+    public void onErasingEvent(ErasingEvent event) {
+        Log.e(TAG, "onErasingEvent: ");
         onErasing(event.getMotionEvent());
     }
 
     @Subscribe
-    public void onEraseTouchPointListReceivedEvent(EraseTouchPointListReceivedEvent event){
+    public void onEraseTouchPointListReceivedEvent(EraseTouchPointListReceivedEvent event) {
         Log.e(TAG, "onEraseTouchPointListReceivedEvent: ");
         onFinishErasing(event.getTouchPointList());
     }
@@ -470,7 +466,7 @@ public class NoteManager {
     }
 
     @Subscribe
-    public void onDrawingTouchMoveEvent(DrawingTouchMoveEvent event){
+    public void onDrawingTouchMoveEvent(DrawingTouchMoveEvent event) {
         Log.e(TAG, "onDrawingTouchMoveEvent: ");
         if (event.isLast() && !event.getShape().supportDFB()) {
             drawCurrentPage();
@@ -478,7 +474,7 @@ public class NoteManager {
     }
 
     @Subscribe
-    public void onDrawingTouchUpEvent(DrawingTouchUpEvent event){
+    public void onDrawingTouchUpEvent(DrawingTouchUpEvent event) {
         Log.e(TAG, "onDrawingTouchUpEvent: ");
         if (!event.getShape().supportDFB()) {
             drawCurrentPage();
@@ -489,19 +485,19 @@ public class NoteManager {
     }
 
     @Subscribe
-    public void onBeginShapeSelectEvent(BeginShapeSelectEvent event){
+    public void onBeginShapeSelectEvent(BeginShapeSelectEvent event) {
         Log.e(TAG, "onBeginShapeSelectEvent: ");
         onBeginShapeSelecting();
     }
 
     @Subscribe
-    public void onShapeSelectingEvent(ShapeSelectingEvent event){
-        Log.e(TAG, "onShapeSelectingEvent: " );
+    public void onShapeSelectingEvent(ShapeSelectingEvent event) {
+        Log.e(TAG, "onShapeSelectingEvent: ");
         onShapeSelecting(event.getMotionEvent());
     }
 
     @Subscribe
-    public void onShapeSelectTouchPointListReceived(ShapeSelectTouchPointListReceivedEvent event){
+    public void onShapeSelectTouchPointListReceived(ShapeSelectTouchPointListReceivedEvent event) {
         onFinishShapeSelecting(event.getTouchPointList());
     }
     //TODO:avoid direct obtain note view helper,because we plan to remove this class.
@@ -516,7 +512,7 @@ public class NoteManager {
 
     public void setView(Context context, SurfaceView surfaceView) {
         EventBus.getDefault().register(this);
-        mNoteViewHelper.setView(context, surfaceView, null);
+        mNoteViewHelper.setView(context, surfaceView);
     }
 
     private NoteViewHelper.InputCallback getInputCallback() {
@@ -639,7 +635,7 @@ public class NoteManager {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 SelectShapeByPointListRequest req = (SelectShapeByPointListRequest) request;
-                for (Shape shape:req.getSelectResultList()){
+                for (Shape shape : req.getSelectResultList()) {
                     Log.e(TAG, "shape:" + shape);
                 }
             }
@@ -709,5 +705,9 @@ public class NoteManager {
 
     public void clearPageUndoRedo(Context context) {
         mNoteViewHelper.clearPageUndoRedo(context);
+    }
+
+    public RequestManager getRequestManager() {
+        return mNoteViewHelper.getRequestManager();
     }
 }

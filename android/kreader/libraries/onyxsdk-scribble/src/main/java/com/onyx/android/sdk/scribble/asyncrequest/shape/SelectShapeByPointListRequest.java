@@ -2,8 +2,8 @@ package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
 import android.util.Log;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
@@ -23,7 +23,8 @@ public class SelectShapeByPointListRequest extends AsyncBaseNoteRequest {
         setPauseInputProcessor(true);
     }
 
-    public void execute(final NoteViewHelper helper) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper helper) throws Exception {
         setResumeInputProcessor(helper.useDFBForCurrentState());
         benchmarkStart();
         selectResultList = helper.getNoteDocument().selectShapesByTouchPointList(getContext(), touchPointList, 1.0f);

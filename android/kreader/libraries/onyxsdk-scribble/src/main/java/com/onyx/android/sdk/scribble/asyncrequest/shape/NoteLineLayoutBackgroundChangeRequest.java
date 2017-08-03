@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 
 /**
  * Created by ming on 16/12/9 14:50.
@@ -16,7 +16,8 @@ public class NoteLineLayoutBackgroundChangeRequest extends AsyncBaseNoteRequest 
         setResumeInputProcessor(resume);
     }
 
-    public void execute(final NoteViewHelper parent) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper parent) throws Exception {
         parent.setLineLayoutBackground(bgType);
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);
