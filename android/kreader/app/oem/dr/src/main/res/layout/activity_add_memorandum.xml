@@ -17,15 +17,8 @@
         <TextView
             android:id="@+id/add_memorandum_activity_start_time"
             style="@style/new_word_notebook_textview_style"
-            android:layout_width="@dimen/add_memorandum_activity_width"
-            android:text="@string/add_memorandum_activity_start_time" />
-
-        <TextView
-            android:id="@+id/add_memorandum_activity_end_time"
-            style="@style/new_word_notebook_textview_style"
-            android:layout_width="@dimen/add_memorandum_activity_width"
-            android:layout_toRightOf="@id/add_memorandum_activity_start_time"
-            android:text="@string/add_memorandum_activity_end_time" />
+            android:layout_width="wrap_content"
+            android:text="@string/select_time" />
 
     </RelativeLayout>
 

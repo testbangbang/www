@@ -38,6 +38,8 @@ public class Constants {
     public static final String JAPANESE_DICTIONARY = "/dicts/Japanese_dictionary";
     public static final String EDITQUERY = "editQuery";
     public static final String DICTTYPE = "dictType";
+    public static final String MINUTE_POSITION = "minutePosition";
+    public static final String HOUR_POSITION = "hourPosition";
 
     public static final int ACCOUNT_TYPE_MY_TRACKS = 0;
     public static final int ACCOUNT_TYPE_MY_THINK = 1;
@@ -47,6 +49,10 @@ public class Constants {
     public static final int ENGLISH_NEW_WORD_NOTEBOOK = 0;
     public static final int CHINESE_NEW_WORD_NOTEBOOK = 1;
     public static final int JAPANESE_NEW_WORD_NOTEBOOK = 2;
+
+    public static final int DIALOG_VIEW_FIRST_TYPE = 0;
+    public static final int DIALOG_VIEW_SECOND_TYPE = 1;
+    public static final int DIALOG_VIEW_THIRD_TYPE = 2;
 
     public static final int ACCOUNT_TYPE_GOOD_SENTENCE = 0;
     public static final int ACCOUNT_TYPE_NEW_WORD = 1;
@@ -59,6 +65,8 @@ public class Constants {
 
     public static final String MY_NOTES_FOLDER = "/my_notes_html";
     public static final String NEW_WORD_HTML = MY_NOTES_FOLDER + "/new_word.html";
+    public static final String INFORMAL_ESSAY_HTML = MY_NOTES_FOLDER + "/informal_essay.html";
+    public static final String GOOD_SENTENCE_HTML = MY_NOTES_FOLDER + "/good_sentence.html";
 
     public static final int HOUR = 24;
     public static final int MINUTE = 60;

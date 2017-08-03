@@ -32,6 +32,6 @@ public class InformalEssayExport extends BaseDataRequest {
     }
 
     public void exportData() {
-        ExportToHtmlUtils.exportInfromalEssayToHtml(dataList, context.getString(R.string.infromal_essay_html), infromalEssayList);
+        ExportToHtmlUtils.exportInfromalEssayToHtml(context, dataList, context.getString(R.string.infromal_essay_html), infromalEssayList);
     }
 }

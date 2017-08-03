@@ -675,7 +675,7 @@ public class Utils {
         return hour + ":" + minute;
     }
 
-    public static String getTimeAndMinuteSecond(String hour, String minute) {
+    public static String getTimeAndMinuteSecond(int hour, int minute) {
         String content = "";
         if (Integer.valueOf(hour) < 10 && Integer.valueOf(minute) < 10) {
             content = "0" + hour + ":0" + minute;

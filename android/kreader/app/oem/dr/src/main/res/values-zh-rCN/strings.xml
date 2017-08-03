@@ -238,11 +238,19 @@
     <string name="item_sketch_title">标题</string>
     <string name="do_not_install_note_apk">没有安装笔记App</string>
     <string name="dict_query_japanese_language">日文</string>
-    <string name="add_memorandum_activity_dialog_height" format="float" type="dimen">0.3</string>
+    <string name="add_memorandum_activity_dialog_height" format="float" type="dimen">0.38</string>
     <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
     <string name="article_repeat_after">文章跟读</string>
     <string name="speech_recording">演讲录音</string>
     <string name="pronounce_evaluation">发音测评</string>
+    <string name="select_time">选择时间</string>
+    <string name="start_time">开始:</string>
+    <string name="end_time">结束:</string>
+    <string name="select_date">选择日期</string>
+    <string name="end_date_must_more_than_start_date">结束日期必须大于开始日期</string>
+    <string name="no_relevant_data">没有相应数据</string>
+    <string name="export_success">导出成功</string>
+    <string name="good_sentence_notebook_html">好句本报表</string>
 </resources>

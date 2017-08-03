@@ -8,6 +8,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.request.local.GoodSentenceDeleteByTime;
 import com.onyx.android.dr.request.local.GoodSentenceExport;
 import com.onyx.android.dr.request.local.GoodSentenceInsert;
+import com.onyx.android.dr.request.local.GoodSentenceQueryByTime;
 import com.onyx.android.dr.request.local.GoodSentenceQueryByType;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.DataManager;
@@ -27,6 +28,10 @@ public class GoodSentenceData {
     }
 
     public void getGoodSentenceByType(Context context, final GoodSentenceQueryByType req, final BaseCallback baseCallback) {
+        submitRequest(context, req, baseCallback);
+    }
+
+    public void getGoodSentenceByTime(Context context, final GoodSentenceQueryByTime req, final BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
     }
 
