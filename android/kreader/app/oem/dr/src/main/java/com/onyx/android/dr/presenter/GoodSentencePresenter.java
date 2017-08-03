@@ -2,9 +2,7 @@ package com.onyx.android.dr.presenter;
 
 import android.content.Context;
 
-import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.GoodSentenceAdapter;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.GoodSentenceData;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.interfaces.GoodSentenceView;
@@ -89,7 +87,6 @@ public class GoodSentencePresenter {
         goodSentenceData.exportGoodSentence(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                CommonNotices.showMessage(context, context.getString(R.string.export_success));
             }
         });
     }

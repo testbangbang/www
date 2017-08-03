@@ -2,9 +2,7 @@ package com.onyx.android.dr.presenter;
 
 import android.content.Context;
 
-import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.NewWordAdapter;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.NewWordData;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.interfaces.NewWordView;
@@ -89,7 +87,6 @@ public class NewWordPresenter {
         newWordData.exportNewWord(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                CommonNotices.showMessage(context, context.getString(R.string.export_success));
             }
         });
     }

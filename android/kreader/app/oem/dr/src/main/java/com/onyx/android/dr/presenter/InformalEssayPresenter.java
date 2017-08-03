@@ -77,7 +77,6 @@ public class InformalEssayPresenter {
         infromalEssayData.exportInformalEssay(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                CommonNotices.showMessage(context, context.getString(R.string.export_success));
             }
         });
     }

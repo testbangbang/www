@@ -1,5 +1,7 @@
 package com.onyx.android.dr.request.local;
 
+import android.util.Log;
+
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;

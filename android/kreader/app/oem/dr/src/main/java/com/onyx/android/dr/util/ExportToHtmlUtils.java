@@ -1,8 +1,11 @@
 package com.onyx.android.dr.util;
 
+import android.content.Context;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
+import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
@@ -51,7 +54,7 @@ public class ExportToHtmlUtils {
         }
     }
 
-    public static void exportNewWordToHtml(List<String> newWordTitle, String title, List<NewWordNoteBookEntity> dataList) {
+    public static void exportNewWordToHtml(Context context, List<String> newWordTitle, String title, List<NewWordNoteBookEntity> dataList) {
         StringBuilder sb = getTitleStringBuilder(title);
         sb.append("<table border=\"1\"><tr>");
         for (int i = 0; i < newWordTitle.size(); i++) {
@@ -87,12 +90,15 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
+            CommonNotices.showMessage(context, context.getString(R.string.export_success));
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            FileUtils.closeQuietly(printStream);
         }
     }
 
-    public static void exportInfromalEssayToHtml(List<String> htmlTitle, String title, List<InformalEssayEntity> dataList) {
+    public static void exportInfromalEssayToHtml(Context context, List<String> htmlTitle, String title, List<InformalEssayEntity> dataList) {
         StringBuilder sb = getTitleStringBuilder(title);
         sb.append("<table border=\"1\"><tr>");
         for (int i = 0; i < htmlTitle.size(); i++) {
@@ -128,12 +134,15 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
+            CommonNotices.showMessage(context, context.getString(R.string.export_success));
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            FileUtils.closeQuietly(printStream);
         }
     }
 
-    public static void exportGoodSentenceToHtml(List<String> htmlTitle, String title, List<GoodSentenceNoteEntity> dataList) {
+    public static void exportGoodSentenceToHtml(Context context, List<String> htmlTitle, String title, List<GoodSentenceNoteEntity> dataList) {
         StringBuilder sb = getTitleStringBuilder(title);
         sb.append("<table border=\"1\"><tr>");
         for (int i = 0; i < htmlTitle.size(); i++) {
@@ -169,8 +178,11 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
+            CommonNotices.showMessage(context, context.getString(R.string.export_success));
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            FileUtils.closeQuietly(printStream);
         }
     }
 }
