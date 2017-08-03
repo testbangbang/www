@@ -1,9 +1,9 @@
 package com.onyx.android.sdk.scribble.asyncrequest.note;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,8 @@ public class NoteLoadThumbnailByUIDRequest extends AsyncBaseNoteRequest {
         this(idList, Integer.MAX_VALUE);
     }
 
-    public void execute(final NoteViewHelper shapeManager) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper shapeManager) throws Exception {
         int i = 0;
         for (String id : targetIdList) {
             NoteModel noteModel = NoteDataProvider.load(getContext(), id);

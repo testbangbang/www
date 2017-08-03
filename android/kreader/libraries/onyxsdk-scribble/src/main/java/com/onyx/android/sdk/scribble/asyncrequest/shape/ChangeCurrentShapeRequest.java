@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
 /**
@@ -17,7 +17,8 @@ public class ChangeCurrentShapeRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(ShapeFactory.isDFBShape(newShapeType));
     }
 
-    public void execute(final NoteViewHelper parent) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper parent) throws Exception {
         parent.setCurrentShapeType(newShapeType);
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);

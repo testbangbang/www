@@ -1,9 +1,9 @@
 package com.onyx.android.sdk.scribble.asyncrequest.note;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 
 /**
  * Created by zhuzeng on 6/23/16.
@@ -27,7 +27,8 @@ public class NoteDocumentOpenRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(true);
     }
 
-    public void execute(final NoteViewHelper parent) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper parent) throws Exception {
         benchmarkStart();
         if (newCreate) {
             parent.createDocument(getContext(), documentUniqueId, getParentLibraryId());

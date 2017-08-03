@@ -7,7 +7,8 @@ import android.graphics.Color;
 import android.net.Uri;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.PageNameList;
@@ -15,7 +16,6 @@ import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.NormalPencilShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.CursorUtil;
@@ -78,7 +78,8 @@ public class ImportScribbleRequest extends AsyncBaseNoteRequest {
         this.context = context;
     }
 
-    public void execute(NoteViewHelper helper) throws Exception {
+    @Override
+    public void execute(AsyncNoteViewHelper helper) throws Exception {
         Cursor cursor = null;
         try {
             Uri uri = Uri.parse(OLD_SCRIBBLE_URL);
@@ -105,7 +106,7 @@ public class ImportScribbleRequest extends AsyncBaseNoteRequest {
         }
     }
 
-    private void readColumnData(NoteViewHelper helper, Cursor c, int count, int index) {
+    private void readColumnData(AsyncNoteViewHelper helper, Cursor c, int count, int index) {
         if (!columnIndexesInitialized) {
             sColumnID = c.getColumnIndex(_ID);
             sColumnMD5 = c.getColumnIndex(MD5);

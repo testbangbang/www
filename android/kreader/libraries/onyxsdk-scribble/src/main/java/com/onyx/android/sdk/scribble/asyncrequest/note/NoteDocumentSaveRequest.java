@@ -1,8 +1,8 @@
 package com.onyx.android.sdk.scribble.asyncrequest.note;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 
 /**
  * Created by zhuzeng on 6/23/16.
@@ -19,7 +19,8 @@ public class NoteDocumentSaveRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(!close);
     }
 
-    public void execute(final NoteViewHelper parent) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper parent) throws Exception {
         renderCurrentPage(parent);
         NoteDataProvider.saveThumbnailWithSize(getContext(),
                 parent.getNoteDocument().getDocumentUniqueId(),

@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest.note;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class NotePageShapesRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(NoteViewHelper helper) throws Exception {
+    public void execute(AsyncNoteViewHelper helper) throws Exception {
         pageShapes =  helper.getNoteDocument().getNotePage(getContext(), pageUniqueName).getShapeList();
     }
 

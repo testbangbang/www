@@ -15,7 +15,6 @@ import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.R;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
@@ -41,7 +40,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
     private String docUniqueId;
     private String parentLibraryId;
     private Rect viewportSize;
-    private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
+    private List<PageInfo> visiblePages = new ArrayList<>();
     private boolean debugPathBenchmark = false;
     private boolean pauseInputProcessor = true;
     private boolean resumeInputProcessor = false;
@@ -110,7 +109,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         return visiblePages;
     }
 
-    public void beforeExecute(final NoteViewHelper helper) {
+    public void beforeExecute(final AsyncNoteViewHelper helper) {
         helper.getRequestManager().acquireWakeLock(getContext(), getClass().getSimpleName());
         if (isPauseInputProcessor()) {
             helper.pauseDrawing();
@@ -136,14 +135,14 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         }
     }
 
-    public void execute(final NoteViewHelper helper) throws Exception {
+    public void execute(final AsyncNoteViewHelper helper) throws Exception {
     }
 
     /**
      * drawToView Instantly when finish request,reused isRender Flag
      * @param helper
      */
-    public void postExecute(final NoteViewHelper helper){
+    public void postExecute(final AsyncNoteViewHelper helper){
         if (getException() != null) {
             getException().printStackTrace();
         }
@@ -179,7 +178,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         return shapeDataInfo;
     }
 
-    public void renderVisiblePages(final NoteViewHelper parent) {
+    public void renderVisiblePages(final AsyncNoteViewHelper parent) {
         synchronized (parent) {
             Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
             bitmap.eraseColor(Color.WHITE);
@@ -206,7 +205,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         }
     }
 
-    private Paint preparePaint(final NoteViewHelper parent) {
+    private Paint preparePaint(final AsyncNoteViewHelper parent) {
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
@@ -330,7 +329,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         canvas.drawPath(path, paint);
     }
 
-    public void currentPageAsVisiblePage(final NoteViewHelper helper) {
+    public void currentPageAsVisiblePage(final AsyncNoteViewHelper helper) {
         final NotePage notePage = helper.getNoteDocument().getCurrentPage(getContext());
         getVisiblePages().clear();
         PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), getViewportSize().width(), getViewportSize().height());
@@ -338,7 +337,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         getVisiblePages().add(pageInfo);
     }
 
-    public void renderCurrentPage(final NoteViewHelper helper) {
+    public void renderCurrentPage(final AsyncNoteViewHelper helper) {
         if (!isRender()) {
             return;
         }
@@ -346,12 +345,12 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         renderVisiblePages(helper);
     }
 
-    public void updateShapeDataInfo(final NoteViewHelper parent) {
+    public void updateShapeDataInfo(final AsyncNoteViewHelper parent) {
         final ShapeDataInfo shapeDataInfo = getShapeDataInfo();
         parent.updateShapeDataInfo(getContext(), shapeDataInfo);
     }
 
-    public void ensureDocumentOpened(final NoteViewHelper parent) {
+    public void ensureDocumentOpened(final AsyncNoteViewHelper parent) {
         if (!parent.getNoteDocument().isOpen()) {
             parent.getNoteDocument().open(getContext(),
                     getDocUniqueId(),
