@@ -3,7 +3,6 @@ package com.onyx.edu.note;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Layout;
@@ -689,10 +688,6 @@ public class NoteManager {
 
     public void resumeDrawing() {
         mNoteViewHelper.resumeDrawing();
-    }
-
-    public Bitmap getViewBitmap() {
-        return mNoteViewHelper.getViewBitmap();
     }
 
     public Bitmap getRenderBitmap() {

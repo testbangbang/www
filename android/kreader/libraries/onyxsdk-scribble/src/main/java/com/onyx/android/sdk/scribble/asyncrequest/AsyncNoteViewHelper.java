@@ -73,7 +73,6 @@ public class AsyncNoteViewHelper {
     private RawInputProcessor rawInputProcessor = null;
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
-    private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
     private Rect softwareLimitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
@@ -93,16 +92,15 @@ public class AsyncNoteViewHelper {
     private volatile boolean isDrawing = false;
 
     private Rect customLimitRect = null;
-
-    public RequestManager getRequestManager() {
-        return requestManager;
-    }
-
     private RequestManager requestManager = new RequestManager();
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, PEN_PAUSE);
         EpdController.enablePost(view, 1);
+    }
+
+    public RequestManager getRequestManager() {
+        return requestManager;
     }
 
     public void setView(final Context context, final SurfaceView view) {
@@ -443,25 +441,6 @@ public class AsyncNoteViewHelper {
 
     public Bitmap getRenderBitmap() {
         return renderBitmapWrapper.getBitmap();
-    }
-
-    // copy from render bitmap to view bitmap.
-    public void copyBitmap() {
-        if (renderBitmapWrapper == null) {
-            return;
-        }
-        final Bitmap bitmap = renderBitmapWrapper.getBitmap();
-        if (bitmap == null) {
-            return;
-        }
-        viewBitmapWrapper.copyFrom(bitmap);
-    }
-
-    public Bitmap getViewBitmap() {
-        if (viewBitmapWrapper == null) {
-            return null;
-        }
-        return viewBitmapWrapper.getBitmap();
     }
 
     private void initRawInputProcessor() {
