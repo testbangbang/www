@@ -144,7 +144,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     private void loadDialog() {
         RelativeLayout view = (RelativeLayout) LayoutInflater.from(this).inflate(
                 R.layout.dialog_word_query_result, null);
-        selectTimeDialog = new SelectAlertDialog(this);
+        selectTimeDialog = new SelectAlertDialog();
         // find id
         prevPageButton = (ImageView) view.findViewById(R.id.dialog_result_button_previous);
         pageIndicator = (TextView) view.findViewById(R.id.dialog_result_page_size_indicator);

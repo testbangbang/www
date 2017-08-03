@@ -222,6 +222,8 @@
         <item name="android:gravity">center</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:ellipsize">middle</item>
+        <item name="android:singleLine">true</item>
     </style>
 
     <style name="good_sentence_item_view">

@@ -14,6 +14,7 @@ import android.widget.TimePicker;
 
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.util.Utils;
 
@@ -92,11 +93,11 @@ public class TimePickerDialog {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        if (tag == 0) {
+                        if (tag == Constants.DIALOG_VIEW_FIRST_TYPE) {
                             getTimePickerValue();
-                        } else if (tag == 1) {
+                        } else if (tag == Constants.DIALOG_VIEW_SECOND_TYPE) {
                             getDatePickerValue();
-                        } else if (tag == 2) {
+                        } else if (tag == Constants.DIALOG_VIEW_THIRD_TYPE) {
                             getDateAndPickerValue();
                         }
                         timePickerDialogInterface.positiveListener();
@@ -113,7 +114,7 @@ public class TimePickerDialog {
     }
 
     public void showTimePickerDialog() {
-        tag = 0;
+        tag = Constants.DIALOG_VIEW_FIRST_TYPE;
         View view = initStartAndEndTimePicker();
         alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle(R.string.select_time);
@@ -122,7 +123,7 @@ public class TimePickerDialog {
     }
 
     public void showDatePickerDialog() {
-        tag = 1;
+        tag = Constants.DIALOG_VIEW_SECOND_TYPE;
         View view = initStartAndEndDatePicker();
         alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle(R.string.select_date);
@@ -131,7 +132,7 @@ public class TimePickerDialog {
     }
 
     public void showDateAndTimePickerDialog() {
-        tag = 2;
+        tag = Constants.DIALOG_VIEW_THIRD_TYPE;
         View view = initDateAndTimePicker();
         alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle(R.string.select_time);

@@ -10,6 +10,7 @@ import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;

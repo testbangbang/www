@@ -21,7 +21,7 @@ public class CommunityBaseDialog extends Dialog {
 	public CommunityBaseDialog(Context context) {
 		super(context);
 		context = context;
-	}	
+	}
 
 	@Override
 	public void dismiss() {

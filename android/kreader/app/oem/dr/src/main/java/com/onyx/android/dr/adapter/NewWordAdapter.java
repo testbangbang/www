@@ -13,7 +13,6 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.util.TimeUtils;
-import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.List;
@@ -62,7 +61,7 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
         holder.time.setText(TimeUtils.getDate(currentTime));
         holder.content.setText(bean.newWord);
         holder.readingMatter.setText(bean.readingMatter);
-        holder.dictionaryLookup.setText(Utils.getDictionaryLookupString(bean.dictionaryLookup));
+        holder.dictionaryLookup.setText(bean.dictionaryLookup);
         holder.checkBox.setChecked(listCheck.get(position));
         holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override

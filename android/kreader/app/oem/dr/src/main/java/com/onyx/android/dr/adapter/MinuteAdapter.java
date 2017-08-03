@@ -33,7 +33,7 @@ public class MinuteAdapter extends PageRecyclerView.PageAdapter implements View.
     }
 
     public void setDatas(List<String> list) {
-        this.list = list;
+        this.list.addAll(list);
     }
 
     public void setSpecificMinute(String specificMinute) {

@@ -754,17 +754,4 @@ public class Utils {
         }
         return dictPaths;
     }
-
-    public static String getDictionaryLookupString(String content) {
-        String newContent;
-        if (content != null &&  !"".equals(content)) {
-            if (content.length() > 18) {
-                newContent = content.substring(0, 19) + "...";
-                return newContent;
-            }else{
-                return content;
-            }
-        }
-        return content;
-    }
 }

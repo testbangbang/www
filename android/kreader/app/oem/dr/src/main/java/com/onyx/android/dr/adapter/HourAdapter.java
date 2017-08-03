@@ -33,7 +33,7 @@ public class HourAdapter extends PageRecyclerView.PageAdapter implements View.On
     }
 
     public void setDatas(List<String> list) {
-        this.list = list;
+        this.list.addAll(list);
     }
 
     public void setSpecificHour(String specificHour) {

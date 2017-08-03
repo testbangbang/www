@@ -50,6 +50,10 @@ public class Constants {
     public static final int CHINESE_NEW_WORD_NOTEBOOK = 1;
     public static final int JAPANESE_NEW_WORD_NOTEBOOK = 2;
 
+    public static final int DIALOG_VIEW_FIRST_TYPE = 0;
+    public static final int DIALOG_VIEW_SECOND_TYPE = 1;
+    public static final int DIALOG_VIEW_THIRD_TYPE = 2;
+
     public static final int ACCOUNT_TYPE_GOOD_SENTENCE = 0;
     public static final int ACCOUNT_TYPE_NEW_WORD = 1;
 
