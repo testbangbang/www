@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.onyx.android.dr.bean.ProvinceBean;
 import com.onyx.android.dr.data.database.AddressDBHelper;
+import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
@@ -41,19 +42,24 @@ public class RequestProvinceList extends BaseDataRequest {
 
     private List<ProvinceBean> queryProvinces() {
         provinces = new ArrayList<>();
-        SQLiteDatabase db = new AddressDBHelper(getContext()).getReadableDatabase();
-        Cursor cursor = db.query("t_province", new String[]{"ProName", "ProSort", "ProRemark"}, null, null, null, null, null);
-        while (cursor != null && cursor.moveToNext()) {
-            ProvinceBean provinceBean = new ProvinceBean();
-            provinceBean.proName = cursor.getString(0);
-            provinceBean.proSort = cursor.getString(1);
-            provinceBean.proRemark = cursor.getString(2);
-            provinces.add(provinceBean);
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        try {
+            db = new AddressDBHelper(getContext()).getReadableDatabase();
+            cursor = db.query("t_province", new String[]{"ProName", "ProSort", "ProRemark"}, null, null, null, null, null);
+            while (cursor != null && cursor.moveToNext()) {
+                ProvinceBean provinceBean = new ProvinceBean();
+                provinceBean.proName = cursor.getString(0);
+                provinceBean.proSort = cursor.getString(1);
+                provinceBean.proRemark = cursor.getString(2);
+                provinces.add(provinceBean);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Utils.closeQuietly(cursor);
+            Utils.closeQuietly(db);
         }
-        if (cursor != null) {
-            cursor.close();
-        }
-        db.close();
         return provinces;
     }
 }
