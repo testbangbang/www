@@ -7,10 +7,8 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.NewWordAdapter;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
-import com.onyx.android.dr.dialog.TimePickerDialog;
 import com.onyx.android.dr.interfaces.NewWordView;
 import com.onyx.android.dr.presenter.NewWordPresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -25,9 +23,9 @@ import butterknife.OnClick;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class NewWordNotebookActivity extends BaseActivity implements NewWordView, TimePickerDialog.TimePickerDialogInterface {
+public class NewWordNotebookActivity extends BaseActivity implements NewWordView {
     @Bind(R.id.new_word_activity_recyclerview)
-    PageRecyclerView newWordRecyclerView;
+    PageRecyclerView goodSentenceRecyclerView;
     @Bind(R.id.new_word_activity_delete)
     TextView delete;
     @Bind(R.id.new_word_activity_export)
@@ -38,7 +36,6 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     private List<NewWordNoteBookEntity> newWordList;
     private ArrayList<Boolean> listCheck;
     private int dictType;
-    private TimePickerDialog timePickerDialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -58,17 +55,14 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         newWordAdapter = new NewWordAdapter();
-        DisableScrollGridManager disableScrollGridManager = new DisableScrollGridManager(DRApplication.getInstance());
-        disableScrollGridManager.setScrollEnable(true);
-        newWordRecyclerView.setLayoutManager(disableScrollGridManager);
-        newWordRecyclerView.addItemDecoration(dividerItemDecoration);
+        goodSentenceRecyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
+        goodSentenceRecyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
     protected void initData() {
         newWordList = new ArrayList<NewWordNoteBookEntity>();
         listCheck = new ArrayList<>();
-        timePickerDialog = new TimePickerDialog(this);
         loadNewWordDatas();
         initEvent();
     }
@@ -87,7 +81,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         newWordList = dataList;
         listCheck = checkList;
         newWordAdapter.setDataList(newWordList, listCheck);
-        newWordRecyclerView.setAdapter(newWordAdapter);
+        goodSentenceRecyclerView.setAdapter(newWordAdapter);
     }
 
     public void initEvent() {
@@ -96,7 +90,6 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
             public void setOnItemClick(int position, boolean isCheck) {
                 listCheck.set(position, isCheck);
             }
-
             @Override
             public void setOnItemCheckedChanged(int position, boolean isCheck) {
                 listCheck.set(position, isCheck);
@@ -116,26 +109,14 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
                 newWordPresenter.remoteAdapterDatas(listCheck, newWordAdapter);
                 break;
             case R.id.new_word_activity_export:
-                timePickerDialog.showDatePickerDialog();
+                newWordPresenter.getHtmlTitle();
                 break;
         }
     }
 
     @Override
-    public void positiveListener() {
-        long startDateMillisecond = timePickerDialog.getStartDateMillisecond();
-        long endDateMillisecond = timePickerDialog.getEndDateMillisecond();
-        newWordPresenter.getNewWordByTime(startDateMillisecond, endDateMillisecond);
-    }
-
-    @Override
-    public void setNewWordByTime(List<NewWordNoteBookEntity> dataList) {
-        if (dataList != null && dataList.size() > 0) {
-            ArrayList<String> htmlTitleData = newWordPresenter.getHtmlTitle();
-            newWordPresenter.exportDataToHtml(this, htmlTitleData, dataList);
-        } else {
-            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
-        }
+    public void setHtmlTitleData(ArrayList<String> dataList) {
+        newWordPresenter.exportDataToHtml(this, dataList, newWordList);
     }
 
     @Override

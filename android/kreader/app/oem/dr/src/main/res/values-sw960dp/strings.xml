@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="webview_default_font_size" format="float" type="dimen">1.6</string>
-    <string name="add_memorandum_activity_dialog_height" format="float" type="dimen">0.38</string>
+    <string name="add_memorandum_activity_dialog_height" format="float" type="dimen">0.3</string>
     <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
-    <string name="wheel_view_paint_color">#83cde6</string>
-    <string name="wheel_view_itemview_color_one">#0288ce</string>
-    <string name="wheel_view_itemview_color_two">#bbbbbb</string>
 </resources>

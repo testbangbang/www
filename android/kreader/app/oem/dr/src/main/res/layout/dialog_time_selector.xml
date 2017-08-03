@@ -21,12 +21,6 @@
             android:layout_toLeftOf="@+id/time_selector_dialog_cancel"
             android:text="@string/time_selector_dialog_confirm" />
 
-        <TextView
-            android:id="@+id/time_selector_dialog_location_current_time"
-            style="@style/new_word_notebook_textview_style"
-            android:layout_toLeftOf="@+id/time_selector_dialog_confirm"
-            android:text="@string/time_selector_dialog_confirm" />
-
     </RelativeLayout>
 
     <LinearLayout

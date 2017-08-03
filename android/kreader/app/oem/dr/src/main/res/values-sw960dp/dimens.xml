@@ -104,5 +104,4 @@
     <dimen name="item_sketch_time_margin_top">5dp</dimen>
     <dimen name="item_sketch_title_margin_top">5dp</dimen>
     <dimen name="title_interval_margin_left">1dp</dimen>
-    <dimen name="new_word_activity_buttom_height">120dp</dimen>
 </resources>

@@ -5,11 +5,10 @@ import android.content.Context;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.request.local.InformalEssayDelete;
 import com.onyx.android.dr.request.local.InformalEssayExport;
+import com.onyx.android.dr.request.local.InformalEssayDelete;
 import com.onyx.android.dr.request.local.InformalEssayInsert;
 import com.onyx.android.dr.request.local.InformalEssayQueryAll;
-import com.onyx.android.dr.request.local.InformalEssayQueryByTime;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
@@ -31,10 +30,6 @@ public class InformalEssayData {
         submitRequest(context, req, baseCallback);
     }
 
-    public void getInformalEssayByTime(Context context, InformalEssayQueryByTime req, BaseCallback baseCallback) {
-        submitRequest(context, req, baseCallback);
-    }
-
     public void insertInformalEssay(Context context, InformalEssayInsert req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
     }
@@ -47,7 +42,7 @@ public class InformalEssayData {
         submitRequest(context, req, baseCallback);
     }
 
-    public ArrayList<String> getHtmlTitle(Context context) {
+    public ArrayList<String> setHtmlTitle(Context context) {
         htmlTitle.add(context.getString(R.string.infromal_essay_activity_time));
         htmlTitle.add(context.getString(R.string.infromal_essay_activity_title));
         htmlTitle.add(context.getString(R.string.infromal_essay_activity_word_number));

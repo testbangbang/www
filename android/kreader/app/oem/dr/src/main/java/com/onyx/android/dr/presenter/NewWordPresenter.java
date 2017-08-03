@@ -2,15 +2,12 @@ package com.onyx.android.dr.presenter;
 
 import android.content.Context;
 
-import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.NewWordAdapter;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.NewWordData;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.interfaces.NewWordView;
 import com.onyx.android.dr.request.local.NewWordDelete;
 import com.onyx.android.dr.request.local.NewWordExport;
-import com.onyx.android.dr.request.local.NewWordQueryByTime;
 import com.onyx.android.dr.request.local.NewWordQueryByType;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -45,16 +42,6 @@ public class NewWordPresenter {
         });
     }
 
-    public void getNewWordByTime(long startDate, long endDate) {
-        final NewWordQueryByTime req = new NewWordQueryByTime(startDate, endDate);
-        newWordData.getNewWordByTime(context, req, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                newWordView.setNewWordByTime(req.getData());
-            }
-        });
-    }
-
     public void deleteNewWord(long time) {
         final NewWordDelete req = new NewWordDelete(time, true);
         newWordData.deleteNewWord(context, req, new BaseCallback() {
@@ -74,22 +61,20 @@ public class NewWordPresenter {
                 allData.remove(i);
                 listCheck.remove(i);
                 adapter.notifyItemRemoved(i);
+                adapter.notifyItemRangeChanged(0, allData.size());
             }
         }
-        adapter.notifyItemRangeChanged(0, allData.size());
     }
 
-    public  ArrayList<String> getHtmlTitle() {
-        ArrayList<String> stringList = newWordData.setHtmlTitle(context);
-        return stringList;
+    public void getHtmlTitle() {
+        newWordData.setHtmlTitle(context);
     }
 
-    public void exportDataToHtml(final Context context, ArrayList<String> dataList, List<NewWordNoteBookEntity> list) {
+    public void exportDataToHtml(Context context, ArrayList<String> dataList, List<NewWordNoteBookEntity> list) {
         final NewWordExport req = new NewWordExport(context, dataList, list);
         newWordData.exportNewWord(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                CommonNotices.showMessage(context, context.getString(R.string.export_success));
             }
         });
     }

@@ -66,76 +66,77 @@
             android:name=".activity.DictQueryActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+            android:windowSoftInputMode="stateVisible|adjustResize">
+        </activity>
 
-        <activity
-            android:name=".activity.DictResultShowActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+    <activity
+        android:name=".activity.DictResultShowActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <activity
-            android:name=".activity.MyNotesActivity"
-            android:screenOrientation="portrait" />
+    <activity
+        android:name=".activity.MyNotesActivity"
+        android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".activity.GoodSentenceTypeActivity"
-            android:screenOrientation="portrait" />
+    <activity
+        android:name=".activity.GoodSentenceTypeActivity"
+        android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".activity.GoodSentenceNotebookActivity"
-            android:screenOrientation="portrait" />
+    <activity
+        android:name=".activity.GoodSentenceNotebookActivity"
+        android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".activity.NewWordTypeActivity"
-            android:screenOrientation="portrait" />
+    <activity
+        android:name=".activity.NewWordTypeActivity"
+        android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".activity.QueryRecordActivity"
-            android:screenOrientation="portrait" />
+    <activity
+        android:name=".activity.QueryRecordActivity"
+        android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".activity.NewWordNotebookActivity"
-            android:screenOrientation="portrait" />
+    <activity
+        android:name=".activity.NewWordNotebookActivity"
+        android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".activity.NewWordQueryActivity"
-            android:screenOrientation="portrait" />
+    <activity
+        android:name=".activity.NewWordQueryActivity"
+        android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".activity.InformalEssayActivity"
-            android:screenOrientation="portrait" />
+    <activity
+        android:name=".activity.InformalEssayActivity"
+        android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".activity.AddInformalEssayActivity"
-            android:screenOrientation="portrait" />
+    <activity
+        android:name=".activity.AddInformalEssayActivity"
+        android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".activity.MemorandumActivity"
-            android:screenOrientation="portrait" />
+    <activity
+        android:name=".activity.MemorandumActivity"
+        android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".activity.AddMemorandumActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
+    <activity
+        android:name=".activity.AddMemorandumActivity"
+        android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".activity.HearAndSpeakActivity"
-            android:screenOrientation="portrait" />
+    <activity
+        android:name=".activity.HearAndSpeakActivity"
+        android:screenOrientation="portrait" />
 
-        <provider
-            android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"
-            android:authorities="com.onyx.content.database.ContentProvider"
-            android:exported="true"
-            android:process=":database_content_provider" />
+    <provider
+        android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"
+        android:authorities="com.onyx.content.database.ContentProvider"
+        android:exported="true"
+        android:process=":database_content_provider" />
 
-        <provider
-            android:name="com.onyx.android.sdk.data.db.OnyxAccountContentProvider_Provider"
-            android:authorities="com.onyx.account.database.ContentProvider"
-            android:exported="true" />
+    <provider
+        android:name="com.onyx.android.sdk.data.db.OnyxAccountContentProvider_Provider"
+        android:authorities="com.onyx.account.database.ContentProvider"
+        android:exported="true" />
 
-        <provider
-            android:name="com.onyx.android.sdk.data.db.OnyxSystemContentProvider_Provider"
-            android:authorities="com.onyx.system.database.ContentProvider"
-            android:exported="true" />
-    </application>
-</manifest>
+    <provider
+        android:name="com.onyx.android.sdk.data.db.OnyxSystemContentProvider_Provider"
+        android:authorities="com.onyx.system.database.ContentProvider"
+        android:exported="true" />
+</application>
+
+    </manifest>

@@ -9,14 +9,15 @@ import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 
-
 /**
- * Created by zhouzhiming on 2017/8/3.
+ * Created by huxiaomao on 2017/1/12.
  */
+
 public class ExportToHtmlUtils {
 
     @NonNull
@@ -42,15 +43,6 @@ public class ExportToHtmlUtils {
         return sb;
     }
 
-    @NonNull
-    private static void createCatalogue() {
-        String filePath = Environment.getExternalStorageDirectory() + Constants.MY_NOTES_FOLDER;
-        File file = new File(filePath);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-    }
-
     public static void exportNewWordToHtml(List<String> newWordTitle, String title, List<NewWordNoteBookEntity> dataList) {
         StringBuilder sb = getTitleStringBuilder(title);
         sb.append("<table border=\"1\"><tr>");
@@ -65,7 +57,13 @@ public class ExportToHtmlUtils {
             NewWordNoteBookEntity bean = dataList.get(i);
             long currentTime = bean.currentTime;
             sb.append("<th>");
-            sb.append(TimeUtils.getDate(currentTime));
+            sb.append(TimeUtils.getCurrentMonth(currentTime));
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(TimeUtils.getWeekOfMonth(currentTime));
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(TimeUtils.getCurrentDay(currentTime));
             sb.append("</th>");
             sb.append("<th>");
             sb.append(bean.newWord);
@@ -82,12 +80,14 @@ public class ExportToHtmlUtils {
 
         PrintStream printStream = null;
         try {
-            createCatalogue();
-            File file = new File(Environment.getExternalStorageDirectory() + Constants.NEW_WORD_HTML);
-            file.createNewFile();
+            String fileName = Environment.getExternalStorageDirectory() + Constants.NEW_WORD_HTML;
+            File file = new File(fileName);
+            if (!file.getParentFile().exists()){
+                file.getParentFile().mkdirs();
+            }
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -123,12 +123,14 @@ public class ExportToHtmlUtils {
 
         PrintStream printStream = null;
         try {
-            createCatalogue();
-            File file = new File(Environment.getExternalStorageDirectory() + Constants.INFORMAL_ESSAY_HTML);
-            file.createNewFile();
+            String fileName = Environment.getExternalStorageDirectory() + Constants.NEW_WORD_HTML;
+            File file = new File(fileName);
+            if (!file.getParentFile().exists()){
+                file.getParentFile().mkdirs();
+            }
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -164,12 +166,14 @@ public class ExportToHtmlUtils {
 
         PrintStream printStream = null;
         try {
-            createCatalogue();
-            File file = new File(Environment.getExternalStorageDirectory() + Constants.GOOD_SENTENCE_HTML);
-            file.createNewFile();
+            String fileName = Environment.getExternalStorageDirectory() + Constants.NEW_WORD_HTML;
+            File file = new File(fileName);
+            if (!file.getParentFile().exists()){
+                file.getParentFile().mkdirs();
+            }
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }

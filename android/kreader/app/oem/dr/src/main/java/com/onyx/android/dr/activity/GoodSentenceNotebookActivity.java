@@ -7,10 +7,8 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.GoodSentenceAdapter;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
-import com.onyx.android.dr.dialog.TimePickerDialog;
 import com.onyx.android.dr.interfaces.GoodSentenceView;
 import com.onyx.android.dr.presenter.GoodSentencePresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -25,7 +23,7 @@ import butterknife.OnClick;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSentenceView, TimePickerDialog.TimePickerDialogInterface {
+public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSentenceView {
     @Bind(R.id.good_sentence_activity_recyclerview)
     PageRecyclerView goodSentenceRecyclerView;
     @Bind(R.id.good_sentence_activity_export)
@@ -38,7 +36,6 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     private int dictType;
     private List<GoodSentenceNoteEntity> newWordList;
     private ArrayList<Boolean> listCheck;
-    private TimePickerDialog timePickerDialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -51,10 +48,10 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
 
     @Override
     protected void initView() {
-        initRecyclerView();
+        initRecylcerView();
     }
 
-    private void initRecyclerView() {
+    private void initRecylcerView() {
         dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         goodSentenceAdapter = new GoodSentenceAdapter();
@@ -66,7 +63,6 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     protected void initData() {
         newWordList = new ArrayList<GoodSentenceNoteEntity>();
         listCheck = new ArrayList<>();
-        timePickerDialog = new TimePickerDialog(this);
         loadData();
         initEvent();
     }
@@ -94,7 +90,6 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
             public void setOnItemClick(int position, boolean isCheck) {
                 listCheck.set(position, isCheck);
             }
-
             @Override
             public void setOnItemCheckedChanged(int position, boolean isCheck) {
                 listCheck.set(position, isCheck);
@@ -114,26 +109,14 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
                 goodSentencePresenter.remoteAdapterDatas(listCheck, goodSentenceAdapter);
                 break;
             case R.id.good_sentence_activity_export:
-                timePickerDialog.showDatePickerDialog();
+                goodSentencePresenter.getHtmlTitle();
                 break;
         }
     }
 
     @Override
-    public void positiveListener() {
-        long startDateMillisecond = timePickerDialog.getStartDateMillisecond();
-        long endDateMillisecond = timePickerDialog.getEndDateMillisecond();
-        goodSentencePresenter.getGoodSentenceByTime(startDateMillisecond, endDateMillisecond);
-    }
-
-    @Override
-    public void setGoodSentenceByTime(List<GoodSentenceNoteEntity> dataList) {
-        if (dataList != null && dataList.size() > 0) {
-            ArrayList<String> htmlTitleData = goodSentencePresenter.getHtmlTitle();
-            goodSentencePresenter.exportDataToHtml(this, htmlTitleData, dataList);
-        } else {
-            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
-        }
+    public void setHtmlTitleData(ArrayList<String> dataList) {
+        goodSentencePresenter.exportDataToHtml(this, dataList, newWordList);
     }
 
     @Override

@@ -675,7 +675,7 @@ public class Utils {
         return hour + ":" + minute;
     }
 
-    public static String getTimeAndMinuteSecond(int hour, int minute) {
+    public static String getTimeAndMinuteSecond(String hour, String minute) {
         String content = "";
         if (Integer.valueOf(hour) < 10 && Integer.valueOf(minute) < 10) {
             content = "0" + hour + ":0" + minute;
@@ -753,18 +753,5 @@ public class Utils {
             dictPaths.add(path + Constants.JAPANESE_DICTIONARY);
         }
         return dictPaths;
-    }
-
-    public static String getDictionaryLookupString(String content) {
-        String newContent;
-        if (content != null &&  !"".equals(content)) {
-            if (content.length() > 18) {
-                newContent = content.substring(0, 19) + "...";
-                return newContent;
-            }else{
-                return content;
-            }
-        }
-        return content;
     }
 }
