@@ -18,6 +18,7 @@ import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.manager.CreateLibraryAction;
 import com.onyx.android.note.actions.manager.GetOldScribbleCountAction;
 import com.onyx.android.note.actions.manager.ImportScribbleAction;
+import com.onyx.android.note.actions.manager.LoadNoteListAction;
 import com.onyx.android.note.actions.manager.ManageLoadPageAction;
 import com.onyx.android.note.actions.manager.NoteMoveAction;
 import com.onyx.android.note.actions.manager.RenameNoteOrLibraryAction;
@@ -379,11 +380,11 @@ public class ManagerActivity extends BaseManagerActivity {
         NotePreference.setIntValue(NotePreference.KEY_NOTE_ASC_ORDER, ascOrder);
     }
 
-//    @Override
-//    public void loadNoteList() {
-//        final LoadNoteListAction<BaseManagerActivity> action = new LoadNoteListAction<>(getCurrentLibraryId(), currentSortBy, ascOrder);
-//        action.execute(this);
-//    }
+    @Override
+    public void loadNoteList() {
+        final LoadNoteListAction<BaseManagerActivity> action = new LoadNoteListAction<>(getCurrentLibraryId(), currentSortBy, ascOrder);
+        action.execute(this);
+    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
