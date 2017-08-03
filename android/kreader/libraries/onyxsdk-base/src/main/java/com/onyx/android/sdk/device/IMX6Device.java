@@ -524,8 +524,6 @@ public class IMX6Device extends BaseDevice {
         int array[] = new int[regions.length * 4];
         for (int i = 0; i < regions.length; i++) {
             Rect region = regions[i];
-            float[] leftTop = new float[] { region.left, region.top };
-            float[] rightBottom = new float[] { region.right, region.bottom };
 
             int left = Math.min(region.left, region.right);
             int top = Math.min(region.top, region.bottom);
