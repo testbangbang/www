@@ -16,6 +16,8 @@ public class TimeUtils {
     public static final String DATA_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String HOUR_AND_MINUTE = "yyyy-MM-dd HH:mm";
     public static final String DATA_FORMAT = "yyyy-MM-dd";
+    public static final String START_TIME = " 00:00:00";
+    public static final String END_TIME = " 23:59:59";
     private static final int MILLISECOND = 1000;
     private static final int MINUTE_STEP = 60;
     private static final int MILLISECOND_STEP = 3600;
@@ -56,7 +58,7 @@ public class TimeUtils {
     }
 
     public static int compareDate(String DATE1, String DATE2) {
-        DateFormat df = new SimpleDateFormat(DATA_TIME_FORMAT);
+        DateFormat df = new SimpleDateFormat(DATA_FORMAT);
         try {
             Date dt1 = df.parse(DATE1);
             Date dt2 = df.parse(DATE2);
@@ -88,6 +90,36 @@ public class TimeUtils {
             exception.printStackTrace();
         }
         return false;
+    }
+
+    public static long getStartDateMillisecond(String startDate) {
+        DateFormat dateFormat = new SimpleDateFormat(DATA_TIME_FORMAT);
+        try {
+            Date date = dateFormat.parse(startDate + START_TIME);
+            long time = date.getTime();
+            return time;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static long getEndDateMillisecond(String endDate) {
+        DateFormat dateFormat = new SimpleDateFormat(DATA_TIME_FORMAT);
+        try {
+            Date date = dateFormat.parse(endDate + END_TIME);
+            long time = date.getTime();
+            return time;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static String getDateString(int year, int month, int day) {
+        String date;
+        date = year + "-" + month + "-" + day;
+        return date;
     }
 
     public static int daysBetween(String date1, String date2) {
@@ -192,6 +224,18 @@ public class TimeUtils {
         Calendar calender = getCalendar(timeMillis);
         int day = calender.get(Calendar.DATE);
         return day + "";
+    }
+
+    public static int getCurrentHour() {
+        Calendar calender = Calendar.getInstance();
+        int hour = calender.get(Calendar.HOUR);
+        return hour;
+    }
+
+    public static int getCurrentMinute() {
+        Calendar calender = Calendar.getInstance();
+        int minute = calender.get(Calendar.MINUTE);
+        return minute;
     }
 
     public static long getCurrentTimeMillis() {

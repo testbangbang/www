@@ -2,7 +2,6 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -305,7 +304,6 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                 }
                 queryResult.put(entry.getValue().dictionary.name, entry.getValue());
             }
-            Log.i("###result.size()", result.size() + "");
         }
     }
 
