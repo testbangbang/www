@@ -3,9 +3,11 @@ package com.onyx.android.sdk.scribble.asyncrequest;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -839,6 +841,15 @@ public class AsyncNoteViewHelper {
             return;
         }
         cursorShape.render(renderContext);
+    }
+
+    public void renderSelectedRect(RectF selectedRectF, RenderContext renderContext) {
+        if (selectedRectF.width() < 0 || selectedRectF.height() < 0) {
+            return;
+        }
+        Paint boundingPaint = new Paint(Color.BLACK);
+        boundingPaint.setStyle(Paint.Style.STROKE);
+        renderContext.canvas.drawRect(selectedRectF, boundingPaint);
     }
 
     public void drawLineLayoutBackground(final RenderContext renderContext) {
