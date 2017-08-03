@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.util.DictPreference;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.List;
@@ -20,6 +22,7 @@ import butterknife.ButterKnife;
 public class MinuteAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
     private List<String> list;
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
+    private String specificMinute;
 
     public interface OnRecyclerViewItemClickListener {
         void onItemClick(View view, int position);
@@ -31,6 +34,10 @@ public class MinuteAdapter extends PageRecyclerView.PageAdapter implements View.
 
     public void setDatas(List<String> list) {
         this.list = list;
+    }
+
+    public void setSpecificMinute(String specificMinute) {
+        this.specificMinute = specificMinute;
     }
 
     @Override
@@ -50,7 +57,7 @@ public class MinuteAdapter extends PageRecyclerView.PageAdapter implements View.
 
     @Override
     public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_dict_query, null);
+        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_time_select, null);
         return new ViewHolder(inflate);
     }
 
@@ -58,6 +65,9 @@ public class MinuteAdapter extends PageRecyclerView.PageAdapter implements View.
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
         String data = list.get(position);
+        if (specificMinute.equals(data)) {
+            DictPreference.setIntValue(DRApplication.getInstance(), Constants.MINUTE_POSITION, position);
+        }
         viewHolder.tabMenuTitle.setText(data);
         viewHolder.rootView.setTag(position);
         viewHolder.rootView.setOnClickListener(this);
@@ -75,7 +85,7 @@ public class MinuteAdapter extends PageRecyclerView.PageAdapter implements View.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tab_dict_title)
+        @Bind(R.id.tab_time_title)
         TextView tabMenuTitle;
         View rootView;
 

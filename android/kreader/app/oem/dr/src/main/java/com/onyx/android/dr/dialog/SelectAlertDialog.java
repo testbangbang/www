@@ -4,24 +4,24 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+
 import com.onyx.android.dr.R;
 
 /**
  * Created by zhouzhiming on 2017/7/13.
  */
 public class SelectAlertDialog extends CommunityBaseDialog {
-	private Context mContext;
+	private Context context;
 	private LinearLayout contentView;
 
 	public SelectAlertDialog(Context context) {
 		super(context, R.style.base_dialog);
-		mContext = context;
+		this.context = context;
 		initUI();
 	}
 
 	private void initUI() {
-
-		View dlgView = LayoutInflater.from(mContext).inflate(R.layout.dialog_choose_business_select_list, null);
+		View dlgView = LayoutInflater.from(context).inflate(R.layout.dialog_choose_business_select_list, null);
 		contentView = (LinearLayout) dlgView.findViewById(R.id.dilog_content_set_view);
 		setContentView(dlgView);
 		setCanceledOnTouchOutside(true);

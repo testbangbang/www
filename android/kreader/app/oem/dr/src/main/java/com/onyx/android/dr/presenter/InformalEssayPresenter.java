@@ -9,10 +9,11 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.InformalEssayData;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.interfaces.InformalEssayView;
-import com.onyx.android.dr.request.local.InformalEssayExport;
 import com.onyx.android.dr.request.local.InformalEssayDelete;
+import com.onyx.android.dr.request.local.InformalEssayExport;
 import com.onyx.android.dr.request.local.InformalEssayInsert;
 import com.onyx.android.dr.request.local.InformalEssayQueryAll;
+import com.onyx.android.dr.request.local.InformalEssayQueryByTime;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -47,6 +48,16 @@ public class InformalEssayPresenter {
         });
     }
 
+    public void getInformalEssayByTime(long startDate, long endDate) {
+        final InformalEssayQueryByTime req = new InformalEssayQueryByTime(startDate, endDate);
+        infromalEssayData.getInformalEssayByTime(context, req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                informalEssayView.setInformalEssayByTime(req.getData());
+            }
+        });
+    }
+
     public void deleteNewWord(long time) {
         final InformalEssayDelete req = new InformalEssayDelete(time, true);
         infromalEssayData.deleteInformalEssay(context, req, new BaseCallback() {
@@ -56,15 +67,17 @@ public class InformalEssayPresenter {
         });
     }
 
-    public void getHtmlTitle() {
-        infromalEssayData.setHtmlTitle(context);
+    public ArrayList<String> getHtmlTitleData() {
+        ArrayList<String> htmlTitle = infromalEssayData.getHtmlTitle(context);
+        return htmlTitle;
     }
 
-    public void exportDataToHtml(Context context, ArrayList<String> dataList, List<InformalEssayEntity> infromalEssayList) {
+    public void exportDataToHtml(final Context context, ArrayList<String> dataList, List<InformalEssayEntity> infromalEssayList) {
         final InformalEssayExport req = new InformalEssayExport(context, dataList, infromalEssayList);
         infromalEssayData.exportInformalEssay(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                CommonNotices.showMessage(context, context.getString(R.string.export_success));
             }
         });
     }
