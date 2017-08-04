@@ -48,4 +48,6 @@
     <integer name="quick_preview_bitmap_default_width">300</integer>
     <integer name="quick_preview_bitmap_default_height">400</integer>
     <integer name="new_word_notebook_row">14</integer>
+    <integer name="pencil_sketch_tab_column">4</integer>
+    <integer name="pencil_sketch_tab_row">3</integer>
 </resources>

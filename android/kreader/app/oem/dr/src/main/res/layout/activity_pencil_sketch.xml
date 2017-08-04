@@ -11,7 +11,7 @@
         android:layout_height="wrap_content" />
 
     <RelativeLayout
-        android:id="@+id/sketch_activity_buttom"
+        android:id="@+id/sketch_activity_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
@@ -19,19 +19,20 @@
         <TextView
             android:id="@+id/sketch_activity_share"
             style="@style/new_word_notebook_textview_style"
-            android:layout_alignParentRight="true"
-            android:text="@string/infromal_essay_activity_share" />
+            android:text="@string/infromal_essay_activity_share"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/sketch_activity_export"
             style="@style/new_word_notebook_textview_style"
             android:layout_toLeftOf="@+id/sketch_activity_share"
-            android:text="@string/export" />
+            android:text="@string/export"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/sketch_activity_delete"
             style="@style/new_word_notebook_textview_style"
-            android:layout_toLeftOf="@+id/sketch_activity_export"
+            android:layout_alignParentRight="true"
             android:text="@string/new_word_delete" />
 
         <TextView
@@ -45,7 +46,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/sketch_activity_buttom"
+        android:layout_above="@id/sketch_activity_bottom"
         android:layout_below="@id/title_bar"
         android:orientation="vertical">
 
@@ -53,10 +54,11 @@
             android:id="@+id/sketch_activity_check_all"
             style="@style/new_word_notebook_textview_style"
             android:layout_toLeftOf="@+id/sketch_activity_export"
-            android:text="@string/sketch_activity_check_all" />
+            android:text="@string/sketch_activity_check_all"
+            android:visibility="gone" />
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
-            android:id="@+id/sketch_activity_recyclerview"
+            android:id="@+id/sketch_activity_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

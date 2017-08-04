@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Created by zhouzhiming on 2017/7/12.
  */
 public class InformalEssayData {
-    private ArrayList<String> htmlTitle = new ArrayList<String>();
+    private ArrayList<String> htmlTitle;
 
     public void submitRequest(Context context, final BaseDataRequest req, final BaseCallback callBack) {
         DataManager dataManager = DRApplication.getDataManager();
@@ -48,6 +48,7 @@ public class InformalEssayData {
     }
 
     public ArrayList<String> getHtmlTitle(Context context) {
+        htmlTitle = new ArrayList<String>();
         htmlTitle.add(context.getString(R.string.infromal_essay_activity_time));
         htmlTitle.add(context.getString(R.string.infromal_essay_activity_title));
         htmlTitle.add(context.getString(R.string.infromal_essay_activity_word_number));

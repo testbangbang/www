@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Created by zhouzhiming on 2017/7/12.
  */
 public class GoodSentenceData {
-    private ArrayList<String> htmlTitle = new ArrayList<String>();
+    private ArrayList<String> htmlTitle;
 
     public void submitRequest(Context context, final BaseDataRequest req, final BaseCallback callBack) {
         DataManager dataManager = DRApplication.getDataManager();
@@ -48,6 +48,7 @@ public class GoodSentenceData {
     }
 
     public ArrayList<String> setHtmlTitle(Context context) {
+        htmlTitle = new ArrayList<String>();
         htmlTitle.add(context.getString(R.string.memorandum_activity_time));
         htmlTitle.add(context.getString(R.string.good_sentence_activity_good_sentence));
         htmlTitle.add(context.getString(R.string.good_sentence_activity_involved_reading_matter));

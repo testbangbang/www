@@ -116,7 +116,7 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSketchEvent(SketchEvent event) {
-        ActivityManager.startScribbleActivity(this);
+        ActivityManager.startNoteApp(this);
     }
 
     @Override
