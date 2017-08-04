@@ -3,7 +3,10 @@ package com.onyx.einfo.action;
 import android.content.Context;
 import android.util.Log;
 
-import com.onyx.android.sdk.data.request.cloud.v2.BindInstallationIdByHardwareInfoRequest;
+import com.onyx.android.sdk.data.model.Device;
+import com.onyx.android.sdk.data.model.v2.InstallationIdBinding;
+import com.onyx.android.sdk.data.request.cloud.v2.BindingInfoSaveRequest;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.einfo.R;
 import com.onyx.einfo.InfoApp;
 import com.onyx.einfo.device.DeviceConfig;
@@ -103,8 +106,8 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
 
     private void addInstallationBindingRequest(final LibraryDataHolder dataHolder,
                                                final CloudRequestChain requestChain) {
-        final BindInstallationIdByHardwareInfoRequest bindRequest = new BindInstallationIdByHardwareInfoRequest(
-                getInstallationIdMap());
+        final BindingInfoSaveRequest bindRequest = new BindingInfoSaveRequest(
+                getInstallationIdBinding(dataHolder.getContext()));
         requestChain.addRequest(bindRequest, null);
     }
 
@@ -152,6 +155,16 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
 
     private Map<String, String> getInstallationIdMap() {
         return InfoApp.getInstallationIdMap();
+    }
+
+    private InstallationIdBinding getInstallationIdBinding(Context context) {
+        Device device = Device.updateCurrentDeviceInfo(context);
+        if (device == null) {
+            device = new Device();
+            device.macAddress = NetworkUtil.getMacAddress(context);
+        }
+        device.installationMap = getInstallationIdMap();
+        return new InstallationIdBinding(device);
     }
 
     private IndexService createIndexService(Context context) {
