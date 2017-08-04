@@ -376,6 +376,10 @@ public class NoteManager {
         shapeStash.add(shape);
     }
 
+    public void addNewStashList(final List<Shape> shapes) {
+        shapeStash.addAll(shapes);
+    }
+
     public final NoteDrawingArgs getNoteDrawingArgs() {
         return noteDocument.getNoteDrawingArgs();
     }

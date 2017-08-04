@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.model.v2.CloudLibrary;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.ProductResult;
+import com.onyx.android.sdk.data.model.v2.InstallationIdBinding;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.utils.ResultCode;
 
@@ -104,4 +105,7 @@ public interface ContentService {
 
     @GET("adapplys/phoneVerify")
     Call<ResponseBody> applyPhoneVerify(@Query(Constant.PHONE_TAG) final String phone);
+
+    @POST("devices/updateInstallationIdByMac")
+    Call<ResponseBody> updateInstallationIdByMac(@Body final InstallationIdBinding installationIdBinding);
 }

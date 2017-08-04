@@ -3,6 +3,10 @@ package com.onyx.einfo.action;
 import android.content.Context;
 import android.util.Log;
 
+import com.onyx.android.sdk.data.model.Device;
+import com.onyx.android.sdk.data.model.v2.InstallationIdBinding;
+import com.onyx.android.sdk.data.request.cloud.v2.BindingInfoSaveRequest;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.einfo.R;
 import com.onyx.einfo.InfoApp;
 import com.onyx.einfo.device.DeviceConfig;
@@ -29,12 +33,15 @@ import com.onyx.android.sdk.data.utils.CloudConf;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Map;
+
 /**
  * Created by suicheng on 2017/5/18.
  */
 public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     private static final String TAG = "AuthTokenAction";
     private int localLoadRetryCount = 1;
+    private boolean loadOnlyFromCloud = false;
 
     @Override
     public void execute(LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
@@ -51,6 +58,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         final CloudRequestChain requestChain = new CloudRequestChain();
         requestChain.setAbortException(false);
         addIndexLookupRequest(dataHolder, requestChain);
+        addInstallationBindingRequest(dataHolder, requestChain);
         addLoginRequest(dataHolder, requestChain, baseCallback);
         requestChain.execute(dataHolder.getContext(), dataHolder.getCloudManager());
     }
@@ -76,6 +84,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     private void addLoginRequest(final LibraryDataHolder dataHolder, final CloudRequestChain requestChain, final BaseCallback baseCallback) {
         final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
         accountLoadRequest.setLocalLoadRetryCount(localLoadRetryCount);
+        accountLoadRequest.setLoadOnlyFromCloud(loadOnlyFromCloud);
         requestChain.addRequest(accountLoadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -93,6 +102,13 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
+    }
+
+    private void addInstallationBindingRequest(final LibraryDataHolder dataHolder,
+                                               final CloudRequestChain requestChain) {
+        final BindingInfoSaveRequest bindRequest = new BindingInfoSaveRequest(
+                getInstallationIdBinding(dataHolder.getContext()));
+        requestChain.addRequest(bindRequest, null);
     }
 
     private void processCloudException(Context context, Throwable e) {
@@ -131,6 +147,24 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
 
     public void setLocalLoadRetryCount(int retryCount) {
         this.localLoadRetryCount = retryCount;
+    }
+
+    public void setLoadOnlyFromCloud(boolean onlyCloud) {
+        this.loadOnlyFromCloud = onlyCloud;
+    }
+
+    private Map<String, String> getInstallationIdMap() {
+        return InfoApp.getInstallationIdMap();
+    }
+
+    private InstallationIdBinding getInstallationIdBinding(Context context) {
+        Device device = Device.updateCurrentDeviceInfo(context);
+        if (device == null) {
+            device = new Device();
+            device.macAddress = NetworkUtil.getMacAddress(context);
+        }
+        device.installationMap = getInstallationIdMap();
+        return new InstallationIdBinding(device);
     }
 
     private IndexService createIndexService(Context context) {

@@ -1,5 +1,7 @@
 package com.onyx.edu.reader.ui.actions.form;
 
+import android.view.ViewGroup;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.ui.data.ReaderMenuViewData;
 import com.onyx.android.sdk.ui.data.ReaderMenuViewHolder;
@@ -34,7 +36,7 @@ public class ShowFormExamMenuAction extends ShowFormMenuAction {
     }
 
     @Override
-    public List<ReaderMenuViewHolder> getBottomMenuViewHolders(ReaderDataHolder readerDataHolder) {
+    public List<ReaderMenuViewHolder> getBottomMenuViewHolders(ReaderDataHolder readerDataHolder, final ViewGroup parent) {
         List<ReaderMenuViewHolder> bottomMenuViewHolders = new ArrayList<>();
 
         bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_exit, EXIT, R.string.exit));

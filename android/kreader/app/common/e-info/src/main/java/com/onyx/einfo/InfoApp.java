@@ -26,6 +26,9 @@ import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Created by zhuzeng on 14/11/2016.
@@ -181,5 +184,11 @@ public class InfoApp extends MultiDexApplication {
             libraryDataHolder.setCloudManager(getCloudStore().getCloudManager());
         }
         return libraryDataHolder;
+    }
+
+    public static Map<String, String> getInstallationIdMap() {
+        Map<String, String> map = new HashMap<>();
+        map.put(Constant.PUSH_KEY, LeanCloudManager.getInstallationId());
+        return map;
     }
 }

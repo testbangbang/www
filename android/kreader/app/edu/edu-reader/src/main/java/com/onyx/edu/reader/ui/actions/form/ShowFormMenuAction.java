@@ -3,6 +3,7 @@ package com.onyx.edu.reader.ui.actions.form;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -12,6 +13,7 @@ import com.onyx.android.sdk.ui.data.ReaderMenuViewData;
 import com.onyx.android.sdk.ui.data.ReaderMenuViewHolder;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
@@ -77,7 +79,7 @@ public class ShowFormMenuAction extends BaseFormMenuAction {
     }
 
     @Override
-    public List<ReaderMenuViewHolder> getBottomMenuViewHolders(final ReaderDataHolder readerDataHolder) {
+    public List<ReaderMenuViewHolder> getBottomMenuViewHolders(final ReaderDataHolder readerDataHolder, final ViewGroup parent) {
         List<ReaderMenuViewHolder> bottomMenuViewHolders = new ArrayList<>();
 
         bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_exit, EXIT, R.string.exit));
@@ -94,7 +96,7 @@ public class ShowFormMenuAction extends BaseFormMenuAction {
     }
 
     @Override
-    public List<ReaderMenuViewHolder> getTopMenuViewHolders(ReaderDataHolder readerDataHolder) {
+    public List<ReaderMenuViewHolder> getTopMenuViewHolders(ReaderDataHolder readerDataHolder, final ViewGroup parent) {
         return null;
     }
 

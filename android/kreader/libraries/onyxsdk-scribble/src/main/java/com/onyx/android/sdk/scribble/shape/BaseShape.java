@@ -223,6 +223,11 @@ public class BaseShape implements Shape {
 
     public void onTranslate(final float dx, final float dy) {
         normalizedPoints.translateAllPoints(dx, dy);
+        updatePoints();
+    }
+
+    @Override
+    public void updatePoints() {
         if (normalizedPoints.size() > 0) {
             downPoint.set(normalizedPoints.get(0));
         }
