@@ -58,7 +58,7 @@ import com.onyx.edu.reader.note.actions.RedoAction;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
 import com.onyx.edu.reader.note.actions.LockFormShapesAction;
-import com.onyx.edu.reader.note.actions.TransferSignatureShapesAction;
+import com.onyx.edu.reader.note.actions.LoadSignatureToFormAction;
 import com.onyx.edu.reader.note.actions.UndoAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.ui.ReaderActivity;
@@ -1002,7 +1002,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private static void signature(final ReaderDataHolder readerDataHolder) {
-        NeoAccountBase account = readerDataHolder.getEduAccount();
+        NeoAccountBase account = readerDataHolder.getAccount();
         if (account == null) {
             return;
         }
@@ -1012,7 +1012,7 @@ public class ShowReaderMenuAction extends BaseAction {
         }
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
-        actionChain.addAction(new TransferSignatureShapesAction(account._id, signatureForm.getRect()));
+        actionChain.addAction(new LoadSignatureToFormAction(account._id, signatureForm.getRect()));
         actionChain.addAction(new FlushNoteAction(pages, true, true, true, false));
         actionChain.execute(readerDataHolder, null);
     }

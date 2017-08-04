@@ -22,7 +22,6 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.reader.api.FormScribbleType;
 import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
-import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.utils.Debug;
@@ -84,7 +83,7 @@ public class ReaderDataHolder {
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private EventBus eventBus = new EventBus();
     private EventReceiver eventReceiver;
-    private NeoAccountBase eduAccount;
+    private NeoAccountBase account;
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
@@ -834,12 +833,12 @@ public class ReaderDataHolder {
         ApplyReviewDataFromCloudAction.apply(this, showTips);
     }
 
-    public NeoAccountBase getEduAccount() {
-        return eduAccount;
+    public NeoAccountBase getAccount() {
+        return account;
     }
 
-    public void setEduAccount(NeoAccountBase eduAccount) {
-        this.eduAccount = eduAccount;
+    public void setAccount(NeoAccountBase account) {
+        this.account = account;
     }
 
     private void accountLoadFromLocal() {

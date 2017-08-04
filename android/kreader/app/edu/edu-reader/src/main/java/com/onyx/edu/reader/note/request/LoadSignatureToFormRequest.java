@@ -18,13 +18,13 @@ import java.util.List;
  * Created by ming on 2017/8/1.
  */
 
-public class TransferSignatureShapesRequest extends ReaderBaseNoteRequest {
+public class LoadSignatureToFormRequest extends ReaderBaseNoteRequest {
 
     private String accountId;
     private RectF targetRect;
     private PageInfo pageInfo;
 
-    public TransferSignatureShapesRequest(String accountId, RectF targetRect, PageInfo pageInfo) {
+    public LoadSignatureToFormRequest(String accountId, RectF targetRect, PageInfo pageInfo) {
         this.accountId = accountId;
         this.targetRect = targetRect;
         this.pageInfo = pageInfo;

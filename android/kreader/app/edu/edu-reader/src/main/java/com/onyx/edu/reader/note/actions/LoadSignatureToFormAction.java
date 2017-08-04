@@ -4,24 +4,21 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.edu.reader.note.NoteManager;
-import com.onyx.edu.reader.note.request.TransferSignatureShapesRequest;
+import com.onyx.edu.reader.note.request.LoadSignatureToFormRequest;
 import com.onyx.edu.reader.ui.actions.BaseAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
-
-import java.util.List;
 
 /**
  * Created by ming on 2017/8/3.
  */
 
-public class TransferSignatureShapesAction extends BaseAction {
+public class LoadSignatureToFormAction extends BaseAction {
 
     private String accountId;
     private RectF targetRect;
 
-    public TransferSignatureShapesAction(String accountId, RectF targetRect) {
+    public LoadSignatureToFormAction(String accountId, RectF targetRect) {
         this.accountId = accountId;
         this.targetRect = targetRect;
     }
@@ -29,7 +26,7 @@ public class TransferSignatureShapesAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
         final NoteManager noteManager = readerDataHolder.getNoteManager();
-        TransferSignatureShapesRequest signatureShapesRequest = new TransferSignatureShapesRequest(accountId, targetRect, readerDataHolder.getFirstPageInfo());
+        LoadSignatureToFormRequest signatureShapesRequest = new LoadSignatureToFormRequest(accountId, targetRect, readerDataHolder.getFirstPageInfo());
         noteManager.submit(readerDataHolder.getContext(), signatureShapesRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
