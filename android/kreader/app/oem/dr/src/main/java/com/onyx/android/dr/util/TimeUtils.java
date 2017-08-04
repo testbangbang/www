@@ -11,7 +11,6 @@ import java.util.Date;
 /**
  * Created by huxiaomao on 2017/1/12.
  */
-
 public class TimeUtils {
     public static final String DATA_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String HOUR_AND_MINUTE = "yyyy-MM-dd HH:mm";
@@ -39,6 +38,11 @@ public class TimeUtils {
 
     public static String getDate(long timeInMillis) {
         return getTime(timeInMillis, DATE_FORMAT_DATE);
+    }
+
+    public static String getStringByDate(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat(DATA_TIME_FORMAT);
+        return dateFormat.format(date);
     }
 
     public static long getCurrentTimeInLong() {

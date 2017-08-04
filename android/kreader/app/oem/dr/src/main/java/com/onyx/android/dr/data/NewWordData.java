@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Created by zhouzhiming on 2017/7/12.
  */
 public class NewWordData {
-    private ArrayList<String> newWordTitle = new ArrayList<String>();
+    private ArrayList<String> newWordTitle;
 
     public void submitRequest(Context context, final BaseDataRequest req, final BaseCallback callBack) {
         DataManager dataManager = DRApplication.getDataManager();
@@ -48,6 +48,7 @@ public class NewWordData {
     }
 
     public ArrayList<String> setHtmlTitle(Context context) {
+        newWordTitle = new ArrayList<String>();
         newWordTitle.add(context.getString(R.string.memorandum_activity_time));
         newWordTitle.add(context.getString(R.string.new_word_activity_new_word));
         newWordTitle.add(context.getString(R.string.new_word_activity_dictionaryLookup));
