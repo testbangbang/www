@@ -2,7 +2,11 @@ package com.onyx.edu.note;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Layout;
@@ -59,6 +63,7 @@ import com.onyx.edu.note.ui.view.LinedEditText;
 import org.apache.commons.collections4.MapUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -96,8 +101,8 @@ public class NoteManager {
     int mCurrentScribbleMode = ScribbleMode.MODE_NORMAL_SCRIBBLE;
 
     //TODO:Shape Selecting Relative
+    private TouchPoint mShapeSelectStartPoint = null;
     private TouchPoint mShapeSelectPoint = null;
-
 
     public int getCurrentScribbleMode() {
         return mCurrentScribbleMode;
@@ -486,7 +491,7 @@ public class NoteManager {
     @Subscribe
     public void onBeginShapeSelectEvent(BeginShapeSelectEvent event) {
         Log.e(TAG, "onBeginShapeSelectEvent: ");
-        onBeginShapeSelecting();
+        onBeginShapeSelecting(event.getMotionEvent());
     }
 
     @Subscribe
@@ -499,94 +504,55 @@ public class NoteManager {
     public void onShapeSelectTouchPointListReceived(ShapeSelectTouchPointListReceivedEvent event) {
         onFinishShapeSelecting(event.getTouchPointList());
     }
+
+    private void drawErasingIndicator(final SurfaceView view, final Paint paint) {
+        if (mErasePoint == null || mErasePoint.getX() <= 0 || mErasePoint.getY() <= 0) {
+            return;
+        }
+
+        float x = mErasePoint.getX();
+        float y = mErasePoint.getY();
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
+        paint.setStrokeWidth(2.0f);
+        Canvas canvas = view.getHolder().lockCanvas();
+        canvas.drawCircle(x, y, shapeDataInfo.getEraserRadius(), paint);
+        view.getHolder().unlockCanvasAndPost(canvas);
+    }
+
+    private void drawShapeSelectIndicator(final SurfaceView view, final Paint paint) {
+        if (mShapeSelectStartPoint == null || mShapeSelectStartPoint.getX() <= 0 || mShapeSelectStartPoint.getY() <= 0) {
+            return;
+        }
+
+        RectF selectRect = new RectF(mShapeSelectStartPoint.getX(), mShapeSelectStartPoint.getY(),
+                mShapeSelectPoint.getX(), mShapeSelectPoint.getY());
+        Log.d(TAG, "selectRect:" + selectRect);
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2.0f);
+        paint.setPathEffect(mNoteViewHelper.selectedDashPathEffect);
+        Canvas canvas = view.getHolder().lockCanvas();
+        canvas.drawRect(selectRect, paint);
+//        canvas.drawPoint(mShapeSelectStartPoint.getX(), mShapeSelectStartPoint.getY(),paint);
+//        canvas.drawPoint(mShapeSelectPoint.getX(), mShapeSelectPoint.getY(),paint);
+        view.getHolder().unlockCanvasAndPost(canvas);
+    }
+
     //TODO:avoid direct obtain note view helper,because we plan to remove this class.
 
     public void reset(View view) {
         mNoteViewHelper.reset(view);
     }
 
-    public View getView() {
+    public SurfaceView getView() {
         return mNoteViewHelper.getView();
     }
 
     public void setView(Context context, SurfaceView surfaceView) {
         EventBus.getDefault().register(this);
         mNoteViewHelper.setView(context, surfaceView);
-    }
-
-    private NoteViewHelper.InputCallback getInputCallback() {
-        if (mInputCallback == null) {
-            mInputCallback = new NoteViewHelper.InputCallback() {
-                @Override
-                public void onBeginRawData() {
-                    removeSpanRunnable();
-                }
-
-                @Override
-                public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
-                    if (isLineLayoutMode()) {
-                        buildSpan();
-                    }
-                    EventBus.getDefault().post(new RawDataReceivedEvent());
-                }
-
-                @Override
-                public void onBeginErasing() {
-                    NoteManager.this.onBeginErasing();
-                }
-
-                @Override
-                public void onErasing(final MotionEvent touchPoint) {
-                    NoteManager.this.onErasing(touchPoint);
-                }
-
-                @Override
-                public void onEraseTouchPointListReceived(TouchPointList pointList) {
-                    onFinishErasing(pointList);
-                }
-
-                @Override
-                public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {
-                    if (!shape.supportDFB()) {
-                        drawCurrentPage();
-                    }
-                }
-
-                @Override
-                public void onDrawingTouchMove(final MotionEvent motionEvent, final Shape shape, boolean last) {
-                    if (last && !shape.supportDFB()) {
-                        drawCurrentPage();
-                    }
-                }
-
-                @Override
-                public void onDrawingTouchUp(final MotionEvent motionEvent, final Shape shape) {
-                    if (!shape.supportDFB()) {
-                        drawCurrentPage();
-                    }
-                    if (isLineLayoutMode()) {
-                        buildSpan();
-                    }
-                }
-
-                @Override
-                public void onBeginShapeSelect() {
-                    onBeginShapeSelecting();
-                }
-
-                @Override
-                public void onShapeSelecting(MotionEvent motionEvent) {
-                    NoteManager.this.onShapeSelecting(motionEvent);
-                }
-
-                @Override
-                public void onShapeSelectTouchPointListReceived(TouchPointList pointList) {
-                    NoteManager.this.onFinishShapeSelecting(pointList);
-                }
-
-            };
-        }
-        return mInputCallback;
     }
 
     protected void onBeginErasing() {
@@ -604,6 +570,8 @@ public class NoteManager {
         }
         mErasePoint.x = touchPoint.getX();
         mErasePoint.y = touchPoint.getY();
+        //TODO:temp disable indicator.
+//        drawErasingIndicator(getView(), new Paint());
     }
 
     protected void onFinishErasing(TouchPointList pointList) {
@@ -611,24 +579,29 @@ public class NoteManager {
         new RemoveByPointListAction(pointList).execute(this, null);
     }
 
-    protected void onBeginShapeSelecting() {
+    protected void onBeginShapeSelecting(final MotionEvent event) {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                mShapeSelectStartPoint = new TouchPoint(event);
                 mShapeSelectPoint = new TouchPoint();
+                Log.e(TAG, "mShapeSelectStartPoint.getX():" + mShapeSelectStartPoint.getX());
+                Log.e(TAG, "mShapeSelectStartPoint.getY():" + mShapeSelectStartPoint.getY());
             }
         });
     }
 
     protected void onShapeSelecting(final MotionEvent touchPoint) {
-        if (mShapeSelectPoint == null) {
+        if (mShapeSelectStartPoint == null) {
             return;
         }
         mShapeSelectPoint.x = touchPoint.getX();
         mShapeSelectPoint.y = touchPoint.getY();
+        drawShapeSelectIndicator(getView(),new Paint());
     }
 
     protected void onFinishShapeSelecting(TouchPointList pointList) {
+        mShapeSelectStartPoint = null;
         mShapeSelectPoint = null;
         new SelectShapeByPointListAction(pointList).execute(this, new BaseCallback() {
             @Override
