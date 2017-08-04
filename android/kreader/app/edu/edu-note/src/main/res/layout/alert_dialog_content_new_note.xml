@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/new_note"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/textView_note_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:minHeight="@dimen/button_minHeight"
+        android:text="@string/note_name"
+        android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium" />
+
+    <EditText
+        android:id="@+id/editText_Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/rounded_rectangle"
+        android:maxLines="1"
+        android:maxLength="20"
+        android:minHeight="@dimen/button_minHeight"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" />
+</LinearLayout>

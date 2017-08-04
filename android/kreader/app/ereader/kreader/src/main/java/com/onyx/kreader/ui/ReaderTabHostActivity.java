@@ -543,8 +543,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             } else if (action.equals(Intent.ACTION_VIEW)) {
                 handleViewActionIntent();
                 return true;
+            } else if (action.equals(ReaderTabHostBroadcastReceiver.ACTION_TAB_BACK_PRESSED)) {
+                onBackPressed();
+                return true;
             }
-            finish();
             return true;
         } catch (java.lang.Exception e) {
             e.printStackTrace();

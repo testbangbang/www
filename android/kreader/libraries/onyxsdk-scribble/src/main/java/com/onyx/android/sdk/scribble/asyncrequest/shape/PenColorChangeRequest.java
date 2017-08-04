@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 
 /**
  * Created by solskjaer49 on 16/7/5 14:50.
@@ -17,7 +17,8 @@ public class PenColorChangeRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(resume);
     }
 
-    public void execute(final NoteViewHelper parent) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper parent) throws Exception {
         parent.setStrokeColor(penColor);
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);

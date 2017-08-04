@@ -37,4 +37,6 @@
     <dimen name="tab_layout_tab_text_margin">40dp</dimen>
     <dimen name="tab_layout_tab_image_margin">42dp</dimen>
 
+    <dimen name="menu_item_text_size">28sp</dimen>
+
 </resources>

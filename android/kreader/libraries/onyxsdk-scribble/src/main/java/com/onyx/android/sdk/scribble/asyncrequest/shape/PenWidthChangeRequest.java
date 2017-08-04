@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 
 /**
  * Created by solskjaer49 on 16/7/5 14:51.
@@ -16,7 +16,8 @@ public class PenWidthChangeRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(true);
     }
 
-    public void execute(final NoteViewHelper parent) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper parent) throws Exception {
         parent.setStrokeWidth(penWidth);
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);

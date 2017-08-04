@@ -2,8 +2,8 @@ package com.onyx.android.sdk.scribble.asyncrequest.navigation;
 
 import android.graphics.Bitmap;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.utils.ExportUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 
@@ -24,7 +24,7 @@ public class ExportEditedPicRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(NoteViewHelper helper) throws Exception {
+    public void execute(AsyncNoteViewHelper helper) throws Exception {
         super.execute(helper);
         File file = new File(ExportUtils.getExportPicPath(document));
         FileUtils.saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.PNG, 100);

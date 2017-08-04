@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.util.Log;
 
+import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 
@@ -85,6 +85,12 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(ACTION_TAB_BACK_PRESSED)) {
             if (callback != null) {
                 callback.onTabBackPressed();
+            } else {
+                Intent i = new Intent();
+                i.setClass(context, ReaderTabHostActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setAction(ACTION_TAB_BACK_PRESSED);
+                ActivityUtil.startActivitySafely(context, i);
             }
         } else if (intent.getAction().equals(ACTION_CHANGE_SCREEN_ORIENTATION)) {
             if (callback != null) {

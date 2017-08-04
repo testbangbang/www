@@ -85,6 +85,7 @@ public class ScribbleFunctionItemUtils {
         sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.ENTER, R.drawable.ic_enter);
         sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.KEYBOARD, R.drawable.ic_keyboard);
         sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.COLOR, R.drawable.ic_color);
+        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.SHAPE_SELECT, R.drawable.ic_menu_more);
     }
 
     private static void buildSubMenuIDIconSparseArray() {

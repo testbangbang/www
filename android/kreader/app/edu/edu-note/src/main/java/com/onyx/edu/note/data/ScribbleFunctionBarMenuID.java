@@ -15,7 +15,7 @@ public class ScribbleFunctionBarMenuID {
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
     @IntDef({PEN_WIDTH, PEN_STYLE, ERASER, BG, COLOR, DELETE, SPACE, ENTER,
-            KEYBOARD, ADD_PAGE, DELETE_PAGE, PREV_PAGE, NEXT_PAGE})
+            KEYBOARD, ADD_PAGE, DELETE_PAGE, PREV_PAGE, NEXT_PAGE, SHAPE_SELECT})
     // Create an interface for validating int types
     public @interface ScribbleFunctionBarMenuDef {
     }
@@ -33,7 +33,7 @@ public class ScribbleFunctionBarMenuID {
     public static final int DELETE_PAGE = 10;
     public static final int PREV_PAGE = 11;
     public static final int NEXT_PAGE = 12;
-
+    public static final int SHAPE_SELECT = 13;
 
     public
     @ScribbleFunctionBarMenuDef

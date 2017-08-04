@@ -54,9 +54,14 @@ public class ScribbleViewModel extends BaseObservable {
 
     private ScribbleNavigator mNavigator;
     private NoteManager mNoteManager;
+    private String mParentID;
 
     public String getCurrentDocumentUniqueID() {
         return mCurrentDocumentUniqueID;
+    }
+
+    public String getParentUniqueID() {
+        return mParentID;
     }
 
     private String mCurrentDocumentUniqueID;
@@ -69,6 +74,7 @@ public class ScribbleViewModel extends BaseObservable {
 
     void start(String uniqueID, String parentID, @ScribbleAction.ScribbleActionDef int action, final BaseCallback callback) {
         mCurrentDocumentUniqueID = uniqueID;
+        mParentID = parentID;
         BaseCallback baseCallback = new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

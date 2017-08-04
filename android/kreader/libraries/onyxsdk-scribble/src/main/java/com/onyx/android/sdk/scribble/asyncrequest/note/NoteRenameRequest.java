@@ -1,8 +1,8 @@
 package com.onyx.android.sdk.scribble.asyncrequest.note;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 
 /**
  * Created by solskjaer49 on 16/7/21 15:27.
@@ -20,7 +20,8 @@ public class NoteRenameRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(false);
     }
 
-    public void execute(final NoteViewHelper shapeManager) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper shapeManager) throws Exception {
         NoteDataProvider.renameNote(getContext(), noteID, newName);
     }
 }
