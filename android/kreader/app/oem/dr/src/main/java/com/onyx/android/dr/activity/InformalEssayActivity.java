@@ -1,7 +1,6 @@
 package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -137,10 +136,8 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
 
     @Override
     public void setInformalEssayByTime(List<InformalEssayEntity> dataList) {
-        Log.i("@@@dataList", dataList.size() + "");
         if (dataList != null && dataList.size() > 0) {
             ArrayList<String> htmlTitleData = informalEssayPresenter.getHtmlTitleData();
-            Log.i("@@@dataList", dataList.size() + "");
             informalEssayPresenter.exportDataToHtml(this, htmlTitleData, dataList);
         } else {
             CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
