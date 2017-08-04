@@ -77,7 +77,7 @@ public class PencilSketchActivity extends BaseActivity implements PencilSketchVi
     @Override
     protected void onResume() {
         super.onResume();
-        pencilSketchPresenter = new PencilSketchPresenter(getApplicationContext(), this);
+        pencilSketchPresenter = new PencilSketchPresenter(this);
         pencilSketchPresenter.getAllPencilSketchData();
     }
 

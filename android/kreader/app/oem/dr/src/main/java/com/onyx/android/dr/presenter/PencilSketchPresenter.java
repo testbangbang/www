@@ -1,7 +1,6 @@
 package com.onyx.android.dr.presenter;
 
-import android.content.Context;
-
+import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.data.PencilSketchData;
 import com.onyx.android.dr.interfaces.PencilSketchView;
 import com.onyx.android.dr.request.local.PencilSketchQueryAll;
@@ -18,18 +17,16 @@ import java.util.List;
 public class PencilSketchPresenter {
     private final PencilSketchView pencilSketchView;
     private PencilSketchData pencilSketchData;
-    private Context context;
     public List<NoteModel> allData;
 
-    public PencilSketchPresenter(Context context, PencilSketchView pencilSketchView) {
+    public PencilSketchPresenter(PencilSketchView pencilSketchView) {
         this.pencilSketchView = pencilSketchView;
-        this.context = context;
         pencilSketchData = new PencilSketchData();
     }
 
     public void getAllPencilSketchData() {
         final PencilSketchQueryAll req = new PencilSketchQueryAll();
-        pencilSketchData.getAllPencilSketch(context, req, new BaseCallback() {
+        pencilSketchData.getAllPencilSketch(DRApplication.getInstance(), req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 allData = req.getAllData();
