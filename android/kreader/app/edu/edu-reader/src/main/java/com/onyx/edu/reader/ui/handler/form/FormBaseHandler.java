@@ -33,6 +33,7 @@ import com.onyx.edu.reader.note.model.ReaderNoteDataProvider;
 import com.onyx.edu.reader.note.request.StartNoteRequest;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
+import com.onyx.edu.reader.ui.handler.BaseHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.ReadingHandler;
 
@@ -64,9 +65,8 @@ public class FormBaseHandler extends ReadingHandler {
             this.formFieldControls = initialState.formFieldControls;
             handleFormFieldControls();
         }
-        if (readerDataHolder.hasScribbleFormField() && !readerDataHolder.hasDialogShowing()) {
-            startNoteDrawing(readerDataHolder);
-        }
+        setEnableNoteDrawing(readerDataHolder.hasScribbleFormField() && !readerDataHolder.hasDialogShowing());
+        startNoteDrawing(readerDataHolder);
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
@@ -79,6 +79,9 @@ public class FormBaseHandler extends ReadingHandler {
     }
 
     private void startNoteDrawing(final ReaderDataHolder readerDataHolder) {
+        if (!isEnableNoteDrawing()) {
+            return;
+        }
         final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
         setEnableNoteDrawing(true);

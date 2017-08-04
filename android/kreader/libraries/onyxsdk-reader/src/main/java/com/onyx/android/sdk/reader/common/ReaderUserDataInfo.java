@@ -371,6 +371,19 @@ public class ReaderUserDataInfo {
         return false;
     }
 
+    public List<ReaderFormScribble> getReaderFormScribbles(final PageInfo pageInfo) {
+        List<ReaderFormScribble> readerFormScribbles = new ArrayList<>();
+        if (hasFormFields(pageInfo)) {
+            List<ReaderFormField> formFields = formFieldMap.get(pageInfo.getName());
+            for (ReaderFormField formField : formFields) {
+                if (formField instanceof ReaderFormScribble) {
+                    readerFormScribbles.add((ReaderFormScribble)formField);
+                }
+            }
+        }
+        return readerFormScribbles;
+    }
+
     public List<ReaderFormField> getFormFields(final PageInfo pageInfo) {
         return formFieldMap.get(pageInfo.getName());
     }

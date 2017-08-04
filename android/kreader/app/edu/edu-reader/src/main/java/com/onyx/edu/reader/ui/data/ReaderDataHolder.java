@@ -16,10 +16,13 @@ import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.reader.api.FormScribbleType;
 import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -40,6 +43,7 @@ import com.onyx.edu.reader.note.actions.CloseNoteMenuAction;
 import com.onyx.edu.reader.note.receiver.DeviceReceiver;
 import com.onyx.edu.reader.tts.ReaderTtsManager;
 import com.onyx.edu.reader.ui.ReaderBroadcastReceiver;
+import com.onyx.edu.reader.ui.actions.AccountLoadFromLocalAction;
 import com.onyx.edu.reader.ui.actions.CloudConfInitAction;
 import com.onyx.edu.reader.ui.actions.ApplyReviewDataFromCloudAction;
 import com.onyx.edu.reader.ui.actions.ExportAnnotationAction;
@@ -79,6 +83,7 @@ public class ReaderDataHolder {
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private EventBus eventBus = new EventBus();
     private EventReceiver eventReceiver;
+    private NeoAccountBase account;
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
@@ -201,6 +206,10 @@ public class ReaderDataHolder {
         return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_PROVIDER);
     }
 
+    public boolean inSignatureFormProvider() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_SIGNATURE_PROVIDER);
+    }
+
     public boolean inReadingProvider() {
         return getHandlerManager().getActiveProviderName().equals(HandlerManager.READING_PROVIDER);
     }
@@ -306,9 +315,19 @@ public class ReaderDataHolder {
         return ttsManager;
     }
 
-    public boolean useCustomFormMode() {
-        ReaderDocumentCategory documentCategory = getReaderUserDataInfo().getDocumentCategory();
-        return documentCategory == ReaderDocumentCategory.HOMEWORK || documentCategory == ReaderDocumentCategory.EXERCISE;
+    public boolean useFormMode() {
+        return !getDefaultProvider().equals(HandlerManager.READING_PROVIDER);
+    }
+
+    public String getDefaultProvider() {
+        return getHandlerManager().getDefaultProvider();
+    }
+
+    public ReaderDocumentCategory getDocumentCategory() {
+        if (getReaderUserDataInfo() == null) {
+            return null;
+        }
+        return getReaderUserDataInfo().getDocumentCategory();
     }
 
     public void notifyTtsStateChanged() {
@@ -687,6 +706,7 @@ public class ReaderDataHolder {
     }
 
     public void onActivityResume() {
+        accountLoadFromLocal();
         getEventBus().post(new ActivityResumeEvent(getContext()));
     }
 
@@ -811,6 +831,33 @@ public class ReaderDataHolder {
 
     public void applyReviewDataFromCloud(boolean showTips) {
         ApplyReviewDataFromCloudAction.apply(this, showTips);
+    }
+
+    public NeoAccountBase getAccount() {
+        return account;
+    }
+
+    public void setAccount(NeoAccountBase account) {
+        this.account = account;
+    }
+
+    private void accountLoadFromLocal() {
+        AccountLoadFromLocalAction.create().execute(this, null);
+    }
+
+    public ReaderFormScribble getFirstSignatureForm() {
+        if (getVisiblePages() == null) {
+            return null;
+        }
+        for (PageInfo pageInfo : getVisiblePages()) {
+            List<ReaderFormScribble> readerFormScribbles = getReaderUserDataInfo().getReaderFormScribbles(pageInfo);
+            for (ReaderFormScribble readerFormScribble : readerFormScribbles) {
+                if (readerFormScribble.getScribbleType().equals(FormScribbleType.Signature)) {
+                    return readerFormScribble;
+                }
+            }
+        }
+        return null;
     }
 }
 
