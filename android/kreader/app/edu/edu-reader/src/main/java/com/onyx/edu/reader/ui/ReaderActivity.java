@@ -1141,11 +1141,11 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
-        if (!getReaderDataHolder().useCustomFormMode()) {
+        if (!getReaderDataHolder().useFormMode()) {
             return;
         }
         boolean startNoteDrawing = getReaderDataHolder().hasScribbleFormField();
-        getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormBaseHandler.createInitialState(formFieldControls));
+        getHandlerManager().setActiveProvider(getReaderDataHolder().getDefaultProvider(), FormBaseHandler.createInitialState(formFieldControls));
         ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
     }
 

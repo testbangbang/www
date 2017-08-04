@@ -110,4 +110,6 @@
     <dimen name="menu_item_view_left_margin">10dp</dimen>
     <dimen name="menu_text_padding_bottom">34dp</dimen>
     <dimen name="divider_view_height">2dp</dimen>
+    <dimen name="signature_text_padding">6dp</dimen>
+    <dimen name="signature_text_margin_right">20dp</dimen>
 </resources>

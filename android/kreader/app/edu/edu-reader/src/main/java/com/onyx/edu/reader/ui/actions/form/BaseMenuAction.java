@@ -1,5 +1,7 @@
 package com.onyx.edu.reader.ui.actions.form;
 
+import android.view.ViewGroup;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.ui.data.ReaderMenuViewData;
@@ -22,9 +24,9 @@ public abstract class BaseMenuAction extends BaseAction {
 
     public abstract void show(ReaderDataHolder readerDataHolder);
 
-    public abstract List<ReaderMenuViewHolder> getBottomMenuViewHolders(final ReaderDataHolder readerDataHolder);
+    public abstract List<ReaderMenuViewHolder> getBottomMenuViewHolders(final ReaderDataHolder readerDataHolder, final ViewGroup parent);
 
-    public abstract List<ReaderMenuViewHolder> getTopMenuViewHolders(final ReaderDataHolder readerDataHolder);
+    public abstract List<ReaderMenuViewHolder> getTopMenuViewHolders(final ReaderDataHolder readerDataHolder, final ViewGroup parent);
 
     public abstract List<ReaderMenuViewHolder> getChildrenViewHolders (final ReaderDataHolder readerDataHolder, final ReaderMenuAction parent);
 

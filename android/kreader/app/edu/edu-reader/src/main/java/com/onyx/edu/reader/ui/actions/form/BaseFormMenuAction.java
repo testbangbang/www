@@ -62,13 +62,12 @@ public abstract class BaseFormMenuAction extends BaseMenuAction {
     }
 
     protected OnyxToolbar createScribbleBottomToolbar(final ReaderDataHolder readerDataHolder) {
-        List<ReaderMenuViewHolder> bottomMenuViewHolders = getBottomMenuViewHolders(readerDataHolder);
+        OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Bottom, OnyxToolbar.FillStyle.WrapContent);
+        List<ReaderMenuViewHolder> bottomMenuViewHolders = getBottomMenuViewHolders(readerDataHolder, toolbar);
         if (bottomMenuViewHolders == null || bottomMenuViewHolders.size() == 0) {
             return null;
         }
         menuViewHolders.addAll(bottomMenuViewHolders);
-
-        OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Bottom, OnyxToolbar.FillStyle.WrapContent);
         toolbar.setDividerViewHeight((int) readerDataHolder.getContext().getResources().getDimension(R.dimen.divider_view_height));
         toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
 

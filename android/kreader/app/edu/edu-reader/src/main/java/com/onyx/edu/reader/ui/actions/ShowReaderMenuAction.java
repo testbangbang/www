@@ -19,8 +19,10 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
@@ -56,6 +58,7 @@ import com.onyx.edu.reader.note.actions.RedoAction;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
 import com.onyx.edu.reader.note.actions.LockFormShapesAction;
+import com.onyx.edu.reader.note.actions.TransferSignatureShapesAction;
 import com.onyx.edu.reader.note.actions.UndoAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.ui.ReaderActivity;
@@ -63,7 +66,9 @@ import com.onyx.edu.reader.ui.actions.form.BaseMenuAction;
 import com.onyx.edu.reader.ui.actions.form.ShowFormExamMenuAction;
 import com.onyx.edu.reader.ui.actions.form.ShowFormExerciseMenuAction;
 import com.onyx.edu.reader.ui.actions.form.ShowFormInteractiveMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormMeetingMenuAction;
 import com.onyx.edu.reader.ui.actions.form.ShowFormMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormSignMenuAction;
 import com.onyx.edu.reader.ui.actions.form.ShowFormVoteMenuAction;
 import com.onyx.edu.reader.ui.data.ReaderCropArgs;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
@@ -822,7 +827,8 @@ public class ShowReaderMenuAction extends BaseAction {
         }
         ShowScribbleMenuAction.ActionCallback actionCallback = getScribbleActionCallback(readerDataHolder);
         BaseMenuAction formMenuActon;
-        switch (readerActivity.getHandlerManager().getActiveProviderName()) {
+        Debug.d(ShowReaderMenuAction.class, readerDataHolder.getHandlerManager().getActiveProviderName());
+        switch (readerDataHolder.getHandlerManager().getActiveProviderName()) {
             case HandlerManager.FORM_PROVIDER:
                 formMenuActon = new ShowFormMenuAction(readerMenuViewData, actionCallback);
                 break;
@@ -837,6 +843,12 @@ public class ShowReaderMenuAction extends BaseAction {
                 break;
             case HandlerManager.FORM_EXERCISE_PROVIDER:
                 formMenuActon = new ShowFormExerciseMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_MEETING_PROVIDER:
+                formMenuActon = new ShowFormMeetingMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_SIGNATURE_PROVIDER:
+                formMenuActon = new ShowFormSignMenuAction(readerMenuViewData, actionCallback);
                 break;
             default:
                 formMenuActon = new ShowFormMenuAction(readerMenuViewData, actionCallback);
@@ -896,6 +908,9 @@ public class ShowReaderMenuAction extends BaseAction {
                 break;
             case SCRIBBLE_PAGE_POSITION:
                 DialogGotoPage.show(readerDataHolder, true, null);
+                break;
+            case SIGNATURE:
+                signature(readerDataHolder);
                 break;
             case SCRIBBLE_WIDTH1:
             case SCRIBBLE_WIDTH2:
@@ -984,6 +999,22 @@ public class ShowReaderMenuAction extends BaseAction {
                 redo(readerDataHolder);
                 break;
         }
+    }
+
+    private static void signature(final ReaderDataHolder readerDataHolder) {
+        NeoAccountBase account = readerDataHolder.getEduAccount();
+        if (account == null) {
+            return;
+        }
+        ReaderFormScribble signatureForm = readerDataHolder.getFirstSignatureForm();
+        if (signatureForm == null) {
+            return;
+        }
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        actionChain.addAction(new TransferSignatureShapesAction(account._id, signatureForm.getRect()));
+        actionChain.addAction(new FlushNoteAction(pages, true, true, true, false));
+        actionChain.execute(readerDataHolder, null);
     }
 
     private static void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {

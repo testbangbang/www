@@ -30,6 +30,7 @@ public class AccountLoadFromLocalAction extends BaseAction {
                     Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.account_no_log_in), Toast.LENGTH_SHORT).show();
                 } else {
                     token.append(account.token);
+                    readerDataHolder.setEduAccount(account);
                 }
                 BaseCallback.invoke(baseCallback, request, e);
             }
