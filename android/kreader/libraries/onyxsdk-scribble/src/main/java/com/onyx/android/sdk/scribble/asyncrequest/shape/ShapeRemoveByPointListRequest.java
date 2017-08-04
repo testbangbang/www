@@ -2,9 +2,9 @@ package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
 import android.util.Log;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 
 /**
  * Created by zhuzeng on 7/3/16.
@@ -17,7 +17,8 @@ public class ShapeRemoveByPointListRequest extends AsyncBaseNoteRequest {
         setPauseInputProcessor(true);
     }
 
-    public void execute(final NoteViewHelper helper) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper helper) throws Exception {
         setResumeInputProcessor(helper.useDFBForCurrentState());
         benchmarkStart();
         helper.getNoteDocument().removeShapesByTouchPointList(getContext(), touchPointList, 1.0f);

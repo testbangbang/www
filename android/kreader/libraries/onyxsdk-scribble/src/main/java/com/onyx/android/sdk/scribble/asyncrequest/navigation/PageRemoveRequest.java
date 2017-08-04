@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest.navigation;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 
 
 /**
@@ -16,7 +16,7 @@ public class PageRemoveRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(final NoteViewHelper parent) throws Exception {
+    public void execute(final AsyncNoteViewHelper parent) throws Exception {
         parent.getNoteDocument().removePage(getContext(), parent.getNoteDocument().getCurrentPageIndex());
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);

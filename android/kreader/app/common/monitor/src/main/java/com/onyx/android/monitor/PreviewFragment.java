@@ -3,11 +3,10 @@ package com.onyx.android.monitor;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
@@ -26,12 +25,14 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
-import android.media.Image;
 import android.media.ImageReader;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -45,12 +46,23 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.onyx.android.monitor.databinding.FragmentPreviewBasicBinding;
+import com.onyx.android.monitor.dialog.ConfirmationDialog;
+import com.onyx.android.monitor.dialog.ConnectErrorDialog;
+import com.onyx.android.monitor.dialog.DialogPreviewMenu;
+import com.onyx.android.monitor.dialog.ErrorDialog;
+import com.onyx.android.monitor.event.DismissMenuEvent;
+import com.onyx.android.monitor.event.FullRefreshEvent;
+import com.onyx.android.monitor.event.MenuKeyEvent;
+import com.onyx.android.monitor.event.SettingsChangedEvent;
 import com.onyx.android.monitor.view.AutoFitTextureView;
+import com.onyx.android.monitor.event.ConnectEvent;
+import com.onyx.android.monitor.view.MenuItem;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,6 +71,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class PreviewFragment extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
 
@@ -66,7 +79,6 @@ public class PreviewFragment extends Fragment
      * Conversion from screen rotation to JPEG orientation.
      */
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
-    private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
 
     static {
@@ -185,6 +197,8 @@ public class PreviewFragment extends Fragment
             mCameraOpenCloseLock.release();
             mCameraDevice = cameraDevice;
             createCameraPreviewSession();
+            openA2();
+            startGcTimer(gcRefreshRunnable);
         }
 
         @Override
@@ -199,10 +213,7 @@ public class PreviewFragment extends Fragment
             mCameraOpenCloseLock.release();
             cameraDevice.close();
             mCameraDevice = null;
-            Activity activity = getActivity();
-            if (null != activity) {
-                activity.finish();
-            }
+            new ConnectErrorDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG);
         }
 
     };
@@ -273,7 +284,17 @@ public class PreviewFragment extends Fragment
      */
     private int mSensorOrientation;
 
+    private boolean isUsingA2 = false;
     private AlertDialog exitConfirmDialog;
+    private DialogPreviewMenu menuDialog;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable gcRefreshRunnable = new Runnable() {
+        @Override
+        public void run() {
+            gcRefreshOnce();
+            startGcTimer(this);
+        }
+    };
 
     /**
      * A {@link CameraCaptureSession.CaptureCallback} that handles events related to JPEG capture.
@@ -418,7 +439,7 @@ public class PreviewFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_preview_basic,container,false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_preview_basic,container,false);
         return binding.getRoot();
     }
 
@@ -433,6 +454,12 @@ public class PreviewFragment extends Fragment
             public boolean onLongClick(View v) {
                 getExitAlertDialog().show();
                 return true;
+            }
+        });
+        binding.texture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getMenuDialog().show();
             }
         });
     }
@@ -463,19 +490,22 @@ public class PreviewFragment extends Fragment
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         startBackgroundThread();
-
-        // When the screen is turned off and turned back on, the SurfaceTexture is already
-        // available, and "onSurfaceTextureAvailable" will not be called. In that case, we can open
-        // a camera and start preview from here (otherwise, we wait until the surface is ready in
-        // the SurfaceTextureListener).
-        if (mTextureView.isAvailable()) {
-            openCamera(mTextureView.getWidth(), mTextureView.getHeight());
-        } else {
-            mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
-        }
+        openCamera();
     }
 
     @Override
@@ -490,14 +520,14 @@ public class PreviewFragment extends Fragment
             new ConfirmationDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG);
         } else {
             FragmentCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
-                    REQUEST_CAMERA_PERMISSION);
+                    Constant.REQUEST_CAMERA_PERMISSION);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+        if (requestCode == Constant.REQUEST_CAMERA_PERMISSION) {
             if (grantResults.length != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 ErrorDialog.newInstance(getString(R.string.request_permission))
                         .show(getChildFragmentManager(), FRAGMENT_DIALOG);
@@ -507,7 +537,7 @@ public class PreviewFragment extends Fragment
         }
     }
 
-    private void showCamera2SupportLevel(CameraCharacteristics characteristics,String cameraId){
+    private void showCamera2SupportLevel(CameraCharacteristics characteristics, String cameraId) {
         int support = characteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
         if( support == CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY )
             Log.d(TAG, "Camera " + cameraId + " has LEGACY Camera2 support");
@@ -637,6 +667,18 @@ public class PreviewFragment extends Fragment
         }
     }
 
+    private void openCamera() {
+        // When the screen is turned off and turned back on, the SurfaceTexture is already
+        // available, and "onSurfaceTextureAvailable" will not be called. In that case, we can open
+        // a camera and start preview from here (otherwise, we wait until the surface is ready in
+        // the SurfaceTextureListener).
+        if (mTextureView.isAvailable()) {
+            openCamera(mTextureView.getWidth(), mTextureView.getHeight());
+        } else {
+            mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
+        }
+    }
+
     /**
      * Opens the camera specified by {@link PreviewFragment#mCameraId}.
      */
@@ -680,6 +722,8 @@ public class PreviewFragment extends Fragment
                 mImageReader.close();
                 mImageReader = null;
             }
+            stopGcTimer(gcRefreshRunnable);
+            closeA2();
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while trying to lock camera closing.", e);
         } finally {
@@ -746,6 +790,7 @@ public class PreviewFragment extends Fragment
                                 // Auto focus should be continuous for camera preview.
                                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
                                         CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+
                                 // Flash is automatically enabled when necessary.
                                 setAutoFlash(mPreviewRequestBuilder);
 
@@ -800,7 +845,8 @@ public class PreviewFragment extends Fragment
             matrix.postScale(scale, scale, centerX, centerY);
             matrix.postRotate(90 * (rotation - 2), centerX, centerY);
         } else if (Surface.ROTATION_180 == rotation) {
-            matrix.postRotate(180, centerX, centerY);
+            // Do not rotate, We have to make sure that the menu is in the same direction as priveiw
+            //matrix.postRotate(180, centerX, centerY);
         }
         mTextureView.setTransform(matrix);
     }
@@ -954,50 +1000,6 @@ public class PreviewFragment extends Fragment
     }
 
     /**
-     * Saves a JPEG {@link Image} into the specified {@link File}.
-     */
-    private static class ImageSaver implements Runnable {
-
-        /**
-         * The JPEG image
-         */
-        private final Image mImage;
-        /**
-         * The file we save the image into.
-         */
-        private final File mFile;
-
-        public ImageSaver(Image image, File file) {
-            mImage = image;
-            mFile = file;
-        }
-
-        @Override
-        public void run() {
-            ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
-            byte[] bytes = new byte[buffer.remaining()];
-            buffer.get(bytes);
-            FileOutputStream output = null;
-            try {
-                output = new FileOutputStream(mFile);
-                output.write(bytes);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                mImage.close();
-                if (null != output) {
-                    try {
-                        output.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-    }
-
-    /**
      * Compares two {@code Size}s based on their areas.
      */
     static class CompareSizesByArea implements Comparator<Size> {
@@ -1011,67 +1013,72 @@ public class PreviewFragment extends Fragment
 
     }
 
-    /**
-     * Shows an error message dialog.
-     */
-    public static class ErrorDialog extends DialogFragment {
-
-        private static final String ARG_MESSAGE = "message";
-
-        public static ErrorDialog newInstance(String message) {
-            ErrorDialog dialog = new ErrorDialog();
-            Bundle args = new Bundle();
-            args.putString(ARG_MESSAGE, message);
-            dialog.setArguments(args);
-            return dialog;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Activity activity = getActivity();
-            return new AlertDialog.Builder(activity)
-                    .setMessage(getArguments().getString(ARG_MESSAGE))
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            activity.finish();
-                        }
-                    })
-                    .create();
-        }
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowMenu(final MenuKeyEvent event) {
+        getMenuDialog().show();
     }
 
-    /**
-     * Shows OK/Cancel confirmation dialog about camera permission.
-     */
-    public static class ConfirmationDialog extends DialogFragment {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOpenCamera(final ConnectEvent event) {
+        openCamera();
+    }
 
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Fragment parent = getParentFragment();
-            return new AlertDialog.Builder(getActivity())
-                    .setMessage(R.string.request_permission)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            FragmentCompat.requestPermissions(parent,
-                                    new String[]{Manifest.permission.CAMERA},
-                                    REQUEST_CAMERA_PERMISSION);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Activity activity = parent.getActivity();
-                                    if (activity != null) {
-                                        activity.finish();
-                                    }
-                                }
-                            })
-                    .create();
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onFullRefresh(final FullRefreshEvent event) {
+        gcRefreshOnce();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDismissMenu(final DismissMenuEvent event) {
+        getMenuDialog().dismiss();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSettingsChanged(final SettingsChangedEvent event) {
+        if (event.getId() == MenuItem.MenuId.A2) {
+            stopGcTimer(gcRefreshRunnable);
+            startGcTimer(gcRefreshRunnable);
         }
+    }
+
+    private DialogPreviewMenu getMenuDialog() {
+        if (menuDialog == null) {
+            menuDialog = new DialogPreviewMenu(getActivity());
+        }
+        return menuDialog;
+    }
+
+    private void gcRefreshOnce() {
+        closeA2();
+        openA2();
+    }
+
+    private void startGcTimer(Runnable runnable) {
+        long delay = SingletonSharedPreference.getGcIntervalTime(getActivity()) * 60 * 1000;
+        Log.i(TAG, "GC refresh once after " + delay/60/1000 + " minutes!");
+        handler.postDelayed(runnable, delay);
+    }
+
+    private void stopGcTimer(Runnable runnable) {
+        handler.removeCallbacks(runnable);
+    }
+
+    private void openA2() {
+        if (!isUsingA2) {
+            toggleA2();
+        }
+    }
+
+    private void closeA2() {
+        if (isUsingA2) {
+            toggleA2();
+        }
+    }
+
+    private void toggleA2() {
+        getActivity().sendBroadcast(new Intent(Constant.A2_ACTION));
+        isUsingA2 = !isUsingA2;
+        Log.i(TAG, "Using A2 refresh mode : " + isUsingA2);
     }
 
 }

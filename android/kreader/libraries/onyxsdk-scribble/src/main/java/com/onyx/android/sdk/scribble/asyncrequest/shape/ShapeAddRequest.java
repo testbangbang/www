@@ -1,8 +1,8 @@
 package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
-import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.ShapeManagerOptions;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.data.ShapeManagerOptions;
 
 /**
  * Created by zhuzeng on 4/18/16.
@@ -21,7 +21,8 @@ public class ShapeAddRequest extends AsyncBaseNoteRequest {
         shapeManagerOptions = option;
     }
 
-    public void execute(final NoteViewHelper parent) throws Exception {
+    @Override
+    public void execute(final AsyncNoteViewHelper parent) throws Exception {
 
     }
 }

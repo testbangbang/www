@@ -5,5 +5,6 @@ package com.onyx.android.monitor;
  */
 
 public class Constant {
-    static final String A2_ACTION = "action.toggle.a2.mode";
+    static public final String A2_ACTION = "action.toggle.a2.mode";
+    static public final int REQUEST_CAMERA_PERMISSION = 1;
 }

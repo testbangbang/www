@@ -203,7 +203,7 @@ public class ScribbleSubMenuID {
                 return key;
             }
         }
-        return NORMAL_PEN_STYLE;
+        return -1;
     }
 
     public static int shapeTypeFromMenuID(int menuID) {

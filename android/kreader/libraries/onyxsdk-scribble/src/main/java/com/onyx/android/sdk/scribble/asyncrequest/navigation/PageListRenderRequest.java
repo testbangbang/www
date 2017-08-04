@@ -5,8 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class PageListRenderRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(resume);
     }
 
-    public void execute(final NoteViewHelper parent) throws Exception {
+    public void execute(final AsyncNoteViewHelper parent) throws Exception {
         ensureDocumentOpened(parent);
         loadShapeData(parent);
         renderVisiblePages(parent);
@@ -37,7 +37,7 @@ public class PageListRenderRequest extends AsyncBaseNoteRequest {
         renderBitmap = copyBitmap ? Bitmap.createBitmap(parent.getRenderBitmap()) : parent.getRenderBitmap();
     }
 
-    public void loadShapeData(final NoteViewHelper parent) {
+    public void loadShapeData(final AsyncNoteViewHelper parent) {
         try {
             parent.getNoteDocument().loadShapePages(getContext(), getVisiblePages());
         } catch (Exception e) {
