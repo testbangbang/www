@@ -65,7 +65,7 @@ public abstract class BaseFormMenuAction extends BaseMenuAction {
         OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Bottom, OnyxToolbar.FillStyle.WrapContent);
         List<ReaderMenuViewHolder> bottomMenuViewHolders = getBottomMenuViewHolders(readerDataHolder, toolbar);
         if (bottomMenuViewHolders == null || bottomMenuViewHolders.size() == 0) {
-            return null;
+            return toolbar;
         }
         menuViewHolders.addAll(bottomMenuViewHolders);
         toolbar.setDividerViewHeight((int) readerDataHolder.getContext().getResources().getDimension(R.dimen.divider_view_height));

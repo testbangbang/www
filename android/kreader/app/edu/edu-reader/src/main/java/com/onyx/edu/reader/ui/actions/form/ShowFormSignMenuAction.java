@@ -29,10 +29,6 @@ public class ShowFormSignMenuAction extends ShowFormMenuAction {
 
     @Override
     public List<ReaderMenuViewHolder> getBottomMenuViewHolders(ReaderDataHolder readerDataHolder, final ViewGroup parent) {
-        List<ReaderMenuViewHolder> bottomMenuViewHolders = new ArrayList<>();
-        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_exit, EXIT, R.string.exit));
-        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_submit, SUBMIT, R.string.submit));
-        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_scribble_eraser_part, SCRIBBLE_ERASER, R.string.eraser));
-        return bottomMenuViewHolders;
+        return null;
     }
 }

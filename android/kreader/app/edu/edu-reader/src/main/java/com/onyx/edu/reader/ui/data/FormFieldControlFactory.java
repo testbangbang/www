@@ -110,7 +110,7 @@ public class FormFieldControlFactory {
         params.leftMargin = (int)buttonField.getRect().left;
         params.topMargin = (int)buttonField.getRect().top;
         button.setText(buttonField.getCaption());
-        button.setBackgroundResource(R.drawable.fillet_view_bg);
+        button.setBackgroundColor(Color.TRANSPARENT);
 
         button.setLayoutParams(params);
         return button;

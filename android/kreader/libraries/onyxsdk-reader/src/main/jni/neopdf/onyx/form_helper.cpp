@@ -120,7 +120,7 @@ jobject createTextObject(JNIEnv *env, CPDF_FormField *field, FPDF_PAGE page) {
 
     static const char *readerFormTextClassName = "com/onyx/android/sdk/reader/api/ReaderFormText";
     static const char *methodName = "create";
-    static const char *methodSignature = "(Ljava/lang/String;FFFFLjava/lang/String;)Lcom/onyx/android/sdk/reader/api/ReaderFormText;";
+    static const char *methodSignature = "(Ljava/lang/String;FFFFLjava/lang/String;)Lcom/onyx/android/sdk/reader/api/ReaderFormField;";
     return createObject(env, readerFormTextClassName, methodName, methodSignature,
                         name, rect.left, rect.top, rect.right, rect.bottom, nullptr);
 }

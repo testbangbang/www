@@ -28,19 +28,33 @@ public class ReaderFormField {
     }
 
     public ReaderFormAction getFormAction() {
+        ReaderFormAction action = ReaderFormAction.INVALID;
         ReaderFormAttributes formAttributes = getFormAttributes();
         if (formAttributes == null) {
-            return ReaderFormAction.INVALID;
+            return action;
         }
-        return ReaderFormAction.valueOf(formAttributes.getAction());
+        try {
+            action = ReaderFormAction.valueOf(formAttributes.getAction().toUpperCase().trim());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return action;
+        }
+        return action;
     }
 
     public static ReaderFormType getFormTypeByName(String name) {
+        ReaderFormType type = ReaderFormType.INVALID;
         ReaderFormAttributes formAttributes = getFormAttributesByName(name);
         if (formAttributes == null || formAttributes.getType() == null) {
-            return ReaderFormType.INVALID;
+            return type;
         }
-        return ReaderFormType.valueOf(formAttributes.getType());
+        try {
+            type = ReaderFormType.valueOf(formAttributes.getType().toUpperCase().trim());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return type;
+        }
+        return type;
     }
 
     protected ReaderFormField() {
