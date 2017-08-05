@@ -87,6 +87,8 @@ public class DeviceConfig {
     private String defaultAnnotationHighlightStyle = "Highlight";
     private Float[] defaultFontSizes = {20.0f, 24.0f, 28.0f, 32.0f, 36.0f, 40.0f, 44.0f, 48.0f};
 
+    private String signatureDocumentPath = "/system/media/signature.pdf";
+
     private DeviceConfig(Context context) {
         String content = readConfig(context);
         if (!StringUtils.isNullOrEmpty(content)) {
@@ -702,6 +704,14 @@ public class DeviceConfig {
     private static ReaderTextStyle.PageMargin getDefaultPageMargin(Context context) {
         int index = DeviceConfig.sharedInstance(context).getDefaultPageMarginIndex();
         return ReaderTextStyle.getPageMarginByIndex(index);
+    }
+
+    public String getSignatureDocumentPath() {
+        return signatureDocumentPath;
+    }
+
+    public void setSignatureDocumentPath(String signatureDocumentPath) {
+        this.signatureDocumentPath = signatureDocumentPath;
     }
 }
 

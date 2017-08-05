@@ -17,6 +17,7 @@ public class LoadSignatureToFormAction extends BaseAction {
 
     private String accountId;
     private RectF targetRect;
+    private boolean hasSignature = false;
 
     public LoadSignatureToFormAction(String accountId, RectF targetRect) {
         this.accountId = accountId;
@@ -26,12 +27,17 @@ public class LoadSignatureToFormAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
         final NoteManager noteManager = readerDataHolder.getNoteManager();
-        LoadSignatureToFormRequest signatureShapesRequest = new LoadSignatureToFormRequest(accountId, targetRect, readerDataHolder.getFirstPageInfo());
+        final LoadSignatureToFormRequest signatureShapesRequest = new LoadSignatureToFormRequest(accountId, targetRect, readerDataHolder.getFirstPageInfo());
         noteManager.submit(readerDataHolder.getContext(), signatureShapesRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                hasSignature = signatureShapesRequest.hasSignature();
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
+    }
+
+    public boolean hasSinature() {
+        return hasSignature;
     }
 }

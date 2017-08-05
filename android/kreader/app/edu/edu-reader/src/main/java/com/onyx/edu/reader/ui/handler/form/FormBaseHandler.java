@@ -11,12 +11,14 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
 import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormPushButton;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -106,7 +108,23 @@ public class FormBaseHandler extends ReadingHandler {
             processRadioGroupForm((RelativeRadioGroup) view);
         }else if (view instanceof EditText) {
             processEditTextForm((EditText) view);
+        }else if (view instanceof Button) {
+            processButtonForm((Button) view);
         }
+    }
+
+    private void processButtonForm(Button button) {
+        final ReaderFormPushButton field = (ReaderFormPushButton) getReaderFormField(button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onFormButtonClicked(field);
+            }
+        });
+    }
+
+    protected void onFormButtonClicked(final ReaderFormPushButton field) {
+
     }
 
     private void processCheckBoxForm(CheckBox checkBox) {
@@ -161,7 +179,6 @@ public class FormBaseHandler extends ReadingHandler {
             FormValue value = formShapeModel.getFormValue();
             radioGroup.check(value.getIndex());
         }
-
     }
 
     private void processEditTextForm(final EditText editText) {

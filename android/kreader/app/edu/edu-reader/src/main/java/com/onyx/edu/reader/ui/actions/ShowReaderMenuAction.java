@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
@@ -20,6 +21,7 @@ import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
@@ -33,10 +35,12 @@ import com.onyx.android.sdk.ui.data.ReaderMenuViewData;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.edu.reader.R;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.utils.Debug;
@@ -54,6 +58,7 @@ import com.onyx.edu.reader.note.actions.ChangeNoteShapeAction;
 import com.onyx.edu.reader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.edu.reader.note.actions.ClearPageAction;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
+import com.onyx.edu.reader.note.actions.FlushSignatureShapesChain;
 import com.onyx.edu.reader.note.actions.RedoAction;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
@@ -85,6 +90,7 @@ import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.view.EduMenu;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1012,9 +1018,48 @@ public class ShowReaderMenuAction extends BaseAction {
         }
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
-        actionChain.addAction(new LoadSignatureToFormAction(account._id, signatureForm.getRect()));
+        final LoadSignatureToFormAction signatureToFormAction = new LoadSignatureToFormAction(account._id, signatureForm.getRect());
+        actionChain.addAction(signatureToFormAction);
         actionChain.addAction(new FlushNoteAction(pages, true, true, true, false));
-        actionChain.execute(readerDataHolder, null);
+        actionChain.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (!signatureToFormAction.hasSinature()) {
+                    openSignatureDoc(readerDataHolder);
+                }
+            }
+        });
+    }
+
+    public static void openJumpFromDoc(final ReaderDataHolder readerDataHolder) {
+        String path = readerDataHolder.getJumpFromDocPath();
+        Intent intent = ViewDocumentUtils.viewActionIntentWithMimeType(new File(path));
+        openDocument(readerDataHolder, intent, path);
+    }
+
+    private static void openSignatureDoc(final ReaderDataHolder readerDataHolder) {
+        String path = DeviceConfig.sharedInstance(readerDataHolder.getContext()).getSignatureDocumentPath();
+        Intent intent = ViewDocumentUtils.viewActionIntentWithMimeType(new File(path));
+        intent.putExtra(Constant.JUMP_FROM_DOCUMENT_PATH_TAG, readerDataHolder.getDocumentPath());
+        openDocument(readerDataHolder, intent, path);
+    }
+
+    private static void openDocument(final ReaderDataHolder readerDataHolder, final Intent intent, final String path) {
+        if (StringUtils.isNullOrEmpty(path)) {
+            return;
+        }
+        final File file = new File(path);
+        if (!file.exists()) {
+            return;
+        }
+        new SaveReaderStateActionChain().execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ActivityUtil.startActivitySafely(readerDataHolder.getContext(),
+                        intent,
+                        ViewDocumentUtils.getEduReaderComponentName(readerDataHolder.getContext()));
+            }
+        });
     }
 
     private static void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {
@@ -1098,7 +1143,7 @@ public class ShowReaderMenuAction extends BaseAction {
         action.execute(readerDataHolder, null);
     }
 
-    private static void eraseWholePage(final ReaderDataHolder readerDataHolder) {
+    public static void eraseWholePage(final ReaderDataHolder readerDataHolder) {
         final ClearPageAction clearPageAction = new ClearPageAction(readerDataHolder.getFirstPageInfo());
         clearPageAction.execute(readerDataHolder, null);
     }
