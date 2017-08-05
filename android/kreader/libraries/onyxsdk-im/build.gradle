@@ -37,12 +37,14 @@ android {
 }
 
 dependencies {
-    compile project(':libraries:onyxsdk-base')
+    compile(project(':libraries:onyxsdk-base')) {
+        exclude group: 'com.alibaba', module: 'fastjson'
+    }
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
     compile ("io.socket:socket.io-client:$rootProject.socketio") {
         exclude group: 'org.json', module: 'json'
     }
-    compile ("cn.leancloud.android:avoscloud-sdk:v$rootProject.avoscloudsdk")
-    compile ("cn.leancloud.android:avoscloud-push:v$rootProject.avoscloudpush@aar"){transitive = true}
+    compile ("cn.leancloud.android:avoscloud-sdk:$rootProject.avoscloudVersion")
+    compile ("cn.leancloud.android:avoscloud-push:$rootProject.avoscloudVersion@aar"){transitive = true}
 }
