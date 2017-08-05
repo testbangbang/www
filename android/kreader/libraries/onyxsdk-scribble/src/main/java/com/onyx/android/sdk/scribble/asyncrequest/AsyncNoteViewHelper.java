@@ -3,18 +3,21 @@ package com.onyx.android.sdk.scribble.asyncrequest;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.device.Device;
@@ -865,4 +868,53 @@ public class AsyncNoteViewHelper {
     public LineLayoutArgs getLineLayoutArgs() {
         return lineLayoutArgs;
     }
+
+    public void renderToSurfaceView() {
+        Rect rect = checkSurfaceView();
+        if (rect == null) {
+            return;
+        }
+
+        applyUpdateMode();
+        Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
+        if (canvas == null) {
+            return;
+        }
+
+        Paint paint = new Paint();
+        clearBackground(canvas, paint, rect);
+        canvas.drawBitmap(getRenderBitmap(), 0, 0, paint);
+        RenderContext renderContext = RenderContext.create(canvas, paint, null);
+        for (Shape shape : getDirtyStash()) {
+            shape.render(renderContext);
+        }
+        surfaceView.getHolder().unlockCanvasAndPost(canvas);
+    }
+
+    private Rect checkSurfaceView() {
+        if (surfaceView == null || !surfaceView.getHolder().getSurface().isValid()) {
+            Log.e(TAG, "surfaceView is not valid");
+            return null;
+        }
+        return getViewportSize();
+    }
+
+    private void applyUpdateMode() {
+        if (false) {
+            EpdController.setViewDefaultUpdateMode(surfaceView, UpdateMode.GC);
+        } else {
+            EpdController.resetUpdateMode(surfaceView);
+        }
+    }
+
+    private Canvas getCanvasForDraw(SurfaceView surfaceView, Rect rect) {
+        return surfaceView.getHolder().lockCanvas(rect);
+    }
+
+    private void clearBackground(final Canvas canvas, final Paint paint, final Rect rect) {
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.WHITE);
+        canvas.drawRect(rect, paint);
+    }
+
 }
