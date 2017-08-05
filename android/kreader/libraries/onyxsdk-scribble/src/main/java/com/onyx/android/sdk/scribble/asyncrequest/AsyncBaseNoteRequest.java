@@ -19,10 +19,10 @@ import com.onyx.android.sdk.scribble.R;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
-import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
@@ -44,8 +44,8 @@ public class AsyncBaseNoteRequest extends BaseRequest {
     private boolean debugPathBenchmark = false;
     private boolean pauseInputProcessor = true;
     private boolean resumeInputProcessor = false;
-    private volatile boolean render = true;
-    private int [] renderingBuffer = null;
+    private volatile boolean renderToBitmap = true;
+    private volatile boolean renderToScreen = true;
     private boolean useExternal = false;
     private String identifier;
 
@@ -65,12 +65,25 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         this.pauseInputProcessor = pauseInputProcessor;
     }
 
-    public boolean isRender() {
-        return render;
+    public boolean isRenderToBitmap() {
+        return renderToBitmap;
+    }
+
+    public void setRenderToBitmap(boolean render) {
+        renderToBitmap = render;
+    }
+
+    public boolean isRenderToScreen() {
+        return renderToScreen;
+    }
+
+    public void setRenderToScreen(boolean render) {
+        renderToScreen = render;
     }
 
     public void setRender(boolean render) {
-        this.render = render;
+        setRenderToBitmap(render);
+        setRenderToScreen(render);
     }
 
     public AsyncBaseNoteRequest() {
@@ -147,9 +160,9 @@ public class AsyncBaseNoteRequest extends BaseRequest {
             getException().printStackTrace();
         }
 
-        if (isRender()) {
+        if (isRenderToScreen()) {
             helper.enableScreenPost(true);
-            NoteViewUtil.drawPage(helper.getView(), helper.getRenderBitmap(), helper.getDirtyStash());
+            helper.renderToSurfaceView();
         }
         benchmarkEnd();
         final Runnable runnable = new Runnable() {
@@ -178,32 +191,38 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         return shapeDataInfo;
     }
 
-    public void renderVisiblePages(final AsyncNoteViewHelper parent) {
-        synchronized (parent) {
-            Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
-            bitmap.eraseColor(Color.WHITE);
-            Canvas canvas = new Canvas(bitmap);
-            Paint paint = preparePaint(parent);
+    public void renderVisiblePagesInBitmap(final AsyncNoteViewHelper parent) {
+        Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
+        bitmap.eraseColor(Color.WHITE);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = preparePaint(parent);
 
-            if (!parent.isLineLayoutMode()) {
-                drawBackground(canvas, paint, parent.getNoteDocument().getBackground(),
-                        parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
-            }
-            prepareRenderingBuffer(bitmap);
-
-            final Matrix renderMatrix = new Matrix();
-            final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
-            for (PageInfo page : getVisiblePages()) {
-                final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
-                notePage.render(renderContext, null);
-                parent.renderSelectedRect(notePage.getSelectedRect(), renderContext);
-            }
-            parent.renderCursorShape(renderContext);
-            parent.drawLineLayoutBackground(renderContext);
-
-            flushRenderingBuffer(bitmap);
-            drawRandomTestPath(canvas, paint);
+        if (!parent.isLineLayoutMode()) {
+            drawBackground(canvas, paint, parent.getNoteDocument().getBackground(),
+                    parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
         }
+        prepareRenderingBuffer(bitmap);
+
+        final Matrix renderMatrix = new Matrix();
+        final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
+        for (PageInfo page : getVisiblePages()) {
+            final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
+            notePage.render(renderContext, null);
+            //parent.renderSelectedRect(notePage.getSelectedRect(), renderContext);
+        }
+        parent.renderCursorShape(renderContext);
+        parent.drawLineLayoutBackground(renderContext);
+
+        flushRenderingBuffer(bitmap);
+        drawRandomTestPath(canvas, paint);
+    }
+
+    public void renderSelectionRectangle(final AsyncNoteViewHelper parent, final TouchPoint start, final TouchPoint end) {
+        Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = preparePaint(parent);
+        RectF rect = new RectF(start.getX(), start.getY(), end.getX(), end.getY());
+        canvas.drawRect(rect, paint);
     }
 
     private Paint preparePaint(final AsyncNoteViewHelper parent) {
@@ -338,12 +357,16 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         getVisiblePages().add(pageInfo);
     }
 
-    public void renderCurrentPage(final AsyncNoteViewHelper helper) {
-        if (!isRender()) {
+    public void renderCurrentPageInBitmap(final AsyncNoteViewHelper helper) {
+        if (!isRenderToBitmap()) {
             return;
         }
         currentPageAsVisiblePage(helper);
-        renderVisiblePages(helper);
+        renderVisiblePagesInBitmap(helper);
+    }
+
+    public void renderSelectionRect(final AsyncNoteViewHelper hepler, final TouchPoint start, final TouchPoint end) {
+        renderSelectionRectangle(hepler, start, end);
     }
 
     public void updateShapeDataInfo(final AsyncNoteViewHelper parent) {
