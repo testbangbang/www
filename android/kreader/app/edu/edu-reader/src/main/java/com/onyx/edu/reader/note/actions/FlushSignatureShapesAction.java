@@ -19,7 +19,9 @@ public class FlushSignatureShapesAction extends BaseAction {
         if (readerDataHolder.getAccount() == null) {
             return;
         }
-        FlushSignatureShapesRequest signatureShapesRequest = new FlushSignatureShapesRequest(readerDataHolder.getAccount()._id, readerDataHolder.getReader().getDocumentMd5());
+        FlushSignatureShapesRequest signatureShapesRequest = new FlushSignatureShapesRequest(
+                readerDataHolder.getAccount()._id,
+                readerDataHolder.getReader().getDocumentMd5());
         readerDataHolder.submitNonRenderRequest(signatureShapesRequest, baseCallback);
     }
 }
