@@ -212,11 +212,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     @Override
     public void onBackPressed() {
         //TODO:need back key to dismiss sub menu first or direct exit even sub menu showing?
-        hideSubMenu();
-        if (mScribbleAction == ScribbleAction.CREATE){
-            saveNewNoteDocument();
-        }else {
-            onDocumentClose();
+        if (!hideSubMenu()) {
+            if (mScribbleAction == ScribbleAction.CREATE) {
+                saveNewNoteDocument();
+            } else {
+                onDocumentClose();
+            }
         }
     }
 
@@ -395,10 +396,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         mSubMenu.show(mainMenuID, mViewModel.getSubMenuIDList(mainMenuID), mNoteManager.isLineLayoutMode());
     }
 
-    private void hideSubMenu() {
+    private boolean hideSubMenu() {
         if (mSubMenu != null && mSubMenu.isShow()) {
             mSubMenu.dismiss(true);
+            return true;
         }
+        return false;
     }
 
     @Override

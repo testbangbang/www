@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -93,6 +94,7 @@ public class AsyncNoteViewHelper {
 
     private Rect customLimitRect = null;
     private RequestManager requestManager = new RequestManager();
+    public DashPathEffect selectedDashPathEffect = new DashPathEffect(new float[]{4, 4, 4, 4}, 2);
 
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, PEN_PAUSE);
@@ -518,9 +520,9 @@ public class AsyncNoteViewHelper {
         shortcutErasing = false;
     }
 
-    private void onBeginShapeSelecting() {
+    private void onBeginShapeSelecting(MotionEvent motionEvent) {
         shapeSelectPoints = new TouchPointList();
-        EventBus.getDefault().post(new BeginShapeSelectEvent());
+        EventBus.getDefault().post(new BeginShapeSelectEvent(motionEvent));
     }
 
     private boolean onShapeSelecting(final MotionEvent motionEvent) {
@@ -666,7 +668,7 @@ public class AsyncNoteViewHelper {
 
     private boolean forwardShapeSelecting(final MotionEvent motionEvent) {
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            onBeginShapeSelecting();
+            onBeginShapeSelecting(motionEvent);
         } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             onShapeSelecting(motionEvent);
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
@@ -828,6 +830,7 @@ public class AsyncNoteViewHelper {
         }
         Paint boundingPaint = new Paint(Color.BLACK);
         boundingPaint.setStyle(Paint.Style.STROKE);
+        boundingPaint.setPathEffect(selectedDashPathEffect);
         renderContext.canvas.drawRect(selectedRectF, boundingPaint);
     }
 
