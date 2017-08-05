@@ -15,7 +15,7 @@ public class PageGotoFirstRequest extends AsyncBaseNoteRequest {
 
     public void execute(final AsyncNoteViewHelper helper) throws Exception {
         helper.getNoteDocument().gotoFirst();
-        renderCurrentPage(helper);
+        renderCurrentPageInBitmap(helper);
         updateShapeDataInfo(helper);
     }
 

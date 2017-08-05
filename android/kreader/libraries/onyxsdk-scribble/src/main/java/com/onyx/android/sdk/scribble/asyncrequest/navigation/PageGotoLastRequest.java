@@ -15,7 +15,7 @@ public class PageGotoLastRequest extends AsyncBaseNoteRequest {
 
     public void execute(final AsyncNoteViewHelper helper) throws Exception {
         helper.getNoteDocument().gotoLast();
-        renderCurrentPage(helper);
+        renderCurrentPageInBitmap(helper);
         updateShapeDataInfo(helper);
     }
 

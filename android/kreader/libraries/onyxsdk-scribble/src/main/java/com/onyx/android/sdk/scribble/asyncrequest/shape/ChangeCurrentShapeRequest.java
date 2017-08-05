@@ -20,7 +20,7 @@ public class ChangeCurrentShapeRequest extends AsyncBaseNoteRequest {
     @Override
     public void execute(final AsyncNoteViewHelper parent) throws Exception {
         parent.setCurrentShapeType(newShapeType);
-        renderCurrentPage(parent);
+        renderCurrentPageInBitmap(parent);
         updateShapeDataInfo(parent);
     }
 

@@ -19,7 +19,7 @@ public class PageGoToTargetIndexRequest extends AsyncBaseNoteRequest {
     public void execute(final AsyncNoteViewHelper helper) throws Exception {
         setResumeInputProcessor(resume && helper.useDFBForCurrentState());
         helper.getNoteDocument().gotoPage(targetIndex);
-        renderCurrentPage(helper);
+        renderCurrentPageInBitmap(helper);
         updateShapeDataInfo(helper);
     }
 

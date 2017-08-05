@@ -14,7 +14,7 @@ public class UndoRequest extends AsyncBaseNoteRequest {
     @Override
     public void execute(final AsyncNoteViewHelper parent) throws Exception {
         parent.undo(getContext());
-        renderCurrentPage(parent);
+        renderCurrentPageInBitmap(parent);
         updateShapeDataInfo(parent);
     }
 }

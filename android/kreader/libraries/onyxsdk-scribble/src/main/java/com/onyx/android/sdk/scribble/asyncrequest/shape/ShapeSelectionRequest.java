@@ -5,28 +5,29 @@ import android.util.Log;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by john on 29/7/2017.
+ * Created by john on 5/8/2017.
  */
 
-public class RenderInBackgroundRequest extends AsyncBaseNoteRequest {
+public class ShapeSelectionRequest extends AsyncBaseNoteRequest {
 
     private static final String TAG = PageFlushRequest.class.getSimpleName();
+    private volatile TouchPoint start;
+    private volatile TouchPoint end;
 
-    private List<Shape> shapeList = new ArrayList<>();
-
-
-    public RenderInBackgroundRequest(final List<Shape> list) {
+    public ShapeSelectionRequest(final TouchPoint s, final TouchPoint e) {
         super();
         setAbortPendingTasks(false);
-        shapeList.addAll(list);
-        setPauseInputProcessor(false);
+        setPauseInputProcessor(true);
         setResumeInputProcessor(false);
+        start = new TouchPoint(s);
+        end = new TouchPoint(e);
     }
 
     @Override
@@ -35,11 +36,8 @@ public class RenderInBackgroundRequest extends AsyncBaseNoteRequest {
             return;
         }
         benchmarkStart();
-        helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
-        setRenderToBitmap(true);
-        setRenderToScreen(false);
+        setRender(true);
         renderCurrentPageInBitmap(helper);
-        Log.e(TAG, "render takes: " + benchmarkEnd());
+        renderSelectionRect(helper, start, end);
     }
-
 }

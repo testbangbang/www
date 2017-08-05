@@ -21,7 +21,7 @@ public class ShapeRemoveByGroupIdRequest extends AsyncBaseNoteRequest {
     public void execute(final AsyncNoteViewHelper helper) throws Exception {
         setResumeInputProcessor(helper.useDFBForCurrentState() && resume);
         helper.getNoteDocument().removeShapesByGroupId(getContext(), groupId);
-        renderCurrentPage(helper);
+        renderCurrentPageInBitmap(helper);
         updateShapeDataInfo(helper);
     }
 

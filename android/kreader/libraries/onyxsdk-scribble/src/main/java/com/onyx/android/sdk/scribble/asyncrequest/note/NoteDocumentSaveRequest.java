@@ -21,7 +21,7 @@ public class NoteDocumentSaveRequest extends AsyncBaseNoteRequest {
 
     @Override
     public void execute(final AsyncNoteViewHelper parent) throws Exception {
-        renderCurrentPage(parent);
+        renderCurrentPageInBitmap(parent);
         NoteDataProvider.saveThumbnailWithSize(getContext(),
                 parent.getNoteDocument().getDocumentUniqueId(),
                 parent.getRenderBitmap(),

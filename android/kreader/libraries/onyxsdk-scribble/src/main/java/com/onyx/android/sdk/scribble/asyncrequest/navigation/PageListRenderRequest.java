@@ -32,7 +32,7 @@ public class PageListRenderRequest extends AsyncBaseNoteRequest {
     public void execute(final AsyncNoteViewHelper parent) throws Exception {
         ensureDocumentOpened(parent);
         loadShapeData(parent);
-        renderVisiblePages(parent);
+        renderVisiblePagesInBitmap(parent);
         updateShapeDataInfo(parent);
         renderBitmap = copyBitmap ? Bitmap.createBitmap(parent.getRenderBitmap()) : parent.getRenderBitmap();
     }

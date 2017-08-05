@@ -19,7 +19,7 @@ public class PenWidthChangeRequest extends AsyncBaseNoteRequest {
     @Override
     public void execute(final AsyncNoteViewHelper parent) throws Exception {
         parent.setStrokeWidth(penWidth);
-        renderCurrentPage(parent);
+        renderCurrentPageInBitmap(parent);
         updateShapeDataInfo(parent);
     }
 }

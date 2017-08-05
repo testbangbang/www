@@ -18,7 +18,7 @@ public class PageRemoveRequest extends AsyncBaseNoteRequest {
     @Override
     public void execute(final AsyncNoteViewHelper parent) throws Exception {
         parent.getNoteDocument().removePage(getContext(), parent.getNoteDocument().getCurrentPageIndex());
-        renderCurrentPage(parent);
+        renderCurrentPageInBitmap(parent);
         updateShapeDataInfo(parent);
     }
 }

@@ -23,7 +23,6 @@ public class AddShapeRequest extends AsyncBaseNoteRequest {
             Log.e("######", "origin shape with size: " + shape.getPoints().size());
         }
         shapeList.addAll(list);
-        setRender(true);
         setPauseInputProcessor(false);
         setResumeInputProcessor(false);
     }
@@ -31,7 +30,7 @@ public class AddShapeRequest extends AsyncBaseNoteRequest {
     public void execute(final AsyncNoteViewHelper helper) throws Exception {
         long start = System.currentTimeMillis();
         helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
-        renderCurrentPage(helper);
+        renderCurrentPageInBitmap(helper);
         updateShapeDataInfo(helper);
         long end = System.currentTimeMillis();
         Log.e(TAG, "Render in background finished: " + (end - start));

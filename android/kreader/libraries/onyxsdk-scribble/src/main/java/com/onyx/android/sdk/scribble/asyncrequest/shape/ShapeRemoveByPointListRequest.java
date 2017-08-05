@@ -22,7 +22,7 @@ public class ShapeRemoveByPointListRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(helper.useDFBForCurrentState());
         benchmarkStart();
         helper.getNoteDocument().removeShapesByTouchPointList(getContext(), touchPointList, 1.0f);
-        renderCurrentPage(helper);
+        renderCurrentPageInBitmap(helper);
         updateShapeDataInfo(helper);
         Log.e("############", "erase takes: " + benchmarkEnd());
     }

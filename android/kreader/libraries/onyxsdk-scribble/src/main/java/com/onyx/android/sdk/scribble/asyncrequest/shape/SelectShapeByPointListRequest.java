@@ -28,7 +28,7 @@ public class SelectShapeByPointListRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(helper.useDFBForCurrentState());
         benchmarkStart();
         selectResultList = helper.getNoteDocument().selectShapesByTouchPointList(getContext(), touchPointList, 1.0f);
-        renderCurrentPage(helper);
+        renderCurrentPageInBitmap(helper);
         updateShapeDataInfo(helper);
         Log.e("############", "shape select takes: " + benchmarkEnd());
     }

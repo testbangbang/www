@@ -16,7 +16,7 @@ public class PageNextRequest extends AsyncBaseNoteRequest {
     public void execute(final AsyncNoteViewHelper helper) throws Exception {
         setResumeInputProcessor(helper.useDFBForCurrentState());
         helper.getNoteDocument().nextPage();
-        renderCurrentPage(helper);
+        renderCurrentPageInBitmap(helper);
         updateShapeDataInfo(helper);
     }
 
