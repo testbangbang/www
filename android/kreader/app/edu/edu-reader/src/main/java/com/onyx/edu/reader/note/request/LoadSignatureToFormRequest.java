@@ -24,7 +24,7 @@ public class LoadSignatureToFormRequest extends ReaderBaseNoteRequest {
     private String accountId;
     private RectF targetRect;
     private PageInfo pageInfo;
-    private boolean hasSignature = false;
+    private volatile boolean hasSignature = false;
 
     public LoadSignatureToFormRequest(String accountId, RectF targetRect, PageInfo pageInfo) {
         this.accountId = accountId;
