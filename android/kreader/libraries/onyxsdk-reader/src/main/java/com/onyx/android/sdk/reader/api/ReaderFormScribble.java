@@ -8,16 +8,6 @@ import com.onyx.android.sdk.utils.Debug;
 
 public class ReaderFormScribble extends ReaderFormField {
 
-    public FormScribbleType getScribbleType() {
-        String name = getName();
-        for (FormScribbleType formScribbleType : FormScribbleType.values()) {
-            if (name.toUpperCase().endsWith(formScribbleType.name().toUpperCase())) {
-                return formScribbleType;
-            }
-        }
-        return FormScribbleType.Common;
-    }
-
     private ReaderFormScribble(String name, float left, float top, float right, float bottom) {
         super(name, left, top, right, bottom);
     }

@@ -19,10 +19,11 @@ import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
-import com.onyx.android.sdk.reader.api.FormScribbleType;
 import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.reader.api.ReaderFormAction;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
+import com.onyx.android.sdk.reader.api.ReaderFormType;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -69,6 +70,7 @@ public class ReaderDataHolder {
 
     private Context context;
     private String documentPath;
+    private String jumpFromDocPath;
     private String cloudDocId;
     private Reader reader;
     private ReaderViewInfo readerViewInfo;
@@ -829,6 +831,14 @@ public class ReaderDataHolder {
         this.cloudDocId = cloudDocId;
     }
 
+    public String getJumpFromDocPath() {
+        return jumpFromDocPath;
+    }
+
+    public void setJumpFromDocPath(String jumpFromDocPath) {
+        this.jumpFromDocPath = jumpFromDocPath;
+    }
+
     public void applyReviewDataFromCloud(boolean showTips) {
         ApplyReviewDataFromCloudAction.apply(this, showTips);
     }
@@ -852,7 +862,7 @@ public class ReaderDataHolder {
         for (PageInfo pageInfo : getVisiblePages()) {
             List<ReaderFormScribble> readerFormScribbles = getReaderUserDataInfo().getReaderFormScribbles(pageInfo);
             for (ReaderFormScribble readerFormScribble : readerFormScribbles) {
-                if (readerFormScribble.getScribbleType().equals(FormScribbleType.Signature)) {
+                if (readerFormScribble.getFormAction().equals(ReaderFormAction.SIGNATURE)) {
                     return readerFormScribble;
                 }
             }

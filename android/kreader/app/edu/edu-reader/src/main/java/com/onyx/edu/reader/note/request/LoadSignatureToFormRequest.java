@@ -6,6 +6,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.data.ReaderShapeFactory;
 import com.onyx.edu.reader.note.model.ReaderNoteDataProvider;
@@ -23,6 +24,7 @@ public class LoadSignatureToFormRequest extends ReaderBaseNoteRequest {
     private String accountId;
     private RectF targetRect;
     private PageInfo pageInfo;
+    private boolean hasSignature = false;
 
     public LoadSignatureToFormRequest(String accountId, RectF targetRect, PageInfo pageInfo) {
         this.accountId = accountId;
@@ -33,11 +35,13 @@ public class LoadSignatureToFormRequest extends ReaderBaseNoteRequest {
     @Override
     public void execute(NoteManager noteManager) throws Exception {
         List<SignatureShapeModel> models = ReaderNoteDataProvider.loadSignatureShapeList(getContext(), accountId);
+        hasSignature = models.size() > 0;
         List<Shape> shapes = new ArrayList<>();
         for (SignatureShapeModel model : models) {
             Shape shape = ReaderShapeFactory.shapeFromSignatureModel(model);
             transformShapePoints(shape);
             shapes.add(shape);
+            shape.setShapeUniqueId(ShapeUtils.generateUniqueId());
         }
         noteManager.addNewStashList(shapes);
     }
@@ -53,5 +57,9 @@ public class LoadSignatureToFormRequest extends ReaderBaseNoteRequest {
             point.normalize(pageInfo);
         }
         shape.updatePoints();
+    }
+
+    public boolean hasSignature() {
+        return hasSignature;
     }
 }

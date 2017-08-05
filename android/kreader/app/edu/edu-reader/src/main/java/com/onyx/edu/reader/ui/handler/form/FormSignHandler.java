@@ -2,6 +2,7 @@ package com.onyx.edu.reader.ui.handler.form;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.reader.api.ReaderFormPushButton;
 import com.onyx.edu.reader.note.actions.FlushSignatureShapesAction;
 import com.onyx.edu.reader.note.actions.FlushSignatureShapesChain;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
@@ -37,5 +38,30 @@ public class FormSignHandler extends FormBaseHandler {
                 FormSignHandler.super.close(readerDataHolder);
             }
         });
+    }
+
+    @Override
+    protected void onFormButtonClicked(ReaderFormPushButton field) {
+        switch (field.getFormAction()) {
+            case OK:
+                onFinished(getReaderDataHolder());
+                break;
+            case REDO:
+                onRedo(getReaderDataHolder());
+                break;
+        }
+    }
+
+    private void onFinished(final ReaderDataHolder readerDataHolder) {
+        new FlushSignatureShapesChain().execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ShowReaderMenuAction.openJumpFromDoc(readerDataHolder);
+            }
+        });
+    }
+
+    private void onRedo(final ReaderDataHolder readerDataHolder) {
+        ShowReaderMenuAction.eraseWholePage(readerDataHolder);
     }
 }

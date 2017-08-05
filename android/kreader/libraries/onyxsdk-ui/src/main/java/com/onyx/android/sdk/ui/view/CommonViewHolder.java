@@ -79,6 +79,12 @@ public class CommonViewHolder extends RecyclerView.ViewHolder{
         return this;
     }
 
+    public CommonViewHolder setEnabled(int viewId, boolean enabled) {
+        View view = getView(viewId);
+        view.setEnabled(enabled);
+        return this;
+    }
+
     public CommonViewHolder setTag(int viewId, Object tag) {
         View view = getView(viewId);
         view.setTag(tag);

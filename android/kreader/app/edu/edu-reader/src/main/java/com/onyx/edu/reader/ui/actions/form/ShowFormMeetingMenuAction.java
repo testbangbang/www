@@ -33,11 +33,11 @@ public class ShowFormMeetingMenuAction extends ShowFormMenuAction {
         List<ReaderMenuViewHolder> bottomMenuViewHolders = new ArrayList<>();
 
         boolean showScribbleMenu = getReaderMenuViewData().isShowScribbleMenu();
-        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), showScribbleMenu ? R.drawable.ic_write_black : R.drawable.ic_write_gray, ReaderMenuAction.SWITCH_SCRIBBLE, R.string.submit));
-        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), showScribbleMenu ? R.drawable.ic_eraser_all_black : R.drawable.ic_eraser_all_gray, ReaderMenuAction.SCRIBBLE_ERASER, R.string.eraser));
+        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), showScribbleMenu ? R.drawable.ic_write_black : R.drawable.ic_write_forbidden, ReaderMenuAction.SWITCH_SCRIBBLE, R.string.scribble));
+        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), showScribbleMenu ? R.drawable.ic_eraser_all_black : R.drawable.ic_eraser_all_gray, ReaderMenuAction.SCRIBBLE_ERASER, R.string.eraser, showScribbleMenu));
         bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_meeting_submit, ReaderMenuAction.SUBMIT, R.string.submit));
-        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_meeting_undo, ReaderMenuAction.SCRIBBLE_UNDO, R.string.undo));
-        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_meeting_redo, ReaderMenuAction.SCRIBBLE_REDO, R.string.redo));
+        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_meeting_undo, ReaderMenuAction.SCRIBBLE_UNDO, R.string.undo, showScribbleMenu));
+        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_meeting_redo, ReaderMenuAction.SCRIBBLE_REDO, R.string.redo, showScribbleMenu));
 
         bottomMenuViewHolders.add(ReaderMenuViewHolder.create(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
 

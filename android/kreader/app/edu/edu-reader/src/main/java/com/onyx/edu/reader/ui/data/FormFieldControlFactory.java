@@ -6,19 +6,22 @@ import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.reader.api.ReaderFormCheckbox;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormPushButton;
 import com.onyx.android.sdk.reader.api.ReaderFormRadioButton;
 import com.onyx.android.sdk.reader.api.ReaderFormRadioGroup;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.reader.api.ReaderFormText;
+import com.onyx.android.sdk.ui.view.AutoFitButton;
 import com.onyx.android.sdk.ui.view.RelativeRadioGroup;
+import com.onyx.edu.reader.R;
 
 /**
  * Created by joy on 5/25/17.
@@ -99,6 +102,20 @@ public class FormFieldControlFactory {
         return view;
     }
 
+    private static View createFormButton(RelativeLayout parentView, ReaderFormPushButton buttonField) {
+        Button button = new AutoFitButton(parentView.getContext());
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)buttonField.getRect().width(),
+                (int)buttonField.getRect().height());
+        params.leftMargin = (int)buttonField.getRect().left;
+        params.topMargin = (int)buttonField.getRect().top;
+        button.setText(buttonField.getCaption());
+        button.setBackgroundResource(R.drawable.fillet_view_bg);
+
+        button.setLayoutParams(params);
+        return button;
+    }
+
     public static View createFormControl(RelativeLayout parentView, ReaderFormField field) {
         View view;
         if (field instanceof ReaderFormText) {
@@ -109,6 +126,8 @@ public class FormFieldControlFactory {
             view = createRadioGroup(parentView, (ReaderFormRadioGroup)field);
         } else if (field instanceof ReaderFormScribble) {
             view = createScribbleRegion(parentView, (ReaderFormScribble)field);
+        } else if (field instanceof ReaderFormPushButton) {
+            view = createFormButton(parentView, (ReaderFormPushButton)field);
         } else {
             view = null;
         }

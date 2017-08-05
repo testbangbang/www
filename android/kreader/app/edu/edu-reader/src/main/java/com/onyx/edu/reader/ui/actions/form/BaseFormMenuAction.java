@@ -155,6 +155,14 @@ public abstract class BaseFormMenuAction extends BaseMenuAction {
         return viewHolder;
     }
 
+    public ReaderMenuViewHolder createImageViewTitleHolder(Context context, int imageResId, final ReaderMenuAction action, int titleResId, boolean enable) {
+        ReaderMenuViewHolder viewHolder = createImageViewTitleHolder(context, imageResId, action, titleResId);
+        viewHolder.setEnabled(R.id.content_view, enable);
+        viewHolder.setEnabled(R.id.title, enable);
+        viewHolder.itemView.setEnabled(enable);
+        return viewHolder;
+    }
+
     public ReaderMenuViewHolder createPageTextViewHolder(Context context, float textSize, String text, final ReaderMenuAction action) {
         TextView textView = new TextView(context);
         textView.setText(text);

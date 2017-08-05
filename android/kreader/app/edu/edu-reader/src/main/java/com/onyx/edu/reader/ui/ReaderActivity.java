@@ -41,6 +41,7 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
@@ -822,6 +823,10 @@ public class ReaderActivity extends OnyxBaseActivity {
         Metadata metadata = MetadataUtils.getIntentExtraDataMetadata(getIntent());
         if (metadata != null) {
             getReaderDataHolder().setCloudDocId(metadata.getCloudId());
+        }
+        String jumpFromPath = getIntent().getStringExtra(Constant.JUMP_FROM_DOCUMENT_PATH_TAG);
+        if (!StringUtils.isNullOrEmpty(jumpFromPath)) {
+            getReaderDataHolder().setJumpFromDocPath(jumpFromPath);
         }
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
         if (isDocumentOpening() || isFileAlreadyOpened(path)) {

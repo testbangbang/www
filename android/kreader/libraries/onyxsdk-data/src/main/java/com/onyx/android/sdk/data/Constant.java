@@ -72,4 +72,5 @@ public class Constant {
     public static final String CLOUD_BACKUP_FILE_SAVE_FOLDER = "cloud_backup";
     public static final String CLOUD_BACKUP_TEMP_FILE_FOLDER = "cloud_backup_temp";
 
+    public static final String JUMP_FROM_DOCUMENT_PATH_TAG = "jump_from_document_path";
 }
