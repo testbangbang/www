@@ -88,6 +88,7 @@ import com.onyx.edu.reader.ui.dialog.DialogTableOfContent;
 import com.onyx.edu.reader.ui.dialog.DialogTextStyle;
 import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
+import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.view.EduMenu;
 
 import java.io.File;
@@ -918,6 +919,9 @@ public class ShowReaderMenuAction extends BaseAction {
             case SIGNATURE:
                 signature(readerDataHolder);
                 break;
+            case TOGGLE_FORM_SCRIBBLE:
+                toggleFormScribble(readerDataHolder);
+                break;
             case SCRIBBLE_WIDTH1:
             case SCRIBBLE_WIDTH2:
             case SCRIBBLE_WIDTH3:
@@ -1005,6 +1009,10 @@ public class ShowReaderMenuAction extends BaseAction {
                 redo(readerDataHolder);
                 break;
         }
+    }
+
+    private static void toggleFormScribble(final ReaderDataHolder readerDataHolder) {
+        FormBaseHandler handler = readerDataHolder.getFormHandler();
     }
 
     private static void signature(final ReaderDataHolder readerDataHolder) {

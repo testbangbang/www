@@ -52,6 +52,7 @@ import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.events.TextSelectionEvent;
 import com.onyx.edu.reader.ui.events.*;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
+import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.highlight.ReaderSelectionManager;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -205,7 +206,14 @@ public class ReaderDataHolder {
     }
 
     public boolean inFormProvider() {
-        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_PROVIDER);
+        return getHandlerManager().getActiveProvider() instanceof FormBaseHandler;
+    }
+
+    public FormBaseHandler getFormHandler() {
+        if (!inFormProvider()) {
+            return null;
+        }
+        return (FormBaseHandler) getHandlerManager().getActiveProvider();
     }
 
     public boolean inSignatureFormProvider() {

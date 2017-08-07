@@ -517,4 +517,5 @@
     <string name="submit">Submit</string>
     <string name="fetch">Fetch</string>
     <string name="timer">Timer</string>
+    <string name="touch">Touch</string>
 </resources>

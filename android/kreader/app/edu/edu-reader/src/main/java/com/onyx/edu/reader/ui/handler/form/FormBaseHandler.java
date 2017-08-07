@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormPushButton;
+import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -125,6 +126,23 @@ public class FormBaseHandler extends ReadingHandler {
 
     protected void onFormButtonClicked(final ReaderFormPushButton field) {
 
+    }
+
+    public Rect getFormScribbleRect() {
+        Rect rect = null;
+        for (View formFieldControl : formFieldControls) {
+            if (isFormScribble(formFieldControl)) {
+                ReaderFormField field = (ReaderFormField) formFieldControl.getTag();
+                RectF rectF = field.getRect();
+                rect = new Rect((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom);
+                break;
+            }
+        }
+        return rect;
+    }
+
+    private boolean isFormScribble(View view) {
+        return view.getTag() instanceof ReaderFormScribble;
     }
 
     private void processCheckBoxForm(CheckBox checkBox) {

@@ -356,4 +356,5 @@
     <string name="submit">提交</string>
     <string name="fetch">获取</string>
     <string name="timer">计时</string>
+    <string name="touch">触摸</string>
 </resources>

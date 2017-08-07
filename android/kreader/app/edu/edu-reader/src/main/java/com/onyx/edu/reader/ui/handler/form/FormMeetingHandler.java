@@ -1,5 +1,7 @@
 package com.onyx.edu.reader.ui.handler.form;
 
+import android.graphics.Rect;
+
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 
 /**
@@ -17,4 +19,8 @@ public class FormMeetingHandler extends FormBaseHandler {
         return true;
     }
 
+    @Override
+    public Rect getFormScribbleRect() {
+        return null;
+    }
 }
