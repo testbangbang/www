@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.edu.note.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.edu.note.R;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
