@@ -10,6 +10,7 @@ import android.widget.PopupWindow;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.adapter.PopupAdapter;
 import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 

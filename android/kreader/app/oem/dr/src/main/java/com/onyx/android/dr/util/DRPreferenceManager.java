@@ -1,5 +1,6 @@
 package com.onyx.android.dr.util;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.onyx.android.dr.common.Constants;
@@ -47,5 +48,33 @@ public class DRPreferenceManager extends PreferenceManager {
 
     public static void setImportContent(Context context, boolean imported) {
         setBooleanValue(context, Constants.IMPORT_CONTENT_IN_FIRST_BOOT_TAG, imported);
+    }
+
+    public static void saveUserAccount(Context context, String userName) {
+        setStringValue(context, Constants.ACCOUNT, userName);
+    }
+
+    public static String getUserAccount(Context context, String defaultValue) {
+        return getStringValue(context, Constants.ACCOUNT, defaultValue);
+    }
+
+    public static void saveUserPassword(Context context, String password) {
+        setStringValue(context, Constants.PASSWORD, password);
+    }
+
+    public static String getUserPassword(Context context, String defaultValue) {
+        return getStringValue(context, Constants.PASSWORD, defaultValue);
+    }
+
+    public static void saveUserType(Context context, String userType) {
+        setStringValue(context, Constants.USER_TYPE, userType);
+    }
+
+    public static String getUserType(Context context, String defaultValue) {
+        return getStringValue(context, Constants.USER_TYPE, defaultValue);
+    }
+
+    public static String loadPreferredBookshelf(Context context, String defaultValue) {
+        return getStringValue(context, Constants.PREFERRED_BOOKSHELF, defaultValue);
     }
 }

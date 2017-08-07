@@ -9,9 +9,15 @@ import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.event.ApplicationEvent;
 import com.onyx.android.dr.event.ArticlePushMenuEvent;
 import com.onyx.android.dr.event.DictMenuEvent;
+import com.onyx.android.dr.event.GradedBooksEvent;
 import com.onyx.android.dr.event.ListenAndSayMenuEvent;
+import com.onyx.android.dr.event.MyBooksMenuEvent;
 import com.onyx.android.dr.event.NotesMenuEvent;
+import com.onyx.android.dr.event.ProfessionalMaterialsMenuEvent;
+import com.onyx.android.dr.event.RealTimeBooksMenuEvent;
+import com.onyx.android.dr.event.SchoolBasedMaterialsMenuEvent;
 import com.onyx.android.dr.event.SettingsMenuEvent;
+import com.onyx.android.sdk.data.model.Library;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,17 +33,6 @@ public class MainTabMenuConfig {
     private static List<MenuBean> highSchoolMenuData = new ArrayList<>();
     private static List<MenuBean> universityMenuData = new ArrayList<>();
     private static List<MenuBean> teacherMenuData = new ArrayList<>();
-    public static Map<String, String> languageBookshelf = new HashMap<>();
-    public static List<String> languages = new ArrayList<>();
-
-    static {
-        languageBookshelf.put("english", DRApplication.getInstance().getString(R.string.english_bookshelf));
-        languageBookshelf.put("chinese", DRApplication.getInstance().getString(R.string.chinese_bookshelf));
-        languageBookshelf.put("other", DRApplication.getInstance().getString(R.string.small_language_bookshelf));
-        languages.add("english");
-        languages.add("chinese");
-        languages.add("other");
-    }
 
     public static void loadMenuInfo(Context context) {
         MenuBean menuData = new MenuBean(DeviceConfig.MainMenuInfo.MENU_DICT, context.getResources().getString(R.string.menu_dict), R.drawable.ic_dict, new DictMenuEvent());

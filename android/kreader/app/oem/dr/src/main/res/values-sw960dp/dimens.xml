@@ -107,4 +107,7 @@
     <dimen name="item_sketch_time_margin_top">5dp</dimen>
     <dimen name="item_sketch_title_margin_top">5dp</dimen>
     <dimen name="title_interval_margin_left">1dp</dimen>
+    <dimen name="fragment_main_view_bookName_width">210dp</dimen>
+    <dimen name="now_reading_book_cover_width">220dp</dimen>
+    <dimen name="now_reading_book_cover_height">300dp</dimen>
 </resources>

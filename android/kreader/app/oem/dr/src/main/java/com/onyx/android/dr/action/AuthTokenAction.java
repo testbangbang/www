@@ -81,6 +81,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         String password = DRPreferenceManager.getUserPassword(dataHolder.getContext(), "");
         if (StringUtils.isNullOrEmpty(account) && StringUtils.isNullOrEmpty(password)) {
             EventBus.getDefault().post(new LoginFailedEvent());
+            return;
         }
 
         if (!NetworkUtil.isWiFiConnected(dataHolder.getContext())) {

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/ebook_library_item_cover_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/image_selector_bg">
+
+        <ImageView
+            android:id="@+id/ebook_library_image_cover"
+            android:layout_width="@dimen/library_item_cover_width"
+            android:layout_height="@dimen/library_item_cover_width"
+            android:scaleType="fitXY"
+            android:src="@drawable/book_cover" />
+
+        <ImageView
+            android:id="@+id/ebook_library_image_get_widget"
+            android:layout_width="@dimen/book_list_item_widget_width"
+            android:layout_height="@dimen/book_list_item_widget_height"
+            android:layout_marginTop="0dp"
+            android:src="@drawable/book_item_get_widget"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/ebook_library_price"
+            android:layout_width="@dimen/library_item_cover_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:ellipsize="end"
+            android:gravity="left" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/ebook_library_add_to_shopping_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_rectangle_stroke"
+                android:padding="@dimen/edit_text_padding"
+                android:text="@string/add_to_shopping_cart" />
+
+            <TextView
+                android:id="@+id/ebook_library_item_buy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_rectangle_stroke"
+                android:padding="@dimen/edit_text_padding"
+                android:text="@string/buy" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

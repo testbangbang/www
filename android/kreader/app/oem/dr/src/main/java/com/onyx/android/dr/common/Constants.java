@@ -68,4 +68,8 @@ public class Constants {
     public static final String USER_TYPE = "user_type";
     public static final int HOUR = 24;
     public static final int MINUTE = 60;
+    public static final String PREFERRED_BOOKSHELF = "preferred_bookshelf";
+    public static final String CHINESE = "中文";
+    public static final String ENGLISH = "英文";
+    public static final String SMALL_LANGUAGE = "小语种";
 }

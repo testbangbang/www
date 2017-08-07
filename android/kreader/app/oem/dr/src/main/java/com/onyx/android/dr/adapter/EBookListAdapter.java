@@ -32,8 +32,6 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,8 +43,8 @@ import butterknife.ButterKnife;
 /**
  * Created by hehai on 2017/7/5.
  */
-public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapter.LibraryItemViewHolder> implements View.OnClickListener {
-    private static final String TAG = BookListAdapter.class.getSimpleName();
+public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdapter.LibraryItemViewHolder> implements View.OnClickListener {
+    private static final String TAG = EBookListAdapter.class.getSimpleName();
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_row);
     private int col = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_col);
     private Context context;
@@ -55,7 +53,7 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
     private boolean isVisibleToUser = false;
     private LibraryDataHolder dataHolder;
 
-    public BookListAdapter(Context context, LibraryDataHolder dataHolder) {
+    public EBookListAdapter(Context context, LibraryDataHolder dataHolder) {
         this.context = context;
         this.dataHolder = dataHolder;
     }
@@ -88,7 +86,7 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
 
     @Override
     public LibraryItemViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.book_list_item, parent, false);
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.ebook_list_item, parent, false);
         inflate.setPadding(context.getResources().getInteger(R.integer.library_item_padding_left),
                 context.getResources().getInteger(R.integer.library_item_padding_top),
                 context.getResources().getInteger(R.integer.library_item_padding_right),
@@ -103,7 +101,7 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
         Metadata eBook = getEBookList().get(position);
         viewHolder.getWidgetImage.setVisibility(isFileExists(eBook) ? View.VISIBLE : View.GONE);
         viewHolder.titleView.setVisibility(View.VISIBLE);
-        viewHolder.titleView.setText(String.valueOf(eBook.getName()));
+        viewHolder.titleView.setText(String.valueOf(eBook.getPrice()));
 
         Bitmap bitmap = getBitmap(eBook.getAssociationId());
         if (bitmap == null) {
@@ -118,6 +116,18 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
         }
         viewHolder.rootView.setOnClickListener(this);
         viewHolder.rootView.setTag(position);
+        viewHolder.addToShoppingCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: 17-8-3 add to shopping cart
+            }
+        });
+        viewHolder.buy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: 17-8-3 buy
+            }
+        });
     }
 
     @Override
@@ -134,6 +144,7 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
         if (enableWifiOpenAndDetect()) {
             return;
         }
+        // TODO: 17-8-7 buy
         startDownload(book);
     }
 
@@ -163,13 +174,17 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
     }
 
     static class LibraryItemViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.library_item_image_cover)
+        @Bind(R.id.ebook_library_image_cover)
         ImageView coverImage;
-        @Bind(R.id.library_item_image_get_widget)
+        @Bind(R.id.ebook_library_image_get_widget)
         ImageView getWidgetImage;
-        @Bind(R.id.library_item_textView_title)
+        @Bind(R.id.ebook_library_price)
         TextView titleView;
         View rootView;
+        @Bind(R.id.ebook_library_add_to_shopping_cart)
+        TextView addToShoppingCart;
+        @Bind(R.id.ebook_library_item_buy)
+        TextView buy;
 
         public LibraryItemViewHolder(final View itemView) {
             super(itemView);

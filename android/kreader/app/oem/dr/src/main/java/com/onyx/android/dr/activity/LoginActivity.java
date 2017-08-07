@@ -236,8 +236,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
     public void setProvince(List<String> provinceNames, List<ProvinceBean> provinces) {
         this.provinceNames = provinceNames;
         this.provinces = provinces;
-        spinnerProvince.setText(provinceNames.get(0));
-        loginPresenter.queryCity(provinces.get(0).proSort);
+        if (provinceNames != null) {
+            spinnerProvince.setText(provinceNames.get(0));
+            loginPresenter.queryCity(provinces.get(0).proSort);
+        }
     }
 
     @Override
@@ -486,7 +488,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     private void connectNetwork() {
         Device.currentDevice().enableWifiDetect(this);
         NetworkUtil.enableWiFi(this, true);
-        CommonNotices.showMessage(this,getString(R.string.network_not_connected));
+        CommonNotices.showMessage(this, getString(R.string.network_not_connected));
     }
 
     @Override

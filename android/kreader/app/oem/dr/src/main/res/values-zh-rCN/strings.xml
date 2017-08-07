@@ -293,4 +293,11 @@
     <string name="article_repeat_after">文章跟读</string>
     <string name="speech_recording">演讲录音</string>
     <string name="pronounce_evaluation">发音测评</string>
+    <string name="ebook_store">电子书城</string>
+    <string name="download_link_invalid">下载链接为空或者有误</string>
+    <string name="file_path_invalid">文件路径无效</string>
+    <string name="download_fail">下载失败</string>
+    <string name="bookshelf">%s书架</string>
+    <string name="add_to_shopping_cart">加入购物车</string>
+    <string name="buy">购买</string>
 </resources>

@@ -10,6 +10,7 @@ import com.onyx.android.dr.activity.AddMemorandumActivity;
 import com.onyx.android.dr.activity.ApplicationsActivity;
 import com.onyx.android.dr.activity.DictQueryActivity;
 import com.onyx.android.dr.activity.DictResultShowActivity;
+import com.onyx.android.dr.activity.EBookStoreActivity;
 import com.onyx.android.dr.activity.GoodSentenceNotebookActivity;
 import com.onyx.android.dr.activity.GoodSentenceTypeActivity;
 import com.onyx.android.dr.activity.HearAndSpeakActivity;
@@ -24,6 +25,8 @@ import com.onyx.android.dr.activity.QueryRecordActivity;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.utils.NetworkUtil;
 
 /**
  * Created by hehai on 17-6-29.
@@ -31,6 +34,10 @@ import com.onyx.android.sdk.data.model.Metadata;
 
 public class ActivityManager {
     public static void startLoginActivity(Context context) {
+        if (enableWifiOpenAndDetect(context)) {
+            CommonNotices.showMessage(context, context.getString(R.string.network_not_connected));
+            return;
+        }
         Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);
     }
@@ -167,5 +174,19 @@ public class ActivityManager {
     public static void startApplicationsActivity(Context context) {
         Intent intent = new Intent(context, ApplicationsActivity.class);
         context.startActivity(intent);
+    }
+
+    public static void startEBookStoreActivity(Context context) {
+        Intent intent = new Intent(context, EBookStoreActivity.class);
+        context.startActivity(intent);
+    }
+
+    private static boolean enableWifiOpenAndDetect(Context context) {
+        if (!NetworkUtil.isWiFiConnected(context)) {
+            Device.currentDevice().enableWifiDetect(context);
+            NetworkUtil.enableWiFi(context, true);
+            return true;
+        }
+        return false;
     }
 }

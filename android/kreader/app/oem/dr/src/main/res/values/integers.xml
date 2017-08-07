@@ -51,4 +51,8 @@
     <integer name="interest_col">3</integer>
     <integer name="address_popup_list_row">10</integer>
     <integer name="address_popup_list_col">1</integer>
+    <integer name="recent_book_row">2</integer>
+    <integer name="recent_book_col">3</integer>
+    <integer name="bookshelf_group_item_row">1</integer>
+    <integer name="bookshelf_group_item_col">3</integer>
 </resources>

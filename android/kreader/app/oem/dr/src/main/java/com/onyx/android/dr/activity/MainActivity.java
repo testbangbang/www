@@ -23,6 +23,7 @@ import com.onyx.android.dr.event.BackToBookshelfEvent;
 import com.onyx.android.dr.event.BackToMainViewEvent;
 import com.onyx.android.dr.event.BookshelfEvent;
 import com.onyx.android.dr.event.DictMenuEvent;
+import com.onyx.android.dr.event.DownloadSucceedEvent;
 import com.onyx.android.dr.event.GradedBooksEvent;
 import com.onyx.android.dr.event.ListenAndSayMenuEvent;
 import com.onyx.android.dr.event.LoginFailedEvent;
@@ -40,6 +41,7 @@ import com.onyx.android.dr.fragment.BookshelfV2Fragment;
 import com.onyx.android.dr.fragment.ChildViewID;
 import com.onyx.android.dr.fragment.CommonBooksFragment;
 import com.onyx.android.dr.fragment.MainViewFragment;
+import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.presenter.MainPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.data.model.Library;
@@ -65,6 +67,7 @@ public class MainActivity extends BaseActivity implements MainView {
     private int currentPageID = ChildViewID.BASE_VIEW;
     private SparseArray<BaseFragment> childViewList = new SparseArray<>();
     private List<Library> libraryList;
+    private LibraryDataHolder dataHolder;
 
     @Override
     protected Integer getLayoutId() {
@@ -73,12 +76,13 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected void initConfig() {
+        mainPresenter = new MainPresenter(this);
+        mainPresenter.loadData(this);
     }
 
     @Override
     protected void initView() {
         initTabMenu();
-        switchCurrentFragment(ChildViewID.FRAGMENT_MAIN_VIEW);
     }
 
     private void initTabMenu() {
@@ -92,14 +96,12 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected void initData() {
-        mainPresenter = new MainPresenter(this);
-        mainPresenter.loadData(this);
-        mainPresenter.loadTabMenu(DRPreferenceManager.getUserType(this, Constants.ACCOUNT_TYPE_HIGH_SCHOOL));
         mainPresenter.authToken();
     }
 
     @Override
     public void setTabMenuData(List<MenuBean> menuData) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_MAIN_VIEW);
         tabMenuAdapter.setMenuDataList(menuData);
         tabMenuAdapter.notifyDataSetChanged();
     }
@@ -115,31 +117,33 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGradedBooksEvent(GradedBooksEvent event) {
-        switchCommonFragment(Constants.GRADED_BOOKS);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMyBooksMenuEvent(MyBooksMenuEvent event) {
-        switchCommonFragment(Constants.MY_BOOKS);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRealTimeBooksMenuEvent(RealTimeBooksMenuEvent event) {
-        switchCommonFragment(Constants.REAL_TIME_BOOKS_LIBRARY_NAME);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSchoolBasedMaterialsMenuEvent(SchoolBasedMaterialsMenuEvent event) {
-        switchCommonFragment(Constants.SCHOOL_BASED_MATERIALS_LIBRARY_NAME);
+
     }
 
     private void switchCommonFragment(String libraryName) {
-
+        switchCurrentFragment(ChildViewID.FRAGMENT_COMMON_BOOKS);
+        CommonBooksFragment fragment = (CommonBooksFragment) getPageView(ChildViewID.FRAGMENT_COMMON_BOOKS);
+        fragment.setData(getLibraryParentId(),libraryName,R.drawable.ic_real_time_books);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onProfessionalMaterialsMenuEvent(ProfessionalMaterialsMenuEvent event) {
-        switchCommonFragment(Constants.PROFESSIONAL_MATERIALS);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -207,14 +211,27 @@ public class MainActivity extends BaseActivity implements MainView {
         CommonNotices.showMessage(this, event.getLibrary().getName());
         switchCurrentFragment(ChildViewID.FRAGMENT_BOOKSHELF);
         BookshelfFragment fragment = (BookshelfFragment) getPageView(ChildViewID.FRAGMENT_BOOKSHELF);
-        fragment.setData(library, event.getLanguages());
+        fragment.setData(library);
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onDownloadSucceedEvent(DownloadSucceedEvent event) {
+        getDataHolder().getCloudManager().getCloudDataProvider().saveMetadata(DRApplication.getInstance(), event.getMetadata());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookshelfEvent(BookshelfEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_BOOKSHELF);
         BookshelfFragment fragment = (BookshelfFragment) getPageView(ChildViewID.FRAGMENT_BOOKSHELF);
-        fragment.setData(event.getLanguage(), libraryList);
+        fragment.setData(event.getLanguage());
+    }
+
+    private LibraryDataHolder getDataHolder() {
+        if (dataHolder == null) {
+            dataHolder = new LibraryDataHolder(this);
+            dataHolder.setCloudManager(DRApplication.getCloudStore().getCloudManager());
+        }
+        return dataHolder;
     }
 
     public void switchCurrentFragment(int pageID) {

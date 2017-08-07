@@ -13,7 +13,9 @@ import com.onyx.android.dr.request.local.RequestLoadLocalDB;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudChildLibraryListLoadRequest;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -57,6 +59,7 @@ public class MainPresenter {
                 }
             }
         });
+
     }
 
     public void getMyGroup() {
@@ -68,7 +71,20 @@ public class MainPresenter {
                 if (groups != null && groups.size() > 0) {
                     String library = groups.get(0).library;
                     DRPreferenceManager.saveLibraryParentId(DRApplication.getInstance(), library);
+                    getLibraryList(library);
                 }
+            }
+        });
+    }
+
+    private void getLibraryList(String library) {
+        final CloudChildLibraryListLoadRequest req = new CloudChildLibraryListLoadRequest(library);
+        mainData.getLibraryList(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                List<Library> libraryList = req.getLibraryList();
+                mainView.setTabMenuData(mainData.loadTabMenu(libraryList));
+                mainView.setLibraryList(libraryList);
             }
         });
     }

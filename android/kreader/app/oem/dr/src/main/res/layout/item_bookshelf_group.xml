@@ -20,7 +20,7 @@
             android:src="@drawable/ic_next" />
     </RelativeLayout>
 
-    <com.onyx.android.sdk.ui.view.PageRecyclerView
+    <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
         android:id="@+id/page_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
