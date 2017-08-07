@@ -32,6 +32,8 @@ public class NoteAppConfig {
     public static final String USE_LINE_LAYOUT = "use_line_layout";
     public static final String SHOW_INPUT_METHOD_INSTANTLY_AFTER_OPEN_DIALOG = "show_input_method_instantly_after_open_dialog";
     public static final String USE_MX_UI_STYLE = "use_mx_ui_style";
+    //once use edu config.hide import/export function.give extra shape and less note background.
+    public static final String USE_EDU_CONFIG = "use_edu_config";
     static public final boolean useDebugConfig = false;
 
     static public NoteAppConfig sharedInstance(Context context) {
@@ -172,5 +174,9 @@ public class NoteAppConfig {
     //TODO:key to config support PressStress or not,now just disable for no function.
     public boolean isEnablePressStressDetect(){
         return false;
+    }
+
+    public boolean useEduConfig(){
+        return backend.hasKey(USE_EDU_CONFIG) && backend.getBoolean(USE_EDU_CONFIG);
     }
 }

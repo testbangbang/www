@@ -32,7 +32,14 @@ public class DataProviderManager {
     public static DataProviderBase getCloudDataProvider(CloudConf cloudConf) {
         if (cloudDataProvider == null) {
             cloudDataProvider = new CloudDataProvider(cloudConf);
+        } else {
+            CloudDataProvider cloud = (CloudDataProvider) cloudDataProvider;
+            cloud.setCloudConf(cloudConf);
         }
         return cloudDataProvider;
+    }
+
+    public static void setCloudDataProvider(CloudConf cloudConf) {
+        cloudDataProvider = new CloudDataProvider(cloudConf);
     }
 }

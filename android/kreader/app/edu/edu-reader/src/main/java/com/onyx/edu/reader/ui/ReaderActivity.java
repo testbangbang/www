@@ -41,6 +41,7 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
@@ -84,6 +85,7 @@ import com.onyx.edu.reader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.edu.reader.ui.events.ChangeOrientationEvent;
 import com.onyx.edu.reader.ui.events.ClearFormFieldControlsEvent;
 import com.onyx.edu.reader.ui.events.ClosePopupEvent;
+import com.onyx.edu.reader.ui.events.CloudConfInitEvent;
 import com.onyx.edu.reader.ui.events.ConfirmCloseDialogEvent;
 import com.onyx.edu.reader.ui.events.DialogUIChangeEvent;
 import com.onyx.edu.reader.ui.events.DocumentInitRenderedEvent;
@@ -117,7 +119,7 @@ import com.onyx.edu.reader.ui.events.UpdateTabWidgetVisibilityEvent;
 import com.onyx.edu.reader.ui.gesture.MyOnGestureListener;
 import com.onyx.edu.reader.ui.gesture.MyScaleGestureListener;
 import com.onyx.edu.reader.ui.handler.BaseHandler;
-import com.onyx.edu.reader.ui.handler.FormFieldHandler;
+import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.SlideshowHandler;
 import com.onyx.edu.reader.ui.receiver.NetworkConnectChangedReceiver;
@@ -466,6 +468,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         getReaderDataHolder().onActivityResume();
     }
 
+    @Override
+    protected void onStop() {
+        getReaderDataHolder().stop();
+        super.onStop();
+    }
+
     private void enablePenShortcut() {
         getReaderDataHolder().enablePenShortcut();
     }
@@ -694,7 +702,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         disablePenShortcut();
         stopRawEventProcessor();
-        getReaderDataHolder().getHandlerManager().resetActiveProvider();
+        getReaderDataHolder().getHandlerManager().resetDefaultProvider();
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
@@ -816,6 +824,10 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (metadata != null) {
             getReaderDataHolder().setCloudDocId(metadata.getCloudId());
         }
+        String jumpFromPath = getIntent().getStringExtra(Constant.JUMP_FROM_DOCUMENT_PATH_TAG);
+        if (!StringUtils.isNullOrEmpty(jumpFromPath)) {
+            getReaderDataHolder().setJumpFromDocPath(jumpFromPath);
+        }
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
         if (isDocumentOpening() || isFileAlreadyOpened(path)) {
             return;
@@ -889,10 +901,14 @@ public class ReaderActivity extends OnyxBaseActivity {
         initReaderMenu();
         updateNoteHostView();
         getReaderDataHolder().updateRawEventProcessor();
-        getReaderDataHolder().applyReviewDataFromCloud(false);
         getReaderDataHolder().resetHandlerManager();
 
         postDocumentInitRendered();
+    }
+
+    @Subscribe
+    public void onCloudConfInit(final CloudConfInitEvent event) {
+        getReaderDataHolder().applyReviewDataFromCloud(false);
     }
 
     private void postDocumentInitRendered() {
@@ -1076,6 +1092,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         try {
+            ensureClearFormFieldControls(renderFormField);
             readerPainter.drawPage(this,
                     canvas,
                     pageBitmap,
@@ -1089,8 +1106,15 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
     }
 
+    private void ensureClearFormFieldControls(boolean renderFormField) {
+        if (!renderFormField) {
+            return;
+        }
+        clearFormFieldControls(null);
+    }
+
     @Subscribe
-    public void onClearFormFieldControlsEvent(final ClearFormFieldControlsEvent event) {
+    public void clearFormFieldControls(final ClearFormFieldControlsEvent event) {
         for (View view : formFieldControls) {
             mainView.removeView(view);
         }
@@ -1122,31 +1146,13 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
-        if (formFieldControls.size() > 0) {
-            boolean startNoteDrawing = hasScribbleFormField();
-            if (!startNoteDrawing || getReaderDataHolder().hasDialogShowing()) {
-                getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
-            }else {
-                getHandlerManager().setActiveProvider(HandlerManager.FORM_SCRIBBLE_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
-            }
-
-            ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
+        if (!getReaderDataHolder().useFormMode()) {
+            return;
         }
+        boolean startNoteDrawing = getReaderDataHolder().hasScribbleFormField();
+        getHandlerManager().setActiveProvider(getReaderDataHolder().getDefaultProvider(), FormBaseHandler.createInitialState(formFieldControls));
+        ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
     }
-
-    private boolean hasScribbleFormField() {
-        if (formFieldControls == null) {
-            return false;
-        }
-        for (View formFieldControl : formFieldControls) {
-            ReaderFormField field = (ReaderFormField) formFieldControl.getTag();
-            if (field instanceof ReaderFormScribble) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     private boolean isFormScribble(View view) {
         return view.getTag() instanceof ReaderFormScribble;

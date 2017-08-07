@@ -27,6 +27,13 @@
             app:layout_heightPercent="40%"
             app:layout_widthPercent="100%">
 
+            <ImageView
+                android:id="@+id/back_ground_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                />
+
             <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
                 android:id="@+id/device_detail_area"
                 android:layout_width="wrap_content"
@@ -60,6 +67,15 @@
                     android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium" />
             </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
+            <ImageView
+                android:id="@+id/device_info_enter_image_view"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                />
+
             <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
                 android:id="@+id/mac_qr_code_layout"
                 android:layout_width="wrap_content"
@@ -68,8 +84,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignWithParentIfMissing="true"
                 app:alwaysLayoutImageView="true"
-                app:layout_marginBottomPercent="45%"
-                app:layout_marginRightPercent="23%">
+                app:layout_marginBottomPercent="@fraction/qrcode_bottom_margin"
+                app:layout_marginRightPercent="@fraction/qrcode_right_margin">
 
                 <ImageView
                     android:id="@+id/mac_qr_code_image_view"

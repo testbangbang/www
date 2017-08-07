@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -71,7 +72,7 @@ public class WifiAdmin {
     }
 
     public interface Callback {
-        void onWifiStateChange(boolean isWifiEnable);
+        void onWifiStateChange(boolean isWifiEnable,int wifiExtraState);
 
         void onScanResultReady(List<AccessPoint> scanResult);
 
@@ -102,7 +103,8 @@ public class WifiAdmin {
             public void onReceive(Context context, Intent intent) {
                 switch (intent.getAction()) {
                     case WifiManager.WIFI_STATE_CHANGED_ACTION:
-                        callback.onWifiStateChange(wifiManager.isWifiEnabled());
+                        int wifiExtraState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE,WifiManager.WIFI_STATE_UNKNOWN);
+                        callback.onWifiStateChange(wifiManager.isWifiEnabled(), wifiExtraState);
                         if (wifiManager.isWifiEnabled()) {
                             triggerWifiScan();
                         }
@@ -125,11 +127,12 @@ public class WifiAdmin {
     }
 
     private List<AccessPoint> buildResultList(Collection<ScanResult> scanResults) {
+        HashMap<String, AccessPoint> resultMap = new HashMap<>();
         List<AccessPoint> resultList = new LinkedList<>();
         AccessPoint connectedPoint = null;
         for (ScanResult item : scanResults) {
             AccessPoint point = new AccessPoint(item, this);
-            if (point != null && point.getWifiConfiguration() != null) {
+            if (point.getWifiConfiguration() != null) {
                 if (Debug.getDebug()) {
                     Log.e(TAG, point.getWifiConfiguration().SSID + "(networkID):" + point.getWifiConfiguration().networkId);
                 }
@@ -142,10 +145,11 @@ public class WifiAdmin {
                     connectedPoint = point;
                 }
             }
-            if (checkAccessPointLegality(point,resultList)){
-                resultList.add(point);
+            if (checkAccessPointLegality(point,resultMap)){
+                resultMap.put(point.getScanResult().SSID, point);
             }
         }
+        resultList.addAll(resultMap.values());
         Collections.sort(resultList, new Comparator<AccessPoint>() {
             @Override
             public int compare(AccessPoint a1, AccessPoint a2) {
@@ -159,13 +163,15 @@ public class WifiAdmin {
         return resultList;
     }
 
-    //sync from Android Settings AccessPoint Class Logic.
-    private boolean checkAccessPointLegality(AccessPoint point, List<AccessPoint> list) {
-        for (AccessPoint ap : list) {
-            if (ap.getScanResult().SSID.equals(point.getScanResult().SSID) &&
-                    ap.getSecurity() == point.getSecurity()) {
-                return false;
-            }
+    /**
+     *  sync from Android Settings AccessPoint Class Logic.
+     *  Logic:first check security,if same,pass.
+     *  if security not same,just check the signal level,show the strongest one.
+     */
+    private boolean checkAccessPointLegality(AccessPoint point, HashMap<String, AccessPoint> map) {
+        if (map.containsKey(point.getScanResult().SSID)) {
+            AccessPoint originalPoint = map.get(point.getScanResult().SSID);
+            return originalPoint.getSecurity() != point.getSecurity() && originalPoint.getSignalLevel() < point.getSignalLevel();
         }
         return true;
     }

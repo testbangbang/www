@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.provider.SearchHistoryProvider;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormRadioButton;
 import com.onyx.android.sdk.reader.api.ReaderFormRadioGroup;
@@ -42,6 +43,7 @@ public class ReaderUserDataInfo {
     private PointF touchPoint;
 
     private String documentPath;
+    private ReaderDocumentCategory documentCategory;
     private int documentCodePage;
     public ReaderChineseConvertType chineseConvertType = ReaderChineseConvertType.NONE;
     private ReaderDocumentMetadata documentMetadata;
@@ -62,6 +64,14 @@ public class ReaderUserDataInfo {
 
     public String getDocumentPath() {
         return documentPath;
+    }
+
+    public void setDocumentCategory(ReaderDocumentCategory documentType) {
+        this.documentCategory = documentType;
+    }
+
+    public ReaderDocumentCategory getDocumentCategory() {
+        return documentCategory;
     }
 
     public void setDocumentCodePage(int documentCodePage) {
@@ -359,6 +369,19 @@ public class ReaderUserDataInfo {
             }
         }
         return false;
+    }
+
+    public List<ReaderFormScribble> getReaderFormScribbles(final PageInfo pageInfo) {
+        List<ReaderFormScribble> readerFormScribbles = new ArrayList<>();
+        if (hasFormFields(pageInfo)) {
+            List<ReaderFormField> formFields = formFieldMap.get(pageInfo.getName());
+            for (ReaderFormField formField : formFields) {
+                if (formField instanceof ReaderFormScribble) {
+                    readerFormScribbles.add((ReaderFormScribble)formField);
+                }
+            }
+        }
+        return readerFormScribbles;
     }
 
     public List<ReaderFormField> getFormFields(final PageInfo pageInfo) {

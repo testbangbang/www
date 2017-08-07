@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="gray_shallow">#E9E9E9</color>
+    <color name="background_gray">#FAFAFA</color>
+    <color name="gray">#808080</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="right_color">#000000</color>
+    <color name="wrong_color">#B3B3B3</color>
+    <color name="progress_color">#4D4D4D</color>
+    <color name="home_item_view_background">#E8E2D1</color>
+    <color name="home_item_view_action_normal_stoke_color">#919191</color>
+    <color name="home_item_view_action_select_stoke_color">@android:color/black</color>
+    <color name="home_item_inner_divider_background">#82817d</color>
+</resources>

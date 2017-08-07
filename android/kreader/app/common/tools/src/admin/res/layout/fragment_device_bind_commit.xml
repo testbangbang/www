@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f5f5f5"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/ToolBarStyle"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <include
+            android:id="@+id/toolbar_header"
+            layout="@layout/toolbar_header" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <include
+        android:id="@+id/layout_mac_address"
+        layout="@layout/layout_mac_info"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="6dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="39dp"
+                android:text="*以下均为必填项"
+                android:textColor="#ed6965"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:id="@+id/layout_user_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/layout_username"
+                    layout="@layout/layout_user_edit_info" />
+
+                <include
+                    android:id="@+id/layout_phone"
+                    layout="@layout/layout_user_edit_info" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="12dp"
+                    android:text="组"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:padding="20dp">
+
+                <Button
+                    android:id="@+id/btn_unbind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/activity_contact_commit_button_height"
+                    android:layout_marginLeft="@dimen/activity_contact_commit_button_text_margin_left_right"
+                    android:layout_marginRight="@dimen/activity_contact_commit_button_text_margin_left_right"
+                    android:background="@drawable/button_background"
+                    android:text="@string/device_unbind"
+                    android:layout_centerVertical="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/activity_contact_commit_button_text_size" />
+
+                <Button
+                    android:id="@+id/btn_bind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/activity_contact_commit_button_height"
+                    android:layout_marginLeft="@dimen/activity_contact_commit_button_text_margin_left_right"
+                    android:layout_marginRight="@dimen/activity_contact_commit_button_text_margin_left_right"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/button_background"
+                    android:text="@string/device_bind"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/activity_contact_commit_button_text_size" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,42 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        sourceSets.main {
+            aidl.srcDirs = ['src/main/java']
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../proguard-rules.pro', 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            minifyEnabled false
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "com.google.zxing:core:$rootProject.zxingVersion"
+    compile "com.android.support:appcompat-v7:$rootProject.phone_supportLibraryVersion"
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    compile "pub.devrel:easypermissions:$rootProject.easyPermissonVersion"
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
+}

@@ -3,12 +3,10 @@ package com.onyx.android.sdk.ui.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
@@ -209,6 +207,13 @@ public class OnyxToolbar extends ViewGroup {
         view.setBackgroundColor(getResources().getColor(android.R.color.black));
         view.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DimenUtils.dip2px(getContext(), 1)));
         return view;
+    }
+
+    public void setDividerViewHeight(int height) {
+        if (dividerView == null) {
+            return;
+        }
+        dividerView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
     }
 
     @Override
@@ -484,6 +489,23 @@ public class OnyxToolbar extends ViewGroup {
             lp.weight = weight;
             spaceView.setLayoutParams(lp);
             return spaceView;
+        }
+
+        public static CommonViewHolder createImageViewTitleHolder(Context context,
+                                                                  int imageId,
+                                                                  int imageResId,
+                                                                  int titleId,
+                                                                  int resTitleId,
+                                                                  int layoutId,
+                                                                  final Object tag) {
+            View view = LayoutInflater.from(context).inflate(layoutId, null, false);
+            view.setTag(tag);
+            CommonViewHolder viewHolder = new CommonViewHolder(view);
+            viewHolder.setImageResource(imageId, imageResId);
+            viewHolder.setText(titleId, resTitleId);
+            OnyxToolbar.LayoutParams lp = new OnyxToolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            view.setLayoutParams(lp);
+            return viewHolder;
         }
 
         public static CommonViewHolder createMarkerViewHolder(Context context,

@@ -98,6 +98,10 @@ public class StatisticsManager {
         getImpl().onBatteryStatusChange(context, statusStr, level);
     }
 
+    public void onFormFieldSelectedEvent(Context context, String formId, String value) {
+        getImpl().onFormFieldSelected(context, formId, value);
+    }
+
     private StatisticsBase getImpl() {
         return impl;
     }

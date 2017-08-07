@@ -41,6 +41,7 @@ public class EventReceiver {
             case Onyx:
                 final String url = DeviceConfig.sharedInstance(context).getStatisticsUrl();
                 args.put(StatisticsBase.STATISTICS_URL, url);
+                args.put(StatisticsBase.USE_CLOUD_INDEX, String.valueOf(true));
                 break;
         }
 
@@ -140,6 +141,14 @@ public class EventReceiver {
             return;
         }
         statisticsManager.onDocumentFinished(event.getContext(), event.getComment(), event.getScore());
+    }
+
+    @Subscribe
+    public void onFormFieldSelected(final FormFieldSelectedEvent event) {
+        if (!isEnable()) {
+            return;
+        }
+        statisticsManager.onFormFieldSelectedEvent(event.getContext(), event.getFormId(), event.getValue());
     }
 
     @Subscribe

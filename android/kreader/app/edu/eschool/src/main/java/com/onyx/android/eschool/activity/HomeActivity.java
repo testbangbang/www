@@ -45,8 +45,6 @@ import butterknife.OnClick;
 public class HomeActivity extends BaseActivity {
     private static boolean checkedOnBootComplete = false;
 
-    private String picDisplayPath = "/mnt/sdcard/slide/sample-cfa_01.png";
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
@@ -59,29 +57,30 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void cloudContentImportFirstBoot() {
-        if (!isCheckOnBootComplete() && !StudentPreferenceManager.hasImportContent(this)) {
-            StudentPreferenceManager.setImportContent(this, true);
-            String jsonFilePath = DeviceConfig.sharedInstance(this).getCloudContentImportJsonFilePath();
-            if (StringUtils.isNullOrEmpty(jsonFilePath)) {
-                return;
-            }
-            List<String> filePathList = new ArrayList<>();
-            filePathList.add(jsonFilePath);
-            CloudContentImportFromJsonRequest listImportRequest = new CloudContentImportFromJsonRequest(filePathList);
-            SchoolApp.getSchoolCloudStore().getCloudManager().submitRequest(this, listImportRequest, new BaseCallback() {
-                @Override
-                public void start(BaseRequest request) {
-                    showProgressDialog(request, R.string.cloud_content_import_loading, null);
-                }
-
-                @Override
-                public void done(BaseRequest request, Throwable e) {
-                    dismissProgressDialog(request);
-                    ToastUtils.showToast(request.getContext(), e == null ? R.string.cloud_content_import_success :
-                            R.string.cloud_content_import_failed);
-                }
-            });
+        if (isCheckOnBootComplete() || StudentPreferenceManager.hasImportContent(this)) {
+            return;
         }
+        StudentPreferenceManager.setImportContent(this, true);
+        String jsonFilePath = DeviceConfig.sharedInstance(this).getCloudContentImportJsonFilePath();
+        if (StringUtils.isNullOrEmpty(jsonFilePath)) {
+            return;
+        }
+        List<String> filePathList = new ArrayList<>();
+        filePathList.add(jsonFilePath);
+        CloudContentImportFromJsonRequest listImportRequest = new CloudContentImportFromJsonRequest(filePathList);
+        SchoolApp.getSchoolCloudStore().getCloudManager().submitRequest(this, listImportRequest, new BaseCallback() {
+            @Override
+            public void start(BaseRequest request) {
+                showProgressDialog(request, R.string.cloud_content_import_loading, null);
+            }
+
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                dismissProgressDialog(request);
+                ToastUtils.showToast(request.getContext(), e == null ? R.string.cloud_content_import_success :
+                        R.string.cloud_content_import_failed);
+            }
+        });
     }
 
     @Override
@@ -146,16 +145,6 @@ public class HomeActivity extends BaseActivity {
     }
 
     protected void initConfig() {
-        initConfigByAppConfig();
-    }
-
-    private void initConfigByAppConfig() {
-        if (AppConfig.sharedInstance(this).isForDisplayHomeLayout()) {
-            String path = AppConfig.sharedInstance(this).getHomePicDisplayFilePath();
-            if (StringUtils.isNotBlank(path)) {
-                picDisplayPath = path;
-            }
-        }
     }
 
     private void initNormalItem() {
@@ -190,15 +179,6 @@ public class HomeActivity extends BaseActivity {
     void onTeachingMaterialClick() {
         //ActivityUtil.startActivitySafely(this, getPackageManager().getLaunchIntentForPackage("com.youngy.ui"));
         ActivityUtil.startActivitySafely(this, new Intent(this, MainActivity.class));
-    }
-
-    private Intent getPicDisplayIntent() {
-        Intent intent = ViewDocumentUtils.viewActionIntentWithMimeType(new File(picDisplayPath));
-        ComponentName component = ViewDocumentUtils.getEduReaderComponentName(this);
-        if (component != null) {
-            intent.setComponent(component);
-        }
-        return intent;
     }
 
     private Intent getApplicationListIntent() {

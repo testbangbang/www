@@ -24,4 +24,5 @@
     <dimen name="onyx_note_style_width">340dp</dimen>
 
     <dimen name="onyx_scribble_btn_page_progress_width">@dimen/wrap_content</dimen>
+    <dimen name="dialog_move_folder_item_height">40dp</dimen>
 </resources>

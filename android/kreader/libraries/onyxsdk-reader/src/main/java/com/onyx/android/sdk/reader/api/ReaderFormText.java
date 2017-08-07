@@ -13,12 +13,14 @@ public class ReaderFormText extends ReaderFormField {
                            String defaultText) {
         super(name, left, top, right, bottom);
         text = defaultText;
-
     }
 
-    public static ReaderFormText create(String name, float left, float top, float right, float bottom,
+    public static ReaderFormField create(String name, float left, float top, float right, float bottom,
                                  String defaultText) {
-        Debug.e(ReaderFormText.class, "create: " + name + ", " + left + ", " + top + ", " + right + ", " + bottom);
+        ReaderFormType formType = ReaderFormField.getFormTypeByName(name);
+        if (formType == ReaderFormType.SCRIBBLE) {
+            return ReaderFormScribble.create(name, left, top, right, bottom);
+        }
         return new ReaderFormText(name, left, top, right, bottom, defaultText);
     }
 

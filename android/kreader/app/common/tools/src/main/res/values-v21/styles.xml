@@ -1,0 +1,8 @@
+<resources>
+
+    <style name="AppTheme" parent="@style/CustomLibraryTheme">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:colorControlNormal">@android:color/white</item>
+    </style>
+
+</resources>

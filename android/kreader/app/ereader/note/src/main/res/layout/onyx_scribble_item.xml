@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageview_bg"
-        android:ellipsize="middle"
+        android:ellipsize="end"
         android:gravity="top|center_horizontal"
         android:singleLine="@bool/onyx_scribble_item_title_single_line"
         android:lines="@integer/onyx_scribble_item_title_max_line_count"

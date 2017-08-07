@@ -13,6 +13,7 @@ import java.util.List;
  * Created by zhuzeng on 6/28/16.
  */
 public class PageFlushRequest extends BaseNoteRequest {
+    private static final String TAG = PageFlushRequest.class.getSimpleName();
 
     private List<Shape> shapeList = new ArrayList<>();
     private volatile boolean save = false;

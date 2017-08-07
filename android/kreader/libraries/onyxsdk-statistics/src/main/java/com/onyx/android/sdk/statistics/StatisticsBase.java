@@ -18,6 +18,7 @@ public interface StatisticsBase {
     static final String KEY_TAG = "key";
     static final String CHANNEL_TAG = "channel";
     static final String STATISTICS_URL = "url";
+    static final String USE_CLOUD_INDEX = "use cloud index";
 
     boolean init(final Context context, final Map<String, String> args);
 
@@ -42,4 +43,6 @@ public interface StatisticsBase {
     void onDictionaryLookupEvent(final Context context, final String originText);
 
     void onBatteryStatusChange(final Context context, final String status, final int level);
+
+    void onFormFieldSelected(final Context context, final String formId, final String value);
 }

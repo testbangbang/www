@@ -19,6 +19,7 @@ public class BaseShape implements Shape {
     private TouchPointList normalizedPoints = new TouchPointList(400);
     private TouchPoint downPoint = new TouchPoint();
     private TouchPoint currentPoint = new TouchPoint();
+    private TouchPoint currentScreenPoint = new TouchPoint();
     private String uniqueId;
     private String documentUniqueId;
     private String pageUniqueId;
@@ -40,6 +41,9 @@ public class BaseShape implements Shape {
     private FormValue formValue;
     private boolean lock;
     private boolean review;
+
+    private boolean selected = false;
+    private float scale = 1.0f;
 
     /**
      * rectangle, circle, etc.
@@ -122,11 +126,31 @@ public class BaseShape implements Shape {
         this.displayStrokeWidth = displayStrokeWidth;
     }
 
+    @Override
+    public void setScale(float targetScaleValue) {
+        scale = targetScaleValue;
+    }
+
+    @Override
+    public float getScale() {
+        return scale;
+    }
+
+    @Override
+    public void setSelected(boolean isSelected) {
+        selected = isSelected;
+    }
+
+    @Override
+    public boolean isSelected() {
+        return selected;
+    }
+
     public float getDisplayScale(final RenderContext renderContext) {
         if (renderContext == null || renderContext.matrix == null) {
-            return 1.0f;
+            return scale;
         }
-        return renderContext.displayScale;
+        return scale * renderContext.displayScale;
     }
 
     public boolean supportDFB() {
@@ -173,6 +197,8 @@ public class BaseShape implements Shape {
         downPoint.y = normalizedPoint.y;
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
+        currentScreenPoint.x = screenPoint.x;
+        currentScreenPoint.y = screenPoint.y;
         normalizedPoints.add(normalizedPoint);
         updateBoundingRect();
     }
@@ -184,6 +210,8 @@ public class BaseShape implements Shape {
     public void addMovePoint(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
+        currentScreenPoint.x = screenPoint.x;
+        currentScreenPoint.y = screenPoint.y;
         if (isAddMovePoint()) {
             normalizedPoints.add(normalizedPoint);
         }
@@ -195,6 +223,11 @@ public class BaseShape implements Shape {
 
     public void onTranslate(final float dx, final float dy) {
         normalizedPoints.translateAllPoints(dx, dy);
+        updatePoints();
+    }
+
+    @Override
+    public void updatePoints() {
         if (normalizedPoints.size() > 0) {
             downPoint.set(normalizedPoints.get(0));
         }
@@ -208,6 +241,8 @@ public class BaseShape implements Shape {
     public void addUpPoint(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         currentPoint.x = normalizedPoint.x;
         currentPoint.y = normalizedPoint.y;
+        currentScreenPoint.x = screenPoint.x;
+        currentScreenPoint.y = screenPoint.y;
         normalizedPoints.add(normalizedPoint);
         updateBoundingRect();
     }
@@ -242,11 +277,8 @@ public class BaseShape implements Shape {
     }
 
     public boolean hitTest(final float x, final float y, final float radius) {
-        final float limit = radius * radius;
-        float thickness = getStrokeWidth();
+        final float limit = radius;
         float x1, y1, x2, y2;
-        float left, top, right, bottom;
-        float xMin = Float.MAX_VALUE, xMax = Float.MIN_VALUE, yMin = Float.MAX_VALUE, yMax = Float.MIN_VALUE;
         boolean hit = false;
         int first, second;
         final List<TouchPoint> points = normalizedPoints.getPoints();
@@ -260,27 +292,10 @@ public class BaseShape implements Shape {
             x2 = points.get(second).getX();
             y2 = points.get(second).getY();
 
-            left = x1 - thickness;
-            top = y1 - thickness;
-            right = x1 + thickness;
-            bottom = y1 + thickness;
-
-            boolean isIntersect = ShapeUtils.contains(x1, y1, x2, y2, x, y, limit);
+            boolean isIntersect = ShapeUtils.hitTest(x1, y1, x2, y2, x, y, limit);
             if (isIntersect) {
                 hit = true;
                 break;
-            }
-            if (xMin > left) {
-                xMin = left;
-            }
-            if (xMax < right) {
-                xMax = right;
-            }
-            if (yMin > top) {
-                yMin = top;
-            }
-            if (yMax < bottom) {
-                yMax = bottom;
             }
         }
         return hit;
@@ -289,6 +304,10 @@ public class BaseShape implements Shape {
 
     public final TouchPoint getCurrentPoint() {
         return currentPoint;
+    }
+
+    public TouchPoint getCurrentScreenPoint() {
+        return currentScreenPoint;
     }
 
     public final TouchPoint getDownPoint() {
@@ -438,5 +457,10 @@ public class BaseShape implements Shape {
 
     public void setReview(boolean review) {
         this.review = review;
+    }
+
+    @Override
+    public boolean inVisibleDrawRectF(RectF rect) {
+        return true;
     }
 }

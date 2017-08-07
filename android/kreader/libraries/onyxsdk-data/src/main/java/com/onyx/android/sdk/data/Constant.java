@@ -24,6 +24,12 @@ public class Constant {
     public static final String ONYX_HOST_BASE = "http://oa.o-in.me:9058";
     public static final String ONYX_API_BASE = "http://oa.o-in.me:9058/api/";
 
+    public static final String ONYX_BACKUP_HOST_BASE = "http://47.90.54.36:8001";
+    public static final String ONYX_BACKUP_API_BASE = "http://47.90.54.36:8001/api/";
+
+    public static final String CLOUD_MAIN_INDEX_SERVER_HOST = "http://119.23.143.188/";
+    public static final String CLOUD_MAIN_INDEX_SERVER_API = "http://119.23.143.188/api/";
+
     public static final String WHERE_TAG = "where";
     public static final String ARGS_TAG = "args";
     static public final String JSON_TAG = "application/json";
@@ -39,6 +45,13 @@ public class Constant {
     static public final String FILE_TAG = "file";
     static public final String MD5_TAG = "md5";
     static public final String DOCID_TAG = "docId";
+    static public final String NAME_TAG = "name";
+    static public final String PACKAGE_TAG = "package";
+    static public final String VERSION_TAG = "version";
+    static public final String DEVICE_MAC_TAG = "deviceMAC";
+    static public final String PHONE_TAG = "phone";
+    static public final String MAC_TAG = "mac";
+    static public final String INSTALLATIONId_TAG = "installationId";
     static public final String READER_DATA_FOLDER = "OnyxReader";
 
     public static final String COVER_TYPE_SMALL = "small";
@@ -56,4 +69,8 @@ public class Constant {
 
     public static final String HEADER_AUTHORIZATION = "authorization";
 
+    public static final String CLOUD_BACKUP_FILE_SAVE_FOLDER = "cloud_backup";
+    public static final String CLOUD_BACKUP_TEMP_FILE_FOLDER = "cloud_backup_temp";
+
+    public static final String JUMP_FROM_DOCUMENT_PATH_TAG = "jump_from_document_path";
 }

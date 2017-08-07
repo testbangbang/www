@@ -7,6 +7,7 @@ import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import com.onyx.android.sdk.utils.DeviceInfoUtil;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -36,6 +37,7 @@ public class Device extends BaseData {
     public String deviceUniqueId;
     public Map<String, String> installationMap = new HashMap<String, String>();
     public String name;
+    public String details;
 
     static public Device updateCurrentDeviceInfo(final Context context) {
         if (currentDevice != null) {
@@ -56,7 +58,9 @@ public class Device extends BaseData {
         currentDevice.height = metrics.heightPixels;
         currentDevice.model = Build.MODEL;
         currentDevice.brand = Build.BRAND;
+        currentDevice.buildId = Build.ID;
         currentDevice.fingerprint = Build.FINGERPRINT;
+        currentDevice.details = DeviceInfoUtil.deviceInfo();
         updateDeviceUniqueId(context, currentDevice);
         return currentDevice;
     }

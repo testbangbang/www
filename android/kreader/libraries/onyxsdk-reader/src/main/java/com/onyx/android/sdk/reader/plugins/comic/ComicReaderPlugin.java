@@ -387,6 +387,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return null;
     }
 
+    @Override
+    public List<ReaderRichMedia> getRichMedias(String position) {
+        return null;
+    }
+
     /**
      * Return the plugin display name.
      *

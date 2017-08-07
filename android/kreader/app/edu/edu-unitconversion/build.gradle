@@ -1,0 +1,34 @@
+apply plugin: 'com.android.application'
+
+apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
+apply from: file(rootProject.projectDir.absolutePath + '/versioning.gradle')
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        applicationId "com.onyx.unitconversion"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode gitVersionCode(projectDir)
+        versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../../proguard-rules.pro', 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':libraries:onyxsdk-ui')
+    compile project(':libraries:onyxsdk-base')
+    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
+    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    testCompile "junit:junit:$rootProject.junitVersion"
+}

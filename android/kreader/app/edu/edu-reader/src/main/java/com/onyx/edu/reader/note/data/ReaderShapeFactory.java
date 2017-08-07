@@ -8,25 +8,12 @@ import com.onyx.android.sdk.scribble.shape.*;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
 import com.onyx.edu.reader.note.model.ReaderNoteShapeModel;
+import com.onyx.edu.reader.note.model.SignatureShapeModel;
 
 /**
  * Created by zhuzeng on 9/16/16.
  */
 public class ReaderShapeFactory {
-
-
-    static public final int SHAPE_ERASER = -2;
-    static public final int SHAPE_INVALID = -1;
-
-    static public final int SHAPE_CIRCLE = 0;
-    static public final int SHAPE_RECTANGLE = 1;
-    static public final int SHAPE_PENCIL_SCRIBBLE = 2;
-    static public final int SHAPE_OILY_PEN_SCRIBBLE = 3;
-    static public final int SHAPE_FOUNTAIN_PEN_SCRIBBLE = 4;
-    static public final int SHAPE_BRUSH_SCRIBBLE = 5;
-    static public final int SHAPE_TEXT = 6;
-    static public final int SHAPE_LINE = 7;
-    static public final int SHAPE_TRIANGLE = 8;
 
     static public final int SHAPE_FORM_SINGLE_SELECTION = 0;
     static public final int SHAPE_FORM_MULTIPLE_SELECTION = 1;
@@ -39,57 +26,29 @@ public class ReaderShapeFactory {
                 formType == SHAPE_FORM_FILL;
     }
 
-    public static final Shape createShape(int type) {
-        Shape shape;
-        switch (type) {
-            case ShapeFactory.SHAPE_PENCIL_SCRIBBLE:
-                shape = new NormalPencilShape();
-                break;
-            case ShapeFactory.SHAPE_LINE:
-                shape = new LineShape();
-                break;
-            case ShapeFactory.SHAPE_OILY_PEN_SCRIBBLE:
-                shape = new NormalPencilShape();
-                break;
-            case ShapeFactory.SHAPE_FOUNTAIN_PEN_SCRIBBLE:
-                shape = new NormalPencilShape();
-                break;
-            case ShapeFactory.SHAPE_BRUSH_SCRIBBLE:
-                shape = new BrushScribbleShape();
-                break;
-            case ShapeFactory.SHAPE_CIRCLE:
-                shape = new CircleShape();
-                break;
-            case ShapeFactory.SHAPE_RECTANGLE:
-                shape = new RectangleShape();
-                break;
-            case ShapeFactory.SHAPE_TEXT:
-                shape = new TexShape();
-                break;
-            case ShapeFactory.SHAPE_TRIANGLE:
-                shape = new TriangleShape();
-                break;
-            default:
-                shape = new NormalPencilShape();
-                break;
-        }
-        return shape;
-    }
-
     public static final Shape shapeFromModel(final ReaderNoteShapeModel shapeModel) {
-        Shape shape = createShape(shapeModel.getShapeType());
+        Shape shape = ShapeFactory.createShape(shapeModel.getShapeType());
         syncShapeDataFromModel(shape, shapeModel);
         return shape;
     }
 
     public static final Shape shapeFromFormModel(final ReaderFormShapeModel shapeModel) {
-        Shape shape = createShape(shapeModel.getShapeType());
+        Shape shape = ShapeFactory.createShape(shapeModel.getShapeType());
         syncFormShapeDataFromModel(shape, shapeModel);
         return shape;
     }
 
+    public static final Shape shapeFromSignatureModel(final SignatureShapeModel shapeModel) {
+        Shape shape = ShapeFactory.createShape(shapeModel.getShapeType());
+        syncSignatureShapeFromModel(shape, shapeModel);
+        return shape;
+    }
+
     public static boolean isDFBShape(int shape) {
-        return shape == SHAPE_PENCIL_SCRIBBLE || shape == SHAPE_BRUSH_SCRIBBLE || shape == SHAPE_OILY_PEN_SCRIBBLE || shape == SHAPE_FOUNTAIN_PEN_SCRIBBLE;
+        return shape == ShapeFactory.SHAPE_PENCIL_SCRIBBLE ||
+                shape == ShapeFactory.SHAPE_BRUSH_SCRIBBLE ||
+                shape == ShapeFactory.SHAPE_OILY_PEN_SCRIBBLE ||
+                shape == ShapeFactory.SHAPE_FOUNTAIN_PEN_SCRIBBLE;
     }
 
     public static final ReaderNoteShapeModel modelFromShape(final Shape shape) {
@@ -102,9 +61,22 @@ public class ReaderShapeFactory {
             ((ReaderFormShapeModel) shapeModel).setFormValue(shape.getFormValue());
             ((ReaderFormShapeModel) shapeModel).setLock(shape.isLock());
             ((ReaderFormShapeModel) shapeModel).setReview(shape.isReview());
-        }else {
+        } else {
             shapeModel = new ReaderNoteShapeModel();
         }
+        syncModelFromShape(shapeModel, shape);
+        return shapeModel;
+    }
+
+    public static SignatureShapeModel signatureModelFromShape(final Shape shape, final String accountId) {
+        SignatureShapeModel shapeModel = new SignatureShapeModel();
+        shapeModel.setAccountId(accountId);
+        shapeModel.setSignatureRect(shape.getFormRect());
+        syncModelFromShape(shapeModel, shape);
+        return shapeModel;
+    }
+
+    private static void syncModelFromShape(final ReaderNoteShapeModel shapeModel, final Shape shape) {
         shapeModel.setDocumentUniqueId(shape.getDocumentUniqueId());
         shapeModel.setPageUniqueId(shape.getPageUniqueId());
         shapeModel.setShapeUniqueId(shape.getShapeUniqueId());
@@ -114,9 +86,9 @@ public class ReaderShapeFactory {
         shapeModel.setPoints(shape.getPoints());
         shapeModel.setThickness(shape.getStrokeWidth());
         shapeModel.setShapeType(shape.getType());
+        shapeModel.setExtraAttributes(shape.getShapeExtraAttributes());
         shapeModel.setPageOriginHeight(shape.getPageOriginHeight());
         shapeModel.setPageOriginWidth(shape.getPageOriginWidth());
-        return shapeModel;
     }
 
     private static void syncShapeDataFromModel(final Shape shape, final ReaderNoteShapeModel model) {
@@ -126,6 +98,7 @@ public class ReaderShapeFactory {
         shape.setStrokeWidth(model.getThickness());
         shape.setShapeUniqueId(model.getShapeUniqueId());
         shape.addPoints(model.getPoints());
+        shape.setShapeExtraAttributes(model.getExtraAttributes());
         shape.setPageOriginWidth(model.getPageOriginWidth());
         shape.setFormShape(false);
     }
@@ -139,6 +112,11 @@ public class ReaderShapeFactory {
         shape.setFormRect(model.getFormRect());
         shape.setLock(model.isLock());
         shape.setReview(model.isReview());
+    }
+
+    private static void syncSignatureShapeFromModel(final Shape shape, final SignatureShapeModel model) {
+        syncShapeDataFromModel(shape, model);
+        shape.setFormRect(model.getSignatureRect());
     }
 
     public static Shape createFormShape(String documentUniqueId,

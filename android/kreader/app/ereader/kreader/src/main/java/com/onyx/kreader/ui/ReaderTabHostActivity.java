@@ -123,6 +123,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     @Override
     protected void onDestroy() {
+        ReaderTabHostBroadcastReceiver.setCallback(null);
         deviceReceiver.enable(this, false);
         saveReaderTabState();
         super.onDestroy();
@@ -334,6 +335,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 ReaderTabHostActivity.this.onMediaUnmounted(intent);
             }
         });
+        deviceReceiver.setMtpEventListener(new DeviceReceiver.MtpEventListener() {
+            @Override
+            public void onMtpEvent(Intent intent) {
+                ReaderTabHostActivity.this.onMediaUnmounted(intent);
+            }
+        });
     }
 
     private void onMediaUnmounted(Intent intent) {
@@ -536,8 +543,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             } else if (action.equals(Intent.ACTION_VIEW)) {
                 handleViewActionIntent();
                 return true;
+            } else if (action.equals(ReaderTabHostBroadcastReceiver.ACTION_TAB_BACK_PRESSED)) {
+                onBackPressed();
+                return true;
             }
-            finish();
             return true;
         } catch (java.lang.Exception e) {
             e.printStackTrace();

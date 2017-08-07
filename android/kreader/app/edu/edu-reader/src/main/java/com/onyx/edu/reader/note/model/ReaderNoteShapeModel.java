@@ -3,6 +3,7 @@ package com.onyx.edu.reader.note.model;
 import android.graphics.RectF;
 import com.onyx.android.sdk.scribble.data.ConverterRectangle;
 import com.onyx.android.sdk.scribble.data.ConverterTouchPointList;
+import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.raizlabs.android.dbflow.annotation.*;
@@ -70,8 +71,8 @@ public class ReaderNoteShapeModel extends BaseModel {
     @Column
     int shapeType;
 
-    @Column
-    String extraAttributes;
+    @Column(typeConverter = ConverterShapeExtraAttributes.class)
+    ShapeExtraAttributes extraAttributes;
 
     public ReaderNoteShapeModel() {
     }
@@ -189,11 +190,11 @@ public class ReaderNoteShapeModel extends BaseModel {
         shapeType = t;
     }
 
-    public String getExtraAttributes() {
+    public ShapeExtraAttributes getExtraAttributes() {
         return extraAttributes;
     }
 
-    public void setExtraAttributes(final String attributes) {
+    public void setExtraAttributes(final ShapeExtraAttributes attributes) {
         extraAttributes = attributes;
     }
 

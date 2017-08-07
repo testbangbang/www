@@ -1,0 +1,49 @@
+== Length
+meter, 1.0, 0.0
+decimeter, 10.0, 0.0
+centimeter, 100.0, 0.0
+kilometer, 0.001, 0.0
+millimeter, 1000.0, 0.0
+foot, 3.280839895013123, 0.0
+chinese_foot, 3, 0.0
+yard, 1.0936133, 0.0
+== Area
+square_meters, 1.0, 0.0
+square_decimetres, 100.0, 0.0
+square_kilometers, 1e-6, 0.0
+square_centimeters, 10000.0, 0.0
+square_foots, 10.7639104, 0.0
+ha, 0.0001, 0.0
+mu, 0.0015, 0.0
+== Volume
+cubic_meter, 1.0, 0.0
+cubic_millimeter, 1000000000, 0.0
+cubic_centimeter, 1000000, 0.0
+cubic_decimetre, 1000, 0.0
+cubic_foot, 35.3147248, 0.0
+rise, 1000, 0.0
+milliliter, 1000000, 0.0
+== Mass
+kg, 1.0, 0.0
+jin, 2.0, 0.0
+ton, 0.001, 0.0
+two, 20.0, 0.0
+pound, 2.2046226, 0.0
+g, 1000.0, 0.0
+ounce, 35.2739619, 0.0
+== Temperature
+kelvin, 1.0, 273.15
+celsius, 1.0, 0.0
+fahrenheit, 1.8, 32.0
+reaumur, 0.8, 0.0
+rankine, 1.8, 491.67
+== Time
+second, 86400.0, 0.0
+millisecond, 8.64e+7, 0.0
+day, 1.0, 0.0
+minute, 1440.0, 0.0
+week, 0.14285714285714286, 0.0
+hour, 24.0, 0.0
+year, 0.00273790933079226, 0.0
+
+

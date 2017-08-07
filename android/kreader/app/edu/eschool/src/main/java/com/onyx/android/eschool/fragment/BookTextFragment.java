@@ -86,7 +86,7 @@ public class BookTextFragment extends Fragment {
     private LibraryDataModel pageDataModel = new LibraryDataModel();
 
     private boolean newPage = false;
-    private int hasNoThumbnail = 0;
+    private int noThumbnailPosition = 0;
 
     private int row = 2;
     private int col = 3;
@@ -130,12 +130,12 @@ public class BookTextFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loadData();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        loadData();
     }
 
     private void loadData() {
@@ -278,7 +278,7 @@ public class BookTextFragment extends Fragment {
                     viewHolder.coverImage.setImageResource(R.drawable.cloud_default_cover);
                     if (newPage) {
                         newPage = false;
-                        hasNoThumbnail = position;
+                        noThumbnailPosition = position;
                     }
                     loadThumbnailRequest(position, eBook);
                 } else {
@@ -314,7 +314,7 @@ public class BookTextFragment extends Fragment {
         final CloudThumbnailLoadRequest loadRequest = new CloudThumbnailLoadRequest(
                 metadata.getCoverUrl(),
                 metadata.getAssociationId(), OnyxThumbnail.ThumbnailKind.Original);
-        if (hasNoThumbnail == position) {
+        if (isVisibleToUser && noThumbnailPosition == position) {
             loadRequest.setAbortPendingTasks(true);
         }
         getCloudStore().submitRequestToSingle(getContext().getApplicationContext(), loadRequest, new BaseCallback() {

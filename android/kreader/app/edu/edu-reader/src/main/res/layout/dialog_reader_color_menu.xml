@@ -5,27 +5,6 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
-        android:padding="5dp"
-        android:background="@android:color/white"
-        appCompat:alwaysLayoutImageView="true"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/imageView_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/ic_exit"/>
-
-    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
-
-    <View
-        style="@style/single_line_X_axis_View"
-        android:layout_height="1dp"/>
-
     <View
         android:layout_weight="1"
         android:id="@+id/dismiss_zone"
@@ -35,10 +14,10 @@
 
     <View
         style="@style/single_line_X_axis_View"
-        android:layout_height="1dp"/>
+        android:layout_height="@dimen/divider_view_height"/>
 
     <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
-        android:padding="2dp"
+        android:gravity="center_vertical"
         android:background="@android:color/white"
         appCompat:alwaysLayoutImageView="true"
         android:orientation="horizontal"
@@ -54,15 +33,35 @@
             android:layout_height="wrap_content">
         </LinearLayout>
 
-        <ImageView
-            android:layout_marginRight="10dp"
-            android:layout_gravity="center_vertical"
-            android:id="@+id/prev"
-            android:src="@drawable/prevbtn_bg"
+
+        <LinearLayout
+            android:layout_marginRight="@dimen/menu_item_view_margin"
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:id="@+id/prev"
+                android:src="@drawable/prevbtn_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/prev_title"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/prev_page"
+                android:layout_marginTop="@dimen/menu_item_view_margin"
+                android:textSize="@dimen/scribble_page_position_size"
+                android:textColor="@android:color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
 
         <TextView
+            android:layout_marginRight="@dimen/menu_item_view_margin"
             android:minWidth="80dp"
             android:textSize="25sp"
             android:layout_gravity="center_vertical"
@@ -73,14 +72,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <ImageView
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_gravity="center_vertical"
-            android:id="@+id/next"
-            android:src="@drawable/nextbtn_bg"
+        <LinearLayout
+            android:layout_marginRight="@dimen/menu_item_view_margin"
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:id="@+id/next"
+                android:src="@drawable/nextbtn_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/next_title"
+                android:text="@string/next_page"
+                android:layout_marginTop="@dimen/menu_item_view_margin"
+                android:textSize="@dimen/scribble_page_position_size"
+                android:textColor="@android:color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 

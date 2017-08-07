@@ -6,18 +6,22 @@ import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.reader.api.ReaderFormCheckbox;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormPushButton;
 import com.onyx.android.sdk.reader.api.ReaderFormRadioButton;
 import com.onyx.android.sdk.reader.api.ReaderFormRadioGroup;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.reader.api.ReaderFormText;
+import com.onyx.android.sdk.ui.view.AutoFitButton;
+import com.onyx.android.sdk.ui.view.RelativeRadioGroup;
+import com.onyx.edu.reader.R;
 
 /**
  * Created by joy on 5/25/17.
@@ -41,6 +45,7 @@ public class FormFieldControlFactory {
 
     private static CheckBox createCheckBox(RelativeLayout parentView, ReaderFormCheckbox checkboxField) {
         CheckBox checkBox = new CheckBox(parentView.getContext());
+        checkBox.setBackgroundColor(Color.TRANSPARENT);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)checkboxField.getRect().width() + 10,
                 (int)checkboxField.getRect().height());
@@ -51,7 +56,7 @@ public class FormFieldControlFactory {
         return checkBox;
     }
 
-    private static RadioGroup createRadioGroup(RelativeLayout parentView, ReaderFormRadioGroup groupField) {
+    private static RelativeRadioGroup createRadioGroup(RelativeLayout parentView, ReaderFormRadioGroup groupField) {
         if (groupField.getButtons().size() <= 0) {
             return null;
         }
@@ -61,21 +66,20 @@ public class FormFieldControlFactory {
             bound.union(button.getRect());
         }
 
-        RadioGroup radioGroup = new RadioGroup(parentView.getContext());
+        RelativeRadioGroup radioGroup = new RelativeRadioGroup(parentView.getContext());
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                (int)bound.height());
-        radioGroup.setOrientation(RadioGroup.VERTICAL);
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = (int)bound.left;
         params.topMargin = (int)bound.top;
 
         int index = 0;
-        int buttonWidth = (int) bound.height() / groupField.getButtons().size();
         for (ReaderFormRadioButton buttonField : groupField.getButtons()) {
             RadioButton button = new RadioButton(parentView.getContext());
-            RadioGroup.LayoutParams buttonParams = new RadioGroup.LayoutParams(buttonWidth, 0);
-            buttonParams.weight = 1.0f;
-            buttonParams.setMargins(0, 0, 0, 0);
-            button.setPadding(0, 0, 0, 0);
+            button.setBackgroundColor(Color.TRANSPARENT);
+            RelativeRadioGroup.LayoutParams buttonParams = new RelativeRadioGroup.LayoutParams((int) buttonField.getRect().width() + 10, (int) buttonField.getRect().height() + 10);
+            button.setTag(buttonField);
+            buttonParams.leftMargin = (int) buttonField.getRect().left - (int)bound.left;
+            buttonParams.topMargin = (int) buttonField.getRect().top - (int)bound.top;
             radioGroup.addView(button, buttonParams);
             button.setId(index);
             index++;
@@ -98,6 +102,20 @@ public class FormFieldControlFactory {
         return view;
     }
 
+    private static View createFormButton(RelativeLayout parentView, ReaderFormPushButton buttonField) {
+        Button button = new AutoFitButton(parentView.getContext());
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int)buttonField.getRect().width(),
+                (int)buttonField.getRect().height());
+        params.leftMargin = (int)buttonField.getRect().left;
+        params.topMargin = (int)buttonField.getRect().top;
+        button.setText(buttonField.getCaption());
+        button.setBackgroundColor(Color.TRANSPARENT);
+
+        button.setLayoutParams(params);
+        return button;
+    }
+
     public static View createFormControl(RelativeLayout parentView, ReaderFormField field) {
         View view;
         if (field instanceof ReaderFormText) {
@@ -108,6 +126,8 @@ public class FormFieldControlFactory {
             view = createRadioGroup(parentView, (ReaderFormRadioGroup)field);
         } else if (field instanceof ReaderFormScribble) {
             view = createScribbleRegion(parentView, (ReaderFormScribble)field);
+        } else if (field instanceof ReaderFormPushButton) {
+            view = createFormButton(parentView, (ReaderFormPushButton)field);
         } else {
             view = null;
         }

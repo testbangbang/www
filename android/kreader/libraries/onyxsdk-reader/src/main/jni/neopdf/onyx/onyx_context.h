@@ -70,6 +70,7 @@ public:
 class OnyxPdfiumContext {
 
 private:
+    std::string filePath;
     FPDF_DOCUMENT document;
     FPDF_FORMHANDLE formHandle;
     FPDF_BITMAP bitmap;
@@ -79,8 +80,8 @@ private:
     bool renderFormFields;
 
 public:
-    OnyxPdfiumContext(FPDF_DOCUMENT doc, FPDF_FORMHANDLE formHandle)
-        : document(doc), formHandle(formHandle), textGamma(1.0f), renderFormFields(true) {
+    OnyxPdfiumContext(const std::string &path, FPDF_DOCUMENT doc, FPDF_FORMHANDLE formHandle)
+        : filePath(path), document(doc), formHandle(formHandle), textGamma(1.0f), renderFormFields(true) {
     }
     ~OnyxPdfiumContext() {
         document = NULL;
@@ -90,6 +91,10 @@ public:
     }
 
 public:
+    std::string getFilePath() {
+        return filePath;
+    }
+
     FPDF_DOCUMENT getDocument() {
         return document;
     }
@@ -195,9 +200,18 @@ private:
 public:
     static OnyxPdfiumContext * getContext(JNIEnv *env, jint id);
     static OnyxPdfiumContext * createContext(JNIEnv *env, jint id,
+                                             const std::string &filePath,
                                              FPDF_DOCUMENT document,
                                              FPDF_FORMHANDLE formHandle);
     static void releaseContext(JNIEnv *env, jint id);
+
+    static std::string getFilePath(JNIEnv *env, jint id) {
+        OnyxPdfiumContext * context = getContext(env, id);
+        if (context == NULL) {
+            return std::string();
+        }
+        return context->getFilePath();
+    }
 
     static FPDF_DOCUMENT getDocument(JNIEnv *env, jint id) {
         OnyxPdfiumContext * context = getContext(env, id);

@@ -98,7 +98,11 @@ public class JSONObjectParseUtils {
     }
 
     public static String toJson(Object object) {
-        String result = JSON.toJSONString(object);
+        String result = null;
+        try {
+            result = JSON.toJSONString(object);
+        } catch (Exception e) {
+        }
         return result;
     }
 

@@ -21,5 +21,10 @@ public class Constant {
     static final public String IMX6_KIT_KAT_BASED_CONFIG_NAME = "onyx_imx6_kit_kat";
     static final public String RK3026_BASED_CONFIG_NAME = "onyx_rk3026";
 
+    static final public int EDU_DEVICE_INFO_TRIGGER_VALUE = 5;
+    //unit:ms
+    static final public int EDU_DEVICE_INFO_TRIGGER_TIME_LIMIT = 2000;
+    static final public String SCREEN_BARCODE_FILE_PATH = "data/local/assets/device_screen_barcode.png";
+
 }
 

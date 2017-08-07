@@ -6,12 +6,16 @@ import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.StatisticsCloudManager;
 import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
+import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.request.cloud.PushStatisticsRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudIndexServiceRequest;
 import com.onyx.android.sdk.data.request.data.fs.GetFileMd5Request;
 import com.onyx.android.sdk.data.utils.StatisticsUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -35,6 +39,8 @@ public class OnyxStatistics implements StatisticsBase {
     private String md5;
     private String md5short;
     private String url;
+    private boolean useCloudIndex = false;
+    private boolean hasCloudIndexRequest = false;
 
     private List<OnyxStatisticsModel> statisticsQueue;
 
@@ -43,6 +49,10 @@ public class OnyxStatistics implements StatisticsBase {
         cloudManager = new StatisticsCloudManager();
         statisticsQueue = new ArrayList<>();
         url = args.get(STATISTICS_URL);
+        String cloudArg = args.get(USE_CLOUD_INDEX);
+        if (!StringUtils.isNullOrEmpty(cloudArg)) {
+            useCloudIndex = Boolean.parseBoolean(args.get(USE_CLOUD_INDEX));
+        }
         return true;
     }
 
@@ -53,6 +63,35 @@ public class OnyxStatistics implements StatisticsBase {
     private void saveToCloud(final Context context, final OnyxStatisticsModel statisticsModel) {
         statisticsQueue.add(statisticsModel);
         if (statisticsQueue.size() >= PUSH_THRESHOLD_VALUE) {
+            prepareFlushStatistics(context);
+        }
+    }
+
+    private void getCloudIndex(final Context context, final BaseCallback callback) {
+        final CloudManager cloudManager = new CloudManager();
+        final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(Constant.CLOUD_MAIN_INDEX_SERVER_API,
+                IndexService.createIndexService(context));
+        cloudManager.submitRequest(context, indexServiceRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                hasCloudIndexRequest = true;
+                if (e == null && IndexService.hasValidServer(indexServiceRequest.getResultIndexService())) {
+                    url = cloudManager.getCloudConf().getApiBase();
+                }
+                BaseCallback.invoke(callback, request, e);
+            }
+        });
+    }
+
+    private void prepareFlushStatistics(final Context context) {
+        if (useCloudIndex && !hasCloudIndexRequest) {
+            getCloudIndex(context, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    flushStatistics(context);
+                }
+            });
+        }else {
             flushStatistics(context);
         }
     }
@@ -65,18 +104,18 @@ public class OnyxStatistics implements StatisticsBase {
 
     @Override
     public void onActivityResume(Context context) {
-        flushStatistics(context);
+        prepareFlushStatistics(context);
     }
 
     @Override
     public void onActivityPause(Context context) {
-        flushStatistics(context);
+        prepareFlushStatistics(context);
     }
 
     @Override
     public void onNetworkChanged(Context context, boolean connected, int networkType) {
         if (connected && networkType == ConnectivityManager.TYPE_WIFI) {
-            flushStatistics(context);
+            prepareFlushStatistics(context);
         }
     }
 
@@ -102,14 +141,14 @@ public class OnyxStatistics implements StatisticsBase {
                     statisticsData.setMd5(md5Request.getMd5());
                     OnyxStatistics.this.md5 = md5Request.getMd5();
                     statisticsQueue.add(statisticsData);
-                    flushStatistics(context);
+                    prepareFlushStatistics(context);
                 }
             });
         }else {
             statisticsData.setMd5(md5);
             this.md5 = md5;
             statisticsQueue.add(statisticsData);
-            flushStatistics(context);
+            prepareFlushStatistics(context);
         }
     }
 
@@ -117,7 +156,7 @@ public class OnyxStatistics implements StatisticsBase {
     public void onDocumentClosed(Context context) {
         OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_CLOSE);
         statisticsQueue.add(statisticsData);
-        flushStatistics(context);
+        prepareFlushStatistics(context);
     }
 
     @Override
@@ -163,6 +202,14 @@ public class OnyxStatistics implements StatisticsBase {
         OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_BATTERY);
         statisticsData.setName(status);
         statisticsData.setScore(level);
+        saveToCloud(context, statisticsData);
+    }
+
+    @Override
+    public void onFormFieldSelected(Context context, String formId, String value) {
+        OnyxStatisticsModel statisticsData = createStatisticsData(context, BaseStatisticsModel.DATA_TYPE_FORM);
+        statisticsData.setName(formId);
+        statisticsData.setOrgText(value);
         saveToCloud(context, statisticsData);
     }
 }

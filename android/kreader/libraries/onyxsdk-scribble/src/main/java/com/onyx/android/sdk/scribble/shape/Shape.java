@@ -86,6 +86,8 @@ public interface Shape {
 
     void onTranslate(final float dx, final float dy);
 
+    void updatePoints();
+
     void addPoints(final TouchPointList points);
 
     TouchPointList getPoints();
@@ -141,4 +143,18 @@ public interface Shape {
     boolean isReview();
 
     void setReview(boolean review);
+
+    boolean inVisibleDrawRectF(RectF rect);
+
+    TouchPoint getCurrentPoint();
+
+    TouchPoint getCurrentScreenPoint();
+
+    void setScale(float targetScaleValue);
+
+    float getScale();
+
+    void setSelected(boolean isSelected);
+
+    boolean isSelected();
 }

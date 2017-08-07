@@ -13,6 +13,10 @@ public class GPaginator {
         return currentPage;
     }
 
+    public int getVisibleCurrentPage() {
+        return pages() != 0 ? currentPage + 1 : 0;
+    }
+
     public void setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
     }

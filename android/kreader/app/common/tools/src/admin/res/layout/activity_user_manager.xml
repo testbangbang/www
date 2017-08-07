@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/ToolBarStyle"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <include
+            android:id="@+id/toolbar_header"
+            layout="@layout/toolbar_header" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/root_group"
+                style="@style/parent_group_layout_style"
+                android:text="@string/node_root" />
+
+            <LinearLayout
+                android:id="@+id/parent_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <include layout="@layout/search_edit" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/child_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white" />
+
+    <View
+        style="@style/divider_style"
+        android:layout_alignParentTop="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:padding="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="@string/username"
+            android:textColor="@color/colorPrimary"
+            android:textSize="21sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="45dp"
+            android:text="MAC"
+            android:textColor="@color/colorPrimary"
+            android:textSize="21sp" />
+
+    </RelativeLayout>
+
+    <View
+        style="@style/divider_style"
+        android:layout_alignParentTop="true" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/contact_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/contact_dialog"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="30sp"
+            android:visibility="invisible" />
+
+        <com.onyx.edu.manager.view.ui.SideBar
+            android:id="@+id/contact_sidebar"
+            android:layout_width="15dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|center"
+            android:layout_marginRight="3dp" />
+
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">屏幕共享</string>
+    <string name="exit_confirm">退出共享?</string>
+    <string name="refresh_time">刷新时间</string>
+    <string name="contrast_value">对比度值</string>
+    <string name="connect_error">连接失败,请检查HDMI连接线！</string>
+</resources>

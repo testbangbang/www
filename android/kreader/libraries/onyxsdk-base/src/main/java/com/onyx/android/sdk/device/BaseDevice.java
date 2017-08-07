@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.PowerManager;
 import android.view.View;
@@ -114,10 +115,6 @@ public class BaseDevice {
     }
 
     public List<Integer> getFrontLightValueList(Context context) {
-        return new ArrayList<Integer>();
-    }
-
-    public List<Integer> getNaturalLightValueList(Context context) {
         return new ArrayList<Integer>();
     }
 
@@ -257,6 +254,13 @@ public class BaseDevice {
     public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
     }
 
+    public void setScreenHandWritingRegionLimit(View view, int[] array) {
+    }
+
+
+    public void setScreenHandWritingRegionLimit(View view, Rect[] regions) {
+    }
+
     public void postInvalidate(View view, UpdateMode mode) {
         view.postInvalidate();
     }
@@ -390,4 +394,7 @@ public class BaseDevice {
         return true;
     }
 
+    public void setQRShowConfig(int orientation, int startX, int startY) {};
+
+    public void setInfoShowConfig(int orientation, int startX, int startY) {}
 }

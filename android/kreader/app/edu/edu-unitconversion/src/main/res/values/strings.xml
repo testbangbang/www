@@ -1,0 +1,59 @@
+<resources>
+    <string name="app_name">Unit Conversion</string>
+    <string name="all">ALL</string>
+
+    <string name="length">Length</string>
+    <string name="area">Area</string>
+    <string name="volume">Volume</string>
+    <string name="mass">Mass</string>
+    <string name="temperature">Temperature</string>
+    <string name="time">Time</string>
+
+    <string name="meter">Meter(m)</string>
+    <string name="decimeter">Decimeter(dm)</string>
+    <string name="centimeter">Centimeter(cm)</string>
+    <string name="kilometer">Kilometer(km)</string>
+    <string name="millimeter">Millimeter(mm)</string>
+    <string name="foot">Foot(ft)</string>
+    <string name="chinese_foot">Chinese foot</string>
+    <string name="yard">Yard(yd)</string>
+
+    <string name="square_meters">Square meters(㎡)</string>
+    <string name="square_decimetres">Square decimetres(dm²)</string>
+    <string name="square_kilometers">Square kilometers(km²)</string>
+    <string name="square_centimeters">Square centimeters(cm²)</string>
+    <string name="square_foots">Square foots(sq.ft)</string>
+    <string name="ha">Ha</string>
+    <string name="mu">mu</string>
+
+    <string name="cubic_meter">Cubic meter(m³)</string>
+    <string name="cubic_millimeter">Cubic millimeter(mm³)</string>
+    <string name="cubic_centimeter">Cubic centimeter(cm³)</string>
+    <string name="cubic_decimetre">Cubic decimetre(dm³)</string>
+    <string name="cubic_foot">Cubic foot(cu ft)</string>
+    <string name="rise">Rise(l)</string>
+    <string name="milliliter">Milliliter(ml)</string>
+
+    <string name="kg">Kilogram(kg)</string>
+    <string name="jin">Jin</string>
+    <string name="ton">Ton(t)</string>
+    <string name="two">Two</string>
+    <string name="pound">Pound(lb)</string>
+    <string name="g">Gram(g)</string>
+    <string name="ounce">Ounce(oz)</string>
+
+    <string name="kelvin">Kelvin(K)</string>
+    <string name="celsius">Celsius(℃)</string>
+    <string name="fahrenheit">Fahrenheit(℉)</string>
+    <string name="reaumur">Reaumur(°Re)</string>
+    <string name="rankine">Rankine(°R)</string>
+
+    <string name="second">Second</string>
+    <string name="millisecond">Millisecond(ms)</string>
+    <string name="day">Day(d)</string>
+    <string name="minute">Minute(min)</string>
+    <string name="week">Week</string>
+    <string name="hour">Hour(h)</string>
+    <string name="year">Year(yr)</string>
+
+</resources>

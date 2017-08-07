@@ -129,5 +129,12 @@ public interface ReaderNavigator {
      */
     public List<ReaderImage> getImages(final String position);
 
+    /**
+     * rich media list on the page
+     *
+     * @param position
+     * @return
+     */
+    public List<ReaderRichMedia> getRichMedias(final String position);
 
 }

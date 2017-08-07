@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Rect;
-import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -17,8 +16,15 @@ import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.utils.CloudConf;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.reader.api.ReaderFormAction;
+import com.onyx.android.sdk.reader.api.ReaderFormScribble;
+import com.onyx.android.sdk.reader.api.ReaderFormType;
+import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -32,17 +38,16 @@ import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
-import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.actions.CloseNoteMenuAction;
-import com.onyx.edu.reader.note.actions.SaveReviewDataAction;
 import com.onyx.edu.reader.note.receiver.DeviceReceiver;
 import com.onyx.edu.reader.tts.ReaderTtsManager;
 import com.onyx.edu.reader.ui.ReaderBroadcastReceiver;
+import com.onyx.edu.reader.ui.actions.AccountLoadFromLocalAction;
+import com.onyx.edu.reader.ui.actions.CloudConfInitAction;
 import com.onyx.edu.reader.ui.actions.ApplyReviewDataFromCloudAction;
 import com.onyx.edu.reader.ui.actions.ExportAnnotationAction;
-import com.onyx.edu.reader.ui.actions.GetDocumentDataFromCloudChain;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.events.TextSelectionEvent;
 import com.onyx.edu.reader.ui.events.*;
@@ -65,6 +70,7 @@ public class ReaderDataHolder {
 
     private Context context;
     private String documentPath;
+    private String jumpFromDocPath;
     private String cloudDocId;
     private Reader reader;
     private ReaderViewInfo readerViewInfo;
@@ -79,6 +85,7 @@ public class ReaderDataHolder {
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private EventBus eventBus = new EventBus();
     private EventReceiver eventReceiver;
+    private NeoAccountBase account;
 
     private boolean preRender = true;
     private boolean preRenderNext = true;
@@ -190,8 +197,7 @@ public class ReaderDataHolder {
     }
 
     public boolean inNoteWritingProvider() {
-        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER) ||
-                getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_SCRIBBLE_PROVIDER);
+        return getHandlerManager().getActiveProvider().isEnableNoteDrawing();
     }
 
     public boolean inScribbleProvider() {
@@ -199,8 +205,11 @@ public class ReaderDataHolder {
     }
 
     public boolean inFormProvider() {
-        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_PROVIDER) ||
-                getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_SCRIBBLE_PROVIDER);
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_PROVIDER);
+    }
+
+    public boolean inSignatureFormProvider() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.FORM_SIGNATURE_PROVIDER);
     }
 
     public boolean inReadingProvider() {
@@ -306,6 +315,21 @@ public class ReaderDataHolder {
             ttsManager = new ReaderTtsManager(this);
         }
         return ttsManager;
+    }
+
+    public boolean useFormMode() {
+        return !getDefaultProvider().equals(HandlerManager.READING_PROVIDER);
+    }
+
+    public String getDefaultProvider() {
+        return getHandlerManager().getDefaultProvider();
+    }
+
+    public ReaderDocumentCategory getDocumentCategory() {
+        if (getReaderUserDataInfo() == null) {
+            return null;
+        }
+        return getReaderUserDataInfo().getDocumentCategory();
     }
 
     public void notifyTtsStateChanged() {
@@ -593,12 +617,16 @@ public class ReaderDataHolder {
         closeDocument(callback);
     }
 
+    public void stop() {
+        clearFormFieldControls();
+    }
+
     private void closeFormMenu() {
         getEventBus().post(new CloseFormMenuEvent());
     }
 
     public void resetHandlerManager() {
-        getHandlerManager().resetActiveProvider();
+        getHandlerManager().resetDefaultProvider();
     }
 
     private void closeDocument(final BaseCallback callback) {
@@ -680,12 +708,23 @@ public class ReaderDataHolder {
     }
 
     public void onActivityResume() {
+        accountLoadFromLocal();
         getEventBus().post(new ActivityResumeEvent(getContext()));
     }
 
     public void onDocumentInitRendered() {
         documentInitRendered = true;
         getEventBus().post(new DocumentInitRenderedEvent());
+        cloudConfInit();
+    }
+
+    private void cloudConfInit() {
+        new CloudConfInitAction().execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                getEventBus().post(new CloudConfInitEvent());
+            }
+        });
     }
 
     public boolean isDocumentInitRendered() {
@@ -718,6 +757,17 @@ public class ReaderDataHolder {
             return;
         }
         final AnnotationEvent event = AnnotationEvent.onAddAnnotation(getContext(), originText, userNote);
+        getEventBus().post(event);
+    }
+
+    public void onFormFieldSelected(final String formId, final FormValue value) {
+        if (StringUtils.isNullOrEmpty(formId)) {
+            return;
+        }
+        if (value == null) {
+            return;
+        }
+        FormFieldSelectedEvent event = FormFieldSelectedEvent.create(getContext(), formId, JSONObjectParseUtils.toJson(value));
         getEventBus().post(event);
     }
 
@@ -781,8 +831,43 @@ public class ReaderDataHolder {
         this.cloudDocId = cloudDocId;
     }
 
+    public String getJumpFromDocPath() {
+        return jumpFromDocPath;
+    }
+
+    public void setJumpFromDocPath(String jumpFromDocPath) {
+        this.jumpFromDocPath = jumpFromDocPath;
+    }
+
     public void applyReviewDataFromCloud(boolean showTips) {
         ApplyReviewDataFromCloudAction.apply(this, showTips);
+    }
+
+    public NeoAccountBase getAccount() {
+        return account;
+    }
+
+    public void setAccount(NeoAccountBase account) {
+        this.account = account;
+    }
+
+    private void accountLoadFromLocal() {
+        AccountLoadFromLocalAction.create().execute(this, null);
+    }
+
+    public ReaderFormScribble getFirstSignatureForm() {
+        if (getVisiblePages() == null) {
+            return null;
+        }
+        for (PageInfo pageInfo : getVisiblePages()) {
+            List<ReaderFormScribble> readerFormScribbles = getReaderUserDataInfo().getReaderFormScribbles(pageInfo);
+            for (ReaderFormScribble readerFormScribble : readerFormScribbles) {
+                if (readerFormScribble.getFormAction().equals(ReaderFormAction.SIGNATURE)) {
+                    return readerFormScribble;
+                }
+            }
+        }
+        return null;
     }
 }
 

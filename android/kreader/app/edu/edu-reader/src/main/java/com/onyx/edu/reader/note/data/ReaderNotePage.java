@@ -143,9 +143,10 @@ public class ReaderNotePage {
         }
     }
 
-    public void removeShapesByTouchPointList(final TouchPointList touchPointList, final float radius) {
+    public boolean removeShapesByTouchPointList(final TouchPointList touchPointList, final float radius) {
+        boolean removed = false;
         if (touchPointList == null) {
-            return;
+            return removed;
         }
         Map<String, Shape> hitShapes = new HashMap<>();
         for(Shape shape : shapeList) {
@@ -161,10 +162,12 @@ public class ReaderNotePage {
             for(TouchPoint touchPoint : touchPointList.getPoints()) {
                 if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
                     removeShape(entry.getValue(), true);
+                    removed = true;
                     break;
                 }
             }
         }
+        return removed;
     }
 
     public final List<Shape> getShapeList() {

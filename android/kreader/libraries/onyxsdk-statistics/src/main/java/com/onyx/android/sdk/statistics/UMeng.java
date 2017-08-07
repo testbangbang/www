@@ -19,7 +19,7 @@ public class UMeng implements StatisticsBase {
 
     public boolean init(final Context context, final Map<String, String> args) {
         try {
-            MobclickAgent.UMAnalyticsConfig config = new MobclickAgent.UMAnalyticsConfig(context, args.get(KEY_TAG), args.get(CHANNEL_TAG));
+            MobclickAgent.UMAnalyticsConfig config = new MobclickAgent.UMAnalyticsConfig(context, (String) args.get(KEY_TAG), (String) args.get(CHANNEL_TAG));
             MobclickAgent.startWithConfigure(config);
             MobclickAgent.setDebugMode(true);
 
@@ -119,6 +119,11 @@ public class UMeng implements StatisticsBase {
 
     @Override
     public void onBatteryStatusChange(Context context, String status, int level) {
+
+    }
+
+    @Override
+    public void onFormFieldSelected(Context context, String formId, String value) {
 
     }
 }

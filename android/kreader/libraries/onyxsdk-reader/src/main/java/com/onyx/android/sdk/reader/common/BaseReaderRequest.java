@@ -204,6 +204,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
                         currentPage, totalPage);
                 ContentSdKDataUtils.updateProgress(getContext(), reader.getDocumentPath(),
                         currentPage, totalPage);
+                LegacySdkDataUtils.recordFinishReading(getContext(), currentPage, totalPage);
             }
         } catch (Throwable tr) {
             Log.w(TAG, this.getClass().toString());
@@ -213,6 +214,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
 
     private void loadUserData(final Reader reader) {
         getReaderUserDataInfo().setDocumentPath(reader.getDocumentPath());
+        getReaderUserDataInfo().setDocumentCategory(reader.getDocumentOptions().getDocumentCategory());
         getReaderUserDataInfo().setDocumentCodePage(reader.getDocumentOptions().getCodePage());
         getReaderUserDataInfo().setChineseConvertType(reader.getDocumentOptions().getChineseConvertType());
         getReaderUserDataInfo().setDocumentMetadata(reader.getDocumentMetadata());

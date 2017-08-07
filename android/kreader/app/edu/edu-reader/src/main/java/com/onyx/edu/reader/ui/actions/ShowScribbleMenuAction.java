@@ -22,6 +22,7 @@ import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
 import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.edu.reader.R;
+import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
@@ -123,26 +124,29 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private OnyxToolbar createScribbleBottomToolbar(final ReaderDataHolder readerDataHolder) {
         OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Bottom, OnyxToolbar.FillStyle.WrapContent);
+        toolbar.setDividerViewHeight((int) readerDataHolder.getContext().getResources().getDimension(R.dimen.divider_view_height));
         toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         final ReaderMenuAction[] expandedActions = {ReaderMenuAction.SCRIBBLE_WIDTH, ReaderMenuAction.SCRIBBLE_SHAPE, ReaderMenuAction.SCRIBBLE_ERASER};
 
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width, ReaderMenuAction.SCRIBBLE_WIDTH);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape, ReaderMenuAction.SCRIBBLE_SHAPE);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_eraser_part, ReaderMenuAction.SCRIBBLE_ERASER);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_black, ReaderMenuAction.SCRIBBLE_COLOR);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_pack_up, ReaderMenuAction.SCRIBBLE_MINIMIZE);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape, ReaderMenuAction.SCRIBBLE_SHAPE, R.string.shape);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width, ReaderMenuAction.SCRIBBLE_WIDTH, R.string.width);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_eraser_part, ReaderMenuAction.SCRIBBLE_ERASER, R.string.eraser);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_black, ReaderMenuAction.SCRIBBLE_COLOR, R.string.black);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_undo, ReaderMenuAction.SCRIBBLE_UNDO, R.string.undo);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_redo, ReaderMenuAction.SCRIBBLE_REDO, R.string.redo);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_pack_up, ReaderMenuAction.SCRIBBLE_MINIMIZE, R.string.pack_up);
 
         toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
 
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.prevbtn_bg, ReaderMenuAction.SCRIBBLE_PREV_PAGE);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.prevbtn_bg, ReaderMenuAction.SCRIBBLE_PREV_PAGE, R.string.prev_page);
 
         String positionText = (readerDataHolder.getCurrentPage() + 1) + "/" + readerDataHolder.getPageCount();
-        addTextViewHolder(toolbar, readerDataHolder.getContext(), readerDataHolder.getContext().getResources().getDimension(R.dimen.scribble_page_position_size), positionText, ReaderMenuAction.SCRIBBLE_PAGE_POSITION);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.nextbtn_bg, ReaderMenuAction.SCRIBBLE_NEXT_PAGE);
+        addPageTextViewHolder(toolbar, readerDataHolder.getContext(), readerDataHolder.getContext().getResources().getDimension(R.dimen.scribble_page_position_size), positionText, ReaderMenuAction.SCRIBBLE_PAGE_POSITION);
+        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.nextbtn_bg, ReaderMenuAction.SCRIBBLE_NEXT_PAGE, R.string.next_page);
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        int margin = DimenUtils.dip2px(readerDataHolder.getContext(), 5);
+        int margin = (int) readerDataHolder.getContext().getResources().getDimension(R.dimen.menu_item_view_margin);
         toolbar.setMenuViewMargin(margin, 0, margin, 0);
         toolbar.setLayoutParams(lp);
         updateStrokeColor();
@@ -167,18 +171,15 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     private OnyxToolbar createScribbleTopToolbar(ReaderDataHolder readerDataHolder) {
         OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Top, OnyxToolbar.FillStyle.WrapContent);
-
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_top_back, ReaderMenuAction.SCRIBBLE_CLOSE);
+        toolbar.setDividerViewHeight((int) readerDataHolder.getContext().getResources().getDimension(R.dimen.divider_view_height));
 
         toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
-
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_undo, ReaderMenuAction.SCRIBBLE_UNDO);
         addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_save, ReaderMenuAction.SCRIBBLE_SAVE);
-        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_redo, ReaderMenuAction.SCRIBBLE_REDO);
+        addImageViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_exit, ReaderMenuAction.SCRIBBLE_CLOSE);
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        int margin = DimenUtils.dip2px(readerDataHolder.getContext(), 5);
+        int margin = (int) readerDataHolder.getContext().getResources().getDimension(R.dimen.menu_item_view_margin);
         toolbar.setMenuViewMargin(margin, 0, margin, 0);
         toolbar.setLayoutParams(lp);
 
@@ -240,14 +241,26 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         scribbleViewHolderMap.put(action, viewHolder);
     }
 
-    private void addTextViewHolder(OnyxToolbar toolbar, Context context, float textSize, String text, final ReaderMenuAction action) {
+    private void addImageViewTitleHolder(OnyxToolbar toolbar, Context context, int imageResId, final ReaderMenuAction action, int titleResId) {
+        if (disableMenuActions.contains(action)) {
+            return;
+        }
+        CommonViewHolder viewHolder = OnyxToolbar.Builder.createImageViewTitleHolder(context, R.id.content_view, imageResId, R.id.title, titleResId, R.layout.tool_bar_image_title_view, action);
+        viewHolder.setVisibility(R.id.title, DeviceConfig.sharedInstance(context).isShowMenuTitle() ? View.VISIBLE : View.GONE);
+        toolbar.addViewHolder(viewHolder);
+        scribbleViewHolderMap.put(action, viewHolder);
+    }
+
+    private void addPageTextViewHolder(OnyxToolbar toolbar, Context context, float textSize, String text, final ReaderMenuAction action) {
         if (disableMenuActions.contains(action)) {
             return;
         }
         TextView textView = new TextView(context);
         textView.setText(text);
+        textView.setTextColor(Color.BLACK);
         textView.setTextSize(textSize);
         OnyxToolbar.Builder.setLayoutParams(context, textView, 0, 0);
+        textView.setPadding(0, 0, 0, DeviceConfig.sharedInstance(context).isShowMenuTitle() ? (int) context.getResources().getDimension(R.dimen.menu_text_padding_bottom) : 0);
         CommonViewHolder viewHolder = new CommonViewHolder(textView);
         textView.setTag(action);
         toolbar.addViewHolder(viewHolder);
@@ -513,8 +526,8 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         }
         ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
         boolean isBlack = noteDataInfo.getStrokeColor() == Color.BLACK;
-        ImageView view = (ImageView) viewHolder.itemView;
-        view.setImageResource(isBlack ? R.drawable.ic_scribble_black : R.drawable.ic_scribble_white);
+        viewHolder.setImageResource(R.id.content_view, isBlack ? R.drawable.ic_scribble_black : R.drawable.ic_scribble_white);
+        viewHolder.setText(R.id.title, isBlack ? R.string.black : R.string.white);
     }
 
     @Subscribe

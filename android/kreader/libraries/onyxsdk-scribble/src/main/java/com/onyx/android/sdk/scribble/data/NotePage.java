@@ -1,13 +1,18 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
+import android.graphics.RectF;
+import android.support.annotation.Nullable;
 
-import com.onyx.android.sdk.scribble.shape.*;
+import com.onyx.android.sdk.scribble.shape.BaseShape;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -166,11 +171,59 @@ public class NotePage {
         }
 
         for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
-            for(TouchPoint touchPoint : touchPointList.getPoints()) {
-                if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
-                    removeShape(entry.getValue(), true);
+            hitTestAndRemoveShape(entry, touchPointList, radius);
+        }
+    }
+
+    @Nullable
+    public List<Shape> selectShapeByTouchPointList(TouchPointList touchPointList, float radius) {
+        if (touchPointList == null) {
+            return null;
+        }
+        Map<String, Shape> hitShapes = new HashMap<>();
+        for (Shape shape : shapeList) {
+            if (!shape.isFreePosition()) {
+                continue;
+            }
+            for (TouchPoint touchPoint : touchPointList.getPoints()) {
+                if (shape.fastHitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                    hitShapes.put(shape.getShapeUniqueId(), shape);
                     break;
                 }
+            }
+        }
+        HashSet<Shape> shapeHashSet = new HashSet<>();
+        List<Shape>resultList = new ArrayList<>();
+        for (Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
+            shapeHashSet.addAll(hitTestAndSelectShape(entry, touchPointList, radius));
+        }
+        resultList.addAll(shapeHashSet);
+        for (Shape shape : shapeList) {
+            if (resultList.contains(shape)) {
+                shape.setSelected(true);
+            } else {
+                shape.setSelected(false);
+            }
+        }
+        return resultList;
+    }
+
+    private List<Shape> hitTestAndSelectShape(Map.Entry<String, Shape> entry,
+                                              TouchPointList touchPointList, float radius) {
+        List<Shape> resultList = new ArrayList<>();
+        for (TouchPoint touchPoint : touchPointList.getPoints()) {
+            if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                resultList.add(entry.getValue());
+            }
+        }
+        return resultList;
+    }
+
+    private void hitTestAndRemoveShape(Map.Entry<String, Shape> entry, final TouchPointList touchPointList, final float radius) {
+        for(TouchPoint touchPoint : touchPointList.getPoints()) {
+            if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                removeShape(entry.getValue(), true);
+                return;
             }
         }
     }
@@ -208,11 +261,31 @@ public class NotePage {
         if (shapeList == null) {
             return;
         }
-        for(Shape shape : shapeList) {
+        for (Shape shape : shapeList) {
             shape.render(renderContext);
             if (callback != null && callback.isRenderAbort()) {
                 break;
             }
+        }
+    }
+
+    public RectF getSelectedRect() {
+        List<RectF> selectShapeRectList = new ArrayList<>();
+        for (Shape shape : shapeList) {
+            if (shape.isSelected()) {
+                RectF selectRect = new RectF();
+                ((BaseShape) shape).getOriginDisplayPath().computeBounds(selectRect, true);
+                selectShapeRectList.add(selectRect);
+            }
+        }
+        if (selectShapeRectList.size() == 0) {
+            return new RectF();
+        } else {
+            RectF resultSelectRectF = new RectF();
+            for (RectF targetRect : selectShapeRectList) {
+                resultSelectRectF.union(targetRect);
+            }
+            return resultSelectRectF;
         }
     }
 

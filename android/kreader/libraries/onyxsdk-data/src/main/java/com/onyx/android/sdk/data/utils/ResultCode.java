@@ -1,9 +1,11 @@
 package com.onyx.android.sdk.data.utils;
 
+import java.io.Serializable;
+
 /**
  * Created by suicheng on 2016/10/14.
  */
-public class ResultCode {
+public class ResultCode implements Serializable {
     public static final String CODE = "code";
     public static final String MESSAGE = "message";
 

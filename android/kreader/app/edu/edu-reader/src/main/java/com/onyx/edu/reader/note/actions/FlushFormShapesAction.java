@@ -16,14 +16,16 @@ import java.util.List;
 public class FlushFormShapesAction extends BaseAction {
 
     private List<Shape> shapes;
+    private boolean resume;
 
-    public FlushFormShapesAction(List<Shape> shapes) {
+    public FlushFormShapesAction(List<Shape> shapes, boolean resume) {
         this.shapes = shapes;
+        this.resume = resume;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
-        FlushFormShapesRequest flushFormShapesRequest = new FlushFormShapesRequest(shapes);
+        FlushFormShapesRequest flushFormShapesRequest = new FlushFormShapesRequest(shapes, resume);
         final NoteManager noteManager = readerDataHolder.getNoteManager();
         noteManager.submit(readerDataHolder.getContext(), flushFormShapesRequest, baseCallback);
     }

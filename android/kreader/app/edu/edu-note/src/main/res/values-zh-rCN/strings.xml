@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="create_note">创建笔记</string>
+    <string name="file_total_count">总计:%1$d/%2$d</string>
+    <string name="new_folder">新文件夹</string>
+    <string name="name_can_not_empty">标题不能为空.</string>
+    <string name="noti">通知</string>
+    <string name="note_name_already_exist">文件夹已重名\n请更换名称后重新保存</string>
+    <string name="create_folder_failed">文件夹创建失败.</string>
+    <string name="remove_failed">删除失败.</string>
+    <string name="name_length_illegal">文件名不多于20个字符.</string>
+    <string name="discard">丢弃</string>
+</resources>

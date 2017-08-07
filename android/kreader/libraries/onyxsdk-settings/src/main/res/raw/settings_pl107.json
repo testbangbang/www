@@ -2,12 +2,16 @@
   "has_front_light": false,
   "hide_vpn_setting": true,
   "hide_drm_setting": true,
+  "use_edu_config":true,
+  "custom_row_count": 2,
   "setting_item_list": [
     "setting_item_wifi",
+    "setting_item_bluetooth",
     "setting_item_power",
     "setting_item_product_detail",
     "setting_item_firmware_update",
-    "setting_item_production_test"
+    "setting_item_production_test",
+    "setting_item_error_report"
   ],
   "test_apps": [
     "com.onyx.test",

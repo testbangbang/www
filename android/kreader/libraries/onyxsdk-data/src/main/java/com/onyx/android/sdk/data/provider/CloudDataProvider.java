@@ -60,6 +60,10 @@ public class CloudDataProvider implements DataProviderBase {
         this.conf = conf;
     }
 
+    public void setCloudConf(CloudConf cloudConf) {
+        this.conf = cloudConf;
+    }
+
     @Override
     public void clearMetadata() {
         Delete.table(CloudMetadata.class);
@@ -246,50 +250,61 @@ public class CloudDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
-        List<CloudLibrary> cloudLibraryList;
+    public QueryResult<Library> fetchAllLibrary(String parentId, QueryArgs queryArgs) {
+        QueryResult<Library> result;
         if (FetchPolicy.isCloudPartPolicy(queryArgs.fetchPolicy)) {
-            cloudLibraryList = fetchLibraryListFromCloud(parentId, queryArgs);
+            result = fetchLibraryListFromCloud(queryArgs.libraryUniqueId, queryArgs);
         } else {
-            cloudLibraryList = fetchLibraryListFromLocal(parentId);
-            if (FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy) && CollectionUtils.isNullOrEmpty(cloudLibraryList)) {
-                cloudLibraryList = fetchLibraryListFromCloud(parentId, queryArgs);
+            result = fetchLibraryListFromLocal(queryArgs.libraryUniqueId);
+            if (FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy) && !QueryResult.isValidQueryResult(result)) {
+                result = fetchLibraryListFromCloud(queryArgs.libraryUniqueId, queryArgs);
             }
         }
-        return getLibraryListFromCloud(cloudLibraryList);
+        return result;
     }
 
-    private List<Library> getLibraryListFromCloud(List<CloudLibrary> cloudLibraryList) {
-        if (CollectionUtils.isNullOrEmpty(cloudLibraryList)) {
-            return new ArrayList<>();
-        }
-        List<Library> libraryList = new ArrayList<>();
-        for (CloudLibrary cloudLibrary : cloudLibraryList) {
-            libraryList.add(cloudLibrary);
-        }
-        return libraryList;
+    @Override
+    public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
+        QueryResult<Library> result = fetchAllLibrary(parentId, queryArgs);
+        return result.list;
     }
 
-    public List<CloudLibrary> fetchLibraryListFromCloud(String parentId, QueryArgs queryArgs) {
-        List<CloudLibrary> libraryList = new ArrayList<>();
+    public QueryResult<Library> fetchLibraryListFromCloud(String parentId, QueryArgs queryArgs) {
+        QueryResult<Library> result = new QueryResult<>();
         try {
-            Response<List<CloudLibrary>> response = RetrofitUtils.executeCall(getContentService().loadLibraryList());
+            Response<QueryResult<CloudLibrary>> response = RetrofitUtils.executeCall(getContentService().loadLibraryList(parentId));
             if (response.isSuccessful()) {
-                libraryList = response.body();
+                result.list = new ArrayList<>();
+                for (CloudLibrary library : response.body().list) {
+                    result.list.add(library);
+                }
+                result.count = response.body().count;
+                result.fetchSource = Metadata.FetchSource.CLOUD;
             }
         } catch (Exception e) {
             if (!FetchPolicy.isCloudOnlyPolicy(queryArgs.fetchPolicy) && !FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy)) {
-                libraryList = fetchLibraryListFromLocal(parentId);
+                result = fetchLibraryListFromLocal(parentId);
             }
         }
-        return libraryList;
+        return result;
     }
 
-    public List<CloudLibrary> fetchLibraryListFromLocal(String parentId) {
-        return new Select().from(CloudLibrary.class)
+    public QueryResult<Library> fetchLibraryListFromLocal(String parentId) {
+        QueryResult<Library> result = new QueryResult<>();
+        List<CloudLibrary> cloudLibraryList = new Select().from(CloudLibrary.class)
                 .where()
                 .and(CloudLibrary_Table.parentUniqueId.eq(parentId))
                 .queryList();
+        if (CollectionUtils.isNullOrEmpty(cloudLibraryList)) {
+            return result;
+        }
+        result.list = new ArrayList<>();
+        for (CloudLibrary library : cloudLibraryList) {
+            result.list.add(library);
+        }
+        result.count = cloudLibraryList.size();
+        result.fetchSource = Metadata.FetchSource.LOCAL;
+        return result;
     }
 
     @Override
@@ -308,12 +323,12 @@ public class CloudDataProvider implements DataProviderBase {
 
     @Override
     public void deleteLibrary(Library library) {
-
+        library.delete();
     }
 
     @Override
     public void clearLibrary() {
-
+        Delete.table(CloudLibrary.class);
     }
 
     @Override

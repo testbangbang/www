@@ -3,6 +3,7 @@
  */
 package com.onyx.android.sdk.data.compatability;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -17,6 +18,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author joy
@@ -312,6 +315,120 @@ public class OnyxCmsCenter {
                 c.close();
             }
         }
+    }
+
+    public static List<OnyxHistoryEntry> getHistoryByApplication(Context context, String application) {
+        Cursor c = null;
+        List<OnyxHistoryEntry> historyEntries = new ArrayList<OnyxHistoryEntry>();
+        try {
+            c = context.getContentResolver().query(OnyxHistoryEntry.CONTENT_URI,
+                    null, OnyxHistoryEntry.Columns.APPLICATION + "= ?", new String[]{application}, null);
+            if (c == null) {
+                Log.w(TAG, "getHistoryByApplication, query database failed");
+                return null;
+            }
+            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                OnyxHistoryEntry history_entry = OnyxHistoryEntry.Columns.readColumnsData(c);
+                historyEntries.add(history_entry);
+            }
+            return historyEntries;
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+    }
+
+    public static boolean insertHistory(Context context, OnyxHistoryEntry historyEntry) {
+        return insertHistory(context, context.getPackageName(), historyEntry);
+    }
+
+    public static boolean insertHistory(Context context, String application, OnyxHistoryEntry historyEntry) {
+        historyEntry.setApplication(application);
+        Uri result = context.getContentResolver().insert(
+                OnyxHistoryEntry.CONTENT_URI,
+                OnyxHistoryEntry.Columns.createColumnData(historyEntry));
+        if (result == null) {
+            return false;
+        }
+        String id = result.getLastPathSegment();
+        if (id == null) {
+            return false;
+        }
+        historyEntry.setId(Long.parseLong(id));
+        return true;
+    }
+
+    public static boolean updateHistory(Context context, OnyxHistoryEntry onyxHistoryEntry) {
+        return updateHistory(context, context.getPackageName(), onyxHistoryEntry);
+    }
+
+    public static boolean updateHistory(Context context, String application, OnyxHistoryEntry onyxHistoryEntry) {
+        onyxHistoryEntry.setApplication(application);
+
+        Uri row = Uri.withAppendedPath(OnyxHistoryEntry.CONTENT_URI,
+                String.valueOf(onyxHistoryEntry.getId()));
+        int count = context.getContentResolver().update(row,
+                OnyxHistoryEntry.Columns.createColumnData(onyxHistoryEntry), null, null);
+        if (count <= 0) {
+            return false;
+        }
+        assert (count == 1);
+        return true;
+    }
+
+    public static List<OnyxHistoryEntry> getHistorysByMD5(Context context, String md5) {
+        return getHistorysByMD5(context, context.getPackageName(), md5);
+    }
+
+    public static List<OnyxHistoryEntry> getHistorysByMD5(Context context, String application, String md5) {
+
+        Cursor c = null;
+        List<OnyxHistoryEntry> historyEntries = new ArrayList<OnyxHistoryEntry>();
+        try {
+            c = context.getContentResolver().query(OnyxHistoryEntry.CONTENT_URI,
+                    null, OnyxHistoryEntry.Columns.MD5 + "= ?", new String[]{md5}, null);
+            if (c == null) {
+                Log.w(TAG, "getHistorysByMD5, query database failed");
+                return null;
+            }
+            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                OnyxHistoryEntry history_entry = OnyxHistoryEntry.Columns.readColumnsData(c);
+                historyEntries.add(history_entry);
+            }
+            return historyEntries;
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+    }
+
+    public static boolean deleteHistoryByMD5(Context context, String md5) {
+        return deleteHistoryByMD5(context, context.getPackageName(), md5);
+    }
+
+    public static boolean deleteHistoryByMD5Only(Context context, String md5) {
+        int result_code = context.getContentResolver().delete(
+                OnyxHistoryEntry.CONTENT_URI, OnyxHistoryEntry.Columns.MD5 + " = ?",
+                new String[]{md5});
+        return result_code > 0 ? true : false;
+    }
+
+    public static boolean deleteHistoryByMD5(Context context, String application, String md5) {
+        int result_code = context.getContentResolver().delete(
+                OnyxHistoryEntry.CONTENT_URI,
+                OnyxHistoryEntry.Columns.APPLICATION + " = ? AND " + OnyxHistoryEntry.Columns.MD5 + " = ?",
+                new String[]{application, md5});
+        return result_code > 0 ? true : false;
+    }
+
+    public static boolean deleteAllHistory(Context context) {
+        int result_code = context.getContentResolver().delete(OnyxHistoryEntry.CONTENT_URI, null, null);
+        ContentValues cv = new ContentValues();
+        cv.putNull(OnyxMetadata.Columns.LAST_ACCESS);
+        context.getContentResolver().update(OnyxMetadata.CONTENT_URI, cv, null, null);
+        return result_code > 0 ? true : false;
     }
 
 }

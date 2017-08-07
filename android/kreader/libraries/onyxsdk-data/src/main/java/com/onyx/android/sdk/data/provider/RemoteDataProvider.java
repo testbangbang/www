@@ -26,8 +26,10 @@ import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -112,7 +114,9 @@ public class RemoteDataProvider implements DataProviderBase {
                 hashTag = FileUtils.computeMD5(new File(path));
             }
             metadata = ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
-                    Metadata.class, ConditionGroup.clause().and(Metadata_Table.hashTag.eq(hashTag)), null);
+                    Metadata.class, ConditionGroup.clause()
+                            .or(Metadata_Table.hashTag.eq(hashTag))
+                            .or(Metadata_Table.nativeAbsolutePath.eq(path)), null);
         } catch (Exception e) {
         } finally {
             return MetadataUtils.ensureObject(metadata);
@@ -250,8 +254,16 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
+    public QueryResult<Library> fetchAllLibrary(String parentId, QueryArgs queryArgs) {
+        QueryResult<Library> result = new QueryResult<>();
+        result.list = loadAllLibrary(parentId, queryArgs);
+        result.count = CollectionUtils.getSize(result.list);
+        return result;
+    }
+
+    @Override
     public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
-        Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
+        Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, queryArgs.libraryUniqueId);
         return ContentUtils.queryList(OnyxLibraryProvider.CONTENT_URI,
                 Library.class,
                 ConditionGroup.clause().and(condition),

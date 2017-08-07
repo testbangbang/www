@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.onyx.android.sdk.ui.compat.AppCompatLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:appCompat="http://schemas.android.com/tools"
+              appCompat:alwaysLayoutImageView="true"
+              android:orientation="vertical"
+              android:padding="4dp"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+        appCompat:alwaysLayoutImageView="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:textColor="@android:color/black"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:layout_marginLeft="@dimen/conversion_margin"
+            android:layout_marginRight="@dimen/conversion_margin"
+            android:inputType="numberDecimal"
+            android:imeOptions="actionDone"
+            android:id="@+id/input_text"
+            android:textSize="25sp"
+            android:background="@drawable/square_bg"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+        <Spinner
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="@dimen/conversion_margin"
+            android:background="@drawable/ic_drop_down"
+            android:id="@+id/input_unit"
+            android:textSize="25sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:layout_marginRight="1dp"
+            android:layout_marginLeft="@dimen/conversion_margin"
+            android:src="@drawable/ic_conversion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Spinner
+            android:textColor="@android:color/black"
+            android:layout_marginLeft="@dimen/conversion_margin"
+            android:layout_marginRight="@dimen/conversion_margin"
+            android:background="@drawable/ic_drop_down"
+            android:id="@+id/output_unit"
+            android:textSize="25sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/output_content"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>

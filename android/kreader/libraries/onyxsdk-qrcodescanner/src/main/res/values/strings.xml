@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">QrCodeScanner</string>
+
+    <string name="title_activity_scan_qr_code">Qr scanner</string>
+    <string name="qc_code_close">Close</string>
+    <string name="qr_code_select_picture">Photos</string>
+    <string name="qr_code_open_flash_light">Open flash light</string>
+    <string name="qr_code_close_flash_light">Close flash light</string>
+    <string name="qr_code_auto_scan_notification">Scan automatically, Put the QR code into the box</string>
+    <string name="qr_code_notification">Tip</string>
+    <string name="qr_code_camera_not_open">Your camera does\'t seem to open, go \"Settings>Privacy>Camera\" to set it</string>
+    <string name="qr_code_positive_button_know">Got it</string>
+    <string name="qr_code_positive_button_confirm">OK</string>
+    <string name="qr_code_could_not_read_qr_code_from_picture">Did\'t read the link of pic, try to change the other</string>
+    <string name="qr_code_could_not_read_qr_code_from_scanner">Sorry, can\'t scan the content</string>
+    <string name="qr_code_camera_not_found">No camera detected</string>
+
+    <string name="request_camera_permission_rationale">Android6.0 need to apply for camera permissions, or can\'t operate</string>
+    <string name="warning_of_permissions_denied">Application permission is denied and can not be done</string>
+    <string name="tip_of_permissions_request">This app involves the camera permissions, can\'t operate later if not authority</string>
+    <string name="goto_permission_setting">Go to the rights management settings interface</string>
+
+    <string name="go_to">Goto</string>
+    <string name="cancel">Cancel</string>
+</resources>

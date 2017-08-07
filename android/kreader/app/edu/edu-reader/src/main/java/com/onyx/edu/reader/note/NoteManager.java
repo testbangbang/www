@@ -147,6 +147,7 @@ public class NoteManager {
         }
         view = sv;
         getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
+        setVisibleDrawRectF(new RectF(visibleDrawRect.left, visibleDrawRect.top, visibleDrawRect.right, visibleDrawRect.bottom));
     }
 
     public final NoteEventProcessorManager getNoteEventProcessorManager() {
@@ -375,6 +376,10 @@ public class NoteManager {
         shapeStash.add(shape);
     }
 
+    public void addNewStashList(final List<Shape> shapes) {
+        shapeStash.addAll(shapes);
+    }
+
     public final NoteDrawingArgs getNoteDrawingArgs() {
         return noteDocument.getNoteDrawingArgs();
     }
@@ -598,7 +603,9 @@ public class NoteManager {
     }
 
     private Shape onShapeMove(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
-        getCurrentShape().onMove(normal, screen);
+        if (getCurrentShape().inVisibleDrawRectF(visibleDrawRectF)) {
+            getCurrentShape().onMove(normal, screen);
+        }
         return getCurrentShape();
     }
 
@@ -607,7 +614,9 @@ public class NoteManager {
         if (shape == null) {
             return null;
         }
-        shape.onUp(normal, screen);
+        TouchPoint normalPoint = shape.inVisibleDrawRectF(visibleDrawRectF) ? normal : shape.getCurrentPoint();
+        TouchPoint screenPoint = shape.inVisibleDrawRectF(visibleDrawRectF) ? screen : shape.getCurrentScreenPoint();
+        shape.onUp(normalPoint, screenPoint);
         resetCurrentShape();
         return shape;
     }

@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.scribble;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -34,7 +35,6 @@ import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
-import com.onyx.android.sdk.utils.TreeObserverUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +81,14 @@ public class NoteViewHelper {
         // caller should do hit test in current page, remove shapes hit-tested.
         public abstract void onEraseTouchPointListReceived(final TouchPointList pointList);
 
+        // caller should render the page here.
+        public abstract void onBeginShapeSelect();
+
+        // caller should draw shape select indicator
+        public abstract void onShapeSelecting(final MotionEvent motionEvent);
+
+        // caller should do hit test in current page, shapes select hit-tested.
+        public abstract void onShapeSelectTouchPointListReceived(final TouchPointList pointList);
     }
 
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
@@ -94,6 +102,7 @@ public class NoteViewHelper {
     private List<Shape> dirtyStash = new ArrayList<>();
     private InputCallback callback;
     private TouchPointList erasePoints;
+    private TouchPointList shapeSelectPoints;
     private DeviceConfig deviceConfig;
     private MappingConfig mappingConfig;
     private LineLayoutArgs lineLayoutArgs;
@@ -126,7 +135,7 @@ public class NoteViewHelper {
         pauseDrawing();
     }
 
-    public View getView() {
+    public SurfaceView getView() {
         return surfaceView;
     }
 
@@ -324,7 +333,12 @@ public class NoteViewHelper {
 
         int viewPosition[] = {0, 0};
         surfaceView.getLocationOnScreen(viewPosition);
-        dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, viewPosition[1] + yAxisOffset);
+        if (DeviceConfig.sharedInstance(surfaceView.getContext()).getEpdPostOrientation() == 270) {
+            int reverseTop = ((Activity) surfaceView.getContext()).getWindow().getDecorView().getBottom() - surfaceView.getHeight() - viewPosition[1];
+            dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, reverseTop + yAxisOffset);
+        }else {
+            dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, viewPosition[1] + yAxisOffset);
+        }
 
         final OnyxMatrix matrix = matrixFromViewToEpd();
         matrix.mapInPlace(dfbLimitRect);
@@ -427,7 +441,7 @@ public class NoteViewHelper {
         globalLayoutListener = null;
     }
 
-    private Rect getViewportSize() {
+    public Rect getViewportSize() {
         if (surfaceView != null) {
             return new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
         }
@@ -587,6 +601,10 @@ public class NoteViewHelper {
             callback.onErasing(motionEvent);
         }
         if (erasePoints != null) {
+            int n = motionEvent.getHistorySize();
+            for(int i = 0; i < n; ++i) {
+                erasePoints.add(fromHistorical(motionEvent, i));
+            }
             erasePoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(), motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
         }
         return true;
@@ -597,6 +615,33 @@ public class NoteViewHelper {
             callback.onEraseTouchPointListReceived(erasePoints);
         }
         shortcutErasing = false;
+    }
+
+    private void onBeginShapeSelecting() {
+        shapeSelectPoints = new TouchPointList();
+        if (callback != null) {
+            callback.onBeginShapeSelect();
+        }
+    }
+
+    private boolean onShapeSelecting(final MotionEvent motionEvent) {
+        if (callback != null) {
+            callback.onShapeSelecting(motionEvent);
+        }
+        if (shapeSelectPoints != null) {
+            int n = motionEvent.getHistorySize();
+            for(int i = 0; i < n; ++i) {
+                shapeSelectPoints.add(fromHistorical(motionEvent, i));
+            }
+            shapeSelectPoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(), motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
+        }
+        return true;
+    }
+
+    private void onFinishShapeSelecting() {
+        if (callback != null) {
+            callback.onShapeSelectTouchPointListReceived(shapeSelectPoints);
+        }
     }
 
     public List<Shape> getDirtyStash() {
@@ -626,11 +671,23 @@ public class NoteViewHelper {
         int type = getCurrentShapeType();
         if (ShapeFactory.isDFBShape(type)) {
             setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
-        } else if (type == ShapeFactory.SHAPE_ERASER) {
-            setPenState(NoteDrawingArgs.PenState.PEN_USER_ERASING);
-        } else {
-            setPenState(NoteDrawingArgs.PenState.PEN_CANVAS_DRAWING);
+            return;
         }
+        switch (type) {
+            case ShapeFactory.SHAPE_ERASER:
+                setPenState(NoteDrawingArgs.PenState.PEN_USER_ERASING);
+                break;
+            case ShapeFactory.SHAPE_SELECTOR:
+                setPenState(NoteDrawingArgs.PenState.PEN_SHAPE_SELECTING);
+                break;
+            default:
+                setPenState(NoteDrawingArgs.PenState.PEN_CANVAS_DRAWING);
+                break;
+        }
+    }
+
+    public boolean inShapeSelecting(){
+        return getPenState() == NoteDrawingArgs.PenState.PEN_SHAPE_SELECTING;
     }
 
     public boolean inErasing() {
@@ -692,6 +749,9 @@ public class NoteViewHelper {
             }
             return forwardErasing(motionEvent);
         }
+        if (inShapeSelecting()){
+            return forwardShapeSelecting(motionEvent);
+        }
         if (!(useRawInput() && renderByFramework())) {
             return forwardDrawing(motionEvent);
         }
@@ -705,6 +765,17 @@ public class NoteViewHelper {
             onDrawingTouchMove(motionEvent);
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             onDrawingTouchUp(motionEvent);
+        }
+        return true;
+    }
+
+    private boolean forwardShapeSelecting(final MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            onBeginShapeSelecting();
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            onShapeSelecting(motionEvent);
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            onFinishShapeSelecting();
         }
         return true;
     }
@@ -818,6 +889,7 @@ public class NoteViewHelper {
         }
         return true;
     }
+
     public boolean supportColor(Context context){
         return DeviceConfig.sharedInstance(context, "note").supportColor();
     }

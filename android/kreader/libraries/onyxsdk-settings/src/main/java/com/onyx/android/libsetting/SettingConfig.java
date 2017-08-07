@@ -79,6 +79,9 @@ public class SettingConfig {
         static  private  final String TEST_APPS_TAG = "test_apps";
 
         static private final String ENABLE_AUTO_WIFI_RESCAN_TAG = "enable_auto_wifi_scan";
+        static private final String CUSTOM_ROW_COUNT_TAG = "custom_row_count";
+        static private final String USE_EDU_CONFIG = "use_edu_config";
+
     }
 
     static class Default {
@@ -543,6 +546,26 @@ public class SettingConfig {
         Boolean result = getData(Custom.ENABLE_AUTO_WIFI_RESCAN_TAG, Boolean.class);
         if (result == null) {
             return true;
+        }
+        return result;
+    }
+
+    public int customRowCount(){
+        Integer result =  getData(Custom.CUSTOM_ROW_COUNT_TAG,Integer.class);
+        if (result == null) {
+            return -1;
+        }
+        return result;
+    }
+
+    public boolean isCustomRowCount() {
+        return customRowCount() != -1;
+    }
+
+    public boolean useEduConfig(){
+        Boolean result = getData(Custom.USE_EDU_CONFIG, Boolean.class);
+        if (result == null) {
+            return false;
         }
         return result;
     }

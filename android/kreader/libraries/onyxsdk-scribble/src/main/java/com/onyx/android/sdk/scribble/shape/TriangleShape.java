@@ -1,12 +1,6 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.RectF;
-import android.util.Log;
-
-import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 /**

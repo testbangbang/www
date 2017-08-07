@@ -170,6 +170,11 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
         inputEditText.setVisibility(View.VISIBLE);
     }
 
+    public OnyxCustomDialog setInputHintText(CharSequence hint) {
+        inputEditText.setHint(hint);
+        return this;
+    }
+
     public OnyxCustomDialog setDismissOnBackPressed(boolean dismissOnBackPressed) {
         this.dismissOnBackPressed = dismissOnBackPressed;
 

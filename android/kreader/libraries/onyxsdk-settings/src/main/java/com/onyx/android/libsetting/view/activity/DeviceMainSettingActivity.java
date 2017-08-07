@@ -9,9 +9,11 @@ import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.zxing.WriterException;
 import com.onyx.android.libsetting.R;
@@ -22,6 +24,7 @@ import com.onyx.android.libsetting.databinding.DeviceMainSettingsItemBinding;
 import com.onyx.android.libsetting.model.ModelInfo;
 import com.onyx.android.libsetting.model.SettingItem;
 import com.onyx.android.libsetting.util.CommonUtil;
+import com.onyx.android.libsetting.util.Constant;
 import com.onyx.android.libsetting.util.QRCodeUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.DeviceMainSettingItemDecoration;
@@ -34,11 +37,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.onyx.android.libsetting.util.Constant.EDU_DEVICE_INFO_TRIGGER_VALUE;
+
 public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
+    private static final String TAG = DeviceMainSettingActivity.class.getSimpleName();
     SettingConfig config;
     ActivityDeviceMainSettingBinding binding;
     ModelInfo info;
     SettingFunctionAdapter adapter;
+    GridLayoutManager layoutManager;
+    int eduDeviceInfoCount = 0;
+    long eduDeviceInfoTriggerStartTime = 0;
 
     private static final float miniPercent = 0.20f;
 
@@ -69,7 +78,7 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_device_main_setting);
         RecyclerView recyclerView = binding.functionRecyclerView;
         recyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 12);
+        layoutManager = new GridLayoutManager(this, 12);
         adapter = new SettingFunctionAdapter(this, new ArrayList<SettingItem>());
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -121,15 +130,45 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         });
 
         //TODO:custom view for normal/colorDevice;
-        if (AppCompatUtils.isColorDevice(this)) {
-            binding.infoArea.setBackground(getResources().getDrawable(R.drawable.main_setting_bg));
+        if (SettingConfig.sharedInstance(this).useEduConfig()) {
+            binding.backGroundImageView.setImageResource(R.drawable.main_setting_bg);
             try {
-                binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.getQRCodeCFABitmap(this));
+                binding.macQrCodeImageView.setImageBitmap(QRCodeUtil.getQRCodeCFABitmap());
+                binding.deviceInfoEnterImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (eduDeviceInfoCount == 0) {
+                            eduDeviceInfoTriggerStartTime = System.currentTimeMillis();
+                        }
+                        if (System.currentTimeMillis() - eduDeviceInfoTriggerStartTime <= Constant.EDU_DEVICE_INFO_TRIGGER_TIME_LIMIT) {
+                            eduDeviceInfoCount++;
+                        } else {
+                            eduDeviceInfoTriggerStartTime = 0;
+                            eduDeviceInfoCount = 0;
+                        }
+
+                        if (eduDeviceInfoCount > (EDU_DEVICE_INFO_TRIGGER_VALUE / 2)) {
+                            if (eduDeviceInfoCount >= EDU_DEVICE_INFO_TRIGGER_VALUE) {
+                                eduDeviceInfoCount = 0;
+                                eduDeviceInfoTriggerStartTime = 0;
+                                Intent intent = SettingCategory.getConfigIntentByCategory(DeviceMainSettingActivity.this, SettingCategory.DEVICE_INFO);
+                                if (intent != null) {
+                                    startActivity(intent);
+                                }
+                            } else {
+                                Toast.makeText(DeviceMainSettingActivity.this, getString(R.string.still_need_times_to_activate,
+                                        EDU_DEVICE_INFO_TRIGGER_VALUE - eduDeviceInfoCount), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
             } catch (WriterException e) {
                 e.printStackTrace();
             }
             binding.deviceDetailArea.setVisibility(View.GONE);
         } else {
+            binding.deviceInfoEnterImageView.setVisibility(View.GONE);
+            binding.backGroundImageView.setVisibility(View.GONE);
             binding.infoArea.setBackground(getResources().getDrawable(R.drawable.image_button_bg));
             binding.macQrCodeLayout.setVisibility(View.GONE);
         }
@@ -153,6 +192,10 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
                     break;
             }
         }
+        if (config.isCustomRowCount()) {
+            layoutManager.setSpanCount(adapter.dataList.size() / config.customRowCount() +
+                    (adapter.dataList.size() % config.customRowCount()));
+        }
         adapter.notifyDataSetChanged();
         PercentRelativeLayout.LayoutParams params = (PercentRelativeLayout.LayoutParams) binding.infoArea.getLayoutParams();
         PercentLayoutHelper.PercentLayoutInfo info = params.getPercentLayoutInfo();
@@ -162,6 +205,9 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
 
     // TODO: 2016/11/30 temp max 3 line layout
     private int calculateSpanSizeBySettingItemSize(int position, int settingItemSize) {
+        if (config.isCustomRowCount()) {
+            return 1;
+        }
         switch (settingItemSize) {
             case 2:
             case 6:
@@ -279,6 +325,11 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         }
 
         public int getRowCount() {
+            SettingConfig config = SettingConfig.sharedInstance(context);
+            if (config.isCustomRowCount()) {
+                return config.customRowCount();
+            }
+
             if (dataList.size() >= 6) {
                 return 3;
             } else if (dataList.size() > 4) {

@@ -119,8 +119,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onPostResume() {
+        super.onPostResume();
         wakeLockHolder.acquireWakeLock(this, TAG);
         DeviceUtils.setFullScreenOnResume(this, true);
         if (AppCompatUtils.isColorDevice(this)){
@@ -162,7 +162,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         rootView = (RelativeLayout) findViewById(R.id.onyx_activity_scribble);
         spanTextView = (LinedEditText) findViewById(R.id.span_text_view);
         switchBtn = (ImageView) findViewById(R.id.button_switch);
-        exportBtn.setVisibility(NoteAppConfig.sharedInstance(this).isEnableExport() ? View.VISIBLE : View.GONE);
+        settingBtn.setVisibility(NoteAppConfig.sharedInstance(this).useEduConfig() ? View.GONE : View.VISIBLE);
         pageIndicator = (Button) findViewById(R.id.button_page_progress);
         functionContentView = (ContentView) findViewById(R.id.function_content_view);
         functionContentView.setShowPageInfoArea(false);
@@ -310,14 +310,29 @@ public class ScribbleActivity extends BaseScribbleActivity {
         spanTextView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-                switch (keyCode) {
-                    case KeyEvent.KEYCODE_DEL:
-                        setKeyboardInput(true);
-                        onDelete(false);
-                        return true;
-                    case KeyEvent.KEYCODE_ENTER:
-                        onCloseKeyBoard();
-                        return false;
+                if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_DEL:
+                            setKeyboardInput(true);
+                            onDelete(false);
+                            return true;
+                        case KeyEvent.KEYCODE_ENTER:
+                            onCloseKeyBoard();
+                            return false;
+                        case KeyEvent.KEYCODE_1:
+                        case KeyEvent.KEYCODE_2:
+                        case KeyEvent.KEYCODE_3:
+                        case KeyEvent.KEYCODE_4:
+                        case KeyEvent.KEYCODE_5:
+                        case KeyEvent.KEYCODE_6:
+                        case KeyEvent.KEYCODE_7:
+                        case KeyEvent.KEYCODE_8:
+                        case KeyEvent.KEYCODE_9:
+                        case KeyEvent.KEYCODE_0:
+                            char displayLabel = keyEvent.getDisplayLabel();
+                            buildTextShape(String.valueOf(displayLabel));
+                            return true;
+                    }
                 }
                 return false;
             }
@@ -339,12 +354,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         spanTextView.setInputConnectionListener(new LinedEditText.InputConnectionListener() {
             @Override
             public void commitText(CharSequence text, int newCursorPosition) {
-                if (isBuildingSpan()) {
-                    return;
-                }
-                int width = (int) spanTextView.getPaint().measureText(text.toString());
-                setKeyboardInput(true);
-                spanTextHandler.buildTextShape(text.toString(), width, getSpanTextFontHeight());
+                buildTextShape(text.toString());
             }
         });
 
@@ -355,6 +365,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 switchScribbleMode(isLineLayoutMode());
             }
         });
+    }
+
+    private void buildTextShape(String text) {
+        if (isBuildingSpan()) {
+            return;
+        }
+        setKeyboardInput(true);
+        int width = (int) spanTextView.getPaint().measureText(text);
+        spanTextHandler.buildTextShape(text, width, getSpanTextFontHeight());
     }
 
     private void updateLineLayoutArgs() {
@@ -1084,7 +1103,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void onStrokeWidthChanged(float width, BaseCallback callback) {
         if (shapeDataInfo.isInUserErasing()) {
-            setCurrentShapeType(PenType.PENCIL);
+            setCurrentShapeType(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
         }
         setStrokeWidth(width);
         syncWithCallback(true, true, callback);

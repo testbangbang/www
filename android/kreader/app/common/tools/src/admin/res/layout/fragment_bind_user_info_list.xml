@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f5f5f5"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/ToolBarStyle"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <include
+            android:id="@+id/toolbar_header"
+            layout="@layout/toolbar_header" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_mac_address"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="6dp"
+        android:background="@android:color/white"
+        android:gravity="center"
+        android:text="Mac:   "
+        android:textSize="23sp" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/root_group"
+                style="@style/parent_group_layout_style"
+                android:text="@string/node_root" />
+
+            <LinearLayout
+                android:id="@+id/parent_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/child_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:text="@string/select_user_to_bind_device"
+        android:textColor="#999999"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <include layout="@layout/search_edit" />
+
+    <TextView
+        android:id="@+id/tv_add_new_user"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_marginTop="11dp"
+        android:background="@android:color/white"
+        android:drawableLeft="@drawable/icon_add"
+        android:drawablePadding="4dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="@string/user_add_new"
+        android:textSize="21sp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/contact_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/contact_dialog"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="30sp"
+            android:visibility="invisible" />
+
+        <com.onyx.edu.manager.view.ui.SideBar
+            android:id="@+id/contact_sidebar"
+            android:layout_width="15dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|center"
+            android:layout_marginRight="3dp" />
+
+    </FrameLayout>
+
+</LinearLayout>

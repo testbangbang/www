@@ -51,6 +51,13 @@ public class AppCompatUtils {
         return value;
     }
 
+    public static void forceViewReLayout(View view) {
+        view.measure(
+                View.MeasureSpec.makeMeasureSpec(view.getMeasuredWidth(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(view.getMeasuredHeight(), View.MeasureSpec.EXACTLY));
+        AppCompatUtils.processViewLayoutEvenPosition(view);
+    }
+
     public static void processViewLayoutEvenPosition(View view) {
         int[] locationOnScreen = new int[2];
         view.getLocationOnScreen(locationOnScreen);

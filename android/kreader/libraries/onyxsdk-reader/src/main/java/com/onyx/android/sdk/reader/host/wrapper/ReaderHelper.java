@@ -126,6 +126,7 @@ public class ReaderHelper {
         this.pluginOptions = pluginOptions;
         saveMetadata(context, documentPath);
         saveThumbnail(context, documentPath);
+        LegacySdkDataUtils.recordStartReading(context, documentPath);
     }
 
     private void saveMetadata(final Context context, final String path) {
@@ -402,11 +403,18 @@ public class ReaderHelper {
     }
 
     private void applyGamma(final ReaderViewInfo viewInfo, final ReaderBitmapReferenceImpl bitmap) {
-        final List<RectF> regions = collectTextRectangleList(viewInfo);
+        boolean applyImageGammaOnly = true;
         final RectF parent = new RectF(0, 0, bitmap.getBitmap().getWidth(), bitmap.getBitmap().getHeight());
-        final List<RectF> imageRegions = RectUtils.cutRectByExcludingRegions(parent, regions);
-        applyTextGamma(bitmap);
-        applyImageGamma(bitmap, imageRegions);
+        if (applyImageGammaOnly) {
+            final List<RectF> imageRegions = new ArrayList();
+            imageRegions.add(parent);
+            applyImageGamma(bitmap, imageRegions);
+        } else {
+            final List<RectF> regions = collectTextRectangleList(viewInfo);
+            final List<RectF> imageRegions = RectUtils.cutRectByExcludingRegions(parent, regions);
+            applyTextGamma(bitmap);
+            applyImageGamma(bitmap, imageRegions);
+        }
     }
 
     private void applyTextGamma(final ReaderBitmapReferenceImpl bitmap) {

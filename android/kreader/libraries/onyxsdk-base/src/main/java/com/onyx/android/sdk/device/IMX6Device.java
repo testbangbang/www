@@ -2,6 +2,7 @@ package com.onyx.android.sdk.device;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
@@ -86,6 +87,9 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
 
+    private static Method sMethodSetQRShowConfig;
+    private static Method sMethodSetInfoShowConfig;
+
     private static Method sMethodGetRemovableSDCardDirectory;
 
     /**
@@ -166,6 +170,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodStopTpd;
     private static Method sMethodStartTpd;
     private static Method sMethodEnableTpd;
+    private static Method sMethodHasWifi;
 
     private IMX6Device() {
     }
@@ -502,11 +507,35 @@ public class IMX6Device extends BaseDevice {
     }
 
     public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
+        setScreenHandWritingRegionLimit(view, new int[] { left, top, right, bottom });
+    }
+
+    @Override
+    public void setScreenHandWritingRegionLimit(View view, int[] array) {
         try {
-            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionLimit, view, left, top, right, bottom);
+            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionLimit, view, array);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void setScreenHandWritingRegionLimit(View view, Rect[] regions) {
+        int array[] = new int[regions.length * 4];
+        for (int i = 0; i < regions.length; i++) {
+            Rect region = regions[i];
+
+            int left = Math.min(region.left, region.right);
+            int top = Math.min(region.top, region.bottom);
+            int right = Math.max(region.left, region.right);
+            int bottom = Math.max(region.top, region.bottom);
+
+            array[4 * i] = left;
+            array[4 * i + 1] = top;
+            array[4 * i + 2] = right;
+            array[4 * i + 3] = bottom;
+        }
+        setScreenHandWritingRegionLimit(view, array);
     }
 
     public void applyGammaCorrection(boolean apply, int value) {
@@ -587,7 +616,9 @@ public class IMX6Device extends BaseDevice {
             sMethodLed = ReflectUtil.getMethodSafely(deviceControllerClass, "led", boolean.class);
             sMethodSetLedColor = ReflectUtil.getMethodSafely(deviceControllerClass, "setLedColor", String.class, int.class);
 
+
             sMethodEnableTpd = ReflectUtil.getMethodSafely(cls, "enableOnyxTpd", int.class);
+            sMethodHasWifi = ReflectUtil.getMethodSafely(deviceControllerClass, "hasWifi");
             // signature of "public void setUpdatePolicy(int updatePolicy, int guInterval)"
             sMethodSetUpdatePolicy = ReflectUtil.getMethodSafely(cls, "setUpdatePolicy", int.class, int.class);
             // signature of "public void postInvalidate(int updateMode)"
@@ -610,7 +641,7 @@ public class IMX6Device extends BaseDevice {
             sMethodGetTouchHeight = ReflectUtil.getMethodSafely(cls, "getTouchHeight");
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
-            sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", int.class, int.class, int.class, int.class);
+            sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", int[].class);
             sMethodApplyGammaCorrection = ReflectUtil.getMethodSafely(cls, "applyGammaCorrection", boolean.class, int.class);
 
             sMethodStartStroke = ReflectUtil.getMethodSafely(cls, "startStroke", float.class, float.class, float.class, float.class, float.class, float.class);
@@ -652,6 +683,9 @@ public class IMX6Device extends BaseDevice {
             sMethodEnableA2 = ReflectUtil.getMethodSafely(cls, "enableA2");
             // signature of "public void disableA2()"
             sMethodDisableA2 = ReflectUtil.getMethodSafely(cls, "disableA2");
+
+            sMethodSetQRShowConfig = ReflectUtil.getMethodSafely(cls,"setQRShowConfig",int.class,int.class,int.class);
+            sMethodSetInfoShowConfig = ReflectUtil.getMethodSafely(cls,"setInfoShowConfig",int.class,int.class,int.class);
 
             sMethodGetRemovableSDCardDirectory = ReflectUtil.getMethodSafely(Environment.class,"getRemovableSDCardDirectory");
             Log.d(TAG, "init device EINK_ONYX_GC_MASK.");
@@ -799,12 +833,6 @@ public class IMX6Device extends BaseDevice {
     @Override
     public List<Integer> getFrontLightValueList(Context context) {
         Integer intValues[] = {0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160};
-        return Arrays.asList(intValues);
-    }
-
-    @Override
-    public List<Integer> getNaturalLightValueList(Context context) {
-        Integer intValues[] = {0,3,6,9,12,15,17,19,21,23,25,26,27,28,29,30,31};
         return Arrays.asList(intValues);
     }
 
@@ -980,8 +1008,29 @@ public class IMX6Device extends BaseDevice {
         ReflectUtil.invokeMethodSafely(sMethodEnableA2, view);
     }
 
+    @Override
+    public void setQRShowConfig(int orientation, int startX, int startY) {
+        ReflectUtil.invokeMethodSafely(sMethodSetQRShowConfig, null, orientation, startX, startY);
+    }
+
+    @Override
+    public void setInfoShowConfig(int orientation, int startX, int startY) {
+        ReflectUtil.invokeMethodSafely(sMethodSetInfoShowConfig, null, orientation, startX, startY);
+    }
+
     public void gotoSleep(final Context context) {
         long value = System.currentTimeMillis();
         ReflectUtil.invokeMethodSafely(sMethodGotoSleep, context, value);
+    }
+
+    @Override
+    public boolean hasWifi(Context context)
+    {
+        Boolean has = (Boolean)this.invokeDeviceControllerMethod(context,  sMethodHasWifi);
+        if (has == null) {
+            return false;
+        }
+
+        return has.booleanValue();
     }
 }

@@ -1,0 +1,44 @@
+<resources>
+
+    <style name="AppTheme" parent="@style/CustomLibraryTheme">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="parent_group_layout_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/button_background</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingLeft">6dp</item>
+        <item name="android:paddingRight">6dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="search_edit_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:layout_marginBottom">11dp</item>
+        <item name="android:layout_marginLeft">14dp</item>
+        <item name="android:layout_marginRight">14dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:drawablePadding">3dp</item>
+        <item name="android:drawableLeft">@drawable/ic_search</item>
+        <item name="android:hint">@string/user_search_edit_hint</item>
+        <item name="android:imeOptions">actionSearch</item>
+        <item name="android:paddingBottom">9dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingTop">9dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColorHint">#999999</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:background">@drawable/search_background</item>
+    </style>
+
+</resources>

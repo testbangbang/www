@@ -3,6 +3,7 @@ package com.onyx.android.libsetting.view.activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -56,8 +57,14 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
         private void initAdmin() {
             wifiAdmin = new WifiAdmin(getContext(), new WifiAdmin.Callback() {
                 @Override
-                public void onWifiStateChange(boolean isWifiEnable) {
+                public void onWifiStateChange(boolean isWifiEnable, int wifiExtraState) {
                     wifiSwitchPreference.setSwitchChecked(isWifiEnable);
+                    switch (wifiExtraState){
+                        case WifiManager.WIFI_STATE_DISABLED:
+                        case WifiManager.WIFI_STATE_ENABLED:
+                            wifiSwitchPreference.setSwitchEnabled(true);
+                            break;
+                    }
                 }
 
                 @Override
@@ -98,6 +105,7 @@ public class NetworkSettingActivity extends OnyxAppCompatActivity {
                 @Override
                 public void onSwitchClicked() {
                     wifiAdmin.toggleWifi();
+                    wifiSwitchPreference.setSwitchEnabled(false);
                 }
 
                 @Override

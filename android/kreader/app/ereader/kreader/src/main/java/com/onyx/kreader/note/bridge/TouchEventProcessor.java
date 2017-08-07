@@ -2,6 +2,7 @@ package com.onyx.kreader.note.bridge;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -120,6 +121,11 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
     private void onErasingTouchDown(final MotionEvent motionEvent) {
         eraserPoint = new TouchPoint(motionEvent);
         historyErasingPoints = new TouchPointList();
+        final PageInfo pageInfo = getNoteManager().hitTest(eraserPoint.getX(), eraserPoint.getY());
+        if (pageInfo != null) {
+            eraserPoint.normalize(pageInfo);
+            historyErasingPoints.add(eraserPoint);
+        }
         if (getCallback() != null) {
             getCallback().onErasingTouchDown(motionEvent, null);
         }
@@ -128,9 +134,14 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
     private void onErasingTouchMove(final MotionEvent motionEvent) {
         int n = motionEvent.getHistorySize();
         for(int i = 0; i < n; ++i) {
-            eraserPoint = fromHistorical(motionEvent, i);
             if (getCallback() != null) {
                 getCallback().onErasingTouchMove(motionEvent, null, false);
+            }
+            eraserPoint = fromHistorical(motionEvent, i);
+            final PageInfo pageInfo = getNoteManager().hitTest(eraserPoint.getX(), eraserPoint.getY());
+            if (pageInfo != null) {
+                eraserPoint.normalize(pageInfo);
+                historyErasingPoints.add(eraserPoint);
             }
         }
         final PageInfo pageInfo = getNoteManager().hitTest(motionEvent.getX(), motionEvent.getY());
@@ -138,18 +149,24 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
             return;
         }
         eraserPoint = new TouchPoint(motionEvent);
+        eraserPoint.normalize(pageInfo);
+        historyErasingPoints.add(eraserPoint);
         if (getCallback() != null) {
             getCallback().onErasingTouchMove(motionEvent, historyErasingPoints, true);
         }
-        eraserPoint.normalize(pageInfo);
-        historyErasingPoints.add(eraserPoint);
     }
 
     private void onErasingTouchUp(final MotionEvent motionEvent) {
-        eraserPoint = null;
+        eraserPoint = new TouchPoint(motionEvent);
+        final PageInfo pageInfo = getNoteManager().hitTest(eraserPoint.getX(), eraserPoint.getY());
+        if (pageInfo != null) {
+            eraserPoint.normalize(pageInfo);
+            historyErasingPoints.add(eraserPoint);
+        }
         if (getCallback() != null) {
             getCallback().onErasingTouchUp(motionEvent, historyErasingPoints);
         }
+        eraserPoint = null;
     }
 
     private TouchPoint touchPointFromNormalized(final TouchPoint normalized) {

@@ -8,6 +8,8 @@ import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuViewFactory;
+import com.onyx.edu.reader.R;
+import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.ui.dialog.DialogReaderEduMenu;
 
 import java.util.ArrayList;
@@ -78,7 +80,7 @@ public class EduMenu extends ReaderMenu {
     }
 
     private View createMainMenuContainerView(List<ReaderLayerMenuItem> items, ReaderMenuState state) {
-        return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, state, readerMenuCallback, true);
+        return ReaderLayerMenuViewFactory.createMainMenuContainerView(context, items, R.layout.edu_reader_layer_menu_button_item, state, readerMenuCallback, true);
     }
 
     private DialogReaderEduMenu getDialog() {
