@@ -476,7 +476,8 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public boolean activateDeviceDRM(String deviceId, String certificate) {
-        return false;
+        getPluginImpl().activateDeviceDRM(deviceId, certificate);
+        return true;
     }
 
     public ReaderSelection selectWordOnScreen(final ReaderHitTestArgs hitTest, final ReaderTextSplitter splitter) {
