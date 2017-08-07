@@ -12,6 +12,7 @@ import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.ZipUtil;
+import com.onyx.android.sdk.reader.utils.OnyxDrmUtils;
 
 public class AlFilesZIP extends AlFiles {
 	
@@ -347,14 +348,19 @@ public class AlFilesZIP extends AlFiles {
 
 	private byte[] in_external_buff = null;
 	private byte[] out_external_buff = null;
+	private byte[] unzip_external_buff = null;
 	private Inflater external_infl = null;
 
 	@Override
 	public boolean fillBufFromExternalFile(int num, int pos, byte[] dst, int dst_pos, int cnt) {
+		return fillBufFromExternalFile(num, pos, dst, dst_pos, cnt, false);
+	}
+
+	@Override
+	public boolean fillBufFromExternalFile(int num, int pos, byte[] dst, int dst_pos, int cnt, boolean encrypted) {
 		int res = 0;
 
 		if (num >= 0 && num < fileList.size()) {
-
 			if (fileName != null && fileList.get(num).name.contentEquals(fileName)) {
 				res = getByteBuffer(pos, dst, dst_pos, cnt);
 			} else {
@@ -386,14 +392,27 @@ public class AlFilesZIP extends AlFiles {
 							total_out += out_buff_size;
 
 							if (external_infl.needsInput()) {
+								if (encrypted) {
+									in_external_buff = new byte[fileList.get(num).cSize];
+								}
 								in_buff_size = //parent.getBuffer(
 										parent.getByteBuffer(
-												external_infl.getTotalIn() + position, in_external_buff, ZIP_CHUNK_SIZE);
+												external_infl.getTotalIn() + position, in_external_buff, in_external_buff.length);
 								external_infl.setInput(in_external_buff, 0, in_buff_size);
 							}
 
 							try {
-								out_buff_size = external_infl.inflate(out_external_buff, 0, ZIP_CHUNK_SIZE);
+								if (!encrypted) {
+									out_buff_size = external_infl.inflate(out_external_buff, 0, ZIP_CHUNK_SIZE);
+								} else {
+									unzip_external_buff = new byte[fileList.get(num).uSize];
+									external_infl.inflate(unzip_external_buff, 0, unzip_external_buff.length);
+									out_external_buff = new byte[unzip_external_buff.length];
+									int decryptSize = OnyxDrmUtils.decrypt(unzip_external_buff, unzip_external_buff.length, out_external_buff);
+									if (decryptSize > 0) {
+										out_buff_size = out_external_buff.length;
+									}
+								}
 
 								if (out_buff_size == 0 && external_infl.finished()) {
 									out_buff_size = out_external_buff.length;
@@ -407,13 +426,17 @@ public class AlFilesZIP extends AlFiles {
 									out_external_buff[err] = 0x00;
 								e.printStackTrace();
 							}
-
 						}
+					}
+
+					if (encrypted) {
+						in_external_buff = null;
+						out_external_buff = null;
+						unzip_external_buff = null;
 					}
 
 					//external_infl.finished();
 					//external_infl = null;
-
 				} else if (fileList.get(num).compress == 0) {
 					res = parent.getByteBuffer(fileList.get(num).position + pos, dst, dst_pos, cnt);
 				}
