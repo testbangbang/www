@@ -56,4 +56,7 @@ public class Constant {
 
     public static final String HEADER_AUTHORIZATION = "authorization";
 
+    public static final String NAME = "name";
+    public static final String EMAIL = "email";
+    public static final String INFO = "info";
 }

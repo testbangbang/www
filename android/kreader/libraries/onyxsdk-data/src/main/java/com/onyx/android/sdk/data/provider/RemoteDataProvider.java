@@ -416,4 +416,10 @@ public class RemoteDataProvider implements DataProviderBase {
                 group,
                 null);
     }
+
+    @Override
+    public List<Library> loadChildLibrary(String parentId, QueryArgs queryArgs) {
+        Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
+        return new Select().from(Library.class).where(condition).queryList();
+    }
 }
