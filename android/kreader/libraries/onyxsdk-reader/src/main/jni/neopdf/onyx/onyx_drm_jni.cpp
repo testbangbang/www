@@ -15,16 +15,25 @@
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_OnyxDrmUtils_setup
   (JNIEnv *env, jclass, jstring deviceId, jstring drmCertificate, jstring manifestBase64, jstring additionalDataBase64) {
-    JNIString strDeviceId(env, deviceId);
-    JNIString strCertificate(env, drmCertificate);
+    std::string id = "";
+    std::string certificate = "";
+
+    if (deviceId) {
+        JNIString strDeviceId(env, deviceId);
+        id = strDeviceId.getLocalString();
+    }
+    if (drmCertificate) {
+        JNIString strCertificate(env, drmCertificate);
+        certificate = strCertificate.getLocalString();
+    }
+
     JNIString strManifest(env, manifestBase64);
     JNIString strAddtionalData(env, additionalDataBase64);
 
     onyx::DrmDecryptManager &drmManager = onyx::DrmDecryptManager::singleton();
     drmManager.reset();
 
-    return drmManager.setupWithManifest(strDeviceId.getLocalString(),
-                                      strCertificate.getLocalString(),
+    return drmManager.setupWithManifest(id, certificate,
                                       strManifest.getLocalString(),
                                       strAddtionalData.getLocalString());
 }
