@@ -21,6 +21,7 @@ import com.onyx.android.dr.activity.MyNotesActivity;
 import com.onyx.android.dr.activity.NewWordNotebookActivity;
 import com.onyx.android.dr.activity.NewWordQueryActivity;
 import com.onyx.android.dr.activity.NewWordTypeActivity;
+import com.onyx.android.dr.activity.PencilSketchActivity;
 import com.onyx.android.dr.activity.QueryRecordActivity;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
@@ -145,6 +146,13 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
+    public static void startPencilSketchActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, PencilSketchActivity.class);
+        context.startActivity(intent);
+    }
+
     public static void startScribbleActivity(Context context) {
         try {
             Intent intent = context.getPackageManager().getLaunchIntentForPackage(
@@ -152,6 +160,25 @@ public class ActivityManager {
             if (intent != null) {
                 ComponentName componentName = new ComponentName(Constants.SCRIBBLE_ACTIVITY_PACKAGE_NAME,
                         Constants.SCRIBBLE_ACTIVITY_FULL_PATH);
+                intent.setAction(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                intent.setComponent(componentName);
+                context.startActivity(intent);
+            } else {
+                CommonNotices.showMessage(context, context.getString(R.string.do_not_install_note_apk));
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public static void startNoteApp(Context context) {
+        try {
+            Intent intent = context.getPackageManager().getLaunchIntentForPackage(
+                    Constants.SCRIBBLE_ACTIVITY_PACKAGE_NAME);
+            if (intent != null) {
+                ComponentName componentName = new ComponentName(Constants.SCRIBBLE_ACTIVITY_PACKAGE_NAME,
+                        Constants.STARTUP_ACTIVITY_FULL_PATH);
                 intent.setAction(Intent.ACTION_MAIN);
                 intent.addCategory(Intent.CATEGORY_LAUNCHER);
                 intent.setComponent(componentName);

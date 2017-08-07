@@ -8,6 +8,7 @@ import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.interfaces.GoodSentenceView;
 import com.onyx.android.dr.request.local.GoodSentenceDeleteByTime;
 import com.onyx.android.dr.request.local.GoodSentenceExport;
+import com.onyx.android.dr.request.local.GoodSentenceQueryByTime;
 import com.onyx.android.dr.request.local.GoodSentenceQueryByType;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -42,6 +43,16 @@ public class GoodSentencePresenter {
         });
     }
 
+    public void getGoodSentenceByTime(long startDate, long endDate) {
+        final GoodSentenceQueryByTime req = new GoodSentenceQueryByTime(startDate, endDate);
+        goodSentenceData.getGoodSentenceByTime(context, req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                goodSentenceView.setGoodSentenceByTime(req.getData());
+            }
+        });
+    }
+
     public void deleteGoodSentence(long time) {
         final GoodSentenceDeleteByTime req = new GoodSentenceDeleteByTime(time);
         goodSentenceData.deleteGoodSentence(context, req, new BaseCallback() {
@@ -66,11 +77,12 @@ public class GoodSentencePresenter {
         }
     }
 
-    public void getHtmlTitle() {
-        goodSentenceData.setHtmlTitle(context);
+    public ArrayList<String> getHtmlTitle() {
+        ArrayList<String> stringList = goodSentenceData.setHtmlTitle(context);
+        return stringList;
     }
 
-    public void exportDataToHtml(Context context, ArrayList<String> dataList, List<GoodSentenceNoteEntity> list) {
+    public void exportDataToHtml(final Context context, ArrayList<String> dataList, List<GoodSentenceNoteEntity> list) {
         final GoodSentenceExport req = new GoodSentenceExport(context, dataList, list);
         goodSentenceData.exportGoodSentence(context, req, new BaseCallback() {
             @Override

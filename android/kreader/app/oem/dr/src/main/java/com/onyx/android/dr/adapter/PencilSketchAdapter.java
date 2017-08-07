@@ -6,13 +6,13 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.util.TimeUtils;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.List;
@@ -23,24 +23,24 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.ViewHolder> {
-    private List<NewWordNoteBookEntity> dataList;
+public class PencilSketchAdapter extends PageRecyclerView.PageAdapter<PencilSketchAdapter.ViewHolder> {
+    private List<NoteModel> dataList;
     private List<Boolean> listCheck;
     private OnItemClickListener onItemClickListener;
 
-    public void setDataList(List<NewWordNoteBookEntity> dataList, List<Boolean> listCheck) {
-        this.dataList = dataList;
-        this.listCheck = listCheck;
+    public void setDataList(List<NoteModel> dataList, List<Boolean> listCheck) {
+        this.dataList.addAll(dataList);
+        this.listCheck.addAll(listCheck);
     }
 
     @Override
     public int getRowCount() {
-        return DRApplication.getInstance().getResources().getInteger(R.integer.new_word_notebook_row);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.pencil_sketch_tab_row);
     }
 
     @Override
     public int getColumnCount() {
-        return DRApplication.getInstance().getResources().getInteger(R.integer.good_sentence_tab_column);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.pencil_sketch_tab_column);
     }
 
     @Override
@@ -50,18 +50,15 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
 
     @Override
     public ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_new_word, null);
+        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_pencil_sketch, null);
         return new ViewHolder(inflate);
     }
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        NewWordNoteBookEntity bean = dataList.get(position);
-        long currentTime = bean.currentTime;
-        holder.time.setText(TimeUtils.getDate(currentTime));
-        holder.content.setText(bean.newWord);
-        holder.readingMatter.setText(bean.readingMatter);
-        holder.dictionaryLookup.setText(bean.dictionaryLookup);
+        NoteModel bean = dataList.get(position);
+        holder.time.setText(TimeUtils.getStringByDate(bean.getUpdatedAt()));
+        holder.title.setText(bean.getTitle());
         holder.checkBox.setChecked(listCheck.get(position));
         holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
@@ -97,18 +94,14 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.new_word_item_check)
+        @Bind(R.id.item_sketch_title_checkbox)
         CheckBox checkBox;
-        @Bind(R.id.new_word_item_time)
+        @Bind(R.id.item_sketch_picture)
+        ImageView picture;
+        @Bind(R.id.item_sketch_time)
         TextView time;
-        @Bind(R.id.new_word_item_content)
-        TextView content;
-        @Bind(R.id.new_word_item_reading_matter)
-        TextView readingMatter;
-        @Bind(R.id.new_word_item_dictionaryLookup)
-        TextView dictionaryLookup;
-        @Bind(R.id.item_new_word_linearlayout)
-        LinearLayout itemLinearLayout;
+        @Bind(R.id.item_sketch_title)
+        TextView title;
         View rootView;
 
         ViewHolder(View view) {

@@ -32,6 +32,6 @@ public class NewWordExport extends BaseDataRequest {
     }
 
     public void exportData() {
-        ExportToHtmlUtils.exportNewWordToHtml(dataList, context.getString(R.string.new_word_notebook_html), newWordList);
+        ExportToHtmlUtils.exportNewWordToHtml(context, dataList, context.getString(R.string.new_word_notebook_html), newWordList);
     }
 }

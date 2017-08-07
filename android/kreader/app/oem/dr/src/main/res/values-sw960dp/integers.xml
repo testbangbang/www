@@ -28,7 +28,7 @@
     <integer name="sketch_tab_column">4</integer>
     <integer name="sketch_tab_row">3</integer>
     <integer name="hour_tab_column">1</integer>
-    <integer name="hour_tab_row">4</integer>
+    <integer name="hour_tab_row">5</integer>
     <integer name="quick_preview_bitmap_default_width">300</integer>
     <integer name="quick_preview_bitmap_default_height">400</integer>
     <integer name="interest_row">4</integer>
@@ -37,4 +37,7 @@
     <integer name="recent_book_row">2</integer>
     <integer name="bookshelf_group_item_row">1</integer>
     <integer name="bookshelf_group_item_col">3</integer>
+    <integer name="new_word_notebook_row">14</integer>
+    <integer name="pencil_sketch_tab_column">4</integer>
+    <integer name="pencil_sketch_tab_row">3</integer>
 </resources>

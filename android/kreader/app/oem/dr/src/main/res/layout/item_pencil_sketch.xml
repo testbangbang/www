@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_infromal_essay_linearlayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <ImageView
@@ -28,12 +28,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/item_sketch_title_margin_top"
+            android:ellipsize="middle"
+            android:singleLine="true"
             android:text="@string/item_sketch_title"
-            android:textSize="@dimen/level_two_heading_font" />
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_font_size" />
 
         <CheckBox
             android:id="@+id/item_sketch_title_checkbox"
-            style="@style/checkbox_style" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/item_sketch_title_checkbox_margin_left"
+            android:background="@drawable/check_box_style" />
 
     </LinearLayout>
 </LinearLayout>

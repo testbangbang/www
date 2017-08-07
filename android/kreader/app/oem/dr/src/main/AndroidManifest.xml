@@ -121,9 +121,10 @@
             android:name=".activity.HearAndSpeakActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".activity.EBookStoreActivity"
+        <activity
+            android:name=".activity.EBookStoreActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"

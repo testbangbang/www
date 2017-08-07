@@ -32,6 +32,6 @@ public class GoodSentenceExport extends BaseDataRequest {
     }
 
     public void exportData() {
-        ExportToHtmlUtils.exportGoodSentenceToHtml(dataList, context.getString(R.string.new_word_notebook_html), goodSentenceList);
+        ExportToHtmlUtils.exportGoodSentenceToHtml(context, dataList, context.getString(R.string.good_sentence_notebook_html), goodSentenceList);
     }
 }

@@ -8,7 +8,9 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.InformalEssayAdapter;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
+import com.onyx.android.dr.dialog.TimePickerDialog;
 import com.onyx.android.dr.interfaces.InformalEssayView;
 import com.onyx.android.dr.presenter.InformalEssayPresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -23,7 +25,7 @@ import butterknife.OnClick;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class InformalEssayActivity extends BaseActivity implements InformalEssayView {
+public class InformalEssayActivity extends BaseActivity implements InformalEssayView, TimePickerDialog.TimePickerDialogInterface {
     @Bind(R.id.infromal_essay_activity_recyclerview)
     PageRecyclerView recyclerView;
     @Bind(R.id.infromal_essay_activity_share)
@@ -35,10 +37,11 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     @Bind(R.id.infromal_essay_activity_new)
     TextView newInformalEssay;
     private DividerItemDecoration dividerItemDecoration;
-    private InformalEssayAdapter infromalEssayAdapter;
-    private InformalEssayPresenter infromalEssayPresenter;
-    private List<InformalEssayEntity> infromalEssayList;
+    private InformalEssayAdapter informalEssayAdapter;
+    private InformalEssayPresenter informalEssayPresenter;
+    private List<InformalEssayEntity> informalEssayList;
     private ArrayList<Boolean> listCheck;
+    private TimePickerDialog timePickerDialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -51,29 +54,30 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
 
     @Override
     protected void initView() {
-        initRecylcerView();
+        initRecyclerView();
     }
 
-    private void initRecylcerView() {
+    private void initRecyclerView() {
         dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
-        infromalEssayAdapter = new InformalEssayAdapter();
+        informalEssayAdapter = new InformalEssayAdapter();
         recyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
     protected void initData() {
-        infromalEssayList = new ArrayList<InformalEssayEntity>();
+        informalEssayList = new ArrayList<InformalEssayEntity>();
         listCheck = new ArrayList<>();
+        timePickerDialog = new TimePickerDialog(this);
         initEvent();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        infromalEssayPresenter = new InformalEssayPresenter(getApplicationContext(), this);
-        infromalEssayPresenter.getAllInformalEssayData();
+        informalEssayPresenter = new InformalEssayPresenter(getApplicationContext(), this);
+        informalEssayPresenter.getAllInformalEssayData();
     }
 
     @Override
@@ -81,14 +85,14 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
-        infromalEssayList = dataList;
+        informalEssayList = dataList;
         listCheck = checkList;
-        infromalEssayAdapter.setDataList(infromalEssayList, listCheck);
-        recyclerView.setAdapter(infromalEssayAdapter);
+        informalEssayAdapter.setDataList(informalEssayList, listCheck);
+        recyclerView.setAdapter(informalEssayAdapter);
     }
 
     public void initEvent() {
-        infromalEssayAdapter.setOnItemListener(new InformalEssayAdapter.OnItemClickListener() {
+        informalEssayAdapter.setOnItemListener(new InformalEssayAdapter.OnItemClickListener() {
             @Override
             public void setOnItemClick(int position, boolean isCheck) {
                 listCheck.set(position, isCheck);
@@ -112,10 +116,10 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
                 finish();
                 break;
             case R.id.infromal_essay_activity_delete:
-                infromalEssayPresenter.remoteAdapterDatas(listCheck, infromalEssayAdapter);
+                informalEssayPresenter.remoteAdapterDatas(listCheck, informalEssayAdapter);
                 break;
             case R.id.infromal_essay_activity_export:
-                infromalEssayPresenter.getHtmlTitle();
+                timePickerDialog.showDatePickerDialog();
                 break;
             case R.id.infromal_essay_activity_new:
                 ActivityManager.startAddInfromalEssayActivity(this);
@@ -124,8 +128,20 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     }
 
     @Override
-    public void setHtmlTitleData(ArrayList<String> dataList) {
-        infromalEssayPresenter.exportDataToHtml(this, dataList, infromalEssayList);
+    public void positiveListener() {
+        long startDateMillisecond = timePickerDialog.getStartDateMillisecond();
+        long endDateMillisecond = timePickerDialog.getEndDateMillisecond();
+        informalEssayPresenter.getInformalEssayByTime(startDateMillisecond, endDateMillisecond);
+    }
+
+    @Override
+    public void setInformalEssayByTime(List<InformalEssayEntity> dataList) {
+        if (dataList != null && dataList.size() > 0) {
+            ArrayList<String> htmlTitleData = informalEssayPresenter.getHtmlTitleData();
+            informalEssayPresenter.exportDataToHtml(this, htmlTitleData, dataList);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+        }
     }
 
     @Override

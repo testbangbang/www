@@ -7,66 +7,6 @@
         <item>@string/other</item>
     </array>
 
-    <string-array name="month">
-        <item>月</item>
-        <item>1月</item>
-        <item>2月</item>
-        <item>3月</item>
-        <item>4月</item>
-        <item>5月</item>
-        <item>6月</item>
-        <item>7月</item>
-        <item>8月</item>
-        <item>9月</item>
-        <item>10月</item>
-        <item>11月</item>
-        <item>12月</item>
-    </string-array>
-
-    <string-array name="week">
-        <item>周</item>
-        <item>1周</item>
-        <item>2周</item>
-        <item>3周</item>
-        <item>4周</item>
-        <item>5周</item>
-    </string-array>
-
-    <string-array name="day">
-        <item>日</item>
-        <item>1日</item>
-        <item>2日</item>
-        <item>3日</item>
-        <item>4日</item>
-        <item>5日</item>
-        <item>6日</item>
-        <item>7日</item>
-        <item>8日</item>
-        <item>9日</item>
-        <item>10日</item>
-        <item>11日</item>
-        <item>12日</item>
-        <item>13日</item>
-        <item>14日</item>
-        <item>15日</item>
-        <item>16日</item>
-        <item>17日</item>
-        <item>18日</item>
-        <item>19日</item>
-        <item>20日</item>
-        <item>21日</item>
-        <item>22日</item>
-        <item>23日</item>
-        <item>24日</item>
-        <item>25日</item>
-        <item>26日</item>
-        <item>27日</item>
-        <item>28日</item>
-        <item>29日</item>
-        <item>30日</item>
-        <item>31日</item>
-    </string-array>
-
     <string-array name="EnglishPublishers">
         <item>@string/people_education_Press</item>
         <item>@string/Beijing_Normal_University_Press</item>
@@ -125,4 +65,5 @@
         <item>@string/ancient_books</item>
         <item>@string/novels</item>
     </string-array>
+    
 </resources>
