@@ -343,6 +343,14 @@ public class AlBookEng{
 
 	private final AlTextOnScreen textOnScreen = new AlTextOnScreen();
 
+	public static String drmDeviceId;
+	public static String drmCertificate;
+
+	public void activateDeviceDRM(String deviceId, String certificate) {
+		drmDeviceId = deviceId;
+		drmCertificate = certificate;
+    }
+
 
     /**
      * Инициализация окна (Activity), с которым взаимодействует библиотека.

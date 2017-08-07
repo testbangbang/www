@@ -61,7 +61,7 @@ public class AlFilesZIPRecord extends AlFiles {
     }
 
     @Override
-    protected final int getBuffer(int pos, byte[] dst, int cnt) {
+    protected int getBuffer(int pos, byte[] dst, int cnt) {
         int out_num = 0, ps = 0, j;// , out_max = cnt;
         AlOneZIPRecord oc;
         int	recLength = recordList.size();
@@ -128,6 +128,11 @@ public class AlFilesZIPRecord extends AlFiles {
     @Override
     public boolean fillBufFromExternalFile(int num, int pos, byte[] dst, int dst_pos, int cnt) {
         return parent.fillBufFromExternalFile(num, pos, dst, dst_pos, cnt);
+    }
+
+    @Override
+    public boolean fillBufFromExternalFile(int num, int pos, byte[] dst, int dst_pos, int cnt, boolean encrypted) {
+        return parent.fillBufFromExternalFile(num, pos, dst, dst_pos, cnt, encrypted);
     }
 
     @Override

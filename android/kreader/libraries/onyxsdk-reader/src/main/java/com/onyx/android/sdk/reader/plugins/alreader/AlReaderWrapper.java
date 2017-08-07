@@ -91,6 +91,10 @@ public class AlReaderWrapper {
         bookEng.setNewScreenSize(width, height);
     }
 
+    public void activateDeviceDRM(String deviceId, String certificate) {
+        bookEng.activateDeviceDRM(deviceId, certificate);
+    }
+
     public long openDocument(final String path,  final ReaderDocumentOptions documentOptions) {
         filePath = path;
         AlBookOptions bookOpt = new AlBookOptions();
