@@ -1,4 +1,4 @@
-package com.onyx.edu.note.data;
+package com.onyx.android.sdk.scribble.data;
 
 import android.support.annotation.IntDef;
 

@@ -3,7 +3,7 @@ package com.onyx.edu.note.actions.common;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.note.NoteNameCheckLegalityRequest;
-import com.onyx.edu.note.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.edu.note.actions.BaseNoteAction;
 
 /**

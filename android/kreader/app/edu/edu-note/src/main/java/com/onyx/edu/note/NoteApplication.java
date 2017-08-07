@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.view.View;
 
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;

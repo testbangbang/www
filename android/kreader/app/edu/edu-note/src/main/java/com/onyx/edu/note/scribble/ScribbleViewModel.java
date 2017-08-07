@@ -15,7 +15,7 @@ import com.onyx.android.sdk.scribble.asyncrequest.note.NoteDocumentOpenRequest;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.utils.DateTimeUtil;
-import com.onyx.edu.note.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.edu.note.actions.scribble.DocumentCreateAction;
 import com.onyx.edu.note.actions.scribble.DocumentEditAction;
 import com.onyx.edu.note.data.ScribbleAction;

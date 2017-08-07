@@ -221,6 +221,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
+        paint.setPathEffect(parent.selectedDashPathEffect);
         RectF rect = new RectF(start.getX(), start.getY(), end.getX(), end.getY());
         canvas.drawRect(rect, paint);
     }
