@@ -6,7 +6,7 @@ package com.onyx.android.sdk.im;
 
 public class MessageEvent {
 
-    private Message message;
+    public Message message;
 
     public MessageEvent(Message message) {
         this.message = message;

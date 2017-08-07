@@ -5,9 +5,9 @@ package com.onyx.android.sdk.im;
  */
 
 public class Message {
-
     private String channel;
     private String action;
+    private String type;
     private String id;
     private String content;
 
@@ -46,14 +46,23 @@ public class Message {
         this.content = content;
     }
 
-    public Message(String channel, String action, String id, String content) {
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Message(String channel, String action, String type, String id, String content) {
+        this.type = type;
         this.channel = channel;
         this.action = action;
         this.id = id;
         this.content = content;
     }
 
-    public static Message create(String channel, String action, String id, String content) {
-        return new Message(channel, action, id, content);
+    public static Message create(String channel, String action, String type, String id, String content) {
+        return new Message(channel, action, type, id, content);
     }
 }

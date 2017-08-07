@@ -1,5 +1,7 @@
 package com.onyx.edu.reader.ui.actions.form;
 
+import android.view.ViewGroup;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.ui.data.ReaderMenuViewData;
@@ -33,7 +35,7 @@ public class ShowFormVoteMenuAction extends BaseFormMenuAction {
     }
 
     @Override
-    public List<ReaderMenuViewHolder> getBottomMenuViewHolders(ReaderDataHolder readerDataHolder) {
+    public List<ReaderMenuViewHolder> getBottomMenuViewHolders(ReaderDataHolder readerDataHolder, final ViewGroup parent) {
         List<ReaderMenuViewHolder> bottomMenuViewHolders = new ArrayList<>();
 
         bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_exit, EXIT, R.string.exit));
@@ -46,7 +48,7 @@ public class ShowFormVoteMenuAction extends BaseFormMenuAction {
     }
 
     @Override
-    public List<ReaderMenuViewHolder> getTopMenuViewHolders(ReaderDataHolder readerDataHolder) {
+    public List<ReaderMenuViewHolder> getTopMenuViewHolders(ReaderDataHolder readerDataHolder, final ViewGroup parent) {
         return null;
     }
 

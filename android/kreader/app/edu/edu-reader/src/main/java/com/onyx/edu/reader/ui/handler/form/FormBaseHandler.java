@@ -11,12 +11,14 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
 import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormPushButton;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -33,6 +35,7 @@ import com.onyx.edu.reader.note.model.ReaderNoteDataProvider;
 import com.onyx.edu.reader.note.request.StartNoteRequest;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
+import com.onyx.edu.reader.ui.handler.BaseHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.ReadingHandler;
 
@@ -64,9 +67,8 @@ public class FormBaseHandler extends ReadingHandler {
             this.formFieldControls = initialState.formFieldControls;
             handleFormFieldControls();
         }
-        if (readerDataHolder.hasScribbleFormField() && !readerDataHolder.hasDialogShowing()) {
-            startNoteDrawing(readerDataHolder);
-        }
+        setEnableNoteDrawing(readerDataHolder.hasScribbleFormField() && !readerDataHolder.hasDialogShowing());
+        startNoteDrawing(readerDataHolder);
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
@@ -79,6 +81,9 @@ public class FormBaseHandler extends ReadingHandler {
     }
 
     private void startNoteDrawing(final ReaderDataHolder readerDataHolder) {
+        if (!isEnableNoteDrawing()) {
+            return;
+        }
         final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
         setEnableNoteDrawing(true);
@@ -103,7 +108,23 @@ public class FormBaseHandler extends ReadingHandler {
             processRadioGroupForm((RelativeRadioGroup) view);
         }else if (view instanceof EditText) {
             processEditTextForm((EditText) view);
+        }else if (view instanceof Button) {
+            processButtonForm((Button) view);
         }
+    }
+
+    private void processButtonForm(Button button) {
+        final ReaderFormPushButton field = (ReaderFormPushButton) getReaderFormField(button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onFormButtonClicked(field);
+            }
+        });
+    }
+
+    protected void onFormButtonClicked(final ReaderFormPushButton field) {
+
     }
 
     private void processCheckBoxForm(CheckBox checkBox) {
@@ -158,7 +179,6 @@ public class FormBaseHandler extends ReadingHandler {
             FormValue value = formShapeModel.getFormValue();
             radioGroup.check(value.getIndex());
         }
-
     }
 
     private void processEditTextForm(final EditText editText) {

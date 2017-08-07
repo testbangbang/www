@@ -36,9 +36,9 @@ public class RenderInBackgroundRequest extends AsyncBaseNoteRequest {
         }
         benchmarkStart();
         helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
-        setRender(true);
-        renderCurrentPage(helper);
-        setRender(false);
+        setRenderToBitmap(true);
+        setRenderToScreen(false);
+        renderCurrentPageInBitmap(helper);
         Log.e(TAG, "render takes: " + benchmarkEnd());
     }
 

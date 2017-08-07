@@ -74,6 +74,14 @@ public class ReaderNoteDataProvider {
     }
 
     public static List<ReaderFormShapeModel> loadFormShapeList(final Context context,
+                                                               final String documentUniqueId) {
+        Select select = new Select();
+        Where where = select.from(ReaderFormShapeModel.class).where(ReaderFormShapeModel_Table.documentUniqueId.eq(documentUniqueId));
+        List<ReaderFormShapeModel> list = where.queryList();
+        return list;
+    }
+
+    public static List<ReaderFormShapeModel> loadFormShapeList(final Context context,
                                                                final String documentUniqueId,
                                                                final String pageUniqueId) {
         return loadFormShapeList(context, documentUniqueId, pageUniqueId, null);
@@ -138,6 +146,31 @@ public class ReaderNoteDataProvider {
         }
         database.setTransactionSuccessful();
         database.endTransaction();
+    }
+
+    public static void saveSignatureShapeList(final Context context,
+                                     final Collection<SignatureShapeModel> list) {
+        final DatabaseWrapper database= FlowManager.getDatabase(ReaderNoteDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for(ReaderNoteShapeModel shapeModel : list) {
+            shapeModel.save();
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
+    public static List<SignatureShapeModel> loadSignatureShapeList(final Context context,
+                                                           final String accountId) {
+        Select select = new Select();
+        Where where = select.from(SignatureShapeModel.class).where(SignatureShapeModel_Table.accountId.eq(accountId));
+        List<SignatureShapeModel> list = where.queryList();
+        return list;
+    }
+
+    public static boolean removeSignatureShapes(final Context context, String accountId) {
+        Delete delete = new Delete();
+        delete.from(SignatureShapeModel.class).where(SignatureShapeModel_Table.accountId.eq(accountId)).query();
+        return true;
     }
 
     public static void saveFormShapeList(final Context context,

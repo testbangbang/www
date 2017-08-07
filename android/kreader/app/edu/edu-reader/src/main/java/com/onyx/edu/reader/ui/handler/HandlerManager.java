@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.KeyBinding;
 import com.onyx.android.sdk.data.TouchAction;
 import com.onyx.android.sdk.data.TouchBinding;
+import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.ui.ReaderTabHostBroadcastReceiver;
@@ -31,6 +32,8 @@ import com.onyx.edu.reader.ui.handler.form.FormExamHandler;
 import com.onyx.edu.reader.ui.handler.form.FormExerciseHandler;
 import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.handler.form.FormInteractiveHandler;
+import com.onyx.edu.reader.ui.handler.form.FormMeetingHandler;
+import com.onyx.edu.reader.ui.handler.form.FormSignHandler;
 import com.onyx.edu.reader.ui.handler.form.FormVoteHandler;
 
 import java.util.HashMap;
@@ -58,6 +61,8 @@ public class HandlerManager {
     public static final String FORM_INTERACTIVE_PROVIDER = "form_interactive";
     public static final String FORM_EXAM_PROVIDER = "form_exam";
     public static final String FORM_EXERCISE_PROVIDER = "form_exercise";
+    public static final String FORM_MEETING_PROVIDER = "form_meeting";
+    public static final String FORM_SIGNATURE_PROVIDER = "form_signature";
 
     private static final int TOUCH_HORIZONTAL_PART = 3;
     private static final int TOUCH_VERTICAL_PART = 2;
@@ -89,6 +94,8 @@ public class HandlerManager {
         providerMap.put(FORM_INTERACTIVE_PROVIDER, new FormInteractiveHandler(this));
         providerMap.put(FORM_EXAM_PROVIDER, new FormExamHandler(this));
         providerMap.put(FORM_EXERCISE_PROVIDER, new FormExerciseHandler(this));
+        providerMap.put(FORM_MEETING_PROVIDER, new FormMeetingHandler(this));
+        providerMap.put(FORM_SIGNATURE_PROVIDER, new FormSignHandler(this));
         activeProviderName = READING_PROVIDER;
         enable.set(true);
         enableTouch.set(true);
@@ -191,11 +198,27 @@ public class HandlerManager {
         setActiveProvider(getDefaultProvider());
     }
 
-    private String getDefaultProvider() {
-        if (readerDataHolder.useCustomFormMode()) {
-            return FORM_PROVIDER;
+    public String getDefaultProvider() {
+        ReaderDocumentCategory documentCategory = readerDataHolder.getDocumentCategory();
+        if (documentCategory == null) {
+            return READING_PROVIDER;
         }
-        return READING_PROVIDER;
+        switch (documentCategory) {
+            case NORMAL:
+            case BOOK:
+                return READING_PROVIDER;
+            case HOMEWORK:
+            case EXERCISE:
+                return FORM_EXERCISE_PROVIDER;
+            case EXAMINATION:
+                return FORM_EXAM_PROVIDER;
+            case MEETING:
+                return FORM_MEETING_PROVIDER;
+            case SIGNATURE:
+                return FORM_SIGNATURE_PROVIDER;
+            default:
+                return READING_PROVIDER;
+        }
     }
 
     public void setActiveProvider(final String providerName) {

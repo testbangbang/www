@@ -14,7 +14,7 @@ public class RedoRequest extends AsyncBaseNoteRequest {
     @Override
     public void execute(final AsyncNoteViewHelper parent) throws Exception {
         parent.redo(getContext());
-        renderCurrentPage(parent);
+        renderCurrentPageInBitmap(parent);
         updateShapeDataInfo(parent);
     }
 

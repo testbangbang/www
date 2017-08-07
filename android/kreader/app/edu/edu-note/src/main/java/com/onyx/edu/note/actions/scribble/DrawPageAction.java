@@ -14,7 +14,6 @@ public class DrawPageAction extends BaseNoteAction {
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
         AsyncBaseNoteRequest request = new AsyncBaseNoteRequest();
-        request.setRender(true);
         noteManager.submitRequest(request, callback);
     }
 }

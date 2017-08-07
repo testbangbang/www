@@ -22,7 +22,7 @@ public class PageAddRequest extends AsyncBaseNoteRequest {
             pageIndex = parent.getNoteDocument().getCurrentPageIndex() + 1;
         }
         parent.getNoteDocument().createBlankPage(getContext(), pageIndex);
-        renderCurrentPage(parent);
+        renderCurrentPageInBitmap(parent);
         updateShapeDataInfo(parent);
     }
 }

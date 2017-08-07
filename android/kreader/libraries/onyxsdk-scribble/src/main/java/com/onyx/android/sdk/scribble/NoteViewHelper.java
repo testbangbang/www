@@ -17,17 +17,6 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginShapeSelectEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchDownEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchMoveEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchUpEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectingEvent;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
@@ -46,8 +35,6 @@ import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -555,7 +542,6 @@ public class NoteViewHelper {
                 if (callback != null) {
                     callback.onBeginRawData();
                 }
-                EventBus.getDefault().post(new BeginRawDataEvent());
             }
 
             @Override
@@ -593,7 +579,6 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onRawTouchPointListReceived(shape, pointList);
         }
-        EventBus.getDefault().post(new RawTouchPointListReceivedEvent(shape,pointList));
     }
 
     private Shape createNewShape(boolean isSpanTextMode, int type) {
@@ -609,14 +594,12 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onBeginErasing();
         }
-        EventBus.getDefault().post(new BeginErasingEvent());
     }
 
     private boolean onErasing(final MotionEvent motionEvent) {
         if (callback != null) {
             callback.onErasing(motionEvent);
         }
-        EventBus.getDefault().post(new ErasingEvent(motionEvent));
         if (erasePoints != null) {
             int n = motionEvent.getHistorySize();
             for(int i = 0; i < n; ++i) {
@@ -631,7 +614,6 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onEraseTouchPointListReceived(erasePoints);
         }
-        EventBus.getDefault().post(new EraseTouchPointListReceivedEvent(erasePoints));
         shortcutErasing = false;
     }
 
@@ -640,14 +622,12 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onBeginShapeSelect();
         }
-        EventBus.getDefault().post(new BeginShapeSelectEvent());
     }
 
     private boolean onShapeSelecting(final MotionEvent motionEvent) {
         if (callback != null) {
             callback.onShapeSelecting(motionEvent);
         }
-        EventBus.getDefault().post(new ShapeSelectingEvent(motionEvent));
         if (shapeSelectPoints != null) {
             int n = motionEvent.getHistorySize();
             for(int i = 0; i < n; ++i) {
@@ -662,7 +642,6 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onShapeSelectTouchPointListReceived(shapeSelectPoints);
         }
-        EventBus.getDefault().post(new ShapeSelectTouchPointListReceivedEvent(shapeSelectPoints));
     }
 
     public List<Shape> getDirtyStash() {
@@ -834,7 +813,6 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onDrawingTouchDown(motionEvent, currentShape);
         }
-        EventBus.getDefault().post(new DrawingTouchDownEvent(motionEvent,currentShape));
     }
 
     private void onDrawingTouchMove(final MotionEvent motionEvent) {
@@ -853,7 +831,6 @@ public class NoteViewHelper {
                 callback.onDrawingTouchMove(motionEvent, currentShape, false);
             }
         }
-        EventBus.getDefault().post(new DrawingTouchMoveEvent(motionEvent,currentShape,false));
 
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
@@ -865,7 +842,6 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onDrawingTouchMove(motionEvent, currentShape, true);
         }
-        EventBus.getDefault().post(new DrawingTouchMoveEvent(motionEvent,currentShape,true));
     }
 
     private void onDrawingTouchUp(final MotionEvent motionEvent) {
@@ -882,7 +858,6 @@ public class NoteViewHelper {
         if (callback != null) {
             callback.onDrawingTouchUp(motionEvent, currentShape);
         }
-        EventBus.getDefault().post(new DrawingTouchUpEvent(motionEvent, currentShape));
     }
 
     private TouchPoint touchPointFromNormalized(final TouchPoint normalized) {

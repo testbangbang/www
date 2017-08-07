@@ -43,7 +43,7 @@ public class IMTest extends ActivityInstrumentationTestCase2<IMTestActivity> {
         IMManager.getInstance().getMessageIdSets().clear();
         TestUtils.sleep(2000);
         String messageId = TestUtils.randString();
-        Message message = Message.create("Test", "Test", messageId, "Test");
+        Message message = Message.create("Test", "Test", "Test", messageId, "Test");
         IMManager.getInstance().getSocketIOClient().emit(Constant.NEW_MESSAGE, JSONObject.toJSONString(message));
         TestUtils.sleep(2000);
         assertTrue(IMManager.getInstance().getMessageIdSets().contains(messageId));

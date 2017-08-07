@@ -62,13 +62,12 @@ public abstract class BaseFormMenuAction extends BaseMenuAction {
     }
 
     protected OnyxToolbar createScribbleBottomToolbar(final ReaderDataHolder readerDataHolder) {
-        List<ReaderMenuViewHolder> bottomMenuViewHolders = getBottomMenuViewHolders(readerDataHolder);
+        OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Bottom, OnyxToolbar.FillStyle.WrapContent);
+        List<ReaderMenuViewHolder> bottomMenuViewHolders = getBottomMenuViewHolders(readerDataHolder, toolbar);
         if (bottomMenuViewHolders == null || bottomMenuViewHolders.size() == 0) {
-            return null;
+            return toolbar;
         }
         menuViewHolders.addAll(bottomMenuViewHolders);
-
-        OnyxToolbar toolbar = new OnyxToolbar(readerDataHolder.getContext(), OnyxToolbar.Direction.Bottom, OnyxToolbar.FillStyle.WrapContent);
         toolbar.setDividerViewHeight((int) readerDataHolder.getContext().getResources().getDimension(R.dimen.divider_view_height));
         toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
 
@@ -153,6 +152,14 @@ public abstract class BaseFormMenuAction extends BaseMenuAction {
         ReaderMenuViewHolder viewHolder = ReaderMenuViewHolder.create(OnyxToolbar.Builder.createImageViewTitleHolder(context, R.id.content_view, imageResId, R.id.title, titleResId, R.layout.tool_bar_image_title_view, action), action);
         viewHolder.setVisibility(R.id.title, DeviceConfig.sharedInstance(context).isShowMenuTitle() ? View.VISIBLE : View.GONE);
         viewHolder.setMenuAction(action);
+        return viewHolder;
+    }
+
+    public ReaderMenuViewHolder createImageViewTitleHolder(Context context, int imageResId, final ReaderMenuAction action, int titleResId, boolean enable) {
+        ReaderMenuViewHolder viewHolder = createImageViewTitleHolder(context, imageResId, action, titleResId);
+        viewHolder.setEnabled(R.id.content_view, enable);
+        viewHolder.setEnabled(R.id.title, enable);
+        viewHolder.itemView.setEnabled(enable);
         return viewHolder;
     }
 

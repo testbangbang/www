@@ -35,7 +35,7 @@ public class PageFlushRequest extends AsyncBaseNoteRequest {
         }
         helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
         helper.updateDrawingArgs(getDrawingArgs());
-        renderCurrentPage(helper);
+        renderCurrentPageInBitmap(helper);
         saveDocument(helper);
         updateShapeDataInfo(helper);
         setResumeInputProcessor(helper.useDFBForCurrentState() && isResumeInputProcessor());

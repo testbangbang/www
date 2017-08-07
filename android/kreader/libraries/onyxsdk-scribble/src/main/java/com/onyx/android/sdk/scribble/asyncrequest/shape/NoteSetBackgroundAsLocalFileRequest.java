@@ -21,7 +21,7 @@ public class NoteSetBackgroundAsLocalFileRequest extends AsyncBaseNoteRequest {
     public void execute(final AsyncNoteViewHelper parent) throws Exception {
         parent.setBackground(NoteBackgroundType.FILE);
         parent.setBackgroundFilePath(localFilePath);
-        renderCurrentPage(parent);
+        renderCurrentPageInBitmap(parent);
         updateShapeDataInfo(parent);
     }
 

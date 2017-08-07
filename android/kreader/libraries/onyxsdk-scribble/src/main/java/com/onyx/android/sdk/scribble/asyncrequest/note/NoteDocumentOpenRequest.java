@@ -35,7 +35,7 @@ public class NoteDocumentOpenRequest extends AsyncBaseNoteRequest {
         } else {
             parent.openDocument(getContext(), documentUniqueId, getParentLibraryId());
         }
-        renderCurrentPage(parent);
+        renderCurrentPageInBitmap(parent);
         updateShapeDataInfo(parent);
         setResumeInputProcessor(parent.useDFBForCurrentState());
         noteModel = NoteDataProvider.load(documentUniqueId);

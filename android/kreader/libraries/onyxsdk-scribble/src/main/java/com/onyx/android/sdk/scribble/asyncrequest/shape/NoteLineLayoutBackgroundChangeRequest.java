@@ -19,7 +19,7 @@ public class NoteLineLayoutBackgroundChangeRequest extends AsyncBaseNoteRequest 
     @Override
     public void execute(final AsyncNoteViewHelper parent) throws Exception {
         parent.setLineLayoutBackground(bgType);
-        renderCurrentPage(parent);
+        renderCurrentPageInBitmap(parent);
         updateShapeDataInfo(parent);
     }
 
