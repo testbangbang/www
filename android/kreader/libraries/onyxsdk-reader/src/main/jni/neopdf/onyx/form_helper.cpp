@@ -67,8 +67,8 @@ jstring getFieldName(JNIEnv *env, const CPDF_FormField *field) {
 }
 
 jstring getPushButtonCaption(JNIEnv *env, const CPDF_FormField *field) {
-    CFX_ByteString caption = field->GetFieldDict()->GetDictFor("MK")->GetStringFor("CA");
-    return env->NewStringUTF(caption.c_str());
+    CFX_WideString caption = field->GetFieldDict()->GetDictFor("MK")->GetUnicodeTextFor("CA");
+    return env->NewStringUTF(caption.UTF8Encode().c_str());
 }
 
 jobject createObject(JNIEnv *env, const char *className, const char *methodName,
