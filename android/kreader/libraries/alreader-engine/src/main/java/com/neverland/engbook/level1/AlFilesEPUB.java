@@ -59,8 +59,11 @@ public class AlFilesEPUB extends AlFilesZIPRecord {
             byte[] boox = new byte[booxEntry.uSize];
             if (fillBufFromExternalFile(booxNum, 0, boox, 0, boox.length) ) {
                 drmManifest = new String(boox);
-                isEncrypted = OnyxDrmUtils.setup(AlBookEng.drmDeviceId, AlBookEng.drmCertificate,
-                        drmManifest, drmAdditionalData);
+                if (!OnyxDrmUtils.setup(AlBookEng.drmDeviceId, AlBookEng.drmCertificate,
+                        drmManifest, drmAdditionalData)) {
+                    return TAL_RESULT.ERROR;
+                }
+                isEncrypted = true;
             }
         }
 
