@@ -5,6 +5,7 @@ import android.graphics.RectF;
 import android.support.annotation.Nullable;
 
 import com.onyx.android.sdk.scribble.shape.BaseShape;
+import com.onyx.android.sdk.scribble.shape.EPDShape;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -274,7 +275,9 @@ public class NotePage {
         for (Shape shape : shapeList) {
             if (shape.isSelected()) {
                 RectF selectRect = new RectF();
-                ((BaseShape) shape).getOriginDisplayPath().computeBounds(selectRect, true);
+                if ((shape instanceof EPDShape)) {
+                    ((BaseShape) shape).getOriginDisplayPath().computeBounds(selectRect, true);
+                }
                 selectShapeRectList.add(selectRect);
             }
         }

@@ -12,12 +12,13 @@ import java.lang.annotation.RetentionPolicy;
 public class ScribbleMode {
     public static final int MODE_NORMAL_SCRIBBLE = 0;
     public static final int MODE_SPAN_SCRIBBLE = 1;
+    public static final int MODE_SHAPE_TRANSFORM = 2;
 
     // ... type definitions
     // Describes when the annotation will be discarded
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
-    @IntDef({MODE_NORMAL_SCRIBBLE, MODE_SPAN_SCRIBBLE})
+    @IntDef({MODE_NORMAL_SCRIBBLE, MODE_SPAN_SCRIBBLE, MODE_SHAPE_TRANSFORM})
     // Create an interface for validating int types
     public @interface ScribbleModeDef {
     }

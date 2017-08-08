@@ -208,7 +208,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         for (PageInfo page : getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
             notePage.render(renderContext, null);
-//            parent.renderSelectedRect(notePage.getSelectedRect(), renderContext);
+            parent.renderSelectedRect(notePage.getSelectedRect(), renderContext);
         }
         parent.renderCursorShape(renderContext);
         parent.drawLineLayoutBackground(renderContext);

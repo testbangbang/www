@@ -5,9 +5,10 @@ import android.util.SparseArray;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
-import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.edu.note.actions.scribble.ClearAllFreeShapesAction;
 import com.onyx.edu.note.actions.scribble.DocumentAddNewPageAction;
 import com.onyx.edu.note.actions.scribble.DocumentDeletePageAction;
@@ -18,7 +19,6 @@ import com.onyx.edu.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.edu.note.actions.scribble.RedoAction;
 import com.onyx.edu.note.actions.scribble.UndoAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
-import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_ERASER;
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_SELECTOR;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_CALENDAR;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_EMPTY;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_ENGLISH;
@@ -314,8 +313,7 @@ public class ScribbleHandler extends BaseHandler {
 
     private void onSetShapeSelectModeChanged(){
         Log.e(TAG, "onSetShapeSelectModeChanged: ");
-        mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_SELECTOR);
-        mNoteManager.sync(true, false);
+        EventBus.getDefault().post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SHAPE_TRANSFORM));
     }
 
     private void onEraserChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
