@@ -208,7 +208,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         for (PageInfo page : getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
             notePage.render(renderContext, null);
-            //parent.renderSelectedRect(notePage.getSelectedRect(), renderContext);
+//            parent.renderSelectedRect(notePage.getSelectedRect(), renderContext);
         }
         parent.renderCursorShape(renderContext);
         parent.drawLineLayoutBackground(renderContext);
@@ -366,8 +366,8 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         renderVisiblePagesInBitmap(helper);
     }
 
-    public void renderSelectionRect(final AsyncNoteViewHelper hepler, final TouchPoint start, final TouchPoint end) {
-        renderSelectionRectangle(hepler, start, end);
+    public void renderSelectionRect(final AsyncNoteViewHelper helper, final TouchPoint start, final TouchPoint end) {
+        renderSelectionRectangle(helper, start, end);
     }
 
     public void updateShapeDataInfo(final AsyncNoteViewHelper parent) {
