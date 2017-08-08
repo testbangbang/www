@@ -17,7 +17,7 @@ public class AlFilesEPUB extends AlFilesZIPRecord {
 
     private boolean isEncrypted = false;
     private String drmManifest;
-    private String drmAddtionalData;
+    private String drmAdditionalData;
 
     @Override
     public int initState(String file, AlFiles myParent, ArrayList<AlFileZipEntry> fList) {
@@ -46,18 +46,21 @@ public class AlFilesEPUB extends AlFilesZIPRecord {
             }
         }
 
-        if (booxEntry != null && oadEntry != null) {
-            int booxNum = parent.getExternalFileNum(booxEntry.name);
-            int oadNum = parent.getExternalFileNum(oadEntry.name);
-            byte[] boox = new byte[booxEntry.uSize];
-            byte[] oad = new byte[oadEntry.uSize];
+        if (booxEntry != null) {
+            if (oadEntry != null) { // additional data is not necessary
+                int oadNum = parent.getExternalFileNum(oadEntry.name);
+                byte[] oad = new byte[oadEntry.uSize];
+                if (fillBufFromExternalFile(oadNum, 0, oad, 0, oad.length)) {
+                    drmAdditionalData = new String(oad);
+                }
+            }
 
-            if (fillBufFromExternalFile(booxNum, 0, boox, 0, boox.length) &&
-                    fillBufFromExternalFile(oadNum, 0, oad, 0, oad.length)) {
+            int booxNum = parent.getExternalFileNum(booxEntry.name);
+            byte[] boox = new byte[booxEntry.uSize];
+            if (fillBufFromExternalFile(booxNum, 0, boox, 0, boox.length) ) {
                 drmManifest = new String(boox);
-                drmAddtionalData = new String(oad);
                 isEncrypted = OnyxDrmUtils.setup(AlBookEng.drmDeviceId, AlBookEng.drmCertificate,
-                        drmManifest, drmAddtionalData);
+                        drmManifest, drmAdditionalData);
             }
         }
 
