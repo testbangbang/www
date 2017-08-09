@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.onyx.android.sample.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/layout_function"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true">
+
+        <Button
+            android:id="@+id/button_environment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Environment Demo"/>
+
+        <Button
+            android:id="@+id/button_epd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EPD Demo"/>
+
+        <Button
+            android:id="@+id/button_front_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Front Light"/>
+
+        <Button
+            android:id="@+id/button_touch_screen_scribble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Touch Screen Scribble Demo"/>
+
+        <Button
+            android:id="@+id/button_surfaceview_stylus_scribble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stylus Scribble SurfaceView Demo"/>
+
+        <Button
+            android:id="@+id/button_webview_stylus_scribble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stylus Scribble WebView Demo"/>
+
+        <Button
+            android:id="@+id/button_scribble_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Scribble State Demo" />
+
+        <Button
+            android:id="@+id/button_sdk_data_ota_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SdkData OTA-Test Demo" />
+
+        <Button
+            android:id="@+id/button_full_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full Screen Demo" />
+
+        <Button
+            android:id="@+id/button_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings Demo" />
+
+        <Button
+            android:id="@+id/button_parallel_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Parallel Update Demo" />
+
+        <Button
+            android:id="@+id/button_fast_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fast Update Demo" />
+
+        <Button
+            android:id="@+id/button_overlay_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Parallel Overlay Update Demo" />
+
+        <Button
+            android:id="@+id/button_text_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Text Select Demo" />
+
+        <Button
+            android:id="@+id/button_rect_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rectangle Update Demo" />
+    </LinearLayout>
+
+</RelativeLayout>
