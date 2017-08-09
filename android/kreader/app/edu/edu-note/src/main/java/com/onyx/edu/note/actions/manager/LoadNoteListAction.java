@@ -4,7 +4,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.data.AscDescOrder;
 import com.onyx.android.sdk.scribble.data.SortBy;
 import com.onyx.android.sdk.scribble.asyncrequest.note.NoteLibraryLoadRequest;
-import com.onyx.edu.note.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.edu.note.actions.BaseNoteAction;
 import com.onyx.edu.note.util.Constant;
 

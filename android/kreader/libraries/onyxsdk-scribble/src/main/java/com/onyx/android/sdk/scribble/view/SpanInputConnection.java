@@ -1,4 +1,4 @@
-package com.onyx.edu.note.ui;
+package com.onyx.android.sdk.scribble.view;
 
 import android.text.Editable;
 import android.text.SpannableStringBuilder;

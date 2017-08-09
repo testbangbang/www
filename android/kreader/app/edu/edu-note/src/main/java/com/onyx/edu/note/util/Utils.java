@@ -26,7 +26,7 @@ import android.view.View;
 
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
-import com.onyx.edu.note.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.edu.note.R;
 
 /**

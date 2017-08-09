@@ -1,4 +1,4 @@
-package com.onyx.edu.note;
+package com.onyx.android.sdk.scribble.asyncrequest;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,9 +19,6 @@ import android.view.View;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginShapeSelectEvent;
@@ -30,15 +27,22 @@ import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchMoveEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchUpEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.SpanFinishedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.SpanTextShowOutOfRangeEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.note.NotePageShapesRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByGroupIdRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByPointListRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeSelectionRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
+import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
@@ -47,25 +51,13 @@ import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+import com.onyx.android.sdk.scribble.view.LinedEditText;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.edu.note.actions.scribble.DocumentFlushAction;
-import com.onyx.edu.note.actions.scribble.DrawPageAction;
-import com.onyx.edu.note.actions.scribble.NotePageShapeAction;
-import com.onyx.edu.note.actions.scribble.RemoveByGroupIdAction;
-import com.onyx.edu.note.actions.scribble.RemoveByPointListAction;
-import com.onyx.edu.note.actions.scribble.SelectShapeByPointListAction;
-import com.onyx.edu.note.actions.scribble.SpannableAction;
-import com.onyx.edu.note.data.ScribbleMode;
-import com.onyx.edu.note.scribble.event.RawDataReceivedEvent;
-import com.onyx.edu.note.scribble.event.SpanFinishedEvent;
-import com.onyx.edu.note.scribble.event.SpanTextShowOutOfRangeEvent;
-import com.onyx.edu.note.ui.view.LinedEditText;
 
 import org.apache.commons.collections4.MapUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +74,6 @@ public class NoteManager {
     private static NoteManager instance;
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
     private Context appContext;
-    private NoteViewHelper.InputCallback mInputCallback;
 
     private TouchPoint mErasePoint = null;
 
@@ -114,7 +105,7 @@ public class NoteManager {
     }
 
     private NoteManager(Context context) {
-        appContext = context;
+        appContext = context.getApplicationContext();
         if (noteViewHelper == null) {
             noteViewHelper = new AsyncNoteViewHelper();
         }
@@ -180,11 +171,8 @@ public class NoteManager {
         if (isLineLayoutMode()) {
             stash.clear();
         }
-        final DocumentFlushAction action = new DocumentFlushAction(stash,
-                render,
-                resume,
-                shapeDataInfo.getDrawingArgs());
-        action.execute(this, callback);
+        PageFlushRequest flushRequest = new PageFlushRequest(stash, render, resume, shapeDataInfo.getDrawingArgs());
+        submitRequest(flushRequest, callback);
     }
 
     public ShapeDataInfo getShapeDataInfo() {
@@ -209,9 +197,8 @@ public class NoteManager {
             sync(false, resume);
             return;
         }
-        RemoveByGroupIdAction removeByGroupIdAction = new
-                RemoveByGroupIdAction(groupId, resume);
-        removeByGroupIdAction.execute(this, new BaseCallback() {
+        ShapeRemoveByGroupIdRequest changeRequest = new ShapeRemoveByGroupIdRequest(groupId, resume);
+        submitRequest(changeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 loadPageShapes();
@@ -272,7 +259,8 @@ public class NoteManager {
     }
 
     public void loadPageShapes() {
-        new NotePageShapeAction().execute(this, new BaseCallback() {
+        NotePageShapesRequest notePageShapesRequest = new NotePageShapesRequest(getNoteDocument().getCurrentPageUniqueId());
+        submitRequest(notePageShapesRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 List<Shape> subPageAllShapeList = ((NotePageShapesRequest) request).getPageShapes();
@@ -320,7 +308,8 @@ public class NoteManager {
     }
 
     private void spanShape(final Map<String, List<Shape>> subPageSpanTextShapeMap, final List<Shape> newAddShapeList) {
-        new SpannableAction(subPageSpanTextShapeMap, newAddShapeList).execute(this, new BaseCallback() {
+        SpannableRequest spannableRequest = new SpannableRequest(subPageSpanTextShapeMap, newAddShapeList);
+        submitRequest(spannableRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 SpannableRequest req = (SpannableRequest) request;
@@ -519,15 +508,12 @@ public class NoteManager {
 
         RectF selectRect = new RectF(mShapeSelectStartPoint.getX(), mShapeSelectStartPoint.getY(),
                 mShapeSelectPoint.getX(), mShapeSelectPoint.getY());
-        Log.d(TAG, "selectRect:" + selectRect);
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2.0f);
         paint.setPathEffect(noteViewHelper.selectedDashPathEffect);
         Canvas canvas = view.getHolder().lockCanvas();
         canvas.drawRect(selectRect, paint);
-//        canvas.drawPoint(mShapeSelectStartPoint.getX(), mShapeSelectStartPoint.getY(),paint);
-//        canvas.drawPoint(mShapeSelectPoint.getX(), mShapeSelectPoint.getY(),paint);
         view.getHolder().unlockCanvasAndPost(canvas);
     }
 
@@ -567,17 +553,19 @@ public class NoteManager {
 
     protected void onFinishErasing(TouchPointList pointList) {
         mErasePoint = null;
-        new RemoveByPointListAction(pointList).execute(this, null);
+        if (pointList == null) {
+            return;
+        }
+        ShapeRemoveByPointListRequest changeRequest = new ShapeRemoveByPointListRequest(pointList);
+        submitRequest(changeRequest, null);
     }
 
     protected void onBeginShapeSelecting(final MotionEvent event) {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                mShapeSelectStartPoint = new TouchPoint(event);
-                mShapeSelectPoint = new TouchPoint(event);
-                Log.e(TAG, "mShapeSelectStartPoint.getX():" + mShapeSelectStartPoint.getX());
-                Log.e(TAG, "mShapeSelectStartPoint.getY():" + mShapeSelectStartPoint.getY());
+                mShapeSelectStartPoint = new TouchPoint();
+                mShapeSelectPoint = new TouchPoint();
             }
         });
     }
@@ -585,6 +573,10 @@ public class NoteManager {
     protected void onShapeSelecting(final MotionEvent touchPoint) {
         if (mShapeSelectStartPoint == null) {
             return;
+        }
+        if (mShapeSelectStartPoint.x == 0 && mShapeSelectStartPoint.y == 0) {
+            mShapeSelectStartPoint.x = touchPoint.getX();
+            mShapeSelectStartPoint.y = touchPoint.getY();
         }
         mShapeSelectPoint.x = touchPoint.getX();
         mShapeSelectPoint.y = touchPoint.getY();
@@ -595,7 +587,8 @@ public class NoteManager {
     protected void onFinishShapeSelecting(TouchPointList pointList) {
         mShapeSelectStartPoint = null;
         mShapeSelectPoint = null;
-        new SelectShapeByPointListAction(pointList).execute(this, new BaseCallback() {
+        SelectShapeByPointListRequest changeRequest = new SelectShapeByPointListRequest(pointList);
+        submitRequest(changeRequest,new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 SelectShapeByPointListRequest req = (SelectShapeByPointListRequest) request;
@@ -607,7 +600,8 @@ public class NoteManager {
     }
 
     private void drawCurrentPage() {
-        new DrawPageAction().execute(this, null);
+        AsyncBaseNoteRequest request = new AsyncBaseNoteRequest();
+        submitRequest(request, null);
     }
 
     public void quit() {

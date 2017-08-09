@@ -4,7 +4,7 @@ import android.support.annotation.CallSuper;
 import android.util.SparseArray;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.edu.note.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;

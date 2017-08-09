@@ -1,6 +1,6 @@
 package com.onyx.edu.note.scribble.event;
 
-import com.onyx.edu.note.data.ScribbleMode;
+import com.onyx.android.sdk.scribble.data.ScribbleMode;
 
 /**
  * Created by solskjaer49 on 2017/7/21 12:05.

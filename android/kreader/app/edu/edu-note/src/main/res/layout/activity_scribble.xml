@@ -67,7 +67,7 @@
             android:layout_above="@id/divider"
             android:layout_below="@+id/tool_bar">
 
-            <com.onyx.edu.note.ui.view.LinedEditText
+            <com.onyx.android.sdk.scribble.view.LinedEditText
                 android:visibility="gone"
                 android:id="@+id/span_text_view"
                 android:layout_width="match_parent"

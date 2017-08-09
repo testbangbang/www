@@ -1,4 +1,4 @@
-package com.onyx.edu.note.scribble.event;
+package com.onyx.android.sdk.scribble.asyncrequest.event;
 
 /**
  * Created by solskjaer49 on 2017/7/26 12:26.

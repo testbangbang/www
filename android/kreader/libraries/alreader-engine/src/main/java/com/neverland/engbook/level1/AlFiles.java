@@ -522,6 +522,10 @@ public abstract class AlFiles {
 	public boolean fillBufFromExternalFile(int num, int pos, byte[] dst, int dst_pos, int cnt) {
 		return false;
 	}
+
+	public boolean fillBufFromExternalFile(int num, int pos, byte[] dst, int dst_pos, int cnt, boolean encrypted) {
+		return false;
+	}
 	
 	abstract protected int getBuffer(final int pos, byte[] dst, int cnt);
 

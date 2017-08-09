@@ -770,15 +770,28 @@ bool DrmDecryptManager::setupWithManifest(const std::string &deviceId,
                                           const std::string &manifestBase64,
                                           const std::string &additionalDataBase64)
 {
+    if (manifestBase64.length() <= 0) {
+        return false;
+    }
+
     int len = 0;
     unsigned char *data = unbase64(manifestBase64.c_str(), manifestBase64.length(), &len);
+    if (!data) {
+        return false;
+    }
     std::vector<unsigned char> manifest(data, data + len);
     free(data);
 
-    len = 0;
-    data = unbase64(additionalDataBase64.c_str(), additionalDataBase64.length(), &len);
-    std::string additionalData(reinterpret_cast<char *>(data));
-    free(data);
+    std::string additionalData;
+    if (additionalDataBase64.length() > 0) {
+        // additional data is not necessary
+        len = 0;
+        data = unbase64(additionalDataBase64.c_str(), additionalDataBase64.length(), &len);
+        if (data) {
+            additionalData = reinterpret_cast<char *>(data);
+            free(data);
+        }
+    }
 
     uint32_t version = 0;
     memcpy(&version, &manifest[508], 4);
