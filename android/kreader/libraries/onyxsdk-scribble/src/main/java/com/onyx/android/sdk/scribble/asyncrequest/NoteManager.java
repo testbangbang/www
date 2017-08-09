@@ -508,7 +508,6 @@ public class NoteManager {
 
         RectF selectRect = new RectF(mShapeSelectStartPoint.getX(), mShapeSelectStartPoint.getY(),
                 mShapeSelectPoint.getX(), mShapeSelectPoint.getY());
-        Log.d(TAG, "selectRect:" + selectRect);
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2.0f);
@@ -565,10 +564,8 @@ public class NoteManager {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                mShapeSelectStartPoint = new TouchPoint(event);
-                mShapeSelectPoint = new TouchPoint(event);
-                Log.e(TAG, "mShapeSelectStartPoint.getX():" + mShapeSelectStartPoint.getX());
-                Log.e(TAG, "mShapeSelectStartPoint.getY():" + mShapeSelectStartPoint.getY());
+                mShapeSelectStartPoint = new TouchPoint();
+                mShapeSelectPoint = new TouchPoint();
             }
         });
     }
@@ -576,6 +573,10 @@ public class NoteManager {
     protected void onShapeSelecting(final MotionEvent touchPoint) {
         if (mShapeSelectStartPoint == null) {
             return;
+        }
+        if (mShapeSelectStartPoint.x == 0 && mShapeSelectStartPoint.y == 0) {
+            mShapeSelectStartPoint.x = touchPoint.getX();
+            mShapeSelectStartPoint.y = touchPoint.getY();
         }
         mShapeSelectPoint.x = touchPoint.getX();
         mShapeSelectPoint.y = touchPoint.getY();
