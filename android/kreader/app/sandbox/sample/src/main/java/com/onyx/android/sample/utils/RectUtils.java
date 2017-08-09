@@ -26,6 +26,11 @@ public class RectUtils {
         }
 
         public List<Rect>  generate() {
+            if (first.contains(second)) {
+                inFirst.add(second);
+                return all;
+            }
+
             generateAllRects(all);
             all = cleanup(all);
 
@@ -63,9 +68,6 @@ public class RectUtils {
         public List<Rect> cleanup(final List<Rect> list) {
             List<Rect> temp = new ArrayList<>();
             for(Rect rect : list) {
-                if (rect.contains(first) || rect.contains(second)){
-                    continue;
-                }
                 if (first.contains(rect) || second.contains(rect)) {
                     temp.add(rect);
                 }
