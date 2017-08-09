@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">OnyxAndroidSample</string>
+    <string name="title_activity_environment_demo">EnvironmentDemoActivity</string>
+</resources>
