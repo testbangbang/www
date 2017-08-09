@@ -189,38 +189,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     return;
                 }
 
-                DialogTabHostMenu dlg = new DialogTabHostMenu(ReaderTabHostActivity.this, tabManager,
-                        new DialogTabHostMenu.Callback() {
-                            @Override
-                            public void onDoubleOpen(ReaderTabManager.ReaderTab tab) {
-                                ReaderTabManager.ReaderTab freeTab = getFreeReaderTab();
-                                openDocWithTab(freeTab, tabManager.getOpenedTabs().get(tab));
-                                startSideReadingMode(tab, freeTab);
-
-                                isDoubleOpen = true;
-                                doubleOpenedTab = freeTab;
-                            }
-
-                            @Override
-                            public void onLinkedOpen(ReaderTabManager.ReaderTab tab) {
-                                onDoubleOpen(tab);
-
-                                isDoubleLinked = true;
-                            }
-
-                            @Override
-                            public void onSideOpen(ReaderTabManager.ReaderTab left, ReaderTabManager.ReaderTab right) {
-                                startSideReadingMode(left, right);
-                            }
-
-                            @Override
-                            public void onClosing(List<ReaderTabManager.ReaderTab> list) {
-                                for (ReaderTabManager.ReaderTab tab : list) {
-                                    closeReaderTab(tab);
-                                }
-                            }
-                        });
-                showDialog(dlg);
+                showTabHostMenuDialog();
             }
         });
         btnSwitch = (ImageView) findViewById(R.id.btn_switch);
@@ -1109,5 +1078,49 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         });
         bringSelfToFront();
         dlg.show();
+    }
+
+    private void showTabHostMenuDialog() {
+        DialogTabHostMenu dlg = new DialogTabHostMenu(ReaderTabHostActivity.this, tabManager,
+                new DialogTabHostMenu.Callback() {
+                    @Override
+                    public void onDoubleOpen(ReaderTabManager.ReaderTab tab) {
+                        ReaderTabManager.ReaderTab freeTab = getFreeReaderTab();
+                        openDocWithTab(freeTab, tabManager.getOpenedTabs().get(tab));
+                        startSideReadingMode(tab, freeTab);
+
+                        isDoubleOpen = true;
+                        doubleOpenedTab = freeTab;
+                    }
+
+                    @Override
+                    public void onLinkedOpen(ReaderTabManager.ReaderTab tab) {
+                        onDoubleOpen(tab);
+
+                        isDoubleLinked = true;
+                    }
+
+                    @Override
+                    public void onSideOpen(ReaderTabManager.ReaderTab left, ReaderTabManager.ReaderTab right) {
+                        startSideReadingMode(left, right);
+                    }
+
+                    @Override
+                    public void onClosing(List<ReaderTabManager.ReaderTab> list) {
+                        for (ReaderTabManager.ReaderTab tab : list) {
+                            closeReaderTab(tab);
+                        }
+                    }
+                });
+
+        int[] location = new int[2];
+        tabWidget.getLocationOnScreen(location);
+
+        dlg.getWindow().setGravity(Gravity.LEFT | Gravity.TOP);
+        WindowManager.LayoutParams lp = dlg.getWindow().getAttributes();
+        lp.x = 10;
+        lp.y = location[1] + tabWidget.getHeight();
+        
+        showDialog(dlg);
     }
 }
