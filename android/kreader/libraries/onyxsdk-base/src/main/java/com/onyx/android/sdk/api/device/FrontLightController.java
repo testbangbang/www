@@ -77,6 +77,15 @@ public class FrontLightController
         return false;
     }
 
+    public static boolean setBrightnessConfigValue(Context context, int value)
+    {
+        BaseDevice dev = Device.currentDevice();
+        if (dev.setFrontLightConfigValue(context, value)) {
+            return true;
+        }
+        return false;
+    }
+
     public static boolean setNaturalBrightness(Context context, int level)
     {
         BaseDevice dev = Device.currentDevice();
