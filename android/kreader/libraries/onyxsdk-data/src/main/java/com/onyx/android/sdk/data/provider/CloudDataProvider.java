@@ -324,7 +324,7 @@ public class CloudDataProvider implements DataProviderBase {
     private List<CloudLibrary> fetchChildLibraryListFromCloud(String parentId, QueryArgs queryArgs) {
         List<CloudLibrary> libraryList = new ArrayList<>();
         try {
-            Response<ProductResult<CloudLibrary>> response = RetrofitUtils.executeCall(getContentService().loadChildLibraryList(parentId));
+            Response<QueryResult<CloudLibrary>> response = RetrofitUtils.executeCall(getContentService().loadChildLibraryList(parentId));
             if (response.isSuccessful() && response.body() != null) {
                 libraryList = response.body().list;
             }

@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.v2;
 
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
@@ -60,5 +61,5 @@ public interface ContentService {
     Call<List<GroupBean>> getMyGroup();
 
     @GET("librarys/{id}/library")
-    Call<ProductResult<CloudLibrary>> loadChildLibraryList(@Path(Constant.ID_TAG) final String libraryId);
+    Call<QueryResult<CloudLibrary>> loadChildLibraryList(@Path(Constant.ID_TAG) final String libraryId);
 }

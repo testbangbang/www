@@ -48,7 +48,7 @@ public class QueryArgs implements Serializable {
     public Set<String> series = new HashSet<>();
     public Set<String> category = new HashSet<>();
     public String query;
-    public boolean r;
+    public boolean recursive;
 
     public
     @FetchPolicy.Type
