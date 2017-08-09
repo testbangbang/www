@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PathDashPathEffect;
-import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,7 +12,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
@@ -31,7 +28,7 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
     private SurfaceHolder holder;
     private Paint paint;
     private List<Rect> src = new ArrayList<>();
-    private List<Rect> rectList = new ArrayList<>();
+    com.onyx.android.sample.utils.RectUtils.RectResult rectResult = new com.onyx.android.sample.utils.RectUtils.RectResult();
 
     public enum UpdateMode {
         A, B, C, D, E
@@ -86,15 +83,28 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
 
     private void screenUpdate() {
         TestUtils.sleep(2000);
-        for (Rect rect : rectList) {
+        {
+            Rect rect = rectResult.first;
             EpdController.refreshScreenRegion(this, rect.left, rect.top, rect.width(), rect.height(), com.onyx.android.sdk.api.device.epd.UpdateMode.GC);
             TestUtils.sleep(600);
         }
+
+        for (Rect rect : rectResult.inSecond) {
+            EpdController.refreshScreenRegion(this, rect.left, rect.top, rect.width(), rect.height(), com.onyx.android.sdk.api.device.epd.UpdateMode.GC);
+            TestUtils.sleep(1000);
+        }
+
+
+        for (Rect rect : rectResult.inFirst) {
+            EpdController.refreshScreenRegion(this, rect.left, rect.top, rect.width(), rect.height(), com.onyx.android.sdk.api.device.epd.UpdateMode.GC);
+            TestUtils.sleep(1000);
+        }
+
+
     }
 
     private void generateRectangles() {
-        rectList.clear();
-        src.clear();
+
         switch (currentMode) {
             case A:
                 generateRectanglesTypeA();
@@ -127,9 +137,9 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
         int left2 = left + width / 2;
         int top2 = top + height / 2;
         Rect r2 = new Rect(left2, top2, left2 + width, top2 + height);
-
-        rectList.add(r1);
-        rectList.add(r2);
+        rectResult.first = r1;
+        rectResult.second = r2;
+        rectResult.generate();
     }
 
     private void generateRectanglesTypeA() {
@@ -144,23 +154,18 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
         int top2 = top + height / 2;
         Rect r2 = com.onyx.android.sample.utils.RectUtils.createRect(left2, top2, left2 + width, top2 + height);
 
-        src.add(r1);
-        src.add(r2);
-
-        com.onyx.android.sample.utils.RectUtils.RectResult rectResult = new com.onyx.android.sample.utils.RectUtils.RectResult();
-        rectResult.parent = r1;
-        rectResult.child = r2;
-        rectList.addAll(rectResult.generate());
+        postGenerate(r1, r2);
     }
 
     private void postGenerate(final Rect r1, final Rect r2) {
+        src.clear();
         src.add(r1);
         src.add(r2);
 
-        com.onyx.android.sample.utils.RectUtils.RectResult rectResult = new com.onyx.android.sample.utils.RectUtils.RectResult();
-        rectResult.parent = r1;
-        rectResult.child = r2;
-        rectList.addAll(rectResult.generate());
+        rectResult.first = r1;
+        rectResult.second = r2;
+        rectResult.reset();
+        rectResult.generate();
     }
 
     private void generateRectanglesTypeB() {
@@ -236,7 +241,8 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
 
-        for(Rect rect: rectList) {
+
+        for(Rect rect: rectResult.inSecond) {
             int value = 128;
             paint.setColor(Color.rgb(value, value, value));
             paint.setStyle(Paint.Style.STROKE);
