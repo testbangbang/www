@@ -138,11 +138,11 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
         int top = TestUtils.randInt(0, getHeight() / div);
         int width = TestUtils.randInt(getWidth() /  (div * 2), getWidth() /  div);
         int height = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
-        Rect r1 = new Rect(left, top, left + width, top + height);
+        Rect r1 = com.onyx.android.sample.utils.RectUtils.createRect(left, top, left + width, top + height);
 
         int left2 = left + width / 2;
         int top2 = top + height / 2;
-        Rect r2 = new Rect(left2, top2, left2 + width, top2 + height);
+        Rect r2 = com.onyx.android.sample.utils.RectUtils.createRect(left2, top2, left2 + width, top2 + height);
 
         src.add(r1);
         src.add(r2);
@@ -169,13 +169,13 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
         int top = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
         int width = TestUtils.randInt(getWidth() /  (div * 2), getWidth() /  div);
         int height = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
-        Rect r1 = new Rect(left, top, left + width, top + height);
+        Rect r1 = com.onyx.android.sample.utils.RectUtils.createRect(left, top, left + width, top + height);
 
         int left2 = TestUtils.randInt(left + 1, left + width - 1);
         int top2 = TestUtils.randInt(top + 1, top + height - 1);
-        int right2 = left2 + TestUtils.randInt(1, width - 1);
-        int bottom2 = top2 + TestUtils.randInt(1, getHeight() / div);
-        Rect r2 = new Rect(left2, top2, right2, bottom2);
+        int right2 = TestUtils.randInt(left + 1, left + width - 1);
+        int bottom2 = TestUtils.randInt(top + 1, top + height - 1);
+        Rect r2 = com.onyx.android.sample.utils.RectUtils.createRect(left2, top2, right2, bottom2);
 
         postGenerate(r1, r2);
     }
