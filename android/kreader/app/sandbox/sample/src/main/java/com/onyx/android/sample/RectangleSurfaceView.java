@@ -91,13 +91,11 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         for (Rect rect : rectResult.inSecond) {
             EpdController.refreshScreenRegion(this, rect.left, rect.top, rect.width(), rect.height(), com.onyx.android.sdk.api.device.epd.UpdateMode.GC);
-
         }
         TestUtils.sleep(1000);
 
         for (Rect rect : rectResult.inFirst) {
             EpdController.refreshScreenRegion(this, rect.left, rect.top, rect.width(), rect.height(), com.onyx.android.sdk.api.device.epd.UpdateMode.GC);
-
         }
         TestUtils.sleep(1000);
 
@@ -108,19 +106,19 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         switch (currentMode) {
             case A:
-                generateRectanglesTypeA();
+                generateRectanglesInterset();
                 break;
             case B:
-                generateRectanglesTypeB();
+                generateRectanglesInside();
                 break;
             case C:
-                generateRectanglesTypeC();
+                generateRectanglesContains();
                 break;
             case D:
-                generateRectanglesTypeD();
+                generateRectanglesTopEdgeIntersect();
                 break;
             case E:
-                generateRectanglesTypeE();
+                generateRectanglesTopEdgeLargeInterset();
                 break;
             default:
                 break;
@@ -143,7 +141,7 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
         rectResult.generate();
     }
 
-    private void generateRectanglesTypeA() {
+    private void generateRectanglesInterset() {
         int div = 3;
         int left = TestUtils.randInt(0, getWidth() / div);
         int top = TestUtils.randInt(0, getHeight() / div);
@@ -169,7 +167,7 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
         rectResult.generate();
     }
 
-    private void generateRectanglesTypeB() {
+    private void generateRectanglesInside() {
         int div = 3;
         int left = TestUtils.randInt(getWidth() /  (div * 2), getWidth() / div);
         int top = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
@@ -186,21 +184,28 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
         postGenerate(r1, r2);
     }
 
-    private void generateRectanglesTypeC() {
-        int div = 4;
+    // second contains the first
+    private void generateRectanglesContains() {
+        int div = 3;
         int left = TestUtils.randInt(getWidth() /  (div * 2), getWidth() / div);
         int top = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
         int width = TestUtils.randInt(getWidth() /  (div * 2), getWidth() /  div);
         int height = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
-        Rect r1 = new Rect(left, top, left + width, top + height);
+        Rect r1 = com.onyx.android.sample.utils.RectUtils.createRect(left, top, left + width, top + height);
 
-        int left2 = left;
-        int top2 = top + height - 1;
-        Rect r2 = new Rect(left2, top2, left2 + width, top2 + height);
+        int lowLimit = width / 3;
+        int upLimit = width / 2;
+
+        int left2 = left - TestUtils.randInt(lowLimit, upLimit);
+        int top2 = top - TestUtils.randInt(lowLimit, upLimit);
+        int right2 = left + width + TestUtils.randInt(lowLimit, upLimit);
+        int bottom2 = top + height + TestUtils.randInt(lowLimit, upLimit);
+        Rect r2 = com.onyx.android.sample.utils.RectUtils.createRect(left2, top2, right2, bottom2);
+
         postGenerate(r1, r2);
     }
 
-    private void generateRectanglesTypeD() {
+    private void generateRectanglesTopEdgeIntersect() {
         int div = 3;
         int left = TestUtils.randInt(getWidth() /  (div * 2), getWidth() / div);
         int top = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
@@ -218,7 +223,7 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
         postGenerate(r1, r2);
     }
 
-    private void generateRectanglesTypeE() {
+    private void generateRectanglesTopEdgeLargeInterset() {
         int div = 3;
         int left = TestUtils.randInt(getWidth() /  (div * 2), getWidth() / div);
         int top = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
