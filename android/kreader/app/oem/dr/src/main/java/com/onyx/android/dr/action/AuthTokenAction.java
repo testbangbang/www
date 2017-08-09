@@ -99,7 +99,6 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                 } else {
                     NeoAccountBase eduAccount = accountLoadRequest.getNeoAccount();
                     if (NeoAccountBase.isValid(eduAccount) && StringUtils.isNotBlank(eduAccount.info)) {
-                        DRPreferenceManager.saveUserType(dataHolder.getContext(), eduAccount.groups.get(0));
                         sendAccountAvailableEvent(eduAccount);
                     } else {
                         sendLoginFailedEvent(dataHolder.getContext());

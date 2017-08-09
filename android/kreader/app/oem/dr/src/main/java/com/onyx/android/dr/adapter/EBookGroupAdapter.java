@@ -11,10 +11,7 @@ import android.widget.TextView;
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.bean.LibraryBean;
 import com.onyx.android.dr.event.EBookChildLibraryEvent;
-import com.onyx.android.dr.event.EBookListEvent;
-import com.onyx.android.dr.event.ToBookshelfV2Event;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -44,7 +41,6 @@ import butterknife.ButterKnife;
  */
 
 public class EBookGroupAdapter extends PageRecyclerView.PageAdapter<EBookGroupAdapter.GroupItemViewHolder> implements View.OnClickListener {
-    private Context context;
     private List<Library> groups;
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.bookshelf_group_row);
     private int col = DRApplication.getInstance().getResources().getInteger(R.integer.bookshelf_group_col);
@@ -52,8 +48,8 @@ public class EBookGroupAdapter extends PageRecyclerView.PageAdapter<EBookGroupAd
     private int item_row = DRApplication.getInstance().getResources().getInteger(R.integer.bookshelf_group_item_row);
     private int item_col = DRApplication.getInstance().getResources().getInteger(R.integer.bookshelf_group_item_col);
 
-    public EBookGroupAdapter(Context context) {
-        this.context = context;
+    public EBookGroupAdapter() {
+
     }
 
     public void setGroups(List<Library> groups) {
@@ -78,7 +74,7 @@ public class EBookGroupAdapter extends PageRecyclerView.PageAdapter<EBookGroupAd
 
     @Override
     public EBookGroupAdapter.GroupItemViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(context, R.layout.item_bookshelf_group, null);
+        View inflate = View.inflate(parent.getContext(), R.layout.item_bookshelf_group, null);
         return new GroupItemViewHolder(inflate);
     }
 
@@ -86,7 +82,7 @@ public class EBookGroupAdapter extends PageRecyclerView.PageAdapter<EBookGroupAd
     public void onPageBindViewHolder(final EBookGroupAdapter.GroupItemViewHolder holder, int position) {
         Library library = groups.get(position);
         holder.groupName.setText(library.getName());
-        final EBookListAdapter listAdapter = new EBookListAdapter(context, getDataHolder());
+        final EBookListAdapter listAdapter = new EBookListAdapter(getDataHolder());
         listAdapter.setRowAndCol(item_row, item_col);
         holder.pageRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration =
@@ -96,10 +92,10 @@ public class EBookGroupAdapter extends PageRecyclerView.PageAdapter<EBookGroupAd
         QueryArgs queryArgs = new QueryArgs();
         queryArgs = QueryBuilder.generateMetadataInQueryArgs(queryArgs);
         queryArgs.libraryUniqueId = library.getIdString();
-        queryArgs.r = true;
+        queryArgs.recursive = true;
         queryArgs.limit = item_col;
         final CloudContentListRequest listRequest = new CloudContentListRequest(queryArgs);
-        DRApplication.getCloudStore().submitRequestToSingle(context, listRequest, new BaseCallback() {
+        DRApplication.getCloudStore().submitRequestToSingle(DRApplication.getInstance(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
@@ -107,7 +103,7 @@ public class EBookGroupAdapter extends PageRecyclerView.PageAdapter<EBookGroupAd
                 }
                 QueryResult<Metadata> result = listRequest.getProductResult();
                 if (result != null && result.list != null) {
-                    Map<String, CloseableReference<Bitmap>> bitmaps = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(context, DRApplication.getCloudStore().getCloudManager(), result.list);
+                    Map<String, CloseableReference<Bitmap>> bitmaps = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(DRApplication.getInstance(), DRApplication.getCloudStore().getCloudManager(), result.list);
                     listAdapter.updateContentView(getLibraryDataModel(result, bitmaps));
                 }
                 if (result == null || result.list == null || result.list.size() <= 0) {
@@ -151,7 +147,7 @@ public class EBookGroupAdapter extends PageRecyclerView.PageAdapter<EBookGroupAd
 
     private LibraryDataHolder getDataHolder() {
         if (dataHolder == null) {
-            dataHolder = new LibraryDataHolder(context);
+            dataHolder = new LibraryDataHolder(DRApplication.getInstance());
             dataHolder.setCloudManager(DRApplication.getCloudStore().getCloudManager());
         }
         return dataHolder;

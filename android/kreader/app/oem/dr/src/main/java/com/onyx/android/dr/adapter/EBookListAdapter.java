@@ -47,14 +47,12 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
     private static final String TAG = EBookListAdapter.class.getSimpleName();
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_row);
     private int col = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_col);
-    private Context context;
     private boolean newPage = false;
     private int noThumbnailPosition = 0;
     private boolean isVisibleToUser = false;
     private LibraryDataHolder dataHolder;
 
-    public EBookListAdapter(Context context, LibraryDataHolder dataHolder) {
-        this.context = context;
+    public EBookListAdapter(LibraryDataHolder dataHolder) {
         this.dataHolder = dataHolder;
     }
 
@@ -87,10 +85,10 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
     @Override
     public LibraryItemViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
         View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.ebook_list_item, parent, false);
-        inflate.setPadding(context.getResources().getInteger(R.integer.library_item_padding_left),
-                context.getResources().getInteger(R.integer.library_item_padding_top),
-                context.getResources().getInteger(R.integer.library_item_padding_right),
-                context.getResources().getInteger(R.integer.library_item_padding_bottom));
+        inflate.setPadding(DRApplication.getInstance().getResources().getInteger(R.integer.library_item_padding_left),
+                DRApplication.getInstance().getResources().getInteger(R.integer.library_item_padding_top),
+                DRApplication.getInstance().getResources().getInteger(R.integer.library_item_padding_right),
+                DRApplication.getInstance().getResources().getInteger(R.integer.library_item_padding_bottom));
         return new LibraryItemViewHolder(inflate);
     }
 
@@ -220,7 +218,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         if (StringUtils.isNullOrEmpty(book.getGuid())) {
             return false;
         }
-        File dir = CloudUtils.dataCacheDirectory(context, book.getGuid());
+        File dir = CloudUtils.dataCacheDirectory(DRApplication.getInstance(), book.getGuid());
         if (dir.list() == null || dir.list().length <= 0) {
             return false;
         }
@@ -255,7 +253,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         if (isVisibleToUser && noThumbnailPosition == position) {
             loadRequest.setAbortPendingTasks(true);
         }
-        DRApplication.getCloudStore().submitRequestToSingle(context.getApplicationContext(), loadRequest, new BaseCallback() {
+        DRApplication.getCloudStore().submitRequestToSingle(DRApplication.getInstance().getApplicationContext(), loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (!isContentValid(request, e)) {
@@ -297,7 +295,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         if (StringUtils.isBlank(fileName)) {
             return null;
         }
-        return new File(CloudUtils.dataCacheDirectory(context, book.getGuid()), fileName)
+        return new File(CloudUtils.dataCacheDirectory(DRApplication.getInstance(), book.getGuid()), fileName)
                 .getAbsolutePath();
     }
 
@@ -309,9 +307,9 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
     }
 
     private boolean enableWifiOpenAndDetect() {
-        if (!NetworkUtil.isWiFiConnected(context)) {
-            Device.currentDevice().enableWifiDetect(context);
-            NetworkUtil.enableWiFi(context, true);
+        if (!NetworkUtil.isWiFiConnected(DRApplication.getInstance())) {
+            Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
+            NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
             return true;
         }
         return false;

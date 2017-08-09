@@ -112,8 +112,10 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
     }
 
     private void loadBookshelf() {
-        titleBarTitle.setText(String.format(getString(R.string.bookshelf), language));
-        bookshelfPresenter.getBookshelf(language, getDataHolder());
+        if (titleBarTitle != null) {
+            titleBarTitle.setText(String.format(getString(R.string.bookshelf), language));
+            bookshelfPresenter.getBookshelf(language, getDataHolder());
+        }
     }
 
     private void loadLibrary() {

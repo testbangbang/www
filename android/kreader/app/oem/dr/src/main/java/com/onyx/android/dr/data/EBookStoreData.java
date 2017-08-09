@@ -20,9 +20,6 @@ import java.util.Map;
 
 public class EBookStoreData {
     private Map<String, List<Metadata>> languageCategoryMap = new HashMap<>();
-    private List<Metadata> chineseList = new ArrayList<>();
-    private List<Metadata> englishList = new ArrayList<>();
-    private List<Metadata> smallList = new ArrayList<>();
 
     public void getRootLibraryList(CloudChildLibraryListLoadRequest request, BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), request, baseCallback);
@@ -32,35 +29,39 @@ public class EBookStoreData {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                chineseList.clear();
-                englishList.clear();
-                smallList.clear();
-                languageCategoryMap.clear();
                 QueryResult<Metadata> productResult = req.getProductResult();
-                if (productResult != null && productResult.list != null) {
-                    List<Metadata> list = productResult.list;
-                    for (Metadata metadata : list) {
-                        if (Constants.CHINESE.equals(metadata.getLanguage())) {
-                            chineseList.add(metadata);
-                        } else if (Constants.ENGLISH.equals(metadata.getLanguage())) {
-                            englishList.add(metadata);
-                        } else {
-                            smallList.add(metadata);
-                        }
-                    }
-                    if (chineseList.size() > 0) {
-                        languageCategoryMap.put(Constants.CHINESE, chineseList);
-                    }
-                    if (englishList.size() > 0) {
-                        languageCategoryMap.put(Constants.ENGLISH, englishList);
-                    }
-                    if (smallList.size() > 0) {
-                        languageCategoryMap.put(Constants.SMALL_LANGUAGE, smallList);
-                    }
-                }
+                organizeData(languageCategoryMap,productResult);
                 invoke(baseCallback, request, e);
             }
         });
+    }
+
+    public static void organizeData(Map<String, List<Metadata>> languageCategoryMap,  QueryResult<Metadata> productResult) {
+        List<Metadata> chineseList = new ArrayList<>();
+        List<Metadata> englishList = new ArrayList<>();
+        List<Metadata> smallList = new ArrayList<>();
+        languageCategoryMap.clear();
+        if (productResult != null && productResult.list != null) {
+            List<Metadata> list = productResult.list;
+            for (Metadata metadata : list) {
+                if (Constants.CHINESE.equals(metadata.getLanguage())) {
+                    chineseList.add(metadata);
+                } else if (Constants.ENGLISH.equals(metadata.getLanguage())) {
+                    englishList.add(metadata);
+                } else {
+                    smallList.add(metadata);
+                }
+            }
+            if (chineseList.size() > 0) {
+                languageCategoryMap.put(Constants.CHINESE, chineseList);
+            }
+            if (englishList.size() > 0) {
+                languageCategoryMap.put(Constants.ENGLISH, englishList);
+            }
+            if (smallList.size() > 0) {
+                languageCategoryMap.put(Constants.SMALL_LANGUAGE, smallList);
+            }
+        }
     }
 
     public Map<String, List<Metadata>> getLanguageCategoryMap() {

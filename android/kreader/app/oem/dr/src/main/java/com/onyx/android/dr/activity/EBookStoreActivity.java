@@ -74,16 +74,16 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     @Override
     protected void initView() {
         titleBarTitle.setText(getString(R.string.ebook_store));
-        adapter = new EBookGroupAdapter(this);
+        adapter = new EBookGroupAdapter();
         ebookStoreGroupsRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         ebookStoreGroupsRecycler.addItemDecoration(dividerItemDecoration);
         ebookStoreGroupsRecycler.setAdapter(adapter);
 
-        listAdapter = new EBookListAdapter(this, getDataHolder());
+        listAdapter = new EBookListAdapter(getDataHolder());
 
-        eBookLanguageGroupAdapter = new EBookLanguageGroupAdapter(this);
+        eBookLanguageGroupAdapter = new EBookLanguageGroupAdapter();
     }
 
     @Override

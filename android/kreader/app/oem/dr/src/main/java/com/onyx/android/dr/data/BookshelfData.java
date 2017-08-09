@@ -26,40 +26,13 @@ import java.util.concurrent.CountDownLatch;
 
 public class BookshelfData {
     private Map<String, List<Metadata>> languageCategoryMap = new HashMap<>();
-    private List<Metadata> chineseList = new ArrayList<>();
-    private List<Metadata> englishList = new ArrayList<>();
-    private List<Metadata> smallList = new ArrayList<>();
 
     public void getLibraryBooks(final CloudContentListRequest req, final BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                chineseList.clear();
-                englishList.clear();
-                smallList.clear();
-                languageCategoryMap.clear();
                 QueryResult<Metadata> productResult = req.getProductResult();
-                if (productResult != null && productResult.list != null) {
-                    List<Metadata> list = productResult.list;
-                    for (Metadata metadata : list) {
-                        if (Constants.CHINESE.equals(metadata.getLanguage())) {
-                            chineseList.add(metadata);
-                        } else if (Constants.ENGLISH.equals(metadata.getLanguage())) {
-                            englishList.add(metadata);
-                        } else {
-                            smallList.add(metadata);
-                        }
-                    }
-                    if (chineseList.size() > 0) {
-                        languageCategoryMap.put(Constants.CHINESE, chineseList);
-                    }
-                    if (englishList.size() > 0) {
-                        languageCategoryMap.put(Constants.ENGLISH, englishList);
-                    }
-                    if (smallList.size() > 0) {
-                        languageCategoryMap.put(Constants.SMALL_LANGUAGE, smallList);
-                    }
-                }
+                EBookStoreData.organizeData(languageCategoryMap,productResult);
                 invoke(baseCallback, request, e);
             }
         });
