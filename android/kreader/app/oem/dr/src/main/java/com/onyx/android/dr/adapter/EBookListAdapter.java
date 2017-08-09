@@ -153,9 +153,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
-                    eBook.setNativeAbsolutePath(filePath);
-                    DownloadSucceedEvent event = new DownloadSucceedEvent(eBook);
-                    EventBus.getDefault().post(event);
+                    setCloudMetadataNativeAbsolutePath(eBook, filePath);
                 }
             }
 
@@ -230,7 +228,16 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         if (!file.exists() && file.length() <= 0) {
             return false;
         }
+        if (StringUtils.isNullOrEmpty(book.getNativeAbsolutePath())) {
+            setCloudMetadataNativeAbsolutePath(book, path);
+        }
         return true;
+    }
+
+    private void setCloudMetadataNativeAbsolutePath(Metadata book, String path) {
+        book.setNativeAbsolutePath(path);
+        DownloadSucceedEvent event = new DownloadSucceedEvent(book);
+        EventBus.getDefault().post(event);
     }
 
     private Bitmap getBitmap(String associationId) {

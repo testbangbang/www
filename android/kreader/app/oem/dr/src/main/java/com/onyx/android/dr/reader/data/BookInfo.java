@@ -1,5 +1,7 @@
 package com.onyx.android.dr.reader.data;
 
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 /**
  * Created by huxiaomao on 17/5/25.
  */
@@ -8,6 +10,7 @@ public class BookInfo {
     private String bookName;
     private String bookPath;
     private String password;
+    private String language;
 
     public String getBookPath() {
         return bookPath;
@@ -31,5 +34,13 @@ public class BookInfo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }

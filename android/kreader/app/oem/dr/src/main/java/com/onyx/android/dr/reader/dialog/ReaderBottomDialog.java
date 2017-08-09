@@ -14,7 +14,9 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.ReaderMenuBean;
+import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.reader.action.ShowReaderBottomMenuDialogAction;
 import com.onyx.android.dr.reader.adapter.ReaderTabMenuAdapter;
@@ -37,18 +39,20 @@ import com.onyx.android.dr.reader.event.TtsSpeakingStateEvent;
 import com.onyx.android.dr.reader.event.TtsStopStateEvent;
 import com.onyx.android.dr.reader.handler.HandlerManger;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
+import com.onyx.android.dr.request.local.GoodSentenceInsert;
+import com.onyx.android.dr.util.TimeUtils;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
-import com.onyx.android.sdk.scribble.request.note.ImportScribbleRequest;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-
-import retrofit2.http.GET;
 
 /**
  * Created by hehai on 17-7-14.
@@ -322,7 +326,54 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnReaderGoodSentenceMenuEvent(ReaderGoodSentenceMenuEvent event) {
+        addGoodSentence();
+    }
 
+    private void addGoodSentence() {
+        String selectionText = readerPresenter.getBookOperate().getSelectionText();
+        if (StringUtils.isNotBlank(selectionText)) {
+            GoodSentenceNoteEntity bean = new GoodSentenceNoteEntity();
+            bean.currentTime = TimeUtils.getCurrentTimeMillis();
+            bean.details = selectionText;
+            bean.readingMatter = readerPresenter.getBookInfo().getBookName();
+            bean.pageNumber = String.valueOf(readerPresenter.getPageInformation().getCurrentPage());
+            bean.goodSentenceType = getGoodSentenceType(readerPresenter.getBookInfo().getLanguage());
+            GoodSentenceInsert req = new GoodSentenceInsert(bean);
+            DRApplication.getDataManager().submit(readerPresenter.getReaderView().getViewContext(), req, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    if (e == null) {
+                        ToastManage.showMessage(getContext(), String.format(getContext().getResources().getString(R.string.Good_sentences_have_been_included_in_the_good_sentence_notebook),
+                                readerPresenter.getBookInfo().getLanguage()));
+                    }
+                }
+            });
+        } else {
+            ToastManage.showMessage(getContext(), getContext().getString(R.string.Please_press_to_select_the_sentence_you_want_to_include));
+        }
+        dismiss();
+        readerPresenter.getBookOperate().redrawPage();
+        readerPresenter.getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
+        readerPresenter.getReaderSelectionManager().clear();
+    }
+
+    private int getGoodSentenceType(String language) {
+        int type;
+        if (StringUtils.isNotBlank(language)) {
+            switch (language) {
+                case Constants.CHINESE:
+                    type = Constants.CHINESE_NEW_WORD_NOTEBOOK;
+                    break;
+                case Constants.ENGLISH:
+                    type = Constants.ENGLISH_NEW_WORD_NOTEBOOK;
+                    break;
+                default:
+                    type = Constants.JAPANESE_NEW_WORD_NOTEBOOK;
+            }
+        } else {
+            type = Constants.JAPANESE_NEW_WORD_NOTEBOOK;
+        }
+        return type;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

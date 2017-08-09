@@ -25,7 +25,6 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.reader.event.PostilManageDialogDismissEvent;
 import com.onyx.android.dr.reader.action.ShowQuickPreviewAction;
 import com.onyx.android.dr.reader.action.ShowReaderBottomMenuDialogAction;
 import com.onyx.android.dr.reader.base.ReaderView;
@@ -42,6 +41,7 @@ import com.onyx.android.dr.reader.event.DocumentOpenEvent;
 import com.onyx.android.dr.reader.event.FinishReaderEvent;
 import com.onyx.android.dr.reader.event.ManagePostilDialogEvent;
 import com.onyx.android.dr.reader.event.NewFileCreatedEvent;
+import com.onyx.android.dr.reader.event.PostilManageDialogDismissEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopBackEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopBookStoreEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopBrightnessEvent;
@@ -62,11 +62,14 @@ import com.onyx.android.dr.reader.view.BookProgressbar;
 import com.onyx.android.dr.reader.view.CustomDialog;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.request.ChangeViewConfigRequest;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -131,6 +134,10 @@ public class ReaderActivity extends Activity implements ReaderView {
         String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
         if (!FileUtils.fileExist(path)) {
             return false;
+        }
+        CloudMetadata metadata = new Select().from(CloudMetadata.class).where(CloudMetadata_Table.nativeAbsolutePath.eq(path)).querySingle();
+        if (metadata != null) {
+            bookInfo.setLanguage(metadata.getLanguage());
         }
         bookInfo.setBookPath(path);
 

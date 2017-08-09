@@ -308,4 +308,6 @@
     <string name="no_relevant_data">没有相应数据</string>
     <string name="export_success">导出成功</string>
     <string name="good_sentence_notebook_html">好句本报表</string>
+    <string name="Good_sentences_have_been_included_in_the_good_sentence_notebook">好句已收入%s</string>
+    <string name="Please_press_to_select_the_sentence_you_want_to_include">请长按选择要收录的好句</string>
 </resources>

@@ -313,4 +313,6 @@
     <string name="no_relevant_data">no relevant data</string>
     <string name="export_success">export success</string>
     <string name="good_sentence_notebook_html">good sentence notebook html</string>
+    <string name="Good_sentences_have_been_included_in_the_good_sentence_notebook">Good sentences have been included in %s</string>
+    <string name="Please_press_to_select_the_sentence_you_want_to_include">Please press to select the sentence you want to include.</string>
 </resources>
