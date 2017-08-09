@@ -91,8 +91,9 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
 
         for (Rect rect : rectResult.inSecond) {
             EpdController.refreshScreenRegion(this, rect.left, rect.top, rect.width(), rect.height(), com.onyx.android.sdk.api.device.epd.UpdateMode.GC);
+            TestUtils.sleep(500);
         }
-        TestUtils.sleep(1000);
+
 
         for (Rect rect : rectResult.inFirst) {
             EpdController.refreshScreenRegion(this, rect.left, rect.top, rect.width(), rect.height(), com.onyx.android.sdk.api.device.epd.UpdateMode.GC);
