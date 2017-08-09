@@ -16,7 +16,6 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.ui.ReaderTabManager;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -30,10 +29,11 @@ import butterknife.OnClick;
 public class DialogTabHostMenu extends DialogBase {
 
     public static abstract class Callback {
-        public abstract void onDoubleOpen(ReaderTabManager.ReaderTab tab);
         public abstract void onLinkedOpen(ReaderTabManager.ReaderTab tab);
         public abstract void onSideOpen(ReaderTabManager.ReaderTab left, ReaderTabManager.ReaderTab right);
-        public abstract void onClosing(List<ReaderTabManager.ReaderTab> list);
+        public abstract void onSideNote(ReaderTabManager.ReaderTab tab);
+        public abstract void onSideSwitch();
+        public abstract void onClosing();
     }
 
     private class TabViewHolder extends RecyclerView.ViewHolder {
@@ -57,13 +57,10 @@ public class DialogTabHostMenu extends DialogBase {
                         selectedTabs.remove(currentTab);
                     }
 
-                    disableAllButtons();
-                    if (selectedTabs.size() > 0) {
-                        buttonClose.setEnabled(true);
-                    }
+                    disableButtons();
                     if (selectedTabs.size() == 1) {
-                        buttonDoubleOpen.setEnabled(true);
                         buttonDoubleLink.setEnabled(true);
+                        buttonSideNote.setEnabled(true);
                     }
                     if (selectedTabs.size() == 2) {
                         buttonSideOpen.setEnabled(true);
@@ -78,12 +75,14 @@ public class DialogTabHostMenu extends DialogBase {
         }
     }
 
-    @Bind(R.id.button_double_open)
-    Button buttonDoubleOpen;
     @Bind(R.id.button_double_link)
     Button buttonDoubleLink;
     @Bind(R.id.button_side_open)
     Button buttonSideOpen;
+    @Bind(R.id.button_side_note)
+    Button buttonSideNote;
+    @Bind(R.id.button_side_switch)
+    Button buttonSideSwitch;
     @Bind(R.id.button_close)
     Button buttonClose;
 
@@ -91,15 +90,17 @@ public class DialogTabHostMenu extends DialogBase {
     private ArrayList<ReaderTabManager.ReaderTab> tabList = new ArrayList<>();
     private ArrayList<ReaderTabManager.ReaderTab> selectedTabs = new ArrayList<>();
 
+    private boolean isSideReading;
     private Callback callback;
 
-    public DialogTabHostMenu(final Context context, final ReaderTabManager tabManager, Callback callback) {
+    public DialogTabHostMenu(final Context context, final ReaderTabManager tabManager, final boolean isSideReading, Callback callback) {
         super(context);
         setContentView(R.layout.dialog_tab_host_menu);
 
         ButterKnife.bind(this);
 
         this.tabManager = tabManager;
+        this.isSideReading = isSideReading;
         this.callback = callback;
 
         for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
@@ -109,27 +110,35 @@ public class DialogTabHostMenu extends DialogBase {
         init();
     }
 
-    @OnClick(R.id.button_double_open)
-    void onButtonDoubleOpenClicked() {
-        if (callback != null) {
-            DialogTabHostMenu.this.dismiss();
-            callback.onDoubleOpen(selectedTabs.get(0));
-        }
-    }
-
     @OnClick(R.id.button_double_link)
     void onButtonDoubleLinkClicked() {
+        DialogTabHostMenu.this.dismiss();
         if (callback != null) {
-            DialogTabHostMenu.this.dismiss();
             callback.onLinkedOpen(selectedTabs.get(0));
         }
     }
 
     @OnClick(R.id.button_side_open)
     void onButtonSideOpenClicked() {
+        DialogTabHostMenu.this.dismiss();
         if (callback != null) {
-            DialogTabHostMenu.this.dismiss();
             callback.onSideOpen(selectedTabs.get(0), selectedTabs.get(1));
+        }
+    }
+
+    @OnClick(R.id.button_side_note)
+    void onButtonSideNoteClicked() {
+        DialogTabHostMenu.this.dismiss();
+        if (callback != null) {
+            callback.onSideNote(selectedTabs.get(0));
+        }
+    }
+
+    @OnClick(R.id.button_side_switch)
+    void onButtonSideSwitchClicked() {
+        DialogTabHostMenu.this.dismiss();
+        if (callback != null) {
+            callback.onSideSwitch();
         }
     }
 
@@ -137,7 +146,7 @@ public class DialogTabHostMenu extends DialogBase {
     void onButtonCloseClicked() {
         if (callback != null) {
             DialogTabHostMenu.this.dismiss();
-            callback.onClosing(selectedTabs);
+            callback.onClosing();
         }
     }
 
@@ -172,14 +181,18 @@ public class DialogTabHostMenu extends DialogBase {
 
         });
 
-        disableAllButtons();
+        disableButtons();
     }
 
-    private void disableAllButtons() {
-        buttonDoubleOpen.setEnabled(false);
+    private void disableButtons() {
         buttonDoubleLink.setEnabled(false);
         buttonSideOpen.setEnabled(false);
-        buttonClose.setEnabled(false);
+        buttonSideNote.setEnabled(false);
+
+        if (!isSideReading) {
+            buttonSideSwitch.setEnabled(false);
+            buttonClose.setEnabled(false);
+        }
     }
 
 }

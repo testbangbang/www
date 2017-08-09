@@ -48,6 +48,7 @@ import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogTabHostMenu;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -184,10 +185,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isSideReading) {
-                    quitSideReadingMode();
-                    return;
-                }
 
                 showTabHostMenuDialog();
             }
@@ -304,6 +301,40 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         setSideReadingRight(null);
 
         bringReaderTabToFront(getSideReadingLeft());
+    }
+
+    private void startSideNote(ReaderTabManager.ReaderTab tab) {
+        String path = tabManager.getOpenedTabs().get(tab);
+        File noteFile = getNoteFile(path);
+        if (!noteFile.exists()) {
+            try {
+                FileUtils.copyFile(new File("/sdcard/blanknote.pdf"), noteFile);
+            } catch (IOException e) {
+                // TODO string res
+                Toast.makeText(this, "creating note file failed!", Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+        ReaderTabManager.ReaderTab freeTab = getFreeReaderTab();
+        openDocWithTab(freeTab, noteFile.getAbsolutePath());
+        startSideReadingMode(tab, freeTab);
+    }
+
+    private File getNoteFile(String docPath) {
+        String dir = FileUtils.getParent(docPath);
+        String basename = FileUtils.getBaseName(docPath);
+        String ext = FileUtils.getFileExtension(docPath);
+        return new File(dir, basename + "-note." + ext);
+    }
+
+    private void switchSideReadingTab() {
+        ReaderTabManager.ReaderTab tab = getSideReadingLeft();
+        setSideReadingLeft(getSideReadingRight());
+        setSideReadingRight(tab);
+
+        updateReaderTabWindowHeight(getSideReadingLeft());
+        updateReaderTabWindowHeight(getSideReadingRight());
     }
 
     private boolean closeReaderIfFileNotExists() {
@@ -1071,7 +1102,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 tabHost.setBackgroundColor(Color.WHITE);
-                if (getCurrentTabInHost() != null) {
+                if (isSideReading) {
+                    bringReaderTabToFront(getSideReadingLeft());
+                    bringReaderTabToFront(getSideReadingRight());
+                } else if (getCurrentTabInHost() != null) {
                     bringReaderTabToFront(getCurrentTabInHost());
                 }
             }
@@ -1081,23 +1115,18 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void showTabHostMenuDialog() {
-        DialogTabHostMenu dlg = new DialogTabHostMenu(ReaderTabHostActivity.this, tabManager,
+        DialogTabHostMenu dlg = new DialogTabHostMenu(ReaderTabHostActivity.this, tabManager, isSideReading,
                 new DialogTabHostMenu.Callback() {
+
                     @Override
-                    public void onDoubleOpen(ReaderTabManager.ReaderTab tab) {
+                    public void onLinkedOpen(ReaderTabManager.ReaderTab tab) {
                         ReaderTabManager.ReaderTab freeTab = getFreeReaderTab();
                         openDocWithTab(freeTab, tabManager.getOpenedTabs().get(tab));
                         startSideReadingMode(tab, freeTab);
 
                         isDoubleOpen = true;
-                        doubleOpenedTab = freeTab;
-                    }
-
-                    @Override
-                    public void onLinkedOpen(ReaderTabManager.ReaderTab tab) {
-                        onDoubleOpen(tab);
-
                         isDoubleLinked = true;
+                        doubleOpenedTab = freeTab;
                     }
 
                     @Override
@@ -1106,19 +1135,30 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     }
 
                     @Override
-                    public void onClosing(List<ReaderTabManager.ReaderTab> list) {
-                        for (ReaderTabManager.ReaderTab tab : list) {
-                            closeReaderTab(tab);
+                    public void onSideNote(ReaderTabManager.ReaderTab tab) {
+                        startSideNote(tab);
+                    }
+
+                    @Override
+                    public void onSideSwitch() {
+                        switchSideReadingTab();
+                    }
+
+                    @Override
+                    public void onClosing() {
+                        if (isSideReading) {
+                            quitSideReadingMode();
+                            return;
                         }
                     }
                 });
 
         int[] location = new int[2];
-        tabWidget.getLocationOnScreen(location);
+        btnMenu.getLocationOnScreen(location);
 
         dlg.getWindow().setGravity(Gravity.LEFT | Gravity.TOP);
         WindowManager.LayoutParams lp = dlg.getWindow().getAttributes();
-        lp.x = 10;
+        lp.x = location[0] + 10;
         lp.y = location[1] + tabWidget.getHeight();
         
         showDialog(dlg);
