@@ -82,23 +82,24 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
     }
 
     private void screenUpdate() {
-        TestUtils.sleep(2000);
+        TestUtils.sleep(1000);
         {
             Rect rect = rectResult.first;
             EpdController.refreshScreenRegion(this, rect.left, rect.top, rect.width(), rect.height(), com.onyx.android.sdk.api.device.epd.UpdateMode.GC);
-            TestUtils.sleep(600);
+            TestUtils.sleep(1000);
         }
 
         for (Rect rect : rectResult.inSecond) {
             EpdController.refreshScreenRegion(this, rect.left, rect.top, rect.width(), rect.height(), com.onyx.android.sdk.api.device.epd.UpdateMode.GC);
-            TestUtils.sleep(1000);
-        }
 
+        }
+        TestUtils.sleep(1000);
 
         for (Rect rect : rectResult.inFirst) {
             EpdController.refreshScreenRegion(this, rect.left, rect.top, rect.width(), rect.height(), com.onyx.android.sdk.api.device.epd.UpdateMode.GC);
-            TestUtils.sleep(1000);
+
         }
+        TestUtils.sleep(1000);
 
 
     }
@@ -200,38 +201,38 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
     }
 
     private void generateRectanglesTypeD() {
-        int div = 4;
-        int left = TestUtils.randInt(0, getWidth() / div);
-        int top = TestUtils.randInt(0, getHeight() / div);
-        int width = TestUtils.randInt(0, getWidth() /  div);
-        int height = TestUtils.randInt(0, getHeight() / div);
-        Rect r1 = new Rect(left, top, left + width, top + height);
+        int div = 3;
+        int left = TestUtils.randInt(getWidth() /  (div * 2), getWidth() / div);
+        int top = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
+        int width = TestUtils.randInt(getWidth() /  (div * 2), getWidth() /  div);
+        int height = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
+        Rect r1 = com.onyx.android.sample.utils.RectUtils.createRect(left, top, left + width, top + height);
 
-        int lowLimit = 20;
-        int upLimit = 30;
+        int lowLimit = width / 3;
+        int upLimit = width / 2;
         int left2 = left + TestUtils.randInt(lowLimit, upLimit);
-        int top2 = top + TestUtils.randInt(lowLimit, upLimit);
-        int width2 = width - TestUtils.randInt(lowLimit, upLimit);
-        int height2 = height - TestUtils.randInt(lowLimit, upLimit);
-        Rect r2 = new Rect(left2, top2, left2 + width2, top2 + height2);
+        int top2 = top - TestUtils.randInt(lowLimit, upLimit);
+        int right2 = r1.right - TestUtils.randInt(lowLimit, upLimit);
+        int bottom2 = r1.bottom - TestUtils.randInt(lowLimit, upLimit);
+        Rect r2 = com.onyx.android.sample.utils.RectUtils.createRect(left2, top2, right2, bottom2);
         postGenerate(r1, r2);
     }
 
     private void generateRectanglesTypeE() {
-        int div = 4;
-        int left = TestUtils.randInt(0, getWidth() / div);
-        int top = TestUtils.randInt(0, getHeight() / div);
-        int width = TestUtils.randInt(0, getWidth() /  div);
-        int height = TestUtils.randInt(0, getHeight() / div);
-        Rect r1 = new Rect(left, top, left + width, top + height);
+        int div = 3;
+        int left = TestUtils.randInt(getWidth() /  (div * 2), getWidth() / div);
+        int top = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
+        int width = TestUtils.randInt(getWidth() /  (div * 2), getWidth() /  div);
+        int height = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
+        Rect r1 = com.onyx.android.sample.utils.RectUtils.createRect(left, top, left + width, top + height);
 
-        int lowLimit = 20;
-        int upLimit = 30;
+        int lowLimit = width / 3;
+        int upLimit = width / 2;
         int left2 = left - TestUtils.randInt(lowLimit, upLimit);
         int top2 = top - TestUtils.randInt(lowLimit, upLimit);
-        int width2 = width + TestUtils.randInt(lowLimit, upLimit);
-        int height2 = height + TestUtils.randInt(lowLimit, upLimit);
-        Rect r2 = new Rect(left2, top2, left2 + width2, top2 + height2);
+        int right2 = r1.right + TestUtils.randInt(lowLimit, upLimit);
+        int bottom2 = r1.bottom - TestUtils.randInt(lowLimit, upLimit);
+        Rect r2 = com.onyx.android.sample.utils.RectUtils.createRect(left2, top2, right2, bottom2);
         postGenerate(r1, r2);
     }
 
