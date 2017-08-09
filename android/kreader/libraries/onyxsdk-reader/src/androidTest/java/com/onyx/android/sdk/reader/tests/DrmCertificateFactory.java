@@ -1,4 +1,4 @@
-package com.onyx.kreader.ui.data;
+package com.onyx.android.sdk.reader.tests;
 
 import android.content.Context;
 

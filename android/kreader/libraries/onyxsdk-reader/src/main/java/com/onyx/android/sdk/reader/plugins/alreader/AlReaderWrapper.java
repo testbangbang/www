@@ -188,7 +188,9 @@ public class AlReaderWrapper {
         engineOptions = new AlEngineOptions();
         engineOptions.appInstance = context;
         engineOptions.runInOneThread = true;
-        engineOptions.font_catalogs_addon = pluginOptions.getFontDirectories().toArray(new String[0]);
+        if (pluginOptions.getFontDirectories() != null) {
+            engineOptions.font_catalogs_addon = pluginOptions.getFontDirectories().toArray(new String[0]);
+        }
         engineOptions.hyph_lang = EngBookMyType.TAL_HYPH_LANG.ENGRUS;
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
         engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
