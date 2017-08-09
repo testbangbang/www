@@ -4,6 +4,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,66 @@ public class RectUtils {
         }
 
         public List<Rect>  generate() {
+            List<Integer> x = new ArrayList<>();
+            List<Integer> y = new ArrayList<>();
+            x.add(parent.left);
+            x.add(parent.right);
+            x.add(child.left);
+            x.add(child.right);
+            Collections.sort(x);
+
+
+            y.add(parent.top);
+            y.add(parent.bottom);
+            y.add(child.top);
+            y.add(child.bottom);
+            Collections.sort(y);
+
+
+            List<Rect> temp = new ArrayList<>();
+            for(int i = 0; i < x.size() - 1; ++i) {
+                for(int j = 0; j < y.size() - 1; ++j) {
+                    add(temp, createRect(x.get(i), y.get(j), x.get(i + 1), y.get(j + 1)));
+                }
+            }
+            temp = cleanup(temp);
+            temp = merge(temp);
+            return temp;
+        }
+
+        public List<Rect> cleanup(final List<Rect> list) {
+            List<Rect> temp = new ArrayList<>();
+            for(Rect rect : list) {
+                if (rect.contains(parent) || rect.contains(child)){
+                    continue;
+                }
+                if (parent.contains(rect) || child.contains(rect)) {
+                    temp.add(rect);
+                }
+            }
+            return temp;
+        }
+
+        public List<Rect> merge(final List<Rect> list) {
+            List<Rect> temp = new ArrayList<>();
+            for(int i = 0; i < list.size(); ++i) {
+                for(int j = 0; j < list.size(); ++j) {
+                    if (canMerge(list.get(j), list.get(i))) {
+                        list.get(i).union(list.get(j));
+                        list.set(j, null);
+                    }
+                }
+            }
+            temp.clear();
+            for(Rect rect : list) {
+                if (rect != null) {
+                    temp.add(rect);
+                }
+            }
+            return temp;
+        }
+
+        public List<Rect> generate2() {
             List<Rect> temp = new ArrayList<>();
             createList(parent, child, temp);
 
@@ -115,6 +176,16 @@ public class RectUtils {
         list.add(rect);
     }
 
+    public static void checkAndAdd(final List<Rect> list, final Rect rect) {
+        for(int i = 0; i < list.size(); ++i) {
+            final Rect r = list.get(i);
+            if (r.contains(rect)) {
+                return;
+            }
+        }
+        list.add(rect);
+    }
+
     public static boolean canMerge(final Rect first, final Rect second)  {
         if (first == null || second == null) {
             return false;
@@ -142,10 +213,10 @@ public class RectUtils {
 
 
     public static void createList(final Rect parent, final int x, final int y, final List<Rect> list) {
-        list.add(createRect(x, y, parent.left, parent.top));
-        list.add(createRect(x, y, parent.right, parent.top));
-        list.add(createRect(x, y, parent.left, parent.bottom));
-        list.add(createRect(x, y, parent.right, parent.bottom));
+        checkAndAdd(list, createRect(x, y, parent.left, parent.top));
+        checkAndAdd(list, createRect(x, y, parent.right, parent.top));
+        checkAndAdd(list, createRect(x, y, parent.left, parent.bottom));
+        checkAndAdd(list, createRect(x, y, parent.right, parent.bottom));
     }
 
     public static void createList(final Rect parent, final Rect child, final List<Rect> list) {
