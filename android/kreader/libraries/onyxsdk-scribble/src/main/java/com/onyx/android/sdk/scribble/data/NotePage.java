@@ -32,6 +32,7 @@ public class NotePage {
     private List<Shape> shapeList = new ArrayList<>();
     private List<Shape> newAddedShapeList = new ArrayList<>();
     private List<Shape> removedShapeList = new ArrayList<>();
+    private List<Shape> selectedShapeList = new ArrayList<>();
 
     private int currentShapeType;
     private Shape currentShape;
@@ -194,7 +195,8 @@ public class NotePage {
             }
         }
         HashSet<Shape> shapeHashSet = new HashSet<>();
-        List<Shape>resultList = new ArrayList<>();
+        List<Shape> resultList = new ArrayList<>();
+        selectedShapeList.clear();
         for (Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
             shapeHashSet.addAll(hitTestAndSelectShape(entry, touchPointList, radius));
         }
@@ -206,7 +208,12 @@ public class NotePage {
                 shape.setSelected(false);
             }
         }
+        selectedShapeList.addAll(resultList);
         return resultList;
+    }
+
+    public List<Shape> getSelectedShapeList(){
+        return selectedShapeList;
     }
 
     private List<Shape> hitTestAndSelectShape(Map.Entry<String, Shape> entry,
@@ -313,7 +320,8 @@ public class NotePage {
      * @param subPageName
      * @return
      */
-    public static final NotePage loadPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
+    public static final NotePage loadPage(final Context context, final String docUniqueId,
+                                          final String pageName, final String subPageName) {
         final List<ShapeModel> list = ShapeDataProvider.loadShapeList(context, docUniqueId, pageName, subPageName);
         final NotePage notePage = createPage(context, docUniqueId, pageName, subPageName);
         for(ShapeModel model : list) {
@@ -397,5 +405,14 @@ public class NotePage {
 
     public void remove() {
 
+    }
+
+    public void setScaleToSelectShapeList(float scale) {
+        if (selectedShapeList.size() <= 0) {
+            return;
+        }
+        for (Shape shape : selectedShapeList) {
+            shape.setScale(scale);
+        }
     }
 }
