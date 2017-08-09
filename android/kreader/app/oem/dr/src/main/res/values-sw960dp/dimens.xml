@@ -112,4 +112,5 @@
     <dimen name="now_reading_book_cover_height">300dp</dimen>
     <dimen name="new_word_activity_buttom_height">120dp</dimen>
     <dimen name="item_sketch_title_checkbox_margin_left">20dp</dimen>
+    <dimen name="item_postil_padding">20dp</dimen>
 </resources>

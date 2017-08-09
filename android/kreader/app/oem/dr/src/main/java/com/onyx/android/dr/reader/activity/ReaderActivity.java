@@ -25,7 +25,9 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.reader.event.PostilManageDialogDismissEvent;
 import com.onyx.android.dr.reader.action.ShowQuickPreviewAction;
+import com.onyx.android.dr.reader.action.ShowReaderBottomMenuDialogAction;
 import com.onyx.android.dr.reader.base.ReaderView;
 import com.onyx.android.dr.reader.common.ReadPageInfo;
 import com.onyx.android.dr.reader.common.ReaderConstants;
@@ -33,10 +35,12 @@ import com.onyx.android.dr.reader.common.ReaderDeviceManager;
 import com.onyx.android.dr.reader.data.BookInfo;
 import com.onyx.android.dr.reader.data.SingletonSharedPreference;
 import com.onyx.android.dr.reader.dialog.DialogSearch;
+import com.onyx.android.dr.reader.dialog.ReaderDialogManage;
 import com.onyx.android.dr.reader.event.BookReadRecordUpdateEvent;
 import com.onyx.android.dr.reader.event.DisplayStatusBarEvent;
 import com.onyx.android.dr.reader.event.DocumentOpenEvent;
 import com.onyx.android.dr.reader.event.FinishReaderEvent;
+import com.onyx.android.dr.reader.event.ManagePostilDialogEvent;
 import com.onyx.android.dr.reader.event.NewFileCreatedEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopBackEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopBookStoreEvent;
@@ -56,8 +60,11 @@ import com.onyx.android.dr.reader.utils.CustomFileObserver;
 import com.onyx.android.dr.reader.utils.ScreenUtil;
 import com.onyx.android.dr.reader.view.BookProgressbar;
 import com.onyx.android.dr.reader.view.CustomDialog;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.android.sdk.reader.host.request.ChangeViewConfigRequest;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 
@@ -359,6 +366,29 @@ public class ReaderActivity extends Activity implements ReaderView {
         readerPresenter.gotoPage(event.getPage());
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onManagePostilDialogEvent(ManagePostilDialogEvent event) {
+        ReaderDialogManage.onShowPostilMangeDialog(readerPresenter);
+        final ChangeViewConfigRequest request = new ChangeViewConfigRequest(readerPresenter.getReaderView().getView().getWidth() / 2, readerPresenter.getReaderView().getView().getHeight() / 2);
+        readerPresenter.getReader().submitRequest(readerPresenter.getReaderView().getViewContext(), request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerPresenter.getBookOperate().redrawPage();
+            }
+        });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPostilManageDialogDismissEvent(PostilManageDialogDismissEvent event) {
+        final ChangeViewConfigRequest request = new ChangeViewConfigRequest(readerPresenter.getReaderView().getView().getWidth(), readerPresenter.getReaderView().getView().getHeight());
+        readerPresenter.getReader().submitRequest(readerPresenter.getReaderView().getViewContext(), request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerPresenter.getBookOperate().redrawPage();
+            }
+        });
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -371,6 +401,7 @@ public class ReaderActivity extends Activity implements ReaderView {
             dialog.dismiss();
         }
         EventBus.getDefault().unregister(this);
+        ShowReaderBottomMenuDialogAction.resetReaderBottomDialog();
     }
 
     @Subscribe

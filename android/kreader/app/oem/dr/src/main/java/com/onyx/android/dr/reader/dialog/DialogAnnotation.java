@@ -30,7 +30,7 @@ public class DialogAnnotation extends Dialog {
     private TextView selectContent;
     private String userSelectContent;
 
-    public DialogAnnotation(Context context, AnnotationAction action, String userSelectContent,Callback callback) {
+    public DialogAnnotation(Context context, AnnotationAction action, String userSelectContent, Callback callback) {
         super(context, R.style.dialog_no_title);
 
         setCanceledOnTouchOutside(true);
@@ -40,7 +40,7 @@ public class DialogAnnotation extends Dialog {
     }
 
     public DialogAnnotation(Context context, AnnotationAction action, String userSelectContent, String note, Callback callback) {
-        super(context);
+        super(context, R.style.dialog_no_title);
 
         this.note = note;
         this.userSelectContent = userSelectContent;
@@ -51,7 +51,7 @@ public class DialogAnnotation extends Dialog {
     private void initView(AnnotationAction action) {
         setContentView(R.layout.dialog_annotation);
         selectContent = (TextView) findViewById(R.id.select_content);
-        if(StringUtils.isNotBlank(userSelectContent)){
+        if (StringUtils.isNotBlank(userSelectContent)) {
             selectContent.setText(userSelectContent);
         }
 

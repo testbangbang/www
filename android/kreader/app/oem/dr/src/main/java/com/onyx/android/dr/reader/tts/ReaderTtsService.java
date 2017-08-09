@@ -50,7 +50,7 @@ public class ReaderTtsService {
     private String text = null;
     private TtsState ttsState = TtsState.Ready;
 
-    Handler handler = new Handler();
+    private static Handler handler = new Handler();
 
     public ReaderTtsService(final Context context, Callback callback) {
         this.context = context;
