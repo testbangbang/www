@@ -31,6 +31,9 @@ public class RectUtils {
             // clean up if not in parent and child
             List<Rect> list = new ArrayList<>();
             for(Rect rect : temp) {
+                if (rect.contains(parent) || rect.contains(child)){
+                    continue;
+                }
                 if (parent.contains(rect) || child.contains(rect)) {
                     list.add(rect);
                 }
@@ -38,7 +41,7 @@ public class RectUtils {
 
             // clean up if item contains the other
             temp.clear();
-            for(int i = 0; i < list.size() - 1; ++i) {
+            for(int i = 0; i < list.size(); ++i) {
                 boolean found = false;
                 for(int j = i + 1; j < list.size(); ++j) {
                     if (list.get(j).contains(list.get(i))) {
