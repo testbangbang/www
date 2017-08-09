@@ -28,7 +28,7 @@ public class RectUtils {
             List<Rect> temp = new ArrayList<>();
             createList(parent, child, temp);
 
-            // clean up if not in parent and child
+            // clean up if not in parent and child, remove invalid rects.
             List<Rect> list = new ArrayList<>();
             for(Rect rect : temp) {
                 if (rect.contains(parent) || rect.contains(child)){
@@ -39,23 +39,107 @@ public class RectUtils {
                 }
             }
 
+            // merge hortionzally
+            for(int i = 0; i < list.size(); ++i) {
+                for(int j = 0; j < list.size(); ++j) {
+                    if (canMerge(list.get(j), list.get(i))) {
+                        list.get(i).union(list.get(j));
+                        list.set(j, null);
+                    }
+                }
+            }
+            temp.clear();
+            for(Rect rect : list) {
+                if (rect != null) {
+                    temp.add(rect);
+                }
+            }
+            list.clear();
+            list.addAll(temp);
+
+
             // clean up if item contains the other
             temp.clear();
             for(int i = 0; i < list.size(); ++i) {
                 boolean found = false;
-                for(int j = i + 1; j < list.size(); ++j) {
-                    if (list.get(j).contains(list.get(i))) {
-                        found = true;
-                        break;
+                for(int j = 0; j < list.size(); ++j) {
+                    final Rect first = list.get(i);
+                    final Rect second = list.get(j);
+                    if (!first.equals(second)) {
+                        if (first.contains(second)) {
+                            found = true;
+                            add(temp, first);
+                        } else if (second.contains(first)) {
+                            found = true;
+                            add(temp, second);
+                        }
                     }
                 }
                 if (!found) {
                     temp.add(list.get(i));
                 }
             }
+
+            // clean up intersets
+            list.clear();
+            list.addAll(temp);
+            temp.clear();
+            for(int i = 0; i < list.size(); ++i) {
+                boolean found = false;
+                for(int j = 0; j < list.size(); ++j) {
+                    final Rect first = list.get(i);
+                    final Rect second = list.get(j);
+                    if (!first.equals(second)) {
+                        if (first.contains(second)) {
+                            found = true;
+                            add(temp, first);
+                        } else if (second.contains(first)) {
+                            found = true;
+                            add(temp, second);
+                        }
+                    }
+                }
+                if (!found) {
+                    temp.add(list.get(i));
+                }
+            }
+
             return temp;
         }
     }
+
+    public static void add(final List<Rect> list, final Rect rect) {
+        if (list.indexOf(rect) >= 0) {
+            return;
+        }
+        list.add(rect);
+    }
+
+    public static boolean canMerge(final Rect first, final Rect second)  {
+        if (first == null || second == null) {
+            return false;
+        }
+        if (first.equals(second)) {
+            return false;
+        }
+        if (first.contains(second) || second.contains(first)) {
+            return true;
+        }
+        if (first.top == second.top && first.height() == second.height()) {
+            if ((second.left >= first.left && second.left <= first.right) ||
+                (first.left >= second.left && first.left <= second.right)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static Rect union(final Rect first, final Rect second) {
+        Rect rect = new Rect(first);
+        rect.union(second);
+        return rect;
+    }
+
 
     public static void createList(final Rect parent, final int x, final int y, final List<Rect> list) {
         list.add(createRect(x, y, parent.left, parent.top));
