@@ -208,7 +208,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         for (PageInfo page : getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
             notePage.render(renderContext, null);
-            //parent.renderSelectedRect(notePage.getSelectedRect(), renderContext);
+            parent.renderSelectedRect(notePage.getSelectedRect(), renderContext);
         }
         parent.renderCursorShape(renderContext);
         parent.drawLineLayoutBackground(renderContext);
@@ -221,6 +221,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
+        paint.setPathEffect(parent.selectedDashPathEffect);
         RectF rect = new RectF(start.getX(), start.getY(), end.getX(), end.getY());
         canvas.drawRect(rect, paint);
     }
@@ -365,8 +366,8 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         renderVisiblePagesInBitmap(helper);
     }
 
-    public void renderSelectionRect(final AsyncNoteViewHelper hepler, final TouchPoint start, final TouchPoint end) {
-        renderSelectionRectangle(hepler, start, end);
+    public void renderSelectionRect(final AsyncNoteViewHelper helper, final TouchPoint start, final TouchPoint end) {
+        renderSelectionRectangle(helper, start, end);
     }
 
     public void updateShapeDataInfo(final AsyncNoteViewHelper parent) {

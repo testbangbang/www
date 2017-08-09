@@ -1,4 +1,4 @@
-package com.onyx.edu.note.ui.view;
+package com.onyx.android.sdk.scribble.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,8 +11,6 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
-
-import com.onyx.edu.note.ui.SpanInputConnection;
 
 /**
  * Created by zhuzeng on 8/18/16.

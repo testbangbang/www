@@ -1,4 +1,4 @@
-package com.onyx.edu.note.scribble.event;
+package com.onyx.android.sdk.scribble.asyncrequest.event;
 
 import android.text.SpannableStringBuilder;
 

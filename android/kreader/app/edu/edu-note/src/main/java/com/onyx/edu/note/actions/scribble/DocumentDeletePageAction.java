@@ -2,7 +2,7 @@ package com.onyx.edu.note.actions.scribble;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageRemoveRequest;
-import com.onyx.edu.note.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.edu.note.actions.BaseNoteAction;
 
 /**
