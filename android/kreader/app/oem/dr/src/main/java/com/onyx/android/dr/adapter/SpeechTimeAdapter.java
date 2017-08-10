@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 public class SpeechTimeAdapter extends PageRecyclerView.PageAdapter<SpeechTimeAdapter.ViewHolder> implements View.OnClickListener {
     private List<SpeechTimeBean> dataList = new ArrayList<>();
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
-    private int selectedPosition = 0;
+    public int selectedPosition = -1;
 
     public void setMenuDataList(List<SpeechTimeBean> dataList) {
         this.dataList.addAll(dataList);

@@ -1,5 +1,7 @@
 package com.onyx.android.dr.activity;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -49,7 +51,10 @@ public class RecordTimeSettingActivity extends BaseActivity implements RecordTim
     private SpeechTimeAdapter speechTimeAdapter;
     private RecordTimeSettingPresenter recordTimeSettingPresenter;
     private List<SpeechTimeBean> speechTimeData;
-    private int speechTime = 1;
+    private String speechTime = "";
+    private int MIN_NUMBER = 0;
+    private int DEFAULT_NUMBER = -1;
+    private int MAX_NUMBER = 15;
 
     @Override
     protected Integer getLayoutId() {
@@ -100,15 +105,35 @@ public class RecordTimeSettingActivity extends BaseActivity implements RecordTim
         speechTimeAdapter.setOnItemClick(new SpeechTimeAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                speechTime = speechTimeData.get(position).getNumber();
-                DictPreference.setIntValue(RecordTimeSettingActivity.this, Constants.SPEECH_TIME, speechTime);
+                int minute = speechTimeData.get(position).getNumber();
+                speechTime = String.valueOf(minute);
+                DictPreference.setIntValue(RecordTimeSettingActivity.this, Constants.SPEECH_TIME, minute);
                 EventBus.getDefault().post(new SelfDefinedTimeEvent());
+            }
+        });
+
+        selfDefinedTime.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!StringUtils.isNullOrEmpty(s.toString())) {
+                    speechTimeAdapter.selectedPosition = DEFAULT_NUMBER;
+                    speechTime = "";
+                    speechTimeAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
     }
 
     @OnClick({R.id.image_view_back,
-              R.id.record_time_activity_next_step})
+            R.id.record_time_activity_next_step})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.image_view_back:
@@ -122,9 +147,13 @@ public class RecordTimeSettingActivity extends BaseActivity implements RecordTim
 
     private void saveSpeechTime() {
         String time = selfDefinedTime.getText().toString();
+        if (StringUtils.isNullOrEmpty(speechTime) && StringUtils.isNullOrEmpty(time)) {
+            CommonNotices.showMessage(RecordTimeSettingActivity.this, getString(R.string.set_speech_time));
+            return;
+        }
         if (!StringUtils.isNullOrEmpty(time)) {
             int minute = Integer.valueOf(time);
-            if (minute <= 0 || minute > 15) {
+            if (minute <= MIN_NUMBER || minute > MAX_NUMBER) {
                 CommonNotices.showMessage(RecordTimeSettingActivity.this, getString(R.string.record_time_activity_edit_text_hint));
                 return;
             }

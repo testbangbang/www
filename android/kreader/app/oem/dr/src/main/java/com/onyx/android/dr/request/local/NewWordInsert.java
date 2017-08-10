@@ -30,8 +30,6 @@ public class NewWordInsert extends BaseDataRequest {
             newWordsInfo.insert();
         } else {
             newWordEntity.currentTime = newWordsInfo.currentTime;
-            newWordEntity.dictionaryLookup = newWordsInfo.dictionaryLookup;
-            newWordEntity.readingMatter = newWordsInfo.readingMatter;
             newWordEntity.newWordType = newWordsInfo.newWordType;
             newWordEntity.update();
         }
@@ -42,7 +40,9 @@ public class NewWordInsert extends BaseDataRequest {
         if (dataList != null && dataList.size() > 0) {
             for (int i = 0; i < dataList.size(); i++) {
                 newWordEntity = dataList.get(i);
-                if (newWordsInfo.newWord.equals(newWordEntity.newWord)) {
+                if (newWordsInfo.newWord.equals(newWordEntity.newWord)
+                        && newWordsInfo.dictionaryLookup.equals(newWordEntity.dictionaryLookup)
+                        && newWordsInfo.readingMatter.equals(newWordEntity.readingMatter)) {
                     weatherInsert = false;
                     return true;
                 }
