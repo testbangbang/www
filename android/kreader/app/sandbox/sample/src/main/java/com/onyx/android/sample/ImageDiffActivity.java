@@ -24,10 +24,9 @@ public class ImageDiffActivity extends AppCompatActivity {
         super.onResume();
         ImageUtils imageUtils = new ImageUtils();
         List<String> list = new ArrayList<>();
-        list.add("/mnt/sdcard/1.png");
-        list.add("/mnt/sdcard/2.png");
-        list.add("/mnt/sdcard/3.png");
-        list.add("/mnt/sdcard/4.png");
+        for(int i = 0; i < 50; ++i) {
+            list.add("/mnt/sdcard/scp-" + i + ".png");
+        }
         for(int i = 0; i < list.size() - 1; ++i) {
             imageUtils.diff(list.get(i), list.get(i + 1));
             Log.e(TAG, "diff finished: " + list.get(i + 1));

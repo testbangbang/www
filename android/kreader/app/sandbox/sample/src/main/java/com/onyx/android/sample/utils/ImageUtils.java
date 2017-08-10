@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ImageUtils {
     private List<Rect> list = new ArrayList<>();
-    public static int threshold = 10;
+    public static int threshold = 3;
 
     public void diff(final String first, final String second) {
         list.clear();
@@ -35,18 +35,21 @@ public class ImageUtils {
                 if (v1 == v2) {
                     continue;
                 }
-                tryToMerge(x, y, threshold);
+                tryToMerge(x, y, threshold, threshold);
             }
         }
 
         drawRectanglesOnBitmap(secondBitmap, list);
-        BitmapUtils.saveBitmap(secondBitmap, second + ".diff.png");
+
+        final String path = second + ".diff-" + list.size() + ".png";
+        FileUtils.deleteFile(path);
+        BitmapUtils.saveBitmap(secondBitmap, path);
     }
 
-    private boolean tryToMerge(int x, int y, int threshold) {
+    private boolean tryToMerge(int x, int y, int xthreshold, int ythreshold) {
         for(int i = list.size() - 1; i >= 0; --i) {
             Rect rect = list.get(i);
-            if (contains(rect, x, y, threshold)) {
+            if (contains(rect, x, y, xthreshold, ythreshold)) {
                 rect.union(x, y);
                 return true;
             }
@@ -56,11 +59,11 @@ public class ImageUtils {
         return false;
     }
 
-    public static boolean contains(final Rect rect, int x, int y, int threshold) {
-        return x >= rect.left - threshold &&
-                x < rect.right + threshold &&
-                y >= rect.top - threshold &&
-                y < rect.bottom + threshold;
+    public static boolean contains(final Rect rect, int x, int y, int xthreshold, int ythreshold) {
+        return x >= rect.left &&
+                x < rect.right + xthreshold &&
+                y >= rect.top &&
+                y < rect.bottom + ythreshold;
     }
 
     public static void union(final Rect rect, int x, int y) {
@@ -70,11 +73,15 @@ public class ImageUtils {
     public static void drawRectanglesOnBitmap(final Bitmap bitmap, final List<Rect> list) {
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
-        paint.setColor(Color.RED);
+
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(3.0F);
+        int value = 1;
         for(Rect rect : list) {
+            paint.setColor(Color.rgb(value, value, value));
             canvas.drawRect(rect, paint);
+            value += 10;
+            value %= 255;
         }
     }
 
