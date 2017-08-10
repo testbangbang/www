@@ -89,7 +89,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     private List<DictTypeBean> englishDictName;
     private List<DictTypeBean> chineseDictName;
     private List<DictTypeBean> japaneseDictName;
-    private int dictType = Constants.ENGLISH_NEW_WORD_NOTEBOOK;
+    private int dictType = Constants.ENGLISH_TYPE;
 
     @Override
     protected Integer getLayoutId() {
@@ -117,7 +117,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
 
     @Override
     protected void initData() {
-        dictPresenter = new DictFunctionPresenter(getApplicationContext(), this);
+        dictPresenter = new DictFunctionPresenter(this);
         dictPresenter.loadData(this);
         dictPresenter.loadDictType(Constants.ACCOUNT_TYPE_DICT_LANGUAGE);
         loadDictData();
@@ -129,7 +129,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         dictTypeAdapter = new DictTypeAdapter();
         englishDictName = Utils.getDictName(Constants.ENGLISH_DICTIONARY);
         chineseDictName = Utils.getDictName(Constants.CHINESE_DICTIONARY);
-        japaneseDictName = Utils.getDictName(Constants.JAPANESE_DICTIONARY);
+        japaneseDictName = Utils.getDictName(Constants.OTHER_DICTIONARY);
         dictTypeAdapter.setMenuDatas(englishDictName);
         dictTypeRecyclerView.setAdapter(dictTypeAdapter);
     }
@@ -177,7 +177,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         japaneseLinearLayout.setVisibility(View.GONE);
         dictTypeAdapter.setMenuDatas(englishDictName);
         dictTypeAdapter.notifyDataSetChanged();
-        dictType = Constants.ENGLISH_NEW_WORD_NOTEBOOK;
+        dictType = Constants.ENGLISH_TYPE;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -187,7 +187,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         japaneseLinearLayout.setVisibility(View.GONE);
         dictTypeAdapter.setMenuDatas(chineseDictName);
         dictTypeAdapter.notifyDataSetChanged();
-        dictType = Constants.CHINESE_NEW_WORD_NOTEBOOK;
+        dictType = Constants.CHINESE_TYPE;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -197,7 +197,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         chineseLinearLayout.setVisibility(View.GONE);
         dictTypeAdapter.setMenuDatas(japaneseDictName);
         dictTypeAdapter.notifyDataSetChanged();
-        dictType = Constants.JAPANESE_NEW_WORD_NOTEBOOK;
+        dictType = Constants.OTHER_TYPE;
     }
 
     @OnClick({R.id.activity_word_query_search,

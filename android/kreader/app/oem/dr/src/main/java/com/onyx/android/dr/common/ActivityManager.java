@@ -23,6 +23,7 @@ import com.onyx.android.dr.activity.NewWordQueryActivity;
 import com.onyx.android.dr.activity.NewWordTypeActivity;
 import com.onyx.android.dr.activity.PencilSketchActivity;
 import com.onyx.android.dr.activity.QueryRecordActivity;
+import com.onyx.android.dr.activity.RecordTimeSettingActivity;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -111,14 +112,15 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startInfromalEssayActivity(Context context) {
+    public static void startInformalEssayActivity(Context context, int jumpSource) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.JUMP_SOURCE, jumpSource);
         intent.setClass(context, InformalEssayActivity.class);
         context.startActivity(intent);
     }
 
-    public static void startAddInfromalEssayActivity(Context context) {
+    public static void startAddInformalEssayActivity(Context context) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, AddInformalEssayActivity.class);
@@ -150,6 +152,13 @@ public class ActivityManager {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, PencilSketchActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startRecordTimeSettingActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, RecordTimeSettingActivity.class);
         context.startActivity(intent);
     }
 

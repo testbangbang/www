@@ -315,4 +315,13 @@
     <string name="good_sentence_notebook_html">good sentence notebook html</string>
     <string name="Good_sentences_have_been_included_in_the_good_sentence_notebook">Good sentences have been included in %s</string>
     <string name="Please_press_to_select_the_sentence_you_want_to_include">Please press to select the sentence you want to include.</string>
+    <string name="one_minute">one minute</string>
+    <string name="two_minute">two minute</string>
+    <string name="three_minute">three minute</string>
+    <string name="four_minute">four minute</string>
+    <string name="five_minute">five minute</string>
+    <string name="set_speech_time">set speech time</string>
+    <string name="self_defined_time">self defined time: </string>
+    <string name="record_time_data_minute">minute</string>
+    <string name="record_time_activity_edit_text_hint">time horizon: 0-15 minute</string>
 </resources>

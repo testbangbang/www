@@ -60,4 +60,5 @@
     <integer name="pencil_sketch_tab_row">3</integer>
     <integer name="postil_list_row">5</integer>
     <integer name="postil_list_col">1</integer>
+    <integer name="speech_time_tab_row">5</integer>
 </resources>

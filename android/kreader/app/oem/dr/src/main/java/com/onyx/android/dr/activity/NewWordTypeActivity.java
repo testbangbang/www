@@ -81,17 +81,17 @@ public class NewWordTypeActivity extends BaseActivity implements GoodSentenceTpy
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEnglishNewWordEvent(EnglishNewWordEvent event) {
-        ActivityManager.startNewWordNotebookActivity(this, Constants.ENGLISH_NEW_WORD_NOTEBOOK);
+        ActivityManager.startNewWordNotebookActivity(this, Constants.ENGLISH_TYPE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChineseNewWordEvent(ChineseNewWordEvent event) {
-        ActivityManager.startNewWordNotebookActivity(this, Constants.CHINESE_NEW_WORD_NOTEBOOK);
+        ActivityManager.startNewWordNotebookActivity(this, Constants.CHINESE_TYPE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMinorityLanguageNewWordEvent(MinorityLanguageNewWordEvent event) {
-        ActivityManager.startNewWordNotebookActivity(this, Constants.JAPANESE_NEW_WORD_NOTEBOOK);
+        ActivityManager.startNewWordNotebookActivity(this, Constants.OTHER_TYPE);
     }
 
     @Override

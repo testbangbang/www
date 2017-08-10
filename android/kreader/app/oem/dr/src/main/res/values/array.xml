@@ -66,4 +66,18 @@
         <item>@string/novels</item>
     </string-array>
     
+    <integer-array name="speech_time_number">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </integer-array>
+    <string-array name="speech_time_name">
+        <item>@string/one_minute</item>
+        <item>@string/two_minute</item>
+        <item>@string/three_minute</item>
+        <item>@string/four_minute</item>
+        <item>@string/five_minute</item>
+    </string-array>
 </resources>

@@ -41,7 +41,7 @@ public class DictQueryTest extends ApplicationTestCase<DRApplication> {
             File path = Environment.getExternalStorageDirectory();
             dictPaths.add(path + Constants.ENGLISH_DICTIONARY);
             dictPaths.add(path + Constants.CHINESE_DICTIONARY);
-            dictPaths.add(path + Constants.JAPANESE_DICTIONARY);
+            dictPaths.add(path + Constants.OTHER_DICTIONARY);
         }
         DictDatasInit dictDatasInit = new DictDatasInit(DRApplication.getInstance().getApplicationContext(), dictPaths);
         DictionaryManager dictionaryManager = dictDatasInit.getDictionaryManager();

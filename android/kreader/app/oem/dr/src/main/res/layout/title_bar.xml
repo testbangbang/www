@@ -39,6 +39,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/menu_back"
                 android:background="@android:color/white"
+                android:textSize="@dimen/level_one_font_size"
                 android:padding="@dimen/title_bar_title_padding" />
         </LinearLayout>
 

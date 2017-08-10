@@ -126,6 +126,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".activity.RecordTimeSettingActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"
             android:authorities="com.onyx.content.database.ContentProvider"

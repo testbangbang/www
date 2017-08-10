@@ -30,8 +30,6 @@ public class GoodSentenceInsert extends BaseDataRequest {
             goodSentencesInfo.insert();
         } else {
             goodSentenceEntity.currentTime = goodSentencesInfo.currentTime;
-            goodSentenceEntity.details = goodSentencesInfo.details;
-            goodSentenceEntity.readingMatter = goodSentencesInfo.readingMatter;
             goodSentenceEntity.pageNumber = goodSentencesInfo.pageNumber;
             goodSentenceEntity.goodSentenceType = goodSentencesInfo.goodSentenceType;
             goodSentenceEntity.update();
@@ -43,7 +41,8 @@ public class GoodSentenceInsert extends BaseDataRequest {
         if (dataList != null && dataList.size() > 0) {
             for (int i = 0; i < dataList.size(); i++) {
                 goodSentenceEntity = dataList.get(i);
-                if (goodSentencesInfo.details.equals(goodSentenceEntity.details)) {
+                if (goodSentencesInfo.details.equals(goodSentenceEntity.details)
+                        && goodSentencesInfo.readingMatter.equals(goodSentenceEntity.readingMatter)) {
                     weatherInsert = false;
                     return true;
                 }

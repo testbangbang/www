@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.bean.GoodSentenceBean;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.ReaderMenuBean;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
@@ -40,6 +41,7 @@ import com.onyx.android.dr.reader.event.TtsStopStateEvent;
 import com.onyx.android.dr.reader.handler.HandlerManger;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
 import com.onyx.android.dr.request.local.GoodSentenceInsert;
+import com.onyx.android.dr.util.OperatingDataManager;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -332,22 +334,12 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     private void addGoodSentence() {
         String selectionText = readerPresenter.getBookOperate().getSelectionText();
         if (StringUtils.isNotBlank(selectionText)) {
-            GoodSentenceNoteEntity bean = new GoodSentenceNoteEntity();
-            bean.currentTime = TimeUtils.getCurrentTimeMillis();
-            bean.details = selectionText;
-            bean.readingMatter = readerPresenter.getBookInfo().getBookName();
-            bean.pageNumber = String.valueOf(readerPresenter.getPageInformation().getCurrentPage());
-            bean.goodSentenceType = getGoodSentenceType(readerPresenter.getBookInfo().getLanguage());
-            GoodSentenceInsert req = new GoodSentenceInsert(bean);
-            DRApplication.getDataManager().submit(readerPresenter.getReaderView().getViewContext(), req, new BaseCallback() {
-                @Override
-                public void done(BaseRequest request, Throwable e) {
-                    if (e == null) {
-                        ToastManage.showMessage(getContext(), String.format(getContext().getResources().getString(R.string.Good_sentences_have_been_included_in_the_good_sentence_notebook),
-                                readerPresenter.getBookInfo().getLanguage()));
-                    }
-                }
-            });
+            GoodSentenceBean bean = new GoodSentenceBean();
+            bean.setDetails(selectionText);
+            bean.setReadingMatter(readerPresenter.getBookInfo().getBookName());
+            bean.setPageNumber(String.valueOf(readerPresenter.getPageInformation().getCurrentPage()));
+            bean.setGoodSentenceType(getGoodSentenceType(readerPresenter.getBookInfo().getLanguage()));
+            OperatingDataManager.getInstance().insertGoodSentence(bean);
         } else {
             ToastManage.showMessage(getContext(), getContext().getString(R.string.Please_press_to_select_the_sentence_you_want_to_include));
         }
@@ -362,16 +354,16 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
         if (StringUtils.isNotBlank(language)) {
             switch (language) {
                 case Constants.CHINESE:
-                    type = Constants.CHINESE_NEW_WORD_NOTEBOOK;
+                    type = Constants.CHINESE_TYPE;
                     break;
                 case Constants.ENGLISH:
-                    type = Constants.ENGLISH_NEW_WORD_NOTEBOOK;
+                    type = Constants.ENGLISH_TYPE;
                     break;
                 default:
-                    type = Constants.JAPANESE_NEW_WORD_NOTEBOOK;
+                    type = Constants.OTHER_TYPE;
             }
         } else {
-            type = Constants.JAPANESE_NEW_WORD_NOTEBOOK;
+            type = Constants.OTHER_TYPE;
         }
         return type;
     }
