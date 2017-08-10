@@ -357,4 +357,5 @@
     <string name="fetch">获取</string>
     <string name="timer">计时</string>
     <string name="touch">触摸</string>
+    <string name="submit_vote_tips">投票后不能再修改，确定提交你的选择吗？</string>
 </resources>

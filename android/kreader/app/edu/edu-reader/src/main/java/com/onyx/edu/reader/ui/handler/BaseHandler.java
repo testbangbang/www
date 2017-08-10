@@ -13,8 +13,10 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.ui.actions.GotoPositionAction;
 import com.onyx.edu.reader.ui.actions.NextScreenAction;
@@ -404,6 +406,10 @@ public abstract class BaseHandler {
         readerDataHolder.getEventBus().post(new QuitEvent());
     }
 
+    public void closeImpl(final ReaderDataHolder readerDataHolder) {
+
+    }
+
     public boolean isEnableNoteDrawing() {
         return enableNoteDrawing;
     }
@@ -411,4 +417,18 @@ public abstract class BaseHandler {
     public void setEnableNoteDrawing(boolean enableNoteDrawing) {
         this.enableNoteDrawing = enableNoteDrawing;
     }
+
+    public void onShapeAdded(Shape shape) {
+
+    }
+
+    public void onShapesRemoved(List<String> shapeIds) {
+
+    }
+
+    public boolean onMenuClicked(ReaderMenuAction action) {
+        return false;
+    }
+
+    public void activeIMService(){}
 }

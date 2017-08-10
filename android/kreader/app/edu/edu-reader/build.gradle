@@ -74,13 +74,17 @@ apt {
 
 dependencies {
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
-    compile project(':libraries:onyxsdk-reader')
-    compile project(':libraries:onyxsdk-base')
     compile project(':libraries:onyxsdk-statistics')
     compile project(':libraries:onyxsdk-ui')
+    compile project(':libraries:onyxsdk-reader')
     compile project(':libraries:cropimage')
     compile (project(':libraries:onyxsdk-scribble')) {
         ['com.github.Raizlabs.DBFlow', 'com.alibaba'].each {
+            exclude group: it
+        }
+    }
+    compile(project(':libraries:onyxsdk-im')) {
+        ['cn.leancloud.android', 'com.alibaba'].each {
             exclude group: it
         }
     }
@@ -89,7 +93,6 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:design:$rootProject.supportLibraryVersion"
     compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
-    compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
     compile "net.lingala.zip4j:zip4j:$rootProject.zip4jVersion"
     compile "com.android.support:multidex:$multidexVersion"
 

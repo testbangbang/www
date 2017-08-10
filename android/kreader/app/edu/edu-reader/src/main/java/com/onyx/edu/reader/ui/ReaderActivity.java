@@ -666,6 +666,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (getReaderDataHolder() == null) {
             return;
         }
+        getReaderDataHolder().activeIMService();
         if (!getReaderDataHolder().isDocumentOpened() ||
                 getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
             return;
@@ -1144,9 +1145,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!getReaderDataHolder().useFormMode()) {
             return;
         }
-        boolean startNoteDrawing = getReaderDataHolder().hasScribbleFormField();
         getHandlerManager().setActiveProvider(getReaderDataHolder().getDefaultProvider(), FormBaseHandler.createInitialState(formFieldControls));
-        ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
+        ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this);
     }
 
     private boolean isFormScribble(View view) {

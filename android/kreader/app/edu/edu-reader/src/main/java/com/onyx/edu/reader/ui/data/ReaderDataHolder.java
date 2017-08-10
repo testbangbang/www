@@ -716,7 +716,6 @@ public class ReaderDataHolder {
     }
 
     public void onActivityResume() {
-        accountLoadFromLocal();
         getEventBus().post(new ActivityResumeEvent(getContext()));
     }
 
@@ -724,6 +723,15 @@ public class ReaderDataHolder {
         documentInitRendered = true;
         getEventBus().post(new DocumentInitRenderedEvent());
         cloudConfInit();
+    }
+
+    public void activeIMService() {
+        AccountLoadFromLocalAction.create().execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                getHandlerManager().getActiveProvider().activeIMService();
+            }
+        });
     }
 
     private void cloudConfInit() {

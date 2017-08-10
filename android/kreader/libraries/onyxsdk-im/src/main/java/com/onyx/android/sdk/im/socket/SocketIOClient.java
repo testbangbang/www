@@ -1,6 +1,9 @@
 package com.onyx.android.sdk.im.socket;
 
+import com.onyx.android.sdk.im.Constant;
 import com.onyx.android.sdk.im.IMConfig;
+import com.onyx.android.sdk.im.IMManager;
+import com.onyx.android.sdk.im.data.Message;
 import com.onyx.android.sdk.utils.Debug;
 
 import java.net.URISyntaxException;
@@ -22,9 +25,12 @@ public class SocketIOClient {
     private boolean isConnected = false;
     private boolean closed = false;
     private IMConfig config;
+    private boolean isConnecting = false;
+    private IMManager manager;
 
-    public SocketIOClient(IMConfig c) {
+    public SocketIOClient(IMManager manager, IMConfig c) {
         config = c;
+        this.manager = manager;
         initSocketIOClient();
     }
 
@@ -34,10 +40,16 @@ public class SocketIOClient {
             options.reconnection = true;
             options.reconnectionAttempts = config.getReconnectLimit();
             options.reconnectionDelayMax = config.getReconnectInterval();
+            options.path = config.getSocketIoPath();
             socket = IO.socket(config.getServerUri(), options);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setConfig(IMConfig config) {
+        this.config = config;
+        initSocketIOClient();
     }
 
     public SocketIOClient on(String event, Emitter.Listener fn) {
@@ -53,12 +65,17 @@ public class SocketIOClient {
     }
 
     public SocketIOClient connect() {
+        if (isConnecting) {
+            return this;
+        }
         Debug.d(getClass(), "start connect");
+        isConnecting = true;
         closed = false;
         on(Socket.EVENT_CONNECT,onConnect);
         on(Socket.EVENT_DISCONNECT,onDisconnect);
         on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        on(Constant.EVENT_NEW_USER, newUser);
         getSocket().connect();
         return this;
     }
@@ -68,11 +85,21 @@ public class SocketIOClient {
         return this;
     }
 
+    private Emitter.Listener newUser = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Debug.d(getClass(), "newUser");
+            String data = (String) args[0];
+            manager.onReceivedSocketMessage(Message.create(Constant.EVENT_NEW_USER, data));
+        }
+    };
+
     private Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             Debug.d(getClass(), "onConnected");
             isConnected = true;
+            manager.onReceivedSocketMessage(Message.create(Socket.EVENT_CONNECT));
         }
     };
 
@@ -81,6 +108,7 @@ public class SocketIOClient {
         public void call(Object... args) {
             Debug.d(getClass(), "onDisconnect");
             isConnected = false;
+            manager.onReceivedSocketMessage(Message.create(Socket.EVENT_DISCONNECT));
         }
     };
 
@@ -88,14 +116,17 @@ public class SocketIOClient {
         @Override
         public void call(Object... args) {
             Debug.d(getClass(), "onConnectError");
+            isConnecting = false;
             isConnected = false;
+            manager.onReceivedSocketMessage(Message.create(Socket.EVENT_CONNECT_ERROR));
         }
     };
 
     public void close() {
+        Debug.d(getClass(), "message: socket io close");
         closed = true;
-        removeListeners();
         getSocket().close();
+        removeListeners();
         isConnected = false;
     }
 

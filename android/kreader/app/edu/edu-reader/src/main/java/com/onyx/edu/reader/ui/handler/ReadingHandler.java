@@ -40,7 +40,7 @@ public class ReadingHandler extends BaseHandler {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            postQuitEvent(readerDataHolder);
+                            closeImpl(readerDataHolder);
                         }
                     },
                     new DialogInterface.OnClickListener() {
@@ -61,6 +61,11 @@ public class ReadingHandler extends BaseHandler {
         } else {
             postQuitEvent(readerDataHolder);
         }
+    }
+
+    @Override
+    public void closeImpl(ReaderDataHolder readerDataHolder) {
+        postQuitEvent(readerDataHolder);
     }
 
     protected void postQuitEvent(final ReaderDataHolder readerDataHolder) {

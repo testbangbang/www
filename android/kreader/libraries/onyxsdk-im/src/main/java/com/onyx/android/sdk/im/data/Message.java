@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.im;
+package com.onyx.android.sdk.im.data;
 
 /**
  * Created by ming on 2017/7/14.
@@ -10,6 +10,7 @@ public class Message {
     private String type;
     private String id;
     private String content;
+    private String event;
 
     public Message() {
     }
@@ -54,6 +55,14 @@ public class Message {
         this.type = type;
     }
 
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
+    }
+
     public Message(String channel, String action, String type, String id, String content) {
         this.type = type;
         this.channel = channel;
@@ -62,7 +71,24 @@ public class Message {
         this.content = content;
     }
 
+    public Message(String action, String content) {
+        this.action = action;
+        this.content = content;
+    }
+
+    public Message(String action) {
+        this.action = action;
+    }
+
     public static Message create(String channel, String action, String type, String id, String content) {
         return new Message(channel, action, type, id, content);
+    }
+
+    public static Message create(String action, String content) {
+        return new Message(action, content);
+    }
+
+    public static Message create(String action) {
+        return new Message(action);
     }
 }

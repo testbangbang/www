@@ -518,4 +518,5 @@
     <string name="fetch">Fetch</string>
     <string name="timer">Timer</string>
     <string name="touch">Touch</string>
+    <string name="submit_vote_tips">Cannot change after the vote, decide to submit your choice?</string>
 </resources>
