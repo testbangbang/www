@@ -204,7 +204,6 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         prepareRenderingBuffer(bitmap);
 
         final Matrix renderMatrix = new Matrix();
-//        renderMatrix.postScale(1.5f, 1.5f);
         final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
         for (PageInfo page : getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
