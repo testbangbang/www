@@ -12,6 +12,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.WindowParameters;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -83,6 +84,8 @@ public class ReaderDataHolder {
     private boolean sideNoting = false;
     private int sideNotePage = 0;
     private int sideNotePageCount = 1;
+
+    private WindowParameters windowParameters = new WindowParameters();
 
     /**
      * can be either Dialog or DialogFragment, so we store it as basic Object
@@ -514,6 +517,10 @@ public class ReaderDataHolder {
 
     public void showReaderSettings() {
         getEventBus().post(new ShowReaderSettingsEvent());
+    }
+
+    public WindowParameters getWindowParameters() {
+        return windowParameters;
     }
 
     private void addActiveDialog(Dialog dialog) {

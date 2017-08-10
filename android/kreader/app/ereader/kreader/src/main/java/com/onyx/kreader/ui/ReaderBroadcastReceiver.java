@@ -38,6 +38,7 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String TAG_TAB_WIDGET_VISIBLE = "com.onyx.kreader.TAB_WIDGET_VISIBLE";
     public static final String TAG_PAGE_LINK = "com.onyx.kreader.PAGE_LINK";
     public static final String TAG_ENABLE_DEBUG = "com.onyx.kreader.ENABLE_DEBUG";
+    public static final String TAG_SIDE_NOTE_MODE = "com.onyx.kreader.SIDE_NOTE_MODE";
 
     private static EventBus eventBus;
 

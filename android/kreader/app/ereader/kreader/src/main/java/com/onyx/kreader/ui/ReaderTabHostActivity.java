@@ -317,7 +317,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
 
         ReaderTabManager.ReaderTab freeTab = getFreeReaderTab();
-        openDocWithTab(freeTab, noteFile.getAbsolutePath());
+        openDocWithTab(freeTab, noteFile.getAbsolutePath(), true);
         startSideReadingMode(tab, freeTab);
     }
 
@@ -831,6 +831,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void openDocWithTab(ReaderTabManager.ReaderTab tab, String path) {
+        openDocWithTab(tab, path, false);
+    }
+
+    private void openDocWithTab(ReaderTabManager.ReaderTab tab, String path, boolean sideNoteMode) {
         Debug.d(TAG, "openDocWithTab: " + tab + ", " + path);
         addReaderTab(tab, path);
 
@@ -854,6 +858,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
         if (tabManager.getOpenedTabs().size() > 1) {
             intent.putExtra(ReaderBroadcastReceiver.TAG_TAB_WIDGET_VISIBLE, tabWidgetVisible.get());
+        }
+        if (sideNoteMode) {
+            intent.putExtra(ReaderBroadcastReceiver.TAG_SIDE_NOTE_MODE, true);
         }
 
         startActivity(intent);

@@ -145,8 +145,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         super.onCreate(savedInstanceState);
         acquireStartupWakeLock();
         setContentView(R.layout.activity_reader);
-        initWindow();
         initComponents();
+        initWindow();
     }
 
     @Override
@@ -177,11 +177,20 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     protected void onPause() {
-        if (DeviceUtils.isDeviceInteractive(this)) {
-            onDocumentDeactivated();
+        if (getReaderDataHolder().isDocumentInitRendered()) {
+            final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
+            FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, true, false);
+            flushNoteAction.execute(getReaderDataHolder(), null);
         }
+
         getReaderDataHolder().onActivityPause();
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        onDocumentDeactivated();
+        super.onStop();
     }
 
     @Override
@@ -265,6 +274,9 @@ public class ReaderActivity extends OnyxBaseActivity {
         layoutParams.height = getIntent().getIntExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, WindowManager.LayoutParams.MATCH_PARENT);
         layoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         getWindow().setAttributes(layoutParams);
+
+        getReaderDataHolder().getWindowParameters().update(layoutParams.windowAnimations,
+                layoutParams.height, layoutParams.gravity);
 
         Debug.d(getClass(), "target window height:" + layoutParams.height);
     }
@@ -637,6 +649,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void onDocumentDeactivated() {
+        Debug.e(getClass(), "onDocumentDeactivated");
         enablePost(true);
         if (!verifyReader()) {
             return;
@@ -855,6 +868,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!tabWidgetVisible) {
             buttonShowTabWidget.setVisibility(View.VISIBLE);
         }
+
+        boolean sideNoteMode = getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_SIDE_NOTE_MODE, false);
+        if (sideNoteMode) {
+            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), this, true);
+        }
+
         releaseStartupWakeLock();
     }
 
@@ -911,6 +930,9 @@ public class ReaderActivity extends OnyxBaseActivity {
         Debug.d(getClass(), "onResizeReaderWindow: " + event.width + ", " + event.height);
         getWindow().setLayout(event.width, event.height);
         getWindow().setGravity(event.gravity);
+
+        getReaderDataHolder().getWindowParameters().update(event.width,
+                event.height, event.gravity);
     }
 
     private void prepareGCUpdateInterval() {

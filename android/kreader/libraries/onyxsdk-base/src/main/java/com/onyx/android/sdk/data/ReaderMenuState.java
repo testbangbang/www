@@ -19,4 +19,6 @@ public abstract class ReaderMenuState {
 
     public abstract List<String> getFontFaces();
     public abstract ReaderTextStyle getReaderStyle();
+
+    public abstract WindowParameters getWindowParameters();
 }

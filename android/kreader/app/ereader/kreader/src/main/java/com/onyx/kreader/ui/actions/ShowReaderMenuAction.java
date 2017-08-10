@@ -18,6 +18,7 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.data.WindowParameters;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
@@ -1103,6 +1104,11 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public ReaderTextStyle getReaderStyle() {
                 return readerDataHolder.getReaderViewInfo().getReaderTextStyle();
+            }
+
+            @Override
+            public WindowParameters getWindowParameters() {
+                return readerDataHolder.getWindowParameters();
             }
         };
     }
