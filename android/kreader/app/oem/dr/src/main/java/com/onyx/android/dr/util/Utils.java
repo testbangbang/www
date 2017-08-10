@@ -731,7 +731,7 @@ public class Utils {
         } else if (dictType == Constants.CHINESE_TYPE) {
             pathList = loadLocalDict(Constants.CHINESE_DICTIONARY);
         } else if (dictType == Constants.OTHER_TYPE) {
-            pathList = loadLocalDict(Constants.JAPANESE_DICTIONARY);
+            pathList = loadLocalDict(Constants.OTHER_DICTIONARY);
         }
         return pathList;
     }
@@ -740,7 +740,7 @@ public class Utils {
         List<String> pathList = new ArrayList<>();
         pathList.addAll(loadLocalDict(Constants.CHINESE_DICTIONARY));
         pathList.addAll(loadLocalDict(Constants.ENGLISH_DICTIONARY));
-        pathList.addAll(loadLocalDict(Constants.JAPANESE_DICTIONARY));
+        pathList.addAll(loadLocalDict(Constants.OTHER_DICTIONARY));
         return pathList;
     }
 
@@ -750,7 +750,7 @@ public class Utils {
             File path = Environment.getExternalStorageDirectory();
             dictPaths.add(path + Constants.CHINESE_DICTIONARY);
             dictPaths.add(path + Constants.ENGLISH_DICTIONARY);
-            dictPaths.add(path + Constants.JAPANESE_DICTIONARY);
+            dictPaths.add(path + Constants.OTHER_DICTIONARY);
         }
         return dictPaths;
     }

@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.bean.SpeechTimeBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.ArrayList;
@@ -19,11 +20,11 @@ import butterknife.ButterKnife;
  * Created by zhouzhiming on 17-7-11.
  */
 public class SpeechTimeAdapter extends PageRecyclerView.PageAdapter<SpeechTimeAdapter.ViewHolder> implements View.OnClickListener {
-    private List<String> dataList = new ArrayList<>();
+    private List<SpeechTimeBean> dataList = new ArrayList<>();
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
-    private int selectedPosition = -1;
+    private int selectedPosition = 0;
 
-    public void setMenuDataList(List<String> dataList) {
+    public void setMenuDataList(List<SpeechTimeBean> dataList) {
         this.dataList.addAll(dataList);
     }
 
@@ -58,8 +59,8 @@ public class SpeechTimeAdapter extends PageRecyclerView.PageAdapter<SpeechTimeAd
 
     @Override
     public void onPageBindViewHolder(ViewHolder holder, int position) {
-        String content = dataList.get(position);
-        holder.tabMenuTitle.setText(content);
+        SpeechTimeBean bean = dataList.get(position);
+        holder.tabMenuTitle.setText(bean.getName());
         holder.rootView.setTag(position);
         if (selectedPosition == position) {
             holder.tabMenuTitle.setBackgroundResource(R.drawable.rectangle_stroke_focused);

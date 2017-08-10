@@ -76,7 +76,6 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     private DictSpinnerAdapter dictSpinnerAdapter;
     private TextView baiduBaike;
     private List<String> pathList;
-    private OperatingDataManager dataManager;
 
     @Override
     protected Integer getLayoutId() {
@@ -109,7 +108,6 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         queryRecordPresenter = new QueryRecordPresenter(this);
         queryRecordPresenter.getAllQueryRecordData();
         dictSpinnerAdapter = new DictSpinnerAdapter(this);
-        dataManager = new OperatingDataManager();
         loadDictionary();
         initEvent();
     }
@@ -242,7 +240,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                 bean.setNewWord(newWord);
                 bean.setDictionaryLookup(dictionaryLookup);
                 bean.setReadingMatter(readingMatter);
-                dataManager.insertNewWord(bean);
+                OperatingDataManager.getInstance().insertNewWord(bean);
             }
         });
         baiduBaike.setOnClickListener(new View.OnClickListener() {

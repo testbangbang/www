@@ -105,7 +105,6 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     private String dictionaryLookup = "";
     private int dictType;
     private List<String> pathList;
-    private OperatingDataManager dataManager;
 
     @Override
     protected Integer getLayoutId() {
@@ -159,7 +158,6 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
         dictPresenter = new DictFunctionPresenter(this);
-        dataManager = new OperatingDataManager();
         DictPreference.init(this);
         dictPresenter.loadData(this);
         dictPresenter.loadTabMenu(Constants.ACCOUNT_TYPE_DICT_FUNCTION);
@@ -463,7 +461,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         bean.setDictionaryLookup(dictionaryLookup);
         bean.setReadingMatter("");
         bean.setNewWordType(dictType);
-        dataManager.insertNewWord(bean);
+        OperatingDataManager.getInstance().insertNewWord(bean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -478,7 +476,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         bean.setReadingMatter(dictionaryLookup);
         bean.setPageNumber("");
         bean.setGoodSentenceType(dictType);
-        dataManager.insertGoodSentence(bean);
+        OperatingDataManager.getInstance().insertGoodSentence(bean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

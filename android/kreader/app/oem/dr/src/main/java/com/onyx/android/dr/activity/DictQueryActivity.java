@@ -129,7 +129,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         dictTypeAdapter = new DictTypeAdapter();
         englishDictName = Utils.getDictName(Constants.ENGLISH_DICTIONARY);
         chineseDictName = Utils.getDictName(Constants.CHINESE_DICTIONARY);
-        japaneseDictName = Utils.getDictName(Constants.JAPANESE_DICTIONARY);
+        japaneseDictName = Utils.getDictName(Constants.OTHER_DICTIONARY);
         dictTypeAdapter.setMenuDatas(englishDictName);
         dictTypeRecyclerView.setAdapter(dictTypeAdapter);
     }

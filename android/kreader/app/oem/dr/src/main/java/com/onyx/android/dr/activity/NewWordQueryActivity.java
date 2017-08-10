@@ -72,7 +72,6 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     private QueryRecordPresenter queryRecordPresenter;
     private String editQuery = "";
     private List<String> pathList;
-    public OperatingDataManager dataManager;
 
     @Override
     protected Integer getLayoutId() {
@@ -91,9 +90,8 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     protected void initData() {
         queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
-        queryRecordPresenter = new QueryRecordPresenter(getApplicationContext(), this);
+        queryRecordPresenter = new QueryRecordPresenter(this);
         dictSpinnerAdapter = new DictSpinnerAdapter(this);
-        dataManager = new OperatingDataManager();
         getIntentDatas();
         initEvent();
     }
@@ -189,7 +187,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
                 bean.setNewWord(newWord);
                 bean.setDictionaryLookup(dictionaryLookup);
                 bean.setReadingMatter(readingMatter);
-                dataManager.insertNewWord(bean);
+                OperatingDataManager.getInstance().insertNewWord(bean);
             }
         });
     }

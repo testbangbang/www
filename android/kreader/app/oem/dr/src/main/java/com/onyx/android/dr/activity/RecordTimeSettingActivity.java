@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.SpeechTimeAdapter;
+import com.onyx.android.dr.bean.SpeechTimeBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
@@ -47,8 +48,8 @@ public class RecordTimeSettingActivity extends BaseActivity implements RecordTim
     PageRecyclerView recyclerView;
     private SpeechTimeAdapter speechTimeAdapter;
     private RecordTimeSettingPresenter recordTimeSettingPresenter;
-    private List<String> speechTimeData;
-    private String speechTime = "";
+    private List<SpeechTimeBean> speechTimeData;
+    private int speechTime = 1;
 
     @Override
     protected Integer getLayoutId() {
@@ -86,7 +87,7 @@ public class RecordTimeSettingActivity extends BaseActivity implements RecordTim
     }
 
     @Override
-    public void setRecordTime(List<String> dataList) {
+    public void setRecordTime(List<SpeechTimeBean> dataList) {
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
@@ -99,10 +100,8 @@ public class RecordTimeSettingActivity extends BaseActivity implements RecordTim
         speechTimeAdapter.setOnItemClick(new SpeechTimeAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                String content = speechTimeData.get(position);
-                speechTime = content.substring(0, 1);
-                int minute = Integer.valueOf(speechTime);
-                DictPreference.setIntValue(RecordTimeSettingActivity.this, Constants.SPEECH_TIME, minute);
+                speechTime = speechTimeData.get(position).getNumber();
+                DictPreference.setIntValue(RecordTimeSettingActivity.this, Constants.SPEECH_TIME, speechTime);
                 EventBus.getDefault().post(new SelfDefinedTimeEvent());
             }
         });
@@ -123,10 +122,6 @@ public class RecordTimeSettingActivity extends BaseActivity implements RecordTim
 
     private void saveSpeechTime() {
         String time = selfDefinedTime.getText().toString();
-        if (StringUtils.isNullOrEmpty(speechTime) && StringUtils.isNullOrEmpty(time)) {
-            CommonNotices.showMessage(RecordTimeSettingActivity.this, getString(R.string.set_speech_time));
-            return;
-        }
         if (!StringUtils.isNullOrEmpty(time)) {
             int minute = Integer.valueOf(time);
             if (minute <= 0 || minute > 15) {

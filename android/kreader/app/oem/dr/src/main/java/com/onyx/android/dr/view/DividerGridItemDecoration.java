@@ -34,7 +34,6 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
         int spanCount = -1;
         RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
-
             spanCount = ((GridLayoutManager) layoutManager).getSpanCount();
         } else if (layoutManager instanceof StaggeredGridLayoutManager) {
             spanCount = ((StaggeredGridLayoutManager) layoutManager)
