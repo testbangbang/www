@@ -34,11 +34,12 @@
         <activity android:name=".FullScreenDemoActivity" />
         <activity android:name=".SettingsDemoActivity" />
         <activity android:name=".ScribbleStateDemoActivity" />
-        <activity android:name=".ParallelUpdateActivity"/>
+        <activity android:name=".ParallelUpdateActivity" />
         <activity android:name=".FastUpdateModeActivity" />
         <activity android:name=".OverlayUpdateActivity" />
         <activity android:name=".TextSelectionActivity" />
         <activity android:name=".RectangleUpdateTest" />
+        <activity android:name=".ImageDiffActivity"></activity>
     </application>
 
 </manifest>
