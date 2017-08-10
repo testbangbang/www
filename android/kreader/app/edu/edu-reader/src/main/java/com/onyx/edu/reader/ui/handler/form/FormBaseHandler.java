@@ -15,13 +15,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
-import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.im.Constant;
 import com.onyx.android.sdk.im.IMConfig;
-import com.onyx.android.sdk.im.data.JoinModel;
 import com.onyx.android.sdk.im.data.Message;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormPushButton;
@@ -46,17 +43,12 @@ import com.onyx.edu.reader.note.model.ReaderNoteDataProvider;
 import com.onyx.edu.reader.note.request.StartNoteRequest;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
-import com.onyx.edu.reader.ui.handler.BaseHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.ReadingHandler;
-import com.onyx.edu.reader.ui.service.ReaderFormIMService;
+import com.onyx.edu.reader.ui.events.im.IMAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.socket.client.Socket;
-
-import static com.onyx.android.sdk.data.Constant.MEETING_API_BASE;
 
 /**
  * Created by ming on 2017/6/5.
@@ -65,7 +57,6 @@ import static com.onyx.android.sdk.data.Constant.MEETING_API_BASE;
 public class FormBaseHandler extends ReadingHandler {
 
     public List<View> formFieldControls;
-    private ReaderFormIMService imService;
 
     public FormBaseHandler(HandlerManager parent) {
         super(parent);
@@ -82,39 +73,8 @@ public class FormBaseHandler extends ReadingHandler {
         if (account == null) {
             return;
         }
-        if (imService == null) {
-            initFormIMService(url, event);
-        }
-        imService.startSocketIO(getContext());
-    }
-
-    public ReaderFormIMService getImService() {
-        return imService;
-    }
-
-    private ReaderFormIMService initFormIMService(String url, String event) {
-        Debug.d(getClass(), "initFormIMService");
         IMConfig config = IMConfig.create(url, event, Constant.SOCKET_IO_CLIENT_PATH);
-        imService = new ReaderFormIMService(getContext(), config);
-        imService.setCallback(new ReaderFormIMService.Callback() {
-            @Override
-            public void onReceivedMessage(Message message) {
-                onReceivedIMMessage(message);
-            }
-        });
-        return imService;
-    }
-
-    protected void onReceivedIMMessage(Message message) {
-
-    }
-
-    private void closeFormImService() {
-        if (imService == null) {
-            return;
-        }
-        imService.close();
-        imService = null;
+        getReaderDataHolder().startSocketIO(config);
     }
 
     @Override
@@ -308,12 +268,6 @@ public class FormBaseHandler extends ReadingHandler {
         }
     }
 
-    @Override
-    public void closeImpl(ReaderDataHolder readerDataHolder) {
-        closeFormImService();
-        super.closeImpl(readerDataHolder);
-    }
-
     private boolean ensurePushedFormData() {
         if (ReaderNoteDataProvider.hasUnLockFormShapes(getReaderDataHolder().getContext(),
                 getReaderDataHolder().getReader().getDocumentMd5(),
@@ -336,7 +290,7 @@ public class FormBaseHandler extends ReadingHandler {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        closeImpl(getReaderDataHolder());
+                        postQuitEvent(getReaderDataHolder());
                     }
                 })
                 .setOnCloseListener(new DialogInterface.OnDismissListener() {
@@ -462,6 +416,15 @@ public class FormBaseHandler extends ReadingHandler {
 
     protected boolean isEnableNoteWhenHaveScribbleForm() {
         return true;
+    }
+
+    protected void join(String event) {
+        Message message = new Message();
+        message.setChannel(event);
+        message.setEvent(event);
+        message.setMac(NetworkUtil.getMacAddress(getContext()));
+        message.setContent(getReaderDataHolder().getAccount().name);
+        getReaderDataHolder().emitIMMessage(message);
     }
 
 }

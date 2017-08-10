@@ -3,21 +3,17 @@ package com.onyx.edu.reader.ui.handler.form;
 import android.graphics.Rect;
 
 import com.alibaba.fastjson.TypeReference;
-import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.im.Constant;
-import com.onyx.android.sdk.im.IMConfig;
 import com.onyx.android.sdk.im.data.JoinModel;
 import com.onyx.android.sdk.im.data.Message;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.NetworkUtil;
-import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.note.data.ReaderShapeFactory;
 import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
-import com.onyx.edu.reader.ui.service.ReaderFormIMService;
 
 import java.util.List;
 
@@ -56,11 +52,11 @@ public class FormMeetingHandler extends FormBaseHandler {
     }
 
     @Override
-    protected void onReceivedIMMessage(Message message) {
+    public void onReceivedIMMessage(Message message) {
         Debug.d(getClass(), "meeting message:" + message.getAction());
         switch (message.getAction()) {
             case Socket.EVENT_CONNECT:
-                getImService().joinRoom(JoinModel.create(Constant.MEETING, getReaderDataHolder().getAccount().name, NetworkUtil.getMacAddress(getContext())));
+                join(Constant.EVENT_MEETING);
                 break;
             case Constant.ACTION_ADD_SHAPES:
                 List<ReaderFormShapeModel> shapeModels = JSONObjectParseUtils.toBean(message.getContent(), new TypeReference<List<ReaderFormShapeModel>>() {}.getType());
@@ -82,13 +78,13 @@ public class FormMeetingHandler extends FormBaseHandler {
     public void onShapeAdded(Shape shape) {
         Debug.d(getClass(), "add shape");
         Message message = Message.create(Constant.EVENT_ADD_SHAPE, JSONObjectParseUtils.toJson(ReaderShapeFactory.modelFromShape(shape)));
-        getImService().emit(message);
+        getReaderDataHolder().emitIMMessage(message);
     }
 
     @Override
     public void onShapesRemoved(List<String> shapeIds) {
         Debug.d(getClass(), "remove shapes:" + JSONObjectParseUtils.toJson(shapeIds));
         Message message = Message.create(Constant.EVENT_REMOVE_SHAPE, JSONObjectParseUtils.toJson(shapeIds));
-        getImService().emit(message);
+        getReaderDataHolder().emitIMMessage(message);
     }
 }

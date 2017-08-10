@@ -62,11 +62,11 @@ public class FormVoteHandler extends FormBaseHandler {
     }
 
     @Override
-    protected void onReceivedIMMessage(Message message) {
+    public void onReceivedIMMessage(Message message) {
         Debug.d(getClass(), "vote message:" + message.getAction());
         switch (message.getAction()) {
             case Socket.EVENT_CONNECT:
-                getImService().joinRoom(JoinModel.create(Constant.VOTE, getReaderDataHolder().getAccount().name, NetworkUtil.getMacAddress(getContext())));
+                join(Constant.EVENT_VOTE);
                 break;
             case Constant.ACTION_ADD_SHAPES:
                 List<ReaderFormShapeModel> shapeModels = JSONObjectParseUtils.toBean(message.getContent(), new TypeReference<List<ReaderFormShapeModel>>() {}.getType());
@@ -121,7 +121,7 @@ public class FormVoteHandler extends FormBaseHandler {
         if (shapeModels == null || shapeModels.size() == 0) {
             return;
         }
-        getImService().emit(Message.create(Constant.EVENT_VOTE, JSONObjectParseUtils.toJson(shapeModels)));
+        getReaderDataHolder().emitIMMessage(Message.create(Constant.EVENT_VOTE, JSONObjectParseUtils.toJson(shapeModels)));
         setLockFormView(true);
         lockFormView();
     }

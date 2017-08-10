@@ -11,6 +11,7 @@ public class Message {
     private String id;
     private String content;
     private String event;
+    private String mac;
 
     public Message() {
     }
@@ -61,6 +62,14 @@ public class Message {
 
     public void setEvent(String event) {
         this.event = event;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
     }
 
     public Message(String channel, String action, String type, String id, String content) {

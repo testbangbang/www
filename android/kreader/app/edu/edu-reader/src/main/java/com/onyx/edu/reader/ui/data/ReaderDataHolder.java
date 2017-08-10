@@ -19,11 +19,12 @@ import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.im.IMConfig;
+import com.onyx.android.sdk.im.data.Message;
 import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderFormAction;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
-import com.onyx.android.sdk.reader.api.ReaderFormType;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -51,10 +52,15 @@ import com.onyx.edu.reader.ui.actions.ExportAnnotationAction;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.events.TextSelectionEvent;
 import com.onyx.edu.reader.ui.events.*;
+import com.onyx.edu.reader.ui.events.im.CloseSocketIOEvent;
+import com.onyx.edu.reader.ui.events.im.EmitMessageEvent;
+import com.onyx.edu.reader.ui.events.im.StartSocketIOEvent;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.highlight.ReaderSelectionManager;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.edu.reader.ui.events.im.IMAdapter;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
@@ -86,6 +92,7 @@ public class ReaderDataHolder {
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private EventBus eventBus = new EventBus();
     private EventReceiver eventReceiver;
+    private IMAdapter imAdapter = new IMAdapter(this);
     private NeoAccountBase account;
 
     private boolean preRender = true;
@@ -623,6 +630,12 @@ public class ReaderDataHolder {
         clearFormFieldControls();
         resetHandlerManager();
         closeDocument(callback);
+        closeSocketIO(true);
+    }
+
+    public void quit() {
+        closeSocketIO(false);
+        getEventBus().post(new QuitEvent());
     }
 
     public void stop() {
@@ -885,6 +898,27 @@ public class ReaderDataHolder {
         }
         return null;
     }
+
+    public IMAdapter getImAdapter() {
+        return imAdapter;
+    }
+
+    public void postIMEvent(Object event) {
+        getImAdapter().post(event);
+    }
+
+    public void startSocketIO(IMConfig config) {
+        postIMEvent(StartSocketIOEvent.create(config));
+    }
+
+    public void emitIMMessage(Message message) {
+        postIMEvent(EmitMessageEvent.create(message));
+    }
+
+    public void closeSocketIO(boolean unRegister) {
+        postIMEvent(CloseSocketIOEvent.create(unRegister));
+    }
+
 }
 
 

@@ -1021,6 +1021,7 @@ public class ShowReaderMenuAction extends BaseAction {
     private static void toggleFormScribble(final ReaderDataHolder readerDataHolder) {
         BaseHandler handler = readerDataHolder.getHandlerManager().getActiveProvider();
         boolean enableNoteDrawing = handler.isEnableNoteDrawing();
+        handler.onDeactivate(readerDataHolder);
         handler.setEnableNoteDrawing(!enableNoteDrawing);
         readerDataHolder.redrawPage();
     }
