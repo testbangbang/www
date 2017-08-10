@@ -1,9 +1,7 @@
 package com.onyx.edu.reader.ui.actions.form;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -33,7 +31,7 @@ public class ShowFormMeetingMenuAction extends ShowFormMenuAction {
         List<ReaderMenuViewHolder> bottomMenuViewHolders = new ArrayList<>();
 
         boolean showScribbleMenu = getReaderMenuViewData().isShowScribbleMenu();
-        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), showScribbleMenu ? R.drawable.ic_write_black : R.drawable.ic_write_forbidden, ReaderMenuAction.SWITCH_SCRIBBLE, R.string.scribble));
+        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), showScribbleMenu ? R.drawable.ic_write_black : R.drawable.ic_write_forbidden, ReaderMenuAction.TOGGLE_FORM_SCRIBBLE, showScribbleMenu ? R.string.scribble : R.string.touch));
         bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), showScribbleMenu ? R.drawable.ic_eraser_all_black : R.drawable.ic_eraser_all_gray, ReaderMenuAction.SCRIBBLE_ERASER, R.string.eraser, showScribbleMenu));
         bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_meeting_submit, ReaderMenuAction.SUBMIT, R.string.submit));
         bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_meeting_undo, ReaderMenuAction.SCRIBBLE_UNDO, R.string.undo, showScribbleMenu));

@@ -1,4 +1,6 @@
-package com.onyx.android.sdk.im;
+package com.onyx.android.sdk.im.event;
+
+import com.onyx.android.sdk.im.data.Message;
 
 /**
  * Created by ming on 2017/7/14.

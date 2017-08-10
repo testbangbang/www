@@ -36,15 +36,7 @@ public class ShowFormVoteMenuAction extends BaseFormMenuAction {
 
     @Override
     public List<ReaderMenuViewHolder> getBottomMenuViewHolders(ReaderDataHolder readerDataHolder, final ViewGroup parent) {
-        List<ReaderMenuViewHolder> bottomMenuViewHolders = new ArrayList<>();
-
-        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_exit, EXIT, R.string.exit));
-        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_submit, SUBMIT, R.string.submit));
-
-        bottomMenuViewHolders.add(ReaderMenuViewHolder.create(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
-
-        bottomMenuViewHolders.addAll(getPageTextViewHolder());
-        return bottomMenuViewHolders;
+        return null;
     }
 
     @Override

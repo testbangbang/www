@@ -373,6 +373,7 @@ public class NoteManager {
     }
 
     private void onNewStash(final Shape shape) {
+        parent.getHandlerManager().getActiveProvider().onShapeAdded(shape);
         shapeStash.add(shape);
     }
 

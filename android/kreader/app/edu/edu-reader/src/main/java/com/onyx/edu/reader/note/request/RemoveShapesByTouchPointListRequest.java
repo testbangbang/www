@@ -16,6 +16,7 @@ import java.util.List;
 public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
 
     private volatile TouchPointList touchPointList;
+    private List<String> removedShapeList;
     public RemoveShapesByTouchPointListRequest(final List<PageInfo> pageInfoList, final TouchPointList pointList) {
         setVisiblePages(pageInfoList);
         touchPointList = pointList;
@@ -30,10 +31,15 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
         boolean changed = false;
         if (notePage != null) {
             changed |= notePage.removeShapesByTouchPointList(touchPointList, radius);
+            removedShapeList = notePage.getRemovedShapeIdList();
         }
         changed |= renderVisiblePages(noteManager);
         getNoteDataInfo().setContentRendered(changed);
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
         Log.e("############", "erase takes: " + benchmarkEnd() + " changed: " + changed);
+    }
+
+    public List<String> getRemovedShapeList() {
+        return removedShapeList;
     }
 }

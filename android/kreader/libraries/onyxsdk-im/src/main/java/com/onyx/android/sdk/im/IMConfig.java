@@ -13,7 +13,9 @@ public class IMConfig {
     private String clientKey;
 
     private String serverUri;
-    private int reconnectLimit = 5;
+    private String socketIOEvent;
+    private String socketIoPath;
+    private int reconnectLimit = 0;
     private int reconnectInterval = 2000;
 
     public IMConfig() {
@@ -82,7 +84,31 @@ public class IMConfig {
         this.reconnectInterval = reconnectInterval;
     }
 
+    public String getSocketIOEvent() {
+        return socketIOEvent;
+    }
+
+    public void setSocketIOEvent(String socketIOEvent) {
+        this.socketIOEvent = socketIOEvent;
+    }
+
+    public String getSocketIoPath() {
+        return socketIoPath;
+    }
+
+    public void setSocketIoPath(String socketIoPath) {
+        this.socketIoPath = socketIoPath;
+    }
+
     public boolean canReconnect(int reconnectCount) {
         return reconnectCount < this.reconnectLimit;
+    }
+
+    public static IMConfig create(String serverUri, String socketIOEvent, String socketIoPath) {
+        IMConfig config = new IMConfig();
+        config.setServerUri(serverUri);
+        config.setSocketIOEvent(socketIOEvent);
+        config.setSocketIoPath(socketIoPath);
+        return config;
     }
 }

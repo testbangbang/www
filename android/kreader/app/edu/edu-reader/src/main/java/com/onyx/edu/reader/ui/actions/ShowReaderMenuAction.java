@@ -87,7 +87,9 @@ import com.onyx.edu.reader.ui.dialog.DialogSearch;
 import com.onyx.edu.reader.ui.dialog.DialogTableOfContent;
 import com.onyx.edu.reader.ui.dialog.DialogTextStyle;
 import com.onyx.edu.reader.device.DeviceConfig;
+import com.onyx.edu.reader.ui.handler.BaseHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
+import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.view.EduMenu;
 
 import java.io.File;
@@ -242,6 +244,9 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public void onMenuItemClicked(ReaderMenuItem menuItem) {
                 Log.d(TAG, "onMenuItemClicked: " + menuItem.getAction());
+                if (readerDataHolder.getHandlerManager().onMenuClicked(menuItem.getAction())) {
+                    return;
+                }
                 switch (menuItem.getAction()) {
                     case FONT:
                         showTextStyleDialog(readerDataHolder);
@@ -824,9 +829,9 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
-    public static void showFormMenu(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, final boolean showScribbleMenu) {
+    public static void showFormMenu(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
         ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
-        ReaderMenuViewData readerMenuViewData = ReaderMenuViewData.create(disableMenus, showScribbleMenu, readerActivity.getExtraView());
+        ReaderMenuViewData readerMenuViewData = ReaderMenuViewData.create(disableMenus, readerDataHolder.getHandlerManager().isEnableNoteDrawing(), readerActivity.getExtraView());
         if (noteDataInfo != null) {
             int currentShapeType = noteDataInfo.getCurrentShapeType();
             readerMenuViewData.setSelectShapeAction(createShapeAction(currentShapeType));
@@ -868,6 +873,9 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public void onClicked(final ReaderMenuAction action) {
                 if (processScribbleActionGroup(readerDataHolder, action)) {
+                    return;
+                }
+                if (readerDataHolder.getHandlerManager().onMenuClicked(action)) {
                     return;
                 }
                 processScribbleAction(readerDataHolder, action);
@@ -917,6 +925,9 @@ public class ShowReaderMenuAction extends BaseAction {
                 break;
             case SIGNATURE:
                 signature(readerDataHolder);
+                break;
+            case TOGGLE_FORM_SCRIBBLE:
+                toggleFormScribble(readerDataHolder);
                 break;
             case SCRIBBLE_WIDTH1:
             case SCRIBBLE_WIDTH2:
@@ -1005,6 +1016,14 @@ public class ShowReaderMenuAction extends BaseAction {
                 redo(readerDataHolder);
                 break;
         }
+    }
+
+    private static void toggleFormScribble(final ReaderDataHolder readerDataHolder) {
+        BaseHandler handler = readerDataHolder.getHandlerManager().getActiveProvider();
+        boolean enableNoteDrawing = handler.isEnableNoteDrawing();
+        handler.onDeactivate(readerDataHolder);
+        handler.setEnableNoteDrawing(!enableNoteDrawing);
+        readerDataHolder.redrawPage();
     }
 
     private static void signature(final ReaderDataHolder readerDataHolder) {

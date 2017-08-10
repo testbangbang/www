@@ -25,7 +25,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver" >
+        <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_PRESENT" />

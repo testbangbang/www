@@ -13,6 +13,7 @@ import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.KeyBinding;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.TouchAction;
 import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
@@ -238,6 +239,10 @@ public class HandlerManager {
 
     public String getActiveProviderName() {
         return activeProviderName;
+    }
+
+    public boolean onMenuClicked(ReaderMenuAction action) {
+        return getActiveProvider().onMenuClicked(action);
     }
 
     public boolean onKeyDown(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
@@ -673,5 +678,9 @@ public class HandlerManager {
 
     public void close(final ReaderDataHolder readerDataHolder) {
         getActiveProvider().close(readerDataHolder);
+    }
+
+    public boolean isEnableNoteDrawing() {
+        return getActiveProvider().isEnableNoteDrawing();
     }
 }
