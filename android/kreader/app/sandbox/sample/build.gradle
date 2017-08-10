@@ -57,5 +57,6 @@ dependencies {
     compile 'com.onyx.android.sdk:onyxsdk-scribble:1.0.4'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.onyx.android.sdk:onyxsdk-data:1.0.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }
