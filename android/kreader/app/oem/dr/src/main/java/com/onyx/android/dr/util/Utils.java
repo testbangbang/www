@@ -28,11 +28,9 @@ import org.mozilla.universalchardet.UniversalDetector;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
@@ -761,8 +759,9 @@ public class Utils {
 
     public static void closeQuietly(SQLiteDatabase closeable) {
         try {
-            if (closeable != null)
+            if (closeable != null) {
                 closeable.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -770,8 +769,9 @@ public class Utils {
 
     public static void closeQuietly(Cursor cursor) {
         try {
-            if (cursor != null)
+            if (cursor != null) {
                 cursor.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
