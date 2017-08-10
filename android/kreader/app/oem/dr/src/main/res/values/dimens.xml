@@ -193,4 +193,10 @@
     <dimen name="new_word_activity_buttom_height">120dp</dimen>
     <dimen name="item_sketch_title_checkbox_margin_left">20dp</dimen>
     <dimen name="item_postil_padding">20dp</dimen>
+    <dimen name="item_postil_content_margin_top">20dp</dimen>
+    <dimen name="dialog_annotation_padding">10dp</dimen>
+    <dimen name="dialog_annotation_margin">20dp</dimen>
+    <dimen name="dialog_annotation_content_margin_left">10dp</dimen>
+    <dimen name="dialog_annotation_button_width">120dp</dimen>
+    <dimen name="dialog_annotation_button_height">45dp</dimen>
 </resources>
