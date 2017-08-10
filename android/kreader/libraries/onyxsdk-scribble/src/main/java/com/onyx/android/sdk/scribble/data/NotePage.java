@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
+import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 
@@ -269,7 +270,12 @@ public class NotePage {
         if (shapeList == null) {
             return;
         }
+        final Matrix renderMatrix = new Matrix();
         for (Shape shape : shapeList) {
+            renderMatrix.reset();
+            renderMatrix.postScale(shape.getScale(), shape.getScale());
+            renderContext.setMatrix(renderMatrix);
+            renderContext.force = shape.getScale() > 1.0f;
             shape.render(renderContext);
             if (callback != null && callback.isRenderAbort()) {
                 break;

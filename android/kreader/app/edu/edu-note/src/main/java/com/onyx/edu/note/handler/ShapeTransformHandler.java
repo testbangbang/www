@@ -160,14 +160,14 @@ public class ShapeTransformHandler extends BaseHandler {
     @Subscribe
     public void onBeginShapeSelectEvent(BeginShapeSelectEvent event) {
         Log.e(TAG, "onBeginShapeSelectEvent: ");
-        //TODO:test effect only.
+        //TODO:test effect only.need design undo/redo scale/drag
         new GetSelectedShapeListAction().execute(mNoteManager, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GetSelectedShapeListRequest req = (GetSelectedShapeListRequest) request;
                 Log.e(TAG, "req.getSelectedShapeList().size():" + req.getSelectedShapeList().size());
                 if (req.getSelectedShapeList().size() > 0) {
-                    new ChangeSelectedShapeScaleAction(5.0f).execute(mNoteManager, new BaseCallback() {
+                    new ChangeSelectedShapeScaleAction(1.5f).execute(mNoteManager, new BaseCallback() {
                         @Override
                         public void done(BaseRequest request, Throwable e) {
                             mNoteManager.sync(true, false);

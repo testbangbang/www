@@ -150,7 +150,7 @@ public class BaseShape implements Shape {
         if (renderContext == null || renderContext.matrix == null) {
             return scale;
         }
-        return scale * renderContext.displayScale;
+        return renderContext.displayScale;
     }
 
     public boolean supportDFB() {
