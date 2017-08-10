@@ -21,7 +21,6 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginShapeSelectEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchDownEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchMoveEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchUpEvent;
@@ -29,8 +28,6 @@ import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListRecei
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.SpanFinishedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.SpanTextShowOutOfRangeEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
@@ -466,23 +463,6 @@ public class NoteManager {
         if (isLineLayoutMode()) {
             buildSpan();
         }
-    }
-
-    @Subscribe
-    public void onBeginShapeSelectEvent(BeginShapeSelectEvent event) {
-        Log.e(TAG, "onBeginShapeSelectEvent: ");
-        onBeginShapeSelecting(event.getMotionEvent());
-    }
-
-    @Subscribe
-    public void onShapeSelectingEvent(ShapeSelectingEvent event) {
-        Log.e(TAG, "onShapeSelectingEvent: ");
-        onShapeSelecting(event.getMotionEvent());
-    }
-
-    @Subscribe
-    public void onShapeSelectTouchPointListReceived(ShapeSelectTouchPointListReceivedEvent event) {
-        onFinishShapeSelecting(event.getTouchPointList());
     }
 
     private void drawErasingIndicator(final SurfaceView view, final Paint paint) {
