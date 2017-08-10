@@ -51,10 +51,10 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
 
     @Override
     protected void initView() {
-        initRecylcerView();
+        initRecyclerView();
     }
 
-    private void initRecylcerView() {
+    private void initRecyclerView() {
         dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         newWordAdapter = new NewWordAdapter();

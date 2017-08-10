@@ -726,11 +726,11 @@ public class Utils {
 
     public static List<String> getPathList(int dictType) {
         List<String> pathList = new ArrayList<>();
-        if (dictType == Constants.ENGLISH_NEW_WORD_NOTEBOOK) {
+        if (dictType == Constants.ENGLISH_TYPE) {
             pathList = loadLocalDict(Constants.ENGLISH_DICTIONARY);
-        } else if (dictType == Constants.CHINESE_NEW_WORD_NOTEBOOK) {
+        } else if (dictType == Constants.CHINESE_TYPE) {
             pathList = loadLocalDict(Constants.CHINESE_DICTIONARY);
-        } else if (dictType == Constants.JAPANESE_NEW_WORD_NOTEBOOK) {
+        } else if (dictType == Constants.OTHER_TYPE) {
             pathList = loadLocalDict(Constants.JAPANESE_DICTIONARY);
         }
         return pathList;

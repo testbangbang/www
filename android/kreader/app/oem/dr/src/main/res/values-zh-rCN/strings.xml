@@ -253,4 +253,13 @@
     <string name="no_relevant_data">没有相应数据</string>
     <string name="export_success">导出成功</string>
     <string name="good_sentence_notebook_html">好句本报表</string>
+    <string name="one_minute">1分钟</string>
+    <string name="two_minute">2分钟</string>
+    <string name="three_minute">3分钟</string>
+    <string name="four_minute">4分钟</string>
+    <string name="five_minute">5分钟</string>
+    <string name="set_speech_time">请设置演讲的时长</string>
+    <string name="self_defined_time">自行设定: </string>
+    <string name="record_time_data_minute">分钟</string>
+    <string name="record_time_activity_edit_text_hint">时间范围0-15分钟</string>
 </resources>

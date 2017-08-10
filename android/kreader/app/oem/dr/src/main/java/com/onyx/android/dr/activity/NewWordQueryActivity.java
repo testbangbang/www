@@ -20,6 +20,7 @@ import com.onyx.android.dr.event.WebViewLoadOverEvent;
 import com.onyx.android.dr.interfaces.QueryRecordView;
 import com.onyx.android.dr.presenter.QueryRecordPresenter;
 import com.onyx.android.dr.util.DictPreference;
+import com.onyx.android.dr.util.OperatingDataManager;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
@@ -71,6 +72,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     private QueryRecordPresenter queryRecordPresenter;
     private String editQuery = "";
     private List<String> pathList;
+    public OperatingDataManager dataManager;
 
     @Override
     protected Integer getLayoutId() {
@@ -91,6 +93,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
         customFontSize = DRApplication.getInstance().getCustomFontSize();
         queryRecordPresenter = new QueryRecordPresenter(getApplicationContext(), this);
         dictSpinnerAdapter = new DictSpinnerAdapter(this);
+        dataManager = new OperatingDataManager();
         getIntentDatas();
         initEvent();
     }
@@ -103,7 +106,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     private void loadDictionary() {
         DictPreference.init(this);
         pathList = new ArrayList<>();
-        int dictType = DictPreference.getIntValue(this, Constants.DICTTYPE, Constants.ENGLISH_NEW_WORD_NOTEBOOK);
+        int dictType = DictPreference.getIntValue(this, Constants.DICTTYPE, Constants.ENGLISH_TYPE);
         dictionaryManager = DRApplication.getInstance().getDictionaryManager();
         dictionaryManager.newProviderMap.clear();
         pathList = Utils.getPathList(dictType);
@@ -186,7 +189,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
                 bean.setNewWord(newWord);
                 bean.setDictionaryLookup(dictionaryLookup);
                 bean.setReadingMatter(readingMatter);
-                queryRecordPresenter.insertNewWord(bean);
+                dataManager.insertNewWord(bean);
             }
         });
     }

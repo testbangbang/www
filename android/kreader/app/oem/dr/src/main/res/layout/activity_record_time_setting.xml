@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:id="@+id/record_time_activity_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/record_time_activity_next_step"
+            style="@style/new_word_notebook_textview_style"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:text="@string/next_step" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/record_time_activity_bottom"
+        android:layout_below="@id/title_bar"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/record_time_activity_hint_margin_top"
+            android:text="@string/set_speech_time"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_font_size" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/record_time_activity_hint_margin_top"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/self_defined_time"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_font_size" />
+
+            <EditText
+                android:id="@+id/record_time_activity_self_defined_time"
+                style="@style/dict_query_edittext"
+                android:hint="@string/record_time_activity_edit_text_hint"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/level_three_heading_font"
+                android:inputType="number" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/record_time_activity_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/hear_and_speak_activity_view_margin_top" />
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
