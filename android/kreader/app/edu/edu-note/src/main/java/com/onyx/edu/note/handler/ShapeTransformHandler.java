@@ -1,15 +1,30 @@
 package com.onyx.edu.note.handler;
 
+import android.util.Log;
 import android.util.SparseArray;
+import android.view.MotionEvent;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BeginShapeSelectEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.shape.GetSelectedShapeListRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRequest;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.edu.note.actions.scribble.ChangeSelectedShapeScaleAction;
+import com.onyx.edu.note.actions.scribble.GetSelectedShapeListAction;
+import com.onyx.edu.note.actions.scribble.SelectShapeByPointListAction;
+import com.onyx.edu.note.actions.scribble.ShapeSelectionAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +68,8 @@ import static com.onyx.edu.note.data.ScribbleSubMenuID.Thickness.THICKNESS_ULTRA
 
 public class ShapeTransformHandler extends BaseHandler {
     private static final String TAG = ShapeTransformHandler.class.getSimpleName();
+    private TouchPoint mShapeSelectStartPoint = null;
+    private TouchPoint mShapeSelectPoint = null;
 
     public ShapeTransformHandler(NoteManager noteManager) {
         super(noteManager);
@@ -61,8 +78,15 @@ public class ShapeTransformHandler extends BaseHandler {
     @Override
     public void onActivate() {
         super.onActivate();
+        EventBus.getDefault().register(this);
         mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_SELECTOR);
         mNoteManager.sync(true, false);
+    }
+
+    @Override
+    public void onDeactivate() {
+        super.onDeactivate();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -131,6 +155,65 @@ public class ShapeTransformHandler extends BaseHandler {
     @Override
     public void deletePage() {
 
+    }
+
+    @Subscribe
+    public void onBeginShapeSelectEvent(BeginShapeSelectEvent event) {
+        Log.e(TAG, "onBeginShapeSelectEvent: ");
+        //TODO:test effect only.
+        new GetSelectedShapeListAction().execute(mNoteManager, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GetSelectedShapeListRequest req = (GetSelectedShapeListRequest) request;
+                Log.e(TAG, "req.getSelectedShapeList().size():" + req.getSelectedShapeList().size());
+                if (req.getSelectedShapeList().size() > 0) {
+                    new ChangeSelectedShapeScaleAction(5.0f).execute(mNoteManager, new BaseCallback() {
+                        @Override
+                        public void done(BaseRequest request, Throwable e) {
+                            mNoteManager.sync(true, false);
+                        }
+                    });
+                }
+            }
+        });
+        mNoteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                mShapeSelectStartPoint = new TouchPoint();
+                mShapeSelectPoint = new TouchPoint();
+            }
+        });
+    }
+
+    @Subscribe
+    public void onShapeSelectingEvent(ShapeSelectingEvent event) {
+        Log.e(TAG, "onShapeSelectingEvent: ");
+        MotionEvent motionEvent = event.getMotionEvent();
+        if (mShapeSelectStartPoint == null) {
+            return;
+        }
+        if (mShapeSelectStartPoint.x == 0 && mShapeSelectStartPoint.y == 0) {
+            mShapeSelectStartPoint.x = motionEvent.getX();
+            mShapeSelectStartPoint.y = motionEvent.getY();
+        }
+        mShapeSelectPoint.x = motionEvent.getX();
+        mShapeSelectPoint.y = motionEvent.getY();
+        new ShapeSelectionAction(mShapeSelectStartPoint, mShapeSelectPoint).execute(mNoteManager, null);
+    }
+
+    @Subscribe
+    public void onShapeSelectTouchPointListReceived(ShapeSelectTouchPointListReceivedEvent event) {
+        mShapeSelectStartPoint = null;
+        mShapeSelectPoint = null;
+        new SelectShapeByPointListAction(event.getTouchPointList()).execute(mNoteManager, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                SelectShapeByPointListRequest req = (SelectShapeByPointListRequest) request;
+                for (Shape shape : req.getSelectResultList()) {
+                    Log.e(TAG, "shape:" + shape);
+                }
+            }
+        });
     }
 
     private List<Integer> buildSubMenuThicknessIDList() {
