@@ -1,6 +1,9 @@
 package com.onyx.android.sample.utils;
 
+import android.app.AlarmManager;
 import android.graphics.Rect;
+
+import com.onyx.android.sdk.api.device.epd.EpdController;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +78,9 @@ public class RectUtils {
             return temp;
         }
 
-        public List<Rect> findRectsWithFilter(final List<Rect> list, final Rect include, final Rect exclude) {
+        public List<Rect> findRectsWithFilter(final List<Rect> list,
+                                              final Rect include,
+                                              final Rect exclude) {
             List<Rect> temp = new ArrayList<>();
             for(Rect rect : list) {
                 if (contains(include, rect) && !contains(exclude, rect)) {
