@@ -258,4 +258,13 @@
     <string name="no_relevant_data">no relevant data</string>
     <string name="export_success">export success</string>
     <string name="good_sentence_notebook_html">good sentence notebook html</string>
+    <string name="one_minute">one minute</string>
+    <string name="two_minute">two minute</string>
+    <string name="three_minute">three minute</string>
+    <string name="four_minute">four minute</string>
+    <string name="five_minute">five minute</string>
+    <string name="set_speech_time">set speech time</string>
+    <string name="self_defined_time">self defined time: </string>
+    <string name="record_time_data_minute">minute</string>
+    <string name="record_time_activity_edit_text_hint">time horizon: 0-15 minute</string>
 </resources>

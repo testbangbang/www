@@ -23,6 +23,7 @@ import com.onyx.android.dr.dialog.SelectAlertDialog;
 import com.onyx.android.dr.event.RefreshWebviewEvent;
 import com.onyx.android.dr.interfaces.QueryRecordView;
 import com.onyx.android.dr.presenter.QueryRecordPresenter;
+import com.onyx.android.dr.util.OperatingDataManager;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
@@ -104,7 +105,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
         queryRecordList = new ArrayList<QueryRecordEntity>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
-        queryRecordPresenter = new QueryRecordPresenter(getApplicationContext(), this);
+        queryRecordPresenter = new QueryRecordPresenter(this);
         queryRecordPresenter.getAllQueryRecordData();
         dictSpinnerAdapter = new DictSpinnerAdapter(this);
         loadDictionary();
@@ -239,7 +240,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                 bean.setNewWord(newWord);
                 bean.setDictionaryLookup(dictionaryLookup);
                 bean.setReadingMatter(readingMatter);
-                queryRecordPresenter.insertNewWord(bean);
+                OperatingDataManager.getInstance().insertNewWord(bean);
             }
         });
         baiduBaike.setOnClickListener(new View.OnClickListener() {

@@ -26,9 +26,11 @@ public class MyNotesPresenter {
     public void loadMyTracks(int userType) {
         myNotesView.setMyracksData(myNotesTypeConfig.getMenuData(userType));
     }
+
     public void loadMyThink(int userType) {
         myNotesView.setMyThinkData(myNotesTypeConfig.getMenuData(userType));
     }
+
     public void loadMyCreation(int userType) {
         myNotesView.setMyCreationData(myNotesTypeConfig.getMenuData(userType));
     }

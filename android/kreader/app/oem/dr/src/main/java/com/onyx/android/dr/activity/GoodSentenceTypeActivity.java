@@ -47,10 +47,10 @@ public class GoodSentenceTypeActivity extends BaseActivity implements GoodSenten
 
     @Override
     protected void initView() {
-        initRecylcerView();
+        initRecyclerView();
     }
 
-    private void initRecylcerView() {
+    private void initRecyclerView() {
         dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.HORIZONTAL);
         goodSentenceTypeAdapter = new GoodSentenceTypeAdapter();
@@ -81,17 +81,17 @@ public class GoodSentenceTypeActivity extends BaseActivity implements GoodSenten
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEnglishGoodSentenceEvent(EnglishGoodSentenceEvent event) {
-        ActivityManager.startGoodSentenceNotebookActivity(this, Constants.ENGLISH_NEW_WORD_NOTEBOOK);
+        ActivityManager.startGoodSentenceNotebookActivity(this, Constants.ENGLISH_TYPE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChineseGoodSentenceEvent(ChineseGoodSentenceEvent event) {
-        ActivityManager.startGoodSentenceNotebookActivity(this, Constants.CHINESE_NEW_WORD_NOTEBOOK);
+        ActivityManager.startGoodSentenceNotebookActivity(this, Constants.CHINESE_TYPE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMinorityLanguageGoodSentenceEvent(MinorityLanguageGoodSentenceEvent event) {
-        ActivityManager.startGoodSentenceNotebookActivity(this, Constants.JAPANESE_NEW_WORD_NOTEBOOK);
+        ActivityManager.startGoodSentenceNotebookActivity(this, Constants.OTHER_TYPE);
     }
 
     @Override

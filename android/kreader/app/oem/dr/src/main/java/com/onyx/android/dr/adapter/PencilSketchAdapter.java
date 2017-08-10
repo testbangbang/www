@@ -15,6 +15,7 @@ import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -24,8 +25,8 @@ import butterknife.ButterKnife;
  * Created by zhouzhiming on 17-7-11.
  */
 public class PencilSketchAdapter extends PageRecyclerView.PageAdapter<PencilSketchAdapter.ViewHolder> {
-    private List<NoteModel> dataList;
-    private List<Boolean> listCheck;
+    private List<NoteModel> dataList = new ArrayList<>();
+    private List<Boolean> listCheck = new ArrayList<>();
     private OnItemClickListener onItemClickListener;
 
     public void setDataList(List<NoteModel> dataList, List<Boolean> listCheck) {

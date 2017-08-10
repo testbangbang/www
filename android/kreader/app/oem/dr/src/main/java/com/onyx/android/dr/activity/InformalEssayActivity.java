@@ -9,6 +9,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.InformalEssayAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.dialog.TimePickerDialog;
 import com.onyx.android.dr.interfaces.InformalEssayView;
@@ -42,6 +43,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     private List<InformalEssayEntity> informalEssayList;
     private ArrayList<Boolean> listCheck;
     private TimePickerDialog timePickerDialog;
+    private int jumpSource = 0;
 
     @Override
     protected Integer getLayoutId() {
@@ -70,7 +72,23 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         informalEssayList = new ArrayList<InformalEssayEntity>();
         listCheck = new ArrayList<>();
         timePickerDialog = new TimePickerDialog(this);
+        getIntentData();
         initEvent();
+    }
+
+    private void getIntentData() {
+        jumpSource = getIntent().getIntExtra(Constants.JUMP_SOURCE, -1);
+        if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY){
+            shareInformalEssay.setText(getString(R.string.infromal_essay_activity_share));
+            exportInformalEssay.setVisibility(View.VISIBLE);
+            deleteInformalEssay.setVisibility(View.VISIBLE);
+            newInformalEssay.setVisibility(View.VISIBLE);
+        }else if (jumpSource == Constants.RECORD_TIME_SETTING_TO_INFORMAL_ESSAY) {
+            shareInformalEssay.setText(getString(R.string.next_step));
+            exportInformalEssay.setVisibility(View.GONE);
+            deleteInformalEssay.setVisibility(View.GONE);
+            newInformalEssay.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -95,12 +113,18 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         informalEssayAdapter.setOnItemListener(new InformalEssayAdapter.OnItemClickListener() {
             @Override
             public void setOnItemClick(int position, boolean isCheck) {
-                listCheck.set(position, isCheck);
+                if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY){
+                    listCheck.set(position, isCheck);
+                }else if (jumpSource == Constants.RECORD_TIME_SETTING_TO_INFORMAL_ESSAY) {
+                    CommonNotices.showMessage(InformalEssayActivity.this, informalEssayList.get(position).content);
+                }
             }
 
             @Override
             public void setOnItemCheckedChanged(int position, boolean isCheck) {
-                listCheck.set(position, isCheck);
+                if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY){
+                    listCheck.set(position, isCheck);
+                }
             }
         });
     }
@@ -119,10 +143,14 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
                 informalEssayPresenter.remoteAdapterDatas(listCheck, informalEssayAdapter);
                 break;
             case R.id.infromal_essay_activity_export:
-                timePickerDialog.showDatePickerDialog();
+                if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY){
+                    timePickerDialog.showDatePickerDialog();
+                }else if (jumpSource == Constants.RECORD_TIME_SETTING_TO_INFORMAL_ESSAY) {
+
+                }
                 break;
             case R.id.infromal_essay_activity_new:
-                ActivityManager.startAddInfromalEssayActivity(this);
+                ActivityManager.startAddInformalEssayActivity(this);
                 break;
         }
     }

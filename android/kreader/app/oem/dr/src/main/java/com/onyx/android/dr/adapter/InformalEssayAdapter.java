@@ -61,7 +61,6 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
         holder.time.setText(TimeUtils.getDate(currentTime));
         holder.title.setText(bean.title);
         holder.wordNumber.setText(bean.wordNumber);
-
         holder.checkBox.setChecked(listCheck.get(position));
         holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override

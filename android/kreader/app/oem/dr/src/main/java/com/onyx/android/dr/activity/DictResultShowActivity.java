@@ -36,6 +36,7 @@ import com.onyx.android.dr.interfaces.ActionSelectListener;
 import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
 import com.onyx.android.dr.util.DictPreference;
+import com.onyx.android.dr.util.OperatingDataManager;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.conf.AppConfig;
@@ -156,7 +157,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     protected void initData() {
         queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
-        dictPresenter = new DictFunctionPresenter(getApplicationContext(), this);
+        dictPresenter = new DictFunctionPresenter(this);
         DictPreference.init(this);
         dictPresenter.loadData(this);
         dictPresenter.loadTabMenu(Constants.ACCOUNT_TYPE_DICT_FUNCTION);
@@ -460,7 +461,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         bean.setDictionaryLookup(dictionaryLookup);
         bean.setReadingMatter("");
         bean.setNewWordType(dictType);
-        dictPresenter.insertNewWord(bean);
+        OperatingDataManager.getInstance().insertNewWord(bean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -475,7 +476,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         bean.setReadingMatter(dictionaryLookup);
         bean.setPageNumber("");
         bean.setGoodSentenceType(dictType);
-        dictPresenter.insertGoodSentence(bean);
+        OperatingDataManager.getInstance().insertGoodSentence(bean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

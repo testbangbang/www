@@ -106,4 +106,9 @@
     <dimen name="title_interval_margin_left">1dp</dimen>
     <dimen name="new_word_activity_buttom_height">120dp</dimen>
     <dimen name="item_sketch_title_checkbox_margin_left">20dp</dimen>
+    <dimen name="dialog_time_selector_padding">5dp</dimen>
+    <dimen name="record_time_activity_text_view_margin_top">20dp</dimen>
+    <dimen name="record_time_activity_hint_margin_top">30dp</dimen>
+    <dimen name="tab_speech_time_padding">5dp</dimen>
+    <dimen name="hear_and_speak_activity_view_margin_top">10dp</dimen>
 </resources>
