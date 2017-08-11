@@ -123,6 +123,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     @Override
     protected void onDestroy() {
+        ReaderTabHostBroadcastReceiver.setCallback(null);
         deviceReceiver.enable(this, false);
         saveReaderTabState();
         super.onDestroy();

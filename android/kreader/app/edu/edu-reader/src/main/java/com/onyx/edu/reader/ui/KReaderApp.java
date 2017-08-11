@@ -15,6 +15,7 @@ import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ReaderNoteGeneratedDatabaseHolder;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,15 @@ public class KReaderApp extends ReaderBaseApp {
 
         instance = this;
         Debug.d(getClass(), "onCreate: " + PackageUtils.getAppVersionName(this));
+        installLeakCanary();
+    }
+
+    private void installLeakCanary() {
+        if (Debug.getDebug()) {
+            Debug.d(getClass(), "installLeakCanary");
+            LeakCanary.install(this);
+        }
+
     }
 
     public static KReaderApp instance() {
