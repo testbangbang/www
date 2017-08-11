@@ -1,6 +1,9 @@
 package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
@@ -22,6 +25,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
  * Created by zhouzhiming on 17-7-11.
@@ -29,6 +33,12 @@ import butterknife.Bind;
 public class GoodSentenceTypeActivity extends BaseActivity implements GoodSentenceTpyeView {
     @Bind(R.id.good_sentence_activity_type_recyclerview)
     PageRecyclerView typeRecyclerView;
+    @Bind(R.id.image_view_back)
+    ImageView imageViewBack;
+    @Bind(R.id.title_bar_title)
+    TextView title;
+    @Bind(R.id.image)
+    ImageView image;
     private DividerItemDecoration dividerItemDecoration;
     private GoodSentenceTypeAdapter goodSentenceTypeAdapter;
     private GoodSentenceTypePresenter goodSentenceTypePresenter;
@@ -60,8 +70,14 @@ public class GoodSentenceTypeActivity extends BaseActivity implements GoodSenten
 
     @Override
     protected void initData() {
+        initTitleData();
         initGoodSentenceData();
         initEvent();
+    }
+
+    private void initTitleData() {
+        image.setImageResource(R.drawable.good_sentence_notebook);
+        title.setText(getString(R.string.good_sentence_notebook));
     }
 
     private void initGoodSentenceData() {
@@ -77,6 +93,15 @@ public class GoodSentenceTypeActivity extends BaseActivity implements GoodSenten
     }
 
     public void initEvent() {
+    }
+
+    @OnClick({R.id.image_view_back})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.image_view_back:
+                finish();
+                break;
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

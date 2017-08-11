@@ -84,6 +84,10 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     ImageView ivVoiceOne;
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
+    @Bind(R.id.title_bar_title)
+    TextView title;
+    @Bind(R.id.image)
+    ImageView image;
     @Bind(R.id.dict_result_activity_function_container)
     LinearLayout functionContainer;
     private DictFunctionPresenter dictPresenter;
@@ -161,11 +165,23 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         DictPreference.init(this);
         dictPresenter.loadData(this);
         dictPresenter.loadTabMenu(Constants.ACCOUNT_TYPE_DICT_FUNCTION);
+        initTitleData();
         initItemData();
         getIntentDatas();
         initSound();
         settingDictionaryFunction();
         initEvent();
+    }
+
+    private void initTitleData() {
+        image.setImageResource(R.drawable.new_word_notebook);
+        if (dictType == Constants.ENGLISH_TYPE) {
+            title.setText(getString(R.string.dict_query_language));
+        } else if (dictType == Constants.CHINESE_TYPE) {
+            title.setText(getString(R.string.dict_query_chinese_language));
+        }else if (dictType == Constants.OTHER_TYPE) {
+            title.setText(getString(R.string.minority_language_new_word_notebook));
+        }
     }
 
     private void initItemData() {
@@ -373,7 +389,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
                 resultView.prevPage();
                 break;
             case KeyEvent.KEYCODE_BACK:
-                resultView.stopPlayer(0);
+                if (resultView != null) {
+                    resultView.stopPlayer(0);
+                }
                 break;
         }
         return super.onKeyUp(keyCode, event);

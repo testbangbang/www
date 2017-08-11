@@ -11,7 +11,7 @@
         android:layout_height="wrap_content" />
 
     <RelativeLayout
-        android:id="@+id/infromal_essay_activity_buttom"
+        android:id="@+id/informal_essay_activity_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
@@ -45,7 +45,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/infromal_essay_activity_buttom"
+        android:layout_above="@id/informal_essay_activity_bottom"
         android:layout_below="@id/title_bar"
         android:orientation="vertical">
 

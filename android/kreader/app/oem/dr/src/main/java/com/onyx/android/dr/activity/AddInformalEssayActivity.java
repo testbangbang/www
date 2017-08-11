@@ -2,6 +2,7 @@ package com.onyx.android.dr.activity;
 
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
@@ -32,6 +33,12 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
     TextView rightMenu;
     @Bind(R.id.add_infromal_essay_activity_content)
     DefaultEditText contentEditText;
+    @Bind(R.id.image_view_back)
+    ImageView imageViewBack;
+    @Bind(R.id.title_bar_title)
+    TextView title;
+    @Bind(R.id.image)
+    ImageView image;
     private InformalEssayPresenter infromalEssayPresenter;
 
     @Override
@@ -57,6 +64,8 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
         rightMenu.setVisibility(View.VISIBLE);
         rightMenu.setText(R.string.save_button);
         rightMenu.setTextSize(getResources().getDimension(R.dimen.level_two_font_size));
+        image.setImageResource(R.drawable.informal_essay);
+        title.setText(getString(R.string.informal_essay));
     }
 
     @Override

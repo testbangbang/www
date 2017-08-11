@@ -2,6 +2,8 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -37,6 +39,14 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     TextView deleteInformalEssay;
     @Bind(R.id.infromal_essay_activity_new)
     TextView newInformalEssay;
+    @Bind(R.id.image)
+    ImageView image;
+    @Bind(R.id.image_view_back)
+    ImageView imageViewBack;
+    @Bind(R.id.title_bar_title)
+    TextView title;
+    @Bind(R.id.informal_essay_activity_bottom)
+    RelativeLayout bottomContainer;
     private DividerItemDecoration dividerItemDecoration;
     private InformalEssayAdapter informalEssayAdapter;
     private InformalEssayPresenter informalEssayPresenter;
@@ -44,6 +54,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     private ArrayList<Boolean> listCheck;
     private TimePickerDialog timePickerDialog;
     private int jumpSource = 0;
+    private String informalEssayContent = "";
 
     @Override
     protected Integer getLayoutId() {
@@ -78,16 +89,14 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
 
     private void getIntentData() {
         jumpSource = getIntent().getIntExtra(Constants.JUMP_SOURCE, -1);
-        if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY){
-            shareInformalEssay.setText(getString(R.string.infromal_essay_activity_share));
-            exportInformalEssay.setVisibility(View.VISIBLE);
-            deleteInformalEssay.setVisibility(View.VISIBLE);
-            newInformalEssay.setVisibility(View.VISIBLE);
-        }else if (jumpSource == Constants.RECORD_TIME_SETTING_TO_INFORMAL_ESSAY) {
-            shareInformalEssay.setText(getString(R.string.next_step));
-            exportInformalEssay.setVisibility(View.GONE);
-            deleteInformalEssay.setVisibility(View.GONE);
-            newInformalEssay.setVisibility(View.GONE);
+        if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY) {
+            bottomContainer.setVisibility(View.VISIBLE);
+            image.setImageResource(R.drawable.informal_essay);
+            title.setText(getString(R.string.informal_essay));
+        } else if (jumpSource == Constants.RECORD_TIME_SETTING_TO_INFORMAL_ESSAY) {
+            bottomContainer.setVisibility(View.GONE);
+            image.setImageResource(R.drawable.speech_recording);
+            title.setText(getString(R.string.speech_recording));
         }
     }
 
@@ -113,16 +122,17 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         informalEssayAdapter.setOnItemListener(new InformalEssayAdapter.OnItemClickListener() {
             @Override
             public void setOnItemClick(int position, boolean isCheck) {
-                if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY){
+                if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY) {
                     listCheck.set(position, isCheck);
-                }else if (jumpSource == Constants.RECORD_TIME_SETTING_TO_INFORMAL_ESSAY) {
-                    CommonNotices.showMessage(InformalEssayActivity.this, informalEssayList.get(position).content);
+                } else if (jumpSource == Constants.RECORD_TIME_SETTING_TO_INFORMAL_ESSAY) {
+                    informalEssayContent = informalEssayList.get(position).content;
+                    ActivityManager.startSpeechRecordingActivity(InformalEssayActivity.this, informalEssayContent);
                 }
             }
 
             @Override
             public void setOnItemCheckedChanged(int position, boolean isCheck) {
-                if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY){
+                if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY) {
                     listCheck.set(position, isCheck);
                 }
             }
@@ -143,11 +153,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
                 informalEssayPresenter.remoteAdapterDatas(listCheck, informalEssayAdapter);
                 break;
             case R.id.infromal_essay_activity_export:
-                if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY){
-                    timePickerDialog.showDatePickerDialog();
-                }else if (jumpSource == Constants.RECORD_TIME_SETTING_TO_INFORMAL_ESSAY) {
-
-                }
+                timePickerDialog.showDatePickerDialog();
                 break;
             case R.id.infromal_essay_activity_new:
                 ActivityManager.startAddInformalEssayActivity(this);

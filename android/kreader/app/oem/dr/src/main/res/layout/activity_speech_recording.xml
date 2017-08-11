@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/speech_recording_activity_content"
+        android:layout_below="@+id/title_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/record_time_activity_hint_margin_top"
+        android:text="@string/set_speech_time"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/level_one_font_size" />
+
+    <RelativeLayout
+        android:id="@+id/record_time_activity_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/record_time_activity_next_step"
+            style="@style/new_word_notebook_textview_style"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:text="@string/next_step" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/record_time_activity_bottom"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/speech_recording_activity_start_lecture"
+            style="@style/new_word_notebook_textview_style"
+            android:clickable="true"
+            android:text="@string/start_lecture" />
+
+        <TextView
+            android:id="@+id/speech_recording_activity_record_playback"
+            style="@style/new_word_notebook_textview_style"
+            android:clickable="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/record_playback" />
+
+    </RelativeLayout>
+</RelativeLayout>

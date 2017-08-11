@@ -2,6 +2,7 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -30,6 +31,12 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
     TextView deleteInfromalEssay;
     @Bind(R.id.memorandum_activity_new)
     TextView newInfromalEssay;
+    @Bind(R.id.image_view_back)
+    ImageView imageViewBack;
+    @Bind(R.id.title_bar_title)
+    TextView title;
+    @Bind(R.id.image)
+    ImageView image;
     private DividerItemDecoration dividerItemDecoration;
     private MemorandumAdapter memorandumAdapter;
     private MemorandumPresenter memorandumPresenter;
@@ -47,10 +54,10 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
 
     @Override
     protected void initView() {
-        initRecylcerView();
+        initRecyclerView();
     }
 
-    private void initRecylcerView() {
+    private void initRecyclerView() {
         dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         memorandumAdapter = new MemorandumAdapter();
@@ -62,7 +69,13 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
     protected void initData() {
         memorandumList = new ArrayList<MemorandumEntity>();
         listCheck = new ArrayList<>();
+        initTitleData();
         initEvent();
+    }
+
+    private void initTitleData() {
+        image.setImageResource(R.drawable.memorandum);
+        title.setText(getString(R.string.memorandum));
     }
 
     @Override
