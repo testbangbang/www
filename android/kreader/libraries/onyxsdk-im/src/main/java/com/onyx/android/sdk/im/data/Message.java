@@ -85,12 +85,23 @@ public class Message {
         this.content = content;
     }
 
+    public Message(String channel, String action, String content, String event) {
+        this.channel = channel;
+        this.action = action;
+        this.content = content;
+        this.event = event;
+    }
+
     public Message(String action) {
         this.action = action;
     }
 
     public static Message create(String channel, String action, String type, String id, String content) {
         return new Message(channel, action, type, id, content);
+    }
+
+    public static Message create(String channel, String action, String content, String event) {
+        return new Message(channel, action, content, event);
     }
 
     public static Message create(String action, String content) {

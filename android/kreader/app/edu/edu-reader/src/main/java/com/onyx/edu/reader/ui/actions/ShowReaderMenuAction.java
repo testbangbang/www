@@ -843,9 +843,6 @@ public class ShowReaderMenuAction extends BaseAction {
             case HandlerManager.FORM_PROVIDER:
                 formMenuActon = new ShowFormMenuAction(readerMenuViewData, actionCallback);
                 break;
-            case HandlerManager.FORM_VOTE_PROVIDER:
-                formMenuActon = new ShowFormVoteMenuAction(readerMenuViewData, actionCallback);
-                break;
             case HandlerManager.FORM_INTERACTIVE_PROVIDER:
                 formMenuActon = new ShowFormInteractiveMenuAction(readerMenuViewData, actionCallback);
                 break;

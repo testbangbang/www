@@ -935,9 +935,11 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void onScribbleMenuSizeChanged(final ScribbleMenuChangedEvent event) {
         Rect rect = new Rect();
         surfaceView.getLocalVisibleRect(rect);
-        Rect formRect = getFormScribbleRect();
-        if (formRect != null) {
-            rect = formRect;
+        if (getReaderDataHolder().inFormProvider() && getReaderDataHolder().getHandlerManager().isEnableNoteInScribbleForm()) {
+            Rect formRect = getFormScribbleRect();
+            if (formRect != null) {
+                rect = formRect;
+            }
         }
         int bottomOfTopToolBar = event.getBottomOfTopToolBar();
         int topOfBottomToolBar = event.getTopOfBottomToolBar();
@@ -954,11 +956,16 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private Rect getFormScribbleRect() {
-        if (!(getHandlerManager().getActiveProvider() instanceof FormBaseHandler)) {
-            return null;
+        Rect rect = null;
+        for (View formFieldControl : formFieldControls) {
+            if (isFormScribble(formFieldControl)) {
+                ReaderFormField field = (ReaderFormField) formFieldControl.getTag();
+                RectF rectF = field.getRect();
+                rect = new Rect((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom);
+                break;
+            }
         }
-        FormBaseHandler formBaseHandler = (FormBaseHandler) getHandlerManager().getActiveProvider();
-        return formBaseHandler.getFormScribbleRect();
+        return rect;
     }
 
     private List<RectF> getExcludeRect(final RectF scribbleMenuExcludeRect) {
