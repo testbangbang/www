@@ -151,25 +151,13 @@ public class FormBaseHandler extends ReadingHandler {
 
     }
 
-    public Rect getFormScribbleRect() {
-        Rect rect = null;
-        for (View formFieldControl : formFieldControls) {
-            if (isFormScribble(formFieldControl)) {
-                ReaderFormField field = (ReaderFormField) formFieldControl.getTag();
-                RectF rectF = field.getRect();
-                rect = new Rect((int) rectF.left, (int) rectF.top, (int) rectF.right, (int) rectF.bottom);
-                break;
-            }
-        }
-        return rect;
-    }
-
-    private boolean isFormScribble(View view) {
-        return view.getTag() instanceof ReaderFormScribble;
-    }
-
     private void processCheckBoxForm(CheckBox checkBox) {
         final ReaderFormField field = getReaderFormField(checkBox);
+        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());
+        if (formShapeModel != null) {
+            FormValue value = formShapeModel.getFormValue();
+            checkBox.setChecked(value.isCheck());
+        }
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -177,11 +165,6 @@ public class FormBaseHandler extends ReadingHandler {
                 flushFormShapes(field.getName(), field.getRect(), ReaderShapeFactory.SHAPE_FORM_MULTIPLE_SELECTION,  value);
             }
         });
-        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());
-        if (formShapeModel != null) {
-            FormValue value = formShapeModel.getFormValue();
-            checkBox.setChecked(value.isCheck());
-        }
     }
 
     private void flushFormShapes(String fieldId, RectF formRect, int formType, FormValue value) {
@@ -199,12 +182,17 @@ public class FormBaseHandler extends ReadingHandler {
         new FlushFormShapesAction(shapes, isEnableNoteDrawing()).execute(getReaderDataHolder(), null);
     }
 
-    private ReaderFormField getReaderFormField(View view) {
+    public ReaderFormField getReaderFormField(View view) {
         return (ReaderFormField) view.getTag();
     }
 
     private void processRadioGroupForm(final RelativeRadioGroup radioGroup) {
         final ReaderFormField groupField = getReaderFormField(radioGroup);
+        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), groupField.getName());
+        if (formShapeModel != null) {
+            FormValue value = formShapeModel.getFormValue();
+            radioGroup.check(value.getIndex());
+        }
         radioGroup.setOnCheckedChangeListener(new RelativeRadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RelativeRadioGroup group, @IdRes int checkedId) {
@@ -215,12 +203,6 @@ public class FormBaseHandler extends ReadingHandler {
                 flushFormShapes(groupField.getName(), field.getRect(), ReaderShapeFactory.SHAPE_FORM_SINGLE_SELECTION,  value);
             }
         });
-
-        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), groupField.getName());
-        if (formShapeModel != null) {
-            FormValue value = formShapeModel.getFormValue();
-            radioGroup.check(value.getIndex());
-        }
     }
 
     private void processEditTextForm(final EditText editText) {
@@ -414,14 +396,10 @@ public class FormBaseHandler extends ReadingHandler {
         new RemoveFormShapesAction(shapeIds).execute(getReaderDataHolder(), null);
     }
 
-    protected boolean isEnableNoteWhenHaveScribbleForm() {
-        return true;
-    }
-
     protected void join(String event) {
         Message message = new Message();
         message.setChannel(event);
-        message.setEvent(event);
+        message.setEvent(Constant.EVENT_JOIN);
         message.setMac(NetworkUtil.getMacAddress(getContext()));
         message.setContent(getReaderDataHolder().getAccount().name);
         getReaderDataHolder().emitIMMessage(message);

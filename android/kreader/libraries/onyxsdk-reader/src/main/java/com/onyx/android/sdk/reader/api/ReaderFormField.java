@@ -15,13 +15,13 @@ import java.util.List;
 public class ReaderFormField {
     private String name;
     private RectF rect;
-
-    public ReaderFormAttributes getFormAttributes() {
-        return getFormAttributesByName(name);
-    }
+    private ReaderFormAttributes attributes;
 
     public static ReaderFormAttributes getFormAttributesByName(String name) {
         if (StringUtils.isNullOrEmpty(name)) {
+            return null;
+        }
+        if (!name.startsWith("{")) {
             return null;
         }
         return JSONObjectParseUtils.parseObject(name, ReaderFormAttributes.class);
@@ -29,17 +29,30 @@ public class ReaderFormField {
 
     public ReaderFormAction getFormAction() {
         ReaderFormAction action = ReaderFormAction.INVALID;
-        ReaderFormAttributes formAttributes = getFormAttributes();
-        if (formAttributes == null) {
+        if (attributes == null || StringUtils.isNullOrEmpty(attributes.getAction())) {
             return action;
         }
         try {
-            action = ReaderFormAction.valueOf(formAttributes.getAction().toUpperCase().trim());
+            action = ReaderFormAction.valueOf(attributes.getAction().toUpperCase().trim());
         }catch (Exception e) {
             e.printStackTrace();
             return action;
         }
         return action;
+    }
+
+    public ReaderFormUse getFormUse() {
+        ReaderFormUse use = ReaderFormUse.INVALID;
+        if (attributes == null || StringUtils.isNullOrEmpty(attributes.getUse())) {
+            return use;
+        }
+        try {
+            use = ReaderFormUse.valueOf(attributes.getUse().toUpperCase().trim());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return use;
+        }
+        return use;
     }
 
     public static ReaderFormType getFormTypeByName(String name) {
@@ -60,16 +73,23 @@ public class ReaderFormField {
     protected ReaderFormField() {
         name = "";
         rect = new RectF();
+        init(name, rect);
     }
 
     protected ReaderFormField(String name) {
         this.name = name;
         rect = new RectF();
+        init(name, rect);
     }
 
     protected ReaderFormField(String name, float left, float top, float right, float bottom) {
         this.name = name;
         rect = new RectF(left, top, right, bottom);
+        init(name, rect);
+    }
+
+    private void init(String name, RectF rect) {
+        attributes = getFormAttributesByName(name);
     }
 
     public static void addToFieldList(List<ReaderFormField> list, ReaderFormField field) {

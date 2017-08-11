@@ -56,7 +56,7 @@ public class IMAdapter {
         if (event == null) {
             return;
         }
-        getSocketIOClient().emit(event.getMessage().getEvent(), event.getMessage());
+        getSocketIOClient().emit(event.getMessage().getEvent(), JSONObjectParseUtils.toJson(event.getMessage()));
     }
 
     @Subscribe
