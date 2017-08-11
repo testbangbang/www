@@ -21,6 +21,9 @@ public class ReaderFormField {
         if (StringUtils.isNullOrEmpty(name)) {
             return null;
         }
+        if (!name.startsWith("{")) {
+            return null;
+        }
         return JSONObjectParseUtils.parseObject(name, ReaderFormAttributes.class);
     }
 

@@ -935,7 +935,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void onScribbleMenuSizeChanged(final ScribbleMenuChangedEvent event) {
         Rect rect = new Rect();
         surfaceView.getLocalVisibleRect(rect);
-        if (getReaderDataHolder().inFormProvider() && getReaderDataHolder().getHandlerManager().isEnableNoteWhenHaveScribbleForm()) {
+        if (getReaderDataHolder().inFormProvider() && getReaderDataHolder().getHandlerManager().isEnableNoteInScribbleForm()) {
             Rect formRect = getFormScribbleRect();
             if (formRect != null) {
                 rect = formRect;

@@ -681,7 +681,7 @@ public class HandlerManager {
         return getActiveProvider().isEnableNoteDrawing();
     }
 
-    public boolean isEnableNoteWhenHaveScribbleForm() {
-        return getActiveProvider().isEnableNoteWhenHaveScribbleForm();
+    public boolean isEnableNoteInScribbleForm() {
+        return getActiveProvider().isEnableNoteInScribbleForm();
     }
 }

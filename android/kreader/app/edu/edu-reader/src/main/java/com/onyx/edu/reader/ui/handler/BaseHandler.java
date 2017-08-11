@@ -427,5 +427,5 @@ public abstract class BaseHandler {
 
     public void onReceivedIMMessage(Message message) {}
 
-    public boolean isEnableNoteWhenHaveScribbleForm() { return true;}
+    public boolean isEnableNoteInScribbleForm() { return true;}
 }

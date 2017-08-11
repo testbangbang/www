@@ -581,7 +581,7 @@ public class NoteManager {
         if (!parent.inFormProvider()) {
             return;
         }
-        if (!parent.getHandlerManager().isEnableNoteWhenHaveScribbleForm()) {
+        if (!parent.getHandlerManager().isEnableNoteInScribbleForm()) {
             shape.setFormShape(true);
             return;
         }

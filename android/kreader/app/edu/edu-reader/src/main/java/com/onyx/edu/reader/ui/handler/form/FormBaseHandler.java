@@ -2,7 +2,6 @@ package com.onyx.edu.reader.ui.handler.form;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.IdRes;
 import android.text.Editable;
@@ -22,13 +21,11 @@ import com.onyx.android.sdk.im.IMConfig;
 import com.onyx.android.sdk.im.data.Message;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormPushButton;
-import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.RelativeRadioGroup;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.note.actions.FlushFormShapesAction;
@@ -45,7 +42,6 @@ import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.ReadingHandler;
-import com.onyx.edu.reader.ui.events.im.IMAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +86,7 @@ public class FormBaseHandler extends ReadingHandler {
 
     private void initNoteDrawingState(ReaderDataHolder readerDataHolder) {
         boolean enableNoteDrawing = isEnableNoteDrawing();
-        if (isEnableNoteWhenHaveScribbleForm()) {
+        if (isEnableNoteInScribbleForm()) {
             enableNoteDrawing = readerDataHolder.hasScribbleFormField();
         }
         enableNoteDrawing &= !readerDataHolder.hasDialogShowing();

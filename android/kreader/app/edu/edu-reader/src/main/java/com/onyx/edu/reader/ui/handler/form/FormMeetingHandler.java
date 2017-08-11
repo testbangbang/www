@@ -44,7 +44,7 @@ public class FormMeetingHandler extends FormBaseHandler {
     }
 
     @Override
-    public boolean isEnableNoteWhenHaveScribbleForm() {
+    public boolean isEnableNoteInScribbleForm() {
         return false;
     }
 
