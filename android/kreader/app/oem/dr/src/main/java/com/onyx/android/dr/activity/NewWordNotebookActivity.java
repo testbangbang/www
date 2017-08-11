@@ -2,6 +2,7 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -32,6 +33,12 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     TextView delete;
     @Bind(R.id.new_word_activity_export)
     TextView export;
+    @Bind(R.id.image_view_back)
+    ImageView imageViewBack;
+    @Bind(R.id.title_bar_title)
+    TextView title;
+    @Bind(R.id.image)
+    ImageView image;
     private DividerItemDecoration dividerItemDecoration;
     private NewWordAdapter newWordAdapter;
     private NewWordPresenter newWordPresenter;
@@ -69,14 +76,26 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         newWordList = new ArrayList<NewWordNoteBookEntity>();
         listCheck = new ArrayList<>();
         timePickerDialog = new TimePickerDialog(this);
-        loadNewWordDatas();
+        loadNewWordData();
         initEvent();
     }
 
-    private void loadNewWordDatas() {
+    private void loadNewWordData() {
         dictType = getIntent().getIntExtra(Constants.DICTTYPE, -1);
         newWordPresenter = new NewWordPresenter(getApplicationContext(), this);
         newWordPresenter.getAllNewWordByType(dictType);
+        initTitleData();
+    }
+
+    private void initTitleData() {
+        image.setImageResource(R.drawable.new_word_notebook);
+        if (dictType == Constants.ENGLISH_TYPE) {
+            title.setText(getString(R.string.english_new_word_notebook));
+        } else if (dictType == Constants.CHINESE_TYPE) {
+            title.setText(getString(R.string.chinese_new_word_notebook));
+        }else if (dictType == Constants.OTHER_TYPE) {
+            title.setText(getString(R.string.dict_query_japanese_language));
+        }
     }
 
     @Override
