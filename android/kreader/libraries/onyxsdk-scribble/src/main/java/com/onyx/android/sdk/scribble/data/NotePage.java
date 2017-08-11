@@ -275,7 +275,6 @@ public class NotePage {
             renderMatrix.reset();
             renderMatrix.postScale(shape.getScale(), shape.getScale());
             renderContext.setMatrix(renderMatrix);
-            renderContext.force = shape.getScale() > 1.0f;
             shape.render(renderContext);
             if (callback != null && callback.isRenderAbort()) {
                 break;
@@ -419,6 +418,15 @@ public class NotePage {
         }
         for (Shape shape : selectedShapeList) {
             shape.setScale(scale);
+        }
+    }
+
+    public void setTranslateToSelectShapeList(float dX, float dY) {
+        if (selectedShapeList.size() <= 0) {
+            return;
+        }
+        for (Shape shape : selectedShapeList) {
+            shape.onTranslate(dX, dY);
         }
     }
 }

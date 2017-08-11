@@ -9,13 +9,13 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
  * Created by john on 5/8/2017.
  */
 
-public class ShapeSelectionRequest extends AsyncBaseNoteRequest {
+public class ShapeShowTransformRectRequest extends AsyncBaseNoteRequest {
 
     private static final String TAG = PageFlushRequest.class.getSimpleName();
     private volatile TouchPoint start;
     private volatile TouchPoint end;
 
-    public ShapeSelectionRequest(final TouchPoint s, final TouchPoint e) {
+    public ShapeShowTransformRectRequest(final TouchPoint s, final TouchPoint e) {
         super();
         setAbortPendingTasks(false);
         setPauseInputProcessor(true);
@@ -32,6 +32,6 @@ public class ShapeSelectionRequest extends AsyncBaseNoteRequest {
         benchmarkStart();
         setRender(true);
         renderCurrentPageInBitmap(helper);
-        renderSelectionRectangle(helper, start, end);
+        renderShapeMovingRectangle(helper, start, end);
     }
 }

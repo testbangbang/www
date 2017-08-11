@@ -207,6 +207,8 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
         for (PageInfo page : getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
+            //TODO:if select Rect is not null,means some shape is selected.with shape transform,we always need to reConfig point by matrix.
+            renderContext.force = notePage.getSelectedRect() != null;
             notePage.render(renderContext, null);
             parent.renderSelectedRect(notePage.getSelectedRect(), renderContext);
         }
@@ -223,6 +225,16 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         Paint paint = preparePaint(parent);
         paint.setPathEffect(parent.selectedDashPathEffect);
         RectF rect = new RectF(start.getX(), start.getY(), end.getX(), end.getY());
+        canvas.drawRect(rect, paint);
+    }
+
+    public void renderShapeMovingRectangle(final AsyncNoteViewHelper parent, final TouchPoint start, final TouchPoint end) {
+        Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = preparePaint(parent);
+        paint.setPathEffect(parent.selectedDashPathEffect);
+        RectF rect = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect();
+        rect.offset(end.getX() - rect.centerX(), end.getY() - rect.centerY());
         canvas.drawRect(rect, paint);
     }
 
@@ -366,9 +378,6 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         renderVisiblePagesInBitmap(helper);
     }
 
-    public void renderSelectionRect(final AsyncNoteViewHelper helper, final TouchPoint start, final TouchPoint end) {
-        renderSelectionRectangle(helper, start, end);
-    }
 
     public void updateShapeDataInfo(final AsyncNoteViewHelper parent) {
         final ShapeDataInfo shapeDataInfo = getShapeDataInfo();
