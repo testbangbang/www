@@ -578,6 +578,13 @@ public class NoteManager {
     }
 
     private void detectionScribbleFormShape(final PageInfo pageInfo, final Shape shape, final TouchPoint origin) {
+        if (!parent.inFormProvider()) {
+            return;
+        }
+        if (!parent.getHandlerManager().isEnableNoteInScribbleForm()) {
+            shape.setFormShape(true);
+            return;
+        }
         ReaderFormField field = getScribbleFormField(pageInfo, origin);
         if (field != null) {
             shape.setFormShape(true);

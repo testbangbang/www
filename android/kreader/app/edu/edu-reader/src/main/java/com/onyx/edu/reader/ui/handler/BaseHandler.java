@@ -426,4 +426,6 @@ public abstract class BaseHandler {
     public void activeIMService(){}
 
     public void onReceivedIMMessage(Message message) {}
+
+    public boolean isEnableNoteInScribbleForm() { return true;}
 }
