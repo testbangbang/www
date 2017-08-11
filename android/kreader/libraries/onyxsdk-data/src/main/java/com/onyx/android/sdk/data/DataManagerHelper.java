@@ -102,8 +102,17 @@ public class DataManagerHelper {
 
     public static void deleteAllLibrary(Context context, DataManager dataManager, String parentUniqueId,
                                         List<Library> libraryList) {
-        DataProviderBase providerBase = dataManager.getRemoteContentProvider();
+        deleteAllLibrary(context, dataManager.getRemoteContentProvider(), parentUniqueId, libraryList);
+    }
+
+    public static void deleteAllLibrary(Context context, DataProviderBase providerBase, String parentUniqueId,
+                                        List<Library> libraryList) {
         boolean isDeleteMetaCollection = StringUtils.isNullOrEmpty(parentUniqueId);
+        deleteAllLibrary(context, providerBase, parentUniqueId, libraryList, isDeleteMetaCollection);
+    }
+
+    public static void deleteAllLibrary(Context context, DataProviderBase providerBase, String parentUniqueId,
+                                        List<Library> libraryList, boolean isDeleteMetaCollection) {
         for (Library tmp : libraryList) {
             if (isDeleteMetaCollection) {
                 providerBase.deleteMetadataCollection(context, tmp.getIdString());
