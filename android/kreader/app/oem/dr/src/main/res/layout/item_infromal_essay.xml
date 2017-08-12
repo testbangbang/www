@@ -13,8 +13,8 @@
 
     <TextView
         android:id="@+id/infromal_essay_item_time"
-        style="@style/good_sentence_item_textview"
         android:layout_marginLeft="@dimen/title_interval_margin_left"
+        style="@style/good_sentence_item_textview"
         android:layout_weight="2"
         android:text="@string/infromal_essay_activity_time" />
 

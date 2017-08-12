@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
@@ -74,6 +75,10 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     Button japaneseSearch;
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
+    @Bind(R.id.title_bar_title)
+    TextView title;
+    @Bind(R.id.image)
+    ImageView image;
     @Bind(R.id.activity_query_chinese_linearlayout)
     LinearLayout chineseLinearLayout;
     @Bind(R.id.activity_query_english_linearlayout)
@@ -120,8 +125,14 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         dictPresenter = new DictFunctionPresenter(this);
         dictPresenter.loadData(this);
         dictPresenter.loadDictType(Constants.ACCOUNT_TYPE_DICT_LANGUAGE);
+        initTitleData();
         loadDictData();
         initEvent();
+    }
+
+    private void initTitleData() {
+        image.setImageResource(R.drawable.dictionary);
+        title.setText(getString(R.string.dictionary));
     }
 
     private void loadDictData() {

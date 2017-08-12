@@ -44,7 +44,6 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -114,6 +113,10 @@
             android:windowSoftInputMode="stateVisible|adjustResize" />
         
         <activity android:name=".reader.activity.AfterReadingActivity" />
+
+        <activity
+            android:name=".activity.SpeechRecordingActivity"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"

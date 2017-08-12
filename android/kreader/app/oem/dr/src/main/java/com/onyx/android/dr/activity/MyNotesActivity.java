@@ -1,5 +1,9 @@
 package com.onyx.android.dr.activity;
 
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.MyCreationAdapter;
@@ -24,6 +28,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
  * Created by zhouzhiming on 17-7-11.
@@ -35,6 +40,12 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     PageRecyclerView thinkRecyclerView;
     @Bind(R.id.my_notes_activity_creation_recyclerview)
     PageRecyclerView creationRecyclerView;
+    @Bind(R.id.image_view_back)
+    ImageView imageViewBack;
+    @Bind(R.id.title_bar_title)
+    TextView title;
+    @Bind(R.id.image)
+    ImageView image;
     private MyTracksAdapter myTracksAdapter;
     private MyThinkAdapter myThinkAdapter;
     private MyCreationAdapter myCreationAdapter;
@@ -51,10 +62,10 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
 
     @Override
     protected void initView() {
-        initRecylcerView();
+        initRecyclerView();
     }
 
-    private void initRecylcerView() {
+    private void initRecyclerView() {
         myTracksAdapter = new MyTracksAdapter();
         myThinkAdapter = new MyThinkAdapter();
         myCreationAdapter = new MyCreationAdapter();
@@ -70,7 +81,13 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
         myNotesPresenter.loadMyTracks(Constants.ACCOUNT_TYPE_MY_TRACKS);
         myNotesPresenter.loadMyThink(Constants.ACCOUNT_TYPE_MY_THINK);
         myNotesPresenter.loadMyCreation(Constants.ACCOUNT_TYPE_MY_CREATION);
+        initTitleData();
         initEvent();
+    }
+
+    private void initTitleData() {
+        image.setImageResource(R.drawable.my_note);
+        title.setText(getString(R.string.menu_notes));
     }
 
     @Override
@@ -92,6 +109,15 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     }
 
     public void initEvent() {
+    }
+
+    @OnClick({R.id.image_view_back})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.image_view_back:
+                finish();
+                break;
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

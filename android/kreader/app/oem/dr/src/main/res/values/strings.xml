@@ -329,4 +329,7 @@
     <string name="is_it_saved">Is it saved?</string>
     <string name="no_title">No title</string>
     <string name="Call_the_modified_file">Call the modified file</string>
+    <string name="start_lecture">start lecture</string>
+    <string name="record_playback">start lecture</string>
+    <string name="dictionary">dictionary</string>
 </resources>

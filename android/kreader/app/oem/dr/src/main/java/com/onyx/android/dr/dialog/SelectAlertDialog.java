@@ -1,5 +1,7 @@
 package com.onyx.android.dr.dialog;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -10,11 +12,11 @@ import com.onyx.android.dr.R;
 /**
  * Created by zhouzhiming on 2017/7/13.
  */
-public class SelectAlertDialog extends CommunityBaseDialog {
+public class SelectAlertDialog extends Dialog {
 	private LinearLayout contentView;
 
-	public SelectAlertDialog() {
-		super(DRApplication.getInstance(), R.style.base_dialog);
+	public SelectAlertDialog(Context context) {
+		super(context, R.style.base_dialog);
 		initUI();
 	}
 

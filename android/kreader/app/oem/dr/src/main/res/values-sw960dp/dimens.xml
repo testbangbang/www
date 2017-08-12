@@ -66,7 +66,7 @@
     <dimen name="dict_result_america_sound_margin_left">30dp</dimen>
     <dimen name="dict_result_english_sound_margin_left">20dp</dimen>
     <dimen name="dict_result_previous_margin_left">20dp</dimen>
-    <dimen name="dict_result_function_height">80dp</dimen>
+    <dimen name="dict_result_function_height">120dp</dimen>
     <dimen name="activity_query_search_margin_left">30dp</dimen>
     <dimen name="item_dict_query_padding">10dp</dimen>
     <dimen name="reader_page_indicator_padding">10dp</dimen>

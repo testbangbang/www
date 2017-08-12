@@ -284,7 +284,7 @@
     <string name="select_start_time">选择开始时间</string>
     <string name="select_end_time">选择结束时间</string>
     <string name="item_sketch_title">标题</string>
-    <string name="do_not_install_note_apk">没有安装笔记App</string>
+    <string name="do_not_install_note_apk">没有安装App</string>
     <string name="dict_query_japanese_language">日文</string>
     <string name="add_memorandum_activity_dialog_height" format="float" type="dimen">0.38</string>
     <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
@@ -324,4 +324,7 @@
     <string name="is_it_saved">确认删除吗?</string>
     <string name="no_title">无标题</string>
     <string name="Call_the_modified_file">调用批改文件</string>
+    <string name="start_lecture">开始演讲</string>
+    <string name="record_playback">录音回放</string>
+    <string name="dictionary">词典</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.onyx.android.dr.activity;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
@@ -33,6 +34,12 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
     TextView rightMenu;
     @Bind(R.id.add_memorandum_activity_content)
     DefaultEditText contentEditText;
+    @Bind(R.id.image_view_back)
+    ImageView imageViewBack;
+    @Bind(R.id.title_bar_title)
+    TextView title;
+    @Bind(R.id.image)
+    ImageView image;
     private AddMemorandumPresenter addMemorandumPresenter;
     private TimePickerDialog timePickerDialog;
     private String timeHorizon;
@@ -67,6 +74,8 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
         rightMenu.setVisibility(View.VISIBLE);
         rightMenu.setText(R.string.save_button);
         rightMenu.setTextSize(getResources().getDimension(R.dimen.level_two_font_size));
+        image.setImageResource(R.drawable.memorandum);
+        title.setText(getString(R.string.memorandum));
     }
 
     @Override

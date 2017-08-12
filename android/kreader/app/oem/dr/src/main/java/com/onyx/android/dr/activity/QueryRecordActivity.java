@@ -2,6 +2,7 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +45,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
  * Created by zhouzhiming on 17-7-11.
@@ -51,6 +53,12 @@ import butterknife.Bind;
 public class QueryRecordActivity extends BaseActivity implements QueryRecordView {
     @Bind(R.id.query_record_activity_recyclerview)
     PageRecyclerView queryRecordRecyclerView;
+    @Bind(R.id.image_view_back)
+    ImageView imageViewBack;
+    @Bind(R.id.title_bar_title)
+    TextView title;
+    @Bind(R.id.image)
+    ImageView image;
     private DividerItemDecoration dividerItemDecoration;
     private QueryRecordPresenter queryRecordPresenter;
     private QueryRecordAdapter queryRecordAdapter;
@@ -88,11 +96,11 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
 
     @Override
     protected void initView() {
-        initRecylcerView();
+        initRecyclerView();
         loadDialog();
     }
 
-    private void initRecylcerView() {
+    private void initRecyclerView() {
         dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         queryRecordAdapter = new QueryRecordAdapter();
@@ -108,8 +116,14 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         queryRecordPresenter = new QueryRecordPresenter(this);
         queryRecordPresenter.getAllQueryRecordData();
         dictSpinnerAdapter = new DictSpinnerAdapter(this);
+        initTitleData();
         loadDictionary();
         initEvent();
+    }
+
+    private void initTitleData() {
+        image.setImageResource(R.drawable.query_record);
+        title.setText(getString(R.string.query_record));
     }
 
     private void loadDictionary() {
@@ -145,7 +159,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     private void loadDialog() {
         RelativeLayout view = (RelativeLayout) LayoutInflater.from(this).inflate(
                 R.layout.dialog_word_query_result, null);
-        selectTimeDialog = new SelectAlertDialog();
+        selectTimeDialog = new SelectAlertDialog(this);
         // find id
         prevPageButton = (ImageView) view.findViewById(R.id.dialog_result_button_previous);
         pageIndicator = (TextView) view.findViewById(R.id.dialog_result_page_size_indicator);
@@ -318,7 +332,9 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                 resultView.prevPage();
                 break;
             case KeyEvent.KEYCODE_BACK:
-                resultView.stopPlayer(0);
+                if (resultView != null) {
+                    resultView.stopPlayer(0);
+                }
                 break;
         }
         return super.onKeyUp(keyCode, event);
@@ -359,6 +375,15 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         }
         String dictPath = dictionaryQueryResult.dictionary.dictPath;
         resultView.loadUrl("javascript:" + "showDict(\"" + dictName + "\",\"" + dictPath + "\")");
+    }
+
+    @OnClick({R.id.image_view_back})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.image_view_back:
+                finish();
+                break;
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

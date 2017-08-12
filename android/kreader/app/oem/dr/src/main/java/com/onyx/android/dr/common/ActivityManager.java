@@ -26,6 +26,7 @@ import com.onyx.android.dr.activity.QueryRecordActivity;
 import com.onyx.android.dr.activity.RecordTimeSettingActivity;
 import com.onyx.android.dr.reader.activity.AfterReadingActivity;
 import com.onyx.android.dr.reader.common.ReaderConstants;
+import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -161,6 +162,14 @@ public class ActivityManager {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, RecordTimeSettingActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startSpeechRecordingActivity(Context context, String content) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.INFORMAL_ESSAY_CONTENT, content);
+        intent.setClass(context, SpeechRecordingActivity.class);
         context.startActivity(intent);
     }
 

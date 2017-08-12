@@ -41,6 +41,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import butterknife.Bind;
 import butterknife.OnClick;
 
+import static com.onyx.android.dr.R.id.image_view_back;
+
+
 /**
  * Created by zhouzhiming on 17-7-11.
  */
@@ -59,6 +62,12 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     TextView incomeNewWordNote;
     @Bind(R.id.new_word_query_activity_baidubaike)
     TextView baiduBaike;
+    @Bind(image_view_back)
+    ImageView imageViewBack;
+    @Bind(R.id.title_bar_title)
+    TextView title;
+    @Bind(R.id.image)
+    ImageView image;
     private List<String> searchResultList = new ArrayList<String>();
     private DictionaryManager dictionaryManager;
     private QueryWordRequest queryWordRequest;
@@ -92,8 +101,14 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
         customFontSize = DRApplication.getInstance().getCustomFontSize();
         queryRecordPresenter = new QueryRecordPresenter(this);
         dictSpinnerAdapter = new DictSpinnerAdapter(this);
+        initTitleData();
         getIntentDatas();
         initEvent();
+    }
+
+    private void initTitleData() {
+        image.setImageResource(R.drawable.new_word_query);
+        title.setText(getString(R.string.new_word_query));
     }
 
     private void getIntentDatas() {
@@ -302,9 +317,13 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
         testWordDictQuery();
     }
 
-    @OnClick({R.id.new_word_query_activity_baidubaike})
+    @OnClick({R.id.image_view_back,
+            R.id.new_word_query_activity_baidubaike})
     public void onClick(View view) {
         switch (view.getId()) {
+            case image_view_back:
+                finish();
+                break;
             case R.id.new_word_query_activity_baidubaike:
                 Utils.openBaiduBaiKe(this, editQuery);
                 break;

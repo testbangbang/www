@@ -2,6 +2,7 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -32,6 +33,12 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     TextView delete;
     @Bind(R.id.good_sentence_activity_delete)
     TextView export;
+    @Bind(R.id.image_view_back)
+    ImageView imageViewBack;
+    @Bind(R.id.title_bar_title)
+    TextView title;
+    @Bind(R.id.image)
+    ImageView image;
     private DividerItemDecoration dividerItemDecoration;
     private GoodSentenceAdapter goodSentenceAdapter;
     private GoodSentencePresenter goodSentencePresenter;
@@ -75,6 +82,18 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
         dictType = getIntent().getIntExtra(Constants.DICTTYPE, -1);
         goodSentencePresenter = new GoodSentencePresenter(getApplicationContext(), this);
         goodSentencePresenter.getGoodSentenceByType(dictType);
+        initTitleData();
+    }
+
+    private void initTitleData() {
+        image.setImageResource(R.drawable.good_sentence_notebook);
+        if (dictType == Constants.ENGLISH_TYPE) {
+            title.setText(getString(R.string.english_good_sentence_notebook));
+        } else if (dictType == Constants.CHINESE_TYPE) {
+            title.setText(getString(R.string.chinese_good_sentence_notebook));
+        }else if (dictType == Constants.OTHER_TYPE) {
+            title.setText(getString(R.string.minority_language_good_sentence_notebook));
+        }
     }
 
     @Override

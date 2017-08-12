@@ -42,6 +42,7 @@ public class Constants {
     public static final String HOUR_POSITION = "hourPosition";
     public static final String SPEECH_TIME = "speechTime";
     public static final String JUMP_SOURCE = "jumpSource";
+    public static final String INFORMAL_ESSAY_CONTENT = "informalEssayContent";
 
     public static final int ACCOUNT_TYPE_MY_TRACKS = 0;
     public static final int ACCOUNT_TYPE_MY_THINK = 1;
