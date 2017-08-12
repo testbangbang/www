@@ -71,6 +71,7 @@ public class NoteManager {
     private AsyncNoteViewHelper noteViewHelper;
     private RendererHelper rendererHelper;
     private DocumentHelper documentHelper;
+    private PenManager penManager;
 
     private static NoteManager instance;
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
@@ -136,6 +137,13 @@ public class NoteManager {
             documentHelper = new DocumentHelper();
         }
         return documentHelper;
+    }
+
+    public PenManager getPenManager() {
+        if (penManager == null) {
+            penManager = new PenManager();
+        }
+        return penManager;
     }
 
     private Runnable generateRunnable(final AsyncBaseNoteRequest request) {
