@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class AddShapeRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(false);
     }
 
-    public void execute(final AsyncNoteViewHelper helper) throws Exception {
+    public void execute(final NoteManager helper) throws Exception {
         long start = System.currentTimeMillis();
         helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
         renderCurrentPageInBitmap(helper);

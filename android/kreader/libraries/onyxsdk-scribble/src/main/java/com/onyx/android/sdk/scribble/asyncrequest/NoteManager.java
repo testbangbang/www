@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
@@ -43,6 +44,7 @@ import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
@@ -121,12 +123,12 @@ public class NoteManager {
             @Override
             public void run() {
                 try {
-                    request.beforeExecute(noteViewHelper);
-                    request.execute(noteViewHelper);
+                    request.beforeExecute(NoteManager.this);
+                    request.execute(NoteManager.this);
                 } catch (Throwable tr) {
                     request.setException(tr);
                 } finally {
-                    request.postExecute(noteViewHelper);
+                    request.postExecute(NoteManager.this);
                     getRequestManager().dumpWakelocks();
                     getRequestManager().removeRequest(request);
                 }
@@ -643,5 +645,21 @@ public class NoteManager {
 
     public RequestManager getRequestManager() {
         return noteViewHelper.getRequestManager();
+    }
+
+    public void enableScreenPost(boolean enable) {
+        noteViewHelper.enableScreenPost(enable);
+    }
+
+    public void renderToSurfaceView() {
+        noteViewHelper.renderToSurfaceView();
+    }
+
+    public Bitmap updateRenderBitmap(final Rect rect) {
+        return noteViewHelper.updateRenderBitmap(rect);
+    }
+
+    public Rect getViewportSize() {
+        return noteViewHelper.getViewportSize();
     }
 }
