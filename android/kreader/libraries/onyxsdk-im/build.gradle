@@ -47,4 +47,5 @@ dependencies {
     }
     compile ("cn.leancloud.android:avoscloud-sdk:$rootProject.avoscloudVersion")
     compile ("cn.leancloud.android:avoscloud-push:$rootProject.avoscloudVersion@aar"){transitive = true}
+    compile "cn.leancloud.android:avoscloud-statistics:$rootProject.avoscloudVersion"
 }
