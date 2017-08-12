@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/reader_menu_bottom_dialog_margin_top"
+    android:orientation="vertical">
+
+    <include layout="@layout/title_bar" />
+
+    <View
+        android:id="@+id/dismiss_zone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent" />
+
+    <include
+        android:id="@+id/after_reading_menu"
+        layout="@layout/tab_menu"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_menu_tab_height" />
+</LinearLayout>

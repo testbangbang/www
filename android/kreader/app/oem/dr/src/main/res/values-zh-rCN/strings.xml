@@ -319,4 +319,9 @@
     <string name="self_defined_time">自行设定: </string>
     <string name="record_time_data_minute">分钟</string>
     <string name="record_time_activity_edit_text_hint">时间范围0-15分钟</string>
+    <string name="reflection_after_reading">读后反思</string>
+    <string name="prompt">提示</string>
+    <string name="is_it_saved">确认删除吗?</string>
+    <string name="no_title">无标题</string>
+    <string name="Call_the_modified_file">调用批改文件</string>
 </resources>
