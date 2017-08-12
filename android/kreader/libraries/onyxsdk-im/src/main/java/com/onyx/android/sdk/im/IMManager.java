@@ -121,7 +121,7 @@ public class IMManager {
         socketIOClient = null;
     }
 
-    private void startPushServiceImpl(Context activityContext) {
+    private void startPushServiceImpl(Context appContext) {
         if (config == null) {
             return;
         }
@@ -133,8 +133,8 @@ public class IMManager {
                 basePushService = new AVOSCloudPushService();
                 break;
         }
-        basePushService.init(activityContext, config);
-        basePushService.start(activityContext);
+        basePushService.init(appContext, config);
+        basePushService.start(appContext);
     }
 
     private void stopPushServiceImpl(Context activityContext) {

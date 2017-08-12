@@ -10,7 +10,6 @@ import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
 import com.onyx.android.eschool.events.HardwareErrorEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
-import com.onyx.android.eschool.manager.LeanCloudManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
@@ -26,7 +25,7 @@ import com.onyx.android.sdk.data.request.cloud.v2.CloudIndexServiceRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
-import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.android.sdk.im.push.LeanCloudManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -135,8 +134,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     }
 
     private IndexService createIndexService(Context context) {
-        IndexService authService = new IndexService();
-        authService.mac = NetworkUtil.getMacAddress(context);
+        IndexService authService = IndexService.createIndexService(context);
         authService.installationId = LeanCloudManager.getInstallationId();
         return authService;
     }

@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.avos.avoscloud.AVInstallation;
-import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.PushService;
 import com.onyx.android.sdk.im.IMConfig;
 
@@ -20,15 +18,16 @@ public class AVOSCloudPushService implements BasePushService {
         if (config == null) {
             return;
         }
-        AVOSCloud.initialize(context.getApplicationContext(), config.getApplicationId(),
+        LeanCloudManager.initialize(context.getApplicationContext(), config.getApplicationId(),
                 config.getClientKey());
-        AVInstallation.getCurrentInstallation().saveInBackground();
+        Class<? extends Activity> clazz = config.getPushCallbackActivity();
+        if (clazz != null) {
+            PushService.setDefaultPushCallback(context.getApplicationContext(), clazz);
+        }
     }
 
     @Override
     public void start(Context context) {
-        Activity activity = (Activity) context;
-        PushService.setDefaultPushCallback(context.getApplicationContext(), activity.getClass());
     }
 
     @Override
