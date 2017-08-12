@@ -33,7 +33,7 @@ android {
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
                 commandLine 'ndk-build.cmd', '-C', file('src/main').absolutePath, '-j10'
             } else {
-                commandLine '/Users/solskjaer49/Documents/ndk/android-ndk-r10e/ndk-build', '-C', file('src/main').absolutePath, '-j10'
+                commandLine '/opt/adt-bundle-linux/ndk-build', '-C', file('src/main').absolutePath, '-j10'
             }
         }
 
@@ -45,7 +45,7 @@ android {
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
                 commandLine 'ndk-build.cmd', '-C', file('src/main').absolutePath, 'clean'
             } else {
-                commandLine '/Users/solskjaer49/Documents/ndk/android-ndk-r10e/ndk-build', '-C', file('src/main').absolutePath, 'clean'
+                commandLine '/opt/adt-bundle-linux/ndk-build', '-C', file('src/main').absolutePath, 'clean'
             }
         }
 
