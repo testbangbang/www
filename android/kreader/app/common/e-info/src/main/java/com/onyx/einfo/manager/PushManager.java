@@ -35,7 +35,7 @@ import java.util.Map;
 public class PushManager {
 
     public interface PushCallback {
-        void OnMessage(Message message);
+        void onMessage(Message message);
     }
 
     private ActionContext actionContext;
@@ -84,7 +84,7 @@ public class PushManager {
         }
         String type = message.getType();
         if (pushTypeFilterMap.containsKey(type)) {
-            pushTypeFilterMap.get(type).OnMessage(message);
+            pushTypeFilterMap.get(type).onMessage(message);
             return true;
         }
         return false;
