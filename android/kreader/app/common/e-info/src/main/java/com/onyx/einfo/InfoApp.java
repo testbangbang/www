@@ -6,6 +6,12 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.onyx.android.sdk.data.action.ActionContext;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.im.IMConfig;
+import com.onyx.android.sdk.im.IMManager;
+import com.onyx.android.sdk.im.event.MessageEvent;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.einfo.action.FileSystemScanAction;
 import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.events.DataRefreshEvent;
@@ -22,9 +28,12 @@ import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.einfo.manager.PushManager;
 import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +48,7 @@ public class InfoApp extends MultiDexApplication {
     static private InfoApp sInstance = null;
     static private CloudStore cloudStore;
     static private LibraryDataHolder libraryDataHolder;
+    private PushManager messageManager;
 
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
@@ -59,6 +69,7 @@ public class InfoApp extends MultiDexApplication {
     public void onTerminate() {
         terminateCloudStore();
         deviceReceiver.enable(this, false);
+        IMManager.getInstance().getEventBus().unregister(this);
         super.onTerminate();
     }
 
@@ -134,8 +145,16 @@ public class InfoApp extends MultiDexApplication {
     }
 
     private void initLeanCloud() {
-        LeanCloudManager.initialize(this, DeviceConfig.sharedInstance(this).getLeanCloudApplicationId(),
-                DeviceConfig.sharedInstance(this).getLeanCloudClientKey());
+        String leanCloudAppId = DeviceConfig.sharedInstance(this).getLeanCloudApplicationId();
+        String leanCloudClientKey = DeviceConfig.sharedInstance(this).getLeanCloudClientKey();
+        LeanCloudManager.initialize(this, leanCloudAppId, leanCloudClientKey);
+        initIMManager(leanCloudAppId, leanCloudClientKey);
+    }
+
+    private void initIMManager(String appId, String clientKey) {
+        final IMConfig imInitArgs = new IMConfig(appId, clientKey);
+        IMManager.getInstance().init(imInitArgs);
+        IMManager.getInstance().getEventBus().register(this);
     }
 
     public void initCloudStore() {
@@ -173,7 +192,6 @@ public class InfoApp extends MultiDexApplication {
         return cloudConf;
     }
 
-
     static public DataManager getDataManager() {
         return getLibraryDataHolder().getDataManager();
     }
@@ -190,5 +208,19 @@ public class InfoApp extends MultiDexApplication {
         Map<String, String> map = new HashMap<>();
         map.put(Constant.PUSH_KEY, LeanCloudManager.getInstallationId());
         return map;
+    }
+
+    public PushManager getPushMessageManager() {
+        if (messageManager == null) {
+            messageManager = new PushManager(ActionContext.create(getApplicationContext(),
+                    getCloudStore().getCloudManager(), getDataManager()));
+        }
+        return messageManager;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPushMessageEvent(MessageEvent messageEvent) {
+        Debug.d(InfoApp.class, String.valueOf(JSONObjectParseUtils.toJson(messageEvent)));
+        getPushMessageManager().processMessage(messageEvent.message);
     }
 }
