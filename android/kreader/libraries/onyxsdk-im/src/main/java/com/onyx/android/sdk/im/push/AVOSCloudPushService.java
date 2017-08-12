@@ -20,7 +20,7 @@ public class AVOSCloudPushService implements BasePushService {
         if (config == null) {
             return;
         }
-        AVOSCloud.initialize(context, config.getApplicationId(),
+        AVOSCloud.initialize(context.getApplicationContext(), config.getApplicationId(),
                 config.getClientKey());
         AVInstallation.getCurrentInstallation().saveInBackground();
     }
@@ -28,7 +28,7 @@ public class AVOSCloudPushService implements BasePushService {
     @Override
     public void start(Context context) {
         Activity activity = (Activity) context;
-        PushService.setDefaultPushCallback(context, activity.getClass());
+        PushService.setDefaultPushCallback(context.getApplicationContext(), activity.getClass());
     }
 
     @Override
