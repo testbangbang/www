@@ -8,7 +8,8 @@
         android:id="@+id/reader_main_menu_top_id"
         layout="@layout/reader_main_menu_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <View
         android:id="@+id/dismiss_zone"

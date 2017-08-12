@@ -3,18 +3,18 @@ package com.onyx.android.dr.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.DividerItemDecoration;
 import android.util.SparseArray;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.TabMenuAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
-import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.MenuBean;
 import com.onyx.android.dr.event.AccountAvailableEvent;
 import com.onyx.android.dr.event.ApplicationEvent;
@@ -54,12 +54,17 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity implements MainView {
     @Bind(R.id.main_view_container)
     FrameLayout mainViewContainer;
     @Bind(R.id.tab_menu)
     PageRecyclerView tabMenu;
+    @Bind(R.id.tab_menu_prev)
+    ImageView tabMenuPrev;
+    @Bind(R.id.tab_menu_next)
+    ImageView tabMenuNext;
     private MainPresenter mainPresenter;
     private TabMenuAdapter tabMenuAdapter;
     private FragmentManager fragmentManager;
@@ -92,6 +97,19 @@ public class MainActivity extends BaseActivity implements MainView {
         tabMenu.addItemDecoration(dividerItemDecoration);
         tabMenuAdapter = new TabMenuAdapter();
         tabMenu.setAdapter(tabMenuAdapter);
+        tabMenu.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPageChange(int position, int itemCount, int pageSize) {
+                setPrevAndNextButtonVisible();
+            }
+        });
+    }
+
+    private void setPrevAndNextButtonVisible() {
+        int currentPage = tabMenu.getPaginator().getCurrentPage();
+        int pages = tabMenu.getPaginator().pages();
+        tabMenuPrev.setVisibility(currentPage == 0 ? View.GONE : View.VISIBLE);
+        tabMenuNext.setVisibility(currentPage < pages - 1 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -104,6 +122,7 @@ public class MainActivity extends BaseActivity implements MainView {
         switchCurrentFragment(ChildViewID.FRAGMENT_MAIN_VIEW);
         tabMenuAdapter.setMenuDataList(menuData);
         tabMenuAdapter.notifyDataSetChanged();
+        tabMenuNext.setVisibility(menuData.size() > tabMenuAdapter.getColumnCount() ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -138,7 +157,7 @@ public class MainActivity extends BaseActivity implements MainView {
     private void switchCommonFragment(String libraryName) {
         switchCurrentFragment(ChildViewID.FRAGMENT_COMMON_BOOKS);
         CommonBooksFragment fragment = (CommonBooksFragment) getPageView(ChildViewID.FRAGMENT_COMMON_BOOKS);
-        fragment.setData(getLibraryParentId(),libraryName,R.drawable.ic_real_time_books);
+        fragment.setData(getLibraryParentId(), libraryName, R.drawable.ic_real_time_books);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -305,5 +324,17 @@ public class MainActivity extends BaseActivity implements MainView {
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    @OnClick({R.id.tab_menu_prev, R.id.tab_menu_next})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tab_menu_prev:
+                tabMenu.prevPage();
+                break;
+            case R.id.tab_menu_next:
+                tabMenu.nextPage();
+                break;
+        }
     }
 }

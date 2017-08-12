@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,6 +34,7 @@ import com.onyx.android.dr.reader.event.ReaderGoodSentenceMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderListenMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuItemEvent;
 import com.onyx.android.dr.reader.event.ReaderPostilMenuEvent;
+import com.onyx.android.dr.reader.event.ReaderSettingMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderTTSMenuPlayEvent;
 import com.onyx.android.dr.reader.event.ReaderTTSMenuQuitReadingEvent;
 import com.onyx.android.dr.reader.event.ReaderWordQueryMenuEvent;
@@ -111,6 +113,8 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     private int volume = 0;
     private DialogAnnotation.AnnotationAction action;
     private MenuCallback menuCallback;
+    private ImageView tabMenuPrev;
+    private ImageView tabMenuNext;
 
     public ReaderBottomDialog(ReaderPresenter readerPresenter, @NonNull Context context, int layoutID, List<Integer> childIdList, boolean isWord, MenuCallback callback) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -158,14 +162,23 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
         title.setText(getContext().getString(R.string.dialog_reader_menu_back));
         mainTabMenu = findViewById(R.id.reader_main_tab_menu);
         readerTabMenu = (PageRecyclerView) findViewById(R.id.tab_menu);
+        tabMenuPrev = (ImageView) mainTabMenu.findViewById(R.id.tab_menu_prev);
+        tabMenuNext = (ImageView) mainTabMenu.findViewById(R.id.tab_menu_next);
+        tabMenuPrev.setOnClickListener(this);
+        tabMenuNext.setOnClickListener(this);
         readerTabMenu.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         readerTabMenu.addItemDecoration(dividerItemDecoration);
         readerTabMenuAdapter = new ReaderTabMenuAdapter();
         readerTabMenu.setAdapter(readerTabMenuAdapter);
-
         menuBack.setOnClickListener(this);
+        readerTabMenu.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPageChange(int position, int itemCount, int pageSize) {
+                setPrevAndNextButtonVisible();
+            }
+        });
 
         readerTtsMenu = findViewById(R.id.reader_tts_menu_id);
 
@@ -176,9 +189,15 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
         }
     }
 
+    private void setPrevAndNextButtonVisible() {
+        int currentPage = readerTabMenu.getPaginator().getCurrentPage();
+        int pages = readerTabMenu.getPaginator().pages();
+        tabMenuPrev.setVisibility(currentPage == 0 ? View.GONE : View.VISIBLE);
+        tabMenuNext.setVisibility(currentPage < pages - 1 ? View.VISIBLE : View.GONE);
+    }
+
     private void initDefaultView() {
-        readerTabMenuAdapter.setMenuDataList(defaultMenuData);
-        readerTabMenuAdapter.notifyDataSetChanged();
+        setReaderTabMenu(defaultMenuData);
 
         ReaderMainMenuItemEvent.bindReaderDefaultMenuItemEvent();
         initTtsMenuItemClickEvent();
@@ -192,6 +211,7 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     public void setReaderTabMenu(List<ReaderMenuBean> menuData) {
         readerTabMenuAdapter.setMenuDataList(menuData);
         readerTabMenuAdapter.notifyDataSetChanged();
+        tabMenuNext.setVisibility(menuData.size() > readerTabMenuAdapter.getColumnCount() ? View.VISIBLE : View.GONE);
     }
 
     private boolean isHide(ReaderMenuBean menu) {
@@ -376,7 +396,13 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnReaderAfterReadingMenuEvent(ReaderAfterReadingMenuEvent event) {
+        ReaderDialogManage.onShowAfterReadingMenu(readerPresenter);
+    }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnReaderSettingMenuEvent(ReaderSettingMenuEvent event) {
+        ReaderDialogManage.onShowSettingMenu(readerPresenter);
+        dismiss();
     }
 
     @Override
@@ -384,6 +410,12 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.menu_back:
                 dismiss();
+                break;
+            case R.id.tab_menu_prev:
+                readerTabMenu.prevPage();
+                break;
+            case R.id.tab_menu_next:
+                readerTabMenu.nextPage();
                 break;
             default:
                 int viewID = v.getId();

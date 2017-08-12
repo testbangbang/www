@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/rectangle_stroke"
-    android:padding="@dimen/rectangle_stroke_width"
-    android:layout_height="match_parent">
+    android:gravity="center_vertical"
+    android:padding="@dimen/rectangle_stroke_width">
+
+    <ImageView
+        android:id="@+id/tab_menu_prev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_prev"
+        android:visibility="gone"/>
 
     <com.onyx.android.sdk.ui.view.PageRecyclerView
         android:id="@+id/tab_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <ImageView
+        android:id="@+id/tab_menu_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_next" />
 </LinearLayout>

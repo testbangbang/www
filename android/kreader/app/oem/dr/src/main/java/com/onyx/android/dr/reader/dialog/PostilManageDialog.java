@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.reader.action.ShowReaderBottomMenuDialogAction;
@@ -33,6 +34,7 @@ public class PostilManageDialog extends Dialog implements View.OnClickListener {
     private LinearLayout menuBack;
     private PageRecyclerView recyclerView;
     private PostilListAdapter postilListAdapter;
+    private TextView title;
 
     protected PostilManageDialog(ReaderPresenter readerPresenter, @NonNull Context context) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -50,6 +52,8 @@ public class PostilManageDialog extends Dialog implements View.OnClickListener {
 
     private void initView() {
         menuBack = (LinearLayout) findViewById(R.id.menu_back);
+        title = (TextView) menuBack.findViewById(R.id.title_bar_title);
+        title.setText(getContext().getString(R.string.postil));
         recyclerView = (PageRecyclerView) findViewById(R.id.postil_manage_recycler);
         recyclerView.setLayoutManager(new DisableScrollGridManager(getContext()));
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
