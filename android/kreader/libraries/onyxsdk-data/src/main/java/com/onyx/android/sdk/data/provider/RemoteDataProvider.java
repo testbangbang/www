@@ -34,7 +34,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
@@ -413,6 +412,15 @@ public class RemoteDataProvider implements DataProviderBase {
                 .and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         return ContentUtils.querySingle(OnyxMetadataCollectionProvider.CONTENT_URI,
                 MetadataCollection.class,
+                group,
+                null);
+    }
+
+    @Override
+    public List<Library> loadChildLibrary(String parentId, QueryArgs queryArgs) {
+        ConditionGroup group = ConditionGroup.clause().and(Library_Table.parentUniqueId.eq(parentId));
+        return ContentUtils.queryList(OnyxLibraryProvider.CONTENT_URI,
+                Library.class,
                 group,
                 null);
     }

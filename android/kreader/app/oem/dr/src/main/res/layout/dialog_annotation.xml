@@ -3,17 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/textview_bg"
-    android:padding="10dp">
+    android:padding="@dimen/dialog_annotation_padding">
 
     <TextView
         android:id="@+id/textview_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="@dimen/dialog_annotation_margin"
         android:gravity="center_vertical"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        android:text="@string/note"
+        android:paddingBottom="@dimen/dialog_annotation_padding"
+        android:paddingTop="@dimen/dialog_annotation_padding"
+        android:text="@string/postil"
         android:textColor="@android:color/black"
         android:textSize="@dimen/level_two_font_size" />
 
@@ -22,16 +22,16 @@
         style="@style/single_line_X_axis_View"
         android:layout_height="2dp"
         android:layout_below="@id/textview_title"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="@dimen/dialog_annotation_margin" />
 
     <LinearLayout
         android:id="@+id/select_content_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/textview_separate"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="@dimen/dialog_annotation_margin"
+        android:layout_marginRight="@dimen/dialog_annotation_margin"
+        android:layout_marginBottom="@dimen/dialog_annotation_margin"
         android:orientation="horizontal">
 
         <View
@@ -43,7 +43,7 @@
             android:id="@+id/select_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/dialog_annotation_content_margin_left"
             android:ellipsize="end"
             android:maxLines="2"
             android:text="@string/empty"
@@ -57,66 +57,66 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/select_content_ll"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="@dimen/dialog_annotation_margin"
+        android:layout_marginRight="@dimen/dialog_annotation_margin"
         android:gravity="top"
-        android:hint="@string/annotation"
+        android:hint="@string/postil"
         android:lines="5"
         android:textColor="@android:color/black"
         android:textSize="@dimen/level_two_font_size" />
 
     <Button
         android:id="@+id/button_save"
-        android:layout_width="120dp"
-        android:layout_height="45dp"
+        android:layout_width="@dimen/dialog_annotation_button_width"
+        android:layout_height="@dimen/dialog_annotation_button_height"
         android:layout_alignRight="@id/edittext_annotation"
         android:layout_below="@id/edittext_annotation"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginRight="@dimen/dialog_annotation_margin"
+        android:layout_marginTop="@dimen/dialog_annotation_content_margin_left"
         android:background="@drawable/dialog_annotation_corners_border"
         android:text="@string/save_annotation"
         android:textColor="@android:color/black"
-        android:textSize="20sp" />
+        android:textSize="@dimen/level_two_font_size" />
 
     <Button
         android:id="@+id/button_cancel"
-        android:layout_width="120dp"
-        android:layout_height="45dp"
+        android:layout_width="@dimen/dialog_annotation_button_width"
+        android:layout_height="@dimen/dialog_annotation_button_height"
         android:layout_below="@id/edittext_annotation"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginRight="@dimen/dialog_annotation_margin"
+        android:layout_marginTop="@dimen/dialog_annotation_content_margin_left"
         android:layout_toLeftOf="@id/button_save"
         android:background="@drawable/dialog_annotation_corners_border"
         android:text="@string/close"
         android:textColor="@android:color/black"
-        android:textSize="20sp" />
+        android:textSize="@dimen/level_two_font_size" />
 
     <Button
         android:id="@+id/button_update"
-        android:layout_width="120dp"
-        android:layout_height="45dp"
+        android:layout_width="@dimen/dialog_annotation_button_width"
+        android:layout_height="@dimen/dialog_annotation_button_height"
         android:layout_alignRight="@id/edittext_annotation"
         android:layout_below="@id/edittext_annotation"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginRight="@dimen/dialog_annotation_margin"
+        android:layout_marginTop="@dimen/dialog_annotation_content_margin_left"
         android:background="@drawable/dialog_annotation_corners_border"
         android:text="@string/update"
         android:textColor="@android:color/black"
-        android:textSize="20sp"
+        android:textSize="@dimen/level_two_font_size"
         android:visibility="gone" />
 
     <Button
         android:id="@+id/button_remove"
-        android:layout_width="120dp"
-        android:layout_height="45dp"
+        android:layout_width="@dimen/dialog_annotation_button_width"
+        android:layout_height="@dimen/dialog_annotation_button_height"
         android:layout_below="@id/edittext_annotation"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginRight="@dimen/dialog_annotation_margin"
+        android:layout_marginTop="@dimen/dialog_annotation_content_margin_left"
         android:layout_toLeftOf="@id/button_update"
         android:background="@drawable/dialog_annotation_corners_border"
         android:text="@string/delete"
         android:textColor="@android:color/black"
-        android:textSize="20sp"
+        android:textSize="@dimen/level_two_font_size"
         android:visibility="gone" />
 
 </RelativeLayout>

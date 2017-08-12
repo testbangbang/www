@@ -10,18 +10,12 @@ import java.util.List;
 
 public class MainLibraryTabEvent {
     private Library library;
-    private List<String> Languages;
 
-    public MainLibraryTabEvent(Library library, List<String> languages) {
+    public MainLibraryTabEvent(Library library) {
         this.library = library;
-        Languages = languages;
     }
 
     public Library getLibrary() {
         return library;
-    }
-
-    public List<String> getLanguages() {
-        return Languages;
     }
 }

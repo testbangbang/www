@@ -108,7 +108,8 @@ public class WordSelectionHandler extends BaseHandler {
         if (getReaderPresenter().getReaderUserDataInfo().hasHighlightResult()) {
             String text = getReaderPresenter().getReaderUserDataInfo().getHighlightResult().getText();
             if (!StringUtils.isNullOrEmpty(text)) {
-                ReaderDialogManage.onShowMainMenu(getReaderPresenter(), true);
+                boolean isWord = isWord(text);
+                showSelectionMenu(isWord);
             }
         }
         updateHighLightRect();
@@ -137,7 +138,7 @@ public class WordSelectionHandler extends BaseHandler {
 
     private void showSelectionMenu(boolean isWord) {
         getReaderPresenter().setPageAnnotation(null);
-        ShowTextSelectionMenuAction.showTextSelectionPopupMenu(getReaderPresenter(), false, DialogAnnotation.AnnotationAction.add);
+        ReaderDialogManage.onShowMainMenu(getReaderPresenter(), true, DialogAnnotation.AnnotationAction.add);
         enableSelectionCursor(selectWordRequest);
     }
 
@@ -329,6 +330,5 @@ public class WordSelectionHandler extends BaseHandler {
         }
         getReaderPresenter().getReaderSelectionManager().setEnable(true);
         getReaderPresenter().onRenderRequestFinished(request, null, false, false);
-        showSelectionCursor = true;
     }
 }

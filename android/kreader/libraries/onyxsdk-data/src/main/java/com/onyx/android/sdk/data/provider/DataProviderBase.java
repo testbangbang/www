@@ -104,4 +104,6 @@ public interface DataProviderBase {
     List<MetadataCollection> loadMetadataCollection(Context context, String libraryUniqueId);
 
     MetadataCollection findMetadataCollection(Context context, String associationId);
+
+    List<Library> loadChildLibrary(String parentId, QueryArgs queryArgs);
 }

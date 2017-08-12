@@ -11,19 +11,16 @@ import android.widget.TextView;
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.event.ToBookshelfV2Event;
+import com.onyx.android.dr.event.EBookListEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.data.LibraryViewInfo;
-import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -39,19 +36,22 @@ import butterknife.ButterKnife;
 
 public class BookshelfGroupAdapter extends PageRecyclerView.PageAdapter<BookshelfGroupAdapter.GroupItemViewHolder> implements View.OnClickListener {
     private Context context;
-    private List<QueryArgs> groups;
+    private Map<String, List<Metadata>> map;
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.bookshelf_group_row);
     private int col = DRApplication.getInstance().getResources().getInteger(R.integer.bookshelf_group_col);
     private LibraryDataHolder dataHolder;
-    private int mode;
+    private Object[] language;
+    private int item_row = DRApplication.getInstance().getResources().getInteger(R.integer.bookshelf_group_item_row);
+    private int item_col = DRApplication.getInstance().getResources().getInteger(R.integer.bookshelf_group_item_col);
 
     public BookshelfGroupAdapter(Context context) {
         this.context = context;
     }
 
-    public void setGroups(int mode, List<QueryArgs> groups) {
-        this.mode = mode;
-        this.groups = groups;
+    public void setMap(Map<String, List<Metadata>> map) {
+        language = map.keySet().toArray();
+        this.map = map;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -66,41 +66,36 @@ public class BookshelfGroupAdapter extends PageRecyclerView.PageAdapter<Bookshel
 
     @Override
     public int getDataCount() {
-        return groups == null ? 0 : groups.size();
+        return map == null ? 0 : map.size();
     }
 
     @Override
     public BookshelfGroupAdapter.GroupItemViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
         View inflate = View.inflate(context, R.layout.item_bookshelf_group, null);
-        return new GroupItemViewHolder(inflate);
+        return new BookshelfGroupAdapter.GroupItemViewHolder(inflate);
     }
 
     @Override
-    public void onPageBindViewHolder(BookshelfGroupAdapter.GroupItemViewHolder holder, int position) {
-        QueryArgs queryArgs = groups.get(position);
-        holder.groupName.setText(queryArgs.query);
+    public void onPageBindViewHolder(final BookshelfGroupAdapter.GroupItemViewHolder holder, int position) {
+        List<Metadata> list = map.get(language[position]);
+        holder.groupName.setText((String) language[position]);
         final BookListAdapter listAdapter = new BookListAdapter(context, getDataHolder());
+        listAdapter.setRowAndCol(item_row, item_col);
         holder.pageRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         holder.pageRecycler.addItemDecoration(dividerItemDecoration);
         holder.pageRecycler.setAdapter(listAdapter);
-        final CloudContentListRequest listRequest = new CloudContentListRequest(queryArgs);
-        DRApplication.getCloudStore().submitRequestToSingle(context, listRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-                QueryResult<Metadata> result = listRequest.getProductResult();
-                if (result != null && result.list != null) {
-                    Map<String, CloseableReference<Bitmap>> bitmaps = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(context, DRApplication.getCloudStore().getCloudManager(), result.list);
-                    listAdapter.updateContentView(getLibraryDataModel(result, bitmaps));
-                }
-            }
-        });
+        QueryResult<Metadata> result = new QueryResult<>();
+        result.list = list;
+        result.count = list.size();
+        Map<String, CloseableReference<Bitmap>> bitmaps = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(context, DRApplication.getCloudStore().getCloudManager(), result.list);
+        listAdapter.updateContentView(getLibraryDataModel(result, bitmaps));
         holder.nextButton.setOnClickListener(this);
-        holder.nextButton.setTag(position);
+        holder.nextButton.setTag(language[position]);
+        if (result.list == null || result.list.size() <= 0) {
+            holder.rootView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -108,11 +103,8 @@ public class BookshelfGroupAdapter extends PageRecyclerView.PageAdapter<Bookshel
         if (v.getTag() == null) {
             return;
         }
-        int position = (int) v.getTag();
-        ToBookshelfV2Event event = new ToBookshelfV2Event();
-        QueryArgs queryArgs = groups.get(position);
-        event.setTitle(queryArgs.query);
-        event.setArgs(queryArgs);
+        String language = (String) v.getTag();
+        EBookListEvent event = new EBookListEvent(language);
         EventBus.getDefault().post(event);
     }
 
@@ -122,12 +114,15 @@ public class BookshelfGroupAdapter extends PageRecyclerView.PageAdapter<Bookshel
         @Bind(R.id.next_button)
         ImageView nextButton;
         @Bind(R.id.page_recycler)
-        PageRecyclerView pageRecycler;
+        SinglePageRecyclerView pageRecycler;
+        View rootView;
 
         GroupItemViewHolder(View view) {
             super(view);
+            this.rootView = view;
             ButterKnife.bind(this, view);
         }
+
     }
 
     private LibraryDataModel getLibraryDataModel(QueryResult<Metadata> result, Map<String, CloseableReference<Bitmap>> map) {

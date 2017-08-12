@@ -46,6 +46,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
+import retrofit2.http.Query;
 
 /**
  * Created by suicheng on 2017/5/5.
@@ -294,6 +295,45 @@ public class CloudDataProvider implements DataProviderBase {
                 .where()
                 .and(CloudLibrary_Table.parentUniqueId.eq(parentId))
                 .queryList();
+    }
+
+    public List<Library> loadChildLibrary(String parentId, QueryArgs queryArgs) {
+        List<CloudLibrary> childLibraryList;
+        if (FetchPolicy.isCloudPartPolicy(queryArgs.fetchPolicy)) {
+            childLibraryList = fetchChildLibraryListFromCloud(parentId, queryArgs);
+        } else {
+            childLibraryList = fetchLibraryListFromLocal(parentId);
+            if (FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy) && CollectionUtils.isNullOrEmpty(childLibraryList)) {
+                childLibraryList = fetchChildLibraryListFromCloud(parentId, queryArgs);
+            }
+        }
+        return getChildLibraryListFromCloud(childLibraryList);
+    }
+
+    private List<Library> getChildLibraryListFromCloud(List<CloudLibrary> childLibraryList) {
+        if (CollectionUtils.isNullOrEmpty(childLibraryList)) {
+            return new ArrayList<>();
+        }
+        List<Library> libraryList = new ArrayList<>();
+        for (CloudLibrary cloudLibrary : childLibraryList) {
+            libraryList.add(cloudLibrary);
+        }
+        return libraryList;
+    }
+
+    private List<CloudLibrary> fetchChildLibraryListFromCloud(String parentId, QueryArgs queryArgs) {
+        List<CloudLibrary> libraryList = new ArrayList<>();
+        try {
+            Response<QueryResult<CloudLibrary>> response = RetrofitUtils.executeCall(getContentService().loadChildLibraryList(parentId));
+            if (response.isSuccessful() && response.body() != null) {
+                libraryList = response.body().list;
+            }
+        } catch (Exception e) {
+            if (!FetchPolicy.isCloudOnlyPolicy(queryArgs.fetchPolicy) && !FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy)) {
+                libraryList = fetchLibraryListFromLocal(parentId);
+            }
+        }
+        return libraryList;
     }
 
     @Override

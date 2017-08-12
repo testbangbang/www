@@ -310,4 +310,10 @@ public class LocalDataProvider implements DataProviderBase {
         return new Select().from(MetadataCollection.class)
                 .where(MetadataCollection_Table.documentUniqueId.eq(associationId)).querySingle();
     }
+
+    @Override
+    public List<Library> loadChildLibrary(String parentId, QueryArgs queryArgs) {
+        Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
+        return new Select().from(Library.class).where(condition).queryList();
+    }
 }

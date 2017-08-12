@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 public class FetchPolicy {
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({CLOUD_ONLY, MEM_DB_ONLY, CLOUD_MEM_DB, MEM_DB_CLOUD, MEM_CLOUD_DB})
+    @IntDef({CLOUD_ONLY, MEM_DB_ONLY, CLOUD_MEM_DB, MEM_DB_CLOUD, MEM_CLOUD_DB, DB_ONLY})
     public @interface Type {
     }
 
@@ -21,6 +21,7 @@ public class FetchPolicy {
     public static final int CLOUD_MEM_DB = 2;
     public static final int MEM_DB_CLOUD = 3;
     public static final int MEM_CLOUD_DB = 4;
+    public static final int DB_ONLY = 5;
 
     public
     @Type

@@ -14,12 +14,18 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.bean.GoodSentenceBean;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.ReaderMenuBean;
+import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.device.DeviceConfig;
+import com.onyx.android.dr.reader.action.ShowReaderBottomMenuDialogAction;
 import com.onyx.android.dr.reader.adapter.ReaderTabMenuAdapter;
 import com.onyx.android.dr.reader.common.ReadSettingTtsConfig;
 import com.onyx.android.dr.reader.common.ReaderTabMenuConfig;
+import com.onyx.android.dr.reader.common.ToastManage;
 import com.onyx.android.dr.reader.event.ChangeSpeechRateEvent;
+import com.onyx.android.dr.reader.event.ManagePostilDialogEvent;
 import com.onyx.android.dr.reader.event.NotifyTtsStateChangedEvent;
 import com.onyx.android.dr.reader.event.ReaderAfterReadingMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderAnnotationMenuEvent;
@@ -34,8 +40,15 @@ import com.onyx.android.dr.reader.event.TtsSpeakingStateEvent;
 import com.onyx.android.dr.reader.event.TtsStopStateEvent;
 import com.onyx.android.dr.reader.handler.HandlerManger;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
+import com.onyx.android.dr.request.local.GoodSentenceInsert;
+import com.onyx.android.dr.util.OperatingDataManager;
+import com.onyx.android.dr.util.TimeUtils;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -48,6 +61,35 @@ import java.util.List;
  */
 
 public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
+    private static final String TAG = ReaderBottomDialog.class.getSimpleName();
+
+    public void setMode(boolean isWord) {
+        this.isWorld = isWord;
+        initDefaultView();
+    }
+
+    public static abstract class MenuCallback {
+        public abstract void resetSelection();
+
+        public abstract String getSelectionText();
+
+        public abstract void copy();
+
+        public abstract void onLineation();
+
+        public abstract void addAnnotation();
+
+        public abstract void showDictionary();
+
+        public abstract void startTts();
+
+        public abstract boolean supportSelectionMode();
+
+        public abstract void closeMenu();
+
+        public abstract void deleteAnnotation();
+    }
+
     private boolean isWorld;
     PageRecyclerView readerTabMenu;
     private int layoutID = R.layout.reader_menu_bottom_dialog;
@@ -67,12 +109,15 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     private ImageView ttsMenuPlay;
     private int speechRate = 0;
     private int volume = 0;
+    private DialogAnnotation.AnnotationAction action;
+    private MenuCallback menuCallback;
 
-    public ReaderBottomDialog(ReaderPresenter readerPresenter, @NonNull Context context, int layoutID, List<Integer> childIdList, boolean isWord) {
+    public ReaderBottomDialog(ReaderPresenter readerPresenter, @NonNull Context context, int layoutID, List<Integer> childIdList, boolean isWord, MenuCallback callback) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
         this.readerPresenter = readerPresenter;
         this.childIdList = childIdList;
         this.isWorld = isWord;
+        this.menuCallback = callback;
         setCanceledOnTouchOutside(false);
         if (layoutID != -1) {
             this.layoutID = layoutID;
@@ -84,6 +129,15 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
         initView();
     }
 
+    public void setAction(DialogAnnotation.AnnotationAction action) {
+        this.action = action;
+    }
+
+    public DialogAnnotation.AnnotationAction getAction() {
+        return action;
+    }
+
+
     private void initTtsData() {
         audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
     }
@@ -94,7 +148,7 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     }
 
     private void initThirdLibrary() {
-        EventBus.getDefault().register(this);
+
     }
 
     private void initView() {
@@ -111,8 +165,6 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
         readerTabMenuAdapter = new ReaderTabMenuAdapter();
         readerTabMenu.setAdapter(readerTabMenuAdapter);
 
-        dismissZone = findViewById(R.id.dismiss_zone);
-        dismissZone.setOnClickListener(this);
         menuBack.setOnClickListener(this);
 
         readerTtsMenu = findViewById(R.id.reader_tts_menu_id);
@@ -125,18 +177,21 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     }
 
     private void initDefaultView() {
-        if (!isWorld && defaultMenuData != null) {
-            for (ReaderMenuBean menu : defaultMenuData) {
-                if (isHide(menu)) {
-                    menu.setEnable(false);
-                }
-            }
-        }
         readerTabMenuAdapter.setMenuDataList(defaultMenuData);
         readerTabMenuAdapter.notifyDataSetChanged();
 
         ReaderMainMenuItemEvent.bindReaderDefaultMenuItemEvent();
         initTtsMenuItemClickEvent();
+    }
+
+    private boolean haveAnnotation() {
+        List<PageAnnotation> annotations = ShowReaderBottomMenuDialogAction.getAnnotations(readerPresenter);
+        return annotations != null && annotations.size() > 0;
+    }
+
+    public void setReaderTabMenu(List<ReaderMenuBean> menuData) {
+        readerTabMenuAdapter.setMenuDataList(menuData);
+        readerTabMenuAdapter.notifyDataSetChanged();
     }
 
     private boolean isHide(ReaderMenuBean menu) {
@@ -250,7 +305,15 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnReaderPostilMenuEvent(ReaderPostilMenuEvent event) {
-
+        if (!isHaveAnnotationOrSelection()) {
+            return;
+        }
+        if (isWorld) {
+            menuCallback.addAnnotation();
+        } else {
+            EventBus.getDefault().post(new ManagePostilDialogEvent());
+            dismiss();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -265,7 +328,44 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnReaderGoodSentenceMenuEvent(ReaderGoodSentenceMenuEvent event) {
+        addGoodSentence();
+    }
 
+    private void addGoodSentence() {
+        String selectionText = readerPresenter.getBookOperate().getSelectionText();
+        if (StringUtils.isNotBlank(selectionText)) {
+            GoodSentenceBean bean = new GoodSentenceBean();
+            bean.setDetails(selectionText);
+            bean.setReadingMatter(readerPresenter.getBookInfo().getBookName());
+            bean.setPageNumber(String.valueOf(readerPresenter.getPageInformation().getCurrentPage()));
+            bean.setGoodSentenceType(getGoodSentenceType(readerPresenter.getBookInfo().getLanguage()));
+            OperatingDataManager.getInstance().insertGoodSentence(bean);
+        } else {
+            ToastManage.showMessage(getContext(), getContext().getString(R.string.Please_press_to_select_the_sentence_you_want_to_include));
+        }
+        dismiss();
+        readerPresenter.getBookOperate().redrawPage();
+        readerPresenter.getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
+        readerPresenter.getReaderSelectionManager().clear();
+    }
+
+    private int getGoodSentenceType(String language) {
+        int type;
+        if (StringUtils.isNotBlank(language)) {
+            switch (language) {
+                case Constants.CHINESE:
+                    type = Constants.CHINESE_TYPE;
+                    break;
+                case Constants.ENGLISH:
+                    type = Constants.ENGLISH_TYPE;
+                    break;
+                default:
+                    type = Constants.OTHER_TYPE;
+            }
+        } else {
+            type = Constants.OTHER_TYPE;
+        }
+        return type;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -283,7 +383,6 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.menu_back:
-            case R.id.dismiss_zone:
                 dismiss();
                 break;
             default:
@@ -300,6 +399,21 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
         super.dismiss();
         readerPresenter.getHandlerManger().onStop();
         EventBus.getDefault().unregister(this);
-        readerPresenter.getBookOperate().redrawPage();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStart();
+        EventBus.getDefault().unregister(this);
+    }
+
+    private boolean isHaveAnnotationOrSelection() {
+        return isWorld || haveAnnotation();
     }
 }

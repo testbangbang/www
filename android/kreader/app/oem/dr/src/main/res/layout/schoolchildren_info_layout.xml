@@ -33,15 +33,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
+            <Spinner
                 android:id="@+id/schoolchildren_grade"
                 style="@style/UserInfoEditTextStyle"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:hint="@string/grade" />
+                android:dropDownVerticalOffset="@dimen/spinner_drop_down_ver_offset"
+                android:entries="@array/GradeList"/>
 
             <EditText
+                android:id="@+id/schoolchildren_class"
                 style="@style/UserInfoEditTextStyle"
                 android:layout_width="0dp"
                 android:layout_marginLeft="@dimen/user_info_edit_text_margin_right"
@@ -66,9 +68,11 @@
             style="@style/UserInfoTextViewStyle"
             android:text="@string/english_subject" />
 
-        <EditText
-            android:id="@+id/english_publishers"
-            style="@style/UserInfoEditTextStyle" />
+        <Spinner
+            android:id="@+id/english_publisher"
+            style="@style/UserInfoEditTextStyle"
+            android:dropDownVerticalOffset="@dimen/spinner_drop_down_ver_offset"
+            android:entries="@array/EnglishPublishers" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -88,9 +92,11 @@
             style="@style/UserInfoTextViewStyle"
             android:text="@string/chinese" />
 
-        <EditText
-            android:id="@+id/chinese_publishers"
-            style="@style/UserInfoEditTextStyle" />
+        <Spinner
+            android:id="@+id/chinese_publisher"
+            style="@style/UserInfoEditTextStyle"
+            android:dropDownVerticalOffset="@dimen/spinner_drop_down_ver_offset"
+            android:entries="@array/ChinesePublishers" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -111,7 +117,7 @@
             android:text="@string/third_language" />
 
         <EditText
-            android:id="@+id/third_language_publishers"
+            android:id="@+id/third_language_publisher"
             style="@style/UserInfoEditTextStyle" />
 
         <TextView

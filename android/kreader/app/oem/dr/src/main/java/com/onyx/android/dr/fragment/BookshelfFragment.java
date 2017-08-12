@@ -1,28 +1,41 @@
 package com.onyx.android.dr.fragment;
 
+import android.graphics.Bitmap;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.facebook.common.references.CloseableReference;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.adapter.BookListAdapter;
 import com.onyx.android.dr.adapter.BookshelfGroupAdapter;
-import com.onyx.android.dr.data.MainTabMenuConfig;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.event.BackToMainViewEvent;
+import com.onyx.android.dr.event.EBookListEvent;
+import com.onyx.android.dr.holder.LibraryDataHolder;
+import com.onyx.android.dr.interfaces.BookshelfView;
+import com.onyx.android.dr.presenter.BookshelfPresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
+import com.onyx.android.sdk.data.DataManagerHelper;
+import com.onyx.android.sdk.data.LibraryDataModel;
+import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.SortBy;
-import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.Library;
-import com.onyx.android.sdk.data.utils.QueryBuilder;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -31,7 +44,7 @@ import butterknife.OnClick;
  * Created by hehai on 17-7-11.
  */
 
-public class BookshelfFragment extends BaseFragment {
+public class BookshelfFragment extends BaseFragment implements BookshelfView {
     public static final int LIBRARY_MODE = 0;
     public static final int BOOKSHELF_MODE = 1;
     @Bind(R.id.image_view_back)
@@ -53,13 +66,12 @@ public class BookshelfFragment extends BaseFragment {
     @Bind(R.id.enter_bookstore)
     TextView enterBookstore;
     private BookshelfGroupAdapter adapter;
-    List<QueryArgs> queryArgses = new ArrayList<>();
-    private String title;
     private int mode = LIBRARY_MODE;
-    private Library library;
-    private List<String> languages;
-    private List<Library> libraryList;
     private String language;
+    private Library library;
+    private BookshelfPresenter bookshelfPresenter;
+    private LibraryDataHolder dataHolder;
+    private BookListAdapter listAdapter;
 
     @Override
     protected void initListener() {
@@ -75,11 +87,15 @@ public class BookshelfFragment extends BaseFragment {
         bookshelfGroupsRecycler.addItemDecoration(dividerItemDecoration);
         bookshelfGroupsRecycler.setAdapter(adapter);
         menuBack = (LinearLayout) rootView.findViewById(R.id.menu_back);
+
+        listAdapter = new BookListAdapter(getActivity(), getDataHolder());
     }
 
     @Override
     protected void loadData() {
-        titleBarTitle.setText(title);
+        if (bookshelfPresenter == null) {
+            bookshelfPresenter = new BookshelfPresenter(this);
+        }
         loadDataWithMode(mode);
     }
 
@@ -96,29 +112,23 @@ public class BookshelfFragment extends BaseFragment {
     }
 
     private void loadBookshelf() {
-        queryArgses.clear();
-        for (Library library : libraryList) {
-            QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.CreationTime, SortOrder.Desc);
-      //todo queryArgs.conditionGroup = ConditionGroup.clause().and(CloudMetadata_Table.language.eq(language));
-            queryArgs.libraryUniqueId = library.getIdString();
-            queryArgs.query = MainTabMenuConfig.languageBookshelf.get(language) + "-" + library.getName();
-            queryArgses.add(queryArgs);
+        if (titleBarTitle != null) {
+            titleBarTitle.setText(String.format(getString(R.string.bookshelf), language));
+            bookshelfPresenter.getBookshelf(language, getDataHolder());
         }
-        adapter.setGroups(mode, queryArgses);
-        adapter.notifyDataSetChanged();
     }
 
     private void loadLibrary() {
-        queryArgses.clear();
-        for (String language : languages) {
-            QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.CreationTime, SortOrder.Desc);
-      //todo  queryArgs.conditionGroup = ConditionGroup.clause().and(CloudMetadata_Table.language.eq(language));
+        if (library != null) {
+            if (titleBarTitle != null) {
+                titleBarTitle.setText(library.getName());
+            }
+            QueryArgs queryArgs = getDataHolder().getCloudViewInfo().buildLibraryQuery(library.getIdString());
+            queryArgs.fetchPolicy = FetchPolicy.DB_ONLY;
             queryArgs.libraryUniqueId = library.getIdString();
-            queryArgs.query = library.getName() + "-" + MainTabMenuConfig.languageBookshelf.get(language);
-            queryArgses.add(queryArgs);
+            queryArgs.conditionGroup.and(CloudMetadata_Table.nativeAbsolutePath.isNotNull());
+            bookshelfPresenter.getLibrary(queryArgs);
         }
-        adapter.setGroups(mode, queryArgses);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -133,22 +143,22 @@ public class BookshelfFragment extends BaseFragment {
     }
 
     private void back() {
-        EventBus.getDefault().post(new BackToMainViewEvent());
+        if (bookshelfGroupsRecycler.getAdapter() instanceof BookListAdapter) {
+            bookshelfGroupsRecycler.setAdapter(adapter);
+        } else {
+            EventBus.getDefault().post(new BackToMainViewEvent());
+        }
     }
 
-    public void setData(Library library, List<String> languages) {
-        this.library = library;
-        this.languages = languages;
-        mode = LIBRARY_MODE;
-        title = library.getName();
+    public void setData(String language) {
+        this.language = language;
+        mode = BOOKSHELF_MODE;
         loadData();
     }
 
-    public void setData(String language, List<Library> libraryList) {
-        this.libraryList = libraryList;
-        this.language = language;
-        mode = BOOKSHELF_MODE;
-        title = MainTabMenuConfig.languageBookshelf.get(language);
+    public void setData(Library library) {
+        this.library = library;
+        mode = LIBRARY_MODE;
         loadData();
     }
 
@@ -163,7 +173,56 @@ public class BookshelfFragment extends BaseFragment {
             case R.id.bookshelf_author_search:
                 break;
             case R.id.enter_bookstore:
+                enterToBookstore();
                 break;
         }
+    }
+
+    private void enterToBookstore() {
+        ActivityManager.startEBookStoreActivity(getActivity());
+    }
+
+    @Override
+    public void setBooks(List<Metadata> result) {
+        bookshelfGroupsRecycler.setAdapter(listAdapter);
+        QueryResult<Metadata> queryResult = new QueryResult<>();
+        queryResult.list = result;
+        queryResult.count = result.size();
+        Map<String, CloseableReference<Bitmap>> bitmaps = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(DRApplication.getInstance(), DRApplication.getCloudStore().getCloudManager(), queryResult.list);
+        listAdapter.updateContentView(getLibraryDataModel(queryResult, bitmaps));
+    }
+
+    @Override
+    public void setLanguageCategory(Map<String, List<Metadata>> map) {
+        adapter.setMap(map);
+    }
+
+    private LibraryDataHolder getDataHolder() {
+        if (dataHolder == null) {
+            dataHolder = new LibraryDataHolder(getActivity());
+            dataHolder.setCloudManager(DRApplication.getCloudStore().getCloudManager());
+        }
+        return dataHolder;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEBookListEvent(EBookListEvent event) {
+        bookshelfPresenter.getBooks(event.getLanguage());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    private LibraryDataModel getLibraryDataModel(QueryResult<Metadata> result, Map<String, CloseableReference<Bitmap>> map) {
+        return LibraryViewInfo.buildLibraryDataModel(result, map);
     }
 }

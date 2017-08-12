@@ -111,6 +111,39 @@ public class Metadata extends BaseData {
     @Column
     private String coverUrl;
 
+    @Column
+    private String currency;
+
+    @Column
+    private double price;
+
+    @Column
+    private float discount;
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public float getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(float discount) {
+        this.discount = discount;
+    }
+
     public void setFetchSource(int fetchSource) {
         this.fetchSource = fetchSource;
     }

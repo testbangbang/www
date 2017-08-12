@@ -36,5 +36,8 @@
         android:id="@+id/enter_bookstore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="@dimen/dialog_button_padding_top"
+        android:background="@drawable/textview_bg"
+        android:layout_gravity="right"
         android:text="@string/enter_bookstore"/>
 </LinearLayout>

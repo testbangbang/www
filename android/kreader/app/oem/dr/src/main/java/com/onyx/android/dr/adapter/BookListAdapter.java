@@ -14,6 +14,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.event.DownloadSucceedEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -29,6 +30,10 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -133,12 +138,16 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
     }
 
     private void startDownload(final Metadata eBook) {
-        String filePath = getDataSaveFilePath(eBook);
+        final String filePath = getDataSaveFilePath(eBook);
         OnyxDownloadManager downLoaderManager = getDownLoaderManager();
         BaseDownloadTask download = downLoaderManager.download(DRApplication.getInstance(), eBook.getLocation(), filePath, eBook.getGuid(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-
+                if (e == null) {
+                    eBook.setNativeAbsolutePath(filePath);
+                    DownloadSucceedEvent event = new DownloadSucceedEvent(eBook);
+                    EventBus.getDefault().post(event);
+                }
             }
 
             @Override

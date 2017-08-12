@@ -41,6 +41,7 @@
     <com.onyx.android.sdk.ui.view.PageRecyclerView
         android:id="@+id/college_student_interested_subject"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/interest_recycler_margin_left"
+        android:layout_height="@dimen/interest_recycler_height"
         android:layout_marginTop="@dimen/edit_text_margin_top" />
 </LinearLayout>
