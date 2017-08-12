@@ -28,11 +28,11 @@ public class AddShapeRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(false);
     }
 
-    public void execute(final NoteManager helper) throws Exception {
+    public void execute(final NoteManager parent) throws Exception {
         long start = System.currentTimeMillis();
-        helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
-        renderCurrentPageInBitmap(helper);
-        updateShapeDataInfo(helper);
+        parent.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
+        renderCurrentPageInBitmap(parent);
+        updateShapeDataInfo(parent);
         long end = System.currentTimeMillis();
         Log.e(TAG, "Render in background finished: " + (end - start));
     }

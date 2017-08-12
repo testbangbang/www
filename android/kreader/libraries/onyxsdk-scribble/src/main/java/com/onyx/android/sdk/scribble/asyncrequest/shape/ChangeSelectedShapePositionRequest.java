@@ -2,6 +2,7 @@ package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 
 /**
  * Created by solskjaer49 on 2017/8/11 12:08.
@@ -19,7 +20,7 @@ public class ChangeSelectedShapePositionRequest extends AsyncBaseNoteRequest {
     private volatile float targetDy = 0f;
 
     @Override
-    public void execute(AsyncNoteViewHelper helper) throws Exception {
+    public void execute(final NoteManager helper) throws Exception {
         setResumeInputProcessor(helper.useDFBForCurrentState());
         benchmarkStart();
         helper.getNoteDocument().getCurrentPage(getContext()).setTranslateToSelectShapeList(targetDx, targetDy);

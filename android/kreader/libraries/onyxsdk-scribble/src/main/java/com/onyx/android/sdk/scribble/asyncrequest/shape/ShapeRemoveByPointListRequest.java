@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 
 /**
@@ -18,12 +19,12 @@ public class ShapeRemoveByPointListRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(final AsyncNoteViewHelper helper) throws Exception {
-        setResumeInputProcessor(helper.useDFBForCurrentState());
+    public void execute(final NoteManager noteManager) throws Exception {
+        setResumeInputProcessor(noteManager.useDFBForCurrentState());
         benchmarkStart();
-        helper.getNoteDocument().removeShapesByTouchPointList(getContext(), touchPointList, 1.0f);
-        renderCurrentPageInBitmap(helper);
-        updateShapeDataInfo(helper);
+        noteManager.getNoteDocument().removeShapesByTouchPointList(getContext(), touchPointList, 1.0f);
+        renderCurrentPageInBitmap(noteManager);
+        updateShapeDataInfo(noteManager);
         Log.e("############", "erase takes: " + benchmarkEnd());
     }
 

@@ -1,23 +1,28 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.R;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -28,54 +33,60 @@ import java.util.List;
  * Created by john on 12/8/2017.
  */
 
-public class RenderHelper {
+public class RendererHelper {
 
     private boolean useExternal = false;
     private boolean debugPathBenchmark = false;
+    public DashPathEffect selectedDashPathEffect = new DashPathEffect(new float[]{4, 4, 4, 4}, 2);
+    private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
 
-    public void renderVisiblePagesInBitmap(final NoteManager parent, final List<PageInfo> visiblePages) {
-        Bitmap bitmap = parent.updateRenderBitmap(parent.getViewportSize());
+    public void init() {
+        renderBitmapWrapper.clear();
+    }
+
+    public void renderVisiblePagesInBitmap(final NoteManager parent, final AsyncBaseNoteRequest request) {
+        Bitmap bitmap = parent.updateRenderBitmap();
         bitmap.eraseColor(Color.WHITE);
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
 
         if (!parent.isLineLayoutMode()) {
-            drawBackground(canvas, paint, parent.getNoteDocument().getBackground(),
+            drawBackground(parent.getAppContext(),
+                    canvas, paint, parent.getNoteDocument().getBackground(),
                     parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
         }
         prepareRenderingBuffer(bitmap);
 
         final Matrix renderMatrix = new Matrix();
         final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
-        for (PageInfo page : visiblePages) {
-            final NotePage notePage = parent.getNoteDocument().getNotePage(context, page.getName());
-            //TODO:if select Rect is not null,means some shape is selected.with shape transform,we always need to reConfig point by matrix.
+        for (PageInfo page : request.getVisiblePages()) {
+            final NotePage notePage = parent.getNoteDocument().getNotePage(parent.getAppContext(), page.getName());
             renderContext.force = notePage.getSelectedRect() != null;
             notePage.render(renderContext, null);
-            parent.renderSelectedRect(notePage.getSelectedRect(), renderContext);
+            //renderSelectedRect(notePage.getSelectedRect(), renderContext);
         }
-        parent.renderCursorShape(renderContext);
-        parent.drawLineLayoutBackground(renderContext);
+        //renderCursorShape(renderContext);
+        //drawLineLayoutBackground(renderContext);
 
         flushRenderingBuffer(bitmap);
-        drawRandomTestPath(canvas, paint);
+        drawRandomTestPath(request, canvas, paint);
     }
 
     public void renderSelectionRectangle(final NoteManager parent, final TouchPoint start, final TouchPoint end) {
-        Bitmap bitmap = parent.updateRenderBitmap(parent.getViewportSize());
+        Bitmap bitmap = parent.updateRenderBitmap();
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
-        paint.setPathEffect(parent.selectedDashPathEffect);
+        paint.setPathEffect(selectedDashPathEffect);
         RectF rect = new RectF(start.getX(), start.getY(), end.getX(), end.getY());
         canvas.drawRect(rect, paint);
     }
 
     public void renderShapeMovingRectangle(final NoteManager parent, final TouchPoint start, final TouchPoint end) {
-        Bitmap bitmap = parent.updateRenderBitmap(parent.getViewportSize());
+        Bitmap bitmap = parent.updateRenderBitmap();
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
-        paint.setPathEffect(parent.selectedDashPathEffect);
-        RectF rect = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect();
+        paint.setPathEffect(selectedDashPathEffect);
+        RectF rect = parent.getNoteDocument().getCurrentPage(parent.getAppContext()).getSelectedRect();
         rect.offset(end.getX() - rect.centerX(), end.getY() - rect.centerY());
         canvas.drawRect(rect, paint);
     }
@@ -99,7 +110,11 @@ public class RenderHelper {
     private void flushRenderingBuffer(final Bitmap bitmap) {
     }
 
-    private void drawBackground(final Canvas canvas, final Paint paint, int bgType, String bgFilePath) {
+    private void drawBackground(final Context context,
+                                final Canvas canvas,
+                                final Paint paint,
+                                int bgType,
+                                String bgFilePath) {
         int bgResID = 0;
         switch (bgType) {
             case NoteBackgroundType.EMPTY:
@@ -147,23 +162,26 @@ public class RenderHelper {
                 bgResID = Integer.MIN_VALUE;
                 break;
         }
-        drawBackgroundResource(canvas, paint, bgResID, bgFilePath);
+        drawBackgroundResource(context, canvas, paint, bgResID, bgFilePath);
 
     }
 
-    private void drawBackgroundResource(Canvas canvas, Paint paint, int resID, String bgFilePath) {
+    private void drawBackgroundResource(final Context context,
+                                        Canvas canvas,
+                                        Paint paint,
+                                        int resID,
+                                        String bgFilePath) {
         Bitmap bitmap;
         Rect dest;
         if (resID == Integer.MIN_VALUE && !TextUtils.isEmpty(bgFilePath)) {
             bitmap = BitmapFactory.decodeFile(bgFilePath);
-            //TODO:use dynamic rotation angle?(if does,need more info from screenshot).
             if (bitmap.getHeight() < bitmap.getWidth()) {
                 bitmap = BitmapUtils.rotateBmp(bitmap, 90);
             }
             dest = BitmapUtils.getScaleInSideAndCenterRect(
                     canvas.getHeight(), canvas.getWidth(), bitmap.getHeight(), bitmap.getWidth(), false);
         } else {
-            bitmap = BitmapFactory.decodeResource(getContext().getResources(), resID);
+            bitmap = BitmapFactory.decodeResource(context.getResources(), resID);
             dest = new Rect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);
         }
         Rect src = new Rect(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
@@ -181,13 +199,15 @@ public class RenderHelper {
         return debugPathBenchmark;
     }
 
-    private void drawRandomTestPath(final Canvas canvas, final Paint paint) {
+    private void drawRandomTestPath(final AsyncBaseNoteRequest request,
+                                    final Canvas canvas,
+                                    final Paint paint) {
         if (!isRenderRandomTestPath()) {
             return;
         }
         Path path = new Path();
-        int width = getViewportSize().width();
-        int height = getViewportSize().height();
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
         int max = TestUtils.randInt(0, 1000);
         path.moveTo(TestUtils.randInt(0, width), TestUtils.randInt(0, height));
         for(int i = 0; i < max; ++i) {
@@ -196,7 +216,7 @@ public class RenderHelper {
             float xx2 = TestUtils.randInt(0, width);
             float yy2 = TestUtils.randInt(0, height);
             path.quadTo((xx + xx2) / 2, (yy + yy2) / 2, xx2, yy2);
-            if (isAbort()) {
+            if (request.isAbort()) {
                 return;
             }
         }
@@ -204,19 +224,51 @@ public class RenderHelper {
         canvas.drawPath(path, paint);
     }
 
-    public void currentPageAsVisiblePage(final AsyncNoteViewHelper helper) {
-        final NotePage notePage = helper.getNoteDocument().getCurrentPage(getContext());
-        getVisiblePages().clear();
-        PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), getViewportSize().width(), getViewportSize().height());
-        pageInfo.updateDisplayRect(new RectF(0, 0, getViewportSize().width(), getViewportSize().height()));
-        getVisiblePages().add(pageInfo);
+    public void currentPageAsVisiblePage(final NoteManager noteManager, final AsyncBaseNoteRequest request) {
+        final NotePage notePage = noteManager.getNoteDocument().getCurrentPage(request.getContext());
+        request.getVisiblePages().clear();
+        PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(),
+                noteManager.getViewportSize().width(),
+                noteManager.getViewportSize().height());
+        pageInfo.updateDisplayRect(noteManager.getViewportSizeF());
+        request.getVisiblePages().add(pageInfo);
     }
 
-    public void renderCurrentPageInBitmap(final NoteManager helper) {
-        if (!isRenderToBitmap()) {
+    public void renderCurrentPageInBitmap(final NoteManager noteManager, final AsyncBaseNoteRequest request) {
+        if (!request.isRenderToBitmap()) {
             return;
         }
-        currentPageAsVisiblePage(helper);
-        renderVisiblePagesInBitmap(helper);
+        currentPageAsVisiblePage(noteManager, request);
+        renderVisiblePagesInBitmap(noteManager, request);
+    }
+
+    public void renderToSurfaceView() {
+        Rect rect = checkSurfaceView();
+        if (rect == null) {
+            return;
+        }
+
+        applyUpdateMode();
+        Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
+        if (canvas == null) {
+            return;
+        }
+
+        Paint paint = new Paint();
+        clearBackground(canvas, paint, rect);
+        canvas.drawBitmap(getRenderBitmap(), 0, 0, paint);
+        RenderContext renderContext = RenderContext.create(canvas, paint, null);
+        for (Shape shape : getDirtyStash()) {
+            shape.render(renderContext);
+        }
+        surfaceView.getHolder().unlockCanvasAndPost(canvas);
+    }
+
+    private Rect checkSurfaceView() {
+        if (surfaceView == null || !surfaceView.getHolder().getSurface().isValid()) {
+            Log.e(TAG, "surfaceView is not valid");
+            return null;
+        }
+        return getViewportSize();
     }
 }

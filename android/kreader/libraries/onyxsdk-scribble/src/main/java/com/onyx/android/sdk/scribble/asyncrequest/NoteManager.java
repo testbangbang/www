@@ -16,7 +16,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
@@ -40,11 +39,11 @@ import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeSelectionRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
-import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
@@ -70,6 +69,9 @@ public class NoteManager {
 
 
     private AsyncNoteViewHelper noteViewHelper;
+    private RendererHelper rendererHelper;
+    private DocumentHelper documentHelper;
+
     private static NoteManager instance;
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
     private Context appContext;
@@ -118,6 +120,24 @@ public class NoteManager {
         return instance;
     }
 
+    public Context getAppContext() {
+        return appContext;
+    }
+
+    public RendererHelper getRendererHelper() {
+        if (rendererHelper == null) {
+            rendererHelper = new RendererHelper();
+        }
+        return rendererHelper;
+    }
+
+    public DocumentHelper getDocumentHelper() {
+        if (documentHelper == null) {
+            documentHelper = new DocumentHelper();
+        }
+        return documentHelper;
+    }
+
     private Runnable generateRunnable(final AsyncBaseNoteRequest request) {
         return new Runnable() {
             @Override
@@ -137,10 +157,6 @@ public class NoteManager {
     }
 
     private void beforeSubmit(AsyncBaseNoteRequest request) {
-        final Rect rect = noteViewHelper.getViewportSize();
-        if (rect != null) {
-            request.setViewportSize(rect);
-        }
     }
 
     public boolean submitRequest(final AsyncBaseNoteRequest request, final BaseCallback callback) {
@@ -655,11 +671,46 @@ public class NoteManager {
         noteViewHelper.renderToSurfaceView();
     }
 
-    public Bitmap updateRenderBitmap(final Rect rect) {
-        return noteViewHelper.updateRenderBitmap(rect);
+    public Bitmap updateRenderBitmap() {
+        return noteViewHelper.updateRenderBitmap(getViewportSize());
     }
 
     public Rect getViewportSize() {
         return noteViewHelper.getViewportSize();
     }
+
+    public RectF getViewportSizeF() {
+        return noteViewHelper.getViewportSizeF();
+    }
+
+    public void updateShapeDataInfo(final Context context, final ShapeDataInfo shapeDataInfo) {
+        noteViewHelper.updateShapeDataInfo(context, shapeDataInfo);
+    }
+
+    public void renderCurrentPageInBitmap(final AsyncBaseNoteRequest request) {
+        rendererHelper.renderCurrentPageInBitmap(this, request);
+    }
+
+    public int getCurrentShapeType() {
+        return getNoteDocument().getNoteDrawingArgs().getCurrentShapeType();
+    }
+
+    public boolean useDFBForCurrentState() {
+        return ShapeFactory.isDFBShape(getCurrentShapeType()) && !inUserErasing();
+    }
+
+    public void updateDrawingArgs(final NoteDrawingArgs drawingArgs) {
+        noteViewHelper.updateDrawingArgs(drawingArgs);
+    }
+
+    public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
+        getDocumentHelper().getNoteDocument().open(context, documentUniqueId, parentUniqueId);
+        getRendererHelper().init();
+    }
+
+    public void createDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
+        getNoteDocument().create(context, documentUniqueId, parentUniqueId);
+        getRendererHelper().init();
+    }
+
 }

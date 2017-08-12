@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
@@ -30,15 +31,15 @@ public class RenderInBackgroundRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(final AsyncNoteViewHelper helper) throws Exception {
-        if (!helper.getNoteDocument().isOpen()) {
+    public void execute(final NoteManager noteManager) throws Exception {
+        if (!noteManager.getNoteDocument().isOpen()) {
             return;
         }
         benchmarkStart();
-        helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
+        noteManager.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
         setRenderToBitmap(true);
         setRenderToScreen(false);
-        renderCurrentPageInBitmap(helper);
+        renderCurrentPageInBitmap(noteManager);
         Log.e(TAG, "render takes: " + benchmarkEnd());
     }
 

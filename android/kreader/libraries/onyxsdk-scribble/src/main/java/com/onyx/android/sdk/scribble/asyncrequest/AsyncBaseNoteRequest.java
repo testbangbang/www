@@ -39,7 +39,6 @@ public class AsyncBaseNoteRequest extends BaseRequest {
     private volatile ShapeDataInfo shapeDataInfo;
     private String docUniqueId;
     private String parentLibraryId;
-    private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<>();
 
     private boolean pauseInputProcessor = true;
@@ -104,14 +103,6 @@ public class AsyncBaseNoteRequest extends BaseRequest {
 
     public void setParentLibraryId(String parentLibraryId) {
         this.parentLibraryId = parentLibraryId;
-    }
-
-    public void setViewportSize(final Rect size) {
-        viewportSize = size;
-    }
-
-    public final Rect getViewportSize() {
-        return viewportSize;
     }
 
     public void setVisiblePages(final List<PageInfo> pages) {
@@ -191,12 +182,11 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         return shapeDataInfo;
     }
 
-    public void updateShapeDataInfo(final AsyncNoteViewHelper parent) {
-        final ShapeDataInfo shapeDataInfo = getShapeDataInfo();
-        parent.updateShapeDataInfo(getContext(), shapeDataInfo);
+    public void updateShapeDataInfo(final NoteManager parent) {
+        parent.updateShapeDataInfo(getContext(), getShapeDataInfo());
     }
 
-    public void ensureDocumentOpened(final AsyncNoteViewHelper parent) {
+    public void ensureDocumentOpened(final NoteManager parent) {
         if (!parent.getNoteDocument().isOpen()) {
             parent.getNoteDocument().open(getContext(),
                     getDocUniqueId(),
@@ -218,5 +208,9 @@ public class AsyncBaseNoteRequest extends BaseRequest {
 
     public String getIdentifier() {
         return identifier;
+    }
+
+    public void renderCurrentPageInBitmap(final NoteManager noteManager) {
+        noteManager.renderCurrentPageInBitmap(this);
     }
 }

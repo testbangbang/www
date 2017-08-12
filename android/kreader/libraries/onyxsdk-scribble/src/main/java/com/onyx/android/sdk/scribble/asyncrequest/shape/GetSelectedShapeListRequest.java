@@ -2,6 +2,7 @@ package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class GetSelectedShapeListRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(final AsyncNoteViewHelper parent) throws Exception {
+    public void execute(final NoteManager parent) throws Exception {
         selectedShapeList = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedShapeList();
     }
 

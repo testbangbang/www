@@ -2,6 +2,7 @@ package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 
@@ -25,13 +26,13 @@ public class ShapeSelectionRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(final AsyncNoteViewHelper helper) throws Exception {
-        if (!helper.getNoteDocument().isOpen()) {
+    public void execute(final NoteManager noteManager) throws Exception {
+        if (!noteManager.getNoteDocument().isOpen()) {
             return;
         }
         benchmarkStart();
         setRender(true);
-        renderCurrentPageInBitmap(helper);
-        renderSelectionRectangle(helper, start, end);
+        renderCurrentPageInBitmap(noteManager);
+        renderSelectionRectangle(noteManager, start, end);
     }
 }

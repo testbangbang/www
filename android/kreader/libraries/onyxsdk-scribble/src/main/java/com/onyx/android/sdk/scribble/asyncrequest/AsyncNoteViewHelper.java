@@ -75,7 +75,6 @@ public class AsyncNoteViewHelper {
     private static final int PEN_ERASING = 4;
 
     private RawInputProcessor rawInputProcessor = null;
-    private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private Rect softwareLimitRect = null;
     private volatile SurfaceView surfaceView;
@@ -140,47 +139,9 @@ public class AsyncNoteViewHelper {
         onNewTouchPointListReceived(touchPointList);
     }
 
-    public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
-        getNoteDocument().open(context, documentUniqueId, parentUniqueId);
-        onDocumentOpened();
-    }
 
-    public void createDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
-        getNoteDocument().create(context, documentUniqueId, parentUniqueId);
-        onDocumentOpened();
-    }
 
-    private void onDocumentOpened() {
-        renderBitmapWrapper.clear();
-        NoteModel.setDefaultEraserRadius(deviceConfig.getEraserRadius());
-        getNoteDocument().getNoteDrawingArgs().setEraserRadius(deviceConfig.getEraserRadius());
-        InkUtils.setPressureEntries(mappingConfig.getPressureList());
-        EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
-        EpdController.setStrokeColor(getNoteDocument().getNoteDrawingArgs().strokeColor);
-    }
 
-    public void undo(final Context context) {
-        getNoteDocument().getCurrentPage(context).undo(isLineLayoutMode());
-    }
-
-    public void redo(final Context context) {
-        getNoteDocument().getCurrentPage(context).redo(isLineLayoutMode());
-    }
-
-    public void clearPageUndoRedo(final Context context) {
-        NotePage currentPage = getNoteDocument().getCurrentPage(context);
-        if (currentPage != null) {
-            currentPage.clearUndoRedoRecord();
-        }
-    }
-
-    public void save(final Context context, final String title , boolean closeAfterSave) {
-        getNoteDocument().save(context, title);
-        if (closeAfterSave) {
-            getNoteDocument().close(context);
-            renderBitmapWrapper.clear();
-        }
-    }
 
     private void initRawResource(final Context context) {
         deviceConfig = DeviceConfig.sharedInstance(context, "note");
@@ -372,45 +333,7 @@ public class AsyncNoteViewHelper {
         resetRawInputProcessor();
     }
 
-    public void setBackground(int bgType) {
-        getNoteDocument().setBackground(bgType);
-    }
 
-    public void setBackgroundFilePath(String filePath){
-        getNoteDocument().setBackgroundFilePath(filePath);
-    }
-
-    public void setLineLayoutBackground(int bgType) {
-        getNoteDocument().setLineLayoutBackground(bgType);
-    }
-
-    public void setStrokeWidth(float width) {
-        getNoteDocument().setStrokeWidth(width);
-        EpdController.setStrokeWidth(width);
-    }
-
-    public void setStrokeColor(int color) {
-        getNoteDocument().setStrokeColor(color);
-        EpdController.setStrokeColor(color);
-    }
-
-    public void updateDrawingArgs(final NoteDrawingArgs drawingArgs) {
-        setStrokeColor(drawingArgs.strokeColor);
-        setStrokeWidth(drawingArgs.strokeWidth);
-        setCurrentShapeType(drawingArgs.getCurrentShapeType());
-        setBackground(drawingArgs.background);
-    }
-
-    public void updateShapeDataInfo(final Context context, final ShapeDataInfo shapeDataInfo) {
-        shapeDataInfo.updateShapePageMap(
-                getNoteDocument().getPageNameList(),
-                getNoteDocument().getCurrentPageIndex());
-        shapeDataInfo.setInUserErasing(inUserErasing());
-        shapeDataInfo.updateDrawingArgs(getNoteDocument().getNoteDrawingArgs());
-        shapeDataInfo.setCanRedoShape(getNoteDocument().getCurrentPage(context).canRedo());
-        shapeDataInfo.setCanUndoShape(getNoteDocument().getCurrentPage(context).canUndo());
-        shapeDataInfo.setDocumentUniqueId(getNoteDocument().getDocumentUniqueId());
-    }
 
     private void removeLayoutListener() {
         if (surfaceView == null || globalLayoutListener == null) {
@@ -428,15 +351,19 @@ public class AsyncNoteViewHelper {
         return null;
     }
 
+    public RectF getViewportSizeF() {
+        if (surfaceView != null) {
+            return new RectF(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
+        }
+        return null;
+    }
+
+
     public final RawInputProcessor getRawInputProcessor() {
         if (rawInputProcessor == null) {
             rawInputProcessor = new RawInputProcessor();
         }
         return rawInputProcessor;
-    }
-
-    public final NoteDocument getNoteDocument() {
-        return noteDocument;
     }
 
     public Bitmap updateRenderBitmap(final Rect viewportSize) {
@@ -556,13 +483,7 @@ public class AsyncNoteViewHelper {
         return temp;
     }
 
-    public NoteDrawingArgs.PenState getPenState() {
-        return getNoteDocument().getPenState();
-    }
 
-    public void setPenState(NoteDrawingArgs.PenState penState) {
-        getNoteDocument().setPenState(penState);
-    }
 
     public void ensureErasing() {
         shortcutErasing = true;
@@ -587,26 +508,7 @@ public class AsyncNoteViewHelper {
         }
     }
 
-    public boolean inShapeSelecting(){
-        return getPenState() == NoteDrawingArgs.PenState.PEN_SHAPE_SELECTING;
-    }
 
-    public boolean inErasing() {
-        return (shortcutErasing || getPenState() == NoteDrawingArgs.PenState.PEN_USER_ERASING);
-    }
-
-    public boolean inUserErasing() {
-        return getPenState() == NoteDrawingArgs.PenState.PEN_USER_ERASING;
-    }
-
-    public int getCurrentShapeType() {
-        return getNoteDocument().getNoteDrawingArgs().getCurrentShapeType();
-    }
-
-    public void setCurrentShapeType(int currentShapeType) {
-        getNoteDocument().getNoteDrawingArgs().setCurrentShapeType(currentShapeType);
-        updatePenStateByCurrentShapeType();
-    }
 
     private boolean useRawInput() {
         return deviceConfig != null && deviceConfig.useRawInput();
@@ -870,35 +772,7 @@ public class AsyncNoteViewHelper {
         return lineLayoutArgs;
     }
 
-    public void renderToSurfaceView() {
-        Rect rect = checkSurfaceView();
-        if (rect == null) {
-            return;
-        }
 
-        applyUpdateMode();
-        Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
-        if (canvas == null) {
-            return;
-        }
-
-        Paint paint = new Paint();
-        clearBackground(canvas, paint, rect);
-        canvas.drawBitmap(getRenderBitmap(), 0, 0, paint);
-        RenderContext renderContext = RenderContext.create(canvas, paint, null);
-        for (Shape shape : getDirtyStash()) {
-            shape.render(renderContext);
-        }
-        surfaceView.getHolder().unlockCanvasAndPost(canvas);
-    }
-
-    private Rect checkSurfaceView() {
-        if (surfaceView == null || !surfaceView.getHolder().getSurface().isValid()) {
-            Log.e(TAG, "surfaceView is not valid");
-            return null;
-        }
-        return getViewportSize();
-    }
 
     private void applyUpdateMode() {
         if (false) {

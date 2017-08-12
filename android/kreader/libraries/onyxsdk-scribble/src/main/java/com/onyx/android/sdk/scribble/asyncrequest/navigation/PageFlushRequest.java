@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
@@ -29,24 +30,24 @@ public class PageFlushRequest extends AsyncBaseNoteRequest {
         syncDrawingArgs(args);
     }
 
-    public void execute(final AsyncNoteViewHelper helper) throws Exception {
-        if (!helper.getNoteDocument().isOpen()) {
+    public void execute(final NoteManager noteManager) throws Exception {
+        if (!noteManager.getNoteDocument().isOpen()) {
             return;
         }
-        helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
-        helper.updateDrawingArgs(getDrawingArgs());
-        renderCurrentPageInBitmap(helper);
-        saveDocument(helper);
-        updateShapeDataInfo(helper);
-        setResumeInputProcessor(helper.useDFBForCurrentState() && isResumeInputProcessor());
+        noteManager.getNoteDocument().getCurrentPage(getContext()).addShapeList(shapeList);
+        noteManager.updateDrawingArgs(getDrawingArgs());
+        renderCurrentPageInBitmap(noteManager);
+        saveDocument(noteManager);
+        updateShapeDataInfo(noteManager);
+        setResumeInputProcessor(noteManager.useDFBForCurrentState() && isResumeInputProcessor());
     }
 
-    private void saveDocument(final AsyncNoteViewHelper helper) {
+    private void saveDocument(final NoteManager noteManager) {
         if (!save) {
             return;
         }
         benchmarkStart();
-        helper.getNoteDocument().save(getContext(), null);
+        noteManager.getNoteDocument().save(getContext(), null);
         Log.e("Save all pages", " duration " + benchmarkEnd());
     }
 }
