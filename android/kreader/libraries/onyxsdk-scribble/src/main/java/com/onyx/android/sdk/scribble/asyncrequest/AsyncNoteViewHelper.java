@@ -535,7 +535,8 @@ public class AsyncNoteViewHelper {
             for(int i = 0; i < n; ++i) {
                 shapeSelectPoints.add(fromHistorical(motionEvent, i));
             }
-            shapeSelectPoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(), motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
+            shapeSelectPoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(),
+                    motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
         }
         return true;
     }

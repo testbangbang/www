@@ -17,14 +17,19 @@ public class NotePageUndoRedoManager {
         if (action.getObject().get(0).isFreePosition() == isLineLayoutMode) {
             return;
         }
-        if (ShapeActions.ACTION_ADD_SHAPE.equalsIgnoreCase(action.getActionName())) {
-            notePage.removeShape(action.getObject().get(0), false);
-        } else if (ShapeActions.ACTION_REMOVE_SHAPE.equalsIgnoreCase(action.getActionName())) {
-            notePage.addShape(action.getObject().get(0), false);
-        } else if (ShapeActions.ACTION_ADD_SHAPE_LIST.equalsIgnoreCase(action.getActionName())) {
-            notePage.removeShapeList(action.getObject(), false);
-        } else if (ShapeActions.ACTION_REMOVE_SHAPE_LIST.equalsIgnoreCase(action.getActionName())) {
-            notePage.addShapeList(action.getObject(), false);
+        switch (action.getActionName()) {
+            case ShapeActions.ACTION_ADD_SHAPE:
+                notePage.removeShape(action.getObject().get(0), false);
+                break;
+            case ShapeActions.ACTION_ADD_SHAPE_LIST:
+                notePage.removeShapeList(action.getObject(), false);
+                break;
+            case ShapeActions.ACTION_REMOVE_SHAPE:
+                notePage.addShape(action.getObject().get(0), false);
+                break;
+            case ShapeActions.ACTION_REMOVE_SHAPE_LIST:
+                notePage.addShapeList(action.getObject(), false);
+                break;
         }
     }
 
@@ -36,14 +41,19 @@ public class NotePageUndoRedoManager {
         if (action.getObject().get(0).isFreePosition() == isLineLayoutMode) {
             return;
         }
-        if (ShapeActions.ACTION_ADD_SHAPE.equalsIgnoreCase(action.getActionName())) {
-            notePage.addShape(action.getObject().get(0), false);
-        } else if (ShapeActions.ACTION_REMOVE_SHAPE.equalsIgnoreCase(action.getActionName())) {
-            notePage.removeShape(action.getObject().get(0), false);
-        } else if (ShapeActions.ACTION_ADD_SHAPE_LIST.equalsIgnoreCase(action.getActionName())) {
-            notePage.addShapeList(action.getObject(), false);
-        } else if (ShapeActions.ACTION_REMOVE_SHAPE_LIST.equalsIgnoreCase(action.getActionName())) {
-            notePage.removeShapeList(action.getObject(), false);
+        switch (action.getActionName()) {
+            case ShapeActions.ACTION_ADD_SHAPE:
+                notePage.addShape(action.getObject().get(0), false);
+                break;
+            case ShapeActions.ACTION_ADD_SHAPE_LIST:
+                notePage.addShapeList(action.getObject(), false);
+                break;
+            case ShapeActions.ACTION_REMOVE_SHAPE:
+                notePage.removeShape(action.getObject().get(0), false);
+                break;
+            case ShapeActions.ACTION_REMOVE_SHAPE_LIST:
+                notePage.removeShapeList(action.getObject(), false);
+                break;
         }
     }
 
