@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.im.IMManager;
 import com.onyx.einfo.R;
 import com.onyx.einfo.InfoApp;
 import com.onyx.einfo.action.AuthTokenAction;
@@ -52,6 +53,7 @@ public class HomeActivity extends BaseActivity {
 
     private void postCreate() {
         cloudContentImportFirstBoot();
+        IMManager.getInstance().startPushService(this);
     }
 
     private void cloudContentImportFirstBoot() {
