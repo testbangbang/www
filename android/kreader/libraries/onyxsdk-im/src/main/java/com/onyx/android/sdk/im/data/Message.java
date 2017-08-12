@@ -5,6 +5,13 @@ package com.onyx.android.sdk.im.data;
  */
 
 public class Message {
+    public static final String TYPE_TEXT = "text";
+    public static final String TYPE_FILE_DOWNLOAD = "file";
+    public static final String TYPE_PRODUCT_DOWNLOAD = "product";
+    public static final String TYPE_LIBRARY_CLEAR = "library_clear";
+    public static final String TYPE_LOGIN = "login";
+    public static final String TYPE_SCREEN_SAVER = "screen_saver";
+
     private String channel;
     private String action;
     private String type;

@@ -72,27 +72,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name="com.avos.avoscloud.PushService"
-            android:exported="true" />
-
-        <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name=".receiver.OnyxPushReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="com.onyx.push" />
-            </intent-filter>
-        </receiver>
-
         <activity
             android:name=".activity.RouterTestActivity"
             android:label="@string/title_activity_router_test"
