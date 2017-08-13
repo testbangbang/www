@@ -62,9 +62,6 @@ public class LeanCloudManager {
             if (installationSaved) {
                 return;
             }
-            if (!NetworkUtil.isWiFiConnected(context)) {
-                return;
-            }
             Point resolution = DeviceInfoUtil.getScreenResolution(context);
             final AVInstallation installation = AVInstallation.getCurrentInstallation();
             installation.put("width", resolution.x);
