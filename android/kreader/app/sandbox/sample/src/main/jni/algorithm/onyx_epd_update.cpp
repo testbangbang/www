@@ -24,7 +24,7 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sample_utils_EpdUtils_test
     int width = 2200;
     int height = 1650;
     int limit = width * height;
-    int updLimit = 5;
+    int updLimit = 10;
     int maxFrame = 33;
 
     unsigned char * wb      = new unsigned char[limit];
@@ -57,13 +57,18 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sample_utils_EpdUtils_test
                 continue;
             }
 
+
+
             unsigned char *pupd;
             for(int j = 0; j < updLimit; ++j) {
                 pupd = &updList[j][i];
-                if (*pupd != *pwb) {
+                if (*pupd == 0xff) {
+                    continue;
+                }
+                if (*pupd != *pwb ) {
                     *pwb = *pupd;
                     *pwbIndex = maxFrame;
-                    *pupd = 0;
+                    *pupd = 0xff;
                 }
                 ++pwb;
                 ++pwbIndex;
