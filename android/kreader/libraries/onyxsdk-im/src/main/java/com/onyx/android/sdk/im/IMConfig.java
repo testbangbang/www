@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.im;
 
+import android.app.Activity;
+
 import com.onyx.android.sdk.im.push.PushServiceType;
 
 /**
@@ -9,6 +11,8 @@ import com.onyx.android.sdk.im.push.PushServiceType;
 public class IMConfig {
 
     private PushServiceType pushServiceType = PushServiceType.AVCLOUDPUSH;
+    // notification click will open the activity, may assignment this if necessary
+    private Class<? extends Activity> pushCallbackActivityClazz;
     private String applicationId;
     private String clientKey;
 
@@ -58,6 +62,15 @@ public class IMConfig {
 
     public void setClientKey(String clientKey) {
         this.clientKey = clientKey;
+    }
+
+    public IMConfig setPushCallbackActivity(Class<? extends Activity> activityClazz) {
+        this.pushCallbackActivityClazz = activityClazz;
+        return this;
+    }
+
+    public Class<? extends Activity> getPushCallbackActivity() {
+        return this.pushCallbackActivityClazz;
     }
 
     public String getServerUri() {

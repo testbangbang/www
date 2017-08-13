@@ -11,13 +11,13 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.im.IMConfig;
 import com.onyx.android.sdk.im.IMManager;
 import com.onyx.android.sdk.im.event.MessageEvent;
+import com.onyx.android.sdk.im.push.LeanCloudManager;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.einfo.action.FileSystemScanAction;
 import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.events.DataRefreshEvent;
 import com.onyx.einfo.holder.LibraryDataHolder;
 import com.onyx.einfo.manager.ConfigPreferenceManager;
-import com.onyx.einfo.manager.LeanCloudManager;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
@@ -147,7 +147,6 @@ public class InfoApp extends MultiDexApplication {
     private void initLeanCloud() {
         String leanCloudAppId = DeviceConfig.sharedInstance(this).getLeanCloudApplicationId();
         String leanCloudClientKey = DeviceConfig.sharedInstance(this).getLeanCloudClientKey();
-        LeanCloudManager.initialize(this, leanCloudAppId, leanCloudClientKey);
         initIMManager(leanCloudAppId, leanCloudClientKey);
     }
 
