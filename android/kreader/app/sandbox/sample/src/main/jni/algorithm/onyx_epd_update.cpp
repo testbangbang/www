@@ -24,7 +24,7 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sample_utils_EpdUtils_test
     int width = 2200;
     int height = 1650;
     int limit = width * height;
-    int updLimit = 10;
+    int updLimit = 5;
     int maxFrame = 33;
 
     unsigned char * wb      = new unsigned char[limit];
@@ -49,17 +49,24 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sample_utils_EpdUtils_test
         }
 
         LOGE("testing step1 with finished pixels: %d", finished);
+        unsigned char * pwbIndex = &wbIndex[0];
+        unsigned char * pwb = &wb[0];
         for(int i = 0; i < limit; ++i) {
-            if (wbIndex[i] > 0) {
+            if (*pwbIndex > 0) {
+                ++pwbIndex;
                 continue;
             }
-            unsigned char src = wb[i];
+
+            unsigned char *pupd;
             for(int j = 0; j < updLimit; ++j) {
-                unsigned char value = updList[j][i];
-                if (value != src) {
-                    wb[i] = value;
-                    wbIndex[i] = maxFrame;
+                pupd = &updList[j][i];
+                if (*pupd != *pwb) {
+                    *pwb = *pupd;
+                    *pwbIndex = maxFrame;
+                    *pupd = 0;
                 }
+                ++pwb;
+                ++pwbIndex;
             }
         }
         LOGE("testing step1 done");
