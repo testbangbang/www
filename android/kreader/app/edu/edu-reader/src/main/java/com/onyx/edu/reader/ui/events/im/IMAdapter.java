@@ -64,9 +64,6 @@ public class IMAdapter {
         if (event == null) {
             return;
         }
-        if (event.isUnRegister()) {
-            getEventBus().unregister(this);
-        }
         setStarted(false);
         getIMManager().close(getContext());
     }

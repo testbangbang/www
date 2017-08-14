@@ -903,6 +903,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         updateNoteHostView();
         getReaderDataHolder().updateRawEventProcessor();
         getReaderDataHolder().resetHandlerManager();
+        getReaderDataHolder().activeIMService();
 
         postDocumentInitRendered();
     }
