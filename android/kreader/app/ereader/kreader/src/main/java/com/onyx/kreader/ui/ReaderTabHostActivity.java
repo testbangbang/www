@@ -1171,17 +1171,26 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         dlg.show();
     }
 
+    private boolean isValidFilePath(String path) {
+        File file = new File(path);
+        return file.exists() && file.isFile();
+    }
+
     private ArrayList<String> getRecentFiles(List<Metadata> list) {
         ArrayList<String> files = new ArrayList<>();
         if (CollectionUtils.isNullOrEmpty(list)) {
             for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-                files.add(entry.getValue());
+                if (isValidFilePath(entry.getValue())) {
+                    files.add(entry.getValue());
+                }
             }
             return files;
         }
 
         for (Metadata data : list) {
-            files.add(data.getNativeAbsolutePath());
+            if (isValidFilePath(data.getNativeAbsolutePath())) {
+                files.add(data.getNativeAbsolutePath());
+            }
         }
         return files;
     }
