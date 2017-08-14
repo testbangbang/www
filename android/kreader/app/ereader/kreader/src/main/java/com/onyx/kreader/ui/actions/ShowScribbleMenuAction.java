@@ -618,7 +618,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private void updateSideNotePositionTextView() {
         String positionText = getSideNotePositionText();
         CommonViewHolder holder = scribbleViewHolderMap.get(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION);
-        TextView tv = (TextView)holder.getItemView();
-        tv.setText(positionText);
+        if (holder != null) {
+            TextView tv = (TextView) holder.getItemView();
+            tv.setText(positionText);
+        }
     }
 }
