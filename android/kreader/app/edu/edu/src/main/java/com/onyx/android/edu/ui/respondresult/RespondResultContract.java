@@ -15,5 +15,6 @@ public interface RespondResultContract {
 
     interface Presenter extends BasePresenter {
 
+        void updateExaminationPaper(Float score, int count,int errorCount);
     }
 }

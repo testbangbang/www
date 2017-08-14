@@ -27,6 +27,7 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_UPDATE_TAB_WIDGET_VISIBILITY = "com.onyx.kreader.action.UPDATE_TAB_WIDGET_VISIBILITY";
     public static final String ACTION_ENABLE_DEBUG_LOG = "com.onyx.kreader.action.ENABLE_DEBUG_LOG";
     public static final String ACTION_DISABLE_DEBUG_LOG = "com.onyx.kreader.action.DISABLE_DEBUG_LOG";
+    public static final String ACTION_SEND_BOOK_INFO = "com.onyx.kreader.action.SEND_BOOK_INFO";
 
     public static final String TAG_WINDOW_WIDTH = "com.onyx.kreader.WINDOW_WIDTH";
     public static final String TAG_WINDOW_HEIGHT = "com.onyx.kreader.WINDOW_HEIGHT";

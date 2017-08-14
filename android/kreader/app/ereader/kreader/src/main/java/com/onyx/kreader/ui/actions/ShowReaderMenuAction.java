@@ -56,6 +56,7 @@ import com.onyx.kreader.note.actions.RestoreShapeAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.UndoAction;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
+import com.onyx.kreader.ui.KReaderApp;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.data.ReaderCropArgs;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -694,8 +695,11 @@ public class ShowReaderMenuAction extends BaseAction {
     private void startQuiz(final ReaderDataHolder readerDataHolder) {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.onyx.android.edu", "com.onyx.android.edu.ui.exerciserespond.ExerciseRespondActivity"));
-        intent.putExtra("choose_question_variable", "{\"difficult\":{\"difficultName\":\"容易\",\"id\":1},\"documentType\":\"All\",\"questionType\":{\"id\":1},\"stage\":{\"id\":1,\"stageName\":\"初级\"},\"subject\":{\"id\":-1,\"subjectName\":\"软件开发\"},\"textbook\":{\"bookName\":\"Java开发技术\",\"id\":-1},\"version\":{\"id\":-1,\"versionName\":\"第一版\"}}\n");
-        intent.putExtra("question", "[{\"answerCount\":1,\"difficult\":0,\"id\":1,\"questionAnalytical\":{\"answer\":\"v1\",\"id\":-1,\"questionAnalyze\":\"analyse1\"},\"questionOptions\":{\"一个类可以定义多个构造函数\":\"\",\"构造函数和类有相同的名称，并且不能带任何参数\":\"\",\"构造函数的返回类型是void\":\"\",\"类必须显式定义构造函数\":\"\"},\"stem\":\"在Java中，下面对于构造函数的描述正确的是\"},{\"answerCount\":1,\"difficult\":0,\"id\":2,\"questionAnalytical\":{\"answer\":\"v1\",\"id\":-1,\"questionAnalyze\":\"analyse1\"},\"questionOptions\":{\"静态修饰的成员变量和成员方法随着类的加载而加载\":\"\",\"静态修饰的成员变量和成员方法随着类的消失而消失\":\"\",\"静态修饰的成员可以被整个类对象所共享\":\"\",\"静态修饰的成员方法可以访问非静态成员变量\":\"\"},\"stem\":\"下面对static的描述错误的是？\"},{\"answerCount\":3,\"difficult\":0,\"id\":3,\"questionAnalytical\":{\"answer\":\"v1\",\"id\":-1,\"questionAnalyze\":\"analyse1\"},\"stem\":\"请回答Java的访问修饰符\"}]");
+        Log.d(TAG, "startQuiz: ----------"+KReaderApp.instance().getBookId() +"："+KReaderApp.instance().getBookName());
+        intent.putExtra("examination_book_id", KReaderApp.instance().getBookId());
+        intent.putExtra("examination_book_name", KReaderApp.instance().getBookName());
+        //intent.putExtra("choose_question_variable", "{\"difficult\":{\"difficultName\":\"容易\",\"id\":1},\"documentType\":\"All\",\"questionType\":{\"id\":1},\"stage\":{\"id\":1,\"stageName\":\"初级\"},\"subject\":{\"id\":-1,\"subjectName\":\"软件开发\"},\"textbook\":{\"bookName\":\"Java开发技术\",\"id\":-1},\"version\":{\"id\":-1,\"versionName\":\"第一版\"}}\n");
+        //intent.putExtra("question", "[{\"answerCount\":1,\"difficult\":0,\"id\":1,\"questionAnalytical\":{\"answer\":\"v1\",\"id\":-1,\"questionAnalyze\":\"analyse1\"},\"questionOptions\":{\"一个类可以定义多个构造函数\":\"\",\"构造函数和类有相同的名称，并且不能带任何参数\":\"\",\"构造函数的返回类型是void\":\"\",\"类必须显式定义构造函数\":\"\"},\"stem\":\"在Java中，下面对于构造函数的描述正确的是\"},{\"answerCount\":1,\"difficult\":0,\"id\":2,\"questionAnalytical\":{\"answer\":\"v1\",\"id\":-1,\"questionAnalyze\":\"analyse1\"},\"questionOptions\":{\"静态修饰的成员变量和成员方法随着类的加载而加载\":\"\",\"静态修饰的成员变量和成员方法随着类的消失而消失\":\"\",\"静态修饰的成员可以被整个类对象所共享\":\"\",\"静态修饰的成员方法可以访问非静态成员变量\":\"\"},\"stem\":\"下面对static的描述错误的是？\"},{\"answerCount\":3,\"difficult\":0,\"id\":3,\"questionAnalytical\":{\"answer\":\"v1\",\"id\":-1,\"questionAnalyze\":\"analyse1\"},\"stem\":\"请回答Java的访问修饰符\"}]");
         ActivityUtil.startActivitySafely(readerDataHolder.getContext(), intent);
     }
 
