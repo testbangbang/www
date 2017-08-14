@@ -176,6 +176,13 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".ui.receiver.BookInfoReceiver"
+            android:process=":reader_tab_1">
+            <intent-filter>
+                <action android:name="com.onyx.kreader.action.SEND_BOOK_INFO" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".ui.ReaderTab2Activity"
             android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"
             android:launchMode="singleInstance"

@@ -27,18 +27,22 @@ public class ChoiceQuestionView extends BaseQuestionView {
     private RadioGroup mOptions;
     private LinearLayout mMainSelectView;
     private Map<String, String> optionMap;
+    private long questionId;
+    private ChooseCallback callBack;
 
     public ChoiceQuestionView(Context context,
                               boolean showAnswer,
                               Map<String, String> optionMap,
                               String answer,
                               String problem,
-                              String questionAnalyze) {
+                              String questionAnalyze,
+                              long questionId) {
         super(context, showAnswer);
         this.optionMap = optionMap;
         this.rightAnswer = answer;
         this.problem = problem;
         this.questionAnalyze = questionAnalyze;
+        this.questionId = questionId;
         initData();
     }
 
@@ -83,6 +87,7 @@ public class ChoiceQuestionView extends BaseQuestionView {
                 if (isChecked){
                     setHasAnswer(true);
                     chooseAnswer = (String) buttonView.getTag();
+                    callBack.insertAnswer(questionId, chooseAnswer, String.valueOf(getScore()));
                 }
             }
         });
@@ -105,6 +110,9 @@ public class ChoiceQuestionView extends BaseQuestionView {
 
     @Override
     public float getScore() {
+        if(isRight()) {
+            return 5;
+        }
         return 0;
     }
 
@@ -112,6 +120,10 @@ public class ChoiceQuestionView extends BaseQuestionView {
     public void addAnalysisAnswerView() {
         AnalysisAnswerView analysisAnswerView = new AnalysisAnswerView(mContext);
         mMainSelectView.addView(analysisAnswerView);
+    }
+
+    public void setOnChooseAnswerCallBack(ChooseCallback callBack) {
+        this.callBack = callBack;
     }
 
 }

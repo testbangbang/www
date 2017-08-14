@@ -12,6 +12,22 @@ import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 public class EduApp extends Application{
 
     private static EduApp instance;
+    private long startTime;
+    private long endTime;
+    private String bookName;
+    private String bookId;
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
+
+    public long getUseTime() {
+        return (endTime - startTime) / 1000;
+    }
 
     @Override
     public void onCreate() {
@@ -28,4 +44,19 @@ public class EduApp extends Application{
         AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
     }
 
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getBookId() {
+        return bookId;
+    }
 }

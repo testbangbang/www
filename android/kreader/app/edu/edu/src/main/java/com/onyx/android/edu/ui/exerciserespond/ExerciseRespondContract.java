@@ -23,5 +23,6 @@ public interface ExerciseRespondContract {
 
     interface ExerciseRespondPresenter extends BasePresenter {
         PaperResult getPaperResult(List<BaseQuestionView> selectViewList);
+        void insertAnswerAndScore(long questionId, String answer,String score);
     }
 }

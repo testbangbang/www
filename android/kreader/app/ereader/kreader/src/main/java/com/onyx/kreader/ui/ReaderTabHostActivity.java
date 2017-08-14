@@ -2,6 +2,7 @@ package com.onyx.kreader.ui;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -41,6 +42,8 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -84,6 +87,16 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         setContentView(R.layout.activity_reader_host);
         initComponents();
         restoreReaderTabState();
+        Intent intent = getIntent();
+        String bookName = intent.getStringExtra("bookName");
+        String bookId = intent.getStringExtra("bookId");
+
+        Intent intent_receiver = new Intent();
+        intent_receiver.setAction(ReaderBroadcastReceiver.ACTION_SEND_BOOK_INFO);
+        intent_receiver.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent_receiver.putExtra("bookName",bookName);
+        intent_receiver.putExtra("bookId",bookId);
+        sendBroadcast(intent_receiver);
 
         tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 

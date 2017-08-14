@@ -25,3 +25,4 @@
 -keepclasseswithmembernames class * {
  @butterknife.* <methods>;
 }
+-keep public class com.onyx.android.edu.bean.PaperResult {public protected *;}

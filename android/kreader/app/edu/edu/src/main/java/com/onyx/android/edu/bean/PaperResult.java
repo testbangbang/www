@@ -8,9 +8,9 @@ import java.util.List;
  */
 public class PaperResult {
 
-    private List<Boolean> result;
+    public List<Boolean> result;
 
-    private Float score;
+    public Float score;
 
     public List<Boolean> getResult() {
         return result;
