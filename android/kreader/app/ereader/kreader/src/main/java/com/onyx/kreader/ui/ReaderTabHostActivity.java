@@ -356,8 +356,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private File getNoteFile(String docPath) {
         String dir = FileUtils.getParent(docPath);
         String basename = FileUtils.getBaseName(docPath);
-        String ext = FileUtils.getFileExtension(docPath);
-        return new File(dir, basename + "-note." + ext);
+        return new File(dir, basename + "-note.pdf");
     }
 
     private void switchSideReadingTab() {
