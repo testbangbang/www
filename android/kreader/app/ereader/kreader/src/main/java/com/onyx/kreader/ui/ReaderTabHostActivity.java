@@ -491,6 +491,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
             @Override
             public void onOpenDocumentFailed(String path) {
+                if (isSideReading) {
+                    quitSideReadingMode();
+                    return;
+                }
                 closeTabIfOpenFileFailed(path);
             }
 
