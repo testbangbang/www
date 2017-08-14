@@ -1,5 +1,8 @@
 #include "onyx_pdf_writer.h"
 
+#include <fstream>
+#include <vector>
+
 #include "podofo/podofo.h"
 
 #include "page_annotation.h"
@@ -469,4 +472,25 @@ bool OnyxPdfWriter::writeAnnotation(const PageAnnotation &annotation)
         return false;
     }
     return createAnnotationHightlight(impl->doc_, page, annotation);
+}
+
+bool OnyxPdfWriter::setDocumentTitle(const std::string &path, const std::string &title)
+{
+    // PoDoFo can't modify doc in place, so we read in the contents, modify it in memory, then write back
+    std::ifstream in(path, std::ios::in | std::ios::binary);
+    if (!in) {
+        return false;
+    }
+
+    std::vector<char> contents;
+    in.seekg(0, std::ios::end);
+    contents.resize(in.tellg());
+    in.seekg(0, std::ios::beg);
+    in.read(&contents[0], contents.size());
+    in.close();
+
+    PoDoFo::PdfMemDocument doc;
+    doc.Load(contents.data(), contents.size());
+    doc.GetInfo()->SetTitle(title.c_str());
+    doc.Write(path.c_str());
 }
