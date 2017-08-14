@@ -56,6 +56,7 @@ import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
+import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
@@ -107,6 +108,7 @@ import com.onyx.kreader.ui.gesture.MyOnGestureListener;
 import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.BaseHandler;
 import com.onyx.kreader.ui.handler.HandlerManager;
+import com.onyx.kreader.ui.handler.ScribbleHandler;
 import com.onyx.kreader.ui.handler.SlideshowHandler;
 import com.onyx.kreader.ui.receiver.NetworkConnectChangedReceiver;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
@@ -182,6 +184,11 @@ public class ReaderActivity extends OnyxBaseActivity {
             final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
             FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, true, false);
             flushNoteAction.execute(getReaderDataHolder(), null);
+        }
+
+        if (getReaderDataHolder().inNoteWritingProvider()) {
+            StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, false);
+            stopNoteActionChain.execute(getReaderDataHolder(), null);
         }
 
         getReaderDataHolder().onActivityPause();
@@ -447,6 +454,11 @@ public class ReaderActivity extends OnyxBaseActivity {
         enablePenShortcut();
         updateNoteState();
         getReaderDataHolder().onActivityResume();
+
+        if (getReaderDataHolder().inNoteWritingProvider()) {
+            final StartNoteRequest request = new StartNoteRequest(getReaderDataHolder().getVisiblePages());
+            getReaderDataHolder().getNoteManager().submit(getReaderDataHolder().getContext(), request, null);
+        }
     }
 
     private void enablePenShortcut() {
