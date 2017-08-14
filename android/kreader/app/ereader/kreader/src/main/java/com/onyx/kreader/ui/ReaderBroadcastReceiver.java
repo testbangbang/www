@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -22,6 +23,7 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class ReaderBroadcastReceiver extends BroadcastReceiver {
+    public static final String ACTION_START_READER = "com.onyx.kreader.action.START_READER";
     public static final String ACTION_CLOSE_READER = "com.onyx.kreader.action.CLOSE_READER";
     public static final String ACTION_MOVE_TASK_TO_BACK = "com.onyx.kreader.action.MOVE_TASK_TO_BACK";
     public static final String ACTION_RESIZE_WINDOW = "com.onyx.kreader.action.RESIZE_WINDOW";
@@ -31,6 +33,7 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_ENABLE_DEBUG_LOG = "com.onyx.kreader.action.ENABLE_DEBUG_LOG";
     public static final String ACTION_DISABLE_DEBUG_LOG = "com.onyx.kreader.action.DISABLE_DEBUG_LOG";
 
+    public static final String TAG_TARGET_ACTIVITY = "com.onyx.kreader.TARGET_ACTIVITY";
     public static final String TAG_WINDOW_GRAVITY = "com.onyx.kreader.WINDOW_GRAVITY";
     public static final String TAG_WINDOW_WIDTH = "com.onyx.kreader.WINDOW_WIDTH";
     public static final String TAG_WINDOW_HEIGHT = "com.onyx.kreader.WINDOW_HEIGHT";
@@ -44,6 +47,13 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
 
     public static void setEventBus(EventBus eventBus) {
         ReaderBroadcastReceiver.eventBus = eventBus;
+    }
+
+    public static void sendStartReaderIntent(Context context, Intent intent, Class receiverClazz, Class activityClazz) {
+        intent.setComponent(new ComponentName(context, receiverClazz));
+        intent.setAction(ACTION_START_READER);
+        intent.putExtra(TAG_TARGET_ACTIVITY, activityClazz.getCanonicalName());
+        sendBroadcast(context, intent);
     }
 
     public static void sendCloseReaderIntent(Context context, Class clazz) {
@@ -108,6 +118,13 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Debug.d(getClass(), "onReceive: " + intent);
+        if (intent.getAction().equals(ACTION_START_READER)) {
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setComponent(new ComponentName(context, intent.getStringExtra(TAG_TARGET_ACTIVITY)));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+            return;
+        }
         if (eventBus == null) {
             Log.e(getClass().getSimpleName(), "null bus");
             return;

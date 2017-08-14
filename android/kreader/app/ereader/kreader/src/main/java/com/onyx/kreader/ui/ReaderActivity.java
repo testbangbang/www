@@ -167,6 +167,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        Debug.d(getClass(), "onNewIntent: " + intent);
         try {
             setIntent(intent);
             handleActivityIntent();
@@ -278,7 +279,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         getReaderDataHolder().getWindowParameters().update(layoutParams.windowAnimations,
                 layoutParams.height, layoutParams.gravity);
 
-        Debug.d(getClass(), "target window height:" + layoutParams.height);
+        Debug.d(getClass(), "target window: " + layoutParams.gravity + ", " + layoutParams.width + ", " + layoutParams.height);
     }
 
     private void initComponents() {
@@ -735,6 +736,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private boolean handleActivityIntent() {
+        Debug.d(getClass(), "handleActivityIntent: " + getIntent());
         try {
             String action = getIntent().getAction();
             if (action.equals(Intent.ACTION_VIEW)) {
@@ -927,7 +929,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onResizeReaderWindow(final ResizeReaderWindowEvent event) {
-        Debug.d(getClass(), "onResizeReaderWindow: " + event.width + ", " + event.height);
+        Debug.d(getClass(), "onResizeReaderWindow: " + event.gravity + ", " + event.width + ", " + event.height);
         getWindow().setLayout(event.width, event.height);
         getWindow().setGravity(event.gravity);
 
@@ -1089,6 +1091,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void forceCloseApplication(final ForceCloseEvent event) {
+        Debug.d(getClass(), "forceCloseApplication");
         enablePost(true);
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         if (event != null && event.byUser) {

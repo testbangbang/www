@@ -16,7 +16,6 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.ui.ReaderTabManager;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -29,9 +28,9 @@ import butterknife.OnClick;
 public class DialogTabHostMenu extends DialogBase {
 
     public static abstract class Callback {
-        public abstract void onLinkedOpen(ReaderTabManager.ReaderTab tab);
-        public abstract void onSideOpen(ReaderTabManager.ReaderTab left, ReaderTabManager.ReaderTab right);
-        public abstract void onSideNote(ReaderTabManager.ReaderTab tab);
+        public abstract void onLinkedOpen(String path);
+        public abstract void onSideOpen(String left, String right);
+        public abstract void onSideNote(String path);
         public abstract void onSideSwitch();
         public abstract void onClosing();
     }
@@ -41,7 +40,7 @@ public class DialogTabHostMenu extends DialogBase {
         private TextView textView;
         private CheckBox checkBox;
 
-        private ReaderTabManager.ReaderTab currentTab;
+        private String currentFile;
 
         public TabViewHolder(View itemView) {
             super(itemView);
@@ -52,25 +51,25 @@ public class DialogTabHostMenu extends DialogBase {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
-                        selectedTabs.add(currentTab);
+                        selectedFiles.add(currentFile);
                     } else {
-                        selectedTabs.remove(currentTab);
+                        selectedFiles.remove(currentFile);
                     }
 
                     disableButtons();
-                    if (selectedTabs.size() == 1) {
+                    if (selectedFiles.size() == 1) {
                         buttonDoubleLink.setEnabled(true);
                         buttonSideNote.setEnabled(true);
                     }
-                    if (selectedTabs.size() == 2) {
+                    if (selectedFiles.size() == 2) {
                         buttonSideOpen.setEnabled(true);
                     }
                 }
             });
         }
 
-        public void bindView(ReaderTabManager.ReaderTab tab, String path) {
-            currentTab = tab;
+        public void bindView(String path) {
+            currentFile = path;
             textView.setText(FileUtils.getFileName(path));
         }
     }
@@ -86,26 +85,21 @@ public class DialogTabHostMenu extends DialogBase {
     @Bind(R.id.button_close)
     Button buttonClose;
 
-    private ReaderTabManager tabManager;
-    private ArrayList<ReaderTabManager.ReaderTab> tabList = new ArrayList<>();
-    private ArrayList<ReaderTabManager.ReaderTab> selectedTabs = new ArrayList<>();
+    private ArrayList<String> files = new ArrayList<>();
+    private ArrayList<String> selectedFiles = new ArrayList<>();
 
     private boolean isSideReading;
     private Callback callback;
 
-    public DialogTabHostMenu(final Context context, final ReaderTabManager tabManager, final boolean isSideReading, Callback callback) {
+    public DialogTabHostMenu(final Context context, final List<String> files, final boolean isSideReading, Callback callback) {
         super(context);
         setContentView(R.layout.dialog_tab_host_menu);
 
         ButterKnife.bind(this);
 
-        this.tabManager = tabManager;
+        this.files.addAll(files);
         this.isSideReading = isSideReading;
         this.callback = callback;
-
-        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            tabList.add(0, entry.getKey());
-        }
 
         init();
     }
@@ -114,7 +108,7 @@ public class DialogTabHostMenu extends DialogBase {
     void onButtonDoubleLinkClicked() {
         DialogTabHostMenu.this.dismiss();
         if (callback != null) {
-            callback.onLinkedOpen(selectedTabs.get(0));
+            callback.onLinkedOpen(selectedFiles.get(0));
         }
     }
 
@@ -122,7 +116,7 @@ public class DialogTabHostMenu extends DialogBase {
     void onButtonSideOpenClicked() {
         DialogTabHostMenu.this.dismiss();
         if (callback != null) {
-            callback.onSideOpen(selectedTabs.get(0), selectedTabs.get(1));
+            callback.onSideOpen(selectedFiles.get(0), selectedFiles.get(1));
         }
     }
 
@@ -130,7 +124,7 @@ public class DialogTabHostMenu extends DialogBase {
     void onButtonSideNoteClicked() {
         DialogTabHostMenu.this.dismiss();
         if (callback != null) {
-            callback.onSideNote(selectedTabs.get(0));
+            callback.onSideNote(selectedFiles.get(0));
         }
     }
 
@@ -155,7 +149,7 @@ public class DialogTabHostMenu extends DialogBase {
         recyclerView.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override
             public int getRowCount() {
-                return tabManager.getOpenedTabs().size();
+                return 8;
             }
 
             @Override
@@ -165,7 +159,7 @@ public class DialogTabHostMenu extends DialogBase {
 
             @Override
             public int getDataCount() {
-                return tabManager.getOpenedTabs().size();
+                return files.size();
             }
 
             @Override
@@ -175,8 +169,7 @@ public class DialogTabHostMenu extends DialogBase {
 
             @Override
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                ReaderTabManager.ReaderTab tab = tabList.get(position);
-                ((TabViewHolder)holder).bindView(tab, tabManager.getOpenedTabs().get(tab));
+                ((TabViewHolder)holder).bindView(files.get(position));
             }
 
         });

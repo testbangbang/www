@@ -32,9 +32,16 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.TreeObserverUtils;
@@ -80,7 +87,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private boolean isDoubleOpen = false;
     private boolean isDoubleLinked = false;
-    private ReaderTabManager.ReaderTab doubleOpenedTab = null;
+
+    private ReaderTabManager.ReaderTab tabBeforeSideReading;
 
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
@@ -185,8 +193,16 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final QueryArgs queryArgs = QueryBuilder.recentReadingQuery(SortBy.RecentlyRead, SortOrder.Desc);
 
-                showTabHostMenuDialog();
+                final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
+                DataManager dataManager = new DataManager();
+                dataManager.submit(ReaderTabHostActivity.this, metadataRequest, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        showTabHostMenuDialog(getRecentFiles(metadataRequest.getList()));
+                    }
+                });
             }
         });
         btnSwitch = (ImageView) findViewById(R.id.btn_switch);
@@ -258,20 +274,40 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         sideReadingTabs[1] = tab;
     }
 
-    private void startSideReadingMode(ReaderTabManager.ReaderTab left, ReaderTabManager.ReaderTab right) {
+    private void startSideReadingMode(String left, String right, boolean sideNoteMode) {
         saveReaderTabState();
 
+        tabBeforeSideReading = getCurrentTabInHost();
         isSideReading = true;
-        setSideReadingLeft(left);
-        setSideReadingRight(right);
 
+        tabManager.resetTabState();
+
+        ReaderTabManager.ReaderTab leftTab = getFreeReaderTab();
+        // it's a trick here,
+        // by not using tabBeforeSideReading, when we quit side reading mode,
+        // we can switch back to the tab without waiting
+        while (leftTab == tabBeforeSideReading) {
+            leftTab = getFreeReaderTab();
+        }
+        ReaderTabManager.ReaderTab rightTab = getFreeReaderTab();
+        while (rightTab == tabBeforeSideReading) {
+            rightTab = getFreeReaderTab();
+        }
+        setSideReadingLeft(leftTab);
+        setSideReadingRight(rightTab);
+
+        addReaderTab(leftTab, left, false);
+        addReaderTab(rightTab, right, false);
         rebuildTabWidget();
 
-        updateReaderTabWindowHeight(getSideReadingLeft());
-        updateReaderTabWindowHeight(getSideReadingRight());
+        bringReaderTabToFront(leftTab);
+        openDocWithTab(leftTab, left, false);
 
-        reopenReaderTab(getSideReadingLeft());
-        reopenReaderTab(getSideReadingRight());
+        bringReaderTabToFront(rightTab);
+        openDocWithTab(rightTab, right, sideNoteMode);
+
+        bringReaderTabToFront(getSideReadingLeft());
+        bringReaderTabToFront(getSideReadingRight());
 
         findViewById(R.id.dash_line_splitter).setVisibility(View.VISIBLE);
         findViewById(R.id.btn_switch).setVisibility(View.GONE);
@@ -283,9 +319,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         isSideReading = false;
 
         if (isDoubleOpen) {
-            closeTabActivity(doubleOpenedTab);
-            tabManager.removeOpenedTab(doubleOpenedTab);
-            doubleOpenedTab = null;
             isDoubleOpen = false;
             isDoubleLinked = false;
         }
@@ -293,18 +326,19 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         findViewById(R.id.dash_line_splitter).setVisibility(View.INVISIBLE);
         findViewById(R.id.btn_switch).setVisibility(View.VISIBLE);
 
-        rebuildTabWidget();
+        closeReaderTab(getSideReadingLeft(), true, false);
+        closeReaderTab(getSideReadingRight(), true, false);
 
-        updateReaderTabWindowHeight(getSideReadingLeft());
-        updateReaderTabWindowHeight(getSideReadingRight());
         setSideReadingLeft(null);
         setSideReadingRight(null);
 
-        bringReaderTabToFront(getSideReadingLeft());
+        restoreReaderTabState();
+
+        openDocWithTab(tabBeforeSideReading, tabManager.getOpenedTabs().get(tabBeforeSideReading));
+        tabBeforeSideReading = null;
     }
 
-    private void startSideNote(ReaderTabManager.ReaderTab tab) {
-        String path = tabManager.getOpenedTabs().get(tab);
+    private void startSideNote(String path) {
         File noteFile = getNoteFile(path);
         if (!noteFile.exists()) {
             try {
@@ -316,9 +350,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             }
         }
 
-        ReaderTabManager.ReaderTab freeTab = getFreeReaderTab();
-        openDocWithTab(freeTab, noteFile.getAbsolutePath(), true);
-        startSideReadingMode(tab, freeTab);
+        startSideReadingMode(path, noteFile.getAbsolutePath(), true);
     }
 
     private File getNoteFile(String docPath) {
@@ -386,7 +418,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             return false;
         }
         // no need to close reader activity again, as it's already closed
-        closeReaderTab(tab, false);
+        closeReaderTab(tab, false, true);
         return true;
     }
 
@@ -832,12 +864,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void openDocWithTab(ReaderTabManager.ReaderTab tab, String path) {
         openDocWithTab(tab, path, false);
+        addReaderTab(tab, path, true);
     }
 
     private void openDocWithTab(ReaderTabManager.ReaderTab tab, String path, boolean sideNoteMode) {
         Debug.d(TAG, "openDocWithTab: " + tab + ", " + path);
-        addReaderTab(tab, path);
-
         Intent intent = new Intent(this, tabManager.getTabActivity(tab));
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File(path)), getIntent().getType());
@@ -863,7 +894,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             intent.putExtra(ReaderBroadcastReceiver.TAG_SIDE_NOTE_MODE, true);
         }
 
-        startActivity(intent);
+        ReaderBroadcastReceiver.sendStartReaderIntent(this, intent,
+                tabManager.getTabReceiver(tab),
+                tabManager.getTabActivity(tab)
+        );
     }
 
     private ReaderTabManager.ReaderTab getFreeReaderTab() {
@@ -876,9 +910,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return tab;
     }
 
-    private void addReaderTab(ReaderTabManager.ReaderTab tab, String path) {
+    private void addReaderTab(ReaderTabManager.ReaderTab tab, String path, boolean updateTabState) {
         tabManager.addOpenedTab(tab, path);
+        if (updateTabState) {
+            updateReaderTab(tab);
+        }
+    }
 
+    private void updateReaderTab(ReaderTabManager.ReaderTab tab) {
         showTabWidgetOnCondition();
         rebuildTabWidget();
         updateCurrentTabInHost(tab);
@@ -886,14 +925,18 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void closeReaderTab(ReaderTabManager.ReaderTab tab) {
-        closeReaderTab(tab, true);
+        closeReaderTab(tab, true, true);
     }
 
-    private void closeReaderTab(ReaderTabManager.ReaderTab tab, boolean closeTabActivity) {
+    private void closeReaderTab(ReaderTabManager.ReaderTab tab, boolean closeTabActivity, boolean cleanUpTabWidget) {
         if (closeTabActivity) {
             closeTabActivity(tab);
         }
         tabManager.removeOpenedTab(tab);
+
+        if (!cleanUpTabWidget) {
+            return;
+        }
 
         showTabWidgetOnCondition();
         rebuildTabWidget();
@@ -1024,6 +1067,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void onTabSwitched(final ReaderTabManager.ReaderTab tab) {
+        Debug.d(getClass(), "onTabSwitched: " + tab);
         final String path = tabManager.getOpenedTabs().get(tab);
         for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
             ReaderBroadcastReceiver.sendDocumentActivatedIntent(this,
@@ -1121,29 +1165,41 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         dlg.show();
     }
 
-    private void showTabHostMenuDialog() {
-        DialogTabHostMenu dlg = new DialogTabHostMenu(ReaderTabHostActivity.this, tabManager, isSideReading,
+    private ArrayList<String> getRecentFiles(List<Metadata> list) {
+        ArrayList<String> files = new ArrayList<>();
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
+                files.add(entry.getValue());
+            }
+            return files;
+        }
+
+        for (Metadata data : list) {
+            files.add(data.getNativeAbsolutePath());
+        }
+        return files;
+    }
+
+    private void showTabHostMenuDialog(List<String> files) {
+        DialogTabHostMenu dlg = new DialogTabHostMenu(ReaderTabHostActivity.this, files, isSideReading,
                 new DialogTabHostMenu.Callback() {
 
                     @Override
-                    public void onLinkedOpen(ReaderTabManager.ReaderTab tab) {
-                        ReaderTabManager.ReaderTab freeTab = getFreeReaderTab();
-                        openDocWithTab(freeTab, tabManager.getOpenedTabs().get(tab));
-                        startSideReadingMode(tab, freeTab);
+                    public void onLinkedOpen(String path) {
+                        startSideReadingMode(path, path, false);
 
                         isDoubleOpen = true;
                         isDoubleLinked = true;
-                        doubleOpenedTab = freeTab;
                     }
 
                     @Override
-                    public void onSideOpen(ReaderTabManager.ReaderTab left, ReaderTabManager.ReaderTab right) {
-                        startSideReadingMode(left, right);
+                    public void onSideOpen(String left, String right) {
+                        startSideReadingMode(left, right, false);
                     }
 
                     @Override
-                    public void onSideNote(ReaderTabManager.ReaderTab tab) {
-                        startSideNote(tab);
+                    public void onSideNote(String path) {
+                        startSideNote(path);
                     }
 
                     @Override
