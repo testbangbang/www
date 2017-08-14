@@ -6,17 +6,4 @@ package com.onyx.edu.reader.ui.events.im;
 
 public class CloseSocketIOEvent {
 
-    private boolean unRegister = false;
-
-    public CloseSocketIOEvent(boolean unRegister) {
-        this.unRegister = unRegister;
-    }
-
-    public boolean isUnRegister() {
-        return unRegister;
-    }
-
-    public static CloseSocketIOEvent create(boolean unRegister) {
-        return new CloseSocketIOEvent(unRegister);
-    }
 }
