@@ -373,7 +373,8 @@ public class NotePage {
     }
 
     public boolean savePage(final Context context) {
-        List<ShapeModel> modelList = new ArrayList<ShapeModel>(newAddedShapeList.size());
+        List<ShapeModel> modelList = new ArrayList<>(newAddedShapeList.size());
+        //TODO:new shape;
         for(Shape shape : newAddedShapeList) {
             final ShapeModel model = ShapeFactory.modelFromShape(shape);
             modelList.add(model);
@@ -382,6 +383,18 @@ public class NotePage {
             ShapeDataProvider.saveShapeList(context, modelList);
         }
 
+        modelList.clear();
+
+        //TODO:selected Shape:
+        for (Shape shape : selectedShapeList) {
+            final ShapeModel model = ShapeFactory.modelFromShape(shape);
+            modelList.add(model);
+        }
+        if (modelList.size() > 0) {
+            ShapeDataProvider.updateShapeList(context, modelList);
+        }
+
+        //TODO:removed Shape:
         List<String> list = new ArrayList<>();
         for(Shape shape: removedShapeList) {
             list.add(shape.getShapeUniqueId());
