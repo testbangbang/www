@@ -40,6 +40,7 @@ import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
+import com.onyx.android.sdk.reader.utils.PdfWriterUtils;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
@@ -343,6 +344,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         if (!noteFile.exists()) {
             try {
                 FileUtils.copyFile(new File("/sdcard/blanknote.pdf"), noteFile);
+                PdfWriterUtils.setDocumentTitle(noteFile.getAbsolutePath(),
+                        FileUtils.getBaseName(noteFile.getName()));
             } catch (IOException e) {
                 // TODO string res
                 Toast.makeText(this, "creating note file failed!", Toast.LENGTH_LONG).show();
