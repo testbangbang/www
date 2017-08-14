@@ -283,7 +283,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         layoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         getWindow().setAttributes(layoutParams);
 
-        getReaderDataHolder().getWindowParameters().update(layoutParams.windowAnimations,
+        getReaderDataHolder().getWindowParameters().update(layoutParams.width,
                 layoutParams.height, layoutParams.gravity);
 
         Debug.d(getClass(), "target window: " + layoutParams.gravity + ", " + layoutParams.width + ", " + layoutParams.height);
