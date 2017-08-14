@@ -5,5 +5,5 @@ package com.onyx.android.sdk.reader.api;
  */
 
 public enum  ReaderFormAction {
-    INVALID, SIGNATURE, OK, CANCEL, REDO, SUBMIT
+    INVALID, SIGNATURE, OK, CANCEL, REDO, SUBMIT, EXIT
 }

@@ -103,4 +103,14 @@ public class BaseData extends BaseModel {
     public static final String generateUniqueId() {
         return UUID.randomUUID().toString();
     }
+
+    public static final void asyncSave(BaseData data) {
+        if (data == null) {
+            return;
+        }
+        try {
+            data.async().save();
+        } catch (Exception e) {
+        }
+    }
 }

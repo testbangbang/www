@@ -2,7 +2,6 @@ package com.onyx.edu.reader.ui.handler.form;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.IdRes;
 import android.text.Editable;
@@ -15,8 +14,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.im.Constant;
+import com.onyx.android.sdk.im.IMConfig;
+import com.onyx.android.sdk.im.data.Message;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormPushButton;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -24,10 +26,13 @@ import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.RelativeRadioGroup;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.note.actions.FlushFormShapesAction;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
+import com.onyx.edu.reader.note.actions.RemoveFormShapesAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
+import com.onyx.edu.reader.note.actions.SaveFormShapesAction;
 import com.onyx.edu.reader.note.actions.StopNoteActionChain;
 import com.onyx.edu.reader.note.data.ReaderShapeFactory;
 import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
@@ -35,7 +40,6 @@ import com.onyx.edu.reader.note.model.ReaderNoteDataProvider;
 import com.onyx.edu.reader.note.request.StartNoteRequest;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
-import com.onyx.edu.reader.ui.handler.BaseHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.ReadingHandler;
 
@@ -60,6 +64,15 @@ public class FormBaseHandler extends ReadingHandler {
         return initialState;
     }
 
+    protected void startFormIMService(String url, String event) {
+        final NeoAccountBase account = getReaderDataHolder().getAccount();
+        if (account == null) {
+            return;
+        }
+        IMConfig config = IMConfig.create(url, event, Constant.SOCKET_IO_CLIENT_PATH);
+        getReaderDataHolder().startSocketIO(config);
+    }
+
     @Override
     public void onActivate(ReaderDataHolder readerDataHolder, HandlerInitialState initialState) {
         super.onActivate(readerDataHolder, initialState);
@@ -67,8 +80,17 @@ public class FormBaseHandler extends ReadingHandler {
             this.formFieldControls = initialState.formFieldControls;
             handleFormFieldControls();
         }
-        setEnableNoteDrawing(readerDataHolder.hasScribbleFormField() && !readerDataHolder.hasDialogShowing());
+        initNoteDrawingState(readerDataHolder);
         startNoteDrawing(readerDataHolder);
+    }
+
+    private void initNoteDrawingState(ReaderDataHolder readerDataHolder) {
+        boolean enableNoteDrawing = isEnableNoteDrawing();
+        if (isEnableNoteInScribbleForm()) {
+            enableNoteDrawing = readerDataHolder.hasScribbleFormField();
+        }
+        enableNoteDrawing &= !readerDataHolder.hasDialogShowing();
+        setEnableNoteDrawing(enableNoteDrawing);
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
@@ -77,7 +99,6 @@ public class FormBaseHandler extends ReadingHandler {
         }
         StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, false);
         stopNoteActionChain.execute(readerDataHolder, null);
-        setEnableNoteDrawing(false);
     }
 
     private void startNoteDrawing(final ReaderDataHolder readerDataHolder) {
@@ -86,7 +107,6 @@ public class FormBaseHandler extends ReadingHandler {
         }
         final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
-        setEnableNoteDrawing(true);
     }
 
     private void handleFormFieldControls() {
@@ -129,6 +149,11 @@ public class FormBaseHandler extends ReadingHandler {
 
     private void processCheckBoxForm(CheckBox checkBox) {
         final ReaderFormField field = getReaderFormField(checkBox);
+        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());
+        if (formShapeModel != null) {
+            FormValue value = formShapeModel.getFormValue();
+            checkBox.setChecked(value.isCheck());
+        }
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -136,11 +161,6 @@ public class FormBaseHandler extends ReadingHandler {
                 flushFormShapes(field.getName(), field.getRect(), ReaderShapeFactory.SHAPE_FORM_MULTIPLE_SELECTION,  value);
             }
         });
-        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());
-        if (formShapeModel != null) {
-            FormValue value = formShapeModel.getFormValue();
-            checkBox.setChecked(value.isCheck());
-        }
     }
 
     private void flushFormShapes(String fieldId, RectF formRect, int formType, FormValue value) {
@@ -150,6 +170,7 @@ public class FormBaseHandler extends ReadingHandler {
                 formType,
                 formRect,
                 value);
+        onShapeAdded(shape);
         shape.setPageUniqueId(getReaderDataHolder().getFirstPageInfo().getName());
         List<Shape> shapes = new ArrayList<>();
         shapes.add(shape);
@@ -157,12 +178,17 @@ public class FormBaseHandler extends ReadingHandler {
         new FlushFormShapesAction(shapes, isEnableNoteDrawing()).execute(getReaderDataHolder(), null);
     }
 
-    private ReaderFormField getReaderFormField(View view) {
+    public ReaderFormField getReaderFormField(View view) {
         return (ReaderFormField) view.getTag();
     }
 
     private void processRadioGroupForm(final RelativeRadioGroup radioGroup) {
         final ReaderFormField groupField = getReaderFormField(radioGroup);
+        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), groupField.getName());
+        if (formShapeModel != null) {
+            FormValue value = formShapeModel.getFormValue();
+            radioGroup.check(value.getIndex());
+        }
         radioGroup.setOnCheckedChangeListener(new RelativeRadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RelativeRadioGroup group, @IdRes int checkedId) {
@@ -173,12 +199,6 @@ public class FormBaseHandler extends ReadingHandler {
                 flushFormShapes(groupField.getName(), field.getRect(), ReaderShapeFactory.SHAPE_FORM_SINGLE_SELECTION,  value);
             }
         });
-
-        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), groupField.getName());
-        if (formShapeModel != null) {
-            FormValue value = formShapeModel.getFormValue();
-            radioGroup.check(value.getIndex());
-        }
     }
 
     private void processEditTextForm(final EditText editText) {
@@ -358,6 +378,27 @@ public class FormBaseHandler extends ReadingHandler {
         }
         final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, true, false);
         flushNoteAction.execute(getParent().getReaderDataHolder(), null);
+    }
+
+    public List<View> getFormFieldControls() {
+        return formFieldControls;
+    }
+
+    protected void saveFormShapesFromCloud(List<ReaderFormShapeModel> formShapeModels) {
+        new SaveFormShapesAction(formShapeModels).execute(getReaderDataHolder(), null);
+    }
+
+    protected void removeFormShapesFromCloud(List<String> shapeIds) {
+        new RemoveFormShapesAction(shapeIds).execute(getReaderDataHolder(), null);
+    }
+
+    protected void join(String event) {
+        Message message = new Message();
+        message.setChannel(event);
+        message.setEvent(Constant.EVENT_JOIN);
+        message.setMac(NetworkUtil.getMacAddress(getContext()));
+        message.setContent(getReaderDataHolder().getAccount().name);
+        getReaderDataHolder().emitIMMessage(message);
     }
 
 }

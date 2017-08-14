@@ -7,7 +7,7 @@ import android.content.Intent;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.im.Constant;
 import com.onyx.android.sdk.im.IMManager;
-import com.onyx.android.sdk.im.Message;
+import com.onyx.android.sdk.im.data.Message;
 import com.onyx.android.sdk.utils.Debug;
 
 

@@ -64,7 +64,7 @@ public class ReadingHandler extends BaseHandler {
     }
 
     protected void postQuitEvent(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.getEventBus().post(new QuitEvent());
+        readerDataHolder.quit();
     }
 
     protected void postConfirmDialogOpenEvent(final ReaderDataHolder readerDataHolder, boolean open) {

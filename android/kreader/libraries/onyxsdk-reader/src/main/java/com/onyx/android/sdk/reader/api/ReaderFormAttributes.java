@@ -12,6 +12,8 @@ public class ReaderFormAttributes {
 
     private String action;
 
+    private String use;
+
     private String extraAttributes;
 
     public ReaderFormAttributes() {
@@ -47,5 +49,13 @@ public class ReaderFormAttributes {
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    public String getUse() {
+        return use;
+    }
+
+    public void setUse(String use) {
+        this.use = use;
     }
 }

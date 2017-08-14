@@ -373,6 +373,7 @@ public class NoteManager {
     }
 
     private void onNewStash(final Shape shape) {
+        parent.getHandlerManager().getActiveProvider().onShapeAdded(shape);
         shapeStash.add(shape);
     }
 
@@ -577,6 +578,13 @@ public class NoteManager {
     }
 
     private void detectionScribbleFormShape(final PageInfo pageInfo, final Shape shape, final TouchPoint origin) {
+        if (!parent.inFormProvider()) {
+            return;
+        }
+        if (!parent.getHandlerManager().isEnableNoteInScribbleForm()) {
+            shape.setFormShape(true);
+            return;
+        }
         ReaderFormField field = getScribbleFormField(pageInfo, origin);
         if (field != null) {
             shape.setFormShape(true);

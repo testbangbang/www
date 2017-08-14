@@ -41,7 +41,7 @@ public class ViewDocumentUtils {
         return intent;
     }
 
-    public static Intent viewActionIntentWithMimeType(final File file) {
+    public static Intent viewActionIntentWithMimeType(final File file, int... flags) {
         final Intent intent = viewActionIntent(file);
         final String extensionName = FileUtils.getFileExtension(file);
         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extensionName);
@@ -53,6 +53,11 @@ public class ViewDocumentUtils {
             intent.setDataAndType(Uri.fromFile(file), mimeType);
         } else {
             intent.setData(Uri.fromFile(new File("dummy." + extensionName)));
+        }
+        if (flags != null && flags.length > 0) {
+            for (int flag : flags) {
+                intent.addFlags(flag);
+            }
         }
         return intent;
     }

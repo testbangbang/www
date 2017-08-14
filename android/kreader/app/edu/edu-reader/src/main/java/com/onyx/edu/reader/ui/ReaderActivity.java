@@ -666,6 +666,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (getReaderDataHolder() == null) {
             return;
         }
+        getReaderDataHolder().activeIMService();
         if (!getReaderDataHolder().isDocumentOpened() ||
                 getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
             return;
@@ -934,9 +935,11 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void onScribbleMenuSizeChanged(final ScribbleMenuChangedEvent event) {
         Rect rect = new Rect();
         surfaceView.getLocalVisibleRect(rect);
-        Rect formRect = getFormRect();
-        if (formRect != null) {
-            rect = formRect;
+        if (getReaderDataHolder().inFormProvider() && getReaderDataHolder().getHandlerManager().isEnableNoteInScribbleForm()) {
+            Rect formRect = getFormScribbleRect();
+            if (formRect != null) {
+                rect = formRect;
+            }
         }
         int bottomOfTopToolBar = event.getBottomOfTopToolBar();
         int topOfBottomToolBar = event.getTopOfBottomToolBar();
@@ -952,7 +955,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, getExcludeRect(event.getExcludeRect()), rotation);
     }
 
-    private Rect getFormRect() {
+    private Rect getFormScribbleRect() {
         Rect rect = null;
         for (View formFieldControl : formFieldControls) {
             if (isFormScribble(formFieldControl)) {
@@ -1149,9 +1152,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!getReaderDataHolder().useFormMode()) {
             return;
         }
-        boolean startNoteDrawing = getReaderDataHolder().hasScribbleFormField();
         getHandlerManager().setActiveProvider(getReaderDataHolder().getDefaultProvider(), FormBaseHandler.createInitialState(formFieldControls));
-        ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
+        ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this);
     }
 
     private boolean isFormScribble(View view) {

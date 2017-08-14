@@ -13,6 +13,7 @@ import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.KeyBinding;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.TouchAction;
 import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
@@ -34,7 +35,6 @@ import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.handler.form.FormInteractiveHandler;
 import com.onyx.edu.reader.ui.handler.form.FormMeetingHandler;
 import com.onyx.edu.reader.ui.handler.form.FormSignHandler;
-import com.onyx.edu.reader.ui.handler.form.FormVoteHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +57,6 @@ public class HandlerManager {
     public static final String TTS_PROVIDER = "tts";
     public static final String SLIDESHOW_PROVIDER = "slideshow";
     public static final String FORM_PROVIDER = "form";
-    public static final String FORM_VOTE_PROVIDER = "form_vote";
     public static final String FORM_INTERACTIVE_PROVIDER = "form_interactive";
     public static final String FORM_EXAM_PROVIDER = "form_exam";
     public static final String FORM_EXERCISE_PROVIDER = "form_exercise";
@@ -90,7 +89,6 @@ public class HandlerManager {
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
         providerMap.put(SLIDESHOW_PROVIDER, new SlideshowHandler(this));
         providerMap.put(FORM_PROVIDER, new FormBaseHandler(this));
-        providerMap.put(FORM_VOTE_PROVIDER, new FormVoteHandler(this));
         providerMap.put(FORM_INTERACTIVE_PROVIDER, new FormInteractiveHandler(this));
         providerMap.put(FORM_EXAM_PROVIDER, new FormExamHandler(this));
         providerMap.put(FORM_EXERCISE_PROVIDER, new FormExerciseHandler(this));
@@ -238,6 +236,10 @@ public class HandlerManager {
 
     public String getActiveProviderName() {
         return activeProviderName;
+    }
+
+    public boolean onMenuClicked(ReaderMenuAction action) {
+        return getActiveProvider().onMenuClicked(action);
     }
 
     public boolean onKeyDown(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
@@ -673,5 +675,13 @@ public class HandlerManager {
 
     public void close(final ReaderDataHolder readerDataHolder) {
         getActiveProvider().close(readerDataHolder);
+    }
+
+    public boolean isEnableNoteDrawing() {
+        return getActiveProvider().isEnableNoteDrawing();
+    }
+
+    public boolean isEnableNoteInScribbleForm() {
+        return getActiveProvider().isEnableNoteInScribbleForm();
     }
 }
