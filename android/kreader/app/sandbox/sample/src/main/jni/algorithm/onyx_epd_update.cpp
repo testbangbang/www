@@ -53,11 +53,10 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sample_utils_EpdUtils_test
         unsigned char * pwb = &wb[0];
         for(int i = 0; i < limit; ++i) {
             if (*pwbIndex > 0) {
+                ++pwb;
                 ++pwbIndex;
                 continue;
             }
-
-
 
             unsigned char *pupd;
             for(int j = 0; j < updLimit; ++j) {
@@ -69,10 +68,11 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sample_utils_EpdUtils_test
                     *pwb = *pupd;
                     *pwbIndex = maxFrame;
                     *pupd = 0xff;
+                    break;
                 }
-                ++pwb;
-                ++pwbIndex;
             }
+            ++pwb;
+            ++pwbIndex;
         }
         LOGE("testing step1 done");
         for(int i = 0; i < limit; ++i) {
