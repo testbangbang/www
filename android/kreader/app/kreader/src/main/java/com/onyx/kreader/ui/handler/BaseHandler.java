@@ -41,6 +41,7 @@ import java.util.List;
  */
 public abstract class BaseHandler {
 
+    private static final String TAG = BaseHandler.class.getSimpleName();
     public static class HandlerInitialState {
         public String ttsInitialPosition;
         public RelativeLayout slideShowParentLayout;
@@ -63,7 +64,6 @@ public abstract class BaseHandler {
     private boolean pinchZooming = false;
     private boolean scrolling = false;
     private boolean smallScrollToSingleTap = false;
-
 
     public boolean isSingleTapUp() {
         return singleTapUp;
@@ -97,6 +97,7 @@ public abstract class BaseHandler {
         startPoint = new Point((int)e.getX(), (int)e.getY());
         actionUp = false;
         singleTapUp = false;
+        readerDataHolder.getCurrentBrightness();
         return true;
     }
 
@@ -117,6 +118,14 @@ public abstract class BaseHandler {
     }
 
     public boolean onTouchEvent(ReaderDataHolder readerDataHolder,MotionEvent e) {
+        switch (e.getAction()){
+            case  MotionEvent.ACTION_DOWN:
+                break;
+            case  MotionEvent.ACTION_UP:
+                readerDataHolder.setBrightnessConfigValue();
+                break;
+
+        }
         return true;
     }
 
@@ -272,6 +281,7 @@ public abstract class BaseHandler {
     }
 
     public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+
         if (isPinchZooming()) {
             // scrolling may happens after pinch zoom, so we always reset scroll state to avoid conflicts
             setScrolling(false);
@@ -289,14 +299,18 @@ public abstract class BaseHandler {
         setSingleTap(false);
         setScrolling(true);
         getStartPoint().set((int)e1.getX(), (int)e1.getY());
-        if (e2.getAction() == MotionEvent.ACTION_MOVE) {
-            panning(readerDataHolder,(int)(e2.getX() - getStartPoint().x), (int)(e2.getY() - getStartPoint().y));
+        if (e2.getAction() == MotionEvent.ACTION_MOVE){
+            if(rightEdgeSlide(readerDataHolder, e1, e2, distanceX, distanceY)) {
+                setScrolling(false);
+            }
+            panning(readerDataHolder, (int) (e2.getX() - getStartPoint().x), (int) (e2.getY() - getStartPoint().y));
         }
         return true;
     }
 
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
         setLongPress(true);
+        readerDataHolder.cleanChangeCount();
         actionUp = false;
     }
 
@@ -306,6 +320,23 @@ public abstract class BaseHandler {
         }
 
         PanAction.panning(readerDataHolder, offsetX, offsetY);
+    }
+
+    private boolean rightEdgeSlide(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        if(isLongPress()){
+            return false;
+        }
+        float startX = e2.getX();
+        DisplayMetrics dm = readerDataHolder.getContext().getResources().getDisplayMetrics();
+        if (startX > dm.widthPixels * 8.5 / 10) {
+            if (distanceY < 0 && Math.abs(distanceY) > 4) {
+                readerDataHolder.adjustLowerBrightness();
+            } else if ( Math.abs(distanceY) > 4 ){
+                readerDataHolder.adjustRaiseBrightness();
+            }
+            return true;
+        }
+        return false;
     }
 
     public void panFinished(ReaderDataHolder readerDataHolder,int offsetX, int offsetY) {
