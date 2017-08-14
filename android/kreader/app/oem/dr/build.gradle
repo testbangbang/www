@@ -11,7 +11,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode gitVersionCode(projectDir)
-        versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
+        versionName gitVersionCode(projectDir).toString() + "-" + gitHash(projectDir)
         multiDexEnabled true
         testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
     }
@@ -107,4 +107,5 @@ dependencies {
         exclude group: 'org.mozilla.juniversalchardet', module: 'juniversalchardet'
     }
     compile "org.jsoup:jsoup:$rootProject.jsoupVersion"
+    compile 'com.umeng.analytics:analytics:latest.integration'
 }

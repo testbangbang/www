@@ -324,6 +324,11 @@
     <string name="self_defined_time">self defined time: </string>
     <string name="record_time_data_minute">minute</string>
     <string name="record_time_activity_edit_text_hint">time horizon: 0-15 minute</string>
+    <string name="reflection_after_reading">Reflection after reading</string>
+    <string name="prompt">Prompt</string>
+    <string name="is_it_saved">Is it saved?</string>
+    <string name="no_title">No title</string>
+    <string name="Call_the_modified_file">Call the modified file</string>
     <string name="start_lecture">start lecture</string>
     <string name="record_playback">start lecture</string>
     <string name="dictionary">dictionary</string>

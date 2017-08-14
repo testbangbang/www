@@ -24,6 +24,8 @@ import com.onyx.android.dr.activity.NewWordTypeActivity;
 import com.onyx.android.dr.activity.PencilSketchActivity;
 import com.onyx.android.dr.activity.QueryRecordActivity;
 import com.onyx.android.dr.activity.RecordTimeSettingActivity;
+import com.onyx.android.dr.reader.activity.AfterReadingActivity;
+import com.onyx.android.dr.reader.common.ReaderConstants;
 import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
@@ -233,5 +235,11 @@ public class ActivityManager {
             return true;
         }
         return false;
+    }
+
+    public static void startAfterReadingActivity(Context context, String documentMd5) {
+        Intent intent = new Intent(context, AfterReadingActivity.class);
+        intent.putExtra(ReaderConstants.AFTER_READING_ID, documentMd5);
+        context.startActivity(intent);
     }
 }

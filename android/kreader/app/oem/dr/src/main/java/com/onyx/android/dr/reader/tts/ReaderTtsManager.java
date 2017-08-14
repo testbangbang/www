@@ -24,7 +24,7 @@ public class ReaderTtsManager {
     public ReaderTtsManager(final ReaderPresenter readerPresenter,TTSHandler ttsHandler) {
         this.readerPresenter = readerPresenter;
         this.ttsHandler = ttsHandler;
-        ttsService = new ReaderTtsService(readerPresenter.getReaderView().getViewContext(), new ReaderTtsService.Callback() {
+        ttsService = new ReaderTtsService(readerPresenter.getReaderView().getApplicationContext(), new ReaderTtsService.Callback() {
             @Override
             public void onStart() {
                 EventBus.getDefault().post(new NotifyTtsStateChangedEvent().onStart());

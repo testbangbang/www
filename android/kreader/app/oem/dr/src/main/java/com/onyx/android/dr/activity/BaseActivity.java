@@ -2,10 +2,12 @@ package com.onyx.android.dr.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.onyx.android.dr.event.BackToMainViewEvent;
 import com.onyx.android.dr.fragment.ChildViewID;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -57,5 +59,19 @@ public abstract class BaseActivity extends OnyxAppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onObject(Object event) {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(getClass().getSimpleName());
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(getClass().getSimpleName());
+        MobclickAgent.onPause(this);
     }
 }

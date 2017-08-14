@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.onyx.android.dr.reader.activity.AfterReadingActivity">
+
+    <include layout="@layout/title_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_after_reading_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_after_reading_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_rectangle_stroke"
+                android:ellipsize="end"
+                android:hint="@string/title"
+                android:padding="@dimen/edit_after_reading_padding"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/edit_after_reading_modified_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/edit_after_reading_top"
+                android:background="@drawable/rectangle_stroke"
+                android:padding="@dimen/activity_after_reading_padding"
+                android:text="@string/Call_the_modified_file" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/edit_after_reading_contents"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/edit_after_reading_top"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_rectangle_stroke"
+            android:gravity="top"
+            android:hint="@string/after_reading"
+            android:padding="@dimen/edit_after_reading_padding" />
+    </LinearLayout>
+
+</LinearLayout>

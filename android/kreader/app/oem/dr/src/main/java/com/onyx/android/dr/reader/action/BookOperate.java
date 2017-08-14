@@ -317,7 +317,7 @@ public class BookOperate {
 
     public void startTtsPlay() {
         final ScaleToPageRequest scaleToPageRequest = new ScaleToPageRequest(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName());
-        readerPresenter.getReader().submitRequest(readerPresenter.getReaderView().getViewContext(),
+        readerPresenter.getReader().submitRequest(readerPresenter.getReaderView().getApplicationContext(),
                 scaleToPageRequest, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable throwable) {

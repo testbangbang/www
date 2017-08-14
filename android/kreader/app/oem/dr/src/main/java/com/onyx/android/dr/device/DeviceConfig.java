@@ -285,6 +285,12 @@ public class DeviceConfig {
         public static final String MENU_GOOD_SENTENCE_EXTRACT = "menu_good_sentence_extract";
         public static final String MENU_LISTEN_BOOKS = "menu_listen_books";
         public static final String MENU_AFTER_READING = "menu_after_reading";
+        public static final String MENU_READER_SETTING = "menu_reader_setting";
+    }
+
+    public static class AfterReadingInfo {
+        public static final String MENU_READING_SUMMARY = "menu_reading_summary";
+        public static final String MENU_AFTER_READING = "menu_after_reading";
     }
 
     private JSONObject getMenuObject(String userType) {
