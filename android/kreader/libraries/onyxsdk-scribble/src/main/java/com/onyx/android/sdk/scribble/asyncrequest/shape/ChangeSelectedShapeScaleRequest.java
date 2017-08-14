@@ -7,8 +7,8 @@ import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
  * Created by solskjaer49 on 2017/8/9 17:30.
  */
 
-public class ChangedSelectedShapeScaleRequest extends AsyncBaseNoteRequest {
-    public ChangedSelectedShapeScaleRequest(float scale) {
+public class ChangeSelectedShapeScaleRequest extends AsyncBaseNoteRequest {
+    public ChangeSelectedShapeScaleRequest(float scale) {
         scaleSize = scale;
     }
 

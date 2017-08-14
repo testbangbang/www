@@ -27,11 +27,12 @@ public class ChangeSelectedShapePositionAction extends BaseNoteAction {
 
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
+        ChangeSelectedShapePositionRequest request;
         if ((targetDx == Float.MIN_VALUE || targetDy == Float.MIN_VALUE) && (touchPoint != null)) {
-            targetDx = touchPoint.getX() - noteManager.getNoteDocument().getCurrentPage(noteManager.getView().getContext()).getSelectedRect().centerX();
-            targetDy = touchPoint.getY() - noteManager.getNoteDocument().getCurrentPage(noteManager.getView().getContext()).getSelectedRect().centerY();
+            request = new ChangeSelectedShapePositionRequest(touchPoint);
+        } else {
+            request = new ChangeSelectedShapePositionRequest(targetDx, targetDy);
         }
-        ChangeSelectedShapePositionRequest request = new ChangeSelectedShapePositionRequest(targetDx, targetDy);
         noteManager.submitRequest(request, callback);
     }
 }

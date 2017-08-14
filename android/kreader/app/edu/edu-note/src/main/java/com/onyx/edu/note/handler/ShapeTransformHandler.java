@@ -19,7 +19,6 @@ import com.onyx.edu.note.actions.scribble.ChangeSelectedShapePositionAction;
 import com.onyx.edu.note.actions.scribble.GetSelectedShapeListAction;
 import com.onyx.edu.note.actions.scribble.SelectShapeByPointListAction;
 import com.onyx.edu.note.actions.scribble.ShapeSelectionAction;
-import com.onyx.edu.note.actions.scribble.ShapeShowTransformRectAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
@@ -71,7 +70,7 @@ public class ShapeTransformHandler extends BaseHandler {
     private static final String TAG = ShapeTransformHandler.class.getSimpleName();
     private TouchPoint mShapeSelectStartPoint = null;
     private TouchPoint mShapeSelectPoint = null;
-    private ControlMode currentCortrolMode = ControlMode.SelectMode;
+    private ControlMode currentControlMode = ControlMode.SelectMode;
 
     private enum ControlMode {SelectMode, OperatingMode}
 
@@ -176,7 +175,7 @@ public class ShapeTransformHandler extends BaseHandler {
             public void done(BaseRequest request, Throwable e) {
                 GetSelectedShapeListRequest req = (GetSelectedShapeListRequest) request;
                 if (req.getSelectedShapeList().size() > 0) {
-                    currentCortrolMode = ControlMode.OperatingMode;
+                    currentControlMode = ControlMode.OperatingMode;
                 }
             }
         });
@@ -202,20 +201,19 @@ public class ShapeTransformHandler extends BaseHandler {
         }
         mShapeSelectPoint.x = motionEvent.getX();
         mShapeSelectPoint.y = motionEvent.getY();
-        switch (currentCortrolMode) {
+        switch (currentControlMode) {
             case SelectMode:
                 new ShapeSelectionAction(mShapeSelectStartPoint, mShapeSelectPoint).execute(mNoteManager, null);
                 break;
             case OperatingMode:
-                new ShapeShowTransformRectAction(mShapeSelectStartPoint, mShapeSelectPoint).execute(mNoteManager, null);
-//                new ChangeSelectedShapePositionAction(mShapeSelectPoint).execute(mNoteManager, null);
+                new ChangeSelectedShapePositionAction(mShapeSelectPoint).execute(mNoteManager, null);
                 break;
         }
     }
 
     @Subscribe
     public void onShapeSelectTouchPointListReceived(ShapeSelectTouchPointListReceivedEvent event) {
-        switch (currentCortrolMode) {
+        switch (currentControlMode) {
             case SelectMode:
                 new SelectShapeByPointListAction(event.getTouchPointList()).execute(mNoteManager, new BaseCallback() {
                     @Override
