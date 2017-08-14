@@ -75,6 +75,22 @@ public class DocumentHelper {
         EpdController.setStrokeWidth(width);
     }
 
+    public float getStrokeWidth() {
+        return getNoteDocument().getStrokeWidth();
+    }
+
+    public int getStrokeColor() {
+        return getNoteDocument().getStrokeColor();
+    }
+
+    public int getLineLayoutBackground() {
+        return getNoteDocument().getLineLayoutBackground();
+    }
+
+    public String getCurrentPageUniqueId() {
+        return getNoteDocument().getCurrentPageUniqueId();
+    }
+
     public void setStrokeColor(int color) {
         getNoteDocument().setStrokeColor(color);
         EpdController.setStrokeColor(color);
