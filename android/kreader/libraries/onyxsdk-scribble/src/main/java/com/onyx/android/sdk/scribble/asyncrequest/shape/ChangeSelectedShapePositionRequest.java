@@ -29,9 +29,11 @@ public class ChangeSelectedShapePositionRequest extends AsyncBaseNoteRequest {
     public void execute(AsyncNoteViewHelper helper) throws Exception {
         setResumeInputProcessor(helper.useDFBForCurrentState());
         benchmarkStart();
-        if ((targetDx == Float.MIN_VALUE || targetDy == Float.MIN_VALUE) && touchPoint != null) {
-            targetDx = touchPoint.getX() - helper.getNoteDocument().getCurrentPage(helper.getView().getContext()).getSelectedRect().centerX();
-            targetDy = touchPoint.getY() - helper.getNoteDocument().getCurrentPage(helper.getView().getContext()).getSelectedRect().centerY();
+        if ((Float.compare(targetDx, Float.MIN_VALUE) == 0 || (Float.compare(targetDy, Float.MIN_VALUE) == 0)) && touchPoint != null) {
+            targetDx = touchPoint.getX() - helper.getNoteDocument().getCurrentPage(
+                    helper.getView().getContext()).getSelectedRect().centerX();
+            targetDy = touchPoint.getY() - helper.getNoteDocument().getCurrentPage(
+                    helper.getView().getContext()).getSelectedRect().centerY();
         }
         helper.getNoteDocument().getCurrentPage(getContext()).setTranslateToSelectShapeList(targetDx, targetDy);
         renderCurrentPageInBitmap(helper);

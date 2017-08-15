@@ -34,6 +34,7 @@ public class NotePage {
     private List<Shape> newAddedShapeList = new ArrayList<>();
     private List<Shape> removedShapeList = new ArrayList<>();
     private List<Shape> selectedShapeList = new ArrayList<>();
+    private List<Shape> dirtyShapeList = new ArrayList<>();
 
     private int currentShapeType;
     private Shape currentShape;
@@ -136,6 +137,13 @@ public class NotePage {
 
     public void clearUndoRedoRecord() {
         undoRedoManager.clear();
+    }
+
+    public void clearShapeSelectRecord() {
+        for (Shape shape : selectedShapeList) {
+            shape.setSelected(false);
+        }
+        selectedShapeList.clear();
     }
 
     private void updateShape(final Shape shape) {
@@ -339,20 +347,22 @@ public class NotePage {
     public void loadPage(final Context context) {
         newAddedShapeList.clear();
         removedShapeList.clear();
-        final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, getDocumentUniqueId(), getPageUniqueId(), getSubPageName());
+        final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context,
+                getDocumentUniqueId(), getPageUniqueId(), getSubPageName());
         for(ShapeModel model : modelList) {
             addShapeFromModel(ShapeFactory.shapeFromModel(model));
         }
         setLoaded(true);
     }
 
-    public static final NotePage createPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
+    public static final NotePage createPage(final Context context, final String docUniqueId,
+                                            final String pageName, final String subPageName) {
         final NotePage page = new NotePage(docUniqueId, pageName, subPageName);
         return page;
     }
 
     public List<ShapeModel> getNewAddedShapeModeList() {
-        List<ShapeModel> modelList = new ArrayList<ShapeModel>(newAddedShapeList.size());
+        List<ShapeModel> modelList = new ArrayList<>(newAddedShapeList.size());
         for(Shape shape : newAddedShapeList) {
             final ShapeModel model = ShapeFactory.modelFromShape(shape);
             modelList.add(model);
@@ -374,7 +384,7 @@ public class NotePage {
 
     public boolean savePage(final Context context) {
         List<ShapeModel> modelList = new ArrayList<>(newAddedShapeList.size());
-        //TODO:new shape;
+        //TODO: new shape;
         for(Shape shape : newAddedShapeList) {
             final ShapeModel model = ShapeFactory.modelFromShape(shape);
             modelList.add(model);
@@ -385,8 +395,8 @@ public class NotePage {
 
         modelList.clear();
 
-        //TODO:selected Shape:
-        for (Shape shape : selectedShapeList) {
+        //TODO: dirtyShape;
+        for (Shape shape : dirtyShapeList) {
             final ShapeModel model = ShapeFactory.modelFromShape(shape);
             modelList.add(model);
         }
@@ -394,12 +404,8 @@ public class NotePage {
             ShapeDataProvider.updateShapeList(context, modelList);
         }
 
-        //TODO:removed Shape:
-        List<String> list = new ArrayList<>();
-        for(Shape shape: removedShapeList) {
-            list.add(shape.getShapeUniqueId());
-        }
-        ShapeDataProvider.removeShapesByIdList(context, list);
+        //TODO: removed Shape;
+        ShapeDataProvider.removeShapesByIdList(context, getRemovedShapeIdList());
         newAddedShapeList.clear();
         removedShapeList.clear();
         return true;
@@ -432,6 +438,7 @@ public class NotePage {
         for (Shape shape : selectedShapeList) {
             shape.setScale(scale);
         }
+        dirtyShapeList.addAll(selectedShapeList);
     }
 
     public void setTranslateToSelectShapeList(float dX, float dY) {
@@ -441,5 +448,6 @@ public class NotePage {
         for (Shape shape : selectedShapeList) {
             shape.onTranslate(dX, dY);
         }
+        dirtyShapeList.addAll(selectedShapeList);
     }
 }

@@ -174,6 +174,16 @@ public class AsyncNoteViewHelper {
         }
     }
 
+    public void clearPageSelectRecord() {
+        Log.e(TAG, "getNoteDocument().getPageCount():" + getNoteDocument().getPageCount());
+        for (int i = 0; i < getNoteDocument().getPageCount(); i++) {
+            NotePage page = getNoteDocument().getPageByIndex(i);
+            if (page != null) {
+                page.clearShapeSelectRecord();
+            }
+        }
+    }
+
     public void save(final Context context, final String title , boolean closeAfterSave) {
         getNoteDocument().save(context, title);
         if (closeAfterSave) {

@@ -16,12 +16,17 @@ import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.edu.note.actions.scribble.ChangeSelectedShapePositionAction;
+import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
 import com.onyx.edu.note.actions.scribble.GetSelectedShapeListAction;
+import com.onyx.edu.note.actions.scribble.GotoNextPageAction;
+import com.onyx.edu.note.actions.scribble.GotoPrevPageAction;
 import com.onyx.edu.note.actions.scribble.SelectShapeByPointListAction;
 import com.onyx.edu.note.actions.scribble.ShapeSelectionAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
+import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
+import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -74,6 +79,13 @@ public class ShapeTransformHandler extends BaseHandler {
 
     private enum ControlMode {SelectMode, OperatingMode}
 
+    private BaseCallback actionDoneCallback = new BaseCallback() {
+        @Override
+        public void done(BaseRequest request, Throwable e) {
+            EventBus.getDefault().post(new RequestInfoUpdateEvent(request, e));
+        }
+    };
+
     public ShapeTransformHandler(NoteManager noteManager) {
         super(noteManager);
     }
@@ -82,6 +94,7 @@ public class ShapeTransformHandler extends BaseHandler {
     public void onActivate() {
         super.onActivate();
         EventBus.getDefault().register(this);
+        currentControlMode = ControlMode.SelectMode;
         mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_SELECTOR);
         mNoteManager.sync(true, false);
     }
@@ -121,6 +134,29 @@ public class ShapeTransformHandler extends BaseHandler {
     @Override
     public void handleFunctionBarMenuFunction(int functionBarMenuID) {
         //TODO:temp restore to normal scribble here.in shape select mode , may have different icon here.
+        switch (functionBarMenuID) {
+            case ScribbleFunctionBarMenuID.ADD_PAGE:
+                addPage();
+                break;
+            case ScribbleFunctionBarMenuID.DELETE_PAGE:
+                deletePage();
+                break;
+            case ScribbleFunctionBarMenuID.NEXT_PAGE:
+                nextPage();
+                break;
+            case ScribbleFunctionBarMenuID.PREV_PAGE:
+                prevPage();
+                break;
+            case ScribbleFunctionBarMenuID.SHAPE_SELECT:
+                onSetShapeSelectModeChanged();
+                break;
+            default:
+                EventBus.getDefault().post(new ShowSubMenuEvent(functionBarMenuID));
+                break;
+        }
+    }
+
+    private void onSetShapeSelectModeChanged() {
         mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_PENCIL_SCRIBBLE);
         EventBus.getDefault().post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
     }
@@ -137,17 +173,31 @@ public class ShapeTransformHandler extends BaseHandler {
 
     @Override
     public void saveDocument(String uniqueID, String title, boolean closeAfterSave, BaseCallback callback) {
-
+        DocumentSaveAction documentSaveAction = new DocumentSaveAction(uniqueID,
+                title, closeAfterSave);
+        documentSaveAction.execute(mNoteManager, callback);
     }
 
     @Override
     public void prevPage() {
-
+        mNoteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GotoPrevPageAction prevPageAction = new GotoPrevPageAction();
+                prevPageAction.execute(mNoteManager, actionDoneCallback);
+            }
+        });
     }
 
     @Override
     public void nextPage() {
-
+        mNoteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GotoNextPageAction nextPageAction = new GotoNextPageAction();
+                nextPageAction.execute(mNoteManager, actionDoneCallback);
+            }
+        });
     }
 
     @Override
