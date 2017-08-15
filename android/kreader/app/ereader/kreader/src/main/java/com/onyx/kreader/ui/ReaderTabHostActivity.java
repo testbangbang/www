@@ -45,8 +45,8 @@ import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
-import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -1158,6 +1158,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
+                sendBroadcast(new Intent(com.onyx.kreader.note.receiver.DeviceReceiver.SYSTEM_UI_DIALOG_CLOSE_ACTION));
                 tabHost.setBackgroundColor(Color.WHITE);
                 if (isSideReading) {
                     bringReaderTabToFront(getSideReadingLeft());
@@ -1169,6 +1170,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         });
         bringSelfToFront();
         dlg.show();
+        sendBroadcast(new Intent(com.onyx.kreader.note.receiver.DeviceReceiver.SYSTEM_UI_DIALOG_OPEN_ACTION));
     }
 
     private boolean isValidFilePath(String path) {
