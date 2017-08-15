@@ -902,6 +902,12 @@ public class ShowReaderMenuAction extends BaseAction {
             case SCRIBBLE_MAXIMIZE:
                 toggleMenu(readerDataHolder);
                 break;
+            case SCRIBBLE_PREV_PAGE:
+                prevScreen(readerDataHolder);
+                break;
+            case SCRIBBLE_NEXT_PAGE:
+                nextScreen(readerDataHolder);
+                break;
             case SCRIBBLE_DOC_PREV_PAGE:
                 prevScreen(readerDataHolder);
                 break;
