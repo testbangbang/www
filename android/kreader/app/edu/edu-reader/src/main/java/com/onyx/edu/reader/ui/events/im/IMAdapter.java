@@ -3,14 +3,9 @@ package com.onyx.edu.reader.ui.events.im;
 import android.content.Context;
 
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
-import com.onyx.android.sdk.im.Constant;
-import com.onyx.android.sdk.im.IMConfig;
 import com.onyx.android.sdk.im.IMManager;
-import com.onyx.android.sdk.im.data.JoinModel;
-import com.onyx.android.sdk.im.data.Message;
 import com.onyx.android.sdk.im.event.MessageEvent;
 import com.onyx.android.sdk.im.socket.SocketIOClient;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 
 import org.greenrobot.eventbus.EventBus;
@@ -28,7 +23,12 @@ public class IMAdapter {
 
     public IMAdapter(ReaderDataHolder readerDataHolder) {
         this.readerDataHolder = readerDataHolder;
-        getEventBus().register(this);
+    }
+
+    public void registerEventBus() {
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
     }
 
     public EventBus getEventBus() {
@@ -64,6 +64,7 @@ public class IMAdapter {
         if (event == null) {
             return;
         }
+        getEventBus().unregister(this);
         setStarted(false);
         getIMManager().close(getContext());
     }
