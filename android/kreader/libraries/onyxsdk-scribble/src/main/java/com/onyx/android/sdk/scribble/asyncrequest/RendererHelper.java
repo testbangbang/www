@@ -27,8 +27,6 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
-import java.util.List;
-
 /**
  * Created by john on 12/8/2017.
  */
@@ -50,7 +48,7 @@ public class RendererHelper {
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
 
-        if (!parent.isLineLayoutMode()) {
+        if (!parent.inSpanScribbleMode()) {
             drawBackground(parent.getAppContext(),
                     canvas, paint, parent.getNoteDocument().getBackground(),
                     parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
@@ -65,11 +63,26 @@ public class RendererHelper {
             notePage.render(renderContext, null);
             //renderSelectedRect(notePage.getSelectedRect(), renderContext);
         }
-        //renderCursorShape(renderContext);
-        //drawLineLayoutBackground(renderContext);
+        renderSpanCursorShape(parent, renderContext);
+        drawSpanLayoutBackground(parent, renderContext);
 
         flushRenderingBuffer(bitmap);
         drawRandomTestPath(request, canvas, paint);
+    }
+
+    private void renderSpanCursorShape(final NoteManager parent, final RenderContext renderContext) {
+        if (!parent.inSpanScribbleMode()) {
+            return;
+        }
+        Shape cursorShape = parent.getSpanCursorShape();
+        if (cursorShape == null) {
+            return;
+        }
+        cursorShape.render(renderContext);
+    }
+
+    private void drawSpanLayoutBackground(final NoteManager parent, final RenderContext renderContext) {
+        parent.drawSpanLayoutBackground(renderContext);
     }
 
     public void renderSelectionRectangle(final NoteManager parent, final TouchPoint start, final TouchPoint end) {

@@ -3,7 +3,6 @@ package com.onyx.edu.note;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.view.View;
 
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
@@ -70,8 +69,7 @@ public class NoteApplication extends Application {
             @Override
             public void uncaughtException(Thread thread, Throwable e) {
                 e.printStackTrace();
-                final View view = getNoteManager().getView();
-                getNoteManager().reset(view);
+                getNoteManager().reset();
             }
         });
     }

@@ -51,7 +51,6 @@ public class SpanHelper {
     private int mSpanTextFontHeight = 0;
 
     private LineLayoutArgs lineLayoutArgs;
-    private boolean isLineLayoutMode = false;
     private Shape cursorShape = null;
     private NoteManager noteManager;
 
@@ -304,16 +303,11 @@ public class SpanHelper {
         shape.addPoints(touchPointList);
     }
 
-    public void setLineLayoutMode(boolean lineLayoutMode) {
-        isLineLayoutMode = lineLayoutMode;
-    }
-
-    public boolean isLineLayoutMode() {
-        return isLineLayoutMode;
-    }
-
-    public void drawLineLayoutBackground(final RenderContext renderContext, View view) {
-        if (!isLineLayoutMode()) {
+    public void drawLineLayoutBackground(final RenderContext renderContext, View hostView) {
+        if (!noteManager.inSpanScribbleMode()) {
+            return;
+        }
+        if (hostView == null) {
             return;
         }
         if (noteManager.getDocumentHelper().getLineLayoutBackground() == NoteBackgroundType.EMPTY) {
@@ -325,7 +319,7 @@ public class SpanHelper {
         }
 
         Rect viewRect = new Rect();
-        view.getLocalVisibleRect(viewRect);
+        hostView.getLocalVisibleRect(viewRect);
         int count = args.getLineCount();
         int lineHeight = args.getLineHeight();
         int baseline = args.getBaseLine();
