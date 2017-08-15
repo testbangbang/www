@@ -186,11 +186,6 @@ public class ReaderActivity extends OnyxBaseActivity {
             flushNoteAction.execute(getReaderDataHolder(), null);
         }
 
-        if (getReaderDataHolder().inNoteWritingProvider()) {
-            StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, false);
-            stopNoteActionChain.execute(getReaderDataHolder(), null);
-        }
-
         getReaderDataHolder().onActivityPause();
         super.onPause();
     }
@@ -454,11 +449,6 @@ public class ReaderActivity extends OnyxBaseActivity {
         enablePenShortcut();
         updateNoteState();
         getReaderDataHolder().onActivityResume();
-
-        if (getReaderDataHolder().inNoteWritingProvider()) {
-            final StartNoteRequest request = new StartNoteRequest(getReaderDataHolder().getVisiblePages());
-            getReaderDataHolder().getNoteManager().submit(getReaderDataHolder().getContext(), request, null);
-        }
     }
 
     private void enablePenShortcut() {
@@ -589,13 +579,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (event == null || !getReaderDataHolder().inNoteWritingProvider()) {
             return;
         }
-        final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
         if (event.isUiOpen()) {
-            FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(list);
-            flushNoteAction.execute(getReaderDataHolder(), null);
+            StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, false);
+            stopNoteActionChain.execute(getReaderDataHolder(), null);
         } else {
-            ResumeDrawingAction action = new ResumeDrawingAction(list);
-            action.execute(getReaderDataHolder(), null);
+            final StartNoteRequest request = new StartNoteRequest(getReaderDataHolder().getVisiblePages());
+            getReaderDataHolder().getNoteManager().submit(getReaderDataHolder().getContext(), request, null);
         }
         enableShortcut(!event.isUiOpen());
     }
